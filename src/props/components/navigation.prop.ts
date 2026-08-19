@@ -194,9 +194,19 @@ export type StepsProp = {
   type?: "default" | "dot" | "inline";
   size?: "md" | "sm";
   titlePlacement?: "horizontal" | "vertical";
+  /**
+   * The glyph between inline steps (`type="inline"` only). `chevron` (default, `›`) is the
+   * breadcrumb-flavoured original. `arrow` (`→`) is the canonical hosted-identity progression
+   * marker: a chevron reads as "drill into", an arrow reads as "then" — which is what a step row
+   * means. Ignored by every other `type`.
+   */
+  separator?: StepsSeparatorProp;
   onValueChange?: (value: number) => void;
   className?: ClassNameProp;
 };
+
+/** @see Steps — inline separator glyph. */
+export type StepsSeparatorProp = "chevron" | "arrow";
 
 /** Tab pane — Ant Design `items` entry. */
 export type TabItemProp = {

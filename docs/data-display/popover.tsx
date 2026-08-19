@@ -34,7 +34,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>PopoverAnchor · non-trigger positioning reference</CardTitle>
+            <CardTitle level={2}>PopoverAnchor · non-trigger positioning reference</CardTitle>
             <CardDescription>Anchor positions content without becoming its toggle.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -209,11 +209,14 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Modal</CardTitle>
             <CardDescription>
-              modal traps focus and blocks outside interaction while open. Shown open at rest.
+              modal traps focus and blocks outside interaction while open, which also marks the rest
+              of the page aria-hidden. Shown CLOSED at rest: an open modal layer would take the
+              frame&apos;s own main landmark and heading out of the accessibility tree. Open it from
+              the trigger to inspect it.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Popover modal defaultOpen>
+            <Popover modal>
               <PopoverTrigger asChild>
                 <Button variant="outline">確認が必要</Button>
               </PopoverTrigger>

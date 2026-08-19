@@ -29,6 +29,26 @@
    * (a brand's success-bg/-border are often more present than the faint 5%/30% default). */
   --alert-bg-alpha: 0.05;
   --alert-border-alpha: 0.3;
+  /* BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to
+   * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card
+   * language sets --banner-radius, one that rules its top edge too sets --banner-border-width.
+   * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines
+   * its text up with the page title instead of sitting at a second, unrelated margin. */
+  --banner-radius: 0;
+  --banner-border-width: 0;
+  --banner-border-block-end-width: 1px;
+  --banner-space-block: var(--space-3);
+  /* Inline inset tracks the page gutter so a banner's text lines up with the page title.
+   * `--space-page-active-x` steps down to the compact gutter on `.ui-page-container` only, and
+   * custom properties inherit — so a banner rendered INSIDE the container picks the compact value
+   * up for free, while the normal case (a banner mounted ABOVE the container, or in AppShell) would
+   * keep the desktop gutter and sit 8px out at 390px. The compact step below is what actually keeps
+   * the two aligned; retune it rather than hard-coding a mobile inset at the call site. */
+  --banner-space-inline: var(--space-page-active-x);
+  --banner-space-inline-compact: var(--space-page-compact-x);
+  /* Dismiss offset is measured from the banner's own (shorter) block inset, so the ✕ stays
+   * optically centred on a one-line strip instead of floating at the inline-alert offset. */
+  --banner-dismiss-space-offset: var(--space-2);
   /* Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44).
    * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the
    * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change. */

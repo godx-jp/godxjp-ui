@@ -77,3 +77,58 @@ describe("PageContainer status band", () => {
     );
   });
 });
+
+/**
+ * `headerLoading` (gh#255, ported from the dev-line standalone PageHeader): the title band
+ * skeletonises while the page record resolves, but the `<h1>` never leaves the document and
+ * never becomes an empty heading — the heading outline a screen-reader user navigates by
+ * survives the load. Breadcrumbs and `extra` come from the route, so they stay live.
+ */
+describe("PageContainer headerLoading", () => {
+  it("skeletonises the title band, keeps an accessibly-named <h1>, and marks the header busy", () => {
+    const { container } = renderWithUi(
+      <PageContainer
+        title="組織プロファイル"
+        subtitle="契約と環境"
+        headerLoading
+        extra={<button type="button">再読み込み</button>}
+      >
+        body
+      </PageContainer>,
+    );
+    const header = container.querySelector("header.ui-page-header");
+    expect(header).toHaveAttribute("aria-busy", "true");
+
+    // The <h1> stays in the tree, wears the skeleton skin, and keeps an sr-only accessible name.
+    const heading = screen.getByRole("heading", { level: 1 });
+    expect(heading.className).toContain("ui-skeleton-block");
+    expect(heading.className).toContain("ui-page-title-placeholder");
+    expect(heading).toHaveAccessibleName();
+
+    // The subtitle placeholder is decorative only — the heading already announces the pending state.
+    const subtitlePlaceholder = container.querySelector(".ui-page-subtitle-placeholder");
+    expect(subtitlePlaceholder).toHaveAttribute("aria-hidden", "true");
+
+    // Route-owned regions are NOT skeletonised.
+    expect(screen.getByRole("button", { name: "再読み込み" })).toBeInTheDocument();
+  });
+
+  it("settled header carries no ARIA state and renders the real title again", () => {
+    const { container } = renderWithUi(
+      <PageContainer title="組織プロファイル" subtitle="契約と環境">
+        body
+      </PageContainer>,
+    );
+    expect(container.querySelector("header.ui-page-header")).not.toHaveAttribute("aria-busy");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("組織プロファイル");
+    expect(container.querySelector(".ui-page-title-placeholder")).toBeNull();
+  });
+
+  it("has no axe violations while pending", async () => {
+    await expectNoA11yViolations(
+      <PageContainer title="組織プロファイル" headerLoading>
+        body
+      </PageContainer>,
+    );
+  });
+});

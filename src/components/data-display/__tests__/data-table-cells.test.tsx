@@ -81,3 +81,40 @@ describe("DataTable — cell rendering", () => {
     expect(screen.getAllByText("—").length).toBeGreaterThanOrEqual(2);
   });
 });
+
+describe("DataTable — default cell text is never a bare node in the <td> (gh#412)", () => {
+  it("wraps the rendered value in a measurable element, placeholder included", () => {
+    const { container } = renderWithUi(
+      <DataTable
+        data={[{ id: "1", name: "タイムゾーン", note: null }]}
+        columns={[
+          { key: "name", header: "名前" },
+          { key: "note", header: "備考" },
+        ]}
+      />,
+    );
+
+    const cells = container.querySelectorAll("tbody td");
+    // A bare text node leaves the padded cell BOX as the only measurable geometry, so a single
+    // unwrapped line reads as wrapped — the false positive a CJK one-char-per-line check hits.
+    for (const cell of cells) {
+      expect(cell.childNodes).toHaveLength(1);
+      expect(cell.firstElementChild).toHaveAttribute("data-slot", "table-cell-text");
+    }
+    expect(cells[0].textContent).toBe("タイムゾーン");
+    expect(cells[1].textContent).toBe("—");
+  });
+
+  it("leaves a consumer `render` completely alone", () => {
+    const { container } = renderWithUi(
+      <DataTable
+        data={[{ id: "1", name: "Mai" }]}
+        columns={[{ key: "name", header: "名前", render: (row) => <b>{row.name}</b> }]}
+      />,
+    );
+
+    const cell = container.querySelector("tbody td")!;
+    expect(cell.firstElementChild?.tagName).toBe("B");
+    expect(cell.querySelector('[data-slot="table-cell-text"]')).toBeNull();
+  });
+});

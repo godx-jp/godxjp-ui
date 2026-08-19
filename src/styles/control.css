@@ -714,7 +714,17 @@
 .ui-otp-container {
   display: flex;
   align-items: center;
+  justify-content: var(--otp-container-align, flex-start);
   gap: var(--space-2);
+}
+/* `align` on InputOTP lands on the hidden <input> (input-otp owns the container element), so the
+ * container reads it through :has() — the same mechanism this file already uses for the invalid
+ * and disabled states. Specificity puts the per-instance prop above the theme token. */
+.ui-otp-container:has(.ui-otp-input[data-align="center"]) {
+  justify-content: center;
+}
+.ui-otp-container:has(.ui-otp-input[data-align="end"]) {
+  justify-content: flex-end;
 }
 .ui-otp-input:disabled {
   cursor: not-allowed;
@@ -726,8 +736,8 @@
 .ui-otp-slot {
   position: relative;
   display: flex;
-  width: var(--otp-slot-size, var(--control-height));
-  height: var(--otp-slot-size, var(--control-height));
+  width: var(--otp-slot-inline-size, var(--otp-slot-size, var(--control-height)));
+  height: var(--otp-slot-block-size, var(--otp-slot-size, var(--control-height)));
   align-items: center;
   justify-content: center;
   font-size: var(--font-size-base);
@@ -817,6 +827,11 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
+  /* A 10-star scale needs ~276px of hit area; a 320px viewport offers ~212 inside a card. Without
+   * wrapping, the last stars are painted outside the surface with nothing to scroll them into
+   * view, so they can be neither seen nor clicked (WCAG 2.1.1 / 2.4.7). Wrapping keeps every star
+   * reachable and is a no-op wherever the row already fits. */
+  flex-wrap: wrap;
 }
 .ui-rating-star {
   /* ≥24px hit area (WCAG 2.5.8) around the 20px glyph */

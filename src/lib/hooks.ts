@@ -111,3 +111,66 @@ export function useMediaQuery(query: string): boolean {
 export function useIsMobile(): boolean {
   return useMediaQuery("(max-width: 767px)");
 }
+
+/** A scroll container is already keyboard-reachable when something inside it can take focus. */
+const SCROLLABLE_REGION_FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * WCAG 2.1.1 — a region that scrolls must be operable by keyboard. Tabbing to a focusable child
+ * scrolls the container, so a region whose content IS focusable needs nothing; one whose content is
+ * inert (plain text) strands its overflow for anyone not using a pointer and must therefore take
+ * focus itself via `tabindex="0"`. Which case applies depends on the RENDERED size and content —
+ * the same pagination strip is fine at 1440px and unreachable at 375px, and a panel full of text
+ * only overflows once it is resized — so it is measured at runtime and kept in sync as the element
+ * resizes or its content changes.
+ *
+ * The attribute is written imperatively rather than rendered: `react-resizable-panels` applies our
+ * className to a nested div it owns, which no prop can reach.
+ *
+ * @param element the scroll container itself (state, not a ref, so the effect re-runs when it mounts)
+ */
+export function useScrollableRegionTabIndex(element: HTMLElement | null): void {
+  useEffect(() => {
+    if (!element) return;
+
+    const sync = () => {
+      const scrolls =
+        element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+      const hasFocusableContent =
+        element.querySelector(SCROLLABLE_REGION_FOCUSABLE_SELECTOR) !== null;
+      // Guard both writes: setting an attribute to the value it already holds still emits a
+      // MutationRecord, which would call this back forever.
+      if (scrolls && !hasFocusableContent) {
+        if (element.getAttribute("tabindex") !== "0") element.setAttribute("tabindex", "0");
+      } else if (element.getAttribute("tabindex") === "0") {
+        element.removeAttribute("tabindex");
+      }
+    };
+
+    sync();
+
+    // Resize covers the container AND its children (content growing past the box); mutations cover
+    // content swapped in, or a child losing `disabled` and becoming a focus target.
+    const observers: Array<{ disconnect: () => void }> = [];
+    if (typeof ResizeObserver !== "undefined") {
+      const resizeObserver = new ResizeObserver(sync);
+      resizeObserver.observe(element);
+      for (const child of Array.from(element.children)) resizeObserver.observe(child);
+      observers.push(resizeObserver);
+    }
+    if (typeof MutationObserver !== "undefined") {
+      const mutationObserver = new MutationObserver(sync);
+      mutationObserver.observe(element, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["disabled", "href", "tabindex"],
+      });
+      observers.push(mutationObserver);
+    }
+    return () => {
+      for (const observer of observers) observer.disconnect();
+    };
+  }, [element]);
+}

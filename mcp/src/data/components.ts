@@ -153,6 +153,13 @@ export const COMPONENTS: ComponentEntry[] = [
           "Grow the body to fill the remaining shell height. Default false = top-packed, content-height (short pages leave no stretched void). Enable for a full-height DataTable, SplitPane, or a chat surface.",
       },
       {
+        name: "headerLoading",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Skeletonise the TITLE BAND only while the page's record resolves (title/subtitle placeholders + aria-busy; the <h1> stays in the outline with an sr-only accessible name). Breadcrumbs and `extra` stay live — they come from the route, not the record. This is not a page-wide loading flag; use DataState for the body.",
+      },
+      {
         name: "linkComponent",
         type: "React.ElementType",
         description:
@@ -167,7 +174,7 @@ export const COMPONENTS: ComponentEntry[] = [
       "DO: Pass `breadcrumb` as an ordered array of `{ label, to? }` objects from root to current page. The last item is automatically rendered without a link and receives `aria-current='page'`; earlier items with `to` become router `<Link>` elements. Never hand-roll a breadcrumb nav inside a PageContainer.",
       "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
       "DO: Use `preset='admin-collection'` for canonical Admin list pages. It owns the toolbar/search/control/table composition once at PageContainer level; do not repeat widths, heights, cell padding or media queries on child fields and rows.",
-      "DON'T: Confuse PageContainer's prop names with the old PageHeader's prop names — PageContainer uses `subtitle` (not `description`) and `extra` (not `actions`). If you see those legacy names in old code, migrate them to PageContainer.",
+      "DO: Use `subtitle` (not `description`) and `extra` (not `actions`) — those are the canonical page-header names. If you see `description` / `actions` in old code, migrate them.",
       "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`. DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
       'DO: Reach for `headerLayout="responsive-inline"` when a SINGLE compact header control (a member search, one primary action) must stay beside the title at 390px instead of wrapping under the subtitle. Its measure is the token `--page-header-extra-measure` (11rem) — never a consumer `w-[176px]` or a media query in app CSS. Keep the default `stack` when `extra` holds a toolbar of several buttons; squeezing those into the compact measure only makes them wrap in a narrower box.',
       "DO: Know the header draws NO bottom divider by default — it is governed by the semantic token `--page-header-divider` (default `none`). A service theme opts in once, globally, with `--page-header-divider: 1px solid hsl(var(--border));` in its theme CSS. Never re-create the divider with a `border-b` utility on the header or a `<Separator>` under the title; `variant='ghost'` stays divider-less regardless of the token.",
@@ -508,7 +515,7 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
         type: '"default" | "login" | "registration" | "device-authorization" | "context-selection" | "account-recovery"',
         defaultValue: '"default"',
         description:
-          'Named flow GEOMETRY — the package-owned layout contract for a canonical hosted-identity flow. "login" (gh#237) anchors the 360px SCR-001 card at x=540/332/15 and y=363/363/353 for 1440x900, 1024x900 and 390x844; its fixed identity slot absorbs standalone, one-line requester and wrapped two-line requester states without truncating data. "device-authorization" (gh#220) = a 380px card at 1440/1024 with a 5px inline page gutter at 390. "registration" (gh#256) = the 360px sign-up measure with a 15px inline gutter at 390 (the same page rhythm as "login", so sign-in to sign-up never jumps on a phone). START-aligned like login: a sign-up card is the tallest surface in the set (name/email/password/confirm/strength/consent/submit/providers) and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach. It is also the only preset with its own footer-clearance knob, so the legal/consent footer never sits flush against the submit button; it carries the full password form AND the pending-email confirmation state with no consumer geometry CSS. "context-selection" (gh#217) = a 25rem card on desktop/tablet, edge-to-edge on mobile, plus tokenized section rhythm. "account-recovery" (gh#233) = the 27rem/432px SCR-008 recovery/MFA panel with a 15px mobile gutter. ORTHOGONAL to `variant`, so `variant="canonical" preset="login"` keeps canonical control chrome while the preset owns layout. Selecting a preset REPLACES consumer-side geometry overrides.',
+          'Named flow GEOMETRY — the package-owned layout contract for a canonical hosted-identity flow. "login" (gh#237) anchors the 360px SCR-001 card at x=540/332/15 and y=363/363/353 for 1440x900, 1024x900 and 390x844; its fixed identity slot absorbs standalone, one-line requester and wrapped two-line requester states without truncating data. "device-authorization" (gh#220, gh#12) = a 380px card at 1440/1024 with a 5px inline page gutter at 390, AND the code field itself: the preset hands --otp-slot-{inline,block}-size the canonical 27.5x52 device-grant slot, so two 4-slot grouped boxes measure 112x54 instead of the 146x38 the square --control-height tier produced. "registration" (gh#256) = the 360px sign-up measure with a 15px inline gutter at 390 (the same page rhythm as "login", so sign-in to sign-up never jumps on a phone). START-aligned like login: a sign-up card is the tallest surface in the set (name/email/password/confirm/strength/consent/submit/providers) and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach. It is also the only preset with its own footer-clearance knob, so the legal/consent footer never sits flush against the submit button; it carries the full password form AND the pending-email confirmation state with no consumer geometry CSS. "context-selection" (gh#217) = a 25rem card on desktop/tablet, edge-to-edge on mobile, plus tokenized section rhythm. "account-recovery" (gh#233) = the 27rem/432px SCR-008 recovery/MFA panel with a 15px mobile gutter. ORTHOGONAL to `variant`, so `variant="canonical" preset="login"` keeps canonical control chrome while the preset owns layout. Selecting a preset REPLACES consumer-side geometry overrides.',
       },
       {
         name: "density",
@@ -899,7 +906,7 @@ export default function Shell() {
         type: "ReactNode",
         defaultValue: "undefined",
         description:
-          "Center cluster (grows + centers) — optional. e.g. a search trigger (`Button` + `Search` icon opening your command palette) or a page/entity switcher (`DropdownMenu`).",
+          "Center cluster (grows + centers) — optional. e.g. a search trigger (`Button` + `Search` icon opening your command palette) or a page/entity switcher (`DropdownMenu`). ⚠ HIDDEN AT 1100px AND BELOW by default: the slot follows `--topbar-center-compact-display` (default `none`) so it cannot cover the start breadcrumb/title or the end utilities when a 16rem sidebar is docked (gh#244). A global search placed here is therefore invisible on tablets and every phone until you set `--topbar-center-compact-display: flex`.",
       },
       {
         name: "end",
@@ -927,7 +934,9 @@ export default function Shell() {
       "DO put a locale/theme switcher in `end` using `AppSettingPicker` (or your own control) — icon-only vs labelled, bordered vs not, is THAT component's prop, not Topbar's. Topbar does not ship or force a language picker.",
       "DON'T look for `product`/`project`/`onSearchOpen`/`onNotificationsOpen`/`collapsed` props — they were removed. A chrome control only exists if YOU put it in a slot, so there is never a dead dropdown / empty search with nothing behind it.",
       "DO render Topbar inside `AppShell`'s `topbar` slot (or any `<header>`). For a non-three-cluster layout, pass `children` and lay it out yourself.",
+      "DO decide, explicitly, what happens to the `center` slot at 1100px and below. It is REMOVED there by default (`--topbar-center-compact-display: none`, gh#244) so it cannot cover the start or end clusters when a 16rem sidebar is docked — which also means a global search trigger in `center` is gone on tablets AND phones. This default arrived in 18.6.0 and changed behaviour for consumers who touched nothing but their lockfile. If your center content already has a compact presentation (an icon-only search trigger), opt back in globally with `:root { --topbar-center-compact-display: flex; }`; if it does not, move the trigger into `end` for compact widths. Never re-create either behaviour with a page-local media query.",
       "DO rely on the built-in shrink contract instead of hand-tuning widths: the bar never exceeds its shell allocation, `start` shrinks first and `center` yields its whole box, each cluster CLIPS its own overflow (so a long tenant/brand string can never spill over a sibling or leak a horizontal document scroll), and `end` keeps its natural width anchored inline-end — the locale picker and user menu stay visible at 1024px with a 16rem sidebar. If a label must degrade gracefully rather than be cut, give THAT element `truncate`/`text-overflow` yourself; don't add `overflow`/`flex` overrides to the slots.",
+      'KNOW the shrink contract reaches only the LAST child of `start` — and `Button` ships `shrink-0`, so any Button you put mid-slot (the classic entity switcher, with a brand mark before it and a screen title after) keeps its full width while the cluster clips it. Clipped, but still focusable: a keyboard user tabs to a control they cannot see (SC 2.4.7). Give such a control `min-w-11 flex-1` at compact widths so it takes the leftover room without dropping under the 44px touch floor, and wrap its label in `<span className="truncate">`. Budget the `end` cluster too — it is `flex: 0 0 auto`, so an ambient status chip there is subtracted from `start` before `start` gets a say (a 93px environment Badge left `start` 25px of a 198px bar at 320). Hide ambient chips below `sm`.',
     ],
     useCases: [
       "Admin shell: `start` = sidebar toggle + brand mark (`Avatar`) + an entity switcher (`DropdownMenu` around a `Button`); `center` = a `Button` search trigger; `end` = `AppSettingPicker` (locale) + a notifications `Button` + a user `DropdownMenu`.",
@@ -2161,13 +2170,22 @@ export default function InvoiceList({
       {
         name: "accent",
         type: '"primary" | "success" | "warning" | "info" | "attention" | "destructive"',
-        description: "3px left-edge semantic accent stripe.",
+        description:
+          "Semantic accent TONE. Where it is drawn is `accentPlacement`'s job — by default a leading-edge stripe on `border-inline-start` at the `--card-accent-rail-width` measure (6px).",
+      },
+      {
+        name: "accentPlacement",
+        type: '"edge" | "perimeter"',
+        defaultValue: '"edge"',
+        description:
+          'Where `accent` is drawn. "edge" is the classic leading rail. "perimeter" is the FULL attention border — the whole edge in the accent tone, at the same optical weight as `variant="featured"` but tone-owned, so a card can read as "action required" (accent="attention") or "failed" (accent="destructive") without borrowing the brand colour. Inert without `accent`. Switching placement never shifts the body text: the rail\'s slot-padding compensation is undone with it.',
       },
       {
         name: "variant",
         type: '"default" | "muted" | "outline" | "featured"',
         defaultValue: '"default"',
-        description: "Surface fill style.",
+        description:
+          'Surface fill style. `featured` is the BRAND perimeter; its colour is now the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement="perimeter"` instead.',
       },
       {
         name: "size",
@@ -2188,6 +2206,7 @@ export default function InvoiceList({
       "DO use <CardContent flush> for edge-to-edge children such as DataTable, Table, or a Tabs list — this removes horizontal padding. Combine with <CardContent tight> when there is no visual gap needed after the header, and <CardContent solo> when there is no CardHeader above (top padding matches the card shell).",
       "DO use <CardFooter separated> to render a top-bordered action band (Save/Cancel buttons, table summary row). Use <CardFooter flush> for a full-bleed footer bar.",
       "DO use <CardCover> as the first child for full-bleed cover media — the header below it uses card-section top spacing, not the card shell.",
+      'DO reach for `accentPlacement="perimeter"` when the whole card needs attention, not one edge: `<Card accent="attention" accentPlacement="perimeter">` is the semantic-tone equivalent of `variant="featured"` (which is brand-toned by definition). Never hand-roll it with `className="border-2 border-[--attention]"` or a page-local `.card--attention` rule — the placement owns the border weight, the outer ring AND the slot-padding compensation, so text stays on the same column as an unaccented sibling.',
       "DON'T hand-roll a stat/KPI tile with <Card> + raw divs — use <StatCard> (label, value, hint, delta, layout, inverse props) which is already a Card internally with correct token-driven layout.",
       "SPACING IS BORDER-AWARE & token-driven (theme via src/tokens/components/card.css, never hard-code padding on slots): `--card-space-inset` is the shared horizontal column every slot (header/content/footer) aligns to. A DIVIDED section — a `banded` header or a `separated` footer, i.e. one carrying a divider border — pads SYMMETRICALLY top+bottom from `--card-space-divided-y` (a band reads as its own region). A PLAIN header flows into the body instead: top `--card-space-shell-y`, no bottom, and the body supplies the gap via `--card-space-body-y`. THE TWO AXES ARE INDEPENDENT (gh#232): `--card-space-inset` is inline-only, while `--card-space-shell-y` owns the BLOCK shell edges (plain-header top, `solo` body top, terminal slot bottom) and defaults to the inset — so a shell/theme can make a card SHORTER without narrowing its column by overriding `--card-space-shell-y` alone (this is how AuthShell's `--auth-shell-card-padding-block-compact` reaches CardContent). Never bridge it with a consumer selector on the card-content slot. Special case: a header above `<CardContent flush>` with a <Table> gets its own `--card-space-body-y` bottom gap (the flush table zeroes its top), so the title never butts the table. `--card-space-gap` is the in-slot stack gap (title↕description). Tune the band rhythm once at `--card-space-divided-y`; tune the accent stripe width at `--card-accent-rail-width` (default 6px).",
     ],
@@ -3922,7 +3941,7 @@ import { Flex } from "@godxjp/ui/layout";
       "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
       "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",
       "DO use loadOptions + selectedLabel together for async selects: selectedLabel prevents a flash of the raw id string while the first page loads.",
-      "DO pair id= with a <label htmlFor={id}> for a11y. The trigger renders as a button; screen readers announce the label.",
+      "DO name the control with FormField (or aria-label) — NOT with a <label htmlFor>. The trigger is a button with role=combobox, and neither a wrapping <label> nor htmlFor names it: role=combobox takes no accessible name from its content either, so the visible value is the VALUE, not the name. Wrapping the Select in <FormField label=…> is the supported route; for a Select with no visible label pass aria-label. This holds for BOTH APIs — the compound trigger inherits the FormField contract (label, helper, error, required) through Select, and a bare <Select aria-label=…> forwards it too. Anything you set directly on SelectTrigger wins.",
       "DO treat loading / no-options / error / disabled as DISTINCT states. A data-driven Select never opens a blank popover: a static options=[] list auto-disables the trigger (opening it would show nothing), while an async loadOptions shows a loading row, then either the options, a localized empty affordance (override with emptyMessage), or an error affordance if the fetch rejects (override with errorMessage). Disable the Select when there is nothing to pick AND no async loader; keep it enabled (it opens to load/search) whenever loadOptions is set.",
       "DON'T mix the two APIs: once you pass options or loadOptions, Select is data-driven — all compound sub-parts (SelectTrigger, SelectContent, SelectItem) are rendered internally. Do not wrap them manually.",
       "DON'T use a raw <select> element. Select is the one control for all single-select use cases. The only allowed raw <select> is a hidden aria-hidden sr-only element kept as an e2e hook paired with a visible Select.",
@@ -4966,10 +4985,10 @@ import { Button } from "@godxjp/ui/general";
     ],
     useCases: [
       'Page-level error banner after a form submission fails server-side validation — `tone="destructive"` with `Alert.Title` summarising the error and `Alert.Description` listing field issues, paired with `onDismiss` so the user can clear it.',
-      "Inline warning at the top of an accounting invoice list when the OAuth token for the MF sync is about to expire — `variant=\"warning\"` with an `Alert.Actions` containing a 'Reconnect' Button.",
+      "Inline warning at the top of an accounting invoice list when the OAuth token for the MF sync is about to expire — `tone=\"warning\"` with an `Alert.Actions` containing a 'Reconnect' Button.",
       'Success confirmation banner rendered after a bulk-import job completes and the user returns to the list page — `tone="success"` with `Alert.Description` showing the record count imported.',
       "TanStack Query data-fetch failure inside a Card body — use `<Alert.QueryError error={error} onRetry={refetch} />` instead of writing a custom error state.",
-      "Informational notice at the top of a settings page when a feature is in beta or requires a plan upgrade — `variant=\"default\"` (Info icon) with a short description and an `Alert.Actions` 'Learn more' link.",
+      "Informational notice at the top of a settings page when a feature is in beta or requires a plan upgrade — `tone=\"info\"` with a short description and an `Alert.Actions` 'Learn more' link.",
       'Dismissible billing-overdue notice at the top of the dashboard — `tone="destructive"` with `onDismiss` that sets a session flag so it does not reappear until the next login.',
     ],
     related: [
@@ -5179,6 +5198,7 @@ toast.error("保存に失敗しました");`,
       "DO trust the horizontal `TabsList` to scroll its own overflow (hidden scrollbar, swipeable) instead of clipping when tab labels — especially long localized ones (Japanese, German) — don't fit a narrow container. Don't wrap it in your own `overflow-x-auto` div or truncate labels to work around clipping; that was gh#175 and is now the framework's job (#175).",
       "DON'T assume the first item is ever auto-selected when it is `disabled` — Tabs always resolves the fallback to the first ENABLED item (or none, if all are disabled). A `disabled: true` first item is safe to author without also setting `defaultValue`.",
       'DON\'T write your own resize/scroll-into-view effect to keep the selected tab on screen — `TabsList` observes its own size and its triggers\' `data-state` and re-pins the active (or focused, under `activationMode="manual"`) trigger with `scrollIntoView({ block: "nearest", inline: "nearest" })`, honoring `prefers-reduced-motion` and leaving a deliberate manual scroll alone. Before gh#204 a 1440 → 1024 → 390 resize could strand the ACTIVE FIRST tab entirely outside the strip while it still reported `aria-selected="true"`.',
+      "DON'T re-centre the strip with a `justify-center` utility. `TabsList` aligns with `safe center` on purpose: plain centring splits the overflow across BOTH edges while `scrollLeft` only ever covers the trailing one, so the leading tab ends up permanently outside the scrollport and no gesture reaches it. `safe` keeps the centred look while the tabs fit and falls back to start alignment the moment they don't.",
     ],
     useCases: [
       "Detail drawers or pages that need full per-panel control — e.g. an accounting journal-entry sheet where one panel has `forceMount` to keep a live chart mounted, requiring custom `TabsContent` props that `Tabs` cannot pass.",
@@ -5271,6 +5291,7 @@ toast.error("保存に失敗しました");`,
       "DO use `simple` mode for compact contexts (mobile, sidebars, sheet footers) — it renders Prev / `n / total` / Next with no page-number buttons. Use the full form for primary admin list pages.",
       "DO use `showTotal` to surface item counts: pass `true` for the built-in i18n label, or a function `(total, [from, to]) => ReactNode` for a custom range label like '1–10 of 342 invoices'. Never hard-code a total string beside the component.",
       "DON'T use Pagination for cursor- or infinite-scroll-based lists. Pagination is strictly offset/page-based (`value` is a page number). For cursor pagination inside a DataTable use `DataTable.Pagination`; for infinite scroll use `InfiniteQueryState`.",
+      "NOTE the page strip scrolls horizontally rather than wrapping, and its page buttons are normally the keyboard route to that overflow. Disable the whole bar (`disabled`) and there is no such route, so the strip takes `tabindex=0` itself to stay keyboard-scrollable (WCAG 2.1.1). Nothing to configure — just don't strip the attribute in consumer CSS/JS.",
     ],
     useCases: [
       "Standalone offset-paginated admin list pages (e.g. invoice list, customer list, transaction history) rendered outside DataTable — place Pagination below the table card, outside the card border, with `showTotal` and optionally `showSizeChanger`.",
@@ -5389,6 +5410,13 @@ import { Button } from "@godxjp/ui/general";
         description: "Lay step titles beside or below the step icons.",
       },
       {
+        name: "separator",
+        type: '"chevron" | "arrow"',
+        defaultValue: '"chevron"',
+        description:
+          'The glyph between INLINE steps (`type="inline"` only; gh#12). `chevron` (›) is the breadcrumb-flavoured original; `arrow` (→) is the canonical hosted-identity progression marker — a chevron reads "drill into", an arrow reads "then", which is what a step row means. Both flip under dir="rtl". Ignored by every other `type`.',
+      },
+      {
         name: "onValueChange",
         type: "(value: number) => void",
         description: "Fires with the clicked step index (0-based).",
@@ -5399,6 +5427,7 @@ import { Button } from "@godxjp/ui/general";
       "DO: Control the active step with `value` (0-based index). For async operations, set the top-level `status` prop (`'process'|'error'|'finish'`) to override the current step's icon — e.g. `status='error'` turns the active step red without touching `items`.",
       "DO: Use per-item `status` to pin individual steps independently of `value` (e.g. a skipped or already-errored step). Per-item `status` takes precedence over the derived status from `value`.",
       "DO: Use type='inline' for compact hosted-auth/device progress. It retains process/finish/error/wait and aria-current semantics without the tall icon rail; never rebuild the row from Text and arrows in a consumer.",
+      'DO: Pick the inline progression marker with `separator` (`"arrow"` for the canonical hosted-identity row, `"chevron"` for the default), and express the step-number emphasis through `--steps-inline-index-{color,font-weight}` + `--steps-inline-separator-color` in the service theme. The canonical treatment is an accent TINT at normal weight; the library default is bold at the inherited colour. Both are one token away — never fork `.ui-steps-inline-index` in app CSS.',
       "DON'T: Use Steps for navigation that needs URL routing or tab-switching — it has no built-in panel rendering. Pair it with your own conditional panel or a `Tabs`/`Tabs` body; Steps only renders the indicator bar.",
       "DON'T: Wire `onValueChange` unless you actually support non-linear navigation. `onValueChange` makes every non-disabled step clickable (rendered as `<button>`); omitting it makes all steps non-interactive (`cursor-default`). Never set `disabled` on an item without also providing `onValueChange`, or the prop is meaningless.",
       "A11y: The `<ol>` is given `aria-label='Progress'` automatically. Individual steps render as `<button type='button'>` when `onValueChange` is present — ensure each `item.title` is descriptive enough to serve as the button label; avoid icon-only steps without a visible title.",
@@ -8423,6 +8452,13 @@ import { fetchInvoice } from "@/api/invoices";
           'Identity geometry. `circle` (default, inert) is the PERSON avatar — the round --radius-pill mark on the muted surface. `square` is the ENTITY-HEADER organization/service mark (gh#249): a compact rounded square on the brand surface, whose radius, box size, fill and glyph colour are all --avatar-square-{radius,size,background,foreground} tokens. Pick the shape by WHAT the mark represents; never hand-roll it with className="rounded-md bg-primary".',
       },
       {
+        name: "appearance",
+        type: '"default" | "tinted"',
+        defaultValue: '"default"',
+        description:
+          'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION (gh#12): a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on. Retune with --avatar-tinted-{background,foreground,glyph-size}.',
+      },
+      {
         name: "children",
         type: "ReactNode",
         description: "Compose AvatarImage and AvatarFallback.",
@@ -8431,6 +8467,7 @@ import { fetchInvoice } from "@/api/invoices";
     ],
     usage: [
       "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
+      'DO render a capability / feature icon as `<Avatar shape="square" appearance="tinted"><AvatarFallback><Sparkles aria-hidden /></AvatarFallback></Avatar>` — the medallion is a COMPOSITION (Avatar + a Lucide glyph, per docs/COMPOSITION-VS-COMPONENT.md), and `appearance="tinted"` is the token-owned tint that composition needs. A BARE glyph beside a card title, or a hand-derived `hsl(var(--primary) / 0.1)` plate in page CSS, are both the anti-pattern this replaces. Left-aligned capability card: `<Card><CardHeader className="flex flex-row items-center gap-3"><Avatar shape="square" appearance="tinted">…</Avatar><CardTitle>…</CardTitle></CardHeader>…`.',
       'DO use `shape="square"` for an organization / service / tenant mark in an entity header, and keep the default `shape="circle"` for people. The square appearance already carries the brand surface and an AA-contrast glyph colour — a className/colour override on the call site is never needed (and is forbidden by the API-first redesign policy).',
       "DON'T retune the entity mark per call site: set --avatar-square-{radius,size,background,foreground} ONCE in the service theme (e.g. --avatar-square-background: hsl(var(--muted)) for a neutral mark).",
       "DON'T use Avatar for decorative thumbnails; use CardCover or an img when the image is content rather than identity.",
@@ -8857,13 +8894,22 @@ export default function PasswordBlock() {
           "Value callback (this is a true text input — onChange is the DOM-style value handler here).",
       },
       { name: "pattern", type: "string", description: "Allowed-char regex (e.g. digits only)." },
+      {
+        name: "align",
+        type: '"start" | "center" | "end"',
+        defaultValue: '"start"',
+        description:
+          "Main-axis alignment of the whole code row (groups + separators) inside the field (gh#12). `center` is the canonical auth challenge. Before this existed, every consumer wrapped the OTP in their own flex-centring div — do not. A service that wants all code fields centred sets `--otp-container-align` once instead.",
+      },
     ],
     usage: [
       "DO set `maxLength` to the code length and render that many InputOTPSlot with sequential `index`.",
+      'DO centre a challenge with `align="center"` on InputOTP — never with a wrapper `<div className="flex justify-center">`. The container is owned by input-otp, so a wrapper is the only thing a consumer CAN reach, which is exactly why the prop exists.',
       "DO wrap slots in InputOTPGroup; use InputOTPSeparator between groups (e.g. 3 + 3).",
       "For device codes, set `appearance='grouped'` on each InputOTPGroup to render one outline per group while preserving the single hidden input, paste, caret, keyboard and screen-reader behavior.",
       "DON'T build N separate Inputs — this is ONE field with paste, arrow-key, and caret handling built in.",
       "DO widen the slots with `--otp-slot-size` (gh#233) when a challenge row must fill a wide auth panel — it defaults to the live `--control-height` tier, so re-scoping `--control-height` on the card instead would also resize the submit button and every other input in it. Set a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
+      'DO use `--otp-slot-inline-size` / `--otp-slot-block-size` (gh#12) when the code field is NOT square — a device-grant slot is taller than it is wide. They win over the `--otp-slot-size` shorthand and fall back to it, so setting neither keeps the square control tier. You rarely set them by hand inside `AuthShell preset="device-authorization"`: that preset already owns its code-field measure.',
       "DO drive the sign-in MFA challenge from FormField: `error` wires aria-invalid + aria-errormessage + a role=alert message onto the single field, and the slot borders turn destructive. State is never colour-only.",
     ],
     useCases: [
@@ -8910,6 +8956,7 @@ export default function PasswordBlock() {
       "DO use readOnly to DISPLAY a score (e.g. product average); interactive (default) for collecting a rating.",
       "DO pass `name` to submit the value in a plain form.",
       "DON'T render raw star icons for input — this handles keyboard (radiogroup), hover preview, and a11y.",
+      "NOTE a long scale WRAPS rather than overflowing. At `max={10}` the row needs ~276px of hit area and a 320px viewport offers ~212 inside a card, so the stars fall onto a second line instead of being painted where no one can reach them. Don't add `flex-nowrap` or a fixed width to force one line; use a smaller `max` if a single row matters.",
     ],
     useCases: [
       "Product / vendor review input",
@@ -9181,6 +9228,7 @@ export default function PasswordBlock() {
       "DON'T reach for ResizablePanel when the split is fixed and never user-adjustable — use a plain `Flex`/`ResponsiveGrid`, or `SplitPane` for a simple two-pane layout. Resizable is for *user-draggable* boundaries only.",
       "DO give each panel a stable `id` and use `collapsible` + `collapsedSize` for a side panel the user can fully tuck away (e.g. a filters rail), reacting via `onResize`.",
       "DON'T hand-roll a draggable divider with mouse-move listeners — the primitive handles pointer + keyboard resizing, ARIA separator semantics, and min/max clamping. Always render `<ResizableHandle>`, never a bare styled `<div>`.",
+      "DON'T add your own `overflow: auto` wrapper inside a panel: the panel IS the scroll container. Let it own the scrolling and it also manages keyboard reachability — when a panel scrolls but holds nothing focusable, ResizablePanel gives it `tabindex=0` so keyboard users can still reach the clipped content (WCAG 2.1.1); a panel whose content is focusable is left alone, so no redundant tab stop appears. Your own nested scroller gets neither.",
     ],
     useCases: [
       "Master–detail admin layout: a draggable list pane on the left and a detail/preview pane on the right (e.g. 仕訳一覧 | 仕訳詳細).",
@@ -9968,6 +10016,31 @@ export function NotifyRow() {
         description: "Open-state callback.",
       },
       {
+        name: "search",
+        type: "string",
+        description: "Controlled search-box query. Pairs with `onSearchChange`.",
+      },
+      {
+        name: "defaultSearch",
+        type: "string",
+        defaultValue: '""',
+        description:
+          "Initial uncontrolled query, and the value the palette resets to when it closes.",
+      },
+      {
+        name: "onSearchChange",
+        type: "(query: string) => void",
+        description:
+          "Fires on every keystroke with the current query — the seam for search-as-you-type. Also fires with `defaultSearch` when the palette closes.",
+      },
+      {
+        name: "shouldFilter",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Whether the palette filters `groups` itself. Set false for server-side search, which also hands the empty node to the palette (derived from `groups`).",
+      },
+      {
         name: "loading",
         type: "boolean",
         defaultValue: "false",
@@ -9978,6 +10051,8 @@ export function NotifyRow() {
     usage: [
       "Provide localized labels and real command groups; the component does not fetch commands.",
       "Use either `open` plus `onOpenChange` or `defaultOpen`; do not mirror both state models.",
+      "Search-as-you-type against an API: read the query from `onSearchChange`, pass the results back as `groups`, and set `shouldFilter={false}` so the rows are not scored a second time against the same string.",
+      "The empty-state contract: with `shouldFilter` (default) cmdk decides — items exist, the query matches none. With `shouldFilter={false}` the PALETTE decides from props — `labels.empty` renders when `groups` carries no items, and never while `loading` or `error` is set. Hold `loading` for the whole in-flight window: a request that has not answered yet is not an empty result, and asserting over cmdk's own empty node races an async group that populates a frame late.",
     ],
     example: `import { CommandPalette } from "@godxjp/ui/data-entry";
 

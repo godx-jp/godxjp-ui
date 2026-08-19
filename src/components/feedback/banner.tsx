@@ -25,7 +25,9 @@ export type { BannerProp, BannerProp as BannerProps } from "../../props/componen
  * page-scoped, at most one per surface; transient feedback stays with `toast()`.
  */
 const BannerBase = React.forwardRef<HTMLDivElement, BannerProp>((props, ref) => (
-  <AlertBase ref={ref} variant="banner" {...props} />
+  // `variant` sits AFTER the spread: the type already excludes it, and the runtime half of the
+  // same guarantee means a spread of leftover Alert props can never silently downgrade the strip.
+  <AlertBase ref={ref} {...props} variant="banner" />
 ));
 BannerBase.displayName = "Banner";
 

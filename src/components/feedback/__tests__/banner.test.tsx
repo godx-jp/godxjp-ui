@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { createRef } from "react";
 import { renderWithUi, screen, userEvent } from "@/test/render";
+import { expectNoA11yViolations } from "@/test/a11y";
 import { Button } from "../../general/button";
 import { Banner, type BannerProp, type BannerProps } from "../banner";
 
@@ -96,5 +97,57 @@ describe("Banner", () => {
     // @ts-expect-error — `variant` is not part of the Banner contract (fixed to "banner").
     const invalid: BannerProps = { variant: "default" };
     expect(invalid).toBeDefined();
+  });
+});
+
+/**
+ * Ported from the dev-line Banner suite (godxjp-ui 18.7.x, gh#255): the full tone matrix, the
+ * runtime variant guard and the axe pass — adapted to the canonical `../banner` export.
+ */
+describe("Banner — tone matrix and runtime guards", () => {
+  it.each([
+    ["destructive", "alert"],
+    ["warning", "alert"],
+    ["success", "status"],
+    ["info", "status"],
+    ["muted", "status"],
+    ["neutral", "status"],
+    ["default", "status"],
+  ] as const)("tone=%s announces via role=%s, exactly as Alert does", (tone, role) => {
+    renderWithUi(
+      <Banner tone={tone}>
+        <Banner.Title>お知らせ</Banner.Title>
+      </Banner>,
+    );
+    expect(screen.getByRole(role)).toHaveAttribute("data-tone", tone);
+  });
+
+  it("cannot be talked out of the banner measure — the alias owns `variant` at runtime too", () => {
+    // The prop is `Omit<AlertProp, "variant">` at the type level; this is the runtime half of the
+    // same guarantee, so a spread of leftover Alert props can't silently downgrade the strip.
+    const { container } = renderWithUi(
+      // @ts-expect-error — `variant` is not part of BannerProp; asserted here as a runtime guard.
+      <Banner tone="info" variant="default">
+        <Banner.Title>定期メンテナンス</Banner.Title>
+      </Banner>,
+    );
+    expect(container.querySelector('[data-slot="alert"]')).toHaveAttribute(
+      "data-variant",
+      "banner",
+    );
+  });
+
+  it("has no axe violations with title, description, actions and dismiss", async () => {
+    await expectNoA11yViolations(
+      <Banner tone="warning" onDismiss={() => undefined}>
+        <Banner.Content>
+          <Banner.Title>お試し期間は残り 3 日です</Banner.Title>
+          <Banner.Description>期限までにプランを選択してください。</Banner.Description>
+        </Banner.Content>
+        <Banner.Actions>
+          <Button size="sm">プランを見る</Button>
+        </Banner.Actions>
+      </Banner>,
+    );
   });
 });

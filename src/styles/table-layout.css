@@ -186,6 +186,21 @@
     padding-inline: 0;
   }
 
+  /* Same reset, same reason, for a table sitting straight on a FLUSH page. The bleed above exists
+   * to cancel the page gutter so the scroll region reaches the page edges — but
+   * `.ui-page-container--flush .ui-page-body` zeroes that gutter, leaving nothing to bleed into.
+   * The -16px then escapes the page: nothing clips it, so the whole page gained 16px of
+   * horizontal scroll at 320/375/390 (WCAG 2.2 SC 1.4.10 Reflow). Scoped by child combinator so a
+   * table inside a Card keeps its own bleed — the card supplies the padding that one compensates. */
+  .ui-page-container--flush > .ui-page-body > .ui-data-table-root > .ui-data-table-scroll {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  .ui-page-container--flush > .ui-page-body > .ui-data-table-root > .ui-data-table-scroll::after {
+    inset-inline-end: 0;
+  }
+
   [data-slot="card-content"][data-flush] .ui-data-table-scroll::after {
     inset-inline-end: 0;
   }
@@ -322,7 +337,18 @@
     --table-action-collection-column-width: var(--table-action-collection-actions-width);
     text-align: end;
   }
+}
 
+/* The compact tier lives in `godxjp-ui-responsive` — the LAST layer, declared after Tailwind in
+ * styles/base.css — not in `@layer components`. `<table>` carries `text-sm`, a Tailwind utility,
+ * and `utilities` outranks `components` by LAYER ORDER, so a `font-size:` re-point written here as
+ * a component rule can never apply however specific it is: that is exactly why
+ * `--table-action-collection-font-size-compact` was dead at every width (gh#412), leaving the
+ * narrow frame at 14px where a 5–6 character Japanese label overflows its column measure. The
+ * column measures move with it so the whole compact tier is decided in ONE place, and so a
+ * consumer utility on the table can't half-collapse it either. See styles/base.css · THE LAYER
+ * CONTRACT. */
+@layer godxjp-ui-responsive {
   /* Below the step the SOURCE measures are re-pointed to their compact tier (and the type / row
    * density with them); nothing else moves. One block per canonical step — a media/container
    * query cannot read a `var()`, so the tokenized scale is written out (sm 40rem · md 48rem ·
@@ -339,6 +365,10 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
+      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
+       * before; a consumer whose column count exceeds the priority budget raises it and the
+       * surrounding scroll region takes the overflow instead of the cells. */
+      min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
@@ -375,6 +405,10 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
+      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
+       * before; a consumer whose column count exceeds the priority budget raises it and the
+       * surrounding scroll region takes the overflow instead of the cells. */
+      min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
@@ -411,6 +445,10 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
+      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
+       * before; a consumer whose column count exceeds the priority budget raises it and the
+       * surrounding scroll region takes the overflow instead of the cells. */
+      min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
@@ -447,6 +485,10 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
+      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
+       * before; a consumer whose column count exceeds the priority budget raises it and the
+       * surrounding scroll region takes the overflow instead of the cells. */
+      min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the

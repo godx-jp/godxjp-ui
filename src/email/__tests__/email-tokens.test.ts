@@ -194,6 +194,19 @@ describe("email geometry derives from src/tokens/components/email.css", () => {
     expect(EMAIL_SHELL.referenceHeightPx).toBe(407);
   });
 
+  it("holds the CTA to the 44px TOUCH-TARGET floor, not the web control height", () => {
+    // A CONTRACT, not a restatement of the current value. Asserting only
+    // `heightPx === EMAIL_CSS["--email-cta-height"]` is green for ANY number, which is exactly how
+    // a 36px CTA (the old --control-height-lg mirror) survived: it clears SC 2.5.8 (AA, 24x24) and
+    // nothing downstream could see that it failed SC 2.5.5 (AAA, 44x44), Apple HIG 44pt and
+    // Material 48dp. Email is touch-only — no hover, no precise pointer, no reliable zoom — so the
+    // AAA target size is the floor here. A consumer may still raise it; lowering it fails.
+    expect(EMAIL_CTA.heightPx).toBeGreaterThanOrEqual(44);
+    expect(EMAIL_CTA.lineHeightPx).toBeGreaterThanOrEqual(44);
+    // and it is deliberately NOT the web control tier any more
+    expect(EMAIL_CTA.heightPx).toBeGreaterThan(36);
+  });
+
   it("exposes CTA, footer, focus and mobile groups straight from their tokens", () => {
     expect(EMAIL_CTA.heightPx).toBe(Number.parseFloat(EMAIL_CSS["--email-cta-height"]));
     // an Outlook-safe button centres by line-height == height, not flexbox
@@ -241,15 +254,19 @@ describe("matches the SCR-302 canonical reference", () => {
     expect(EMAIL_MOBILE.headingFontSizePx).toBeLessThan(EMAIL_TYPOGRAPHY.headingFontSizePx);
   });
 
-  it("primary CTA: 36×auto, 16px inline padding, 6px radius, 14px/500 label", () => {
-    expect(EMAIL_CTA.heightPx).toBe(36);
-    expect(EMAIL_CTA.lineHeightPx).toBe(36);
+  it("primary CTA: 44×auto, 16px inline padding, 6px radius, 14px/500 label", () => {
+    // 44, not the 36 this pinned until 18.8.0 (dxs-platform/platform#559). The box used to mirror
+    // --control-height-lg; that mirror is now deliberately broken, because a mail client is a
+    // touch-only surface with no hover, no precise pointer and no dependable zoom.
+    expect(EMAIL_CTA.heightPx).toBe(44);
+    expect(EMAIL_CTA.lineHeightPx).toBe(44);
     expect(EMAIL_CTA.paddingXPx).toBe(16);
     expect(EMAIL_CTA.radiusPx).toBe(6);
     expect(EMAIL_CTA.fontSizePx).toBe(14);
     expect(EMAIL_CTA.fontWeight).toBe(500);
-    // WCAG 2.2 SC 2.5.8 Target Size (Minimum) is 24×24 CSS px — the canonical box still clears it,
-    // and the mobile reflow takes the CTA full-bleed.
+    // Clears WCAG 2.2 SC 2.5.8 Target Size (Minimum, AA, 24×24) as it always did, and now also
+    // SC 2.5.5 Target Size (Enhanced, AAA, 44×44) / Apple HIG 44pt / Material 48dp.
+    // The floor itself is asserted as a contract above, not just as this literal.
     expect(EMAIL_CTA.heightPx).toBeGreaterThanOrEqual(24);
     expect(EMAIL_MOBILE.ctaWidth).toBe("100%");
   });

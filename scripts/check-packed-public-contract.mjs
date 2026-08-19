@@ -91,6 +91,17 @@ const contracts = [
     ],
   },
   {
+    // gh#258 — the typed FilterBar model. The navigation subpath had no packed contract at all,
+    // so nothing pinned the public names a list page imports.
+    subpath: "./navigation",
+    runtime: ["FilterBar", "FilterBarGroup", "Toolbar", "ToolbarGroup"],
+    types: ["FilterBarProp", "FilterBarProps", "FilterBarChipProp", "FilterBarGroupProps"],
+    files: [
+      "dist/components/navigation/filter-bar.js",
+      "dist/components/navigation/filter-bar.d.ts",
+    ],
+  },
+  {
     subpath: "./charts/compact-bar-trend",
     runtime: ["CompactBarTrend"],
     types: ["CompactBarTrendProp", "CompactBarTrendProps"],

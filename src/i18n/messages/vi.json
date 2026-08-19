@@ -139,6 +139,9 @@
     }
   },
   "layout": {
+    "pageHeader": {
+      "loading": "Đang tải trang…"
+    },
     "sidebar": {
       "ariaLabel": "Điều hướng chính"
     },

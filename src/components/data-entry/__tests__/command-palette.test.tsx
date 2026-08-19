@@ -115,3 +115,128 @@ describe("CommandPalette", () => {
     expect(screen.getByText("No results")).toBeInTheDocument();
   });
 });
+
+describe("CommandPalette query accessor (gh#412)", () => {
+  it("reports every keystroke and accepts a controlled query", async () => {
+    const user = userEvent.setup();
+    const onSearchChange = vi.fn();
+
+    function Controlled() {
+      const [search, setSearch] = useState("das");
+      return (
+        <CommandPalette
+          defaultOpen
+          search={search}
+          onSearchChange={(next) => {
+            setSearch(next);
+            onSearchChange(next);
+          }}
+          groups={groups}
+          labels={labels}
+          onSelect={vi.fn()}
+        />
+      );
+    }
+
+    renderWithUi(<Controlled />);
+    const input = screen.getByRole("combobox", { name: "Command palette" });
+    expect(input).toHaveValue("das");
+
+    await user.type(input, "h");
+    expect(onSearchChange).toHaveBeenLastCalledWith("dash");
+    await waitFor(() => expect(input).toHaveValue("dash"));
+  });
+
+  it("seeds an uncontrolled query and resets it — announced — when the palette closes", async () => {
+    const user = userEvent.setup();
+    const onSearchChange = vi.fn();
+
+    renderWithUi(
+      <CommandPalette
+        defaultSearch="ser"
+        onSearchChange={onSearchChange}
+        groups={groups}
+        labels={labels}
+        onSelect={vi.fn()}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Search screens" }));
+    const input = await screen.findByRole("combobox", { name: "Command palette" });
+    expect(input).toHaveValue("ser");
+
+    await user.type(input, "vices");
+    expect(onSearchChange).toHaveBeenLastCalledWith("services");
+
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(onSearchChange).toHaveBeenLastCalledWith("ser"));
+
+    await user.click(screen.getByRole("button", { name: "Search screens" }));
+    expect(await screen.findByRole("combobox", { name: "Command palette" })).toHaveValue("ser");
+  });
+
+  it("hands filtering to the consumer with shouldFilter={false} — no second client-side match", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <CommandPalette
+        defaultOpen
+        shouldFilter={false}
+        groups={groups}
+        labels={labels}
+        onSelect={vi.fn()}
+      />,
+    );
+
+    // A query that matches NEITHER row: with client filtering both would disappear. The server
+    // said these are the matches, so both stay.
+    await user.type(screen.getByRole("combobox", { name: "Command palette" }), "zzzz");
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(screen.getByText("Services")).toBeInTheDocument();
+    expect(screen.queryByText("No results")).toBeNull();
+  });
+
+  it("derives the empty node from `groups`, never from a scheduled cmdk count", async () => {
+    const user = userEvent.setup();
+    const { rerender } = renderWithUi(
+      <CommandPalette
+        defaultOpen
+        shouldFilter={false}
+        groups={[{ id: "screens", label: "Screens", items: [] }]}
+        labels={labels}
+        onSelect={vi.fn()}
+      />,
+    );
+    expect(screen.getByText("No results")).toBeInTheDocument();
+
+    // In flight: a request that has not answered is NOT an empty result, at any query.
+    rerender(
+      <CommandPalette
+        defaultOpen
+        shouldFilter={false}
+        loading
+        groups={[{ id: "screens", label: "Screens", items: [] }]}
+        labels={labels}
+        onSelect={vi.fn()}
+      />,
+    );
+    expect(screen.queryByText("No results")).toBeNull();
+    expect(screen.getByRole("status")).toHaveTextContent("Loading");
+
+    // Answered, with matches — the empty node is gone on the SAME render the items arrive on.
+    rerender(
+      <CommandPalette
+        defaultOpen
+        shouldFilter={false}
+        groups={groups}
+        labels={labels}
+        onSelect={vi.fn()}
+      />,
+    );
+    expect(screen.queryByText("No results")).toBeNull();
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+
+    // Typing cannot reintroduce it — the consumer owns the query and the result set.
+    await user.type(screen.getByRole("combobox", { name: "Command palette" }), "anything");
+    expect(screen.queryByText("No results")).toBeNull();
+  });
+});

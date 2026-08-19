@@ -107,13 +107,16 @@ export default function Demo() {
               <Text as="p" size="xs" tone="muted">
                 単体 (どこでも):
               </Text>
-              <pre className="bg-muted overflow-x-auto rounded p-3 text-xs">
+              {/* tabIndex: the snippet scrolls sideways on a narrow viewport and holds no
+                  focusable content, so without its own tab stop a keyboard user cannot reach the
+                  clipped end of the line (WCAG 2.1.1). */}
+              <pre tabIndex={0} className="bg-muted overflow-x-auto rounded p-3 text-xs">
                 {`<Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "現在ページ" }]} />`}
               </pre>
               <Text as="p" size="xs" tone="muted">
                 PageContainer / AppShell の breadcrumb プロップに (任意):
               </Text>
-              <pre className="bg-muted overflow-x-auto rounded p-3 text-xs">
+              <pre tabIndex={0} className="bg-muted overflow-x-auto rounded p-3 text-xs">
                 {`<PageContainer title="仕訳詳細" breadcrumb={[{ label: "ホーム", to: "/" }, { label: "JE-0042" }]}>`}
               </pre>
             </Flex>

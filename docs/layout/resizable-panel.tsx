@@ -66,11 +66,9 @@ function HorizontalCard() {
         <div style={{ height: "16rem", ...frameStyle }}>
           <ResizablePanelGroup orientation="horizontal">
             <ResizablePanel id="list-panel" defaultSize="35%" minSize="20%" maxSize="60%">
-              <Flex
-                direction="col"
-                gap="sm"
-                style={{ padding: "1rem", height: "100%", overflowY: "auto" }}
-              >
+              {/* No inner overflow: the panel is already the scroll container, and letting it own
+                  the scrolling is what earns the keyboard tab stop ResizablePanel now manages. */}
+              <Flex direction="col" gap="sm" style={{ padding: "1rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   請求書リスト
                 </Text>

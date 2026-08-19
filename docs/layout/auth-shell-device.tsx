@@ -27,6 +27,12 @@ import { AppSettingPicker, Steps } from "@godxjp/ui/navigation";
  *
  * `variant="canonical"` still owns control density + heading size; the preset only re-measures.
  * Verify at 1440x900 · 1024x900 · 390x844.
+ *
+ * gh#12 — the preset also owns the CODE FIELD now: `--otp-slot-{inline,block}-size` come from
+ * `--auth-shell-device-otp-slot-*`, so each 4-slot grouped box measures the canonical 112x54
+ * instead of the 146x38 the square control tier produced. Nothing on this page sets it. The row is
+ * centred with `align="center"` (not a wrapper div) and the progress marker is the canonical
+ * `separator="arrow"`.
  */
 export default function Demo() {
   return (
@@ -53,6 +59,7 @@ export default function Demo() {
           <CardHeader>
             <Steps
               type="inline"
+              separator="arrow"
               value={0}
               items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
             />
@@ -73,7 +80,7 @@ export default function Demo() {
                 onAction={() => {}}
               />
               <FormField id="device-otp" label="デバイス確認コード" required>
-                <InputOTP maxLength={8}>
+                <InputOTP maxLength={8} align="center">
                   <InputOTPGroup appearance="grouped">
                     <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />

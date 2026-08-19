@@ -139,6 +139,9 @@
     }
   },
   "layout": {
+    "pageHeader": {
+      "loading": "ページを読み込んでいます…"
+    },
     "sidebar": {
       "ariaLabel": "メインナビゲーション"
     },

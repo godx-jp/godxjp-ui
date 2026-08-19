@@ -19,6 +19,7 @@ export default function Demo() {
   const [emailCode, setEmailCode] = useState("");
   const [smsCode, setSmsCode] = useState("");
   const [inviteCode, setInviteCode] = useState("");
+  const [centeredCode, setCenteredCode] = useState("");
 
   // Auto-submit pattern — onComplete fires when every slot is filled.
   const [completeCode, setCompleteCode] = useState("123456");
@@ -130,6 +131,41 @@ export default function Demo() {
                   <InputOTPSlot index={0} />
                   <InputOTPSlot index={1} />
                   <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+            </FormField>
+          </CardContent>
+        </Card>
+
+        {/* align — the centred challenge, without a consumer wrapper div (gh#12) */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>中央寄せ（align=&quot;center&quot;）</CardTitle>
+            <CardDescription>
+              認証画面のコード入力は中央寄せが定型。コンテナ要素は input-otp
+              が所有していて消費側から触れないため、以前は必ず flex の div
+              でラップする必要があった。align はそのラッパーを不要にする （テーマ全体なら
+              --otp-container-align を 1 か所）。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="centered-otp" label="認証コード" required>
+              <InputOTP
+                maxLength={6}
+                align="center"
+                value={centeredCode}
+                onChange={setCenteredCode}
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                </InputOTPGroup>
+                <InputOTPSeparator />
+                <InputOTPGroup>
                   <InputOTPSlot index={3} />
                   <InputOTPSlot index={4} />
                   <InputOTPSlot index={5} />

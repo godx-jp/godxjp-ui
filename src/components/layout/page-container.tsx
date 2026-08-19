@@ -70,6 +70,7 @@ function PageContainerRoot({
   breadcrumbLabel,
   breadcrumbAriaLabel,
   linkComponent: LinkComponent = "a",
+  headerLoading = false,
   density,
   variant = "default",
   preset = "default",
@@ -108,7 +109,13 @@ function PageContainerRoot({
       {/* `data-layout` is the only hook the header arrangement needs: `stack` (the default)
           matches no rule, so the historical geometry is untouched, while `responsive-inline`
           selects the compact-range rules that keep `extra` beside the title band (gh#231). */}
-      <header ref={headerRef} className="ui-page-header" data-layout={headerLayout}>
+      <header
+        ref={headerRef}
+        className="ui-page-header"
+        data-layout={headerLayout}
+        // Only emitted while pending, so a settled header carries no ARIA state at all.
+        aria-busy={headerLoading ? "true" : undefined}
+      >
         {breadcrumb && breadcrumb.length > 0 && (
           <nav
             aria-label={
@@ -150,7 +157,18 @@ function PageContainerRoot({
                 token-owned --page-header-status-gap and wraps UNDER the title on compact
                 viewports. The wrapper row exists only when `status` is passed, so a page
                 without one keeps the exact historical DOM and geometry. */}
-            {status != null ? (
+            {/* `headerLoading` (gh#255): the `<h1>` stays in the tree while pending — a page that
+                drops its only level-1 heading mid-load breaks the heading outline a screen-reader
+                user navigates by. It BECOMES the placeholder by wearing the library's own
+                `ui-skeleton-block` skin rather than wrapping a `<Skeleton>` element: `<h1>` takes
+                phrasing content, so nesting Skeleton's `<div>` inside it is invalid HTML. The
+                visible name is sr-only text, because a heading rendered as a bare decorative box
+                is an EMPTY heading (axe `empty-heading`, WCAG 1.3.1). */}
+            {headerLoading ? (
+              <h1 className="ui-page-title ui-skeleton-block ui-page-title-placeholder">
+                <span className="sr-only">{t("layout.pageHeader.loading")}</span>
+              </h1>
+            ) : status != null ? (
               <div className="ui-page-header-title-row">
                 <h1 className="ui-page-title">{title}</h1>
                 <div className="ui-page-header-status">{status}</div>
@@ -158,7 +176,16 @@ function PageContainerRoot({
             ) : (
               <h1 className="ui-page-title">{title}</h1>
             )}
-            {subtitle && <p className="ui-page-subtitle">{subtitle}</p>}
+            {headerLoading ? (
+              // Decorative only — the pending state is already announced once by the heading above,
+              // so a second live placeholder here would double-announce it.
+              <p
+                className="ui-page-subtitle ui-skeleton-block ui-page-subtitle-placeholder"
+                aria-hidden="true"
+              />
+            ) : (
+              subtitle && <p className="ui-page-subtitle">{subtitle}</p>
+            )}
           </div>
           {extra && <div className="ui-page-header-extra">{extra}</div>}
         </div>

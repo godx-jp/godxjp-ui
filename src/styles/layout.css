@@ -626,6 +626,22 @@
     margin-top: var(--space-1);
   }
 
+  /* `headerLoading` placeholders — the real `<h1>`/`<p>` wearing the shared `.ui-skeleton-block`
+   * skin, so the pending band occupies the same rhythm the settled band will. `max-inline-size:
+   * 100%` keeps them inside a 390px column; the block size replaces the line box the (sr-only)
+   * text no longer fills. */
+  .ui-page-title-placeholder {
+    inline-size: var(--page-title-placeholder-measure);
+    max-inline-size: 100%;
+    min-block-size: var(--page-title-placeholder-block-size);
+  }
+
+  .ui-page-subtitle-placeholder {
+    inline-size: var(--page-subtitle-placeholder-measure);
+    max-inline-size: 100%;
+    min-block-size: var(--page-subtitle-placeholder-block-size);
+  }
+
   /* Default: content-height + top-packed. The container's min-height:100% keeps
    * the page background spanning the viewport-tall shell, but the body itself is
    * NOT stretched — so short pages no longer leave a jarring void below their

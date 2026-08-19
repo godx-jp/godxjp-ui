@@ -89,6 +89,14 @@
    * nor the wrapping row. */
   --page-header-status-gap: var(--space-inline-sm);
 
+  /* PageContainer `headerLoading` placeholders (gh#255). The title/subtitle elements wear the
+   * shared `.ui-skeleton-block` skin, so they need only a MEASURE and a block size — a service
+   * retunes the pending band's proportions here instead of per page. */
+  --page-title-placeholder-measure: 14rem; /* 224px */
+  --page-title-placeholder-block-size: 1.5em;
+  --page-subtitle-placeholder-measure: 22rem; /* 352px */
+  --page-subtitle-placeholder-block-size: 1.25em;
+
   /* Bounded page MEASURE (gh#245 / gh#247) — the shared inline cap applied to the page HEADER and
    * BODY together, so the header `extra` action ends on the same edge as the body surface (the
    * `variant="narrow"` complaint: it caps only `.ui-page-body`, leaving the header action out at

@@ -83,6 +83,369 @@ card-stack-gap, identity-slot-block-size}`. Worked screen:
   validation. **One-time manual cleanup**: the six legacy tags already on the registry must be
   removed by a human with 2FA/OTP (command in godx-jp/godxjp-ui#266) — the script never creates
   versioned staging tags again.
+- **`Table` / `DataTable` `preset="action-collection"` — a compact-tier legibility floor:
+  `--table-action-collection-min-inline-size-compact` (dxs-platform/platform#680).** The preset's
+  percentage budget is sized for ONE column per priority tier plus one free-text column: 24%
+  primary + 22% secondary + 20% meta + a 2.75rem action measure. A queue that REPEATS a tier — two
+  `secondary` columns, three `meta` columns, or a second unmarked column — asks for more than 100%,
+  and under `table-layout: fixed` the surplus comes out of the COLUMNS rather than out of the
+  table. Measured on a consumer's seven-column Japanese admin queue at 390: 名前 59 · 種別 54 ·
+  支店 54 · シリアル番号 49 · 最終接続 49 · 状態 49 · 操作 44 in a 356px table, with シリアル番号
+  and 最終接続 wrapping at TWO characters per line and a six-column sibling reaching ONE character
+  per line in a 14px box. That is a WCAG 2.2 SC 1.4.10 Reflow (AA) failure — the content is present
+  and unreadable — and the preset had no seam through which a consumer could say so.
+
+  The new token is the measure below which the preset stops fitting the table to its container.
+  Above the floor nothing changes. Below it the `overflow-x: auto` region the table already owns
+  takes the overflow instead of the cells, which is the conformant outcome rather than a
+  concession: SC 1.4.10 exempts "parts of the content which require two-dimensional layout for
+  usage or meaning", and its own note names data tables as the example. A queue that scrolls
+  horizontally inside its card conforms; a queue whose cells are one character wide does not.
+
+  **Default `0`, so this is inert for every existing consumer** — a queue that fits its priority
+  budget keeps fitting, at the same measures, with no scroll introduced. Nothing is hidden, no
+  breakpoint is invented, and the table is byte-identical at 1440. Applies at all four collapse
+  steps (`sm` / `md` / `lg` / `xl`).
+
+- **`CommandPalette` — a real query accessor: `search` / `defaultSearch` / `onSearchChange`, plus
+  `shouldFilter` (gh#412).** A server-backed result group could not learn what the user had typed:
+  the palette exposed the open state and the groups, and nothing in between. The only route left was
+  reaching into the internal `cmdk-input` element, which a consumer built, proved, and then reverted
+  rather than ship — driving the palette through its own internals destabilised their empty-state
+  contract test, because cmdk decides that node from a SCHEDULED count of the items that have
+  registered in the DOM, so an async group populating a frame late flips it on and off. That was the
+  right call, and this is the seam that makes it unnecessary. The pair follows the `SearchSelect`
+  idiom (`search` + `onSearchChange`) and adds the uncontrolled half `SearchSelect` lacks: pass
+  `search` to control the query, `defaultSearch` to seed it, or neither. `onSearchChange` fires on
+  every keystroke either way, and once more with `defaultSearch` when the palette closes — the query
+  has never survived a close (it used to fall out of the dialog unmounting cmdk), and now that it is
+  a prop the palette says so out loud, so a controlled consumer can drop the result set it fetched
+  for the abandoned query. `shouldFilter={false}` hands filtering to the consumer, which is what
+  server-side search needs: without it every row the server already matched is scored a second time
+  against the same string.
+- **`CommandPalette` — a stated empty-state contract, and `shouldFilter={false}` changes who owns
+  it (gh#412).** With `shouldFilter` (the default) nothing moves: cmdk owns the empty node, and it
+  means "this palette holds items and the query matches none of them". With `shouldFilter={false}`
+  the PALETTE owns it, derived synchronously from props — `labels.empty` renders when `groups`
+  carries no items, and never while `loading` or `error` is set. cmdk's node cannot be trusted in
+  that mode, because it counts DOM registrations on a scheduler rather than reading what the
+  consumer knows; reading `groups` instead makes "did we render the empty state?" a pure function
+  of that render's props, which is the thing a contract test can assert without racing. The
+  practical rule, now documented on the component and in the MCP catalog: hold `loading` for the
+  whole in-flight window — a request that has not answered yet is not an empty result. No new prop
+  was needed to say it.
+
+### Fixed
+
+- **Controls that narrow viewports were hiding (WCAG 2.2 SC 2.1.1 / 2.4.7 / 1.4.10).** Found by the
+  frame-geometry sweep across 154 frames × 8 widths, which now reports zero.
+  - `Rating` laid its stars in a non-wrapping row. A 10-star scale needs ~276px of hit area; a
+    320px viewport offers ~212 inside a card, so the last stars were painted outside the surface
+    with nothing to scroll them into view — unclickable and invisible. The row now wraps, which is
+    a no-op wherever it already fits.
+  - `DataTable` on a **flush** `PageContainer` gave the whole page 16px of horizontal scroll at
+    320/375/390. The scroll region bleeds by `-var(--space-page-active-x)` to cancel the page
+    gutter and reach the page edges, but `.ui-page-container--flush .ui-page-body` zeroes that
+    gutter — so the bleed escaped the page with nothing to clip it. Reset for a table sitting
+    directly on a flush page, exactly as it already was inside a flush `CardContent`. A table
+    inside a `Card` keeps its bleed: the card supplies the padding it compensates.
+  - `Tabs`: the strip is a centred flex box that also scrolls, and plain `justify-content: center`
+    splits the overflow across BOTH edges while `scrollLeft` only ever covers the trailing one —
+    so at 320px the leading tab sat permanently outside the scrollport, reachable by no gesture.
+    Now `safe center`, which falls back to start alignment exactly when it overflows and still
+    centres whenever the tabs fit.
+
+- **A compound `Select` under `FormField` had NO accessible name (WCAG 2.2 SC 4.1.2, critical).**
+  `FormField` hands its label/helper/error wiring to a single child with `cloneElement`. In the
+  compound API that child is `SelectPrimitive.Root` — a context-only component that renders no DOM
+  — so `id` and every `aria-*` were silently dropped and never reached the trigger button. The
+  visible value was not a fallback: the trigger is `role="combobox"`, which takes no accessible
+  name from its content, so `<FormField label="担当拠点"><Select><SelectTrigger>…` shipped an
+  anonymous combobox to assistive tech. axe reported `button-name` (critical) on every such
+  trigger; the data-driven `<Select options>` API was unaffected because it forwards `aria-*` to
+  the trigger explicitly. `Select` now routes the field-a11y contract — plus `id`, so
+  label-click-to-focus resolves — through context to `SelectTrigger`, which also fixes a bare
+  `<Select aria-label="…">` in compound form. Props set directly on `SelectTrigger` still win, and
+  a trigger that states its own name (`aria-label`/`aria-labelledby`) keeps it whole rather than
+  inheriting a competing `aria-labelledby`.
+
+- **A `ResizablePanel` or fully disabled `Pagination` could scroll but not be reached by keyboard
+  (WCAG 2.2 SC 2.1.1).** `react-resizable-panels` hardcodes `overflow: auto` on the nested div it
+  applies our class to, and the pagination strip scrolls horizontally instead of wrapping. Tabbing
+  to a focusable child normally scrolls such a region — but a panel holding only text, or a
+  pagination bar whose every button is disabled, offers no focusable child, so the clipped content
+  was unreachable without a pointer. Both now measure at runtime (size and content, kept in sync as
+  either changes) and take `tabindex="0"` only in that case, so no redundant tab stop appears where
+  the content is already reachable.
+
+- **`--table-action-collection-font-size-compact` was dead at every width (gh#412).** Reported
+  independently by two consumers. `Table` emits its type as a Tailwind utility
+  (`<table class="… text-sm">`), and `utilities` outranks `@layer components` by LAYER ORDER — so
+  the compact tier's `font-size:` re-point could never apply, however specific it was written. The
+  documented token had no effect, and the measured consequence only ever showed up in Japanese: in
+  the 390px frame the `action-collection` table is 356px, `primary` takes 24% ≈ 69px of content,
+  and `タイムゾーン` at the effective 14px needs 84px — so the compact tier could not hold a 5–6
+  character Japanese label and broke it toward one character per line (WCAG 2.2 SC 1.4.10). The
+  whole compact tier — type AND the four column measures — now lives in `@layer
+godxjp-ui-responsive`, declared after Tailwind in `styles/base.css` and therefore the LAST layer,
+  so it outranks `utilities` and cannot be half-collapsed by a consumer utility on the table
+  either. At `--font-size-xs` the same label needs ~62px and fits. No markup changed and no default
+  moved; the token simply does what it always said it did.
+- **`DataTable`'s default cell renderer no longer emits a bare text node into the `<td>`
+  (gh#412).** Scalar values (and the `—` placeholder) render inside
+  `<span data-slot="table-cell-text">`. A bare text node leaves the padded cell BOX as the only
+  geometry anything can measure, and the cell's block padding inflates it — so a single unwrapped
+  line reads as wrapped, which is exactly how a CJK one-character-per-line reflow check
+  false-positives on a healthy cell (a consumer hit this and correctly fixed their side rather than
+  weaken their detector). A column with a custom `render` is untouched.
+
+### Changed
+
+- **New cascade layer `godxjp-ui-responsive`, and the layer contract is now written down
+  (cardinal rule #47, `docs/TOKENS.md`).** Declared immediately after `@import "tailwindcss"` in
+  `styles/base.css`, so it is the last layer and outranks `utilities`. It is reserved for
+  responsive re-points — `@container`/`@media` blocks that must beat a component's own static
+  utility — and holds nothing else. The consumer half of the contract matters just as much and had
+  never been stated: UNLAYERED app CSS outranks every layer, including this one, so an app must
+  theme this package through TOKENS on a wrapper and must not write its own selectors against
+  `[data-slot]` / `[data-priority]` internals. One that did killed the package's `@container`
+  re-point at every width and rendered a column at 0px, wrapping one character per line. If an app
+  genuinely must write such a rule, it belongs in `@layer components { … }`.
+
+- **`Card accentPlacement="perimeter"` — a full attention border in a SEMANTIC tone (gh#12).**
+  `accent` was documented and implemented as a leading-edge stripe (`border-inline-start` only), and
+  the system's one perimeter — `variant="featured"` — hard-coded `--primary`. So a card that had to
+  read as "action required" or "this failed" around its whole edge had exactly one route left: page
+  CSS. The tone and its PLACEMENT are now two orthogonal props, and `perimeter` carries the same
+  optical weight `featured` has (`--card-accent-perimeter-width` + `--card-accent-perimeter-ring-width`,
+  1px + 1px) in the card's own accent colour. It also undoes the rail's slot-padding compensation,
+  so switching placement never shifts the body text off the shell column — the failure mode of every
+  hand-rolled `border-2` workaround. `edge` is the default and emits no attribute, so every existing
+  accented Card keeps byte-identical DOM. `StatCard` forwards the prop for a KPI that needs the same
+  treatment.
+- **`Avatar appearance="tinted"` — the capability medallion (gh#12).** Canonical capability icons sit
+  in a tinted rounded-square medallion. `EmptyState`'s icon plate is centred, `StatCard`'s is
+  KPI-semantic, and `Avatar shape="square"` is a SOLID entity mark — so a left-aligned capability
+  card had no equivalent and consumers rendered bare glyphs. The medallion is a _composition_
+  (`Avatar` + a Lucide glyph, exactly as `docs/COMPOSITION-VS-COMPONENT.md` prescribes) and stays
+  one: what the library owed it was the TINT, which had no token, forcing `hsl(var(--primary) / 0.1)`
+  to be re-derived in page CSS. `appearance` is orthogonal to `shape`, so
+  `shape="square" appearance="tinted"` is the canonical rounded square and a tinted circle costs the
+  same one word. Retune with `--avatar-tinted-{background,foreground,glyph-size}`; the glyph rule is
+  scoped to this appearance on purpose, since a global `.ui-avatar svg` would outrank the per-call-site
+  icon classes existing avatars already carry.
+- **`InputOTP align` + `--otp-container-align` (gh#12).** `.ui-otp-container` had no alignment of its
+  own, and the container element belongs to `input-otp` — so the only thing a consumer could reach
+  was a wrapping flex div, and every one of them wrote it. `align="center"` (the canonical auth
+  challenge) is now a prop; the attribute lands on the hidden input and the container reads it back
+  through `:has()`, the same mechanism this stylesheet already uses for the invalid and disabled
+  states. `start` is the default and emits nothing.
+- **`--otp-slot-inline-size` / `--otp-slot-block-size` — a per-AXIS code-field measure (gh#12).**
+  `--otp-slot-size` stayed the square shorthand; the two new knobs win over it and fall back to it,
+  so the chain (axis → square → `--control-height`) still resolves at the call site. A code field
+  that is taller than it is wide was previously inexpressible from a token.
+- **`AuthShell preset="device-authorization"` now owns its CODE FIELD (gh#12).** The preset owned the
+  page measure but not its own subject: left on the generic square knob, two 4-slot
+  `appearance="grouped"` boxes rendered **146×38** against a **112×54** artboard (4 × the canonical
+  36px control tier + the 1px group border). The preset now hands the per-axis knobs
+  `--auth-shell-device-otp-slot-{inline,block}-size` (27.5×52 per slot ⇒ 112×54 per group), as literal
+  artboard lengths like every other measure in that file. Nothing else moves, and the generic
+  `--otp-slot-size` default is untouched everywhere else.
+- **`Steps separator="arrow"` + inline-emphasis tokens (gh#12).** The inline step row separated steps
+  with a chevron (`›`) and marked the number with bold, where the canonical hosted-identity row uses
+  an arrow (`→`) and an accent tint. A chevron reads "drill into"; an arrow reads "then", which is
+  what a step row means — so the glyph is a prop, and the emphasis is two knobs
+  (`--steps-inline-index-font-weight`, `--steps-inline-index-color`, plus
+  `--steps-inline-separator-color`). Both glyphs flip under `dir="rtl"`. Defaults reproduce the
+  existing row byte for byte.
+
+- **`PageHeader` is now a real export (gh#255).** The page title band — breadcrumbs, `<h1>`,
+  subtitle, a new `meta` status slot, `extra` actions, the `layout` arrangement and a `loading`
+  pending state — was only reachable through `PageContainer`, so a surface that is NOT a whole page
+  (a Sheet detail, a `MasterDetail` pane, a tab body) had to re-author `.ui-page-header` locally.
+  Following the gh#251 post-mortem, the deciding question was not the Gate 0 verdict alone but
+  whether the consumer can reach the geometry through PUBLIC routes: they could hand-build a header
+  from `Breadcrumb` + `Heading` + `Flex`, but they could NOT get the token-owned row gaps, `extra`
+  alignment, responsive arrangement or the `--page-header-divider` opt-in without copying package
+  CSS — so it is exported. There is exactly ONE implementation: `PageContainer` now renders this
+  component, and `page-header.test.tsx` pins the pre-gh#255 header DOM byte-for-byte so the
+  extraction cannot have moved an existing page. `denied`/`error` are deliberately NOT states of the
+  band — a title band for a resource the user may not see leaks its name, which is `ErrorSurface`'s
+  whole-surface contract. `loading` keeps the `<h1>` in the heading outline wearing the library's own
+  `ui-skeleton-block` skin (nesting Skeleton's `<div>` inside an `<h1>` is invalid HTML) with an
+  sr-only accessible name, because a heading rendered as a bare decorative box is an EMPTY heading
+  (axe `empty-heading`, WCAG 1.3.1); breadcrumbs and `extra` are not skeletonised, since they come
+  from the route rather than the record.
+- **`Banner` — the canonical page-level status strip (gh#255).** `Alert` locked to the new
+  `variant="banner"`: square, edge-to-edge, ruled on the block-end edge only, measured by the new
+  `--banner-*` tokens. Deliberately an ALIAS, not a second implementation — a banner and an inline
+  alert are one object at two measures, so re-deriving the tone→role mapping, icon defaults, actions
+  grid and dismiss control would be exactly the duplication this system forbids (the same reasoning
+  that makes `FilterBar` an alias of `Toolbar`). `Banner.Title` IS `AlertTitle`, asserted by
+  identity in `banner.test.tsx`, so a consumer can never mix two families in one strip.
+- **`AuthShell preset="registration"` (gh#256)** — the 360px sign-up measure with a 15px inline
+  gutter at 390px, matching `preset="login"` exactly so sign-in → sign-up never jumps on a phone.
+  Two things make it structurally distinct rather than a re-skin of `login`, and both are pinned by
+  tests: it is the ONLY start-aligned preset, because a sign-up card is the tallest surface in the
+  hosted-identity set and a vertically CENTRED tall card overflows ABOVE the scroll origin on a
+  short viewport, putting its first field permanently out of reach; and it is the only preset with
+  its own footer-clearance knob, so the legal/consent footer never sits flush against the submit
+  button at the end of a long scroll. Carries the full password form AND the pending-email state
+  with no consumer geometry CSS.
+- **A typed search/filter/chip/action/reset/result-count model on `FilterBar` (gh#258).** New
+  `search`, `chips`, `onChipRemove`, `resultCount` and `actions` props, plus the `FilterBarChipProp`
+  type. ORDER IS THE CONTRACT: DOM order is tab order, and the bar now decides it —
+  search → filter groups → applied chips → result count → reset → actions, with reset before
+  `actions` so "clear filters" never lands beside an unrelated primary action. `search` is a SLOT,
+  so the control finally gets one token-owned measure (`--filter-bar-search-width`) across every
+  list page instead of whatever width each page gave it. `chips` owns the chip lifecycle: a labelled
+  group, a remove control named after THAT specific filter (a row of buttons all called "Remove" is
+  unusable from a screen-reader's control list), no row at all when the array is empty, and NO
+  remove control — rather than a disabled one, which is a dead tab stop — for a chip the user may
+  not lift. `resultCount` renders in a polite live region formatted via `Intl.NumberFormat` + CLDR
+  plurals, which is the accessibility point of the whole prop: a sighted user SEES the table change,
+  and this is what tells everyone else. The bar still owns no filter state. Every region is opt-in
+  and emits nothing when its prop is absent, so a bar built the old way is geometrically unchanged
+  (pinned by a backwards-compatibility test).
+- **Packed-consumer coverage for the new surface.** `check:packed-public-contract` now extracts
+  `PageHeader`/`PageHeaderProp(s)` and `Banner`/`BannerProp(s)` from the real tarball, and gains a
+  `./navigation` contract (`FilterBar`, `FilterBarGroup`, `Toolbar`, `ToolbarGroup`,
+  `FilterBarChipProp`) that did not exist before — the navigation subpath had nothing pinning the
+  names a list page imports. This is the gh#251 lesson applied preventively: the guard immediately
+  caught that `FilterBarChipProp` was exported from `filter-bar.tsx` but never re-exported from the
+  navigation barrel, so it would have been invisible to a consumer despite passing every
+  source-level check.
+- **`docs/CANONICAL-CONTRACTS.md`** — the formal per-name record of what the package ships for
+  `PageHeader`, `Banner`, `SocialLinks`, `OrganizationChoiceList`, `ServiceRolePanel`,
+  `BranchScopePicker`, `PermissionMatrix` and `FilterBar`, with the Gate 0 verdict, the
+  "can the consumer reach it publicly?" follow-up that gh#251 taught us to ask, and — for a
+  composition — the exact primitives, token knobs and state table.
+- **New tokens.** `--page-header-meta-gap`, `--page-title-placeholder-{measure,block-size}`,
+  `--page-subtitle-placeholder-{measure,block-size}` (gh#255 header band);
+  `--banner-{radius,border-width,border-block-end-width,space-block,space-inline,space-inline-compact,dismiss-space-offset}`
+  (gh#255 banner); `--auth-shell-registration-*` (gh#256);
+  `--filter-bar-search-width`, `--filter-bar-chip-*`, `--filter-bar-count-*` (gh#258). The chip and
+  count colour knobs are role-mirror knobs, declared `initial` at `:root` with the role default at
+  the CALL SITE, so a scoped `[data-tenant]`/`.dark` override of `--muted`/`--muted-foreground`
+  actually reaches them.
+
+### Changed
+
+- **⚠ VISIBLE IN EVERY TRANSACTIONAL EMAIL: the primary CTA grows 36px → 44px
+  (`--email-cta-height`, dxs-platform/platform#559).** The email CTA mirrored `--control-height-lg`,
+  and 36px clears WCAG 2.2 **SC 2.5.8** Target Size (Minimum, AA, 24×24) — which is why nothing
+  downstream could see the problem. It does NOT clear **SC 2.5.5** Target Size (Enhanced, AAA,
+  44×44), Apple HIG 44pt or Material 48dp. Email is a mobile-first, **touch-only** medium: no hover
+  state, no precise pointer, and mail clients do not reliably offer zoom or a focus affordance, so
+  the web's AA floor is the wrong bar. `--email-cta-height` and `--email-cta-line-height` (which
+  must stay equal — an Outlook-safe button centres by line-height, not flexbox) are now **44px**,
+  and the mirror to `--control-height-lg` is **deliberately broken**; the token comment says so, so
+  the next reader does not "restore" it. The 44px floor is now asserted as a CONTRACT
+  (`expect(EMAIL_CTA.heightPx).toBeGreaterThanOrEqual(44)`), not as a restatement of the current
+  value — the previous test only checked `heightPx === EMAIL_CSS["--email-cta-height"]`, which is
+  green for any number and is exactly how a consumer spec asserting the 44px floor got pinned to
+  `EMAIL_CTA.heightPx` and silently lost it. The artboard test that pinned 36 was updated
+  deliberately. **Kept in a MINOR** on purpose: no public name, prop or export changes, nothing is
+  removed, the change only enlarges a touch target toward an accessibility floor, and the escape
+  hatch is one public line — a service that must keep the old box sets `--email-cta-height` and
+  `--email-cta-line-height` to `36px` in its own theme. Templates with a tightly measured CTA row
+  will reflow by 8px.
+- **⚠ 18.6.0 silently removed the Topbar CENTRE SLOT at 1100px and below — including on every phone.**
+  The gh#244 collision fix introduced `@media (width <= 68.75rem) { .ui-topbar-center { display:
+var(--topbar-center-compact-display) } }` with a default of `none`. Consumers whose global search
+  trigger lives in `Topbar center` lost it at 901–1100px and downward **without changing a line of
+  their own code** — a lockfile bump deleted a slot they depended on. **The default stays `none`**:
+  the overlap it prevents (a full search trigger covering the start breadcrumb/title or the end
+  utilities with a 16rem sidebar docked) is a real defect, and flipping a shipped default a second
+  time would be worse than documenting it once. It is now stated as a decision instead of a
+  side effect — the token comment, the MCP catalog's `center` prop description and a new Topbar usage
+  rule all carry the warning and the opt-in:
+
+  ```css
+  :root {
+    --topbar-center-compact-display: flex;
+  } /* restore the slot at every width */
+  ```
+
+  Opt back in only once the centre content has a compact presentation of its own (an icon-only search
+  trigger); otherwise move the trigger into `end` for compact widths. A page-local media query is the
+  anti-pattern the knob replaces.
+
+- **`variant="featured"` no longer hard-codes `--primary`.** Its edge and ring are now
+  `--card-featured-border-color` (role-mirror `initial`, so the `--primary` default resolves at the
+  call site and a scoped `[data-tenant]`/`.dark` override reaches it) and `--card-featured-ring-width`.
+  Rendered output is unchanged. `featured` is now simply the brand-toned member of the same family as
+  `accentPlacement="perimeter"`.
+- **The Card accent colour is resolved once per tone into `--card-accent-color`**, consumed by both
+  placements, so a rail and a perimeter can never drift apart. It is set on the element and is
+  therefore NOT a service knob — retint the role (`--attention`, `--success`, …).
+- **The `registration` preset's vertical geometry was invented, and is now derived and measured.**
+  The first pass shipped `3rem` / `1.5rem` block-start offsets that were chosen rather than taken
+  from the canonical artboard — the one thing every other preset in that file does carefully, citing
+  exact artboard pixels. Measured in headless Chromium, the card landed **133px / 147px above** the
+  canonical SCR-002 anchor. The offsets are now derived from the artboard quoted in the SCR-002
+  acceptance review (card `y=284` at 1440x900, `y=274` at 390x844) through the column's own
+  arithmetic — `card y = padding-block-start + identity slot + stack gap` — giving `9.5rem` /
+  `8.875rem`; re-measured delta is **0.00px at both viewports**. The horizontal measure chosen in
+  the first pass was already correct and is unchanged (360px card, 15px mobile gutter, centred at
+  1440 — measured delta 0.00px).
+- **`registration` gains the fixed identity track `login` already proved (`--auth-shell-registration-identity-slot-block-size`, 112px).**
+  Without it the card rides on the identity block's own height — measured at 82.69px for one wrapped
+  requester — so the canonical anchor above would have held for exactly one copy length and drifted
+  for every other. With it, headless Chromium measures card `y=274` identically for absent, short
+  and wrapped two-line requester copy. Applied to the identity element rather than through a grid
+  row, so the preset does not constrain how many sections a page stacks.
+- **The registration docs frame no longer passes a `brand` bar.** The canonical hosted-identity
+  screens put the mark INSIDE the column as `AuthIdentity` and pass no top bar — the real DXS
+  `Login.tsx` and `Register.tsx` both do exactly this. The frame passed one, which pushed the whole
+  column down by the bar's measured 72px and made every offset read off that page wrong. This was
+  what first looked like a 72px defect in the shipped `login` preset; `login` is correct, and the
+  frame was lying. NOTE: `docs/layout/auth-shell.tsx` still demonstrates `preset="login"` WITH a
+  brand bar and so mis-states that preset's anchor by the same 72px — left unchanged here because it
+  is pre-existing and touching it would move visual baselines outside this issue's scope.
+
+- **The banner's inline inset now steps down with the page gutter at 720px.** `--banner-space-inline`
+  reads `--space-page-active-x` so a strip's text lines up with the page title, but that token steps
+  down to the compact gutter on `.ui-page-container` ONLY. Custom properties inherit, so a banner
+  rendered inside the container picked the compact value up for free — while the normal case, a
+  banner mounted ABOVE the container or in `AppShell`, kept the 24px desktop gutter and sat 8px
+  outside the page title at 390px. The new `--banner-space-inline-compact` knob applies the same
+  step to the banner itself, so the alignment the token was introduced for actually holds on mobile.
+
+- **`ServiceRolePanel`, `BranchScopePicker` and `PermissionMatrix` are formally documented as
+  COMPOSITIONS, not components (gh#257).** All three fail the Framework-Component Test, and
+  `BranchScopePicker` fails it twice over: a hierarchical multi-select with parent/child aggregation
+  IS `TreeSelect`, so adding it would duplicate a primitive. The follow-up question is a clean
+  "yes" — each is reachable from public primitives + tokens with no package CSS — and the one
+  genuinely reusable part, the grant/diff data logic, already ships as the pure
+  `@godxjp/ui/lib/permission-grid` util. Documented with every state gh#257 listed
+  (read-only/locked, loading, empty, validation, error, permission-denied, destructive-confirmation)
+  in the new `docs/showcase/service-role-scope.tsx`, plus a new MCP `rbac-service-roles` pattern so
+  an agent asking for these names is taught the composition instead of inventing an API. Read-only
+  is a `Badge` STATING the fact, never a disabled `Select` — a disabled control is a dead tab stop
+  that implies "editable later".
+- **`SocialLinks` and `OrganizationChoiceList` formally documented as compositions (gh#256)**, with
+  their loading/empty/error/denied/disabled states, in `docs/layout/auth-shell-registration.tsx` and
+  two new `AuthShell` MCP usage rules. The package deliberately does not own the provider row:
+  which providers a product offers, in what order, and what consent they imply are product
+  decisions.
+- **MCP catalog corrections.** `Alert`'s `variant` was catalogued as
+  `"default" | "destructive" | "warning" | "success"` — it has never been the colour axis (that is
+  `tone`), and two `useCases` repeated the error. Both are fixed, and `variant` now documents the
+  MEASURE axis it really is. The `PageContainer` usage rule that told agents about "the old
+  PageHeader's prop names" was rewritten: there is now a real `PageHeader`, and leaving that string
+  in place would have taught agents the exact kind of wrong thing gh#251 was filed about.
+
+### Fixed
+
+- **The AppShell drawer breakpoint was documented as `lg` (1024px) but has always fired at 900px
+  (gh#259).** `shell-layout.css` said the docked sidebar "collapses out below `lg`", and the MCP
+  catalog's `mobileNav` description and its AppShell usage rule said the same — while the shipped
+  rule is `@media (width <= 56.25rem)` and the hamburger is `max-[900px]:inline-flex`. Between 900
+  and 1024 an agent reading the catalog therefore built against a breakpoint that does not exist.
+  `layout.prop.ts` was already correct. All three now name 900px / 56.25rem and point at the block
+  comment that explains why it is the one canonical value. No behaviour change — this was always a
+  documentation defect, but agents read the catalog, so it shipped wrong numbers into consumers.
 - **The boxed `<Logo tone="success">` glyph inked its TEXT with the identity KNOCKOUT colour, failing
   WCAG 2.2 AA at 3.67:1.** `.ui-logo[data-tone="success"]` fell back to `--brand-foreground` for
   `color`, but `--brand-foreground` is not an ink — it tracks `--background` in both themes

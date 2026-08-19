@@ -394,10 +394,15 @@
     box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
   }
 
+  /* The step NUMBER carries the emphasis. Both knobs exist because the canonical hosted-identity
+   * row marks the step with an accent TINT at normal weight, while the original marked it with
+   * bold at the inherited colour — a service picks its own emphasis instead of forking this rule
+   * (rule #45). Defaults are the original bold + inherited colour, so nothing moves. */
   .ui-steps-inline-index {
     flex: none;
     font-variant-numeric: tabular-nums;
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--steps-inline-index-font-weight);
+    color: var(--steps-inline-index-color, currentColor);
   }
 
   .ui-steps-inline-title {
@@ -418,8 +423,7 @@
     color: hsl(var(--destructive));
   }
 
-  .ui-steps-inline-item[data-status="wait"] .ui-steps-inline-control,
-  .ui-steps-inline-separator {
+  .ui-steps-inline-item[data-status="wait"] .ui-steps-inline-control {
     color: hsl(var(--muted-foreground));
   }
 
@@ -427,5 +431,6 @@
     width: var(--steps-inline-separator-size);
     height: var(--steps-inline-separator-size);
     flex: none;
+    color: var(--steps-inline-separator-color, hsl(var(--muted-foreground)));
   }
 }

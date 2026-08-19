@@ -51,9 +51,16 @@
     background: transparent;
   }
 
+  /* `featured` = the brand-toned perimeter. Its colour is a role-mirror knob (rule #45): declared
+   * `initial` in the token layer so the --primary default resolves HERE, at the call site, and a
+   * scoped [data-tenant]/.dark override of --primary still reaches it. A service that wants the
+   * featured ring in a non-brand tone overrides --card-featured-border-color; a card that wants a
+   * SEMANTIC perimeter (attention / destructive / success …) uses
+   * `accent="…" accentPlacement="perimeter"` instead — same geometry, tone-owned. */
   [data-slot="card"][data-variant="featured"] {
-    border-color: hsl(var(--primary));
-    box-shadow: 0 0 0 1px hsl(var(--primary));
+    border-color: var(--card-featured-border-color, hsl(var(--primary)));
+    box-shadow: 0 0 0 var(--card-featured-ring-width)
+      var(--card-featured-border-color, hsl(var(--primary)));
   }
 
   /* ── Density — override the shell inset/body tokens ──────────────────────
@@ -72,39 +79,68 @@
     --card-space-body-y: var(--space-5);
   }
 
-  /* ── Accent edge — semantic left stripe (token width), content on shell ─ */
-  [data-slot="card"][data-accent] {
-    border-inline-start-width: var(--card-accent-rail-width);
-  }
-
+  /* ── Accent tone — ONE resolved colour per semantic accent ─────────────
+   * `--card-accent-color` is RESOLVED from the card's own `data-accent`, so both placements read
+   * the same value and a new tone is one line. It is deliberately NOT a service knob: it is set on
+   * the element, so a :root / [data-tenant] override could never reach it. Retint the ROLE
+   * (--attention, --success, …) — that is what a role is for. */
   [data-slot="card"][data-accent="primary"] {
-    border-inline-start-color: hsl(var(--primary));
+    --card-accent-color: hsl(var(--primary));
   }
 
   [data-slot="card"][data-accent="success"] {
-    border-inline-start-color: hsl(var(--success));
+    --card-accent-color: hsl(var(--success));
   }
 
   [data-slot="card"][data-accent="warning"] {
-    border-inline-start-color: hsl(var(--warning));
+    --card-accent-color: hsl(var(--warning));
   }
 
   [data-slot="card"][data-accent="info"] {
-    border-inline-start-color: hsl(var(--info));
+    --card-accent-color: hsl(var(--info));
   }
 
   [data-slot="card"][data-accent="attention"] {
-    border-inline-start-color: hsl(var(--attention));
+    --card-accent-color: hsl(var(--attention));
   }
 
   [data-slot="card"][data-accent="destructive"] {
-    border-inline-start-color: hsl(var(--destructive));
+    --card-accent-color: hsl(var(--destructive));
+  }
+
+  /* ── Accent placement `edge` (DEFAULT) — semantic left stripe (token width), content on shell ─ */
+  [data-slot="card"][data-accent] {
+    border-inline-start-width: var(--card-accent-rail-width);
+    border-inline-start-color: var(--card-accent-color);
   }
 
   [data-slot="card"][data-accent] > [data-slot="card-header"],
   [data-slot="card"][data-accent] > [data-slot="card-content"]:not([data-flush]),
   [data-slot="card"][data-accent] > [data-slot="card-footer"]:not([data-flush]) {
     padding-inline-start: calc(var(--card-space-inset) - var(--card-accent-rail-width));
+  }
+
+  /* ── Accent placement `perimeter` — the full attention border (gh#12) ───
+   * The whole edge carries the semantic tone instead of one rail, so a card can read as
+   * "action required" / "failed" at a glance without borrowing `--primary` the way
+   * `variant="featured"` does. Same optical weight as `featured` (border + 1px ring), tone-owned.
+   * Because the rail is gone, the slot padding compensation above is undone — content returns to
+   * the normal shell column, so switching placement never shifts the text. */
+  [data-slot="card"][data-accent][data-accent-placement="perimeter"] {
+    border-width: var(--card-accent-perimeter-width);
+    border-color: var(--card-accent-color);
+    box-shadow:
+      0 0 0 var(--card-accent-perimeter-ring-width) var(--card-accent-color),
+      var(--card-shadow),
+      var(--card-glow);
+  }
+
+  [data-slot="card"][data-accent][data-accent-placement="perimeter"] > [data-slot="card-header"],
+  [data-slot="card"][data-accent][data-accent-placement="perimeter"]
+    > [data-slot="card-content"]:not([data-flush]),
+  [data-slot="card"][data-accent][data-accent-placement="perimeter"]
+    > [data-slot="card-footer"]:not([data-flush]) {
+    padding-inline-start: var(--card-space-inset);
   }
 
   /* ── Header ──────────────────────────────────────────────────────────── */

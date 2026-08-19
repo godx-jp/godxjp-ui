@@ -169,59 +169,79 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
+    "name": "--card-accent-perimeter-width",
+    "value": "1px",
+    "description": "Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can * tune the edge weight and the outer ring independently; the defaults reproduce the optical * weight of `variant=\"featured\"` (1px border + 1px ring) in the card's own semantic accent tone * instead of --primary. Structural 1px literals, like the base card hairline."
+  },
+  {
+    "name": "--card-accent-perimeter-ring-width",
+    "value": "1px",
+    "description": "Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can * tune the edge weight and the outer ring independently; the defaults reproduce the optical * weight of `variant=\"featured\"` (1px border + 1px ring) in the card's own semantic accent tone * instead of --primary. Structural 1px literals, like the base card hairline."
+  },
+  {
+    "name": "--card-featured-border-color",
+    "value": "initial",
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
+  },
+  {
+    "name": "--card-featured-ring-width",
+    "value": "1px",
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
+  },
+  {
     "name": "--stat-card-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-label-font-weight",
     "value": "var(--font-weight-medium)",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-label-letter-spacing",
     "value": "0.04em",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-value-font-size",
     "value": "var(--font-size-2xl)",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-value-line-height",
     "value": "1.1",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-value-font-weight",
     "value": "var(--font-weight-semibold)",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-hint-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-gap",
     "value": "var(--space-stack-xs)",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-icon-size",
     "value": "2.25rem",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-icon-glyph-size",
     "value": "1.25rem",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-icon-radius",
     "value": "var(--radius-md)",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-icon-background",
@@ -614,6 +634,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "InputOTP slot box (gh#233). Its own knob so an auth surface can widen the 6-slot challenge row * to fill a wide panel WITHOUT re-scoping --control-height (which would resize every other * control in the same card). Declared `initial` — the tier-mirror form of the role-mirror rule in * docs/TOKENS.md: the default must resolve at the CALL SITE (`var(--otp-slot-size, * var(--control-height))`), because `--otp-slot-size: var(--control-height)` here would FREEZE at * the :root tier (32px) and an OTP row inside `.ui-auth-shell[data-variant=\"canonical\"]`, which * re-scopes --control-height to 36px, would silently shrink. Verified in Chromium: 36px before * and after. A service opts in with a NAMED tier (`var(--control-height-lg)`), never a calc."
   },
   {
+    "name": "--otp-slot-inline-size",
+    "value": "initial",
+    "description": "Per-AXIS overrides of the slot box (gh#12). --otp-slot-size stays the square shorthand; these * two win over it when set, so a code field can be WIDER-than-tall or TALLER-than-wide without * abandoning the token. A canonical device-grant code field is 27.5x52 per slot (a 4-slot * `appearance=\"grouped\"` box of 112x54 with its 1px group border) — not expressible with one * square knob, which is why grouped OTP measured 146x38 against that artboard. `initial` for the * same tier-mirror reason as --otp-slot-size: the whole fallback chain * (axis → square → --control-height) must resolve at the CALL SITE so a shell that re-scopes * --control-height still reaches an OTP row that sets neither axis."
+  },
+  {
+    "name": "--otp-slot-block-size",
+    "value": "initial",
+    "description": "default = var(--otp-slot-size, var(--control-height))"
+  },
+  {
+    "name": "--otp-container-align",
+    "value": "flex-start",
+    "description": "Main-axis alignment of the whole OTP row (rule #44/#45 — chrome is a token, default quiet). * `flex-start` is the historical behaviour, so an existing field is byte-identical; a centred * code field is `align=\"center\"` on InputOTP (which wins over this knob) or this token set once * in a service theme. It exists because EVERY consumer was wrapping .ui-otp-container in a * flex-centring div to get a centred challenge."
+  },
+  {
     "name": "--checkbox-checked-background",
     "value": "initial",
     "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
@@ -809,6 +844,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Entity-header mark — `<Avatar shape=\"square\">` (gh#249): the compact rounded SQUARE an organization/service header uses, as opposed to the round person avatar. Every value is a knob (rule #45) so a service matches the mark to its own grid without a className override. --avatar-square-background / --avatar-square-foreground are role-mirror knobs: `initial` so the --primary / --primary-foreground defaults re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to a role var would freeze at the :root value). Defaults = --radius-lg corners · --control-height box (same as the circle avatar, so swapping shape never reflows a header) · hsl(var(--primary)) fill · hsl(var(--primary-foreground)) glyph."
   },
   {
+    "name": "--avatar-tinted-background",
+    "value": "initial",
+    "description": "Capability medallion — `<Avatar appearance=\"tinted\">` (gh#12): the tinted plate a capability / feature glyph sits on, as opposed to the SOLID entity mark above. Pair it with shape=\"square\" for the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are role-mirror knobs (`initial`, docs/TOKENS.md) so the --primary defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches them — the exact reason this is a token and not the `hsl(var(--primary) / 0.1)` literal consumers were writing in page CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph · --control-icon-size glyph box."
+  },
+  {
+    "name": "--avatar-tinted-foreground",
+    "value": "initial",
+    "description": "Capability medallion — `<Avatar appearance=\"tinted\">` (gh#12): the tinted plate a capability / feature glyph sits on, as opposed to the SOLID entity mark above. Pair it with shape=\"square\" for the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are role-mirror knobs (`initial`, docs/TOKENS.md) so the --primary defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches them — the exact reason this is a token and not the `hsl(var(--primary) / 0.1)` literal consumers were writing in page CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph · --control-icon-size glyph box."
+  },
+  {
+    "name": "--avatar-tinted-glyph-size",
+    "value": "var(--control-icon-size)",
+    "description": "Capability medallion — `<Avatar appearance=\"tinted\">` (gh#12): the tinted plate a capability / feature glyph sits on, as opposed to the SOLID entity mark above. Pair it with shape=\"square\" for the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are role-mirror knobs (`initial`, docs/TOKENS.md) so the --primary defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches them — the exact reason this is a token and not the `hsl(var(--primary) / 0.1)` literal consumers were writing in page CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph · --control-icon-size glyph box."
+  },
+  {
     "name": "--progress-track-background",
     "value": "initial",
     "description": "Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme. Track reads --secondary, fill reads --success; a service re-tones once. Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill."
@@ -995,13 +1045,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--email-cta-height",
-    "value": "36px",
-    "description": "── Primary CTA — the one action button ──────────────────────────────────────────────────"
+    "value": "44px",
+    "description": "TOUCH TARGET, deliberately DECOUPLED from --control-height-lg (36px). Do not \"restore\" the * mirror: email is a mobile-first, touch-only medium. There is no hover state, no precise * pointer, and mail clients do not reliably offer zoom or a focus affordance — so the web's AA * floor (SC 2.5.8, 24x24, which 36px clears) is the wrong bar here. 44px is the AAA target size * (SC 2.5.5, 44x44) and the Apple HIG 44pt / Material 48dp convention. A service that must keep * the old box sets --email-cta-height + --email-cta-line-height in its own theme."
   },
   {
     "name": "--email-cta-line-height",
-    "value": "36px",
-    "description": "mirrors --control-height-lg (2.25rem) — the canonical CTA box"
+    "value": "44px",
+    "description": "TOUCH TARGET, deliberately DECOUPLED from --control-height-lg (36px). Do not \"restore\" the * mirror: email is a mobile-first, touch-only medium. There is no hover state, no precise * pointer, and mail clients do not reliably offer zoom or a focus affordance — so the web's AA * floor (SC 2.5.8, 24x24, which 36px clears) is the wrong bar here. 44px is the AAA target size * (SC 2.5.5, 44x44) and the Apple HIG 44pt / Material 48dp convention. A service that must keep * the old box sets --email-cta-height + --email-cta-line-height in its own theme."
   },
   {
     "name": "--email-cta-padding-x",
@@ -1222,6 +1272,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--alert-border-alpha",
     "value": "0.3",
     "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
+  },
+  {
+    "name": "--banner-radius",
+    "value": "0",
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+  },
+  {
+    "name": "--banner-border-width",
+    "value": "0",
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+  },
+  {
+    "name": "--banner-border-block-end-width",
+    "value": "1px",
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+  },
+  {
+    "name": "--banner-space-block",
+    "value": "var(--space-3)",
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+  },
+  {
+    "name": "--banner-space-inline",
+    "value": "var(--space-page-active-x)",
+    "description": "Inline inset tracks the page gutter so a banner's text lines up with the page title. * `--space-page-active-x` steps down to the compact gutter on `.ui-page-container` only, and * custom properties inherit — so a banner rendered INSIDE the container picks the compact value * up for free, while the normal case (a banner mounted ABOVE the container, or in AppShell) would * keep the desktop gutter and sit 8px out at 390px. The compact step below is what actually keeps * the two aligned; retune it rather than hard-coding a mobile inset at the call site."
+  },
+  {
+    "name": "--banner-space-inline-compact",
+    "value": "var(--space-page-compact-x)",
+    "description": "Inline inset tracks the page gutter so a banner's text lines up with the page title. * `--space-page-active-x` steps down to the compact gutter on `.ui-page-container` only, and * custom properties inherit — so a banner rendered INSIDE the container picks the compact value * up for free, while the normal case (a banner mounted ABOVE the container, or in AppShell) would * keep the desktop gutter and sit 8px out at 390px. The compact step below is what actually keeps * the two aligned; retune it rather than hard-coding a mobile inset at the call site."
+  },
+  {
+    "name": "--banner-dismiss-space-offset",
+    "value": "var(--space-2)",
+    "description": "Dismiss offset is measured from the banner's own (shorter) block inset, so the ✕ stays * optically centred on a one-line strip instead of floating at the inline-alert offset."
   },
   {
     "name": "--dialog-content-glow",
@@ -1724,6 +1809,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
+    "name": "--steps-inline-index-font-weight",
+    "value": "var(--font-weight-bold)",
+    "description": "Inline-step emphasis (gh#12). The step number's weight and tint are separate knobs so a * service can express progression the canonical way — an accent TINT at normal weight — instead * of the original bold. --steps-inline-index-color / --steps-inline-separator-color are * role-mirror knobs (docs/TOKENS.md): `initial` so their defaults (the inherited step colour and * the --muted-foreground role) resolve at the CALL SITE and a scoped [data-tenant]/.dark * override still reaches them. Defaults reproduce today's row byte for byte."
+  },
+  {
+    "name": "--steps-inline-index-color",
+    "value": "initial",
+    "description": "Inline-step emphasis (gh#12). The step number's weight and tint are separate knobs so a * service can express progression the canonical way — an accent TINT at normal weight — instead * of the original bold. --steps-inline-index-color / --steps-inline-separator-color are * role-mirror knobs (docs/TOKENS.md): `initial` so their defaults (the inherited step colour and * the --muted-foreground role) resolve at the CALL SITE and a scoped [data-tenant]/.dark * override still reaches them. Defaults reproduce today's row byte for byte."
+  },
+  {
+    "name": "--steps-inline-separator-color",
+    "value": "initial",
+    "description": "default = currentColor at the call site"
+  },
+  {
     "name": "--app-setting-picker-compact-control-height",
     "value": "var(--control-height-sm)",
     "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
@@ -2056,37 +2156,37 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--topbar-center-compact-display",
     "value": "none",
-    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
+    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
   },
   {
     "name": "--org-switcher-trigger-height",
     "value": "2.75rem",
-    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
+    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
   },
   {
     "name": "--org-switcher-trigger-padding-x",
     "value": "var(--space-2)",
-    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
+    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
   },
   {
     "name": "--org-switcher-avatar-size",
     "value": "1.75rem",
-    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
+    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
   },
   {
     "name": "--org-switcher-menu-width",
     "value": "16rem",
-    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
+    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
   },
   {
     "name": "--org-switcher-sheet-max-height",
     "value": "75dvh",
-    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
+    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
   },
   {
     "name": "--org-switcher-state-min-height",
     "value": "8rem",
-    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
+    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
   },
   {
     "name": "--sidebar-item-active-color",
@@ -2252,6 +2352,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--auth-shell-device-main-padding-mobile",
     "value": "0.9375rem 0.3125rem",
     "description": "Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter * (at a 390px viewport the card is x=5px, width=380px)."
+  },
+  {
+    "name": "--auth-shell-device-otp-slot-inline-size",
+    "value": "1.71875rem",
+    "description": "CODE FIELD measure — the preset owns it (gh#12). A device grant is the one canonical flow whose * PRIMARY control is the code field, so leaving it on the generic square --otp-slot-size made the * preset own the page but not its own subject: two 4-slot `appearance=\"grouped\"` boxes rendered * 146x38 (4 x the canonical 36px control tier + the 1px group border) against a 112x54 artboard. * These are the per-slot boxes that ADD UP to that artboard group: * inline 27.5px x 4 + 2 x 1px group border = 112px * block 52px + 2 x 1px group border = 54px * Literal artboard lengths, like every other preset measure here — they must not drift with * --scaling. A service that groups its code differently overrides --otp-slot-inline-size / * --otp-slot-block-size on its own field; the generic square knob is untouched everywhere else."
+  },
+  {
+    "name": "--auth-shell-device-otp-slot-block-size",
+    "value": "3.25rem",
+    "description": "CODE FIELD measure — the preset owns it (gh#12). A device grant is the one canonical flow whose * PRIMARY control is the code field, so leaving it on the generic square --otp-slot-size made the * preset own the page but not its own subject: two 4-slot `appearance=\"grouped\"` boxes rendered * 146x38 (4 x the canonical 36px control tier + the 1px group border) against a 112x54 artboard. * These are the per-slot boxes that ADD UP to that artboard group: * inline 27.5px x 4 + 2 x 1px group border = 112px * block 52px + 2 x 1px group border = 54px * Literal artboard lengths, like every other preset measure here — they must not drift with * --scaling. A service that groups its code differently overrides --otp-slot-inline-size / * --otp-slot-block-size on its own field; the generic square knob is untouched everywhere else."
   },
   {
     "name": "--auth-shell-context-card-max-width",
@@ -2737,5 +2847,10 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-action-collection-row-height-compact",
     "value": "var(--table-row-height-compact)",
     "description": "Floor for a column with NO `priority` (the free-text column, `auto` up to the budget). It * cannot stay `auto` past the budget: once the marked columns over-constrain the table, the * fixed algorithm hands an auto column exactly 0px (verified in Chromium) — the same * shredding, moved to the free-text column. The actions floor is simply * `--table-action-collection-actions-width-compact`, already an absolute measure."
+  },
+  {
+    "name": "--table-action-collection-min-inline-size-compact",
+    "value": "0",
+    "description": "Compact-tier LEGIBILITY FLOOR — the measure below which the preset stops fitting the table * to its container and lets the scroll region it already owns take over. * * The percentage budget above is sized for ONE column per priority tier plus one free-text * column. A queue that repeats a tier — two `secondary` columns, three `meta` columns, or an * unmarked column beside them — asks for more than 100%, and under `table-layout: fixed` the * surplus is taken out of the columns rather than out of the table: measured on a seven-column * Japanese admin queue at 390, every column landed at 44–59px and CJK labels wrapped at ONE to * TWO characters per line (dxs-platform/platform#680). That is a WCAG 2.2 SC 1.4.10 Reflow (AA) * failure, and it is the failure mode this floor removes. * * Scrolling is the correct escape, not a concession: SC 1.4.10 exempts \"parts of the content * which require two-dimensional layout for usage or meaning\", and its own note names data * tables as the example. A table that scrolls horizontally inside its card conforms; a table * whose cells are one character wide does not. * * Default `0` so nothing changes for any existing consumer: a queue that fits its priority * budget keeps fitting. A consumer whose queue carries more columns than the budget sets this * to the measure at which its narrowest column is still readable (roughly 5rem per column for * Japanese at the compact type tier) and the table scrolls instead of crushing."
   }
 ];

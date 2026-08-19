@@ -74,6 +74,18 @@
    * The slot padding compensation in card-layout.css subtracts the same token,
    * so content stays aligned on the shell whatever the rail width. */
   --card-accent-rail-width: 6px;
+  /* Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can
+   * tune the edge weight and the outer ring independently; the defaults reproduce the optical
+   * weight of `variant="featured"` (1px border + 1px ring) in the card's own semantic accent tone
+   * instead of --primary. Structural 1px literals, like the base card hairline. */
+  --card-accent-perimeter-width: 1px;
+  --card-accent-perimeter-ring-width: 1px;
+  /* `variant="featured"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary
+   * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary
+   * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card
+   * at once. Default = hsl(var(--primary)). */
+  --card-featured-border-color: initial;
+  --card-featured-ring-width: 1px;
   --stat-card-label-font-size: var(--font-size-xs);
   --stat-card-label-font-weight: var(--font-weight-medium);
   --stat-card-label-letter-spacing: 0.04em;

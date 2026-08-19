@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronRight, Circle, Loader2, X } from "lucide-react";
+import { ArrowRight, Check, ChevronRight, Circle, Loader2, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
@@ -11,6 +11,7 @@ export type {
   StepsProp as StepsProps,
   StepItemProp,
   StepStatusProp,
+  StepsSeparatorProp,
 } from "../../props/components/navigation.prop";
 
 function resolveStepStatus(
@@ -84,6 +85,7 @@ export function Steps({
   type = "default",
   size = "md",
   titlePlacement = "horizontal",
+  separator = "chevron",
   onValueChange,
   className,
 }: StepsProp) {
@@ -92,6 +94,8 @@ export function Steps({
   const isVertical = orientation === "vertical";
   const compact = size === "sm";
   const inline = type === "inline";
+  // Both glyphs point along the reading direction, so both flip under dir="rtl".
+  const SeparatorIcon = separator === "arrow" ? ArrowRight : ChevronRight;
 
   return (
     <ol
@@ -209,7 +213,7 @@ export function Steps({
               <span className={stepClassName}>{stepInner}</span>
             )}
             {inline && index < items.length - 1 ? (
-              <ChevronRight
+              <SeparatorIcon
                 className="ui-steps-inline-separator rtl:rotate-180"
                 aria-hidden="true"
               />

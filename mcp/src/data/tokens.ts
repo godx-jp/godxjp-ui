@@ -309,7 +309,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--email-cta-{height,line-height,padding-x,radius,font-size,font-weight} / --email-focus-border-width",
     category: "component",
     tier: "component",
-    role: "The single primary email CTA, reconciled with the SCR-302 canonical reference (gh#250): 36px tall (mirrors --control-height-lg) with line-height EQUAL to the height so the label centres without flexbox in Outlook, 16px inline padding (--space-4), the 6px --radius base, 14px/500 label. 36px still clears WCAG 2.2 SC 2.5.8 (24×24) and the mobile reflow takes the CTA full-bleed. Fill/label are EMAIL_COLORS.primary / primaryForeground, derived from the --primary role — never paste a canonical hex, or the email stops tracking a re-theme. --email-focus-border-width mirrors --focus-ring-width for the webmail panes that honour :focus-visible. Exposed as EMAIL_CTA / EMAIL_FOCUS.",
+    role: "The single primary email CTA, reconciled with the SCR-302 canonical reference (gh#250): 44px tall with line-height EQUAL to the height so the label centres without flexbox in Outlook, 16px inline padding (--space-4), the 6px --radius base, 14px/500 label. The height is a TOUCH TARGET and is deliberately DECOUPLED from --control-height-lg (36px), which it mirrored until 18.8.0 — do not restore the mirror. Email is touch-only: no hover, no precise pointer, no dependable zoom, so the web AA floor (SC 2.5.8, 24×24, which 36px clears) is the wrong bar. 44px is SC 2.5.5 Target Size (Enhanced, AAA, 44×44) plus the Apple HIG 44pt / Material 48dp convention, and the mobile reflow still takes the CTA full-bleed. Fill/label are EMAIL_COLORS.primary / primaryForeground, derived from the --primary role — never paste a canonical hex, or the email stops tracking a re-theme. --email-focus-border-width mirrors --focus-ring-width for the webmail panes that honour :focus-visible. Exposed as EMAIL_CTA / EMAIL_FOCUS.",
   },
   {
     name: "--email-footer-{font-size,line-height,link-gap,padding-top,border-width} / --email-mobile-*",
@@ -318,10 +318,10 @@ export const TOKENS: TokenEntry[] = [
     role: "Legal-footer typography (11px/1.8 quiet type per the SCR-302 canonical, 12px between adjacent links, 20px above the hairline) and the narrow-viewport reflow (520px breakpoint, fluid card, 20px inset, 12px gutter, 16px heading — one step under the 17px desktop title, full-bleed CTA). The canonical 390px reference raster is unusable (435px wide and already clipping the card, dxs-platform/platform#496), so the mobile ramp is the library's documented contract rather than a measured value. Exposed as EMAIL_FOOTER / EMAIL_MOBILE; every reflow rule needs an inline fallback because most clients strip <style>.",
   },
   {
-    name: "--auth-shell-device-{card-max-width,main-padding,main-padding-mobile}",
+    name: "--auth-shell-device-{card-max-width,main-padding,main-padding-mobile,otp-slot-inline-size,otp-slot-block-size}",
     category: "component",
     tier: "component",
-    role: 'AuthShell `preset="device-authorization"` measure (gh#220) — the canonical OAuth device-grant artboard: a 23.75rem/380px card at 1440/1024 and a 15px-block · 5px-inline page gutter at 390 (so the card renders x=5px, width=380px). LITERAL lengths, not --space-*, because the artboard specifies exact device pixels that must not drift with --scaling. Selecting the preset replaces a consumer-side --auth-shell-card-max-width override or a forked `.auth-shell--wide` class; the canonical 360px/15px default is untouched.',
+    role: 'AuthShell `preset="device-authorization"` measure (gh#220, gh#12) — the canonical OAuth device-grant artboard: a 23.75rem/380px card at 1440/1024 and a 15px-block · 5px-inline page gutter at 390 (so the card renders x=5px, width=380px), PLUS the code field the flow is actually about. The preset now owns its OTP slot box and hands it to --otp-slot-{inline,block}-size: 27.5x52 per slot, i.e. a 4-slot `appearance="grouped"` box of 112x54 with its 1px group border. Without it the field fell back to the square --control-height tier and rendered 146x38 against that artboard — the preset owned the page but not its subject. LITERAL lengths, not --space-*, because the artboard specifies exact device pixels that must not drift with --scaling. Selecting the preset replaces a consumer-side --auth-shell-card-max-width override or a forked `.auth-shell--wide` class; the canonical 360px/15px default is untouched.',
   },
   {
     name: "--auth-shell-context-{card-max-width,main-padding,main-padding-mobile,card-stack-gap}",
@@ -348,6 +348,18 @@ export const TOKENS: TokenEntry[] = [
     role: "InputOTP slot box (gh#233). Default `var(--control-height)` — byte-identical to before and still density-aware — but its OWN knob, so an auth panel can widen the 6-slot challenge row to fill a wide surface WITHOUT re-scoping --control-height (which would resize the primary button and every other input in the same card). Set it to a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
   },
   {
+    name: "--otp-slot-{inline-size,block-size}",
+    category: "component",
+    tier: "component",
+    role: 'Per-AXIS InputOTP slot box (gh#12). --otp-slot-size stays the SQUARE shorthand; these two win over it and fall back to it, so a code field that is taller than it is wide — the canonical device-grant slot, 27.5x52 — is finally expressible from a token. Declared `initial` so the whole chain (axis → square → --control-height) resolves at the CALL SITE and a shell that re-scopes --control-height still reaches a field that sets neither axis. `AuthShell preset="device-authorization"` sets both for you.',
+  },
+  {
+    name: "--otp-container-align",
+    category: "component",
+    tier: "component",
+    role: 'Main-axis alignment of the whole InputOTP row (gh#12). Default `flex-start` = the historical layout, so nothing moves. It exists because a centred code challenge is the common auth case and the container element belongs to `input-otp` — the only thing a consumer could reach was a wrapper div, and every one of them wrote it. Per instance use `align="center"` on InputOTP, which outranks this token.',
+  },
+  {
     name: "--tabs-indicator-{background,size,offset}",
     category: "component",
     tier: "component",
@@ -360,10 +372,16 @@ export const TOKENS: TokenEntry[] = [
     role: 'Avatar `shape="square"` entity-header mark (gh#249) — the compact rounded square an organization/service header uses instead of the round person avatar. --avatar-square-background / --avatar-square-foreground are declared `initial` so the hsl(var(--primary)) / hsl(var(--primary-foreground)) defaults re-resolve at the CALL SITE under a scoped theme. Defaults = --radius-lg corners · --control-height box (swapping shape never reflows the header) · primary fill at 4.65:1 contrast. `shape="circle"` (the default) is inert and reads --avatar-background / --avatar-tint as before.',
   },
   {
-    name: "--steps-inline-{gap,item-gap,font-size,separator-size}",
+    name: "--avatar-tinted-{background,foreground,glyph-size}",
     category: "component",
     tier: "component",
-    role: "Steps type=inline compact auth/device progress rhythm and typography. Consumers select the semantic appearance; services retune the row once without page CSS.",
+    role: 'Avatar `appearance="tinted"` — the CAPABILITY MEDALLION (gh#12): the tinted plate a feature/capability glyph sits on, as opposed to the solid entity mark above. Orthogonal to `shape`, so `shape="square" appearance="tinted"` is the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are declared `initial` so the hsl(var(--primary) / 0.1) / hsl(var(--primary)) defaults re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme — which is the whole point: consumers were writing that 0.1 alpha literal into page CSS, or giving up and rendering a bare glyph, because the medallion is a composition (Avatar + a Lucide glyph) whose tint had no token. Defaults = 10% primary wash · primary glyph · --control-icon-size glyph box.',
+  },
+  {
+    name: "--steps-inline-{gap,item-gap,font-size,separator-size,index-font-weight,index-color,separator-color}",
+    category: "component",
+    tier: "component",
+    role: "Steps type=inline compact auth/device progress rhythm, typography and EMPHASIS (gh#12). Consumers select the semantic appearance; services retune the row once without page CSS. The step number's emphasis is two knobs — --steps-inline-index-font-weight (default bold) and --steps-inline-index-color (role-mirror `initial`, default the inherited step colour) — because the canonical hosted-identity row marks the step with an accent TINT at normal weight while the library default marks it with bold. --steps-inline-separator-color (role-mirror `initial`, default --muted-foreground) tints the glyph the `separator` prop picks.",
   },
   {
     name: "--auth-account-summary-{min-height,gap,padding,identity-min-width,avatar-size,avatar-glyph-size,email-font-size}",
@@ -376,6 +394,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "AuthShell column knobs shared by every preset. --auth-shell-main-align is the block alignment of the auth column (default `center`, the vertically-centred card; set `start` for a tall intro+card+footnote stack). --auth-shell-card-stack-gap is the gap between the card slot's direct sections — default `0px` (quiet, rule #44) so an existing single-card consumer is byte-for-byte unchanged; a preset opts in.",
+  },
+  {
+    name: "--card-{accent-rail-width,accent-perimeter-width,accent-perimeter-ring-width,featured-border-color,featured-ring-width}",
+    category: "component",
+    tier: "component",
+    role: 'Card ACCENT geometry, one set per placement (gh#12). `accentPlacement="edge"` (the default) draws the leading rail at --card-accent-rail-width (6px). `accentPlacement="perimeter"` draws the FULL attention border, measured by --card-accent-perimeter-width + --card-accent-perimeter-ring-width (1px + 1px, the optical weight of `variant="featured"`) in the card\'s own semantic accent tone. `variant="featured"` is the brand-toned member of the same family and no longer hard-codes --primary: its edge is the --card-featured-border-color role-mirror knob (`initial`, so the --primary default resolves at the CALL SITE and a scoped [data-tenant]/.dark override reaches it) at --card-featured-ring-width. The accent COLOUR itself is not a knob — it is resolved from `data-accent` on the card, so retint the ROLE (--attention, --success …).',
   },
   {
     name: "--card-space-shell-y",

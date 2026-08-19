@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T13:11:57.818Z",
+  "generatedAt": "2026-08-19T21:29:53.670Z",
   "base": "http://localhost:6018",
   "results": [
     {
@@ -277,27 +277,27 @@
       "locale": "ja",
       "bar": {
         "x": 68,
-        "y": 7.5,
+        "y": 9.5,
         "width": 310,
-        "height": 32
+        "height": 28
       },
       "start": {
         "x": 68,
-        "y": 7.5,
-        "width": 137.234375,
-        "height": 32
+        "y": 9.5,
+        "width": 238,
+        "height": 28
       },
       "center": null,
       "end": {
-        "x": 213.234375,
+        "x": 314,
         "y": 9.5,
-        "width": 164.765625,
+        "width": 64,
         "height": 28
       },
       "title": {
-        "x": 290,
+        "x": 156,
         "y": 13,
-        "width": 0,
+        "width": 150,
         "height": 21
       },
       "titleStyle": {
@@ -319,27 +319,27 @@
       "locale": "en",
       "bar": {
         "x": 68,
-        "y": 7.5,
+        "y": 9.5,
         "width": 310,
-        "height": 32
+        "height": 28
       },
       "start": {
         "x": 68,
-        "y": 7.5,
-        "width": 137.234375,
-        "height": 32
+        "y": 9.5,
+        "width": 238,
+        "height": 28
       },
       "center": null,
       "end": {
-        "x": 213.234375,
+        "x": 314,
         "y": 9.5,
-        "width": 164.765625,
+        "width": 64,
         "height": 28
       },
       "title": {
-        "x": 290,
+        "x": 156,
         "y": 13,
-        "width": 0,
+        "width": 150,
         "height": 21
       },
       "titleStyle": {
@@ -361,27 +361,27 @@
       "locale": "vi",
       "bar": {
         "x": 68,
-        "y": 7.5,
+        "y": 9.5,
         "width": 310,
-        "height": 32
+        "height": 28
       },
       "start": {
         "x": 68,
-        "y": 7.5,
-        "width": 137.234375,
-        "height": 32
+        "y": 9.5,
+        "width": 238,
+        "height": 28
       },
       "center": null,
       "end": {
-        "x": 213.234375,
+        "x": 314,
         "y": 9.5,
-        "width": 164.765625,
+        "width": 64,
         "height": 28
       },
       "title": {
-        "x": 290,
+        "x": 156,
         "y": 13,
-        "width": 0,
+        "width": 150,
         "height": 21
       },
       "titleStyle": {

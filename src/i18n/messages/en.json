@@ -142,6 +142,9 @@
     }
   },
   "layout": {
+    "pageHeader": {
+      "loading": "Loading page…"
+    },
     "sidebar": {
       "ariaLabel": "Primary"
     },

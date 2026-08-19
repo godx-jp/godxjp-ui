@@ -67,6 +67,22 @@
    * re-scopes --control-height to 36px, would silently shrink. Verified in Chromium: 36px before
    * and after. A service opts in with a NAMED tier (`var(--control-height-lg)`), never a calc. */
   --otp-slot-size: initial; /* default = var(--control-height) at the call site */
+  /* Per-AXIS overrides of the slot box (gh#12). --otp-slot-size stays the square shorthand; these
+   * two win over it when set, so a code field can be WIDER-than-tall or TALLER-than-wide without
+   * abandoning the token. A canonical device-grant code field is 27.5x52 per slot (a 4-slot
+   * `appearance="grouped"` box of 112x54 with its 1px group border) — not expressible with one
+   * square knob, which is why grouped OTP measured 146x38 against that artboard. `initial` for the
+   * same tier-mirror reason as --otp-slot-size: the whole fallback chain
+   * (axis → square → --control-height) must resolve at the CALL SITE so a shell that re-scopes
+   * --control-height still reaches an OTP row that sets neither axis. */
+  --otp-slot-inline-size: initial; /* default = var(--otp-slot-size, var(--control-height)) */
+  --otp-slot-block-size: initial; /* default = var(--otp-slot-size, var(--control-height)) */
+  /* Main-axis alignment of the whole OTP row (rule #44/#45 — chrome is a token, default quiet).
+   * `flex-start` is the historical behaviour, so an existing field is byte-identical; a centred
+   * code field is `align="center"` on InputOTP (which wins over this knob) or this token set once
+   * in a service theme. It exists because EVERY consumer was wrapping .ui-otp-container in a
+   * flex-centring div to get a centred challenge. */
+  --otp-container-align: flex-start;
 
   /* Checked/on/active fills — `initial` so the --primary default re-resolves at the call site
    * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped

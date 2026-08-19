@@ -509,6 +509,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "DensityProp",
       "PageContainerVariantProp",
       {
+        field: "headerLoading",
+        local: true,
+        reason:
+          "Pending state of the TITLE BAND only (skeleton title/subtitle + aria-busy on the header). Named for the BAND it skeletonises, so it can never be read as a page-wide loading flag (that is DataState's job); breadcrumbs and `extra` come from the route and stay live while the record resolves.",
+      },
+      {
         field: "headerLayout",
         local: true,
         reason:
@@ -1242,6 +1248,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display.prop.ts",
     vocabulary: ["AvatarShapeProp", "ChildrenProp", "ClassNameProp"],
   },
+  AvatarAppearanceProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
   BadgeProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
@@ -1625,12 +1636,22 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: [],
   },
+  InputOTPAlignProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
   StepItemProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
     vocabulary: ["TitleProp", "SubtitleProp", "DescriptionProp", "IconProp", "DisabledProp"],
   },
   StepStatusProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: [] },
+  StepsSeparatorProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
   TabsProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
@@ -1682,7 +1703,7 @@ export const COMPONENT_PROP_REGISTRY = {
   CommandPaletteProp: {
     group: "data-entry",
     file: "components/data-entry/command-palette.tsx",
-    vocabulary: ["OpenProp", "DefaultOpenProp", "OnOpenChangeProp"],
+    vocabulary: ["OpenProp", "DefaultOpenProp", "OnOpenChangeProp", "OnSearchChangeProp"],
   },
   TwoFactorSetupProp: {
     group: "feedback",

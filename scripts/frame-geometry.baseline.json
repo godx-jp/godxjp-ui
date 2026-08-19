@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13",
+  "generatedAt": "2026-08-19",
   "note": "Per-frame widths with horizontal overflow / clipped controls. Allowlist — may only SHRINK. Regenerate after a responsive-fix PR: `node scripts/frame-geometry.mjs --update-baseline`.",
   "widths": [
     320,
@@ -11,66 +11,5 @@
     1440,
     1920
   ],
-  "frames": {
-    "data-display-data-table-index": [
-      320,
-      375,
-      390
-    ],
-    "data-display-data-table-examples-grid-features": [
-      320,
-      375,
-      390
-    ],
-    "data-display-data-table-examples-list-page": [
-      320,
-      375,
-      390
-    ],
-    "data-entry-rating": [
-      320
-    ],
-    "data-entry-form-examples-employee-settings": [
-      320,
-      375,
-      390,
-      768
-    ],
-    "data-entry-form-examples-invoice-form": [
-      320,
-      375,
-      390,
-      768
-    ],
-    "foundation-density": [
-      320,
-      375
-    ],
-    "general-button-examples-toolbar": [
-      320,
-      375,
-      390
-    ],
-    "layout-page-container": [
-      320,
-      375,
-      390
-    ],
-    "layout-topbar": [
-      320,
-      375,
-      390
-    ],
-    "navigation-pagination": [
-      320,
-      375,
-      390,
-      768
-    ],
-    "navigation-tabs": [
-      320,
-      375,
-      390
-    ]
-  }
+  "frames": {}
 }

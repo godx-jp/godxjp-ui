@@ -96,9 +96,26 @@ export type DescriptionsItemProp = {
  */
 export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
   shape?: AvatarShapeProp;
+  appearance?: AvatarAppearanceProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };
+
+/**
+ * Avatar fill treatment.
+ *
+ * - `"default"` — the identity fill: `--muted` for a person, the solid brand mark for
+ *   `shape="square"`.
+ * - `"tinted"` — the **capability medallion**: a soft role wash behind a role-coloured glyph.
+ *   This is the plate a capability/feature icon sits on (`shape="square" appearance="tinted"` for
+ *   the canonical rounded square). It exists because the medallion is a composition — `Avatar` +
+ *   a Lucide glyph, per docs/COMPOSITION-VS-COMPONENT.md — but its *tint* was not reachable from
+ *   a token, so consumers were re-deriving `hsl(var(--primary) / 0.1)` in page CSS or giving up
+ *   and rendering a bare glyph. Retune with `--avatar-tinted-*`.
+ *
+ * @see Avatar
+ */
+export type AvatarAppearanceProp = "default" | "tinted";
 
 /** @see Badge */
 export type BadgeProp = {

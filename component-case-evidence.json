@@ -1153,7 +1153,22 @@
         },
         "variant": {
           "cases": ["default", "banner"],
-          "evidence": ["docs/feedback/alert.tsx", "docs/feedback/banner.tsx"]
+          "evidence": [
+            "docs/feedback/alert.tsx",
+            "docs/feedback/banner.tsx",
+            "src/components/feedback/__tests__/banner.test.tsx"
+          ]
+        }
+      }
+    },
+    "Banner": {
+      "props": {
+        "tone": {
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "evidence": [
+            "docs/feedback/banner.tsx",
+            "src/components/feedback/__tests__/banner.test.tsx"
+          ]
         }
       }
     },

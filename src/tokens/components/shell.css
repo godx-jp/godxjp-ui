@@ -81,10 +81,21 @@
   --topbar-height: auto;
   --topbar-inset: 0px;
   --topbar-gap: var(--space-2);
-  /* At compact desktop/tablet widths the docked sidebar leaves too little inline room for three
-   * intrinsically-sized clusters. The package hides the optional center slot before it can cover
-   * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy
-   * (for example `flex`) once their center content has its own compact presentation. */
+  /* ⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot.
+   * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three
+   * intrinsically-sized clusters, so the package hides the optional center slot before it can
+   * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a
+   * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every
+   * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot
+   * for consumers who never changed a line of their own code (gh#12); it stays because the
+   * overlap it prevents is a real defect and flipping a shipped default twice is worse than
+   * documenting it once, but it is a DECISION, not an accident:
+   *
+   *   :root { --topbar-center-compact-display: flex; }   ← restore the slot at every width
+   *
+   * Opt back in only once the center content has a compact presentation of its own (an icon-only
+   * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob
+   * replaces. */
   --topbar-center-compact-display: none;
   --org-switcher-trigger-height: 2.75rem;
   --org-switcher-trigger-padding-x: var(--space-2);
@@ -183,6 +194,18 @@
   --auth-shell-device-card-max-width: 23.75rem;
   --auth-shell-device-main-padding: 1rem;
   --auth-shell-device-main-padding-mobile: 0.9375rem 0.3125rem;
+  /* CODE FIELD measure — the preset owns it (gh#12). A device grant is the one canonical flow whose
+   * PRIMARY control is the code field, so leaving it on the generic square --otp-slot-size made the
+   * preset own the page but not its own subject: two 4-slot `appearance="grouped"` boxes rendered
+   * 146x38 (4 x the canonical 36px control tier + the 1px group border) against a 112x54 artboard.
+   * These are the per-slot boxes that ADD UP to that artboard group:
+   *   inline  27.5px x 4 + 2 x 1px group border = 112px
+   *   block   52px       + 2 x 1px group border =  54px
+   * Literal artboard lengths, like every other preset measure here — they must not drift with
+   * --scaling. A service that groups its code differently overrides --otp-slot-inline-size /
+   * --otp-slot-block-size on its own field; the generic square knob is untouched everywhere else. */
+  --auth-shell-device-otp-slot-inline-size: 1.71875rem;
+  --auth-shell-device-otp-slot-block-size: 3.25rem;
 
   /* Context-selection preset — 25rem card measure on desktop/tablet, edge-to-edge on mobile
    * (0 inline gutter) with a 16px rhythm between the intro, the card and the remember row. */

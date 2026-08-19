@@ -42,6 +42,14 @@ export type InputOTPGroupProp = React.HTMLAttributes<HTMLDivElement> & {
   appearance?: InputOTPGroupAppearanceProp;
 };
 
+/**
+ * Main-axis alignment of the whole code row (groups + separators) inside its container.
+ * `start` is the historical default. A centred challenge is the common auth case and used to
+ * force every consumer to wrap `.ui-otp-container` in their own flex-centring div.
+ * @see InputOTP
+ */
+export type InputOTPAlignProp = "start" | "center" | "end";
+
 /** @see Input */
 export type InputProp = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Show an inline ✕ that clears the field while it holds text (default false). */

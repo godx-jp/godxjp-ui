@@ -2,6 +2,7 @@ import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
+import { useScrollableRegionTabIndex } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import {
@@ -23,7 +24,28 @@ const PaginationContent = React.forwardRef<
   HTMLUListElement,
   React.HTMLAttributes<HTMLUListElement>
 >(({ className, ...props }, ref) => {
-  return <ul ref={ref} className={cn("ui-pagination-list", className)} role="list" {...props} />;
+  // The strip scrolls horizontally instead of wrapping. Its page buttons normally supply the
+  // keyboard route to that overflow — but a fully disabled pagination has none, so the hook gives
+  // the list its own tab stop (WCAG 2.1.1).
+  const [scrollRegion, setScrollRegion] = React.useState<HTMLUListElement | null>(null);
+  const setListElement = React.useCallback(
+    (node: HTMLUListElement | null) => {
+      setScrollRegion(node);
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref],
+  );
+  useScrollableRegionTabIndex(scrollRegion);
+
+  return (
+    <ul
+      ref={setListElement}
+      className={cn("ui-pagination-list", className)}
+      role="list"
+      {...props}
+    />
+  );
 });
 PaginationContent.displayName = "PaginationContent";
 

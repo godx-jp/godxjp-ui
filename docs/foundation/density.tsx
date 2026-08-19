@@ -125,7 +125,7 @@ export default function Demo() {
           <CardContent>
             <Flex direction="row" gap="lg" align="start" wrap>
               {density.map((d) => (
-                <Flex key={d.cls} direction="col" gap="sm" className="min-w-72 flex-1">
+                <Flex key={d.cls} direction="col" gap="sm" className="min-w-0 flex-1 sm:min-w-72">
                   <Flex direction="row" align="center" justify="between" gap="sm">
                     <Text size="xs" mono>
                       density=&quot;{d.label}&quot;
@@ -155,7 +155,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="row" gap="lg" align="start" wrap>
-              <Flex direction="col" gap="sm" className="min-w-72 flex-1">
+              <Flex direction="col" gap="sm" className="min-w-0 flex-1 sm:min-w-72">
                 <Text size="xs" mono>
                   density=&quot;compact&quot;
                 </Text>
@@ -170,7 +170,7 @@ export default function Demo() {
                   </CardContent>
                 </Card>
               </Flex>
-              <Flex direction="col" gap="sm" className="min-w-72 flex-1">
+              <Flex direction="col" gap="sm" className="min-w-0 flex-1 sm:min-w-72">
                 <Text size="xs" mono>
                   density=&quot;comfortable&quot;
                 </Text>

@@ -67,6 +67,14 @@ export type PageContainerProp = {
    * overflow (`headerLayout` / `measure`) all live on this one renderer.
    */
   status?: StatusProp;
+  /**
+   * Pending state for the title band while the page's own record resolves. Renders the
+   * title/subtitle as `ui-skeleton-block` placeholders and marks the header `aria-busy`, keeping
+   * the `<h1>` in the document with an sr-only accessible name (an empty heading is an axe
+   * violation) so the page's heading outline never disappears mid-load. Breadcrumbs and `extra`
+   * are NOT skeletonised — they come from the route, not the record.
+   */
+  headerLoading?: boolean;
   extra?: ExtraProp;
   footer?: FooterProp;
   breadcrumb?: BreadcrumbProp;

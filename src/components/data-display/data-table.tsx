@@ -1018,9 +1018,18 @@ DataTable.Content = function DataTableContent() {
                           ? col.render(original as never)
                           : (() => {
                               const v = (original as Record<string, unknown>)[col.key];
-                              if (v == null) return "—";
-                              if (typeof v === "string" || typeof v === "number") return String(v);
-                              return "—";
+                              const text =
+                                v == null || !(typeof v === "string" || typeof v === "number")
+                                  ? "—"
+                                  : String(v);
+                              // The default renderer emits its text inside a real element, never
+                              // as a bare text node in the `<td>` (gh#412). A bare node leaves the
+                              // cell BOX as the only thing a reflow/overflow check can measure,
+                              // and the cell's block padding inflates that box — so a single
+                              // unwrapped line reads as wrapped, which is how a CJK
+                              // one-character-per-line check false-positives on a healthy cell.
+                              // The span measures the TEXT.
+                              return <span data-slot="table-cell-text">{text}</span>;
                             })()}
                       </TableCell>
                     ))}

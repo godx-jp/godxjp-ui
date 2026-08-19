@@ -153,7 +153,8 @@ const COMPONENT_TYPE_ALLOWLIST = new Set([
   "SkeletonProps", // React.HTMLAttributes passthrough
   "TableProps", // React.HTMLAttributes passthrough + `scrollable` (own-scroll opt-out)
   "TabsProps", // Radix Tabs.Root props passthrough
-  "SelectProp", // data-driven union (SelectDataProp | Radix Select.Root props)
+  "SelectProp", // union of the two Select APIs (SelectDataProp | SelectCompoundProp)
+  "SelectCompoundProp", // Radix Select.Root props passthrough + the FieldA11yProps contract
 ]);
 
 function walkComponents(dir) {

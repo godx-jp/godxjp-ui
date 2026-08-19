@@ -66,6 +66,18 @@ export function pickFieldA11y(props: FieldA11yProps): FieldA11yProps {
 }
 
 /**
+ * The inverse of {@link pickFieldA11y}: everything EXCEPT the field-a11y attributes. Use it when a
+ * component must route the contract somewhere other than the element the remaining props land on —
+ * e.g. `Select`'s compound API, where the props bag belongs to `SelectPrimitive.Root` (a
+ * context-only component that renders no DOM) while the accessible name has to reach the trigger.
+ */
+export function omitFieldA11y<T extends FieldA11yProps>(props: T): Omit<T, keyof FieldA11yProps> {
+  const out = { ...props } as Record<string, unknown>;
+  for (const key of FIELD_A11Y_KEYS) delete out[key];
+  return out as Omit<T, keyof FieldA11yProps>;
+}
+
+/**
  * As {@link pickFieldA11y}, but resolves the accessible **name** for a control that also has an
  * intrinsic `aria-label` (e.g. SearchInput's built-in "Search"): when the FormField supplies an
  * `aria-labelledby`, it wins and the intrinsic `aria-label` is dropped (a control must not carry

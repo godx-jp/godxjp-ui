@@ -29,15 +29,16 @@ Do not rebuild sidebar or topbar chrome inside product previews or apps. Compose
 **Prop type:** `PageContainerProp`  
 **Import:** `@godxjp/ui/layout`
 
-| Prop         | Vocabulary        | Required          |
-| ------------ | ----------------- | ----------------- |
-| `title`      | `TitleProp`       | ✅                |
-| `subtitle`   | `SubtitleProp`    |                   |
-| `extra`      | `ExtraProp`       |                   |
-| `footer`     | `FooterProp`      |                   |
-| `breadcrumb` | `BreadcrumbProp`  |                   |
-| `density`    | `PageDensityProp` | default `default` |
-| `children`   | `ChildrenProp`    |                   |
+| Prop            | Vocabulary        | Required          |
+| --------------- | ----------------- | ----------------- |
+| `title`         | `TitleProp`       | ✅                |
+| `subtitle`      | `SubtitleProp`    |                   |
+| `extra`         | `ExtraProp`       |                   |
+| `footer`        | `FooterProp`      |                   |
+| `breadcrumb`    | `BreadcrumbProp`  |                   |
+| `headerLoading` | local (`boolean`) | default `false`   |
+| `density`       | `PageDensityProp` | default `default` |
+| `children`      | `ChildrenProp`    |                   |
 
 Every admin page **must** use PageContainer.
 
@@ -102,12 +103,13 @@ All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640
 
 ## Feedback
 
-| Component   | Prop type           | Key props                                                         |
-| ----------- | ------------------- | ----------------------------------------------------------------- |
-| `Alert`     | `AlertProp`         | `variant`, compound slots, `onDismiss`, `Alert.QueryError` preset |
-| `Dialog`    | `DialogConfirmProp` | `mode: form \| confirm`, `Dialog.Confirm` preset                  |
-| `Sheet`     | Radix primitives    | slide-in panel (mobile filters, detail flyouts)                   |
-| `Skeleton*` | `SkeletonRowsProp`  | loading placeholders                                              |
+| Component   | Prop type           | Key props                                                                    |
+| ----------- | ------------------- | ---------------------------------------------------------------------------- |
+| `Alert`     | `AlertProp`         | `tone` (colour), `variant` (measure), slots, `onDismiss`, `Alert.QueryError` |
+| `Banner`    | `BannerProp`        | page-level `Alert` (`variant="banner"`); same tones/slots/dismiss            |
+| `Dialog`    | `DialogConfirmProp` | `mode: form \| confirm`, `Dialog.Confirm` preset                             |
+| `Sheet`     | Radix primitives    | slide-in panel (mobile filters, detail flyouts)                              |
+| `Skeleton*` | `SkeletonRowsProp`  | loading placeholders                                                         |
 
 ---
 
@@ -142,12 +144,14 @@ Auto retry: `useQuery({ retry, retryDelay })`. Manual retry: default `refetch()`
 
 ## Navigation
 
-| Component      | Prop type          | Key props                     |
-| -------------- | ------------------ | ----------------------------- |
-| `Toolbar`      | `ToolbarProp`      | `onClear: OnClearFiltersProp` |
-| `ToolbarGroup` | `ToolbarGroupProp` | `label: LabelProp`            |
-| `Tabs`         | Radix primitives   | —                             |
-| `DropdownMenu` | Radix primitives   | —                             |
+| Component        | Prop type          | Key props                                                                                                                      |
+| ---------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `FilterBar`      | `ToolbarProp`      | typed model: `search`, `filters`, `chips`, `onChipRemove`, `resultCount`, `actions`, `loading`, `disabled`, `error`, `onClear` |
+| `FilterBarGroup` | `ToolbarGroupProp` | `label: LabelProp`, `controlId: IdProp`                                                                                        |
+| `Toolbar`        | `ToolbarProp`      | back-compat alias of `FilterBar`                                                                                               |
+| `ToolbarGroup`   | `ToolbarGroupProp` | back-compat alias of `FilterBarGroup`                                                                                          |
+| `Tabs`           | Radix primitives   | —                                                                                                                              |
+| `DropdownMenu`   | Radix primitives   | —                                                                                                                              |
 
 ---
 

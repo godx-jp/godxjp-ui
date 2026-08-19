@@ -3,17 +3,38 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { controlTriggerClass } from "../../lib/control-styles";
+import { mergeAriaIds, omitFieldA11y, pickFieldA11y } from "../../lib/field-a11y";
+import type { FieldA11yProps } from "../../lib/field-a11y";
 import { SearchSelect } from "./search-select";
 import type {
   SearchSelectOptionProp,
   SelectDataProp,
 } from "../../props/components/data-entry.prop";
 
-export type SelectProp = SelectDataProp | React.ComponentProps<typeof SelectPrimitive.Root>;
+/** Compound-API props: the Radix root's own props PLUS the FormField field-a11y contract, which
+ *  this component re-routes to the trigger (see {@link SelectFieldA11yContext}). */
+export type SelectCompoundProp = React.ComponentProps<typeof SelectPrimitive.Root> &
+  FieldA11yProps & { id?: string };
+
+export type SelectProp = SelectDataProp | SelectCompoundProp;
 
 function isDataSelect(props: SelectProp): props is SelectDataProp {
   return "options" in props || "loadOptions" in props;
 }
+
+/**
+ * Carries the FormField field-a11y contract from `<Select>` down to `<SelectTrigger>`.
+ *
+ * FormField injects `id` / `aria-labelledby` / `aria-describedby` / … onto its single child with
+ * `cloneElement`. In the compound API that child is `SelectPrimitive.Root` — a context-only
+ * component that renders NO DOM — so those props were silently dropped and the trigger button was
+ * left with no accessible name at all. `role="combobox"` does not take its name from content, so
+ * the visible value ("東京") is the VALUE, not the name: axe reports `button-name`, and a screen
+ * reader announces an unlabelled combobox (WCAG 4.1.2). Routing the contract through context lands
+ * it on the trigger — the real focus target — for both FormField and a hand-written
+ * `<Select aria-label="…">`. Props set directly on the trigger always win.
+ */
+const SelectFieldA11yContext = React.createContext<(FieldA11yProps & { id?: string }) | null>(null);
 
 /**
  * Select — one component for every single-select. Use the compound API for full control
@@ -26,7 +47,19 @@ export function Select(props: SelectProp) {
   if (isDataSelect(props)) {
     return <DataSelect {...props} />;
   }
-  return <SelectPrimitive.Root data-slot="select" {...props} />;
+  return <CompoundSelect {...props} />;
+}
+
+function CompoundSelect({ id, ...props }: SelectCompoundProp) {
+  // `id` and the aria-* contract are NOT Radix root props — they belong to the trigger. Everything
+  // else stays on the root untouched.
+  const fieldA11y = pickFieldA11y(props);
+  const rootProps = omitFieldA11y(props);
+  return (
+    <SelectFieldA11yContext.Provider value={{ ...fieldA11y, id }}>
+      <SelectPrimitive.Root data-slot="select" {...rootProps} />
+    </SelectFieldA11yContext.Provider>
+  );
 }
 
 export function SelectGroup(props: React.ComponentProps<typeof SelectPrimitive.Group>) {
@@ -49,30 +82,54 @@ export const SelectTrigger = React.forwardRef<
      */
     showIndicator?: boolean;
   }
->(({ className, children, size = "md", showIndicator = true, ...props }, ref) => (
-  <SelectPrimitive.Trigger
-    ref={ref}
-    data-slot="select-trigger"
-    data-size={size}
-    className={cn(
-      controlTriggerClass,
-      "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground w-full gap-2 whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",
-      className,
-    )}
-    {...props}
-  >
-    {children}
-    {showIndicator ? (
-      <SelectPrimitive.Icon asChild>
-        <ChevronDown
-          data-slot="select-chevron"
-          className="size-4 shrink-0 opacity-50"
-          aria-hidden="true"
-        />
-      </SelectPrimitive.Icon>
-    ) : null}
-  </SelectPrimitive.Trigger>
-));
+>(({ className, children, size = "md", showIndicator = true, ...props }, ref) => {
+  // The FormField contract reaches the compound trigger through context, because Radix's root
+  // drops the cloneElement props. Anything set directly on the trigger wins; the two id-list
+  // attributes merge rather than replace so a local description survives.
+  const field = React.useContext(SelectFieldA11yContext);
+  // The NAME is inherited as a unit, not attribute by attribute: a trigger that states its own
+  // name keeps it whole. Merging per-attribute would leave the inherited `aria-labelledby` in
+  // place next to the local `aria-label`, and labelledby outranks label — the trigger's own name
+  // would lose to the one it deliberately overrode.
+  const ownsName = props["aria-label"] !== undefined || props["aria-labelledby"] !== undefined;
+  const fieldA11y = field
+    ? {
+        id: props.id ?? field.id,
+        ...(ownsName
+          ? {}
+          : { "aria-label": field["aria-label"], "aria-labelledby": field["aria-labelledby"] }),
+        "aria-describedby": mergeAriaIds(props["aria-describedby"], field["aria-describedby"]),
+        "aria-errormessage": mergeAriaIds(props["aria-errormessage"], field["aria-errormessage"]),
+        "aria-required": props["aria-required"] ?? field["aria-required"],
+        "aria-invalid": props["aria-invalid"] ?? field["aria-invalid"],
+      }
+    : undefined;
+  return (
+    <SelectPrimitive.Trigger
+      ref={ref}
+      data-slot="select-trigger"
+      data-size={size}
+      className={cn(
+        controlTriggerClass,
+        "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground w-full gap-2 whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",
+        className,
+      )}
+      {...props}
+      {...fieldA11y}
+    >
+      {children}
+      {showIndicator ? (
+        <SelectPrimitive.Icon asChild>
+          <ChevronDown
+            data-slot="select-chevron"
+            className="size-4 shrink-0 opacity-50"
+            aria-hidden="true"
+          />
+        </SelectPrimitive.Icon>
+      ) : null}
+    </SelectPrimitive.Trigger>
+  );
+});
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 export const SelectScrollUpButton = React.forwardRef<

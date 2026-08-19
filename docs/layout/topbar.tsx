@@ -97,13 +97,21 @@ export default function Demo() {
       >
         {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
       </Button>
-      <Avatar className="rounded-md">
+      {/* Decorative mark — hidden below sm so the budget goes to the two real controls. */}
+      <Avatar className="hidden rounded-md sm:flex">
         <AvatarFallback className="bg-primary text-primary-foreground font-bold">C</AvatarFallback>
       </Avatar>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm">
-            {activeEntity.name}
+          {/* Button ships `shrink-0`, and only the LAST child of the start slot gets the built-in
+              truncation contract — so a switcher sitting mid-slot has to be told it may shrink, or
+              it keeps its full width and the slot clips it while it stays focusable. `flex-1
+              min-w-11` below sm lets it take just the leftover room without ever dropping under
+              the 44px touch floor — plain `min-w-0` let flex hand it 20px, which is under the 24px
+              SC 2.5.8 minimum, trading one failure for another. `truncate` puts the ellipsis on
+              the label rather than letting it spill. */}
+          <Button variant="ghost" size="sm" className="min-w-11 flex-1 sm:min-w-0 sm:flex-none">
+            <span className="truncate">{activeEntity.name}</span>
             <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
@@ -145,7 +153,11 @@ export default function Demo() {
   // end · notifications + user menu, both consumer-composed.
   const end = (
     <>
-      <Badge tone="warning" className="text-xs">
+      {/* The end slot is `flex: 0 0 auto` — whatever sits here is taken out of the start slot's
+          budget before it gets a say. At 320 this environment chip alone claimed 93 of the bar's
+          198px, squeezing start to 25px and clipping the entity switcher inside it. An ambient
+          status label is the first thing a compact bar drops, so it appears from sm up. */}
+      <Badge tone="warning" className="hidden text-xs sm:inline-flex">
         ステージング
       </Badge>
       <Button

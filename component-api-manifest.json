@@ -1663,6 +1663,19 @@
       "group": "data-display",
       "props": [
         {
+          "name": "appearance",
+          "origin": "owned",
+          "required": false,
+          "type": "AvatarAppearanceProp | undefined",
+          "values": [
+            "default",
+            "tinted"
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
           "name": "shape",
           "origin": "owned",
           "required": false,
@@ -2631,6 +2644,19 @@
             "info",
             "primary",
             "attention"
+          ],
+          "declaredIn": [
+            "src/components/data-display/card.tsx"
+          ]
+        },
+        {
+          "name": "accentPlacement",
+          "origin": "owned",
+          "required": false,
+          "type": "CardAccentPlacement | undefined",
+          "values": [
+            "edge",
+            "perimeter"
           ],
           "declaredIn": [
             "src/components/data-display/card.tsx"
@@ -3805,6 +3831,16 @@
           ]
         },
         {
+          "name": "defaultSearch",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
           "name": "error",
           "origin": "owned",
           "required": false,
@@ -3858,6 +3894,16 @@
           ]
         },
         {
+          "name": "onSearchChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((query: string) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
           "name": "onSelect",
           "origin": "owned",
           "required": true,
@@ -3881,7 +3927,30 @@
           ]
         },
         {
+          "name": "search",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
           "name": "shortcut",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "shouldFilter",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
@@ -7980,6 +8049,33 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "InputOTPAlignProp | undefined",
+          "values": [
+            "center",
+            "start",
+            "end"
+          ],
+          "declaredIn": [
+            "src/components/ui/input-otp.tsx"
+          ]
+        },
+        {
+          "name": "disabled",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
           "name": "type",
           "origin": "inherited-behavioral",
           "required": false,
@@ -10018,6 +10114,19 @@
           ]
         },
         {
+          "name": "headerLoading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "linkComponent",
           "origin": "owned",
           "required": false,
@@ -12030,6 +12139,84 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "aria-describedby",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-errormessage",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-invalid",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined",
+          "values": [
+            false,
+            true,
+            "true",
+            "false",
+            "grammar",
+            "spelling"
+          ],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-labelledby",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-required",
+          "origin": "owned",
+          "required": false,
+          "type": "(boolean | \"true\" | \"false\") | undefined",
+          "values": [
+            false,
+            true,
+            "true",
+            "false"
+          ],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
@@ -12051,6 +12238,17 @@
           ],
           "declaredIn": [
             "node_modules/.pnpm/@radix-ui+react-select@2.3.3_@types+react-dom@19.2.3_@types+react@19.2.17__@types+react_f9b02e7a1a0d2bed7b40ca8d3c3f2b18/node_modules/@radix-ui/react-select/dist/index.d.mts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/select.tsx",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -13713,6 +13911,19 @@
           ]
         },
         {
+          "name": "accentPlacement",
+          "origin": "owned",
+          "required": false,
+          "type": "CardAccentPlacement | undefined",
+          "values": [
+            "edge",
+            "perimeter"
+          ],
+          "declaredIn": [
+            "src/components/data-display/card.tsx"
+          ]
+        },
+        {
           "name": "align",
           "origin": "owned",
           "required": false,
@@ -13950,6 +14161,19 @@
           "values": [
             "vertical",
             "horizontal"
+          ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "separator",
+          "origin": "owned",
+          "required": false,
+          "type": "StepsSeparatorProp | undefined",
+          "values": [
+            "chevron",
+            "arrow"
           ],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"

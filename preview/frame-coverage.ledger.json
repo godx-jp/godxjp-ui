@@ -473,7 +473,7 @@
       "geometry": {
         "runner": "scripts/frame-geometry.mjs (pnpm check:frame-geometry)",
         "baseline": "scripts/frame-geometry.baseline.json",
-        "recordedAt": "2026-07-13",
+        "recordedAt": "2026-08-19",
         "widths": [
           320,
           375,
@@ -484,29 +484,17 @@
           1440,
           1920
         ],
-        "failingFrames": 12,
-        "failingCells": 36,
-        "byWidth": {
-          "320": 12,
-          "375": 11,
-          "390": 10,
-          "768": 3
-        },
+        "failingFrames": 0,
+        "failingCells": 0,
+        "byWidth": {},
         "note": "Recorded frame×width overflow / clipped-control failures from the shrink-only geometry baseline. NOT re-executed by this generator — the sweep needs Chromium plus a built preview. It proves the absence of overflow on the frames it swept; it is not a responsive-layout case and never promotes `responsive`."
       },
       "axe": {
         "runner": "scripts/check-frame-axe.mjs (pnpm check:frame-axe)",
         "baseline": "scripts/frame-axe.baseline.json",
-        "recordedAt": "2026-07-13",
-        "failingFrames": 6,
-        "failingRules": [
-          "aria-hidden-focus",
-          "button-name",
-          "landmark-one-main",
-          "landmark-unique",
-          "page-has-heading-one",
-          "scrollable-region-focusable"
-        ],
+        "recordedAt": "2026-08-18",
+        "failingFrames": 0,
+        "failingRules": [],
         "note": "Recorded per-frame axe violations from the shrink-only axe baseline. NOT re-executed by this generator. An axe pass never promotes `accessibleName` or `keyboard`."
       }
     }
@@ -537,12 +525,12 @@
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
     "exports": 280,
     "dimensionCells": 3920,
-    "covered": 64,
+    "covered": 65,
     "untested": 2148,
-    "notApplicable": 1708,
+    "notApplicable": 1707,
     "knownMissingFrames": [],
-    "geometryFailingCells": 36,
-    "axeFailingFrames": 6
+    "geometryFailingCells": 0,
+    "axeFailingFrames": 0
   },
   "cases": [],
   "components": {
@@ -1591,13 +1579,13 @@
         "docs/feedback/banner.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "untested",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
@@ -4397,8 +4385,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -4407,7 +4395,7 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
