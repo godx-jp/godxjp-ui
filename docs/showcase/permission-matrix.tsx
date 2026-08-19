@@ -6,15 +6,17 @@
  * DXS role tabs (SCR-203) and the org role editor (SCR-111b) each hand-rolled
  * (godxjp-ui#194). Read-only by default.
  *
- * GATE 0 — this is a COMPOSITION PATTERN, not a framework component
- * (docs/COMPOSITION-VS-COMPONENT.md): C2 fails (it owns no reusable interaction
- * beyond what Table already gives), C3 fails (it is expressible today from the
- * Table family + Badge + tokens), C7 fails (RBAC-admin niche, not every app). So
- * it is BUILT HERE from real @godxjp/ui primitives, NOT added to src/components/.
+ * SINCE gh#257 the grid itself IS a package export — `PermissionMatrix` from
+ * `@godxjp/ui/data-display` (see docs/data-display/permission-matrix.tsx). The
+ * original Gate-0 "composition pattern" verdict was OUTCOME-corrected the same
+ * way ErrorSurface was (gh#251): a consumer cannot import a docs page, so the
+ * canonical grid needed an importable home. Prefer the export in app code.
  *
- * The only genuinely reusable part — the grant/diff DATA logic — lives in the
- * library as the pure, tested `@godxjp/ui/lib/permission-grid` util (no strings,
- * no React), so every consumer shares one source of truth. No new component.
+ * This showcase remains as the COMPOSED form of the same screen — the full
+ * hand-built Table-family version with its own compare controls — for consumers
+ * who need a variant the export does not model. The shared grant/diff DATA
+ * logic stays in the pure, tested `@godxjp/ui/lib/permission-grid` util (no
+ * strings, no React), used identically by the export and by this composition.
  *
  * GAP: DataTable/ColumnDef cannot pin the FIRST column (only the header row and a
  * single trailing `pin:'end'` column). So the sticky-権限 column is composed from

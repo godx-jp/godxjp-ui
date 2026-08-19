@@ -37,6 +37,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `tone="warning"`, the Button's own `disabled`) — never bespoke markup. Both are catalogued in
   the MCP AuthShell entry and demonstrated with every state in
   `docs/layout/auth-shell-registration.tsx`.
+- **`PermissionMatrix`, `BranchScopePicker`, `ServiceRolePanel` — the three canonical DXS RBAC
+  composites are now REAL public exports** (gh#257, unblocking DXS platform#311). The decision
+  followed the gh#251 ErrorSurface precedent: the permission-matrix showcase already proved the
+  composition, but a consumer cannot import a docs page, so each canonical contract now has an
+  importable home while staying a THIN formalized composition over existing primitives — no new
+  interaction machinery, no new tokens, and NO platform domain data (roles, permissions, branches
+  and grants all arrive via props).
+  - `PermissionMatrix` (`@godxjp/ui/data-display`) — sticky-permission-column role × permission
+    grid over the Table family + the tested `lib/permission-grid` helpers. Read-only ✓/— cells by
+    default (shape + `sr-only`, never colour-only); `onGrantChange` switches to real `Checkbox`
+    cells with `locked` roles and `readOnly` staying read-only; `compare`/`diffOnly` reuse the
+    helper logic; lifecycle states use the DataTable #216 vocabulary and precedence
+    (`loading` → `denied` → `error` → `empty`, with `onRetry` on the built-in error only).
+  - `BranchScopePicker` (`@godxjp/ui/data-entry`) — the all-branches-vs-subset scope control as
+    ONE controlled `{ mode, branchIds }` value (mode flips preserve `branchIds`), composed from
+    `RadioGroup` + `CheckboxGroup` + `SearchInput` so keyboard and field-a11y come from the
+    primitives. `error` stays FIELD VALIDATION (wired `aria-invalid`/`aria-errormessage`);
+    collection reads use `listError`/`denied`/`loading`/`empty`; `readOnly` renders a static
+    badge summary.
+  - `ServiceRolePanel` (`@godxjp/ui/layout`) — role-collection ⇄ detail over `MasterDetail`
+    (`rail="master"`; geometry stays token-owned: two tracks at 1440/1024, stacked at 390).
+    Controlled selection triad with `aria-current` role rows, CLDR-pluralized member counts,
+    `locked` system roles, and a built-in destructive `AlertDialog` — `onDeleteRole` fires only
+    AFTER the user confirms; `readOnly` hides every mutating affordance; #216 lifecycle states.
+  - The `docs/showcase/permission-matrix` header no longer teaches "not a framework component"
+    (the exact wrong-guidance propagation gh#251 documented); it now points at the export and
+    remains as the composed variant. New docs pages: `docs/data-display/permission-matrix.tsx`,
+    `docs/data-entry/branch-scope-picker.tsx`, `docs/layout/service-role-panel.tsx`. Contract
+    pinned by `src/components/__tests__/rbac-composites.test.tsx` (exports, state precedence,
+    read-only/locked/editable semantics, destructive confirmation, basic keyboard, vi/ja/en keys).
 
 ### Fixed
 

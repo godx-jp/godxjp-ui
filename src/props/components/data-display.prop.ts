@@ -252,3 +252,73 @@ export type ListRowProp = {
   unread?: boolean;
   className?: ClassNameProp;
 };
+
+// ─── PermissionMatrix (gh#257 / DXS platform#311) ────────────────────────────────────────────────
+
+/** @see PermissionMatrix — one role COLUMN. Domain data is consumer-supplied; nothing is encoded. */
+export type PermissionMatrixRoleProp = {
+  /** Stable role id — the `roleId` half of a grant key. */
+  id: string;
+  /** Human role name (also used in accessible cell labels, so a plain string). */
+  name: string;
+  /** Short hint under the role name (e.g. member count or scope). */
+  description?: string;
+  /** A locked role renders read-only cells even when the matrix is editable. */
+  locked?: boolean;
+};
+
+/** @see PermissionMatrix — one permission ROW. */
+export type PermissionMatrixPermissionProp = {
+  /** Stable permission id — the `permissionId` half of a grant key. */
+  id: string;
+  /** Human permission name (also used in accessible cell labels, so a plain string). */
+  name: string;
+  /** Secondary line under the permission name. */
+  description?: string;
+  /** Optional category caption rendered with the description (e.g. 請求 / レポート). */
+  group?: string;
+};
+
+/**
+ * @see PermissionMatrix — the grant relation. Either the `grantKey(roleId, permissionId)` `Set`
+ * from `@godxjp/ui/lib/permission-grid` (O(1), the canonical form) or a plain pair array, which the
+ * matrix normalizes through the same `grantKey` encoding.
+ */
+export type PermissionMatrixGrantsProp =
+  ReadonlySet<string> | readonly { roleId: string; permissionId: string }[];
+
+/** @see PermissionMatrix */
+export type PermissionMatrixProp = {
+  /** Role columns, in render order. */
+  roles: readonly PermissionMatrixRoleProp[];
+  /** Permission rows, in render order. */
+  permissions: readonly PermissionMatrixPermissionProp[];
+  /** The grant relation (see {@link PermissionMatrixGrantsProp}). */
+  grants: PermissionMatrixGrantsProp;
+  /**
+   * Grant toggle handler. Its PRESENCE makes the matrix editable (checkbox cells); omitted, the
+   * matrix is the canonical read-only ✓/— grid. Locked roles and `readOnly` stay read-only
+   * regardless.
+   */
+  onGrantChange?: (roleId: string, permissionId: string, granted: boolean) => void;
+  /** Force the read-only grid even when `onGrantChange` is present (e.g. viewer permission). */
+  readOnly?: boolean;
+  /** Two role ids to compare side by side; highlights their columns and the differing rows. */
+  compare?: readonly [string, string] | null;
+  /** With `compare`, keep only the rows on which the two roles differ (差分のみ). */
+  diffOnly?: boolean;
+  /** Accessible name for the grid. Defaults to the localized caption. */
+  label?: LabelProp;
+  /** Show the loading skeleton instead of the grid. Precedence: loading → denied → error → empty. */
+  loading?: boolean;
+  /** Custom empty content when `permissions` is empty; defaults to a localized EmptyState. */
+  empty?: React.ReactNode;
+  /** Failure state (mirrors DataTable #216): `true` = built-in localized message, node = replace. */
+  error?: React.ReactNode;
+  /** Permission-denied state — refused, not failed. Takes precedence over `error`. */
+  denied?: React.ReactNode;
+  /** Retry handler for the built-in `error` state; omit to hide the retry action. */
+  onRetry?: HandlerProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+};

@@ -75,3 +75,9 @@ export type {
   LegalDocumentShellProp,
   LegalDocumentShellProps,
 } from "./legal-document-shell";
+export { ServiceRolePanel } from "./service-role-panel";
+export type {
+  ServiceRoleItemProp,
+  ServiceRolePanelProp,
+  ServiceRolePanelProps,
+} from "./service-role-panel";

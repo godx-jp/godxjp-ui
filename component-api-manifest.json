@@ -2005,6 +2005,193 @@
         }
       ]
     },
+    "BranchScopePicker": {
+      "group": "data-entry",
+      "props": [
+        {
+          "name": "allLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "branches",
+          "origin": "owned",
+          "required": true,
+          "type": "readonly BranchScopeOptionProp[]",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "owned",
+          "required": false,
+          "type": "BranchScopeValueProp | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "denied",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "empty",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "error",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "listError",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "name",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: BranchScopeValueProp) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "readOnly",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "searchable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "selectedLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "BranchScopeValueProp | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        }
+      ]
+    },
     "Breadcrumb": {
       "group": "layout",
       "props": [
@@ -10339,6 +10526,170 @@
         }
       ]
     },
+    "PermissionMatrix": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "compare",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly [string, string] | null | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "denied",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "diffOnly",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "empty",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "error",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "grants",
+          "origin": "owned",
+          "required": true,
+          "type": "PermissionMatrixGrantsProp",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "onGrantChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((roleId: string, permissionId: string, granted: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "onRetry",
+          "origin": "owned",
+          "required": false,
+          "type": "HandlerProp | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "permissions",
+          "origin": "owned",
+          "required": true,
+          "type": "readonly PermissionMatrixPermissionProp[]",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "readOnly",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "roles",
+          "origin": "owned",
+          "required": true,
+          "type": "readonly PermissionMatrixRoleProp[]",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        }
+      ]
+    },
     "PieChart": {
       "group": "charts",
       "props": [
@@ -12275,6 +12626,220 @@
           "values": [],
           "declaredIn": [
             "src/components/data-display/service-launcher-card.tsx"
+          ]
+        }
+      ]
+    },
+    "ServiceRolePanel": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode | ((role: ServiceRoleItemProp | undefined) => ReactNode)",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "collapseBelow",
+          "origin": "owned",
+          "required": false,
+          "type": "false | BreakpointProp | undefined",
+          "values": [
+            false,
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "denied",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "detailLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "empty",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "error",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "masterLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "masterViewport",
+          "origin": "owned",
+          "required": false,
+          "type": "MasterDetailMasterViewportProp | undefined",
+          "values": [
+            "compact",
+            "auto",
+            "standard"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "onDeleteRole",
+          "origin": "owned",
+          "required": false,
+          "type": "((roleId: string) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "onRetry",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((roleId: string) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "railWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "MasterDetailRailWidthProp | undefined",
+          "values": [
+            "compact",
+            "standard"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "readOnly",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "roles",
+          "origin": "owned",
+          "required": true,
+          "type": "readonly ServiceRoleItemProp[]",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
           ]
         }
       ]

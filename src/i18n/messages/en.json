@@ -110,6 +110,24 @@
       "previousYear": "Previous year",
       "nextYear": "Next year",
       "placeholder": "yyyy/mm"
+    },
+    "branchScope": {
+      "label": "Branch scope",
+      "all": "All branches",
+      "allDescription": "Applies to every current and future branch",
+      "selected": "Selected branches only",
+      "selectedDescription": "Applies only to the branches checked below",
+      "listLabel": "Branches",
+      "searchPlaceholder": "Search branches",
+      "selectedCount": {
+        "one": "{count} branch selected",
+        "other": "{count} branches selected"
+      },
+      "empty": "No branches to choose from",
+      "error": "Could not load branches",
+      "denied": "You do not have permission to view branches",
+      "loading": "Loading branches…",
+      "noMatches": "No branches match your search"
     }
   },
   "feedback": {
@@ -164,6 +182,28 @@
       "searchPlaceholder": "Search...",
       "notifications": "Notifications",
       "tweaks": "Open settings"
+    },
+    "serviceRolePanel": {
+      "rolesLabel": "Roles",
+      "detailLabel": "Role detail",
+      "locked": "Locked",
+      "memberCount": {
+        "one": "{count} member",
+        "other": "{count} members"
+      },
+      "selectRole": "Select {role}",
+      "deleteRole": "Delete {role}",
+      "deleteTitle": "Delete this role?",
+      "deleteDescription": "Deleting {role} removes its permissions from every assigned member. This cannot be undone.",
+      "deleteConfirm": "Delete role",
+      "empty": "No roles yet",
+      "emptyDescription": "Create a role to start assigning permissions.",
+      "error": "Could not load roles",
+      "errorDescription": "The data could not be fetched. Try again shortly.",
+      "denied": "You do not have permission to view roles",
+      "deniedDescription": "Ask an administrator to grant you access.",
+      "loading": "Loading roles…",
+      "noDetail": "Select a role to see its detail"
     }
   },
   "dataDisplay": {
@@ -179,6 +219,21 @@
     "listRow": {
       "unread": "Unread",
       "read": "Read"
+    },
+    "permissionMatrix": {
+      "caption": "Role and permission matrix",
+      "permissionColumn": "Permission",
+      "granted": "Granted",
+      "notGranted": "Not granted",
+      "difference": "Difference",
+      "toggle": "Grant {permission} to {role}",
+      "locked": "Locked",
+      "empty": "No permissions to show",
+      "error": "Could not load the permission matrix",
+      "errorDescription": "The data could not be fetched. Try again shortly.",
+      "denied": "You do not have permission to view this matrix",
+      "deniedDescription": "Ask an administrator to grant you access.",
+      "loading": "Loading permissions…"
     }
   },
   "ui": {

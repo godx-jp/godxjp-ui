@@ -71,3 +71,11 @@ export {
   useCarousel,
 } from "./carousel";
 export type { CarouselApi } from "./carousel";
+export { PermissionMatrix } from "./permission-matrix";
+export type {
+  PermissionMatrixGrantsProp,
+  PermissionMatrixPermissionProp,
+  PermissionMatrixProp,
+  PermissionMatrixProps,
+  PermissionMatrixRoleProp,
+} from "./permission-matrix";

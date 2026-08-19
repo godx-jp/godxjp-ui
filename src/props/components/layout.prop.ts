@@ -834,3 +834,62 @@ export type LegalDocumentShellProp = {
   id?: IdProp;
   className?: ClassNameProp;
 };
+
+// ─── ServiceRolePanel (gh#257 / DXS platform#311) ────────────────────────────────────────────────
+
+/** @see ServiceRolePanel — one role in the master rail. Domain data is consumer-supplied. */
+export type ServiceRoleItemProp = {
+  /** Stable role id (the selection value). */
+  id: string;
+  /** Human role name (also used in accessible labels, so a plain string). */
+  name: string;
+  /** Secondary line under the role name. */
+  description?: string;
+  /** Member count caption, pluralized via CLDR. */
+  memberCount?: number;
+  /** A locked (system) role shows a lock badge and never offers deletion. */
+  locked?: boolean;
+};
+
+/** @see ServiceRolePanel */
+export type ServiceRolePanelProp = {
+  /** The roles in the master collection, in render order. */
+  roles: readonly ServiceRoleItemProp[];
+  /** Controlled selected role id. */
+  value?: string;
+  /** Uncontrolled initial selected role id. Defaults to the first role. */
+  defaultValue?: string;
+  /** Selection change handler. */
+  onValueChange?: (roleId: string) => void;
+  /**
+   * Detail surface for the current selection. A render function receives the selected role
+   * (or `undefined` when nothing is selected); a plain node is rendered as-is.
+   */
+  children?: ReactNode | ((role: ServiceRoleItemProp | undefined) => ReactNode);
+  /**
+   * Confirmed-deletion handler. Its PRESENCE adds a delete affordance per non-locked role behind
+   * the built-in destructive `AlertDialog`; the handler fires only AFTER the user confirms.
+   */
+  onDeleteRole?: (roleId: string) => void;
+  /** Hide every mutating affordance (locked view). */
+  readOnly?: boolean;
+  /** Show the loading skeleton instead of the panel. Precedence: loading → denied → error → empty. */
+  loading?: boolean;
+  /** Custom empty content when `roles` is empty; defaults to a localized EmptyState. */
+  empty?: ReactNode;
+  /** Failure state: `true` = built-in localized message, any other node replaces it. */
+  error?: ReactNode;
+  /** Permission-denied state — refused, not failed. Takes precedence over `error`. */
+  denied?: ReactNode;
+  /** Retry handler for the built-in `error` state; omit to hide the retry action. */
+  onRetry?: () => void;
+  /** Accessible names for the two regions (localized defaults otherwise). */
+  masterLabel?: string;
+  detailLabel?: string;
+  /** Forwarded MasterDetail geometry. */
+  railWidth?: MasterDetailRailWidthProp;
+  masterViewport?: MasterDetailMasterViewportProp;
+  collapseBelow?: BreakpointProp | false;
+  id?: IdProp;
+  className?: ClassNameProp;
+};

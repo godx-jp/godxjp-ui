@@ -1799,6 +1799,345 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout/split-pane.tsx",
     vocabulary: ["ClassNameProp", "ChildrenProp"],
   },
+  PermissionMatrixRoleProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "IdProp",
+      {
+        field: "name",
+        local: true,
+        reason: "Consumer-supplied role display name; a plain string so it can label cells for AT.",
+      },
+      {
+        field: "description",
+        local: true,
+        reason: "Secondary caption under the role column header.",
+      },
+      {
+        field: "locked",
+        local: true,
+        reason: "Per-role read-only flag — a locked role keeps ✓/— cells in an editable matrix.",
+      },
+    ],
+  },
+  PermissionMatrixPermissionProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "IdProp",
+      {
+        field: "name",
+        local: true,
+        reason: "Consumer-supplied permission display name; plain string for accessible labels.",
+      },
+      {
+        field: "description",
+        local: true,
+        reason: "Secondary line under the permission name.",
+      },
+      {
+        field: "group",
+        local: true,
+        reason: "Optional category caption for the permission row.",
+      },
+    ],
+  },
+  PermissionMatrixGrantsProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "grants",
+        local: true,
+        reason:
+          "The role×permission grant relation — the grantKey Set from lib/permission-grid or a pair array normalized through the same encoding.",
+      },
+    ],
+  },
+  PermissionMatrixProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "HandlerProp",
+      "ClassNameProp",
+      "IdProp",
+      {
+        field: "roles",
+        local: true,
+        reason: "Consumer-supplied role columns (see PermissionMatrixRoleProp).",
+      },
+      {
+        field: "permissions",
+        local: true,
+        reason: "Consumer-supplied permission rows (see PermissionMatrixPermissionProp).",
+      },
+      {
+        field: "grants",
+        local: true,
+        reason: "The grant relation (see PermissionMatrixGrantsProp).",
+      },
+      {
+        field: "onGrantChange",
+        local: true,
+        reason:
+          "Cell toggle handler carrying the (roleId, permissionId, granted) triple; its presence switches the grid from read-only ✓/— to editable checkboxes.",
+      },
+      {
+        field: "readOnly",
+        local: true,
+        reason: "Forces the read-only grid even when onGrantChange is present (viewer permission).",
+      },
+      {
+        field: "compare",
+        local: true,
+        reason: "Two role ids compared side by side — the lib/permission-grid ComparePair.",
+      },
+      {
+        field: "diffOnly",
+        local: true,
+        reason: "差分のみ filter: with compare set, keep only the rows where the two roles differ.",
+      },
+      {
+        field: "loading",
+        local: true,
+        reason:
+          "Read-lifecycle skeleton state mirroring DataTable #216 (precedence loading → denied → error → empty).",
+      },
+      {
+        field: "empty",
+        local: true,
+        reason: "Custom empty content override, mirroring DataTable's empty slot.",
+      },
+      {
+        field: "error",
+        local: true,
+        reason: "Read-failure state mirroring DataTable #216 (true = built-in localized message).",
+      },
+      {
+        field: "denied",
+        local: true,
+        reason: "Permission-denied read state mirroring DataTable #216 — refused, not failed.",
+      },
+      {
+        field: "onRetry",
+        local: true,
+        reason: "Retry affordance for the built-in error state, mirroring DataTable #216.",
+      },
+    ],
+  },
+  BranchScopeModeProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      {
+        field: "mode",
+        local: true,
+        reason: "Closed scope vocabulary: all branches vs an explicit subset.",
+      },
+    ],
+  },
+  BranchScopeValueProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      {
+        field: "mode",
+        local: true,
+        reason: "The selected scope mode (see BranchScopeModeProp).",
+      },
+      {
+        field: "branchIds",
+        local: true,
+        reason: "Checked branch ids, meaningful only when mode = selected.",
+      },
+    ],
+  },
+  BranchScopeOptionProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "IdProp",
+      "DisabledProp",
+      {
+        field: "name",
+        local: true,
+        reason: "Consumer-supplied branch display name; plain string so it is searchable.",
+      },
+      {
+        field: "description",
+        local: true,
+        reason: "Secondary line under the branch name.",
+      },
+    ],
+  },
+  BranchScopePickerProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "ErrorProp",
+      "NameProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "branches",
+        local: true,
+        reason: "Consumer-supplied selectable branches (see BranchScopeOptionProp).",
+      },
+      {
+        field: "readOnly",
+        local: true,
+        reason: "Locked view: render the current scope without editable affordances.",
+      },
+      {
+        field: "searchable",
+        local: true,
+        reason: "Toggle for the built-in branch SearchInput above the checkbox list.",
+      },
+      {
+        field: "loading",
+        local: true,
+        reason: "Read-lifecycle skeleton state (precedence loading → denied → listError → empty).",
+      },
+      {
+        field: "empty",
+        local: true,
+        reason: "Custom empty content when there are no branches.",
+      },
+      {
+        field: "listError",
+        local: true,
+        reason:
+          "Branch-collection READ failure — deliberately distinct from ErrorProp `error`, which stays field validation.",
+      },
+      {
+        field: "denied",
+        local: true,
+        reason: "Permission-denied read state — the branch collection was refused, not failed.",
+      },
+      {
+        field: "allLabel",
+        local: true,
+        reason: "Override for the localized all-branches radio label.",
+      },
+      {
+        field: "selectedLabel",
+        local: true,
+        reason: "Override for the localized selected-branches radio label.",
+      },
+    ],
+  },
+  ServiceRoleItemProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "IdProp",
+      {
+        field: "name",
+        local: true,
+        reason: "Consumer-supplied role display name; plain string for accessible labels.",
+      },
+      {
+        field: "description",
+        local: true,
+        reason: "Secondary line under the role name in the master rail.",
+      },
+      {
+        field: "memberCount",
+        local: true,
+        reason: "Member count caption, pluralized via CLDR categories.",
+      },
+      {
+        field: "locked",
+        local: true,
+        reason: "System-role flag: lock badge, no delete affordance ever.",
+      },
+    ],
+  },
+  ServiceRolePanelProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "ChildrenProp",
+      "BreakpointProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "roles",
+        local: true,
+        reason: "Consumer-supplied role collection (see ServiceRoleItemProp).",
+      },
+      {
+        field: "onDeleteRole",
+        local: true,
+        reason:
+          "Confirmed-deletion handler; its presence arms the built-in destructive AlertDialog per non-locked role.",
+      },
+      {
+        field: "readOnly",
+        local: true,
+        reason: "Locked view: hides every mutating affordance.",
+      },
+      {
+        field: "loading",
+        local: true,
+        reason: "Read-lifecycle skeleton state (precedence loading → denied → error → empty).",
+      },
+      {
+        field: "empty",
+        local: true,
+        reason: "Custom empty content when there are no roles.",
+      },
+      {
+        field: "error",
+        local: true,
+        reason: "Read-failure state (true = built-in localized message, node replaces it).",
+      },
+      {
+        field: "denied",
+        local: true,
+        reason: "Permission-denied read state — refused, not failed.",
+      },
+      {
+        field: "onRetry",
+        local: true,
+        reason: "Retry affordance for the built-in error state.",
+      },
+      {
+        field: "masterLabel",
+        local: true,
+        reason: "Accessible name override for the roles region (localized default otherwise).",
+      },
+      {
+        field: "detailLabel",
+        local: true,
+        reason: "Accessible name override for the detail region (localized default otherwise).",
+      },
+      {
+        field: "railWidth",
+        local: true,
+        reason: "Forwarded MasterDetail rail geometry preset.",
+      },
+      {
+        field: "masterViewport",
+        local: true,
+        reason: "Forwarded MasterDetail bounded-collection preset.",
+      },
+      {
+        field: "collapseBelow",
+        local: true,
+        reason: "Forwarded MasterDetail stacking threshold override.",
+      },
+    ],
+  },
 } as const;
 
 export type ComponentPropName = keyof typeof COMPONENT_PROP_REGISTRY;

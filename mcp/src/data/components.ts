@@ -10436,6 +10436,268 @@ import { Badge } from "@godxjp/ui/data-display";
     storyPath: "navigation/FilterBar.stories.tsx",
     rules: [],
   },
+  // ─── RBAC composites (gh#257 / DXS platform#311) ────────────────────────
+  {
+    name: "PermissionMatrix",
+    group: "data-display",
+    tagline:
+      "Canonical role × permission grid — sticky permission column, shape-encoded ✓/— cells (never colour-only), optional editable checkbox mode, two-role compare with a 差分のみ filter, and the DataTable #216 lifecycle states (loading → denied → error → empty). Domain data is 100% consumer-supplied.",
+    props: [
+      {
+        name: "roles",
+        type: "{ id: string; name: string; description?: string; locked?: boolean }[]",
+        required: true,
+        description:
+          "Role COLUMNS in render order. `locked` keeps that role's cells read-only (with a localized lock badge) even in an editable matrix.",
+      },
+      {
+        name: "permissions",
+        type: "{ id: string; name: string; description?: string; group?: string }[]",
+        required: true,
+        description: "Permission ROWS in render order, with an optional category caption.",
+      },
+      {
+        name: "grants",
+        type: "ReadonlySet<string> | { roleId: string; permissionId: string }[]",
+        required: true,
+        description:
+          "The grant relation: the grantKey(roleId, permissionId) Set from @godxjp/ui/lib/permission-grid (canonical, O(1)), or a plain pair array normalized through the same encoding.",
+      },
+      {
+        name: "onGrantChange",
+        type: "(roleId: string, permissionId: string, granted: boolean) => void",
+        description:
+          "Its PRESENCE makes the matrix editable (real Checkbox cells, Space toggles). Omitted, the matrix is the canonical read-only ✓/— grid.",
+      },
+      {
+        name: "readOnly",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Force the read-only grid even when onGrantChange is present (viewer permission).",
+      },
+      {
+        name: "compare",
+        type: "[string, string] | null",
+        description:
+          "Two role ids compared side by side: their columns tint, and rows where they disagree carry a localized difference badge.",
+      },
+      {
+        name: "diffOnly",
+        type: "boolean",
+        defaultValue: "false",
+        description: "With `compare`, keep only the rows the two roles disagree on (差分のみ).",
+      },
+      {
+        name: "loading / denied / error / empty / onRetry",
+        type: "boolean | ReactNode / handler",
+        description:
+          "The DataTable #216 lifecycle vocabulary with the same precedence (loading → denied → error → empty). `true` renders the built-in localized surface; a node replaces it; onRetry adds Retry to the built-in error only.",
+      },
+      { name: "label", type: "string", description: "Accessible table name (localized default)." },
+    ],
+    usage: [
+      "DO import it — it is a real export from @godxjp/ui/data-display (the gh#251 lesson: a docs page is not importable). Never hand-compose the sticky-column grid per app.",
+      "DO keep grants in the lib/permission-grid grantKey Set form when you already hold role:permission tuples — the pair-array form exists for convenience and is normalized through the same encoding.",
+      "DO put it in a Card with CardContent flush: <Card><CardContent flush><PermissionMatrix …/></CardContent></Card>. Below its natural measure the grid scrolls horizontally INSIDE its own container (390px keeps the sticky permission column).",
+      "DO NOT encode platform roles/permissions in the library — roles, permissions and grants are consumer data by contract.",
+      "DO NOT pass compare pickers/toggles into the matrix — compose Select + Switch beside it and drive `compare`/`diffOnly` (see the showcase).",
+    ],
+    useCases: [
+      "RBAC role tab on a service detail screen: read-only matrix + role compare.",
+      "Org role editor: editable matrix (onGrantChange) with the system role locked.",
+      "Permission-denied / failed read states without hand-rolling: denied / error / onRetry.",
+    ],
+    related: [
+      "lib/permission-grid — the pure grant/diff data helpers the matrix (and any custom RBAC UI) shares.",
+      "DataTable — general tabular data with sorting/selection/pagination; PermissionMatrix is the fixed role-grid specialization with a sticky FIRST column (which DataTable cannot pin).",
+      "ServiceRolePanel — the master-detail roles surface a matrix typically renders inside.",
+    ],
+    example: `import { Card, CardContent, PermissionMatrix } from "@godxjp/ui/data-display";
+import { grantKey } from "@godxjp/ui/lib/permission-grid";
+
+const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permissionId)));
+
+<Card>
+  <CardContent flush>
+    <PermissionMatrix
+      roles={roles}
+      permissions={permissions}
+      grants={grants}
+      onGrantChange={(roleId, permissionId, granted) => mutate({ roleId, permissionId, granted })}
+    />
+  </CardContent>
+</Card>`,
+    docPath: "data-display/permission-matrix.tsx",
+    storyPath: "data-display/PermissionMatrix.stories.tsx",
+    rules: [24],
+  },
+  {
+    name: "BranchScopePicker",
+    group: "data-entry",
+    tagline:
+      "Canonical scope control: all branches vs an explicit subset. One controlled value ({ mode, branchIds }), real RadioGroup + CheckboxGroup + SearchInput underneath (keyboard + field-a11y from the primitives), validation via aria-errormessage, and the #216 collection lifecycle (loading → denied → listError → empty).",
+    props: [
+      {
+        name: "branches",
+        type: "{ id: string; name: string; description?: string; disabled?: boolean }[]",
+        required: true,
+        description: "The selectable branches — consumer domain data.",
+      },
+      {
+        name: "value / defaultValue / onValueChange",
+        type: '{ mode: "all" | "selected"; branchIds?: string[] }',
+        description:
+          'The controlled triad; default { mode: "all" }. Mode flips PRESERVE branchIds so switching back to all never destroys a curated subset.',
+      },
+      {
+        name: "error",
+        type: "ReactNode",
+        description:
+          "Field VALIDATION message — rendered under the control and wired via aria-invalid/aria-errormessage on the radiogroup. Collection read failures are `listError`, not this.",
+      },
+      {
+        name: "listError / denied / loading / empty",
+        type: "boolean | ReactNode",
+        description:
+          "The #216 collection lifecycle (precedence loading → denied → listError → empty). `true` renders the built-in localized message.",
+      },
+      {
+        name: "readOnly",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Locked view: the current scope as a static summary (mode + branch badges).",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Controls visible but inert.",
+      },
+      {
+        name: "searchable",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Built-in branch search above the checkbox list.",
+      },
+      {
+        name: "allLabel / selectedLabel",
+        type: "ReactNode",
+        description: "Override the localized radio labels (e.g. domain wording like 全店舗).",
+      },
+    ],
+    usage: [
+      "DO treat scope as ONE form field: the single { mode, branchIds } value goes through FormField like any other control.",
+      "DO import it from @godxjp/ui/data-entry — never compose an ad-hoc radio+checkbox scope block per screen.",
+      "DO use `error` ONLY for validation (e.g. mode=selected with zero branches checked); a failed branch fetch is `listError`, a 403 is `denied`.",
+      'DO NOT preselect branches for the user — default is { mode: "all" }; an explicit subset is a user decision.',
+    ],
+    useCases: [
+      "Role/permission assignment scoped to branches (service role forms).",
+      "Report or notification audience: whole org vs selected branches.",
+      "Read-only scope display on a detail screen (readOnly).",
+    ],
+    related: [
+      "CheckboxGroup / RadioGroup — the primitives underneath; use them directly for non-scope choices.",
+      "Transfer — large two-list assignment; BranchScopePicker is the compact all-vs-subset scope idiom.",
+      "TreeSelect — hierarchical selection when branches nest.",
+    ],
+    example: `import { BranchScopePicker, FormField } from "@godxjp/ui/data-entry";
+
+<FormField label="適用範囲" required error={errors.scope}>
+  <BranchScopePicker
+    branches={branches}
+    value={scope}
+    onValueChange={setScope}
+    error={scope.mode === "selected" && !scope.branchIds?.length ? "1件以上選択してください" : undefined}
+  />
+</FormField>`,
+    docPath: "data-entry/branch-scope-picker.tsx",
+    storyPath: "data-entry/BranchScopePicker.stories.tsx",
+    rules: [24],
+  },
+  {
+    name: "ServiceRolePanel",
+    group: "layout",
+    tagline:
+      "Canonical role-collection ⇄ role-detail surface over MasterDetail (rail=master): controlled selection with aria-current role rows, locked system roles, a built-in destructive AlertDialog for deletion (fires onDeleteRole only AFTER confirm), and the #216 lifecycle states. Geometry (1440/1024 two-track, 390 stacked) is MasterDetail's tokens.",
+    props: [
+      {
+        name: "roles",
+        type: "{ id: string; name: string; description?: string; memberCount?: number; locked?: boolean }[]",
+        required: true,
+        description:
+          "The role collection — consumer domain data. `locked` = system role: lock badge, never deletable. memberCount is CLDR-pluralized.",
+      },
+      {
+        name: "value / defaultValue / onValueChange",
+        type: "string / (roleId: string) => void",
+        description: "Controlled selection triad; defaults to the first role.",
+      },
+      {
+        name: "children",
+        type: "ReactNode | (role) => ReactNode",
+        description:
+          "The detail surface. A render function receives the selected role — typically renders a PermissionMatrix + role metadata.",
+      },
+      {
+        name: "onDeleteRole",
+        type: "(roleId: string) => void",
+        description:
+          "Its PRESENCE arms a per-role delete affordance behind the built-in destructive AlertDialog; it fires only after the user confirms. Locked roles never offer it.",
+      },
+      {
+        name: "readOnly",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Hide every mutating affordance.",
+      },
+      {
+        name: "loading / denied / error / empty / onRetry",
+        type: "boolean | ReactNode / handler",
+        description:
+          "The #216 lifecycle vocabulary (precedence loading → denied → error → empty), same semantics as DataTable/PermissionMatrix.",
+      },
+      {
+        name: "railWidth / masterViewport / collapseBelow / masterLabel / detailLabel",
+        type: "MasterDetail geometry + region labels",
+        description:
+          "Forwarded to MasterDetail (localized region labels by default). Never re-derive tracks or breakpoints in the app.",
+      },
+    ],
+    usage: [
+      "DO compose the detail from real primitives — the panel deliberately owns NO detail layout; PermissionMatrix + Descriptions is the typical body.",
+      "DO rely on the built-in AlertDialog for deletion — never wire a bare onClick delete; the confirm gate is the contract.",
+      'DO pass masterViewport="compact" for long role collections so the rail scrolls inside its region after stacking (gh#231).',
+      "DO NOT nest interactive controls in a role row — the select button and the delete button are SIBLINGS by design; keep any custom row content non-interactive.",
+    ],
+    useCases: [
+      "Service detail → roles tab: role list rail + permission matrix detail.",
+      "Org role management screen with locked system roles and confirmed deletion.",
+      "Read-only role browser for auditors (readOnly).",
+    ],
+    related: [
+      "MasterDetail — the geometry underneath; use it directly for non-role collections.",
+      "PermissionMatrix — the canonical detail body for a selected role.",
+      "AlertDialog — the confirm primitive the panel embeds; use directly for other destructive flows.",
+    ],
+    example: `import { PermissionMatrix } from "@godxjp/ui/data-display";
+import { ServiceRolePanel } from "@godxjp/ui/layout";
+
+<ServiceRolePanel
+  roles={roles}
+  value={selectedRoleId}
+  onValueChange={setSelectedRoleId}
+  onDeleteRole={(roleId) => deleteRole.mutate(roleId)}
+>
+  {(role) =>
+    role && <PermissionMatrix roles={[role]} permissions={permissions} grants={grants} readOnly={role.locked} />
+  }
+</ServiceRolePanel>`,
+    docPath: "layout/service-role-panel.tsx",
+    storyPath: "layout/ServiceRolePanel.stories.tsx",
+    rules: [24, 40],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {

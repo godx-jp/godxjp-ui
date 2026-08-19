@@ -110,6 +110,21 @@
       "previousYear": "Năm trước",
       "nextYear": "Năm sau",
       "placeholder": "yyyy/mm"
+    },
+    "branchScope": {
+      "label": "Phạm vi chi nhánh",
+      "all": "Tất cả chi nhánh",
+      "allDescription": "Áp dụng cho mọi chi nhánh hiện tại và sau này",
+      "selected": "Chỉ chi nhánh đã chọn",
+      "selectedDescription": "Chỉ áp dụng cho các chi nhánh được chọn bên dưới",
+      "listLabel": "Chi nhánh",
+      "searchPlaceholder": "Tìm chi nhánh",
+      "selectedCount": "Đã chọn {count} chi nhánh",
+      "empty": "Chưa có chi nhánh để chọn",
+      "error": "Không tải được danh sách chi nhánh",
+      "denied": "Bạn không có quyền xem chi nhánh",
+      "loading": "Đang tải chi nhánh…",
+      "noMatches": "Không có chi nhánh khớp với tìm kiếm"
     }
   },
   "feedback": {
@@ -164,6 +179,25 @@
       "searchPlaceholder": "Tìm kiếm...",
       "notifications": "Thông báo",
       "tweaks": "Mở tùy chỉnh"
+    },
+    "serviceRolePanel": {
+      "rolesLabel": "Danh sách vai trò",
+      "detailLabel": "Chi tiết vai trò",
+      "locked": "Đã khóa",
+      "memberCount": "{count} thành viên",
+      "selectRole": "Chọn {role}",
+      "deleteRole": "Xóa {role}",
+      "deleteTitle": "Xóa vai trò này?",
+      "deleteDescription": "Xóa {role} sẽ gỡ quyền của vai trò này khỏi mọi thành viên được gán. Không thể hoàn tác.",
+      "deleteConfirm": "Xóa vai trò",
+      "empty": "Chưa có vai trò",
+      "emptyDescription": "Tạo một vai trò để bắt đầu gán quyền.",
+      "error": "Không tải được vai trò",
+      "errorDescription": "Không lấy được dữ liệu. Vui lòng thử lại sau giây lát.",
+      "denied": "Bạn không có quyền xem vai trò",
+      "deniedDescription": "Hãy đề nghị quản trị viên cấp quyền truy cập.",
+      "loading": "Đang tải vai trò…",
+      "noDetail": "Chọn một vai trò để xem chi tiết"
     }
   },
   "dataDisplay": {
@@ -179,6 +213,21 @@
     "listRow": {
       "unread": "Chưa đọc",
       "read": "Đã đọc"
+    },
+    "permissionMatrix": {
+      "caption": "Ma trận vai trò và quyền",
+      "permissionColumn": "Quyền",
+      "granted": "Được phép",
+      "notGranted": "Không được phép",
+      "difference": "Khác biệt",
+      "toggle": "Cấp {permission} cho {role}",
+      "locked": "Đã khóa",
+      "empty": "Chưa có quyền nào để hiển thị",
+      "error": "Không tải được ma trận quyền",
+      "errorDescription": "Không lấy được dữ liệu. Vui lòng thử lại sau giây lát.",
+      "denied": "Bạn không có quyền xem ma trận này",
+      "deniedDescription": "Hãy đề nghị quản trị viên cấp quyền truy cập.",
+      "loading": "Đang tải quyền…"
     }
   },
   "ui": {

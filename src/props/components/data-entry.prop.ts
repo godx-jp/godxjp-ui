@@ -572,3 +572,63 @@ export type TransferProp = FieldA11yProps & {
   selectedKeys?: [string[], string[]];
   onSelectChange?: (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void;
 };
+
+// ─── BranchScopePicker (gh#257 / DXS platform#311) ───────────────────────────────────────────────
+
+/** @see BranchScopePicker — scope mode: every branch, or an explicit subset. */
+export type BranchScopeModeProp = "all" | "selected";
+
+/**
+ * @see BranchScopePicker — the picker value. `mode: "all"` ignores `branchIds`; `mode: "selected"`
+ * carries the checked branch ids.
+ */
+export type BranchScopeValueProp = {
+  mode: BranchScopeModeProp;
+  branchIds?: readonly string[];
+};
+
+/** @see BranchScopePicker — one selectable branch. Domain data is consumer-supplied. */
+export type BranchScopeOptionProp = {
+  /** Stable branch id. */
+  id: string;
+  /** Human branch name (also the search haystack, so a plain string). */
+  name: string;
+  /** Secondary line under the branch name (e.g. an address or code). */
+  description?: string;
+  /** Keep the branch visible but unselectable. */
+  disabled?: boolean;
+};
+
+/** @see BranchScopePicker */
+export type BranchScopePickerProp = FieldA11yProps & {
+  /** The selectable branches. */
+  branches: readonly BranchScopeOptionProp[];
+  /** Controlled value. */
+  value?: BranchScopeValueProp;
+  /** Uncontrolled initial value. Default `{ mode: "all" }`. */
+  defaultValue?: BranchScopeValueProp;
+  /** Value change handler (fires for mode switches AND branch checks). */
+  onValueChange?: (value: BranchScopeValueProp) => void;
+  /** Disable the whole control. */
+  disabled?: DisabledProp;
+  /** Render the current value without any editable affordance (locked view). */
+  readOnly?: boolean;
+  /** Show a branch search input above the list once there is anything to search. Default `true`. */
+  searchable?: boolean;
+  /** Validation message under the control (wired via `aria-errormessage`/`aria-invalid`). */
+  error?: ErrorProp;
+  /** Show the loading skeleton instead of the list. Precedence: loading → denied → listError → empty. */
+  loading?: boolean;
+  /** Custom empty content when `branches` is empty; defaults to a localized message. */
+  empty?: React.ReactNode;
+  /** Branch-collection READ failure (distinct from `error`, which is field validation). */
+  listError?: React.ReactNode;
+  /** Permission-denied state — the branch read was refused. Takes precedence over `listError`. */
+  denied?: React.ReactNode;
+  /** Radio labels override (localized defaults otherwise). */
+  allLabel?: React.ReactNode;
+  selectedLabel?: React.ReactNode;
+  name?: NameProp;
+  id?: IdProp;
+  className?: ClassNameProp;
+};

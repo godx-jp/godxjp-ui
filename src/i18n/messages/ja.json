@@ -110,6 +110,21 @@
       "previousYear": "前年へ",
       "nextYear": "翌年へ",
       "placeholder": "yyyy/mm"
+    },
+    "branchScope": {
+      "label": "ブランチ範囲",
+      "all": "すべてのブランチ",
+      "allDescription": "現在および今後のすべてのブランチに適用",
+      "selected": "選択したブランチのみ",
+      "selectedDescription": "下で選択したブランチにのみ適用",
+      "listLabel": "ブランチ",
+      "searchPlaceholder": "ブランチを検索",
+      "selectedCount": "{count} 件選択中",
+      "empty": "選択できるブランチがありません",
+      "error": "ブランチを取得できませんでした",
+      "denied": "ブランチを表示する権限がありません",
+      "loading": "ブランチを読み込み中…",
+      "noMatches": "検索に一致するブランチがありません"
     }
   },
   "feedback": {
@@ -164,6 +179,25 @@
       "searchPlaceholder": "検索...",
       "notifications": "通知",
       "tweaks": "設定を開く"
+    },
+    "serviceRolePanel": {
+      "rolesLabel": "ロール一覧",
+      "detailLabel": "ロールの詳細",
+      "locked": "変更不可",
+      "memberCount": "{count} 名",
+      "selectRole": "{role} を選択",
+      "deleteRole": "{role} を削除",
+      "deleteTitle": "ロールを削除しますか？",
+      "deleteDescription": "{role} を削除すると、割り当てられたメンバーはこのロールの権限を失います。この操作は取り消せません。",
+      "deleteConfirm": "ロールを削除",
+      "empty": "ロールがありません",
+      "emptyDescription": "ロールを作成して権限の割り当てを始めましょう。",
+      "error": "ロールを取得できませんでした",
+      "errorDescription": "データを取得できませんでした。時間をおいて再試行してください。",
+      "denied": "ロールを表示する権限がありません",
+      "deniedDescription": "閲覧するには管理者に権限の付与を依頼してください。",
+      "loading": "ロールを読み込み中…",
+      "noDetail": "ロールを選択すると詳細が表示されます"
     }
   },
   "dataDisplay": {
@@ -179,6 +213,21 @@
     "listRow": {
       "unread": "未読",
       "read": "既読"
+    },
+    "permissionMatrix": {
+      "caption": "ロールと権限のマトリクス",
+      "permissionColumn": "権限",
+      "granted": "許可",
+      "notGranted": "不許可",
+      "difference": "差分",
+      "toggle": "{role} に {permission} を付与",
+      "locked": "変更不可",
+      "empty": "表示できる権限がありません",
+      "error": "権限マトリクスを取得できませんでした",
+      "errorDescription": "データを取得できませんでした。時間をおいて再試行してください。",
+      "denied": "このマトリクスを表示する権限がありません",
+      "deniedDescription": "閲覧するには管理者に権限の付与を依頼してください。",
+      "loading": "権限を読み込み中…"
     }
   },
   "ui": {
