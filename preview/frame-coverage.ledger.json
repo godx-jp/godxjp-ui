@@ -538,8 +538,8 @@
     "exports": 277,
     "dimensionCells": 3878,
     "covered": 64,
-    "untested": 2121,
-    "notApplicable": 1694,
+    "untested": 2123,
+    "notApplicable": 1692,
     "knownMissingFrames": [],
     "geometryFailingCells": 36,
     "axeFailingFrames": 6
@@ -4061,8 +4061,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -4071,7 +4071,7 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -7989,8 +7989,8 @@
       "embeddable": true,
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -7999,7 +7999,7 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
