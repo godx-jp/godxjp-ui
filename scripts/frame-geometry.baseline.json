@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07",
+  "generatedAt": "2026-08-18",
   "note": "Per-frame widths with horizontal overflow / clipped controls. Allowlist — may only SHRINK. Regenerate after a responsive-fix PR: `node scripts/frame-geometry.mjs --update-baseline`.",
   "widths": [
     320,
@@ -12,34 +12,7 @@
     1920
   ],
   "frames": {
-    "data-entry-rating": [
-      320
-    ],
-    "data-entry-form-examples-employee-settings": [
-      320,
-      375,
-      390,
-      768
-    ],
-    "data-entry-form-examples-invoice-form": [
-      320,
-      375,
-      390,
-      768
-    ],
-    "foundation-density": [
-      320,
-      375
-    ],
-    "layout-page-container": [
-      320,
-      375,
-      390
-    ],
     "layout-topbar": [
-      320
-    ],
-    "navigation-tabs": [
       320
     ]
   }

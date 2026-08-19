@@ -5278,6 +5278,7 @@ toast.error("保存に失敗しました");`,
       "DO trust the horizontal `TabsList` to scroll its own overflow (hidden scrollbar, swipeable) instead of clipping when tab labels — especially long localized ones (Japanese, German) — don't fit a narrow container. Don't wrap it in your own `overflow-x-auto` div or truncate labels to work around clipping; that was gh#175 and is now the framework's job (#175).",
       "DON'T assume the first item is ever auto-selected when it is `disabled` — Tabs always resolves the fallback to the first ENABLED item (or none, if all are disabled). A `disabled: true` first item is safe to author without also setting `defaultValue`.",
       'DON\'T write your own resize/scroll-into-view effect to keep the selected tab on screen — `TabsList` observes its own size and its triggers\' `data-state` and re-pins the active (or focused, under `activationMode="manual"`) trigger with `scrollIntoView({ block: "nearest", inline: "nearest" })`, honoring `prefers-reduced-motion` and leaving a deliberate manual scroll alone. Before gh#204 a 1440 → 1024 → 390 resize could strand the ACTIVE FIRST tab entirely outside the strip while it still reported `aria-selected="true"`.',
+      "DON'T re-centre the strip with a `justify-center` utility. `TabsList` aligns with `safe center` on purpose: plain centring splits the overflow across BOTH edges while `scrollLeft` only ever covers the trailing one, so the leading tab ends up permanently outside the scrollport and no gesture reaches it. `safe` keeps the centred look while the tabs fit and falls back to start alignment the moment they don't.",
     ],
     useCases: [
       "Detail drawers or pages that need full per-panel control — e.g. an accounting journal-entry sheet where one panel has `forceMount` to keep a live chart mounted, requiring custom `TabsContent` props that `Tabs` cannot pass.",
@@ -8980,6 +8981,7 @@ export default function PasswordBlock() {
       "DO use readOnly to DISPLAY a score (e.g. product average); interactive (default) for collecting a rating.",
       "DO pass `name` to submit the value in a plain form.",
       "DON'T render raw star icons for input — this handles keyboard (radiogroup), hover preview, and a11y.",
+      "NOTE a long scale WRAPS rather than overflowing. At `max={10}` the row needs ~276px of hit area and a 320px viewport offers ~212 inside a card, so the stars fall onto a second line instead of being painted where no one can reach them. Don't add `flex-nowrap` or a fixed width to force one line; use a smaller `max` if a single row matters.",
     ],
     useCases: [
       "Product / vendor review input",

@@ -20,6 +20,9 @@ class Box {
   parentElement: Box | null = null;
   children: Box[] = [];
   focusable = false;
+  ariaHidden = false;
+  visibility = "visible";
+  opacity = "1";
   #scrollLeft = 0;
 
   /** Clamped exactly like a real scroll container — a container cannot scroll past its content. */
@@ -57,6 +60,13 @@ class Box {
     return { left, right: left + this.width, top: 0, bottom: 24, width: this.width, height: 24 };
   }
 
+  /** Only the `[aria-hidden="true"]` lookup `measure` performs is supported. */
+  closest(selector: string): Box | null {
+    if (selector !== '[aria-hidden="true"]') throw new Error(`unsupported selector ${selector}`);
+    if (this.ariaHidden) return this;
+    return this.parentElement ? this.parentElement.closest(selector) : null;
+  }
+
   /** `measure` only ever asks the frame for its focusable descendants. */
   querySelectorAll() {
     const out: Box[] = [];
@@ -72,7 +82,11 @@ function withFrame(build: (frame: Box) => void) {
   build(frame);
   const g = globalThis as unknown as Record<string, unknown>;
   g.document = { querySelector: () => frame };
-  g.getComputedStyle = (n: Box) => ({ overflowX: n.overflowX });
+  g.getComputedStyle = (n: Box) => ({
+    overflowX: n.overflowX,
+    visibility: n.visibility,
+    opacity: n.opacity,
+  });
   return measure() as { overflowX: boolean; clipped: number };
 }
 
@@ -152,12 +166,48 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     expect(scroller.scrollLeft).toBe(0);
   });
 
+  it("does NOT count a hidden form mirror parked off the inline start", () => {
+    // Radix's native <input> behind Checkbox/Radio/Switch: aria-hidden, tabindex -1, opacity 0,
+    // translateX(-100%) — off-frame by construction, never seen or focused. The control the user
+    // operates is the sibling button inside the frame. Counting it flagged every choice-control
+    // form (data-entry-form-examples-*) as unreachable at all four narrow widths.
+    const r = withFrame((frame) => {
+      const field = frame.append(new Box({ x: 34, width: 16 }));
+      focusable(field.append(new Box({ x: 34, width: 16 }))); // the visible radio button
+      const mirror = focusable(field.append(new Box({ x: -16, width: 16 })));
+      mirror.ariaHidden = true;
+      mirror.opacity = "0";
+    });
+    expect(r.clipped).toBe(0);
+  });
+
+  it("does NOT count a control hidden inside an aria-hidden subtree", () => {
+    const r = withFrame((frame) => {
+      const hiddenRegion = frame.append(new Box({ x: 0, width: 300 }));
+      hiddenRegion.ariaHidden = true;
+      focusable(hiddenRegion.append(new Box({ x: 400, width: 41 })));
+    });
+    expect(r.clipped).toBe(0);
+  });
+
+  it("still counts a VISIBLE control that merely sits in a transformed wrapper", () => {
+    // Guard against over-broad exclusion: opacity 1, not aria-hidden, unreachable → real defect.
+    const r = withFrame((frame) => {
+      focusable(frame.append(new Box({ x: 400, width: 41 })));
+    });
+    expect(r.clipped).toBe(1);
+  });
+
   it("reports document overflow independently of the clipped count", () => {
     const g = globalThis as unknown as Record<string, unknown>;
     const frame = new Box({ x: 0, width: 300, overflowX: "auto", clientWidth: 300 });
     frame.scrollWidth = 420;
     g.document = { querySelector: () => frame };
-    g.getComputedStyle = (n: Box) => ({ overflowX: n.overflowX });
+    g.getComputedStyle = (n: Box) => ({
+      overflowX: n.overflowX,
+      visibility: n.visibility,
+      opacity: n.opacity,
+    });
     const r = measure() as { overflowX: boolean; clipped: number };
     expect(r.overflowX).toBe(true);
     expect(r.clipped).toBe(0);

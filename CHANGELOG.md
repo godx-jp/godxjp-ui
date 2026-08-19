@@ -62,6 +62,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Three controls could not be reached at narrow viewports (WCAG 2.2 SC 2.1.1 / 2.4.7 / 1.4.10).**
+  Found by the frame-geometry sweep across 154 frames × 8 widths.
+  - `Rating` laid its stars in a non-wrapping row. A 10-star scale needs ~276px of hit area; a
+    320px viewport offers ~212 inside a card, so the last stars were painted outside the surface
+    with nothing to scroll them into view — unclickable and invisible. The row now wraps, which is
+    a no-op wherever it already fits.
+  - `DataTable` on a **flush** `PageContainer` gave the whole page 16px of horizontal scroll at
+    320/375/390. The scroll region bleeds by `-var(--space-page-active-x)` to cancel the page
+    gutter and reach the page edges, but `.ui-page-container--flush .ui-page-body` zeroes that
+    gutter — so the bleed escaped the page with nothing to clip it. Reset for a table sitting
+    directly on a flush page, exactly as it already was inside a flush `CardContent`. A table
+    inside a `Card` keeps its bleed: the card supplies the padding it compensates.
+  - `Tabs`: the strip is a centred flex box that also scrolls, and plain `justify-content: center`
+    splits the overflow across BOTH edges while `scrollLeft` only ever covers the trailing one —
+    so at 320px the leading tab sat permanently outside the scrollport, reachable by no gesture.
+    Now `safe center`, which falls back to start alignment exactly when it overflows and still
+    centres whenever the tabs fit.
+
 - **A compound `Select` under `FormField` had NO accessible name (WCAG 2.2 SC 4.1.2, critical).**
   `FormField` hands its label/helper/error wiring to a single child with `cloneElement`. In the
   compound API that child is `SelectPrimitive.Root` — a context-only component that renders no DOM

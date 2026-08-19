@@ -827,6 +827,11 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
+  /* A 10-star scale needs ~276px of hit area; a 320px viewport offers ~212 inside a card. Without
+   * wrapping, the last stars are painted outside the surface with nothing to scroll them into
+   * view, so they can be neither seen nor clicked (WCAG 2.1.1 / 2.4.7). Wrapping keeps every star
+   * reachable and is a no-op wherever the row already fits. */
+  flex-wrap: wrap;
 }
 .ui-rating-star {
   /* ≥24px hit area (WCAG 2.5.8) around the 20px glyph */

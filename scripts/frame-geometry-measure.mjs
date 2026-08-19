@@ -75,12 +75,28 @@ export function measure() {
     return inside || oversized;
   };
 
+  /**
+   * A hidden form MIRROR is not a control. Radix renders the native input behind Checkbox / Radio
+   * / Switch as `aria-hidden tabindex="-1"`, `opacity: 0; pointer-events: none`, parked off the
+   * inline start with `translateX(-100%)` so the value still submits with the form. It is never
+   * seen, never focused, and the control the user actually operates is its sibling button — which
+   * sits inside the frame. Counting the mirror reported an unreachable control on forms that have
+   * none (every checkbox/radio/switch demo, at every width). Same for anything else hidden from
+   * both the a11y tree and the eye.
+   */
+  const isControl = (el) => {
+    if (el.closest('[aria-hidden="true"]')) return false;
+    const cs = getComputedStyle(el);
+    return cs.visibility !== "hidden" && cs.opacity !== "0";
+  };
+
   let clipped = 0;
   for (const el of frame.querySelectorAll(
     "a[href], button, [role=button], input:not([type=hidden]), select, textarea, [tabindex]:not([tabindex='-1'])",
   )) {
     const r = el.getBoundingClientRect();
     if (r.width === 0 && r.height === 0) continue;
+    if (!isControl(el)) continue;
     if (r.right > fr.right + 1 || r.left < fr.left - 1) {
       if (!reachableByScroll(el)) clipped++;
     }

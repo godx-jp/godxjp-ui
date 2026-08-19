@@ -186,6 +186,21 @@
     padding-inline: 0;
   }
 
+  /* Same reset, same reason, for a table sitting straight on a FLUSH page. The bleed above exists
+   * to cancel the page gutter so the scroll region reaches the page edges — but
+   * `.ui-page-container--flush .ui-page-body` zeroes that gutter, leaving nothing to bleed into.
+   * The -16px then escapes the page: nothing clips it, so the whole page gained 16px of
+   * horizontal scroll at 320/375/390 (WCAG 2.2 SC 1.4.10 Reflow). Scoped by child combinator so a
+   * table inside a Card keeps its own bleed — the card supplies the padding that one compensates. */
+  .ui-page-container--flush > .ui-page-body > .ui-data-table-root > .ui-data-table-scroll {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  .ui-page-container--flush > .ui-page-body > .ui-data-table-root > .ui-data-table-scroll::after {
+    inset-inline-end: 0;
+  }
+
   [data-slot="card-content"][data-flush] .ui-data-table-scroll::after {
     inset-inline-end: 0;
   }
