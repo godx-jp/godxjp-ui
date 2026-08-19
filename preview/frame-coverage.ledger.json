@@ -473,7 +473,7 @@
       "geometry": {
         "runner": "scripts/frame-geometry.mjs (pnpm check:frame-geometry)",
         "baseline": "scripts/frame-geometry.baseline.json",
-        "recordedAt": "2026-08-18",
+        "recordedAt": "2026-08-19",
         "widths": [
           320,
           375,
@@ -484,11 +484,9 @@
           1440,
           1920
         ],
-        "failingFrames": 1,
-        "failingCells": 1,
-        "byWidth": {
-          "320": 1
-        },
+        "failingFrames": 0,
+        "failingCells": 0,
+        "byWidth": {},
         "note": "Recorded frame×width overflow / clipped-control failures from the shrink-only geometry baseline. NOT re-executed by this generator — the sweep needs Chromium plus a built preview. It proves the absence of overflow on the frames it swept; it is not a responsive-layout case and never promotes `responsive`."
       },
       "axe": {
@@ -531,7 +529,7 @@
     "untested": 2128,
     "notApplicable": 1699,
     "knownMissingFrames": [],
-    "geometryFailingCells": 1,
+    "geometryFailingCells": 0,
     "axeFailingFrames": 0
   },
   "cases": [],

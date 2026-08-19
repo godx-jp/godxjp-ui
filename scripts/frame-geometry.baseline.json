@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18",
+  "generatedAt": "2026-08-19",
   "note": "Per-frame widths with horizontal overflow / clipped controls. Allowlist — may only SHRINK. Regenerate after a responsive-fix PR: `node scripts/frame-geometry.mjs --update-baseline`.",
   "widths": [
     320,
@@ -11,9 +11,5 @@
     1440,
     1920
   ],
-  "frames": {
-    "layout-topbar": [
-      320
-    ]
-  }
+  "frames": {}
 }

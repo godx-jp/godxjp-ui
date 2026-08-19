@@ -62,8 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Three controls could not be reached at narrow viewports (WCAG 2.2 SC 2.1.1 / 2.4.7 / 1.4.10).**
-  Found by the frame-geometry sweep across 154 frames × 8 widths.
+- **Controls that narrow viewports were hiding (WCAG 2.2 SC 2.1.1 / 2.4.7 / 1.4.10).** Found by the
+  frame-geometry sweep across 154 frames × 8 widths, which now reports zero.
   - `Rating` laid its stars in a non-wrapping row. A 10-star scale needs ~276px of hit area; a
     320px viewport offers ~212 inside a card, so the last stars were painted outside the surface
     with nothing to scroll them into view — unclickable and invisible. The row now wraps, which is
