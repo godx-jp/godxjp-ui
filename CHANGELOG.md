@@ -108,6 +108,30 @@ var(--text-clamp)`), with the same `min-width: 0` flex-shrink contract as `trunc
   `src/components/navigation/__tests__/filter-bar-typed-model.test.tsx` (slots + order, chip
   lifecycle, reset, localized plural count, keyboard order, loading/disabled/error, legacy
   path unchanged, vitest-axe 0 violations, compile-time `@ts-expect-error` contract).
+- **`Banner` / `BannerProps` — the canonical DXS full-bleed attention strip** (gh#255,
+  dxs-platform#311): exported from `@godxjp/ui/feedback` and pinned in the packed-artifact
+  contract. It IS the Alert primitive with the structural axis fixed to the new
+  `variant="banner"` (`AlertVariantProp` widened `"default" | "banner"`), so ONE implementation
+  owns tone semantics + live-region politeness, the default per-tone icon (`icon`/`icon={false}`),
+  `Banner.Title/Description/Content/Actions` slots, the built-in localized dismiss
+  (`onDismiss`, last in DOM/focus order) and the ≥640px trailing-actions / <640px full-width
+  wrapping behaviour. Strip geometry is token-owned via the new
+  **`--banner-{radius,border-width,space-inset-block,space-inset-inline}`** component tokens
+  (`src/tokens/components/banner.css`): square corners, a single tone-coloured hairline on the
+  block-end edge, and an inline inset defaulting to the page gutter (`--space-page-active-x`).
+  No DXS business behaviour — the app decides WHEN a banner shows; the package owns only
+  presentation.
+- **`PageContainer status` — the status/meta band of the canonical page-header contract**
+  (gh#255): PageContainer's embedded header is formally the DXS `PageHeader` (deliberately NO
+  separate export — a standalone header renderer is what produced the nested-header defect the
+  platform audit flagged). `status` renders StatusBadge/meta content beside the `<h1>` on one
+  wrapping row at the new semantic token **`--page-header-status-gap`** (default
+  `--space-inline-sm`); on compact viewports or under a long JA/VI title the band wraps UNDER
+  the title instead of clipping. A page that omits `status` keeps the exact historical DOM and
+  geometry. Loading/error/denied stay compositions of existing exports (Skeleton in the slots;
+  `ErrorSurface` replacing the page for 403/404/5xx; `Alert.QueryError`/`DataState` in-body) —
+  documented on the MCP `PageContainer` entry.
+
 - **`--logo-identity-foreground`** (`48 9% 9%`) — the ink the boxed `mark="glyph"` sets its TEXT in
   when it sits on the `--brand` identity fill. Deliberately NOT a role-mirror knob: its default is a
   real value rather than a role token, so there is no role to freeze and it is declared at `:root`

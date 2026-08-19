@@ -78,11 +78,16 @@ const contracts = [
   },
   {
     subpath: "./feedback",
-    runtime: ["TwoFactorSetup"],
-    types: ["TwoFactorSetupProps"],
+    // gh#255 — Banner is the canonical DXS attention strip. Pinned in the PACKED artifact
+    // (same rationale as ErrorSurface/gh#251: a contract that exists only in source or docs
+    // regresses silently at publish time).
+    runtime: ["TwoFactorSetup", "Banner"],
+    types: ["TwoFactorSetupProps", "BannerProp", "BannerProps"],
     files: [
       "dist/components/feedback/two-factor-setup.js",
       "dist/components/feedback/two-factor-setup.d.ts",
+      "dist/components/feedback/banner.js",
+      "dist/components/feedback/banner.d.ts",
     ],
   },
   {

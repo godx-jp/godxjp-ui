@@ -47,8 +47,27 @@
     color: hsl(var(--foreground));
   }
 
+  /* variant="banner" (the <Banner> export) — the full-bleed page/shell attention strip.
+   * ONLY geometry changes here: every tone colour rule above applies unchanged, and the
+   * strip keeps its tone-coloured hairline on the block-end edge alone. All values are
+   * --banner-* component tokens (src/tokens/components/banner.css), so a consumer never
+   * writes CSS to place a banner and a service retunes the strip once via theme. */
+  [data-slot="alert"][data-variant="banner"] {
+    border-radius: var(--banner-radius);
+    border-block-start-width: 0;
+    border-inline-width: 0;
+    border-block-end-width: var(--banner-border-width);
+    padding-block: var(--banner-space-inset-block);
+    padding-inline: var(--banner-space-inset-inline);
+  }
+
   [data-slot="alert"][data-dismissible] {
     padding-inline-end: calc(var(--alert-space-inset) + var(--space-8));
+  }
+
+  /* The banner strip reserves dismiss clearance from ITS inline inset, not the card's. */
+  [data-slot="alert"][data-variant="banner"][data-dismissible] {
+    padding-inline-end: calc(var(--banner-space-inset-inline) + var(--space-8));
   }
 
   [data-slot="alert-icon"] {

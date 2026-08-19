@@ -128,6 +128,11 @@ export const VOCABULARY_REGISTRY = {
     category: "content",
     description: "Secondary line under title",
   },
+  StatusProp: {
+    file: "vocabulary/content.prop.ts",
+    category: "content",
+    description: "Status/meta band beside a title (StatusBadge, meta text)",
+  },
   DescriptionProp: {
     file: "vocabulary/content.prop.ts",
     category: "content",
@@ -339,7 +344,7 @@ export const VOCABULARY_REGISTRY = {
   AlertVariantProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Inline Alert banner tone",
+    description: "Alert structural axis: default inline card | banner full-bleed strip",
   },
   SortDirectionProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -497,6 +502,7 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: [
       "TitleProp",
       "SubtitleProp",
+      "StatusProp",
       "ExtraProp",
       "FooterProp",
       "BreadcrumbProp",
@@ -1531,6 +1537,11 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
       "ChildrenProp",
     ],
+  },
+  BannerProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["ToneProp", "IconProp", "OnValueChangeProp", "ClassNameProp", "ChildrenProp"],
   },
   AlertTitleProp: {
     group: "feedback",

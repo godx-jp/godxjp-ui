@@ -5,6 +5,7 @@ import type {
   BreadcrumbProp,
   TitleProp,
   SubtitleProp,
+  StatusProp,
   ExtraProp,
   FooterProp,
   PageDensityProp,
@@ -56,6 +57,16 @@ export type PageContainerMeasureProp = "default" | "narrow" | "medium";
 export type PageContainerProp = {
   title: TitleProp;
   subtitle?: SubtitleProp;
+  /**
+   * Status/meta band rendered beside the title inside the heading — StatusBadge, environment
+   * tag, "updated …" meta text. Geometry is token-owned (`--page-header-status-gap`): the band
+   * sits on the title line and WRAPS under it on compact viewports, so a consumer never
+   * hand-lays a badge next to an `<h1>`. Part of the canonical page-header contract
+   * (godxjp-ui#255): PageContainer's embedded header IS the DXS `PageHeader` — breadcrumbs
+   * (`breadcrumb`), title, subtitle, status/meta (this), actions (`extra`) and responsive
+   * overflow (`headerLayout` / `measure`) all live on this one renderer.
+   */
+  status?: StatusProp;
   extra?: ExtraProp;
   footer?: FooterProp;
   breadcrumb?: BreadcrumbProp;

@@ -73,6 +73,12 @@ export const COMPONENTS: ComponentEntry[] = [
       },
       { name: "subtitle", type: "string", description: "Secondary line beneath the title." },
       {
+        name: "status",
+        type: "ReactNode",
+        description:
+          'Status/meta band beside the title (StatusBadge, environment tag, "updated …" meta). Sits on the title line at the token-owned --page-header-status-gap and wraps UNDER the title on compact viewports. Part of the canonical page-header contract (gh#255) — never hand-lay a badge next to the <h1>.',
+      },
+      {
         name: "extra",
         type: "ReactNode",
         description: "Action buttons / controls rendered right of the title row.",
@@ -155,6 +161,7 @@ export const COMPONENTS: ComponentEntry[] = [
     ],
     usage: [
       "DO: Always wrap every page's content in PageContainer — it is the mandatory page shell. Pass `title` (required, rendered as `<h1>`) for every page; omitting it leaves the page without an accessible heading.",
+      "CANONICAL PAGE-HEADER CONTRACT (gh#255): PageContainer's embedded header IS the DXS `PageHeader` — there is deliberately NO separate PageHeader export, so the page header cannot be re-created or nested. It owns breadcrumbs (`breadcrumb`), title (`title`), subtitle/description (`subtitle`), status/meta (`status`), actions (`extra`) and responsive overflow (`headerLayout` + `measure`). Loading/error/denied are compositions of siblings, never hand-rolls: skeleton `title`/`subtitle` content or `SkeletonDetail` body while a detail loads; `ErrorSurface` (from @godxjp/ui/layout) REPLACES the page for denied (403) / not-found (404) / failed (5xx) whole-page states; `Alert.QueryError` / `DataState` own an in-body query failure.",
       "DO: Use the `extra` prop (not a sibling div, not a wrapper) for action buttons or controls that sit right of the title row — e.g. `extra={<Button>新規作成</Button>}`. Use the `footer` prop for a pinned action bar below the body (e.g. Save/Cancel on a form page); combine with `stickyFooter` to pin it to the viewport bottom on scroll.",
       "DO: Use `variant='flush'` when the page body contains a full-bleed component like DataTable. Inside a flush container, wrap any padded strips (Toolbar, intro text) in `<PageContainer.Inset>` to align them with the header. Never add manual `px-*` or `p-*` padding to compensate — use PageContainer.Inset.",
       "DO: Pass `breadcrumb` as an ordered array of `{ label, to? }` objects from root to current page. The last item is automatically rendered without a link and receives `aria-current='page'`; earlier items with `to` become router `<Link>` elements. Never hand-roll a breadcrumb nav inside a PageContainer.",
@@ -4927,9 +4934,10 @@ import { Button } from "@godxjp/ui/general";
     props: [
       {
         name: "variant",
-        type: '"default" | "destructive" | "warning" | "success"',
+        type: '"default" | "banner"',
         defaultValue: '"default"',
-        description: "Colour scheme + default icon.",
+        description:
+          'STRUCTURAL axis, orthogonal to `tone` (which owns colour + icon): "default" is the inline rounded card; "banner" is the full-bleed attention strip — prefer the `Banner` export, which fixes this axis.',
       },
       {
         name: "onDismiss",
@@ -4977,6 +4985,67 @@ import { Button } from "@godxjp/ui/general";
   <AlertDescription>本日中に確認してください。</AlertDescription>
 </Alert>`,
     storyPath: "feedback/Alert.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "Banner",
+    group: "feedback",
+    tagline:
+      "Full-bleed page/shell attention strip (past-due subscription, support session, maintenance). The Alert primitive with variant fixed to banner. Parts: Banner.Title/Description/Content/Actions.",
+    props: [
+      {
+        name: "tone",
+        type: '"default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"',
+        defaultValue: '"default"',
+        description:
+          'Semantic tone driving the surface colour, the default leading icon AND live-region politeness ("destructive"/"warning" announce assertively via role="alert"; every other tone politely via role="status").',
+      },
+      {
+        name: "onDismiss",
+        type: "() => void | Promise<void>",
+        description:
+          "Renders the built-in localized dismiss button (top/inline-end). It sits LAST in DOM and focus order: content → actions → dismiss.",
+      },
+      {
+        name: "icon",
+        type: "LucideIcon | false",
+        description: "Override or hide (false) the tone's default leading icon.",
+      },
+    ],
+    usage: [
+      'CANONICAL BANNER CONTRACT (gh#255): `Banner` is `Alert` with the structural axis fixed to `variant="banner"` — same tone system, same slots, same dismiss/a11y behaviour, but STRIP geometry owned by the `--banner-*` tokens (square corners, hairline block-end rule, page-gutter inline inset). Never fake a banner by putting `className` overrides on an `Alert`, and never hand-roll a coloured div strip.',
+      "DO: Place a Banner FULL-BLEED at the top of the surface it warns about — directly under the Topbar inside AppShell's children for shell-wide attention (past-due subscription, active support session), or as the first child of a page for page-scoped notices. Its inline inset defaults to the page gutter (--space-page-active-x) so the text column aligns with page content.",
+      "DO: Compose text as `Banner.Title` + `Banner.Description` (group multi-part copy in `Banner.Content` when you add `Banner.Actions`). At >=640px actions sit in a trailing column; below the step they drop onto their own full-width WRAPPING line, so a 390px viewport wraps instead of clipping.",
+      "DO: Pass `onDismiss` for dismissible notices — the component renders its own accessible, localized dismiss button. DON'T hand-roll an × Button in `Banner.Actions`.",
+      "DON'T: Use Banner for transient feedback ('saved successfully') — that is `toast()` + `<Toaster>`. Banner is persistent and page/shell-scoped, and there should be at most ONE per surface; stack further messages inside the page as inline `Alert`s.",
+      "DON'T: Encode DXS business rules here (when past_due shows, who sees a support-session strip) — the app decides WHEN to render; Banner owns only presentation and behaviour.",
+    ],
+    useCases: [
+      'Past-due subscription strip across the console shell — `tone="warning"` with a `Banner.Actions` "お支払い方法を更新" Button, rendered above the page slot until billing recovers.',
+      'Active support-session indicator — `tone="info"` with the operator name in `Banner.Description` and a "セッションを終了" action; not dismissible while the session runs.',
+      'Scheduled maintenance notice — `tone="neutral"` with `onDismiss` so the user can clear it for the session.',
+      'Read-only / archived-organization mode — `tone="muted"` explaining why every mutation control on the page is disabled.',
+      'Degraded-service warning after a partial outage — `tone="destructive"` with a status-page link in `Banner.Actions`.',
+    ],
+    related: [
+      "Alert — the SAME primitive in its inline-card presentation; use inside a page section or Card for persistent local feedback. Banner is the full-bleed strip presentation for shell/page-level attention.",
+      "Toaster — transient auto-dismissing feedback (toast()). Banner is persistent until acted on or dismissed.",
+      "ErrorSurface — a whole-page semantic exception state (403/404/5xx) that REPLACES the page. Banner annotates a page that still works.",
+      "PageContainer — Banner sits ABOVE or as the first child of PageContainer, never inside the header slots; the page header's own status/meta belongs in PageContainer's `status` prop.",
+    ],
+    example: `import { Banner } from "@godxjp/ui/feedback";
+import { Button } from "@godxjp/ui/general";
+
+<Banner tone="warning">
+  <Banner.Content>
+    <Banner.Title>お支払いが確認できていません</Banner.Title>
+    <Banner.Description>サービスの停止を避けるため、お支払い方法を更新してください。</Banner.Description>
+  </Banner.Content>
+  <Banner.Actions>
+    <Button size="sm" variant="outline">お支払い方法を更新</Button>
+  </Banner.Actions>
+</Banner>`,
+    storyPath: "feedback/Banner.stories.tsx",
     rules: [],
   },
   {

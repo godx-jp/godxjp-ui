@@ -1,0 +1,16 @@
+/* Banner — the full-bleed attention strip (<Banner> = Alert variant="banner").
+ * Colour stays with the alert tone rules; these tokens own ONLY the strip geometry,
+ * so a service retunes the banner once here instead of forking alert-layout.css
+ * (rule #45 — every service-tunable constant gets a knob). */
+
+:root {
+  /* Square corners — a strip spans its container edge-to-edge, so it carries no radius. */
+  --banner-radius: 0;
+  /* The strip keeps a single hairline block-end rule (tone-coloured via the alert
+   * border rules); inline/block-start edges are open so it reads as part of the frame. */
+  --banner-border-width: 1px;
+  /* Strip inset. Block is denser than the inline Alert card; inline defaults to the
+   * page gutter so banner text aligns with page content under AppShell/PageContainer. */
+  --banner-space-inset-block: var(--space-3);
+  --banner-space-inset-inline: var(--space-page-active-x, var(--space-6));
+}

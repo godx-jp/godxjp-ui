@@ -521,6 +521,29 @@
     width: 100%;
   }
 
+  /* Title line + status/meta band (PageContainer `status`, godxjp-ui#255). The band sits on
+   * the title's baseline row at the token-owned gap and WRAPS under the title when the
+   * viewport (390px) or a long JA/VI title leaves no room — never clips, never overlaps. */
+  .ui-page-header-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--page-header-status-gap);
+    min-inline-size: 0;
+  }
+
+  .ui-page-header-title-row > .ui-page-title {
+    min-inline-size: 0;
+  }
+
+  .ui-page-header-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--page-header-status-gap);
+    min-inline-size: 0;
+  }
+
   .ui-page-title {
     font-size: var(--page-title-font-size);
     font-weight: var(--font-weight-medium);

@@ -205,9 +205,10 @@
           "name": "variant",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | undefined",
+          "type": "AlertVariantProp | undefined",
           "values": [
-            "default"
+            "default",
+            "banner"
           ],
           "declaredIn": [
             "src/props/components/feedback.prop.ts"
@@ -1763,6 +1764,71 @@
           ],
           "declaredIn": [
             "src/components/data-display/badge.tsx"
+          ]
+        }
+      ]
+    },
+    "Banner": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts",
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts",
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "false | IconProp | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "onDismiss",
+          "origin": "owned",
+          "required": false,
+          "type": "HandlerProp | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "tone",
+          "origin": "owned",
+          "required": false,
+          "type": "ToneProp | undefined",
+          "values": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral"
+          ],
+          "declaredIn": [
+            "src/props/components/feedback.prop.ts"
           ]
         }
       ]
@@ -9797,6 +9863,16 @@
             "default",
             "admin-collection"
           ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": [
             "src/props/components/layout.prop.ts"
           ]

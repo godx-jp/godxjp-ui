@@ -47,6 +47,8 @@ export { Toaster } from "./sonner";
 export { toast } from "./use-toast";
 export { Skeleton, SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonStat } from "./skeleton";
 export type { SkeletonProps } from "./skeleton";
+export { Banner } from "./banner";
+export type { BannerProp, BannerProps } from "./banner";
 export {
   Alert,
   AlertTitle,

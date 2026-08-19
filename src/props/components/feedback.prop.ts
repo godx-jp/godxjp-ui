@@ -61,6 +61,13 @@ export type AlertProp = React.HTMLAttributes<HTMLDivElement> & {
   children?: ChildrenProp;
 };
 
+/**
+ * @see Banner — the full-bleed attention strip (`<Alert variant="banner">` with the variant fixed).
+ * Same contract as {@link AlertProp} minus `variant`: `tone` owns colour + live-region politeness,
+ * `icon`/`icon={false}` owns the leading glyph, `onDismiss` renders the built-in dismiss button.
+ */
+export type BannerProp = Omit<AlertProp, "variant">;
+
 /** @see AlertTitle */
 export type AlertTitleProp = React.HTMLAttributes<HTMLParagraphElement> & {
   className?: ClassNameProp;

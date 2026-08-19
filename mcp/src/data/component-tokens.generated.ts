@@ -29,6 +29,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Small-by-design (badge/pill/counter). A knob (rule #45) so a service can * re-tune badge text without touching the global --font-size-xs step."
   },
   {
+    "name": "--banner-radius",
+    "value": "0",
+    "description": "Square corners — a strip spans its container edge-to-edge, so it carries no radius."
+  },
+  {
+    "name": "--banner-border-width",
+    "value": "1px",
+    "description": "The strip keeps a single hairline block-end rule (tone-coloured via the alert * border rules); inline/block-start edges are open so it reads as part of the frame."
+  },
+  {
+    "name": "--banner-space-inset-block",
+    "value": "var(--space-3)",
+    "description": "Strip inset. Block is denser than the inline Alert card; inline defaults to the * page gutter so banner text aligns with page content under AppShell/PageContainer."
+  },
+  {
+    "name": "--banner-space-inset-inline",
+    "value": "var(--space-page-active-x, var(--space-6))",
+    "description": "Strip inset. Block is denser than the inline Alert card; inline defaults to the * page gutter so banner text aligns with page content under AppShell/PageContainer."
+  },
+  {
     "name": "--card-space-inset",
     "value": "var(--space-section-active)",
     "description": "Horizontal inset of every slot (header / content / footer) + the resting top/bottom * shell padding. This is the column the title, body and footer all align to."

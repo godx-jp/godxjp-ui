@@ -234,6 +234,18 @@ export const TOKENS: TokenEntry[] = [
     role: "Feedback component sizing and spacing.",
   },
   {
+    name: "--banner-{radius,border-width,space-inset-block,space-inset-inline}",
+    category: "component",
+    tier: "component",
+    role: 'Banner strip geometry (gh#255) — the full-bleed presentation of the Alert primitive (`<Banner>` / Alert variant="banner"). radius 0 (square strip corners), a single hairline block-end rule (tone-coloured by the alert rules), block inset denser than the inline card (--space-3), inline inset defaulting to the page gutter (--space-page-active-x) so banner text aligns with page content. Colour stays entirely with `tone`; a service retunes the strip once here — a consumer never writes CSS to place a banner.',
+  },
+  {
+    name: "--page-header-status-gap",
+    category: "semantic",
+    tier: "semantic",
+    role: "Gap between the page title and its status/meta band (PageContainer `status`, gh#255), and between the band's own items. Default --space-inline-sm. The band shares the title line and wraps under it on compact viewports; a page that never passes `status` reads neither the token nor the wrapping row.",
+  },
+  {
     name: "--sheet-responsive-breakpoint-width / --sheet-bottom-max-height",
     category: "component",
     tier: "component",

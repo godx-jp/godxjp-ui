@@ -83,6 +83,12 @@
    * page moves. 11rem = 176px, i.e. the control ends flush with the compact page gutter. */
   --page-header-extra-measure: 11rem; /* 176px */
 
+  /* Gap between the page title and its status/meta band (PageContainer `status`,
+   * godxjp-ui#255), and between the band's own items. One knob aligns the badge row
+   * to a service's grid; a page that never passes `status` reads neither the token
+   * nor the wrapping row. */
+  --page-header-status-gap: var(--space-inline-sm);
+
   /* Bounded page MEASURE (gh#245 / gh#247) — the shared inline cap applied to the page HEADER and
    * BODY together, so the header `extra` action ends on the same edge as the body surface (the
    * `variant="narrow"` complaint: it caps only `.ui-page-body`, leaving the header action out at

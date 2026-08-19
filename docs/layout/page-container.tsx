@@ -69,8 +69,9 @@ const journalColumns: ColumnDef<JournalEntry>[] = [
 
 /**
  * PageContainer · mandatory page shell.
- * Covers: title/subtitle/extra/footer/breadcrumb/linkComponent + variant
+ * Covers: title/subtitle/status/extra/footer/breadcrumb/linkComponent + variant
  * default/narrow/flush/ghost + density compact/default/comfortable + PageContainer.Inset.
+ * The embedded header is the CANONICAL DXS PageHeader (gh#255) — status/meta band included.
  * Each example is standalone (no AppShell) so the variant behaviour is visible in
  * isolation. Composed only from real @godxjp/ui components.
  */
@@ -124,6 +125,49 @@ export default function Demo() {
           <StatCard label="売掛金残高" value="¥1,284,500" hint="未回収 18件" />
           <StatCard label="回収率" value="96.8%" delta="+1.2%" />
         </ResponsiveGrid>
+      </PageContainer>
+
+      {/* ── 1b. Canonical page-header contract (gh#255) · status/meta band ── */}
+      {/* PageContainer's embedded header IS the DXS PageHeader: breadcrumbs + title +
+          subtitle + status/meta + actions + responsive overflow on ONE renderer. The
+          `status` band shares the title line at --page-header-status-gap and wraps
+          UNDER the long JA title at 390px — nothing clips, no consumer CSS. */}
+      <PageContainer
+        title="株式会社ファムジア（本社・東京オフィス）の組織プロファイル"
+        subtitle="Organization profile · Hồ sơ tổ chức — trạng thái hợp đồng và môi trường"
+        status={
+          <>
+            <Badge tone="success">有効</Badge>
+            <Badge tone="info">本番環境</Badge>
+          </>
+        }
+        breadcrumb={[
+          { label: "ホーム", to: "/" },
+          { label: "組織", to: "/organizations" },
+          { label: "株式会社ファムジア" },
+        ]}
+        breadcrumbLabel="組織プロファイルのパンくず"
+        extra={
+          <Button size="sm" variant="outline">
+            編集
+          </Button>
+        }
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>ステータスバンドの契約</CardTitle>
+            <CardDescription>
+              status はタイトル行に載り、コンパクト幅ではタイトルの下に折り返します。バッジを h1
+              の隣に手置きしないでください — 余白は --page-header-status-gap が所有します。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Text tone="muted">
+              読み込み中は title/subtitle にスケルトンを、拒否 (403) / 不明 (404) / 障害 (5xx)
+              はページごと ErrorSurface に置き換えます。
+            </Text>
+          </CardContent>
+        </Card>
       </PageContainer>
 
       {/* ── 2. Narrow variant · settings form ── */}

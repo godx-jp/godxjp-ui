@@ -63,6 +63,7 @@ export function PageContainerInset({ className, children, ...props }: PageInsetP
 function PageContainerRoot({
   title,
   subtitle,
+  status,
   extra,
   footer,
   breadcrumb,
@@ -145,7 +146,18 @@ function PageContainerRoot({
         )}
         <div className="ui-page-header-row">
           <div className="ui-page-header-heading min-w-0">
-            <h1 className="ui-page-title">{title}</h1>
+            {/* `status` (godxjp-ui#255): the status/meta band shares the title line at the
+                token-owned --page-header-status-gap and wraps UNDER the title on compact
+                viewports. The wrapper row exists only when `status` is passed, so a page
+                without one keeps the exact historical DOM and geometry. */}
+            {status != null ? (
+              <div className="ui-page-header-title-row">
+                <h1 className="ui-page-title">{title}</h1>
+                <div className="ui-page-header-status">{status}</div>
+              </div>
+            ) : (
+              <h1 className="ui-page-title">{title}</h1>
+            )}
             {subtitle && <p className="ui-page-subtitle">{subtitle}</p>}
           </div>
           {extra && <div className="ui-page-header-extra">{extra}</div>}

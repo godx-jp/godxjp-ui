@@ -13,6 +13,12 @@ export type SubtitleProp = React.ReactNode;
 /** Longer explanatory copy — dialog body, empty state body. */
 export type DescriptionProp = React.ReactNode;
 
+/**
+ * Status/meta band beside a title — StatusBadge, environment tag, "updated …" meta text.
+ * Owned by the canonical page-header contract so consumers never hand-lay a badge row.
+ */
+export type StatusProp = React.ReactNode;
+
 /** Top-right action slot on pages (Ant Design `extra`). */
 export type ExtraProp = React.ReactNode;
 

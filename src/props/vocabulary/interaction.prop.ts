@@ -75,8 +75,13 @@ export type ConfirmVariantProp = "default" | "destructive";
 export type ToneProp =
   "default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral";
 
-/** Inline Alert visual treatment. */
-export type AlertVariantProp = "default";
+/**
+ * Alert STRUCTURAL axis (orthogonal to `tone`, which owns colour/semantics):
+ * `default` — the inline card (rounded, framed on all sides);
+ * `banner` — the full-bleed page/shell attention strip the `Banner` export renders
+ * (square corners, hairline block-end rule only, `--banner-*` token geometry).
+ */
+export type AlertVariantProp = "default" | "banner";
 
 /** Sort direction for table columns. */
 export type SortDirectionProp = "asc" | "desc";
