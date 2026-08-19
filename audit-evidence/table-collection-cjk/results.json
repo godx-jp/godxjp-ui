@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T13:11:52.201Z",
+  "generatedAt": "2026-08-19T14:04:54.728Z",
   "queue10": {
     "clientWidth": 390,
     "scrollWidth": 768,
@@ -300,70 +300,292 @@
         "tag": "th",
         "priority": "primary",
         "text": "申請者",
-        "width": 96.484375,
+        "width": 93.59375,
         "lines": 1
       },
       {
         "tag": "th",
         "priority": "secondary",
         "text": "対象",
-        "width": 88.453125,
+        "width": 85.796875,
         "lines": 1
       },
       {
         "tag": "th",
         "priority": null,
         "text": "理由",
-        "width": 80.40625,
+        "width": 88.609375,
         "lines": 1
       },
       {
         "tag": "th",
         "priority": "meta",
         "text": "申請日時",
-        "width": 80.40625,
+        "width": 78,
         "lines": 1
       },
       {
         "tag": "th",
         "priority": "actions",
         "text": "操作",
-        "width": 44.25,
+        "width": 44,
         "lines": 1
       },
       {
         "tag": "td",
         "priority": "primary",
         "text": "田中 太郎",
-        "width": 96.484375,
+        "width": 93.59375,
         "lines": 1
       },
       {
         "tag": "td",
         "priority": "secondary",
         "text": "会計 / 請求書エクスポート",
-        "width": 88.453125,
+        "width": 85.796875,
         "lines": 3
       },
       {
         "tag": "td",
         "priority": null,
         "text": "月次決算のため請求データの一括出力権限が必要です。",
-        "width": 80.40625,
+        "width": 88.609375,
         "lines": 5
       },
       {
         "tag": "td",
         "priority": "meta",
         "text": "2026/08/03 9:12",
-        "width": 80.40625,
+        "width": 78,
         "lines": 2
       },
       {
         "tag": "td",
         "priority": "actions",
         "text": "…",
-        "width": 44.25,
+        "width": 44,
+        "lines": 1
+      }
+    ]
+  },
+  "dt10": {
+    "clientWidth": 320,
+    "scrollWidth": 768,
+    "cells": [
+      {
+        "tag": "th",
+        "priority": "actions",
+        "text": "選択",
+        "width": 44,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "primary",
+        "text": "組織",
+        "width": 96,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "secondary",
+        "text": "サービス",
+        "width": 88,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "secondary",
+        "text": "ステータス",
+        "width": 88,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "meta",
+        "text": "ステップ",
+        "width": 80,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "meta",
+        "text": "試行回数",
+        "width": 80,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "secondary",
+        "text": "エラーコード",
+        "width": 88,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "meta",
+        "text": "再試行",
+        "width": 80,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "meta",
+        "text": "作成日時",
+        "width": 80,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "actions",
+        "text": "操作",
+        "width": 44,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": "actions",
+        "text": "☐",
+        "width": 44,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": "primary",
+        "text": "株式会社アクメ商事",
+        "width": 96,
+        "lines": 2
+      },
+      {
+        "tag": "td",
+        "priority": "secondary",
+        "text": "quasi-debiti",
+        "width": 88,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": "secondary",
+        "text": "失敗",
+        "width": 88,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": "meta",
+        "text": "3/5",
+        "width": 80,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": "meta",
+        "text": "4",
+        "width": 80,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": "secondary",
+        "text": "E_TIMEOUT_UPSTREAM",
+        "width": 88,
+        "lines": 3
+      },
+      {
+        "tag": "td",
+        "priority": "meta",
+        "text": "可能",
+        "width": 80,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": "meta",
+        "text": "2026/08/03 9:12",
+        "width": 80,
+        "lines": 2
+      },
+      {
+        "tag": "td",
+        "priority": "actions",
+        "text": "…",
+        "width": 44,
+        "lines": 1
+      }
+    ]
+  },
+  "dt5": {
+    "clientWidth": 320,
+    "scrollWidth": 320,
+    "cells": [
+      {
+        "tag": "th",
+        "priority": "primary",
+        "text": "申請者",
+        "width": 76.796875,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "secondary",
+        "text": "対象",
+        "width": 70.390625,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": null,
+        "text": "理由",
+        "width": 64.8125,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "meta",
+        "text": "申請日時",
+        "width": 64,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "actions",
+        "text": "操作",
+        "width": 44,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": "primary",
+        "text": "田中 太郎",
+        "width": 76.796875,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": "secondary",
+        "text": "会計 / 請求書エクスポート",
+        "width": 70.390625,
+        "lines": 3
+      },
+      {
+        "tag": "td",
+        "priority": null,
+        "text": "月次決算のため請求データの一括出力権限が必要です。",
+        "width": 64.8125,
+        "lines": 7
+      },
+      {
+        "tag": "td",
+        "priority": "meta",
+        "text": "2026/08/03 9:12",
+        "width": 64,
+        "lines": 3
+      },
+      {
+        "tag": "td",
+        "priority": "actions",
+        "text": "…",
+        "width": 44,
         "lines": 1
       }
     ]

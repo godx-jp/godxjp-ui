@@ -236,14 +236,14 @@ describe("DataTable action-collection preset (gh#253)", () => {
       meta: round((tableWidth * percent("--table-action-collection-meta-width")) / 100),
       actions: rem("--table-action-collection-actions-width"),
     });
-    // gh#262: the compact tier switched from percentages to rem FLOOR measures — fixed
-    // table layout normalizes over-100% percentage columns (the 10-column CJK shredding),
-    // while a length is the one floor it respects. The measures below are therefore
-    // absolute, not derived from the table width.
-    const compact = () => ({
-      primary: rem("--table-action-collection-primary-width-compact"),
-      secondary: rem("--table-action-collection-secondary-width-compact"),
-      meta: rem("--table-action-collection-meta-width-compact"),
+    const compact = (tableWidth: number) => ({
+      primary: round(
+        (tableWidth * percent("--table-action-collection-primary-width-compact")) / 100,
+      ),
+      secondary: round(
+        (tableWidth * percent("--table-action-collection-secondary-width-compact")) / 100,
+      ),
+      meta: round((tableWidth * percent("--table-action-collection-meta-width-compact")) / 100),
       actions: rem("--table-action-collection-actions-width-compact"),
     });
     const free = (tableWidth: number, m: ReturnType<typeof desktop>) =>
@@ -255,21 +255,59 @@ describe("DataTable action-collection preset (gh#253)", () => {
     // 1024 → 766px table
     expect(desktop(766)).toEqual({ primary: 137.9, secondary: 168.5, meta: 91.9, actions: 56 });
     expect(free(766, desktop(766))).toBe(311.7);
-    // 390 → 388px table, compact tier below the `sm` container step. The canonical 5-column
-    // frame (primary + secondary + meta + actions + one flex column) must stay scroll-free:
-    // floors sum to 388px ≤ 390px.
-    expect(compact()).toEqual({ primary: 96, secondary: 88, meta: 80, actions: 44 });
+    // 390 → 388px table, compact PERCENT tier below the `sm` container step — the ratios that
+    // keep the canonical five-column queue scroll-free at the acceptance artboards (gh#253),
+    // restored after the gh#262 floors briefly replaced them and broke exactly that frame.
+    expect(compact(388)).toEqual({ primary: 93.1, secondary: 85.4, meta: 77.6, actions: 44 });
+    expect(free(388, compact(388))).toBe(87.9);
+    // 320 artboard → a 278px content box in the geometry frame: the free-text measure must stay
+    // non-negative there too, or the five columns cannot fit without a scroll.
+    expect(free(278, compact(278))).toBeGreaterThan(0);
+    // Budget invariant: the compact shares sum under 100%, so a queue within the six-column
+    // budget can never be percentage-normalized into sub-glyph columns.
     expect(
-      round(
-        compact().primary +
-          compact().secondary +
-          compact().meta +
-          compact().actions +
-          rem("--table-action-collection-flex-width-compact"),
-      ),
-    ).toBeLessThanOrEqual(390);
+      percent("--table-action-collection-primary-width-compact") +
+        percent("--table-action-collection-secondary-width-compact") +
+        percent("--table-action-collection-meta-width-compact"),
+    ).toBeLessThan(100);
+    // Wide-collection floor tier (gh#262, seven columns and up): absolute rem measures — the
+    // only floor `table-layout: fixed` respects — sized for ~5 CJK glyphs per line at the
+    // compact type tier. The over-constrained table then grows and scrolls by design.
+    expect(rem("--table-action-collection-primary-width-floor")).toBe(96);
+    expect(rem("--table-action-collection-secondary-width-floor")).toBe(88);
+    expect(rem("--table-action-collection-meta-width-floor")).toBe(80);
+    expect(rem("--table-action-collection-flex-width-floor")).toBe(80);
     // The reserved actions measure must clear the WCAG 2.5.8 24px target even at the compact tier.
     expect(rem("--table-action-collection-actions-width-compact")).toBeGreaterThanOrEqual(24);
+  });
+
+  // ── gh#262 follow-up: scroll ownership under the preset ───────────────────────────────────────
+  // Past the column budget the floor tier grows the TABLE past 100%; the surface between the
+  // table and `.ui-data-table-scroll` is an `overflow: hidden` block that cannot size to a
+  // fixed-layout table's degenerate intrinsics, so it would CLIP the grown table before the outer
+  // region ever saw an overflow (the frame-geometry regression on the approval-queue frame).
+  // Only the table's DIRECT wrapper sees the growth — so under the preset the Table primitive's
+  // own wrapper is the keyboard-reachable scroll region, and the outer region drops its tab stop
+  // rather than adding a second, never-scrollable one.
+  it("moves the scroll region to the table's direct wrapper under the preset", () => {
+    const { container } = render(<Queue preset="action-collection" />);
+    const wrapper = container.querySelector(".ui-table-collection")!;
+    const outer = container.querySelector(".ui-data-table-scroll")!;
+
+    expect(wrapper.className).toContain("overflow-auto");
+    expect(wrapper).toHaveAttribute("tabindex", "0");
+    expect(outer).not.toHaveAttribute("tabindex");
+  });
+
+  it("keeps the outer scroll region + tab stop for a DataTable that did not opt in", () => {
+    const { container } = render(<Queue />);
+    const outer = container.querySelector(".ui-data-table-scroll")!;
+    const wrapper = outer.querySelector(".ui-data-table-surface > div")!;
+
+    expect(outer).toHaveAttribute("tabindex", "0");
+    // The primitive's wrapper stays a bare positioning box — no nested scroller, no second stop.
+    expect(wrapper.className).not.toContain("overflow-auto");
+    expect(wrapper).not.toHaveAttribute("tabindex");
   });
 
   it("does not regress the gh#236 pagination inset tokens", () => {

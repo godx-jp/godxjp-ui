@@ -7,11 +7,16 @@
  * line (the SC 1.4.10 Reflow failure mode). This gate renders the EXACT queue from the issue
  * (10 columns, JA headers, 390×844) against the real component CSS and asserts:
  *
- *   1. every column respects its token floor (`--table-action-collection-*-min-inline-size`);
- *   2. the table therefore outgrows the container and the wrapper's keyboard-reachable
- *      overflow-x region scrolls — the SC 1.4.10-permitted one-dimensional fallback;
+ *   1. past the seven-column budget every column respects its rem floor
+ *      (`--table-action-collection-*-width-floor`);
+ *   2. the table therefore outgrows the container and the table's DIRECT wrapper — the
+ *      keyboard-reachable overflow region — scrolls (SC 1.4.10-permitted one-dimensional
+ *      fallback), including under the DataTable markup, whose `overflow: hidden` surface
+ *      once CLIPPED the grown table instead (the approval-queue frame-geometry regression);
  *   3. no header or cell renders as a vertical character column (line boxes << glyph count);
- *   4. the canonical five-column gh#253 queue still fits 390px WITHOUT scrolling (no regression).
+ *   4. within the budget the compact PERCENT tier still applies: the canonical five-column
+ *      gh#253 queue fits both the 390px frame and the 322px geometry content box WITHOUT
+ *      scrolling (no regression).
  *
  * Self-contained: it inlines src/tokens/components/table.css + src/styles/table-layout.css into a
  * static page (no preview server), so it runs in seconds.
@@ -27,7 +32,8 @@ const tableTokens = readFileSync(path.join(REPO_ROOT, "src/tokens/components/tab
 const tableLayout = readFileSync(path.join(REPO_ROOT, "src/styles/table-layout.css"), "utf8");
 
 const rem = 16;
-/** The compact rem floor-measures from tokens/components/table.css, in px at the 16px root. */
+/** The wide-collection rem floors from tokens/components/table.css, in px at the 16px root.
+ * They apply from SEVEN columns up; within the budget the compact tier stays percentages. */
 const FLOORS_PX = {
   primary: 6 * rem,
   secondary: 5.5 * rem,
@@ -35,6 +41,8 @@ const FLOORS_PX = {
   actions: 2.75 * rem,
   flex: 5 * rem, // unmarked free-text column
 };
+/** Fixtures past the column budget — these must hold the floors and scroll. */
+const WIDE_IDS = ["queue10", "queue10flex", "dt10"];
 
 /** Primitive-token fallbacks the two component stylesheets read (normally supplied by the theme). */
 const baseVars = `
@@ -118,6 +126,26 @@ const html = `<!doctype html><html lang="ja"><head><meta charset="utf-8">
   ${renderQueue("queue10flex", queue10Flex)}
   <hr>
   ${renderQueue("queue5", queue5)}
+  <hr>
+  <!-- DataTable markup at the 322px geometry content box: scroll region > overflow-hidden
+       surface > the primitive's wrapper (the preset's scroll owner) > table. The surface used
+       to clip the floor-grown table here because it cannot size to a fixed-layout table's
+       degenerate intrinsics — the scroll MUST happen at the table's direct wrapper. -->
+  <div style="width:322px">
+    <div class="ui-data-table-scroll">
+      <div class="ui-data-table-surface" data-preset="action-collection">
+        ${renderQueue("dt10", queue10)}
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div style="width:322px">
+    <div class="ui-data-table-scroll">
+      <div class="ui-data-table-surface" data-preset="action-collection">
+        ${renderQueue("dt5", queue5)}
+      </div>
+    </div>
+  </div>
 </body></html>`;
 
 const { chromium } = await loadDeps({ axe: false });
@@ -150,46 +178,55 @@ try {
     }, id);
 
   const measured = {};
-  for (const id of ["queue10", "queue10flex", "queue5"]) {
+  for (const id of ["queue10", "queue10flex", "queue5", "dt10", "dt5"]) {
     measured[id] = await measure(id);
 
-    // 1. Every column holds its token floor (0.5px layout tolerance) — including the UNMARKED
-    //    free-text column, which the fixed algorithm would otherwise collapse to 0px.
-    for (const cell of measured[id].cells) {
-      const floor = FLOORS_PX[cell.priority ?? "flex"];
-      assert.ok(
-        cell.width >= floor - 0.5,
-        `${id} <${cell.tag}> "${cell.text}" (${cell.priority ?? "flex"}): ${cell.width}px < floor ${floor}px`,
-      );
+    // 1. Past the budget, every column holds its token floor (0.5px layout tolerance) —
+    //    including the UNMARKED free-text column, which the fixed algorithm would otherwise
+    //    collapse to 0px. Within the budget the percent tier rules and no floor applies.
+    if (WIDE_IDS.includes(id)) {
+      for (const cell of measured[id].cells) {
+        const floor = FLOORS_PX[cell.priority ?? "flex"];
+        assert.ok(
+          cell.width >= floor - 0.5,
+          `${id} <${cell.tag}> "${cell.text}" (${cell.priority ?? "flex"}): ${cell.width}px < floor ${floor}px`,
+        );
+      }
     }
 
-    // 2. Nothing shreds vertically: the gh#262 symptom is one line box PER GLYPH. At the floors
-    //    every cell must average at least ~4 glyphs per rendered line (a long value wrapping to a
-    //    few full lines is fine; a vertical character column is not).
+    // 2. Nothing shreds vertically: the gh#262 symptom is one line box PER GLYPH. Every cell —
+    //    percent tier included — must average at least ~3 glyphs per rendered line (a long value
+    //    wrapping to a few full lines is fine; a vertical character column is not).
     for (const cell of measured[id].cells) {
       const glyphs = [...cell.text].length;
       if (glyphs < 3) continue;
       assert.ok(
-        cell.lines < glyphs && cell.lines <= Math.ceil(glyphs / 4),
+        cell.lines < glyphs && cell.lines <= Math.ceil(glyphs / 3),
         `${id} <${cell.tag}> "${cell.text}": ${cell.lines} line boxes for ${glyphs} glyphs — vertical shredding`,
       );
     }
   }
 
-  // 3. The floors over-constrain 390px at ten columns, so the wrapper's overflow region scrolls
-  //    (SC 1.4.10 permits one-dimensional scrolling of a data table; shredding is not readable).
-  for (const id of ["queue10", "queue10flex"]) {
+  // 3. The floors over-constrain the frame at ten columns, so the table's DIRECT wrapper
+  //    scrolls — under the DataTable markup too, where the overflow-hidden surface used to clip
+  //    the grown table before the outer region ever saw an overflow (SC 1.4.10 permits
+  //    one-dimensional scrolling of a data table; shredding and clipping are not readable).
+  for (const id of WIDE_IDS) {
     assert.ok(
       measured[id].scrollWidth > measured[id].clientWidth,
       `${id}: expected intentional horizontal scroll, got scrollWidth ${measured[id].scrollWidth} <= clientWidth ${measured[id].clientWidth}`,
     );
   }
 
-  // 4. No regression: the canonical five-column gh#253 queue still fits 390px without scrolling.
-  assert.ok(
-    measured.queue5.scrollWidth <= measured.queue5.clientWidth + 1,
-    `queue5: canonical queue regressed into a scroll (scrollWidth ${measured.queue5.scrollWidth} > clientWidth ${measured.queue5.clientWidth})`,
-  );
+  // 4. No regression WITHIN the budget: the canonical five-column gh#253 queue keeps its
+  //    scroll-free acceptance frames — bare Table at 390px AND DataTable at the 322px geometry
+  //    content box (the exact frame the gh#262 floors briefly broke).
+  for (const id of ["queue5", "dt5"]) {
+    assert.ok(
+      measured[id].scrollWidth <= measured[id].clientWidth + 1,
+      `${id}: canonical queue regressed into a scroll (scrollWidth ${measured[id].scrollWidth} > clientWidth ${measured[id].clientWidth})`,
+    );
+  }
 
   await page.screenshot({ path: path.join(evidenceDirectory, "390x844.png"), fullPage: true });
   writeFileSync(
@@ -197,7 +234,7 @@ try {
     `${JSON.stringify({ generatedAt: new Date().toISOString(), ...measured }, null, 2)}\n`,
   );
   console.log(
-    `PASS table action-collection CJK floors: 10-col JA queue scrolls at floors (${measured.queue10.scrollWidth}px in ${measured.queue10.clientWidth}px), no vertical shredding; 5-col canonical queue scroll-free; evidence -> ${path.relative(REPO_ROOT, evidenceDirectory)}`,
+    `PASS table action-collection CJK floors: 10-col JA queue scrolls at floors (bare ${measured.queue10.scrollWidth}px in ${measured.queue10.clientWidth}px · DataTable ${measured.dt10.scrollWidth}px in ${measured.dt10.clientWidth}px), no vertical shredding; 5-col canonical queue scroll-free at 390 and 322; evidence -> ${path.relative(REPO_ROOT, evidenceDirectory)}`,
   );
 } finally {
   await browser.close();

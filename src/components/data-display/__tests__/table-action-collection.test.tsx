@@ -154,18 +154,28 @@ describe("Table action-collection preset (gh#253)", () => {
 describe("Table action-collection priority floors (gh#262)", () => {
   // jsdom performs no table layout, so the geometry itself is exercised by the Playwright script
   // (scripts/table-collection-cjk-visual.mjs, 10 CJK columns at 390px). Here we pin the CONTRACT:
-  // every compact measure is a LENGTH floor (the only floor `table-layout: fixed` respects —
-  // over-constrained percentage columns are normalized back into the frame and shred CJK headers
-  // one character per line), the unmarked column is floored below the step, and the overflow
-  // fallback region the floors rely on actually exists on the rendered wrapper.
+  // up to the six-column budget the compact tier stays the gh#253 percentage ratios (canonical
+  // queues keep their scroll-free acceptance frames), and from SEVEN columns a `:has()` tier
+  // swaps in rem LENGTH floors — the only floor `table-layout: fixed` respects: over-constrained
+  // percentage columns are normalized back into the frame and shred CJK headers one character
+  // per line, while length columns grow the table into the wrapper's scroll region instead.
 
-  it("floors every compact measure as a rem length — never a normalizable percentage", () => {
+  it("keeps the compact ratios as percentages and owns a rem floor per priority", () => {
     for (const token of [
       "--table-action-collection-primary-width-compact",
       "--table-action-collection-secondary-width-compact",
       "--table-action-collection-meta-width-compact",
-      "--table-action-collection-actions-width-compact",
-      "--table-action-collection-flex-width-compact",
+    ]) {
+      // Percent within the budget: ratios keep a five-column queue filling — never overflowing —
+      // its container at every acceptance artboard.
+      expect(tableTokens).toMatch(new RegExp(`${token}:\\s*[\\d.]+%;`));
+      expect(tableCssFlat).toContain(`var(${token})`);
+    }
+    for (const token of [
+      "--table-action-collection-primary-width-floor",
+      "--table-action-collection-secondary-width-floor",
+      "--table-action-collection-meta-width-floor",
+      "--table-action-collection-flex-width-floor",
     ]) {
       // rem, not %: fixed layout scales over-constrained percentages back down (sub-glyph
       // columns), while length columns grow the table into the scroll region instead.
@@ -176,17 +186,22 @@ describe("Table action-collection priority floors (gh#262)", () => {
     }
   });
 
-  it("floors the unmarked free-text column below the step — auto would collapse to 0px", () => {
-    // Base rule: the cell measure falls back through the flex slot before `auto`, so the
-    // container query can floor unmarked columns without touching marked ones.
+  it("switches to the floor tier at the documented seven-column budget, at every step", () => {
+    // The budget is a `:has()` column-count gate per collapse step: within six columns the rule
+    // never matches (percent tier, scroll-free canon); from seven the shares are guaranteed to
+    // over-sum and every column — the unmarked free-text one included, which `auto` would
+    // collapse to 0px — takes its rem floor, so the table grows and the wrapper scrolls.
+    const gate =
+      ':has([data-slot="table-head"]:nth-child(7)){--table-action-collection-primary-width:var(--table-action-collection-primary-width-floor);';
+    expect(tableCssFlat.split(gate).length - 1).toBe(4); // sm / md / lg / xl
+    const flexFloor =
+      "--table-action-collection-flex-width:var(--table-action-collection-flex-width-floor)";
+    expect(tableCssFlat.split(flexFloor).length - 1).toBe(4);
+    // Base rule: the cell measure falls back through the flex slot before `auto`, so the floor
+    // tier can floor unmarked columns without touching marked ones.
     expect(tableCssFlat).toContain(
       "inline-size:var(--table-action-collection-column-width,var(--table-action-collection-flex-width,auto))",
     );
-    // Every collapse step re-points the flex slot at the compact flex floor.
-    const occurrences = tableCssFlat.split(
-      "--table-action-collection-flex-width:var(--table-action-collection-flex-width-compact)",
-    ).length;
-    expect(occurrences - 1).toBe(4); // sm / md / lg / xl
   });
 
   it("keeps the keyboard-reachable horizontal overflow region the floors fall back to", () => {

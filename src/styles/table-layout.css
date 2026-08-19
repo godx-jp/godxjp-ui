@@ -284,13 +284,13 @@
 
   .ui-table-collection :is([data-slot="table-head"], [data-slot="table-cell"]) {
     /* The column measure comes from `priority`; an unmarked column takes what is left (`auto`),
-     * which is the free-text column — EXCEPT below the collapse step, where the container query
-     * re-points the middle fallback at the compact flex measure (gh#262): the fixed algorithm
-     * hands an auto column 0px once the marked columns over-constrain the table, which is the
-     * one-character-per-line shredding this preset must never produce. Below the step every
-     * column therefore carries a rem floor-measure; once the floors outgrow the container the
-     * table's used width grows past its specified 100% (CSS 2.1 §17.5.2.1) and the wrapper's
-     * existing keyboard-reachable overflow-x region scrolls — the SC 1.4.10-permitted
+     * which is the free-text column — EXCEPT past the seven-column budget below the collapse
+     * step, where the `:has()` tier re-points the middle fallback at the flex floor (gh#262):
+     * the fixed algorithm hands an auto column 0px once the marked columns over-constrain the
+     * table, which is the one-character-per-line shredding this preset must never produce.
+     * There every column carries a rem floor-measure; once the floors outgrow the container the
+     * table's used width grows past its specified 100% (CSS 2.1 §17.5.2.1) and the DIRECT
+     * wrapper's keyboard-reachable overflow-x region scrolls — the SC 1.4.10-permitted
      * one-dimensional scroll, instead of unreadable shredding (see tokens/components/table.css). */
     inline-size: var(
       --table-action-collection-column-width,
@@ -335,7 +335,6 @@
       );
       --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
       --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
-      --table-action-collection-flex-width: var(--table-action-collection-flex-width-compact);
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
@@ -347,6 +346,21 @@
     [data-collapse-below="sm"] [data-slot="table-cell"] * {
       white-space: normal;
     }
+
+    /* SEVEN columns and up — the wide-collection floor tier (gh#262). Percent shares are
+     * guaranteed to sum past 100% here and fixed layout would normalize them into sub-glyph
+     * columns, so every column (the unmarked free-text one included) takes its rem floor
+     * instead; the over-constrained table grows past 100% and its wrapper scrolls. Up to six
+     * columns this rule never matches and the percent tier above keeps the canonical queues
+     * scroll-free — the preset's documented column-count ceiling. */
+    [data-collapse-below="sm"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
+      --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+      --table-action-collection-secondary-width: var(
+        --table-action-collection-secondary-width-floor
+      );
+      --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+      --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+    }
   }
 
   @container ui-table-collection (width < 48rem) {
@@ -357,7 +371,6 @@
       );
       --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
       --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
-      --table-action-collection-flex-width: var(--table-action-collection-flex-width-compact);
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
@@ -369,6 +382,21 @@
     [data-collapse-below="md"] [data-slot="table-cell"] * {
       white-space: normal;
     }
+
+    /* SEVEN columns and up — the wide-collection floor tier (gh#262). Percent shares are
+     * guaranteed to sum past 100% here and fixed layout would normalize them into sub-glyph
+     * columns, so every column (the unmarked free-text one included) takes its rem floor
+     * instead; the over-constrained table grows past 100% and its wrapper scrolls. Up to six
+     * columns this rule never matches and the percent tier above keeps the canonical queues
+     * scroll-free — the preset's documented column-count ceiling. */
+    [data-collapse-below="md"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
+      --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+      --table-action-collection-secondary-width: var(
+        --table-action-collection-secondary-width-floor
+      );
+      --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+      --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+    }
   }
 
   @container ui-table-collection (width < 64rem) {
@@ -379,7 +407,6 @@
       );
       --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
       --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
-      --table-action-collection-flex-width: var(--table-action-collection-flex-width-compact);
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
@@ -391,6 +418,21 @@
     [data-collapse-below="lg"] [data-slot="table-cell"] * {
       white-space: normal;
     }
+
+    /* SEVEN columns and up — the wide-collection floor tier (gh#262). Percent shares are
+     * guaranteed to sum past 100% here and fixed layout would normalize them into sub-glyph
+     * columns, so every column (the unmarked free-text one included) takes its rem floor
+     * instead; the over-constrained table grows past 100% and its wrapper scrolls. Up to six
+     * columns this rule never matches and the percent tier above keeps the canonical queues
+     * scroll-free — the preset's documented column-count ceiling. */
+    [data-collapse-below="lg"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
+      --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+      --table-action-collection-secondary-width: var(
+        --table-action-collection-secondary-width-floor
+      );
+      --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+      --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+    }
   }
 
   @container ui-table-collection (width < 80rem) {
@@ -401,7 +443,6 @@
       );
       --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
       --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
-      --table-action-collection-flex-width: var(--table-action-collection-flex-width-compact);
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
@@ -412,6 +453,21 @@
      * compact measure — inside a collapsed action cell everything wraps. */
     [data-collapse-below="xl"] [data-slot="table-cell"] * {
       white-space: normal;
+    }
+
+    /* SEVEN columns and up — the wide-collection floor tier (gh#262). Percent shares are
+     * guaranteed to sum past 100% here and fixed layout would normalize them into sub-glyph
+     * columns, so every column (the unmarked free-text one included) takes its rem floor
+     * instead; the over-constrained table grows past 100% and its wrapper scrolls. Up to six
+     * columns this rule never matches and the percent tier above keeps the canonical queues
+     * scroll-free — the preset's documented column-count ceiling. */
+    [data-collapse-below="xl"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
+      --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
+      --table-action-collection-secondary-width: var(
+        --table-action-collection-secondary-width-floor
+      );
+      --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
+      --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
     }
   }
 }

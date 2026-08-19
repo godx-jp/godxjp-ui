@@ -735,8 +735,10 @@ DataTable.Content = function DataTableContent() {
       // A table wider than its container scrolls horizontally here; keep the scroll region
       // keyboard-reachable so it can be scrolled without a pointer (WCAG 2.1.1 / axe
       // scrollable-region-focusable). No landmark role — avoids landmark-unique collisions
-      // when a page renders several tables.
-      tabIndex={0}
+      // when a page renders several tables. With the collection preset the Table primitive's
+      // own wrapper owns the overflow + tab stop instead (see `scrollable` below), so this
+      // region drops its tab stop rather than adding a second, never-scrollable one.
+      tabIndex={presetAttr ? undefined : 0}
     >
       <div
         // The narrow-viewport width floor is `--table-surface-min-inline-size` (gh#253) — it used
@@ -748,7 +750,16 @@ DataTable.Content = function DataTableContent() {
         data-striped={striped ? "" : undefined}
         data-hoverable={hoverable ? "" : undefined}
       >
-        <Table scrollable={false} preset={preset} collapseBelow={collapseBelow}>
+        {/* With `preset="default"` the `.ui-data-table-scroll` region above owns the overflow, so
+            the primitive's wrapper is a bare box (`scrollable={false}` — no nested scroller, no
+            duplicate tab stop). The collection preset flips that (gh#262): past its column
+            budget the floor tier grows the TABLE past 100%, and the surface between here and
+            the scroll region is an `overflow: hidden` block that cannot size to a fixed-layout
+            table's degenerate intrinsics — it would CLIP the grown table before the outer
+            region ever saw an overflow. Only the table's DIRECT wrapper sees the growth, so for
+            the preset that wrapper is the keyboard-reachable scroll region (exactly the bare
+            `Table` behaviour), scrolling inside the surface border. */}
+        <Table scrollable={preset !== "default"} preset={preset} collapseBelow={collapseBelow}>
           <TableHeader className={cn("bg-secondary", stickyHeader && "sticky top-0 z-10")}>
             <TableRow>
               {selectable && (

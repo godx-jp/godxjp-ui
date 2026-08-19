@@ -25,6 +25,12 @@ export type TableProps = React.HTMLAttributes<HTMLTableElement> & {
    * of forcing a horizontal scroll. Mark each column with `priority` on its `TableHead`/`TableCell`.
    * The table keeps its real semantics: no `display` change, no role rewriting, no card swap, so
    * header association, `aria-sort` and screen-reader table navigation are identical at every width.
+   *
+   * Column-count ceiling (gh#262): the wrap-instead-of-scroll contract holds up to SIX columns.
+   * From seven, the priority shares cannot fit a phone frame, so below the step each column takes
+   * its rem floor (`--table-action-collection-*-width-floor`, ~5 CJK glyphs per line) and the
+   * table intentionally scrolls inside this wrapper — SC 1.4.10 permits one-dimensional scrolling
+   * of a data table; compressing further would shred CJK headers one character per line.
    */
   preset?: TablePresetProp;
   /**
