@@ -53,5 +53,9 @@
     "react",
     "claude",
     "cursor"
-  ]
+  ],
+  "author": "GoDX (https://godx.jp)",
+  "bugs": {
+    "url": "https://github.com/godx-jp/godxjp-ui/issues"
+  }
 }

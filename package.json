@@ -2,6 +2,16 @@
   "name": "@godxjp/ui",
   "version": "18.6.0",
   "godxUiMcp": "18.6.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godx-jp/godxjp-ui.git"
+  },
+  "homepage": "https://github.com/godx-jp/godxjp-ui#readme",
+  "bugs": {
+    "url": "https://github.com/godx-jp/godxjp-ui/issues"
+  },
+  "author": "GoDX (https://godx.jp)",
   "type": "module",
   "packageManager": "pnpm@10.29.1",
   "pnpm": {
@@ -12,6 +22,7 @@
   "sideEffects": false,
   "description": "@godxjp/ui — shared React UI framework (shadcn + Radix + Tailwind v4).",
   "files": [
+    "LICENSE",
     "dist",
     "scripts/ui-audit.mjs",
     "README.md",
