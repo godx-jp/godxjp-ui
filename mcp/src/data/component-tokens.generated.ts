@@ -1390,8 +1390,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--form-label-width",
-    "value": "max-content",
-    "description": "Width of the label column in horizontal/inline layout. A service theme sets * this once (e.g. 110px) to align every form to its design grid; the Form/ * FormField `labelWidth` prop overrides per form/field."
+    "value": "8rem",
+    "description": "Fixed aligned label column by default (gh#284) — `max-content` sized each field's label * column to its own label, so horizontal forms (especially columns={2} grids) had controls * starting at ragged x positions. 8rem mirrors --descriptions-label-width so edit forms and * show pages share the same optical grid; the Form/FormField `labelWidth` prop overrides."
   },
   {
     "name": "--form-label-gap",
