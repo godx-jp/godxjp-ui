@@ -214,16 +214,20 @@ export function Pagination({
         >
           <SelectTrigger
             // 幅はコンテンツに合わせる (gh#286) — 固定幅はロケールの長い
-            // ラベル (ja「100 / ページ」) を切り詰める。token は下限のみ。
+            // ラベル (ja「100 件/ページ」) を切り詰める。token は下限のみ。
             className="ui-pagination-size-trigger w-max min-w-[var(--pagination-size-width)]"
             aria-label={t("navigation.pagination.pageSize")}
           >
-            <SelectValue />
+            {/* トリガーだけ単位付き (「20 件/ページ」) — メニュー項目は素の数値
+              * (gh#289, MUI/kintone 方式): 全行に単位を繰り返すと冗長で長い。 */}
+            <SelectValue>
+              {t("navigation.pagination.pageSizeOption", { size: pageSize })}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {pageSizeOptions.map((size) => (
               <SelectItem key={size} value={String(size)}>
-                {t("navigation.pagination.pageSizeOption", { size })}
+                {size}
               </SelectItem>
             ))}
           </SelectContent>
