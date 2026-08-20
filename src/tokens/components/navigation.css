@@ -3,6 +3,9 @@
 :root {
   --pagination-gap: var(--space-inline-sm);
   --pagination-item-gap: var(--space-inline-xs);
+  /* Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so
+   * localized labels (ja 100/ページ) never clip; this token only keeps short labels from
+   * collapsing below the control rhythm. */
   --pagination-size-width: 5.5rem;
   --pagination-total-font-size: var(--font-size-sm);
   --filter-bar-gap: var(--space-3);

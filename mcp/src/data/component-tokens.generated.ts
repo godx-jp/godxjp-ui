@@ -1761,57 +1761,57 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--pagination-size-width",
     "value": "5.5rem",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--pagination-total-font-size",
     "value": "var(--font-size-sm)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--filter-bar-gap",
     "value": "var(--space-3)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--filter-bar-padding-y",
     "value": "var(--space-2)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--filter-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--filter-picker-width-sm",
     "value": "11rem",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--filter-picker-width-md",
     "value": "14rem",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--steps-inline-gap",
     "value": "var(--space-2)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--steps-inline-item-gap",
     "value": "var(--space-1)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--steps-inline-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--steps-inline-separator-size",
     "value": "var(--control-icon-size-sm)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
     "name": "--steps-inline-index-font-weight",

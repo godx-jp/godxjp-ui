@@ -213,7 +213,9 @@ export function Pagination({
           disabled={disabled}
         >
           <SelectTrigger
-            className="ui-pagination-size-trigger w-[var(--pagination-size-width)]"
+            // 幅はコンテンツに合わせる (gh#286) — 固定幅はロケールの長い
+            // ラベル (ja「100 / ページ」) を切り詰める。token は下限のみ。
+            className="ui-pagination-size-trigger w-max min-w-[var(--pagination-size-width)]"
             aria-label={t("navigation.pagination.pageSize")}
           >
             <SelectValue />
