@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Region focus ring is token-gated and OFF by default (gh#276)** — gh#271 gave
+  `.app-main:focus-visible` the control-strength DS ring, but a 2px brand frame around the whole
+  content region reads as a glitch to mouse-first users (`:focus-visible` promotes on any keypress
+  after a click-focus). New tokens: `--region-focus-ring-width` (default `0` — no ring; a
+  deliberate product tradeoff against WCAG 2.4.7 keyboard-scroll visibility) and
+  `--region-focus-ring-color` (`initial` → resolves to the live focus-ring hue at the call site).
+  Opt back in with one line: `--region-focus-ring-width: var(--focus-ring-width);`.
+
 - **`Table bordered` prop (gh#274)** — draws the full cell grid: a 1px outer frame plus vertical
   rules between columns (horizontal row rules already come from TableRow). For tables carrying
   rowSpan/colSpan merged cells (permission matrices, 帳票-style grids) — without column rules the
