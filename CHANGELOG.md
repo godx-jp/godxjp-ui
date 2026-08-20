@@ -70,6 +70,14 @@ card-stack-gap, identity-slot-block-size}`. Worked screen:
 
 ### Fixed
 
+- **AppShell content region no longer shows the browser default blue focus ring (gh#271)** —
+  `.app-main` carries `tabindex="0"` (axe `scrollable-region-focusable`, dbad118) but had no
+  `:focus-visible` style, so tabbing into the region drew the user-agent outline (blue in
+  Chrome) around the entire content area. It now uses the design-system ring
+  (`--focus-ring-width` / `--focus-ring-color`→`--ring`), INSET because `.app-main` is the
+  shell's `contain: paint` clip boundary. The indicator stays visible — the region is
+  keyboard-focusable and WCAG 2.4.7 requires focus to be shown.
+
 - **Release staging dist-tags no longer accumulate on the registry.** Every release staged both
   packages under a per-version `godx-staging-${version}` dist-tag and planned a final
   `npm dist-tag rm` pair — but deleting a dist-tag needs npm DELETE rights the CI automation token
