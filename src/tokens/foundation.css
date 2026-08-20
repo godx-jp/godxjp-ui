@@ -153,6 +153,17 @@
    * default re-resolves at the element that paints the ring while an explicit override still wins. */
   --focus-ring-color: initial; /* default = the live --ring role */
   --focus-ring-width: 2px;
+  /* REGION focus ring — the keyboard-scroll affordance on large scroll REGIONS (`.app-main`,
+   * gh#271/gh#276), separate from the control ring above. A control-strength 2px brand frame
+   * around the entire content area reads as a glitch to mouse-first users (`:focus-visible`
+   * promotes on any keypress after a click-focus), so the DEFAULT IS OFF — a deliberate,
+   * product-owner tradeoff against WCAG 2.4.7 for keyboard-scroll visibility. A service that
+   * needs the visible affordance opts in with ONE token:
+   *   --region-focus-ring-width: var(--focus-ring-width);
+   * `--region-focus-ring-color` is declared `initial` (NOT a :root var binding — the freeze
+   * rule) and resolves to the live focus-ring hue at the element that paints it. */
+  --region-focus-ring-width: 0;
+  --region-focus-ring-color: initial; /* default = hsl(var(--focus-ring-color, var(--ring))) */
 
   /* GRADIENTS — opt-in decorative fills exposed at the token layer so a service can paint a hero
    * banner, a brand wash, or a radial brand glow purely by configuring tokens (cardinal rule #45).
