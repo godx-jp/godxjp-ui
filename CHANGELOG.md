@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`Table bordered` prop (gh#274)** — draws the full cell grid: a 1px outer frame plus vertical
+  rules between columns (horizontal row rules already come from TableRow). For tables carrying
+  rowSpan/colSpan merged cells (permission matrices, 帳票-style grids) — without column rules the
+  merge relationships are unreadable. Colour via the new `--table-border-color` component token
+  (declared `initial`, resolving to the live `--border` role at the call site). Default `false`
+  keeps the plain table byte-identical.
+
 ### Fixed
 
 - **DataTable scroll-hint fade rendered unconditionally (gh#267)** — `.ui-data-table-scroll::after`
