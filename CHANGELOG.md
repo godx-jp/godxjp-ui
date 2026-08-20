@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Alert's default radius is now the Card radius (gh#282, gh#268 follow-up)** — an Alert almost
+  always sits in the same page column as Cards, and the old `--radius-md` default (2 φ-steps
+  smaller than `--card-radius`) read as mismatched corners that every tenant re-aligned by hand.
+  `--alert-radius` now defaults to `var(--card-radius)`; override the token for a smaller radius.
+
 - **Plain (non-searchable) Select honors `clearable` (gh#280)** — the plain branch dropped the
   prop entirely, so no clear affordance ever rendered despite the documented default-true
   contract. It now mirrors SearchSelect: while a CONTROLLED value is selected (and not
