@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Page-size TRIGGER uses the shortest per-locale form (gh#290)** — the long unit on the
+  control itself (「50 件/ページ」) took disproportionate space; the trigger now renders the new
+  `pageSizeTrigger` string (ja 「50件」 / en "50 / page" / vi "50 / trang", the kintone
+  treatment) while the menu keeps bare numbers (gh#289) and the ページサイズ aria-label stays.
+
 - **Page-size menu is compact (gh#289)** — repeating the full localized unit on every dropdown
   row (「15 件/ページ」×4) was long and redundant; the menu now lists bare numbers while the
   TRIGGER keeps the localized unit (「20 件/ページ」), the MUI/kintone treatment.

@@ -302,6 +302,7 @@
       "next": "次のページ",
       "page": "ページ {page}",
       "pageSize": "ページサイズ",
+      "pageSizeTrigger": "{size}件",
       "pageSizeOption": "{size} 件/ページ",
       "total": "全 {total} 件"
     },

@@ -311,6 +311,7 @@
       "next": "Next page",
       "page": "Page {page}",
       "pageSize": "Page size",
+      "pageSizeTrigger": "{size} / page",
       "pageSizeOption": "{size} / page",
       "total": {
         "one": "Total {total} item",
