@@ -6,7 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **DataTable scroll-hint fade rendered unconditionally (gh#267)** — `.ui-data-table-scroll::after`
+  was pure CSS with no overflow detection, so every table WITHOUT a `pin:'end'` column showed a
+  permanent inline-end fade washing out its last column even when nothing scrolls. The component
+  now measures the scroll box (scroll + ResizeObserver, RTL-safe) and stamps
+  `.ui-data-table-has-overflow-end`; the fade only shows while the region overflows and is not
+  scrolled to the inline-end.
+
 ### Added
+
+- **`--alert-radius` component token (gh#268 — rule #45)** — Alert's corner radius was a
+  hard-coded `--radius-md`; a full-width Alert sitting above a Card (`--card-radius`, 2 φ-steps
+  larger) read as unsynchronized corners with no knob to align them. Default unchanged.
+
 
 - **`AuthShell preset="registration"` (gh#256)** — the canonical SCR-002 sign-up measure: a
   22.5rem/360px form measure with a 15px inline gutter at 390 (card x=15, width=360, the same page
@@ -77,6 +91,14 @@ card-stack-gap, identity-slot-block-size}`. Worked screen:
   something drives it — a numbered `<DataTable.Pagination>` child (cursor mode is server
   paging and is never client-sliced), or controlled `pagination`/`onPaginationChange` state.
   A plain table renders every row.
+
+- **AppShell content region no longer shows the browser default blue focus ring (gh#271)** —
+  `.app-main` carries `tabindex="0"` (axe `scrollable-region-focusable`, dbad118) but had no
+  `:focus-visible` style, so tabbing into the region drew the user-agent outline (blue in
+  Chrome) around the entire content area. It now uses the design-system ring
+  (`--focus-ring-width` / `--focus-ring-color`→`--ring`), INSET because `.app-main` is the
+  shell's `contain: paint` clip boundary. The indicator stays visible — the region is
+  keyboard-focusable and WCAG 2.4.7 requires focus to be shown.
 
 - **Release staging dist-tags no longer accumulate on the registry.** Every release staged both
   packages under a per-version `godx-staging-${version}` dist-tag and planned a final
