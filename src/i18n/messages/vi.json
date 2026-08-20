@@ -302,6 +302,7 @@
       "next": "Trang sau",
       "page": "Trang {page}",
       "pageSize": "Số dòng mỗi trang",
+      "pageSizeTrigger": "{size} / trang",
       "pageSizeOption": "{size} / trang",
       "total": "Tổng {total} mục"
     },

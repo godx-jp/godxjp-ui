@@ -218,10 +218,11 @@ export function Pagination({
             className="ui-pagination-size-trigger w-max min-w-[var(--pagination-size-width)]"
             aria-label={t("navigation.pagination.pageSize")}
           >
-            {/* トリガーだけ単位付き (「20 件/ページ」) — メニュー項目は素の数値
-              * (gh#289, MUI/kintone 方式): 全行に単位を繰り返すと冗長で長い。 */}
+            {/* トリガーはロケール別の最短形 (ja「20件」/ en「20 / page」) —
+              * gh#290: コントロール上の長い単位表記が場所を取るため。
+              * メニュー項目は素の数値 (gh#289)。 */}
             <SelectValue>
-              {t("navigation.pagination.pageSizeOption", { size: pageSize })}
+              {t("navigation.pagination.pageSizeTrigger", { size: pageSize })}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
