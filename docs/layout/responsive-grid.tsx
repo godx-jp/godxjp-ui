@@ -16,7 +16,9 @@ import { Flex, PageContainer, ResponsiveGrid, SplitPane } from "@godxjp/ui/layou
  * with no external container-type declaration (gh#165). Direct children are typically
  * StatCard (self-contained bordered card · never wrap in Card/CardContent) or
  * Card+CardContent for richer tile bodies. columns accepts a number OR breakpoint
- * object { sm?, md?, lg? }. Composed only from real @godxjp/ui components.
+ * object { sm?, md?, lg? } — or use the named `preset` prop (e.g. "pricing-plans") for a
+ * recognised collection shape instead of hand-rolling the breakpoint map. Composed only from
+ * real @godxjp/ui components.
  */
 export default function Demo() {
   return (
@@ -178,6 +180,52 @@ export default function Demo() {
               <StatCard layout="inline" label="消費税額" value="¥480,000" hint="税率 10%" />
               <StatCard layout="inline" label="支払済" value="¥2,400,000" delta="-50%" inverse />
               <StatCard layout="inline" label="残額" value="¥2,400,000" />
+            </ResponsiveGrid>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>
+              preset=&quot;pricing-plans&quot; · 課金プラン一覧（3/3/1）
+            </CardTitle>
+            <CardDescription>
+              名前付きコレクション geometry: コンテナ幅が lg ステップ（64rem）に達するまでは 1
+              列、そこから 3 列に切り替わる。ResponsiveGrid には lg
+              より上のステップが無いため、1024px 相当でも 1440px 相当でも同じ 3 列になる —
+              課金プランカタログの「3/3/1」契約 （dxs-platform/platform#333）。`columns` の代わりに
+              `preset` を渡すだけで、呼び出し側がブレークポイント値を自作する必要がない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveGrid preset="pricing-plans">
+              <Card>
+                <CardHeader>
+                  <CardTitle>スタンダード</CardTitle>
+                  <CardDescription>¥9,800 / 月</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Text tone="muted">小規模チーム向けの基本プラン。</Text>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>プロフェッショナル</CardTitle>
+                  <CardDescription>¥29,800 / 月</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Text tone="muted">成長企業向けの推奨プラン。</Text>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>エンタープライズ</CardTitle>
+                  <CardDescription>お問い合わせ</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Text tone="muted">大規模組織向けのカスタムプラン。</Text>
+                </CardContent>
+              </Card>
             </ResponsiveGrid>
           </CardContent>
         </Card>

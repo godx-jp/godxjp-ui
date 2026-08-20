@@ -165,6 +165,20 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
 
 export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?: number };
 
+/**
+ * Named, package-owned column geometry for ResponsiveGrid — the semantic alternative to a
+ * consumer hand-rolling a `columns={{ sm, md, lg }}` breakpoint map for a recognised collection
+ * shape. Takes priority over `columns` when both are set (`columns` is then ignored, not merged).
+ *
+ * `pricing-plans` — the canonical billing/pricing-plan collection: 1 column until the `lg` step
+ * (container ≥ 64rem), then 3 columns from `lg` upward. Because ResponsiveGrid has no step above
+ * `lg`, this reads as exactly 3 columns at BOTH the 1024px and 1440px reference widths and 1
+ * column at 390px — the 3/3/1 contract requested for the billing plan catalog
+ * (dxs-platform/platform#333, tracked upstream at dxs-platform/pkg-ui#14). General-purpose beyond
+ * pricing: any 3-up desktop / 1-up mobile collection (no intermediate `md` step) can reuse it.
+ */
+export type ResponsiveGridPresetProp = "pricing-plans";
+
 export type MasterDetailRailWidthProp = "compact" | "standard";
 export type MasterDetailRailProp = "master" | "detail";
 /**

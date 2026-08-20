@@ -11883,6 +11883,18 @@
           "declaredIn": [
             "src/components/layout/responsive-grid.tsx"
           ]
+        },
+        {
+          "name": "preset",
+          "origin": "owned",
+          "required": false,
+          "type": "\"pricing-plans\" | undefined",
+          "values": [
+            "pricing-plans"
+          ],
+          "declaredIn": [
+            "src/components/layout/responsive-grid.tsx"
+          ]
         }
       ]
     },

@@ -555,6 +555,7 @@ export const COMPONENT_PROP_REGISTRY = {
     ],
   },
   ResponsiveGridColumnsProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  ResponsiveGridPresetProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   MasterDetailRailWidthProp: {
     group: "layout",
     file: "components/layout.prop.ts",
