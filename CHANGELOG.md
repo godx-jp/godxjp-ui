@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Pagination size-changer no longer clips localized labels (gh#286)** — the trigger was a
+  fixed `--pagination-size-width` (5.5rem, sized for the EN label) and the ja locale rendered
+  「20 / ペ…」truncated. The trigger now sizes to its content (`w-max`); the token is demoted to
+  a MIN width so short labels keep the control rhythm.
+
 - **Horizontal Form defaults to a fixed, aligned label column (gh#284)** — the old
   `--form-label-width: max-content` sized each field's label column to its own label, so
   multi-column horizontal forms had controls starting at ragged x positions. The default is now
