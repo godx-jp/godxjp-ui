@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Horizontal Form defaults to a fixed, aligned label column (gh#284)** — the old
+  `--form-label-width: max-content` sized each field's label column to its own label, so
+  multi-column horizontal forms had controls starting at ragged x positions. The default is now
+  `8rem`, mirroring `--descriptions-label-width` so edit forms and show pages share one optical
+  grid; the `labelWidth` prop and the token still override per form/tenant.
+
 - **Alert's default radius is now the Card radius (gh#282, gh#268 follow-up)** — an Alert almost
   always sits in the same page column as Cards, and the old `--radius-md` default (2 φ-steps
   smaller than `--card-radius`) read as mismatched corners that every tenant re-aligned by hand.
