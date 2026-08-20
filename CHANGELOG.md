@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Page-size menu is compact (gh#289)** — repeating the full localized unit on every dropdown
+  row (「15 件/ページ」×4) was long and redundant; the menu now lists bare numbers while the
+  TRIGGER keeps the localized unit (「20 件/ページ」), the MUI/kintone treatment.
+
 - **ja: size-changer reads 「15 件/ページ」 (gh#288)** — the ja `pageSizeOption` was a literal of
   the EN "15 / page"; natural Japanese (and antd's ja_JP convention) uses the 件 counter.
 
