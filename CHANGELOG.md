@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Plain (non-searchable) Select honors `clearable` (gh#280)** — the plain branch dropped the
+  prop entirely, so no clear affordance ever rendered despite the documented default-true
+  contract. It now mirrors SearchSelect: while a CONTROLLED value is selected (and not
+  disabled/readOnly) the chevron swaps for an X overlay that emits `onValueChange("", undefined)`;
+  `clearable={false}` and uncontrolled selects keep the previous DOM byte-identical.
+
 ### Added
 
 - **`check:mcp-catalog-coverage` release gate (gh#278)** — consumer audit found the published

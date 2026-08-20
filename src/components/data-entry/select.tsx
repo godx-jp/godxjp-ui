@@ -1,11 +1,12 @@
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { controlTriggerClass } from "../../lib/control-styles";
 import { mergeAriaIds, omitFieldA11y, pickFieldA11y } from "../../lib/field-a11y";
 import type { FieldA11yProps } from "../../lib/field-a11y";
 import { SearchSelect } from "./search-select";
+import { useTranslation } from "../../i18n/use-translation";
 import type {
   SearchSelectOptionProp,
   SelectDataProp,
@@ -299,6 +300,7 @@ function DataSelect({
   const ariaProps = Object.fromEntries(
     Object.entries(rest as Record<string, unknown>).filter(([key]) => key.startsWith("aria-")),
   );
+  const { t } = useTranslation();
   const searchable = showSearch ?? Boolean(loadOptions);
   const hasOptions = options.length > 0;
 
@@ -358,7 +360,14 @@ function DataSelect({
   // empty state and back on first pick (React's controlled↔uncontrolled warning).
   // An unmatched value (incl. "") simply shows the placeholder in Radix.
   const isControlled = value !== undefined;
-  return (
+  // Clear affordance for the PLAIN branch (gh#280) — the searchable branch already gets it
+  // from SearchSelect. Same contract: default ON, shown only while a controlled value is
+  // selected; clearing emits `onValueChange("", undefined)` and Radix shows the placeholder.
+  // Only controlled selects can clear (an uncontrolled Radix value cannot be reset from here),
+  // and their DOM gains a relative wrapper so the X can overlay the trigger like SearchSelect.
+  const canClear = clearable !== false && isControlled && !disabled && !readOnly;
+  const showClear = canClear && Boolean(value);
+  const select = (
     <SelectPrimitive.Root
       data-slot="select"
       value={isControlled ? value : undefined}
@@ -372,7 +381,13 @@ function DataSelect({
       disabled={disabled || !hasOptions}
       name={name}
     >
-      <SelectTrigger id={id} data-testid={dataTestId} className={className} {...ariaProps}>
+      <SelectTrigger
+        id={id}
+        data-testid={dataTestId}
+        className={cn(showClear && "pe-9", canClear ? undefined : className)}
+        showIndicator={!showClear}
+        {...ariaProps}
+      >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
@@ -388,5 +403,26 @@ function DataSelect({
         )}
       </SelectContent>
     </SelectPrimitive.Root>
+  );
+
+  if (!canClear) return select;
+
+  return (
+    <div className={cn("relative", className)}>
+      {select}
+      {showClear ? (
+        <div className="absolute inset-y-0 end-2 flex items-center">
+          <button
+            type="button"
+            aria-label={clearLabel ?? t("dataEntry.searchSelect.clear")}
+            data-testid={dataTestId ? `${dataTestId}-clear` : undefined}
+            className="flex size-6 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
+            onClick={() => onValueChange?.("", undefined)}
+          >
+            <X className="size-4" aria-hidden="true" />
+          </button>
+        </div>
+      ) : null}
+    </div>
   );
 }
