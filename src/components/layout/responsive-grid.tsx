@@ -22,15 +22,25 @@ type ResponsiveGridStyle = CSSProperties & {
 };
 
 /**
- * Column geometry behind each named preset. `pricing-plans`: 1 column below the `lg` container
- * step, 3 columns from `lg` up — ResponsiveGrid has no step above `lg`, so this alone produces 3
- * columns at both the 1024px and 1440px reference widths (dxs-platform/platform#333).
+ * Column geometry behind each named preset. `pricing-plans`: 3 columns from the `sm` container
+ * step up, 1 column only below it.
+ *
+ * This grid's breakpoints respond to the GRID'S OWN container width (`container-type:
+ * inline-size` on `.ui-responsive-grid-scope`), not the viewport — see the container-query note
+ * on `ResponsiveGrid` below. A real consumer inside a shelled layout (sidebar + padding) loses
+ * ~300px of the viewport to chrome before the grid ever sees it: a 1024px viewport can leave the
+ * grid with a container as narrow as ~721px (45rem) — inside the `sm` tier (>=40rem, <64rem), not
+ * `lg` (>=64rem). An earlier `{ sm: 1, md: 1, lg: 3 }` mapping passed its own jsdom unit test
+ * (which never evaluates `@container` and only reads back the CSS custom properties) but silently
+ * regressed the real 3-up-at-1024 contract inside DXS's shelled Console
+ * (dxs-platform/platform#333, reported 2026-08-20). `sm: 3` fixes that: any container from the
+ * `sm` step up renders 3 columns; only a genuinely narrow (<40rem) container drops to 1.
  */
 const RESPONSIVE_GRID_PRESET_COLUMNS: Record<
   ResponsiveGridPresetProp,
   { sm: number; md: number; lg: number }
 > = {
-  "pricing-plans": { sm: 1, md: 1, lg: 3 },
+  "pricing-plans": { sm: 3, md: 3, lg: 3 },
 };
 
 function resolveColumns(columns: ResponsiveGridColumnsProp): {

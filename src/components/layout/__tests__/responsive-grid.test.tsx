@@ -72,20 +72,28 @@ describe("ResponsiveGrid — column resolution", () => {
 describe("ResponsiveGrid — preset='pricing-plans' (3/3/1 contract)", () => {
   // The contract is expressed as the sm/md/lg container-query steps ResponsiveGrid already
   // resolves to CSS custom properties (same assertion style as the columns tests above — jsdom
-  // does not evaluate @container, so the custom properties ARE the geometry contract). 1024px and
-  // 1440px both land in the `lg` step (min-width: 64rem / 1024px, no step above it), so a single
-  // `lg` assertion covers both reference widths; 390px is below the `sm` step (640px) and falls
-  // through to the grid's un-queried 1-column base, which the `sm` value below also pins.
-  it("resolves to 1 column below lg and 3 columns at lg — covering 390 / 1024 / 1440 (dxs-platform/platform#333)", () => {
+  // does not evaluate @container, so the custom properties ARE the geometry contract).
+  //
+  // IMPORTANT — this asserts the GRID'S CONTAINER width, not the viewport, and those are NOT the
+  // same number for a real consumer. An earlier version of this preset used `{ sm: 1, md: 1, lg:
+  // 3 }`, reasoning (wrongly) that a 1024px *viewport* always lands in the `lg` (>=64rem) container
+  // step. That passed this exact test in jsdom while silently regressing to 1 column in DXS's real
+  // shelled Console, where a 1024px viewport only leaves the grid a ~721px (45rem) container — the
+  // `sm` step, not `lg` (dxs-platform/platform#333, caught 2026-08-20 by a real-browser contract
+  // test this jsdom test cannot substitute for). `sm: 3` fixes that by making the 3-column geometry
+  // hold from the `sm` step up, so it survives being embedded in a narrower real container, not
+  // just a full-bleed one. If you ever "simplify" this back to `{ sm: 1, ... }`, re-verify against
+  // a REAL shelled consumer at a real 1024px viewport, not just this unit test.
+  it("resolves to 1 column below sm and 3 columns from sm up — covering 390 / 1024 / 1440 (dxs-platform/platform#333)", () => {
     const { container } = render(
       <ResponsiveGrid preset="pricing-plans">
         <div>plan</div>
       </ResponsiveGrid>,
     );
     expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
-      sm: "1", // covers the 390px reference width (below the 640px sm step)
-      md: "1",
-      lg: "3", // covers BOTH the 1024px and 1440px reference widths (no step above lg)
+      sm: "3", // must survive a narrower real container (e.g. a 1024px viewport inside a shell)
+      md: "3",
+      lg: "3", // covers the 1440px reference width
     });
   });
 
@@ -96,8 +104,8 @@ describe("ResponsiveGrid — preset='pricing-plans' (3/3/1 contract)", () => {
       </ResponsiveGrid>,
     );
     expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
-      sm: "1",
-      md: "1",
+      sm: "3",
+      md: "3",
       lg: "3",
     });
   });
