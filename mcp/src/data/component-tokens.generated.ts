@@ -2724,14 +2724,19 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Table component tokens: row height, cell padding."
   },
   {
+    "name": "--table-border-color",
+    "value": "initial",
+    "description": "Cell-grid rule colour for `<Table bordered>` (gh#274) — the outer frame and the vertical * rules between columns. Declared `initial` so the default re-resolves to the LIVE --border * role at the call site (a :root binding to hsl(var(--border)) freezes at the :root value and * a scoped [data-tenant] override of --border would never reach it — docs/TOKENS.md). * Default = hsl(var(--border))."
+  },
+  {
     "name": "--table-pagination-padding-y",
     "value": "initial",
-    "description": "Pagination footer inset (gh#236). The footer ships as a SELF-CONTAINED slot and is commonly * placed in a flush container (`<Card><CardContent flush><DataTable/>`), where no ancestor * supplies padding — so it owns its own on BOTH axes instead of declaring block-start only. * Block default = the previous single `padding-top` value, now on both block edges (breathing * room above the footer and before the container's closing border). Inline default = the cell * inline padding, so the \"rows per page\" label sits on the same optical axis as the first * column's text. A service retunes either axis to its own grid (#45). * Both are declared `initial` so the defaults re-resolve at the CALL SITE: --space-stack-sm and * --table-cell-space-x are density-scaled and re-declared inside a `.ui-density-*` subtree, and a * :root binding would freeze the footer at the :root density (docs/TOKENS.md — the :root freeze * rule). Defaults = var(--space-stack-sm) block · var(--table-cell-space-x) inline."
+    "description": "Cell-grid rule colour for `<Table bordered>` (gh#274) — the outer frame and the vertical * rules between columns. Declared `initial` so the default re-resolves to the LIVE --border * role at the call site (a :root binding to hsl(var(--border)) freezes at the :root value and * a scoped [data-tenant] override of --border would never reach it — docs/TOKENS.md). * Default = hsl(var(--border))."
   },
   {
     "name": "--table-pagination-padding-x",
     "value": "initial",
-    "description": "Pagination footer inset (gh#236). The footer ships as a SELF-CONTAINED slot and is commonly * placed in a flush container (`<Card><CardContent flush><DataTable/>`), where no ancestor * supplies padding — so it owns its own on BOTH axes instead of declaring block-start only. * Block default = the previous single `padding-top` value, now on both block edges (breathing * room above the footer and before the container's closing border). Inline default = the cell * inline padding, so the \"rows per page\" label sits on the same optical axis as the first * column's text. A service retunes either axis to its own grid (#45). * Both are declared `initial` so the defaults re-resolve at the CALL SITE: --space-stack-sm and * --table-cell-space-x are density-scaled and re-declared inside a `.ui-density-*` subtree, and a * :root binding would freeze the footer at the :root density (docs/TOKENS.md — the :root freeze * rule). Defaults = var(--space-stack-sm) block · var(--table-cell-space-x) inline."
+    "description": "Cell-grid rule colour for `<Table bordered>` (gh#274) — the outer frame and the vertical * rules between columns. Declared `initial` so the default re-resolves to the LIVE --border * role at the call site (a :root binding to hsl(var(--border)) freezes at the :root value and * a scoped [data-tenant] override of --border would never reach it — docs/TOKENS.md). * Default = hsl(var(--border))."
   },
   {
     "name": "--table-surface-min-inline-size",
