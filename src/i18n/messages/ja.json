@@ -302,7 +302,7 @@
       "next": "次のページ",
       "page": "ページ {page}",
       "pageSize": "ページサイズ",
-      "pageSizeOption": "{size} / ページ",
+      "pageSizeOption": "{size} 件/ページ",
       "total": "全 {total} 件"
     },
     "themePicker": {

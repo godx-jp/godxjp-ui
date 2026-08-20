@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **ja: size-changer reads 「15 件/ページ」 (gh#288)** — the ja `pageSizeOption` was a literal of
+  the EN "15 / page"; natural Japanese (and antd's ja_JP convention) uses the 件 counter.
+
 - **Pagination size-changer no longer clips localized labels (gh#286)** — the trigger was a
   fixed `--pagination-size-width` (5.5rem, sized for the EN label) and the ja locale rendered
   「20 / ペ…」truncated. The trigger now sizes to its content (`w-max`); the token is demoted to
