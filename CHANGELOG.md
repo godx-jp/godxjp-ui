@@ -84,6 +84,14 @@ card-stack-gap, identity-slot-block-size}`. Worked screen:
 
 ### Fixed
 
+- **DataTable no longer silently caps a plain table at 10 rows (gh#270)** — the internal
+  TanStack pagination default (pageSize 10) sliced every `data`+`columns` table even when no
+  `<DataTable.Pagination>` was composed and no pagination props were passed: rows 11+ were
+  unreachable with no pager UI and no warning. Client pagination now engages ONLY when
+  something drives it — a numbered `<DataTable.Pagination>` child (cursor mode is server
+  paging and is never client-sliced), or controlled `pagination`/`onPaginationChange` state.
+  A plain table renders every row.
+
 - **AppShell content region no longer shows the browser default blue focus ring (gh#271)** —
   `.app-main` carries `tabindex="0"` (axe `scrollable-region-focusable`, dbad118) but had no
   `:focus-visible` style, so tabbing into the region drew the user-agent outline (blue in
