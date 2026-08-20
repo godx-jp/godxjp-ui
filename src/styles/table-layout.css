@@ -281,6 +281,19 @@
       var(--table-row-selected-background, hsl(var(--muted) / 0.3))
     );
   }
+
+  /* `<Table bordered>` — the full cell grid (gh#274). Horizontal row rules already come from
+   * TableRow's own border; here we add the outer frame and the vertical rules between columns,
+   * so rowSpan/colSpan merged cells read as merged (a merged group cell floating in whitespace
+   * is unreadable). Colour resolves the --table-border-color token at the CALL SITE so a scoped
+   * theme override of --border reaches it. */
+  .ui-table-bordered {
+    border: 1px solid var(--table-border-color, hsl(var(--border)));
+  }
+
+  .ui-table-bordered :is([data-slot="table-head"], [data-slot="table-cell"]):not(:last-child) {
+    border-inline-end: 1px solid var(--table-border-color, hsl(var(--border)));
+  }
 }
 
 @layer components {

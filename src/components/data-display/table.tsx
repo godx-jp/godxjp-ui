@@ -17,6 +17,14 @@ export type TableProps = React.HTMLAttributes<HTMLTableElement> & {
    */
   scrollable?: boolean;
   /**
+   * Draw the full cell grid (gh#274): a 1px outer frame plus vertical rules between columns
+   * (horizontal row rules already come from TableRow). Reach for this whenever the table
+   * carries rowSpan/colSpan merged cells — without column rules the merge relationships are
+   * unreadable. Colour comes from the `--table-border-color` token (default `--border`).
+   * Default `false` emits nothing, keeping the plain table byte-identical.
+   */
+  bordered?: boolean;
+  /**
    * Named collection contract. `"default"` (the default) emits no attribute and keeps the plain
    * table exactly as it is. `"action-collection"` is the canonical dense approval / action queue
    * (gh#253): below `collapseBelow`, the desktop intrinsic column widths — the thing that pushes
@@ -42,7 +50,17 @@ export type TableProps = React.HTMLAttributes<HTMLTableElement> & {
 };
 
 export const Table = React.forwardRef<HTMLTableElement, TableProps>(
-  ({ className, scrollable = true, preset = "default", collapseBelow = "sm", ...props }, ref) => (
+  (
+    {
+      className,
+      scrollable = true,
+      bordered = false,
+      preset = "default",
+      collapseBelow = "sm",
+      ...props
+    },
+    ref,
+  ) => (
     // A table wider than its container scrolls horizontally in this wrapper; keep it
     // keyboard-reachable so it can be scrolled without a pointer (WCAG 2.1.1 / axe
     // scrollable-region-focusable). No landmark role — avoids landmark-unique collisions.
@@ -62,7 +80,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
       <table
         ref={ref}
         data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
+        className={cn("w-full caption-bottom text-sm", bordered && "ui-table-bordered", className)}
         {...props}
       />
     </div>
