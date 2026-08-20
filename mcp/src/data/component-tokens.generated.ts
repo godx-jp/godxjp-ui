@@ -1245,28 +1245,28 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--alert-radius",
-    "value": "var(--radius-md)",
-    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card (--card-radius); a service aligns them by * overriding this once. Default keeps the historical --radius-md."
+    "value": "var(--card-radius)",
+    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by * overriding this once. Default keeps the historical --radius-md."
   },
   {
     "name": "--alert-space-inset",
     "value": "var(--space-section-active)",
-    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card (--card-radius); a service aligns them by * overriding this once. Default keeps the historical --radius-md."
+    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by * overriding this once. Default keeps the historical --radius-md."
   },
   {
     "name": "--alert-space-gap",
     "value": "var(--space-inline-md)",
-    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card (--card-radius); a service aligns them by * overriding this once. Default keeps the historical --radius-md."
+    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by * overriding this once. Default keeps the historical --radius-md."
   },
   {
     "name": "--alert-inner-space-gap",
     "value": "var(--space-stack-sm)",
-    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card (--card-radius); a service aligns them by * overriding this once. Default keeps the historical --radius-md."
+    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by * overriding this once. Default keeps the historical --radius-md."
   },
   {
     "name": "--alert-dismiss-space-offset",
     "value": "var(--space-3)",
-    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card (--card-radius); a service aligns them by * overriding this once. Default keeps the historical --radius-md."
+    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by * overriding this once. Default keeps the historical --radius-md."
   },
   {
     "name": "--alert-bg-alpha",
