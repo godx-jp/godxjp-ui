@@ -21,6 +21,10 @@
   --dialog-space-inset: var(--dialog-space-y) var(--dialog-space-x);
   --dialog-space-gap: var(--space-stack-md);
   --dialog-close-space-offset: var(--space-4);
+  /* Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the
+   * same page column as a Card (--card-radius); a service aligns them by
+   * overriding this once. Default keeps the historical --radius-md. */
+  --alert-radius: var(--radius-md);
   --alert-space-inset: var(--space-section-active);
   --alert-space-gap: var(--space-inline-md);
   --alert-inner-space-gap: var(--space-stack-sm);
