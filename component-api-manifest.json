@@ -14364,6 +14364,19 @@
       "group": "data-display",
       "props": [
         {
+          "name": "bordered",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/data-display/table.tsx"
+          ]
+        },
+        {
           "name": "collapseBelow",
           "origin": "owned",
           "required": false,
