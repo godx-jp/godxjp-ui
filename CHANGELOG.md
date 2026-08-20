@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`check:mcp-catalog-coverage` release gate (gh#278)** — consumer audit found the published
+  18.11.x MCP catalog denying components the package actually ships (`rbac-service-roles` said
+  ServiceRolePanel / BranchScopePicker / PermissionMatrix "do not exist" while all three are real
+  exports, and `get_component PageHeader` documented a standalone export that never shipped). The
+  catalog entries were already fixed on main; this gate keeps them fixed: every public export in
+  `component-api-manifest.json` must be discoverable somewhere in `mcp/src/data/*.ts`, and catalog
+  prose may not carry existence-denial claims ("NO <Export>", "<Export> does not exist") for a
+  shipped export. Wired into `verify` and `verify:static`.
+
 - **Region focus ring is token-gated and OFF by default (gh#276)** — gh#271 gave
   `.app-main:focus-visible` the control-strength DS ring, but a 2px brand frame around the whole
   content region reads as a glitch to mouse-first users (`:focus-visible` promotes on any keypress
