@@ -201,7 +201,10 @@ interface DataTableProps<T> {
   onColumnVisibilityChange?: OnChangeFn<VisibilityState>;
   /**
    * Manual (server) flags. Default `false` so the simple `data`+`columns` case
-   * sorts / filters / paginates in-browser with no extra wiring. Set the
+   * sorts / filters in-browser with no extra wiring. Client pagination slices
+   * rows ONLY when engaged — a numbered `<DataTable.Pagination>` child is
+   * composed, or `pagination`/`onPaginationChange` is supplied; a plain table
+   * with neither renders every row (no silent 10-row cap, gh#270). Set the
    * relevant flag `true` and drive the matching state from your query for
    * server-side sort / filter / pagination.
    */
@@ -377,6 +380,24 @@ export function DataTable<T>({
 
   const tanstackColumns = React.useMemo(() => toTanstackColumns(columns), [columns]);
 
+  // Client pagination is engaged ONLY when something actually drives it: a
+  // composed numbered <DataTable.Pagination> child (cursor mode is server
+  // paging — never client-slice it), or externally controlled pagination
+  // state. Otherwise the internal default (pageSize 10) used to slice every
+  // plain `data`+`columns` table to 10 rows with no pager and no warning —
+  // a silent cap (gh#270). No pager, no controlled state → render all rows.
+  const hasNumberedPager = React.Children.toArray(children).some(
+    (c) =>
+      React.isValidElement(c) &&
+      (c.type as { displayName?: string }).displayName === "DataTable.Pagination" &&
+      typeof (c.props as { onChange?: unknown }).onChange !== "function",
+  );
+  const paginationEngaged =
+    manualPagination ||
+    controlledPagination !== undefined ||
+    onPaginationChange !== undefined ||
+    hasNumberedPager;
+
   const table = useReactTable<T>({
     data,
     columns: tanstackColumns,
@@ -384,7 +405,9 @@ export function DataTable<T>({
     getCoreRowModel: getCoreRowModel(),
     ...(manualSorting ? {} : { getSortedRowModel: getSortedRowModel() }),
     ...(manualFiltering ? {} : { getFilteredRowModel: getFilteredRowModel() }),
-    ...(manualPagination ? {} : { getPaginationRowModel: getPaginationRowModel() }),
+    ...(manualPagination || !paginationEngaged
+      ? {}
+      : { getPaginationRowModel: getPaginationRowModel() }),
     manualSorting,
     manualFiltering,
     manualPagination,

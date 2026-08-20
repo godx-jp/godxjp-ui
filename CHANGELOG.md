@@ -70,6 +70,14 @@ card-stack-gap, identity-slot-block-size}`. Worked screen:
 
 ### Fixed
 
+- **DataTable no longer silently caps a plain table at 10 rows (gh#270)** — the internal
+  TanStack pagination default (pageSize 10) sliced every `data`+`columns` table even when no
+  `<DataTable.Pagination>` was composed and no pagination props were passed: rows 11+ were
+  unreachable with no pager UI and no warning. Client pagination now engages ONLY when
+  something drives it — a numbered `<DataTable.Pagination>` child (cursor mode is server
+  paging and is never client-sliced), or controlled `pagination`/`onPaginationChange` state.
+  A plain table renders every row.
+
 - **Release staging dist-tags no longer accumulate on the registry.** Every release staged both
   packages under a per-version `godx-staging-${version}` dist-tag and planned a final
   `npm dist-tag rm` pair — but deleting a dist-tag needs npm DELETE rights the CI automation token
