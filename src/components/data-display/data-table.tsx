@@ -702,6 +702,33 @@ DataTable.Content = function DataTableContent() {
     }
   }, [missingHeaderNames]);
 
+  // gh#267 — the inline-end fade is a SCROLL affordance: it must render only
+  // while the region actually overflows AND is not scrolled to the inline-end.
+  // CSS alone cannot know (there is no :overflowing selector), so measure the
+  // scroll box and mirror the state into a class the stylesheet gates on.
+  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  const [hasOverflowEnd, setHasOverflowEnd] = React.useState(false);
+  React.useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const update = () => {
+      const overflowing = el.scrollWidth - el.clientWidth > 1;
+      // RTL scrolls into negative scrollLeft — abs() keeps the math logical.
+      const atEnd = Math.abs(el.scrollLeft) + el.clientWidth >= el.scrollWidth - 1;
+      setHasOverflowEnd(overflowing && !atEnd);
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    // The surface resizes when data/columns/density change the table's width.
+    if (el.firstElementChild) observer.observe(el.firstElementChild);
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, []);
+
   // Active sort for header indicators — prefer the lean `sort` prop, else read
   // it back from the internal TanStack sorting state.
   const activeSort = sort ?? sortingStateToSort(table.getState().sorting);
@@ -730,7 +757,12 @@ DataTable.Content = function DataTableContent() {
 
   return (
     <div
-      className={cn("ui-data-table-scroll", hasPinEnd && "ui-data-table-has-pin-end")}
+      ref={scrollRef}
+      className={cn(
+        "ui-data-table-scroll",
+        hasPinEnd && "ui-data-table-has-pin-end",
+        hasOverflowEnd && "ui-data-table-has-overflow-end",
+      )}
       aria-busy={loading}
       // A table wider than its container scrolls horizontally here; keep the scroll region
       // keyboard-reachable so it can be scrolled without a pointer (WCAG 2.1.1 / axe
