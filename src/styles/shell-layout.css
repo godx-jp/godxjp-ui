@@ -77,6 +77,17 @@
     background-color: var(--app-shell-main-background);
   }
 
+  /* `.app-main` carries tabindex="0" (axe scrollable-region-focusable, dbad118), so keyboard
+   * focus can land on the region — without a rule here the USER-AGENT default outline (blue
+   * in Chrome) wraps the whole content area. Use the design-system ring instead; INSET because
+   * `.app-main` is the shell's clip boundary (`contain: paint`) and an outset shadow would be
+   * clipped by the grid. Never remove the indicator outright — the region is focusable and
+   * must show focus (WCAG 2.4.7, gh#271). */
+  .app-main:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
+  }
+
   .app-footer {
     grid-area: footer;
     border-top: 1px solid hsl(var(--border));
