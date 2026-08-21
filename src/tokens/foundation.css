@@ -156,8 +156,11 @@
   /* Ring headroom for clipped chrome (`overflow-clip-margin` on the topbar family, gh#291).
    * MUST stay a plain length consumed via a bare var(): Chromium rejects any calc() in
    * overflow-clip-margin at parse time (even calc(2 * 2px)), silently dropping the
-   * declaration to 0. Value = max ring paint (3px open/focus) + 1px breathing. */
-  --focus-ring-clip-margin: 4px;
+   * declaration to 0. Value = max ring paint (3px open/focus) + rounding immunity:
+   * at 4px a flush-edge ring had only 1px of slack, which device-pixel rounding on
+   * non-retina (dpr 1) displays or fractional browser zoom could consume, shaving the
+   * ring's outer edge. 8px keeps ≥5px of slack under any rounding regime. */
+  --focus-ring-clip-margin: 8px;
   /* REGION focus ring — the keyboard-scroll affordance on large scroll REGIONS (`.app-main`,
    * gh#271/gh#276), separate from the control ring above. A control-strength 2px brand frame
    * around the entire content area reads as a glitch to mouse-first users (`:focus-visible`
