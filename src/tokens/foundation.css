@@ -9,7 +9,16 @@
   --card-foreground: 48 8% 13%;
   --popover: 60 33% 99%;
   --popover-foreground: 48 8% 13%;
-  --primary: 204 100% 39%; /* SmartHR MAIN #0077c7 */
+  /* SmartHR MAIN, two lightness steps down from #0077c7 (gh#299).
+   *
+   * The published blue measures 4.62:1 as TEXT on --background — compliant,
+   * but with 0.12 of headroom, which every tint this system applies to a row
+   * then spends: the zebra stripe (muted/0.4) takes it to 4.46 and hover
+   * (muted/0.5) to 4.43. A link inside a striped table therefore failed AA
+   * while the same link on a card passed, which is not a defensible place to
+   * draw that line. 37% clears every one of those states with margin and is
+   * indistinguishable from the original side by side. */
+  --primary: 204 100% 37%; /* SmartHR MAIN #0071bd */
   --primary-foreground: 60 33% 99%;
   --secondary: 45 15% 95%; /* #f4f3f0 */
   --secondary-foreground: 48 8% 13%;
