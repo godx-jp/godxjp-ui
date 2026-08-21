@@ -1280,6 +1280,10 @@
      * which has headroom; the horizontal shrink/truncation contract is unchanged. */
     overflow-x: clip;
     overflow-y: visible;
+    /* Ring headroom on the clipped axis: the end rail sits flush against this
+     * box, so without a margin the LAST control's ring loses its outer edge.
+     * 2x the ring token — open/focus rings paint up to 3px (gh#291 follow-up). */
+    overflow-clip-margin: calc(2 * var(--focus-ring-width));
   }
   .ui-topbar-start,
   .ui-topbar-center,
@@ -1295,7 +1299,10 @@
      * ring headroom where supported. */
     overflow-x: clip;
     overflow-y: visible;
-    overflow-clip-margin: var(--focus-ring-width);
+    /* 2x the ring token, NOT 1x: focus/open rings paint up to 3px while the
+     * token is 2px, so a flush-edge control (the locale picker is the first
+     * child of `end`) lost 1px of ring on the clipped axis (gh#291 follow-up). */
+    overflow-clip-margin: calc(2 * var(--focus-ring-width));
   }
   .ui-topbar-start {
     flex: 0 1 auto;

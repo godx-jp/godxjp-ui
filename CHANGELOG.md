@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.12.13] - 2026-08-21
+
+### Fixed
+
+- **Topbar flush-edge focus ring no longer shaved on the clipped axis (gh#291 follow-up)** —
+  the rails' `overflow-clip-margin` was `var(--focus-ring-width)` (2px) while focus/open rings
+  paint up to 3px, so a control flush against a rail edge (the locale picker is the first child
+  of `end`) lost 1px of ring on the left. Bar and rails now reserve
+  `calc(2 * var(--focus-ring-width))`, and `.ui-topbar` itself gained the same margin so the
+  last control's outer edge survives the bar-level clip too.
+
 ## [18.12.12] - 2026-08-21
 
 ### Fixed

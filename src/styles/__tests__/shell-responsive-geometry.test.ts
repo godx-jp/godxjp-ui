@@ -110,7 +110,9 @@ describe("responsive shell geometry", () => {
     expect(slots).toMatch(/overflow-y:\s*visible;/);
     expect(slots).not.toMatch(/overflow:\s*hidden;/);
     // …and the clip margin keeps an edge control's focus ring paintable (WCAG 2.4.11 / 2.4.13).
-    expect(slots).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-width\);/);
+    // 2x the token: rings paint up to 3px while --focus-ring-width is 2px, so 1x shaved the
+    // flush-edge ring by 1px (gh#291 follow-up).
+    expect(slots).toMatch(/overflow-clip-margin:\s*calc\(2 \* var\(--focus-ring-width\)\);/);
     expect(slots).toMatch(/min-width:\s*0;/);
     // The grouped rule covers all three clusters.
     for (const selector of [".ui-topbar-center", ".ui-topbar-end"]) {
