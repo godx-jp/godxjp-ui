@@ -22,6 +22,7 @@ export function AppShell({
   children,
   sidebarCollapsed = false,
   responsiveNavigation = "drawer",
+  topbarSpan = "content",
   mobileNav,
   mobileNavLabel,
   mobileNavOpen,
@@ -62,16 +63,14 @@ export function AppShell({
       </div>
     );
 
-  return (
-    <div
-      className="app-root"
-      data-collapsed={sidebarCollapsed ? "true" : undefined}
-      data-responsive-navigation={responsiveNavigation}
-    >
-      <aside className="app-sidebar" aria-label={t("layout.appShell.sidebarLabel")}>
-        {sidebar}
-      </aside>
-      <header className="app-topbar ui-scale-fixed" aria-label={t("layout.appShell.headerLabel")}>
+  const rail = (
+    <aside className="app-sidebar" aria-label={t("layout.appShell.sidebarLabel")}>
+      {sidebar}
+    </aside>
+  );
+
+  const bar = (
+    <header className="app-topbar ui-scale-fixed" aria-label={t("layout.appShell.headerLabel")}>
         {hasDrawer && (
           <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
             <SheetTrigger asChild>
@@ -110,8 +109,23 @@ export function AppShell({
             </SheetContent>
           </Sheet>
         )}
-        {resolvedTopbar}
-      </header>
+      {resolvedTopbar}
+    </header>
+  );
+
+  return (
+    <div
+      className="app-root"
+      data-collapsed={sidebarCollapsed ? "true" : undefined}
+      data-responsive-navigation={responsiveNavigation}
+      data-topbar-span={topbarSpan === "full" ? "full" : undefined}
+    >
+      {/* Grid areas place these regardless of source order, so source order is free to be the
+       * ACCESSIBLE one: whichever region the eye reaches first comes first in the DOM. With a
+       * full-width bar above the rail, leaving the aside first would send Tab into the sidebar
+       * while the bar sits visibly above it (WCAG 2.4.3 / 1.3.2). */}
+      {topbarSpan === "full" ? bar : rail}
+      {topbarSpan === "full" ? rail : bar}
       <main className="app-main" aria-label={t("layout.appShell.mainLabel")} tabIndex={0}>
         {breadcrumb !== undefined && <div className="app-breadcrumb">{breadcrumb}</div>}
         {children}

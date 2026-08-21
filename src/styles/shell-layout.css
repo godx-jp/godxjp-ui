@@ -25,6 +25,20 @@
     grid-template-columns: var(--app-shell-rail-width) minmax(0, 1fr);
   }
 
+  /* topbarSpan="full" — the bar runs edge to edge and the rail starts beneath it, for products
+   * whose bar carries space-level chrome (global search, account, notifications) that outranks the
+   * current section instead of belonging to it. Only the row assignment changes: both track sizes
+   * stay token-owned, so --app-shell-sidebar-width and the collapsed rail still apply untouched.
+   * Below the 900px breakpoint the grid already collapses to a single column, which IS this
+   * arrangement, so no narrow override is needed here — only the docked mode, which rebuilds the
+   * two-track grid, needs restating (see the breakpoint block). */
+  .app-root[data-topbar-span="full"] {
+    grid-template-areas:
+      "topbar topbar"
+      "sidebar main"
+      "sidebar footer";
+  }
+
   .app-sidebar {
     grid-area: sidebar;
     display: flex;
@@ -672,6 +686,15 @@
       grid-template-columns: var(--app-shell-rail-width) minmax(0, 1fr);
     }
 
+    /* Docked mode rebuilds the two-track grid at narrow widths, which would otherwise undo
+     * topbarSpan="full" exactly where the bar's space-level controls matter most. */
+    .app-root[data-responsive-navigation="docked"][data-topbar-span="full"] {
+      grid-template-areas:
+        "topbar topbar"
+        "sidebar main"
+        "sidebar footer";
+    }
+
     .app-root[data-responsive-navigation="docked"] > .app-sidebar {
       display: flex;
     }
@@ -932,7 +955,7 @@
     gap: var(--sidebar-nav-item-gap);
     padding-inline: var(--sidebar-nav-item-padding-x);
     border: 0;
-    border-radius: calc(var(--radius) - 1px);
+    border-radius: var(--sidebar-nav-item-radius);
     background: transparent;
     /* gh#228 — the row/label foreground is its own knob (default = the muted role, unchanged). The
      * icon reads a SEPARATE knob on `.sb-icon` below, so a service can darken 16px nav icons

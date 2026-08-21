@@ -402,6 +402,13 @@ import { StatCard } from "@godxjp/ui/data-display";
           "Navigation strategy below the canonical 900px breakpoint. drawer exposes the accessible mobile Sheet; docked retains the token-sized sidebar grid track and suppresses the redundant drawer trigger.",
       },
       {
+        name: "topbarSpan",
+        type: '"content" | "full"',
+        defaultValue: '"content"',
+        description:
+          "Which columns the topbar spans. content starts it beside the sidebar, so the rail runs the full window height and the bar sits over the content only. full runs the bar edge to edge with the rail beneath it, for a bar carrying space-level chrome (global search, account, notifications) that outranks the current section. full also renders the header before the aside so keyboard order follows the visual order.",
+      },
+      {
         name: "footer",
         type: "ReactNode",
         description: "App-level footer outside the main content area.",

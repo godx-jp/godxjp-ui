@@ -179,6 +179,45 @@ describe("responsive shell geometry", () => {
     expect(shellStyles).not.toMatch(/\.app-mobile-nav-body\s*\{[^}]*padding-inline:/s);
   });
 
+  it('topbarSpan="full" spans the bar across both tracks without touching their sizes', () => {
+    expect(declarationsFor(shellStyles, '.app-root[data-topbar-span="full"]')).toMatch(
+      /grid-template-areas:\s*"topbar topbar"\s*"sidebar main"\s*"sidebar footer";/,
+    );
+    // Row assignment only. Restating grid-template-columns here would fork the rail width away
+    // from --app-shell-sidebar-width and silently break the collapsed rail (rule #45, gh#213).
+    expect(declarationsFor(shellStyles, '.app-root[data-topbar-span="full"]')).not.toMatch(
+      /grid-template-columns:/,
+    );
+  });
+
+  it('keeps topbarSpan="full" spanning when docked mode rebuilds the narrow grid', () => {
+    // Below the breakpoint the default grid collapses to one column, which already IS the full
+    // arrangement — but docked mode explicitly restores the two-track grid, which would undo the
+    // span exactly where the bar's space-level controls matter most.
+    expect(
+      declarationsFor(
+        shellStyles,
+        '.app-root[data-responsive-navigation="docked"][data-topbar-span="full"]',
+      ),
+    ).toMatch(/grid-template-areas:\s*"topbar topbar"\s*"sidebar main"\s*"sidebar footer";/);
+  });
+
+  it("makes the nav row's corner radius a knob so a full-bleed rail can square it", () => {
+    // Every other geometry property of a nav row was already a knob; the radius was pinned to the
+    // global rail radius. That is the right default for an inset pill, but a rail that zeroes
+    // --sidebar-nav-scroll-padding and --sidebar-nav-gap has full-bleed rows flush with both
+    // edges, and rounding a band leaves notched corners against the rail. Without the knob the
+    // only fix is a consumer selector against `.sb-nav-item` — the coupling rule #45 forbids.
+    expect(shellTokens).toContain("--sidebar-nav-item-radius: calc(var(--radius) - 1px);");
+    expect(declarationsFor(shellStyles, ".sb-nav-item")).toMatch(
+      /border-radius:\s*var\(--sidebar-nav-item-radius\);/,
+    );
+    // The literal it replaced must not survive on the row — that is what pinned it before.
+    expect(declarationsFor(shellStyles, ".sb-nav-item")).not.toMatch(
+      /border-radius:\s*calc\(var\(--radius\)/,
+    );
+  });
+
   it("sizes both docked rail widths from tokens, never literals (gh#213)", () => {
     // The single most-retuned shell constant: a service on a 255px grid sets the token once instead
     // of forking `.app-root`. Defaults are unchanged (16rem expanded / 4rem collapsed).

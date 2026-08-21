@@ -70,6 +70,13 @@
   --sidebar-nav-item-gap: 0.625rem;
   --sidebar-nav-item-padding-x: 0.625rem;
   --sidebar-nav-gap: 2px;
+  /* Corner radius of a nav row. Defaults to the global rail radius, which is what an inset pill
+   * wants — but a rail that sets --sidebar-nav-scroll-padding and --sidebar-nav-gap to 0 makes its
+   * rows full-bleed bands flush with both edges, and a band wants square corners. Every other
+   * geometry property of `.sb-nav-item` was already a knob; this one was pinned to a constant, so
+   * the only way to square a band was a consumer selector against a DS internal class — the exact
+   * coupling rule #45 exists to prevent. Set `0` for full-bleed bands. */
+  --sidebar-nav-item-radius: calc(var(--radius) - 1px);
   --sidebar-nav-scroll-padding: var(--space-3) var(--space-2);
   --sidebar-section-gap: var(--space-4);
   --sidebar-section-label-padding-x: var(--space-2);

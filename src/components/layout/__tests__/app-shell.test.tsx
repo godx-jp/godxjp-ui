@@ -21,6 +21,48 @@ describe("AppShell", () => {
     expect(getByText("本文")).toBeInTheDocument();
   });
 
+  it("spans the topbar over the content only, by default", () => {
+    const { container } = renderWithUi(
+      <AppShell sidebar={<nav>n</nav>}>x</AppShell>,
+    );
+    const root = container.querySelector(".app-root")!;
+    // No attribute at all rather than data-topbar-span="content": the default arrangement is the
+    // bare grid, so a consumer's CSS never has to out-specify a default marker.
+    expect(root).not.toHaveAttribute("data-topbar-span");
+    // Source order is the accessible order, and here the rail is what the eye reaches first.
+    const regions = [...root.children].map((c) => c.tagName.toLowerCase());
+    expect(regions.slice(0, 2)).toEqual(["aside", "header"]);
+  });
+
+  it('topbarSpan="full" puts the bar before the rail so focus follows the eye', () => {
+    const { container } = renderWithUi(
+      <AppShell sidebar={<nav>n</nav>} topbarSpan="full">
+        x
+      </AppShell>,
+    );
+    const root = container.querySelector(".app-root")!;
+    expect(root).toHaveAttribute("data-topbar-span", "full");
+    // The point of the prop that a grid area alone cannot deliver: with the bar rendered above the
+    // rail, leaving <aside> first in source would send Tab into the sidebar while the bar sits
+    // visibly above it — a focus order that contradicts the visual one (WCAG 2.4.3 / 1.3.2).
+    const regions = [...root.children].map((c) => c.tagName.toLowerCase());
+    expect(regions.slice(0, 2)).toEqual(["header", "aside"]);
+  });
+
+  it('topbarSpan="full" changes only the row assignment, not the landmarks', () => {
+    const { getByRole, getByText } = renderWithUi(
+      <AppShell sidebar={<nav>ナビ</nav>} topbarSpan="full">
+        <p>本文</p>
+      </AppShell>,
+    );
+    // Reordering regions in source is exactly the kind of change that quietly drops one.
+    expect(getByRole("complementary")).toBeInTheDocument();
+    expect(getByRole("banner")).toBeInTheDocument();
+    expect(getByRole("main")).toHaveAttribute("tabindex", "0");
+    expect(getByText("ナビ")).toBeInTheDocument();
+    expect(getByText("本文")).toBeInTheDocument();
+  });
+
   it("composes the default topbar from logo / left / right slots", () => {
     const { getByText } = renderWithUi(
       <AppShell

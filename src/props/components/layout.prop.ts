@@ -256,6 +256,20 @@ export type AppShellProp = {
    */
   responsiveNavigation?: "drawer" | "docked";
   /**
+   * Which columns the topbar spans.
+   *
+   * - `"content"` (default) starts the topbar beside the sidebar, so the rail runs the full height
+   *   of the window and the bar sits over the content only. The admin-console arrangement.
+   * - `"full"` runs the topbar edge to edge across the top with the sidebar starting beneath it —
+   *   the arrangement products use when the bar carries space-level chrome (global search, account,
+   *   notifications) that outranks the current section rather than belonging to it.
+   *
+   * Not cosmetic: it changes what the bar reads as owning. `"full"` also renders the `<header>`
+   * before the `<aside>` so keyboard order follows the visual order — a grid area alone would put
+   * focus in the rail while the eye starts at the bar (WCAG 2.4.3).
+   */
+  topbarSpan?: "content" | "full";
+  /**
    * Navigation shown in the mobile drawer at the DXS 900px breakpoint, where the docked sidebar is
    * hidden. AppShell OWNS the drawer: it renders a hamburger trigger in the topbar and a focus-
    * trapped Sheet (Esc + overlay close, focus returns to the trigger) — hiding the sidebar without
