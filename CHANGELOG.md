@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.12.20] - 2026-08-21
+
+### Changed
+
+- **Noto Sans JP is now the primary bundled face; M PLUS 2 is the fallback (product override,
+  direct instruction)** — reverses the primary/fallback order the v18.12.0 bundle change set. Every
+  locale's font stack (`--font-sans-base`, `--font-sans-vi`, and the email-safe
+  `--email-font-family-sans`) now names Noto Sans JP first, M PLUS 2 second; both faces stay
+  bundled, only the order flips. Before flipping, re-measured the historical #254 clipping
+  guard (a tight line-height that sheared Vietnamese tone marks and Latin descenders) against
+  real Chromium canvas ink extents for both faces at the sidebar nav's 0.8125rem — Noto Sans JP's
+  worst-case ink (14.65px) stays under M PLUS 2's own worst case (15.38px) that the existing
+  `--sidebar-nav-item-line-height: 1.5` token was validated against, so no regression there.
+
 ## [18.12.19] - 2026-08-21
 
 ### Changed

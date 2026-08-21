@@ -262,10 +262,10 @@ export default function Demo() {
               {EMAIL_TYPOGRAPHY.bodyFontSize}/{EMAIL_TYPOGRAPHY.bodyLineHeight}, title{" "}
               {EMAIL_TYPOGRAPHY.headingFontSize} at weight {EMAIL_TYPOGRAPHY.headingFontWeight} (a
               transactional title is calm, not bold), legal band {EMAIL_FOOTER.fontSize}/
-              {EMAIL_FOOTER.lineHeight}. Font stacks name the canonical M PLUS 2 face FIRST and then
-              degrade. No email client honours <code>@font-face</code>, so a reader gets M PLUS 2
-              only where it is already available and otherwise lands on Hiragino (macOS/iOS), Yu
-              Gothic (Windows), Noto Sans JP, Meiryo, the system UI face, Arial, then{" "}
+              {EMAIL_FOOTER.lineHeight}. Font stacks name the canonical Noto Sans JP face FIRST and
+              then degrade. No email client honours <code>@font-face</code>, so a reader gets Noto
+              Sans JP only where it is already available and otherwise lands on Hiragino (macOS/iOS),
+              Yu Gothic (Windows), M PLUS 2, Meiryo, the system UI face, Arial, then{" "}
               <code>sans-serif</code>. Families are single-quoted so the value drops into a
               double-quoted <code>style</code> attribute unescaped.
             </CardDescription>

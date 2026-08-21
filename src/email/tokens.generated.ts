@@ -145,7 +145,7 @@ export const EMAIL_GEOMETRY_SOURCE = {
   "--email-mark-gap": "8px",
   "--email-wordmark-font-size": "13px",
   "--email-wordmark-font-weight": "700",
-  "--email-font-family-sans": "'M PLUS 2', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic Medium', YuGothic, 'Noto Sans JP', Meiryo, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, Arial, sans-serif",
+  "--email-font-family-sans": "'Noto Sans JP', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic Medium', YuGothic, 'M PLUS 2', Meiryo, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, Arial, sans-serif",
   "--email-font-family-mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
   "--email-body-font-size": "14px",
   "--email-body-line-height": "1.9",

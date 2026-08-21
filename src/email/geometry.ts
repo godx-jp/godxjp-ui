@@ -81,11 +81,12 @@ export const EMAIL_SHELL: EmailShellTokens = Object.freeze({
 /** Type ramp. Sizes are literal px — no email client resolves the rem scale reliably. */
 export interface EmailTypographyTokens {
   /**
-   * The canonical DXS stack, M PLUS 2 first. Web-font `@font-face` is unavailable in most clients,
-   * so this NAMES the face and degrades: a client with M PLUS 2 installed (or a webmail that
-   * already loaded it) renders the canonical face; everything else falls to Hiragino (macOS/iOS) →
-   * Yu Gothic (Windows) → Noto Sans JP → Meiryo → the system UI face → Arial → `sans-serif`. Family
-   * names are SINGLE-quoted so the value drops straight into a double-quoted `style="…"` attribute.
+   * The canonical DXS stack, Noto Sans JP first (product override, direct instruction). Web-font
+   * `@font-face` is unavailable in most clients, so this NAMES the face and degrades: a client with
+   * Noto Sans JP installed (or a webmail that already loaded it) renders the canonical face;
+   * everything else falls to Hiragino (macOS/iOS) → Yu Gothic (Windows) → M PLUS 2 → Meiryo → the
+   * system UI face → Arial → `sans-serif`. Family names are SINGLE-quoted so the value drops
+   * straight into a double-quoted `style="…"` attribute.
    */
   readonly fontFamily: string;
   /** Mono stack for invoice ids, masked card numbers, ISO dates and amounts. */

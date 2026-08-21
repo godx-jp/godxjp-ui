@@ -51,11 +51,11 @@ describe("DXS hi-fi visual contract", () => {
     expect(card).toMatch(/--card-shadow:\s*var\(--shadow-sm\)/);
   });
 
-  it("bundles M PLUS 2 as the default product face", () => {
+  it("bundles Noto Sans JP as the default product face (product override, direct instruction)", () => {
     const fonts = read("../fonts.css");
 
-    expect(fonts).toContain('@import "@fontsource/m-plus-2/400.css"');
-    expect(fonts).toMatch(/--font-sans-base:\s*\n\s*"M PLUS 2"/);
+    expect(fonts).toContain('@import "@fontsource/noto-sans-jp/400.css"');
+    expect(fonts).toMatch(/--font-sans-base:\s*\n\s*"Noto Sans JP"/);
     expect(fonts).not.toContain("@fontsource/montserrat");
   });
 });

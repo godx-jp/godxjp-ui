@@ -330,8 +330,8 @@ export function AppProvider({
   }, [requestHeaders]);
 
   // Reflect the locale on <html>: `dir` flips logical CSS (ms/me/ps/pe, start/end) under RTL,
-  // and `lang` drives `:lang()` rules — including the Vietnamese → Montserrat font swap in
-  // styles/index.css (all supported locales keep the default DXS M PLUS 2 stack).
+  // and `lang` drives `:lang()` rules (all supported locales keep the default DXS Noto Sans JP
+  // stack — see styles/fonts.css).
   React.useEffect(() => {
     if (typeof document !== "undefined") {
       document.documentElement.dir = localeDirection(locale);

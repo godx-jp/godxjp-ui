@@ -200,8 +200,8 @@
    *        --font-sans-zh-hant  (lang="zh-Hant" | "zh-TW")
    *      e.g. `--font-sans-ja: "Noto Sans JP", var(--font-sans-base);`
    * The opt-in bundle `@godxjp/ui/styles/fonts` overwrites `--font-sans-base`
-   * (and `--font-sans-vi`) with the DXS bundle — "M PLUS 2" primary, "Noto Sans JP"
-   * as the CJK fallback — so the all-in-one entry is zero-config. That fill also
+   * (and `--font-sans-vi`) with the DXS bundle — "Noto Sans JP" primary, "M PLUS 2"
+   * as its fallback — so the all-in-one entry is zero-config. That fill also
    * lands on `:root` at THIS specificity, so `styles/fonts` MUST be imported AFTER
    * `styles/base`, or the system stack below silently wins (issue #210). */
   --font-sans-base:

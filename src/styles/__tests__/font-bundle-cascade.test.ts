@@ -74,7 +74,7 @@ describe("bundled-font cascade order (issue #210)", () => {
     expect(foundation).not.toMatch(/@layer/);
   });
 
-  it("resolves --font-sans-base to the bundled M PLUS 2 stack through the all-in-one entry", () => {
+  it("resolves --font-sans-base to the bundled Noto Sans JP stack through the all-in-one entry", () => {
     const flattened = flatten(resolve(STYLES_DIR, "index.css"));
     const winner = winningDeclaration(flattened, "--font-sans-base");
 
@@ -82,8 +82,8 @@ describe("bundled-font cascade order (issue #210)", () => {
     expect(
       winner,
       "the LAST --font-sans-base declaration in the all-in-one cascade must be the bundled face, not the font-agnostic system stack",
-    ).toMatch(/^"M PLUS 2"/);
-    expect(winner).toContain('"Noto Sans JP"');
+    ).toMatch(/^"Noto Sans JP"/);
+    expect(winner).toContain('"M PLUS 2"');
     // The font-agnostic foundation default must NOT be the last word.
     expect(winner).not.toMatch(/^-apple-system/);
   });
@@ -92,14 +92,15 @@ describe("bundled-font cascade order (issue #210)", () => {
     const flattened = flatten(resolve(STYLES_DIR, "index.css"));
     const winner = winningDeclaration(flattened, "--font-sans-vi");
 
-    expect(winner).toMatch(/^"M PLUS 2"/);
+    expect(winner).toMatch(/^"Noto Sans JP"/);
   });
 
   it("ships the @font-face bundle that the tokens actually name", () => {
     const fonts = stripComments(readFileSync(resolve(STYLES_DIR, "fonts.css"), "utf8"));
 
-    // Docs (README / CUSTOMER-THEMING / mcp tokens) claim M PLUS 2 primary +
-    // Noto Sans JP CJK fallback — the @font-face imports must match the claim.
+    // Docs (README / CUSTOMER-THEMING / mcp tokens) claim Noto Sans JP primary +
+    // M PLUS 2 fallback (product override, direct instruction) — the @font-face
+    // imports must match the claim.
     expect(fonts).toContain("@fontsource/m-plus-2/400.css");
     expect(fonts).toContain("@fontsource/noto-sans-jp/400.css");
     expect(fonts).not.toContain("@fontsource/montserrat");

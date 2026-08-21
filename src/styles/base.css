@@ -61,7 +61,7 @@
  * base sans. Consumers switch a locale's face by setting its slot, e.g.
  *   :root { --font-sans-ja: "Noto Sans JP", var(--font-sans-base); }
  * without writing any [lang] selectors. The opt-in bundle styles/fonts fills
- * these slots for its M PLUS 2 + Noto Sans JP fallback. `--font-sans-base` is a
+ * these slots for its Noto Sans JP + M PLUS 2 fallback. `--font-sans-base` is a
  * separate token (not --font-family-sans) so the fallback can't self-reference. */
 [lang="ja"] {
   --font-family-sans: var(--font-sans-ja, var(--font-sans-base));

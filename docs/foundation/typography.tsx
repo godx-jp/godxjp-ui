@@ -11,7 +11,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Typography"
-      subtitle="M PLUS 2 (Noto Sans JP fallback) · 14 / 1.7 body · headings 20/18/14/13 @ 500 · three weights only"
+      subtitle="Noto Sans JP (M PLUS 2 fallback) · 14 / 1.7 body · headings 20/18/14/13 @ 500 · three weights only"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -98,8 +98,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Font family</CardTitle>
             <CardDescription>
-              font-sans · Noto Sans JP by default (Japanese + Latin); the Vietnamese locale
-              (&lt;html lang=&quot;vi&quot;&gt;) swaps to Montserrat (incl. its Vietnamese subset).
+              font-sans · Noto Sans JP by default (Japanese + Latin, incl. the Vietnamese subset);
+              M PLUS 2 is the fallback face for every supported locale.
               font-mono · the UI-monospace stack for code, IDs and aligned digits.
             </CardDescription>
           </CardHeader>

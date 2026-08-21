@@ -322,7 +322,7 @@ describe("values are compatible with inline email styles", () => {
       // eslint-disable-next-line no-control-regex
       expect(stack).toMatch(/^[\x20-\x7e]+$/);
     }
-    expect(EMAIL_TYPOGRAPHY.fontFamily.startsWith("'M PLUS 2'")).toBe(true);
+    expect(EMAIL_TYPOGRAPHY.fontFamily.startsWith("'Noto Sans JP'")).toBe(true);
     expect(EMAIL_TYPOGRAPHY.fontFamily).toContain("Arial");
     expect(EMAIL_TYPOGRAPHY.fontFamily.endsWith("sans-serif")).toBe(true);
     expect(EMAIL_TYPOGRAPHY.monoFontFamily.endsWith("monospace")).toBe(true);

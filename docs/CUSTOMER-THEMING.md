@@ -14,8 +14,8 @@ The design system ships a complete, **zero-config default theme**. Two audiences
 import "@godxjp/ui/styles";
 ```
 
-That single import ships everything: colors, the bundled fonts (**M PLUS 2** as the default face —
-including the Vietnamese coverage — with **Noto Sans JP** as the CJK fallback, self-bundled &
+That single import ships everything: colors, the bundled fonts (**Noto Sans JP** as the default face —
+including the Vietnamese coverage — with **M PLUS 2** as the fallback, self-bundled &
 subsetted), the golden-ratio type scale, spacing grid, radius scale, shadow ramp, and all component
 CSS. Nothing else to configure. Pick density per surface with
 `<PageContainer density="compact | default | comfortable">`.
@@ -84,10 +84,11 @@ tokens — never edit the library. Two modes, both token-only:
 
 `styles/base.css` wires every `[lang]` to its slot; the opt-in `styles/fonts`
 overwrites `--font-sans-base` (and `--font-sans-vi`) with the bundled stack —
-**M PLUS 2** primary, **Noto Sans JP** CJK fallback. (**Bundle change:** v16
-bundled Noto Sans JP + Montserrat; v18 bundles M PLUS 2 + Noto Sans JP. If your
-design spec named the v16 faces, set the tokens yourself rather than relying on
-the bundle.) Headings read
+**Noto Sans JP** primary, **M PLUS 2** fallback. (**Bundle change:** v16 bundled
+Noto Sans JP + Montserrat; v18.12.0–18.12.19 bundled M PLUS 2 + Noto Sans JP;
+v18.12.20+ bundles Noto Sans JP + M PLUS 2 (product override, direct
+instruction). If your design spec named an earlier bundle's faces, set the
+tokens yourself rather than relying on the bundle.) Headings read
 `--font-family-display` and body reads `--font-family-body`, both defaulting to
 `--font-family-sans` — override them for a dual-font (display + body) brand.
 
