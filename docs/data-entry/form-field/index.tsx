@@ -130,6 +130,36 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Static value · mixed with editable fields (gh#294)</CardTitle>
+            <CardDescription>
+              staticText renders a read-only VALUE — Descriptions.Item's exact value typography,
+              no control, no id/aria-* wiring — as a FormField, so an immutable name/email row and
+              an editable role Select share the same Form context: label column, labelAlign, and
+              row-to-row gap, with nothing to reconcile by hand.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form layout="horizontal" labelWidth="8rem" controlWidth="20rem">
+              <FormField label="名前" staticText="山田 太郎" />
+              <FormField label="メールアドレス" staticText="yamada@example.jp" />
+              <FormField id="static-role" label="ロール" required>
+                <Select
+                  id="static-role"
+                  name="role"
+                  value="member"
+                  onValueChange={() => {}}
+                  options={[
+                    { value: "member", label: "Member" },
+                    { value: "admin", label: "Admin" },
+                  ]}
+                />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>
               Layout matrix · widths / breakpoints / long locale / RTL
             </CardTitle>

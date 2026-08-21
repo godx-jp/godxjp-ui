@@ -100,6 +100,13 @@
             "docs/data-entry/form-field/index.tsx",
             "src/components/data-entry/__tests__/form-field.a11y.test.tsx"
           ]
+        },
+        "staticText": {
+          "cases": ["text", "node"],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "src/components/data-entry/__tests__/form-field.test.tsx"
+          ]
         }
       }
     },
