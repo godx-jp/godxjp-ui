@@ -6,6 +6,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.12.16] - 2026-08-21
+
+### Fixed
+
+- **`.ui-data-table-surface` uses `overflow: clip`, not `hidden` — `stickyHeader` was a no-op
+  (gh#291 family)** — `hidden` made the surface a scroll container between the real scroll region
+  (`.ui-data-table-scroll`) and the table, so `stickyHeader`'s (default `true`) sticky context, and
+  the pinned column's, anchored to a box that never scrolls — the header scrolled away with the
+  body. `clip` preserves the same rounded-border clipping without becoming a scroll container, so
+  sticky binds to the real scroll region (measured: `hidden` → thead moved 300px per 300px
+  scrolled; `clip` → 1px).
+
+### Added
+
+- **`Descriptions` gains `labelAlign` + a themeable row-gap token (gh#294)** — mirrors `Form`'s own
+  `labelAlign` contract exactly (same prop, same `text-align: end` mechanism, same vertical-only
+  guard), so a `Descriptions` block can be told to align like a `Form`/`FormField` composed beside
+  it. The row-to-row gap moves from a hardcoded `gap-y-3` utility to `--descriptions-row-gap`
+  (default `var(--space-3)` — visually identical to the historical value); a consumer placing
+  `Descriptions` next to a `Form` on one card retunes it to `var(--space-4)` to share the same
+  rhythm. Both default to today's exact rendering — no existing consumer's output changes.
+- **`FormField` gains `staticText` — a read-only VALUE row on the same `Form` (gh#294)** — for a
+  field genuinely mixed into an otherwise-editable form (an immutable name/email row above an
+  editable role `Select` on the same card), `<FormField label="…" staticText="…" />` renders plain
+  text matching `Descriptions.Item`'s value typography byte-for-byte, skipping FormField's control
+  a11y wiring entirely (there is no control to label). Because it's the same `FormField` reading
+  the same `Form` context, it inherits `layout`/`labelAlign`/row-gap automatically — nothing to
+  reconcile between two different components by hand. Mutually exclusive with `children`.
+
 ## [18.12.15] - 2026-08-21
 
 ### Fixed
