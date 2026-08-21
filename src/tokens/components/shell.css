@@ -24,6 +24,9 @@
   /* DXS application-shell geometry. These defaults mirror the checked-in
    * Admin/Console hi-fi source while remaining themeable by consumers. */
   --app-shell-bar-height: 3rem;
+  /* (the coarse-pointer override lives at the end of this file — Rule #24 grows
+   * controls to 44px, and a 48px bar cannot hold a 44px control plus its 3px
+   * focus ring at the very top of the viewport, where overflow cannot help.) */
   /* Inline inset and slot gap of the AppShell top bar. `-compact` applies below the shell
    * breakpoint (the docked sidebar is gone, so the bar tightens against the viewport edge). */
   --app-shell-bar-inset: var(--space-4);
@@ -345,4 +348,14 @@
    * "Role-mirror knobs MUST be `initial`"). Documented default = hsl(var(--background)) — a public
    * page is the plain page canvas, not the app's `--muted` chrome. */
   --centered-shell-landing-background: initial;
+}
+
+/* Rule #24 companion (gh#291): on coarse pointers --control-height grows to 2.75rem
+ * (44px tap floor), and the shell bar sits flush with the viewport top — a 3rem bar
+ * leaves the control's 3px focus ring painting ABOVE y=0, off-screen, which no
+ * overflow setting can recover. 3.5rem gives 6px of breathing per side. */
+@media (pointer: coarse) {
+  :root {
+    --app-shell-bar-height: 3.5rem;
+  }
 }

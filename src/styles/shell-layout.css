@@ -47,7 +47,13 @@
      * set to baseline; --scaling:1 alone is not enough — see foundation.css). */
     display: flex;
     min-width: 0;
-    overflow: hidden;
+    /* Horizontal-only clip with ring headroom (gh#291): on coarse-pointer
+     * viewports --control-height is 44px inside this 48px bar, so a control's
+     * 3px ring paints ABOVE y=0 — a plain `hidden` (both axes, no clip-margin
+     * possible) cut it flat at top and bottom. Same contract as .ui-topbar. */
+    overflow-x: clip;
+    overflow-y: visible;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
     align-items: center;
     gap: var(--app-shell-bar-gap);
     padding-inline: var(--app-shell-bar-inset);
