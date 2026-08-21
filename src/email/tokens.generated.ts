@@ -42,7 +42,7 @@ export const EMAIL_COLOR_SOURCE = {
   },
   "primary": {
     "cssVar": "--primary",
-    "hsl": "204 100% 39%"
+    "hsl": "204 100% 37%"
   },
   "primaryForeground": {
     "cssVar": "--primary-foreground",

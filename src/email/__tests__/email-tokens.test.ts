@@ -159,12 +159,16 @@ describe("email colours derive from the web token roles", () => {
   });
 
   it("hslToHex matches the reference conversions the design comments record", () => {
-    expect(hslToHex("204 100% 39%")).toBe("#0077c7"); // SmartHR MAIN, per foundation.css
+    // Fixed vectors for the conversion itself: a saturated blue, both ends of the
+    // lightness axis, a primary and a mid-lightness green. They are arithmetic, so
+    // they stay true no matter what the palette does. What `--primary` currently
+    // resolves to is asserted where it belongs — against FOUNDATION_LIGHT, below —
+    // rather than pasted here, which only re-broke every time the token moved.
+    expect(hslToHex("204 100% 39%")).toBe("#0077c7");
     expect(hslToHex("0 0% 100%")).toBe("#ffffff");
     expect(hslToHex("0 0% 0%")).toBe("#000000");
     expect(hslToHex("0 100% 50%")).toBe("#ff0000");
     expect(hslToHex("120 100% 25%")).toBe("#008000");
-    expect(EMAIL_COLORS.primary).toBe("#0077c7");
   });
 
   it("rejects anything that is not a bare HSL channel triplet", () => {
