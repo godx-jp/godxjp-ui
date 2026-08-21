@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.12.18] - 2026-08-21
+
+### Changed
+
+- **Topbar search trigger fills the center slot by default (gh#296)** — product override, direct
+  instruction. `.tb-search` was a fixed ~420px box (`--topbar-search-max-width: 26.25rem`),
+  centered regardless of available room, leaving visible dead space before whatever sits in `end`
+  (locale picker, notification bell, account menu) at normal desktop widths. `--topbar-search-max-width`
+  now defaults to `none`; `.tb-search` is `width: 100%; max-width: var(--topbar-search-max-width)` —
+  it fills the slot flush to `end` by default. A consumer wanting the old capped, centered look sets
+  the token explicitly (e.g. back to `26.25rem`).
+
 ## [18.12.17] - 2026-08-21
 
 ### Fixed
