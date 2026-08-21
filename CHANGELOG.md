@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.12.19] - 2026-08-21
+
+### Changed
+
+- **`AppSettingPicker`'s icon-only trigger drops its resting border/bg/shadow (gh#297)** — it
+  reused `controlTriggerClass`'s form-input chrome (`border border-input bg-background shadow-sm`),
+  meant for labeled Select triggers. In a shell topbar (`kind="locale"`, `appearance="icon"`, the
+  canonical locale switcher — see `ShellFrame`) it sits beside ghost icon buttons (sidebar toggle,
+  notifications, account menu) with no border at rest, so the bordered box read as an inconsistent
+  outlier. Now `border-transparent bg-transparent shadow-none` at rest with a `hover:bg-accent`
+  ghost hover, matching its siblings; the open-state ring (`data-[state=open]:border-ring`, from
+  `controlTriggerClass`) and the focus-visible ring are untouched. Scoped to the icon appearance
+  only — labeled/inline Select triggers (forms, settings rows) keep their input-like chrome.
+
 ## [18.12.18] - 2026-08-21
 
 ### Changed

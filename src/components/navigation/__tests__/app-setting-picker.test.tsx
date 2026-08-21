@@ -134,6 +134,18 @@ describe("AppSettingPicker", () => {
     expect(trigger).toHaveTextContent("");
   });
 
+  it('appearance="icon": has no resting border/bg, matching the ghost icon buttons beside it in a topbar', () => {
+    renderWithUi(
+      <AppSettingPicker kind="locale" appearance="icon" value="ja" onValueChange={vi.fn()} />,
+    );
+    expect(screen.getByRole("combobox")).toHaveClass(
+      "ui-app-setting-picker-icon",
+      "border-transparent",
+      "bg-transparent",
+      "shadow-none",
+    );
+  });
+
   it('appearance="icon": still opens and fires onValueChange with localized options', async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();

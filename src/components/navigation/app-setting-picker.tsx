@@ -180,8 +180,15 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
               ? "ui-app-setting-picker-inline h-auto min-h-0 w-auto rounded-none border-0 bg-transparent p-0 shadow-none"
               : iconOnly
                 ? // Structurally icon-only: drop the owned width + value spacing and square the box to
-                  // the density-aware --control-height tap target, centring the icon.
-                  "w-[length:var(--control-height)] justify-center ps-0 pe-0"
+                  // the density-aware --control-height tap target, centring the icon. Visually it
+                  // sits among ghost icon buttons (the topbar's sidebar-toggle/notifications/account
+                  // triggers), so it drops controlTriggerClass's form-input chrome (border/bg/shadow)
+                  // at rest and adopts the same ghost hover — a resting border here read as visually
+                  // inconsistent next to its borderless topbar siblings. The open-state ring
+                  // (`data-[state=open]:border-ring`, from controlTriggerClass) and the
+                  // focus-visible ring are untouched, so keyboard and "is this open" affordance
+                  // still hold.
+                  "ui-app-setting-picker-icon w-[length:var(--control-height)] justify-center border-transparent bg-transparent ps-0 pe-0 shadow-none hover:bg-accent hover:text-accent-foreground"
                 : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
                   // caps at the container (`w-auto max-w-full`) instead of the old UNCONDITIONAL
                   // `w-full` — so a labeled picker dropped into a narrow topbar no longer stretches to
