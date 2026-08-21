@@ -1404,6 +1404,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Column gap between the label and its control in horizontal/inline layout."
   },
   {
+    "name": "--form-block-gap",
+    "value": "var(--space-4)",
+    "description": "Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's * CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN * direct children (no Card framing). Unchanged from the historical value."
+  },
+  {
+    "name": "--form-field-row-gap",
+    "value": "var(--space-3)",
+    "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value * mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical * rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, * which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` * composition every real Save-button form needs), so it holds at any DOM depth relative to Form."
+  },
+  {
     "name": "--legal-document-measure-max-width",
     "value": "46rem",
     "description": "Readable document measure. Caps the header, the section column and the footer so * a 1440px viewport still reads at ~75-90 characters per line."

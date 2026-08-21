@@ -12,7 +12,25 @@
   .ui-form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+  }
+
+  /* Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's
+   * CardContent and its CardFooter action row. MARGIN, not flex `gap`: `gap` only reaches DIRECT
+   * children, which is dead the moment a consumer needs a CardFooter Save button to actually
+   * submit (it must stay a `<form>` descendant, so Form has to wrap CardContent — the FormFields
+   * become grandchildren, past flex `gap`'s reach). Margin-based sibling spacing works at any
+   * depth as long as the elements are literal siblings. */
+  .ui-form > * + * {
+    margin-block-start: var(--form-block-gap);
+  }
+
+  /* Field-to-field row rhythm (gh#295) — MORE SPECIFIC than the rule above (two class selectors
+   * beat one), so it wins rather than stacking with it whenever two FormFields are adjacent
+   * siblings: Form's own direct children (a plain field list, no Card framing) or nested one
+   * level through CardContent (the common Card-framed, Save-button-capable case). This is what
+   * makes the rhythm hold regardless of DOM depth — the actual fix for gh#295. */
+  .ui-form-field + .ui-form-field {
+    margin-block-start: var(--form-field-row-gap);
   }
 
   /* Vertical (default + collapsed state): label stacked above the control column, LEFT-aligned.
