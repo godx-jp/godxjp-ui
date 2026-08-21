@@ -119,7 +119,14 @@
   }
 
   .ui-data-table-surface {
-    overflow: hidden;
+    /* `clip`, NOT `hidden` (gh#291 family): both clip the table to the rounded
+     * border, but `hidden` makes this box a SCROLL CONTAINER, which silently
+     * captured the sticky context of `stickyHeader` (default true) and of the
+     * pinned columns — they anchored to a box that never scrolls, so the header
+     * scrolled away with the body inside `.ui-data-table-scroll`. `clip` is not
+     * a scroll container, so sticky binds to the real scroll region and works.
+     * Measured: hidden → thead moved 300px per 300px scrolled; clip → 1px. */
+    overflow: clip;
     /* Narrow-viewport legibility floor — a TOKEN, not the old `min-w-[640px]` literal (gh#253,
      * rule #45). Cleared at the `sm` step below, and opted out of entirely by the collection
      * preset, which owns its width through the column-priority measures. */

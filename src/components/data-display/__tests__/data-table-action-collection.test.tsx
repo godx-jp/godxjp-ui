@@ -188,8 +188,12 @@ describe("DataTable action-collection preset (gh#253)", () => {
 
   it("owns the surface width floor as a documented token, not a literal", () => {
     expect(tableTokens).toContain("--table-surface-min-inline-size: 640px;");
+    // `clip`, not `hidden` (gh#291 family): both clip to the rounded border, but
+    // `hidden` makes the surface a SCROLL CONTAINER and silently captures the
+    // sticky context of stickyHeader/pinned columns — measured: the header then
+    // scrolls away 1:1 with the body. Keep this pinned so it cannot regress.
     expect(tableCssBare).toContain(
-      ".ui-data-table-surface{overflow:hidden;min-inline-size:var(--table-surface-min-inline-size);",
+      ".ui-data-table-surface{overflow:clip;min-inline-size:var(--table-surface-min-inline-size);",
     );
     // Logical property only (RTL) — never `min-width`.
     expect(tableCssBare).not.toMatch(/\.ui-data-table-surface[^{]*\{[^}]*min-width:/);
