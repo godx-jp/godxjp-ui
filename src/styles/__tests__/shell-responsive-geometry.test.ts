@@ -110,9 +110,11 @@ describe("responsive shell geometry", () => {
     expect(slots).toMatch(/overflow-y:\s*visible;/);
     expect(slots).not.toMatch(/overflow:\s*hidden;/);
     // …and the clip margin keeps an edge control's focus ring paintable (WCAG 2.4.11 / 2.4.13).
-    // 2x the token: rings paint up to 3px while --focus-ring-width is 2px, so 1x shaved the
-    // flush-edge ring by 1px (gh#291 follow-up).
-    expect(slots).toMatch(/overflow-clip-margin:\s*calc\(2 \* var\(--focus-ring-width\)\);/);
+    // The dedicated 4px headroom token, consumed as a BARE var(): rings paint up to 3px while
+    // --focus-ring-width is 2px, and Chromium rejects any calc() inside overflow-clip-margin at
+    // parse time — a calc() here silently degrades the margin to 0 (gh#291 follow-up).
+    expect(slots).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
+    expect(slots).not.toMatch(/overflow-clip-margin:\s*calc\(/);
     expect(slots).toMatch(/min-width:\s*0;/);
     // The grouped rule covers all three clusters.
     for (const selector of [".ui-topbar-center", ".ui-topbar-end"]) {

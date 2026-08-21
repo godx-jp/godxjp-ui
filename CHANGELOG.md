@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.12.14] - 2026-08-21
+
+### Fixed
+
+- **Topbar ring headroom actually applies — Chromium rejects calc() in overflow-clip-margin
+  (gh#291 follow-up)** — 18.12.13 set the margin to `calc(2 * var(--focus-ring-width))`, which
+  Chromium drops at parse time (even a literal `calc(2 * 2px)` is refused), silently degrading
+  the headroom to 0 and clipping flush-edge rings harder than before. The value now lives in a
+  dedicated plain-length token `--focus-ring-clip-margin: 4px` consumed as a bare `var()`,
+  which Chromium honours (verified live: computed 4px, ring fully painted on all four edges).
+
 ## [18.12.13] - 2026-08-21
 
 ### Fixed

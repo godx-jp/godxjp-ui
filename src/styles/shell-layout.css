@@ -1282,8 +1282,8 @@
     overflow-y: visible;
     /* Ring headroom on the clipped axis: the end rail sits flush against this
      * box, so without a margin the LAST control's ring loses its outer edge.
-     * 2x the ring token — open/focus rings paint up to 3px (gh#291 follow-up). */
-    overflow-clip-margin: calc(2 * var(--focus-ring-width));
+     * Bare var() only — Chromium drops any calc() in overflow-clip-margin. */
+    overflow-clip-margin: var(--focus-ring-clip-margin);
   }
   .ui-topbar-start,
   .ui-topbar-center,
@@ -1299,10 +1299,11 @@
      * ring headroom where supported. */
     overflow-x: clip;
     overflow-y: visible;
-    /* 2x the ring token, NOT 1x: focus/open rings paint up to 3px while the
-     * token is 2px, so a flush-edge control (the locale picker is the first
-     * child of `end`) lost 1px of ring on the clipped axis (gh#291 follow-up). */
-    overflow-clip-margin: calc(2 * var(--focus-ring-width));
+    /* 4px headroom, NOT the 2px ring token: focus/open rings paint up to 3px,
+     * so 1x shaved a flush-edge control's ring (the locale picker is the first
+     * child of `end`). Bare var() only — Chromium drops any calc() in
+     * overflow-clip-margin at parse time, degrading the margin to 0. */
+    overflow-clip-margin: var(--focus-ring-clip-margin);
   }
   .ui-topbar-start {
     flex: 0 1 auto;
