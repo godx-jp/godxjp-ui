@@ -1271,7 +1271,15 @@
     align-items: center;
     gap: var(--topbar-gap);
     padding-inline: var(--topbar-inset);
-    overflow: hidden;
+    /* Horizontal-only clip (gh#291). `hidden` clipped BOTH axes with no clip-margin,
+     * cutting the focus ring of slot controls flat at top/bottom — the bar's content
+     * box hugs --control-height exactly, and the rails' overflow-clip-margin below
+     * cannot help when the parent already swallowed the ring. `clip` (not `hidden`)
+     * is what lets overflow-y stay `visible` — a `hidden`/`visible` pair computes to
+     * `auto` and still clips. Vertically the ring paints into the shell bar's box,
+     * which has headroom; the horizontal shrink/truncation contract is unchanged. */
+    overflow-x: clip;
+    overflow-y: visible;
   }
   .ui-topbar-start,
   .ui-topbar-center,
@@ -1280,7 +1288,13 @@
     min-width: 0;
     align-items: center;
     gap: var(--topbar-gap);
-    overflow: clip;
+    /* Clip horizontally only (gh#291): the rails hug --control-height, so a
+     * vertical clip eats the focus ring even WITH the clip-margin — the margin
+     * is 2px while e.g. the toggle ring paints 3px, and Safari does not
+     * implement overflow-clip-margin at all. The margin still buys horizontal
+     * ring headroom where supported. */
+    overflow-x: clip;
+    overflow-y: visible;
     overflow-clip-margin: var(--focus-ring-width);
   }
   .ui-topbar-start {
