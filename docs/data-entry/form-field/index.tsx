@@ -132,10 +132,10 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Static value · mixed with editable fields (gh#294)</CardTitle>
             <CardDescription>
-              staticText renders a read-only VALUE — Descriptions.Item's exact value typography,
-              no control, no id/aria-* wiring — as a FormField, so an immutable name/email row and
-              an editable role Select share the same Form context: label column, labelAlign, and
-              row-to-row gap, with nothing to reconcile by hand.
+              staticText renders a read-only VALUE as a FormField itself: Descriptions.Item's
+              exact value typography, no control, no id/aria-* wiring. An immutable name/email row
+              and an editable role Select then share the same Form context · label column ·
+              labelAlign · row-to-row gap, with nothing to reconcile by hand.
             </CardDescription>
           </CardHeader>
           <CardContent>
