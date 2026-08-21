@@ -1435,7 +1435,13 @@
 
   .tb-search {
     display: flex;
-    width: min(var(--topbar-search-max-width), 40vw);
+    /* Fills the whole `Topbar` center slot by default (gh#296) — `--topbar-search-max-width`
+     * defaults to `none`, so nothing caps it short of `end`. A consumer opting into the older
+     * fixed-width, centered look sets the token to an explicit length instead of overriding this
+     * rule. `width: 100%` + `max-width: none` is the pair that makes both cases work from ONE
+     * token: a set length caps it, an unset one (`none`) doesn't. */
+    width: 100%;
+    max-width: var(--topbar-search-max-width);
     height: var(--control-height-sm);
     align-items: center;
     gap: var(--space-2);

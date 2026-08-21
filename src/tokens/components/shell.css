@@ -74,7 +74,11 @@
   --sidebar-section-gap: var(--space-4);
   --sidebar-section-label-padding-x: var(--space-2);
   --sidebar-section-label-padding-bottom: var(--space-1);
-  --topbar-search-max-width: 26.25rem;
+  /* Default `none` (gh#296): the search trigger fills its whole `Topbar` center slot — flush to
+   * whatever sits in `end` (a locale picker, notification bell, account menu) — rather than
+   * floating as a fixed ~420px box with dead space on either side at normal desktop widths. A
+   * consumer that wants a capped, centered search box (the previous look) sets this explicitly. */
+  --topbar-search-max-width: none;
   /* Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally
    * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs
    * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that

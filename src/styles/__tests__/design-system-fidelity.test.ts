@@ -23,7 +23,10 @@ describe("DXS hi-fi visual contract", () => {
     const shell = read("../shell-layout.css");
 
     expect(tokens).toMatch(/--app-shell-page-max-width:\s*80rem/);
-    expect(tokens).toMatch(/--topbar-search-max-width:\s*26\.25rem/);
+    // Product override (gh#296, direct instruction): the search trigger now fills its Topbar
+    // center slot by default instead of floating as a fixed ~420px box with dead space on either
+    // side. The token stays available for a consumer that wants the old capped, centered look.
+    expect(tokens).toMatch(/--topbar-search-max-width:\s*none/);
     expect(tokens).toMatch(/--app-shell-main-background:\s*hsl\(var\(--muted\) \/ 0\.4\)/);
     expect(shell).toMatch(
       /\.app-main \.ui-page-container\s*\{[^}]*max-width:\s*var\(--app-shell-page-max-width\)/s,

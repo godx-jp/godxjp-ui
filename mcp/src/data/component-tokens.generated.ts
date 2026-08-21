@@ -2155,8 +2155,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--topbar-search-max-width",
-    "value": "26.25rem",
-    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
+    "value": "none",
+    "description": "Default `none` (gh#296): the search trigger fills its whole `Topbar` center slot — flush to * whatever sits in `end` (a locale picker, notification bell, account menu) — rather than * floating as a fixed ~420px box with dead space on either side at normal desktop widths. A * consumer that wants a capped, centered search box (the previous look) sets this explicitly."
   },
   {
     "name": "--topbar-height",
