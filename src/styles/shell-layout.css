@@ -47,12 +47,14 @@
      * set to baseline; --scaling:1 alone is not enough — see foundation.css). */
     display: flex;
     min-width: 0;
-    /* Horizontal-only clip with ring headroom (gh#291): on coarse-pointer
-     * viewports --control-height is 44px inside this 48px bar, so a control's
-     * 3px ring paints ABOVE y=0 — a plain `hidden` (both axes, no clip-margin
-     * possible) cut it flat at top and bottom. Same contract as .ui-topbar. */
-    overflow-x: clip;
-    overflow-y: visible;
+    /* Same both-axes-clip + margin contract as .ui-topbar (gh#291): Chromium
+     * honours overflow-clip-margin ONLY when BOTH axes are `clip` — a
+     * single-axis clip silently drops the margin, which would cut a flush
+     * control's ring whenever a theme sets --app-shell-bar-inset to 0. The 8px
+     * margin also covers the vertical ring of coarse-pointer 44px controls,
+     * which the 3.5rem coarse bar height already keeps inside the bar. Safari
+     * falls back to `visible` with the .ui-topbar family below. */
+    overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
     align-items: center;
     gap: var(--app-shell-bar-gap);
@@ -1310,6 +1312,7 @@
    * engine only — the .app-topbar horizontal clip still prevents bar blowout
    * and document scroll. */
   @supports not (overflow-clip-margin: 1px) {
+    .app-topbar,
     .ui-topbar,
     .ui-topbar-start,
     .ui-topbar-center,

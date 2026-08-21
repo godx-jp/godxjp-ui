@@ -92,8 +92,15 @@ export type StickyProp = boolean;
  * the desktop intrinsic column widths are replaced by token-owned column-PRIORITY measures under
  * `table-layout: fixed` and cells wrap, so every column — including the row actions — stays inside
  * the initial narrow frame. The real `<table>` semantics are never rewritten.
+ *
+ * `"stacked-record-collection"` (gh#293 restore — SCR-215) is the canonical wide-record collection:
+ * a table whose column count/content cannot be squeezed into any fixed-measure narrow frame at all
+ * (an admin detail row with many heterogeneous fields). Below `collapseBelow` the header row hides
+ * and every `<tr>` becomes a bordered key-value CARD stack — each `TableCell`'s own `label` prop
+ * renders inline above its value, taking over the accessible-name role the (now hidden) `<th>`
+ * association would otherwise carry. Above the step it is a byte-for-byte ordinary table.
  */
-export type TablePresetProp = "default" | "action-collection";
+export type TablePresetProp = "default" | "action-collection" | "stacked-record-collection";
 
 /**
  * Relative importance of a table column, used by `preset="action-collection"` to allocate the

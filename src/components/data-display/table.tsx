@@ -39,12 +39,20 @@ export type TableProps = React.HTMLAttributes<HTMLTableElement> & {
    * its rem floor (`--table-action-collection-*-width-floor`, ~5 CJK glyphs per line) and the
    * table intentionally scrolls inside this wrapper — SC 1.4.10 permits one-dimensional scrolling
    * of a data table; compressing further would shred CJK headers one character per line.
+   *
+   * `"stacked-record-collection"` (gh#293 restore — SCR-215) is for a wide, heterogeneous record
+   * table that CANNOT be squeezed into any fixed narrow-frame measure — an admin detail row with
+   * many disparate fields, not a dense queue. Below `collapseBelow` the `<thead>` hides and every
+   * `<tr>` becomes a bordered key-value card: each `TableCell`'s own `label` prop (its column's
+   * header text, repeated per cell since `<thead>` is gone) renders inline above the value. Above
+   * the step it renders as a byte-for-byte ordinary table — mark `label` on every `TableCell`.
    */
   preset?: TablePresetProp;
   /**
-   * Step at which `preset="action-collection"` switches to the priority measures, measured against
-   * the TABLE's own container (not the viewport), so a table inside a rail collapses before the
-   * page does. Defaults to `"sm"` (40rem). Ignored while `preset` is `"default"`.
+   * Step at which `preset="action-collection"`/`"stacked-record-collection"` switch away from the
+   * ordinary table, measured against the TABLE's own container (not the viewport), so a table
+   * inside a rail collapses before the page does. Defaults to `"sm"` (40rem). Ignored while
+   * `preset` is `"default"`.
    */
   collapseBelow?: BreakpointProp;
 };
@@ -71,7 +79,8 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
     <div
       className={cn(
         scrollable ? "relative w-full overflow-auto" : "relative w-full",
-        preset !== "default" && "ui-table-collection",
+        preset === "action-collection" && "ui-table-collection",
+        preset === "stacked-record-collection" && "ui-table-stacked-collection",
       )}
       data-preset={preset === "default" ? undefined : preset}
       data-collapse-below={preset === "default" ? undefined : collapseBelow}
