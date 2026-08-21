@@ -87,7 +87,7 @@ describe("responsive shell geometry", () => {
 
   it("allows Topbar and its center slot to shrink without document overflow", () => {
     expect(shellStyles).toMatch(
-      /\.ui-topbar\s*\{[^}]*width:\s*auto;[^}]*max-width:\s*100%;[^}]*min-width:\s*0;[^}]*flex:\s*1 1 0%;[^}]*overflow:\s*hidden;/s,
+      /\.ui-topbar\s*\{[^}]*width:\s*auto;[^}]*max-width:\s*100%;[^}]*min-width:\s*0;[^}]*flex:\s*1 1 0%;[^}]*overflow-x:\s*clip;/s,
     );
     expect(shellStyles).toMatch(/\.ui-topbar-center\s*\{[^}]*flex:\s*1 1 0%;/s);
   });
@@ -99,17 +99,22 @@ describe("responsive shell geometry", () => {
     // jsdom does no layout, so the contract is pinned here declaration-by-declaration.
     const slots = declarationsFor(shellStyles, ".ui-topbar-start");
 
-    // Every slot clips its OWN overflow, so a long string can never spill over a sibling cluster
-    // or leak a document scroll. `clip` (not `hidden`): a hidden box is still a scroll container,
-    // so focusing a clipped control would scroll the slot and shove its leading content away.
-    expect(slots).toMatch(/overflow:\s*clip;/);
+    // Every slot clips its OWN horizontal overflow, so a long string can never spill over a
+    // sibling cluster or leak a document scroll. `clip` (not `hidden`): a hidden box is still a
+    // scroll container, so focusing a clipped control would scroll the slot and shove its leading
+    // content away. The vertical axis stays `visible` (gh#291): the slot box hugs
+    // --control-height, so any vertical clip cuts an edge control's focus ring flat — the
+    // clip-margin alone cannot save it (2px margin vs a 3px toggle ring, and Safari does not
+    // implement overflow-clip-margin).
+    expect(slots).toMatch(/overflow-x:\s*clip;/);
+    expect(slots).toMatch(/overflow-y:\s*visible;/);
     expect(slots).not.toMatch(/overflow:\s*hidden;/);
     // …and the clip margin keeps an edge control's focus ring paintable (WCAG 2.4.11 / 2.4.13).
     expect(slots).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-width\);/);
     expect(slots).toMatch(/min-width:\s*0;/);
     // The grouped rule covers all three clusters.
     for (const selector of [".ui-topbar-center", ".ui-topbar-end"]) {
-      expect(declarationsFor(shellStyles, selector)).toContain("overflow: clip;");
+      expect(declarationsFor(shellStyles, selector)).toContain("overflow-x: clip;");
     }
 
     // start absorbs the overflow; center yields its whole box first (flex-basis 0)…
@@ -249,8 +254,10 @@ describe("responsive shell geometry", () => {
     for (const selector of [".ui-topbar-start", ".ui-topbar-center", ".ui-topbar-end"]) {
       expect(declarationsFor(shellStyles, selector)).toMatch(/gap:\s*var\(--topbar-gap\);/);
     }
-    // …and the gh#226 shrink contract is untouched by the knobs.
+    // …and the gh#226 shrink contract is untouched by the knobs (horizontal-only clip since
+    // gh#291 — the vertical axis stays visible so slot controls' focus rings paint).
     expect(root).toMatch(/flex:\s*1 1 0%;/);
-    expect(root).toMatch(/overflow:\s*hidden;/);
+    expect(root).toMatch(/overflow-x:\s*clip;/);
+    expect(root).toMatch(/overflow-y:\s*visible;/);
   });
 });

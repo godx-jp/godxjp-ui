@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Topbar no longer clips its controls' focus ring (gh#291)** — `.ui-topbar` used
+  `overflow: hidden`, whose box hugs `--control-height` exactly, so the 2–3px outward
+  focus ring of slot controls (AppSettingPicker, icon buttons, the user menu) was cut
+  flat at top and bottom; the rails' `overflow-clip-margin` could not help because the
+  parent had already swallowed the ring (and Safari does not implement clip-margin).
+  Bar and rails now clip the horizontal axis only (`overflow-x: clip` +
+  `overflow-y: visible` — a `hidden`/`visible` pair would compute to `auto` and still
+  clip), keeping the shrink/truncation contract while the ring paints fully.
+
 - **Page-size TRIGGER uses the shortest per-locale form (gh#290)** — the long unit on the
   control itself (「50 件/ページ」) took disproportionate space; the trigger now renders the new
   `pageSizeTrigger` string (ja 「50件」 / en "50 / page" / vi "50 / trang", the kintone
@@ -82,7 +91,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`--alert-radius` component token (gh#268 — rule #45)** — Alert's corner radius was a
   hard-coded `--radius-md`; a full-width Alert sitting above a Card (`--card-radius`, 2 φ-steps
   larger) read as unsynchronized corners with no knob to align them. Default unchanged.
-
 
 - **`AuthShell preset="registration"` (gh#256)** — the canonical SCR-002 sign-up measure: a
   22.5rem/360px form measure with a 15px inline gutter at 390 (card x=15, width=360, the same page
