@@ -27,6 +27,14 @@ export type ColumnDefProp<T> = {
   ariaLabel?: string;
   render?: (row: T) => React.ReactNode;
   sortable?: boolean;
+  /**
+   * Column width: either a utility class (`"w-[300px]"`) or a CSS length
+   * (`"300px"`, `"20%"`, `"calc(50% - 1rem)"`). Both work — a length is
+   * applied inline, anything else is treated as a class.
+   *
+   * It used to be class-only, and a length silently became a dead class name,
+   * so the column fell back to auto layout with nothing to indicate why.
+   */
   width?: string;
   align?: ColumnAlignProp;
   hiddenOnMobile?: boolean;

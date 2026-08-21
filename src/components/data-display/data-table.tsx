@@ -560,6 +560,30 @@ DataTable.ViewOptions = function DataTableViewOptions({
 };
 (DataTable.ViewOptions as React.FC).displayName = "DataTable.ViewOptions";
 
+/**
+ * `ColumnDef.width` accepts either a utility class or a CSS length.
+ *
+ * It has always been forwarded straight into `cn()`, so a perfectly reasonable
+ * `width: "300px"` became the class name `300px` — which matches nothing. The
+ * column silently fell back to auto layout, and under `table-layout: fixed` a
+ * wrapping cell then collapsed to its minimum. Nothing errors, nothing warns,
+ * and the type said `string`, which is exactly what invites a length.
+ *
+ * A value that begins like a length, or is a `calc()` / `var()` / `clamp()`,
+ * is applied as an inline width. Anything else is treated as a class, as
+ * before, so existing `w-[300px]` call sites are untouched.
+ */
+function columnWidth(width: string | undefined): {
+  className?: string;
+  style?: React.CSSProperties;
+} {
+  if (width === undefined || width === "") return {};
+  if (/^(?:[\d.]|calc\(|var\(|clamp\(|min\(|max\()/.test(width.trim())) {
+    return { style: { width } };
+  }
+  return { className: width };
+}
+
 /** A header slot with no visible text — an action / selection column. */
 function isEmptyHeader(header: React.ReactNode): boolean {
   return header == null || header === "" || header === false;
@@ -881,8 +905,9 @@ DataTable.Content = function DataTableContent() {
                           : "none"
                         : undefined
                     }
+                    style={columnWidth(col.width).style}
                     className={cn(
-                      col.width,
+                      columnWidth(col.width).className,
                       col.align === "right" && "text-end",
                       col.align === "center" && "text-center",
                       col.hiddenOnMobile && "hidden md:table-cell",
@@ -925,9 +950,10 @@ DataTable.Content = function DataTableContent() {
                     <TableCell
                       key={col.key}
                       priority={col.priority}
+                      style={columnWidth(col.width).style}
                       className={cn(
                         cellPadding,
-                        col.width,
+                        columnWidth(col.width).className,
                         col.align === "right" && "text-end",
                         col.align === "center" && "text-center",
                         col.hiddenOnMobile && "hidden md:table-cell",
@@ -1072,9 +1098,10 @@ DataTable.Content = function DataTableContent() {
                       <TableCell
                         key={col.key}
                         priority={col.priority}
+                        style={columnWidth(col.width).style}
                         className={cn(
                           cellPadding,
-                          col.width,
+                          columnWidth(col.width).className,
                           col.align === "right" && "text-end",
                           col.align === "center" && "text-center",
                           col.hiddenOnMobile && "hidden md:table-cell",
