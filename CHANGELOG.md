@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.12.17] - 2026-08-21
+
+### Fixed
+
+- **Form's field-to-field row rhythm was structurally dead once a FormField nested through
+  CardContent (gh#295)** — `.ui-form`'s rhythm was a flexbox `gap`, which only reaches DIRECT
+  children. The real composition every Save-button form needs (`Form` wrapping `CardContent` +
+  `CardFooter`, so the submit button stays inside the `<form>`) puts `FormField`s one level deeper
+  as grandchildren, past `gap`'s reach — consecutive fields rendered with zero intentional
+  spacing. Replaced with margin-based sibling spacing at two specificity tiers: `--form-block-gap`
+  (unchanged `--space-4`) for a Form's own top-level blocks, and the new, more-specific
+  `--form-field-row-gap` (`--space-3`, mirrors `--descriptions-row-gap` from gh#294) for
+  field-to-field rhythm — this wins by CSS specificity whenever two `FormField`s are adjacent, at
+  any DOM depth relative to `Form`. No more page-local `<Flex gap="md">` workaround needed around
+  a FormField group.
+
 ## [18.12.16] - 2026-08-21
 
 ### Fixed
