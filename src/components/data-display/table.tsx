@@ -136,6 +136,16 @@ TableRow.displayName = "TableRow";
  */
 type TableCellPriority = { priority?: TableColumnPriorityProp };
 
+/**
+ * A `TableCell`'s own column label, read only by `Table preset="stacked-record-collection"`
+ * below its collapse step — where the real `<thead>` hides and this renders inline above the
+ * cell's value inside the stacked card, standing in for the header association that is no longer
+ * visually present. Rendered into the DOM unconditionally (so it exists for the preset's CSS to
+ * reveal) but visually hidden above the collapse step, where the real `<th>` already carries the
+ * label — an ordinary table with no `label` prop supplied gains no extra markup.
+ */
+type TableCellLabel = { label?: React.ReactNode };
+
 export const TableHead = React.forwardRef<
   HTMLTableCellElement,
   React.ThHTMLAttributes<HTMLTableCellElement> & TableCellPriority
@@ -152,14 +162,21 @@ TableHead.displayName = "TableHead";
 
 export const TableCell = React.forwardRef<
   HTMLTableCellElement,
-  React.TdHTMLAttributes<HTMLTableCellElement> & TableCellPriority
->(({ className, priority, ...props }, ref) => (
+  React.TdHTMLAttributes<HTMLTableCellElement> & TableCellPriority & TableCellLabel
+>(({ className, priority, label, children, ...props }, ref) => (
   <td
     ref={ref}
     data-slot="table-cell"
     data-priority={priority}
     className={cn(className)}
     {...props}
-  />
+  >
+    {label !== undefined ? (
+      <span className="ui-table-stacked-collection-label" aria-hidden="true">
+        {label}
+      </span>
+    ) : null}
+    {children}
+  </td>
 ));
 TableCell.displayName = "TableCell";

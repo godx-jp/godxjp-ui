@@ -32,7 +32,14 @@
     min-width: 0;
     min-height: 0;
     flex-direction: column;
-    overflow: hidden;
+    /* Same ring-headroom contract as the topbar family (gh#291): nav rows are
+     * flush with the rail's inline edges, so a plain `hidden` clipped their
+     * focus ring on three sides. `clip` + margin (the margin is honoured only
+     * when BOTH axes clip) lets the ring paint over the rail border, while the
+     * rail still contains its content. Inner scroll regions are unaffected —
+     * `clip` creates no scroll container, exactly like `hidden`. */
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
     border-inline-end: 1px solid hsl(var(--border));
     background: hsl(var(--card));
     /* Opt-in brand-chrome wash — invisible by default (--sidebar-gradient: none). */
@@ -1312,6 +1319,7 @@
    * engine only — the .app-topbar horizontal clip still prevents bar blowout
    * and document scroll. */
   @supports not (overflow-clip-margin: 1px) {
+    .app-sidebar,
     .app-topbar,
     .ui-topbar,
     .ui-topbar-start,
