@@ -1277,18 +1277,18 @@
     align-items: center;
     gap: var(--topbar-gap);
     padding-inline: var(--topbar-inset);
-    /* Horizontal-only clip (gh#291). `hidden` clipped BOTH axes with no clip-margin,
-     * cutting the focus ring of slot controls flat at top/bottom — the bar's content
-     * box hugs --control-height exactly, and the rails' overflow-clip-margin below
-     * cannot help when the parent already swallowed the ring. `clip` (not `hidden`)
-     * is what lets overflow-y stay `visible` — a `hidden`/`visible` pair computes to
-     * `auto` and still clips. Vertically the ring paints into the shell bar's box,
-     * which has headroom; the horizontal shrink/truncation contract is unchanged. */
-    overflow-x: clip;
-    overflow-y: visible;
-    /* Ring headroom on the clipped axis: the end rail sits flush against this
-     * box, so without a margin the LAST control's ring loses its outer edge.
-     * Bare var() only — Chromium drops any calc() in overflow-clip-margin. */
+    /* Ring headroom contract (gh#291), measured empirically:
+     *   - Chromium honours overflow-clip-margin ONLY when BOTH axes are `clip`;
+     *     a single-axis clip silently ignores the margin, and a flush-edge
+     *     control's ring vanishes on the clipped axis.
+     *   - `hidden` can never work here (no clip-margin, and pairing it with
+     *     `visible` computes to `auto`, which still clips).
+     *   - The margin must be a bare var() — Chromium drops calc() at parse time.
+     * So: clip BOTH axes and let the margin carry the ring on every side. The
+     * gh#226 shrink/truncation contract is intact (content clips 8px outside
+     * the box). Safari (clip yes, clip-margin no) falls back to `visible`
+     * below. */
+    overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
   }
   .ui-topbar-start,
@@ -1298,18 +1298,24 @@
     min-width: 0;
     align-items: center;
     gap: var(--topbar-gap);
-    /* Clip horizontally only (gh#291): the rails hug --control-height, so a
-     * vertical clip eats the focus ring even WITH the clip-margin — the margin
-     * is 2px while e.g. the toggle ring paints 3px, and Safari does not
-     * implement overflow-clip-margin at all. The margin still buys horizontal
-     * ring headroom where supported. */
-    overflow-x: clip;
-    overflow-y: visible;
-    /* 4px headroom, NOT the 2px ring token: focus/open rings paint up to 3px,
-     * so 1x shaved a flush-edge control's ring (the locale picker is the first
-     * child of `end`). Bare var() only — Chromium drops any calc() in
-     * overflow-clip-margin at parse time, degrading the margin to 0. */
+    /* Same both-axes-clip + margin contract as .ui-topbar above (gh#291): the
+     * 8px margin covers the 3px ring on every side of a flush-edge control;
+     * single-axis clip would silently drop the margin in Chromium. */
+    overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
+  }
+  /* Safari implements `overflow: clip` but NOT overflow-clip-margin, so the
+   * both-axes clip above would eat every flush-edge focus ring there with no
+   * margin to save it. Trade slot containment for ring visibility on that
+   * engine only — the .app-topbar horizontal clip still prevents bar blowout
+   * and document scroll. */
+  @supports not (overflow-clip-margin: 1px) {
+    .ui-topbar,
+    .ui-topbar-start,
+    .ui-topbar-center,
+    .ui-topbar-end {
+      overflow: visible;
+    }
   }
   .ui-topbar-start {
     flex: 0 1 auto;

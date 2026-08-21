@@ -87,7 +87,7 @@ describe("responsive shell geometry", () => {
 
   it("allows Topbar and its center slot to shrink without document overflow", () => {
     expect(shellStyles).toMatch(
-      /\.ui-topbar\s*\{[^}]*width:\s*auto;[^}]*max-width:\s*100%;[^}]*min-width:\s*0;[^}]*flex:\s*1 1 0%;[^}]*overflow-x:\s*clip;/s,
+      /\.ui-topbar\s*\{[^}]*width:\s*auto;[^}]*max-width:\s*100%;[^}]*min-width:\s*0;[^}]*flex:\s*1 1 0%;[^}]*overflow:\s*clip;/s,
     );
     expect(shellStyles).toMatch(/\.ui-topbar-center\s*\{[^}]*flex:\s*1 1 0%;/s);
   });
@@ -99,16 +99,15 @@ describe("responsive shell geometry", () => {
     // jsdom does no layout, so the contract is pinned here declaration-by-declaration.
     const slots = declarationsFor(shellStyles, ".ui-topbar-start");
 
-    // Every slot clips its OWN horizontal overflow, so a long string can never spill over a
-    // sibling cluster or leak a document scroll. `clip` (not `hidden`): a hidden box is still a
-    // scroll container, so focusing a clipped control would scroll the slot and shove its leading
-    // content away. The vertical axis stays `visible` (gh#291): the slot box hugs
-    // --control-height, so any vertical clip cuts an edge control's focus ring flat — the
-    // clip-margin alone cannot save it (2px margin vs a 3px toggle ring, and Safari does not
-    // implement overflow-clip-margin).
-    expect(slots).toMatch(/overflow-x:\s*clip;/);
-    expect(slots).toMatch(/overflow-y:\s*visible;/);
+    // Every slot clips its OWN overflow, so a long string can never spill over a sibling cluster
+    // or leak a document scroll. `clip` on BOTH axes (not `hidden`, not single-axis): a hidden box
+    // is still a scroll container, and Chromium honours overflow-clip-margin ONLY when both axes
+    // are `clip` — a single-axis clip silently drops the margin and a flush-edge control's ring
+    // vanishes on the clipped axis (gh#291, measured). The 8px margin carries the 3px ring on
+    // every side; Safari (no clip-margin) falls back to `visible` via @supports.
+    expect(slots).toMatch(/overflow:\s*clip;/);
     expect(slots).not.toMatch(/overflow:\s*hidden;/);
+    expect(shellStyles).toMatch(/@supports not \(overflow-clip-margin: 1px\)/);
     // …and the clip margin keeps an edge control's focus ring paintable (WCAG 2.4.11 / 2.4.13).
     // The dedicated 4px headroom token, consumed as a BARE var(): rings paint up to 3px while
     // --focus-ring-width is 2px, and Chromium rejects any calc() inside overflow-clip-margin at
@@ -118,7 +117,7 @@ describe("responsive shell geometry", () => {
     expect(slots).toMatch(/min-width:\s*0;/);
     // The grouped rule covers all three clusters.
     for (const selector of [".ui-topbar-center", ".ui-topbar-end"]) {
-      expect(declarationsFor(shellStyles, selector)).toContain("overflow-x: clip;");
+      expect(declarationsFor(shellStyles, selector)).toContain("overflow: clip;");
     }
 
     // start absorbs the overflow; center yields its whole box first (flex-basis 0)…
@@ -258,10 +257,10 @@ describe("responsive shell geometry", () => {
     for (const selector of [".ui-topbar-start", ".ui-topbar-center", ".ui-topbar-end"]) {
       expect(declarationsFor(shellStyles, selector)).toMatch(/gap:\s*var\(--topbar-gap\);/);
     }
-    // …and the gh#226 shrink contract is untouched by the knobs (horizontal-only clip since
-    // gh#291 — the vertical axis stays visible so slot controls' focus rings paint).
+    // …and the gh#226 shrink contract is untouched by the knobs (both-axes clip + clip-margin
+    // since gh#291 — the margin, honoured only for two-axis clip, carries the focus ring).
     expect(root).toMatch(/flex:\s*1 1 0%;/);
-    expect(root).toMatch(/overflow-x:\s*clip;/);
-    expect(root).toMatch(/overflow-y:\s*visible;/);
+    expect(root).toMatch(/overflow:\s*clip;/);
+    expect(root).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
   });
 });
