@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.12.15] - 2026-08-21
+
+### Fixed
+
+- **`.app-sidebar` joins the ring-headroom contract (gh#291)** — same defect as the topbar in the
+  other half of the shell: `overflow: hidden` with nav rows flush against the rail's inline edges
+  clipped a focused row's ring on three sides. Now `overflow: clip` + `var(--focus-ring-clip-margin)`,
+  joining the `@supports` Safari fallback.
+
+### Added
+
+- **`Table preset="stacked-record-collection"` restored (gh#293 — SCR-215)** — the canonical WIDE,
+  heterogeneous record collection: a table whose columns/content cannot be squeezed into any fixed
+  narrow-frame measure at all (an admin detail row with many disparate, free-text fields), as
+  distinct from `action-collection`'s dense five/six-column queue. Below `collapseBelow` the
+  `<thead>` hides and every `<tr>` becomes a bordered key-value card; each `TableCell`'s own new
+  `label` prop renders inline above its value, taking over the accessible-name role the hidden
+  `<th>` would otherwise carry. Above the step it renders as a byte-for-byte ordinary table. This
+  preset previously shipped to npm (≤18.12.11) but was never committed to this repository's
+  tracked history, so a later direct-local-publish from a checkout without it silently dropped the
+  capability with no deprecation notice — restored here with the same container-query architecture
+  as `action-collection` (measured against the table's own container, one step per canonical
+  sm/md/lg/xl breakpoint) plus its own themeable card/label tokens
+  (`--table-stacked-collection-*`).
+
 ## [18.12.14] - 2026-08-21
 
 ### Fixed

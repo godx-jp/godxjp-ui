@@ -2659,6 +2659,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Role-mirror knob — MUST stay `initial`, with the role default at the CALL SITE * (`var(--centered-shell-landing-background, var(--background))`), so a scoped * `[data-tenant]` / `.dark` override of `--background` still reaches it (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented default = hsl(var(--background)) — a public * page is the plain page canvas, not the app's `--muted` chrome."
   },
   {
+    "name": "--app-shell-bar-height",
+    "value": "3.5rem",
+    "description": "Rule #24 companion (gh#291): on coarse pointers --control-height grows to 2.75rem * (44px tap floor), and the shell bar sits flush with the viewport top — a 3rem bar * leaves the control's 3px focus ring painting ABOVE y=0, off-screen, which no * overflow setting can recover. 3.5rem gives 6px of breathing per side."
+  },
+  {
     "name": "--sidebar-nav-item-foreground",
     "value": "initial",
     "description": "Resting nav row + label (also the resting sub-row). Default = hsl(var(--muted-foreground))."
@@ -2862,5 +2867,30 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-action-collection-min-inline-size-compact",
     "value": "0",
     "description": "Compact-tier LEGIBILITY FLOOR — the measure below which the preset stops fitting the table * to its container and lets the scroll region it already owns take over. * * The percentage budget above is sized for ONE column per priority tier plus one free-text * column. A queue that repeats a tier — two `secondary` columns, three `meta` columns, or an * unmarked column beside them — asks for more than 100%, and under `table-layout: fixed` the * surplus is taken out of the columns rather than out of the table: measured on a seven-column * Japanese admin queue at 390, every column landed at 44–59px and CJK labels wrapped at ONE to * TWO characters per line (dxs-platform/platform#680). That is a WCAG 2.2 SC 1.4.10 Reflow (AA) * failure, and it is the failure mode this floor removes. * * Scrolling is the correct escape, not a concession: SC 1.4.10 exempts \"parts of the content * which require two-dimensional layout for usage or meaning\", and its own note names data * tables as the example. A table that scrolls horizontally inside its card conforms; a table * whose cells are one character wide does not. * * Default `0` so nothing changes for any existing consumer: a queue that fits its priority * budget keeps fitting. A consumer whose queue carries more columns than the budget sets this * to the measure at which its narrowest column is still readable (roughly 5rem per column for * Japanese at the compact type tier) and the table scrolls instead of crushing."
+  },
+  {
+    "name": "--table-stacked-collection-card-padding-y",
+    "value": "var(--space-stack-sm)",
+    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no * column-priority measure to retune — the whole row becomes one block)."
+  },
+  {
+    "name": "--table-stacked-collection-card-padding-x",
+    "value": "var(--space-inline-md)",
+    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no * column-priority measure to retune — the whole row becomes one block)."
+  },
+  {
+    "name": "--table-stacked-collection-card-gap",
+    "value": "var(--space-stack-sm)",
+    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no * column-priority measure to retune — the whole row becomes one block)."
+  },
+  {
+    "name": "--table-stacked-collection-cell-padding-y",
+    "value": "var(--space-stack-xs)",
+    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no * column-priority measure to retune — the whole row becomes one block)."
+  },
+  {
+    "name": "--table-stacked-collection-label-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no * column-priority measure to retune — the whole row becomes one block)."
   }
 ];
