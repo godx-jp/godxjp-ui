@@ -5226,7 +5226,8 @@
           "type": "TablePresetProp | undefined",
           "values": [
             "default",
-            "action-collection"
+            "action-collection",
+            "stacked-record-collection"
           ],
           "declaredIn": [
             "src/components/data-display/data-table.tsx"
@@ -5607,6 +5608,19 @@
             1,
             2,
             3
+          ],
+          "declaredIn": [
+            "src/components/data-display/descriptions.tsx"
+          ]
+        },
+        {
+          "name": "labelAlign",
+          "origin": "owned",
+          "required": false,
+          "type": "\"start\" | \"end\" | undefined",
+          "values": [
+            "start",
+            "end"
           ],
           "declaredIn": [
             "src/components/data-display/descriptions.tsx"
@@ -14410,7 +14424,8 @@
           "type": "TablePresetProp | undefined",
           "values": [
             "default",
-            "action-collection"
+            "action-collection",
+            "stacked-record-collection"
           ],
           "declaredIn": [
             "src/components/data-display/table.tsx"
@@ -14438,6 +14453,16 @@
     "TableCell": {
       "group": "data-display",
       "props": [
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/table.tsx"
+          ]
+        },
         {
           "name": "priority",
           "origin": "owned",

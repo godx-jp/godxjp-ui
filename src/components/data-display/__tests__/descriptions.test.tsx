@@ -101,3 +101,45 @@ describe("Descriptions.Item", () => {
     expect(screen.getByText("v0").closest("div")!.className).not.toContain("col-span");
   });
 });
+
+describe("Descriptions labelAlign (gh#294 — Form parity)", () => {
+  it("defaults to start-aligned — no existing consumer's render changes", () => {
+    render(
+      <Descriptions layout="horizontal">
+        <Descriptions.Item label="lbl">val</Descriptions.Item>
+      </Descriptions>,
+    );
+    expect(screen.getByText("lbl").className).not.toContain("text-end");
+  });
+
+  it("end-aligns the label when labelAlign=\"end\", in horizontal layout", () => {
+    render(
+      <Descriptions layout="horizontal" labelAlign="end">
+        <Descriptions.Item label="lbl">val</Descriptions.Item>
+      </Descriptions>,
+    );
+    expect(screen.getByText("lbl").className).toContain("text-end");
+  });
+
+  it("never end-aligns a VERTICAL item — same guard Form uses for its own labelAlign", () => {
+    render(
+      <Descriptions layout="vertical" labelAlign="end">
+        <Descriptions.Item label="lbl">val</Descriptions.Item>
+      </Descriptions>,
+    );
+    expect(screen.getByText("lbl").className).not.toContain("text-end");
+  });
+});
+
+describe("Descriptions row gap (gh#294 — themeable, not hardcoded)", () => {
+  it("reads gap-y from the --descriptions-row-gap token instead of a fixed utility", () => {
+    const { container } = render(
+      <Descriptions>
+        <Descriptions.Item label="lbl">val</Descriptions.Item>
+      </Descriptions>,
+    );
+    const dl = container.querySelector("dl")!;
+    expect(dl.className).toContain("gap-y-[var(--descriptions-row-gap)]");
+    expect(dl.className).not.toContain("gap-y-3");
+  });
+});

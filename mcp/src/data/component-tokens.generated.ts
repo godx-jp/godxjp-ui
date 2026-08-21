@@ -939,6 +939,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Width of the label column when <Descriptions layout=\"horizontal\">. Labels align to this * shared column so the values line up (the horizontal-detail look, mirroring <Form layout>). * A rem value gives a fixed aligned column; set `max-content` to size each label to its text. * (rule #44/#45 — a service theme tunes it here instead of forking CSS.)"
   },
   {
+    "name": "--descriptions-row-gap",
+    "value": "var(--space-3)",
+    "description": "Row-to-row gap (gh#294). Default = the historical hardcoded `gap-y-3`, so nothing changes * visually by default. A consumer composing Descriptions beside a Form/FormField (a read-only * block above an editable field on the same card) retunes this to `var(--space-4)` to match * Form's own field-to-field rhythm instead of the two blocks reading as visually unrelated."
+  },
+  {
     "name": "--email-shell-width",
     "value": "480px",
     "description": "── Shell — the 480px transactional-email geometry ───────────────────────────────────────"
