@@ -517,7 +517,19 @@ DataTable.Search = function DataTableSearch({
 
 // ── ViewOptions (column visibility / "set view") ─────────────────────────
 
-DataTable.ViewOptions = function DataTableViewOptions({ className }: { className?: string }) {
+DataTable.ViewOptions = function DataTableViewOptions({
+  className,
+  label,
+}: {
+  className?: string;
+  /**
+   * Overrides the button's text. The default ("View") is the shortest thing
+   * that fits a dense toolbar, but a product whose users know the control by a
+   * longer name — "View Options", "表示項目" — needs to say that, and hiding a
+   * bare text node from the outside is not something CSS can do.
+   */
+  label?: React.ReactNode;
+}) {
   const { table } = useDataTableContext();
   const { t } = useTranslation();
   const hideable = table.getAllLeafColumns().filter((c) => c.getCanHide());
@@ -527,7 +539,7 @@ DataTable.ViewOptions = function DataTableViewOptions({ className }: { className
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className={className}>
           <SlidersHorizontal className="size-4 shrink-0" aria-hidden="true" />
-          {t("dataGrid.view")}
+          {label ?? t("dataGrid.view")}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
