@@ -31,6 +31,7 @@ export function FormField({
   colSpan,
   className,
   children,
+  staticText,
 }: FormFieldProp) {
   // Form context provides defaults; per-field props override (Form → FormField priority).
   const form = useFormLayout();
@@ -49,7 +50,12 @@ export function FormField({
   const helperId = helper ? `${resolvedId}-helper` : undefined;
   const errorId = error ? `${resolvedId}-error` : undefined;
 
+  // `staticText` (gh#294) is a read-only VALUE, not a control — none of the id/aria-* wiring
+  // below applies (there is nothing to label), so it takes an entirely separate render path.
+  const isStatic = staticText !== undefined;
+
   if (
+    !isStatic &&
     typeof process !== "undefined" &&
     process.env?.NODE_ENV !== "production" &&
     !React.isValidElement(children)
@@ -57,7 +63,8 @@ export function FormField({
     // FormField wires aria-* onto a single control; multiple/no/text children can't receive them.
     console.warn(
       "FormField expects a single React element child to receive aria-describedby/aria-errormessage; " +
-        "the helper text and error message will not be associated with the control.",
+        "the helper text and error message will not be associated with the control. Pass plain text " +
+        "via `staticText` instead of `children` for a read-only value row.",
     );
   }
 
@@ -65,38 +72,38 @@ export function FormField({
     ? (children.props as Record<string, unknown>)
     : undefined;
   const mergeIds = mergeAriaIds;
-  const childWithA11y = React.isValidElement(children)
-    ? React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
-        // The label is associated via aria-labelledby (not <label for>): composite
-        // controls (Radio.Group, checkbox lists, range pairs) have no labelable root,
-        // and a dangling `for` triggers Chrome's "Incorrect use of <label>" issue.
-        id: (childProps?.id as string | undefined) ?? resolvedId,
-        "aria-labelledby": (childProps?.["aria-labelledby"] as string | undefined) ?? labelId,
-        // Redundant `aria-label` fallback (belt-and-suspenders): the accessible name is the
-        // SAME string as the visible label, just reachable even if an aria-labelledby lookup
-        // ever comes back empty (id-ref timing, AT quirks). Only when `label` is plain text and
-        // the child hasn't already set its own aria-label.
-        "aria-label":
-          (childProps?.["aria-label"] as string | undefined) ??
-          (typeof label === "string" ? label : undefined),
-        // Helper and error can coexist: helper stays on aria-describedby, the error on
-        // aria-errormessage (surfaced when aria-invalid is true).
-        "aria-describedby": mergeIds(
-          childProps?.["aria-describedby"] as string | undefined,
-          helperId,
-        ),
-        "aria-errormessage": mergeIds(
-          childProps?.["aria-errormessage"] as string | undefined,
-          errorId,
-        ),
-        "aria-required": required
-          ? true
-          : (childProps?.["aria-required"] as React.AriaAttributes["aria-required"]),
-        "aria-invalid": error
-          ? true
-          : (childProps?.["aria-invalid"] as React.AriaAttributes["aria-invalid"]),
-      })
-    : children;
+  const childWithA11y = isStatic ? (
+    // Byte-for-byte the same value typography as `Descriptions.Item`'s `dd` (gh#294), so a
+    // read-only FormField row and a Descriptions value are indistinguishable when mixed.
+    <span className="text-sm break-all">{staticText}</span>
+  ) : React.isValidElement(children) ? (
+    React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
+      // The label is associated via aria-labelledby (not <label for>): composite
+      // controls (Radio.Group, checkbox lists, range pairs) have no labelable root,
+      // and a dangling `for` triggers Chrome's "Incorrect use of <label>" issue.
+      id: (childProps?.id as string | undefined) ?? resolvedId,
+      "aria-labelledby": (childProps?.["aria-labelledby"] as string | undefined) ?? labelId,
+      // Redundant `aria-label` fallback (belt-and-suspenders): the accessible name is the
+      // SAME string as the visible label, just reachable even if an aria-labelledby lookup
+      // ever comes back empty (id-ref timing, AT quirks). Only when `label` is plain text and
+      // the child hasn't already set its own aria-label.
+      "aria-label":
+        (childProps?.["aria-label"] as string | undefined) ??
+        (typeof label === "string" ? label : undefined),
+      // Helper and error can coexist: helper stays on aria-describedby, the error on
+      // aria-errormessage (surfaced when aria-invalid is true).
+      "aria-describedby": mergeIds(childProps?.["aria-describedby"] as string | undefined, helperId),
+      "aria-errormessage": mergeIds(childProps?.["aria-errormessage"] as string | undefined, errorId),
+      "aria-required": required
+        ? true
+        : (childProps?.["aria-required"] as React.AriaAttributes["aria-required"]),
+      "aria-invalid": error
+        ? true
+        : (childProps?.["aria-invalid"] as React.AriaAttributes["aria-invalid"]),
+    })
+  ) : (
+    children
+  );
 
   const style: React.CSSProperties = {};
   if (labelWidth != null)

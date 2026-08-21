@@ -121,27 +121,61 @@ export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
   className?: ClassNameProp;
 };
 
-/** @see FormField */
-export type FormFieldProp = {
-  /** Optional — auto-generated and injected into the child control when omitted. */
-  id?: IdProp;
-  label: LabelProp;
-  required?: RequiredProp;
-  helper?: HelperProp;
-  error?: ErrorProp;
-  /** Optional control rendered inline after the label (e.g. a help button). */
-  labelAddon?: React.ReactNode;
-  /** Override the Form's layout for this field only. */
-  layout?: FormLayoutProp;
-  /** Override the Form's label width for this field (horizontal layout). */
-  labelWidth?: WidthProp;
-  /** Override the Form's control width for this field. */
-  controlWidth?: WidthProp;
-  /** Span N columns when inside a `columns` Form grid. */
-  colSpan?: number;
-  className?: ClassNameProp;
-  children: React.ReactNode;
-};
+/**
+ * @see FormField — exactly one of `children` (an interactive control) or `staticText` (gh#294):
+ * a read-only VALUE row inside the same Form, styled to match `Descriptions.Item`'s value
+ * typography (`text-sm break-all`) byte-for-byte. This is the "mixed read-only + editable fields
+ * on one form" case (an immutable name/email row above an editable role Select, for example) —
+ * putting the read-only rows through FormField itself, not a separate `Descriptions` composed
+ * alongside it, gets perfect layout/labelAlign/row-gap sync FOR FREE because it IS the same
+ * component reading the same Form context, rather than two components whose contracts need
+ * reconciling. `staticText` skips FormField's control a11y wiring (id/aria-labelledby/
+ * aria-describedby cloning) entirely — there is no real control to label, so none of that applies.
+ */
+export type FormFieldProp =
+  | {
+      /** Optional — auto-generated and injected into the child control when omitted. */
+      id?: IdProp;
+      label: LabelProp;
+      required?: RequiredProp;
+      helper?: HelperProp;
+      error?: ErrorProp;
+      /** Optional control rendered inline after the label (e.g. a help button). */
+      labelAddon?: React.ReactNode;
+      /** Override the Form's layout for this field only. */
+      layout?: FormLayoutProp;
+      /** Override the Form's label width for this field (horizontal layout). */
+      labelWidth?: WidthProp;
+      /** Override the Form's control width for this field. */
+      controlWidth?: WidthProp;
+      /** Span N columns when inside a `columns` Form grid. */
+      colSpan?: number;
+      className?: ClassNameProp;
+      children: React.ReactNode;
+      staticText?: never;
+    }
+  | {
+      /** Optional — auto-generated and injected into the child control when omitted. */
+      id?: IdProp;
+      label: LabelProp;
+      required?: RequiredProp;
+      helper?: HelperProp;
+      error?: ErrorProp;
+      /** Optional control rendered inline after the label (e.g. a help button). */
+      labelAddon?: React.ReactNode;
+      /** Override the Form's layout for this field only. */
+      layout?: FormLayoutProp;
+      /** Override the Form's label width for this field (horizontal layout). */
+      labelWidth?: WidthProp;
+      /** Override the Form's control width for this field. */
+      controlWidth?: WidthProp;
+      /** Span N columns when inside a `columns` Form grid. */
+      colSpan?: number;
+      className?: ClassNameProp;
+      children?: never;
+      /** Read-only value — renders as `Descriptions.Item`-matched text instead of a control. */
+      staticText: React.ReactNode;
+    };
 
 /** @see SearchInput */
 export type SearchInputProp = FieldA11yProps & {

@@ -3432,13 +3432,20 @@ import { Flex } from "@godxjp/ui/layout";
       {
         name: "children",
         type: "ReactNode",
-        required: true,
-        description: "The single control to render.",
+        description:
+          "The single interactive control to render. Mutually exclusive with `staticText` — pass exactly one of the two.",
+      },
+      {
+        name: "staticText",
+        type: "ReactNode",
+        description:
+          "Read-only VALUE instead of an interactive control (gh#294) — renders as plain text styled to match `Descriptions.Item`'s value typography byte-for-byte (`text-sm break-all`), skipping all of FormField's id/aria-* control wiring (there is nothing to label). Mutually exclusive with `children`. Use this to put a read-only field (name, email — anything immutable) on the SAME `<Form>` as editable fields, so it inherits the exact same layout/labelAlign/row-gap automatically instead of reaching for a separate `Descriptions` block that needs its own props reconciled to match.",
       },
     ],
     usage: [
       "DO pass the same string to both `id` on `<FormField>` and `id` on the child control — the component wires `<Label htmlFor={id}>`, and builds `{id}-helper` / `{id}-error` ids for `aria-describedby`. If the ids diverge the label click and screen-reader announcements break.",
       "DO pass a SINGLE React element as `children`. FormField calls `React.cloneElement` on it to inject `aria-describedby`, `aria-required`, and `aria-invalid` — if you pass a fragment or multiple nodes, cloneElement silently skips the injection and a11y attributes are lost.",
+      "DO reach for `staticText` (not `children` with a bare string/span) for a read-only field mixed into an otherwise-editable Form — e.g. an immutable name/email row above an editable role Select on the same Members-edit card. It renders with the exact typography `Descriptions.Item`'s value uses, and — because it IS a FormField reading the same Form context — it lines up with every other field's label column, `labelAlign`, and row-to-row gap automatically. A bare string as `children` instead triggers the dev-mode 'expected a single React element child' warning and has no typography contract at all.",
       "WIDTH: a FormField FILLS its container in vertical/horizontal layout — exactly like Ant Design's Form.Item (vertical → width:100%). It works full-width inside `<Form>`, a `ResponsiveGrid` cell, a bare `<Flex direction='col'>`, or a plain block; you do NOT need to wrap it in a grid to get full width. `layout='inline'` is the only content-width exception (compact, side-by-side). To narrow just the control (keeping the label row full-width), set `controlWidth` — never constrain the FormField itself.",
       "DO use the `error` prop (not a hand-rolled `<p>`) for validation messages — it renders with `role='alert'` and `text-destructive` styling and overrides `helper` automatically. Never render an error paragraph alongside FormField.",
       "DO use `labelAddon` (a ReactNode rendered inline after the label text) for supplementary controls such as a tooltip trigger or a 'copy' icon button — never insert such controls as siblings outside FormField, which breaks layout.",

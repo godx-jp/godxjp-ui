@@ -110,3 +110,34 @@ describe("FormField", () => {
     expect(input).toHaveAttribute("aria-labelledby", `${input.id}-label`);
   });
 });
+
+describe("FormField staticText (gh#294 — a read-only VALUE row on the same Form)", () => {
+  it("renders plain text with Descriptions.Item's exact value typography, no <input>", () => {
+    renderWithUi(<FormField label="Name" staticText="ANH THU NGO" />);
+    const value = screen.getByText("ANH THU NGO");
+    expect(value.tagName).toBe("SPAN");
+    expect(value.className).toContain("text-sm");
+    expect(value.className).toContain("break-all");
+    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+  });
+
+  it("never warns about a missing element child — staticText is not a control to a11y-wire", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    renderWithUi(<FormField label="Name" staticText="ANH THU NGO" />);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("still renders helper/error rows beside a static value", () => {
+    renderWithUi(<FormField label="Name" staticText="ANH THU NGO" helper="Legal name" error="Stale" />);
+    expect(screen.getByText("Legal name")).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent("Stale");
+  });
+
+  it("accepts arbitrary ReactNode, not just strings", () => {
+    renderWithUi(
+      <FormField label="Status" staticText={<strong data-testid="badge">Active</strong>} />,
+    );
+    expect(screen.getByTestId("badge")).toBeInTheDocument();
+  });
+});
