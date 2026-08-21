@@ -136,3 +136,15 @@
    * Japanese at the compact type tier) and the table scrolls instead of crushing. */
   --table-action-collection-min-inline-size-compact: 0;
 }
+
+/* Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE,
+ * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered
+ * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no
+ * column-priority measure to retune — the whole row becomes one block). */
+:root {
+  --table-stacked-collection-card-padding-y: var(--space-stack-sm);
+  --table-stacked-collection-card-padding-x: var(--space-inline-md);
+  --table-stacked-collection-card-gap: var(--space-stack-sm);
+  --table-stacked-collection-cell-padding-y: var(--space-stack-xs);
+  --table-stacked-collection-label-font-size: var(--font-size-xs);
+}

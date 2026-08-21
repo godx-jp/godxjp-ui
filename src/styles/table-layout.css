@@ -363,6 +363,29 @@
   }
 }
 
+@layer components {
+  /* ── Table · `preset="stacked-record-collection"` (gh#293 restore — SCR-215) ─────────────────
+   * The canonical WIDE, heterogeneous record collection: a table whose column count/content
+   * cannot be squeezed into any fixed narrow-frame measure at all — an admin detail row with many
+   * disparate, free-text fields of unpredictable length, not a dense queue (contrast
+   * `action-collection` above, which keeps the real table and only re-sizes columns). Below
+   * `collapseBelow` the `<thead>` hides and every `<tr>` becomes a bordered key-value CARD: each
+   * `TableCell`'s own `label` (its column header text, carried per-cell since the `<th>`
+   * association is now hidden) renders inline above the value, taking over the accessible-name
+   * role. Above the step it is a byte-for-byte ordinary table. Measured against the TABLE'S OWN
+   * container, not the viewport, same as `action-collection`. */
+  .ui-table-stacked-collection {
+    container: ui-table-stacked-collection / inline-size;
+  }
+
+  /* Rendered into the DOM unconditionally so it exists for the container query below to reveal
+   * (see TableCell in table.tsx) but hidden above the collapse step, where the real `<th>` already
+   * carries the label — an ordinary table gains no visible extra markup. */
+  .ui-table-stacked-collection-label {
+    display: none;
+  }
+}
+
 /* The compact tier lives in `godxjp-ui-responsive` — the LAST layer, declared after Tailwind in
  * styles/base.css — not in `@layer components`. `<table>` carries `text-sm`, a Tailwind utility,
  * and `utilities` outranks `components` by LAYER ORDER, so a `font-size:` re-point written here as
@@ -534,6 +557,181 @@
       );
       --table-action-collection-meta-width: var(--table-action-collection-meta-width-floor);
       --table-action-collection-flex-width: var(--table-action-collection-flex-width-floor);
+    }
+  }
+
+  /* ── `preset="stacked-record-collection"` (gh#293 restore — SCR-215) ────────────────────────
+   * Below the step the `<thead>` hides and each `<tr>` becomes a bordered key-value card. This is
+   * a genuine layout-mode swap (`display: block`) rather than a measure re-point, because the
+   * whole point of this preset is fields too heterogeneous for ANY fixed column measure to hold —
+   * unlike `action-collection`'s fixed-layout column budget above. Above the step, none of this
+   * matches and the table renders exactly as an ordinary `<table>`. One block per canonical step,
+   * same sm/md/lg/xl scale as `action-collection`. */
+  @container ui-table-stacked-collection (width < 40rem) {
+    [data-collapse-below="sm"] [data-slot="table"] {
+      display: block;
+    }
+
+    [data-collapse-below="sm"] [data-slot="table"] > thead {
+      display: none;
+    }
+
+    [data-collapse-below="sm"] [data-slot="table"] > tbody {
+      display: block;
+    }
+
+    [data-collapse-below="sm"] .ui-table-row {
+      display: block;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius-md);
+      padding: var(--table-stacked-collection-card-padding-y)
+        var(--table-stacked-collection-card-padding-x);
+      margin-block-end: var(--table-stacked-collection-card-gap);
+    }
+
+    [data-collapse-below="sm"] .ui-table-row:last-child {
+      margin-block-end: 0;
+    }
+
+    [data-collapse-below="sm"] [data-slot="table-cell"] {
+      display: block;
+      padding-block: var(--table-stacked-collection-cell-padding-y);
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    [data-collapse-below="sm"] .ui-table-stacked-collection-label {
+      display: block;
+      font-size: var(--table-stacked-collection-label-font-size);
+      font-weight: var(--font-weight-medium);
+      color: hsl(var(--muted-foreground));
+      margin-block-end: var(--space-stack-xs);
+    }
+  }
+
+  @container ui-table-stacked-collection (width < 48rem) {
+    [data-collapse-below="md"] [data-slot="table"] {
+      display: block;
+    }
+
+    [data-collapse-below="md"] [data-slot="table"] > thead {
+      display: none;
+    }
+
+    [data-collapse-below="md"] [data-slot="table"] > tbody {
+      display: block;
+    }
+
+    [data-collapse-below="md"] .ui-table-row {
+      display: block;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius-md);
+      padding: var(--table-stacked-collection-card-padding-y)
+        var(--table-stacked-collection-card-padding-x);
+      margin-block-end: var(--table-stacked-collection-card-gap);
+    }
+
+    [data-collapse-below="md"] .ui-table-row:last-child {
+      margin-block-end: 0;
+    }
+
+    [data-collapse-below="md"] [data-slot="table-cell"] {
+      display: block;
+      padding-block: var(--table-stacked-collection-cell-padding-y);
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    [data-collapse-below="md"] .ui-table-stacked-collection-label {
+      display: block;
+      font-size: var(--table-stacked-collection-label-font-size);
+      font-weight: var(--font-weight-medium);
+      color: hsl(var(--muted-foreground));
+      margin-block-end: var(--space-stack-xs);
+    }
+  }
+
+  @container ui-table-stacked-collection (width < 64rem) {
+    [data-collapse-below="lg"] [data-slot="table"] {
+      display: block;
+    }
+
+    [data-collapse-below="lg"] [data-slot="table"] > thead {
+      display: none;
+    }
+
+    [data-collapse-below="lg"] [data-slot="table"] > tbody {
+      display: block;
+    }
+
+    [data-collapse-below="lg"] .ui-table-row {
+      display: block;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius-md);
+      padding: var(--table-stacked-collection-card-padding-y)
+        var(--table-stacked-collection-card-padding-x);
+      margin-block-end: var(--table-stacked-collection-card-gap);
+    }
+
+    [data-collapse-below="lg"] .ui-table-row:last-child {
+      margin-block-end: 0;
+    }
+
+    [data-collapse-below="lg"] [data-slot="table-cell"] {
+      display: block;
+      padding-block: var(--table-stacked-collection-cell-padding-y);
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    [data-collapse-below="lg"] .ui-table-stacked-collection-label {
+      display: block;
+      font-size: var(--table-stacked-collection-label-font-size);
+      font-weight: var(--font-weight-medium);
+      color: hsl(var(--muted-foreground));
+      margin-block-end: var(--space-stack-xs);
+    }
+  }
+
+  @container ui-table-stacked-collection (width < 80rem) {
+    [data-collapse-below="xl"] [data-slot="table"] {
+      display: block;
+    }
+
+    [data-collapse-below="xl"] [data-slot="table"] > thead {
+      display: none;
+    }
+
+    [data-collapse-below="xl"] [data-slot="table"] > tbody {
+      display: block;
+    }
+
+    [data-collapse-below="xl"] .ui-table-row {
+      display: block;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius-md);
+      padding: var(--table-stacked-collection-card-padding-y)
+        var(--table-stacked-collection-card-padding-x);
+      margin-block-end: var(--table-stacked-collection-card-gap);
+    }
+
+    [data-collapse-below="xl"] .ui-table-row:last-child {
+      margin-block-end: 0;
+    }
+
+    [data-collapse-below="xl"] [data-slot="table-cell"] {
+      display: block;
+      padding-block: var(--table-stacked-collection-cell-padding-y);
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    [data-collapse-below="xl"] .ui-table-stacked-collection-label {
+      display: block;
+      font-size: var(--table-stacked-collection-label-font-size);
+      font-weight: var(--font-weight-medium);
+      color: hsl(var(--muted-foreground));
+      margin-block-end: var(--space-stack-xs);
     }
   }
 }
