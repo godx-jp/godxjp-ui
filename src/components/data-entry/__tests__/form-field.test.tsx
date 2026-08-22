@@ -129,7 +129,9 @@ describe("FormField staticText (gh#294 — a read-only VALUE row on the same For
   });
 
   it("still renders helper/error rows beside a static value", () => {
-    renderWithUi(<FormField label="Name" staticText="ANH THU NGO" helper="Legal name" error="Stale" />);
+    renderWithUi(
+      <FormField label="Name" staticText="ANH THU NGO" helper="Legal name" error="Stale" />,
+    );
     expect(screen.getByText("Legal name")).toBeInTheDocument();
     expect(screen.getByRole("alert")).toHaveTextContent("Stale");
   });

@@ -1159,21 +1159,21 @@ import { PanelLeftClose, Search } from "lucide-react";
     name: "ErrorSurface",
     group: "layout",
     tagline:
-      'Package-owned semantic exception surface for 403 / 404 / 500 / 503. `mode` is the SHELL CONTRACT: "application" renders the body you put inside the AppShell the route already provides (chrome PRESERVED, never reconstructed); "system" owns the whole page via CenteredShell align="center" (package-owned 1440/1024/390 geometry). Exactly one recovery action, plus semantic request-id / permission / organization / maintenance metadata slots.',
+      'Package-owned semantic exception surface for 400 / 403 / 404 / 500 / 503. `mode` is the SHELL CONTRACT: "application" renders the body you put inside the AppShell the route already provides (chrome PRESERVED, never reconstructed); "system" owns the whole page via CenteredShell align="center" (package-owned 1440/1024/390 geometry). Exactly one recovery action, plus semantic request-id / permission / organization / maintenance metadata slots.',
     props: [
       {
         name: "mode",
         type: '"application" | "system"',
         required: true,
         description:
-          'The shell contract, not a skin. "application" (403/404) renders ONLY the surface block — put it in AppShell\'s children (usually inside a PageContainer) so the sidebar/topbar/breadcrumb stay mounted; it cannot build chrome, because nav data and the user menu are consumer-owned. "system" (500/503) renders the whole page: CenteredShell align="center", so no consumer min-h-dvh / flex class / media query.',
+          'The shell contract, not a skin. "application" (400/403/404) renders ONLY the surface block — put it in AppShell\'s children (usually inside a PageContainer) so the sidebar/topbar/breadcrumb stay mounted; it cannot build chrome, because nav data and the user menu are consumer-owned. "system" (500/503) renders the whole page: CenteredShell align="center", so no consumer min-h-dvh / flex class / media query.',
       },
       {
         name: "status",
-        type: "403 | 404 | 500 | 503",
+        type: "400 | 403 | 404 | 500 | 503",
         required: true,
         description:
-          "The HTTP status (a NUMBER, not a string). It is the input that drives the default icon (ShieldAlert 403 · SearchX 404 · ServerCrash 500 · Wrench 503) and tone (warning 403/503 · muted 404 · destructive 500). Also rendered as the compact tabular status code, announced as 'HTTP status 403' rather than the cardinal number.",
+          "The HTTP status (a NUMBER, not a string). It is the input that drives the default icon (TriangleAlert 400 · ShieldAlert 403 · SearchX 404 · ServerCrash 500 · Wrench 503) and tone (warning 400/403/503 · muted 404 · destructive 500). Also rendered as the compact tabular status code, announced as 'HTTP status 403' rather than the cardinal number. 400 (gh#301) is the malformed-request page — a route reached with parameters the server refuses to interpret (a bad id, a missing launch parameter) — and belongs in mode=\"application\" like 403/404.",
       },
       {
         name: "title",
@@ -1229,7 +1229,7 @@ import { PanelLeftClose, Search } from "lucide-react";
         name: "tone",
         type: '"muted" | "info" | "success" | "warning" | "destructive"',
         description:
-          "Override the status-derived tone (same union as EmptyState.tone). Defaults: 403/503 warning · 404 muted · 500 destructive.",
+          "Override the status-derived tone (same union as EmptyState.tone). Defaults: 400/403/503 warning · 404 muted · 500 destructive.",
       },
       {
         name: "titleLevel",
@@ -1260,7 +1260,7 @@ import { PanelLeftClose, Search } from "lucide-react";
       { name: "className", type: "string", description: "Root class override (rarely needed)." },
     ],
     usage: [
-      "DO use ErrorSurface for ANY 403 / 404 / 500 / 503 page. It is a real import from @godxjp/ui/layout — never hand-compose an error page from AuthShell + a generic Card, and never add a consumer-local `.canonical-auth-card`-style class (that workaround IS the gh#251 regression).",
+      "DO use ErrorSurface for ANY 400 / 403 / 404 / 500 / 503 page. It is a real import from @godxjp/ui/layout — never hand-compose an error page from AuthShell + a generic Card, and never add a consumer-local `.canonical-auth-card`-style class (that workaround IS the gh#251 regression).",
       'DO put mode="application" INSIDE the shell the route already renders: <AppShell …><PageContainer …><ErrorSurface mode="application" …/></PageContainer></AppShell>. The surface returns only its own block on purpose, so the sidebar/topbar/breadcrumb survive and the user can navigate away.',
       'DO use mode="system" for 500/503 and pass NOTHING for geometry — the surface renders CenteredShell align="center" itself. A className="min-h-dvh flex items-center" is always wrong.',
       "DO pass ONE action. A second CTA is dropped with a development error; put 'contact support' in `description`.",

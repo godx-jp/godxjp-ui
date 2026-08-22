@@ -98,9 +98,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Font family</CardTitle>
             <CardDescription>
-              font-sans · Noto Sans JP by default (Japanese + Latin, incl. the Vietnamese subset);
-              M PLUS 2 is the fallback face for every supported locale.
-              font-mono · the UI-monospace stack for code, IDs and aligned digits.
+              font-sans · Noto Sans JP by default (Japanese + Latin, incl. the Vietnamese subset); M
+              PLUS 2 is the fallback face for every supported locale. font-mono · the UI-monospace
+              stack for code, IDs and aligned digits.
             </CardDescription>
           </CardHeader>
           <CardContent>

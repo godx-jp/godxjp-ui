@@ -6,6 +6,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`Form` gains `asChild` (from the in-flight work committed as `Form: asChild, and a
+label-column type token`)** — Inertia's `<Form action method>` and TanStack Form render their own
+  `<form>`, and two form elements cannot nest, so a consumer had to choose between the router's
+  submission handling and the design system's field layout: `FormField` reads its layout from
+  `Form`'s context, and the only way to provide that context was to render a second form element.
+  `asChild` keeps the context and hands the element back
+  (`<Form asChild layout="horizontal" labelWidth={174}><InertiaForm …/></Form>`). Also adds
+  `--form-label-font-size`, applied through `Label`'s own className because `Label` sets `text-sm`
+  on the element itself, so a font-size inherited from an ancestor never reaches the text.
+
+- **`ErrorSurface` accepts `400` (gh#301)** — the status union was `403 | 404 | 500 | 503`, so a
+  Bad Request page (a CakePHP `BadRequestException` port, for instance: the launch parameters are
+  invalid) could only be expressed by casting the status at the call site and hand-supplying
+  `icon`/`tone`, since `STATUS_META` had no entry to derive them from. `400` now carries
+  `TriangleAlert` + `tone="warning"` — this system's warning glyph, the same mark `Alert
+tone="warning"` and the warning toast already use — because a malformed request is neither a
+  miss (404), a refusal (403) nor a failure (500).
+
+### Fixed
+
+- **`PageContainer`'s header `extra` could not wrap, and starved the `<h1>` instead (gh#300)** —
+  at `>=640px` the action slot was `width: auto` + `flex-shrink: 0`, i.e. frozen at the action
+  group's max-content width, which is unbounded: an admin list header with 10–13 buttons asks for
+  more room than the content column has. Because the box could not shrink, the `flex-wrap: wrap`
+  it already declared never had a narrower width to wrap into, so the entire deficit was charged
+  to `.ui-page-header-heading` (`min-w-0`) — the title collapsed to 0px and wrapped one CJK
+  character per line while action buttons still overflowed the page. The `<=720px` escape hatch
+  (`.ui-page-header-extra > .ui-flex { max-width: 100% }`) could not help either: a percentage
+  resolved against a `fit-content` parent is circular. `extra` is now `flex-shrink: 1` +
+  `min-inline-size: 0`, keeping its max-content base size — a header that already fits is
+  byte-identical (measured: 1 and 4 button headers unchanged at 768/1024/1280/1456, and the whole
+  `<640px` arrangement unchanged) — while a crowded one wraps its buttons and leaves the title a
+  readable measure (768px/13 buttons: `<h1>` 0px · 21 lines with 2 buttons off-screen → 233px ·
+  2 lines with none off-screen). Rejected alternative: pinning the heading with `flex: 0 0 auto`,
+  which would have made a long title unable to yield space — the mirror image of the same bug.
+
 ## [18.12.20] - 2026-08-21
 
 ### Changed

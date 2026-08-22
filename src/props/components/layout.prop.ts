@@ -486,10 +486,10 @@ export type ErrorSurfaceMaintenanceProp = {
 };
 
 /**
- * @see ErrorSurface — the package-owned semantic exception surface for 403 / 404 / 500 / 503.
+ * @see ErrorSurface — the package-owned semantic exception surface for 400 / 403 / 404 / 500 / 503.
  *
  * The `mode` is the SHELL CONTRACT, not a skin:
- * - `mode="application"` (403/404) renders the surface as the **body** you put inside the
+ * - `mode="application"` (400/403/404) renders the surface as the **body** you put inside the
  *   `AppShell` the route already provides (normally within a `PageContainer`). It deliberately does
  *   NOT reconstruct navigation chrome: the sidebar, topbar and user menu are consumer-owned data,
  *   so the surface preserves the shell it is placed in instead of manufacturing a fake one.
@@ -505,7 +505,7 @@ export type ErrorSurfaceMaintenanceProp = {
  * `t()`); the surface owns only its own metadata labels, which it localizes itself.
  */
 export type ErrorSurfaceProp = {
-  /** Where the surface lives — `application` = AppShell body (403/404), `system` = own page (500/503). */
+  /** Where the surface lives — `application` = AppShell body (400/403/404), `system` = own page (500/503). */
   mode: ErrorSurfaceModeProp;
   /** HTTP status presented. Drives the default `icon`, `tone` and the rendered status code. */
   status: ErrorSurfaceStatusProp;
@@ -519,9 +519,12 @@ export type ErrorSurfaceProp = {
    * development-time error.
    */
   action: ActionProp;
-  /** Override the status-derived icon (403 ShieldAlert · 404 SearchX · 500 ServerCrash · 503 Wrench). */
+  /**
+   * Override the status-derived icon (400 TriangleAlert · 403 ShieldAlert · 404 SearchX ·
+   * 500 ServerCrash · 503 Wrench).
+   */
   icon?: IconProp;
-  /** Override the status-derived tone (403/503 `warning` · 404 `muted` · 500 `destructive`). */
+  /** Override the status-derived tone (400/403/503 `warning` · 404 `muted` · 500 `destructive`). */
   tone?: EmptyStateToneProp;
   /**
    * Semantic heading level of `title`. Defaults to `2` in `application` mode (a `PageContainer`

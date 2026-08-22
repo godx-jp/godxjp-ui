@@ -323,7 +323,7 @@ describe("ErrorSurface — semantic metadata slots", () => {
 });
 
 describe("ErrorSurface — status semantics and API contract", () => {
-  it.each([403, 404, 500, 503] as const)(
+  it.each([400, 403, 404, 500, 503] as const)(
     "announces status %i as a phrase, not a bare cardinal number",
     (status) => {
       const { container } = renderLocalized(

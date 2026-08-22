@@ -51,10 +51,7 @@ describe("Table bordered (gh#274)", () => {
     expect(css).toContain("var(--table-border-color, hsl(var(--border)))");
     // The token must stay `initial` in the token file — a :root hsl(var(--border))
     // binding would freeze the role against scoped theme overrides.
-    const tokens = readFileSync(
-      join(__dirname, "../../../tokens/components/table.css"),
-      "utf8",
-    );
+    const tokens = readFileSync(join(__dirname, "../../../tokens/components/table.css"), "utf8");
     expect(tokens).toMatch(/--table-border-color: initial;/);
   });
 });

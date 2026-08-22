@@ -22,9 +22,7 @@ describe("AppShell", () => {
   });
 
   it("spans the topbar over the content only, by default", () => {
-    const { container } = renderWithUi(
-      <AppShell sidebar={<nav>n</nav>}>x</AppShell>,
-    );
+    const { container } = renderWithUi(<AppShell sidebar={<nav>n</nav>}>x</AppShell>);
     const root = container.querySelector(".app-root")!;
     // No attribute at all rather than data-topbar-span="content": the default arrangement is the
     // bare grid, so a consumer's CSS never has to out-specify a default marker.

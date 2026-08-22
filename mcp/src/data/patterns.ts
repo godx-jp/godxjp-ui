@@ -643,7 +643,7 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
     name: "error-pages",
     aliases: ["error-surface", "errorsurface", "403", "404", "500", "503", "exception-page"],
     tagline:
-      '403 / 404 / 500 / 503 exception pages. USE THE COMPONENT: import { ErrorSurface } from "@godxjp/ui/layout". `mode="application"` (403/404) is the body you put inside the AppShell the route already renders; `mode="system"` (500/503) owns the page via CenteredShell align="center".',
+      '400 / 403 / 404 / 500 / 503 exception pages. USE THE COMPONENT: import { ErrorSurface } from "@godxjp/ui/layout". `mode="application"` (400/403/404) is the body you put inside the AppShell the route already renders; `mode="system"` (500/503) owns the page via CenteredShell align="center".',
     tags: [
       "error",
       "errorsurface",

@@ -39,12 +39,17 @@ export type CenteredShellAlignProp = "start" | "center";
 export type ErrorSurfaceModeProp = "application" | "system";
 
 /**
- * The HTTP status an ErrorSurface presents. Deliberately closed to the four exception pages every
- * app ships (RFC 9110 §15.5.4 / §15.5.5 / §15.6.1 / §15.6.4); it drives the default icon, tone and
- * the recommended `mode`. A number, never a string — it is the numeric status, and it is rendered
- * with tabular figures.
+ * The HTTP status an ErrorSurface presents. Deliberately closed to the five exception pages every
+ * app ships (RFC 9110 §15.5.1 / §15.5.4 / §15.5.5 / §15.6.1 / §15.6.4); it drives the default icon,
+ * tone and the recommended `mode`. A number, never a string — it is the numeric status, and it is
+ * rendered with tabular figures.
+ *
+ * `400` (gh#301) is the malformed-request page: a route reached with parameters the server refuses
+ * to interpret (a bad id, a missing launch parameter, a hand-edited query string). It is an
+ * `application` failure like 403/404 — the app itself is healthy, so the shell stays and the
+ * viewer navigates away from it.
  */
-export type ErrorSurfaceStatusProp = 403 | 404 | 500 | 503;
+export type ErrorSurfaceStatusProp = 400 | 403 | 404 | 500 | 503;
 
 /**
  * AuthShell named flow preset — the page MEASURE contract for a canonical hosted-identity flow

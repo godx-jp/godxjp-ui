@@ -132,7 +132,7 @@ describe("Table stacked-record-collection preset (gh#293 restore — SCR-215)", 
   });
 
   it("never styles a table that did not opt in — the inert-default contract (gh#231)", () => {
-    const presetCss = tableCss.slice(tableCss.indexOf('.ui-table-stacked-collection {'));
+    const presetCss = tableCss.slice(tableCss.indexOf(".ui-table-stacked-collection {"));
     expect(presetCss).not.toMatch(/\[data-preset="default"\]/);
   });
 });

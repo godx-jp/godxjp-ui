@@ -26,7 +26,7 @@ export interface DescriptionsProps {
    * name/email block above an editable role field, for example) can be told to match it. Applies
    * only in `layout="horizontal"` — a vertical label sits above the value and end-aligning it
    * there would read as a mistake, exactly like `Form`'s own contract. Default `"start"`, matching
-   * this component's historical unconditional left-align — no existing consumer's render changes.
+   * this component's historical unconditional start-align — no existing consumer's render changes.
    */
   labelAlign?: "start" | "end";
   className?: string;
@@ -97,7 +97,7 @@ Descriptions.Item = function DescriptionsItem({
         className={cn(
           "text-muted-foreground text-xs",
           // `end`-align only ever applies in horizontal layout — same guard `Form` uses, so a
-          // vertical label (already above its value) never mistakenly right-aligns (gh#294).
+          // vertical label (already above its value) never mistakenly end-aligns (gh#294).
           layout === "horizontal" && labelAlign === "end" && "text-end",
         )}
       >

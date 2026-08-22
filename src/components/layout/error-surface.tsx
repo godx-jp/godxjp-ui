@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SearchX, ServerCrash, ShieldAlert, Wrench } from "lucide-react";
+import { SearchX, ServerCrash, ShieldAlert, TriangleAlert, Wrench } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
@@ -22,12 +22,18 @@ export type {
 export type { ErrorSurfaceModeProp, ErrorSurfaceStatusProp } from "../../props/vocabulary";
 
 /**
- * Status → default icon + tone. Closed set (RFC 9110 §15.5.4 / §15.5.5 / §15.6.1 / §15.6.4): the
- * four exception pages every application ships. `tone` is semantic, never decorative — a 404 is a
- * neutral miss (`muted`), a 403 and a planned 503 are recoverable conditions (`warning`), a 500 is
- * a genuine failure (`destructive`). Both are overridable per instance.
+ * Status → default icon + tone. Closed set (RFC 9110 §15.5.1 / §15.5.4 / §15.5.5 / §15.6.1 /
+ * §15.6.4): the five exception pages every application ships. `tone` is semantic, never decorative
+ * — a 404 is a neutral miss (`muted`), a 400, a 403 and a planned 503 are recoverable conditions
+ * (`warning`), a 500 is a genuine failure (`destructive`). Both are overridable per instance.
+ *
+ * 400 takes `TriangleAlert` (gh#301) because it is THIS system's warning glyph — the same mark
+ * `Alert tone="warning"` and the warning toast already carry — and a malformed request has no
+ * truer metaphor than "what you sent is not valid": nothing is missing (404), forbidden (403) or
+ * broken (500).
  */
 const STATUS_META: Record<ErrorSurfaceStatusProp, { icon: IconProp; tone: EmptyStateToneProp }> = {
+  400: { icon: TriangleAlert, tone: "warning" },
   403: { icon: ShieldAlert, tone: "warning" },
   404: { icon: SearchX, tone: "muted" },
   500: { icon: ServerCrash, tone: "destructive" },
@@ -84,8 +90,8 @@ function formatMaintenanceWindow(maintenance: ErrorSurfaceMaintenanceProp, local
 }
 
 /**
- * ErrorSurface — the package-owned semantic exception surface for **403 · 404 · 500 · 503**
- * (gh#221, gh#251).
+ * ErrorSurface — the package-owned semantic exception surface for **400 · 403 · 404 · 500 · 503**
+ * (gh#221, gh#251, gh#301).
  *
  * It exists because the alternative — every app composing `EmptyState` + `Flex` + `Text` inside a
  * hand-picked shell — is unimportable: a consumer cannot `import` a docs page, so the four
@@ -93,7 +99,7 @@ function formatMaintenanceWindow(maintenance: ErrorSurfaceMaintenanceProp, local
  * `.canonical-auth-card`, a bespoke `min-h-dvh` class). What the surface owns is the CONTRACT the
  * composition kept losing:
  *
- * - **`mode` is the shell contract.** `application` (403/404) renders the surface as the BODY you
+ * - **`mode` is the shell contract.** `application` (400/403/404) renders the surface as the BODY you
  *   place inside the `AppShell` the route already provides, so the sidebar, topbar and breadcrumb
  *   are PRESERVED — it never reconstructs navigation chrome, because nav data and the user menu are
  *   consumer-owned and a component cannot manufacture them. `system` (500/503) owns the page and

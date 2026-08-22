@@ -1404,6 +1404,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Column gap between the label and its control in horizontal/inline layout."
   },
   {
+    "name": "--form-label-font-size",
+    "value": "var(--text-sm)",
+    "description": "Type in the label column. Inherits the body size by default, so nothing moves unless a * service opts in. It is a knob because the label column already is one: --form-label-width * lets a service align forms to its grid, and a service whose grid was drawn around a * smaller label had no way to say so — leaving it to hand-write font-size per label, which * is exactly what the width token exists to prevent."
+  },
+  {
     "name": "--form-block-gap",
     "value": "var(--space-4)",
     "description": "Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's * CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN * direct children (no Card framing). Unchanged from the historical value."
@@ -2134,24 +2139,29 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
+    "name": "--sidebar-nav-item-radius",
+    "value": "calc(var(--radius) - 1px)",
+    "description": "Corner radius of a nav row. Defaults to the global rail radius, which is what an inset pill * wants — but a rail that sets --sidebar-nav-scroll-padding and --sidebar-nav-gap to 0 makes its * rows full-bleed bands flush with both edges, and a band wants square corners. Every other * geometry property of `.sb-nav-item` was already a knob; this one was pinned to a constant, so * the only way to square a band was a consumer selector against a DS internal class — the exact * coupling rule #45 exists to prevent. Set `0` for full-bleed bands."
+  },
+  {
     "name": "--sidebar-nav-scroll-padding",
     "value": "var(--space-3) var(--space-2)",
-    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
+    "description": "Corner radius of a nav row. Defaults to the global rail radius, which is what an inset pill * wants — but a rail that sets --sidebar-nav-scroll-padding and --sidebar-nav-gap to 0 makes its * rows full-bleed bands flush with both edges, and a band wants square corners. Every other * geometry property of `.sb-nav-item` was already a knob; this one was pinned to a constant, so * the only way to square a band was a consumer selector against a DS internal class — the exact * coupling rule #45 exists to prevent. Set `0` for full-bleed bands."
   },
   {
     "name": "--sidebar-section-gap",
     "value": "var(--space-4)",
-    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
+    "description": "Corner radius of a nav row. Defaults to the global rail radius, which is what an inset pill * wants — but a rail that sets --sidebar-nav-scroll-padding and --sidebar-nav-gap to 0 makes its * rows full-bleed bands flush with both edges, and a band wants square corners. Every other * geometry property of `.sb-nav-item` was already a knob; this one was pinned to a constant, so * the only way to square a band was a consumer selector against a DS internal class — the exact * coupling rule #45 exists to prevent. Set `0` for full-bleed bands."
   },
   {
     "name": "--sidebar-section-label-padding-x",
     "value": "var(--space-2)",
-    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
+    "description": "Corner radius of a nav row. Defaults to the global rail radius, which is what an inset pill * wants — but a rail that sets --sidebar-nav-scroll-padding and --sidebar-nav-gap to 0 makes its * rows full-bleed bands flush with both edges, and a band wants square corners. Every other * geometry property of `.sb-nav-item` was already a knob; this one was pinned to a constant, so * the only way to square a band was a consumer selector against a DS internal class — the exact * coupling rule #45 exists to prevent. Set `0` for full-bleed bands."
   },
   {
     "name": "--sidebar-section-label-padding-bottom",
     "value": "var(--space-1)",
-    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
+    "description": "Corner radius of a nav row. Defaults to the global rail radius, which is what an inset pill * wants — but a rail that sets --sidebar-nav-scroll-padding and --sidebar-nav-gap to 0 makes its * rows full-bleed bands flush with both edges, and a band wants square corners. Every other * geometry property of `.sb-nav-item` was already a knob; this one was pinned to a constant, so * the only way to square a band was a consumer selector against a DS internal class — the exact * coupling rule #45 exists to prevent. Set `0` for full-bleed bands."
   },
   {
     "name": "--topbar-search-max-width",

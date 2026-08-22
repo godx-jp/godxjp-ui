@@ -219,8 +219,8 @@ export function Pagination({
             aria-label={t("navigation.pagination.pageSize")}
           >
             {/* トリガーはロケール別の最短形 (ja「20件」/ en「20 / page」) —
-              * gh#290: コントロール上の長い単位表記が場所を取るため。
-              * メニュー項目は素の数値 (gh#289)。 */}
+             * gh#290: コントロール上の長い単位表記が場所を取るため。
+             * メニュー項目は素の数値 (gh#289)。 */}
             <SelectValue>
               {t("navigation.pagination.pageSizeTrigger", { size: pageSize })}
             </SelectValue>

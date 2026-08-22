@@ -78,13 +78,7 @@ describe("plain Select clearable (gh#280)", () => {
     expect(screen.queryByTestId("dept-clear")).not.toBeInTheDocument();
 
     rerender(
-      <Select
-        id="dept"
-        aria-label="所属"
-        data-testid="dept"
-        defaultValue="10"
-        options={options}
-      />,
+      <Select id="dept" aria-label="所属" data-testid="dept" defaultValue="10" options={options} />,
     );
     expect(screen.queryByTestId("dept-clear")).not.toBeInTheDocument();
   });

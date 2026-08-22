@@ -1195,6 +1195,19 @@
           "declaredIn": [
             "src/props/components/layout.prop.ts"
           ]
+        },
+        {
+          "name": "topbarSpan",
+          "origin": "owned",
+          "required": false,
+          "type": "\"content\" | \"full\" | undefined",
+          "values": [
+            "content",
+            "full"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
         }
       ]
     },
@@ -6891,6 +6904,7 @@
           "required": true,
           "type": "ErrorSurfaceStatusProp",
           "values": [
+            400,
             403,
             404,
             500,
@@ -7340,6 +7354,19 @@
     "Form": {
       "group": "data-entry",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
         {
           "name": "className",
           "origin": "owned",

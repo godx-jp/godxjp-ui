@@ -201,6 +201,36 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>asChild · the router owns the form element</CardTitle>
+            <CardDescription>
+              Inertia&apos;s <code>&lt;Form action method&gt;</code> and TanStack Form render their
+              own <code>&lt;form&gt;</code>, and two form elements cannot nest. <code>asChild</code>
+              keeps the layout context and hands the element back, so a consumer keeps the
+              router&apos;s submission handling AND the label column instead of hand-rolling one.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form
+              asChild
+              layout="horizontal"
+              labelWidth="8rem"
+              controlWidth="18rem"
+              labelAlign="end"
+            >
+              <form className="contract-aschild-form" onSubmit={(event) => event.preventDefault()}>
+                <FormField id="aschild-name" label="取引先名" required>
+                  <Input id="aschild-name" defaultValue="株式会社ゴドー" />
+                </FormField>
+                <FormField id="aschild-code" label="コード" helper="ルータ側が form 要素を持つ">
+                  <Input id="aschild-code" defaultValue="BTY-0012" />
+                </FormField>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Density · compact / default / comfortable</CardTitle>
             <CardDescription>
               density はフォーム全体の縦方向リズムを変更する。入力サイズやラベル関係は変えない。

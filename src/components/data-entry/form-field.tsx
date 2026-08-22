@@ -92,8 +92,14 @@ export function FormField({
         (typeof label === "string" ? label : undefined),
       // Helper and error can coexist: helper stays on aria-describedby, the error on
       // aria-errormessage (surfaced when aria-invalid is true).
-      "aria-describedby": mergeIds(childProps?.["aria-describedby"] as string | undefined, helperId),
-      "aria-errormessage": mergeIds(childProps?.["aria-errormessage"] as string | undefined, errorId),
+      "aria-describedby": mergeIds(
+        childProps?.["aria-describedby"] as string | undefined,
+        helperId,
+      ),
+      "aria-errormessage": mergeIds(
+        childProps?.["aria-errormessage"] as string | undefined,
+        errorId,
+      ),
       "aria-required": required
         ? true
         : (childProps?.["aria-required"] as React.AriaAttributes["aria-required"]),

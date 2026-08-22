@@ -228,13 +228,13 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
     description:
-      "ErrorSurface shell contract — application (403/404 body inside the route's existing AppShell) vs system (500/503 owns the page via CenteredShell align=center)",
+      "ErrorSurface shell contract — application (400/403/404 body inside the route's existing AppShell) vs system (500/503 owns the page via CenteredShell align=center)",
   },
   ErrorSurfaceStatusProp: {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
     description:
-      "HTTP status an ErrorSurface presents — 403 | 404 | 500 | 503 (numeric); drives the default icon, tone and mode",
+      "HTTP status an ErrorSurface presents — 400 | 403 | 404 | 500 | 503 (numeric); drives the default icon, tone and mode",
   },
   AuthShellPresetProp: {
     file: "vocabulary/layout.prop.ts",

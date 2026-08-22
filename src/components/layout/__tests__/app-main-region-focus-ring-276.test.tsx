@@ -18,7 +18,9 @@ describe("AppShell region focus ring (gh#276)", () => {
     expect(block).toContain("var(--region-focus-ring-width)");
     expect(block).toContain("outline: none");
     // Colour falls back to the live focus-ring hue at the call site.
-    expect(block).toContain("var(--region-focus-ring-color, hsl(var(--focus-ring-color, var(--ring))))");
+    expect(block).toContain(
+      "var(--region-focus-ring-color, hsl(var(--focus-ring-color, var(--ring))))",
+    );
   });
 
   it("defaults the region ring OFF and keeps the colour token call-site-resolved", () => {

@@ -188,7 +188,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                   // (`data-[state=open]:border-ring`, from controlTriggerClass) and the
                   // focus-visible ring are untouched, so keyboard and "is this open" affordance
                   // still hold.
-                  "ui-app-setting-picker-icon w-[length:var(--control-height)] justify-center border-transparent bg-transparent ps-0 pe-0 shadow-none hover:bg-accent hover:text-accent-foreground"
+                  "ui-app-setting-picker-icon hover:bg-accent hover:text-accent-foreground w-[length:var(--control-height)] justify-center border-transparent bg-transparent ps-0 pe-0 shadow-none"
                 : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
                   // caps at the container (`w-auto max-w-full`) instead of the old UNCONDITIONAL
                   // `w-full` — so a labeled picker dropped into a narrow topbar no longer stretches to

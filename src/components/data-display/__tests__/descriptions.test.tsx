@@ -112,7 +112,7 @@ describe("Descriptions labelAlign (gh#294 — Form parity)", () => {
     expect(screen.getByText("lbl").className).not.toContain("text-end");
   });
 
-  it("end-aligns the label when labelAlign=\"end\", in horizontal layout", () => {
+  it('end-aligns the label when labelAlign="end", in horizontal layout', () => {
     render(
       <Descriptions layout="horizontal" labelAlign="end">
         <Descriptions.Item label="lbl">val</Descriptions.Item>

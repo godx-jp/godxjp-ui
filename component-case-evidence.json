@@ -4,6 +4,10 @@
     "Form": {
       "complete": true,
       "props": {
+        "asChild": {
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/form.tsx"]
+        },
         "className": {
           "cases": ["contract-collapse-form"],
           "evidence": ["docs/data-entry/form.tsx"]

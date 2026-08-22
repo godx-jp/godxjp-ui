@@ -613,9 +613,24 @@
       gap: var(--space-inline-lg);
     }
 
+    /* `extra` sizes to its content but STAYS SHRINKABLE (gh#300). `width: auto` releases the
+     * base rule's full-width stretch so a one-button header hugs the end edge; the historical
+     * `flex-shrink: 0` next to it then froze the box at the action group's max-content width,
+     * which is unbounded — an admin header with 10–13 buttons asks for ~1594px inside a 1408px
+     * content column. Because the box could not shrink, its own `flex-wrap: wrap` never had a
+     * narrower width to wrap into, the whole deficit was charged to `.ui-page-header-heading`
+     * (`min-w-0`, so it collapses to 0), and the `<h1>` wrapped one CJK character per line while
+     * the action group still overflowed the page. The <=720px escape hatch above
+     * (`.ui-page-header-extra > .ui-flex { max-width: 100% }`) could not help either: a
+     * percentage resolved against a fit-content parent is circular.
+     *
+     * `flex-shrink: 1` + `min-inline-size: 0` keep the max-content base size (nothing moves on a
+     * header that already fits) but let the row charge the overflow to `extra` too, so the wrap
+     * it already declares finally engages and the title keeps a readable measure. */
     .ui-page-header-extra {
       width: auto;
-      flex-shrink: 0;
+      flex-shrink: 1;
+      min-inline-size: 0;
       justify-content: flex-end;
     }
   }
