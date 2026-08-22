@@ -53,6 +53,9 @@ const FRAME_ALIAS = {
   AlertDialogRoot: "alert-dialog",
   CardContent: "card",
   Field: "form-field",
+  // FormErrors is meaningless outside a Form (it reads Form's error bag + claim registry), so it
+  // is demoed inside the form frame beside the fields that claim their keys, not in its own frame.
+  FormErrors: "form",
   Toaster: "toast",
   formatDate: "format-date",
   SkeletonTable: "skeleton",

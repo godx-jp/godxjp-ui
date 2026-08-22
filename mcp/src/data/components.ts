@@ -3357,6 +3357,12 @@ import { Flex } from "@godxjp/ui/layout";
         description: "Lay fields out in a responsive grid (reuses ResponsiveGrid; 1 col on small).",
       },
       {
+        name: "errors",
+        type: "Partial<Record<string, string | string[]>>",
+        description:
+          "Server validation error bag (e.g. Inertia's form.errors). Each FormField name='…' inside resolves its own message from the bag and CLAIMS its key; <FormErrors /> renders the unclaimed remainder (errors on hidden/derived fields). Works in both <form> and asChild modes.",
+      },
+      {
         name: "density",
         type: '"compact" | "default" | "comfortable"',
         description: "Apply a density to controls inside the form.",
@@ -3367,14 +3373,17 @@ import { Flex } from "@godxjp/ui/layout";
       "DO rely on mobile-first collapse: `layout='horizontal'` automatically stacks to vertical below `collapseBelow` (default `md`). Pass `collapseBelow={false}` only when a field MUST stay label-beside-control even on phones.",
       "DO use `columns` for multi-field forms (e.g. `columns={2}`) — it reuses ResponsiveGrid (1 column on small screens, more on md/lg). Span a wide field across columns with `<FormField colSpan={2}>`.",
       "DON'T hand-roll a `<form>` + Flex stack for spacing — `<Form>` provides the vertical rhythm and the layout context FormField reads. Wire react-hook-form by spreading `onSubmit={handleSubmit(...)}` onto `<Form>`.",
+      "SERVER ERROR BAG: pass `errors={form.errors}` (Inertia) ONCE on `<Form>`, give each field a `name`, and put `<FormErrors />` at the top of the form. A named field resolves its message from the bag automatically (no per-field `error={errors.x}`), and FormErrors catches validation errors on hidden/derived keys (`action_mode`, `page`, a source-record id) that no visible field could display — without it those submits fail SILENTLY.",
     ],
     useCases: [
       "A settings page form where every label sits in a fixed 120px column to the left of its control (horizontal), collapsing to stacked labels on mobile.",
       "A two-column entity-edit form (`columns={2}`) where the address field spans both columns (`colSpan={2}`).",
       "A compact filter form (`layout='horizontal' density='compact'`) above a DataTable.",
+      "An Inertia edit screen passing `errors={form.errors}` so every `FormField name='…'` self-binds its server validation message and `<FormErrors />` surfaces the hidden-field remainder.",
     ],
     related: [
       "FormField — the per-field wrapper (label + control + helper/error) that reads Form's layout context; use one per control inside a Form.",
+      "FormErrors — renders the error-bag entries no mounted FormField claims (validation errors on hidden/derived fields); place inside a `Form errors={…}`.",
       "ResponsiveGrid — Form `columns` reuses it; use ResponsiveGrid directly for non-form card grids.",
     ],
     example: `import { Form, FormField, Input } from "@godxjp/ui/data-entry";
@@ -3398,6 +3407,12 @@ import { Flex } from "@godxjp/ui/layout";
         type: "string",
         required: true,
         description: "Forwarded to Label htmlFor + builds helper/error ids.",
+      },
+      {
+        name: "name",
+        type: "string",
+        description:
+          "Error-bag key of this field. When the surrounding Form carries `errors`, the field resolves its message from `errors[name]` automatically (an explicit `error` prop wins) and CLAIMS the key so <FormErrors /> does not repeat it. NOT injected into the child — pass `name` on the control itself for native form submission.",
       },
       {
         name: "label",
@@ -3484,6 +3499,59 @@ import { Flex } from "@godxjp/ui/layout";
   <Input id="coupon-name" placeholder="春の花粉症対策15%OFF" value={name} onValueChange={(e) => setName(e.target.value)} />
 </FormField>`,
     storyPath: "data-entry/FormField.stories.tsx",
+    rules: [23],
+  },
+  {
+    name: "FormErrors",
+    group: "data-entry",
+    tagline:
+      "The 'no field to stand on' error summary — renders the entries of the surrounding Form's server error bag that no mounted FormField name='…' claims: validation errors on hidden/derived fields (action_mode, page, a source-record id) that would otherwise fail silently. Composed on Alert tone='destructive' (role='alert'); renders nothing while every entry is claimed or the bag is empty.",
+    props: [
+      {
+        name: "errors",
+        type: "Partial<Record<string, string | string[]>>",
+        description:
+          "Explicit error bag — overrides the surrounding Form's `errors`. Use when the component sits outside a Form (e.g. inside FormRoot); field claiming still applies when a Form provides the registry.",
+      },
+      {
+        name: "title",
+        type: "ReactNode",
+        description:
+          "Heading above the messages. Defaults to the localized 'please review your input' title (dataEntry.formErrors.title).",
+      },
+      { name: "className", type: "string", description: "Root class override." },
+    ],
+    usage: [
+      "DO pass the WHOLE bag to `<Form errors={form.errors}>` and place `<FormErrors />` at the top of the form — never hand-filter the bag per page. Fields with `name` claim their keys automatically; FormErrors shows only the remainder, so the consumer never maintains an except-list.",
+      "DO give every visible field its `name` when adopting `Form errors` on a screen. A field that keeps a manual `error={errors.x}` WITHOUT `name` does not claim its key, and FormErrors will show that message twice.",
+      "DON'T hand-roll a destructive Alert bound to `errors.hidden_key` per page — that is exactly the per-page listing this component exists to remove, and it goes stale the moment the server adds a new derived-field rule.",
+      "DON'T use FormErrors as a generic mutation-failure banner — that is `Alert.QueryError` / toast territory. FormErrors is scoped to the VALIDATION bag of the surrounding form.",
+      "ARRAY ENTRIES: a `string[]` bag value lists every message in the banner; a claimed field shows only the FIRST message of its array (Laravel `$errors->first()` semantics).",
+    ],
+    useCases: [
+      "An Inertia edit screen whose Laravel FormRequest validates hidden/derived inputs (`action_mode`, `page`, `source_slip_cd`) — the user pressed save and previously saw NOTHING because those keys have no visible field.",
+      "A ported legacy screen where the server rejects a stale edit-lock or a missing source record under a key that only exists server-side.",
+      "A create form where a Laravel `RuleObject` attaches a cross-field error to a synthetic key (e.g. `combination`) rather than to one input.",
+    ],
+    related: [
+      "Form — provides the error bag (`errors`) and the claim registry FormErrors reads; FormErrors must sit inside it (or receive `errors` explicitly).",
+      "FormField — `name` claims a bag key and self-binds its message; the claimed key never re-appears in FormErrors.",
+      "Alert — the underlying destructive banner; use Alert directly for non-validation notices.",
+    ],
+    example: `import { Form, FormErrors, FormField, Input } from "@godxjp/ui/data-entry";
+import { useForm } from "@inertiajs/react";
+
+const form = useForm({ customer_nm: "", action_mode: "regist" });
+
+<Form asChild layout="horizontal" labelWidth={140} errors={form.errors}>
+  <form onSubmit={submit}>
+    <FormErrors />
+    <FormField name="customer_nm" label="顧客名" required>
+      <Input value={form.data.customer_nm} onChange={(e) => form.setData("customer_nm", e.target.value)} />
+    </FormField>
+  </form>
+</Form>`,
+    storyPath: "data-entry/FormErrors.stories.tsx",
     rules: [23],
   },
   {

@@ -2,6 +2,7 @@ import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
 
 import { cn } from "../../lib/utils";
+import { FormErrorsRegistryProvider } from "./form-errors";
 import { ResponsiveGrid } from "../layout/responsive-grid";
 import type { FormProp } from "../../props/components/data-entry.prop";
 import type { BreakpointProp, FormLayoutProp, WidthProp } from "../../props/vocabulary";
@@ -46,6 +47,7 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
     collapseBelow = "md",
     columns,
     density,
+    errors,
     asChild = false,
     className,
     children,
@@ -61,8 +63,8 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
     columns != null ? <ResponsiveGrid columns={columns}>{children}</ResponsiveGrid> : children;
 
   if (asChild) {
-    // The provider goes OUTSIDE the Slot, not inside: Slot merges these props onto the one
-    // child it is given, and that child has to be the caller's real element. Nesting the
+    // The providers go OUTSIDE the Slot, not inside: Slot merges these props onto the one
+    // child it is given, and that child has to be the caller's real element. Nesting a
     // provider in between would hand Slot a context provider to merge className onto, which
     // renders nothing and drops every prop silently.
     //
@@ -71,15 +73,17 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
     // ResponsiveGrid, which is what `columns` does anyway.
     return (
       <FormLayoutContext.Provider value={ctx}>
-        <Slot
-          ref={ref}
-          data-slot="form"
-          data-layout={layout}
-          className={cn("ui-form", density && `ui-density-${density}`, className)}
-          {...props}
-        >
-          {children}
-        </Slot>
+        <FormErrorsRegistryProvider errors={errors}>
+          <Slot
+            ref={ref}
+            data-slot="form"
+            data-layout={layout}
+            className={cn("ui-form", density && `ui-density-${density}`, className)}
+            {...props}
+          >
+            {children}
+          </Slot>
+        </FormErrorsRegistryProvider>
       </FormLayoutContext.Provider>
     );
   }
@@ -92,7 +96,9 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
       className={cn("ui-form", density && `ui-density-${density}`, className)}
       {...props}
     >
-      <FormLayoutContext.Provider value={ctx}>{content}</FormLayoutContext.Provider>
+      <FormLayoutContext.Provider value={ctx}>
+        <FormErrorsRegistryProvider errors={errors}>{content}</FormErrorsRegistryProvider>
+      </FormLayoutContext.Provider>
     </form>
   );
 });

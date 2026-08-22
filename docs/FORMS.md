@@ -73,3 +73,39 @@ Each app `package.json` must include:
 ```
 
 Peer-enforced by `@godxjp/ui`.
+
+## Server error bags — `Form errors` + `FormField name` + `<FormErrors />`
+
+Server-driven forms (Inertia's `useForm`) return a Laravel error bag whose keys may include
+**hidden/derived fields** (`action_mode`, `page`, a source-record id) that no visible field can
+display — without a summary the submit fails silently. Pass the WHOLE bag once and let fields
+claim their own keys:
+
+```tsx
+import { Form, FormErrors, FormField, Input } from "@godxjp/ui/data-entry";
+import { useForm } from "@inertiajs/react";
+
+const form = useForm({ customer_nm: "", action_mode: "regist" });
+
+<Form asChild layout="horizontal" labelWidth={140} errors={form.errors}>
+  <form onSubmit={submit}>
+    <FormErrors />
+    <FormField name="customer_nm" label="顧客名" required>
+      <Input
+        value={form.data.customer_nm}
+        onChange={(e) => form.setData("customer_nm", e.target.value)}
+      />
+    </FormField>
+  </form>
+</Form>;
+```
+
+- A `FormField name="…"` resolves its message from `errors[name]` automatically (an explicit
+  `error` prop wins; a `string[]` entry surfaces its FIRST message — `$errors->first()`), and
+  **claims** the key.
+- `<FormErrors />` renders only the **unclaimed** remainder as a destructive `Alert`
+  (`role="alert"`, localized default title) — and nothing when every entry is claimed.
+- Never hand-filter the bag per page; that except-list is exactly what this mechanism removes.
+- `FormFieldControl` forwards its `name`, so `FormRoot` + adapter fields claim their keys too;
+  give `<FormErrors errors={form.errors} />` the bag explicitly when there is no surrounding
+  `Form errors`.

@@ -125,6 +125,9 @@
       "denied": "Bạn không có quyền xem chi nhánh",
       "loading": "Đang tải chi nhánh…",
       "noMatches": "Không có chi nhánh khớp với tìm kiếm"
+    },
+    "formErrors": {
+      "title": "Dữ liệu nhập có lỗi, vui lòng kiểm tra"
     }
   },
   "feedback": {

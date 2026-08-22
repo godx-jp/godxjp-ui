@@ -12,6 +12,7 @@ import type {
   ClassNameProp,
   DisabledProp,
   EmptyMessageProp,
+  ErrorBagProp,
   ErrorProp,
   HelperProp,
   IdProp,
@@ -31,6 +32,7 @@ import type {
   BreakpointProp,
   DensityProp,
   SizeProp,
+  TitleProp,
 } from "../vocabulary";
 import type { ResponsiveGridColumnsProp } from "./layout.prop";
 
@@ -119,6 +121,13 @@ export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
   columns?: ResponsiveGridColumnsProp;
   density?: DensityProp;
   /**
+   * Server validation error bag (e.g. Inertia's `form.errors`). Each `FormField name="…"` inside
+   * resolves its own message from the bag automatically and CLAIMS its key; `<FormErrors />`
+   * renders the remaining, unclaimed entries — errors attached to hidden/derived fields that no
+   * visible field displays. Works in both the `<form>` and `asChild` modes.
+   */
+  errors?: ErrorBagProp;
+  /**
    * Render the caller's own element instead of a `<form>`, keeping only the layout context.
    * For routing libraries that own the form element (Inertia, TanStack Form) — two `<form>`
    * elements cannot nest. `columns` does not apply in this mode; wrap fields in ResponsiveGrid.
@@ -142,6 +151,13 @@ export type FormFieldProp =
   | {
       /** Optional — auto-generated and injected into the child control when omitted. */
       id?: IdProp;
+      /**
+       * Error-bag key of this field. When the surrounding `Form` carries `errors`, the field
+       * resolves its message from `errors[name]` automatically (an explicit `error` prop wins)
+       * and CLAIMS the key so `<FormErrors />` does not repeat it. Not injected into the child —
+       * pass `name` on the control itself for native form submission.
+       */
+      name?: NameProp;
       label: LabelProp;
       required?: RequiredProp;
       helper?: HelperProp;
@@ -163,6 +179,12 @@ export type FormFieldProp =
   | {
       /** Optional — auto-generated and injected into the child control when omitted. */
       id?: IdProp;
+      /**
+       * Error-bag key of this field. When the surrounding `Form` carries `errors`, the field
+       * resolves its message from `errors[name]` automatically (an explicit `error` prop wins)
+       * and CLAIMS the key so `<FormErrors />` does not repeat it.
+       */
+      name?: NameProp;
       label: LabelProp;
       required?: RequiredProp;
       helper?: HelperProp;
@@ -182,6 +204,24 @@ export type FormFieldProp =
       /** Read-only value — renders as `Descriptions.Item`-matched text instead of a control. */
       staticText: React.ReactNode;
     };
+
+/**
+ * @see FormErrors — the "no field to stand on" error summary. Renders the entries of the
+ * surrounding `Form`'s error bag that no mounted `FormField name="…"` has claimed — validation
+ * errors attached to hidden/derived fields (`action_mode`, `page`, a source-record id…) that
+ * would otherwise fail silently. Renders nothing while every error is claimed or the bag is empty.
+ */
+export type FormErrorsProp = {
+  /**
+   * Explicit error bag — overrides the surrounding `Form errors`. Use it when the component sits
+   * outside a `Form` (e.g. inside `FormRoot`); field claiming still applies when a `Form` provides
+   * the registry.
+   */
+  errors?: ErrorBagProp;
+  /** Heading above the messages. Defaults to the localized "please review your input" title. */
+  title?: TitleProp;
+  className?: ClassNameProp;
+};
 
 /** @see SearchInput */
 export type SearchInputProp = FieldA11yProps & {

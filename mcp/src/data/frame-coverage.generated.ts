@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 280,
-    dimensionCells: 3920,
+    exports: 281,
+    dimensionCells: 3934,
     covered: 65,
-    untested: 2148,
-    notApplicable: 1707,
+    untested: 2155,
+    notApplicable: 1714,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -222,6 +222,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"FilterBarGroup","group":"navigation","frame":"docs/navigation/toolbar.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Flex","group":"layout","frame":"docs/layout/flex.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Form","group":"data-entry","frame":"docs/data-entry/form.tsx","covered":["density"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"FormErrors","group":"data-entry","frame":"docs/data-entry/form.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"FormField","group":"data-entry","frame":"docs/data-entry/form-field/index.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"Heading","group":"general","frame":"docs/general/typography.tsx","covered":["tones"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","variants"]},
   {"name":"HoverCard","group":"data-display","frame":"docs/data-display/hover-card.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","tones","variants"]},

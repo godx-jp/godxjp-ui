@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`FormErrors` + `Form errors` + `FormField name` — the server error bag gets a home for every
+  message** — an Inertia app has endpoints whose Laravel validation errors attach to
+  hidden/derived fields (`action_mode`, `page`, `source_slip_cd`…) that no visible field displays,
+  so the user pressed save and saw NOTHING. `Form` now accepts the whole bag
+  (`errors={form.errors}`); a `FormField name="…"` resolves its own message from the bag (an
+  explicit `error` prop wins, arrays surface their first message — Laravel `$errors->first()`
+  semantics) and CLAIMS its key in a reference-counted registry; `<FormErrors />` renders only the
+  unclaimed remainder as an `Alert tone="destructive"` (role="alert", localized default title
+  `dataEntry.formErrors.title`), and renders nothing while every entry is claimed. The consumer
+  never maintains a per-page except-list — that is the point. `FormFieldControl` forwards its
+  `name` on both paths, so `FormRoot`-driven fields claim their keys too. New vocabulary type
+  `ErrorBagProp` (`Partial<Record<string, string | string[]>>`).
+
 - **`Form` gains `asChild` (from the in-flight work committed as `Form: asChild, and a
 label-column type token`)** — Inertia's `<Form action method>` and TanStack Form render their own
   `<form>`, and two form elements cannot nest, so a consumer had to choose between the router's

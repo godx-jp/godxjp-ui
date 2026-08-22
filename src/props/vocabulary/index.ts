@@ -14,6 +14,7 @@ export type {
   LabelProp,
   HelperProp,
   ErrorProp,
+  ErrorBagProp,
   PlaceholderProp,
   NameProp,
   ValueProp,

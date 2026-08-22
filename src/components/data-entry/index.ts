@@ -24,6 +24,8 @@ export { Form, useFormLayout, type FormLayoutContextValue } from "./form";
 export type { FormProp, FormProps } from "./form";
 export { FormField } from "./form-field";
 export type { FormFieldProp, FormFieldProps } from "./form-field";
+export { FormErrors } from "./form-errors";
+export type { FormErrorsProp, FormErrorsProps } from "./form-errors";
 export { Field } from "./field";
 export type { FieldProps } from "./field";
 export { SearchInput } from "./search-input";

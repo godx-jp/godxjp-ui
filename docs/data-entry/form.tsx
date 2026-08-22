@@ -8,6 +8,7 @@ import {
   DateRangePicker,
   Field,
   Form,
+  FormErrors,
   FormField,
   Input,
   InputOTP,
@@ -632,6 +633,42 @@ export default function Demo() {
               </FormField>
               <FormField id="s-readonly" label="作成日時（read-only）">
                 <Input id="s-readonly" readOnly defaultValue="2026-01-15 09:32" />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>
+              サーバーエラーバッグ · Form errors + FormField name + FormErrors
+            </CardTitle>
+            <CardDescription>
+              Form に errors（Inertia の form.errors）を渡すと、name
+              を持つフィールドは自分のメッセージをバッグから自動解決してキーを消費（claim）する。
+              FormErrors は残り —
+              隠し・派生フィールド（action_mode、page…）に付いた、どのフィールドにも表示先が無いエラー
+              — だけを role=alert のバナーとして表示する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form
+              layout="horizontal"
+              labelWidth={140}
+              errors={{
+                customer_nm: "顧客名は必須です",
+                action_mode: "操作モードが不正です",
+                page: ["ページ番号が不正です", "ページ範囲を超えています"],
+              }}
+            >
+              <FormErrors />
+              {/* claimed: このフィールドが customer_nm のメッセージを表示するのでバナーには出ない */}
+              <FormField name="customer_nm" label="顧客名" required>
+                <Input placeholder="株式会社…" />
+              </FormField>
+              {/* エラーの無いキー: バッグに tel_no が無いのでこのフィールドは無風 */}
+              <FormField name="tel_no" label="電話番号" helper="ハイフンなし">
+                <Input inputMode="numeric" placeholder="0312345678" />
               </FormField>
             </Form>
           </CardContent>

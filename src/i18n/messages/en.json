@@ -128,6 +128,9 @@
       "denied": "You do not have permission to view branches",
       "loading": "Loading branches…",
       "noMatches": "No branches match your search"
+    },
+    "formErrors": {
+      "title": "Please review the following errors"
     }
   },
   "feedback": {

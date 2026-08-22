@@ -4,6 +4,7 @@ import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
 import { FieldNameContext, mergeAriaIds } from "../../lib/field-a11y";
 import { useFormLayout } from "./form";
+import { firstBagMessage, useClaimErrorKey, useFormErrorsRegistry } from "./form-errors";
 import type { FormFieldProp } from "../../props/components/data-entry.prop";
 import type { WidthProp } from "../../props/vocabulary";
 
@@ -20,10 +21,11 @@ const FOCUSABLE_SELECTOR =
 
 export function FormField({
   id,
+  name,
   label,
   required,
   helper,
-  error,
+  error: errorProp,
   labelAddon,
   layout: layoutProp,
   labelWidth: labelWidthProp,
@@ -40,6 +42,16 @@ export function FormField({
   const controlWidth = controlWidthProp ?? form?.controlWidth;
   const labelAlign = form?.labelAlign ?? "end";
   const collapseBelow = form?.collapseBelow ?? "md";
+
+  // Error-bag binding (FormErrors) — a `name` claims its key in the Form's error registry
+  // (so `<FormErrors />` never repeats a message a field already displays) and, when no explicit
+  // `error` prop is given, resolves the field's message from the bag (first message of an array,
+  // mirroring Laravel's `$errors->first()`).
+  const errorsRegistry = useFormErrorsRegistry();
+  useClaimErrorKey(name);
+  const error =
+    errorProp ??
+    (name && errorsRegistry ? firstBagMessage(errorsRegistry.errors[name]) : undefined);
 
   // `id` is optional: when omitted the field auto-generates one and injects it
   // into the child, so every control under FormField always carries an id

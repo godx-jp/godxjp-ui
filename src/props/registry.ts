@@ -71,6 +71,11 @@ export const VOCABULARY_REGISTRY = {
     category: "shared",
     description: "Validation error message",
   },
+  ErrorBagProp: {
+    file: "vocabulary/shared.prop.ts",
+    category: "shared",
+    description: "Server validation error bag keyed by field name (Laravel/Inertia errors)",
+  },
   PlaceholderProp: {
     file: "vocabulary/shared.prop.ts",
     category: "shared",
@@ -1007,13 +1012,14 @@ export const COMPONENT_PROP_REGISTRY = {
   FormProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["FormLayoutProp", "WidthProp", "BreakpointProp", "DensityProp"],
+    vocabulary: ["FormLayoutProp", "WidthProp", "BreakpointProp", "DensityProp", "ErrorBagProp"],
   },
   FormFieldProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: [
       "IdProp",
+      "NameProp",
       "LabelProp",
       "RequiredProp",
       "HelperProp",
@@ -1021,6 +1027,11 @@ export const COMPONENT_PROP_REGISTRY = {
       "FormLayoutProp",
       "WidthProp",
     ],
+  },
+  FormErrorsProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ErrorBagProp", "TitleProp", "ClassNameProp"],
   },
   SearchInputProp: {
     group: "data-entry",

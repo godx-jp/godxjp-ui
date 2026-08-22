@@ -43,6 +43,12 @@ export type HelperProp = React.ReactNode;
 /** Validation error message. */
 export type ErrorProp = React.ReactNode;
 
+/**
+ * Server validation error bag, keyed by field name — the shape Laravel hands Inertia
+ * (`errors: { field: "message" }`) or a JSON API returns (`{ field: ["m1", "m2"] }`).
+ */
+export type ErrorBagProp = Partial<Record<string, string | string[]>>;
+
 /** Placeholder text for inputs. */
 export type PlaceholderProp = string;
 

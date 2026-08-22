@@ -39,6 +39,13 @@
         "layout": {
           "cases": ["vertical", "horizontal", "inline"],
           "evidence": ["docs/data-entry/form.tsx", "scripts/check-data-entry-frame-runtime.mjs"]
+        },
+        "errors": {
+          "cases": ["bag", "omitted"],
+          "evidence": [
+            "docs/data-entry/form.tsx",
+            "src/components/data-entry/__tests__/form-errors.test.tsx"
+          ]
         }
       }
     },
@@ -110,6 +117,13 @@
           "evidence": [
             "docs/data-entry/form-field/index.tsx",
             "src/components/data-entry/__tests__/form-field.test.tsx"
+          ]
+        },
+        "name": {
+          "cases": ["claimed", "unbound"],
+          "evidence": [
+            "docs/data-entry/form.tsx",
+            "src/components/data-entry/__tests__/form-errors.test.tsx"
           ]
         }
       }
@@ -1327,6 +1341,29 @@
         "size": {
           "cases": ["xs", "sm", "md", "lg"],
           "evidence": ["docs/charts/compact-bar-trend.tsx"]
+        }
+      }
+    },
+    "FormErrors": {
+      "complete": true,
+      "props": {
+        "className": {
+          "cases": ["default"],
+          "evidence": ["src/components/data-entry/__tests__/form-errors.test.tsx"]
+        },
+        "errors": {
+          "cases": ["from-form", "explicit"],
+          "evidence": [
+            "docs/data-entry/form.tsx",
+            "src/components/data-entry/__tests__/form-errors.test.tsx"
+          ]
+        },
+        "title": {
+          "cases": ["custom", "localized-default"],
+          "evidence": [
+            "src/components/data-entry/__tests__/form-errors.test.tsx",
+            "src/components/data-entry/__tests__/form-errors.a11y.test.tsx"
+          ]
         }
       }
     }

@@ -28,6 +28,7 @@ export function FormFieldControl<TFieldValues extends FieldValues>({
     return (
       <FormField
         id={fieldName}
+        name={fieldName}
         label={label}
         required={required}
         helper={helper}
@@ -55,6 +56,7 @@ export function FormFieldControl<TFieldValues extends FieldValues>({
       render={({ field, fieldState }) => (
         <FormField
           id={String(name)}
+          name={String(name)}
           label={label}
           required={required}
           helper={helper}

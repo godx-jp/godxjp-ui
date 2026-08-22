@@ -7429,6 +7429,16 @@
           ]
         },
         {
+          "name": "errors",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<string, string | string[]>> | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
           "name": "labelAlign",
           "origin": "owned",
           "required": false,
@@ -7461,6 +7471,41 @@
             "horizontal",
             "inline"
           ],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        }
+      ]
+    },
+    "FormErrors": {
+      "group": "data-entry",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "errors",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<string, string | string[]>> | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": [
             "src/props/components/data-entry.prop.ts"
           ]
@@ -7580,6 +7625,16 @@
             "horizontal",
             "inline"
           ],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "name",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
             "src/props/components/data-entry.prop.ts"
           ]
