@@ -1,4 +1,4 @@
-import type * as React from "react";
+import * as React from "react";
 
 /**
  * The accessible-name / description / validation contract that {@link FormField} injects onto its
@@ -96,6 +96,48 @@ export function resolveFieldA11y(
     picked["aria-label"] = intrinsicAriaLabel;
   }
   return picked;
+}
+
+/**
+ * The FormField label made reachable by NESTED controls (gh#303).
+ *
+ * `cloneElement` can only wire the field-a11y contract onto FormField's single direct child. When
+ * that child is a layout wrapper (a `Flex` holding a range from/to pair, a 年/月 input+select
+ * combo), the naming attributes stop on the wrapper `div` and every control inside is left with no
+ * accessible name at all (axe: `label` on the inputs, `button-name` on select/combobox triggers).
+ *
+ * FormField therefore also publishes its label through this context, and each control's semantic
+ * focus target picks it up as a LAST-RESORT name via {@link useFieldNameFallback}: a control that
+ * already has a name — its own `aria-label`/`aria-labelledby`, or the one FormField cloned onto it
+ * as the direct child — keeps it untouched. Multiple nested controls then all announce the field's
+ * label; a consumer wanting distinct names (e.g. "開始日" / "終了日") sets `aria-label` per
+ * control, which always wins.
+ */
+export interface FieldNameContextValue {
+  /** DOM id of FormField's visible label element (the `aria-labelledby` target). */
+  labelId: string;
+  /** The label's plain-text content, when it is a string (belt-and-suspenders `aria-label`). */
+  label?: string;
+}
+
+export const FieldNameContext = React.createContext<FieldNameContextValue | null>(null);
+
+/**
+ * Resolve the last-resort accessible name for a control's semantic focus target (see
+ * {@link FieldNameContext}). Returns `{}` — never clobbering anything — unless the control is
+ * inside a FormField AND still nameless after its own props and the cloned contract are applied.
+ */
+export function useFieldNameFallback(
+  name: Pick<FieldA11yProps, "aria-label" | "aria-labelledby">,
+): Pick<FieldA11yProps, "aria-label" | "aria-labelledby"> {
+  const field = React.useContext(FieldNameContext);
+  if (!field || name["aria-label"] !== undefined || name["aria-labelledby"] !== undefined) {
+    return {};
+  }
+  return {
+    "aria-labelledby": field.labelId,
+    ...(field.label !== undefined ? { "aria-label": field.label } : {}),
+  };
 }
 
 /**

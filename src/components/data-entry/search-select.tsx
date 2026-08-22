@@ -2,6 +2,7 @@ import * as React from "react";
 import { ChevronsUpDown, Loader2, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
+import { useFieldNameFallback } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { controlOpenRingClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
@@ -71,6 +72,14 @@ export function SearchSelect({
   "aria-required": ariaRequired,
 }: SearchSelectProp) {
   const { t } = useTranslation();
+  // gh#303 — last-resort accessible name from an enclosing FormField, for a SearchSelect NESTED
+  // under a layout wrapper that the cloneElement contract cannot reach. `{}` when already named.
+  const nameFallback = useFieldNameFallback({
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledby,
+  });
+  const triggerAriaLabel = ariaLabel ?? nameFallback["aria-label"];
+  const triggerAriaLabelledby = ariaLabelledby ?? nameFallback["aria-labelledby"];
   const reactId = React.useId();
   const listId = `${reactId}-listbox`;
   const optionDomId = (optionValue: string) => `${reactId}-opt-${optionValue}`;
@@ -313,8 +322,8 @@ export function SearchSelect({
             size={size}
             aria-expanded={open}
             aria-controls={open ? listId : undefined}
-            aria-label={ariaLabel}
-            aria-labelledby={ariaLabelledby}
+            aria-label={triggerAriaLabel}
+            aria-labelledby={triggerAriaLabelledby}
             aria-describedby={ariaDescribedby}
             aria-errormessage={ariaErrorMessage}
             aria-invalid={ariaInvalid}
@@ -353,8 +362,8 @@ export function SearchSelect({
         {/* Hidden field so the selection submits with a native form. */}
         {name ? <input type="hidden" name={name} value={value} readOnly /> : null}
         <PopoverContent
-          aria-label={ariaLabelledby ? undefined : (ariaLabel ?? resolvedPlaceholder)}
-          aria-labelledby={ariaLabelledby}
+          aria-label={triggerAriaLabelledby ? undefined : (triggerAriaLabel ?? resolvedPlaceholder)}
+          aria-labelledby={triggerAriaLabelledby}
           align="start"
           sideOffset={4}
           collisionPadding={12}

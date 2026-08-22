@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
-import { mergeAriaIds } from "../../lib/field-a11y";
+import { FieldNameContext, mergeAriaIds } from "../../lib/field-a11y";
 import { useFormLayout } from "./form";
 import type { FormFieldProp } from "../../props/components/data-entry.prop";
 import type { WidthProp } from "../../props/vocabulary";
@@ -67,6 +67,15 @@ export function FormField({
         "via `staticText` instead of `children` for a read-only value row.",
     );
   }
+
+  // gh#303 — the label, republished for NESTED controls. cloneElement (below) only reaches the
+  // single direct child; when that child is a layout wrapper (range from/to pair, 年/月 combo)
+  // every control inside it would be nameless. Controls read this context as a last-resort
+  // accessible name via useFieldNameFallback — a control that already has a name keeps it.
+  const fieldNameContext = React.useMemo(
+    () => ({ labelId, label: typeof label === "string" ? label : undefined }),
+    [labelId, label],
+  );
 
   const childProps = React.isValidElement(children)
     ? (children.props as Record<string, unknown>)
@@ -162,7 +171,13 @@ export function FormField({
         {labelAddon}
       </div>
       <div data-slot="form-field-control" className="ui-form-field-control">
-        {childWithA11y}
+        {isStatic ? (
+          childWithA11y
+        ) : (
+          <FieldNameContext.Provider value={fieldNameContext}>
+            {childWithA11y}
+          </FieldNameContext.Provider>
+        )}
         {helper ? (
           <p id={helperId} className="text-muted-foreground text-xs">
             {helper}

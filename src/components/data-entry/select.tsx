@@ -3,7 +3,12 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { controlTriggerClass } from "../../lib/control-styles";
-import { mergeAriaIds, omitFieldA11y, pickFieldA11y } from "../../lib/field-a11y";
+import {
+  mergeAriaIds,
+  omitFieldA11y,
+  pickFieldA11y,
+  useFieldNameFallback,
+} from "../../lib/field-a11y";
 import type { FieldA11yProps } from "../../lib/field-a11y";
 import { SearchSelect } from "./search-select";
 import { useTranslation } from "../../i18n/use-translation";
@@ -93,18 +98,36 @@ export const SelectTrigger = React.forwardRef<
   // place next to the local `aria-label`, and labelledby outranks label — the trigger's own name
   // would lose to the one it deliberately overrode.
   const ownsName = props["aria-label"] !== undefined || props["aria-labelledby"] !== undefined;
-  const fieldA11y = field
-    ? {
-        id: props.id ?? field.id,
-        ...(ownsName
-          ? {}
-          : { "aria-label": field["aria-label"], "aria-labelledby": field["aria-labelledby"] }),
-        "aria-describedby": mergeAriaIds(props["aria-describedby"], field["aria-describedby"]),
-        "aria-errormessage": mergeAriaIds(props["aria-errormessage"], field["aria-errormessage"]),
-        "aria-required": props["aria-required"] ?? field["aria-required"],
-        "aria-invalid": props["aria-invalid"] ?? field["aria-invalid"],
-      }
-    : undefined;
+  const fieldOwnsName =
+    field?.["aria-label"] !== undefined || field?.["aria-labelledby"] !== undefined;
+  // gh#303 — last resort, when neither the trigger nor the Select-level contract names it: a
+  // Select NESTED under a layout wrapper inside FormField (年/月 combo, range pair) still takes
+  // its name from the enclosing field's label. `{}` whenever a name already exists.
+  const nameFallback = useFieldNameFallback({
+    "aria-label": ownsName ? props["aria-label"] : field?.["aria-label"],
+    "aria-labelledby": ownsName ? props["aria-labelledby"] : field?.["aria-labelledby"],
+  });
+  const fieldA11y =
+    field || nameFallback["aria-labelledby"] !== undefined
+      ? {
+          id: props.id ?? field?.id,
+          ...(ownsName
+            ? {}
+            : fieldOwnsName
+              ? {
+                  "aria-label": field?.["aria-label"],
+                  "aria-labelledby": field?.["aria-labelledby"],
+                }
+              : nameFallback),
+          "aria-describedby": mergeAriaIds(props["aria-describedby"], field?.["aria-describedby"]),
+          "aria-errormessage": mergeAriaIds(
+            props["aria-errormessage"],
+            field?.["aria-errormessage"],
+          ),
+          "aria-required": props["aria-required"] ?? field?.["aria-required"],
+          "aria-invalid": props["aria-invalid"] ?? field?.["aria-invalid"],
+        }
+      : undefined;
   return (
     <SelectPrimitive.Trigger
       ref={ref}

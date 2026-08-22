@@ -1,6 +1,7 @@
 import * as React from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
+import { useFieldNameFallback } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
@@ -49,6 +50,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     const { t } = useTranslation();
+    // gh#303 — last-resort accessible label from an enclosing FormField, for inputs NESTED under
+    // a layout wrapper (range from/to, 年/月) that the cloneElement contract cannot reach. `{}`
+    // whenever the input is already labelled, so it never overrides props. (Wording note: the
+    // API-manifest generator greps the source for bare inherited-prop words — keep this comment
+    // free of the standalone word for the native form-submission attribute.)
+    const nameFallback = useFieldNameFallback({
+      "aria-label": props["aria-label"],
+      "aria-labelledby": props["aria-labelledby"],
+    });
     const innerRef = React.useRef<HTMLInputElement | null>(null);
     // Callback ref forwards the real DOM node to the parent's ref (so `ref.current`
     // stays the <input>, exactly as before) while keeping our own handle for clear().
@@ -103,6 +113,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           onChange={onChange}
           className={cn(inputBaseClass, className)}
           {...props}
+          {...nameFallback}
         />
       );
     }
@@ -149,6 +160,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className,
           )}
           {...props}
+          {...nameFallback}
         />
         {trailing != null ? (
           <span className="absolute inset-y-0 end-2 inline-flex items-center">{trailing}</span>

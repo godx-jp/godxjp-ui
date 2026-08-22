@@ -28,6 +28,28 @@ tone="warning"` and the warning toast already use — because a malformed reques
 
 ### Fixed
 
+- **`FormField`'s label now reaches every control NESTED under a composite wrapper (gh#303)** —
+  `cloneElement` wires the field-a11y contract onto the single direct child only, so when that
+  child was a layout wrapper (a `Flex` holding a range from/to pair, a 年/月 input+select combo)
+  every control inside was left with no accessible name at all: an axe sweep of 92 real app
+  screens measured `label` (critical, 46 nodes — the from/to `<input>`s) and `button-name`
+  (critical — nameless Radix Select / SearchSelect `role=combobox` triggers). FormField now also
+  publishes its label through `FieldNameContext` (`src/lib/field-a11y.ts`), and each control's
+  semantic focus target — `Input`'s `<input>` (hence NumberInput, DatePicker and everything
+  composed on it), `SelectTrigger`, `SearchSelect`'s trigger — adopts it as a LAST-RESORT
+  accessible name. A control that already has a name (its own `aria-label`/`aria-labelledby`, or
+  the one FormField cloned onto it as the direct child) keeps it untouched, so set a per-control
+  `aria-label` when the halves should announce distinct names (開始日/終了日).
+
+- **A named `Flex` renders `role="group"` instead of an invalid named bare div (gh#303)** — a
+  role-less `<div>` may not carry naming attributes, and FormField legitimately lands
+  `aria-label`/`aria-labelledby`/`aria-required` on a Flex that wraps a composite field (axe
+  `aria-allowed-attr`, critical, 5 nodes on 4 real app screens). A Flex carrying a naming
+  attribute with no explicit `role` now defaults to `role="group"` and keeps only the aria the
+  group role allows — `aria-errormessage` folds into `aria-describedby`, widget-only
+  `aria-required`/`aria-invalid` are dropped (the `pickGroupFieldA11y` policy). An explicit
+  `role` prop opts out entirely (e.g. `DataTable.BulkActions`' `role="region"` is untouched).
+
 - **`PageContainer`'s header `extra` could not wrap, and starved the `<h1>` instead (gh#300)** —
   at `>=640px` the action slot was `width: auto` + `flex-shrink: 0`, i.e. frozen at the action
   group's max-content width, which is unbounded: an admin list header with 10–13 buttons asks for
