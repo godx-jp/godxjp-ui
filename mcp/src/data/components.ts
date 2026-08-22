@@ -3360,7 +3360,7 @@ import { Flex } from "@godxjp/ui/layout";
         name: "errors",
         type: "Partial<Record<string, string | string[]>>",
         description:
-          "Server validation error bag (e.g. Inertia's form.errors). Each FormField name='…' inside resolves its own message from the bag and CLAIMS its key; <FormErrors /> renders the unclaimed remainder (errors on hidden/derived fields). Works in both <form> and asChild modes.",
+          "Server validation error bag (e.g. Inertia's form.errors). Each FormField name='…' inside resolves its own message from the bag and CLAIMS its key; <FormErrors /> renders the unclaimed remainder (errors on hidden/derived fields). Works in both <form> and asChild modes. A Form WITHOUT this prop joins a surrounding FormErrorsProvider (sibling Card+Form sections sharing one bag); a Form WITH it starts its own shadowing registry.",
       },
       {
         name: "density",
@@ -3374,6 +3374,7 @@ import { Flex } from "@godxjp/ui/layout";
       "DO use `columns` for multi-field forms (e.g. `columns={2}`) — it reuses ResponsiveGrid (1 column on small screens, more on md/lg). Span a wide field across columns with `<FormField colSpan={2}>`.",
       "DON'T hand-roll a `<form>` + Flex stack for spacing — `<Form>` provides the vertical rhythm and the layout context FormField reads. Wire react-hook-form by spreading `onSubmit={handleSubmit(...)}` onto `<Form>`.",
       "SERVER ERROR BAG: pass `errors={form.errors}` (Inertia) ONCE on `<Form>`, give each field a `name`, and put `<FormErrors />` at the top of the form. A named field resolves its message from the bag automatically (no per-field `error={errors.x}`), and FormErrors catches validation errors on hidden/derived keys (`action_mode`, `page`, a source-record id) that no visible field could display — without it those submits fail SILENTLY.",
+      "SIBLING FORMS: an edit screen split into several Card+Form sections shares ONE bag by wrapping the region in `<FormErrorsProvider errors={form.errors}>` instead of passing `errors` to each Form — the section Forms (without their own `errors`) join the shared registry, and one `<FormErrors />` anywhere in the region renders the unclaimed remainder.",
     ],
     useCases: [
       "A settings page form where every label sits in a fixed 120px column to the left of its control (horizontal), collapsing to stacked labels on mobile.",
@@ -3527,6 +3528,7 @@ import { Flex } from "@godxjp/ui/layout";
       "DON'T hand-roll a destructive Alert bound to `errors.hidden_key` per page — that is exactly the per-page listing this component exists to remove, and it goes stale the moment the server adds a new derived-field rule.",
       "DON'T use FormErrors as a generic mutation-failure banner — that is `Alert.QueryError` / toast territory. FormErrors is scoped to the VALIDATION bag of the surrounding form.",
       "ARRAY ENTRIES: a `string[]` bag value lists every message in the banner; a claimed field shows only the FIRST message of its array (Laravel `$errors->first()` semantics).",
+      "SIBLING FORMS: when the screen is split into several Card+Form sections, wrap the REGION in `<FormErrorsProvider errors={form.errors}>` and give NO `errors` to the section Forms — they join the shared registry and one `<FormErrors />` covers the whole screen. A nested Form WITH its own `errors` deliberately starts a separate (shadowed) registry.",
     ],
     useCases: [
       "An Inertia edit screen whose Laravel FormRequest validates hidden/derived inputs (`action_mode`, `page`, `source_slip_cd`) — the user pressed save and previously saw NOTHING because those keys have no visible field.",
@@ -3535,6 +3537,7 @@ import { Flex } from "@godxjp/ui/layout";
     ],
     related: [
       "Form — provides the error bag (`errors`) and the claim registry FormErrors reads; FormErrors must sit inside it (or receive `errors` explicitly).",
+      "FormErrorsProvider — the shared registry for a REGION of sibling Forms (multi-Card edit screens): wrap the region with it, leave `errors` off the section Forms, and one FormErrors covers the whole screen.",
       "FormField — `name` claims a bag key and self-binds its message; the claimed key never re-appears in FormErrors.",
       "Alert — the underlying destructive banner; use Alert directly for non-validation notices.",
     ],

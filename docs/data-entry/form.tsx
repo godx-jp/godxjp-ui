@@ -9,6 +9,7 @@ import {
   Field,
   Form,
   FormErrors,
+  FormErrorsProvider,
   FormField,
   Input,
   InputOTP,
@@ -671,6 +672,44 @@ export default function Demo() {
                 <Input inputMode="numeric" placeholder="0312345678" />
               </FormField>
             </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>兄弟 Form の共有バッグ · FormErrorsProvider</CardTitle>
+            <CardDescription>
+              編集画面を複数の Card+Form セクションに分けても、サーバーのエラーバッグは 1 つ。 各
+              Form に errors を渡す代わりに領域を FormErrorsProvider で包むと、errors を持たない
+              Form は外側のレジストリに参加し、全セクションの claim が 1 つの FormErrors
+              から差し引かれる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormErrorsProvider
+              errors={{
+                customer_nm: "顧客名は必須です",
+                mail_subject: "件名は必須です",
+                source_slip_id: "元伝票が存在しません",
+              }}
+            >
+              <Flex direction="col" gap="md" align="stretch">
+                <FormErrors />
+                {/* セクション A: errors を渡さない Form — 外側のレジストリに参加する */}
+                <Form layout="horizontal" labelWidth={140}>
+                  <FormField name="customer_nm" label="顧客名" required>
+                    <Input placeholder="株式会社…" />
+                  </FormField>
+                </Form>
+                {/* セクション B: 別の Form でも claim は同じレジストリへ */}
+                <Form layout="horizontal" labelWidth={140}>
+                  <FormField name="mail_subject" label="件名">
+                    <Input placeholder="ご請求書の送付" />
+                  </FormField>
+                </Form>
+                {/* source_slip_id はどのフィールドも claim しないのでバナーに残る */}
+              </Flex>
+            </FormErrorsProvider>
           </CardContent>
         </Card>
 

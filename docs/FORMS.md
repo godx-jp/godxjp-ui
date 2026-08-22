@@ -109,3 +109,35 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
 - `FormFieldControl` forwards its `name`, so `FormRoot` + adapter fields claim their keys too;
   give `<FormErrors errors={form.errors} />` the bag explicitly when there is no surrounding
   `Form errors`.
+
+### Sibling Forms — one bag over several Card+Form sections
+
+An edit screen split into several sibling `Card` + `Form` sections still has ONE server bag.
+Wrap the region in `FormErrorsProvider` instead of passing `errors` to each Form — a Form
+**without** its own `errors` joins the surrounding registry, so claims from every section
+subtract from the same `<FormErrors />`:
+
+```tsx
+import { Form, FormErrors, FormErrorsProvider, FormField, Input } from "@godxjp/ui/data-entry";
+
+<FormErrorsProvider errors={form.errors}>
+  <FormErrors />
+  <Card>
+    <Form layout="horizontal" labelWidth={170}>
+      <FormField name="customer_nm" label="顧客名">
+        …
+      </FormField>
+    </Form>
+  </Card>
+  <Card>
+    <Form layout="horizontal" labelWidth={170}>
+      <FormField name="mail_subject" label="件名">
+        …
+      </FormField>
+    </Form>
+  </Card>
+</FormErrorsProvider>;
+```
+
+A nested Form **with** its own `errors` starts a new registry that shadows the provider — its
+claims and messages stay inside it (use this for an embedded sub-form with a separate bag).

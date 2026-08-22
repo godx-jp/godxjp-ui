@@ -2,12 +2,17 @@ import * as React from "react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { Alert, AlertContent, AlertDescription, AlertTitle } from "../feedback/alert";
-import type { FormErrorsProp } from "../../props/components/data-entry.prop";
+import type {
+  FormErrorsProp,
+  FormErrorsProviderProp,
+} from "../../props/components/data-entry.prop";
 import type { ErrorBagProp } from "../../props/vocabulary";
 
 export type {
   FormErrorsProp,
   FormErrorsProp as FormErrorsProps,
+  FormErrorsProviderProp,
+  FormErrorsProviderProp as FormErrorsProviderProps,
 } from "../../props/components/data-entry.prop";
 
 /** SSR-safe layout effect — claims must land before paint so FormErrors never flashes a claimed key. */
@@ -41,16 +46,20 @@ export function firstBagMessage(entry: string | string[] | undefined): string | 
 }
 
 /**
- * Provider rendered by `Form` (both `<form>` and `asChild` modes). Internal — consumers get the
- * registry by passing `errors` to `Form`, never by mounting this directly.
+ * FormErrorsProvider — one shared error registry (error bag + claim set) over a region.
+ * 兄弟 Form 群で 1 つのエラーバッグを共有するための公開プロバイダ。Two ways to get one:
+ *
+ * 1. `Form errors={…}` renders this provider itself (both `<form>` and `asChild` modes) —
+ *    the single-form case needs nothing else.
+ * 2. An edit screen split into several sibling Card+Form sections (the standard exseli shape)
+ *    wraps the REGION in `<FormErrorsProvider errors={…}>` instead: Forms **without** their own
+ *    `errors` join the surrounding registry, every `FormField name="…"` inside claims into it,
+ *    and one `<FormErrors />` anywhere in the region renders the unclaimed remainder.
+ *
+ * A nested Form WITH its own `errors` starts a new registry that shadows this one — its claims
+ * and messages stay inside it.
  */
-export function FormErrorsRegistryProvider({
-  errors,
-  children,
-}: {
-  errors: ErrorBagProp | undefined;
-  children: React.ReactNode;
-}) {
+export function FormErrorsProvider({ errors, children }: FormErrorsProviderProp) {
   const [claimed, setClaimed] = React.useState<ReadonlyMap<string, number>>(new Map());
   const claim = React.useCallback((key: string) => {
     setClaimed((prev) => {

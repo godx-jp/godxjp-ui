@@ -1033,6 +1033,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["ErrorBagProp", "TitleProp", "ClassNameProp"],
   },
+  FormErrorsProviderProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ErrorBagProp"],
+  },
   SearchInputProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

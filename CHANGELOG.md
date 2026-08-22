@@ -21,6 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `name` on both paths, so `FormRoot`-driven fields claim their keys too. New vocabulary type
   `ErrorBagProp` (`Partial<Record<string, string | string[]>>`).
 
+- **`FormErrorsProvider` — one bag over sibling Forms** — the standard consumer edit screen
+  splits into several sibling Card+Form sections sharing ONE server bag, and a registry private
+  to each `Form` would make `<FormErrors />` in section A repeat every message section B already
+  claims. `Form` therefore provides the claim registry only when it carries its own `errors`; a
+  Form WITHOUT the prop joins a surrounding `FormErrorsProvider` (new public export) so every
+  section's `FormField name="…"` claims into the same registry and one `<FormErrors />` covers
+  the whole screen. A nested Form WITH its own `errors` still starts a shadowing registry.
+  New prop type `FormErrorsProviderProp`.
+
 - **`Form` gains `asChild` (from the in-flight work committed as `Form: asChild, and a
 label-column type token`)** — Inertia's `<Form action method>` and TanStack Form render their own
   `<form>`, and two form elements cannot nest, so a consumer had to choose between the router's

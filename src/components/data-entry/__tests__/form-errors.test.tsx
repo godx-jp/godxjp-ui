@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderWithUi, screen } from "@/test/render";
 import { Form } from "../form";
-import { FormErrors } from "../form-errors";
+import { FormErrors, FormErrorsProvider } from "../form-errors";
 import { FormField } from "../form-field";
 import { Input } from "../input";
 
@@ -149,5 +149,72 @@ describe("FormErrors", () => {
     );
     // renderWithUi mounts AppProvider with defaultLocale="vi".
     expect(screen.getByText("Dữ liệu nhập có lỗi, vui lòng kiểm tra")).toBeInTheDocument();
+  });
+
+  // The standard exseli edit-screen shape: one server bag, several sibling Card+Form sections.
+  // Forms WITHOUT their own `errors` must join the surrounding provider's registry, so claims
+  // made in section A and section B both subtract from the ONE FormErrors outside them.
+  it("sibling Forms inside a FormErrorsProvider share one registry", () => {
+    renderWithUi(
+      <FormErrorsProvider
+        errors={{
+          customer_nm: "顧客名は必須です",
+          mail_subject: "件名は必須です",
+          source_slip_id: "元伝票が存在しません",
+        }}
+      >
+        <FormErrors title="入力エラー" />
+        <Form>
+          <FormField name="customer_nm" label="顧客名">
+            <Input />
+          </FormField>
+        </Form>
+        <Form>
+          <FormField name="mail_subject" label="件名">
+            <Input />
+          </FormField>
+        </Form>
+      </FormErrorsProvider>,
+    );
+
+    const banner = screen.getByText("入力エラー").closest('[data-slot="alert"]') as HTMLElement;
+    // Only the key neither sibling claimed remains in the banner…
+    expect(banner).toHaveTextContent("元伝票が存在しません");
+    expect(banner).not.toHaveTextContent("顧客名は必須です");
+    expect(banner).not.toHaveTextContent("件名は必須です");
+    // …and each claimed message renders on its own field inside its own Form.
+    expect(screen.getByText("顧客名は必須です")).toBeInTheDocument();
+    expect(screen.getByText("件名は必須です")).toBeInTheDocument();
+  });
+
+  it("a Form with its own `errors` shadows the surrounding provider (claims stay inside)", () => {
+    renderWithUi(
+      <FormErrorsProvider errors={{ customer_nm: "外側のbagのメッセージ" }}>
+        <FormErrors title="外側エラー" />
+        <Form errors={{ customer_nm: "内側のbagのメッセージ" }}>
+          <FormField name="customer_nm" label="顧客名">
+            <Input />
+          </FormField>
+        </Form>
+      </FormErrorsProvider>,
+    );
+
+    // The field resolves from the INNER bag, and its claim does not leak out — the outer
+    // FormErrors still renders the outer bag's entry for the same key.
+    expect(screen.getByText("内側のbagのメッセージ")).toBeInTheDocument();
+    const banner = screen.getByText("外側エラー").closest('[data-slot="alert"]') as HTMLElement;
+    expect(banner).toHaveTextContent("外側のbagのメッセージ");
+  });
+
+  it("a named FormField in a Form without `errors` and no provider stays inert", () => {
+    const { container } = renderWithUi(
+      <Form>
+        <FormField name="customer_nm" label="顧客名">
+          <Input />
+        </FormField>
+      </Form>,
+    );
+    // No registry anywhere: nothing to resolve, nothing to claim, no error rendered.
+    expect(container.querySelector('[id$="-error"]')).toBeNull();
   });
 });

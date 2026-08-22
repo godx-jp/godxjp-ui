@@ -124,7 +124,9 @@ export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
    * Server validation error bag (e.g. Inertia's `form.errors`). Each `FormField name="…"` inside
    * resolves its own message from the bag automatically and CLAIMS its key; `<FormErrors />`
    * renders the remaining, unclaimed entries — errors attached to hidden/derived fields that no
-   * visible field displays. Works in both the `<form>` and `asChild` modes.
+   * visible field displays. Works in both the `<form>` and `asChild` modes. A Form WITHOUT this
+   * prop joins a surrounding `FormErrorsProvider` instead (sibling Card+Form sections sharing one
+   * bag); a Form WITH it starts its own (shadowing) registry.
    */
   errors?: ErrorBagProp;
   /**
@@ -221,6 +223,21 @@ export type FormErrorsProp = {
   /** Heading above the messages. Defaults to the localized "please review your input" title. */
   title?: TitleProp;
   className?: ClassNameProp;
+};
+
+/**
+ * @see FormErrorsProvider — one shared error registry over a REGION of sibling Forms. An edit
+ * screen split into several Card+Form sections shares a single server bag: wrap the sections in
+ * this provider instead of passing `errors` to each Form, and every `FormField name="…"` inside
+ * (Forms without their own `errors` join the surrounding registry) claims into the same registry,
+ * so one `<FormErrors />` anywhere in the region renders exactly the unclaimed remainder.
+ * `Form errors={…}` renders this provider itself — a Form WITH its own `errors` starts a new
+ * (shadowing) registry.
+ */
+export type FormErrorsProviderProp = {
+  /** Server validation error bag shared by every Form/FormField in the region. */
+  errors?: ErrorBagProp;
+  children?: React.ReactNode;
 };
 
 /** @see SearchInput */

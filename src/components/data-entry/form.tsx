@@ -2,7 +2,7 @@ import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
 
 import { cn } from "../../lib/utils";
-import { FormErrorsRegistryProvider } from "./form-errors";
+import { FormErrorsProvider } from "./form-errors";
 import { ResponsiveGrid } from "../layout/responsive-grid";
 import type { FormProp } from "../../props/components/data-entry.prop";
 import type { BreakpointProp, FormLayoutProp, WidthProp } from "../../props/vocabulary";
@@ -62,6 +62,13 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
   const content =
     columns != null ? <ResponsiveGrid columns={columns}>{children}</ResponsiveGrid> : children;
 
+  // The error registry is provided only when THIS Form carries `errors`. A Form without its own
+  // bag must NOT shadow a surrounding FormErrorsProvider — an edit screen split into sibling
+  // Card+Form sections shares one registry, and wrapping unconditionally here would send each
+  // section's FormField claims into a private empty registry instead (the sibling-Form gap).
+  const withRegistry = (node: React.ReactNode) =>
+    errors !== undefined ? <FormErrorsProvider errors={errors}>{node}</FormErrorsProvider> : node;
+
   if (asChild) {
     // The providers go OUTSIDE the Slot, not inside: Slot merges these props onto the one
     // child it is given, and that child has to be the caller's real element. Nesting a
@@ -73,7 +80,7 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
     // ResponsiveGrid, which is what `columns` does anyway.
     return (
       <FormLayoutContext.Provider value={ctx}>
-        <FormErrorsRegistryProvider errors={errors}>
+        {withRegistry(
           <Slot
             ref={ref}
             data-slot="form"
@@ -82,8 +89,8 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
             {...props}
           >
             {children}
-          </Slot>
-        </FormErrorsRegistryProvider>
+          </Slot>,
+        )}
       </FormLayoutContext.Provider>
     );
   }
@@ -96,9 +103,7 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
       className={cn("ui-form", density && `ui-density-${density}`, className)}
       {...props}
     >
-      <FormLayoutContext.Provider value={ctx}>
-        <FormErrorsRegistryProvider errors={errors}>{content}</FormErrorsRegistryProvider>
-      </FormLayoutContext.Provider>
+      <FormLayoutContext.Provider value={ctx}>{withRegistry(content)}</FormLayoutContext.Provider>
     </form>
   );
 });
