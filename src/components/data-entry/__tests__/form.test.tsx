@@ -81,3 +81,46 @@ describe("Form — layout context flows to FormField", () => {
     expect(input.getAttribute("aria-errormessage")).toContain("x-error");
   });
 });
+
+describe("Form asChild — layout without owning the form element", () => {
+  /**
+   * Inertia and TanStack Form render their own `<form>`. Two form elements cannot nest, so
+   * before `asChild` a consumer had to pick one and hand-roll the other; every such app ended
+   * up with per-field label columns in raw CSS.
+   */
+  it("renders the caller's element, not a second form, and still supplies the layout", () => {
+    renderWithUi(
+      <Form asChild layout="horizontal" labelWidth={174}>
+        <form data-testid="theirs" action="/issues">
+          <FormField id="a" label="A">
+            <Input id="a" />
+          </FormField>
+        </form>
+      </Form>,
+    );
+
+    expect(document.querySelectorAll("form")).toHaveLength(1);
+
+    const theirs = screen.getByTestId("theirs");
+    expect(theirs).toHaveAttribute("action", "/issues");
+    expect(theirs).toHaveAttribute("data-slot", "form");
+    expect(theirs.className).toContain("ui-form");
+
+    const field = document.querySelector('[data-slot="form-field"]') as HTMLElement;
+    expect(field).toHaveAttribute("data-layout", "horizontal");
+    expect(field.style.getPropertyValue("--form-label-width")).toBe("174px");
+  });
+
+  it("keeps the caller's own props rather than replacing them", () => {
+    // Slot merges; a naive implementation spreads over the child and drops its handlers.
+    renderWithUi(
+      <Form asChild layout="horizontal" className="ds-added">
+        <form data-testid="theirs" className="theirs-own" method="post" />
+      </Form>,
+    );
+    const theirs = screen.getByTestId("theirs");
+    expect(theirs).toHaveAttribute("method", "post");
+    expect(theirs.className).toContain("theirs-own");
+    expect(theirs.className).toContain("ds-added");
+  });
+});

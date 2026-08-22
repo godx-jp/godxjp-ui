@@ -118,6 +118,12 @@ export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
   collapseBelow?: BreakpointProp | false;
   columns?: ResponsiveGridColumnsProp;
   density?: DensityProp;
+  /**
+   * Render the caller's own element instead of a `<form>`, keeping only the layout context.
+   * For routing libraries that own the form element (Inertia, TanStack Form) — two `<form>`
+   * elements cannot nest. `columns` does not apply in this mode; wrap fields in ResponsiveGrid.
+   */
+  asChild?: boolean;
   className?: ClassNameProp;
 };
 

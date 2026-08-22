@@ -19,9 +19,7 @@ describe("Form field-to-field row rhythm (gh#295)", () => {
   });
 
   it("carries block-to-block rhythm via margin on ANY direct child pair (e.g. CardContent -> CardFooter)", () => {
-    expect(formCssFlat).toContain(
-      ".ui-form>*+*{margin-block-start:var(--form-block-gap);}",
-    );
+    expect(formCssFlat).toContain(".ui-form>*+*{margin-block-start:var(--form-block-gap);}");
     expect(formTokens).toMatch(/--form-block-gap:\s*var\(--space-4\)/);
   });
 
@@ -50,5 +48,23 @@ describe("Form field-to-field row rhythm (gh#295)", () => {
     const blockClassCount = (blockRuleSelector.match(/\.[a-z-]+/g) ?? []).length;
     const fieldClassCount = (fieldRuleSelector.match(/\.[a-z-]+/g) ?? []).length;
     expect(fieldClassCount).toBeGreaterThan(blockClassCount);
+  });
+});
+
+describe("--form-label-font-size", () => {
+  /**
+   * The label column is already re-tunable by width; a service whose grid was drawn around a
+   * smaller label had no matching knob for the type and had to hand-write font-size per label.
+   * The token has to reach Label's OWN element — Label sets `text-sm` on itself, so a
+   * font-size inherited from the wrapper never applies.
+   */
+  it("is declared with the body size as its default", () => {
+    expect(formTokens).toMatch(/--form-label-font-size:\s*var\(--text-sm\)/);
+  });
+
+  it("is applied on the label element itself, not an ancestor", () => {
+    const source = read("../form-field.tsx");
+    const labelTag = source.slice(source.indexOf("<Label"), source.indexOf("<Label") + 320);
+    expect(labelTag).toContain("text-[length:var(--form-label-font-size)]");
   });
 });

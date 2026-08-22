@@ -125,7 +125,14 @@ export function FormField({
         {/* asChild renders a <span>: the control is named via aria-labelledby, and a
             real <label> whose `for` can dangle (composite children) is a Chrome a11y
             issue. Click-to-focus is preserved by hand. */}
-        <Label asChild id={labelId} className="ui-inline-xs">
+        {/* The size goes through Label's own className, not the wrapper: Label sets
+            `text-sm` on the element itself, so an inherited font-size never reaches
+            the text. tailwind-merge drops text-sm in favour of this one. */}
+        <Label
+          asChild
+          id={labelId}
+          className="ui-inline-xs text-[length:var(--form-label-font-size)]"
+        >
           <span
             onClick={() => {
               const el = document.getElementById(resolvedId);

@@ -13,6 +13,13 @@
   /* Column gap between the label and its control in horizontal/inline layout. */
   --form-label-gap: var(--space-4); /* 16px */
 
+  /* Type in the label column. Inherits the body size by default, so nothing moves unless a
+   * service opts in. It is a knob because the label column already is one: --form-label-width
+   * lets a service align forms to its grid, and a service whose grid was drawn around a
+   * smaller label had no way to say so — leaving it to hand-write font-size per label, which
+   * is exactly what the width token exists to prevent. */
+  --form-label-font-size: var(--text-sm); /* 14px */
+
   /* Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's
    * CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN
    * direct children (no Card framing). Unchanged from the historical value. */
