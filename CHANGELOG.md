@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Two card-layout rules had never applied: nested `:has()` is spec-invalid (structural-selector
+  sweep)** — Selectors 4 forbids `:has()` inside `:has()`, and Chrome drops the whole rule
+  (`CSS.supports` = false, measured on Chrome 151) while the file looks correct — the same
+  failure class as the headerAlign selector. Rewritten as valid rule pairs, so two documented
+  behaviors now actually happen: a toolbar header (action, no description) removes the body's
+  top padding (16px → 0), and a plain header over a tight body becomes symmetric (24/0 → 16/16).
+  Consumers using those two card shapes shift by those pixels — that is the documented intent
+  finally applying. The sweep added 34 tests that extract every structural selector from the
+  shipped CSS and run `.matches()` on rendered DOM (`src/test/css-selector.ts`); the other 37
+  rules all select what they claim.
+
 - **gh#305's frame removal also erased the flush table's TOP divider (gh#306)** — the top edge
   meets the CardHeader area, not the card border, so dropping all four edges left the header
   band floating with no separating line (a rental detail's 出荷伝票一覧 section). The rule now

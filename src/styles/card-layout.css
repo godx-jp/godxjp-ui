@@ -258,11 +258,23 @@
     padding-top: var(--card-space-body-y);
   }
 
-  /* Flush / tight body — symmetric plain header band */
-  [data-slot="card"]:has([data-slot="card-content"][data-tight]:not(:has([data-slot="tabs-list"])))
+  /* Flush / tight body — symmetric plain header band.
+   *
+   * NOT written as `:has(…[data-tight]:not(:has(tabs-list)))`: the Selectors 4 spec forbids
+   * `:has()` anywhere inside `:has()`, and Chrome drops the WHOLE rule as invalid
+   * (CSS.supports=false, measured on Chrome 151) — the symmetric band never applied. Same
+   * failure class as the headerAlign selector (505f0e6): in the file, correct-looking, selects
+   * nothing. So: apply to every tight body, then the tabs case below restores the shell top. */
+  [data-slot="card"]:has([data-slot="card-content"][data-tight])
     [data-slot="card-header"]:not([data-banded]) {
     padding-top: var(--card-space-body-y);
     padding-bottom: var(--card-space-body-y);
+  }
+
+  /* Tabs in a tight body: only the bottom band is managed (rule below) — keep the shell top. */
+  [data-slot="card"]:has([data-slot="card-content"][data-tight] [data-slot="tabs-list"])
+    [data-slot="card-header"]:not([data-banded]) {
+    padding-top: var(--card-space-shell-y, var(--card-space-inset));
   }
 
   [data-slot="card"]:has([data-slot="card-content"][data-tight] [data-slot="tabs-list"])
@@ -283,13 +295,18 @@
     padding-bottom: var(--card-space-body-y);
   }
 
-  [data-slot="card"]:has(
-      [data-slot="card-header"]:has([data-slot="card-action"]):not(
-          :has([data-slot="card-description"])
-        )
-    )
+  /* NOT `:has(header:has(action):not(:has(description)))` — nested `:has()` is spec-invalid
+   * and Chrome drops the whole rule (measured, Chrome 151), so the toolbar body never lost its
+   * top padding. Valid equivalent: zero it for any header-hosted action, then the described
+   * (non-toolbar) header restores the gap in the equal-specificity rule after this one. */
+  [data-slot="card"]:has([data-slot="card-header"] [data-slot="card-action"])
     [data-slot="card-content"]:not([data-tight]) {
     padding-top: 0;
+  }
+
+  [data-slot="card"]:has([data-slot="card-header"] [data-slot="card-description"])
+    [data-slot="card-content"]:not([data-tight]) {
+    padding-top: var(--card-space-body-y);
   }
 
   /* Header-only card — terminal slot owns bottom shell */
