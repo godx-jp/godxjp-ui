@@ -196,11 +196,18 @@
   }
 
   /* Out of flow, in the inline-end reservation its own padding just made.
-   * Logical inset, so RTL puts it on the other side with the padding. */
-  :is(th, td).text-center
-    > .ui-data-table-sort-button
-    > .ui-data-table-sort-label
-    > :not(:first-child) {
+   * Logical inset, so RTL puts it on the other side with the padding.
+   *
+   * `:last-child` and NOT `:not(:first-child)`. A string header renders as a
+   * text node, and `:first-child` counts only ELEMENTS — so with
+   * `[text, svg]` the chevron IS the first element child and the negation
+   * matched nothing at all. The label kept its symmetric padding, which
+   * centres the BOX, while the words inside it stayed 8px off exactly as
+   * before. Measured against the built stylesheet, not read: the rule was
+   * present in the CSS and inert in the DOM, which is why reading it proved
+   * nothing. `:last-child` holds for both shapes the label takes,
+   * `[text, svg]` and `[element, svg]`. */
+  :is(th, td).text-center > .ui-data-table-sort-button > .ui-data-table-sort-label > :last-child {
     position: absolute;
     inset-inline-end: 0;
     top: 50%;

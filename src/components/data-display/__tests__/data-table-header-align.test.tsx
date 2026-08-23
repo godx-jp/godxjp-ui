@@ -94,12 +94,51 @@ describe("DataTable headerAlign", () => {
     });
 
     it("takes the chevron out of flow so it cannot displace the words", () => {
-      const indicator = block("> :not(:first-child)");
+      const indicator = block("> :last-child");
 
       expect(indicator).toMatch(/position:\s*absolute/);
       // Logical, so RTL moves it to the side its padding also moved to.
       expect(indicator).toMatch(/inset-inline-end:\s*0/);
       expect(indicator).not.toMatch(/\bright:\s/);
+    });
+
+    it("aims that rule at an element the rendered label actually has", () => {
+      /* The assertions above prove the CSS says the right thing. They cannot
+       * prove it SELECTS anything, and that is where this went wrong once:
+       * the rule read `> :not(:first-child)`, which is correct-looking and
+       * matched nothing. A string header renders as a text node, `:first-child`
+       * counts only elements, so the chevron was itself the first element child
+       * and the negation excluded the one node it was written for. The stylesheet
+       * contained the fix; the DOM never saw it, and the words stayed 8px off.
+       *
+       * So: take the selector out of the CSS and run it against a real render. */
+      const { container } = render(
+        <DataTable
+          data={rows}
+          getRowId={(row) => String(row.id)}
+          columns={[{ key: "subject", header: "Subject", headerAlign: "center", sortable: true }]}
+          sort={{ key: "subject", direction: "asc" }}
+          onSortChange={() => {}}
+        />,
+      );
+
+      const label = container.querySelector(
+        ".ui-data-table-sort-button > .ui-data-table-sort-label",
+      );
+      expect(label, "a sortable centred header renders the label").not.toBeNull();
+
+      // The chevron: the label's last element child, whatever the header was.
+      const chevron = label!.lastElementChild;
+      expect(chevron, "the label renders a sort indicator").not.toBeNull();
+
+      // The exact selector tail the stylesheet uses to reach it.
+      const tail = /> \.ui-data-table-sort-label\s*>\s*([^{\s]+)\s*\{/.exec(css);
+      expect(tail, "found the indicator rule in the CSS").not.toBeNull();
+
+      expect(
+        chevron!.matches(tail![1]),
+        `stylesheet selects "${tail![1]}" but the chevron does not match it`,
+      ).toBe(true);
     });
 
     it("no longer counterweights the chevron with a flex sibling", () => {
