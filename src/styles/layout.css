@@ -384,6 +384,17 @@
     }
   }
 
+  /* `lg` splits later than the other two ON PURPOSE. A rail is only useful when
+   * the column it sits beside still reads as the main one, and at the 48rem
+   * threshold a 30rem rail would leave 16.5rem of main — narrower than the rail
+   * itself, which inverts the whole point. 64rem leaves the main column 33.5rem,
+   * about twice the rail, so the page still reads main-plus-rail. */
+  @container split-pane (min-width: 64rem) {
+    .ui-split-pane[data-aside-width="lg"] {
+      grid-template-columns: minmax(0, 1fr) 30rem;
+    }
+  }
+
   .ui-split-pane-main,
   .ui-split-pane-aside {
     min-width: 0;

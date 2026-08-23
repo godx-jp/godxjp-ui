@@ -3,7 +3,13 @@ import type { ReactNode } from "react";
 export type SplitPaneProps = {
   children: ReactNode;
   aside: ReactNode;
-  asideWidth?: "sm" | "md";
+  /**
+   * How wide the rail is once the pane is wide enough to split: `sm` 20rem,
+   * `md` 22rem, `lg` 30rem. `lg` is for rails that carry a panel rather than a
+   * list — a metadata table, a recently-updated feed — and it holds off
+   * splitting until 64rem so the main column stays the wider of the two.
+   */
+  asideWidth?: "sm" | "md" | "lg";
   /** Accessible complementary landmark name; required when multiple panes share a document. */
   asideLabel?: string;
 };
