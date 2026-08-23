@@ -13,6 +13,16 @@ import { expect } from "vitest";
  * So structural-selector tests extract the selector FROM the CSS (never
  * retype it — a retyped copy stays green when the file changes) and run it
  * with `.matches()` against really rendered DOM.
+ *
+ * INVARIANT — never wrap the `.matches()` call in try/catch: jsdom (like
+ * Chrome) THROWS SyntaxError on an invalid selector, and that throw is the
+ * signal that separates the two failure modes this sweep exists to tell
+ * apart — "selector is broken" (throws → test fails loudly; the nested
+ * `:has()` card bugs were caught exactly this way) versus "selector is
+ * valid but matches nothing here" (returns false → may be perfectly fine).
+ * Swallowing the exception collapses both into "no match" and re-opens the
+ * 18.15.0 headerAlign trap. jsdom has no usable CSS.supports, so the throw
+ * is the only validity signal at this layer (measured 2026-08-23).
  */
 export function ruleSelectors(css: string, anchor: string | RegExp): string[] {
   const idx = typeof anchor === "string" ? css.indexOf(anchor) : (anchor.exec(css)?.index ?? -1);
