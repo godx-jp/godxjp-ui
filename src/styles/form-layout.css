@@ -33,6 +33,16 @@
     margin-block-start: var(--form-field-row-gap);
   }
 
+  /* …except when the fields are ResponsiveGrid ITEMS (Form columns={n}): there the grid's own
+   * `gap` owns the rhythm, and a per-item margin double-spaces every row AND breaks column
+   * alignment — the FIRST field has no preceding sibling so no margin, while its row-mate does,
+   * shifting row 1's columns 11px apart and inflating every grid track by the margin. Fields
+   * merely NESTED somewhere inside a grid cell (a stacked pair in one cell) are not direct
+   * children, keep the margin, and are unaffected. */
+  .ui-responsive-grid > .ui-form-field + .ui-form-field {
+    margin-block-start: 0;
+  }
+
   /* Vertical (default + collapsed state): label stacked above the control column, LEFT-aligned.
    * Gap = the shared --field-label-gap so FormField matches Descriptions and every label-above stack. */
   .ui-form-field {

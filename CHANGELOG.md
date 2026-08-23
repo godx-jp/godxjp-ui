@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`Form columns={n}`: the field-to-field row rhythm leaked into the grid (gh#304)** — the
+  gh#295 rhythm rule (`.ui-form-field + .ui-form-field { margin-block-start }`) matches adjacent
+  siblings ANYWHERE, including ResponsiveGrid items, where the grid's own `gap` already owns the
+  rhythm. The margin double-spaced every row (track 29.4 → 40.5px at density tight) and broke
+  column alignment: the FIRST field has no preceding sibling and no margin, so row 1's columns
+  sat 11px apart — measured on every one of the consumer's 57 two-column search cards. Grid
+  ITEMS now zero the margin (`.ui-responsive-grid > .ui-form-field + .ui-form-field`); fields
+  merely stacked INSIDE one grid cell are not direct children and keep the rhythm. Measured
+  after: both columns share one top per row (203/203, 247/247, …), pitch 55 → 44px.
+
+## [18.14.0] - 2026-08-23
+
 ### Added
 
 - **`FormErrors` + `Form errors` + `FormField name` — the server error bag gets a home for every
@@ -30,23 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the whole screen. A nested Form WITH its own `errors` still starts a shadowing registry.
   New prop type `FormErrorsProviderProp`.
 
-- **`Form` gains `asChild` (from the in-flight work committed as `Form: asChild, and a
-label-column type token`)** — Inertia's `<Form action method>` and TanStack Form render their own
-  `<form>`, and two form elements cannot nest, so a consumer had to choose between the router's
-  submission handling and the design system's field layout: `FormField` reads its layout from
-  `Form`'s context, and the only way to provide that context was to render a second form element.
-  `asChild` keeps the context and hands the element back
-  (`<Form asChild layout="horizontal" labelWidth={174}><InertiaForm …/></Form>`). Also adds
-  `--form-label-font-size`, applied through `Label`'s own className because `Label` sets `text-sm`
-  on the element itself, so a font-size inherited from an ancestor never reaches the text.
-
-- **`ErrorSurface` accepts `400` (gh#301)** — the status union was `403 | 404 | 500 | 503`, so a
-  Bad Request page (a CakePHP `BadRequestException` port, for instance: the launch parameters are
-  invalid) could only be expressed by casting the status at the call site and hand-supplying
-  `icon`/`tone`, since `STATUS_META` had no entry to derive them from. `400` now carries
-  `TriangleAlert` + `tone="warning"` — this system's warning glyph, the same mark `Alert
-tone="warning"` and the warning toast already use — because a malformed request is neither a
-  miss (404), a refusal (403) nor a failure (500).
+## [18.13.1] - 2026-08-23
 
 ### Fixed
 
@@ -71,6 +69,30 @@ tone="warning"` and the warning toast already use — because a malformed reques
   group role allows — `aria-errormessage` folds into `aria-describedby`, widget-only
   `aria-required`/`aria-invalid` are dropped (the `pickGroupFieldA11y` policy). An explicit
   `role` prop opts out entirely (e.g. `DataTable.BulkActions`' `role="region"` is untouched).
+
+## [18.13.0] - 2026-08-22
+
+### Added
+
+- **`Form` gains `asChild` (from the in-flight work committed as `Form: asChild, and a
+label-column type token`)** — Inertia's `<Form action method>` and TanStack Form render their own
+  `<form>`, and two form elements cannot nest, so a consumer had to choose between the router's
+  submission handling and the design system's field layout: `FormField` reads its layout from
+  `Form`'s context, and the only way to provide that context was to render a second form element.
+  `asChild` keeps the context and hands the element back
+  (`<Form asChild layout="horizontal" labelWidth={174}><InertiaForm …/></Form>`). Also adds
+  `--form-label-font-size`, applied through `Label`'s own className because `Label` sets `text-sm`
+  on the element itself, so a font-size inherited from an ancestor never reaches the text.
+
+- **`ErrorSurface` accepts `400` (gh#301)** — the status union was `403 | 404 | 500 | 503`, so a
+  Bad Request page (a CakePHP `BadRequestException` port, for instance: the launch parameters are
+  invalid) could only be expressed by casting the status at the call site and hand-supplying
+  `icon`/`tone`, since `STATUS_META` had no entry to derive them from. `400` now carries
+  `TriangleAlert` + `tone="warning"` — this system's warning glyph, the same mark `Alert
+tone="warning"` and the warning toast already use — because a malformed request is neither a
+  miss (404), a refusal (403) nor a failure (500).
+
+### Fixed
 
 - **`PageContainer`'s header `extra` could not wrap, and starved the `<h1>` instead (gh#300)** —
   at `>=640px` the action slot was `width: auto` + `flex-shrink: 0`, i.e. frozen at the action
