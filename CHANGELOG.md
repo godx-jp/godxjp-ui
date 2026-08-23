@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`DataTable` `headerAlign="center"` selected nothing** (`505f0e6`) — the sort-indicator rule
+  used `:not(:first-child)`, but a string header renders as a TEXT node, so the svg chevron IS
+  the first element child and the negation excluded the exact node it targeted: the box was
+  centered while the text inside stayed 8px off. Now `> :last-child`, correct for both
+  `[text, svg]` and `[element, svg]` label shapes. The old CSS-string-reading tests stayed green
+  through the breakage; the new test runs `.matches()` against a really rendered DOM.
+
 ### Added
 
 - **`Upload` gains `triggerSize`** (`b52106c`) — the self-rendered trigger button could not be
