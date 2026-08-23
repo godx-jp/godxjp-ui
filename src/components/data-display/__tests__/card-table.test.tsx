@@ -378,3 +378,50 @@ describe("StatCard delta tone", () => {
     expect(delta.className).toContain("text-error-strong");
   });
 });
+
+describe("bordered Table flush inside a Card (gh#305)", () => {
+  // The rule kills only the table's OUTER frame when the card already frames it.
+  // Selector is pulled from the shipped CSS and run with .matches() against real
+  // rendered DOM — a string assertion alone stayed green while a selector chose
+  // nothing (the headerAlign lesson, 505f0e6).
+  const layoutCss = readFileSync(join(__dirname, "../../../styles/table-layout.css"), "utf8");
+  const rule = layoutCss.match(
+    /(\[data-slot="card-content"\]\[data-flush\] \.ui-table-bordered)\s*\{\s*border: 0;/,
+  );
+
+  it("ships the frame-suppression rule", () => {
+    expect(rule).not.toBeNull();
+  });
+
+  it("the selector actually matches a bordered table in a flush CardContent, and only there", () => {
+    renderWithUi(
+      <>
+        <Card>
+          <CardContent flush>
+            <Table bordered data-testid="flush-table">
+              <TableBody>
+                <TableRow>
+                  <TableCell>a</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <Table bordered data-testid="padded-table">
+              <TableBody>
+                <TableRow>
+                  <TableCell>b</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </>,
+    );
+    const selector = rule![1];
+    expect(screen.getByTestId("flush-table").matches(selector)).toBe(true);
+    expect(screen.getByTestId("padded-table").matches(selector)).toBe(false);
+  });
+});

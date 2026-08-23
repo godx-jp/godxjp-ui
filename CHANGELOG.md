@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Table bordered` flush inside a Card doubled the frame (gh#305)** — the card already frames
+  its flush content, so the table's own outer border rendered two nested rounded frames
+  (measured on a consumer detail section). `[data-slot="card-content"][data-flush]
+.ui-table-bordered` now drops only the outer frame; the vertical column rules (the point of
+  `bordered`, gh#274) and row rules are unchanged, and a bordered table outside a flush card
+  keeps its frame. Tested by running the shipped selector with `.matches()` against rendered
+  DOM (the 505f0e6 lesson).
+
+### Fixed
+
 - **`DataTable` `headerAlign="center"` selected nothing** (`505f0e6`) — the sort-indicator rule
   used `:not(:first-child)`, but a string header renders as a TEXT node, so the svg chevron IS
   the first element child and the negation excluded the exact node it targeted: the box was
