@@ -579,6 +579,15 @@ export type UploadProp = FieldA11yProps & {
   ) => Promise<{ mediaId: string; previewUrl?: string }>;
   /** Injected by FormField (or set directly) — applied to the native `<input type="file">`. */
   id?: IdProp;
+  /**
+   * `variant="button"` only — the size of the visible trigger, forwarded to
+   * Button. An icon size renders the trigger icon-only and moves the label to
+   * `aria-label`, which is what a toolbar wants: a 32px square beside the other
+   * icon buttons rather than a 147px labelled one that outweighs them.
+   *
+   * @see Button — same size scale
+   */
+  triggerSize?: "default" | "md" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
   className?: ClassNameProp;
   children?: React.ReactNode;
 };

@@ -140,7 +140,17 @@ const manifest = {
   generatedBy: "scripts/gen-component-api-manifest.mjs",
   components: Object.fromEntries(Object.entries(components).sort(([a], [b]) => a.localeCompare(b))),
 };
-const serialized = `${JSON.stringify(manifest, null, 2)}\n`;
+// Format through prettier (repo config) before writing/comparing, so `pnpm format` and this
+// generator agree byte-for-byte in either order — JSON.stringify always expands arrays, while
+// prettier collapses short ones, and that mismatch made the two gates fight on a clean main
+// (issue #302). The manifest stays prettier-visible on purpose; the generator emits what
+// prettier would.
+const prettier = (await import("prettier")).default;
+const prettierConfig = (await prettier.resolveConfig(output)) ?? {};
+const serialized = await prettier.format(`${JSON.stringify(manifest, null, 2)}\n`, {
+  ...prettierConfig,
+  filepath: output,
+});
 if (process.argv.includes("--check")) {
   if (!fs.existsSync(output) || fs.readFileSync(output, "utf8") !== serialized) {
     console.error(

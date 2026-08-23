@@ -115,6 +115,7 @@ async function runUpload(
 
 export function Upload({
   variant = "dropzone",
+  triggerSize,
   value,
   defaultValue,
   onValueChange,
@@ -281,13 +282,26 @@ export function Upload({
   }
 
   if (variant === "button") {
+    // An icon size means an icon button: the label would not fit a 32px square
+    // and would push it wide, so it moves to `aria-label` and the trigger keeps
+    // its shape. Anything else keeps the label visible.
+    const iconOnly = typeof triggerSize === "string" && triggerSize.startsWith("icon");
+    const label = children ?? t("dataEntry.upload.buttonLabel");
+
     return (
       <div className={cn("ui-stack-sm", className)}>
         {hiddenInput}
         {liveRegion}
-        <Button type="button" variant="outline" disabled={disabled} onClick={openPicker}>
-          <UploadIcon className="me-2 size-4" aria-hidden="true" />
-          {children ?? t("dataEntry.upload.buttonLabel")}
+        <Button
+          type="button"
+          variant="outline"
+          size={triggerSize}
+          disabled={disabled}
+          onClick={openPicker}
+          aria-label={iconOnly ? (typeof label === "string" ? label : undefined) : undefined}
+        >
+          <UploadIcon className={iconOnly ? "size-4" : "me-2 size-4"} aria-hidden="true" />
+          {iconOnly ? null : label}
         </Button>
         {items.length > 0 && (
           <UploadFileList items={items} onRemove={removable ? removeItem : undefined} />
