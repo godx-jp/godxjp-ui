@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`Upload` gains `triggerSize`** (`b52106c`) — the self-rendered trigger button could not be
+  sized from the consumer, so it could not sit in a toolbar next to icon buttons. Accepts the
+  Button size scale; icon sizes move the label to `aria-label` and render icon-only. Default
+  unchanged.
+- **`DataTable` columns gain `headerAlign`** (`6d7d210`) — align a header cell independently of
+  its body cells (a numeric column whose heading should stay start-aligned, and the reverse).
+  `align` alone keeps applying to both.
+
 ### Fixed
 
 - **`Form columns={n}`: the field-to-field row rhythm leaked into the grid (gh#304)** — the
