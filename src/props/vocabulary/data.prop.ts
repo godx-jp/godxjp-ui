@@ -37,6 +37,18 @@ export type ColumnDefProp<T> = {
    */
   width?: string;
   align?: ColumnAlignProp;
+  /**
+   * Alignment of the header cell, when it differs from the body.
+   *
+   * Defaults to `align`, which is the usual case. It exists because a table
+   * can want centred headings over start-aligned text — a long subject reads
+   * from the left while its column heading sits over the column — and `align`
+   * alone cannot say that: setting it to `center` centres the rows too.
+   *
+   * Consumers were reaching for `[&_th_button]:justify-center` to get there,
+   * which is a hand-tuned override of a layout the table owns.
+   */
+  headerAlign?: ColumnAlignProp;
   hiddenOnMobile?: boolean;
   /**
    * List this column in DataTable.ViewOptions (the column show/hide "set view"

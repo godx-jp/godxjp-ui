@@ -908,8 +908,12 @@ DataTable.Content = function DataTableContent() {
                     style={columnWidth(col.width).style}
                     className={cn(
                       columnWidth(col.width).className,
-                      col.align === "right" && "text-end",
-                      col.align === "center" && "text-center",
+                      // `headerAlign` when the heading differs from the rows,
+                      // `align` otherwise. A table wanting centred headings
+                      // over start-aligned text could not say so before, and
+                      // consumers reached for `[&_th_button]:justify-center`.
+                      (col.headerAlign ?? col.align) === "right" && "text-end",
+                      (col.headerAlign ?? col.align) === "center" && "text-center",
                       col.hiddenOnMobile && "hidden md:table-cell",
                       isSortable && "select-none",
                       col.pin === "end" && "ui-data-table-pin-end",

@@ -169,6 +169,26 @@
     gap: var(--space-inline-xs);
   }
 
+  /* A centred header centres its LABEL, not its button.
+   *
+   * The sort chevron lives inside the label, so centring the button alone
+   * leaves the words half an icon to the left of the column they name —
+   * measured at 8px on a 12px icon, which is enough to read as a mistake in a
+   * row of headings. A counterweight of the icon's own width restores the
+   * balance without taking the icon out of flow, so nothing can overlap on a
+   * narrow column.
+   *
+   * Only when the column asked to be centred: a start-aligned header wants the
+   * icon to follow the text with nothing before it. */
+  :is(th, td).text-center > .ui-data-table-sort-button::before {
+    content: "";
+    flex: none;
+    /* The icon's width alone. The button is a flex row with its own gap, so a
+     * counterweight that also included the gap was 3.7px too wide and pushed
+     * the label past centre the other way — measured, not guessed. */
+    width: 0.75rem;
+  }
+
   .ui-data-table-scroll {
     position: relative;
     overflow-x: auto;

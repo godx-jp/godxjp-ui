@@ -12955,6 +12955,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "triggerSize",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | undefined",
+          "values": ["default", "xs", "sm", "md", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,
