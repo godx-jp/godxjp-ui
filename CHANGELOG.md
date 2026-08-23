@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **gh#305's frame removal also erased the flush table's TOP divider (gh#306)** — the top edge
+  meets the CardHeader area, not the card border, so dropping all four edges left the header
+  band floating with no separating line (a rental detail's 出荷伝票一覧 section). The rule now
+  keeps `border-block-start` and drops only the three edges that coincide with the card frame.
+
+### Fixed
+
 - **`Table bordered` flush inside a Card doubled the frame (gh#305)** — the card already frames
   its flush content, so the table's own outer border rendered two nested rounded frames
   (measured on a consumer detail section). `[data-slot="card-content"][data-flush]

@@ -349,11 +349,15 @@
 
   /* A bordered table sitting FLUSH inside a Card already has the card's frame around it —
    * its own outer frame doubles up as two nested rounded borders (measured on
-   * customer-inquiries detail: TABLE 1px inside .ui-card 1px, gh#305). Drop only the outer
-   * frame; the vertical column rules above and TableRow's horizontal rules stay, so the
-   * grid inside the card is unchanged. A bordered table NOT in a flush card keeps its frame. */
+   * customer-inquiries detail: TABLE 1px inside .ui-card 1px, gh#305). Drop the three edges
+   * that coincide with the card frame, but KEEP border-block-start: the top edge meets the
+   * CardHeader area, not the card border, and without it the header band floats with no
+   * separating line (measured on a rental detail's 出荷伝票一覧 section, gh#306). The
+   * vertical column rules above and TableRow's horizontal rules stay, so the grid inside
+   * the card is unchanged. A bordered table NOT in a flush card keeps its full frame. */
   [data-slot="card-content"][data-flush] .ui-table-bordered {
     border: 0;
+    border-block-start: 1px solid var(--table-border-color, hsl(var(--border)));
   }
 }
 

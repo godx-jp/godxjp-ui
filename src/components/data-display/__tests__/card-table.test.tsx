@@ -386,7 +386,7 @@ describe("bordered Table flush inside a Card (gh#305)", () => {
   // nothing (the headerAlign lesson, 505f0e6).
   const layoutCss = readFileSync(join(__dirname, "../../../styles/table-layout.css"), "utf8");
   const rule = layoutCss.match(
-    /(\[data-slot="card-content"\]\[data-flush\] \.ui-table-bordered)\s*\{\s*border: 0;/,
+    /(\[data-slot="card-content"\]\[data-flush\] \.ui-table-bordered)\s*\{\s*border: 0;\s*border-block-start: 1px solid/,
   );
 
   it("ships the frame-suppression rule", () => {
