@@ -174,19 +174,37 @@
    * The sort chevron lives inside the label, so centring the button alone
    * leaves the words half an icon to the left of the column they name —
    * measured at 8px on a 12px icon, which is enough to read as a mistake in a
-   * row of headings. A counterweight of the icon's own width restores the
-   * balance without taking the icon out of flow, so nothing can overlap on a
-   * narrow column.
+   * row of headings.
+   *
+   * The fix is symmetry, not a counterweight. Reserving the chevron's width on
+   * BOTH sides and taking the chevron itself out of flow means the words are
+   * centred by construction — the label's own box is centred in the cell, and
+   * nothing inside it can shift them. A counterweight sitting in flow as a
+   * flex sibling was the first attempt and it holds only while there is room
+   * to spare: flex items shrink, so on a column narrow enough to squeeze them
+   * the balance collapses and the label slides back off centre. Measured at
+   * 8px on a 56px column, 0px on the wide ones — a bug that only appears in
+   * the narrow case is worse than one that appears everywhere.
    *
    * Only when the column asked to be centred: a start-aligned header wants the
    * icon to follow the text with nothing before it. */
-  :is(th, td).text-center > .ui-data-table-sort-button::before {
-    content: "";
-    flex: none;
-    /* The icon's width alone. The button is a flex row with its own gap, so a
-     * counterweight that also included the gap was 3.7px too wide and pushed
-     * the label past centre the other way — measured, not guessed. */
-    width: 0.75rem;
+  :is(th, td).text-center > .ui-data-table-sort-button > .ui-data-table-sort-label {
+    position: relative;
+    /* The icon's width plus the gap it would have sat behind — the space the
+     * chevron occupied when it was in flow, now reserved on each side. */
+    padding-inline: calc(0.75rem + var(--space-inline-xs));
+  }
+
+  /* Out of flow, in the inline-end reservation its own padding just made.
+   * Logical inset, so RTL puts it on the other side with the padding. */
+  :is(th, td).text-center
+    > .ui-data-table-sort-button
+    > .ui-data-table-sort-label
+    > :not(:first-child) {
+    position: absolute;
+    inset-inline-end: 0;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .ui-data-table-scroll {

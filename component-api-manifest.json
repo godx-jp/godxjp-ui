@@ -10917,8 +10917,8 @@
           "name": "asideWidth",
           "origin": "owned",
           "required": false,
-          "type": "\"sm\" | \"md\" | undefined",
-          "values": ["sm", "md"],
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
           "declaredIn": ["src/components/layout/split-pane.tsx"]
         },
         {
