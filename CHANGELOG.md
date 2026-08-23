@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   its body cells (a numeric column whose heading should stay start-aligned, and the reverse).
   `align` alone keeps applying to both.
 
+- **`SplitPane` gains `asideWidth="lg"` (30rem)** (`bffaf58`) — measured against the real
+  Backlog reference: its fixed rail is 475px on project home/files, and the existing `md`
+  (22rem = 352px) falls 123px short. `lg`'s container-query threshold is 64rem (not the 48rem
+  of `sm`/`md`) so the main pane never ends up narrower than the rail. `sm`/`md` values are
+  intentionally untouched.
+
 ### Fixed
 
 - **`Form columns={n}`: the field-to-field row rhythm leaked into the grid (gh#304)** — the
