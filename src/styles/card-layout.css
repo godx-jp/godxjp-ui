@@ -299,13 +299,16 @@
    * and Chrome drops the whole rule (measured, Chrome 151), so the toolbar body never lost its
    * top padding. Valid equivalent: zero it for any header-hosted action, then the described
    * (non-toolbar) header restores the gap in the equal-specificity rule after this one. */
+  /* Both halves of the pair exclude [data-flush]: flush content zeroes its padding by its own
+   * contract, and the description half would otherwise OVERRIDE that zero and float a flush
+   * table 18px off its header (measured on a consumer 関連ファイル section, gh#307). */
   [data-slot="card"]:has([data-slot="card-header"] [data-slot="card-action"])
-    [data-slot="card-content"]:not([data-tight]) {
+    [data-slot="card-content"]:not([data-tight]):not([data-flush]) {
     padding-top: 0;
   }
 
   [data-slot="card"]:has([data-slot="card-header"] [data-slot="card-description"])
-    [data-slot="card-content"]:not([data-tight]) {
+    [data-slot="card-content"]:not([data-tight]):not([data-flush]) {
     padding-top: var(--card-space-body-y);
   }
 

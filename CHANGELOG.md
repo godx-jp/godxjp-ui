@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **The restored describedBody rule overrode flush content's zero padding (gh#307)** — the
+  nested-`:has()` rewrite made the description half apply to `[data-flush]` content too,
+  floating a flush table 18px off its header (measured: a described 関連ファイル section at
+  content padding-top 18.4px vs its 備考 sibling at 0). Both halves of the pair now carry
+  `:not([data-flush])`; a counter-case test pins that the selector skips flush content.
+
+### Fixed
+
 - **Two card-layout rules had never applied: nested `:has()` is spec-invalid (structural-selector
   sweep)** — Selectors 4 forbids `:has()` inside `:has()`, and Chrome drops the whole rule
   (`CSS.supports` = false, measured on Chrome 151) while the file looks correct — the same

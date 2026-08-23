@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { renderWithUi } from "@/test/render";
+import { renderWithUi, screen } from "@/test/render";
 import { ruleSelector } from "@/test/css-selector";
 import {
   Card,
@@ -493,5 +493,38 @@ describe("card-layout.css structural selectors select the rendered DOM", () => {
 
     expect(q(container, "plain-footer").matches(selector)).toBe(true);
     expect(q(container, "divided-footer").matches(selector)).toBe(false);
+  });
+});
+
+describe("described header × flush content (gh#307)", () => {
+  // The describedBody restore must NOT reach flush content: flush zeroes its own padding, and
+  // before the :not([data-flush]) guard the description half overrode that zero and floated a
+  // flush table 18px off its header (measured on a consumer 関連ファイル section).
+  it("the describedBody selector skips flush content and still matches padded content", () => {
+    const selector = ruleSelector(
+      css,
+      /\[data-slot="card"\]:has\(\[data-slot="card-header"\] \[data-slot="card-description"\]\)/,
+    );
+    expect(selector).toContain(":not([data-flush])");
+    renderWithUi(
+      <>
+        <Card>
+          <CardHeader>
+            <CardTitle>a</CardTitle>
+            <CardDescription>note</CardDescription>
+          </CardHeader>
+          <CardContent flush data-testid="flush-described" />
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>b</CardTitle>
+            <CardDescription>note</CardDescription>
+          </CardHeader>
+          <CardContent data-testid="padded-described" />
+        </Card>
+      </>,
+    );
+    expect(screen.getByTestId("flush-described").matches(selector)).toBe(false);
+    expect(screen.getByTestId("padded-described").matches(selector)).toBe(true);
   });
 });
