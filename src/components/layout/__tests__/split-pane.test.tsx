@@ -62,7 +62,11 @@ describe("SplitPane", () => {
       // the other two use, 30rem of aside would leave 16.5rem of main — so `lg`
       // waits for 64rem, and this is the assertion that says the two numbers
       // move together rather than one of them drifting.
-      const blocks = [...layoutCss.matchAll(/@container split-pane \(min-width: ([\d.]+)rem\) \{([\s\S]*?)\n  \}/g)];
+      const blocks = [
+        ...layoutCss.matchAll(
+          /@container split-pane \(min-width: ([\d.]+)rem\) \{([\s\S]*?)\n {2}\}/g,
+        ),
+      ];
       const thresholdFor = (value: string) =>
         Number(blocks.find((b) => b[2].includes(`data-aside-width="${value}"`))?.[1]);
 
