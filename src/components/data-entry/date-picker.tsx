@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, X } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime/parse";
 import { useControlledLatch } from "../../lib/hooks";
@@ -72,6 +72,13 @@ export function DatePicker({
     setText("");
   };
 
+  // Both affordances, never one-or-the-other (gh#308). Input's `allowClear` REPLACES the
+  // trailingIcon while a value is set — right for a plain text field, wrong for a picker,
+  // where the calendar icon is the only visual sign that this field HAS a calendar. So the
+  // picker renders its own trailing cluster and leaves Input's `allowClear` untouched
+  // (nothing changes for every other Input consumer).
+  const showClear = allowClear && text !== "" && !disabled;
+
   const commit = (raw: string) => {
     const trimmed = raw.trim();
     if (trimmed === "") {
@@ -95,8 +102,8 @@ export function DatePicker({
        * convention (Google/Ant/MUI), not flush to the trailing icon. */}
       <PopoverAnchor asChild>
         <div className={cn("relative", className)}>
-          {/* The field owns the value; the calendar is a secondary popup. ONE trailing icon at a
-              time — Input swaps the clear (×) in for this calendar trigger while a value is set. */}
+          {/* The field owns the value; the calendar is a secondary popup. The clear (×) sits
+              BESIDE the calendar trigger, never in place of it — see `showClear` above. */}
           <Input
             id={id}
             name={name}
@@ -110,20 +117,33 @@ export function DatePicker({
             aria-haspopup="dialog"
             aria-controls={open ? dialogId : undefined}
             {...fieldA11y}
-            allowClear={allowClear}
-            onClear={clear}
+            // Two 20px buttons + gap need more room than Input's single-icon `pe-9`.
+            className={showClear ? "pe-14" : undefined}
             trailingIcon={
-              <PopoverTrigger asChild>
-                <button
-                  type="button"
-                  disabled={disabled}
-                  tabIndex={-1}
-                  aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
-                  className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100"
-                >
-                  <CalendarIcon className="size-4" aria-hidden="true" />
-                </button>
-              </PopoverTrigger>
+              <span className="inline-flex items-center gap-1">
+                {showClear ? (
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    aria-label={t("common.clear") ?? "Clear"}
+                    onClick={clear}
+                    className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100"
+                  >
+                    <X className="size-4" aria-hidden="true" />
+                  </button>
+                ) : null}
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    tabIndex={-1}
+                    aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
+                    className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100"
+                  >
+                    <CalendarIcon className="size-4" aria-hidden="true" />
+                  </button>
+                </PopoverTrigger>
+              </span>
             }
             // Combobox semantics made real: clicking the field (or ArrowDown) opens the calendar —
             // the input declares aria-haspopup="dialog", so it controls the popup, not only the

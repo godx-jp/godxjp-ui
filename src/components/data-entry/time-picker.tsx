@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Clock } from "lucide-react";
+import { Clock, X } from "lucide-react";
 
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { isValidHhmm, normalizeHhmm } from "../../lib/datetime";
@@ -289,12 +289,17 @@ export function TimePicker({
     setText("");
   };
 
+  // Both affordances, never one-or-the-other (gh#308) — same reasoning as DatePicker: the
+  // clock icon is the only visual sign this field opens a time panel, so the clear (×) sits
+  // beside it instead of replacing it. Input's own `allowClear` is left alone.
+  const showClear = allowClear && text !== "" && !disabled;
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverAnchor asChild>
         <div className={cn("relative", className)}>
-          {/* ONE trailing icon at a time — Input swaps the clear (×) in for this clock trigger
-              while a value is set; the field itself (onClick / ArrowDown) still opens the panel. */}
+          {/* The clear (×) sits BESIDE the clock trigger, never in place of it (see `showClear`);
+              the field itself (onClick / ArrowDown) still opens the panel. */}
           <Input
             id={id}
             name={name}
@@ -308,21 +313,33 @@ export function TimePicker({
             aria-haspopup="dialog"
             aria-controls={open ? dialogId : undefined}
             {...fieldA11y}
-            className="tabular-nums"
-            allowClear={allowClear}
-            onClear={clear}
+            // Two 20px buttons + gap need more room than Input's single-icon `pe-9`.
+            className={cn("tabular-nums", showClear && "pe-14")}
             trailingIcon={
-              <PopoverTrigger asChild>
-                <button
-                  type="button"
-                  disabled={disabled}
-                  tabIndex={-1}
-                  aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
-                  className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100"
-                >
-                  <Clock className="size-4" aria-hidden="true" />
-                </button>
-              </PopoverTrigger>
+              <span className="inline-flex items-center gap-1">
+                {showClear ? (
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    aria-label={t("common.clear") ?? "Clear"}
+                    onClick={clear}
+                    className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100"
+                  >
+                    <X className="size-4" aria-hidden="true" />
+                  </button>
+                ) : null}
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    tabIndex={-1}
+                    aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
+                    className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100"
+                  >
+                    <Clock className="size-4" aria-hidden="true" />
+                  </button>
+                </PopoverTrigger>
+              </span>
             }
             onClick={() => {
               if (!disabled) setOpen(true);

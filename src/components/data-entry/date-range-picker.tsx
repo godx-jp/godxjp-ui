@@ -187,19 +187,18 @@ export function DateRangePicker({
             >
               <X className="size-4 shrink-0" aria-hidden="true" />
             </button>
-          ) : (
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                disabled={disabled}
-                tabIndex={-1}
-                aria-label={t("dataEntry.dateRangePicker.openCalendar") ?? "Open calendar"}
-                className="text-muted-foreground hover:text-foreground shrink-0"
-              >
-                <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
-              </button>
-            </PopoverTrigger>
-          )}
+          ) : null}
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              disabled={disabled}
+              tabIndex={-1}
+              aria-label={t("dataEntry.dateRangePicker.openCalendar") ?? "Open calendar"}
+              className="text-muted-foreground hover:text-foreground shrink-0"
+            >
+              <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
+            </button>
+          </PopoverTrigger>
           <PopoverContent
             className="w-auto p-0"
             align="start"

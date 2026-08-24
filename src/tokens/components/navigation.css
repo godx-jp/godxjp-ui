@@ -7,6 +7,11 @@
    * localized labels (ja 100/ページ) never clip; this token only keeps short labels from
    * collapsing below the control rhythm. */
   --pagination-size-width: 5.5rem;
+  /* Inline padding on a page button. The button keeps min-width: var(--control-height), so this
+   * only takes effect once a number outgrows that box. Deliberately --space-1 rather than
+   * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came
+   * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px. */
+  --pagination-page-padding-x: var(--space-1);
   --pagination-total-font-size: var(--font-size-sm);
   --filter-bar-gap: var(--space-3);
   --filter-bar-padding-y: var(--space-2);

@@ -884,16 +884,32 @@
     color: hsl(var(--muted-foreground));
   }
 
+  /* The button GROWS with its label instead of being a rigid square. `width: var(--control-height)`
+   * capped every control at one control-height, so a five-figure page number spilled out of its
+   * own box (measured: `12345678` wanted 59.3px of text inside a 30px content box; `1043` cleared
+   * a 32px box by 0.3px and clipped outright at the consumer's 29px density). Ant Design, MUI and
+   * shadcn all size the same way — a min-width for the rhythm, padding for the overflow — so the
+   * one- and two-digit buttons keep the square look while longer ones widen. Height stays pinned so
+   * the row never changes rhythm. */
   .ui-pagination-link {
     display: inline-flex;
-    width: var(--control-height);
+    min-width: var(--control-height);
     height: var(--control-height);
     align-items: center;
     justify-content: center;
+    padding-inline: var(--pagination-page-padding-x);
     border-radius: var(--radius-sm);
     border: 1px solid hsl(var(--border));
     color: hsl(var(--foreground));
     text-decoration: none;
+  }
+
+  /* Keyboard focus was left to the browser, which paints its OWN ring — measured
+   * `outline: rgb(0, 95, 204) auto 1px`, a blue that belongs to no theme and reads as a defect next
+   * to a teal brand. Same ring as `.ui-button` (control.css) so every focusable control agrees. */
+  .ui-pagination-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
   }
 
   .ui-pagination-link[data-active="true"] {

@@ -24,22 +24,29 @@ describe("buildPageRange", () => {
     expect(buildPageRange(1, 1)).toEqual([1]);
   });
 
-  it("near the start: right ellipsis only, no left ellipsis", () => {
-    // current=1 → left=1, right=2; left>2 is false so 2..left is filled (none),
-    // right<totalPages-1 is true so a trailing ellipsis appears before the last page.
+  it("near the start: right ellipsis only, window slides inward", () => {
+    // current=1: the window CANNOT centre on the current page without falling off the edge, so it
+    // slides inward and the strip keeps its full width. Before 2026-08-24 it collapsed instead
+    // ([1, 2, "ellipsis", 20] — four controls with a dead gap, reported by a consumer).
     const range = buildPageRange(1, 20);
     expect(range[0]).toBe(1);
-    expect(range).toEqual([1, 2, "ellipsis", 20]);
+    expect(range).toEqual([1, 2, 3, 4, 5, "ellipsis", 20]);
   });
 
   it("near the end: left ellipsis only, last pages spelled out", () => {
-    // current=20 → showRightEllipsis false so pages right+1..totalPages-1 are spelled out
-    // (exercises the trailing fill loop) and the leading ellipsis collapses the early pages.
+    // Mirror of the case above at the trailing edge (was [1, "ellipsis", 19, 20]).
     const range = buildPageRange(20, 20);
     expect(range[0]).toBe(1);
     expect(range).toContain("ellipsis");
     expect(range.indexOf("ellipsis")).toBe(1);
-    expect(range).toEqual([1, "ellipsis", 19, 20]);
+    expect(range).toEqual([1, "ellipsis", 16, 17, 18, 19, 20]);
+  });
+
+  it("keeps the same number of controls wherever the current page sits", () => {
+    // The point of the clamp: a 20-page list is 7 controls at the start, middle and end alike.
+    expect(buildPageRange(1, 20)).toHaveLength(7);
+    expect(buildPageRange(10, 20)).toHaveLength(7);
+    expect(buildPageRange(20, 20)).toHaveLength(7);
   });
 
   it("in the middle: ellipsis on both sides", () => {

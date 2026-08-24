@@ -8,6 +8,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Pagination` page buttons clipped their own number, wore the browser's focus ring, and
+  collapsed the strip near the edges** — three defects reported together from a consumer list of
+  21,185 rows (1,060 pages), all measured in Chrome against the shipped stylesheet.
+  1. `.ui-pagination-link` was a rigid square (`width: var(--control-height)`, no padding), so a
+     label wider than one control-height was cropped by its own box: `12345678` needed 59.3px of
+     text inside a 30px content box, and `1043` cleared a 32px box by 0.3px — clipped outright at
+     the consumer's 29px density. The button now sizes the way Ant Design, MUI and shadcn do — a
+     `min-width` floor for the rhythm plus `padding-inline` for the overflow (new
+     `--pagination-page-padding-x`, deliberately `--space-1`: at `--space-2` a two-digit label came
+     to 32.8px and pushed the common 1–2 digit buttons off square). One- and two-digit buttons stay
+     exactly 32×32; `1043` → 39.7×32, `12345678` → 69.3×32. Height and the 4px item gap unchanged.
+  2. No `:focus-visible` rule existed, so the browser painted its own — measured
+     `outline: rgb(0, 95, 204) auto 1px`, a blue belonging to no theme and reading as a defect next
+     to a teal brand. Page buttons now use the same ring as `.ui-button`
+     (`box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)))`).
+  3. `buildPageRange` derived its window straight from `current ± siblingCount` and let it collapse
+     against the edges, so a 1,060-page list opened as `1 2 … 1060` — four controls with a wide dead
+     gap, poor target size and no sense of scale. The window is now CLAMPED rather than shrunk
+     (Ant Design / MUI behaviour), so the control count is constant wherever the current page sits:
+     `1 2 3 4 5 … 1060` at the start, `1 … 499 500 501 … 1060` in the middle,
+     `1 … 1056 1057 1058 1059 1060` at the end — 7 controls each. `buildPageRange` also gained a
+     `boundaryCount` parameter (default 1) alongside the existing `siblingCount`; the public
+     `Pagination` props are unchanged.
+
+- **A filled picker lost its calendar/clock icon (gh#308)** — `Input`'s `allowClear` REPLACES the
+  configured `trailingIcon` with the ✕ (one trailing icon, never two). That is right for a plain
+  text field, but for a picker the calendar/clock icon is the ONLY visual sign that the field
+  opens a picker at all: a consumer measured a filled `DatePicker` rendering just the clear
+  button, so a filled date looked like an ordinary text box (clicking the field still opened the
+  calendar — the affordance was invisible, not gone). `DatePicker`, `MonthPicker`,
+  `DateRangePicker`, `MonthRangePicker` and `TimePicker` now render their own trailing cluster
+  with the ✕ **beside** the trigger (input padding grows `pe-9` → `pe-14` only while both show).
+  `Input` itself is untouched, so every other consumer keeps the one-icon rule — pinned by a test
+  that asserts a plain `Input` still swaps its `trailingIcon` for the ✕.
+
+### Fixed
+
 - **The restored describedBody rule overrode flush content's zero padding (gh#307)** — the
   nested-`:has()` rewrite made the description half apply to `[data-flush]` content too,
   floating a flush table 18px off its header (measured: a described 関連ファイル section at

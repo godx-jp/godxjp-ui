@@ -127,8 +127,9 @@ export function MonthPicker({
             }}
             onBlur={() => setText(toYmText(value))}
           />
-          {/* ONE trailing icon: the clear (×) replaces the calendar while a value is set;
-              the field itself still opens the grid (onClick / ArrowDown). */}
+          {/* Clear (×) sits BESIDE the trigger, never in place of it (gh#308) — the calendar
+              icon is the only visual sign this field opens a month grid; the field itself
+              still opens it too (onClick / ArrowDown). */}
           {showClear ? (
             <button
               type="button"
@@ -143,19 +144,18 @@ export function MonthPicker({
             >
               <X className="size-4 shrink-0" aria-hidden="true" />
             </button>
-          ) : (
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                disabled={disabled}
-                tabIndex={-1}
-                aria-label={t("dataEntry.monthPicker.openGrid") ?? "Open month grid"}
-                className="text-muted-foreground hover:text-foreground shrink-0"
-              >
-                <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
-              </button>
-            </PopoverTrigger>
-          )}
+          ) : null}
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              disabled={disabled}
+              tabIndex={-1}
+              aria-label={t("dataEntry.monthPicker.openGrid") ?? "Open month grid"}
+              className="text-muted-foreground hover:text-foreground shrink-0"
+            >
+              <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
+            </button>
+          </PopoverTrigger>
           <PopoverContent
             id={dialogId}
             role="dialog"
