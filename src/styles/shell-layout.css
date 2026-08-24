@@ -929,9 +929,19 @@
     margin-top: var(--sidebar-section-gap);
   }
 
+  /* The section label is the ONE piece of sidebar text with no colour knob.
+   * Every other one has a variable with this same fallback — item, hover,
+   * active, icon — and the sidebar is paintable by design (`--sidebar-gradient`
+   * is a published knob). So a consumer that paints it can recolour every label
+   * except this heading, which stays muted-foreground and lands on whatever
+   * they painted: measured at 1.50 against a mid-tone blue, where 11px text
+   * needs 4.5.
+   *
+   * The fallback is the old value, so nothing changes for a sidebar that does
+   * not paint itself. */
   .sb-section-label {
     padding: 0 var(--sidebar-section-label-padding-x) var(--sidebar-section-label-padding-bottom);
-    color: hsl(var(--muted-foreground));
+    color: var(--sidebar-section-label-foreground, hsl(var(--muted-foreground)));
     font-size: var(--sidebar-section-label-font-size);
     font-weight: 700;
     letter-spacing: 0.08em;
