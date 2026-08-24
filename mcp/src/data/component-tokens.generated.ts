@@ -1784,54 +1784,59 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
   },
   {
+    "name": "--pagination-page-padding-x",
+    "value": "var(--space-1)",
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+  },
+  {
     "name": "--pagination-total-font-size",
     "value": "var(--font-size-sm)",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--filter-bar-gap",
     "value": "var(--space-3)",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--filter-bar-padding-y",
     "value": "var(--space-2)",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--filter-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--filter-picker-width-sm",
     "value": "11rem",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--filter-picker-width-md",
     "value": "14rem",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--steps-inline-gap",
     "value": "var(--space-2)",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--steps-inline-item-gap",
     "value": "var(--space-1)",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--steps-inline-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--steps-inline-separator-size",
     "value": "var(--control-icon-size-sm)",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--steps-inline-index-font-weight",
