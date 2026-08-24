@@ -124,11 +124,12 @@ automatically. Server errors as inline near the field, NOT as toasts
         id: "loading-states",
         title: "Skeleton for INIT, Spinner for ACTIVE work",
         tagline: "Different states for different moments — never mix.",
-        body: `<Form loading={{ kind: "skeleton" }}> while fetching existing
-values (no data yet — maintain layout, prevent flash). <Form loading>
-(boolean true) while saving (data is there, you're transforming).
-Skeleton during save is wrong (user sees structure they already saw —
-broken). Spinner during init is wrong (nothing to spin over).`,
+        body: `Skeleton while fetching existing values (no data yet — put a
+<Skeleton /> in each FormField so labels and grid hold their place and
+nothing flashes). Spinner while saving: keep the filled controls on
+screen and use <Button loading> on the submit. Skeleton during save is
+wrong (the user sees structure they already saw — reads as broken).
+Spinner during init is wrong (nothing to spin over).`,
       },
     ],
   },

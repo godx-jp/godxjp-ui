@@ -20,6 +20,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   that pinned the dead ATTRIBUTE — and so stayed green while the prop did nothing — were
   rewritten to pin the real axis.
 
+### Added
+
+- **`check:doc-prop-existence`** — a guard for the class of bug above, wired into `verify` and
+  `verify:static`. `check:mcp-prop-sync` only checked that every declared prop is documented;
+  nothing checked that every documented prop is declared, which is why examples could hand readers
+  a prop that does not exist and stay green. Examples in `mcp/src/data/*.ts` are string literals
+  and those in `docs/**/*.md` are fenced code, so no compiler can ever see them — the check is
+  textual, reads `component-api-manifest.json` as the source of truth, and skips the 140
+  components whose real surface comes from a third-party primitive (Radix, react-day-picker,
+  embla) that the manifest lists only a lower bound for. That limit is printed on every run rather
+  than left implicit. Verified by mutation: re-introducing `Button tone`, `Topbar product`, and
+  `Form loading` each turns it red on its own.
+
+### Changed
+
+- **Frame-coverage ledger: `Card.sizes` / `StatCard.sizes` reclassified** from
+  `covered:prop-evidence:size` to `not-applicable:api-manifest`, and the issue #163 ratchet floor
+  moved 65 → 63 covered cells. This is the one case where the floor going down is not a violation:
+  those two cells recorded coverage of a prop that no longer exists. No untested cell was
+  reclassified, and the reason is recorded in the ledger's own baseline note.
+
 ### Fixed
 
 - **Documentation examples that used props the components do not have.** `patterns.ts` showed
@@ -27,6 +48,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `Text`/`Heading`), and three Topbar examples passed `product` / `productMenu` / `collapsed`
   when `Topbar` only accepts `start` / `center` / `end` / `children`. Copy-pasting any of them
   produced a type error. Rewritten against the real APIs.
+- **Documentation examples that invented props outright.** `<Carousel autoplay={false}>` was
+  described as "the default in the framework" — Carousel has no `autoplay` prop and never rotates
+  on its own — and `<Form loading={{ kind: "skeleton" }}>` appeared twice, including as the whole
+  basis of the "Skeleton for INIT, Spinner for ACTIVE" rule, though `Form` has never had a
+  `loading` prop. Both rewritten to say what the components actually do.
 - **`DescriptionsProp` had drifted from the component**: it described a long-gone `items` array
   API and was missing `layout` / `labelAlign` entirely (both of which the generated manifest
   already listed, and both of which the component has honoured for a long time). Synced to the

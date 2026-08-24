@@ -222,8 +222,8 @@ expand a row-actions DropdownMenu).`,
 finished reading slide 1; now slide 2 is gone. Accessibility
 nightmare (cognitive load, motion-sensitive).`,
     fix: `Carousel ONLY rotates on explicit user action (arrow click,
-dot click, swipe). \`<Carousel autoplay={false}>\` is the default
-in the framework for this reason.`,
+dot click, swipe). It has no autoplay prop and never rotates on its
+own — that is the default and there is nothing to turn off.`,
   },
   {
     category: "interaction",
@@ -306,10 +306,9 @@ is correct — but ONE deep, not three.`,
 shell with a centered spinner. Layout shifts when content
 arrives.`,
     fix: `Use Skeleton placeholders matching the eventual content shape.
-The framework's \`<Form loading={{ kind: "skeleton" }}>\` cascades
-to every field; \`<Skeleton className="h-9 w-full rounded-md" />\`
-for individual blocks. Layout stays stable, perceived speed
-improves.`,
+Render \`<Skeleton className="h-9 w-full rounded-md" />\` in place of
+each control — inside the FormField that will hold it, so the labels
+and grid stay put. Layout stays stable, perceived speed improves.`,
   },
 ];
 

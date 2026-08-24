@@ -177,26 +177,6 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            Size · md (default) vs compact
-          </Text>
-          <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
-            <Card size="md">
-              <CardHeader>
-                <CardTitle level={2}>size=md</CardTitle>
-              </CardHeader>
-              <CardContent>標準のインセット（16px）</CardContent>
-            </Card>
-            <Card density="tight">
-              <CardHeader>
-                <CardTitle level={2}>size=compact</CardTitle>
-              </CardHeader>
-              <CardContent>密なインセット（KPI タイルの既定）</CardContent>
-            </Card>
-          </ResponsiveGrid>
-        </Flex>
-
-        <Flex direction="col" gap="sm">
-          <Text as="div" weight="medium">
             Density · tight 12px · base 16px · cozy 20px
           </Text>
           <ResponsiveGrid columns={{ sm: 1, md: 3 }}>
