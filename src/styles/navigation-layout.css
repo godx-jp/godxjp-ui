@@ -390,10 +390,6 @@
     outline: none;
   }
 
-  button.ui-steps-inline-control:focus-visible {
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
-  }
-
   /* The step NUMBER carries the emphasis. Both knobs exist because the canonical hosted-identity
    * row marks the step with an accent TINT at normal weight, while the original marked it with
    * bold at the inherited colour — a service picks its own emphasis instead of forking this rule

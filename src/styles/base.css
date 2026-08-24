@@ -108,6 +108,12 @@
  * is never emitted). In-repo the glob scans src; published, it scans dist. */
 @source "../**/*.{tsx,ts,js}";
 @import "../tokens/base.css";
+/* The focus ring is FOUNDATION, not a component layer: every focusable control in
+ * every layer reads the same four tokens from ONE rule (styles/focus-ring.css).
+ * Imported here — not left to index.css — so a consumer that tree-shakes down to
+ * `styles/base` + two layout files still gets keyboard-focus affordance (WCAG
+ * 2.4.7); shipping it as an optional layer would make a11y opt-in by accident. */
+@import "./focus-ring.css";
 @import "./density.css";
 
 /* `inline` (NOT a bare @theme): Tailwind inlines each expression — e.g. `hsl(var(--primary))` —

@@ -162,6 +162,15 @@
    * default re-resolves at the element that paints the ring while an explicit override still wins. */
   --focus-ring-color: initial; /* default = the live --ring role */
   --focus-ring-width: 2px;
+  /* Alpha of the ring fill. Exists so a component that needs a SOFTER ring
+   * (a filled toggle, tinted shell chrome) tunes one knob instead of writing
+   * its own `hsl(... / 0.35)` — which is how four incompatible ring shapes
+   * appeared before the single-source rule in styles/focus-ring.css. */
+  --focus-ring-opacity: 1;
+  /* Gap between element and ring, for the OUTLINE form only (a star, a dot, a
+   * heading anchor — marks where a radius-hugging shadow would touch the
+   * glyph). The shadow form ignores it by construction. */
+  --focus-ring-offset: 0px;
   /* Ring headroom for clipped chrome (`overflow-clip-margin` on the topbar family, gh#291).
    * MUST stay a plain length consumed via a bare var(): Chromium rejects any calc() in
    * overflow-clip-margin at parse time (even calc(2 * 2px)), silently dropping the

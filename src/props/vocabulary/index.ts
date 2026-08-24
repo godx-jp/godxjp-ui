@@ -69,6 +69,7 @@ export type {
   TextAlignProp,
   SizeProp,
   FormLayoutProp,
+  DescriptionsLayoutProp,
   BreakpointProp,
   ConfirmVariantProp,
   ToneProp,

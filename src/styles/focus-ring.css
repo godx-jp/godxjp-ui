@@ -1,0 +1,155 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ * FOCUS RING — the ONE place the keyboard-focus affordance is drawn.
+ *
+ * WHY THIS FILE EXISTS: the ring used to be re-written by hand in every layout
+ * file, and it drifted into four incompatible shapes — the token pair
+ * (`0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)))`),
+ * the same with an ad-hoc `/ 0.45`, and two that hardcoded `3px` with `/ 0.35`
+ * and `/ 0.3`, bypassing `--focus-ring-width` entirely. Same state, four
+ * thicknesses and opacities, and no way for a service to retune them together.
+ * A component that forgot the rule got the UA default instead (Chrome paints
+ * `rgb(0,95,204)` — a blue belonging to no theme; that is exactly how the
+ * pagination defect was found).
+ *
+ * THE API — three layers, each overriding the one above:
+ *
+ *   1. GLOBAL (`:root`, tokens/foundation.css)
+ *        --focus-ring-width    thickness            (default 2px)
+ *        --focus-ring-color    hue, HSL components  (default = live --ring)
+ *        --focus-ring-opacity  alpha                (default 1)
+ *        --focus-ring-offset   gap, outline form    (default 0px)
+ *      Set any of these ONCE — even scoped under `[data-tenant]` — and EVERY
+ *      ring in the system follows.
+ *
+ *   2. PER COMPONENT (tokens/components/*.css)
+ *      A component that genuinely needs a different ring publishes its own
+ *      knob and rebinds the local value, e.g.
+ *        --toggle-focus-ring-opacity: 0.35;                       (public knob)
+ *        .ui-toggle { --focus-ring-opacity: var(--toggle-focus-ring-opacity); }
+ *      Custom properties inherit, so the rule below picks up the local value at
+ *      the element that paints — one formula, per-component tuning, and the
+ *      knob stays discoverable in the token file rather than buried in a
+ *      hand-written box-shadow.
+ *
+ *   3. PER INSTANCE (consumer)
+ *      `style={{ "--focus-ring-color": "0 84% 60%" }}` on any subtree.
+ *
+ * TURNING IT OFF: `--focus-ring-width: 0` — globally at `:root`, on one
+ * component, or on one instance. A zero-width ring paints nothing.
+ * A11y note: the default is ALWAYS ON (WCAG 2.4.7 / 2.4.11); switching it off
+ * is a deliberate consumer act, never a default of this package. The one
+ * exception that ships off is the REGION ring (`.app-main`,
+ * `--region-focus-ring-width: 0`) — a documented product-owner tradeoff (see
+ * tokens/foundation.css), because a control-strength frame around the whole
+ * content area reads as a glitch to mouse-first users.
+ *
+ * TWO FORMS, one API: `box-shadow` hugs the border-radius and never shifts
+ * layout, so it is the default. `outline` + `outline-offset` is for marks that
+ * need a visible GAP (a star, a dot, a heading anchor) where a hugging ring
+ * would touch the glyph. Both read the same four tokens.
+ *
+ * ADDING A COMPONENT: put its class in the matching `:is()` list below, or
+ * give the element `ui-focus-ring` / `ui-focus-ring-outline`. Do NOT write a
+ * `:focus-visible` box-shadow/outline anywhere else — a test enforces this
+ * (`src/styles/__tests__/focus-ring-single-source.test.ts`).
+ * ───────────────────────────────────────────────────────────────────────── */
+@layer components {
+  /* Shadow form — the default. Hugs the radius, no layout shift. */
+  :is(
+    .ui-focus-ring,
+    .ui-button,
+    .ui-toggle,
+    .ui-checkbox,
+    .ui-radio,
+    .ui-slider-thumb,
+    .ui-switch,
+    .ui-time-input,
+    .ui-steps-inline-control,
+    .ui-pagination-link,
+    .ui-legal-document-toc-link,
+    .sb-user,
+    .tb-icon-btn
+  ):focus-visible {
+    outline: none;
+    /* TWO declarations, one ring — because a control may also carry a Tailwind
+     * shadow/ring utility (`shadow-xs` on Checkbox, Radio, Switch, Input …).
+     * Those live in the UTILITIES layer, which outranks `components`, and they
+     * set `box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+     * var(--tw-shadow)` — so a plain `box-shadow` here loses and the ring never
+     * paints. Measured before this fix: Checkbox focus-visible resolved to
+     * `rgba(0,0,0,0) 0 0 0 0`, i.e. NO visible ring at all.
+     * Feeding `--tw-ring-shadow` makes the utility's own composite paint our
+     * ring (and keeps the element's resting shadow); the plain `box-shadow`
+     * covers elements that carry no such utility. */
+    --tw-ring-shadow: 0 0 0 var(--focus-ring-width)
+      hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1));
+    box-shadow: 0 0 0 var(--focus-ring-width)
+      hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1));
+  }
+
+  /* Outline form — for marks that need a gap between glyph and ring. */
+  :is(
+    .ui-focus-ring-outline,
+    .ui-accordion-trigger,
+    .ui-carousel-dot,
+    .ui-rating-star,
+    .ui-legal-document-section
+  ):focus-visible {
+    outline: var(--focus-ring-width) solid
+      hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1));
+    outline-offset: var(--focus-ring-offset, 0px);
+  }
+
+  /* ── Per-component rebinds ────────────────────────────────────────────────
+   * Each line maps a PUBLIC knob (declared in tokens/components/*.css) onto the
+   * local value the rules above read. The historical look is preserved: these
+   * are the components that used to hand-write a different ring. */
+
+  /* Toggle: a heavier, softer ring — the control is a filled surface, so a
+   * hard 2px reads as a second border rather than a focus mark. */
+  .ui-toggle {
+    --focus-ring-width: var(--toggle-focus-ring-width);
+    --focus-ring-opacity: var(--toggle-focus-ring-opacity);
+  }
+
+  /* Time input: same reasoning as Toggle — sits inside a bordered field. */
+  .ui-time-input {
+    --focus-ring-width: var(--time-input-focus-ring-width);
+    --focus-ring-opacity: var(--time-input-focus-ring-opacity);
+  }
+
+  /* Shell chrome: softened so the ring reads as focus, not as a selected item,
+   * on the tinted sidebar/topbar grounds. */
+  .sb-user {
+    --focus-ring-opacity: var(--sidebar-user-focus-ring-opacity);
+  }
+
+  .tb-icon-btn {
+    --focus-ring-opacity: var(--topbar-icon-focus-ring-opacity);
+  }
+
+  /* Outline-form offsets — the gap each mark needs. */
+  .ui-accordion-trigger {
+    --focus-ring-offset: var(--accordion-focus-ring-offset);
+  }
+
+  .ui-carousel-dot {
+    --focus-ring-offset: var(--carousel-dot-focus-ring-offset);
+  }
+
+  .ui-rating-star {
+    --focus-ring-offset: var(--rating-focus-ring-offset);
+  }
+
+  .ui-legal-document-section {
+    --focus-ring-offset: var(--legal-document-section-focus-ring-offset);
+  }
+
+  /* Opt OUT — the command palette input sits inside an already-focused dialog
+   * frame, so its own ring would double up (historical behaviour, kept). */
+  .ui-command-input:focus-visible {
+    --focus-ring-width: 0;
+    outline: none;
+    box-shadow: none;
+  }
+}

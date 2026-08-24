@@ -87,7 +87,7 @@ const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
                 void onDismiss();
               }}
               data-slot="alert-dismiss"
-              className="ring-offset-background focus-visible:ring-ring transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+              className="ui-focus-ring transition-opacity hover:opacity-100"
               aria-label={t("feedback.alert.dismiss")}
             >
               <X className="size-4" aria-hidden="true" />

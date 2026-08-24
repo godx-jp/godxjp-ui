@@ -26,6 +26,7 @@ import type {
   SizeProp,
   LabelProp,
   IdProp,
+  DescriptionsLayoutProp,
 } from "../vocabulary";
 
 /** @see EmptyState */
@@ -71,10 +72,19 @@ export type EmptyStateProp = {
   className?: ClassNameProp;
 };
 
-/** @see Descriptions */
+/**
+ * @see Descriptions — composed with `Descriptions.Item` CHILDREN, not an `items` array.
+ * This type had drifted from the component (it described a long-gone items-based API and was
+ * missing `layout`/`labelAlign` entirely, which the generated manifest already listed).
+ */
 export type DescriptionsProp = {
-  items: DescriptionsItemProp[];
+  /** `Descriptions.Item` children — one label/value pair each. */
+  children: React.ReactNode;
   columns?: 1 | 2 | 3;
+  /** Label placement within each item. Default `vertical` (label over value). */
+  layout?: DescriptionsLayoutProp;
+  /** Label text alignment inside the label column. Applies only to `layout="horizontal"`. */
+  labelAlign?: "start" | "end";
   className?: ClassNameProp;
 };
 

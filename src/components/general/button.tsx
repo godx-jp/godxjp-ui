@@ -24,7 +24,7 @@ const buttonVariants = cva("ui-button", {
     variant: {
       default: "ui-button--default bg-primary text-primary-foreground hover:bg-primary/90",
       destructive:
-        "ui-button--destructive bg-destructive text-destructive-foreground focus-visible:ring-destructive/20",
+        "ui-button--destructive bg-destructive text-destructive-foreground",
       outline:
         "ui-button--outline border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
       dashed:
@@ -129,7 +129,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
         className={cn(
           "inline-flex shrink-0 items-center justify-center gap-2 text-sm font-medium whitespace-nowrap transition-all outline-none",
           fullWidth && "w-full",
-          "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
           "disabled:pointer-events-none disabled:opacity-50",
           "data-[loading]:pointer-events-none",
           "aria-invalid:border-destructive aria-invalid:ring-destructive/20",

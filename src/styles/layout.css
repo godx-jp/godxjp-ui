@@ -904,13 +904,10 @@
     text-decoration: none;
   }
 
-  /* Keyboard focus was left to the browser, which paints its OWN ring — measured
-   * `outline: rgb(0, 95, 204) auto 1px`, a blue that belongs to no theme and reads as a defect next
-   * to a teal brand. Same ring as `.ui-button` (control.css) so every focusable control agrees. */
-  .ui-pagination-link:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
-  }
+  /* Keyboard focus: drawn by the single-source rule in styles/focus-ring.css
+   * (`.ui-pagination-link` is in its shadow-form list). Before that, focus here was
+   * left to the browser, which paints its OWN ring — measured
+   * `outline: rgb(0, 95, 204) auto 1px`, a blue belonging to no theme. */
 
   .ui-pagination-link[data-active="true"] {
     border-color: hsl(var(--ring) / 0.5);
@@ -1230,11 +1227,6 @@
     background: hsl(var(--legal-document-toc-active-background, var(--accent)) / 0.6);
   }
 
-  .ui-legal-document-toc-link:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
-  }
-
   /* Active entry: colour + a leading marker + a heavier weight, so the state survives a
    * monochrome / high-contrast rendering (never colour-only, WCAG 1.4.1). The anchor also
    * carries `aria-current="location"`. */
@@ -1266,11 +1258,6 @@
 
   /* The section is `tabIndex={-1}` and receives focus when its contents anchor is
    * activated, so the focus ring must be VISIBLE (WCAG 2.4.7 / 2.4.11). */
-  .ui-legal-document-section:focus-visible {
-    outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color, var(--ring)));
-    outline-offset: var(--space-1);
-  }
-
   .ui-legal-document-footer {
     display: flex;
     flex-wrap: wrap;

@@ -69,12 +69,10 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            align=&quot;end&quot; · size=&quot;compact&quot; (default) vs size=&quot;md&quot; · icon
-            label · neutral delta
+            align=&quot;end&quot; · icon label · neutral delta
           </Text>
           <ResponsiveGrid columns={{ sm: 2, md: 4 }}>
             <StatCard
-              size="compact"
               label="当期利益"
               value="¥3,120,000"
               delta="+8%"
@@ -82,7 +80,6 @@ export default function Demo() {
               hint="既定の密度 · 右寄せ"
             />
             <StatCard
-              size="md"
               label="年間売上"
               value="¥98,400,000"
               delta="+11%"

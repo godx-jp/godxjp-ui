@@ -6,15 +6,14 @@ import { Card, CardContent, CardFooter } from "../card";
 const q = (c: HTMLElement, slot: string) => c.querySelector(`[data-slot="${slot}"]`) as HTMLElement;
 
 describe("Card — surface data attributes", () => {
-  it("reflects variant / size / accent / density", () => {
+  it("reflects variant / accent / density", () => {
     const { container } = render(
-      <Card variant="muted" size="compact" accent="success" density="tight">
+      <Card variant="muted" accent="success" density="tight">
         body
       </Card>,
     );
     const card = q(container, "card");
     expect(card).toHaveAttribute("data-variant", "muted");
-    expect(card).toHaveAttribute("data-size", "compact");
     expect(card).toHaveAttribute("data-accent", "success");
     expect(card).toHaveAttribute("data-density", "tight");
   });
@@ -44,7 +43,7 @@ describe("Card — surface data attributes", () => {
 
   it("omits data-variant/data-size for the defaults", () => {
     const { container } = render(
-      <Card variant="default" size="md">
+      <Card variant="default">
         body
       </Card>,
     );

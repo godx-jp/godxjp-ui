@@ -12,7 +12,7 @@ const CheckboxRoot = React.forwardRef<
     ref={ref}
     data-slot="checkbox"
     className={cn(
-      "peer ui-checkbox focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground shrink-0 shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+      "peer ui-checkbox aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground shrink-0 shadow-xs transition-shadow outline-none disabled:cursor-not-allowed disabled:opacity-50",
       className,
     )}
     {...props}

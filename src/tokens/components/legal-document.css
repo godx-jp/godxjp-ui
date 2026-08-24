@@ -21,6 +21,10 @@
   /* ── Geometry ─────────────────────────────────────────────────────────────── */
   /* Readable document measure. Caps the header, the section column and the footer so
    * a 1440px viewport still reads at ~75-90 characters per line. */
+  /* Section anchor ring needs a gap so the mark does not touch the heading
+   * (outline form — styles/focus-ring.css). */
+  --legal-document-section-focus-ring-offset: var(--space-1);
+
   --legal-document-measure-max-width: 46rem;
   /* Rail ↔ document column gutter (two-column mode only). */
   --legal-document-column-gap: var(--space-10);

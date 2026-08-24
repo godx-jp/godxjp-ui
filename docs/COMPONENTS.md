@@ -16,7 +16,7 @@ Slot-based app chrome for admin products:
 ```tsx
 <AppShell
   sidebar={<Sidebar sections={sections} activeId="dashboard" />}
-  topbar={<Topbar product={product} />}
+  topbar={<Topbar start={<Logo mark="godx" label={product.name} />} />}
 >
   <PageContainer title="Dashboard">...</PageContainer>
 </AppShell>

@@ -6,6 +6,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **`Card` / `StatCard` `size` — a prop that never did anything.** It shipped in the v6 snapshot
+  with EMPTY cva variants (`md: ""`, `compact: ""`) and emitted `data-size`, but no rule in
+  `card-layout.css` ever matched that attribute, so `size="compact"` was inert at every density
+  for its whole life — measured by a consumer as byte-identical geometry with and without it
+  (none 54px/16px · tight 46px/12px · cozy 62px/20px). Meanwhile the props table listed it and
+  the StatCard guidance told people to write it. Card sizing is `density` (tight 12px · base
+  16px · cozy 20px), which is implemented and measured; a second sizing axis would only
+  duplicate it, so the prop is gone rather than implemented. Consumers passing `size` get a type
+  error and should drop it (or use `density="tight"` for the compact look it implied). Two tests
+  that pinned the dead ATTRIBUTE — and so stayed green while the prop did nothing — were
+  rewritten to pin the real axis.
+
+### Fixed
+
+- **Documentation examples that used props the components do not have.** `patterns.ts` showed
+  `<Button tone="destructive">` (Button has `variant`, not `tone` — `tone` exists only on
+  `Text`/`Heading`), and three Topbar examples passed `product` / `productMenu` / `collapsed`
+  when `Topbar` only accepts `start` / `center` / `end` / `children`. Copy-pasting any of them
+  produced a type error. Rewritten against the real APIs.
+- **`DescriptionsProp` had drifted from the component**: it described a long-gone `items` array
+  API and was missing `layout` / `labelAlign` entirely (both of which the generated manifest
+  already listed, and both of which the component has honoured for a long time). Synced to the
+  real props, and `DescriptionsLayoutProp` is now re-exported from the vocabulary barrel.
+
+
+### Fixed
+
+- **Checkbox, Radio, Switch, Input and Select had NO visible focus ring** — the
+  `:focus-visible` rule lived in the `components` layer while the controls also
+  carry a Tailwind `shadow-xs` utility, and utilities outrank components: the
+  composite `box-shadow` won and the ring slot resolved to `rgba(0,0,0,0) 0 0 0 0`.
+  Measured in Chrome on the built stylesheet — before: ring slot transparent at
+  0px; after: `rgb(0,119,199) 0 0 0 2px`. A WCAG 2.4.7 failure that had been
+  invisible because the rule looked correct in the file. The ring now also feeds
+  `--tw-ring-shadow`, so the utility's own composite paints it.
+
+### Changed
+
+- **Focus ring is now one global API instead of nine hand-written rules.** The
+  ring had drifted into four incompatible shapes across six stylesheets — the
+  token pair, the token pair with an ad-hoc `/ 0.45`, and two that hardcoded
+  `3px` with `/ 0.35` and `/ 0.3`, bypassing `--focus-ring-width` entirely — plus
+  Tailwind `ring-*` utilities written directly into eight components. Same state,
+  four thicknesses, no single knob a service could retune, and any component that
+  forgot the rule fell back to the browser's own blue (`rgb(0,95,204)`).
+
+  Now: `src/styles/focus-ring.css` is the ONE definition, reading four tokens —
+  `--focus-ring-width` / `-color` / `-opacity` / `-offset`. Override globally at
+  `:root`, per component via a published knob (`--toggle-focus-ring-opacity`,
+  `--rating-focus-ring-offset`, …), or per instance via inline style. Set
+  `--focus-ring-width: 0` at any level to turn rings off — shipped ON, since
+  removing the indicator fails WCAG 2.4.7. New components opt in with the
+  `ui-focus-ring` / `ui-focus-ring-outline` class instead of writing CSS.
+
+  Every existing ring keeps its measured appearance (Button 2px, Toggle 3px/0.35,
+  TimeInput 3px/0.3, sidebar & topbar 2px/0.45, rating & accordion outline 2px
+  with a 2px gap). Two tests hold the line: one fails if any stylesheet paints a
+  `:focus-visible` ring outside the single source, one runs the shipped selector
+  with `.matches()` against rendered DOM so a rule that selects nothing is caught.
+
 ### Fixed
 
 - **`Pagination` page buttons clipped their own number, wore the browser's focus ring, and

@@ -456,7 +456,7 @@ import { StatCard } from "@godxjp/ui/data-display";
     useCases: [
       "Full admin SPA shell: AppShell wraps a <Sidebar> nav rail and a <Topbar> (with productMenu entity-switcher, onSearchOpen, onNotificationsOpen, user avatar) and every Inertia page renders as children inside a <PageContainer>.",
       "Collapsible-sidebar layout: maintain a `collapsed` boolean in a persistent Inertia layout component, pass it to both AppShell's `sidebarCollapsed` and Sidebar's `collapsed`, wire Topbar's `onToggleCollapsed` to flip it — AppShell handles the CSS transition automatically.",
-      "Multi-tenant accounting app: pass a <Topbar productMenu={<DropdownMenuContent>…</DropdownMenuContent>}> to AppShell's `topbar` slot so the legal-entity chip opens an inline switcher without a modal.",
+      "Multi-tenant accounting app: pass a <Topbar start={<DropdownMenu>…</DropdownMenu>}> to AppShell's `topbar` slot so the legal-entity chip opens an inline switcher without a modal.",
       "App-level footer (e.g. version/build info, compliance notice): pass a <footer> node to AppShell's `footer` prop — it renders outside `<main>` so it stays pinned below the scroll area.",
       "Rapid prototype or internal tool where you want a branded shell with minimal topbar: skip the `topbar` prop entirely and use `logo`, `topbarLeft`, `topbarRight` to build the rail declaratively without instantiating <Topbar>.",
       "Breadcrumb-aware shell: pass a <Breadcrumb items={…}> node to AppShell's `breadcrumb` prop so the breadcrumb strip appears above all page content without each page having to render it separately.",
@@ -881,10 +881,15 @@ export default function Shell() {
       }
       topbar={
         <Topbar
-          product={{ name: "CoreBooks", color: "hsl(var(--primary))" }}
-          collapsed={collapsed}
-          onToggleCollapsed={() => setCollapsed((c) => !c)}
-          onSearchOpen={() => {}}
+          start={
+            <>
+              <Button variant="ghost" size="icon-sm" aria-label="メニュー" onClick={() => setCollapsed((c) => !c)}>
+                <PanelLeft />
+              </Button>
+              <Logo mark="godx" label="CoreBooks" />
+            </>
+          }
+          end={<Button variant="ghost" size="icon-sm" aria-label="検索" onClick={() => {}}><Search /></Button>}
         />
       }
     >
@@ -2219,7 +2224,7 @@ export default function InvoiceList({
       "SPACING IS BORDER-AWARE & token-driven (theme via src/tokens/components/card.css, never hard-code padding on slots): `--card-space-inset` is the shared horizontal column every slot (header/content/footer) aligns to. A DIVIDED section — a `banded` header or a `separated` footer, i.e. one carrying a divider border — pads SYMMETRICALLY top+bottom from `--card-space-divided-y` (a band reads as its own region). A PLAIN header flows into the body instead: top `--card-space-shell-y`, no bottom, and the body supplies the gap via `--card-space-body-y`. THE TWO AXES ARE INDEPENDENT (gh#232): `--card-space-inset` is inline-only, while `--card-space-shell-y` owns the BLOCK shell edges (plain-header top, `solo` body top, terminal slot bottom) and defaults to the inset — so a shell/theme can make a card SHORTER without narrowing its column by overriding `--card-space-shell-y` alone (this is how AuthShell's `--auth-shell-card-padding-block-compact` reaches CardContent). Never bridge it with a consumer selector on the card-content slot. Special case: a header above `<CardContent flush>` with a <Table> gets its own `--card-space-body-y` bottom gap (the flush table zeroes its top), so the title never butts the table. `--card-space-gap` is the in-slot stack gap (title↕description). Tune the band rhythm once at `--card-space-divided-y`; tune the accent stripe width at `--card-accent-rail-width` (default 6px).",
     ],
     useCases: [
-      'Dashboard KPI summary row: wrap each metric in <StatCard> (or a plain <Card size="compact"> with <CardContent>) to render a uniform grid of labeled value tiles with optional trend deltas.',
+      'Dashboard KPI summary row: wrap each metric in <StatCard> (or a plain <Card density="tight"> with <CardContent>) to render a uniform grid of labeled value tiles with optional trend deltas.',
       'Invoice or order detail panel: <Card accent="primary"> with <CardHeader banded><CardTitle>, <CardContent> body rows (use <Descriptions> inside), and <CardFooter separated> holding approve/reject buttons.',
       "Section container on a settings or form page: a single <Card> wrapping a <CardHeader><CardTitle> plus <CardContent> containing <FormField> groups, with <CardFooter separated> for Save/Cancel.",
       "Data table with toolbar: <Card> + <CardHeader> (title + filter controls in <CardAction>) + <CardContent flush> containing <DataTable> — <CardContent flush> removes horizontal padding so the table header spans full width.",

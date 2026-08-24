@@ -35,7 +35,7 @@ describe("Card a11y", () => {
 
   it("has no axe violations for an accented compact card", async () => {
     await expectNoA11yViolations(
-      <Card size="compact" accent="success" variant="outline">
+      <Card accent="success" variant="outline">
         <CardContent solo>
           <p>処理が正常に完了しました。</p>
         </CardContent>

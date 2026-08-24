@@ -309,7 +309,7 @@ function TreeSelectRoot({
                     className={cn(
                       "flex items-center rounded-sm py-1.5 pe-2 text-sm outline-none",
                       "hover:bg-accent hover:text-accent-foreground",
-                      "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-1",
+                      "ui-focus-ring",
                       isSelected && "bg-accent/60",
                       node.disabled && "pointer-events-none opacity-50",
                     )}

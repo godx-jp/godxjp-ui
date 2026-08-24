@@ -1,11 +1,9 @@
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
 import type { LucideIcon } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import type { HeadingLevelProp } from "../../props/vocabulary";
 
-type CardSize = "md" | "compact";
 /** Semantic accent tone. `accentPlacement` decides WHERE it is drawn — a leading-edge
  *  stripe (default) or the full perimeter. */
 type CardAccent = "primary" | "success" | "warning" | "info" | "attention" | "destructive";
@@ -29,19 +27,14 @@ type CardDensity = "tight" | "cozy";
 // Border WIDTH lives in the components layer (.ui card CSS), not a Tailwind `border` utility:
 // the utility would beat the components-layer accent rail rule, pinning the accent stripe to 1px.
 // A consumer `className="border-2"` still wins (utilities > components), as before.
-const cardVariants = cva("group/card", {
-  variants: {
-    size: {
-      md: "",
-      compact: "",
-    },
-  },
-  defaultVariants: { size: "md" },
-});
+//
+// NOTE — there is deliberately no `size` prop. One shipped from the v6 snapshot with EMPTY
+// variants (`md: ""`, `compact: ""`) and no CSS ever read the `data-size` it emitted, so
+// `size="compact"` was inert in every density for its whole life. Card sizing is `density`
+// (tight 12px · base 16px · cozy 20px), which is implemented and measured; a second sizing
+// axis would only duplicate it. Removed 2026-08-24.
 
-export type CardProps = React.HTMLAttributes<HTMLDivElement> &
-  VariantProps<typeof cardVariants> & {
-    size?: CardSize;
+export type CardProps = React.HTMLAttributes<HTMLDivElement> & {
     accent?: CardAccent;
     /**
      * Where `accent` is drawn — `"edge"` (default, the leading-edge stripe) or `"perimeter"`
@@ -53,12 +46,11 @@ export type CardProps = React.HTMLAttributes<HTMLDivElement> &
   };
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, size = "md", accent, accentPlacement, variant, density, ...props }, ref) => (
+  ({ className, accent, accentPlacement, variant, density, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(cardVariants({ size }), className)}
+      className={cn("group/card", className)}
       data-slot="card"
-      data-size={size === "compact" ? "compact" : undefined}
       data-accent={accent}
       // INERT DEFAULT: `edge` emits no attribute at all, so every existing accented Card keeps
       // the exact DOM and the exact leading-rail geometry it had.
@@ -210,8 +202,7 @@ export const CardBar = React.forwardRef<HTMLDivElement, CardBarProps>(
 );
 CardBar.displayName = "CardBar";
 
-export type StatCardProps = React.HTMLAttributes<HTMLDivElement> &
-  VariantProps<typeof cardVariants> & {
+export type StatCardProps = React.HTMLAttributes<HTMLDivElement> & {
     label: React.ReactNode;
     value: React.ReactNode;
     hint?: React.ReactNode;
@@ -260,14 +251,12 @@ export function StatCard({
   accent,
   accentPlacement,
   className,
-  size = "compact",
   ...props
 }: StatCardProps) {
   const deltaTone = getDeltaTone(delta, inverse);
 
   return (
     <Card
-      size={size ?? "compact"}
       accent={accent}
       accentPlacement={accentPlacement}
       className={cn("ui-stat-card", className)}

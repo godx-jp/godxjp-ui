@@ -54,11 +54,6 @@
     color: hsl(var(--primary-foreground));
   }
 
-  .ui-toggle:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px hsl(var(--focus-ring-color, var(--ring)) / 0.35);
-  }
-
   .ui-toggle:disabled,
   .ui-toggle[data-disabled] {
     cursor: not-allowed;
@@ -81,11 +76,6 @@
     font-weight: var(--font-weight-medium);
     transition-property: color, background-color, border-color, box-shadow;
     transition-duration: 150ms;
-  }
-
-  .ui-button:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
   }
 
   .ui-button:disabled {
@@ -327,14 +317,6 @@
     border-radius: var(--radius-pill);
   }
 
-  .ui-checkbox:focus-visible,
-  .ui-radio:focus-visible,
-  .ui-slider-thumb:focus-visible,
-  .ui-switch:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
-  }
-
   .ui-checkbox:disabled,
   .ui-radio:disabled,
   .ui-slider-thumb:disabled,
@@ -534,8 +516,6 @@
   }
 
   .ui-command-input:focus-visible {
-    box-shadow: none;
-    outline: none;
   }
 
   .ui-command-list {
@@ -861,8 +841,6 @@
   fill: currentColor;
 }
 .ui-rating-star:focus-visible {
-  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color, var(--ring)));
-  outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 

@@ -6,6 +6,11 @@
   --sidebar-section-label-font-size: var(--font-size-2xs);
   --sidebar-product-tenant-font-size: var(--font-size-2xs);
   --sidebar-badge-font-size: var(--font-size-2xs);
+  /* Softened focus ring on the tinted shell grounds: at full alpha the ring
+   * reads as a SELECTED item rather than a focused one (styles/focus-ring.css). */
+  --sidebar-user-focus-ring-opacity: 0.45;
+  --topbar-icon-focus-ring-opacity: 0.45;
+
   --sidebar-user-role-font-size: var(--font-size-2xs);
   --org-switcher-meta-foreground: var(--muted-foreground);
   --sidebar-nav-sub-font-size: var(--font-size-xs);

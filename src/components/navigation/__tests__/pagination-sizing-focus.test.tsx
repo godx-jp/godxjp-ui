@@ -9,6 +9,11 @@ import { buildPageRange } from "../pagination-utils";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const layoutCss = readFileSync(join(here, "../../../styles/layout.css"), "utf8");
+// The ring itself moved OUT of layout.css into the single-source stylesheet: every
+// :focus-visible ring in the system is drawn by one rule reading four tokens, so a
+// service retunes them once instead of per component. Pagination is a member of that
+// rule's selector list rather than carrying a hand-written copy.
+const focusRingCss = readFileSync(join(here, "../../../styles/focus-ring.css"), "utf8");
 
 /**
  * Three defects reported from a consumer list of 21,185 rows (1,060 pages), 2026-08-24:
@@ -71,17 +76,21 @@ describe("正常系: キーボードフォーカスの輪郭", () => {
   // Without an explicit rule the browser paints its own ring (measured rgb(0,95,204)) which
   // belongs to no theme. The ring must come from the same tokens as .ui-button.
   it("フォーカスリングはブラウザ既定ではなくデザインシステムのトークンを使う", () => {
-    const start = layoutCss.indexOf(".ui-pagination-link:focus-visible");
-    expect(start, "focus-visible rule missing").toBeGreaterThan(-1);
-    const rule = layoutCss.slice(start, layoutCss.indexOf("}", start));
+    const start = focusRingCss.indexOf(".ui-focus-ring,");
+    expect(start, "shadow-form ring rule missing").toBeGreaterThan(-1);
+    const rule = focusRingCss.slice(start, focusRingCss.indexOf("}", start));
 
+    expect(rule).toContain(".ui-pagination-link");
     expect(rule).toContain("outline: none");
     expect(rule).toContain("var(--focus-ring-width)");
     expect(rule).toContain("var(--focus-ring-color, var(--ring))");
+
+    // …and nothing paints a competing ring back in layout.css.
+    expect(layoutCss).not.toMatch(/\.ui-pagination-link:focus-visible[^}]*box-shadow/);
   });
 
   it("フォーカスルールのセレクタがページボタンに一致する", () => {
-    const selector = ruleSelector(layoutCss, ".ui-pagination-link:focus-visible");
+    const selector = ruleSelector(focusRingCss, ".ui-focus-ring,", ".ui-pagination-link");
     renderWithUi(<Pagination value={1} total={21185} pageSize={20} onValueChange={() => {}} />);
 
     // `.matches()` on a :focus-visible selector needs the element focused — jsdom resolves the

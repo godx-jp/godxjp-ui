@@ -186,7 +186,7 @@ export default function Demo() {
               </CardHeader>
               <CardContent>標準のインセット（16px）</CardContent>
             </Card>
-            <Card size="compact">
+            <Card density="tight">
               <CardHeader>
                 <CardTitle level={2}>size=compact</CardTitle>
               </CardHeader>

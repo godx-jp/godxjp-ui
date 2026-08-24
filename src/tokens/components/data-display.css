@@ -1,6 +1,10 @@
 /* Data-display component tokens — small-by-design text knobs (rule #45/#46). */
 
 :root {
+  /* Outline-form ring gaps — a hugging ring would touch these marks
+   * (styles/focus-ring.css). */
+  --accordion-focus-ring-offset: 2px;
+  --carousel-dot-focus-ring-offset: 2px;
   --progress-label-font-size: var(--font-size-xs);
   --tree-item-title-font-size: var(--font-size-xs);
   --tree-item-description-font-size: var(--font-size-xs);

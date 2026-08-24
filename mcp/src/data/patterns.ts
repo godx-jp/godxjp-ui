@@ -416,7 +416,7 @@ export function DeleteProjectDialog({ open, onOpenChange, slug }: { open: boolea
         </Flex>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>キャンセル</Button>
-          <Button tone="destructive" disabled={confirm !== slug} onClick={() => { toast.success("削除しました"); onOpenChange(false); }}>完全に削除</Button>
+          <Button variant="destructive" disabled={confirm !== slug} onClick={() => { toast.success("削除しました"); onOpenChange(false); }}>完全に削除</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

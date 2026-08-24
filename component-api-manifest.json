@@ -2063,14 +2063,6 @@
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "\"compact\" | \"md\" | undefined",
-          "values": ["compact", "md"],
-          "declaredIn": ["src/components/data-display/card.tsx"]
-        },
-        {
           "name": "variant",
           "origin": "owned",
           "required": false,
@@ -11004,14 +10996,6 @@
           "required": false,
           "type": "\"inline\" | \"stacked\" | undefined",
           "values": ["inline", "stacked"],
-          "declaredIn": ["src/components/data-display/card.tsx"]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "\"compact\" | \"md\" | null | undefined",
-          "values": ["compact", "md"],
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {

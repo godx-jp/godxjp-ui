@@ -305,8 +305,6 @@
   text-decoration: underline;
 }
 .ui-accordion-trigger:focus-visible {
-  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color, var(--ring)));
-  outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 .ui-accordion-trigger:disabled,
@@ -429,11 +427,6 @@
 .ui-carousel-dot[data-active] {
   width: var(--space-5);
   background: hsl(var(--primary));
-}
-
-.ui-carousel-dot:focus-visible {
-  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color, var(--ring)));
-  outline-offset: 2px;
 }
 
 /* Vertical orientation — stack the dots into a column beside the track. */

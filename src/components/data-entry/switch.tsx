@@ -31,7 +31,7 @@ export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive
           checked={isChecked}
           onCheckedChange={handleCheckedChange}
           className={cn(
-            "peer ui-switch focus-visible:border-ring focus-visible:ring-ring/50 shadow-xs transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+            "peer ui-switch shadow-xs transition-all outline-none disabled:cursor-not-allowed disabled:opacity-50",
             className,
           )}
           {...props}

@@ -130,7 +130,9 @@ Import the styles, then set anchor tokens in your app's `theme.css` (loaded afte
   --card-shadow:
     0 1px 2px rgb(12 26 49 / 0.06), 0 10px 28px -14px rgb(12 26 49 / 0.2); /* lift every Card */
   --focus-ring-color: var(--ring); /* hue of every focus ring */
-  --focus-ring-width: 2px; /* thickness of every focus ring */
+  --focus-ring-width: 2px; /* thickness of every focus ring — 0 turns it OFF */
+  --focus-ring-opacity: 1; /* alpha of every focus ring */
+  --focus-ring-offset: 0px; /* gap, outline-form rings only (star, dot, anchor) */
   --gradient-hero: linear-gradient(
     180deg,
     hsl(var(--accent)),
@@ -155,9 +157,55 @@ Import the styles, then set anchor tokens in your app's `theme.css` (loaded afte
 | `--shadow-color`                                                           | `0 0 0`                 | every shadow step `--shadow-{xs…2xl}` (`rgb(color / α)`)                                |
 | `--shadow-glow`                                                            | invisible               | brand glow halo on the primary CTA (set the full shadow value)                          |
 | `--card-shadow`                                                            | `none`                  | resting elevation of every Card                                                         |
-| `--focus-ring-color` / `--focus-ring-width`                                | `var(--ring)` / `2px`   | hue & thickness of every keyboard-focus ring                                            |
+| `--focus-ring-color` / `--focus-ring-width`                                | `var(--ring)` / `2px`   | hue & thickness of every keyboard-focus ring (`width: 0` turns every ring OFF)          |
+| `--focus-ring-opacity` / `--focus-ring-offset`                             | `1` / `0px`             | alpha of every ring · gap for outline-form rings (star, carousel dot, heading anchor)   |
 | `--gradient-{hero,glow,brand}`                                             | `none`                  | hero header banner / AppShell ambient wash / spare (set the full gradient)              |
 | `--overlay-background`                                                     | `rgb(0 0 0 / .5)`       | the scrim of every overlay (Dialog / AlertDialog / Sheet / Drawer)                      |
+
+### Focus ring — one definition, three levels of override
+
+Every keyboard-focus ring in the system is drawn by a single rule
+(`src/styles/focus-ring.css`) reading the four tokens above. Nothing else paints
+one; a test fails the build if a stylesheet tries.
+
+That means retuning is a one-liner and it reaches everything:
+
+```css
+:root {
+  --focus-ring-color: 24 99% 46%; /* every ring, brand orange */
+  --focus-ring-width: 3px; /* every ring, thicker */
+}
+```
+
+**Per component.** A component that genuinely needs a different ring publishes
+its own knob and the rule picks it up locally — Toggle and TimeInput ship a
+heavier, softer ring because they are filled surfaces where a hard 2px reads as
+a second border:
+
+```css
+:root {
+  --toggle-focus-ring-width: 3px;
+  --toggle-focus-ring-opacity: 0.35;
+  --sidebar-user-focus-ring-opacity: 0.45; /* tinted shell ground */
+  --rating-focus-ring-offset: 2px; /* outline form needs a gap */
+}
+```
+
+**Per instance.** Any subtree, no CSS file needed:
+
+```tsx
+<div style={{ "--focus-ring-color": "0 84% 60%" } as React.CSSProperties}>…</div>
+```
+
+**Turning it off** — `--focus-ring-width: 0`, at any of the three levels. It
+ships **on** (WCAG 2.4.7 / 2.4.11); switching it off is a deliberate act on your
+side, never a default of this package. Removing the visible focus indicator
+fails WCAG 2.4.7 — do it only where another indicator takes over.
+
+**Adding your own component to the system**: put `ui-focus-ring` (or
+`ui-focus-ring-outline` when the mark needs a gap) on the focusable element. Do
+not hand-write a `:focus-visible` box-shadow — that is what drifted into four
+incompatible rings before this rule existed.
 
 Semantic status colors (`--success/-warning/-info/-attention/-destructive`) are **fixed** so a
 "rejected" badge means the same in every brand — override them only if your brand genuinely

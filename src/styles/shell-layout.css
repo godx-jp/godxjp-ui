@@ -1184,10 +1184,6 @@
     outline: none;
   }
 
-  .sb-user:focus-visible {
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)) / 0.45);
-  }
-
   .sb-user-avatar {
     position: relative;
     display: inline-flex;
@@ -1529,10 +1525,6 @@
 
   .tb-icon-btn:focus {
     outline: none;
-  }
-
-  .tb-icon-btn:focus-visible {
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)) / 0.45);
   }
 
   .tb-bell {

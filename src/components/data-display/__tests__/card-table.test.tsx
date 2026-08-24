@@ -290,7 +290,7 @@ describe("Card", () => {
     expect(screen.getByTestId("content")).toHaveAttribute("data-solo", "");
   });
 
-  it("StatCard uses compact stat slot token path", () => {
+  it("StatCard uses the stat slot token path", () => {
     renderWithUi(
       <StatCard
         label="Đơn hôm nay"
@@ -300,7 +300,7 @@ describe("Card", () => {
       />,
     );
     const card = screen.getByTestId("stat");
-    expect(card).toHaveAttribute("data-size", "compact");
+    // (no data-size assertion: the attribute existed but no CSS ever read it — removed 2026-08-24)
     expect(card).toHaveAttribute("data-stat-card", "");
     expect(card).toHaveAttribute("data-stat-layout", "stacked");
     expect(screen.getByText("Đơn hôm nay")).toHaveAttribute("data-slot", "stat-card-label");

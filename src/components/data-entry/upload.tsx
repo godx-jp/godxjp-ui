@@ -409,7 +409,7 @@ export function Upload({
           onClick={openPicker}
           className={cn(
             "border-border bg-muted relative size-24 overflow-hidden rounded-full border-2",
-            "focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none",
+            "ui-focus-ring",
             item?.pendingDelete && "opacity-40",
             disabled && "pointer-events-none opacity-50",
           )}
