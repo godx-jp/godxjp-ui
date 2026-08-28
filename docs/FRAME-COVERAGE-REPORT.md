@@ -34,7 +34,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | DataTable | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Card | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | CardContent | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| StatCard | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
+| StatCard | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | ServiceLauncherCard | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Badge | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | ListRow | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
@@ -55,7 +55,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | SearchInput | ✓ | N/A | · | · | · | · | · | · | · | · |
 | Select | ✓ | N/A | · | · | · | · | · | · | · | · |
 | Switch | ✓ | ✓ | · | · | · | · | · | · | · | · |
-| Textarea | ✓ | N/A | · | · | · | · | · | · | · | · |
+| Textarea | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Label | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Checkbox | ✓ | N/A | · | · | · | · | · | · | · | · |
 | RadioGroup | ✓ | N/A | · | · | · | · | · | · | · | · |

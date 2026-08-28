@@ -30,7 +30,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Embedded in a surface — variant="ghost"</CardTitle>
+            <CardTitle level={2}>Embedded in a surface · variant="ghost"</CardTitle>
             <CardDescription>
               The Card already draws the box, so the field must not draw a second one. Focus moves
               to the surface via focus-within.
@@ -39,16 +39,18 @@ export default function Demo() {
           <CardContent>
             <Flex direction="col" gap="md">
               <Card className="focus-within:ring-ring/50 overflow-hidden focus-within:ring-2">
-                <Textarea
-                  variant="ghost"
-                  className="resize-none"
-                  rows={2}
-                  aria-label="サーフェス内のテキストエリア"
-                  placeholder="メッセージを入力..."
-                />
-                <Flex direction="row" justify="end" className="px-2 pb-2">
-                  <Button size="sm">送信</Button>
-                </Flex>
+                <CardContent flush>
+                  <Textarea
+                    variant="ghost"
+                    className="resize-none"
+                    rows={2}
+                    aria-label="サーフェス内のテキストエリア"
+                    placeholder="メッセージを入力..."
+                  />
+                  <Flex direction="row" justify="end" className="px-2 pb-2">
+                    <Button size="sm">送信</Button>
+                  </Flex>
+                </CardContent>
               </Card>
               <Textarea
                 variant="default"
