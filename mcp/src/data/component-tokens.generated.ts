@@ -519,114 +519,139 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
   },
   {
+    "name": "--toggle-focus-ring-width",
+    "value": "3px",
+    "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
+  },
+  {
+    "name": "--toggle-focus-ring-opacity",
+    "value": "0.35",
+    "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
+  },
+  {
+    "name": "--time-input-focus-ring-width",
+    "value": "3px",
+    "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
+  },
+  {
+    "name": "--time-input-focus-ring-opacity",
+    "value": "0.3",
+    "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
+  },
+  {
+    "name": "--rating-focus-ring-offset",
+    "value": "2px",
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
+  },
+  {
     "name": "--checkbox-size",
     "value": "calc(1rem * var(--scaling))",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--checkbox-size-compact",
     "value": "0.875rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--checkbox-size-comfortable",
     "value": "1.125rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--choice-gap",
     "value": "var(--space-inline-sm)",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--choice-group-gap-x",
     "value": "var(--space-6)",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--choice-group-gap-y",
     "value": "var(--space-3)",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--choice-description-gap",
     "value": "0.125rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--choice-control-offset",
     "value": "0.125rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-width",
     "value": "calc(2.25rem * var(--scaling))",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-width-compact",
     "value": "2rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-width-comfortable",
     "value": "2.5rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-height",
     "value": "calc(1.25rem * var(--scaling))",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-height-compact",
     "value": "1.125rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-height-comfortable",
     "value": "1.375rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-thumb-size",
     "value": "calc(1rem * var(--scaling))",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-thumb-size-compact",
     "value": "0.875rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-thumb-size-comfortable",
     "value": "1.125rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-thumb-translate",
     "value": "calc(1rem * var(--scaling))",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-thumb-translate-compact",
     "value": "0.875rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--switch-thumb-translate-comfortable",
     "value": "1.125rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--slider-track-height",
     "value": "0.375rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--slider-thumb-size",
     "value": "1rem",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
     "name": "--otp-slot-size",
@@ -794,24 +819,34 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
   },
   {
+    "name": "--accordion-focus-ring-offset",
+    "value": "2px",
+    "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
+  },
+  {
+    "name": "--carousel-dot-focus-ring-offset",
+    "value": "2px",
+    "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
+  },
+  {
     "name": "--progress-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
   },
   {
     "name": "--tree-item-title-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
   },
   {
     "name": "--tree-item-description-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
   },
   {
     "name": "--timeline-note-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
   },
   {
     "name": "--avatar-background",
@@ -1419,9 +1454,14 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value * mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical * rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, * which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` * composition every real Save-button form needs), so it holds at any DOM depth relative to Form."
   },
   {
+    "name": "--legal-document-section-focus-ring-offset",
+    "value": "var(--space-1)",
+    "description": "Section anchor ring needs a gap so the mark does not touch the heading * (outline form — styles/focus-ring.css)."
+  },
+  {
     "name": "--legal-document-measure-max-width",
     "value": "46rem",
-    "description": "Readable document measure. Caps the header, the section column and the footer so * a 1440px viewport still reads at ~75-90 characters per line."
+    "description": "Section anchor ring needs a gap so the mark does not touch the heading * (outline form — styles/focus-ring.css)."
   },
   {
     "name": "--legal-document-column-gap",
@@ -1979,49 +2019,59 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
+    "name": "--sidebar-user-focus-ring-opacity",
+    "value": "0.45",
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+  },
+  {
+    "name": "--topbar-icon-focus-ring-opacity",
+    "value": "0.45",
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+  },
+  {
     "name": "--sidebar-user-role-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
     "name": "--org-switcher-meta-foreground",
     "value": "var(--muted-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
     "name": "--sidebar-nav-sub-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
     "name": "--sidebar-flyout-title-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
     "name": "--topbar-chip-icon-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
     "name": "--kbd-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
     "name": "--sidebar-logo-mark-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
     "name": "--sidebar-avatar-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
     "name": "--sidebar-user-name-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
     "name": "--sidebar-gradient",
