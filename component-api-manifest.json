@@ -11773,6 +11773,14 @@
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
           ]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"ghost\" | undefined",
+          "values": ["default", "ghost"],
+          "declaredIn": ["src/components/data-entry/textarea.tsx"]
         }
       ]
     },
@@ -12944,6 +12952,14 @@
           "required": false,
           "type": "\"default\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | undefined",
           "values": ["default", "xs", "sm", "md", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "triggerVariant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"link\" | \"default\" | \"ghost\" | \"destructive\" | \"secondary\" | \"outline\" | \"dashed\" | undefined",
+          "values": ["link", "default", "ghost", "destructive", "secondary", "outline", "dashed"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
