@@ -116,6 +116,7 @@ async function runUpload(
 export function Upload({
   variant = "dropzone",
   triggerSize,
+  triggerVariant = "outline",
   value,
   defaultValue,
   onValueChange,
@@ -294,7 +295,7 @@ export function Upload({
         {liveRegion}
         <Button
           type="button"
-          variant="outline"
+          variant={triggerVariant}
           size={triggerSize}
           disabled={disabled}
           onClick={openPicker}
