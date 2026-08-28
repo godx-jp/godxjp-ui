@@ -1,403 +1,123 @@
 {
   "schemaVersion": 1,
   "components": {
-    "Form": {
-      "complete": true,
+    "Alert": {
       "props": {
-        "asChild": {
+        "tone": {
           "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
-        },
-        "className": {
-          "cases": [
-            "contract-collapse-form"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
-        },
-        "collapseBelow": {
-          "cases": [
-            false,
-            "sm",
-            "md",
-            "lg",
-            "xl"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
-        },
-        "columns": {
-          "cases": [
-            2
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
-        },
-        "controlWidth": {
-          "cases": [
-            "18rem"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
-        },
-        "density": {
-          "cases": [
-            "compact",
             "default",
-            "comfortable"
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral"
           ],
           "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
-        },
-        "labelAlign": {
-          "cases": [
-            "start",
-            "end"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
-        },
-        "labelWidth": {
-          "cases": [
-            120,
-            "6rem",
-            "8rem"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
-        },
-        "layout": {
-          "cases": [
-            "vertical",
-            "horizontal",
-            "inline"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
-        },
-        "errors": {
-          "cases": [
-            "bag",
-            "omitted"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx",
-            "src/components/data-entry/__tests__/form-errors.test.tsx"
-          ]
-        }
-      }
-    },
-    "FormField": {
-      "complete": true,
-      "props": {
-        "children": {
-          "cases": [
-            "Input",
-            "Select"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
-        },
-        "className": {
-          "cases": [
-            "contract-auto-id"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
-        },
-        "colSpan": {
-          "cases": [
-            2
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
-        },
-        "controlWidth": {
-          "cases": [
-            "16rem",
-            "20rem"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
-        },
-        "error": {
-          "cases": [
-            "client",
-            "server"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx",
-            "src/components/data-entry/__tests__/form-field.a11y.test.tsx"
-          ]
-        },
-        "helper": {
-          "cases": [
-            "present",
-            "absent"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
-        },
-        "id": {
-          "cases": [
-            "explicit",
-            "generated"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx",
-            "src/components/data-entry/__tests__/form-field.test.tsx"
-          ]
-        },
-        "label": {
-          "cases": [
-            "text",
-            "long-locale"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
-        },
-        "labelAddon": {
-          "cases": [
-            "button"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
-        },
-        "labelWidth": {
-          "cases": [
-            "8rem",
-            "12rem"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
-        },
-        "layout": {
-          "cases": [
-            "vertical",
-            "horizontal",
-            "inline"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
-        },
-        "required": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx",
-            "src/components/data-entry/__tests__/form-field.a11y.test.tsx"
-          ]
-        },
-        "staticText": {
-          "cases": [
-            "text",
-            "node"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx",
-            "src/components/data-entry/__tests__/form-field.test.tsx"
-          ]
-        },
-        "name": {
-          "cases": [
-            "claimed",
-            "unbound"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx",
-            "src/components/data-entry/__tests__/form-errors.test.tsx"
-          ]
-        }
-      }
-    },
-    "Select": {
-      "props": {
-        "defaultValue": {
-          "cases": [
-            "suzuki"
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx"
-          ]
-        },
-        "disabled": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
-        },
-        "name": {
-          "cases": [
-            "select_default_open"
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx"
-          ]
-        },
-        "onOpenChange": {
-          "cases": [
-            "controlled callback"
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx"
-          ]
-        },
-        "onValueChange": {
-          "cases": [
-            "controlled callback"
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx",
-            "src/components/data-entry/__tests__/select-interaction.test.tsx"
-          ]
-        },
-        "open": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
-        },
-        "value": {
-          "cases": [
-            "tanaka"
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx",
-            "src/components/data-entry/__tests__/select-controlled-empty.test.tsx"
-          ]
-        }
-      }
-    },
-    "Tabs": {
-      "props": {
-        "activationMode": {
-          "cases": [
-            "manual",
-            "automatic"
-          ],
-          "evidence": [
-            "src/components/navigation/__tests__/tabs-variants.test.tsx",
-            "scripts/check-layout-nav-frames.mjs"
-          ]
-        },
-        "contentClassName": {
-          "cases": [
-            "custom class"
-          ],
-          "evidence": [
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
-          ]
-        },
-        "defaultValue": {
-          "cases": [
-            "explicit",
-            "first enabled fallback"
-          ],
-          "evidence": [
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
-          ]
-        },
-        "dir": {
-          "cases": [
-            "ltr",
-            "rtl"
-          ],
-          "evidence": [
-            "docs/navigation/tabs-rtl.tsx",
-            "src/components/navigation/__tests__/tabs-variants.test.tsx",
-            "scripts/check-layout-nav-frames.mjs"
-          ]
-        },
-        "items": {
-          "cases": [
-            "items API",
-            "compound children"
-          ],
-          "evidence": [
-            "docs/navigation/tabs.tsx",
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
-          ]
-        },
-        "listClassName": {
-          "cases": [
-            "custom class"
-          ],
-          "evidence": [
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
-          ]
-        },
-        "onValueChange": {
-          "cases": [
-            "controlled callback"
-          ],
-          "evidence": [
-            "docs/navigation/tabs.tsx",
-            "scripts/check-layout-nav-frames.mjs"
-          ]
-        },
-        "orientation": {
-          "cases": [
-            "vertical",
-            "horizontal"
-          ],
-          "evidence": [
-            "docs/navigation/tabs.tsx",
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
-          ]
-        },
-        "value": {
-          "cases": [
-            "controlled"
-          ],
-          "evidence": [
-            "docs/navigation/tabs.tsx",
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+            "docs/feedback/alert.tsx"
           ]
         },
         "variant": {
           "cases": [
-            "line",
             "default",
-            "card"
+            "banner"
           ],
           "evidence": [
-            "docs/navigation/tabs.tsx",
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+            "docs/feedback/alert.tsx",
+            "docs/feedback/banner.tsx",
+            "src/components/feedback/__tests__/banner.test.tsx"
+          ]
+        }
+      }
+    },
+    "AlertDialog": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "destructive"
+          ],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx"
+          ]
+        }
+      }
+    },
+    "AlertDialogHeader": {
+      "props": {
+        "tone": {
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral"
+          ],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx"
+          ]
+        },
+        "title": {
+          "cases": [
+            "prop-driven title"
+          ],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx",
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
+          ]
+        },
+        "subtitle": {
+          "cases": [
+            "prop-driven subtitle"
+          ],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx",
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
+          ]
+        },
+        "extra": {
+          "cases": [
+            "trailing badge slot"
+          ],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx",
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
+          ]
+        }
+      }
+    },
+    "AlertDialogRoot": {
+      "props": {
+        "open": {
+          "cases": [
+            true,
+            false
+          ],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx",
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
+          ]
+        },
+        "defaultOpen": {
+          "cases": [
+            true,
+            false
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
+          ]
+        },
+        "onOpenChange": {
+          "cases": [
+            "controlled callback",
+            "cancel",
+            "escape"
+          ],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx",
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
           ]
         }
       }
@@ -487,144 +207,199 @@
         }
       }
     },
-    "Pagination": {
+    "AreaChart": {
       "props": {
-        "ariaLabel": {
+        "size": {
           "cases": [
-            "localized default",
-            "custom"
+            "xs",
+            "sm",
+            "md",
+            "lg"
           ],
           "evidence": [
-            "docs/navigation/pagination.tsx",
-            "src/components/navigation/__tests__/pagination-full.test.tsx"
-          ]
-        },
-        "className": {
-          "cases": [
-            "custom class"
-          ],
-          "evidence": [
-            "src/components/navigation/__tests__/pagination-full.test.tsx"
-          ]
-        },
-        "disabled": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/navigation/pagination.tsx",
-            "src/components/navigation/__tests__/pagination-full.test.tsx"
-          ]
-        },
-        "onValueChange": {
-          "cases": [
-            "next",
-            "previous",
-            "page size"
-          ],
-          "evidence": [
-            "src/components/navigation/__tests__/pagination-full.test.tsx",
-            "scripts/check-layout-nav-frames.mjs"
-          ]
-        },
-        "pageSize": {
-          "cases": [
-            5,
-            10,
-            20
-          ],
-          "evidence": [
-            "docs/navigation/pagination.tsx",
-            "src/components/navigation/__tests__/pagination-full.test.tsx"
-          ]
-        },
-        "pageSizeOptions": {
-          "cases": [
-            "5,10,20,50"
-          ],
-          "evidence": [
-            "docs/navigation/pagination.tsx",
-            "src/components/navigation/__tests__/pagination-full.test.tsx"
-          ]
-        },
-        "showSizeChanger": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/navigation/pagination.tsx",
-            "src/components/navigation/__tests__/pagination-full.test.tsx"
-          ]
-        },
-        "showTotal": {
-          "cases": [
-            false,
-            true,
-            "render function"
-          ],
-          "evidence": [
-            "docs/navigation/pagination.tsx",
-            "src/components/navigation/__tests__/pagination-full.test.tsx",
-            "src/components/navigation/__tests__/pagination-simple-total.test.tsx"
-          ]
-        },
-        "simple": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/navigation/pagination.tsx",
-            "src/components/navigation/__tests__/pagination-full.test.tsx"
-          ]
-        },
-        "total": {
-          "cases": [
-            0,
-            47,
-            50,
-            95
-          ],
-          "evidence": [
-            "docs/navigation/pagination.tsx",
-            "src/components/navigation/__tests__/pagination-full.test.tsx"
-          ]
-        },
-        "value": {
-          "cases": [
-            1,
-            2,
-            3
-          ],
-          "evidence": [
-            "docs/navigation/pagination.tsx",
-            "src/components/navigation/__tests__/pagination-full.test.tsx",
-            "scripts/check-layout-nav-frames.mjs"
+            "docs/charts/size-tiers.tsx"
           ]
         }
       }
     },
-    "Input": {
-      "complete": true,
+    "AuthShell": {
       "props": {
-        "allowClear": {
+        "variant": {
+          "cases": [
+            "default",
+            "canonical"
+          ],
+          "evidence": [
+            "docs/layout/auth-shell-variants.tsx",
+            "docs/layout/auth-shell.tsx"
+          ]
+        },
+        "density": {
+          "cases": [
+            "compact",
+            "comfortable"
+          ],
+          "evidence": [
+            "docs/layout/auth-shell-variants.tsx"
+          ]
+        }
+      }
+    },
+    "Avatar": {
+      "props": {
+        "shape": {
+          "cases": [
+            "circle",
+            "square"
+          ],
+          "evidence": [
+            "docs/data-display/avatar.tsx"
+          ]
+        }
+      }
+    },
+    "Badge": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "secondary",
+            "outline",
+            "dashed"
+          ],
+          "evidence": [
+            "docs/data-display/badge.tsx"
+          ]
+        },
+        "tone": {
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral",
+            "primary"
+          ],
+          "evidence": [
+            "docs/data-display/badge.tsx"
+          ]
+        },
+        "shape": {
+          "cases": [
+            "default",
+            "pill",
+            "sharp"
+          ],
+          "evidence": [
+            "docs/data-display/badge.tsx"
+          ]
+        }
+      }
+    },
+    "Banner": {
+      "props": {
+        "tone": {
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral"
+          ],
+          "evidence": [
+            "docs/feedback/banner.tsx",
+            "src/components/feedback/__tests__/banner.test.tsx"
+          ]
+        }
+      }
+    },
+    "BarChart": {
+      "props": {
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "docs/charts/size-tiers.tsx"
+          ]
+        }
+      }
+    },
+    "Button": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "destructive",
+            "outline",
+            "dashed",
+            "secondary",
+            "ghost",
+            "link"
+          ],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "size": {
+          "cases": [
+            "default",
+            "md",
+            "xs",
+            "sm",
+            "lg",
+            "icon",
+            "icon-xs",
+            "icon-sm",
+            "icon-lg"
+          ],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "shape": {
+          "cases": [
+            "default",
+            "pill",
+            "sharp"
+          ],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "fullWidth": {
           "cases": [
             false,
             true
           ],
           "evidence": [
-            "docs/data-entry/input.tsx",
-            "src/components/data-entry/__tests__/input-clear.test.tsx"
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
           ]
         },
-        "defaultValue": {
+        "asChild": {
           "cases": [
-            "filled"
+            false,
+            true
           ],
           "evidence": [
-            "docs/data-entry/input.tsx"
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
           ]
         },
         "disabled": {
@@ -633,138 +408,156 @@
             true
           ],
           "evidence": [
-            "docs/data-entry/input.tsx",
-            "src/components/data-entry/__tests__/input.a11y.test.tsx"
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
           ]
         },
-        "leadingIcon": {
+        "loading": {
           "cases": [
-            "currency"
+            false,
+            true
           ],
           "evidence": [
-            "docs/data-entry/input.tsx"
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
           ]
         },
-        "onClear": {
+        "loadingText": {
           "cases": [
-            "callback"
+            "omitted",
+            "provided"
           ],
           "evidence": [
-            "docs/data-entry/input.tsx",
-            "src/components/data-entry/__tests__/input-clear.test.tsx"
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
           ]
         },
-        "trailingIcon": {
+        "count": {
           "cases": [
-            "reference"
+            "omitted",
+            0,
+            18,
+            128
           ],
           "evidence": [
-            "docs/data-entry/input.tsx"
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "overflowCount": {
+          "cases": [
+            "default-99",
+            "custom-9"
+          ],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "showZero": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
           ]
         },
         "type": {
           "cases": [
-            "text",
-            "password",
-            "number",
-            "date",
-            "file",
-            "email"
+            "button",
+            "reset",
+            "submit"
           ],
           "evidence": [
-            "docs/data-entry/input.tsx"
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
           ]
         },
-        "value": {
+        "onClick": {
           "cases": [
-            "controlled"
+            "fires when enabled",
+            "blocked when disabled",
+            "blocked while loading"
           ],
           "evidence": [
-            "docs/data-entry/input.tsx",
-            "src/components/data-entry/__tests__/input-interactions.test.tsx"
+            "src/components/general/__tests__/button.test.tsx"
           ]
         }
       }
     },
-    "PasswordInput": {
-      "complete": true,
+    "ButtonRefetch": {
       "props": {
-        "allowClear": {
+        "variant": {
           "cases": [
-            false,
-            true
+            "link",
+            "default",
+            "ghost",
+            "destructive",
+            "secondary",
+            "outline",
+            "dashed"
           ],
           "evidence": [
-            "docs/data-entry/password-input.tsx"
+            "docs/query/button-refetch.tsx"
           ]
         },
-        "leadingIcon": {
-          "cases": [
-            "present"
-          ],
-          "evidence": [
-            "docs/data-entry/password-input.tsx",
-            "src/components/data-entry/__tests__/password-input.test.tsx"
-          ]
-        },
-        "onClear": {
-          "cases": [
-            "callback"
-          ],
-          "evidence": [
-            "docs/data-entry/password-input.tsx"
-          ]
-        },
-        "trailingIcon": {
-          "cases": [
-            "present"
-          ],
-          "evidence": [
-            "docs/data-entry/password-input.tsx"
-          ]
-        }
-      }
-    },
-    "PasswordStrength": {
-      "complete": true,
-      "props": {
-        "labels": {
-          "cases": [
-            "custom"
-          ],
-          "evidence": [
-            "docs/data-entry/password-strength.tsx",
-            "src/components/data-entry/__tests__/password-strength.test.tsx"
-          ]
-        },
-        "rules": {
+        "size": {
           "cases": [
             "default",
-            "custom"
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "icon",
+            "icon-xs",
+            "icon-sm",
+            "icon-lg"
           ],
           "evidence": [
-            "docs/data-entry/password-strength.tsx",
-            "src/components/data-entry/__tests__/password-strength.test.tsx"
+            "docs/query/button-refetch.tsx"
           ]
         },
-        "showChecklist": {
+        "shape": {
           "cases": [
-            false,
-            true
+            "default",
+            "pill",
+            "sharp"
           ],
           "evidence": [
-            "docs/data-entry/password-strength.tsx"
+            "docs/query/button-refetch.tsx"
+          ]
+        }
+      }
+    },
+    "Card": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "muted",
+            "outline",
+            "featured"
+          ],
+          "evidence": [
+            "docs/data-display/card/index.tsx"
           ]
         },
-        "value": {
+        "density": {
           "cases": [
-            "empty",
-            "weak",
-            "strong"
+            "tight",
+            "cozy"
           ],
           "evidence": [
-            "docs/data-entry/password-strength.tsx",
-            "src/components/data-entry/__tests__/password-strength.test.tsx"
+            "docs/data-display/card/index.tsx"
           ]
         }
       }
@@ -908,6 +701,928 @@
           "evidence": [
             "docs/data-entry/checkbox.tsx",
             "src/components/data-entry/__tests__/checkbox-group.test.tsx"
+          ]
+        }
+      }
+    },
+    "CompactBarTrend": {
+      "props": {
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "docs/charts/compact-bar-trend.tsx"
+          ]
+        }
+      }
+    },
+    "ContextMenuItem": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "destructive"
+          ],
+          "evidence": [
+            "docs/navigation/context-menu.tsx",
+            "src/components/navigation/__tests__/context-menu.test.tsx"
+          ]
+        }
+      }
+    },
+    "CredentialReveal": {
+      "props": {
+        "tone": {
+          "cases": [
+            "warning",
+            "destructive",
+            "info"
+          ],
+          "evidence": [
+            "docs/data-display/credential-reveal.tsx"
+          ]
+        },
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "docs/data-display/credential-reveal.tsx"
+          ]
+        }
+      }
+    },
+    "DataTable": {
+      "props": {
+        "density": {
+          "cases": [
+            "compact",
+            "default",
+            "comfortable"
+          ],
+          "evidence": [
+            "docs/data-display/data-table/index.tsx"
+          ]
+        }
+      }
+    },
+    "DialogHeader": {
+      "props": {
+        "tone": {
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral"
+          ],
+          "evidence": [
+            "docs/feedback/dialog.tsx"
+          ]
+        }
+      }
+    },
+    "DropdownMenuItem": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "destructive"
+          ],
+          "evidence": [
+            "docs/navigation/dropdown-menu.tsx",
+            "src/components/navigation/__tests__/dropdown-menu.a11y.test.tsx"
+          ]
+        }
+      }
+    },
+    "EmptyState": {
+      "props": {
+        "variant": {
+          "cases": [
+            "section",
+            "compact",
+            "page"
+          ],
+          "evidence": [
+            "docs/data-display/empty-state.tsx"
+          ]
+        },
+        "tone": {
+          "cases": [
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted"
+          ],
+          "evidence": [
+            "docs/data-display/empty-state.tsx"
+          ]
+        }
+      }
+    },
+    "ErrorSurface": {
+      "props": {
+        "tone": {
+          "cases": [
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted"
+          ],
+          "evidence": [
+            "docs/layout/error-surface/index.tsx"
+          ]
+        }
+      }
+    },
+    "Form": {
+      "complete": true,
+      "props": {
+        "asChild": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx"
+          ]
+        },
+        "className": {
+          "cases": [
+            "contract-collapse-form"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx"
+          ]
+        },
+        "collapseBelow": {
+          "cases": [
+            false,
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx",
+            "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        },
+        "columns": {
+          "cases": [
+            2
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx"
+          ]
+        },
+        "controlWidth": {
+          "cases": [
+            "18rem"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx"
+          ]
+        },
+        "density": {
+          "cases": [
+            "compact",
+            "default",
+            "comfortable"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx"
+          ]
+        },
+        "labelAlign": {
+          "cases": [
+            "start",
+            "end"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx"
+          ]
+        },
+        "labelWidth": {
+          "cases": [
+            120,
+            "6rem",
+            "8rem"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx"
+          ]
+        },
+        "layout": {
+          "cases": [
+            "vertical",
+            "horizontal",
+            "inline"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx",
+            "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        },
+        "errors": {
+          "cases": [
+            "bag",
+            "omitted"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx",
+            "src/components/data-entry/__tests__/form-errors.test.tsx"
+          ]
+        }
+      }
+    },
+    "FormErrors": {
+      "complete": true,
+      "props": {
+        "className": {
+          "cases": [
+            "default"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/form-errors.test.tsx"
+          ]
+        },
+        "errors": {
+          "cases": [
+            "from-form",
+            "explicit"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx",
+            "src/components/data-entry/__tests__/form-errors.test.tsx"
+          ]
+        },
+        "title": {
+          "cases": [
+            "custom",
+            "localized-default"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/form-errors.test.tsx",
+            "src/components/data-entry/__tests__/form-errors.a11y.test.tsx"
+          ]
+        }
+      }
+    },
+    "FormErrorsProvider": {
+      "complete": true,
+      "props": {
+        "children": {
+          "cases": [
+            "sibling-forms"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx",
+            "src/components/data-entry/__tests__/form-errors.test.tsx"
+          ]
+        },
+        "errors": {
+          "cases": [
+            "shared-bag",
+            "shadowed-by-inner-form"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx",
+            "src/components/data-entry/__tests__/form-errors.test.tsx"
+          ]
+        }
+      }
+    },
+    "FormField": {
+      "complete": true,
+      "props": {
+        "children": {
+          "cases": [
+            "Input",
+            "Select"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx"
+          ]
+        },
+        "className": {
+          "cases": [
+            "contract-auto-id"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx"
+          ]
+        },
+        "colSpan": {
+          "cases": [
+            2
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx"
+          ]
+        },
+        "controlWidth": {
+          "cases": [
+            "16rem",
+            "20rem"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx"
+          ]
+        },
+        "error": {
+          "cases": [
+            "client",
+            "server"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "src/components/data-entry/__tests__/form-field.a11y.test.tsx"
+          ]
+        },
+        "helper": {
+          "cases": [
+            "present",
+            "absent"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx"
+          ]
+        },
+        "id": {
+          "cases": [
+            "explicit",
+            "generated"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "src/components/data-entry/__tests__/form-field.test.tsx"
+          ]
+        },
+        "label": {
+          "cases": [
+            "text",
+            "long-locale"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx"
+          ]
+        },
+        "labelAddon": {
+          "cases": [
+            "button"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx"
+          ]
+        },
+        "labelWidth": {
+          "cases": [
+            "8rem",
+            "12rem"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx"
+          ]
+        },
+        "layout": {
+          "cases": [
+            "vertical",
+            "horizontal",
+            "inline"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        },
+        "required": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "src/components/data-entry/__tests__/form-field.a11y.test.tsx"
+          ]
+        },
+        "staticText": {
+          "cases": [
+            "text",
+            "node"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "src/components/data-entry/__tests__/form-field.test.tsx"
+          ]
+        },
+        "name": {
+          "cases": [
+            "claimed",
+            "unbound"
+          ],
+          "evidence": [
+            "docs/data-entry/form.tsx",
+            "src/components/data-entry/__tests__/form-errors.test.tsx"
+          ]
+        }
+      }
+    },
+    "Heading": {
+      "props": {
+        "tone": {
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "primary"
+          ],
+          "evidence": [
+            "docs/general/typography.tsx"
+          ]
+        }
+      }
+    },
+    "Input": {
+      "complete": true,
+      "props": {
+        "allowClear": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/input-clear.test.tsx"
+          ]
+        },
+        "defaultValue": {
+          "cases": [
+            "filled"
+          ],
+          "evidence": [
+            "docs/data-entry/input.tsx"
+          ]
+        },
+        "disabled": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/input.a11y.test.tsx"
+          ]
+        },
+        "leadingIcon": {
+          "cases": [
+            "currency"
+          ],
+          "evidence": [
+            "docs/data-entry/input.tsx"
+          ]
+        },
+        "onClear": {
+          "cases": [
+            "callback"
+          ],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/input-clear.test.tsx"
+          ]
+        },
+        "trailingIcon": {
+          "cases": [
+            "reference"
+          ],
+          "evidence": [
+            "docs/data-entry/input.tsx"
+          ]
+        },
+        "type": {
+          "cases": [
+            "text",
+            "password",
+            "number",
+            "date",
+            "file",
+            "email"
+          ],
+          "evidence": [
+            "docs/data-entry/input.tsx"
+          ]
+        },
+        "value": {
+          "cases": [
+            "controlled"
+          ],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/input-interactions.test.tsx"
+          ]
+        }
+      }
+    },
+    "LineChart": {
+      "props": {
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "docs/charts/size-tiers.tsx"
+          ]
+        }
+      }
+    },
+    "ListRow": {
+      "props": {
+        "density": {
+          "cases": [
+            "compact",
+            "default"
+          ],
+          "evidence": [
+            "docs/data-display/list-row.tsx"
+          ]
+        }
+      }
+    },
+    "Logo": {
+      "props": {
+        "tone": {
+          "cases": [
+            "primary",
+            "success"
+          ],
+          "evidence": [
+            "docs/general/logo.tsx"
+          ]
+        },
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "docs/general/logo.tsx"
+          ]
+        }
+      }
+    },
+    "MenubarItem": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "destructive"
+          ],
+          "evidence": [
+            "docs/navigation/menubar.tsx"
+          ]
+        }
+      }
+    },
+    "NumberInput": {
+      "props": {
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "docs/data-entry/number-input.tsx",
+            "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        }
+      }
+    },
+    "PageContainer": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "narrow",
+            "flush",
+            "ghost"
+          ],
+          "evidence": [
+            "docs/layout/page-container.tsx"
+          ]
+        },
+        "density": {
+          "cases": [
+            "compact",
+            "default",
+            "comfortable"
+          ],
+          "evidence": [
+            "docs/layout/page-container.tsx"
+          ]
+        }
+      }
+    },
+    "Pagination": {
+      "props": {
+        "ariaLabel": {
+          "cases": [
+            "localized default",
+            "custom"
+          ],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "className": {
+          "cases": [
+            "custom class"
+          ],
+          "evidence": [
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "disabled": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "onValueChange": {
+          "cases": [
+            "next",
+            "previous",
+            "page size"
+          ],
+          "evidence": [
+            "src/components/navigation/__tests__/pagination-full.test.tsx",
+            "scripts/check-layout-nav-frames.mjs"
+          ]
+        },
+        "pageSize": {
+          "cases": [
+            5,
+            10,
+            20
+          ],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "pageSizeOptions": {
+          "cases": [
+            "5,10,20,50"
+          ],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "showSizeChanger": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "showTotal": {
+          "cases": [
+            false,
+            true,
+            "render function"
+          ],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx",
+            "src/components/navigation/__tests__/pagination-simple-total.test.tsx"
+          ]
+        },
+        "simple": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "total": {
+          "cases": [
+            0,
+            47,
+            50,
+            95
+          ],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "value": {
+          "cases": [
+            1,
+            2,
+            3
+          ],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx",
+            "scripts/check-layout-nav-frames.mjs"
+          ]
+        }
+      }
+    },
+    "PasswordInput": {
+      "complete": true,
+      "props": {
+        "allowClear": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/data-entry/password-input.tsx"
+          ]
+        },
+        "leadingIcon": {
+          "cases": [
+            "present"
+          ],
+          "evidence": [
+            "docs/data-entry/password-input.tsx",
+            "src/components/data-entry/__tests__/password-input.test.tsx"
+          ]
+        },
+        "onClear": {
+          "cases": [
+            "callback"
+          ],
+          "evidence": [
+            "docs/data-entry/password-input.tsx"
+          ]
+        },
+        "trailingIcon": {
+          "cases": [
+            "present"
+          ],
+          "evidence": [
+            "docs/data-entry/password-input.tsx"
+          ]
+        }
+      }
+    },
+    "PasswordStrength": {
+      "complete": true,
+      "props": {
+        "labels": {
+          "cases": [
+            "custom"
+          ],
+          "evidence": [
+            "docs/data-entry/password-strength.tsx",
+            "src/components/data-entry/__tests__/password-strength.test.tsx"
+          ]
+        },
+        "rules": {
+          "cases": [
+            "default",
+            "custom"
+          ],
+          "evidence": [
+            "docs/data-entry/password-strength.tsx",
+            "src/components/data-entry/__tests__/password-strength.test.tsx"
+          ]
+        },
+        "showChecklist": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/data-entry/password-strength.tsx"
+          ]
+        },
+        "value": {
+          "cases": [
+            "empty",
+            "weak",
+            "strong"
+          ],
+          "evidence": [
+            "docs/data-entry/password-strength.tsx",
+            "src/components/data-entry/__tests__/password-strength.test.tsx"
+          ]
+        }
+      }
+    },
+    "PieChart": {
+      "props": {
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "docs/charts/size-tiers.tsx"
+          ]
+        }
+      }
+    },
+    "Progress": {
+      "props": {
+        "tone": {
+          "cases": [
+            "success",
+            "warning",
+            "destructive"
+          ],
+          "evidence": [
+            "docs/data-display/progress.tsx"
+          ]
+        }
+      }
+    },
+    "QrCode": {
+      "complete": true,
+      "props": {
+        "value": {
+          "cases": [
+            "otpauth URI",
+            "HTTPS URL"
+          ],
+          "evidence": [
+            "docs/data-display/qr-code.tsx",
+            "src/components/data-display/__tests__/qr-code.test.tsx"
+          ]
+        },
+        "label": {
+          "cases": [
+            "localized purpose-specific label"
+          ],
+          "evidence": [
+            "docs/data-display/qr-code.tsx",
+            "src/components/data-display/__tests__/qr-code.a11y.test.tsx"
+          ]
+        },
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "docs/data-display/qr-code.tsx",
+            "src/components/data-display/__tests__/qr-code.test.tsx"
+          ]
+        },
+        "className": {
+          "cases": [
+            "consumer-class"
+          ],
+          "evidence": [
+            "src/components/data-display/__tests__/qr-code.test.tsx"
+          ]
+        },
+        "id": {
+          "cases": [
+            "enrollment-code"
+          ],
+          "evidence": [
+            "src/components/data-display/__tests__/qr-code.test.tsx"
           ]
         }
       }
@@ -1103,6 +1818,288 @@
         }
       }
     },
+    "Select": {
+      "props": {
+        "defaultValue": {
+          "cases": [
+            "suzuki"
+          ],
+          "evidence": [
+            "docs/data-entry/select.tsx"
+          ]
+        },
+        "disabled": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/data-entry/select.tsx",
+            "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        },
+        "name": {
+          "cases": [
+            "select_default_open"
+          ],
+          "evidence": [
+            "docs/data-entry/select.tsx"
+          ]
+        },
+        "onOpenChange": {
+          "cases": [
+            "controlled callback"
+          ],
+          "evidence": [
+            "docs/data-entry/select.tsx"
+          ]
+        },
+        "onValueChange": {
+          "cases": [
+            "controlled callback"
+          ],
+          "evidence": [
+            "docs/data-entry/select.tsx",
+            "src/components/data-entry/__tests__/select-interaction.test.tsx"
+          ]
+        },
+        "open": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/data-entry/select.tsx",
+            "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        },
+        "value": {
+          "cases": [
+            "tanaka"
+          ],
+          "evidence": [
+            "docs/data-entry/select.tsx",
+            "src/components/data-entry/__tests__/select-controlled-empty.test.tsx"
+          ]
+        }
+      }
+    },
+    "SelectTrigger": {
+      "props": {
+        "size": {
+          "cases": [
+            "sm",
+            "md"
+          ],
+          "evidence": [
+            "docs/data-entry/select.tsx"
+          ]
+        }
+      }
+    },
+    "SheetHeader": {
+      "props": {
+        "tone": {
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral"
+          ],
+          "evidence": [
+            "docs/feedback/sheet.tsx"
+          ]
+        }
+      }
+    },
+    "StatCard": {
+      "props": {}
+    },
+    "StatusBadge": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "secondary",
+            "outline",
+            "dashed"
+          ],
+          "evidence": [
+            "docs/data-display/badge.tsx"
+          ]
+        },
+        "tone": {
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral",
+            "primary"
+          ],
+          "evidence": [
+            "docs/data-display/badge.tsx"
+          ]
+        },
+        "shape": {
+          "cases": [
+            "default",
+            "pill",
+            "sharp"
+          ],
+          "evidence": [
+            "docs/data-display/badge.tsx"
+          ]
+        }
+      }
+    },
+    "Steps": {
+      "props": {
+        "size": {
+          "cases": [
+            "sm",
+            "md"
+          ],
+          "evidence": [
+            "docs/navigation/steps.tsx",
+            "src/components/navigation/__tests__/steps-compact.test.tsx"
+          ]
+        }
+      }
+    },
+    "Switch": {
+      "props": {
+        "size": {
+          "cases": [
+            "sm",
+            "md"
+          ],
+          "evidence": [
+            "docs/data-entry/switch.tsx",
+            "src/components/data-entry/__tests__/switch-interaction.test.tsx",
+            "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        }
+      }
+    },
+    "Tabs": {
+      "props": {
+        "activationMode": {
+          "cases": [
+            "manual",
+            "automatic"
+          ],
+          "evidence": [
+            "src/components/navigation/__tests__/tabs-variants.test.tsx",
+            "scripts/check-layout-nav-frames.mjs"
+          ]
+        },
+        "contentClassName": {
+          "cases": [
+            "custom class"
+          ],
+          "evidence": [
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        },
+        "defaultValue": {
+          "cases": [
+            "explicit",
+            "first enabled fallback"
+          ],
+          "evidence": [
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        },
+        "dir": {
+          "cases": [
+            "ltr",
+            "rtl"
+          ],
+          "evidence": [
+            "docs/navigation/tabs-rtl.tsx",
+            "src/components/navigation/__tests__/tabs-variants.test.tsx",
+            "scripts/check-layout-nav-frames.mjs"
+          ]
+        },
+        "items": {
+          "cases": [
+            "items API",
+            "compound children"
+          ],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        },
+        "listClassName": {
+          "cases": [
+            "custom class"
+          ],
+          "evidence": [
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        },
+        "onValueChange": {
+          "cases": [
+            "controlled callback"
+          ],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "scripts/check-layout-nav-frames.mjs"
+          ]
+        },
+        "orientation": {
+          "cases": [
+            "vertical",
+            "horizontal"
+          ],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        },
+        "value": {
+          "cases": [
+            "controlled"
+          ],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        },
+        "variant": {
+          "cases": [
+            "line",
+            "default",
+            "card"
+          ],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        }
+      }
+    },
+    "TabsList": {
+      "props": {
+        "variant": {
+          "cases": [
+            "line",
+            "default"
+          ],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-line-active-ring-248.test.tsx"
+          ]
+        }
+      }
+    },
     "TagInput": {
       "complete": true,
       "props": {
@@ -1196,395 +2193,47 @@
         }
       }
     },
-    "QrCode": {
-      "complete": true,
+    "Text": {
       "props": {
-        "value": {
-          "cases": [
-            "otpauth URI",
-            "HTTPS URL"
-          ],
-          "evidence": [
-            "docs/data-display/qr-code.tsx",
-            "src/components/data-display/__tests__/qr-code.test.tsx"
-          ]
-        },
-        "label": {
-          "cases": [
-            "localized purpose-specific label"
-          ],
-          "evidence": [
-            "docs/data-display/qr-code.tsx",
-            "src/components/data-display/__tests__/qr-code.a11y.test.tsx"
-          ]
-        },
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/data-display/qr-code.tsx",
-            "src/components/data-display/__tests__/qr-code.test.tsx"
-          ]
-        },
-        "className": {
-          "cases": [
-            "consumer-class"
-          ],
-          "evidence": [
-            "src/components/data-display/__tests__/qr-code.test.tsx"
-          ]
-        },
-        "id": {
-          "cases": [
-            "enrollment-code"
-          ],
-          "evidence": [
-            "src/components/data-display/__tests__/qr-code.test.tsx"
-          ]
-        }
-      }
-    },
-    "Button": {
-      "props": {
-        "variant": {
+        "tone": {
           "cases": [
             "default",
+            "success",
+            "warning",
             "destructive",
-            "outline",
-            "dashed",
-            "secondary",
-            "ghost",
-            "link"
+            "info",
+            "muted",
+            "primary"
           ],
           "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
+            "docs/general/typography.tsx"
           ]
         },
         "size": {
           "cases": [
-            "default",
-            "md",
             "xs",
             "sm",
+            "md",
             "lg",
-            "icon",
-            "icon-xs",
-            "icon-sm",
-            "icon-lg"
+            "xl",
+            "2xs",
+            "2xl"
           ],
           "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "shape": {
-          "cases": [
-            "default",
-            "pill",
-            "sharp"
-          ],
-          "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "fullWidth": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "asChild": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "disabled": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "loading": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "loadingText": {
-          "cases": [
-            "omitted",
-            "provided"
-          ],
-          "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "count": {
-          "cases": [
-            "omitted",
-            0,
-            18,
-            128
-          ],
-          "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "overflowCount": {
-          "cases": [
-            "default-99",
-            "custom-9"
-          ],
-          "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "showZero": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "type": {
-          "cases": [
-            "button",
-            "reset",
-            "submit"
-          ],
-          "evidence": [
-            "docs/general/button/index.tsx",
-            "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
-          ]
-        },
-        "onClick": {
-          "cases": [
-            "fires when enabled",
-            "blocked when disabled",
-            "blocked while loading"
-          ],
-          "evidence": [
-            "src/components/general/__tests__/button.test.tsx"
+            "docs/general/typography.tsx"
           ]
         }
       }
     },
-    "Upload": {
-      "props": {
-        "variant": {
-          "cases": [
-            "button",
-            "picture",
-            "dropzone",
-            "picture-card",
-            "avatar",
-            "avatar-crop"
-          ],
-          "evidence": [
-            "docs/data-entry/upload.tsx"
-          ]
-        }
-      }
-    },
-    "NumberInput": {
-      "props": {
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/data-entry/number-input.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
-        }
-      }
-    },
-    "Avatar": {
-      "props": {
-        "shape": {
-          "cases": [
-            "circle",
-            "square"
-          ],
-          "evidence": [
-            "docs/data-display/avatar.tsx"
-          ]
-        }
-      }
-    },
-    "Badge": {
+    "Textarea": {
       "props": {
         "variant": {
           "cases": [
             "default",
-            "secondary",
-            "outline",
-            "dashed"
+            "ghost"
           ],
           "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
-        },
-        "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral",
-            "primary"
-          ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
-        },
-        "shape": {
-          "cases": [
-            "default",
-            "pill",
-            "sharp"
-          ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
-        }
-      }
-    },
-    "StatusBadge": {
-      "props": {
-        "variant": {
-          "cases": [
-            "default",
-            "secondary",
-            "outline",
-            "dashed"
-          ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
-        },
-        "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral",
-            "primary"
-          ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
-        },
-        "shape": {
-          "cases": [
-            "default",
-            "pill",
-            "sharp"
-          ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
-        }
-      }
-    },
-    "Card": {
-      "props": {
-        "variant": {
-          "cases": [
-            "default",
-            "muted",
-            "outline",
-            "featured"
-          ],
-          "evidence": [
-            "docs/data-display/card/index.tsx"
-          ]
-        },
-        "density": {
-          "cases": [
-            "tight",
-            "cozy"
-          ],
-          "evidence": [
-            "docs/data-display/card/index.tsx"
-          ]
-        }
-      }
-    },
-    "StatCard": {
-      "props": {}
-    },
-    "EmptyState": {
-      "props": {
-        "variant": {
-          "cases": [
-            "section",
-            "compact",
-            "page"
-          ],
-          "evidence": [
-            "docs/data-display/empty-state.tsx"
-          ]
-        },
-        "tone": {
-          "cases": [
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted"
-          ],
-          "evidence": [
-            "docs/data-display/empty-state.tsx"
+            "docs/data-entry/textarea.tsx"
           ]
         }
       }
@@ -1599,264 +2248,6 @@
           ],
           "evidence": [
             "docs/data-display/timeline.tsx"
-          ]
-        }
-      }
-    },
-    "Progress": {
-      "props": {
-        "tone": {
-          "cases": [
-            "success",
-            "warning",
-            "destructive"
-          ],
-          "evidence": [
-            "docs/data-display/progress.tsx"
-          ]
-        }
-      }
-    },
-    "CredentialReveal": {
-      "props": {
-        "tone": {
-          "cases": [
-            "warning",
-            "destructive",
-            "info"
-          ],
-          "evidence": [
-            "docs/data-display/credential-reveal.tsx"
-          ]
-        },
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/data-display/credential-reveal.tsx"
-          ]
-        }
-      }
-    },
-    "DataTable": {
-      "props": {
-        "density": {
-          "cases": [
-            "compact",
-            "default",
-            "comfortable"
-          ],
-          "evidence": [
-            "docs/data-display/data-table/index.tsx"
-          ]
-        }
-      }
-    },
-    "ListRow": {
-      "props": {
-        "density": {
-          "cases": [
-            "compact",
-            "default"
-          ],
-          "evidence": [
-            "docs/data-display/list-row.tsx"
-          ]
-        }
-      }
-    },
-    "Switch": {
-      "props": {
-        "size": {
-          "cases": [
-            "sm",
-            "md"
-          ],
-          "evidence": [
-            "docs/data-entry/switch.tsx",
-            "src/components/data-entry/__tests__/switch-interaction.test.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
-        }
-      }
-    },
-    "ButtonRefetch": {
-      "props": {
-        "variant": {
-          "cases": [
-            "link",
-            "default",
-            "ghost",
-            "destructive",
-            "secondary",
-            "outline",
-            "dashed"
-          ],
-          "evidence": [
-            "docs/query/button-refetch.tsx"
-          ]
-        },
-        "size": {
-          "cases": [
-            "default",
-            "xs",
-            "sm",
-            "md",
-            "lg",
-            "icon",
-            "icon-xs",
-            "icon-sm",
-            "icon-lg"
-          ],
-          "evidence": [
-            "docs/query/button-refetch.tsx"
-          ]
-        },
-        "shape": {
-          "cases": [
-            "default",
-            "pill",
-            "sharp"
-          ],
-          "evidence": [
-            "docs/query/button-refetch.tsx"
-          ]
-        }
-      }
-    },
-    "AuthShell": {
-      "props": {
-        "variant": {
-          "cases": [
-            "default",
-            "canonical"
-          ],
-          "evidence": [
-            "docs/layout/auth-shell-variants.tsx",
-            "docs/layout/auth-shell.tsx"
-          ]
-        },
-        "density": {
-          "cases": [
-            "compact",
-            "comfortable"
-          ],
-          "evidence": [
-            "docs/layout/auth-shell-variants.tsx"
-          ]
-        }
-      }
-    },
-    "PageContainer": {
-      "props": {
-        "variant": {
-          "cases": [
-            "default",
-            "narrow",
-            "flush",
-            "ghost"
-          ],
-          "evidence": [
-            "docs/layout/page-container.tsx"
-          ]
-        },
-        "density": {
-          "cases": [
-            "compact",
-            "default",
-            "comfortable"
-          ],
-          "evidence": [
-            "docs/layout/page-container.tsx"
-          ]
-        }
-      }
-    },
-    "ErrorSurface": {
-      "props": {
-        "tone": {
-          "cases": [
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted"
-          ],
-          "evidence": [
-            "docs/layout/error-surface/index.tsx"
-          ]
-        }
-      }
-    },
-    "TabsList": {
-      "props": {
-        "variant": {
-          "cases": [
-            "line",
-            "default"
-          ],
-          "evidence": [
-            "docs/navigation/tabs.tsx",
-            "src/components/navigation/__tests__/tabs-line-active-ring-248.test.tsx"
-          ]
-        }
-      }
-    },
-    "ContextMenuItem": {
-      "props": {
-        "variant": {
-          "cases": [
-            "default",
-            "destructive"
-          ],
-          "evidence": [
-            "docs/navigation/context-menu.tsx",
-            "src/components/navigation/__tests__/context-menu.test.tsx"
-          ]
-        }
-      }
-    },
-    "DropdownMenuItem": {
-      "props": {
-        "variant": {
-          "cases": [
-            "default",
-            "destructive"
-          ],
-          "evidence": [
-            "docs/navigation/dropdown-menu.tsx",
-            "src/components/navigation/__tests__/dropdown-menu.a11y.test.tsx"
-          ]
-        }
-      }
-    },
-    "MenubarItem": {
-      "props": {
-        "variant": {
-          "cases": [
-            "default",
-            "destructive"
-          ],
-          "evidence": [
-            "docs/navigation/menubar.tsx"
-          ]
-        }
-      }
-    },
-    "Steps": {
-      "props": {
-        "size": {
-          "cases": [
-            "sm",
-            "md"
-          ],
-          "evidence": [
-            "docs/navigation/steps.tsx",
-            "src/components/navigation/__tests__/steps-compact.test.tsx"
           ]
         }
       }
@@ -1930,397 +2321,19 @@
         }
       }
     },
-    "SelectTrigger": {
-      "props": {
-        "size": {
-          "cases": [
-            "sm",
-            "md"
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx"
-          ]
-        }
-      }
-    },
-    "Alert": {
-      "props": {
-        "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
-          "evidence": [
-            "docs/feedback/alert.tsx"
-          ]
-        },
-        "variant": {
-          "cases": [
-            "default",
-            "banner"
-          ],
-          "evidence": [
-            "docs/feedback/alert.tsx",
-            "docs/feedback/banner.tsx",
-            "src/components/feedback/__tests__/banner.test.tsx"
-          ]
-        }
-      }
-    },
-    "Banner": {
-      "props": {
-        "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
-          "evidence": [
-            "docs/feedback/banner.tsx",
-            "src/components/feedback/__tests__/banner.test.tsx"
-          ]
-        }
-      }
-    },
-    "AlertDialog": {
+    "Upload": {
       "props": {
         "variant": {
           "cases": [
-            "default",
-            "destructive"
+            "button",
+            "picture",
+            "dropzone",
+            "picture-card",
+            "avatar",
+            "avatar-crop"
           ],
           "evidence": [
-            "docs/feedback/alert-dialog.tsx"
-          ]
-        }
-      }
-    },
-    "AlertDialogRoot": {
-      "props": {
-        "open": {
-          "cases": [
-            true,
-            false
-          ],
-          "evidence": [
-            "docs/feedback/alert-dialog.tsx",
-            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
-          ]
-        },
-        "defaultOpen": {
-          "cases": [
-            true,
-            false
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
-          ]
-        },
-        "onOpenChange": {
-          "cases": [
-            "controlled callback",
-            "cancel",
-            "escape"
-          ],
-          "evidence": [
-            "docs/feedback/alert-dialog.tsx",
-            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
-          ]
-        }
-      }
-    },
-    "AlertDialogHeader": {
-      "props": {
-        "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
-          "evidence": [
-            "docs/feedback/alert-dialog.tsx"
-          ]
-        },
-        "title": {
-          "cases": [
-            "prop-driven title"
-          ],
-          "evidence": [
-            "docs/feedback/alert-dialog.tsx",
-            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
-          ]
-        },
-        "subtitle": {
-          "cases": [
-            "prop-driven subtitle"
-          ],
-          "evidence": [
-            "docs/feedback/alert-dialog.tsx",
-            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
-          ]
-        },
-        "extra": {
-          "cases": [
-            "trailing badge slot"
-          ],
-          "evidence": [
-            "docs/feedback/alert-dialog.tsx",
-            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
-          ]
-        }
-      }
-    },
-    "DialogHeader": {
-      "props": {
-        "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
-          "evidence": [
-            "docs/feedback/dialog.tsx"
-          ]
-        }
-      }
-    },
-    "SheetHeader": {
-      "props": {
-        "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
-          "evidence": [
-            "docs/feedback/sheet.tsx"
-          ]
-        }
-      }
-    },
-    "Heading": {
-      "props": {
-        "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "primary"
-          ],
-          "evidence": [
-            "docs/general/typography.tsx"
-          ]
-        }
-      }
-    },
-    "Text": {
-      "props": {
-        "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "primary"
-          ],
-          "evidence": [
-            "docs/general/typography.tsx"
-          ]
-        },
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg",
-            "xl",
-            "2xs",
-            "2xl"
-          ],
-          "evidence": [
-            "docs/general/typography.tsx"
-          ]
-        }
-      }
-    },
-    "Logo": {
-      "props": {
-        "tone": {
-          "cases": [
-            "primary",
-            "success"
-          ],
-          "evidence": [
-            "docs/general/logo.tsx"
-          ]
-        },
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/general/logo.tsx"
-          ]
-        }
-      }
-    },
-    "AreaChart": {
-      "props": {
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/charts/size-tiers.tsx"
-          ]
-        }
-      }
-    },
-    "BarChart": {
-      "props": {
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/charts/size-tiers.tsx"
-          ]
-        }
-      }
-    },
-    "LineChart": {
-      "props": {
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/charts/size-tiers.tsx"
-          ]
-        }
-      }
-    },
-    "PieChart": {
-      "props": {
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/charts/size-tiers.tsx"
-          ]
-        }
-      }
-    },
-    "CompactBarTrend": {
-      "props": {
-        "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/charts/compact-bar-trend.tsx"
-          ]
-        }
-      }
-    },
-    "FormErrors": {
-      "complete": true,
-      "props": {
-        "className": {
-          "cases": [
-            "default"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/form-errors.test.tsx"
-          ]
-        },
-        "errors": {
-          "cases": [
-            "from-form",
-            "explicit"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx",
-            "src/components/data-entry/__tests__/form-errors.test.tsx"
-          ]
-        },
-        "title": {
-          "cases": [
-            "custom",
-            "localized-default"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/form-errors.test.tsx",
-            "src/components/data-entry/__tests__/form-errors.a11y.test.tsx"
-          ]
-        }
-      }
-    },
-    "FormErrorsProvider": {
-      "complete": true,
-      "props": {
-        "children": {
-          "cases": [
-            "sibling-forms"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx",
-            "src/components/data-entry/__tests__/form-errors.test.tsx"
-          ]
-        },
-        "errors": {
-          "cases": [
-            "shared-bag",
-            "shadowed-by-inner-form"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx",
-            "src/components/data-entry/__tests__/form-errors.test.tsx"
+            "docs/data-entry/upload.tsx"
           ]
         }
       }

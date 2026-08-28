@@ -4238,8 +4238,16 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "() => void",
         description: "Called after the field is cleared via the inline ✕ (requires `allowClear`).",
       },
+      {
+        name: "variant",
+        type: '"default" | "ghost"',
+        defaultValue: '"default"',
+        description:
+          "`ghost` strips the field's own border, background and focus ring, for a textarea EMBEDDED in a surface that already draws the box — a chat composer inside a Card, an inline edit cell. The surface then owns focus, via `focus-within` on the wrapper. Two nested rounded borders is the tell that this was needed. Not achievable by overriding `--control-border-width`: the default class carries Tailwind's `border` in @layer utilities, which beats the token rule in @layer components (same structural inertness as gh#260 on Badge).",
+      },
     ],
     usage: [
+      "DO reach for `variant=\"ghost\"` ONLY when a parent surface already draws the box and owns focus — the composer Card, an inline edit cell. A standalone field keeps the default: without its own border it reads as plain text, not something you can type into.",
       "DO always wrap Textarea in FormField when it appears in a form — FormField clones aria-describedby, aria-required, and aria-invalid onto the child, giving error/helper announcements and screen-reader labelling for free. Pass matching id props to both.",
       "DO use the godx-ui Textarea (`import { Textarea } from '@godxjp/ui/data-entry'`) — never a raw `<textarea>`. The component applies the `ui-control-multiline` token class that picks up density, focus-ring, and border tokens from the design system.",
       "DO control the value with `value` + `onChange` in React-managed forms (e.g. Inertia `useForm`). Textarea is a plain `forwardRef` over the native element so it accepts all standard `HTMLTextAreaElement` attributes — `rows`, `maxLength`, `disabled`, `name`, `placeholder`, `readOnly` all pass through directly.",
@@ -6729,6 +6737,19 @@ export function AccountMapping() {
         name: "onValueChange",
         type: "(items: UploadFileItemProp[]) => void",
         description: "Fires with the current file list.",
+      },
+      {
+        name: "triggerSize",
+        type: '"default" | "md" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg"',
+        description:
+          "`variant=\"button\"` only — size of the visible trigger, forwarded to Button. An icon size renders it icon-only and moves the label to `aria-label`: a 32px square beside other icon buttons rather than a 147px labelled one that outweighs them.",
+      },
+      {
+        name: "triggerVariant",
+        type: '"default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link"',
+        defaultValue: '"outline"',
+        description:
+          "`variant=\"button\"` only — visual weight of the visible trigger, forwarded to Button. Default `outline` suits a standalone form field. Pass `ghost` when the trigger sits in a toolbar row beside other icon buttons — inside a chat composer, say — where a bordered square reads as the odd one out.",
       },
     ],
     usage: [

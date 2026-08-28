@@ -2,6 +2,88 @@
 
 Repo-specific facts for syncing `@godxjp/ui` to claude.ai/design. Read this before every re-sync.
 
+## STATUS: re-import 2026-08-28 for @godxjp/ui@18.15.4 — project `bd09516b-d47b-4956-a0eb-8028a2b78cab`
+
+Third deletion in a row: the pinned project from the 2026-06-30 run (`e7ef05a5-…`) was **gone**
+(`get_project` → 404, `list_projects` empty). Re-created a fresh project of the SAME name
+**"@godxjp/ui Design System"** (https://claude.ai/design/p/bd09516b-d47b-4956-a0eb-8028a2b78cab),
+re-pinned it in config.json, and re-imported at full scope. Incremental upload path (fresh empty
+project). Carried forward every durable input: config.json, conventions.md, NOTES.md, and the
+authored previews — now **24** (AppShell + Sidebar added this run).
+
+Uploaded: 1097 local files → 1099 remote (the extra two, `_ds_manifest.json` and
+`_adherence.oxlintrc.json`, are generated app-side). 676 fonts, 368 component files, 24 `_preview`,
+21 `guidelines`, 2 `_vendor`, 6 root.
+
+### `dtsPropsFor` is now load-bearing: 49 of 92 components shipped EMPTY prop contracts
+
+The converter extracts props by looking for `export interface <Name>Props` **in the file named by
+`componentSrcMap`**. But most of this DS re-exports its props from a central registry:
+
+```ts
+// src/components/general/button.tsx
+export type { ButtonProp, ButtonProp as ButtonProps } from "../../props/components/general.prop";
+```
+
+The extractor doesn't follow that, so it fell back to `export interface ButtonProps { [key: string]:
+unknown }` — a contract that tells the design agent *nothing*. This hit **49/92** components,
+including Button, Text, Heading, Switch, Select and every chart. Fixed by extracting
+`export type <Name>Prop` from `src/props/**` into `cfg.dtsPropsFor` (2 → 27 entries); stubs 49 → 24.
+
+**Trap if you regenerate these** — a bare `<Name>Prop` lookup is NOT safe. Two shapes lie:
+
+- `LabelProp = React.ReactNode` (a *vocabulary* alias — the `label` prop OF other components, not
+  the Label component's props)
+- `CheckboxProp = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>` (bare Radix re-export)
+
+Neither has its own object literal, so a naive scanner walks forward and grabs the `{` of the NEXT
+declaration, yielding confident garbage. Require the `{` to precede the `;` that ends that alias.
+
+The **24 remaining stubs are correct as-is**: Accordion, Carousel, Collapsible, HoverCard, Popover,
+ScrollArea, Command, InputOTP, Select, ToggleGroup, Sheet, Tooltip, Separator, AspectRatio,
+ResizablePanel, ContextMenu, NavigationMenu, Menubar, DropdownMenu (Radix pass-throughs — the
+`prompt.md` carries their composition), plus Label, Checkbox, Radio, Slider, Calendar (per above).
+
+### conventions.md re-validated against 18.15.4 — three drifts, NOT rewritten
+
+Verified true: globalName `GodxjpUi`; all five referenced `guidelines/docs/*` exist; Button
+`variant` list exact; Badge `tone` incl. the soft `primary`; Alert `tone` exact.
+
+Drifted (left alone deliberately — conventions.md is user-owned prose):
+
+- Button `size` is really `xs | sm | md | lg | default | icon | icon-xs | icon-sm | icon-lg`;
+  conventions.md lists only `xs | sm | default | lg` (misses `md` and all four icon sizes).
+- **StatCard has no `tone`** — its prop is `accent?: "success" | "warning" | "destructive" | "info"
+  | "primary" | "attention"` plus `accentPlacement?: "edge" | "perimeter"`.
+- Progress `tone` is only `success | warning | destructive`, not the full role list.
+
+### Sidebar previews MUST be composed inside AppShell
+
+Authored `AppShell` (Default, NarrowRail) and `Sidebar` (Default, Rail). A standalone `<Sidebar>`
+renders broken — nav collapses, logo and footer fling to opposite edges — because it depends on
+AppShell's grid. This matches the DS's own docs ("always compose Sidebar inside AppShell, not
+standalone"). Both Sidebar previews therefore wrap in AppShell; `cardMode: "column"` for both.
+
+### [FONT_MISSING] Yu Gothic Medium — resolved via runtimeFontPrefixes
+
+Traced to `src/styles/fonts.css:41`, a JP **system** fallback stack (Yu Gothic / YuGothic /
+Hiragino) — host-served by design, exactly like the existing Noto Sans JP decision. Added all three
+to `runtimeFontPrefixes` rather than shipping them. Do not "fix" this by bundling a JP webfont.
+
+### How to run the build (both of these will bite you)
+
+- Run the **staged** copy from the repo root, with all three flags — invoking the bundled skill
+  path directly dies with `ERR_MODULE_NOT_FOUND: esbuild` (it resolves node_modules from its own dir):
+  `node .ds-sync/package-build.mjs --config .design-sync/config.json --node-modules ./node_modules --out ./ds-bundle`
+- The shell here is **zsh**: unquoted `$VAR` does NOT word-split. `script.py $NAMES` passes ONE
+  argument. Use `${=VAR}` or pass the words literally.
+
+### Re-sync result (2026-08-28, @godxjp/ui@18.15.4 → project bd09516b)
+
+92 components, 24 user-owned previews, 49 floor cards. `package-validate.mjs` exit 0 with exactly
+4 warnings, all on the known-warns list below. Render check 92/92 clean. `_ds_bundle.css` rewrote
+675 font url(s); Montserrat kept, 372 Noto Sans JP blocks dropped.
+
 ## STATUS: re-import 2026-06-30 for @godxjp/ui@16.7.0 — project `e7ef05a5-bc35-45dc-b096-e6cf09bda67c`
 
 The original import's project (`edbd03a8-…`, 2026-06-29) was **deleted** sometime before this re-sync

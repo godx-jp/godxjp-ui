@@ -522,12 +522,12 @@
   },
   "baseline": {
     "recordedAt": "2026-07-30",
-    "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down. 2026-08-24: the floor moved DOWN 65→63, the one case where that is not a ratchet violation — `Card.size` / `StatCard.size` were removed as dead API (empty cva variants, no CSS reader, inert in every density), so their two `sizes` cells became not-applicable:api-manifest. Coverage of a prop that no longer exists cannot be kept on the books; no untested cell was reclassified.",
+    "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
     "exports": 282,
     "dimensionCells": 3948,
-    "covered": 63,
+    "covered": 64,
     "untested": 2162,
-    "notApplicable": 1723,
+    "notApplicable": 1722,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -7918,12 +7918,12 @@
         "docs/data-entry/textarea.tsx"
       ],
       "baseline": {
-        "covered": 0,
-        "notApplicable": 5,
+        "covered": 1,
+        "notApplicable": 4,
         "untested": 9
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",

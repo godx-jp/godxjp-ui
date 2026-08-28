@@ -2,18 +2,28 @@ import * as React from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
-import { controlMultilineClass } from "../../lib/control-styles";
+import { controlMultilineClass, controlMultilineGhostClass } from "../../lib/control-styles";
 
 export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   /** Show an inline ✕ (top-end) that clears the field while it holds text (default false). */
   allowClear?: boolean;
   /** Called after the field is cleared via the inline ✕. */
   onClear?: () => void;
+  /**
+   * `ghost` strips the field's own border, background and focus ring, for a textarea embedded
+   * in a surface that already draws the box (a chat composer inside a Card). The surface then
+   * owns focus — give it `focus-within`. Default keeps the standalone control chrome.
+   */
+  variant?: "default" | "ghost";
 };
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, allowClear = false, onClear, value, defaultValue, onChange, ...props }, ref) => {
+  (
+    { className, allowClear = false, onClear, variant = "default", value, defaultValue, onChange, ...props },
+    ref,
+  ) => {
     const { t } = useTranslation();
+    const base = variant === "ghost" ? controlMultilineGhostClass : controlMultilineClass;
     const innerRef = React.useRef<HTMLTextAreaElement | null>(null);
     const setRefs = React.useCallback(
       (node: HTMLTextAreaElement | null) => {
@@ -58,7 +68,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           value={value}
           defaultValue={defaultValue}
           onChange={onChange}
-          className={cn(controlMultilineClass, className)}
+          className={cn(base, className)}
           {...props}
         />
       );
@@ -73,7 +83,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           value={value}
           defaultValue={defaultValue}
           onChange={handleChange}
-          className={cn(controlMultilineClass, showClear && "pe-9", className)}
+          className={cn(base, showClear && "pe-9", className)}
           {...props}
         />
         {showClear ? (

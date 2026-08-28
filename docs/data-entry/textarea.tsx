@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, Textarea } from "@godxjp/ui/data-entry";
+import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -23,6 +24,38 @@ export default function Demo() {
               <Textarea aria-label="プレースホルダー状態" placeholder="摘要を入力..." />
               <Textarea aria-label="入力済み状態" defaultValue={"4月分 受注\nINV-2024-0312"} />
               <Textarea aria-label="無効状態" disabled defaultValue="無効 (disabled)" />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Embedded in a surface — variant="ghost"</CardTitle>
+            <CardDescription>
+              The Card already draws the box, so the field must not draw a second one. Focus moves
+              to the surface via focus-within.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Card className="focus-within:ring-ring/50 overflow-hidden focus-within:ring-2">
+                <Textarea
+                  variant="ghost"
+                  className="resize-none"
+                  rows={2}
+                  aria-label="サーフェス内のテキストエリア"
+                  placeholder="メッセージを入力..."
+                />
+                <Flex direction="row" justify="end" className="px-2 pb-2">
+                  <Button size="sm">送信</Button>
+                </Flex>
+              </Card>
+              <Textarea
+                variant="default"
+                rows={2}
+                aria-label="単独のテキストエリア"
+                defaultValue='variant="default" — 単独のフィールドは自分で枠を描く'
+              />
             </Flex>
           </CardContent>
         </Card>

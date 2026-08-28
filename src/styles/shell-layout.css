@@ -90,6 +90,15 @@
     grid-area: main;
     min-width: 0;
     overflow: auto;
+    /* Column flow, so a page that asks to FILL can actually be bounded by the
+     * region instead of merely starting at its top. With the default `block`
+     * flow a `--fill` container could only be `min-height: 100%`, i.e. it grew
+     * past the region and pushed the scroll back out here — which is why a chat
+     * transcript slid UNDER its own sticky composer. Ordinary pages are
+     * unaffected: their container still has `min-height: 100%`, still grows,
+     * and this element still scrolls it. */
+    display: flex;
+    flex-direction: column;
     /* Ambient brand glow hook — invisible by default (--gradient-glow: none); a service paints a
      * radial/linear brand wash behind the whole content area by configuring the token alone. */
     background-image: var(--gradient-glow);
@@ -976,6 +985,23 @@
     font-size: var(--sidebar-nav-item-font-size);
     line-height: 1;
     text-align: start;
+  }
+
+  /* Every nav row is a CONTROL, so it owes a visible keyboard indicator (WCAG 2.4.7) — and it
+   * has to be the design system's, not the UA's. Measured in Chromium before this rule: the
+   * first Tab into the shell landed on a rail item drawing Chrome's own
+   * `outline: rgb(0,95,204) auto 1px`, a blue that belongs to no theme and matches nothing else
+   * on the page, while every Button beside it drew the token ring. On a Slack-style shell that
+   * is the FIRST thing a keyboard user sees.
+   *
+   * Same shape as `.app-main:focus-visible` above — suppress the UA outline, draw a token ring —
+   * but NOT gated behind an opt-in width the way the region ring is. A whole-content-area frame
+   * reads as a glitch and defaults off; a 2px ring hugging one 32px row is exactly the
+   * affordance, so it reads the global `--focus-ring-width` and is on by default. `box-shadow`
+   * rather than `outline` so the ring follows `--sidebar-nav-item-radius`. */
+  .sb-nav-item:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
   }
 
   .sb-nav-item:hover {

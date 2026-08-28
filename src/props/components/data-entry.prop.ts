@@ -588,6 +588,15 @@ export type UploadProp = FieldA11yProps & {
    * @see Button — same size scale
    */
   triggerSize?: "default" | "md" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
+  /**
+   * `variant="button"` only — the visual weight of the visible trigger, forwarded to Button.
+   * Defaults to `outline`, which is right for a standalone form field. Pass `ghost` when the
+   * trigger sits in a toolbar row beside other icon buttons — inside a chat composer, say —
+   * where a bordered square reads as the odd one out.
+   *
+   * @see Button — same variant scale
+   */
+  triggerVariant?: "default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link";
   className?: ClassNameProp;
   children?: React.ReactNode;
 };

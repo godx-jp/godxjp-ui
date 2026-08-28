@@ -468,10 +468,22 @@
 
   .ui-page-container--sticky-footer {
     min-height: 100%;
+
+    /* The container's own block-end padding must NOT stay under a sticky
+     * footer. A sticky box cannot travel into its containing block's padding
+     * area, so `bottom: 0` resolves that much ABOVE the true bottom edge —
+     * the footer floats short of the fold and page content scrolls through
+     * the gap behind it. Measured in Chromium at the 24px page padding: the
+     * footer pinned at 837px inside an 861px scroller.
+     *
+     * The space itself is still wanted, so it moves onto the body, which is
+     * what needs breathing room above the footer anyway. */
+    padding-block-end: 0;
   }
 
   .ui-page-container--sticky-footer .ui-page-body {
     flex: 1;
+    padding-block-end: var(--space-page-active-y);
   }
 
   .ui-page-container--sticky-footer .ui-page-footer {
@@ -680,9 +692,24 @@
   /* fill = body grows to fill the remaining shell height (full-height DataTable,
    * split-pane, or a chat surface whose message list scrolls and whose composer
    * is pinned to the bottom via `footer` + `stickyFooter`). */
+  /* `fill` means the body OCCUPIES the remaining height — so when its content is
+   * taller, the content scrolls INSIDE it. The container therefore flexes to the
+   * region rather than growing past it, and the body owns the scroll.
+   *
+   * This is what makes a chat surface behave: header and footer are plain flex
+   * items at the two ends, outside the scroller, so transcript content can never
+   * travel underneath them. Sticky bands cannot give that — sticky keeps the
+   * content flowing beneath the pinned box, which is exactly the half-sliced
+   * message line the chat page was showing. */
+  .ui-page-container--fill {
+    flex: 1;
+    min-height: 0;
+  }
+
   .ui-page-container--fill .ui-page-body {
     flex: 1;
     min-height: 0;
+    overflow-y: auto;
   }
 
   .ui-page-footer {
