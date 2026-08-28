@@ -90,6 +90,15 @@
     grid-area: main;
     min-width: 0;
     overflow: auto;
+    /* Column flow, so a page that asks to FILL can actually be bounded by the
+     * region instead of merely starting at its top. With the default `block`
+     * flow a `--fill` container could only be `min-height: 100%`, i.e. it grew
+     * past the region and pushed the scroll back out here — which is why a chat
+     * transcript slid UNDER its own sticky composer. Ordinary pages are
+     * unaffected: their container still has `min-height: 100%`, still grows,
+     * and this element still scrolls it. */
+    display: flex;
+    flex-direction: column;
     /* Ambient brand glow hook — invisible by default (--gradient-glow: none); a service paints a
      * radial/linear brand wash behind the whole content area by configuring the token alone. */
     background-image: var(--gradient-glow);
