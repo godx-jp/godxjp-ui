@@ -2874,6 +2874,61 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between * two markers — inset by the marker radius on each side so it never runs under a marker."
   },
   {
+    "name": "--app-setting-picker-locale-width",
+    "value": "10rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-timezone-width",
+    "value": "14rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-date-format-width",
+    "value": "11rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-time-format-width",
+    "value": "11rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-theme-width",
+    "value": "9rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-brand-width",
+    "value": "11rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-density-width",
+    "value": "10rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-font-size-width",
+    "value": "9rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-width-breakpoint",
+    "value": "40rem",
+    "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."
+  },
+  {
+    "name": "--app-setting-picker-icon-size",
+    "value": "1rem",
+    "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."
+  },
+  {
+    "name": "--app-setting-picker-icon-rest-alpha",
+    "value": "0.7",
+    "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."
+  },
+  {
     "name": "--sheet-responsive-breakpoint-width",
     "value": "48rem",
     "description": "Viewport width at and below which `SheetContent responsive=\"auto\"` renders the mobile bottom * sheet instead of the desktop side panel. Read at runtime by useSheetResponsiveMode() (a CSS * @media cannot resolve a custom property), so a service moves the drawer breakpoint from ONE * knob for every overlay that opts into the responsive contract — Sheet and OrgSwitcher alike. * 48rem = 768px mirrors the library's canonical mobile line (useIsMobile). Accepts px/rem/em."

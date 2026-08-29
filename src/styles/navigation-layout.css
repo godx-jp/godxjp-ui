@@ -727,4 +727,61 @@
     block-size: 1px;
     background: hsl(var(--border));
   }
+
+  /* APP SETTING PICKER — icon-only box + per-kind labelled widths (#319). */
+
+  /* Structurally icon-only: square to the density-aware --control-height tap target and drop the
+   * form-input chrome so it sits among the topbar's ghost icon buttons. The open-state and
+   * focus-visible rings from controlTriggerClass are untouched. */
+  .ui-app-setting-picker-icon {
+    inline-size: var(--control-height);
+    justify-content: center;
+    border-color: transparent;
+    background: transparent;
+    padding-inline: 0;
+    box-shadow: none;
+  }
+
+  .ui-app-setting-picker-glyph {
+    inline-size: var(--app-setting-picker-icon-size);
+    block-size: var(--app-setting-picker-icon-size);
+    flex-shrink: 0;
+    opacity: var(--app-setting-picker-icon-rest-alpha);
+  }
+
+  /* Each kind is sized to the longest value it can show — a timezone name is far wider than a
+   * theme name. Below the breakpoint every kind hugs its content instead. */
+  @media (min-width: 40rem) {
+    .ui-app-setting-picker-trigger[data-kind="locale"] {
+      inline-size: var(--app-setting-picker-locale-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="timezone"] {
+      inline-size: var(--app-setting-picker-timezone-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="dateFormat"] {
+      inline-size: var(--app-setting-picker-date-format-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="timeFormat"] {
+      inline-size: var(--app-setting-picker-time-format-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="theme"] {
+      inline-size: var(--app-setting-picker-theme-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="brand"] {
+      inline-size: var(--app-setting-picker-brand-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="density"] {
+      inline-size: var(--app-setting-picker-density-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="fontSize"] {
+      inline-size: var(--app-setting-picker-font-size-width);
+    }
+  }
 }

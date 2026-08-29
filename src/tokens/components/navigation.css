@@ -129,4 +129,22 @@
   --steps-horizontal-text-space-inline: var(--space-2);
   --steps-connector-inset: 1.25rem;
   --steps-connector-space-block-start: var(--space-4);
+
+  /* APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest
+   * value it can show: a timezone name is far wider than a theme name. These were literal
+   * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German
+   * timezone list, a Japanese density label) could not widen just the one that overflows. */
+  --app-setting-picker-locale-width: 10rem;
+  --app-setting-picker-timezone-width: 14rem;
+  --app-setting-picker-date-format-width: 11rem;
+  --app-setting-picker-time-format-width: 11rem;
+  --app-setting-picker-theme-width: 9rem;
+  --app-setting-picker-brand-width: 11rem;
+  --app-setting-picker-density-width: 10rem;
+  --app-setting-picker-font-size-width: 9rem;
+  /* Below this the trigger hugs its content instead of taking the per-kind width, so a picker
+   * dropped into a narrow topbar never stretches the bar (gh#165). */
+  --app-setting-picker-width-breakpoint: 40rem;
+  --app-setting-picker-icon-size: 1rem;
+  --app-setting-picker-icon-rest-alpha: 0.7;
 }

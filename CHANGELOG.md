@@ -22,6 +22,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **AppSettingPicker's per-kind widths are themeable (#319) — 18 literals → 0.** Each picker is
+  sized to the longest value it can show — a timezone name is far wider than a theme name — but
+  those widths were `sm:w-*` steps in a lookup table, so a service whose locale renders longer
+  labels could not widen just the one that overflows. Width now comes from `data-kind` selecting
+  `--app-setting-picker-{locale,timezone,date-format,time-format,theme,brand,density,font-size}-width`,
+  with `--app-setting-picker-width-breakpoint` documenting where the trigger stops hugging its
+  content. The inline variant also stopped repeating the chrome-less box as utilities —
+  `.ui-app-setting-picker-inline` already declared every one of them — and the icon-only variant
+  gained the matching rule it never had.
 - **Button is token-themeable (#319) — 18 literals → 0.** Its `ui-button--*` classes already
   carried most of the box; what was left sat inside the cva variant strings and the count pill:
   `--button-xs-*` · `--button-icon-space-inline-{xs,sm,md,lg}` · `--button-space-block` ·

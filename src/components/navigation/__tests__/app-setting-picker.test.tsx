@@ -9,12 +9,9 @@ describe("AppSettingPicker", () => {
     renderWithUi(
       <AppSettingPicker kind="locale" appearance="inline" value="en" onValueChange={() => {}} />,
     );
-    expect(screen.getByRole("combobox")).toHaveClass(
-      "ui-app-setting-picker-inline",
-      "border-0",
-      "bg-transparent",
-      "shadow-none",
-    );
+    // The chrome-less box lives in `.ui-app-setting-picker-inline`'s own rule now, so the
+    // component no longer repeats border-0/bg-transparent/shadow-none as utilities (#319).
+    expect(screen.getByRole("combobox")).toHaveClass("ui-app-setting-picker-inline");
   });
 
   it.each([
@@ -138,12 +135,7 @@ describe("AppSettingPicker", () => {
     renderWithUi(
       <AppSettingPicker kind="locale" appearance="icon" value="ja" onValueChange={vi.fn()} />,
     );
-    expect(screen.getByRole("combobox")).toHaveClass(
-      "ui-app-setting-picker-icon",
-      "border-transparent",
-      "bg-transparent",
-      "shadow-none",
-    );
+    expect(screen.getByRole("combobox")).toHaveClass("ui-app-setting-picker-icon");
   });
 
   it('appearance="icon": still opens and fires onValueChange with localized options', async () => {
@@ -223,7 +215,10 @@ describe("AppSettingPicker", () => {
     renderWithUi(<AppSettingPicker kind="dateFormat" value="iso" onValueChange={vi.fn()} />);
     const trigger = screen.getByRole("combobox");
     expect(trigger).not.toHaveClass("ui-app-setting-picker-compact");
-    expect(trigger).toHaveClass("sm:w-44");
+    // Per-kind width moved from a `sm:w-*` lookup table to a token selected by `data-kind`,
+    // so a service can widen just the picker whose locale overflows (#319).
+    expect(trigger).toHaveClass("ui-app-setting-picker-trigger");
+    expect(trigger).toHaveAttribute("data-kind", "dateFormat");
   });
 
   it("renders an id and name through to the Select", () => {
