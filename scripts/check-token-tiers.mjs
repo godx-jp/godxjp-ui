@@ -45,7 +45,11 @@ function bareDeclarations(css) {
       stack.pop();
       buffer = "";
     } else if (ch === ";") {
-      const decl = buffer.trim().split("\n").pop().trim();
+      // The WHOLE buffer, not its last line. This repo wraps long token values onto the next
+      // line (`--shadow-md:\n  0 4px 6px …;`), so slicing to the last line reads the VALUE and
+      // the declaration stops looking like a custom property — which would have let exactly the
+      // bug this guard exists for slip through whenever the token happened to be multi-line.
+      const decl = buffer.trim();
       // Inside a rule the innermost frame is a selector; inside a bare @media it is the at-rule.
       const innermost = stack[stack.length - 1] ?? "(top level)";
       if (decl.startsWith("--") && innermost.startsWith("@")) {

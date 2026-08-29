@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`check-dist-tokens-resolve`** — the first guard that reads the SHIPPED artifact rather than
+  the source. Two checks, no baseline, because a token that does not resolve does not exist:
+  every custom property in `dist/` must sit inside a real rule body (the 122-dead-token shape),
+  and every `var(--x)` without a fallback must resolve to one that survived (the `--space-9`
+  shape, where two tokens referenced a rung `foundation.css` skips). It reports **1,189 live
+  declarations across 46 shipped stylesheets and 0 dead**, and was proved against both bug shapes
+  by reintroducing them and watching it name the file and line.
 - **A shadcn-compatible registry, publishing the design language rather than the components
   (#316 Phase 5).** `@godxjp/theme` (the token system) and `@godxjp/styles` (the stylesheets it
   drives) resolve at `https://godx-jp.github.io/godxjp-ui/registry/{name}.json` through the
@@ -87,6 +94,12 @@ static` and fell inline after the children at full opacity instead of resting at
   Tokenizing it earlier in this same release turned a `focus-visible:ring-0` utility into
   `box-shadow: none; outline: none`, leaving keyboard users with no focus affordance inside the
   panel. Only the ring is suppressed now.
+- **`check-token-tiers` would have missed the very bug it was written for, on a multi-line
+  token.** Its brace walker read a declaration as `buffer.split("\n").pop()`, and this repo wraps
+  long values onto the next line (`--shadow-md:` then the value). For such a token the walker read
+  the VALUE line, which does not start with `--`, so a multi-line token stranded inside an
+  `@media` block would have slipped straight through. It now reads the whole buffer; proved by
+  planting a multi-line token in a conditional group and watching it fail.
 - **`focus-ring-single-source` reported every `box-shadow: none` as a hand-written ring.** Its
   `/box-shadow:\s*(?!none)/` backtracks `\s*` to zero width, so the lookahead compared against
   `" none"` rather than `"none"` and matched. It now reads each declaration's value — suppressing
