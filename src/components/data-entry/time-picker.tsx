@@ -105,16 +105,9 @@ function TimeColumn({
   };
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col">
-      <div className="text-muted-foreground border-b px-1 py-1.5 text-center text-xs font-medium">
-        {label}
-      </div>
-      <div
-        ref={listRef}
-        role="listbox"
-        aria-label={label}
-        className="h-52 [scrollbar-width:thin] [scrollbar-gutter:stable] overflow-y-scroll overscroll-contain p-1"
-      >
+    <div className="ui-time-picker-column">
+      <div className="ui-time-picker-column-heading">{label}</div>
+      <div ref={listRef} role="listbox" aria-label={label} className="ui-time-picker-column-scroll">
         {items.map((item, index) => {
           const isSelected = item === selected;
           return (
@@ -125,10 +118,7 @@ function TimeColumn({
               aria-selected={isSelected}
               data-selected={isSelected}
               tabIndex={isSelected ? 0 : -1}
-              className={cn(
-                "hover:bg-accent flex w-full items-center justify-center rounded-md py-1.5 text-sm tabular-nums transition-colors",
-                isSelected && "bg-primary text-primary-foreground hover:bg-primary/90",
-              )}
+              className="ui-time-picker-option"
               onClick={() => {
                 onSelect(item);
               }}
@@ -175,7 +165,7 @@ function TimePickerPanel({ value, minuteStep, use12h, onChange, onDone }: TimePi
   const selectedHourItem = use12h ? to12h(hour) : hour;
 
   return (
-    <div className={use12h ? "w-52" : "w-36"}>
+    <div className="ui-time-picker-panel" data-hour-cycle={use12h ? "h12" : "h23"}>
       <div className="divide-border flex divide-x">
         <TimeColumn
           label={t("dataEntry.timePicker.hour")}
@@ -212,7 +202,7 @@ function TimePickerPanel({ value, minuteStep, use12h, onChange, onDone }: TimePi
           />
         )}
       </div>
-      <div className="border-t p-2">
+      <div className="ui-time-picker-footer">
         <Input
           id={draftId}
           value={draft}
@@ -313,19 +303,19 @@ export function TimePicker({
             aria-haspopup="dialog"
             aria-controls={open ? dialogId : undefined}
             {...fieldA11y}
-            // Two 20px buttons + gap need more room than Input's single-icon `pe-9`.
-            className={cn("tabular-nums", showClear && "pe-14")}
+            // Two affix buttons + gap need more room than Input's single-icon reserve.
+            className={cn("tabular-nums", showClear && "ui-time-picker-trigger-affixed")}
             trailingIcon={
-              <span className="inline-flex items-center gap-1">
+              <span className="ui-time-picker-affix">
                 {showClear ? (
                   <button
                     type="button"
                     tabIndex={-1}
                     aria-label={t("common.clear") ?? "Clear"}
                     onClick={clear}
-                    className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100"
+                    className="ui-time-picker-affix-action"
                   >
-                    <X className="size-4" aria-hidden="true" />
+                    <X className="ui-time-picker-affix-icon" aria-hidden="true" />
                   </button>
                 ) : null}
                 <PopoverTrigger asChild>
@@ -334,9 +324,9 @@ export function TimePicker({
                     disabled={disabled}
                     tabIndex={-1}
                     aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
-                    className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100"
+                    className="ui-time-picker-affix-action"
                   >
-                    <Clock className="size-4" aria-hidden="true" />
+                    <Clock className="ui-time-picker-affix-icon" aria-hidden="true" />
                   </button>
                 </PopoverTrigger>
               </span>
@@ -368,7 +358,7 @@ export function TimePicker({
         id={dialogId}
         role="dialog"
         aria-label={t("dataEntry.timePicker.openPicker") ?? "Time picker"}
-        className="w-auto p-0"
+        className="ui-time-picker-popover"
         align="end"
         onOpenAutoFocus={(event) => event.preventDefault()}
       >

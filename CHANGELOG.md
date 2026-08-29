@@ -22,6 +22,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **TimePicker is token-themeable (#319) — 25 literals → 0.** Column height, panel width, row
+  rhythm and the inline affix pair were all literal on the component, so a service could not
+  shorten the scroll column or widen the panel for its own type scale without forking:
+  `--time-picker-column-height` · `--time-picker-panel-width` (+ `-12h`, since a 12-hour layout
+  adds an AM/PM column) · `--time-picker-heading-*` · `--time-picker-option-*` ·
+  `--time-picker-footer-space-inset` · `--time-picker-affix-*`. Unlike Select and SearchSelect,
+  TimePicker's affix sits INSIDE the field rather than overlaying it and carries two controls
+  (clear + clock), so it keeps its own reserve and resting alpha instead of the shared overlay
+  values — shared vocabulary where it fits, separate where it genuinely differs.
 - **Select is token-themeable (#319) — 27 literals → 0, mostly by reusing what already existed.**
   Select's popup is the same surface ContextMenu/Menubar/DropdownMenu use, so its rows, label and
   separator join those shared rules rather than getting a fourth private copy; its trailing clear

@@ -1327,3 +1327,111 @@
     opacity: var(--control-affix-rest-alpha);
   }
 }
+
+@layer components {
+  /* TIME PICKER — hour/minute/second scroll columns + an inline affix pair. */
+  .ui-time-picker-panel {
+    inline-size: var(--time-picker-panel-width);
+  }
+
+  .ui-time-picker-panel[data-hour-cycle="h12"] {
+    inline-size: var(--time-picker-panel-width-12h);
+  }
+
+  .ui-time-picker-column {
+    display: flex;
+    min-inline-size: 0;
+    flex: 1 1 0%;
+    flex-direction: column;
+  }
+
+  .ui-time-picker-column-heading {
+    padding-inline: var(--time-picker-heading-space-inline);
+    padding-block: var(--time-picker-heading-space-block);
+    border-block-end: 1px solid hsl(var(--border));
+    text-align: center;
+    font-size: var(--time-picker-heading-font-size);
+    font-weight: var(--font-weight-medium);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-time-picker-column-scroll {
+    block-size: var(--time-picker-column-height);
+    padding: var(--time-picker-column-space-inset);
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+  }
+
+  .ui-time-picker-option {
+    display: flex;
+    inline-size: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--time-picker-option-radius);
+    padding-block: var(--time-picker-option-space-block);
+    font-size: var(--time-picker-option-font-size);
+    font-variant-numeric: tabular-nums;
+    transition: background-color 150ms ease;
+  }
+
+  .ui-time-picker-option:hover {
+    background: hsl(var(--accent));
+  }
+
+  .ui-time-picker-option[data-selected="true"] {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .ui-time-picker-option[data-selected="true"]:hover {
+    background: hsl(var(--primary) / 0.9);
+  }
+
+  .ui-time-picker-footer {
+    padding: var(--time-picker-footer-space-inset);
+    border-block-start: 1px solid hsl(var(--border));
+  }
+
+  .ui-time-picker-popover {
+    inline-size: auto;
+    padding: 0;
+  }
+
+  /* Two affix controls (clear + clock), so a wider reserved end than the single-affix triggers. */
+  .ui-time-picker-trigger-affixed {
+    padding-inline-end: var(--time-picker-trigger-space-inline-end);
+  }
+
+  .ui-time-picker-affix {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--time-picker-affix-space-gap);
+  }
+
+  /* Sits INSIDE the field rather than overlaying it, so it rests a touch heavier than the
+   * overlay affix Select/SearchSelect use. */
+  .ui-time-picker-affix-action {
+    display: inline-flex;
+    inline-size: var(--time-picker-affix-size);
+    block-size: var(--time-picker-affix-size);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--control-affix-action-radius);
+    color: hsl(var(--muted-foreground));
+    opacity: var(--time-picker-affix-rest-alpha);
+    transition: opacity 150ms ease;
+  }
+
+  .ui-time-picker-affix-action:hover,
+  .ui-time-picker-affix-action:focus-visible {
+    color: hsl(var(--foreground));
+    opacity: 1;
+  }
+
+  .ui-time-picker-affix-icon {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+  }
+}

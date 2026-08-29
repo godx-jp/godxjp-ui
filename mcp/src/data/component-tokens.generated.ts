@@ -994,6 +994,81 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Select rows sit slightly wider than a menu row: a listbox has no leading icon column to * absorb the optical inset, so 2.5 reads level with a menu's 2 + icon."
   },
   {
+    "name": "--time-picker-column-height",
+    "value": "13rem",
+    "description": "TIME PICKER — scroll columns of hour/minute/second plus an inline affix pair. All of its * geometry was literal on the component (#319): a service could not shorten the column, widen * the panel for a 12-hour layout, or retune the row rhythm without forking."
+  },
+  {
+    "name": "--time-picker-panel-width",
+    "value": "9rem",
+    "description": "TIME PICKER — scroll columns of hour/minute/second plus an inline affix pair. All of its * geometry was literal on the component (#319): a service could not shorten the column, widen * the panel for a 12-hour layout, or retune the row rhythm without forking."
+  },
+  {
+    "name": "--time-picker-panel-width-12h",
+    "value": "13rem",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-heading-space-inline",
+    "value": "var(--space-1)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-heading-space-block",
+    "value": "0.375rem",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-heading-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-column-space-inset",
+    "value": "var(--space-1)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-option-space-block",
+    "value": "0.375rem",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-option-radius",
+    "value": "var(--radius-md)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-option-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-footer-space-inset",
+    "value": "var(--space-2)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-trigger-space-inline-end",
+    "value": "3.5rem",
+    "description": "This trigger parks TWO affix controls (clear + clock), so it reserves a wider inline end * than the single-affix triggers that read --control-trigger-space-inline-end."
+  },
+  {
+    "name": "--time-picker-affix-space-gap",
+    "value": "var(--space-1)",
+    "description": "This trigger parks TWO affix controls (clear + clock), so it reserves a wider inline end * than the single-affix triggers that read --control-trigger-space-inline-end."
+  },
+  {
+    "name": "--time-picker-affix-size",
+    "value": "1.25rem",
+    "description": "This trigger parks TWO affix controls (clear + clock), so it reserves a wider inline end * than the single-affix triggers that read --control-trigger-space-inline-end."
+  },
+  {
+    "name": "--time-picker-affix-rest-alpha",
+    "value": "0.7",
+    "description": "These affix glyphs sit inside the field rather than overlaying it, so they rest a touch * heavier than the overlay affix used by Select/SearchSelect."
+  },
+  {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
     "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
