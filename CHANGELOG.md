@@ -22,6 +22,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Upload is token-themeable (#319) — 66 literals → 0, the worst file in the library.** All five
+  variants (dropzone · button · picture · picture-card · avatar) baked their entire box onto the
+  component, so a service could not resize the avatar, dial back the dropzone's 40px inset, or
+  align the file row to its own grid without forking. 47 new knobs across six regions:
+  `--upload-dropzone-*` · `--upload-tile-*` · `--upload-remove-*` · `--upload-picture-*` ·
+  `--upload-avatar-*` · `--upload-draft-*` · `--upload-row-*`. Markup now carries semantic
+  `.ui-upload-*` classes; state moved to data attributes (`data-drag-active`,
+  `data-pending-delete`, `data-disabled`) so it is themeable and assertable.
+  Radius defaults were verified against the built CSS (`rounded-lg` = `--radius`,
+  `rounded-md` = `--radius / --radius-ratio`), so the look is unchanged — with **one deliberate
+  normalization**: the "pending replace" chip used a bare `rounded`, which resolves to a flat
+  `.25rem` and ignored the radius scale entirely (itself a rule #44 miss). It now follows the
+  tile radius, a ~0.3px difference.
 - **Tooltip + Popover are token-themeable (#316 Phase 1).** Both shipped their entire box as
   Tailwind literals on the component (`z-50 max-w-xs px-2 py-1 rounded-md text-xs shadow-md`,
   `w-72 p-4`), so a service theme could not retune tooltip density, popover width, or overlay

@@ -9,13 +9,19 @@ const img = (name = "a.png", bytes = 10) =>
 const fileInput = (c: HTMLElement) => c.querySelector('input[type="file"]') as HTMLInputElement;
 
 describe("Upload — dropzone drag & drop + file list", () => {
-  it("dragOver toggles the active border, drop adds the dropped files", async () => {
+  it("dragOver toggles the active state, drop adds the dropped files", async () => {
     const onValueChange = vi.fn();
     renderWithUi(<Upload variant="dropzone" accept="image/*" onValueChange={onValueChange} />);
     const zone = screen.getByRole("button");
     fireEvent.dragOver(zone);
-    expect(zone.className).toContain("border-primary");
+    // The drag-active signal is a data attribute, not a class: the dropzone's chrome moved into
+    // `.ui-upload-dropzone[data-drag-active]` so a service can retheme it (#319). Asserting the
+    // attribute pins the semantic contract instead of a Tailwind internal.
+    expect(zone).toHaveAttribute("data-drag-active");
     fireEvent.dragLeave(zone);
+    // Previously this fired dragLeave and asserted nothing, so a dropzone stuck in the active
+    // state would have passed.
+    expect(zone).not.toHaveAttribute("data-drag-active");
     fireEvent.drop(zone, { dataTransfer: { files: [img()] } });
     expect(onValueChange).toHaveBeenCalled();
     expect(onValueChange.mock.calls.at(-1)![0]).toHaveLength(1);

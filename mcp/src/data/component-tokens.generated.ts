@@ -3062,5 +3062,255 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-stacked-collection-label-font-size",
     "value": "var(--font-size-xs)",
     "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no * column-priority measure to retune — the whole row becomes one block)."
+  },
+  {
+    "name": "--upload-dropzone-space-inset",
+    "value": "var(--space-10)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-radius",
+    "value": "var(--radius-lg)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-border-width",
+    "value": "2px",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-icon-size",
+    "value": "2.5rem",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-hint-space-block-start",
+    "value": "var(--space-3)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-hint-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-meta-space-block-start",
+    "value": "var(--space-1)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-meta-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-tile-size",
+    "value": "6rem",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-radius",
+    "value": "var(--radius-md)",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-space-gap",
+    "value": "var(--space-3)",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-icon-size",
+    "value": "1.5rem",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-label-space-block-start",
+    "value": "var(--space-1)",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-label-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-overlay-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-overlay-background",
+    "value": "initial",
+    "description": "Busy scrim over a tile/frame — role-mirror knob, `initial` so --background re-resolves at the * CALL SITE under a scoped [data-tenant]/.dark theme. Default = hsl(var(--background) / 0.7)."
+  },
+  {
+    "name": "--upload-overlay-alpha",
+    "value": "70%",
+    "description": "Busy scrim over a tile/frame — role-mirror knob, `initial` so --background re-resolves at the * CALL SITE under a scoped [data-tenant]/.dark theme. Default = hsl(var(--background) / 0.7)."
+  },
+  {
+    "name": "--upload-remove-space-inset",
+    "value": "var(--space-1)",
+    "description": "REMOVE affordance — the ✕ / trash chip pinned to a tile or avatar."
+  },
+  {
+    "name": "--upload-remove-offset",
+    "value": "var(--space-1)",
+    "description": "REMOVE affordance — the ✕ / trash chip pinned to a tile or avatar."
+  },
+  {
+    "name": "--upload-remove-icon-size",
+    "value": "0.875rem",
+    "description": "REMOVE affordance — the ✕ / trash chip pinned to a tile or avatar."
+  },
+  {
+    "name": "--upload-picture-max-width",
+    "value": "20rem",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-radius",
+    "value": "var(--radius-md)",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-preview-max-height",
+    "value": "12rem",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-empty-height",
+    "value": "8rem",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-empty-label-space-block-start",
+    "value": "var(--space-2)",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-empty-label-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-overlay-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-badge-radius",
+    "value": "var(--radius-md)",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+  },
+  {
+    "name": "--upload-picture-badge-offset",
+    "value": "var(--space-2)",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+  },
+  {
+    "name": "--upload-picture-badge-space-inline",
+    "value": "var(--space-2)",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+  },
+  {
+    "name": "--upload-picture-badge-space-block",
+    "value": "0.125rem",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+  },
+  {
+    "name": "--upload-picture-badge-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+  },
+  {
+    "name": "--upload-avatar-size",
+    "value": "6rem",
+    "description": "AVATAR — the round single-image variant."
+  },
+  {
+    "name": "--upload-avatar-border-width",
+    "value": "2px",
+    "description": "AVATAR — the round single-image variant."
+  },
+  {
+    "name": "--upload-avatar-change-space-block",
+    "value": "var(--space-1)",
+    "description": "AVATAR — the round single-image variant."
+  },
+  {
+    "name": "--upload-avatar-change-background",
+    "value": "rgb(0 0 0 / 0.7)",
+    "description": "The \"change\" strip sits ON the photo, so its scrim is intentionally a fixed dark wash rather * than a surface role — it must stay legible over an arbitrary user image in either theme."
+  },
+  {
+    "name": "--upload-avatar-change-foreground",
+    "value": "#fff",
+    "description": "The \"change\" strip sits ON the photo, so its scrim is intentionally a fixed dark wash rather * than a surface role — it must stay legible over an arbitrary user image in either theme."
+  },
+  {
+    "name": "--upload-avatar-pending-delete-alpha",
+    "value": "0.4",
+    "description": "Alpha of an image the user has marked for deletion but not yet committed."
+  },
+  {
+    "name": "--upload-draft-space-inline",
+    "value": "var(--space-3)",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-draft-space-block",
+    "value": "var(--space-2)",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-draft-space-gap",
+    "value": "var(--space-2)",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-draft-radius",
+    "value": "var(--radius-md)",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-draft-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-draft-icon-size",
+    "value": "0.875rem",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-row-space-inline",
+    "value": "var(--space-3)",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-row-space-block",
+    "value": "var(--space-2)",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-row-space-gap",
+    "value": "var(--space-3)",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-row-radius",
+    "value": "var(--radius-md)",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-row-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-row-icon-size",
+    "value": "1rem",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
   }
 ];

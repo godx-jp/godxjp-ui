@@ -265,15 +265,13 @@ export function Upload({
             setDragActive(false);
             pickFiles(e.dataTransfer.files);
           }}
-          className={cn(
-            "cursor-pointer rounded-lg border-2 border-dashed p-10 text-center transition-colors",
-            dragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/50",
-            disabled && "pointer-events-none opacity-50",
-          )}
+          data-drag-active={dragActive ? "" : undefined}
+          data-disabled={disabled ? "" : undefined}
+          className="ui-upload-dropzone"
         >
-          <UploadIcon className="text-muted-foreground mx-auto size-10" aria-hidden="true" />
-          <p className="mt-3 text-sm">{t("dataEntry.upload.dropzoneHint")}</p>
-          <p className="text-muted-foreground mt-1 text-xs">{t("dataEntry.upload.dropzoneMeta")}</p>
+          <UploadIcon className="ui-upload-dropzone-icon" aria-hidden="true" />
+          <p className="ui-upload-dropzone-hint">{t("dataEntry.upload.dropzoneHint")}</p>
+          <p className="ui-upload-dropzone-meta">{t("dataEntry.upload.dropzoneMeta")}</p>
         </div>
         {items.length > 0 && (
           <UploadFileList items={items} onRemove={removable ? removeItem : undefined} />
@@ -301,7 +299,11 @@ export function Upload({
           onClick={openPicker}
           aria-label={iconOnly ? (typeof label === "string" ? label : undefined) : undefined}
         >
-          <UploadIcon className={iconOnly ? "size-4" : "me-2 size-4"} aria-hidden="true" />
+          <UploadIcon
+            className="ui-upload-trigger-icon"
+            data-with-label={iconOnly ? undefined : ""}
+            aria-hidden="true"
+          />
           {iconOnly ? null : label}
         </Button>
         {items.length > 0 && (
@@ -314,7 +316,7 @@ export function Upload({
   if (variant === "picture-card") {
     const canAdd = maxCount == null || items.length < maxCount;
     return (
-      <div className={cn("flex flex-wrap gap-3", className)}>
+      <div className={cn("ui-upload-grid", className)}>
         {hiddenInput}
         {liveRegion}
         {items.map((item) => (
@@ -329,15 +331,12 @@ export function Upload({
             type="button"
             disabled={disabled}
             onClick={openPicker}
-            className={cn(
-              "flex size-24 flex-col items-center justify-center rounded-md border border-dashed",
-              "text-muted-foreground hover:border-primary hover:text-primary transition-colors",
-              disabled && "pointer-events-none opacity-50",
-            )}
+            data-disabled={disabled ? "" : undefined}
+            className="ui-upload-tile-add"
             aria-label={t("dataEntry.upload.addImage")}
           >
-            <ImagePlus className="size-6" aria-hidden="true" />
-            <span className="mt-1 text-xs">{t("dataEntry.upload.addImage")}</span>
+            <ImagePlus className="ui-upload-tile-add-icon" aria-hidden="true" />
+            <span className="ui-upload-tile-add-label">{t("dataEntry.upload.addImage")}</span>
           </button>
         )}
       </div>
@@ -347,21 +346,19 @@ export function Upload({
   if (variant === "picture") {
     const item = draft.state.display;
     return (
-      <div className={cn("ui-stack-sm max-w-xs", className)}>
+      <div className={cn("ui-stack-sm ui-upload-picture", className)}>
         {hiddenInput}
         {liveRegion}
         {item?.previewUrl && !item.pendingDelete ? (
-          <div className="relative overflow-hidden rounded-md border">
-            <img src={item.previewUrl} alt="" className="max-h-48 w-full object-cover" />
+          <div className="ui-upload-picture-frame">
+            <img src={item.previewUrl} alt="" className="ui-upload-picture-img" />
             {item.status === "uploading" && (
-              <div className="bg-background/70 absolute inset-0 flex items-center justify-center text-sm">
+              <div className="ui-upload-overlay ui-upload-picture-overlay">
                 {t("dataEntry.upload.uploading")}
               </div>
             )}
             {item.pendingReplace && (
-              <div className="bg-warning text-warning-foreground absolute start-2 top-2 rounded px-2 py-0.5 text-xs">
-                {t("dataEntry.upload.pendingReplace")}
-              </div>
+              <div className="ui-upload-picture-badge">{t("dataEntry.upload.pendingReplace")}</div>
             )}
           </div>
         ) : (
@@ -369,10 +366,10 @@ export function Upload({
             type="button"
             disabled={disabled}
             onClick={openPicker}
-            className="text-muted-foreground hover:border-primary flex h-32 w-full flex-col items-center justify-center rounded-md border border-dashed"
+            className="ui-upload-picture-empty"
           >
             <ImagePlus className={controlIconClass} aria-hidden="true" />
-            <span className="mt-2 text-sm">{t("dataEntry.upload.addImage")}</span>
+            <span className="ui-upload-picture-empty-label">{t("dataEntry.upload.addImage")}</span>
           </button>
         )}
         <UploadDraftActions draft={draft} disabled={disabled} onPick={openPicker} />
@@ -408,25 +405,20 @@ export function Upload({
           type="button"
           disabled={disabled}
           onClick={openPicker}
-          className={cn(
-            "border-border bg-muted relative size-24 overflow-hidden rounded-full border-2",
-            "ui-focus-ring",
-            item?.pendingDelete && "opacity-40",
-            disabled && "pointer-events-none opacity-50",
-          )}
+          data-pending-delete={item?.pendingDelete ? "" : undefined}
+          data-disabled={disabled ? "" : undefined}
+          className="ui-upload-avatar ui-focus-ring"
           aria-label={t("dataEntry.upload.avatarLabel")}
         >
           {!showPlaceholder && item?.previewUrl ? (
-            <img src={item.previewUrl} alt="" className="size-full object-cover" />
+            <img src={item.previewUrl} alt="" className="ui-upload-avatar-image" />
           ) : (
-            <span className="text-muted-foreground flex size-full items-center justify-center">
+            <span className="ui-upload-avatar-placeholder">
               <Camera className={controlIconClass} aria-hidden="true" />
             </span>
           )}
           {!disabled && (
-            <span className="text-2xs absolute inset-x-0 bottom-0 bg-black/70 py-1 text-center text-white">
-              {t("dataEntry.upload.change")}
-            </span>
+            <span className="ui-upload-avatar-change">{t("dataEntry.upload.change")}</span>
           )}
         </button>
         {removable && item && !item.pendingDelete && (
@@ -434,10 +426,10 @@ export function Upload({
             type="button"
             disabled={disabled}
             onClick={() => draft.markRemove()}
-            className="bg-background hover:bg-destructive hover:text-destructive-foreground absolute -end-1 -top-1 rounded-full border p-1 shadow-sm"
+            className="ui-upload-avatar-remove"
             aria-label={t("dataEntry.upload.removeAvatar")}
           >
-            <Trash2 className="size-3.5" aria-hidden="true" />
+            <Trash2 className="ui-upload-remove-icon" aria-hidden="true" />
           </button>
         )}
       </div>
@@ -460,10 +452,10 @@ function UploadDraftActions({
 
   if (state.canUndoRemove) {
     return (
-      <div className="border-destructive/40 bg-destructive/5 flex flex-wrap items-center gap-2 rounded-md border border-dashed px-3 py-2 text-sm">
+      <div className="ui-upload-draft-undo">
         <span className="text-destructive">{t("dataEntry.upload.markedForDelete")}</span>
         <Button type="button" size="sm" variant="outline" disabled={disabled} onClick={undoRemove}>
-          <RotateCcw className="me-1 size-3.5" aria-hidden="true" />
+          <RotateCcw className="ui-upload-draft-icon" aria-hidden="true" />
           {t("dataEntry.upload.undo")}
         </Button>
       </div>
@@ -472,7 +464,7 @@ function UploadDraftActions({
 
   if (state.canUndoReplace) {
     return (
-      <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-sm">
+      <div className="ui-upload-draft-hint">
         <span>{t("dataEntry.upload.pendingReplaceHint")}</span>
         <Button type="button" size="sm" variant="ghost" disabled={disabled} onClick={undoReplace}>
           {t("dataEntry.upload.undo")}
@@ -490,27 +482,21 @@ function UploadDraftActions({
 function UploadPictureCard({ item, onRemove }: { item: UploadFileItem; onRemove?: () => void }) {
   const { t } = useTranslation();
   return (
-    <div className="bg-muted relative size-24 overflow-hidden rounded-md border">
+    <div className="ui-upload-tile">
       {item.previewUrl ? (
-        <img src={item.previewUrl} alt="" className="size-full object-cover" />
+        <img src={item.previewUrl} alt="" className="ui-upload-avatar-image" />
       ) : (
-        <div className="text-muted-foreground flex size-full items-center justify-center text-xs">
-          …
-        </div>
+        <div className="ui-upload-tile-placeholder">…</div>
       )}
-      {item.status === "uploading" && (
-        <div className="bg-background/70 absolute inset-0 flex items-center justify-center text-xs">
-          …
-        </div>
-      )}
+      {item.status === "uploading" && <div className="ui-upload-overlay">…</div>}
       {onRemove && (
         <button
           type="button"
           onClick={onRemove}
-          className="bg-background/90 hover:bg-destructive hover:text-destructive-foreground absolute end-1 top-1 rounded-full p-0.5 shadow"
+          className="ui-upload-tile-remove"
           aria-label={t("dataEntry.upload.removeImage")}
         >
-          <X className="size-3.5" aria-hidden="true" />
+          <X className="ui-upload-remove-icon" aria-hidden="true" />
         </button>
       )}
     </div>
@@ -528,8 +514,8 @@ function UploadFileList({
   return (
     <ul className="ui-stack-xs">
       {items.map((item) => (
-        <li key={item.uid} className="flex items-center gap-3 rounded-md border px-3 py-2 text-sm">
-          <div className="min-w-0 flex-1">
+        <li key={item.uid} className="ui-upload-row">
+          <div className="ui-upload-row-main">
             <div className="truncate font-medium">{item.name}</div>
             <div className="text-muted-foreground text-xs">
               {formatBytes(item.size)}
@@ -550,7 +536,7 @@ function UploadFileList({
               aria-label={t("dataEntry.upload.removeFile", { name: item.name })}
               onClick={() => onRemove(item.uid)}
             >
-              <X className="size-4" aria-hidden="true" />
+              <X className="ui-upload-row-icon" aria-hidden="true" />
             </Button>
           )}
         </li>
