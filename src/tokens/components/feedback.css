@@ -81,4 +81,35 @@
    * a scoped theme (a :root binding to a role var freezes at :root). A service tints the shimmer to
    * its surface (rule #44) without forking the keyframes. Default = hsl(var(--muted)). */
   --skeleton-background: initial;
+
+  /* TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into
+   * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not
+   * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce
+   * the previous look exactly, so adopting this changes nothing until a theme opts in. */
+  --tooltip-max-width: 20rem;
+  --tooltip-space-inline: var(--space-2);
+  --tooltip-space-block: var(--space-1);
+  --tooltip-radius: var(--radius);
+  --tooltip-font-size: var(--font-size-xs);
+  /* Raised-surface depth — role-mirror knob, so a flat service theme sets `none` once. */
+  --tooltip-shadow: var(--shadow-md);
+  /* Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped
+   * [data-tenant]/.dark theme (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`").
+   * Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text. */
+  --tooltip-background: initial;
+  --tooltip-foreground: initial;
+  --tooltip-border-color: initial;
+
+  /* POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md`
+   * were literals, so a service could not align the panel to its own grid or width scale. */
+  --popover-width: 18rem;
+  --popover-space-inset: var(--space-4);
+  --popover-radius: var(--radius);
+  --popover-shadow: var(--shadow-md);
+  --popover-header-space-gap: var(--space-1);
+  --popover-header-font-size: var(--font-size-sm);
+  /* Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above). */
+  --popover-surface-background: initial;
+  --popover-surface-foreground: initial;
+  --popover-surface-border-color: initial;
 }

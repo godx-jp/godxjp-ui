@@ -22,6 +22,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Tooltip + Popover are token-themeable (#316 Phase 1).** Both shipped their entire box as
+  Tailwind literals on the component (`z-50 max-w-xs px-2 py-1 rounded-md text-xs shadow-md`,
+  `w-72 p-4`), so a service theme could not retune tooltip density, popover width, or overlay
+  stacking without forking the component — the gap cardinal rule #45 exists to close. New knobs:
+  `--tooltip-max-width` · `--tooltip-space-inline` · `--tooltip-space-block` · `--tooltip-radius`
+  · `--tooltip-font-size` · `--tooltip-shadow` · `--tooltip-background` ·
+  `--tooltip-foreground` · `--tooltip-border-color` · `--popover-width` ·
+  `--popover-space-inset` · `--popover-radius` · `--popover-shadow` ·
+  `--popover-header-space-gap` · `--popover-header-font-size` ·
+  `--popover-surface-{background,foreground,border-color}`. Colour knobs are declared `initial`
+  with the role default at the call site, so a scoped `[data-tenant]`/`.dark` override still
+  reaches the portaled node. **Defaults reproduce the previous look exactly** — nothing changes
+  until a theme opts in.
+- **`--overlay-z-index`** (semantic tier) — the ONE stacking layer for every portaled overlay.
+  Tooltip, Popover, Select, DropdownMenu and Sheet each hard-coded `z-50`, so an app mounting the
+  library under its own stacking context had to fight five literals. Stacking is a system
+  decision, not a per-primitive one. Default `50`.
 - **`scripts/audit-shadcn-overlap.mjs`** — đo giá trị thật của 47 component trùng tên shadcn/ui.
   Đếm hằng số hình học/chrome hard-code (thứ khiến service theme không chỉnh được), bỏ qua role
   utility vì chúng đã token-backed qua Tailwind v4 `@theme`. Kết quả khởi điểm: 45/47 đáng giữ,

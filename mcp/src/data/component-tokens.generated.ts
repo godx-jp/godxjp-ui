@@ -1429,6 +1429,96 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Skeleton placeholder fill — `initial` so the --muted default re-resolves at the call site under * a scoped theme (a :root binding to a role var freezes at :root). A service tints the shimmer to * its surface (rule #44) without forking the keyframes. Default = hsl(var(--muted))."
   },
   {
+    "name": "--tooltip-max-width",
+    "value": "20rem",
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-space-inline",
+    "value": "var(--space-2)",
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-space-block",
+    "value": "var(--space-1)",
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-radius",
+    "value": "var(--radius)",
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-shadow",
+    "value": "var(--shadow-md)",
+    "description": "Raised-surface depth — role-mirror knob, so a flat service theme sets `none` once."
+  },
+  {
+    "name": "--tooltip-background",
+    "value": "initial",
+    "description": "Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped * [data-tenant]/.dark theme (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). * Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text."
+  },
+  {
+    "name": "--tooltip-foreground",
+    "value": "initial",
+    "description": "Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped * [data-tenant]/.dark theme (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). * Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text."
+  },
+  {
+    "name": "--tooltip-border-color",
+    "value": "initial",
+    "description": "Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped * [data-tenant]/.dark theme (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). * Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text."
+  },
+  {
+    "name": "--popover-width",
+    "value": "18rem",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-space-inset",
+    "value": "var(--space-4)",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-radius",
+    "value": "var(--radius)",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-shadow",
+    "value": "var(--shadow-md)",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-header-space-gap",
+    "value": "var(--space-1)",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-header-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-surface-background",
+    "value": "initial",
+    "description": "Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above)."
+  },
+  {
+    "name": "--popover-surface-foreground",
+    "value": "initial",
+    "description": "Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above)."
+  },
+  {
+    "name": "--popover-surface-border-color",
+    "value": "initial",
+    "description": "Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above)."
+  },
+  {
     "name": "--form-label-width",
     "value": "8rem",
     "description": "Fixed aligned label column by default (gh#284) — `max-content` sized each field's label * column to its own label, so horizontal forms (especially columns={2} grids) had controls * starting at ragged x positions. 8rem mirrors --descriptions-label-width so edit forms and * show pages share the same optical grid; the Form/FormField `labelWidth` prop overrides."

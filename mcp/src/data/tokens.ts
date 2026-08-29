@@ -24,6 +24,12 @@ export const TOKENS: TokenEntry[] = [
   },
   { name: "--space-0..12", category: "primitive", tier: "primitive", role: "Raw spacing scale." },
   {
+    name: "--overlay-z-index",
+    category: "semantic",
+    tier: "semantic",
+    role: "The ONE stacking layer every portaled overlay sits on — Tooltip, Popover, Select, DropdownMenu, Sheet. Each of those used to hard-code `z-50` independently, so an app that mounts the library under its own stacking context (a sticky masthead, a third-party chat widget) had to fight five separate literals. Stacking is a SYSTEM decision, not a per-primitive one: raise every overlay together by overriding this once. Default 50.",
+  },
+  {
     name: "--font-size-*",
     category: "primitive",
     tier: "primitive",
