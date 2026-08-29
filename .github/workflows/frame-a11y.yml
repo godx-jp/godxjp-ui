@@ -35,6 +35,11 @@ jobs:
       PREVIEW_BASE: http://localhost:6008
     steps:
       - uses: actions/checkout@v6
+      # Bootstrap Node BEFORE pnpm/action-setup: self-hosted runners default to
+      # Node 18, and the pnpm self-installer (npm 11) refuses to run on it.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
@@ -56,6 +61,11 @@ jobs:
       PREVIEW_BASE: http://localhost:6018
     steps:
       - uses: actions/checkout@v6
+      # Bootstrap Node BEFORE pnpm/action-setup: self-hosted runners default to
+      # Node 18, and the pnpm self-installer (npm 11) refuses to run on it.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
@@ -82,6 +92,11 @@ jobs:
       PREVIEW_BASE: http://localhost:6028
     steps:
       - uses: actions/checkout@v6
+      # Bootstrap Node BEFORE pnpm/action-setup: self-hosted runners default to
+      # Node 18, and the pnpm self-installer (npm 11) refuses to run on it.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
@@ -110,6 +125,11 @@ jobs:
       PREVIEW_BASE: http://localhost:6038
     steps:
       - uses: actions/checkout@v6
+      # Bootstrap Node BEFORE pnpm/action-setup: self-hosted runners default to
+      # Node 18, and the pnpm self-installer (npm 11) refuses to run on it.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
