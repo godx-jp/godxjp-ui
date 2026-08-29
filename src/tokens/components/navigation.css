@@ -105,4 +105,28 @@
   --dropdown-content-min-width: 8rem;
   --menu-separator-space-block: var(--space-1);
   --menu-separator-space-inline: calc(var(--space-1) * -1);
+
+  /* STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline
+   * form; the marker, connector and text rhythm of the main variant were still literal on the
+   * component (#319), so a service could not resize the dot, retighten the vertical run, or move
+   * the horizontal connector to match its own grid. */
+  --steps-dot-size: 0.625rem;
+  --steps-dot-process-ring-width: 4px;
+  --steps-marker-border-width: 2px;
+  --steps-marker-font-size: var(--font-size-sm);
+  --steps-marker-icon-size: 1rem;
+  --steps-wait-icon-size: 0.75rem;
+  --steps-title-font-size: var(--font-size-sm);
+  --steps-title-font-size-compact: var(--font-size-xs);
+  --steps-subtitle-font-size: var(--font-size-xs);
+  /* Vertical run: gap between marker and text, and the drop to the next step. */
+  --steps-vertical-space-gap: var(--space-3);
+  --steps-vertical-space-block-end: var(--space-8);
+  --steps-vertical-text-space-block-start: var(--space-1);
+  /* Horizontal run: the text sits under the marker, and the connector spans the gap between
+   * two markers — inset by the marker radius on each side so it never runs under a marker. */
+  --steps-horizontal-text-space-block-start: var(--space-2);
+  --steps-horizontal-text-space-inline: var(--space-2);
+  --steps-connector-inset: 1.25rem;
+  --steps-connector-space-block-start: var(--space-4);
 }

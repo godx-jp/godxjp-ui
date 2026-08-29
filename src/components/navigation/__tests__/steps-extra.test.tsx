@@ -9,8 +9,8 @@ describe("Steps — currentStatus + titlePlacement", () => {
   it("applies the status prop to the current step (currentStatus override)", () => {
     const { container } = render(<Steps items={ITEMS} value={1} status="error" />);
     // step 1 is current → resolveStepStatus uses currentStatus="error"
-    expect(container.querySelector('[class*="bg-destructive"]')).not.toBeNull();
-    expect(screen.getByText("審査").className).toContain("text-destructive");
+    expect(container.querySelector('.ui-steps-marker[data-status="error"]')).not.toBeNull();
+    expect(screen.getByText("審査")).toHaveAttribute("data-status", "error");
   });
 
   it("adds the vertical title-placement spacing on a horizontal stepper", () => {
@@ -18,6 +18,9 @@ describe("Steps — currentStatus + titlePlacement", () => {
       <Steps items={ITEMS} titlePlacement="vertical" orientation="horizontal" />,
     );
     // titlePlacement === "vertical" && !isVertical → the body gets mt-1
-    expect(container.querySelector(".mt-1")).not.toBeNull();
+    // Title placement is a data attribute now; the spacing it selects is a token.
+    expect(
+      container.querySelector('.ui-steps-item[data-title-placement="vertical"]'),
+    ).not.toBeNull();
   });
 });

@@ -548,3 +548,183 @@
     flex-shrink: 0;
   }
 }
+
+@layer components {
+  /* STEPS — full (non-inline) variant. The inline form keeps its own --steps-inline-* set. */
+  .ui-steps-dot {
+    display: block;
+    inline-size: var(--steps-dot-size);
+    block-size: var(--steps-dot-size);
+    border-radius: var(--radius-pill);
+  }
+
+  .ui-steps-dot[data-status="finish"],
+  .ui-steps-dot[data-status="process"] {
+    background: hsl(var(--primary));
+  }
+
+  .ui-steps-dot[data-status="process"] {
+    box-shadow: 0 0 0 var(--steps-dot-process-ring-width) hsl(var(--primary) / 0.2);
+  }
+
+  .ui-steps-dot[data-status="error"] {
+    background: hsl(var(--destructive));
+  }
+
+  .ui-steps-dot[data-status="wait"] {
+    background: hsl(var(--muted-foreground) / 0.3);
+  }
+
+  .ui-steps-marker {
+    border-radius: var(--radius-pill);
+    border: var(--steps-marker-border-width) solid transparent;
+    font-size: var(--steps-marker-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-steps-marker[data-status="finish"] {
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .ui-steps-marker[data-status="process"] {
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+  }
+
+  .ui-steps-marker[data-status="error"] {
+    border-color: hsl(var(--destructive));
+    background: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
+  }
+
+  .ui-steps-marker[data-status="wait"] {
+    border-color: hsl(var(--muted-foreground) / 0.3);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-steps-marker-icon {
+    inline-size: var(--steps-marker-icon-size);
+    block-size: var(--steps-marker-icon-size);
+  }
+
+  .ui-steps-wait-icon {
+    inline-size: var(--steps-wait-icon-size);
+    block-size: var(--steps-wait-icon-size);
+    fill: currentColor;
+  }
+
+  .ui-steps-text {
+    min-inline-size: 0;
+  }
+
+  .ui-steps-item[data-direction="vertical"] .ui-steps-text {
+    padding-block-start: var(--steps-vertical-text-space-block-start);
+    text-align: start;
+  }
+
+  .ui-steps-item[data-direction="horizontal"] .ui-steps-text {
+    margin-block-start: var(--steps-horizontal-text-space-block-start);
+    padding-inline: var(--steps-horizontal-text-space-inline);
+  }
+
+  .ui-steps-item[data-direction="horizontal"][data-title-placement="vertical"] .ui-steps-text {
+    margin-block-start: var(--steps-vertical-text-space-block-start);
+  }
+
+  .ui-steps-title {
+    font-weight: var(--font-weight-medium);
+    font-size: var(--steps-title-font-size);
+  }
+
+  .ui-steps-title[data-compact] {
+    font-size: var(--steps-title-font-size-compact);
+  }
+
+  .ui-steps-title[data-status="process"] {
+    color: hsl(var(--foreground));
+  }
+
+  .ui-steps-title[data-status="wait"] {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-steps-title[data-status="error"] {
+    color: hsl(var(--destructive));
+  }
+
+  .ui-steps-subtitle {
+    font-size: var(--steps-subtitle-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-steps-description {
+    font-size: var(--steps-title-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-steps-description[data-compact] {
+    font-size: var(--steps-title-font-size-compact);
+  }
+
+  .ui-steps-list[data-direction="vertical"] {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .ui-steps-list[data-direction="horizontal"] {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .ui-steps-control {
+    display: flex;
+    min-inline-size: 0;
+  }
+
+  .ui-steps-control[data-direction="vertical"] {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--steps-vertical-space-gap);
+  }
+
+  .ui-steps-control[data-direction="horizontal"] {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ui-steps-item {
+    position: relative;
+    display: flex;
+    min-inline-size: 0;
+  }
+
+  .ui-steps-item[data-direction="vertical"] {
+    flex-direction: row;
+    gap: var(--steps-vertical-space-gap);
+    padding-block-end: var(--steps-vertical-space-block-end);
+  }
+
+  .ui-steps-item[data-direction="vertical"]:last-child {
+    padding-block-end: 0;
+  }
+
+  .ui-steps-item[data-direction="horizontal"] {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* The connector spans between two markers, inset by the marker radius at each end so it never
+   * runs underneath one. Both ends move together when --steps-connector-inset is retuned. */
+  .ui-steps-item[data-direction="horizontal"][data-connector]::after {
+    content: "";
+    position: absolute;
+    inset-block-start: var(--steps-connector-space-block-start);
+    inset-inline-start: calc(50% + var(--steps-connector-inset));
+    inline-size: calc(100% - var(--steps-connector-inset) * 2);
+    block-size: 1px;
+    background: hsl(var(--border));
+  }
+}

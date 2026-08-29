@@ -2459,6 +2459,86 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu."
   },
   {
+    "name": "--steps-dot-size",
+    "value": "0.625rem",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-dot-process-ring-width",
+    "value": "4px",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-marker-border-width",
+    "value": "2px",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-marker-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-marker-icon-size",
+    "value": "1rem",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-wait-icon-size",
+    "value": "0.75rem",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-title-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-title-font-size-compact",
+    "value": "var(--font-size-xs)",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-subtitle-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-vertical-space-gap",
+    "value": "var(--space-3)",
+    "description": "Vertical run: gap between marker and text, and the drop to the next step."
+  },
+  {
+    "name": "--steps-vertical-space-block-end",
+    "value": "var(--space-8)",
+    "description": "Vertical run: gap between marker and text, and the drop to the next step."
+  },
+  {
+    "name": "--steps-vertical-text-space-block-start",
+    "value": "var(--space-1)",
+    "description": "Vertical run: gap between marker and text, and the drop to the next step."
+  },
+  {
+    "name": "--steps-horizontal-text-space-block-start",
+    "value": "var(--space-2)",
+    "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between * two markers — inset by the marker radius on each side so it never runs under a marker."
+  },
+  {
+    "name": "--steps-horizontal-text-space-inline",
+    "value": "var(--space-2)",
+    "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between * two markers — inset by the marker radius on each side so it never runs under a marker."
+  },
+  {
+    "name": "--steps-connector-inset",
+    "value": "1.25rem",
+    "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between * two markers — inset by the marker radius on each side so it never runs under a marker."
+  },
+  {
+    "name": "--steps-connector-space-block-start",
+    "value": "var(--space-4)",
+    "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between * two markers — inset by the marker radius on each side so it never runs under a marker."
+  },
+  {
     "name": "--sheet-responsive-breakpoint-width",
     "value": "48rem",
     "description": "Viewport width at and below which `SheetContent responsive=\"auto\"` renders the mobile bottom * sheet instead of the desktop side panel. Read at runtime by useSheetResponsiveMode() (a CSS * @media cannot resolve a custom property), so a service moves the drawer breakpoint from ONE * knob for every overlay that opts into the responsive contract — Sheet and OrgSwitcher alike. * 48rem = 768px mirrors the library's canonical mobile line (useIsMobile). Accepts px/rem/em."

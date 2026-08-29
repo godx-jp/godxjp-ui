@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Steps is token-themeable (#319) — 25 literals → 0.** `--steps-inline-*` already covered the
+  compact inline form; the main variant's marker, connector and text rhythm were still literal,
+  so a service could not resize the dot, retighten the vertical run, or move the horizontal
+  connector onto its own grid: `--steps-dot-*` · `--steps-marker-*` · `--steps-title-*` ·
+  `--steps-vertical-*` · `--steps-horizontal-*` · `--steps-connector-*`. Step status, direction
+  and title placement now drive the styling through data attributes rather than conditional
+  class strings, so both ends of the horizontal connector move together when
+  `--steps-connector-inset` is retuned instead of needing two hand-matched `calc()` literals.
 - **TreeSelect is token-themeable (#319) — 25 literals → 0, and its depth indent is finally
   reachable.** The indent was a magic expression inline in JSX (`depth * 1.25 + 0.5` rem), so no
   theme could touch it at any price — the guard never even saw it, because it is not a Tailwind

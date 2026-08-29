@@ -7,8 +7,10 @@ describe("Steps — compact size", () => {
   it("uses text-xs for the title and description when size=sm", () => {
     render(<Steps items={[{ title: "申込", description: "書類提出" }]} size="sm" />);
     // compact → text-xs on both the title and the description (the `compact ?` branch)
-    expect(screen.getByText("申込").className).toContain("text-xs");
-    expect(screen.getByText("書類提出").className).toContain("text-xs");
+    // Compact sizing moved from a `text-xs` utility to `data-compact` on the title/description,
+    // so the step's type scale is a token a service can retune (#319).
+    expect(screen.getByText("申込")).toHaveAttribute("data-compact");
+    expect(screen.getByText("書類提出")).toHaveAttribute("data-compact");
   });
 
   it("renders the inline numbered authorization rail with status semantics", () => {

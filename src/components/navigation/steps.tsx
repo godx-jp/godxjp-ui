@@ -43,35 +43,22 @@ function StepIcon({
     // the title exactly like the default marker — a bare dot would top-align and drift above the label.
     return (
       <span className={cn("flex items-center justify-center", controlIconClass)}>
-        <span
-          className={cn(
-            "block size-2.5 rounded-full",
-            status === "finish" && "bg-primary",
-            status === "process" && "bg-primary ring-primary/20 ring-4",
-            status === "error" && "bg-destructive",
-            status === "wait" && "bg-muted-foreground/30",
-          )}
-        />
+        <span className="ui-steps-dot" data-status={status} />
       </span>
     );
   }
 
   return (
     <span
-      className={cn(
-        "flex items-center justify-center",
-        controlIconClass,
-        "rounded-full border-2 text-sm font-medium",
-        status === "finish" && "border-primary bg-primary text-primary-foreground",
-        status === "process" && "border-primary text-primary",
-        status === "error" && "border-destructive bg-destructive text-destructive-foreground",
-        status === "wait" && "border-muted-foreground/30 text-muted-foreground",
-      )}
+      data-status={status}
+      className={cn("flex items-center justify-center", controlIconClass, "ui-steps-marker")}
     >
-      {status === "finish" && <Check className="size-4" aria-hidden="true" />}
-      {status === "process" && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-      {status === "error" && <X className="size-4" aria-hidden="true" />}
-      {status === "wait" && <Circle className="size-3 fill-current" aria-hidden="true" />}
+      {status === "finish" && <Check className="ui-steps-marker-icon" aria-hidden="true" />}
+      {status === "process" && (
+        <Loader2 className="ui-steps-marker-icon animate-spin" aria-hidden="true" />
+      )}
+      {status === "error" && <X className="ui-steps-marker-icon" aria-hidden="true" />}
+      {status === "wait" && <Circle className="ui-steps-wait-icon" aria-hidden="true" />}
     </span>
   );
 }
@@ -99,11 +86,8 @@ export function Steps({
 
   return (
     <ol
-      className={cn(
-        "flex w-full",
-        inline ? "ui-steps-inline" : isVertical ? "flex-col gap-0" : "flex-row items-start",
-        className,
-      )}
+      data-direction={inline ? undefined : isVertical ? "vertical" : "horizontal"}
+      className={cn("flex w-full", inline ? "ui-steps-inline" : "ui-steps-list", className)}
       aria-label={t("navigation.steps.ariaLabel")}
     >
       {items.map((item, index) => {
@@ -126,13 +110,10 @@ export function Steps({
         // When `onValueChange` is provided the step is an actionable control (a real <button> that
         // may be disabled). When it is not, the steps are purely informational, so render a non-button
         // wrapper to keep disabled steps out of the tab order (WAI-ARIA: don't emit dead buttons).
+        const stepDirection = inline ? undefined : isVertical ? "vertical" : "horizontal";
         const stepClassName = cn(
-          "group flex min-w-0",
-          inline
-            ? "ui-steps-inline-control"
-            : isVertical
-              ? "flex-row items-start gap-3"
-              : "flex-col items-center",
+          "group",
+          inline ? "ui-steps-inline-control" : "ui-steps-control",
           clickable ? "cursor-pointer" : "cursor-default",
         );
 
@@ -147,29 +128,17 @@ export function Steps({
         ) : (
           <>
             <StepIcon status={stepStatus} icon={item.icon} type={type} />
-            <div
-              className={cn(
-                "min-w-0",
-                isVertical ? "pt-1 text-start" : "mt-2 px-2",
-                titlePlacement === "vertical" && !isVertical && "mt-1",
-              )}
-            >
+            <div className="ui-steps-text">
               <div
-                className={cn(
-                  "font-medium",
-                  compact ? "text-xs" : "text-sm",
-                  stepStatus === "process" && "text-foreground",
-                  stepStatus === "wait" && "text-muted-foreground",
-                  stepStatus === "error" && "text-destructive",
-                )}
+                className="ui-steps-title"
+                data-status={stepStatus}
+                data-compact={compact ? "" : undefined}
               >
                 {item.title}
               </div>
-              {item.subtitle && (
-                <div className="text-muted-foreground text-xs">{item.subtitle}</div>
-              )}
+              {item.subtitle && <div className="ui-steps-subtitle">{item.subtitle}</div>}
               {description && (
-                <div className={cn("text-muted-foreground", compact ? "text-xs" : "text-sm")}>
+                <div className="ui-steps-description" data-compact={compact ? "" : undefined}>
                   {description}
                 </div>
               )}
@@ -181,23 +150,10 @@ export function Steps({
           <li
             key={index}
             aria-current={isCurrent ? "step" : undefined}
-            className={cn(
-              "relative flex min-w-0",
-              !inline && "flex-1",
-              inline
-                ? "ui-steps-inline-item"
-                : isVertical
-                  ? "flex-row gap-3 pb-8 last:pb-0"
-                  : "flex-col items-center text-center",
-              !isVertical &&
-                !inline &&
-                index < items.length - 1 &&
-                "after:bg-border after:absolute after:top-4 after:h-px",
-              !isVertical &&
-                !inline &&
-                index < items.length - 1 &&
-                "after:left-[calc(50%+1.25rem)] after:w-[calc(100%-2.5rem)]",
-            )}
+            data-direction={inline ? undefined : isVertical ? "vertical" : "horizontal"}
+            data-title-placement={titlePlacement}
+            data-connector={!isVertical && !inline && index < items.length - 1 ? "" : undefined}
+            className={cn(!inline && "flex-1", inline ? "ui-steps-inline-item" : "ui-steps-item")}
             data-status={stepStatus}
           >
             {interactive ? (
@@ -205,12 +161,15 @@ export function Steps({
                 type="button"
                 disabled={!clickable}
                 onClick={clickable ? () => onValueChange?.(absoluteIndex) : undefined}
+                data-direction={stepDirection}
                 className={stepClassName}
               >
                 {stepInner}
               </button>
             ) : (
-              <span className={stepClassName}>{stepInner}</span>
+              <span data-direction={stepDirection} className={stepClassName}>
+                {stepInner}
+              </span>
             )}
             {inline && index < items.length - 1 ? (
               <SeparatorIcon
