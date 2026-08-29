@@ -473,4 +473,43 @@
     pointer-events: none;
     opacity: var(--disabled-opacity);
   }
+
+  /* ── BranchScopePicker (gh#319) ────────────────────────────────────────────────
+   * `.ui-branch-scope-picker` shipped as a bare hook: the class existed but no rule did, so all
+   * of the control's geometry sat on the component as Tailwind literals. It composes RadioGroup +
+   * CheckboxGroup + SearchInput and has no field box of its own, so none of the control-affix
+   * machinery applies — these four rules are the whole surface. Every measure is a documented
+   * token (#45); see tokens/components/data-entry.css for why each default is a flat rem. */
+  .ui-branch-scope-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--branch-scope-picker-gap);
+  }
+
+  .ui-branch-scope-picker-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--branch-scope-picker-badges-gap);
+  }
+
+  /* The `mode="selected"` subset, indented under its radio by a rule on the inline-start edge.
+   * Logical properties throughout, so the indent flips with the writing direction (the utilities
+   * this replaces, `border-s-2 ps-4`, already did). The colour is left to the global
+   * `* { border-color: hsl(var(--border)) }` so a scoped [data-tenant]/.dark override of
+   * `--border` still reaches it. */
+  .ui-branch-scope-picker-subset {
+    display: flex;
+    flex-direction: column;
+    gap: var(--branch-scope-picker-subset-gap);
+    padding-inline-start: var(--branch-scope-picker-subset-padding-inline);
+    border-inline-start-width: var(--branch-scope-picker-subset-border-width);
+  }
+
+  /* A bounded scroll region — the component gives it `tabIndex={0}` + a group name so it stays
+   * keyboard-reachable (WCAG 2.1.1 / axe scrollable-region-focusable) even when every checkbox
+   * in it is disabled. The cap is the token; the overflow is not negotiable. */
+  .ui-branch-scope-picker-list {
+    max-block-size: var(--branch-scope-picker-list-max-height);
+    overflow-y: auto;
+  }
 }

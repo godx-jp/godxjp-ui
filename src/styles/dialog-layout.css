@@ -39,17 +39,21 @@
     );
   }
 
+  /* Stacking joins the ONE system layer (--overlay-z-index) instead of a private z-50 — Sheet,
+   * Tooltip and Popover already do, so a service that lifts its overlays above an app-owned
+   * fixed element no longer has to fork the dialog to bring it along. Default is 50, the literal
+   * this replaces. */
   .ui-dialog-overlay {
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: var(--overlay-z-index);
   }
 
   [data-slot="dialog-content"] {
     position: fixed;
     inset-inline-start: 50%;
     top: 50%;
-    z-index: 50;
+    z-index: var(--overlay-z-index);
     display: grid;
     width: min(var(--dialog-width-default), calc(100% - var(--dialog-viewport-inset)));
     max-width: none;
@@ -88,8 +92,50 @@
   [data-slot="dialog-header"] {
     display: flex;
     flex-direction: column;
-    gap: var(--space-stack-xs);
+    gap: var(--dialog-header-space-gap);
     text-align: start;
+  }
+
+  /* DIALOG chrome rhythm — the exact mirror of the `.ui-sheet-*` set at the foot of this file.
+   * Dialog's default header markup is byte-identical to Sheet's, but its gaps were literal on the
+   * component (`gap-[var(--space-3)] pe-[var(--space-8)]`, `min-w-0 flex-col gap-[var(--space-1)]`,
+   * `shrink-0 gap-[var(--space-2)]`), so the two siblings could not be retuned together (#319). */
+  .ui-dialog-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--dialog-title-row-space-gap);
+    /* Reserves inline room for the absolutely-positioned close button so a long title or the extra
+     * slot never runs under it. Moves with --dialog-close-space-offset. */
+    padding-inline-end: var(--dialog-header-close-space-inline-end);
+  }
+
+  .ui-dialog-title-block {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--dialog-title-block-space-gap);
+  }
+
+  .ui-dialog-extra {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--dialog-extra-space-gap);
+    white-space: nowrap;
+  }
+
+  /* Close glyph — mirrors `.ui-sheet-close-icon`, so both overlay ✕ marks follow the one control
+   * affix size instead of a per-component `size-4`. */
+  .ui-dialog-close-icon {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+  }
+
+  /* Type-to-confirm challenge: the step-up failure line under the input. */
+  .ui-dialog-step-up-error {
+    font-size: var(--dialog-step-up-error-font-size);
+    color: hsl(var(--destructive));
   }
 
   [data-slot="dialog-footer"] {
@@ -127,7 +173,7 @@
     inset-inline-end: var(--dialog-close-space-offset);
     top: var(--dialog-close-space-offset);
     border-radius: var(--radius-sm);
-    opacity: 0.7;
+    opacity: var(--dialog-close-rest-alpha);
   }
 
   [data-slot="dialog-close"]:hover {

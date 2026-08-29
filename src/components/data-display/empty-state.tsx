@@ -37,7 +37,7 @@ export function EmptyState({
            * `--empty-state-icon-foreground` (default `hsl(var(--muted-foreground))` at the call
            * site). A hard-coded `text-muted-foreground` here would out-specify the inherited
            * colour and pin every tone to muted — only the medallion tint would vary. */}
-          <Icon className="size-6" aria-hidden="true" />
+          <Icon aria-hidden="true" />
         </div>
       )}
       {createElement(TitleTag, { className: "ui-empty-state-title" }, title)}

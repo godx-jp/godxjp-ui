@@ -71,15 +71,20 @@ export function UploadCropDialog({ open, onOpenChange, file, onConfirm }: Upload
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm">
+      {/* The cap stays a UTILITY reading the token, not a CSS class: `[data-slot="dialog-content"]`
+          sets `max-width: none` in the same @layer at equal specificity, so only the
+          utilities layer reliably wins (Tailwind v4 orders utilities after components). */}
+      <DialogContent className="max-w-[var(--upload-crop-dialog-max-width)]">
         <DialogHeader>
           <DialogTitle>{t("dataEntry.upload.cropTitle")}</DialogTitle>
           <DialogDescription>{t("dataEntry.upload.cropDescription")}</DialogDescription>
         </DialogHeader>
         <div className="ui-stack-sm">
+          {/* The round crop stage. Its size and radius are --upload-crop-* knobs so a service can
+              keep the stage in proportion with its own --upload-avatar-size. */}
           <div
             className={cn(
-              "bg-muted relative mx-auto size-48 overflow-hidden rounded-full border",
+              "bg-muted relative mx-auto size-[var(--upload-crop-preview-size)] overflow-hidden rounded-[var(--upload-crop-preview-radius)] border",
               "flex items-center justify-center",
             )}
           >
@@ -88,12 +93,14 @@ export function UploadCropDialog({ open, onOpenChange, file, onConfirm }: Upload
                 ref={imgRef}
                 src={src}
                 alt=""
-                className="size-full object-cover transition-transform duration-150"
+                className="size-full object-cover transition-transform duration-[var(--duration-fast)]"
+                // DYNAMIC — the live zoom value, so it stays inline (upload-crop-dialog.test.tsx
+                // reads `preview.style.transform` to assert the slider moves it).
                 style={{ transform: `scale(${scale})` }}
               />
             ) : null}
           </div>
-          <div className="ui-stack-xs px-2">
+          <div className="ui-stack-xs px-[var(--upload-crop-zoom-space-inline)]">
             <span className="text-muted-foreground text-xs">{t("dataEntry.upload.cropZoom")}</span>
             <Slider
               min={1}

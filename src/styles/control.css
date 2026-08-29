@@ -309,6 +309,36 @@
     font-size: var(--choice-description-font-size);
   }
 
+  /* Label primitive (#319). Its box and type were Tailwind literals on label.tsx
+   * (`flex items-center gap-2 text-sm leading-none select-none`), so a service theme could not
+   * retune the label type ramp or the label→addon gap without forking the component.
+   *
+   * SOURCE ORDER IS LOAD-BEARING — this rule MUST stay AFTER `.ui-choice-label` above.
+   * `Field` renders `<Label className="ui-choice-label">`, so that element carries both classes at
+   * equal specificity (0,1,0) in the same layer and the LATER rule wins. Today the `text-sm`
+   * utility out-ranks `.ui-choice-label`'s `font-size: var(--font-size-base)` outright (utilities
+   * are layered after components); putting `.ui-label` EARLIER would hand every checkbox/radio
+   * label back to `.ui-choice-label` and silently change its type. `font-weight` is deliberately
+   * NOT declared here for the same reason: `.ui-choice-label` sets `--font-weight-normal` and
+   * Label's `font-medium` utility beats it today, so `font-medium` stays a utility.
+   *
+   * The disabled states stay utilities too (`peer-disabled:` / `group-data-[disabled=true]:`):
+   * a state must out-rank the resting rule, which in Tailwind v4 means the utilities layer. So
+   * does `line-height` — the `leading-none` it replaces existed precisely to beat the companion
+   * line-height that every `text-*` utility carries, and only a utility can still do that when a
+   * consumer passes their own `text-lg`. Its value is --control-label-line-height all the same.
+   *
+   * Not a regression for the auth shell: the canonical field-label override in shell-layout.css is
+   * INTENTIONALLY UNLAYERED (gh#263) and unlayered author CSS still beats every layer, so it keeps
+   * winning over these declarations exactly as it won over the utilities. */
+  .ui-label {
+    display: flex;
+    align-items: center;
+    gap: var(--control-label-space-gap);
+    font-size: var(--control-label-font-size);
+    user-select: none;
+  }
+
   .ui-checkbox,
   .ui-radio {
     width: var(--checkbox-size);
@@ -1075,9 +1105,11 @@
     box-shadow: none;
   }
 
+  /* The panel itself is the focused surface, so the inner search field suppresses its own RING
+   * (this replaces a `focus-visible:ring-0` utility). It must NOT suppress the outline as well —
+   * that would leave keyboard users with no focus affordance at all inside the panel. */
   .ui-search-select-search-input:focus-visible {
     box-shadow: none;
-    outline: none;
   }
 
   .ui-search-select-list {

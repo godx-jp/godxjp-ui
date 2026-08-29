@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`--checkbox-checked-background` was completely dead.** Checkbox carried
+  `data-[state=checked]:bg-primary` as a utility, and Tailwind v4 orders utilities after
+  components, so it outranked `.ui-checkbox[data-state="checked"]` — a service overriding the
+  token got no fill change at all. The utility is gone; the knob works.
+- **SearchSelect's inner search field suppressed its focus outline, not just its ring.**
+  Tokenizing it earlier in this same release turned a `focus-visible:ring-0` utility into
+  `box-shadow: none; outline: none`, leaving keyboard users with no focus affordance inside the
+  panel. Only the ring is suppressed now.
+- **`focus-ring-single-source` reported every `box-shadow: none` as a hand-written ring.** Its
+  `/box-shadow:\s*(?!none)/` backtracks `\s*` to zero width, so the lookahead compared against
+  `" none"` rather than `"none"` and matched. It now reads each declaration's value — suppressing
+  a ring is the opposite of painting one, and the check could not tell them apart.
 - **122 control tokens were silently dead for most of the v19 refactor.** Every token appended to
   `src/tokens/components/control.css` during #319 landed _after_ the closing brace of `:root` but
   _inside_ the trailing `@media (pointer: coarse)` block. A bare declaration in a conditional
@@ -46,6 +58,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **#319 Phase 1 is complete: 608 hard-coded geometry/chrome literals → 0.** Every component in
+  `src/components/` now expresses its box through tokens rather than Tailwind scale steps, so a
+  service can retune density, measure and chrome without forking. The final wave covered Dialog,
+  Alert, Sonner, UploadCropDialog, Label, Checkbox, Radio, Switch, FormField, Descriptions,
+  BranchScopePicker, ServiceRolePanel, PageContainer, Table, AppShell and EmptyState. Dialog
+  mirrors the `--sheet-*` chrome set rather than inventing a second shape; Sonner's icons became
+  themeable despite living inside a library config object; `--empty-state-icon-size` and
+  `--empty-state-icon-glyph-size` must move together or the glyph stops sitting centred in its
+  medallion, so both are knobs.
+- **`check-no-tailwind-class-assertions`** — a ratchet guard for tests that pin a Tailwind utility
+  instead of the contract. Sixteen tests broke during this refactor without a single behaviour
+  changing, and two were not merely brittle but wrong: `[class*="opacity-0"]` also matches
+  `opacity-05`, and one called `dragLeave` while asserting nothing about it, so a dropzone stuck
+  in the active state passed. DataTable is the proof this is avoidable — 24 test files, 112 cases,
+  zero utility assertions, and it needed no changes when its chrome was tokenized.
+- **Sonner no longer loses its theme when a consumer passes `style`.** `{...props}` was spread
+  after `style={{…}}`, so any consumer `style` replaced the whole object and the toast rendered
+  transparent. The two are merged now.
 - **Tabs, Pagination, ScrollArea and InfiniteQueryState are token-themeable (#319) — 17 literals → 0.** Tabs' line variant carried its whole box on the component: `--tabs-root-gap` ·
   `--tabs-list-line-space-inset` · `--tabs-trigger-line-radius` ·
   `--tabs-trigger-line-padding-x` · `--tabs-trigger-line-padding-y`. Two of its literals were

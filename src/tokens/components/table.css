@@ -162,4 +162,19 @@
   --table-skeleton-check-size: 1rem;
   --table-skeleton-line-height: 1rem;
   --table-skeleton-radius: var(--radius-sm);
+
+  /* The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme
+   * remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical. */
+  --table-font-size: var(--font-size-sm);
+  /* MANDATORY companion to --table-font-size — the gh#260 trap, again. `text-sm` also set
+   * line-height from Tailwind's `--text-sm--line-height`, and styles/base.css remaps `--text-sm`
+   * but NOT that companion. Without this the table would silently inherit ambient page leading
+   * the moment the font-size moved into CSS. Same unitless ratio Tailwind ships. */
+  --table-line-height: calc(1.25 / 0.875);
+  /* Horizontal row rule (chrome, #44) — the divider between body rows AND under the header row.
+   * Owned here rather than as TableRow's `border-b` utility so the "last row draws no rule"
+   * rule in `@layer components` can actually zero it; a utility would outrank it by layer.
+   * Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }`
+   * so a scoped [data-tenant]/.dark override of --border still reaches every row. */
+  --table-row-border-width: 1px;
 }

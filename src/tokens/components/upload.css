@@ -87,4 +87,21 @@
   --upload-row-radius: var(--radius-md);
   --upload-row-font-size: var(--font-size-sm);
   --upload-row-icon-size: 1rem;
+
+  /* CROP DIALOG — the 1:1 avatar cropper (`UploadCropDialog`). The 66-literal upload pass above
+   * never reached this file, so the whole cropper was still baked on the component: the dialog was
+   * pinned to `max-w-sm`, the round preview to `size-48`, the zoom row to `px-2`. An avatar is one
+   * of the most service-specific sizes there is (a 96px tile service wants a smaller crop stage
+   * than a 200px one), and the crop stage must stay in proportion with --upload-avatar-size —
+   * which is exactly the pair rule #45 exists to keep tunable together.
+   *
+   * The dialog width intentionally stays a knob of its own rather than reading
+   * --dialog-width-default: the cropper is deliberately NARROWER than a normal dialog so the round
+   * stage reads as the subject, not as a small element in a wide box. */
+  --upload-crop-dialog-max-width: 24rem;
+  --upload-crop-preview-size: 12rem;
+  --upload-crop-preview-radius: var(--radius-pill);
+  /* Zoom row inset — the slider is inset from the dialog edge so its thumb's focus ring is never
+   * flush against the dialog padding. */
+  --upload-crop-zoom-space-inline: var(--space-2);
 }

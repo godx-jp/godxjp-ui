@@ -291,6 +291,53 @@
     max-block-size: var(--master-detail-master-viewport-standard);
   }
 
+  /* ── ServiceRolePanel (gh#319) ─────────────────────────────────────────────────
+   * MasterDetail above owns every bit of the two-track geometry; what follows is only the role
+   * LIST that sits in the master rail. `.ui-service-role-panel` was a bare hook (class emitted,
+   * no rule anywhere), so all of this used to be Tailwind literals on the component. */
+  .ui-service-role-panel-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--service-role-panel-list-gap);
+    list-style: none;
+  }
+
+  /* One role: the select button plus the optional delete button, as SIBLINGS (never nested
+   * interactive controls). Deliberately NOT `.ui-inline-xs` — that helper wraps, and the icon
+   * button must stay on the row beside the flex-1 select button at every width. */
+  .ui-service-role-panel-row {
+    display: flex;
+    align-items: center;
+    gap: var(--service-role-panel-row-gap);
+  }
+
+  /* ORDERING TRAP (gh#319): this needs the `.ui-service-role-panel` ancestor. The role button is
+   * a real `<Button>`, and `.ui-button--md { padding-block: var(--button-space-block) }` lives in
+   * control.css, which styles/index.css imports AFTER layout.css — same `@layer components`, so
+   * at equal (0,1,0) specificity control.css would win and the row would snap back to the single
+   * control height. (0,2,0) settles it. `h-auto` and `flex-1` stay UTILITIES on the component for
+   * the same reason inverted: they must beat the same rule from a layer that always outranks it. */
+  .ui-service-role-panel .ui-service-role-panel-item {
+    padding-block: var(--service-role-panel-item-padding-block);
+  }
+
+  /* The button's label column. `min-inline-size: 0` is what lets the name and the meta line
+   * truncate instead of forcing the rail wider (the flexbox min-content default). */
+  .ui-service-role-panel-item-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-inline-size: 0;
+    line-height: var(--line-height-tight);
+  }
+
+  .ui-service-role-panel-item-title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--service-role-panel-item-title-gap);
+    max-inline-size: 100%;
+  }
+
   @container responsive-grid (min-width: 40rem) {
     .ui-responsive-grid {
       grid-template-columns: repeat(var(--responsive-grid-sm, 2), minmax(0, 1fr));
@@ -535,6 +582,16 @@
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-stack-sm);
+  }
+
+  /* The title/subtitle column is the SHRINKABLE side of the header row (gh#300): a flex item's
+   * automatic minimum size is its content, so without this the heading refuses to shrink and the
+   * whole overflow is charged to `extra`. The component used to carry it as a bare `min-w-0`
+   * utility, which meant the >=640px arrangement depended on a Tailwind class while the compact
+   * arrangement below declared it in CSS — the same property owned in two places (gh#319).
+   * Unconditional, so both arrangements read one rule. */
+  .ui-page-header-heading {
+    min-inline-size: 0;
   }
 
   .ui-page-header-extra {
@@ -797,13 +854,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 3rem;
-    height: 3rem;
+    inline-size: var(--empty-state-icon-size);
+    block-size: var(--empty-state-icon-size);
     border-radius: var(--radius-pill);
     /* Medallion fill + glyph colour read their knobs, defaulting to the LIVE --muted /
      * --muted-foreground roles at the call site (re-resolves under a scoped theme). */
     background-color: var(--empty-state-icon-tint, hsl(var(--muted)));
     color: var(--empty-state-icon-foreground, hsl(var(--muted-foreground)));
+  }
+
+  .ui-empty-state-icon svg {
+    inline-size: var(--empty-state-icon-glyph-size);
+    block-size: var(--empty-state-icon-glyph-size);
   }
 
   /* tone — set the medallion foreground + tint from the matching role token, so a consumer never

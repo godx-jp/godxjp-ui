@@ -34,7 +34,12 @@ const RadioItem = React.forwardRef<
     ref={ref}
     data-slot="radio-group-item"
     className={cn(
-      "ui-radio aria-invalid:border-destructive aria-invalid:ring-destructive/20 shrink-0 shadow-xs transition-shadow outline-none disabled:cursor-not-allowed disabled:opacity-50",
+      // `disabled:cursor-not-allowed disabled:opacity-50` DELETED, not moved (#319):
+      // `.ui-radio:disabled, .ui-radio[data-disabled]` in styles/control.css already declares both
+      // and reads --disabled-opacity. The utility was layered after components, so it silently
+      // outranked that token — a service theme's --disabled-opacity never reached a radio.
+      // Byte-identical: --disabled-opacity defaults to 0.5.
+      "ui-radio aria-invalid:border-destructive aria-invalid:ring-destructive/20 shrink-0 shadow-xs transition-shadow outline-none",
       className,
     )}
     {...props}

@@ -22,19 +22,22 @@ function useDocumentTheme(): ToasterProps["theme"] {
   );
 }
 
-function Toaster({ ...props }: ToasterProps) {
+function Toaster({ style, ...props }: ToasterProps) {
   const theme = useDocumentTheme();
 
   return (
     <Sonner
       theme={theme}
       className="toaster group"
+      // Sonner takes all five status glyphs through ONE all-or-nothing config prop — a consumer
+      // cannot restyle a single icon without re-declaring the set — so the size is a token
+      // (`--toast-icon-size`) read by `.ui-toast-icon` in alert-layout.css, not a `size-4` here.
       icons={{
-        success: <CheckCircle2 className="size-4" aria-hidden="true" />,
-        info: <Info className="size-4" aria-hidden="true" />,
-        warning: <TriangleAlert className="size-4" aria-hidden="true" />,
-        error: <OctagonX className="size-4" aria-hidden="true" />,
-        loading: <Loader2 className="size-4 animate-spin" aria-hidden="true" />,
+        success: <CheckCircle2 className="ui-toast-icon" aria-hidden="true" />,
+        info: <Info className="ui-toast-icon" aria-hidden="true" />,
+        warning: <TriangleAlert className="ui-toast-icon" aria-hidden="true" />,
+        error: <OctagonX className="ui-toast-icon" aria-hidden="true" />,
+        loading: <Loader2 className="ui-toast-icon animate-spin" aria-hidden="true" />,
       }}
       style={
         {
@@ -46,10 +49,22 @@ function Toaster({ ...props }: ToasterProps) {
           "--normal-text": "hsl(var(--popover-foreground))",
           "--normal-border": "hsl(var(--border))",
           "--border-radius": "var(--radius)",
+          // MERGED, never spread over. `style` used to arrive with the rest of `{...props}` AFTER
+          // this object, so a consumer passing ANY style (a z-index, a width) replaced the whole
+          // object and wiped all four vars — and an unset `--normal-bg` renders the toast
+          // transparent. Merging keeps the surface intact and still lets a consumer override one
+          // var by name.
+          ...style,
         } as React.CSSProperties
       }
       position="bottom-right"
-      mobileOffset={{ bottom: "16px", right: "16px" }}
+      // Viewport gutter of the mobile stack. Sonner drops this straight into inline CSS, so a
+      // var() string resolves normally — the two 16px literals were library config a service
+      // theme could not reach.
+      mobileOffset={{
+        bottom: "var(--toast-mobile-offset)",
+        right: "var(--toast-mobile-offset)",
+      }}
       {...props}
     />
   );

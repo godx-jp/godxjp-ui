@@ -89,9 +89,13 @@ const DialogContent = React.forwardRef<
           {showCloseButton ? (
             <DialogPrimitive.Close
               data-slot="dialog-close"
-              className="ring-offset-background focus:ring-ring transition-opacity focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+              // `ui-focus-ring` is the ONE focus affordance (styles/focus-ring.css): it reads the
+              // four --focus-ring-* tokens, so a service retunes this ring with every other one.
+              // The hand-written `focus:ring-2 focus:ring-offset-2` it replaces was un-themeable
+              // AND fired on plain `:focus` (i.e. on a mouse click), unlike every other control.
+              className="ui-focus-ring transition-opacity focus:outline-hidden disabled:pointer-events-none"
             >
-              <X className="size-4" aria-hidden="true" />
+              <X className="ui-dialog-close-icon" aria-hidden="true" />
               <span className="sr-only">{t("feedback.alert.dismiss")}</span>
             </DialogPrimitive.Close>
           ) : null}
@@ -128,16 +132,14 @@ const DialogHeader = ({
       {...props}
     >
       {children ?? (
-        <div className="flex items-start justify-between gap-[var(--space-3)] pe-[var(--space-8)]">
-          <div className="flex min-w-0 flex-col gap-[var(--space-1)]">
+        // Chrome rhythm lives in dialog-layout.css (`.ui-dialog-*`, mirroring `.ui-sheet-*`), so
+        // the two overlay siblings retune from one --dialog-*/--sheet-* set instead of literals.
+        <div className="ui-dialog-title-row">
+          <div className="ui-dialog-title-block">
             {title != null && <DialogTitle>{title}</DialogTitle>}
             {subtitle != null && <DialogDescription>{subtitle}</DialogDescription>}
           </div>
-          {extra != null && (
-            <div className="flex shrink-0 items-center gap-[var(--space-2)] whitespace-nowrap">
-              {extra}
-            </div>
-          )}
+          {extra != null && <div className="ui-dialog-extra">{extra}</div>}
         </div>
       )}
     </div>
@@ -244,10 +246,11 @@ const AlertDialogContent = React.forwardRef<
         <AlertDialogPrimitive.Cancel asChild>
           <button
             type="button"
-            className="ring-offset-background focus:ring-ring transition-opacity focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+            // Same single-source ring as DialogContent's close (styles/focus-ring.css).
+            className="ui-focus-ring transition-opacity focus:outline-hidden disabled:pointer-events-none"
             aria-label={t("feedback.alert.dismiss")}
           >
-            <X className="size-4" aria-hidden="true" />
+            <X className="ui-dialog-close-icon" aria-hidden="true" />
           </button>
         </AlertDialogPrimitive.Cancel>
       ) : null}
@@ -273,16 +276,12 @@ const AlertDialogHeader = ({
       {...props}
     >
       {children ?? (
-        <div className="flex items-start justify-between gap-[var(--space-3)] pe-[var(--space-8)]">
-          <div className="flex min-w-0 flex-col gap-[var(--space-1)]">
+        <div className="ui-dialog-title-row">
+          <div className="ui-dialog-title-block">
             {title != null && <AlertDialogTitle>{title}</AlertDialogTitle>}
             {subtitle != null && <AlertDialogDescription>{subtitle}</AlertDialogDescription>}
           </div>
-          {extra != null && (
-            <div className="flex shrink-0 items-center gap-[var(--space-2)] whitespace-nowrap">
-              {extra}
-            </div>
-          )}
+          {extra != null && <div className="ui-dialog-extra">{extra}</div>}
         </div>
       )}
     </div>
@@ -450,9 +449,9 @@ function AlertDialog({
 
           {needsPhrase && (
             <div className="ui-stack-xs">
-              <Label htmlFor={inputId} className="text-sm">
-                {t("common.typeToConfirm", { phrase })}
-              </Label>
+              {/* No size class: `Label` already ships `text-sm` in its own variant, so the local
+                  copy was an exact duplicate at the same specificity. */}
+              <Label htmlFor={inputId}>{t("common.typeToConfirm", { phrase })}</Label>
               <Input
                 id={inputId}
                 value={typed}
@@ -469,7 +468,7 @@ function AlertDialog({
           )}
 
           {stepUpFailed && (
-            <p id={stepErrorId} role="alert" className="text-destructive text-sm">
+            <p id={stepErrorId} role="alert" className="ui-dialog-step-up-error">
               {t("feedback.alert.stepUpFailed")}
             </p>
           )}

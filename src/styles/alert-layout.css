@@ -178,12 +178,42 @@
     }
   }
 
+  /* Dismiss ✕ — BOTH halves of the affordance now live here. The rest opacity was a hard 0.7 in
+   * this file while its `:hover` companion sat on the component as `hover:opacity-100`, so the
+   * quiet-at-rest chrome (rule #44) was split across two files and a theme could reach neither.
+   * The hover rule is load-bearing: without it the ✕ stays at the rest alpha forever. */
   [data-slot="alert-dismiss"] {
     position: absolute;
     top: var(--alert-dismiss-space-offset);
     inset-inline-end: var(--alert-dismiss-space-offset);
     border-radius: var(--radius-sm);
-    opacity: 0.7;
+    opacity: var(--alert-dismiss-rest-alpha);
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  [data-slot="alert-dismiss"]:hover {
+    opacity: 1;
+  }
+
+  .ui-alert-dismiss-icon {
+    inline-size: var(--alert-dismiss-icon-size);
+    block-size: var(--alert-dismiss-icon-size);
+  }
+
+  /* AlertContent fills the body column but stays shrinkable, so a long unbroken token truncates
+   * instead of widening the alert. Was `min-w-0 flex-1` on the component. */
+  [data-slot="alert-content"] {
+    min-inline-size: 0;
+    flex: 1 1 0%;
+  }
+
+  /* TOAST (Sonner) — the status glyph handed to sonner through its all-or-nothing `icons` config
+   * prop. Sonner sizes the `[data-icon]` WRAPPER to a fixed 16px box and only sets `flex-shrink`
+   * + margins on the svg inside it, so the glyph's own size is ours to own; the token is what
+   * lets a consumer retune it without re-declaring all five icons. */
+  .ui-toast-icon {
+    inline-size: var(--toast-icon-size);
+    block-size: var(--toast-icon-size);
   }
 
   .ui-skeleton-block {

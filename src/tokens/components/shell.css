@@ -59,6 +59,34 @@
    * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for
    * a custom mobileNav node that wants the full sheet chrome inset. */
   --app-shell-mobile-nav-inset: var(--space-1);
+  /* Hamburger glyph in the drawer trigger. Bigger ON PURPOSE than the trigger Button's own
+   * `size="sm"` icon step (--control-icon-size-sm, 0.875rem) — it is the ONLY navigation
+   * affordance on a phone, so it reads at the 1.25rem step. A flat rem, not a density-scaled
+   * alias: it must not move with the density axis, or the one tap target that opens navigation
+   * shrinks on a compact page. Consumed as a `size-[var(...)]` utility so it outranks
+   * `.ui-button--sm svg` (see the comment at the call site in app-shell.tsx). */
+  --app-shell-mobile-nav-icon-size: 1.25rem;
+
+  /* ServiceRolePanel (gh#319). `.ui-service-role-panel` shipped as a bare hook — the class was on
+   * the root but no rule existed anywhere, so the role rail's rhythm lived entirely as Tailwind
+   * literals inside the component and no theme could reach it (#45). The panel is a thin
+   * composition over MasterDetail, which still owns ALL the two-track geometry; these knobs cover
+   * only the role LIST inside the master rail.
+   *
+   * Flat rems, not `--space-*`: the literals they replace read Tailwind's own `--spacing` grid,
+   * which this package never remaps and which does not follow the density axis. Aliasing them
+   * would start scaling the rail inside a `.ui-density-*` subtree — a visual change, not a
+   * refactor. */
+  --service-role-panel-list-gap: 0.25rem; /* between role rows (was `gap-1`) */
+  --service-role-panel-row-gap: 0.25rem; /* select button ↔ delete button (was `gap-1`) */
+  --service-role-panel-item-title-gap: 0.375rem; /* role name ↔ lock Badge (was `gap-1.5`) */
+  /* The role row is a MULTI-LINE button (name over a description/member-count line), so it opts
+   * out of the control height grid (`h-auto`) and sets its own block padding — that is what the
+   * `py-2` literal was doing. It needs the raised `.ui-service-role-panel` ancestor specificity
+   * (0,2,0) to beat `.ui-button--md { padding-block: var(--button-space-block) }` (0,1,0):
+   * layout.css is imported BEFORE control.css and both are `@layer components`, so an equal
+   * (0,1,0) rule here would silently lose. */
+  --service-role-panel-item-padding-block: 0.5rem;
   --sidebar-brand-mark-size: 1.375rem;
   --sidebar-nav-item-height: 2rem;
   --sidebar-nav-item-font-size: 0.8125rem;

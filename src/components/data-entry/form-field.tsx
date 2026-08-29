@@ -95,8 +95,14 @@ export function FormField({
   const mergeIds = mergeAriaIds;
   const childWithA11y = isStatic ? (
     // Byte-for-byte the same value typography as `Descriptions.Item`'s `dd` (gh#294), so a
-    // read-only FormField row and a Descriptions value are indistinguishable when mixed.
-    <span className="text-sm break-all">{staticText}</span>
+    // read-only FormField row and a Descriptions value are indistinguishable when mixed. That
+    // used to be two copies of the literal `text-sm` kept in sync by this comment; both call sites
+    // now read the SAME token pair (#319), so a service retunes both from one place and they
+    // cannot drift. --descriptions-value-line-height is the mandatory companion: `text-sm` also
+    // set Tailwind's `--text-sm--line-height`, which the theme never remaps (the gh#260 bug).
+    <span className="text-[length:var(--descriptions-value-font-size)] leading-[var(--descriptions-value-line-height)] break-all">
+      {staticText}
+    </span>
   ) : React.isValidElement(children) ? (
     React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
       // The label is associated via aria-labelledby (not <label for>): composite
@@ -152,9 +158,15 @@ export function FormField({
         {/* asChild renders a <span>: the control is named via aria-labelledby, and a
             real <label> whose `for` can dangle (composite children) is a Chrome a11y
             issue. Click-to-focus is preserved by hand. */}
-        {/* The size goes through Label's own className, not the wrapper: Label sets
-            `text-sm` on the element itself, so an inherited font-size never reaches
-            the text. tailwind-merge drops text-sm in favour of this one. */}
+        {/* The size goes through Label's own className, not the wrapper: `.ui-label` sets
+            font-size on the element itself (--control-label-font-size), so an inherited
+            font-size never reaches the text. This arbitrary utility still wins — Tailwind v4
+            layers utilities after components (#319).
+            `ui-inline-xs` is passed for its flex-wrap, NOT its gap: `.ui-label` is imported after
+            `.ui-inline-xs` at equal specificity in the same layer, so the label gap stays
+            --control-label-space-gap (8px). That is unchanged from before — the old `gap-2`
+            utility won the same way — so this field's 4px intent has never been honoured; a
+            service that wants it tightens --control-label-space-gap rather than relying on it. */}
         <Label
           asChild
           id={labelId}

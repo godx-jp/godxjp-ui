@@ -3,6 +3,27 @@
  */
 
 @layer components {
+  /* The table's base type. It used to ride on a `text-sm` utility emitted by the component; the
+   * font-size AND its line-height companion now live here (gh#319 — see
+   * tokens/components/table.css for why both are required). */
+  [data-slot="table"] {
+    font-size: var(--table-font-size);
+    line-height: var(--table-line-height);
+  }
+
+  /* Horizontal rules between rows, and the "last row draws no rule" idiom. Both must be in the
+   * SAME layer: while the row's rule was a `border-b` utility, no `components` selector could
+   * zero it on the last row however specific (the gh#412 layer contract), so the tbody had to
+   * carry an arbitrary-variant utility of its own. `[data-slot="table-body"] .ui-table-row`
+   * (0,2,0) beats `.ui-table-row` (0,1,0), so the last-row reset lands cleanly. */
+  .ui-table-row {
+    border-block-end-width: var(--table-row-border-width);
+  }
+
+  [data-slot="table-body"] .ui-table-row:last-child {
+    border-block-end-width: 0;
+  }
+
   [data-slot="table-head"] {
     height: var(--table-row-height);
     padding: var(--table-cell-padding-y) var(--table-cell-space-x);
@@ -452,14 +473,15 @@
 }
 
 /* The compact tier lives in `godxjp-ui-responsive` — the LAST layer, declared after Tailwind in
- * styles/base.css — not in `@layer components`. `<table>` carries `text-sm`, a Tailwind utility,
- * and `utilities` outranks `components` by LAYER ORDER, so a `font-size:` re-point written here as
- * a component rule can never apply however specific it is: that is exactly why
+ * styles/base.css — not in `@layer components`. The <table> USED to carry `text-sm`, a Tailwind
+ * utility, and `utilities` outranks `components` by LAYER ORDER, so a `font-size:` re-point
+ * written as a component rule could never apply however specific it was: that is exactly why
  * `--table-action-collection-font-size-compact` was dead at every width (gh#412), leaving the
- * narrow frame at 14px where a 5–6 character Japanese label overflows its column measure. The
- * column measures move with it so the whole compact tier is decided in ONE place, and so a
- * consumer utility on the table can't half-collapse it either. See styles/base.css · THE LAYER
- * CONTRACT. */
+ * narrow frame at 14px where a 5–6 character Japanese label overflows its column measure.
+ * gh#319 moved the base type off that utility and onto `[data-slot="table"]` above, but the
+ * compact tier STAYS here: a CONSUMER's own `text-*` utility on the table would otherwise
+ * half-collapse it, and this keeps the whole tier — type AND column measures — decided in ONE
+ * place. See styles/base.css · THE LAYER CONTRACT. */
 @layer godxjp-ui-responsive {
   /* Below the step the SOURCE measures are re-pointed to their compact tier (and the type / row
    * density with them); nothing else moves. One block per canonical step — a media/container

@@ -11,4 +11,26 @@
    * block above an editable field on the same card) retunes this to `var(--space-4)` to match
    * Form's own field-to-field rhythm instead of the two blocks reading as visually unrelated. */
   --descriptions-row-gap: var(--space-3);
+  /* Column-to-column gap of the <dl> grid (#319). Was a hardcoded `gap-x-6`, the one axis of the
+   * grid rhythm a service could NOT reach while --descriptions-row-gap was already a knob — so a
+   * 2/3-column detail block could be retuned vertically but never horizontally.
+   * A RAW rem, deliberately NOT var(--space-6): `gap-x-6` reads Tailwind's own --spacing grid,
+   * which this repo does NOT density-scale, so a --space-* default would silently rescale the
+   * column gap under a compact/comfortable density. Point it at var(--space-6) to opt in. */
+  --descriptions-column-gap: 1.5rem;
+  /* Label → value gap inside ONE item when layout="horizontal" (was `gap-x-3`). Pairs with
+   * --descriptions-label-width: a service that narrows the label column usually wants to close
+   * this gap in the same step. Raw rem for the same --spacing reason as above. */
+  --descriptions-label-gap: 0.75rem;
+  /* VALUE TYPOGRAPHY (gh#294 + #319). `FormField staticText` renders its read-only value with the
+   * SAME typography as a <dd> so a static Form row and a Descriptions value are indistinguishable
+   * when mixed on one card. That contract used to be two copies of the literal `text-sm` plus a
+   * comment asking future editors to keep them in sync; both call sites now read these tokens, so
+   * the mirror is mechanical and a service retunes BOTH from one place. */
+  --descriptions-value-font-size: var(--font-size-sm);
+  /* Companion to --descriptions-value-font-size (the gh#260 bug). The `text-sm` utility this
+   * replaces ALSO set a line-height, via Tailwind's default `--text-sm--line-height`
+   * (= calc(1.25 / 0.875)); the theme remaps --text-sm but never that companion. Without this the
+   * value would silently inherit ambient leading instead of its own 20px line box. */
+  --descriptions-value-line-height: calc(1.25 / 0.875);
 }

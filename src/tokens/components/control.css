@@ -352,6 +352,29 @@
   --button-count-min-width: var(--space-4);
   --button-count-space-inline: var(--space-1);
   --button-count-font-size: var(--font-size-xs);
+
+  /* LABEL — the Label primitive's own box and type (#319). Every one of these was a Tailwind
+   * literal baked into label.tsx (`text-sm leading-none flex items-center gap-2`), so a service
+   * whose form grid wanted a smaller/denser label had to hand-write font-size on every call site
+   * (which is exactly why --form-label-font-size had to be invented as a per-instance escape).
+   * They live under the `control` prefix because Label is a control-family primitive and
+   * src/tokens/components/ has no `label` file of its own.
+   *
+   * Defaults reproduce today's rendering exactly:
+   *   font-size   ← `text-sm`      → --text-sm → var(--font-size-sm)
+   *   line-height ← `leading-none` → 1 (leading-none beats text-sm's companion line-height) */
+  --control-label-font-size: var(--font-size-sm);
+  --control-label-line-height: 1;
+  /* Label → addon/required-marker gap. A RAW rem, deliberately NOT var(--space-2): the `gap-2` it
+   * replaces reads Tailwind's own --spacing grid, which this repo does NOT density-scale, so a
+   * --space-* default would silently resize every label row under a compact/comfortable density.
+   * A service that WANTS it to follow density points the knob at var(--space-2) itself. */
+  --control-label-space-gap: 0.5rem;
+  /* Weight of a label whose `peer` control is disabled. Deliberately its OWN knob rather than the
+   * global --disabled-opacity (0.5): a label must stay READABLE next to a disabled control — it is
+   * still the field's accessible name — so it rests one step heavier than the control it names.
+   * Default = the historical `peer-disabled:opacity-70`. */
+  --control-label-disabled-alpha: 0.7;
 }
 
 @media (pointer: coarse) {
