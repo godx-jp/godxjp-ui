@@ -175,4 +175,23 @@
   --search-select-placeholder-space-block: var(--space-6);
   --search-select-status-font-size: var(--font-size-sm);
   --search-select-spinner-size: 1rem;
+
+  /* CASCADER — column browser + flat search list. Its option rows, column widths and panel
+   * paddings were literals on the component (#319), so a service could not widen a column to fit
+   * longer JA labels or tighten the row rhythm without forking. */
+  --cascader-column-min-width: 9rem;
+  --cascader-columns-max-height: min(280px, 50vh);
+  --cascader-list-max-height: min(300px, 50vh);
+  --cascader-panel-space-inset: var(--space-1);
+  --cascader-option-space-inline: var(--space-3);
+  --cascader-option-space-block: var(--space-2);
+  --cascader-option-space-gap: var(--space-1);
+  --cascader-option-font-size: var(--font-size-sm);
+  --cascader-option-icon-size: 1rem;
+  /* The flat search result row is denser than a column row — it has no chevron to balance. */
+  --cascader-result-space-inline: var(--space-2);
+  --cascader-result-space-block: 0.375rem;
+  --cascader-result-radius: var(--radius-sm);
+  --cascader-result-icon-space-inline-end: var(--space-2);
+  --cascader-empty-space-block: var(--space-6);
 }

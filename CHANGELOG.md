@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Cascader is token-themeable (#319) — 30 literals → 0.** Column widths, panel heights and both
+  row rhythms were literals, so a service could not widen a column to fit longer JA labels or
+  tighten the row without forking: `--cascader-column-min-width` ·
+  `--cascader-columns-max-height` · `--cascader-list-max-height` · `--cascader-option-*` ·
+  `--cascader-result-*` · `--cascader-empty-space-block`. Cascader parks a smaller affix closer
+  to the edge than SearchSelect, so it scopes the shared `--control-affix-*` knobs rather than
+  forcing one calibration on both — shared vocabulary, per-component values.
+- **Purely visual checkboxes now pick up the shared disabled styling.** `.ui-checkbox:disabled`
+  only matches form elements, so a checkbox rendered as a `<span>` (Cascader's `CheckboxVisual`)
+  never matched it and repeated `cursor-not-allowed opacity-50` on the component instead. The
+  rule now also matches `[data-disabled]`, and its alpha is `--disabled-opacity` rather than a
+  hard-coded `0.5`.
 - **SearchSelect is token-themeable, and the select-family trailing affix is now shared (#319).**
   37 literals → 0. Panel geometry was baked on as arbitrary values
   (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could not widen the panel or change its

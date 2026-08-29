@@ -909,6 +909,76 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Empty/error states sit alone in the panel, so they get a taller, centred block."
   },
   {
+    "name": "--cascader-column-min-width",
+    "value": "9rem",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-columns-max-height",
+    "value": "min(280px, 50vh)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-list-max-height",
+    "value": "min(300px, 50vh)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-panel-space-inset",
+    "value": "var(--space-1)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-option-space-inline",
+    "value": "var(--space-3)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-option-space-block",
+    "value": "var(--space-2)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-option-space-gap",
+    "value": "var(--space-1)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-option-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-option-icon-size",
+    "value": "1rem",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-result-space-inline",
+    "value": "var(--space-2)",
+    "description": "The flat search result row is denser than a column row — it has no chevron to balance."
+  },
+  {
+    "name": "--cascader-result-space-block",
+    "value": "0.375rem",
+    "description": "The flat search result row is denser than a column row — it has no chevron to balance."
+  },
+  {
+    "name": "--cascader-result-radius",
+    "value": "var(--radius-sm)",
+    "description": "The flat search result row is denser than a column row — it has no chevron to balance."
+  },
+  {
+    "name": "--cascader-result-icon-space-inline-end",
+    "value": "var(--space-2)",
+    "description": "The flat search result row is denser than a column row — it has no chevron to balance."
+  },
+  {
+    "name": "--cascader-empty-space-block",
+    "value": "var(--space-6)",
+    "description": "The flat search result row is denser than a column row — it has no chevron to balance."
+  },
+  {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
     "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."

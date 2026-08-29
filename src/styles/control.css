@@ -317,12 +317,19 @@
     border-radius: var(--radius-pill);
   }
 
+  /* `:disabled` only matches form elements, so a purely visual checkbox rendered as a <span>
+   * (Cascader's CheckboxVisual, Transfer's row marks) never picked this up and had to repeat
+   * `cursor-not-allowed opacity-50` on the component instead (#319). Matching [data-disabled]
+   * too lets those share the one rule. The alpha is the system token, not a literal 0.5. */
   .ui-checkbox:disabled,
   .ui-radio:disabled,
   .ui-slider-thumb:disabled,
-  .ui-switch:disabled {
+  .ui-switch:disabled,
+  .ui-checkbox[data-disabled],
+  .ui-radio[data-disabled],
+  .ui-switch[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--disabled-opacity);
   }
 
   .ui-checkbox[data-state="checked"] {
@@ -1139,5 +1146,107 @@
     flex-shrink: 0;
     padding: var(--search-select-footer-space-inset);
     border-block-start: 1px solid hsl(var(--border));
+  }
+}
+
+@layer components {
+  /* CASCADER — column browser (desktop) + flat search list (query mode). */
+  .ui-cascader-columns {
+    display: flex;
+    max-block-size: var(--cascader-columns-max-height);
+  }
+
+  .ui-cascader-column {
+    min-inline-size: var(--cascader-column-min-width);
+    border-inline-end: 1px solid hsl(var(--border));
+  }
+
+  .ui-cascader-column:last-child {
+    border-inline-end: 0;
+  }
+
+  .ui-cascader-option {
+    display: flex;
+    inline-size: 100%;
+    align-items: center;
+    gap: var(--cascader-option-space-gap);
+    padding-inline: var(--cascader-option-space-inline);
+    padding-block: var(--cascader-option-space-block);
+    font-size: var(--cascader-option-font-size);
+    outline: none;
+  }
+
+  .ui-cascader-option-icon {
+    margin-inline-end: var(--cascader-option-space-gap);
+    inline-size: var(--cascader-option-icon-size);
+    block-size: var(--cascader-option-icon-size);
+    flex-shrink: 0;
+  }
+
+  /* The chevron marks "has children"; it is decorative, so it keeps the resting weight. */
+  .ui-cascader-option-chevron {
+    inline-size: var(--cascader-option-icon-size);
+    block-size: var(--cascader-option-icon-size);
+    flex-shrink: 0;
+    opacity: var(--control-affix-rest-alpha);
+  }
+
+  .ui-cascader-list {
+    max-block-size: var(--cascader-list-max-height);
+  }
+
+  .ui-cascader-panel {
+    padding: var(--cascader-panel-space-inset);
+  }
+
+  .ui-cascader-popover {
+    inline-size: auto;
+    min-inline-size: var(--radix-popover-trigger-width);
+    padding: 0;
+  }
+
+  .ui-cascader-empty {
+    padding-block: var(--cascader-empty-space-block);
+    text-align: center;
+    font-size: var(--cascader-option-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Flat search result row — denser than a column row (no chevron to balance). */
+  .ui-cascader-result {
+    display: flex;
+    inline-size: 100%;
+    align-items: center;
+    border-radius: var(--cascader-result-radius);
+    padding-inline: var(--cascader-result-space-inline);
+    padding-block: var(--cascader-result-space-block);
+    font-size: var(--cascader-option-font-size);
+    outline: none;
+  }
+
+  .ui-cascader-result-icon {
+    margin-inline-end: var(--cascader-result-icon-space-inline-end);
+    inline-size: var(--cascader-option-icon-size);
+    block-size: var(--cascader-option-icon-size);
+    flex-shrink: 0;
+  }
+
+  /* Reserve the check column even when unselected so labels do not jump on select. */
+  .ui-cascader-result-icon[data-selected="false"] {
+    opacity: 0;
+  }
+
+  /* Cascader parks a SMALLER affix closer to the edge than SearchSelect does. Same shared knobs,
+   * component-scoped values — the vocabulary is shared, the calibration is not. */
+  .ui-cascader-affix {
+    --control-affix-inset-inline-end: var(--space-3);
+    --control-affix-action-size: var(--control-affix-icon-size);
+  }
+
+  /* Disabled option rows keep pointer-events off and take the one system alpha. */
+  .ui-cascader-option[data-disabled],
+  .ui-cascader-trigger[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
   }
 }
