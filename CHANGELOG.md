@@ -22,6 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Input is token-themeable, and the inside-field affix is now shared (#319) — 15 literals → 0.**
+  Input and TimePicker carried a byte-identical affix stack, so that became one control-level set:
+  `--control-inline-affix-size` · `--control-inline-affix-icon-size` ·
+  `--control-inline-affix-space-gap` · `--control-inline-affix-inset-inline` ·
+  `--control-inline-affix-rest-alpha` · `--control-inline-affix-space-inline-end`. It stays
+  SEPARATE from the overlay `--control-affix-*` pair that Select and SearchSelect park on top of a
+  trigger: an affix sitting on the field's own surface rests heavier (0.7) than one floating over
+  it (0.5), and collapsing the two would have flattened that. Input also gained
+  `--input-file-button-*` for the browser-owned file button, and its disabled state now dims by
+  `--disabled-opacity` rather than a literal `0.5`.
 - **DataTable's remaining chrome is token-themeable (#319) — 17 literals → 0.** Its cell rhythm,
   column widths and action-collection tiers were already tokenized; what was left sat around
   them — the select column, sort glyphs, sticky-header layer, pagination text and the loading

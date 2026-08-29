@@ -849,6 +849,46 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Room a trigger reserves so its label never runs under the affix."
   },
   {
+    "name": "--control-inline-affix-size",
+    "value": "1.25rem",
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+  },
+  {
+    "name": "--control-inline-affix-icon-size",
+    "value": "var(--control-affix-icon-size)",
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+  },
+  {
+    "name": "--control-inline-affix-space-gap",
+    "value": "var(--space-1)",
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+  },
+  {
+    "name": "--control-inline-affix-inset-inline",
+    "value": "var(--space-2)",
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+  },
+  {
+    "name": "--control-inline-affix-rest-alpha",
+    "value": "0.7",
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+  },
+  {
+    "name": "--control-inline-affix-space-inline-end",
+    "value": "var(--space-9)",
+    "description": "Inline room the field reserves so its text never runs under a single affix."
+  },
+  {
+    "name": "--input-file-button-height",
+    "value": "1.75rem",
+    "description": "The <input type=file> button is a browser-owned box we restyle; it sits one tier below the * field so it reads as a control INSIDE the control."
+  },
+  {
+    "name": "--input-file-button-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "The <input type=file> button is a browser-owned box we restyle; it sits one tier below the * field so it reads as a control INSIDE the control."
+  },
+  {
     "name": "--search-select-panel-max-width",
     "value": "32rem",
     "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
@@ -1055,18 +1095,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--time-picker-affix-space-gap",
-    "value": "var(--space-1)",
+    "value": "var(--control-inline-affix-space-gap)",
     "description": "This trigger parks TWO affix controls (clear + clock), so it reserves a wider inline end * than the single-affix triggers that read --control-trigger-space-inline-end."
-  },
-  {
-    "name": "--time-picker-affix-size",
-    "value": "1.25rem",
-    "description": "This trigger parks TWO affix controls (clear + clock), so it reserves a wider inline end * than the single-affix triggers that read --control-trigger-space-inline-end."
-  },
-  {
-    "name": "--time-picker-affix-rest-alpha",
-    "value": "0.7",
-    "description": "These affix glyphs sit inside the field rather than overlaying it, so they rest a touch * heavier than the overlay affix used by Select/SearchSelect."
   },
   {
     "name": "--tree-select-list-max-height",

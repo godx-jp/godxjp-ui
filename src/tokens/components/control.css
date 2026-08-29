@@ -159,6 +159,23 @@
   /* Room a trigger reserves so its label never runs under the affix. */
   --control-trigger-space-inline-end: var(--space-9);
 
+  /* INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the
+   * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect
+   * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit
+   * on the field's own surface rather than over it, they rest a touch heavier than the overlay
+   * pair — that difference is the reason the two sets stay separate. */
+  --control-inline-affix-size: 1.25rem;
+  --control-inline-affix-icon-size: var(--control-affix-icon-size);
+  --control-inline-affix-space-gap: var(--space-1);
+  --control-inline-affix-inset-inline: var(--space-2);
+  --control-inline-affix-rest-alpha: 0.7;
+  /* Inline room the field reserves so its text never runs under a single affix. */
+  --control-inline-affix-space-inline-end: var(--space-9);
+  /* The <input type=file> button is a browser-owned box we restyle; it sits one tier below the
+   * field so it reads as a control INSIDE the control. */
+  --input-file-button-height: 1.75rem;
+  --input-file-button-font-size: var(--font-size-sm);
+
   /* SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the
    * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could
    * not widen the panel or change the viewport gutter without forking. */
@@ -221,11 +238,7 @@
   /* This trigger parks TWO affix controls (clear + clock), so it reserves a wider inline end
    * than the single-affix triggers that read --control-trigger-space-inline-end. */
   --time-picker-trigger-space-inline-end: 3.5rem;
-  --time-picker-affix-space-gap: var(--space-1);
-  --time-picker-affix-size: 1.25rem;
-  /* These affix glyphs sit inside the field rather than overlaying it, so they rest a touch
-   * heavier than the overlay affix used by Select/SearchSelect. */
-  --time-picker-affix-rest-alpha: 0.7;
+  --time-picker-affix-space-gap: var(--control-inline-affix-space-gap);
 
   /* TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal
    * on the component, and the depth indent was a magic expression in JSX

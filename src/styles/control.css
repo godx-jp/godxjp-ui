@@ -1421,28 +1421,86 @@
   }
 
   /* Sits INSIDE the field rather than overlaying it, so it rests a touch heavier than the
-   * overlay affix Select/SearchSelect use. */
-  .ui-time-picker-affix-action {
+   * overlay affix Select/SearchSelect use. Shared by Input and TimePicker. */
+  .ui-control-inline-affix-action {
     display: inline-flex;
-    inline-size: var(--time-picker-affix-size);
-    block-size: var(--time-picker-affix-size);
+    inline-size: var(--control-inline-affix-size);
+    block-size: var(--control-inline-affix-size);
     align-items: center;
     justify-content: center;
     border-radius: var(--control-affix-action-radius);
     color: hsl(var(--muted-foreground));
-    opacity: var(--time-picker-affix-rest-alpha);
+    opacity: var(--control-inline-affix-rest-alpha);
     transition: opacity 150ms ease;
   }
 
-  .ui-time-picker-affix-action:hover,
-  .ui-time-picker-affix-action:focus-visible {
+  .ui-control-inline-affix-action:hover,
+  .ui-control-inline-affix-action:focus-visible {
     color: hsl(var(--foreground));
     opacity: 1;
   }
 
-  .ui-time-picker-affix-icon {
-    inline-size: var(--control-affix-icon-size);
-    block-size: var(--control-affix-icon-size);
+  .ui-control-inline-affix-icon {
+    inline-size: var(--control-inline-affix-icon-size);
+    block-size: var(--control-inline-affix-icon-size);
+  }
+
+  /* The browser-owned file button, restyled to read as a control inside the control. */
+  .ui-input::file-selector-button {
+    display: inline-flex;
+    block-size: var(--input-file-button-height);
+    border: 0;
+    background: transparent;
+    color: hsl(var(--foreground));
+    font-size: var(--input-file-button-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* A field in a flex row must be allowed to shrink below its content, or a long value pushes
+   * the row wider instead of the text truncating. */
+  .ui-input {
+    min-inline-size: 0;
+  }
+
+  .ui-input:disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  /* INPUT affix slots — leading/trailing controls parked inside the field box. */
+  .ui-input-affix-wrapper {
+    position: relative;
+    display: inline-flex;
+    inline-size: 100%;
+    align-items: center;
+  }
+
+  .ui-input-leading,
+  .ui-input-trailing {
+    position: absolute;
+    inset-block: 0;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .ui-input-leading {
+    inset-inline-start: var(--control-inline-affix-inset-inline);
+    pointer-events: none;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-input-trailing {
+    inset-inline-end: var(--control-inline-affix-inset-inline);
+  }
+
+  /* The field reserves room on whichever side carries an affix, so its text never runs under. */
+  .ui-input--leading-affix {
+    padding-inline-start: var(--control-inline-affix-space-inline-end);
+  }
+
+  .ui-input--trailing-affix {
+    padding-inline-end: var(--control-inline-affix-space-inline-end);
   }
 }
 

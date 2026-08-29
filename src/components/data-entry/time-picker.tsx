@@ -313,9 +313,9 @@ export function TimePicker({
                     tabIndex={-1}
                     aria-label={t("common.clear") ?? "Clear"}
                     onClick={clear}
-                    className="ui-time-picker-affix-action"
+                    className="ui-control-inline-affix-action"
                   >
-                    <X className="ui-time-picker-affix-icon" aria-hidden="true" />
+                    <X className="ui-control-inline-affix-icon" aria-hidden="true" />
                   </button>
                 ) : null}
                 <PopoverTrigger asChild>
@@ -324,9 +324,9 @@ export function TimePicker({
                     disabled={disabled}
                     tabIndex={-1}
                     aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
-                    className="ui-time-picker-affix-action"
+                    className="ui-control-inline-affix-action"
                   >
-                    <Clock className="ui-time-picker-affix-icon" aria-hidden="true" />
+                    <Clock className="ui-control-inline-affix-icon" aria-hidden="true" />
                   </button>
                 </PopoverTrigger>
               </span>

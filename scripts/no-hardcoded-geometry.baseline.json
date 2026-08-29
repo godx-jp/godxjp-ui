@@ -1,5 +1,5 @@
 {
-  "total": 136,
+  "total": 121,
   "files": {
     "src/components/data-display/card.tsx": 1,
     "src/components/data-display/descriptions.tsx": 3,
@@ -12,7 +12,6 @@
     "src/components/data-entry/date-picker.tsx": 14,
     "src/components/data-entry/date-range-picker.tsx": 8,
     "src/components/data-entry/form-field.tsx": 1,
-    "src/components/data-entry/input.tsx": 15,
     "src/components/data-entry/label.tsx": 5,
     "src/components/data-entry/radio.tsx": 1,
     "src/components/data-entry/switch.tsx": 1,
