@@ -1124,6 +1124,76 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
   },
   {
+    "name": "--calendar-space-inset",
+    "value": "var(--space-3)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-month-space-gap",
+    "value": "var(--space-4)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-caption-space-inline",
+    "value": "var(--space-8)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-caption-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-nav-space-block-start",
+    "value": "var(--space-3)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-nav-space-inline",
+    "value": "var(--space-1)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-nav-rest-alpha",
+    "value": "0.7",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-grid-space-block-start",
+    "value": "var(--space-4)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-week-space-block-start",
+    "value": "var(--space-2)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-weekday-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-weekday-radius",
+    "value": "var(--radius-md)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-day-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-day-radius",
+    "value": "var(--radius-md)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-chevron-size",
+    "value": "1rem",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
     "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."

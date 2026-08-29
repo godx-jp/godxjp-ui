@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Calendar is token-themeable (#319) — 24 literals → 0.** Day and weekday cells already sized
+  from `--control-height` (a system tier decision that stays), but the frame around them — root
+  inset, month gaps, nav offset, grid rhythm — was literal inside the react-day-picker
+  `classNames` map, which is exactly the place a consumer cannot reach without replacing the
+  whole map: `--calendar-space-inset` · `--calendar-month-space-gap` · `--calendar-caption-*` ·
+  `--calendar-nav-*` · `--calendar-grid-space-block-start` · `--calendar-week-space-block-start`
+  · `--calendar-weekday-*` · `--calendar-day-*` · `--calendar-chevron-size`. Every `classNames`
+  slot still merges the caller's override exactly as before.
 - **Steps is token-themeable (#319) — 25 literals → 0.** `--steps-inline-*` already covered the
   compact inline form; the main variant's marker, connector and text rhythm were still literal,
   so a service could not resize the dot, retighten the vertical run, or move the horizontal

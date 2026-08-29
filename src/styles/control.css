@@ -1548,3 +1548,121 @@
     padding-inline-end: var(--space-10);
   }
 }
+
+@layer components {
+  /* CALENDAR — react-day-picker frame. The day/weekday cells keep sizing from --control-height
+   * (a system tier decision); everything around them is now a knob. */
+  .ui-calendar {
+    position: relative;
+    inline-size: fit-content;
+    padding: var(--calendar-space-inset);
+  }
+
+  .ui-calendar-months {
+    display: flex;
+    flex-direction: column;
+    gap: var(--calendar-month-space-gap);
+  }
+
+  @media (min-width: 40rem) {
+    .ui-calendar-months {
+      flex-direction: row;
+    }
+  }
+
+  .ui-calendar-month {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--calendar-month-space-gap);
+  }
+
+  .ui-calendar-caption {
+    display: flex;
+    block-size: var(--control-height);
+    inline-size: 100%;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--calendar-caption-space-inline);
+  }
+
+  .ui-calendar-caption-label {
+    font-size: var(--calendar-caption-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-calendar-nav {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: var(--calendar-nav-space-block-start);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: var(--calendar-nav-space-inline);
+  }
+
+  .ui-calendar-nav-button {
+    background: transparent;
+    padding: 0;
+    opacity: var(--calendar-nav-rest-alpha);
+  }
+
+  .ui-calendar-nav-button:hover {
+    opacity: 1;
+  }
+
+  .ui-calendar-chevron {
+    inline-size: var(--calendar-chevron-size);
+    block-size: var(--calendar-chevron-size);
+  }
+
+  .ui-calendar-grid {
+    margin-block-start: var(--calendar-grid-space-block-start);
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+
+  .ui-calendar-weekday {
+    inline-size: var(--control-height);
+    border-radius: var(--calendar-weekday-radius);
+    font-size: var(--calendar-weekday-font-size);
+    font-weight: var(--font-weight-normal);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-calendar-week {
+    margin-block-start: var(--calendar-week-space-block-start);
+    display: flex;
+    inline-size: 100%;
+  }
+
+  .ui-calendar-day {
+    position: relative;
+    padding: 0;
+    text-align: center;
+    font-size: var(--calendar-day-font-size);
+  }
+
+  .ui-calendar-day:focus-within {
+    position: relative;
+    z-index: 20;
+  }
+
+  .ui-calendar-day-button {
+    inline-size: var(--control-height);
+    block-size: var(--control-height);
+    padding: 0;
+    font-weight: var(--font-weight-normal);
+    border-radius: var(--calendar-day-radius);
+  }
+
+  .ui-calendar-day-button[aria-selected] {
+    opacity: 1;
+  }
+
+  .ui-calendar-day-disabled {
+    color: hsl(var(--muted-foreground));
+    opacity: var(--disabled-opacity);
+  }
+}

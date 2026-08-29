@@ -242,4 +242,24 @@
   --tree-select-toggle-space-inline-end: var(--space-1);
   --tree-select-label-space-gap: var(--space-2);
   --tree-select-empty-space-block: var(--space-6);
+
+  /* CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height
+   * (the system control tier), but the frame around them — root inset, month gaps, nav offset,
+   * grid rhythm — was literal on the component (#319), so a service could not tighten the
+   * calendar to its own density without forking the classNames map. */
+  --calendar-space-inset: var(--space-3);
+  --calendar-month-space-gap: var(--space-4);
+  --calendar-caption-space-inline: var(--space-8);
+  --calendar-caption-font-size: var(--font-size-sm);
+  --calendar-nav-space-block-start: var(--space-3);
+  --calendar-nav-space-inline: var(--space-1);
+  /* Nav chevrons read as secondary until hovered — they frame the month, they are not the point. */
+  --calendar-nav-rest-alpha: 0.7;
+  --calendar-grid-space-block-start: var(--space-4);
+  --calendar-week-space-block-start: var(--space-2);
+  --calendar-weekday-font-size: var(--font-size-xs);
+  --calendar-weekday-radius: var(--radius-md);
+  --calendar-day-font-size: var(--font-size-sm);
+  --calendar-day-radius: var(--radius-md);
+  --calendar-chevron-size: 1rem;
 }
