@@ -1289,6 +1289,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
   },
   {
+    "name": "--month-picker-panel-space-inset",
+    "value": "var(--space-3)",
+    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+  },
+  {
+    "name": "--month-picker-grid-space-block-start",
+    "value": "var(--space-3)",
+    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+  },
+  {
+    "name": "--month-picker-grid-space-gap",
+    "value": "var(--space-1)",
+    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+  },
+  {
+    "name": "--month-picker-cell-space-inline",
+    "value": "var(--space-4)",
+    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+  },
+  {
+    "name": "--month-picker-nav-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+  },
+  {
+    "name": "--month-picker-nav-rest-alpha",
+    "value": "var(--calendar-nav-rest-alpha)",
+    "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
+  },
+  {
+    "name": "--month-picker-field-space-gap",
+    "value": "var(--space-2)",
+    "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
+  },
+  {
+    "name": "--month-picker-icon-size",
+    "value": "1rem",
+    "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
+  },
+  {
+    "name": "--month-picker-separator-icon-size",
+    "value": "0.875rem",
+    "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
+  },
+  {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
     "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."

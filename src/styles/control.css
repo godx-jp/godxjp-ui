@@ -1763,3 +1763,96 @@
     block-size: var(--transfer-action-icon-size);
   }
 }
+
+@layer components {
+  /* MONTH PICKER — the year-nav + 3-column month grid shared by MonthPicker and
+   * MonthRangePicker. One rule set for both; they used to hold identical copies. */
+  .ui-month-picker-field {
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--month-picker-field-space-gap);
+    border-radius: var(--control-radius);
+    border: 1px solid hsl(var(--input));
+    background: hsl(var(--background));
+    outline: none;
+    transition:
+      color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .ui-month-picker-field[data-disabled] {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-month-picker-input {
+    min-inline-size: 0;
+    flex: 1 1 0%;
+    background: transparent;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+  }
+
+  .ui-month-picker-input::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-month-picker-input:disabled {
+    cursor: not-allowed;
+  }
+
+  .ui-month-picker-icon {
+    inline-size: var(--month-picker-icon-size);
+    block-size: var(--month-picker-icon-size);
+    flex-shrink: 0;
+  }
+
+  .ui-month-picker-separator-icon {
+    inline-size: var(--month-picker-separator-icon-size);
+    block-size: var(--month-picker-separator-icon-size);
+    flex-shrink: 0;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-month-picker-panel {
+    inline-size: auto;
+    padding: var(--month-picker-panel-space-inset);
+  }
+
+  .ui-month-picker-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ui-month-picker-nav-button {
+    background: transparent;
+    opacity: var(--month-picker-nav-rest-alpha);
+  }
+
+  .ui-month-picker-nav-button:hover {
+    opacity: 1;
+  }
+
+  .ui-month-picker-nav-label {
+    font-size: var(--month-picker-nav-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-month-picker-grid {
+    margin-block-start: var(--month-picker-grid-space-block-start);
+    display: grid;
+    /* 3 columns × 4 rows is the month grid's shape, not a service knob — 12 months only read
+     * as a calendar year in this arrangement. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--month-picker-grid-space-gap);
+  }
+
+  .ui-month-picker-cell {
+    padding-inline: var(--month-picker-cell-space-inline);
+    font-weight: var(--font-weight-normal);
+  }
+}

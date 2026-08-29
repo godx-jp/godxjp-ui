@@ -142,8 +142,7 @@ export function MonthRangePicker({
 
   // Bare inputs: the BORDER lives on the shared container (one control, antd
   // RangePicker style) — an Input here would draw a second border inside it.
-  const innerInputClass =
-    "min-w-0 flex-1 bg-transparent tabular-nums outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed";
+  const innerInputClass = "ui-month-picker-input";
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.monthPicker.placeholder") ?? YM_HINT;
 
@@ -157,11 +156,11 @@ export function MonthRangePicker({
           id={groupId}
           {...groupA11y}
           aria-disabled={disabled ? true : undefined}
+          data-disabled={disabled ? "" : undefined}
           className={cn(
-            "ui-control border-input bg-background flex w-full min-w-0 items-center gap-2 rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
+            "ui-control ui-month-picker-field",
             "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
             open && "border-ring ring-ring/50 ring-[3px]",
-            disabled && "pointer-events-none cursor-not-allowed opacity-50",
             className,
           )}
           onClick={() => {
@@ -185,7 +184,7 @@ export function MonthRangePicker({
             }}
             onBlur={() => setFromText(toYmText(value?.from))}
           />
-          <ArrowRight className="text-muted-foreground size-3.5 shrink-0" aria-hidden="true" />
+          <ArrowRight className="ui-month-picker-separator-icon" aria-hidden="true" />
           <input
             id={toId}
             name={name ? `${name}_to` : undefined}
@@ -216,7 +215,7 @@ export function MonthRangePicker({
                 clear();
               }}
             >
-              <X className="size-4 shrink-0" aria-hidden="true" />
+              <X className="ui-month-picker-icon" aria-hidden="true" />
             </button>
           ) : null}
           <PopoverTrigger asChild>
@@ -227,11 +226,11 @@ export function MonthRangePicker({
               aria-label={t("dataEntry.monthPicker.openGrid") ?? "Open month grid"}
               className="text-muted-foreground hover:text-foreground shrink-0"
             >
-              <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
+              <CalendarIcon className="ui-month-picker-icon" aria-hidden="true" />
             </button>
           </PopoverTrigger>
           <PopoverContent
-            className="w-auto p-3"
+            className="ui-month-picker-panel"
             align="start"
             onOpenAutoFocus={(event) => event.preventDefault()}
             // The content is portaled but stays a React child of the shell div,
@@ -239,19 +238,19 @@ export function MonthRangePicker({
             // re-open the popover right after a completing pick closed it.
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex items-center justify-between">
+            <div className="ui-month-picker-nav">
               <Button
                 type="button"
                 variant="outline"
                 size="icon-sm"
                 disabled={prevDisabled}
                 aria-label={t("dataEntry.monthPicker.previousYear") ?? "Previous year"}
-                className="bg-transparent opacity-70 hover:opacity-100"
+                className="ui-month-picker-nav-button"
                 onClick={() => setViewYear((y) => y - 1)}
               >
-                <ChevronLeft className="size-4" aria-hidden="true" />
+                <ChevronLeft className="ui-month-picker-icon" aria-hidden="true" />
               </Button>
-              <span className="text-sm font-medium" aria-live="polite">
+              <span className="ui-month-picker-nav-label" aria-live="polite">
                 {viewYear}
               </span>
               <Button
@@ -260,13 +259,13 @@ export function MonthRangePicker({
                 size="icon-sm"
                 disabled={nextDisabled}
                 aria-label={t("dataEntry.monthPicker.nextYear") ?? "Next year"}
-                className="bg-transparent opacity-70 hover:opacity-100"
+                className="ui-month-picker-nav-button"
                 onClick={() => setViewYear((y) => y + 1)}
               >
-                <ChevronRight className="size-4" aria-hidden="true" />
+                <ChevronRight className="ui-month-picker-icon" aria-hidden="true" />
               </Button>
             </div>
-            <div role="grid" aria-label={String(viewYear)} className="mt-3 grid grid-cols-3 gap-1">
+            <div role="grid" aria-label={String(viewYear)} className="ui-month-picker-grid">
               {monthLabels.map((label, i) => {
                 const cell = new Date(viewYear, i, 1);
                 const cellIdx = ymIndex(cell);
@@ -285,7 +284,7 @@ export function MonthRangePicker({
                     variant={isEdge ? "default" : inRange ? "secondary" : "ghost"}
                     size="sm"
                     aria-pressed={isEdge}
-                    className="px-4 font-normal"
+                    className="ui-month-picker-cell"
                     onClick={() => pickMonth(cell)}
                   >
                     {label}

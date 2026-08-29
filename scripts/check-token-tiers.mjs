@@ -29,6 +29,7 @@ const componentPrefixes = {
   card: ["card", "stat-card"],
   control: [
     "control",
+    "month-picker",
     "tree-select",
     "time-picker",
     "search-select",

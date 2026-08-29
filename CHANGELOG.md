@@ -22,6 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **MonthPicker and MonthRangePicker share one token set (#319) — 35 literals → 0 across both.**
+  They render the same year-nav + 3-column month grid and each held an identical copy of every
+  literal, so the two could drift apart silently — the same failure DropdownMenu had against
+  ContextMenu/Menubar. One set now drives both: `--month-picker-panel-space-inset` ·
+  `--month-picker-grid-*` · `--month-picker-cell-space-inline` · `--month-picker-nav-*` ·
+  `--month-picker-field-space-gap` · `--month-picker-icon-size` ·
+  `--month-picker-separator-icon-size`. The nav's resting alpha defaults to
+  `--calendar-nav-rest-alpha`, so retuning the calendar's chevrons keeps the month panel in step.
+  The 3×4 grid shape stays hard-coded on purpose — twelve months only read as a calendar year in
+  that arrangement, so it is layout, not a service knob.
 - **Transfer is token-themeable (#319) — 21 literals → 0.** Pane height, header rhythm and row
   density were literal, so a service could not fit the panes to its own page grid or tighten the
   row for a dense admin screen without forking: `--transfer-pane-*` · `--transfer-header-*` ·

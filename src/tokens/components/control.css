@@ -287,4 +287,19 @@
   --transfer-empty-space-block: var(--space-8);
   --transfer-actions-space-gap: var(--space-2);
   --transfer-action-icon-size: 1rem;
+
+  /* MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav +
+   * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs
+   * now drives both, so they cannot drift apart the way Select and DropdownMenu once did. */
+  --month-picker-panel-space-inset: var(--space-3);
+  --month-picker-grid-space-block-start: var(--space-3);
+  --month-picker-grid-space-gap: var(--space-1);
+  --month-picker-cell-space-inline: var(--space-4);
+  --month-picker-nav-font-size: var(--font-size-sm);
+  /* Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so
+   * the two panels stay visually consistent when either is retuned. */
+  --month-picker-nav-rest-alpha: var(--calendar-nav-rest-alpha);
+  --month-picker-field-space-gap: var(--space-2);
+  --month-picker-icon-size: 1rem;
+  --month-picker-separator-icon-size: 0.875rem;
 }
