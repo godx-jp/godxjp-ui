@@ -1410,8 +1410,15 @@
   }
 
   /* Two affix controls (clear + clock), so a wider reserved end than the single-affix triggers. */
-  .ui-time-picker-trigger-affixed {
-    padding-inline-end: var(--time-picker-trigger-space-inline-end);
+  /* A popover whose content owns its own padding (a Calendar, a month grid) — the panel just
+   * hugs it. Shared by the date/time pickers. */
+  .ui-control-panel-flush {
+    inline-size: auto;
+    padding: 0;
+  }
+
+  .ui-control-inline-affix-pair-affixed {
+    padding-inline-end: var(--control-inline-affix-pair-space-inline-end);
   }
 
   .ui-time-picker-affix {
@@ -1835,12 +1842,12 @@
 @layer components {
   /* MONTH PICKER — the year-nav + 3-column month grid shared by MonthPicker and
    * MonthRangePicker. One rule set for both; they used to hold identical copies. */
-  .ui-month-picker-field {
+  .ui-control-composite-field {
     display: flex;
     inline-size: 100%;
     min-inline-size: 0;
     align-items: center;
-    gap: var(--month-picker-field-space-gap);
+    gap: var(--control-composite-field-space-gap);
     border-radius: var(--control-radius);
     border: 1px solid hsl(var(--input));
     background: hsl(var(--background));
@@ -1850,7 +1857,7 @@
       box-shadow 150ms ease;
   }
 
-  .ui-month-picker-field[data-disabled] {
+  .ui-control-composite-field[data-disabled] {
     pointer-events: none;
     cursor: not-allowed;
     opacity: var(--disabled-opacity);

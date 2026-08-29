@@ -171,6 +171,13 @@
   --control-inline-affix-rest-alpha: 0.7;
   /* Inline room the field reserves so its text never runs under a single affix. */
   --control-inline-affix-space-inline-end: var(--space-9);
+  /* A field parking TWO inline affixes (TimePicker's clear+clock, DatePicker's clear+calendar)
+   * reserves a wider end than the single-affix case. */
+  --control-inline-affix-pair-space-inline-end: 3.5rem;
+  /* COMPOSITE FIELD — the bordered box that wraps two inputs plus a separator (date/month
+   * range pickers) or one input plus affixes. Shared so the four range/picker fields cannot
+   * drift into four slightly different boxes. */
+  --control-composite-field-space-gap: var(--space-2);
   /* The <input type=file> button is a browser-owned box we restyle; it sits one tier below the
    * field so it reads as a control INSIDE the control. */
   --input-file-button-height: 1.75rem;
@@ -235,9 +242,7 @@
   --time-picker-option-radius: var(--radius-md);
   --time-picker-option-font-size: var(--font-size-sm);
   --time-picker-footer-space-inset: var(--space-2);
-  /* This trigger parks TWO affix controls (clear + clock), so it reserves a wider inline end
-   * than the single-affix triggers that read --control-trigger-space-inline-end. */
-  --time-picker-trigger-space-inline-end: 3.5rem;
+
   --time-picker-affix-space-gap: var(--control-inline-affix-space-gap);
 
   /* TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal
@@ -312,7 +317,6 @@
   /* Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so
    * the two panels stay visually consistent when either is retuned. */
   --month-picker-nav-rest-alpha: var(--calendar-nav-rest-alpha);
-  --month-picker-field-space-gap: var(--space-2);
   --month-picker-icon-size: 1rem;
   --month-picker-separator-icon-size: 0.875rem;
 

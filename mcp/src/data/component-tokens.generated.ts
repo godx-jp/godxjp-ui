@@ -879,6 +879,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Inline room the field reserves so its text never runs under a single affix."
   },
   {
+    "name": "--control-inline-affix-pair-space-inline-end",
+    "value": "3.5rem",
+    "description": "A field parking TWO inline affixes (TimePicker's clear+clock, DatePicker's clear+calendar) * reserves a wider end than the single-affix case."
+  },
+  {
+    "name": "--control-composite-field-space-gap",
+    "value": "var(--space-2)",
+    "description": "COMPOSITE FIELD — the bordered box that wraps two inputs plus a separator (date/month * range pickers) or one input plus affixes. Shared so the four range/picker fields cannot * drift into four slightly different boxes."
+  },
+  {
     "name": "--input-file-button-height",
     "value": "1.75rem",
     "description": "The <input type=file> button is a browser-owned box we restyle; it sits one tier below the * field so it reads as a control INSIDE the control."
@@ -1089,14 +1099,9 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "12-hour mode adds an AM/PM column, so the panel is wider."
   },
   {
-    "name": "--time-picker-trigger-space-inline-end",
-    "value": "3.5rem",
-    "description": "This trigger parks TWO affix controls (clear + clock), so it reserves a wider inline end * than the single-affix triggers that read --control-trigger-space-inline-end."
-  },
-  {
     "name": "--time-picker-affix-space-gap",
     "value": "var(--control-inline-affix-space-gap)",
-    "description": "This trigger parks TWO affix controls (clear + clock), so it reserves a wider inline end * than the single-affix triggers that read --control-trigger-space-inline-end."
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
   },
   {
     "name": "--tree-select-list-max-height",
@@ -1346,11 +1351,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--month-picker-nav-rest-alpha",
     "value": "var(--calendar-nav-rest-alpha)",
-    "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
-  },
-  {
-    "name": "--month-picker-field-space-gap",
-    "value": "var(--space-2)",
     "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
   },
   {

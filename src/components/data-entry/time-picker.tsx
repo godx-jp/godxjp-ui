@@ -304,7 +304,7 @@ export function TimePicker({
             aria-controls={open ? dialogId : undefined}
             {...fieldA11y}
             // Two affix buttons + gap need more room than Input's single-icon reserve.
-            className={cn("tabular-nums", showClear && "ui-time-picker-trigger-affixed")}
+            className={cn("tabular-nums", showClear && "ui-control-inline-affix-pair-affixed")}
             trailingIcon={
               <span className="ui-time-picker-affix">
                 {showClear ? (

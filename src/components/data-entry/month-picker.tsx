@@ -88,7 +88,7 @@ export function MonthPicker({
         <div
           data-disabled={disabled ? "" : undefined}
           className={cn(
-            "ui-control ui-month-picker-field",
+            "ui-control ui-control-composite-field",
             "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
             open && "border-ring ring-ring/50 ring-[3px]",
             className,

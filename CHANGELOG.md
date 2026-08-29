@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **DatePicker and DateRangePicker are token-themeable (#319) — 22 literals → 0 across both — and
+  three more shapes moved up to control level.** DatePicker parks the same clear+calendar affix
+  pair TimePicker does, and DateRangePicker uses the same bordered two-input shell as
+  MonthRangePicker, so the reserve, the shell and the flush calendar panel became shared:
+  `--control-inline-affix-pair-space-inline-end` (a field with TWO inline affixes reserves more
+  than one with a single) · `--control-composite-field-space-gap` (the box wrapping two inputs and
+  a separator, now shared by all four range/picker fields so they cannot drift into four slightly
+  different boxes) · `.ui-control-panel-flush` (a popover whose content owns its padding).
 - **Input is token-themeable, and the inside-field affix is now shared (#319) — 15 literals → 0.**
   Input and TimePicker carried a byte-identical affix stack, so that became one control-level set:
   `--control-inline-affix-size` · `--control-inline-affix-icon-size` ·

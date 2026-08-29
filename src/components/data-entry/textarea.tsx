@@ -19,7 +19,16 @@ export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & 
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   (
-    { className, allowClear = false, onClear, variant = "default", value, defaultValue, onChange, ...props },
+    {
+      className,
+      allowClear = false,
+      onClear,
+      variant = "default",
+      value,
+      defaultValue,
+      onChange,
+      ...props
+    },
     ref,
   ) => {
     const { t } = useTranslation();

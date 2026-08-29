@@ -118,18 +118,18 @@ export function DatePicker({
             aria-controls={open ? dialogId : undefined}
             {...fieldA11y}
             // Two 20px buttons + gap need more room than Input's single-icon `pe-9`.
-            className={showClear ? "pe-14" : undefined}
+            className={showClear ? "ui-control-inline-affix-pair-affixed" : undefined}
             trailingIcon={
-              <span className="inline-flex items-center gap-1">
+              <span className="ui-time-picker-affix">
                 {showClear ? (
                   <button
                     type="button"
                     tabIndex={-1}
                     aria-label={t("common.clear") ?? "Clear"}
                     onClick={clear}
-                    className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100"
+                    className="ui-control-inline-affix-action"
                   >
-                    <X className="size-4" aria-hidden="true" />
+                    <X className="ui-control-inline-affix-icon" aria-hidden="true" />
                   </button>
                 ) : null}
                 <PopoverTrigger asChild>
@@ -138,9 +138,9 @@ export function DatePicker({
                     disabled={disabled}
                     tabIndex={-1}
                     aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
-                    className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100"
+                    className="ui-control-inline-affix-action"
                   >
-                    <CalendarIcon className="size-4" aria-hidden="true" />
+                    <CalendarIcon className="ui-control-inline-affix-icon" aria-hidden="true" />
                   </button>
                 </PopoverTrigger>
               </span>
@@ -173,7 +173,7 @@ export function DatePicker({
             id={dialogId}
             role="dialog"
             aria-label={t("dataEntry.datePicker.openCalendar") ?? "Calendar"}
-            className="w-auto p-0"
+            className="ui-control-panel-flush"
             align="start"
             onOpenAutoFocus={(event) => event.preventDefault()}
           >
