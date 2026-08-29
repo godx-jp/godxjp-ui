@@ -117,7 +117,9 @@
   .ui-dropdown-menu-sub-trigger,
   .ui-dropdown-menu-checkbox-item,
   .ui-dropdown-menu-radio-item,
-  .ui-dropdown-menu-shortcut {
+  .ui-dropdown-menu-shortcut,
+  .ui-select-item,
+  .ui-select-label {
     border-radius: var(--menu-item-radius);
     padding-inline: var(--menu-item-space-inline);
     height: var(--menu-item-height);
@@ -199,7 +201,8 @@
 
   .ui-context-menu-separator,
   .ui-menubar-separator,
-  .ui-dropdown-menu-separator {
+  .ui-dropdown-menu-separator,
+  .ui-select-separator {
     margin-block: var(--menu-separator-space-block);
     margin-inline: var(--menu-separator-space-inline);
     height: 1px;

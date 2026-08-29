@@ -1250,3 +1250,80 @@
     opacity: var(--disabled-opacity);
   }
 }
+
+@layer components {
+  /* SELECT — the Radix listbox popup. Its row rhythm, separator and label come from the shared
+   * menu rules in navigation-layout.css (the same surface ContextMenu/Menubar/DropdownMenu use);
+   * only what is genuinely Select's own lives here (#319). */
+  .ui-select-content {
+    position: relative;
+    z-index: var(--overlay-z-index);
+    max-height: var(--select-content-max-height);
+    min-width: var(--menu-content-min-width);
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--popover));
+    color: hsl(var(--popover-foreground));
+    box-shadow: var(--shadow-md);
+  }
+
+  .ui-select-viewport {
+    padding: var(--menu-content-space-inset);
+  }
+
+  /* A listbox row has no leading icon column, so it takes a slightly wider inline inset to read
+   * level with a menu row that does. */
+  .ui-select-item {
+    position: relative;
+    inline-size: 100%;
+    cursor: default;
+    padding-inline: var(--select-item-space-inline);
+    outline: none;
+    user-select: none;
+  }
+
+  .ui-select-item[data-state="checked"] {
+    background: hsl(var(--accent));
+    color: hsl(var(--foreground));
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-select-item[data-highlighted] {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-select-item[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-select-item svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  .ui-select-label {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-select-scroll-button {
+    display: flex;
+    cursor: default;
+    align-items: center;
+    justify-content: center;
+    padding-block: var(--select-scroll-button-space-block);
+  }
+
+  .ui-select-scroll-icon,
+  .ui-select-chevron {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+  }
+
+  .ui-select-chevron {
+    flex-shrink: 0;
+    opacity: var(--control-affix-rest-alpha);
+  }
+}

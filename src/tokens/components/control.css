@@ -194,4 +194,12 @@
   --cascader-result-radius: var(--radius-sm);
   --cascader-result-icon-space-inline-end: var(--space-2);
   --cascader-empty-space-block: var(--space-6);
+
+  /* SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*),
+   * so only what is genuinely its own lives here (#319). */
+  --select-content-max-height: 24rem;
+  --select-scroll-button-space-block: var(--space-1);
+  /* Select rows sit slightly wider than a menu row: a listbox has no leading icon column to
+   * absorb the optical inset, so 2.5 reads level with a menu's 2 + icon. */
+  --select-item-space-inline: 0.625rem;
 }

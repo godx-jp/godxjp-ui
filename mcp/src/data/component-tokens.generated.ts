@@ -979,6 +979,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The flat search result row is denser than a column row — it has no chevron to balance."
   },
   {
+    "name": "--select-content-max-height",
+    "value": "24rem",
+    "description": "SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*), * so only what is genuinely its own lives here (#319)."
+  },
+  {
+    "name": "--select-scroll-button-space-block",
+    "value": "var(--space-1)",
+    "description": "SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*), * so only what is genuinely its own lives here (#319)."
+  },
+  {
+    "name": "--select-item-space-inline",
+    "value": "0.625rem",
+    "description": "Select rows sit slightly wider than a menu row: a listbox has no leading icon column to * absorb the optical inset, so 2.5 reads level with a menu's 2 + icon."
+  },
+  {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
     "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."

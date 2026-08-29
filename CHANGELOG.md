@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Select is token-themeable (#319) — 27 literals → 0, mostly by reusing what already existed.**
+  Select's popup is the same surface ContextMenu/Menubar/DropdownMenu use, so its rows, label and
+  separator join those shared rules rather than getting a fourth private copy; its trailing clear
+  affix matched SearchSelect's calibration exactly, so it reads `--control-affix-*` with no
+  scoping. Only three knobs are genuinely Select's own: `--select-content-max-height` ·
+  `--select-scroll-button-space-block` · `--select-item-space-inline` (a listbox row has no
+  leading icon column, so it takes a slightly wider inline inset to read level with a menu row
+  that does). The popup also stops hard-coding `z-index: 50` and reads `--overlay-z-index`.
 - **DropdownMenu joins the menu family (#319) — 29 literals → 0.** ContextMenu and Menubar were
   already converted and share one row-rhythm rule; DropdownMenu was the only Radix menu surface
   still carrying its whole box as Tailwind literals, so the three drifted apart silently. It now
