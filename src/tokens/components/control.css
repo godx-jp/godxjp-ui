@@ -38,9 +38,9 @@
    * second border. Values preserve the look these controls always had; they are
    * knobs now instead of hand-written box-shadows (styles/focus-ring.css). */
   --toggle-focus-ring-width: 3px;
-  --toggle-focus-ring-opacity: 0.35;
+  --toggle-focus-ring-alpha: 0.35;
   --time-input-focus-ring-width: 3px;
-  --time-input-focus-ring-opacity: 0.3;
+  --time-input-focus-ring-alpha: 0.3;
 
   /* Outline-form gaps — marks where a radius-hugging ring would touch the glyph. */
   --rating-focus-ring-offset: 2px;

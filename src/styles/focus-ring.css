@@ -24,8 +24,8 @@
  *   2. PER COMPONENT (tokens/components/*.css)
  *      A component that genuinely needs a different ring publishes its own
  *      knob and rebinds the local value, e.g.
- *        --toggle-focus-ring-opacity: 0.35;                       (public knob)
- *        .ui-toggle { --focus-ring-opacity: var(--toggle-focus-ring-opacity); }
+ *        --toggle-focus-ring-alpha: 0.35;                       (public knob)
+ *        .ui-toggle { --focus-ring-opacity: var(--toggle-focus-ring-alpha); }
  *      Custom properties inherit, so the rule below picks up the local value at
  *      the element that paints — one formula, per-component tuning, and the
  *      knob stays discoverable in the token file rather than buried in a
@@ -109,23 +109,23 @@
    * hard 2px reads as a second border rather than a focus mark. */
   .ui-toggle {
     --focus-ring-width: var(--toggle-focus-ring-width);
-    --focus-ring-opacity: var(--toggle-focus-ring-opacity);
+    --focus-ring-opacity: var(--toggle-focus-ring-alpha);
   }
 
   /* Time input: same reasoning as Toggle — sits inside a bordered field. */
   .ui-time-input {
     --focus-ring-width: var(--time-input-focus-ring-width);
-    --focus-ring-opacity: var(--time-input-focus-ring-opacity);
+    --focus-ring-opacity: var(--time-input-focus-ring-alpha);
   }
 
   /* Shell chrome: softened so the ring reads as focus, not as a selected item,
    * on the tinted sidebar/topbar grounds. */
   .sb-user {
-    --focus-ring-opacity: var(--sidebar-user-focus-ring-opacity);
+    --focus-ring-opacity: var(--sidebar-user-focus-ring-alpha);
   }
 
   .tb-icon-btn {
-    --focus-ring-opacity: var(--topbar-icon-focus-ring-opacity);
+    --focus-ring-opacity: var(--topbar-icon-focus-ring-alpha);
   }
 
   /* Outline-form offsets — the gap each mark needs. */

@@ -524,7 +524,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
   {
-    "name": "--toggle-focus-ring-opacity",
+    "name": "--toggle-focus-ring-alpha",
     "value": "0.35",
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
@@ -534,7 +534,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
   {
-    "name": "--time-input-focus-ring-opacity",
+    "name": "--time-input-focus-ring-alpha",
     "value": "0.3",
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
@@ -2019,12 +2019,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
-    "name": "--sidebar-user-focus-ring-opacity",
+    "name": "--sidebar-user-focus-ring-alpha",
     "value": "0.45",
     "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
-    "name": "--topbar-icon-focus-ring-opacity",
+    "name": "--topbar-icon-focus-ring-alpha",
     "value": "0.45",
     "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
