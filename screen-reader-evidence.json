@@ -33,12 +33,18 @@
         "title": "Landmarks and page structure",
         "requiredPhases": ["landmark-navigation", "focus-entry", "internal-navigation"],
         "owners": [
+          "data-display/card",
+          "data-display/service-launcher-card",
+          "general/typography",
           "layout/app-shell",
+          "layout/auth-identity",
           "layout/auth-shell",
           "layout/auth-stack",
           "layout/centered-shell",
+          "layout/legal-document-shell",
           "layout/master-detail",
           "layout/page-container",
+          "layout/page-header",
           "layout/resizable",
           "layout/sidebar",
           "layout/split-pane",
@@ -131,6 +137,7 @@
         "title": "Navigation composites",
         "requiredPhases": ["focus-entry", "internal-navigation", "activation"],
         "owners": [
+          "layout/auth-account-summary",
           "layout/breadcrumb",
           "navigation/filter-bar",
           "navigation/menubar",
@@ -182,6 +189,25 @@
           "query/mutation-feedback",
           "query/query-refetch-button"
         ]
+      },
+      {
+        "id": "announced-static-content",
+        "title": "Announced static content",
+        "requiredPhases": ["focus-entry"],
+        "owners": [
+          "charts/compact-bar-trend",
+          "general/logo",
+          "data-display/badge",
+          "data-display/avatar",
+          "data-display/empty-state",
+          "layout/error-surface"
+        ]
+      },
+      {
+        "id": "status-regions",
+        "title": "Loading status regions",
+        "requiredPhases": ["loading-announcement"],
+        "owners": ["feedback/skeleton"]
       }
     ],
     "complexOwners": [
@@ -226,6 +252,54 @@
         "reviewedBy": "Pham Thai Duong",
         "reviewedIn": "https://github.com/godx-jp/godxjp-ui/commit/1fae349",
         "reviewedAt": "2026-07-12T00:00:00Z"
+      },
+      {
+        "target": "layout/flex",
+        "scope": "owner",
+        "reason": "Layout primitive. It renders a bare div whose only job is flex geometry: no role, no name, no state, nothing focusable, and no text of its own. Assistive technology walks straight through it to the children, each of which is its own owner with its own journey.",
+        "reviewedBy": "Fujiwara Satoshi",
+        "reviewedIn": "https://github.com/godx-jp/godxjp-ui/commits/dev",
+        "reviewedAt": "2026-08-19T00:00:00Z"
+      },
+      {
+        "target": "layout/responsive-grid",
+        "scope": "owner",
+        "reason": "Layout primitive. It renders a bare div carrying grid geometry only: no role, no accessible name, no state and nothing focusable. Every announced element inside it belongs to another owner.",
+        "reviewedBy": "Fujiwara Satoshi",
+        "reviewedIn": "https://github.com/godx-jp/godxjp-ui/commits/dev",
+        "reviewedAt": "2026-08-19T00:00:00Z"
+      },
+      {
+        "target": "layout/aspect-ratio",
+        "scope": "owner",
+        "reason": "Layout primitive. It reserves a box of a given ratio and renders no role, name, state or focusable element; screen readers announce only the content a consumer places inside it, which is that content's own owner.",
+        "reviewedBy": "Fujiwara Satoshi",
+        "reviewedIn": "https://github.com/godx-jp/godxjp-ui/commits/dev",
+        "reviewedAt": "2026-08-19T00:00:00Z"
+      },
+      {
+        "target": "layout/separator",
+        "scope": "owner",
+        "reason": "Presentational rule. It renders a separator whose semantics are native and stateless: there is no focus entry, no activation and no value to change, so there is no journey to walk. Announcement of the separator itself is a browser/AT behaviour, not a component contract.",
+        "reviewedBy": "Fujiwara Satoshi",
+        "reviewedIn": "https://github.com/godx-jp/godxjp-ui/commits/dev",
+        "reviewedAt": "2026-08-19T00:00:00Z"
+      },
+      {
+        "target": "layout/auth-divider",
+        "scope": "owner",
+        "reason": "Presentational rule with an optional label, on the same footing as Separator: no role beyond the native separator semantics, nothing focusable, no state. Its label is static text with no journey of its own.",
+        "reviewedBy": "Fujiwara Satoshi",
+        "reviewedIn": "https://github.com/godx-jp/godxjp-ui/commits/dev",
+        "reviewedAt": "2026-08-19T00:00:00Z"
+      },
+      {
+        "target": "layout/auth-footer",
+        "scope": "owner",
+        "reason": "Slot container. It renders wrapper spans plus an aria-hidden middot between items; every announced element in the legal line is consumer-supplied content whose journey belongs to that element's own owner. The component itself contributes nothing to the accessibility tree.",
+        "reviewedBy": "Fujiwara Satoshi",
+        "reviewedIn": "https://github.com/godx-jp/godxjp-ui/commits/dev",
+        "reviewedAt": "2026-08-19T00:00:00Z"
       }
     ],
     "note": "Only actual AT speech capture counts. Axe, DOM assertions and accessibility-tree snapshots are not screen-reader evidence. An owner that is not mapped to a cohort cannot be promoted out of untested: map it in the PR that records its journey."

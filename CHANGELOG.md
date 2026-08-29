@@ -22,6 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **DataTable's #319 rules were trapped in the responsive layer.** The same append mistake that
+  killed 122 tokens hit a stylesheet too: the block targeted `table-layout.css`'s last `}`, which
+  closes `@layer godxjp-ui-responsive` rather than ending it, so a dozen static rules landed in a
+  layer reserved for container-query re-points. Four of them are now scoped through
+  `.ui-data-table-root` — the last layer had been doing their cascade work, and demoting them bare
+  would have shrunk the toolbar/pagination glyphs (`.ui-button svg` outranks a bare class) and
+  re-rounded the loading chips (`.ui-skeleton-block` is imported later).
 - **`--checkbox-checked-background` was completely dead.** Checkbox carried
   `data-[state=checked]:bg-primary` as a utility, and Tailwind v4 orders utilities after
   components, so it outranked `.ui-checkbox[data-state="checked"]` — a service overriding the
