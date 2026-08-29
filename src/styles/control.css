@@ -981,3 +981,163 @@
   inline-size: 0.75rem;
   block-size: 0.75rem;
 }
+
+@layer components {
+  /* SELECT-FAMILY TRAILING AFFIX — the clear ✕ / chevron overlay parked at a trigger's inline
+   * end. Select, SearchSelect and TagInput each repeated the same literal stack (#319); these
+   * are the one shared set of knobs. */
+  .ui-control-affix {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: var(--control-affix-inset-inline-end);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .ui-control-affix-action {
+    pointer-events: auto;
+    display: flex;
+    inline-size: var(--control-affix-action-size);
+    block-size: var(--control-affix-action-size);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--control-affix-action-radius);
+    opacity: var(--control-affix-rest-alpha);
+  }
+
+  .ui-control-affix-action:hover,
+  .ui-control-affix-action:focus-visible {
+    opacity: 1;
+  }
+
+  .ui-control-affix-icon {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+    flex-shrink: 0;
+  }
+
+  /* The chevron is decorative and never interactive, so it keeps the resting weight. */
+  .ui-control-affix-indicator {
+    opacity: var(--control-affix-rest-alpha);
+  }
+
+  .ui-control-trigger-affixed {
+    padding-inline-end: var(--control-trigger-space-inline-end);
+  }
+
+  /* SEARCH-SELECT — Popover + Command combobox. */
+  .ui-search-select-panel {
+    display: flex;
+    flex-direction: column;
+    max-block-size: var(--radix-popover-content-available-height);
+    inline-size: max-content;
+    max-inline-size: min(
+      var(--search-select-panel-max-width),
+      calc(100vw - var(--search-select-panel-viewport-inset))
+    );
+    min-inline-size: var(--radix-popover-trigger-width);
+    padding: 0;
+  }
+
+  .ui-search-select-command {
+    display: flex;
+    min-block-size: 0;
+    flex-direction: column;
+  }
+
+  .ui-search-select-search {
+    flex-shrink: 0;
+    border-block-end: 1px solid hsl(var(--border));
+  }
+
+  /* The search field is the panel's own header, so it drops the standalone input chrome. */
+  .ui-search-select-search-input {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .ui-search-select-search-input:focus-visible {
+    box-shadow: none;
+    outline: none;
+  }
+
+  .ui-search-select-list {
+    max-block-size: none;
+    min-block-size: 0;
+    flex: 1 1 0%;
+    overflow-y: auto;
+    padding: var(--search-select-list-space-inset);
+  }
+
+  /* The consumer's renderOption output — it must be able to truncate inside the row, which is
+   * what min-inline-size:0 buys in a flex child. */
+  .ui-search-select-option-slot {
+    min-inline-size: 0;
+    flex: 1 1 0%;
+  }
+
+  .ui-search-select-option-body {
+    display: flex;
+    min-inline-size: 0;
+    flex: 1 1 0%;
+    align-items: center;
+    gap: var(--search-select-option-space-gap);
+  }
+
+  .ui-search-select-option-text {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+  }
+
+  .ui-search-select-option-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--search-select-option-font-size);
+  }
+
+  .ui-search-select-option-sublabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--search-select-option-sublabel-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-search-select-status {
+    display: flex;
+    align-items: center;
+    gap: var(--search-select-option-space-gap);
+    padding-inline: var(--search-select-status-space-inline);
+    padding-block: var(--search-select-status-space-block);
+    font-size: var(--search-select-status-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-search-select-spinner {
+    inline-size: var(--search-select-spinner-size);
+    block-size: var(--search-select-spinner-size);
+  }
+
+  /* Empty / error occupy the panel alone, so they get a taller centred block. */
+  .ui-search-select-placeholder {
+    padding-inline: var(--search-select-status-space-inline);
+    padding-block: var(--search-select-placeholder-space-block);
+    text-align: center;
+    font-size: var(--search-select-status-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-search-select-placeholder[data-tone="destructive"] {
+    color: hsl(var(--destructive));
+  }
+
+  .ui-search-select-footer {
+    flex-shrink: 0;
+    padding: var(--search-select-footer-space-inset);
+    border-block-start: 1px solid hsl(var(--border));
+  }
+}

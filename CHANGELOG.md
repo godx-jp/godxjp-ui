@@ -22,6 +22,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **SearchSelect is token-themeable, and the select-family trailing affix is now shared (#319).**
+  37 literals → 0. Panel geometry was baked on as arbitrary values
+  (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could not widen the panel or change its
+  viewport inset without forking: `--search-select-panel-max-width` ·
+  `--search-select-panel-viewport-inset` · `--search-select-list-space-inset` ·
+  `--search-select-option-*` · `--search-select-status-*` · `--search-select-placeholder-space-block`.
+  Select, SearchSelect and TagInput each repeated the same `end-2 size-6 rounded-sm opacity-50`
+  affix stack, so that moved to ONE control-level set — `--control-affix-inset-inline-end` ·
+  `--control-affix-action-size` · `--control-affix-action-radius` · `--control-affix-icon-size` ·
+  `--control-affix-rest-alpha` · `--control-trigger-space-inline-end` — which Select and TagInput
+  will adopt as they are converted.
 - **Upload is token-themeable (#319) — 66 literals → 0, the worst file in the library.** All five
   variants (dropzone · button · picture · picture-card · avatar) baked their entire box onto the
   component, so a service could not resize the avatar, dial back the dropzone's 40px inset, or

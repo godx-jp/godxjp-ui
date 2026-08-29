@@ -144,4 +144,35 @@
     --control-height-compact: 2.75rem;
     --control-height-default: 2.75rem;
   }
+
+  /* TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline
+   * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm
+   * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the
+   * literal through several components. One shared set of knobs instead — this is a CONTROL-level
+   * concern, not a per-component one. */
+  --control-affix-inset-inline-end: var(--space-2);
+  --control-affix-action-size: 1.5rem;
+  --control-affix-action-radius: var(--radius-sm);
+  --control-affix-icon-size: 1rem;
+  /* Resting weight of an affix glyph — it must read as secondary until hovered/focused. */
+  --control-affix-rest-alpha: 0.5;
+  /* Room a trigger reserves so its label never runs under the affix. */
+  --control-trigger-space-inline-end: var(--space-9);
+
+  /* SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the
+   * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could
+   * not widen the panel or change the viewport gutter without forking. */
+  --search-select-panel-max-width: 32rem;
+  --search-select-panel-viewport-inset: var(--space-6);
+  --search-select-list-space-inset: var(--space-1);
+  --search-select-footer-space-inset: var(--space-1);
+  --search-select-option-space-gap: var(--space-2);
+  --search-select-option-font-size: var(--font-size-sm);
+  --search-select-option-sublabel-font-size: var(--font-size-xs);
+  --search-select-status-space-inline: var(--space-2);
+  --search-select-status-space-block: var(--space-3);
+  /* Empty/error states sit alone in the panel, so they get a taller, centred block. */
+  --search-select-placeholder-space-block: var(--space-6);
+  --search-select-status-font-size: var(--font-size-sm);
+  --search-select-spinner-size: 1rem;
 }

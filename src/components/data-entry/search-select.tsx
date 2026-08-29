@@ -335,12 +335,12 @@ export function SearchSelect({
               "w-full justify-start font-normal",
               controlOpenRingClass,
               // Reserve trailing room for the single clear-or-chevron overlay rendered below.
-              "pe-9",
+              "ui-control-trigger-affixed",
             )}
           >
             <span
               className={cn(
-                "flex min-w-0 items-center gap-2 text-start",
+                "ui-search-select-option-body text-start",
                 !value && "text-muted-foreground",
               )}
             >
@@ -370,12 +370,12 @@ export function SearchSelect({
           // Full-height list: stretch to the viewport-constrained available height
           // (collisionPadding keeps the breathing room) instead of a 24rem cap that
           // cut the list mid-row.
-          className="flex max-h-[var(--radix-popover-content-available-height)] w-max max-w-[min(32rem,calc(100vw-1.5rem))] min-w-[var(--radix-popover-trigger-width)] flex-col p-0"
+          className="ui-search-select-panel"
         >
-          <Command value={value} shouldFilter={false} className="flex min-h-0 flex-col">
+          <Command value={value} shouldFilter={false} className="ui-search-select-command">
             {/* The search field is FLUSH inside the panel — borderless with a single bottom
                 separator (the panel frames it). A boxed/padded input here double-borders. */}
-            <div className="border-border shrink-0 border-b">
+            <div className="ui-search-select-search">
               <Input
                 autoFocus
                 // The PopoverTrigger is the (single) combobox; this search field is a textbox that
@@ -389,7 +389,7 @@ export function SearchSelect({
                 onChange={(event) => setQuery(event.target.value)}
                 onKeyDown={onKeyDown}
                 placeholder={searchPlaceholder ?? t("dataEntry.searchSelect.search")}
-                className="rounded-none border-0 shadow-none focus-visible:ring-0"
+                className="ui-search-select-search-input"
               />
             </div>
             <div
@@ -401,7 +401,7 @@ export function SearchSelect({
               // The global --command-list-max-height cap (300px) is for bare Command
               // palettes; HERE the popover itself bounds the height (available-height
               // flex column), so the list stretches to fill it instead of stopping short.
-              className="max-h-none min-h-0 flex-1 overflow-y-auto p-1"
+              className="ui-search-select-list"
               onScroll={onScroll}
             >
               {grouped.map((group) => {
@@ -427,18 +427,18 @@ export function SearchSelect({
                     onClick={() => select(option)}
                   >
                     {renderOption ? (
-                      <div className="min-w-0 flex-1">{renderOption(option)}</div>
+                      <div className="ui-search-select-option-slot">{renderOption(option)}</div>
                     ) : (
-                      <div className="flex min-w-0 flex-1 items-center gap-2">
+                      <div className="ui-search-select-option-body">
                         {option.icon ? (
                           <span className="flex shrink-0 items-center" aria-hidden="true">
                             {option.icon}
                           </span>
                         ) : null}
-                        <div className="flex min-w-0 flex-col">
-                          <span className="truncate text-sm">{option.label}</span>
+                        <div className="ui-search-select-option-text">
+                          <span className="ui-search-select-option-label">{option.label}</span>
                           {option.sublabel ? (
-                            <span className="text-muted-foreground truncate text-xs">
+                            <span className="ui-search-select-option-sublabel">
                               {option.sublabel}
                             </span>
                           ) : null}
@@ -460,11 +460,8 @@ export function SearchSelect({
                   render as a disabled, non-focusable option row (the DS empty affordance) so the
                   listbox always owns a child and keyboard nav has nothing to trap on. */}
               {loading ? (
-                <div
-                  role="status"
-                  className="text-muted-foreground flex items-center gap-2 px-2 py-3 text-sm"
-                >
-                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                <div role="status" className="ui-search-select-status">
+                  <Loader2 className="ui-search-select-spinner animate-spin" aria-hidden="true" />
                   {loadingMessage ?? t("dataEntry.searchSelect.loading")}
                 </div>
               ) : error ? (
@@ -480,7 +477,8 @@ export function SearchSelect({
                     role="option"
                     aria-disabled="true"
                     aria-selected={false}
-                    className="text-destructive px-2 py-6 text-center text-sm"
+                    className="ui-search-select-placeholder"
+                    data-tone="destructive"
                   >
                     {errorMessage ?? t("dataEntry.searchSelect.error")}
                   </div>
@@ -490,7 +488,7 @@ export function SearchSelect({
                   role="option"
                   aria-disabled="true"
                   aria-selected={false}
-                  className="text-muted-foreground px-2 py-6 text-center text-sm"
+                  className="ui-search-select-placeholder"
                 >
                   {emptyMessage ?? t("dataEntry.searchSelect.empty")}
                 </div>
@@ -501,7 +499,7 @@ export function SearchSelect({
                 children must be options/groups per APG). */}
             {renderLoadMore && hasMore ? (
               <div
-                className="border-border shrink-0 border-t p-1"
+                className="ui-search-select-footer"
                 // The footer lives inside the cmdk root for layout, but its controls are NOT
                 // cmdk items — stop keydown here so Enter/Space activate the load-more button
                 // natively instead of being hijacked by cmdk's list navigation (a11y: the slot
@@ -524,19 +522,22 @@ export function SearchSelect({
           <button> (invalid HTML → hydration error). The overlay ignores pointer events so a click
           falls through to the trigger to open it; only the clear control re-enables them.
           ONE trailing icon: the clear (×) replaces the chevron while a value is selected. */}
-      <div className="pointer-events-none absolute inset-y-0 end-2 flex items-center">
+      <div className="ui-control-affix">
         {showClear ? (
           <button
             type="button"
             aria-label={clearLabel ?? t("dataEntry.searchSelect.clear")}
             data-testid={optionTestId("clear")}
-            className="pointer-events-auto flex size-6 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
+            className="ui-control-affix-action"
             onClick={clear}
           >
-            <X className="size-4" aria-hidden="true" />
+            <X className="ui-control-affix-icon" aria-hidden="true" />
           </button>
         ) : (
-          <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
+          <ChevronsUpDown
+            className="ui-control-affix-icon ui-control-affix-indicator"
+            aria-hidden="true"
+          />
         )}
       </div>
     </div>

@@ -819,6 +819,96 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
   },
   {
+    "name": "--control-affix-inset-inline-end",
+    "value": "var(--space-2)",
+    "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
+  },
+  {
+    "name": "--control-affix-action-size",
+    "value": "1.5rem",
+    "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
+  },
+  {
+    "name": "--control-affix-action-radius",
+    "value": "var(--radius-sm)",
+    "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
+  },
+  {
+    "name": "--control-affix-icon-size",
+    "value": "1rem",
+    "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
+  },
+  {
+    "name": "--control-affix-rest-alpha",
+    "value": "0.5",
+    "description": "Resting weight of an affix glyph — it must read as secondary until hovered/focused."
+  },
+  {
+    "name": "--control-trigger-space-inline-end",
+    "value": "var(--space-9)",
+    "description": "Room a trigger reserves so its label never runs under the affix."
+  },
+  {
+    "name": "--search-select-panel-max-width",
+    "value": "32rem",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-panel-viewport-inset",
+    "value": "var(--space-6)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-list-space-inset",
+    "value": "var(--space-1)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-footer-space-inset",
+    "value": "var(--space-1)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-option-space-gap",
+    "value": "var(--space-2)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-option-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-option-sublabel-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-status-space-inline",
+    "value": "var(--space-2)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-status-space-block",
+    "value": "var(--space-3)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-placeholder-space-block",
+    "value": "var(--space-6)",
+    "description": "Empty/error states sit alone in the panel, so they get a taller, centred block."
+  },
+  {
+    "name": "--search-select-status-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Empty/error states sit alone in the panel, so they get a taller, centred block."
+  },
+  {
+    "name": "--search-select-spinner-size",
+    "value": "1rem",
+    "description": "Empty/error states sit alone in the panel, so they get a taller, centred block."
+  },
+  {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
     "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."

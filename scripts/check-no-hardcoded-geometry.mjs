@@ -41,9 +41,15 @@ const args = new Set(process.argv.slice(2));
 const UPDATE = args.has("--update");
 const AS_JSON = args.has("--json");
 
-/** Spacing/size utilities carrying a literal scale step. */
+/** Spacing/size utilities carrying a literal SCALE STEP.
+ *
+ * Keyword fills — `w-full`, `min-w-0`, `h-full`, `size-full`, `w-fit`, `w-auto` — are deliberately
+ * NOT matched. They carry no scale step: `w-full` means "fill the parent" and `min-w-0` is the
+ * flexbox truncation idiom. Neither is a constant a service theme would ever retune, so counting
+ * them inflated the debt and pushed toward inventing meaningless classes just to satisfy the
+ * guard. Numeric steps (`p-4`, `h-32`) and t-shirt steps (`max-w-xs`) remain violations. */
 const GEOMETRY =
-  /(?:^|[\s:])((?:p|px|py|pt|pb|pl|pr|ps|pe|m|mx|my|mt|mb|gap|gap-x|gap-y|w|h|min-w|max-w|min-h|max-h|size|z|inset|top|bottom|start|end)-(?:\d+(?:\.\d+)?|px|xs|sm|md|lg|xl|\d?xl|full|fit|auto))(?=$|[\s"'`])/g;
+  /(?:^|[\s:])((?:p|px|py|pt|pb|pl|pr|ps|pe|m|mx|my|mt|mb|gap|gap-x|gap-y|w|h|min-w|max-w|min-h|max-h|size|z|inset|top|bottom|start|end)-(?:\d+(?:\.\d+)?|px|xs|sm|md|lg|xl|\d?xl))(?=$|[\s"'`])/g;
 /** Chrome utilities (radius, elevation, border width, type scale) carrying a literal step. */
 const CHROME =
   /(?:^|[\s:])((?:rounded|shadow|border|text|leading|tracking|opacity)-(?:none|sm|md|lg|xl|\d?xl|full|px|\d+))(?=$|[\s"'`])/g;

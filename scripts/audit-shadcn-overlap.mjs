@@ -79,7 +79,7 @@ const SHADCN = new Set([
 ]);
 // GEOMETRY/CHROME literal scale values -> must become tokens (#44/#45)
 const GEO =
-  /(?:^|[\s:])((?:p|px|py|pt|pb|pl|pr|ps|pe|m|mx|my|mt|mb|gap|gap-x|gap-y|w|h|min-w|max-w|min-h|max-h|size|z|inset|top|bottom|start|end)-(?:\d+(?:\.\d+)?|px|xs|sm|md|lg|xl|\d?xl|full|fit|auto))(?=$|[\s"'`])/g;
+  /(?:^|[\s:])((?:p|px|py|pt|pb|pl|pr|ps|pe|m|mx|my|mt|mb|gap|gap-x|gap-y|w|h|min-w|max-w|min-h|max-h|size|z|inset|top|bottom|start|end)-(?:\d+(?:\.\d+)?|px|xs|sm|md|lg|xl|\d?xl))(?=$|[\s"'`])/g;
 const CHROME =
   /(?:^|[\s:])((?:rounded|shadow|border|text|leading|tracking|opacity)-(?:none|sm|md|lg|xl|\d?xl|full|px|\d+))(?=$|[\s"'`])/g;
 // token-backed = arbitrary var() or a semantic role colour
