@@ -4,6 +4,13 @@ import { render } from "@testing-library/react";
 import { CardTitle } from "../card";
 import { expectNoA11yViolations } from "@/test/a11y";
 
+/**
+ * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
+ * assertion about how the component is painted. What is under test is pass-through: whatever class
+ * the consumer hands in survives `cn()` onto the rendered node.
+ */
+const CONSUMER_CLASS = "text-primary";
+
 describe("CardTitle — semantic heading level (#154)", () => {
   it("defaults to an <h3> (unchanged) so existing usage is untouched", () => {
     const { getByRole } = render(<CardTitle>概要</CardTitle>);
@@ -34,12 +41,12 @@ describe("CardTitle — semantic heading level (#154)", () => {
 
   it("forwards className and other props onto the rendered element", () => {
     const { getByRole } = render(
-      <CardTitle level={2} className="text-primary" id="t1">
+      <CardTitle level={2} className={CONSUMER_CLASS} id="t1">
         X
       </CardTitle>,
     );
     const heading = getByRole("heading", { level: 2 });
-    expect(heading).toHaveClass("text-primary");
+    expect(heading).toHaveClass(CONSUMER_CLASS);
     expect(heading).toHaveAttribute("id", "t1");
   });
 

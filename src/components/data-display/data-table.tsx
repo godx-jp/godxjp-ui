@@ -901,6 +901,11 @@ DataTable.Content = function DataTableContent() {
                     // gains no attribute (see ColumnDefProp.priority).
                     priority={col.priority}
                     data-empty={headerEmpty || undefined}
+                    // The RESOLVED heading alignment, reflected so alignment is assertable and
+                    // themeable at the contract level rather than through whichever text-* utility
+                    // paints it today. Absent (not `"left"`) when the column never asked for one,
+                    // so an ordinary table gains no attribute — same rule as `data-priority`.
+                    data-align={col.headerAlign ?? col.align}
                     aria-sort={
                       isSortable
                         ? isActiveSort
@@ -959,6 +964,7 @@ DataTable.Content = function DataTableContent() {
                     <TableCell
                       key={col.key}
                       priority={col.priority}
+                      data-align={col.align}
                       style={columnWidth(col.width).style}
                       className={cn(
                         cellPadding,
@@ -1107,6 +1113,7 @@ DataTable.Content = function DataTableContent() {
                       <TableCell
                         key={col.key}
                         priority={col.priority}
+                        data-align={col.align}
                         style={columnWidth(col.width).style}
                         className={cn(
                           cellPadding,

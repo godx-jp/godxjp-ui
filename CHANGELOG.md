@@ -94,6 +94,14 @@ static` and fell inline after the children at full opacity instead of resting at
   Tokenizing it earlier in this same release turned a `focus-visible:ring-0` utility into
   `box-shadow: none; outline: none`, leaving keyboard users with no focus affordance inside the
   panel. Only the ring is suppressed now.
+- **Three tests were not brittle but silently vacuous, found while driving utility assertions to
+  zero.** `app-setting-picker` asserted `not.toHaveClass("sm:w-40")` for a class that no longer
+  exists anywhere in `src/` — it could never fail. `badge-status` used
+  `toContain("bg-primary")`, which `bg-primary/10` also satisfies, so the _soft_ pill would have
+  passed the _solid fill_ test. `data-table-align` used `not.toHaveClass("text-end",
+"text-center")`, and jest-dom's multi-name form asserts all are present, so negating it only
+  required one to be missing — a cell wrongly carrying `text-end` passed. All three now assert
+  data attributes, with a positive control where the assertion is a negative.
 - **`check-token-tiers` would have missed the very bug it was written for, on a multi-line
   token.** Its brace walker read a declaration as `buffer.split("\n").pop()`, and this repo wraps
   long values onto the next line (`--shadow-md:` then the value). For such a token the walker read
@@ -149,6 +157,13 @@ static` and fell inline after the children at full opacity instead of resting at
   reach and no class-based guard can see. TreeSelect computed its depth indent as
   `` `${depth * 1.25 + 0.5}rem` `` inline. That one is fixed, so the guard lands at 0 and exists
   to keep it that way; `scale(${scale})` and other genuinely dynamic values are not flagged.
+- **Test assertions on Tailwind utilities: 53 → 0.** Every one now asserts the contract — a
+  `data-*` attribute, a semantic class, or the shipped CSS rule matched against the rendered node
+  via `.matches()`. Three components gained the attribute the assertion needed, which makes the
+  state themeable and assertable at once: DataTable emits `data-align` (only when a column asks
+  for one), Descriptions emits `data-slot`/`data-columns`/`data-label-align`/`data-mono`, and Tabs
+  emits `data-variant` on its root — the list deliberately collapses `card` → `default` (gh#248),
+  so until now no node published which of the three variants the consumer chose.
 - **`check-no-tailwind-class-assertions`** — a ratchet guard for tests that pin a Tailwind utility
   instead of the contract. Sixteen tests broke during this refactor without a single behaviour
   changing, and two were not merely brittle but wrong: `[class*="opacity-0"]` also matches

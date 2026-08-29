@@ -56,6 +56,10 @@ export function Descriptions({
        * still win, and Tailwind v4 layers utilities after components. Defaults unchanged from the
        * historical `gap-x-6` / `gap-y-3`, so no existing consumer's render changes. */}
       <dl
+        data-slot="descriptions"
+        // The grid shape as a CONTRACT: `columns` is the thing a consumer asked for, and it stays
+        // assertable / themeable whichever responsive `grid-cols-*` utilities happen to paint it.
+        data-columns={columns}
         className={cn(
           "grid gap-x-[var(--descriptions-column-gap)] gap-y-[var(--descriptions-row-gap)]",
           colsClass,
@@ -87,8 +91,12 @@ Descriptions.Item = function DescriptionsItem({
 }: DescriptionsItemProps) {
   const { layout, labelAlign } = React.useContext(DescriptionsLayoutContext);
   const spanClass = span === 2 ? "sm:col-span-2" : span === 3 ? "sm:col-span-2 lg:col-span-3" : "";
+  // The EFFECTIVE label alignment, after the vertical guard below. Reflected only when it is the
+  // non-default `end` so an untouched item gains no attribute (the `data-priority` rule).
+  const endAlignedLabel = layout === "horizontal" && labelAlign === "end";
   return (
     <div
+      data-slot="descriptions-item"
       className={cn(
         layout === "horizontal"
           ? // Label beside value — a token-aligned label column so the values line up. The
@@ -104,11 +112,13 @@ Descriptions.Item = function DescriptionsItem({
       )}
     >
       <dt
+        data-slot="descriptions-label"
+        data-label-align={endAlignedLabel ? "end" : undefined}
         className={cn(
           "text-muted-foreground text-xs",
           // `end`-align only ever applies in horizontal layout — same guard `Form` uses, so a
           // vertical label (already above its value) never mistakenly end-aligns (gh#294).
-          layout === "horizontal" && labelAlign === "end" && "text-end",
+          endAlignedLabel && "text-end",
         )}
       >
         {label}
@@ -123,6 +133,10 @@ Descriptions.Item = function DescriptionsItem({
        * companion `--text-sm--line-height`, which the theme never remaps (the gh#260 bug), so
        * dropping it would leave the value inheriting ambient leading. */}
       <dd
+        data-slot="descriptions-value"
+        // `mono` is a typography CONTRACT (IDs / paths / JSON read in the mono face), reflected so
+        // it survives the face moving from a utility to a token.
+        data-mono={mono ? "" : undefined}
         className={cn(
           "text-[length:var(--descriptions-value-font-size)] leading-[var(--descriptions-value-line-height)] break-all",
           mono && "font-mono",

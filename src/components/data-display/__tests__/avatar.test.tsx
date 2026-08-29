@@ -4,6 +4,13 @@ import { render } from "@testing-library/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
 import { expectNoA11yViolations } from "@/test/a11y";
 
+/**
+ * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
+ * assertion about how the component is painted. What is under test is pass-through: whatever class
+ * the consumer hands in survives `cn()` onto the rendered node.
+ */
+const CONSUMER_CLASS = "size-12";
+
 describe("Avatar", () => {
   it("renders the fallback (initials) while the image has not loaded", () => {
     const { getByText, container } = render(
@@ -20,12 +27,12 @@ describe("Avatar", () => {
 
   it("forwards className + arbitrary props to the root", () => {
     const { container } = render(
-      <Avatar className="size-12" data-testid="a">
+      <Avatar className={CONSUMER_CLASS} data-testid="a">
         <AvatarFallback>VB</AvatarFallback>
       </Avatar>,
     );
     const root = container.querySelector('[data-slot="avatar"]');
-    expect(root).toHaveClass("size-12");
+    expect(root).toHaveClass(CONSUMER_CLASS);
     expect(root).toHaveAttribute("data-testid", "a");
   });
 

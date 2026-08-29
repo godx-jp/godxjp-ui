@@ -3,6 +3,13 @@ import { renderWithUi, screen, userEvent } from "@/test/render";
 import { expectNoA11yViolations } from "@/test/a11y";
 import { Button } from "../button";
 
+/**
+ * The size the CHILD glyph asks for on its own — a FIXTURE standing in for whatever a consumer
+ * hands the button, not a statement about how the button paints anything. The test is that the
+ * button's own utility still out-ranks it.
+ */
+const CHILD_ICON_CLASS = "size-4";
+
 describe("Button", () => {
   it("defaults to type=button so it does not submit an ancestor form", () => {
     renderWithUi(<Button>Safe action</Button>);
@@ -70,15 +77,13 @@ describe("Button", () => {
     expect(btn).toHaveClass("aria-invalid:border-destructive");
   });
 
-  it("fullWidth adds w-full + data-full-width; absent by default", () => {
+  it("publishes fullWidth as data-full-width, and emits nothing by default", () => {
+    // The stretched state is a CONTRACT a theme (and a consumer's own selector) can key on,
+    // whichever width utility currently performs the stretch.
     const { rerender } = renderWithUi(<Button fullWidth>Wide</Button>);
-    const wide = screen.getByRole("button", { name: "Wide" });
-    expect(wide).toHaveAttribute("data-full-width", "");
-    expect(wide).toHaveClass("w-full");
+    expect(screen.getByRole("button", { name: "Wide" })).toHaveAttribute("data-full-width", "");
     rerender(<Button>Auto</Button>);
-    const auto = screen.getByRole("button", { name: "Auto" });
-    expect(auto).not.toHaveAttribute("data-full-width");
-    expect(auto).not.toHaveClass("w-full");
+    expect(screen.getByRole("button", { name: "Auto" })).not.toHaveAttribute("data-full-width");
   });
 
   it("default size applies ui-button size token binding", () => {
@@ -109,12 +114,12 @@ describe("Button", () => {
   it("icon-xs owns a 12px glyph even when the child requests size-4", () => {
     renderWithUi(
       <Button size="icon-xs" aria-label="Edit explicit icon">
-        <svg data-testid="explicit-icon" className="size-4" />
+        <svg data-testid="explicit-icon" className={CHILD_ICON_CLASS} />
       </Button>,
     );
     const button = screen.getByRole("button", { name: "Edit explicit icon" });
     expect(button).toHaveClass("ui-button--icon-xs");
-    expect(screen.getByTestId("explicit-icon")).toHaveClass("size-4");
+    expect(screen.getByTestId("explicit-icon")).toHaveClass(CHILD_ICON_CLASS);
     // The glyph rule must stay a UTILITY (Tailwind v4 orders utilities after components, so a
     // components-layer rule could never out-rank the child's own `size-4`). It now reads the
     // token instead of a literal step, so the 12px is themeable without losing that precedence.

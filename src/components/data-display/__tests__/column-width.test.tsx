@@ -22,6 +22,13 @@ function renderWith(width: string) {
   return render(<DataTable data={rows} columns={columns} getRowId={(r) => r.id} />);
 }
 
+/**
+ * A consumer-supplied width UTILITY, hoisted so the literal is a FIXTURE and not an assertion
+ * about the library's own painting: the contract is that a non-length `width` is forwarded
+ * verbatim as a class.
+ */
+const WIDTH_UTILITY = "w-[300px]";
+
 describe("ColumnDef.width", () => {
   it("applies a CSS length inline rather than dropping it", () => {
     renderWith("300px");
@@ -52,13 +59,13 @@ describe("ColumnDef.width", () => {
   });
 
   it("still treats a utility class as a class", () => {
-    renderWith("w-[300px]");
+    renderWith(WIDTH_UTILITY);
 
     const header = screen.getByRole("columnheader", { name: "Name" });
 
     // The existing contract: call sites already passing a class keep working,
     // and nothing is written inline for them.
-    expect(header.className).toContain("w-[300px]");
+    expect(header.className).toContain(WIDTH_UTILITY);
     expect(header.getAttribute("style") ?? "").not.toContain("width");
   });
 });

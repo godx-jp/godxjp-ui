@@ -53,6 +53,11 @@ export function Tabs({
     <TabsPrimitive.Root
       data-slot="tabs"
       data-orientation={orientation}
+      // The variant AS ASKED FOR. The list deliberately collapses `card` into
+      // `data-variant="default"` (its chrome IS the default strip, gh#248), so the root is the
+      // only node that can still say which of the three variants a consumer selected — which is
+      // what a service theme, and a test, need to key on.
+      data-variant={variant}
       orientation={orientation}
       value={value}
       defaultValue={value === undefined ? resolvedDefault : undefined}

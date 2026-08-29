@@ -11,6 +11,13 @@ import { AuthIdentity } from "../auth-identity";
  * requesting-client line — with no page CSS for the centring/rhythm. The mark is decorative: the
  * heading text is the accessible name, so the block is announced once.
  */
+/**
+ * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
+ * assertion about how the component is painted. What is under test is pass-through: whatever class
+ * the consumer hands in survives `cn()` onto the rendered node.
+ */
+const CONSUMER_CLASS = "pb-2";
+
 describe("AuthIdentity", () => {
   it("renders the canonical GoDX identity mark above an h1", () => {
     const { container } = render(<AuthIdentity title="GoDX ID にログイン" />);
@@ -40,9 +47,9 @@ describe("AuthIdentity", () => {
   });
 
   it("merges className onto the root without dropping the canonical class", () => {
-    const { container } = render(<AuthIdentity title="Sign in" className="pb-2" />);
+    const { container } = render(<AuthIdentity title="Sign in" className={CONSUMER_CLASS} />);
     const root = container.querySelector('[data-slot="auth-identity"]')!;
-    expect(root).toHaveClass("ui-auth-identity", "pb-2");
+    expect(root).toHaveClass("ui-auth-identity", CONSUMER_CLASS);
   });
 
   it("has no axe violations, with and without the requester line", async () => {

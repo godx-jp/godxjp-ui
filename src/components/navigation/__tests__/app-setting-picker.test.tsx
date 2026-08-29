@@ -1,8 +1,28 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { describe, expect, it, vi } from "vitest";
 import { render } from "@testing-library/react";
 
 import { AppSettingPicker } from "../app-setting-picker";
-import { renderWithUi, screen, userEvent } from "@/test/render";
+import { cleanup, renderWithUi, screen, userEvent } from "@/test/render";
+import { ruleSelector } from "@/test/css-selector";
+
+const navigationCss = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), "../../../styles/navigation-layout.css"),
+  "utf8",
+);
+
+/**
+ * The shipped rule that gives a locale picker its OWNED per-kind width — selector extracted from
+ * the stylesheet, never retyped. "Hugs its value" means precisely that this rule stops selecting
+ * the trigger, which is a thing `.matches()` can settle and a class name cannot.
+ */
+const perKindWidthSelector = ruleSelector(
+  navigationCss,
+  /\.ui-app-setting-picker-trigger\[data-kind="locale"\] \{\s*\n\s*inline-size:/,
+);
 
 describe("AppSettingPicker", () => {
   it("renders the inline appearance without field-like trigger chrome", () => {
@@ -172,11 +192,20 @@ describe("AppSettingPicker", () => {
     );
     const trigger = screen.getByRole("combobox");
     expect(trigger).toHaveClass("ui-app-setting-picker-compact");
-    expect(trigger).not.toHaveClass("sm:w-40");
-    expect(trigger).toHaveClass("w-auto");
+    // The owned width is GONE: the shipped per-kind rule no longer selects this trigger, so it
+    // hugs its value instead of stretching.
+    expect(trigger.matches(perKindWidthSelector)).toBe(false);
     // Accessible name (localized aria-label) and the visible value are both preserved.
     expect(trigger).toHaveAccessibleName();
     expect(trigger.textContent ?? "").not.toBe("");
+
+    // Positive control — without `compact` the SAME rule does select the trigger, so the `false`
+    // above is the compact opt-out and not a selector that matches nothing anywhere.
+    cleanup();
+    renderWithUi(
+      <AppSettingPicker kind="locale" appearance="labeled" value="ja" onValueChange={vi.fn()} />,
+    );
+    expect(screen.getByRole("combobox").matches(perKindWidthSelector)).toBe(true);
   });
 
   it("compact: still opens and fires onValueChange with localized options", async () => {

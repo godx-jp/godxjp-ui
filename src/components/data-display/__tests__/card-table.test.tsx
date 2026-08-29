@@ -313,11 +313,13 @@ describe("Card", () => {
   it("StatCard color-codes signed deltas and supports inverse semantics", () => {
     const { rerender } = renderWithUi(<StatCard label="Churn" value="4%" delta="-2%" />);
 
-    expect(screen.getByText("-2%")).toHaveClass("text-error-strong");
+    // The TONE the card computed for the delta — the semantic reading of the sign, which is what
+    // `inverse` flips. The colour utility is only how that tone is painted.
+    expect(screen.getByText("-2%")).toHaveAttribute("data-delta-tone", "negative");
 
     rerender(<StatCard label="Churn" value="4%" delta="-2%" inverse />);
 
-    expect(screen.getByText("-2%")).toHaveClass("text-success-strong");
+    expect(screen.getByText("-2%")).toHaveAttribute("data-delta-tone", "positive");
   });
 });
 
@@ -361,21 +363,18 @@ describe("StatCard delta tone", () => {
     const { container } = renderWithUi(<StatCard label="x" value="1" delta="+12%" />);
     const delta = deltaEl(container);
     expect(delta.getAttribute("data-delta-tone")).toBe("positive");
-    expect(delta.className).toContain("text-success-strong");
   });
 
   it("colours a negative delta (-) with the destructive tone", () => {
     const { container } = renderWithUi(<StatCard label="x" value="1" delta="-5%" />);
     const delta = deltaEl(container);
     expect(delta.getAttribute("data-delta-tone")).toBe("negative");
-    expect(delta.className).toContain("text-error-strong");
   });
 
   it("flips delta semantics when inverse is set (lower is better)", () => {
     const { container } = renderWithUi(<StatCard label="x" value="1" delta="+12%" inverse />);
     const delta = deltaEl(container);
     expect(delta.getAttribute("data-delta-tone")).toBe("negative");
-    expect(delta.className).toContain("text-error-strong");
   });
 });
 

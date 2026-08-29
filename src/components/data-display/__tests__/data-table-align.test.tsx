@@ -12,11 +12,14 @@ const columns = [
 ];
 
 describe("DataTable — column alignment", () => {
-  it("applies text-end / text-center per column align (logical)", () => {
+  it("reflects each column's align on its cells, and leaves an unaligned column alone", () => {
     renderWithUi(<DataTable data={rows} columns={columns} getRowId={(r) => r.id} />);
-    expect(screen.getByText("1000").closest("td")).toHaveClass("text-end");
-    expect(screen.getByText("active").closest("td")).toHaveClass("text-center");
-    expect(screen.getByText("Mai").closest("td")).not.toHaveClass("text-end", "text-center");
+    // `data-align` is the contract the cell publishes — a service theme keys on it, and it
+    // survives the logical `text-*` utility that paints it becoming a token.
+    expect(screen.getByText("1000").closest("td")).toHaveAttribute("data-align", "right");
+    expect(screen.getByText("active").closest("td")).toHaveAttribute("data-align", "center");
+    // A column that asked for no alignment gains no attribute at all (the `data-priority` rule).
+    expect(screen.getByText("Mai").closest("td")).not.toHaveAttribute("data-align");
   });
 });
 

@@ -66,7 +66,17 @@ function walk(dir, out = []) {
   return out;
 }
 
-function scan(source) {
+/** Comments are prose, not assertions — a paragraph explaining why an assertion MOVED off a
+ * utility was itself being counted as that assertion. Blanking preserves offsets so nothing
+ * downstream shifts. */
+function stripComments(source) {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "))
+    .replace(/(^|[^:])\/\/[^\n]*/g, (m, p) => p + " ".repeat(m.length - p.length));
+}
+
+function scan(rawSource) {
+  const source = stripComments(rawSource);
   const hits = [];
   // toHaveClass("a", "b") / not.toHaveClass(...)
   for (const m of source.matchAll(/toHaveClass\(([^)]*)\)/g)) {

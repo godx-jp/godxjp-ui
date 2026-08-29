@@ -7,6 +7,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
+import { ruleSelector } from "@/test/css-selector";
 
 /** Prettier wraps long selectors across lines — compare on a whitespace-normalized copy. */
 const navigationCss = readFileSync(
@@ -15,6 +16,27 @@ const navigationCss = readFileSync(
 )
   .replace(/\s+/g, " ")
   .trim();
+
+/** The same file unnormalized — `ruleSelector` anchors on the declaration under the brace. */
+const navigationCssRaw = readFileSync(
+  resolve(process.cwd(), "src/styles/navigation-layout.css"),
+  "utf8",
+);
+
+/**
+ * The two shipped rules that actually implement gh#175, with their selectors taken OUT of the
+ * stylesheet: the root's flexbox shrink floor (what `min-w-0` used to ride along as) and the
+ * strip's width cap plus own-overflow scroll (what `max-w-full` used to). Running them with
+ * `.matches()` proves the rules reach the rendered nodes — a class name only proves a string.
+ */
+const shrinkFloorSelector = ruleSelector(
+  navigationCssRaw,
+  /\[data-slot="tabs"\] \{\s*\n\s*min-inline-size: 0;/,
+);
+const widthCapSelector = ruleSelector(
+  navigationCssRaw,
+  /\[data-slot="tabs-list"\] \{\s*\n\s*max-inline-size:/,
+);
 
 /**
  * Regression coverage for gh#175 — two confirmed Tabs framework defects:
@@ -126,11 +148,16 @@ describe("Tabs — fallback selection skips disabled items (gh#175)", () => {
 
 describe("Tabs — horizontal tablist scrolls instead of clipping long labels (gh#175)", () => {
   it("horizontal tablist (default orientation) is width-bounded, shrinkable and scrolls its own overflow", () => {
-    render(<Tabs items={FIRST_DISABLED} />);
+    const { container } = render(<Tabs items={FIRST_DISABLED} />);
     const tablist = screen.getByRole("tablist");
     expect(tablist).toHaveAttribute("data-orientation", "horizontal");
-    expect(tablist.className).toContain("min-w-0");
-    expect(tablist.className).toContain("max-w-full");
+    // The shrink floor lives on the ROOT: without it the strip's intrinsic width forces every
+    // ancestor wider instead of letting the strip scroll.
+    expect(container.querySelector('[data-slot="tabs"]')!.matches(shrinkFloorSelector)).toBe(true);
+    // …and the cap plus own-overflow scroll are the strip's own rule, token-driven.
+    expect(tablist.matches(widthCapSelector)).toBe(true);
+    expect(navigationCss).toContain("max-inline-size: var(--tabs-list-max-inline-size)");
+    expect(navigationCss).toContain("overflow-x: var(--tabs-list-overflow)");
     expect(tablist.className).toContain("data-[orientation=horizontal]:overflow-x-auto");
   });
 

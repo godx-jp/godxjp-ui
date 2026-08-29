@@ -148,7 +148,9 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
     const inline = resolvedAppearance === "inline";
     // `compact` (gh#217) re-tiers the trigger box to --control-height-sm and drops the picker's
     // owned per-kind width, so a LABELLED footer locale switch hugs its value instead of stretching
-    // to `sm:w-40`. `inline` is already chrome-less, so compact is a no-op there.
+    // to the width its kind would otherwise claim (#319 moved those into
+    // `.ui-app-setting-picker-trigger[data-kind]`). `inline` is already chrome-less, so compact is
+    // a no-op there.
     const isCompact = compact && !inline;
 
     return (
