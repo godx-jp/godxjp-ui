@@ -491,6 +491,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: [],
   },
+  PageContainerHeaderScaleProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
   PageContainerMeasureProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -514,6 +519,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "DensityProp",
       "PageContainerVariantProp",
       {
+        field: "toolbar",
+        local: true,
+        reason:
+          "FIXED chrome band between the page header and the scrolling body (filter strip, status bar, channel workflow rail). Distinct from ExtraProp (header actions, inside the title row) and FooterProp (action bar after the body): it is the only slot that stays OUT of the `fill` scroll viewport while sharing the header/body gutters and measure, so a consumer never hand-lays `position: sticky` page chrome.",
+      },
+      {
         field: "headerLoading",
         local: true,
         reason:
@@ -524,6 +535,12 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason:
           "Header ARRANGEMENT of the title band vs the extra slot below the 640px step (stack | responsive-inline) — orthogonal to PageContainerVariantProp, which selects the page shell layout.",
+      },
+      {
+        field: "headerScale",
+        local: true,
+        reason:
+          "What the page's top row IS — a document title or the surface's own chrome (document | chrome) — which selects the title's type step via --page-title-font-size-chrome. A fourth orthogonal axis: PageContainerVariantProp owns chrome WEIGHT (ghost drops the divider and header pad), headerLayout owns the header ARRANGEMENT, measure owns the inline cap; none of them can say that the h1 is a channel name rather than a headline.",
       },
       {
         field: "measure",
@@ -883,10 +900,26 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["LabelProp"],
   },
+  SidebarBadgeToneProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
   SidebarItemProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["IdProp", "LabelProp", "DisabledProp", "ChildrenProp"],
+    vocabulary: [
+      "IdProp",
+      "LabelProp",
+      "DisabledProp",
+      "ChildrenProp",
+      {
+        field: "badgeTone",
+        local: true,
+        reason:
+          "Emphasis of the row's count pill (neutral | destructive) — an Extract<> subset of the shared ToneProp vocabulary, not a new one. It is `badgeTone` rather than `tone` because the item ALSO has `disabled`/`active` row states: a bare `tone` on a nav row would read as the row's colour, and the axis only ever recolours the badge. Mirrors the existing `badge`/`badgeLabel` pairing on OrgSwitcherOrganization.",
+      },
+    ],
   },
   SidebarRenderItemProp: {
     group: "layout",

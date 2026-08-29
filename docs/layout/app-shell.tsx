@@ -98,6 +98,9 @@ export default function Demo() {
   );
   const [unread, setUnread] = useState(true);
   const [legacyTopbar, setLegacyTopbar] = useState(false);
+  // Bar-less shell: topbar / topbarLeft / topbarRight / logo をすべて渡さない状態。
+  // チャット・メール・IDE のようにページ側が最上段を所有する画面のための構成。
+  const [barless, setBarless] = useState(false);
 
   const sidebar = (
     <Sidebar
@@ -198,22 +201,25 @@ export default function Demo() {
   return (
     <AppShell
       sidebar={sidebar}
-      topbar={legacyTopbar ? undefined : topbar}
+      // barless では 4 スロットすべてが undefined ＝ <header class="app-topbar"> は描画されず、
+      // .app-root に data-topbar="none" が付いてバーの行が 0 になる（900px 以下だけ、
+      // ハンバーガーのためにヘッダーが戻る）。
+      topbar={barless || legacyTopbar ? undefined : topbar}
       logo={
-        legacyTopbar ? (
+        !barless && legacyTopbar ? (
           <Avatar>
             <AvatarFallback>L</AvatarFallback>
           </Avatar>
         ) : undefined
       }
       topbarLeft={
-        legacyTopbar ? (
+        !barless && legacyTopbar ? (
           <Button size="sm" variant="ghost" onClick={() => setLegacyTopbar(false)}>
             Composed topbar を表示
           </Button>
         ) : undefined
       }
-      topbarRight={legacyTopbar ? <Text>Legacy slots active</Text> : undefined}
+      topbarRight={!barless && legacyTopbar ? <Text>Legacy slots active</Text> : undefined}
       sidebarCollapsed={collapsed}
       // Shell-level breadcrumb slot (app-breadcrumb landmark) · distinct from
       // PageContainer's own breadcrumb; here the shell owns the trail.
@@ -242,8 +248,23 @@ export default function Demo() {
               <Bell />
               通知をリセット
             </Button>
-            <Button size="sm" variant="outline" onClick={() => setLegacyTopbar(true)}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setBarless(false);
+                setLegacyTopbar(true);
+              }}
+            >
               レガシースロットを表示
+            </Button>
+            <Button
+              size="sm"
+              variant={barless ? "default" : "outline"}
+              aria-pressed={barless}
+              onClick={() => setBarless((b) => !b)}
+            >
+              {barless ? "トップバーを戻す" : "トップバーなし（チャット型）"}
             </Button>
             <Button size="sm">
               <Plus />
@@ -263,6 +284,17 @@ export default function Demo() {
                 AppShell 所有のモバイルドロワー（トップバー左のハンバーガー → フォーカストラップ付き
                 Sheet · Esc で閉じてトリガーへフォーカス復帰）が navigation を提供する（gh#165）。
                 このデモは mobileNav を渡していないため、同じ Sidebar がドロワーに再利用される。
+              </CardDescription>
+              <CardDescription>
+                「トップバーなし（チャット型）」を押すと topbar / topbarLeft / topbarRight / logo の
+                4 スロットをすべて外した状態になる。バーに置くものが無い画面 （チャット・メール・IDE
+                ＝ ページ自身が最上段を所有する画面）で空のバーを残すと、 48px
+                の固定行＋境界線の上にページヘッダーがもう一段重なるため、AppShell は
+                <code> &lt;header&gt; </code>を描画せず <code>data-topbar=&quot;none&quot;</code>
+                でその行を 0 にする。 900px
+                以下でだけヘッダーはハンバーガー専用として戻る（ドックされたレールが 隠れる幅で
+                navigation を失わせないため）。空の <code>{"topbar={<></>}"}</code>
+                で代用しないこと ― それは 4 スロットが埋まった状態と同じで、バーの行は残る。
               </CardDescription>
             </CardHeader>
           </Card>

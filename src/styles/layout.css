@@ -324,6 +324,17 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* CLOSED rail — `aside={null}`. The `<aside>` element is gone, so the pane is one full-width
+   * column and there is nothing left for the gap to separate. The wrappers stay mounted (that is
+   * what keeps `children` from remounting), so this attribute is the ONLY thing that changes.
+   * The second attribute is deliberate: it lifts the rule above the `[data-aside-width]` presets
+   * in the container queries below, which sit at equal specificity, so a closed pane stays one
+   * column no matter where those blocks end up in source order. */
+  .ui-split-pane[data-aside="closed"][data-aside-width] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
   .ui-resizable-panel-group {
     display: flex;
     min-height: 0;
@@ -412,6 +423,7 @@
    * so the header divider and footer border span the full page width
    * (full-bleed) while their content stays aligned with the body. */
   .ui-page-header,
+  .ui-page-toolbar,
   .ui-page-body,
   .ui-page-footer {
     padding-inline-start: var(--space-page-active-x);
@@ -436,16 +448,21 @@
    * the full compact-gutter surface. The footer is deliberately NOT capped: its border/background
    * is page-level chrome that must span the page when `stickyFooter` pins it. */
   .ui-page-container[data-measure="narrow"] .ui-page-header,
+  .ui-page-container[data-measure="narrow"] .ui-page-toolbar,
   .ui-page-container[data-measure="narrow"] .ui-page-body {
     max-inline-size: var(--page-measure-narrow);
   }
 
   .ui-page-container[data-measure="medium"] .ui-page-header,
+  .ui-page-container[data-measure="medium"] .ui-page-toolbar,
   .ui-page-container[data-measure="medium"] .ui-page-body {
     max-inline-size: var(--page-measure-medium);
   }
 
-  /* flush = full-bleed body (DataTable); header/footer keep their inset. */
+  /* flush = full-bleed body AND toolbar band (DataTable, a full-width filter strip);
+   * header/footer keep their inset. `PageContainer.Inset` re-applies the page gutter to any
+   * padded strip inside either one, so a toolbar's own content can still align with the title. */
+  .ui-page-container--flush .ui-page-toolbar,
   .ui-page-container--flush .ui-page-body {
     padding-inline-start: 0;
     padding-inline-end: 0;
@@ -460,6 +477,21 @@
   .ui-page-container--ghost .ui-page-header {
     border-bottom: none;
     padding-bottom: 0;
+  }
+
+  /* `ghost` is the QUIET chrome variant: it silences the header divider, so it must silence the
+   * toolbar's INHERITED one too — otherwise a ghost page that adds a toolbar would grow a rule
+   * the header itself refuses to draw.
+   *
+   * Inherited, and only inherited. An earlier version hard-set `none` here, which also threw away
+   * an EXPLICIT `--page-toolbar-divider` — so a service could paint the band (ghost deliberately
+   * leaves the ground alone) but could never rule it, and the two knobs disagreed about who ghost
+   * outranks. A chat shell is the case that exposed it: a quiet header, and a workflow band that
+   * has to read as a separate surface from the transcript below it. Re-declaring the property with
+   * a `none` fallback keeps the original guarantee (nothing inherits in) while letting the opt-in
+   * through, which is what the paragraph above always meant. */
+  .ui-page-container--ghost .ui-page-toolbar {
+    border-block-end: var(--page-toolbar-divider, none);
   }
 
   .ui-page-container--ghost {
@@ -530,6 +562,35 @@
     background-image: var(--gradient-hero);
   }
 
+  /* `toolbar` — the FIXED chrome band between the page header and the body: a filter strip, a
+   * status bar, a channel workflow rail. There was no slot for it before, so a page either put
+   * the strip inside the body (where `fill` scrolls it away) or hand-laid `position: sticky` at
+   * the call site — the exact "never hand-lay page chrome" the system forbids.
+   *
+   * `flex: none` is the whole contract: under `fill` the BODY is the scroll viewport (see
+   * .ui-page-container--fill below), so the band is a plain flex item OUTSIDE the scroller and
+   * cannot be squeezed by it. Sticky could not give that — sticky keeps content flowing
+   * BENEATH the pinned box, which is the half-sliced row a hand-rolled strip always shows.
+   *
+   * Chrome is a token, default quiet (rule #44): the band draws NO rule of its own, and its
+   * bottom rule falls back — at the CALL SITE, never bound at :root — to whatever the page
+   * header's divider is, so a service opting into `--page-header-divider` gets a consistent
+   * page chrome in ONE declaration and can still silence just this band with
+   * `--page-toolbar-divider: none`. The inset defaults to 0: the container's
+   * --space-section-active gap already spaces the band from the header and the body.
+   *
+   * The GROUND is a knob too, defaulting to `transparent` so the band looks exactly as it did
+   * before the token existed. Without it the only way to lift the band off the page ground was a
+   * `bg-card` utility at the call site — hand-laid page chrome, which is what this whole slot
+   * exists to abolish, and which cannot be re-themed per tenant. It is the `background`
+   * shorthand, not `background-color`, so a service may equally hand it a gradient. */
+  .ui-page-toolbar {
+    flex: none;
+    padding-block: var(--page-toolbar-pad-block);
+    background: var(--page-toolbar-background);
+    border-block-end: var(--page-toolbar-divider, var(--page-header-divider));
+  }
+
   .ui-page-header-row {
     display: flex;
     flex-direction: column;
@@ -573,6 +634,20 @@
     letter-spacing: var(--letter-spacing-tight);
     line-height: var(--line-height-tight);
     overflow-wrap: anywhere;
+  }
+
+  /* `headerScale="chrome"` — the page's top row is CHROME (a chat channel, a mail thread, an IDE
+   * tab), not a document title, so the `<h1>` takes the body type step. The ELEMENT is untouched:
+   * still an `<h1>`, still the page's one level-1 heading, because the screen-reader outline is
+   * what a page is navigated by — only the type step moves, and only through a token.
+   *
+   * The compound selector's specificity (0,2,0) is load-bearing, not decoration: the 720px block
+   * below re-declares `.ui-page-title` (0,1,0) at the COMPACT DOCUMENT step, which is h2 (18px) —
+   * BIGGER than this. Without out-ranking it, a chrome header would swell on a phone, i.e. exactly
+   * where the height matters most. The responsive step itself is untouched and still governs every
+   * document-scaled page. */
+  .ui-page-container[data-header-scale="chrome"] .ui-page-title {
+    font-size: var(--page-title-font-size-chrome);
   }
 
   /* Compact viewports use a responsive type step, not compact density: body/control text and

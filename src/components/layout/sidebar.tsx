@@ -114,7 +114,17 @@ function SidebarRowContent({
     <>
       {!sub ? <SidebarIcon icon={item.icon} /> : null}
       <span className="sb-label">{item.label}</span>
-      {showBadge ? <span className="sb-badge">{item.badge}</span> : null}
+      {showBadge ? (
+        // `data-tone` is emitted ONLY for the emphasis tone (rule #44: present-when-on,
+        // absent-when-off), so a rail that never sets `badgeTone` renders the exact same node it
+        // always did and no consumer selector has to out-specify a marker meaning "unchanged".
+        <span
+          className="sb-badge"
+          data-tone={item.badgeTone === "destructive" ? "destructive" : undefined}
+        >
+          {item.badge}
+        </span>
+      ) : null}
     </>
   );
 }

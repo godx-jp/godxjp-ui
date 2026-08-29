@@ -84,6 +84,12 @@ export const COMPONENTS: ComponentEntry[] = [
         description: "Action buttons / controls rendered right of the title row.",
       },
       {
+        name: "toolbar",
+        type: "ReactNode",
+        description:
+          'FIXED chrome band between the page header and the body — a filter strip, a status bar, a "channel workflow" rail. It is a SIBLING of the body, not content inside it: with `fill` the body is the scroll viewport, so the band is `flex: none` OUTSIDE the scroller and never scrolls away or gets slid under. Shares the page gutters and the `measure` cap with the header and the body (the three bands line up on both edges), goes full-bleed under variant="flush" (wrap padded strips in PageContainer.Inset), and renders NOTHING when omitted — no wrapper, no gap. Ground, inset and bottom rule are token-owned (--page-toolbar-background, default `transparent`; --page-toolbar-pad-block, default 0; --page-toolbar-divider, falling back to --page-header-divider) — set them in the theme, never with utilities at the call site.',
+      },
+      {
         name: "footer",
         type: "ReactNode",
         description: "Content area pinned below the page body.",
@@ -124,6 +130,13 @@ export const COMPONENTS: ComponentEntry[] = [
         defaultValue: '"stack"',
         description:
           'How the title band and `extra` share the header row BELOW the 640px step. "stack" (default) drops `extra` onto its own full-width line under the subtitle. "responsive-inline" keeps it beside the title at the token-owned --page-header-extra-measure (11rem) and lets the title/subtitle wrap — use it for ONE compact control (a search field, a single primary action) that must stay on the title row at 390px. At >=640px the two arrangements are identical.',
+      },
+      {
+        name: "headerScale",
+        type: '"document" | "chrome"',
+        defaultValue: '"document"',
+        description:
+          'What the page\'s top row IS, which decides the `<h1>`\'s type step. "document" (default) = the row is the page\'s TITLE (a record, a form, a collection, a report): --page-title-font-size (h1, 20px) with the existing responsive step down at 720px; no attribute is emitted, so an existing page is byte-identical. "chrome" = the row is the surface\'s own furniture — a chat channel name, a mail subject line, an IDE tab — naming the thing the user is already INSIDE instead of announcing a document; the h1 takes --page-title-font-size-chrome (--heading-h3 = the 14px body step) at EVERY width, including below 720px where the document-scale step would otherwise pull it back UP. The heading stays an `<h1>` either way — this moves the type step only, never the element, so the screen-reader outline is untouched. A fourth ORTHOGONAL axis: `variant` owns chrome WEIGHT, `headerLayout` the arrangement, `measure` the inline cap; combine `headerScale="chrome"` with `variant="ghost"` for the full quiet chrome header.',
       },
       {
         name: "measure",
@@ -170,6 +183,13 @@ export const COMPONENTS: ComponentEntry[] = [
       "DO: Always wrap every page's content in PageContainer — it is the mandatory page shell. Pass `title` (required, rendered as `<h1>`) for every page; omitting it leaves the page without an accessible heading.",
       "CANONICAL PAGE-HEADER CONTRACT (gh#255): PageContainer's embedded header IS the DXS `PageHeader` — there is deliberately NO separate PageHeader export, so the page header cannot be re-created or nested. It owns breadcrumbs (`breadcrumb`), title (`title`), subtitle/description (`subtitle`), status/meta (`status`), actions (`extra`) and responsive overflow (`headerLayout` + `measure`). Loading/error/denied are compositions of siblings, never hand-rolls: skeleton `title`/`subtitle` content or `SkeletonDetail` body while a detail loads; `ErrorSurface` (from @godxjp/ui/layout) REPLACES the page for denied (403) / not-found (404) / failed (5xx) whole-page states; `Alert.QueryError` / `DataState` own an in-body query failure.",
       "DO: Use the `extra` prop (not a sibling div, not a wrapper) for action buttons or controls that sit right of the title row — e.g. `extra={<Button>新規作成</Button>}`. Use the `footer` prop for a pinned action bar below the body (e.g. Save/Cancel on a form page); combine with `stickyFooter` to pin it to the viewport bottom on scroll.",
+      "DO: Use `toolbar` for any FIXED strip that belongs between the page header and the page content — a filter/segment bar, a status or connection band, a list's bulk-action rail. DON'T put it in `children` (with `fill` the body is the scroller, so it scrolls out of sight) and NEVER hand-lay it with `position: sticky` / a `top-0 z-10` wrapper at the call site: page chrome is the shell's job, and a sticky strip still lets content flow underneath it — the half-sliced row every hand-rolled version produces. It stays out of the scroll viewport, inherits the page gutters and the `measure` cap so it lines up with the title and the body, and is entirely absent from the DOM when the prop is omitted.",
+      "DO: Know the `toolbar` band draws NO bottom rule by default — `--page-toolbar-divider` is unset and falls back to `--page-header-divider` (itself `none`), so a service that opts into the page-header divider gets a consistent band rule in ONE declaration, and `--page-toolbar-divider: none` silences just the band. `variant='ghost'` keeps both quiet.",
+      "DO: Give the `toolbar` band its own SURFACE from the theme when the design separates it from the page ground — `--page-toolbar-background: hsl(var(--card));` declared once (`:root` or a scoped `[data-tenant]`) paints the whole band, page gutters and `measure` cap included, and stays re-themeable per tenant. It is the `background` shorthand, so a gradient works too. The default is `transparent`, i.e. the band looks exactly as it did before the knob existed (rule #44).",
+      "DO: Set `--page-toolbar-pad-block` in the SAME theme declaration that paints or rules the band. The default is `0` and stays `0`: a transparent band has no inside for an inset to breathe, the page's `--space-section-active` gap already separates the band from the header and the body, and under `fill` every pixel of band height comes straight off the scroll viewport the slot exists to protect. Once the band is painted or ruled it DOES have an inside, and `--page-toolbar-pad-block: var(--space-2)` is where that inset belongs. The CALL SITE never sets it — a strip padded at the call site pads only the strip, not the band.",
+      "DON'T: Style the `toolbar` band from the call site. `toolbar={<div className='bg-card py-1.5'>…</div>}` is hand-laid page chrome: the utility paints the STRIP, not the band, so it stops at the content box instead of running the full page width (and full-bleed under `variant='flush'`); it is invisible to per-tenant theming; and it puts geometry the shell owns back into the app. The band's ground, inset and rule are `--page-toolbar-background` / `--page-toolbar-pad-block` / `--page-toolbar-divider` — three theme declarations, zero call-site classes.",
+      "DO: Set `headerScale='chrome'` when the page's top row is CHROME rather than a document title — a chat channel header, a mail thread's subject line, an IDE tab, a conversation view. The `<h1>` drops to the body type step (--page-title-font-size-chrome) at every width, so the header band stops eating the height the content needs: a consumer chat page measured a 61px band with a 24px channel name where the design asked for ~40px at the `sm` step. Pair it with `variant='ghost'` for the full quiet chrome header — ghost also drops the divider and the header's bottom pad — and with `fill` + `toolbar` + `footer`/`stickyFooter` for the canonical chat surface. The heading stays an `<h1>`: this is a type step, never a heading-level downgrade.",
+      "DON'T: Reach for `headerScale='chrome'` just because a title \"looks too big\" on an ordinary document page (a record detail, a form, a collection, a report) — the page title is the document's headline and the h1 step is the system's answer for it; shrinking it there only breaks the type rhythm the rest of the page is measured against. And NEVER override `--page-title-font-size` (or put a `text-sm` / `text-base` utility on the title) at the call site to fake it: that re-themes every page in the subtree, is invisible to the 720px responsive step, and puts page-chrome geometry back in the app. If a service wants a different chrome step, it retunes `--page-title-font-size-chrome` once in its theme.",
       "DO: Use `variant='flush'` when the page body contains a full-bleed component like DataTable. Inside a flush container, wrap any padded strips (Toolbar, intro text) in `<PageContainer.Inset>` to align them with the header. Never add manual `px-*` or `p-*` padding to compensate — use PageContainer.Inset.",
       "DO: Pass `breadcrumb` as an ordered array of `{ label, to? }` objects from root to current page. The last item is automatically rendered without a link and receives `aria-current='page'`; earlier items with `to` become router `<Link>` elements. Never hand-roll a breadcrumb nav inside a PageContainer.",
       "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
@@ -189,10 +209,12 @@ export const COMPONENTS: ComponentEntry[] = [
       "Any deep-nav page in a multi-level admin (e.g. Accounting > Ledger > Journal Entry #42) where a 3-segment breadcrumb trail provides back-navigation without browser history dependence.",
       "A high-density data reconciliation page where an analyst needs to see maximum rows — use `density='compact'` to tighten all spacing across the DataTable, Toolbar, and controls in a single prop.",
       "A chat / messaging detail page where the message list should scroll inside the page and the composer stays pinned at the bottom — use `fill` so the body occupies the full shell height, with `footer={<Composer/>}` + `stickyFooter`. Without `fill` the page would top-pack and the composer would float mid-screen on a tall viewport.",
+      "A Slack-like chat channel, a mail thread, or an IDE-style tab view whose top row is the SURFACE's name rather than a document title — `headerScale='chrome'` (usually with `variant='ghost'`) puts the `<h1>` on the body type step so the header reads as a channel label and the band collapses to roughly the height of one control row, leaving the vertical space to the conversation.",
+      "A chat channel page where a fixed band (channel workflow / pinned-message / connection status) must sit between the page header and the scrolling transcript — `toolbar={<Toolbar>…</Toolbar>}` with `fill` + `footer={<Composer/>}` + `stickyFooter`. The band is outside the scroller, so the transcript never travels under it and the composer stays pinned; a collection page uses the same slot for its filter strip above a full-bleed DataTable (`variant='flush'`).",
     ],
     related: [
       "PageContainer.Inset — use INSIDE a `variant='flush'` PageContainer to re-introduce horizontal padding for strips like Toolbar or intro text that should align with the page header, while the surrounding DataTable stays full-bleed. Not a standalone page shell.",
-      "PageContainer — always use PageContainer for new pages; it supports `children`, `footer`, `variant`, `density`, `stickyFooter`, and `fill`. Legacy code using the old prop names (`description` → `subtitle`, `actions` → `extra`) should be migrated to PageContainer.",
+      "PageContainer — always use PageContainer for new pages; it supports `children`, `toolbar`, `footer`, `variant`, `density`, `stickyFooter`, and `fill`. Legacy code using the old prop names (`description` → `subtitle`, `actions` → `extra`) should be migrated to PageContainer.",
       "AppShell — the outer shell that owns the sidebar/topbar layout grid; PageContainer lives inside AppShell's `children` slot. Do not put AppShell inside PageContainer — the nesting order is AppShell → PageContainer.",
       "SplitPane — use instead of PageContainer when the page body needs a fixed-width aside panel alongside main content (e.g. a detail drawer next to a list). PageContainer has no aside slot; SplitPane fills that gap and can itself be placed inside PageContainer's children.",
     ],
@@ -372,7 +394,8 @@ import { StatCard } from "@godxjp/ui/data-display";
       {
         name: "topbar",
         type: "ReactNode",
-        description: "Full topbar override; else a rail is built from topbarLeft/topbarRight/logo.",
+        description:
+          'Full topbar override; else a rail is built from topbarLeft/topbarRight/logo. Omit ALL FOUR bar slots (topbar, topbarLeft, topbarRight, logo) and there is NO `<header class="app-topbar">` in the DOM at all: the shell publishes `data-topbar="none"` on its root and the bar\'s grid row collapses to zero, for a shell whose PAGE owns the top row. The one exception is the AppShell-owned drawer trigger — at or below 900px the header comes back carrying the hamburger alone, so navigation is never unreachable.',
       },
       {
         name: "topbarRight",
@@ -448,6 +471,8 @@ import { StatCard } from "@godxjp/ui/data-display";
       'DO set `responsiveNavigation="docked"` only when the approved product contract retains its sidebar below 900px. AppShell keeps the same sidebar/footer/active navigation in a token-sized grid track and removes the redundant drawer trigger; never reproduce this with consumer media queries.',
       "DO let the drawer nav own its own inset: AppShell renders `mobileNav` in a Sheet body whose inline padding is the `--app-shell-mobile-nav-inset` token (near-zero by default) instead of the generic 24px sheet chrome inset, so a <Sidebar> in the drawer is not double-padded (its own --sidebar-nav-scroll-padding already insets each row). If a custom `mobileNav` node needs the full chrome inset, set `--app-shell-mobile-nav-inset: var(--space-6)` in the service theme — never patch the drawer with a `[data-slot='sheet-body']` selector in app CSS.",
       "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop only when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — when `topbar` is provided, logo/topbarLeft/topbarRight are ignored entirely.",
+      "DO build a chat / mail / IDE shell by omitting ALL FOUR bar slots (`topbar`, `topbarLeft`, `topbarRight`, `logo`) — a shell whose PAGE owns the top row. AppShell then renders no `<header class='app-topbar'>` and marks its root `data-topbar='none'`, so the bar's grid row collapses to zero and the page header IS the first row of chrome. Keeping an empty bar instead costs a fixed `--app-shell-bar-height` band plus its border and card background, stacking a second row of chrome (~48px + the page header) over exactly the region a transcript or an editor needs most. The mobile drawer survives: at or below 900px the header returns carrying the hamburger alone.",
+      "DO NOT fake the bar-less shell with `topbar={<></>}` (or `topbarLeft={<div />}`, `logo={null}`) — any defined slot counts as bar content, so the `<header>` is still rendered, still paints its border and background, and still eats the grid row. The trigger is the slot being UNDEFINED; pass nothing at all (a conditional slot must resolve to `undefined`, not to an empty node).",
       "DO wire a single `sidebarCollapsed` boolean between AppShell's `sidebarCollapsed` prop and Sidebar's `collapsed` prop — AppShell sets `data-collapsed='true'` on the root div (which CSS reads for width transitions) but does NOT own the collapsed state itself; lift the state and pass it down to both.",
       "DO place breadcrumb content in AppShell's `breadcrumb` prop (renders in the `app-breadcrumb` div inside `<main>` ABOVE children) — do NOT hand-roll a breadcrumb bar as the first child of children, and do NOT put breadcrumbs inside <Sidebar>.",
       "DO NOT nest a second AppShell or AppShell inside AppShell's children — AppShell renders the root `app-root` div; nesting shells breaks the CSS grid layout.",
@@ -460,6 +485,7 @@ import { StatCard } from "@godxjp/ui/data-display";
       "App-level footer (e.g. version/build info, compliance notice): pass a <footer> node to AppShell's `footer` prop — it renders outside `<main>` so it stays pinned below the scroll area.",
       "Rapid prototype or internal tool where you want a branded shell with minimal topbar: skip the `topbar` prop entirely and use `logo`, `topbarLeft`, `topbarRight` to build the rail declaratively without instantiating <Topbar>.",
       "Breadcrumb-aware shell: pass a <Breadcrumb items={…}> node to AppShell's `breadcrumb` prop so the breadcrumb strip appears above all page content without each page having to render it separately.",
+      "Chat / mail / IDE shell: a channel rail in `sidebar`, no bar slots at all, and a <PageContainer fill toolbar={…} footer={<Composer/>} stickyFooter> as children — the page's own header is the top row and the shell reserves no band above it, while the 900px drawer still reaches the channel list.",
     ],
     related: [
       "AppShell — opinionated wrapper that composes AppShell + a frozen default Topbar in three props (menu, children, breadcrumb). Use AppShell for quick scaffolding when the default GodX product chip and no-op search/notification handlers are acceptable; switch to AppShell directly the moment you need a custom entity switcher, real onSearchOpen, user slot, or any topbar configuration.",
@@ -732,7 +758,7 @@ export function MyPage() {
         type: "SidebarSectionProp[]",
         required: true,
         description:
-          "Ordered list of nav sections. Each section has an optional string label and a required items array of SidebarItemProp.",
+          'Ordered list of nav sections. Each section has an optional string label and a required items array of SidebarItemProp. A row\'s count pill is `item.badge` (CONTENT ONLY — a number, a string, "9+"; never a <Badge> element, which would nest a pill inside the pill the row already draws) and its emphasis is `item.badgeTone`: "neutral" (default, the quiet unread pill) or "destructive" (the count is addressed to the user — an @mention, a DM, a failure waiting on them).',
       },
       {
         name: "onSelect",
@@ -801,6 +827,8 @@ export function MyPage() {
       "DO: Rely on route-synchronized group expansion — a group OPENS automatically whenever `activeId` moves to one of its children (e.g. after a deep-link navigation), revealing the newly-active child; users can still collapse/expand manually.",
       "DO: Theme the nav ICON and the row/label SEPARATELY with tokens (gh#228) — the icon reads `--sidebar-nav-icon-foreground` (+ `-hover-`/`-active-`/`-disabled-` variants) and the row/label reads `--sidebar-nav-item-foreground` (+ `-hover-`/`-disabled-`). Defaults are unchanged (both = `hsl(var(--muted-foreground))`, hover/active = `hsl(var(--foreground))`), so setting `--sidebar-nav-icon-foreground: hsl(var(--foreground))` in your theme is all it takes to get canonical darker 16px icons beside muted labels. NEVER write a page-local `.sb-nav-item svg { color: … }` rule and never re-tint `--muted-foreground` globally to fix sidebar icons.",
       "DO: Give every item an `icon` — it is required by SidebarItemProp and by the canonical rail (the collapsed mode is icon-only). An item whose data arrives without one no longer crashes the shell; it renders an EMPTY 16px icon slot so the row keeps its geometry and label column, but it reads as a hole in the rail.",
+      "DO: Distinguish an UNREAD count from one ADDRESSED TO THE USER with `item.badgeTone` — 'neutral' (the default, the pill unchanged) versus 'destructive' for an @mention, a direct message or a failure awaiting them. It emits `data-tone=\"destructive\"` on the existing `.sb-badge` and swaps two colour tokens (`--sidebar-badge-destructive-background` / `-foreground`); the pill's min-width, radius, inline pad and font size are shared by both tones, so mention rows and unread rows stay aligned in the same column. Retune all four `--sidebar-badge-*` knobs in your theme rather than styling the pill.",
+      "DON'T: Put a `<Badge>` (or anything else that draws its own pill) inside `item.badge` to colour a count — the row ALREADY wraps whatever you pass in a `.sb-badge` pill, so you get two nested pills with two borders (measured: a 37.11x19.14 `.sb-badge` wrapping a 25.11x19.14 `<Badge>`). Pass the CONTENT only (`badge: 3`, `badge: '9+'`) and say what it MEANS with `badgeTone`.",
       "DON'T: Change icon SIZE or row geometry through these colour knobs — icon size stays `--sidebar-nav-icon-size` (16px) and row geometry stays `--sidebar-nav-item-height` / `--sidebar-nav-item-gap` / `--sidebar-nav-item-padding-x`. The active row's fill/label keep `--sidebar-item-active-background` / `--sidebar-item-active-foreground`.",
       "DON'T: Manage collapse state inside the Sidebar — it is stateless. Hoist the boolean to your shell/page state and pass it down via both AppShell.sidebarCollapsed and Sidebar.collapsed.",
       "DON'T: Nest children more than one level deep — only top-level items can have children; grandchild items are not rendered.",
@@ -811,6 +839,7 @@ export function MyPage() {
       "Multi-tenant SaaS where onProductClick opens an entity/legal-entity switcher sheet and product.role shows the active tenant name beneath the product logo.",
       "Any app using AppShell where navigation must degrade gracefully to an icon-only rail on narrow viewports or via a user toggle in the Topbar.",
       "Apps with infrequent-access admin pages (Users, Roles, Password) grouped in a dedicated section that appears below primary operations sections.",
+      "A chat / messaging rail listing channels, where most rows carry a neutral unread count and only the channels that @mentioned the user carry `badgeTone: 'destructive'` — the rail answers \"does anything need me personally?\" at a glance, without a second pill or a hand-styled dot.",
     ],
     related: [
       "AppShell — the shell that hosts Sidebar in its sidebar slot and owns the sidebarCollapsed layout grid; always compose Sidebar inside AppShell, not standalone in a page.",
@@ -1121,22 +1150,26 @@ import { PanelLeftClose, Search } from "lucide-react";
       { name: "children", type: "ReactNode", required: true, description: "Main (left) content." },
       {
         name: "aside",
-        type: "ReactNode",
+        type: "ReactNode | null",
         required: true,
-        description: "Aside (right) panel content.",
+        description:
+          "Aside (trailing) panel content. `null` means CLOSED: no `<aside>` element is rendered, the grid drops to one full-width column and the gap goes with it. Closing through this prop — instead of dropping SplitPane at the call site — keeps `children` mounted, because the wrappers stay in place and the main column keeps its position in the React tree.",
       },
       {
         name: "asideWidth",
-        type: '"sm" | "md"',
+        type: '"sm" | "md" | "lg"',
         defaultValue: '"md"',
-        description: "Width preset for the aside column.",
+        description:
+          "Width preset for the aside rail: sm 20rem, md 22rem, lg 30rem. `lg` is for a rail that carries a panel rather than a list, and it holds off splitting until the pane is 64rem wide so the main column stays the wider of the two.",
       },
     ],
     usage: [
       "DO: pass all right-panel content via the `aside` prop — it renders inside a semantic `<aside>` element at a fixed rem width (sm=20rem, md=22rem). The `children` prop fills the main `1fr` column. Both accept any ReactNode.",
       'DO: choose `asideWidth="sm"` for compact detail panels (filters, quick stats, key-value summaries) and the default `asideWidth="md"` for richer panels (forms, timelines, long metadata lists).',
       "DO: wrap SplitPane inside `PageContainer` or `PageContainer.Inset` — SplitPane provides no page padding of its own. It is a grid primitive, not a page scaffold.",
-      "DON'T: expect two columns below 1080px. Below that breakpoint SplitPane stacks to a single column (main on top, aside below). Never use it for layouts that must remain side-by-side on tablet or mobile — use CSS Grid or `ResponsiveGrid` instead.",
+      "DO: close a collapsible rail with `aside={null}` — a Slack-style thread, a Linear-style detail panel — rather than swapping `<SplitPane aside={<Thread />}>{page}</SplitPane>` for a bare `{page}`. Both look the same on screen; only the prop keeps `children` mounted. The conditional swap changes the DEPTH of `{page}` in the React tree, so React remounts it: measured in a consumer as a message list jumping from scrollTop 400 to the bottom the instant a thread opened, losing the reader's place and any component state below it.",
+      'DON\'T: leave `SplitPane` mounted with an empty `aside={<div />}` to avoid that remount — an empty aside still reserves its rail, leaving a blank 20-30rem column. `aside={null}` removes the element AND the column (the pane sets `data-aside="closed"` on itself, so the collapse is one CSS rule, not a call-site width override).',
+      "DON'T: expect two columns below 48rem OF THE PANE'S OWN WIDTH (64rem for `asideWidth=\"lg\"`). The split is a CSS container query on the pane, not a viewport media query (gh#165 replaced the old 1080px viewport breakpoint), so a narrow embedded pane on a large screen correctly stays single-column and a wide pane on a small screen still splits. Below the threshold it stacks (main on top, aside below); for layouts that must stay side-by-side at any width use CSS Grid or `ResponsiveGrid`.",
       "DON'T: add a CSS `overflow: hidden` or fixed height on the SplitPane wrapper; both columns carry `min-width: 0` to handle overflow correctly, and the grid uses `minmax(0, 1fr)` — adding external constraints will break the overflow contract.",
       "DON'T: hand-roll a two-column div layout with flexbox or CSS Grid when SplitPane already ships — that duplicates the responsive breakpoint logic and the semantic `<aside>` element.",
     ],
@@ -1157,6 +1190,11 @@ import { PanelLeftClose, Search } from "lucide-react";
 
 <SplitPane aside={<DetailPanel />} asideWidth="sm">
   <MainContent />
+</SplitPane>
+
+// Collapsible rail — closing with \`null\` does NOT remount <MessageList />.
+<SplitPane asideLabel="Thread" aside={threadOpen ? <Thread /> : null}>
+  <MessageList />
 </SplitPane>`,
     storyPath: "layout/SplitPane.stories.tsx",
     rules: [24],
@@ -4247,7 +4285,7 @@ export function PrioritySelect({ value, onValueChange }) {
       },
     ],
     usage: [
-      "DO reach for `variant=\"ghost\"` ONLY when a parent surface already draws the box and owns focus — the composer Card, an inline edit cell. A standalone field keeps the default: without its own border it reads as plain text, not something you can type into.",
+      'DO reach for `variant="ghost"` ONLY when a parent surface already draws the box and owns focus — the composer Card, an inline edit cell. A standalone field keeps the default: without its own border it reads as plain text, not something you can type into.',
       "DO always wrap Textarea in FormField when it appears in a form — FormField clones aria-describedby, aria-required, and aria-invalid onto the child, giving error/helper announcements and screen-reader labelling for free. Pass matching id props to both.",
       "DO use the godx-ui Textarea (`import { Textarea } from '@godxjp/ui/data-entry'`) — never a raw `<textarea>`. The component applies the `ui-control-multiline` token class that picks up density, focus-ring, and border tokens from the design system.",
       "DO control the value with `value` + `onChange` in React-managed forms (e.g. Inertia `useForm`). Textarea is a plain `forwardRef` over the native element so it accepts all standard `HTMLTextAreaElement` attributes — `rows`, `maxLength`, `disabled`, `name`, `placeholder`, `readOnly` all pass through directly.",
@@ -6742,14 +6780,14 @@ export function AccountMapping() {
         name: "triggerSize",
         type: '"default" | "md" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg"',
         description:
-          "`variant=\"button\"` only — size of the visible trigger, forwarded to Button. An icon size renders it icon-only and moves the label to `aria-label`: a 32px square beside other icon buttons rather than a 147px labelled one that outweighs them.",
+          '`variant="button"` only — size of the visible trigger, forwarded to Button. An icon size renders it icon-only and moves the label to `aria-label`: a 32px square beside other icon buttons rather than a 147px labelled one that outweighs them.',
       },
       {
         name: "triggerVariant",
         type: '"default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link"',
         defaultValue: '"outline"',
         description:
-          "`variant=\"button\"` only — visual weight of the visible trigger, forwarded to Button. Default `outline` suits a standalone form field. Pass `ghost` when the trigger sits in a toolbar row beside other icon buttons — inside a chat composer, say — where a bordered square reads as the odd one out.",
+          '`variant="button"` only — visual weight of the visible trigger, forwarded to Button. Default `outline` suits a standalone form field. Pass `ghost` when the trigger sits in a toolbar row beside other icon buttons — inside a chat composer, say — where a bordered square reads as the odd one out.',
       },
     ],
     usage: [

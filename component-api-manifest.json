@@ -7922,6 +7922,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "headerScale",
+          "origin": "owned",
+          "required": false,
+          "type": "PageContainerHeaderScaleProp | undefined",
+          "values": ["document", "chrome"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "linkComponent",
           "origin": "owned",
           "required": false,
@@ -7973,6 +7981,14 @@
           "name": "title",
           "origin": "owned",
           "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "toolbar",
+          "origin": "owned",
+          "required": false,
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]

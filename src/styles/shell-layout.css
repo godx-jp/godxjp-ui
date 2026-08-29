@@ -39,6 +39,40 @@
       "sidebar footer";
   }
 
+  /* NO TOP BAR AT ALL — `topbar`, `topbarLeft`, `topbarRight` and `logo` all undefined. AppShell
+   * renders no `<header class="app-topbar">` in that state (the mobile drawer trigger is the one
+   * exception, below) and publishes it as ONE attribute here, so the geometry is decided by the
+   * grid element itself rather than by `:has()` on whatever the consumer nested inside.
+   *
+   * The row has to go with the header. An empty --app-shell-bar-height track still costs a fixed
+   * 48px, and the header still painted a bottom border over hsl(var(--card)) — so a chat / mail /
+   * IDE shell, whose PAGE header is the top row, showed two rows of chrome (~48 + ~60px) over
+   * exactly the region that needs the height most.
+   *
+   * `auto`, not a `0` literal, is what makes one attribute enough for every branch: an absent row
+   * measures 0, a `display:none` header measures 0, and at narrow widths — where the header comes
+   * back to carry the hamburger — the row sizes itself from that header's own min-height. So the
+   * breakpoint block needs no restatement of these rows, which is the trap this file has already
+   * paid for once: the deleted 768px block re-declared grid-template-rows with a `3rem` literal
+   * and defeated --app-shell-bar-height below 768px only (see the note on the one @media block).
+   * `[data-topbar-span="full"]` re-declares grid-template-AREAS only, so it inherits this row
+   * template untouched and its named-but-empty "topbar topbar" row is 0 as well. */
+  .app-root[data-topbar="none"] {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  /* The one thing that may still live in a bar-less shell: AppShell's OWN hamburger. Below 900px
+   * the docked sidebar is hidden, and dropping the bar there too would leave the shell with no
+   * reachable navigation at all — a worse failure than the double chrome above (gh#165). So when a
+   * drawer exists the header is still rendered, carrying the trigger and nothing else, and it is
+   * THIS rule, not the empty row, that keeps it off the wide layout: `display:none` removes its
+   * border, its background and its height together. The min-height is inert here and load-bearing
+   * at narrow widths, where it is the only thing giving the `auto` row a height. */
+  .app-root[data-topbar="none"] > .app-topbar {
+    display: none;
+    min-height: var(--app-shell-bar-height);
+  }
+
   .app-sidebar {
     grid-area: sidebar;
     display: flex;
@@ -672,6 +706,16 @@
       padding-inline: var(--app-shell-bar-inset-compact);
     }
 
+    /* Bar-less shell (data-topbar="none") at narrow widths: the bar comes back for the hamburger
+     * ALONE — the only route to navigation once the docked rail is hidden. The `auto` row picks up
+     * its height from the header's min-height, so no grid-template-rows is restated here, and none
+     * may be: the one-breakpoint guard forbids a rows declaration inside this block precisely
+     * because the last one hard-coded 3rem. Docked mode never reaches this rule — it renders no
+     * drawer, so a bar-less docked shell has no header to show. */
+    .app-root[data-topbar="none"] > .app-topbar {
+      display: flex;
+    }
+
     .app-topbar-left:has(.app-mobile-sidebar-trigger) {
       display: flex;
     }
@@ -1052,18 +1096,34 @@
     white-space: nowrap;
   }
 
+  /* The nav row's count pill. Its COLOUR is a knob pair, and the resting values are exactly the
+   * literals it carried before (rule #44/#45) — `initial` at the token tier so the role defaults
+   * re-resolve under a scoped theme, resolved here at the call site. Before the knobs the only
+   * way to emphasise a row was to nest a `<Badge>` INSIDE `badge`, which produced two stacked
+   * pills: a 37.11×19.14 `.sb-badge` wrapping a 25.11×19.14 `<Badge>` with its own border. */
   .sb-badge {
     display: inline-flex;
     min-width: 1.125rem;
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-pill);
-    background: hsl(var(--secondary));
-    color: hsl(var(--muted-foreground));
+    background: var(--sidebar-badge-background, hsl(var(--secondary)));
+    color: var(--sidebar-badge-foreground, hsl(var(--muted-foreground)));
     font-size: var(--sidebar-badge-font-size);
     font-weight: var(--font-weight-medium);
     line-height: 1.2;
     padding-inline: 0.375rem;
+  }
+
+  /* `badgeTone="destructive"` — the count is ADDRESSED TO YOU (an @mention, a direct message),
+   * not merely unread. Present-when-on (rule #44): a neutral row emits no `data-tone` at all, so
+   * this rule cannot reach it and the default pill is byte-identical. GEOMETRY IS UNTOUCHED — the
+   * tone moves two colours and nothing else, which is the whole point of the axis: the row's
+   * height, the pill's radius and its 0.375rem inline pad stay on the base rule, so a mention row
+   * and an unread row still line up in the same column. */
+  .sb-badge[data-tone="destructive"] {
+    background: var(--sidebar-badge-destructive-background, hsl(var(--destructive)));
+    color: var(--sidebar-badge-destructive-foreground, hsl(var(--destructive-foreground)));
   }
 
   .sb-footer {

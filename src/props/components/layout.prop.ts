@@ -26,6 +26,7 @@ import type {
   ActionProp,
   IconProp,
   HeadingLevelProp,
+  ToneProp,
 } from "../vocabulary";
 import type { EmptyStateToneProp } from "./data-display.prop";
 
@@ -53,6 +54,23 @@ export type PageContainerPresetProp = "default" | "admin-collection";
  */
 export type PageContainerMeasureProp = "default" | "narrow" | "medium";
 
+/**
+ * What the page's top row IS — the question that decides its type step, not how big you want it.
+ *
+ * `document` (default) — the row is the page's TITLE: a record, a form, a collection, a report.
+ * The `<h1>` takes `--page-title-font-size` and the existing responsive step down at 720px.
+ *
+ * `chrome` — the row is the surface's own furniture: a chat channel name, a mail subject line, an
+ * IDE tab, a conversation header. It names the thing you are already inside rather than announcing
+ * a document, so it takes the body type step (`--page-title-font-size-chrome`) and the header band
+ * stops competing with the content underneath. Orthogonal to `PageContainerVariantProp`: `ghost`
+ * owns the page's chrome WEIGHT (no divider, no header bottom pad), this owns what the title MEANS
+ * — a chat page usually wants both, a quiet document feed wants only `ghost`.
+ *
+ * The `<h1>` stays an `<h1>` either way; only the type step moves, and only via a token.
+ */
+export type PageContainerHeaderScaleProp = "document" | "chrome";
+
 /** @see PageContainer */
 export type PageContainerProp = {
   title: TitleProp;
@@ -76,6 +94,18 @@ export type PageContainerProp = {
    */
   headerLoading?: boolean;
   extra?: ExtraProp;
+  /**
+   * FIXED chrome band between the page header and the scrolling body — a filter strip, a status
+   * bar, a "channel workflow" rail. It is a first-class page-chrome slot precisely because the
+   * only alternative was hand-laying `position: sticky` at the call site (which the design system
+   * forbids) or putting the strip inside the body, where it scrolls away. Under `fill` the body
+   * IS the scroll viewport, so this band is a plain `flex: none` sibling OUTSIDE it — content can
+   * never travel underneath it the way it does under a sticky box. Shares the page gutters and
+   * the `measure` cap with the header and the body, so the three bands line up on both edges; its
+   * inset and bottom rule are token-owned (`--page-toolbar-pad-block` / `--page-toolbar-divider`).
+   * Omit it and NOTHING is rendered — no wrapper element, no gap.
+   */
+  toolbar?: ReactNode;
   footer?: FooterProp;
   breadcrumb?: BreadcrumbProp;
   /**
@@ -104,6 +134,22 @@ export type PageContainerProp = {
    * `--page-header-extra-measure`. At >=640px both arrangements are identical.
    */
   headerLayout?: PageContainerHeaderLayoutProp;
+  /**
+   * Whether the page's top row is a DOCUMENT TITLE or the surface's own CHROME. Defaults to
+   * `document` — the historical page, byte-identical (no attribute is emitted at all). Pass
+   * `chrome` when the row names the thing the user is already inside rather than announcing a
+   * document: a chat channel, a mail thread, an IDE tab. The `<h1>` then takes the body type step
+   * (`--page-title-font-size-chrome`) at EVERY width — including below 720px, where the
+   * document-scale responsive step would otherwise pull it back UP — so the header band stops
+   * eating the height the conversation needs (measured in a consumer chat page: a 61px band with a
+   * 24px name, against a design that wanted ~40px at the `sm` step).
+   *
+   * It is a type-step axis only: the heading stays an `<h1>`, so the screen-reader outline is
+   * unchanged. Compose it with `variant="ghost"` for the full quiet chrome header (ghost drops the
+   * divider and the header's bottom pad); the two are separate props because chrome WEIGHT and
+   * what the title MEANS are separate questions.
+   */
+  headerScale?: PageContainerHeaderScaleProp;
   /**
    * Bounded page measure shared by the header and the body. Defaults to `default` — no cap, the
    * historical fluid page. `narrow` (624px surface) / `medium` (720px surface) cap BOTH bands to
@@ -571,6 +617,23 @@ export type SidebarProductProp = {
   color?: string;
 };
 
+/**
+ * What a nav row's count MEANS — a subset of the shared `ToneProp` vocabulary, not a palette.
+ *
+ * `neutral` (default) — a plain count: unread items, pending rows, queued jobs. The pill keeps the
+ * quiet `--sidebar-badge-background` / `-foreground` pair it always had.
+ *
+ * `destructive` — the count is ADDRESSED TO THE USER and the rail should pull the eye: an
+ * @mention, a direct message, a failing job awaiting them. Reads the
+ * `--sidebar-badge-destructive-*` pair.
+ *
+ * Deliberately TWO values, not the whole `ToneProp` union: a navigation rail answers one question
+ * about a count — "does this need me personally?" — and a five-colour rail is decoration, not
+ * information. Colour ONLY: the pill's geometry is shared, so a mention row and an unread row stay
+ * aligned in the same column.
+ */
+export type SidebarBadgeToneProp = Extract<ToneProp, "neutral" | "destructive">;
+
 /** @see Sidebar */
 export type SidebarItemProp = {
   id: string;
@@ -583,7 +646,22 @@ export type SidebarItemProp = {
    * `--sidebar-nav-icon-foreground` (see {@link SidebarProp}).
    */
   icon: ComponentType<SVGProps<SVGSVGElement>>;
+  /**
+   * Count/status affix rendered in the row's `.sb-badge` pill. Pass the CONTENT ONLY — a number, a
+   * string, `"9+"`. Never a `<Badge>`: the row already IS a badge, so nesting one produces two
+   * stacked pills (measured: a 37.11×19.14 `.sb-badge` wrapping a 25.11×19.14 `<Badge>` with its
+   * own border). To change what the count MEANS, use {@link SidebarItemProp.badgeTone}.
+   */
   badge?: ReactNode;
+  /**
+   * Emphasis of `badge`. Defaults to `neutral` — the historical pill, byte-identical (no attribute
+   * is emitted at all). Pass `destructive` when the count is addressed to the user rather than
+   * merely unread: an @mention, a direct message, a failure waiting on them. It moves two colour
+   * tokens and nothing else, so mention rows and unread rows still line up.
+   *
+   * Ignored when `badge` is absent, and on the collapsed rail (which hides `.sb-badge` entirely).
+   */
+  badgeTone?: SidebarBadgeToneProp;
   disabled?: boolean;
   /**
    * Destination of the row. It is the SOLE interactive element (no nested `<button>`), so

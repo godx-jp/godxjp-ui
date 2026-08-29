@@ -69,6 +69,38 @@
    * `--page-header-divider: 1px solid hsl(var(--border));` */
   --page-header-divider: none;
 
+  /* PageContainer `toolbar` — the fixed chrome band between the header and the (scrolling) body.
+   * ALL THREE knobs are quiet by default (rule #44):
+   *   background    — `transparent`, i.e. the band shows the page ground exactly as it did before
+   *                   the knob existed. It is bound at `:root` and NOT `initial`, unlike the
+   *                   divider below, because the default is a plain CSS keyword rather than
+   *                   another role token: there is nothing for a scoped [data-tenant]/.dark
+   *                   override to re-resolve, so the `initial` + call-site-fallback dance would
+   *                   buy nothing and only hide the default from anyone reading this file. A
+   *                   service that wants the band to read as its own surface — the design that
+   *                   asked for this knob puts a chat channel's workflow rail on the card ground —
+   *                   sets `--page-toolbar-background: hsl(var(--card));` ONCE in its theme. Never
+   *                   `className="bg-card"` at the call site: that is hand-laid page chrome, it
+   *                   paints only under `variant="flush"` gutters correctly by accident, and it
+   *                   cannot be re-themed per tenant.
+   *   pad-block 0   — the container's --space-section-active gap already spaces the band from the
+   *                   header and the body; a service that opts into the background or the divider
+   *                   gives the band its own inset HERE (`--page-toolbar-pad-block: var(--space-2)`)
+   *                   instead of padding the strip at the call site. Deliberately still 0 now that
+   *                   the band can be painted: a transparent band has no inside for the inset to
+   *                   breathe, and under `fill` every pixel of it comes straight off the scroll
+   *                   viewport the slot exists to protect.
+   *   divider       — declared `initial` so the CALL SITE can fall back to --page-header-divider
+   *                   (`var(--page-toolbar-divider, var(--page-header-divider))`). One theme
+   *                   declaration therefore rules the whole page chrome consistently, and a
+   *                   scoped [data-tenant]/.dark override of the header divider still reaches the
+   *                   band — a `:root` binding would freeze it at the :root value
+   *                   (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). Set
+   *                   `--page-toolbar-divider: none` to silence just this band. */
+  --page-toolbar-background: transparent;
+  --page-toolbar-pad-block: 0px;
+  --page-toolbar-divider: initial;
+
   /* Bottom inset of the page header, sized so title→body distance (this pad + the
    * --space-section-active container gap) EQUALS the page's top padding — the title
    * band reads vertically balanced (24 above / 24 below by default), instead of the
@@ -118,6 +150,16 @@
   --page-title-font-size-compact: var(--heading-h2);
   --page-subtitle-font-size: var(--font-size-base);
   --page-subtitle-font-size-compact: var(--font-size-sm);
+
+  /* PageContainer `headerScale="chrome"` — the title step for a page whose top row IS CHROME
+   * rather than a document title: a chat channel name, a mail subject line, an IDE tab. It is a
+   * SEPARATE knob from the two above on purpose: those are ONE document title at two viewport
+   * sizes (a responsive step), while this is a different KIND of page and holds at every width.
+   * `--heading-h3` (= --font-size-base, 14px) is the body step, which is the point — the row
+   * reads as a label ON the surface, not as the page's headline, and the header band collapses
+   * from the measured 61px to ~40px once it stops carrying a 20px h1. Quiet by default: a page
+   * that never passes `headerScale` never reads this token (rule #44). */
+  --page-title-font-size-chrome: var(--heading-h3);
 
   /* Section "chrome" padding — the SHARED inset for header / body / footer of every overlay-ish
    * surface (Dialog · Sheet · Drawer · Card). One global knob: a service sets these once instead of

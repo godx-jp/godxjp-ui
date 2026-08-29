@@ -22,6 +22,138 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`PageContainer` `headerScale="chrome"` — a page whose top row is CHROME, not a document
+  title.** `.ui-page-title` was locked to `--page-title-font-size` (`--heading-h1`, 20px) with
+  exactly one step down, `--page-title-font-size-compact`, inside `@media (max-width: 720px)` — a
+  RESPONSIVE step for one document title, not an axis a consumer can steer; `density` never
+  touched it. So a page whose first row is furniture rather than a headline — a chat channel, a
+  mail thread, an IDE tab — had no legitimate way to make that row compact: measured in a consumer
+  chat page at a 61px header band carrying a 24px channel name, against a design that budgeted the
+  whole row at ~40px with the name at the `sm` step. On a surface where height is what the
+  conversation needs, those 21px are real. `headerScale` asks what the row IS rather than how big
+  it should be: `document` (the default) is every record, form, collection and report, byte-
+  identical — no attribute is even emitted; `chrome` publishes `data-header-scale="chrome"` on the
+  container and the `<h1>` takes `--page-title-font-size-chrome` at EVERY width. The compound
+  selector out-ranks the bare `.ui-page-title` inside the 720px block deliberately: the compact
+  DOCUMENT step is h2 (18px), _larger_ than the chrome step, so without that the band would swell
+  on a phone — the responsive step itself is untouched and still governs every document page.
+  Extending `variant="ghost"` instead was the alternative and was rejected: ghost is the quiet
+  chrome WEIGHT (no divider, no header bottom pad, tighter title→body gap) and all seven ghost
+  frames in `docs/layout/page-container.tsx` are ordinary document pages — a partner detail, three
+  density samples, two member lists, the notification feed — whose `<h1>` is a headline; folding a
+  type step into it would move all of them and conflate two questions. They compose instead:
+  `headerScale="chrome" variant="ghost"` is the chat header. The heading stays an `<h1>` in both
+  states — this moves a type step, never a heading level, so the screen-reader outline is
+  unchanged.
+- **`--page-title-font-size-chrome`** — the chrome title step, `var(--heading-h3)`
+  (= `--font-size-base`, 14px), so the row reads as a label ON the surface rather than the page's
+  headline. A deliberate THIRD knob beside `--page-title-font-size` / `-compact`: those two are one
+  title at two viewport sizes, this is a different kind of page and holds at every width. Read only
+  when the prop is passed (rule #44), so no existing page resolves it; a service retunes the chrome
+  step here once instead of overriding `--page-title-font-size` at a call site, which would
+  re-theme every page in the subtree and still lose to the 720px rule.
+- **`AppShell` renders NO top bar when all four bar slots are omitted.** The grid reserved
+  `--app-shell-bar-height` unconditionally, and with `topbar` undefined the shell fell back to a
+  `.app-topbar-rail` holding `logo` — so a shell whose PAGE owns the top row (chat, mail, an IDE)
+  got two stacked rows of chrome, measured in a consumer chat shell at ~48px bar + ~60px page
+  header, over exactly the region that needs the height most. With `topbar`, `topbarLeft`,
+  `topbarRight` and `logo` all `undefined` there is now no `<header class="app-topbar">` at all
+  and the row is published as `data-topbar="none"` on `.app-root`, which collapses it to `auto`
+  (0 in practice) in the default template, under `data-topbar-span="full"` — which re-declares
+  areas only — and inside the narrow-width block, which must not restate the rows. One exception,
+  deliberate: below the responsive breakpoint the docked sidebar is hidden and AppShell's own
+  hamburger is the only route to navigation, so when a drawer exists the `<header>` is still
+  rendered carrying that trigger alone, and CSS — not the row — keeps it off the wide layout. The
+  trigger is `undefined`, not empty: `topbar={<></>}` or a conditional resolving to `null` still
+  renders the header and still eats the row.
+- **`SplitPane` closes its rail with `aside={null}` — without remounting `children`.** The aside
+  column was rendered unconditionally, so a collapsible panel (a Slack thread, a Linear detail
+  rail) forced the call site to drop the whole component when closed. That changes React tree
+  depth, so `children` remount: measured in a consumer chat shell as a reader at `scrollTop 400`
+  being thrown to 1522.5 on opening a thread. Keeping the component mounted with an empty aside
+  was the only alternative and it leaves a blank 22rem column. Now `null` renders no `<aside>` and
+  the grid falls to one column with no gap, while `.ui-split-pane-scope` / `.ui-split-pane` /
+  `.ui-split-pane-main` stay put at the same depth — which is what lets React reuse the DOM node.
+  `aside` stays REQUIRED so the call site is explicit about open vs closed. Also corrected in the
+  catalog: the stacking threshold has been a container query on the pane's own width (48rem, and
+  64rem for `lg`) since gh#165, not the `1080px` viewport media query still documented.
+- **`PageContainer` `toolbar` — the missing page-chrome slot between the header and the body.**
+  The shell owned the page header (title/subtitle/status/extra/breadcrumb) and the footer
+  (`footer` + `stickyFooter`), but there was NO slot for a fixed strip in between — a filter bar,
+  a status band, a chat channel's workflow rail. A page had to either put the strip inside
+  `children`, where `fill` scrolls it away, or hand-lay `position: sticky` at the call site, which
+  is exactly the "never hand-lay page chrome" the system forbids (and sticky is not even the same
+  thing: content keeps flowing UNDER a pinned box, which is the half-sliced row every hand-rolled
+  version produces). `toolbar` renders a `.ui-page-toolbar` band between the header and
+  `.ui-page-body` as a `flex: none` sibling, so under `fill` — where the body IS the scroll
+  viewport — it sits outside the scroller entirely. It shares the page gutters and the `measure`
+  cap with the header and body from the same rules (that is what keeps the three bands flush at
+  both edges), goes full-bleed under `variant="flush"` where `PageContainer.Inset` re-aligns its
+  content, and emits NO element and no flex gap when the prop is omitted.
+- **`--page-toolbar-pad-block` / `--page-toolbar-divider`** — the `toolbar` band's inset and
+  bottom rule, both quiet by default (rule #44). The inset is `0`: the container's
+  `--space-section-active` gap already spaces the band from the header and the body. The divider
+  is declared `initial` and resolved at the CALL SITE as
+  `var(--page-toolbar-divider, var(--page-header-divider))`, so one `--page-header-divider`
+  opt-in rules the whole page chrome consistently, a scoped `[data-tenant]` / `.dark` override of
+  it still reaches the band (a `:root` binding would freeze it), and
+  `--page-toolbar-divider: none` silences just the band. `variant="ghost"` keeps both quiet.
+- **`--page-toolbar-background` — the `toolbar` band had a rule knob and an inset knob but no
+  GROUND knob.** The band that `toolbar` had just introduced could be spaced and ruled from a
+  theme, but not painted, and the consuming design put its chat channel's workflow rail on
+  `hsl(var(--card))` so the strip reads as chrome rather than as the top of the transcript. With
+  no knob the call site's only route was `className="bg-card"` on the strip — the exact
+  "never hand-lay page chrome" the system forbids — and, on being told to remove it, that project
+  ended up with a band that is fully TRANSPARENT: worse than before the slot was patched in. The
+  utility was never equivalent anyway: it paints the STRIP, so the colour stops at the content box
+  instead of running the band's full page width (and full-bleed under `variant="flush"`), and it
+  is invisible to a `[data-tenant]` re-theme. `--page-toolbar-background` defaults to
+  `transparent`, so a page that never themes it is byte-identical (rule #44); it is bound at
+  `:root` rather than `initial` — unlike the divider beside it — because its default is a plain
+  CSS keyword and not another role token, so there is nothing for a scoped override to re-resolve
+  and `initial` would only hide the default from anyone reading the token file. It is the
+  `background` shorthand, so a gradient works as well as a colour. `variant="ghost"` silences the
+  band's RULE and deliberately leaves the GROUND alone: ghost is the quiet chrome WEIGHT (rules
+  and pads), and a chat page has to be able to be both quiet and painted.
+- **`--page-toolbar-pad-block` stays `0` — re-examined when the ground knob landed, and kept.**
+  The obvious follow-up was to give the band a small default inset off the space scale now that it
+  can be painted. It is still `0`, for three reasons that all point the same way: a TRANSPARENT
+  band has no inside for an inset to breathe, so the default would buy height and nothing else;
+  the container's `--space-section-active` gap is already the one thing that spaces all three page
+  bands, and a second source would double up on this one; and under `fill` every pixel of band
+  height comes straight off the scroll viewport the slot exists to protect. What was actually
+  missing was not a different default but the instruction, so the MCP catalog now says it in both
+  directions: a theme that PAINTS or RULES the band sets `--page-toolbar-pad-block: var(--space-2)`
+  in the SAME declaration, and a `py-1.5` at the call site is a DON'T — it pads the strip, never
+  the band.
+- **`SidebarItemProp.badgeTone` — a nav row's count had no way to say what it MEANS.** `.sb-badge`
+  carried a single font-size knob and no colour knob at all, so a rail that has to tell "unread"
+  from "mentions you" — every chat, mail and review queue does — could only push a
+  `<Badge tone="destructive">` INSIDE `badge`. The row already wraps whatever it is given in its
+  own pill, so that renders a pill inside a pill: measured at a 37.11x19.14 `.sb-badge` around a
+  25.11x19.14 `<Badge>` with its own border. `badgeTone` is `"neutral"` (default) or
+  `"destructive"`, an `Extract<>` subset of the shared `ToneProp` vocabulary rather than a new one
+  (rule #23), and deliberately two values: a nav rail answers exactly one question about a count,
+  "does this need me personally?", and a five-colour rail is decoration rather than information.
+  Changing `badge` itself to `{ label, tone }` was the alternative and was rejected — it breaks
+  every existing call site and turns a ReactNode slot into a union — while a token-only fix was
+  rejected because it can only recolour EVERY badge in the rail, and the whole point is that two
+  rows differ at the same time. The default emits no attribute at all (rule #44), so an existing
+  rail renders the identical `<span class="sb-badge">` node; `destructive` adds
+  `data-tone="destructive"` to that same node and swaps two colours, leaving min-width, radius,
+  inline pad and font size on the shared base rule so a mention row and an unread row still line
+  up in one column. It rides the library-composed row (gh#213), so `href`, `linkComponent` and
+  `asChild` rows all carry it without touching their markup.
+- **`--sidebar-badge-{background,foreground}` / `--sidebar-badge-destructive-{background,foreground}`**
+  — the pill's colour, split into a resting pair and an emphasis pair. The resting defaults are the
+  literals `.sb-badge` always carried (`hsl(var(--secondary))` fill, `hsl(var(--muted-foreground))`
+  text), now reachable from a theme instead of frozen in the stylesheet; the `-destructive-` pair
+  defaults to the canonical AA-checked `hsl(var(--destructive))` / `hsl(var(--destructive-foreground))`
+  and is read ONLY by a row that passes `badgeTone="destructive"`. All four are declared `initial`
+  with the role default resolved at the call site, so a scoped `[data-tenant]` / `.dark` override
+  of the role still reaches the pill (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`").
+  Colour only — the pill's geometry stays shared, which is what a nested `<Badge>` could never
+  promise.
 - **`check:doc-prop-existence`** — a guard for the class of bug above, wired into `verify` and
   `verify:static`. `check:mcp-prop-sync` only checked that every declared prop is documented;
   nothing checked that every documented prop is declared, which is why examples could hand readers
@@ -57,7 +189,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   API and was missing `layout` / `labelAlign` entirely (both of which the generated manifest
   already listed, and both of which the component has honoured for a long time). Synced to the
   real props, and `DescriptionsLayoutProp` is now re-exported from the vocabulary barrel.
-
 
 ### Fixed
 

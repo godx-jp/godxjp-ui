@@ -130,6 +130,18 @@ export const TOKENS: TokenEntry[] = [
     role: "Modal scrim — the single backdrop colour shared by every overlay (Dialog, AlertDialog, Sheet, Drawer, AppShell mobile nav). Default `rgb(0 0 0 / 0.5)`. A service tints it once, e.g. a navy `rgb(12 26 49 / .55)`. HOW IT REACHES AN OVERLAY (gh#215 — until v18 it reached NOTHING; every overlay carried a private literal and this token was dead): each surface declares its own `--*-overlay-background` knob `initial` and resolves a SHARE of this colour at the call site, `color-mix(in srgb, var(--overlay-background) var(--*-overlay-alpha), transparent)`, so the calibrated per-surface depth survives (Sheet/drawer 40% = 0.2, Dialog 60% = 0.3) while ONE override here retints them all. NOTE: portaled overlays render outside a [data-tenant] subtree, so for multi-tenant scoping put the tenant attribute on the portal container too.",
   },
   {
+    name: "--page-toolbar-{background,pad-block,divider}",
+    category: "semantic",
+    tier: "semantic",
+    role: "PageContainer `toolbar` band chrome — the FIXED strip between the page header and the (scrolling) body. All three knobs are quiet by default (rule #44). `--page-toolbar-background` (default `transparent`) is the band's GROUND: set it ONCE in a service theme — `--page-toolbar-background: hsl(var(--card));` — to lift the band off the page ground the way a chat channel's workflow rail or a collection's filter strip usually wants. It is bound at `:root` rather than `initial` because its default is a plain CSS keyword, not another role token, so there is nothing for a scoped override to re-resolve; it is the `background` shorthand, so a gradient works too. NEVER write `className=\"bg-card\"` on the strip at the call site — that is hand-laid page chrome, it is invisible to per-tenant theming, and it paints the strip rather than the band (so it misses the page gutters and the `measure` cap). `--page-toolbar-pad-block` (default 0) is the band's own block inset. It stays 0 even now that the band can be painted: a TRANSPARENT band has no inside for an inset to breathe, the container's --space-section-active gap already separates it from the header and the body, and under `fill` every pixel of band height is taken from the scroll viewport the slot exists to protect. The corollary is that a theme which PAINTS the band must also set the inset here (`--page-toolbar-pad-block: var(--space-2)`) — the two go together, and neither belongs in a `py-*` utility at the call site. `--page-toolbar-divider` is declared `initial` and resolved at the CALL SITE as `var(--page-toolbar-divider, var(--page-header-divider))` — so ONE `--page-header-divider` opt-in rules the whole page chrome consistently, a scoped [data-tenant]/.dark override of it still reaches the band (a `:root` binding would freeze it), and `--page-toolbar-divider: none` silences just the band. `variant=\"ghost\"` keeps the divider quiet regardless (it does NOT clear the background — ghost is about rules and pads, not grounds). The band's inline gutters and its `measure` cap are shared with the header and body — they are not separate knobs, which is what keeps the three bands aligned.",
+  },
+  {
+    name: "--page-title-font-size-chrome",
+    category: "semantic",
+    tier: "semantic",
+    role: 'PageContainer title step under `headerScale="chrome"` — a page whose top row IS chrome (a chat channel name, a mail subject, an IDE tab) rather than a document title. Default `var(--heading-h3)` = `--font-size-base` (14px), the body step, so the row reads as a label ON the surface instead of the page\'s headline; a consumer chat header measured 61px with a 20px h1 against a design that wanted ~40px at the `sm` step. Deliberately a THIRD knob beside `--page-title-font-size` / `--page-title-font-size-compact`: those two are one document title at two viewport sizes (a responsive step), this is a different KIND of page and holds at every width — the compact rule must not pull a chrome header back up to h2. Read ONLY when the prop is passed, so a document page never touches it (rule #44). A service retunes the chrome step here once; never override `--page-title-font-size` at a call site to fake it.',
+  },
+  {
     name: "--page-header-pad-bottom",
     category: "semantic",
     tier: "semantic",
@@ -454,6 +466,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "EmptyState description MEASURE (gh#221) — default 28rem (~65 Latin characters per line). A service or locale that needs a shorter/longer measure for its own copy (JA/VI error-page descriptions, a narrow system surface) retunes this one knob instead of forking `.ui-empty-state-description` (rule #45).",
+  },
+  {
+    name: "--sidebar-badge-{background,foreground} / --sidebar-badge-destructive-{background,foreground}",
+    category: "component",
+    tier: "component",
+    role: 'Sidebar nav COUNT PILL colour, split into a resting pair and an emphasis pair. Before these knobs `.sb-badge` had a font-size token and no colour token at all, so a rail that had to tell "unread" from "mentions you" could only nest a `<Badge>` INSIDE `SidebarItemProp.badge` — which renders a pill inside a pill (measured: a 37.11x19.14 `.sb-badge` wrapping a 25.11x19.14 `<Badge>` with its own border). The resting pair is what every badge has always looked like (hsl(var(--secondary)) fill, hsl(var(--muted-foreground)) text); the `-destructive-` pair is read ONLY by rows that pass `badgeTone="destructive"`, which is the only thing that emits `data-tone` on the pill (rule #44), so a rail that never sets the prop renders exactly the node it always did. All four are role-mirror knobs declared `initial` with the role default resolved at the call site, so a scoped [data-tenant]/.dark override reaches them. Colour ONLY — the pill\'s min-width, radius, inline pad and font size are shared by both tones, which is what keeps a mention row and an unread row aligned in the same column.',
   },
   {
     name: "--sidebar-nav-item-{foreground,hover-foreground,disabled-foreground} / --sidebar-nav-icon-{foreground,hover-foreground,active-foreground,disabled-foreground}",
