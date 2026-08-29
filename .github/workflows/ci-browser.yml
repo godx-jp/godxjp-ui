@@ -1,0 +1,159 @@
+name: CI (browser)
+
+# Chromium-dependent gates: axe, viewport geometry, contrast/visual audit, and the
+# rendered-runtime shards. Split out of CI because they need a real browser and a live
+# preview server, so they are slower and fail for different reasons than the code gates.
+#
+#   • frame-axe      — real Chromium + axe over every /frame at desktop + mobile-sm.
+#                      Preview-chrome violations are BLOCKING (0 allowed); component/demo
+#                      violations are allowlisted against scripts/frame-axe.baseline.json,
+#                      which may only shrink.
+#   • frame-geometry — viewport-matrix sweep (8 widths), baseline-guarded.
+#   • visual         — check:contrast + check:visual-audit (the browser half of verify:static).
+#   • rendered-runtime — per-shard data-entry / layout runtime contracts.
+#
+# RUNNER NOTE — do NOT add `--with-deps` to `playwright install` here. These are
+# self-hosted hosts that are not Debian/Ubuntu: `--with-deps` shells out to apt-get,
+# which does not exist, and the step dies with `sh: apt-get: command not found`
+# (exit 127) BEFORE the browser binary is even downloaded. The host must provide
+# Chromium's shared libraries (libnspr4, libnss3, libasound2) out of band.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * *"
+
+concurrency:
+  group: ci-browser-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  visual:
+    name: Contrast + visual audit
+    runs-on: [self-hosted, Linux, X64]
+    # Port preview riêng mỗi job (self-hosted chung host) — xem frame-harness.mjs DEFAULT_BASE.
+    env:
+      PREVIEW_BASE: http://localhost:6008
+    steps:
+      - uses: actions/checkout@v6
+      # Bootstrap Node BEFORE pnpm/action-setup: self-hosted runners default to
+      # Node 18, and the pnpm self-installer (npm 11) refuses to run on it.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v6.0.9
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install chromium
+      - run: pnpm preview:build
+      - run: pnpm verify:browser
+
+  axe:
+    name: Per-frame axe (chrome blocking, component allowlisted)
+    runs-on: [self-hosted, Linux, X64]
+    env:
+      PREVIEW_BASE: http://localhost:6028
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v6.0.9
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install chromium
+      - name: axe every frame (desktop + mobile-sm)
+        run: pnpm check:frame-axe
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: frame-axe-evidence
+          path: audit-evidence/frame-axe/
+          if-no-files-found: ignore
+
+  geometry:
+    name: Viewport-matrix geometry sweep
+    runs-on: [self-hosted, Linux, X64]
+    env:
+      PREVIEW_BASE: http://localhost:6038
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v6.0.9
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install chromium
+      - name: geometry sweep (320→1920)
+        run: pnpm check:frame-geometry
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: frame-geometry-evidence
+          path: audit-evidence/frame-geometry/
+          if-no-files-found: ignore
+
+  rendered-runtime:
+    name: rendered-runtime (${{ matrix.name }})
+    runs-on: [self-hosted, Linux, X64]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: data-entry-core
+            port: 6011
+            stories: data-entry-input,data-entry-form-field-index,data-entry-form,data-entry-select,data-entry-checkbox,data-entry-radio-group,data-entry-switch,data-entry-slider,data-entry-toggle
+            command: pnpm check:data-entry-frame-runtime
+          - name: data-entry-pickers
+            port: 6021
+            stories: data-entry-date-picker,data-entry-time-picker,data-entry-month-picker,data-entry-cascader,data-entry-tree-select,data-entry-transfer,data-entry-color-picker,data-entry-number-input,data-entry-upload
+            command: pnpm check:data-entry-frame-runtime
+          - name: data-entry-specialized
+            port: 6031
+            stories: data-entry-search-input,data-entry-password-input,data-entry-input-otp,data-entry-rating,data-entry-tag-input,data-entry-calendar,data-entry-date-range-picker,data-entry-month-range-picker,data-entry-command
+            command: pnpm check:data-entry-frame-runtime
+          - name: interaction-semantics
+            port: 6041
+            stories: ""
+            command: pnpm check:data-entry-touch-aria && pnpm check:layout-nav-frames && pnpm check:provider-feedback-query-runtime && pnpm check:data-table-pagination-wrap && pnpm check:button-icon-xs
+          - name: layout-touch-rtl
+            port: 6051
+            stories: ""
+            command: pnpm check:layout-nav-closure && pnpm check:final-touch-rtl
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v6.0.9
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install chromium
+      - run: ${{ matrix.command }}
+        env:
+          DATA_ENTRY_STORIES: ${{ matrix.stories }}
+          # Port preview riêng mỗi shard (self-hosted chung host) — check-data-entry-frame-runtime
+          # đọc PREVIEW_PORT; các script khác giữ port riêng của chúng (không đụng nhau).
+          PREVIEW_PORT: ${{ matrix.port }}
