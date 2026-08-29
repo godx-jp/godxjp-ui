@@ -185,8 +185,8 @@ a second border:
 ```css
 :root {
   --toggle-focus-ring-width: 3px;
-  --toggle-focus-ring-opacity: 0.35;
-  --sidebar-user-focus-ring-opacity: 0.45; /* tinted shell ground */
+  --toggle-focus-ring-alpha: 0.35;
+  --sidebar-user-focus-ring-alpha: 0.45; /* tinted shell ground */
   --rating-focus-ring-offset: 2px; /* outline form needs a gap */
 }
 ```

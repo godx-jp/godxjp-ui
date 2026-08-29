@@ -6,11 +6,16 @@ const base = `http://localhost:${port}`;
 const server = spawn(
   "pnpm",
   ["exec", "vite", "--config", "preview/vite.config.ts", "--port", String(port), "--strictPort"],
-  { stdio: "ignore", env: process.env },
+  // stderr is piped, not ignored: when the server fails to bind we need to SAY why.
+  { stdio: ["ignore", "ignore", "pipe"], env: process.env },
 );
+let serverStderr = "";
+server.stderr?.on("data", (chunk) => {
+  serverStderr += String(chunk);
+});
 
 async function waitForServer() {
-  for (let attempt = 0; attempt < 100; attempt += 1) {
+  for (let attempt = 0; attempt < 600; attempt += 1) {
     try {
       if ((await fetch(base)).ok) return;
     } catch {
@@ -18,7 +23,9 @@ async function waitForServer() {
     }
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
-  throw new Error("preview server did not start");
+  throw new Error(
+    "preview server did not start within 60s" + (serverStderr ? `\n${serverStderr}` : ""),
+  );
 }
 
 try {

@@ -17,6 +17,11 @@ jobs:
     runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v6
+      # Bootstrap Node BEFORE pnpm/action-setup: self-hosted runners default to
+      # Node 18, and the pnpm self-installer (npm 11) refuses to run on it.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
@@ -61,6 +66,11 @@ jobs:
             command: pnpm check:layout-nav-closure && pnpm check:final-touch-rtl
     steps:
       - uses: actions/checkout@v6
+      # Bootstrap Node BEFORE pnpm/action-setup: self-hosted runners default to
+      # Node 18, and the pnpm self-installer (npm 11) refuses to run on it.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
@@ -69,7 +79,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install chromium
+      - run: pnpm exec playwright install --with-deps chromium
       - run: ${{ matrix.command }}
         env:
           DATA_ENTRY_STORIES: ${{ matrix.stories }}

@@ -6,6 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (BREAKING)
+
+- **Focus-ring knob dùng đuôi `-alpha`, không phải `-opacity`.** Bốn component token ra mắt ở
+  18.15.x đặt tên lệch khỏi vocabulary của chính repo (`--alert-bg-alpha`,
+  `--card-header-background-alpha`…) và không qua được `check:token-tiers` — gate này đã đỏ âm
+  thầm trên `main` kể từ đó vì release đi tắt qua `pnpm verify`. Đổi tên cho khớp thay vì nới
+  guard: thêm một từ đồng nghĩa thứ hai đúng là thứ cardinal rule #44/#45 muốn tránh.
+  `--toggle-focus-ring-opacity` → `--toggle-focus-ring-alpha`,
+  `--time-input-focus-ring-opacity` → `--time-input-focus-ring-alpha`,
+  `--sidebar-user-focus-ring-opacity` → `--sidebar-user-focus-ring-alpha`,
+  `--topbar-icon-focus-ring-opacity` → `--topbar-icon-focus-ring-alpha`.
+  Theme nào đang set bốn tên cũ phải đổi; giá trị mặc định giữ nguyên nên không đổi hình ảnh.
+  `--focus-ring-opacity` ở `foundation.css` là token nền tier khác và **không** đổi.
+
+### Added
+
+- **`scripts/audit-shadcn-overlap.mjs`** — đo giá trị thật của 47 component trùng tên shadcn/ui.
+  Đếm hằng số hình học/chrome hard-code (thứ khiến service theme không chỉnh được), bỏ qua role
+  utility vì chúng đã token-backed qua Tailwind v4 `@theme`. Kết quả khởi điểm: 45/47 đáng giữ,
+  272 hằng số cần tokenize trên 23 component — xem `docs/AUDIT-shadcn-overlap.md` và #316.
+- **`time-input` vào `componentPrefixes.control`** của `check-token-tiers` — thiếu sót thuần khiến
+  `--time-input-focus-ring-*` không qua được guard.
+
 ### Removed
 
 - **`Card` / `StatCard` `size` — a prop that never did anything.** It shipped in the v6 snapshot
@@ -57,7 +80,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   API and was missing `layout` / `labelAlign` entirely (both of which the generated manifest
   already listed, and both of which the component has honoured for a long time). Synced to the
   real props, and `DescriptionsLayoutProp` is now re-exported from the vocabulary barrel.
-
 
 ### Fixed
 
