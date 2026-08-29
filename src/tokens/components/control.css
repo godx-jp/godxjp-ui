@@ -302,4 +302,30 @@
   --month-picker-field-space-gap: var(--space-2);
   --month-picker-icon-size: 1rem;
   --month-picker-separator-icon-size: 0.875rem;
+
+  /* BUTTON size-xs box + the count pill (#319).
+   *
+   * ⚠️ --button-xs-height is DELIBERATELY not --control-height-xs, because today they differ:
+   *      size="icon-xs"  → --control-height-xs                      = 1.5rem
+   *      size="xs"       → calc(var(--control-height) - 0.75rem)    = 1.25rem
+   *    Same tier name, 4px apart — and the xs form does not scale with --scaling while the tier
+   *    does. That is a real inconsistency, but Button is the most-used component in the library,
+   *    so this change only LIFTS the value into a token; it does not move it. Reconciling the two
+   *    is a deliberate visual decision for #319 to make, not a side effect of tokenizing. */
+  --button-xs-height: calc(var(--control-height) - 0.75rem);
+  --button-xs-space-inline: var(--space-2);
+  --button-xs-space-gap: var(--space-1);
+  --button-xs-font-size: var(--font-size-xs);
+  --button-xs-icon-size: 0.75rem;
+  /* Icon-adjacent padding: a button whose only child is an icon needs less inline room than one
+   * carrying a label, or the glyph floats in a too-wide box. One knob per size tier. */
+  --button-icon-space-inline-md: var(--space-3);
+  --button-icon-space-inline-sm: 0.625rem;
+  --button-icon-space-inline-lg: var(--space-4);
+  --button-icon-space-inline-xs: 0.375rem;
+  --button-space-block: var(--space-2);
+  /* Count pill — a borderless counter that reads on the button's own surface. */
+  --button-count-min-width: var(--space-4);
+  --button-count-space-inline: var(--space-1);
+  --button-count-font-size: var(--font-size-xs);
 }

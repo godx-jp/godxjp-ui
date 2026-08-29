@@ -1334,6 +1334,71 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
   },
   {
+    "name": "--button-xs-height",
+    "value": "calc(var(--control-height) - 0.75rem)",
+    "description": "BUTTON size-xs box + the count pill (#319). * * ⚠️ --button-xs-height is DELIBERATELY not --control-height-xs, because today they differ: * size=\"icon-xs\" → --control-height-xs = 1.5rem * size=\"xs\" → calc(var(--control-height) - 0.75rem) = 1.25rem * Same tier name, 4px apart — and the xs form does not scale with --scaling while the tier * does. That is a real inconsistency, but Button is the most-used component in the library, * so this change only LIFTS the value into a token; it does not move it. Reconciling the two * is a deliberate visual decision for #319 to make, not a side effect of tokenizing."
+  },
+  {
+    "name": "--button-xs-space-inline",
+    "value": "var(--space-2)",
+    "description": "BUTTON size-xs box + the count pill (#319). * * ⚠️ --button-xs-height is DELIBERATELY not --control-height-xs, because today they differ: * size=\"icon-xs\" → --control-height-xs = 1.5rem * size=\"xs\" → calc(var(--control-height) - 0.75rem) = 1.25rem * Same tier name, 4px apart — and the xs form does not scale with --scaling while the tier * does. That is a real inconsistency, but Button is the most-used component in the library, * so this change only LIFTS the value into a token; it does not move it. Reconciling the two * is a deliberate visual decision for #319 to make, not a side effect of tokenizing."
+  },
+  {
+    "name": "--button-xs-space-gap",
+    "value": "var(--space-1)",
+    "description": "BUTTON size-xs box + the count pill (#319). * * ⚠️ --button-xs-height is DELIBERATELY not --control-height-xs, because today they differ: * size=\"icon-xs\" → --control-height-xs = 1.5rem * size=\"xs\" → calc(var(--control-height) - 0.75rem) = 1.25rem * Same tier name, 4px apart — and the xs form does not scale with --scaling while the tier * does. That is a real inconsistency, but Button is the most-used component in the library, * so this change only LIFTS the value into a token; it does not move it. Reconciling the two * is a deliberate visual decision for #319 to make, not a side effect of tokenizing."
+  },
+  {
+    "name": "--button-xs-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "BUTTON size-xs box + the count pill (#319). * * ⚠️ --button-xs-height is DELIBERATELY not --control-height-xs, because today they differ: * size=\"icon-xs\" → --control-height-xs = 1.5rem * size=\"xs\" → calc(var(--control-height) - 0.75rem) = 1.25rem * Same tier name, 4px apart — and the xs form does not scale with --scaling while the tier * does. That is a real inconsistency, but Button is the most-used component in the library, * so this change only LIFTS the value into a token; it does not move it. Reconciling the two * is a deliberate visual decision for #319 to make, not a side effect of tokenizing."
+  },
+  {
+    "name": "--button-xs-icon-size",
+    "value": "0.75rem",
+    "description": "BUTTON size-xs box + the count pill (#319). * * ⚠️ --button-xs-height is DELIBERATELY not --control-height-xs, because today they differ: * size=\"icon-xs\" → --control-height-xs = 1.5rem * size=\"xs\" → calc(var(--control-height) - 0.75rem) = 1.25rem * Same tier name, 4px apart — and the xs form does not scale with --scaling while the tier * does. That is a real inconsistency, but Button is the most-used component in the library, * so this change only LIFTS the value into a token; it does not move it. Reconciling the two * is a deliberate visual decision for #319 to make, not a side effect of tokenizing."
+  },
+  {
+    "name": "--button-icon-space-inline-md",
+    "value": "var(--space-3)",
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+  },
+  {
+    "name": "--button-icon-space-inline-sm",
+    "value": "0.625rem",
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+  },
+  {
+    "name": "--button-icon-space-inline-lg",
+    "value": "var(--space-4)",
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+  },
+  {
+    "name": "--button-icon-space-inline-xs",
+    "value": "0.375rem",
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+  },
+  {
+    "name": "--button-space-block",
+    "value": "var(--space-2)",
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+  },
+  {
+    "name": "--button-count-min-width",
+    "value": "var(--space-4)",
+    "description": "Count pill — a borderless counter that reads on the button's own surface."
+  },
+  {
+    "name": "--button-count-space-inline",
+    "value": "var(--space-1)",
+    "description": "Count pill — a borderless counter that reads on the button's own surface."
+  },
+  {
+    "name": "--button-count-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Count pill — a borderless counter that reads on the button's own surface."
+  },
+  {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
     "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."

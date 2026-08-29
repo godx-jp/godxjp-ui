@@ -22,6 +22,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Button is token-themeable (#319) — 18 literals → 0.** Its `ui-button--*` classes already
+  carried most of the box; what was left sat inside the cva variant strings and the count pill:
+  `--button-xs-*` · `--button-icon-space-inline-{xs,sm,md,lg}` · `--button-space-block` ·
+  `--button-count-*`. The base string also duplicated what `.ui-button` already declares, and
+  `.ui-button:disabled` dimmed by a literal `0.5` rather than `--disabled-opacity` — both fixed.
+  **Two things deliberately did NOT change.** `size="xs"` stays at
+  `calc(var(--control-height) - 0.75rem)` (1.25rem) even though `size="icon-xs"` uses
+  `--control-height-xs` (1.5rem): same tier name, 4px apart, and the xs form does not scale with
+  `--scaling` while the tier does. That is a real inconsistency, but Button is the most-used
+  component here, so this change only lifts the value into `--button-xs-height` — reconciling the
+  two is a visual decision for #319 to make, not a side effect of tokenizing. And the icon-glyph
+  rules stay Tailwind _utilities_ rather than moving into the components layer: Tailwind v4 orders
+  utilities after components, so only a utility can out-rank a child's own `size-4`. They now read
+  `--button-xs-icon-size` instead of a literal step, keeping both the precedence and the knob.
 - **MonthPicker and MonthRangePicker share one token set (#319) — 35 literals → 0 across both.**
   They render the same year-nav + 3-column month grid and each held an identical copy of every
   literal, so the two could drift apart silently — the same failure DropdownMenu had against

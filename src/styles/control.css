@@ -78,9 +78,19 @@
     transition-duration: 150ms;
   }
 
-  .ui-button:disabled {
+  .ui-button {
+    flex-shrink: 0;
+    font-size: var(--font-size-sm);
+    outline: none;
+  }
+
+  .ui-button:disabled,
+  .ui-button[data-loading] {
     pointer-events: none;
-    opacity: 0.5;
+  }
+
+  .ui-button:disabled {
+    opacity: var(--disabled-opacity);
   }
 
   .ui-button svg {
@@ -1854,5 +1864,48 @@
   .ui-month-picker-cell {
     padding-inline: var(--month-picker-cell-space-inline);
     font-weight: var(--font-weight-normal);
+  }
+
+  /* BUTTON size-xs + icon-adjacent padding + the count pill (#319). */
+  .ui-button--xs {
+    height: var(--button-xs-height);
+    gap: var(--button-xs-space-gap);
+    padding-inline: var(--button-xs-space-inline);
+    font-size: var(--button-xs-font-size);
+  }
+
+  .ui-button--default-size,
+  .ui-button--md {
+    padding-block: var(--button-space-block);
+  }
+
+  /* An icon-only child needs less inline room than a label, or the glyph floats in a wide box. */
+  .ui-button--default-size:has(> svg),
+  .ui-button--md:has(> svg) {
+    padding-inline: var(--button-icon-space-inline-md);
+  }
+
+  .ui-button--sm:has(> svg) {
+    padding-inline: var(--button-icon-space-inline-sm);
+  }
+
+  .ui-button--lg:has(> svg) {
+    padding-inline: var(--button-icon-space-inline-lg);
+  }
+
+  .ui-button--xs:has(> svg) {
+    padding-inline: var(--button-icon-space-inline-xs);
+  }
+
+  .ui-button-count {
+    display: inline-flex;
+    min-inline-size: var(--button-count-min-width);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    padding-inline: var(--button-count-space-inline);
+    font-size: var(--button-count-font-size);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
   }
 }
