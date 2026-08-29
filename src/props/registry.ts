@@ -540,7 +540,7 @@ export const COMPONENT_PROP_REGISTRY = {
         field: "headerScale",
         local: true,
         reason:
-          "What the page's top row IS — a document title or the surface's own chrome (document | chrome) — which selects the title's type step via --page-title-font-size-chrome. A fourth orthogonal axis: PageContainerVariantProp owns chrome WEIGHT (ghost drops the divider and header pad), headerLayout owns the header ARRANGEMENT, measure owns the inline cap; none of them can say that the h1 is a channel name rather than a headline.",
+          "What the page's top row IS — a document title or the surface's own chrome (document | chrome) — which selects the title's type step via --page-title-font-size-chrome AND opens the page flush with the frame via --page-pad-block-start-chrome (chrome sits on the edge; a document title gets the page's top margin). A fourth orthogonal axis: PageContainerVariantProp owns chrome WEIGHT (ghost drops the divider and header pad), headerLayout owns the header ARRANGEMENT, measure owns the inline cap; none of them can say that the h1 is a channel name rather than a headline.",
       },
       {
         field: "measure",

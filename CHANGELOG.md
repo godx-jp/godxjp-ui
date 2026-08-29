@@ -44,7 +44,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   type step into it would move all of them and conflate two questions. They compose instead:
   `headerScale="chrome" variant="ghost"` is the chat header. The heading stays an `<h1>` in both
   states — this moves a type step, never a heading level, so the screen-reader outline is
-  unchanged.
+  unchanged. It also opens the page FLUSH with the frame. `.ui-page-container` pads every page with
+  `--space-page-active-y` (24px, 16px below the 720px step), which is a document's top margin: a
+  title needs air above it, a channel head does not — it IS the top edge. Measured on the same
+  consumer chat screen at 1512×805, the design's channel head occupies y 0..47 while the app's
+  identical-height head started at y 24, pushing the whole top chrome down 30px and taking the same
+  30px off the transcript (design 617px of scroll viewport, app 587px). The band heights already
+  matched; the page was simply floating inside its own shell. So `chrome` swaps the container's
+  block-start padding for `--page-pad-block-start-chrome` — the same attribute, because "is this row
+  a document title or the surface's own furniture" is ONE question and the type step and the flush
+  edge are two consequences of its answer, not two props a call site would have to keep in lockstep.
+  BLOCK-START only, and a longhand: `headerScale` names the HEADER, so the page's bottom edge stays
+  `stickyFooter`'s, which zeroes `padding-block-end` for its own documented reason. The 720px step
+  re-declares the TOKEN, never this padding, and the attribute selector out-ranks the base rule, so
+  the flush edge holds identically at every width; a page that never passes `headerScale` emits no
+  attribute and is geometrically byte-identical.
 - **`--page-title-font-size-chrome`** — the chrome title step, `var(--heading-h3)`
   (= `--font-size-base`, 14px), so the row reads as a label ON the surface rather than the page's
   headline. A deliberate THIRD knob beside `--page-title-font-size` / `-compact`: those two are one
@@ -52,6 +66,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   when the prop is passed (rule #44), so no existing page resolves it; a service retunes the chrome
   step here once instead of overriding `--page-title-font-size` at a call site, which would
   re-theme every page in the subtree and still lose to the 720px rule.
+- **`--page-pad-block-start-chrome`** — the page's TOP inset under `headerScale="chrome"`, `0px`,
+  so chrome opens on the frame's edge while a document page keeps `--space-page-active-y`. Flush is
+  the quiet state for chrome (rule #44), and it is a knob rather than a literal so a service whose
+  design grid wants its chrome to breathe writes `--page-pad-block-start-chrome: var(--space-2)`
+  once in its theme instead of padding — or negative-margining — the page shell at the call site.
+  Read only when the prop is passed, so no document page resolves it.
 - **`AppShell` renders NO top bar when all four bar slots are omitted.** The grid reserved
   `--app-shell-bar-height` unconditionally, and with `topbar` undefined the shell fell back to a
   `.app-topbar-rail` holding `logo` — so a shell whose PAGE owns the top row (chat, mail, an IDE)

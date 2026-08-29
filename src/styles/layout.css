@@ -431,6 +431,35 @@
     gap: var(--page-band-gap);
   }
 
+  /* `headerScale="chrome"` — the top band is CHROME, so it sits ON the frame's edge, not in a
+   * document's top margin. The shorthand above opens every page with --space-page-active-y (24px,
+   * 16px below the 720px step), which is right for a document: a title needs air above it. Chrome
+   * does not. A chat channel head, a mail thread's subject bar, an IDE tab strip are the FRAME —
+   * measured against the design of a consumer chat screen at 1512x805, the design's channel head
+   * occupies y 0..47 while the app's identical-height head started at y 24, pushing the whole top
+   * chrome down and taking those 24px straight off the scroll viewport (design 617px of transcript,
+   * app 587px). The band heights already matched; the page was simply floating.
+   *
+   * This is the SAME question `headerScale` already answers, not a second one: "is the first row a
+   * document title or the surface's own furniture". The type step (see .ui-page-title below) and
+   * the flush edge are two consequences of that one fact, which is why they ride the same
+   * attribute rather than a second prop that every real call site would have to set in lockstep.
+   *
+   * BLOCK-START ONLY, deliberately. `headerScale` names the HEADER, so it may only speak for the
+   * top edge; the bottom belongs to `stickyFooter`, which already zeroes `padding-block-end` for
+   * its own (documented) reason. A longhand, so that contract is untouched and the shorthand above
+   * still owns the default page.
+   *
+   * Chrome is a token, default quiet (rule #44): the inset is `--page-pad-block-start-chrome`,
+   * 0 by default (flush IS the quiet state for chrome), so a service whose design grid wants its
+   * chrome to breathe retunes it once instead of forking the page shell. The specificity (0,2,0)
+   * out-ranks both the base rule and the 720px block — which re-declares the TOKEN, never this
+   * padding — so the mechanism holds identically on both sides of that step. A page that never
+   * passes `headerScale` emits no attribute and is geometrically byte-identical. */
+  .ui-page-container[data-header-scale="chrome"] {
+    padding-block-start: var(--page-pad-block-start-chrome);
+  }
+
   /* Horizontal page insets live on the header/body/footer — NOT the container —
    * so the header divider and footer border span the full page width
    * (full-bleed) while their content stays aligned with the body. */

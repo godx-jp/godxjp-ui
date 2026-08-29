@@ -144,10 +144,17 @@ export type PageContainerProp = {
    * eating the height the conversation needs (measured in a consumer chat page: a 61px band with a
    * 24px name, against a design that wanted ~40px at the `sm` step).
    *
-   * It is a type-step axis only: the heading stays an `<h1>`, so the screen-reader outline is
-   * unchanged. Compose it with `variant="ghost"` for the full quiet chrome header (ghost drops the
-   * divider and the header's bottom pad); the two are separate props because chrome WEIGHT and
-   * what the title MEANS are separate questions.
+   * The same answer also puts the band ON the frame's edge: the container's block-start padding
+   * becomes `--page-pad-block-start-chrome` (0) instead of `--space-page-active-y`, because a
+   * document title needs air above it and a channel head IS the top edge (measured on a consumer
+   * chat screen as 24px that pushed the head off y=0 and came off the transcript viewport). Two
+   * consequences of ONE fact, so they ride one prop; the page's bottom edge is untouched, that
+   * being `stickyFooter`'s.
+   *
+   * The heading stays an `<h1>` throughout, so the screen-reader outline is unchanged. Compose it
+   * with `variant="ghost"` for the full quiet chrome header (ghost drops the divider and the
+   * header's bottom pad); the two are separate props because chrome WEIGHT and what the title
+   * MEANS are separate questions.
    */
   headerScale?: PageContainerHeaderScaleProp;
   /**

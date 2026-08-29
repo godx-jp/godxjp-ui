@@ -148,6 +148,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'PageContainer title step under `headerScale="chrome"` — a page whose top row IS chrome (a chat channel name, a mail subject, an IDE tab) rather than a document title. Default `var(--heading-h3)` = `--font-size-base` (14px), the body step, so the row reads as a label ON the surface instead of the page\'s headline; a consumer chat header measured 61px with a 20px h1 against a design that wanted ~40px at the `sm` step. Deliberately a THIRD knob beside `--page-title-font-size` / `--page-title-font-size-compact`: those two are one document title at two viewport sizes (a responsive step), this is a different KIND of page and holds at every width — the compact rule must not pull a chrome header back up to h2. Read ONLY when the prop is passed, so a document page never touches it (rule #44). A service retunes the chrome step here once; never override `--page-title-font-size` at a call site to fake it.',
   },
   {
+    name: "--page-pad-block-start-chrome",
+    category: "semantic",
+    tier: "semantic",
+    role: "PageContainer TOP inset under `headerScale=\"chrome\"` — the second half of the same fact the title step answers: chrome sits ON the frame's edge. Default `0px`, so a chrome page opens flush; a document page keeps `--space-page-active-y` (24px, 16px below the 720px step) because a title needs air above it. Measured on a consumer chat screen: an otherwise correctly-sized channel head started at y=24 against a design that starts it at y=0, and those 24px came straight off the transcript viewport (617px in the design, 587px in the app). It is a knob rather than a literal (rule #44) so a service whose grid wants its chrome inset writes `--page-pad-block-start-chrome: var(--space-2)` once instead of forking the page shell, and it is read ONLY when the prop is passed, so no document page resolves it. Block-start only — the page's bottom edge belongs to `stickyFooter`, which zeroes it for its own reason.",
+  },
+  {
     name: "--page-header-pad-bottom",
     category: "semantic",
     tier: "semantic",

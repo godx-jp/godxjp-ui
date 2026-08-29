@@ -924,6 +924,34 @@ describe("PageContainer", () => {
       expect(chromeRule).not.toMatch(/font-weight:|color:|display:|line-height:/);
     });
 
+    /*
+     * The other half of the same fact: chrome sits ON the frame's edge. The container opens every
+     * page with --space-page-active-y, which is a document's top margin — measured on a consumer
+     * chat screen those 24px pushed an otherwise correctly-sized channel head from y=0 to y=24 and
+     * took the same 24px off the transcript viewport (design 617px, app 587px). jsdom runs no
+     * layout, so the geometry is asserted from the CSS SOURCE, exactly as the type step above is.
+     */
+    it("opens a chrome page flush with the frame, from a token, block-start only", () => {
+      const paddingRule =
+        layoutCss.match(/\.ui-page-container\[data-header-scale="chrome"\] \{[^}]*\}/)?.[0] ?? "";
+      expect(paddingRule).toMatch(/padding-block-start: var\(--page-pad-block-start-chrome\);/);
+      // Flush IS the quiet state for chrome, and it is a knob rather than a literal (rule #44).
+      expect(layoutTokens).toMatch(/--page-pad-block-start-chrome:\s*0px;/);
+      expect(layoutCss).not.toMatch(/--page-pad-block-start-chrome:/);
+      // A document page is untouched: the shorthand still owns the default page on BOTH blocks.
+      expect(layoutCss).toMatch(
+        /\.ui-page-container \{[^}]*padding: var\(--space-page-active-y\) 0;/,
+      );
+      // `headerScale` names the HEADER, so it may speak for the top edge only. The block-end
+      // belongs to `stickyFooter`, which zeroes it for its own reason — a longhand here is what
+      // keeps the two axes composable instead of one silently overwriting the other.
+      expect(paddingRule).not.toMatch(/padding-block-end|padding-bottom|padding:/);
+      expect(layoutCss).toMatch(/\.ui-page-container--sticky-footer \{[^}]*padding-block-end: 0;/);
+      // Same specificity argument as the type step: the 720px block re-declares the TOKEN
+      // (--space-page-active-y), never this padding, so the flush edge holds at every width.
+      expect(compactCss).not.toMatch(/padding-block-start/);
+    });
+
     it("does NOT break the 720px document step — and is not pulled back UP by it", () => {
       expect(compactCss).not.toBe("");
       // The existing responsive step is untouched: a document page still steps down to h2 <=720px.

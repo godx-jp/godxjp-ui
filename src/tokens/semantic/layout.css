@@ -181,6 +181,17 @@
    * that never passes `headerScale` never reads this token (rule #44). */
   --page-title-font-size-chrome: var(--heading-h3);
 
+  /* The page's TOP inset under `headerScale="chrome"`, the second half of the same fact: chrome
+   * sits on the frame's edge. A document page opens with --space-page-active-y (24px, 16px below
+   * the 720px step) because a title needs air above it; a chat channel head, a mail subject bar or
+   * an IDE tab strip is the frame itself, and 24px of margin above it reads as a page floating
+   * inside its own shell — measured on a consumer chat screen as 24px lost off the top of the
+   * transcript viewport, against a design whose channel head starts at y=0. 0 is therefore the
+   * quiet default (rule #44), and it is a knob rather than a literal so a service whose grid wants
+   * its chrome inset (`--page-pad-block-start-chrome: var(--space-2)`) retunes it once instead of
+   * forking the page shell. Read ONLY when the prop is passed, so no document page resolves it. */
+  --page-pad-block-start-chrome: 0px;
+
   /* Section "chrome" padding — the SHARED inset for header / body / footer of every overlay-ish
    * surface (Dialog · Sheet · Drawer · Card). One global knob: a service sets these once instead of
    * per-component. Vertical is tightened (16 vs the old 24) and density-aware (see density.css);

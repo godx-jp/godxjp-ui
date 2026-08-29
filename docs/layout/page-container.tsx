@@ -666,6 +666,11 @@ export default function Demo() {
           チャンネル名、メールの件名、IDE のタブ）である場合で、h1 は本文と同じ型段
           （--page-title-font-size-chrome = --heading-h3 / 14px）になり、720px 未満でも戻りません。
           要素は h1 のまま — 見出しレベルは下げないので、スクリーンリーダーの見出し階層は不変。
+          同じ属性でページ上端の余白も落ちます · 既定の --space-page-active-y（24px · 720px 未満は
+          16px）は「文書の見出しの上の余白」であって、チャンネル名やタブは枠そのものだからです。
+          上端だけ --page-pad-block-start-chrome（既定 0）に切り替わり、下端は従来どおり
+          stickyFooter の担当。設計がクロムに余白を求めるならテーマでこのトークンを一度だけ
+          調整します（呼び出し側の padding や負マージンは不可）。
           variant="ghost"（罫線と下余白を落とす）と組み合わせると静かなクロムヘッダーになります。 */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
         <PageContainer
@@ -685,6 +690,9 @@ export default function Demo() {
                 </Descriptions.Item>
                 <Descriptions.Item label="720px 未満">
                   --page-title-font-size-compact（h2 · 18px）
+                </Descriptions.Item>
+                <Descriptions.Item label="ページ上端の余白">
+                  --space-page-active-y（24px）· chrome では --page-pad-block-start-chrome（0）
                 </Descriptions.Item>
               </Descriptions>
             </CardContent>
