@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Dependencies: everything that can move is on its latest, and the two that cannot are
+  documented.** Landed: `@types/node` 22→26 · `globals` 15→17 ·
+  `prettier-plugin-tailwindcss` 0.6→0.8 · `eslint` 9→10 (+ `@eslint/js`) · `jsdom` 29→30 ·
+  `@testing-library/jest-dom` 6→7, plus 13 minor/patch bumps including React 19.2.8,
+  `lucide-react` 1.37 and `zod` 4.5.
+  **ESLint 10 needed one config change:** `eslint-plugin-react@7.37.5` (its latest) declares a
+  peer range stopping at `^9.7` and crashes in `resolveBasedir` while probing the React version,
+  so `settings.react.version` is pinned to `19.2` instead of `"detect"`. Revert to `"detect"` once
+  the plugin ships ESLint 10 support — a pinned version drifts when React moves.
+  **TypeScript 7 is held back by `typescript-eslint`**, which does not support the 7.0 API
+  (upstream: typescript-eslint#10940, targeting TS ≥ 7.1). `tsc --noEmit` passes clean on 7.0 for
+  both `src` and `docs`, so the codebase is ready and only the lint toolchain is not.
+  **`@tanstack/react-table` 9 is a migration, not a bump** — `Table<T>` now takes two type
+  parameters, `ColumnDef.meta` moved to `ExtractColumnMeta`, and the feature-map rewrite drops
+  inference at 12 call sites in `data-table.tsx` (1,304 LOC, 112 tests). Held at 8.21 pending a
+  dedicated pass.
+- **ESLint 10's `no-useless-assignment` found six dead initialisers**, each overwritten on every
+  path: Rating's `next` (the switch's `default` returns, so the type also narrows to `number`),
+  Dialog's `ok` (both the try and the catch assign), and `stopServer` / `captured` / `command` in
+  three scripts. The `stopServer` no-ops were checked against their `catch` before removal — had
+  the catch fallen through to a `finally`, that initialiser would have been load-bearing rather
+  than dead.
+
 ### Changed (BREAKING)
 
 - **Focus-ring knob dùng đuôi `-alpha`, không phải `-opacity`.** Bốn component token ra mắt ở
