@@ -412,7 +412,8 @@ function AlertDialog({
       if (stepUp) {
         setStepUpFailed(false);
         setVerifying(true);
-        let ok = false;
+        // Both the try and the catch assign, so an initialiser here is dead.
+        let ok: boolean;
         try {
           ok = await stepUp();
         } catch {

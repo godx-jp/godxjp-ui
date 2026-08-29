@@ -57,7 +57,7 @@ export default tseslint.config(
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: { react: reactPlugin, "react-hooks": reactHooks },
-    settings: { react: { version: "detect" } },
+    settings: { react: { version: "19.2" } },
     rules: {
       ...reactPlugin.configs.recommended.rules,
       // React 19 / automatic JSX runtime — no React import, no prop-types.

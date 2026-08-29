@@ -145,8 +145,10 @@ console.log(
 
 const steps = [];
 for (const phase of cohort.requiredPhases) {
-  let captured = "";
-  let command = "";
+  // Both are assigned on every iteration before they are read, and the loop always runs at
+  // least once — an initialiser here is dead.
+  let captured;
+  let command;
   for (;;) {
     console.log(`\n── ${phase} ──`);
     command = await ask("  command you performed (e.g. VO-Right, Tab, VO-Space): ");
