@@ -50,7 +50,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # verify:static includes check:visual-audit which renders in Chromium.
       - name: Install Chromium for Playwright
-        run: pnpm exec playwright install chromium
+        run: pnpm exec playwright install --with-deps chromium
       - name: verify:static (all non-browser publish gates + test)
         run: pnpm verify:static
 
@@ -106,7 +106,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Install Chromium for Playwright
-        run: pnpm exec playwright install chromium
+        run: pnpm exec playwright install --with-deps chromium
       - name: axe every frame (desktop + mobile-sm)
         run: pnpm check:frame-axe
       - uses: actions/upload-artifact@v7
@@ -139,7 +139,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Install Chromium for Playwright
-        run: pnpm exec playwright install chromium
+        run: pnpm exec playwright install --with-deps chromium
       - name: geometry sweep (320→1920)
         run: pnpm check:frame-geometry
       - uses: actions/upload-artifact@v7
