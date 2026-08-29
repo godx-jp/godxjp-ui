@@ -139,12 +139,14 @@
 /* Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target
  * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height
  * resolves through these via var(), so inputs/buttons/selects/table rows all bump together. */
-@media (pointer: coarse) {
-  :root {
-    --control-height-compact: 2.75rem;
-    --control-height-default: 2.75rem;
-  }
-
+/* Control-family tokens added for #319.
+ *
+ * These MUST live in a plain :root, not inside the @media (pointer: coarse) block below —
+ * bare declarations in a conditional group rule are invalid CSS and the parser drops them
+ * silently. They spent this whole refactor dead for exactly that reason: the guards read the
+ * file textually, so check-token-tiers and the geometry ratchet both passed while every one of
+ * these resolved to nothing. */
+:root {
   /* TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline
    * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm
    * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the
@@ -157,7 +159,9 @@
   /* Resting weight of an affix glyph — it must read as secondary until hovered/focused. */
   --control-affix-rest-alpha: 0.5;
   /* Room a trigger reserves so its label never runs under the affix. */
-  --control-trigger-space-inline-end: var(--space-9);
+  /* 2.25rem — the room a single trailing affix needs. Written as a raw rem because the
+   * literal it replaced (`pe-9`) is a flat Tailwind step, not a density-scaled one. */
+  --control-trigger-space-inline-end: 2.25rem;
 
   /* INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the
    * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect
@@ -170,7 +174,7 @@
   --control-inline-affix-inset-inline: var(--space-2);
   --control-inline-affix-rest-alpha: 0.7;
   /* Inline room the field reserves so its text never runs under a single affix. */
-  --control-inline-affix-space-inline-end: var(--space-9);
+  --control-inline-affix-space-inline-end: 2.25rem;
   /* A field parking TWO inline affixes (TimePicker's clear+clock, DatePicker's clear+calendar)
    * reserves a wider end than the single-affix case. */
   --control-inline-affix-pair-space-inline-end: 3.5rem;
@@ -345,4 +349,11 @@
   --button-count-min-width: var(--space-4);
   --button-count-space-inline: var(--space-1);
   --button-count-font-size: var(--font-size-xs);
+}
+
+@media (pointer: coarse) {
+  :root {
+    --control-height-compact: 2.75rem;
+    --control-height-default: 2.75rem;
+  }
 }

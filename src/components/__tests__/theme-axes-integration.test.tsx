@@ -211,8 +211,17 @@ describe("theme axes integration (render + class contracts)", () => {
     it("calendar day button uses var(--control-height)", () => {
       renderWithTheme(<Calendar mode="single" />);
       const dayButton = screen.getByRole("grid").querySelector("button");
-      expect(dayButton?.className ?? "").toContain("var(--control-height)");
+      // The day cell's box moved from an arbitrary `size-[length:var(--control-height)]` utility
+      // into `.ui-calendar-day-button`, so the tier now comes from CSS (#319). The contract is
+      // unchanged — the cell still sizes from --control-height, never a literal step — so this
+      // asserts the class that carries it plus the CSS rule that reads the tier.
+      expect(dayButton).toHaveClass("ui-calendar-day-button");
       expect(dayButton?.className ?? "").not.toMatch(/\bsize-9\b/);
+      const controlCss = readFileSync(join(componentsDir, "../styles/control.css"), "utf8");
+      expect(controlCss).toContain(".ui-calendar .ui-calendar-day-button");
+      expect(controlCss).toMatch(
+        /\.ui-calendar \.ui-calendar-day-button \{[^}]*var\(--control-height\)/,
+      );
     });
   });
 });

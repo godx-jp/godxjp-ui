@@ -809,16 +809,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
-    "name": "--control-height-compact",
-    "value": "2.75rem",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
-  },
-  {
-    "name": "--control-height-default",
-    "value": "2.75rem",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
-  },
-  {
     "name": "--control-affix-inset-inline-end",
     "value": "var(--space-2)",
     "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
@@ -845,8 +835,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-trigger-space-inline-end",
-    "value": "var(--space-9)",
-    "description": "Room a trigger reserves so its label never runs under the affix."
+    "value": "2.25rem",
+    "description": "2.25rem — the room a single trailing affix needs. Written as a raw rem because the * literal it replaced (`pe-9`) is a flat Tailwind step, not a density-scaled one."
   },
   {
     "name": "--control-inline-affix-size",
@@ -875,7 +865,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-inline-affix-space-inline-end",
-    "value": "var(--space-9)",
+    "value": "2.25rem",
     "description": "Inline room the field reserves so its text never runs under a single affix."
   },
   {
@@ -1426,6 +1416,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--button-count-font-size",
     "value": "var(--font-size-xs)",
+    "description": "Count pill — a borderless counter that reads on the button's own surface."
+  },
+  {
+    "name": "--control-height-compact",
+    "value": "2.75rem",
+    "description": "Count pill — a borderless counter that reads on the button's own surface."
+  },
+  {
+    "name": "--control-height-default",
+    "value": "2.75rem",
     "description": "Count pill — a borderless counter that reads on the button's own surface."
   },
   {
@@ -2097,6 +2097,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--skeleton-background",
     "value": "initial",
     "description": "Skeleton placeholder fill — `initial` so the --muted default re-resolves at the call site under * a scoped theme (a :root binding to a role var freezes at :root). A service tints the shimmer to * its surface (rule #44) without forking the keyframes. Default = hsl(var(--muted))."
+  },
+  {
+    "name": "--skeleton-block-height",
+    "value": "1rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-caption-height",
+    "value": "0.75rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-title-height",
+    "value": "1.75rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-label-width",
+    "value": "6rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-detail-value-max-width",
+    "value": "28rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-stat-value-width",
+    "value": "8rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-stat-caption-width",
+    "value": "5rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
   },
   {
     "name": "--tooltip-max-width",

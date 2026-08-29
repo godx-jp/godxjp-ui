@@ -100,6 +100,18 @@
    * a scoped theme (a :root binding to a role var freezes at :root). A service tints the shimmer to
    * its surface (rule #44) without forking the keyframes. Default = hsl(var(--muted)). */
   --skeleton-background: initial;
+  /* Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals
+   * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them
+   * through the spacing scale would silently make the loading state track the density axis while
+   * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a
+   * service retuning its type scale knows which one to move. */
+  --skeleton-block-height: 1rem;
+  --skeleton-caption-height: 0.75rem;
+  --skeleton-title-height: 1.75rem;
+  --skeleton-label-width: 6rem;
+  --skeleton-detail-value-max-width: 28rem;
+  --skeleton-stat-value-width: 8rem;
+  --skeleton-stat-caption-width: 5rem;
 
   /* TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into
    * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not

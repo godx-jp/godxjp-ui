@@ -63,8 +63,26 @@ function walk(dir, out = []) {
   return out;
 }
 
+/**
+ * Strip comments before scanning.
+ *
+ * The scanner matches quoted strings, and a comment is free to quote a class list: Card documents
+ * `a consumer className="border-2" still wins`, Topbar's JSDoc example shows
+ * `<Avatar className="rounded-md">`. Both were counted as debt in files that have none — the
+ * guard was reporting phantom work and would have sent someone off to "fix" prose.
+ *
+ * Deliberately naive: it does not track strings containing comment markers (a URL like
+ * `https://…` inside a class list, say). Those are already skipped by the URL reject below, and a
+ * false NEGATIVE here costs one uncounted literal, whereas the false POSITIVE it replaces costs
+ * someone real time.
+ */
+function stripComments(source) {
+  return source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/[^\n]*/g, "$1");
+}
+
 /** Every string literal in the file — class lists live inside them, including multi-line cn(). */
-function scan(source) {
+function scan(rawSource) {
+  const source = stripComments(rawSource);
   const literals = [...source.matchAll(/"([^"\n]{2,400})"|'([^'\n]{2,400})'/g)].map(
     (m) => m[1] ?? m[2] ?? "",
   );

@@ -1724,7 +1724,9 @@
     z-index: 20;
   }
 
-  .ui-calendar-day-button {
+  /* Scoped to the calendar root so it out-ranks `.ui-button--default-size`, which is declared
+   * later in this file and would otherwise re-apply its block padding to a day cell. */
+  .ui-calendar .ui-calendar-day-button {
     inline-size: var(--control-height);
     block-size: var(--control-height);
     padding: 0;
@@ -1732,7 +1734,7 @@
     border-radius: var(--calendar-day-radius);
   }
 
-  .ui-calendar-day-button[aria-selected] {
+  .ui-calendar .ui-calendar-day-button[aria-selected] {
     opacity: 1;
   }
 

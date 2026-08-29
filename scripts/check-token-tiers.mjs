@@ -24,6 +24,41 @@ const hexThemeColor = /^\s*--color-[\w-]+:\s*#/m;
 const componentToken = /^src\/tokens\/components\/([a-z0-9-]+)\.css$/;
 const componentNameShape =
   /^--[a-z0-9]+(?:-[a-z0-9]+)*-(?:space|color|background|foreground|border|radius|height|width|padding|gap|size|font|line|letter|shadow|glow|tint|gradient|alpha|align|inset|offset|translate|max|overflow|display)(?:-[a-z0-9]+)*:/;
+/**
+ * Custom-property declarations that are not inside a rule body.
+ *
+ * Walks the brace structure rather than matching lines, because the failure this catches is
+ * structural: the text of the declaration is perfectly well-formed, it is merely in a place CSS
+ * does not allow it (directly inside `@media { … }` instead of inside a `:root { … }` within it).
+ */
+function bareDeclarations(css) {
+  const out = [];
+  const stack = [];
+  let buffer = "";
+  let line = 1;
+  for (const ch of css) {
+    if (ch === "\n") line += 1;
+    if (ch === "{") {
+      stack.push(buffer.trim().split("\n").pop().trim());
+      buffer = "";
+    } else if (ch === "}") {
+      stack.pop();
+      buffer = "";
+    } else if (ch === ";") {
+      const decl = buffer.trim().split("\n").pop().trim();
+      // Inside a rule the innermost frame is a selector; inside a bare @media it is the at-rule.
+      const innermost = stack[stack.length - 1] ?? "(top level)";
+      if (decl.startsWith("--") && innermost.startsWith("@")) {
+        out.push({ token: decl.split(":")[0].trim(), line, context: innermost });
+      }
+      buffer = "";
+    } else {
+      buffer += ch;
+    }
+  }
+  return out;
+}
+
 const componentPrefixes = {
   badge: ["badge"],
   card: ["card", "stat-card"],
@@ -120,6 +155,20 @@ for (const file of cssFiles) {
   if (componentMatch) {
     const component = componentMatch[1];
     const prefixes = componentPrefixes[component] ?? [component];
+    // A custom property only exists if it is declared inside a RULE. A bare declaration sitting
+    // directly in a conditional group (@media/@supports) is invalid CSS and browsers drop it
+    // silently — the token resolves to nothing at runtime while every textual check still passes.
+    // That is not hypothetical: 122 control tokens spent most of #319 dead this way, because an
+    // append landed after the closing brace of `:root` but inside the trailing `@media
+    // (pointer: coarse)` block. Nothing caught it — this guard scanned line by line, the geometry
+    // ratchet only reads .tsx, and jsdom does not resolve the cascade. So walk the braces.
+    for (const stray of bareDeclarations(css)) {
+      failures.push(
+        `${rel}: component token ${stray.token} is declared outside any rule ` +
+          `(line ${stray.line}, inside ${stray.context}) — browsers DROP it. Move it into :root.`,
+      );
+    }
+
     for (const match of css.matchAll(/^\s*(--[a-z0-9-]+):/gm)) {
       const token = match[1];
       if (!prefixes.some((prefix) => token.startsWith(`--${prefix}-`))) {

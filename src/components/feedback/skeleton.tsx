@@ -33,7 +33,10 @@ export function SkeletonRows({ rows = 6, columns = 4, className }: SkeletonRowsP
           {Array.from({ length: columns }).map((_, j) => (
             <Skeleton
               key={j}
-              className={cn("h-4", j === 0 ? "w-1/4" : j === columns - 1 ? "w-1/6" : "flex-1")}
+              className={cn(
+                "ui-skeleton-line",
+                j === 0 ? "w-1/4" : j === columns - 1 ? "w-1/6" : "flex-1",
+              )}
             />
           ))}
         </div>
@@ -48,7 +51,7 @@ export function SkeletonTable({ rows = 8, columns = 5 }: SkeletonRowsProps) {
     <div className="ui-skeleton-table" aria-busy="true">
       <div className={cn("ui-skeleton-table-head", tableCellPaddingClass, tableRowHeightClass)}>
         {Array.from({ length: columns }).map((_, j) => (
-          <Skeleton key={j} className={cn("h-3", j === 0 ? "w-1/5" : "flex-1")} />
+          <Skeleton key={j} className={cn("ui-skeleton-caption", j === 0 ? "w-1/5" : "flex-1")} />
         ))}
       </div>
       <div className="ui-skeleton-table-body">
@@ -58,7 +61,7 @@ export function SkeletonTable({ rows = 8, columns = 5 }: SkeletonRowsProps) {
             className={cn("ui-skeleton-table-row", tableCellPaddingClass, tableRowHeightClass)}
           >
             {Array.from({ length: columns }).map((_, j) => (
-              <Skeleton key={j} className={cn("h-4", j === 0 ? "w-1/5" : "flex-1")} />
+              <Skeleton key={j} className={cn("ui-skeleton-line", j === 0 ? "w-1/5" : "flex-1")} />
             ))}
           </div>
         ))}
@@ -71,13 +74,13 @@ export function SkeletonTable({ rows = 8, columns = 5 }: SkeletonRowsProps) {
 export function SkeletonDetail() {
   return (
     <div className="ui-skeleton-detail ui-skeleton-detail-stack" aria-busy="true">
-      <Skeleton className="h-7 w-1/3" />
-      <Skeleton className="h-4 w-1/2" />
+      <Skeleton className="ui-skeleton-title w-1/3" />
+      <Skeleton className="ui-skeleton-line w-1/2" />
       <div className="ui-skeleton-detail-box ui-skeleton-detail-stack">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="ui-skeleton-detail-stack">
-            <Skeleton className="h-3 w-24" />
-            <Skeleton className="h-4 w-full max-w-md" />
+            <Skeleton className="ui-skeleton-detail-label" />
+            <Skeleton className="ui-skeleton-detail-value" />
           </div>
         ))}
       </div>
@@ -89,9 +92,9 @@ export function SkeletonDetail() {
 export function SkeletonStat() {
   return (
     <div className="ui-skeleton-stat" aria-busy="true">
-      <Skeleton className="h-3 w-24" />
-      <Skeleton className="h-[length:var(--control-height)] w-32" />
-      <Skeleton className="h-3 w-20" />
+      <Skeleton className="ui-skeleton-detail-label" />
+      <Skeleton className="ui-skeleton-stat-value" />
+      <Skeleton className="ui-skeleton-stat-caption" />
     </div>
   );
 }

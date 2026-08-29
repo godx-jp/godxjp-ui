@@ -20,8 +20,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Theme nào đang set bốn tên cũ phải đổi; giá trị mặc định giữ nguyên nên không đổi hình ảnh.
   `--focus-ring-opacity` ở `foundation.css` là token nền tier khác và **không** đổi.
 
+### Fixed
+
+- **122 control tokens were silently dead for most of the v19 refactor.** Every token appended to
+  `src/tokens/components/control.css` during #319 landed _after_ the closing brace of `:root` but
+  _inside_ the trailing `@media (pointer: coarse)` block. A bare declaration in a conditional
+  group rule is invalid CSS, so browsers dropped all of them: `--control-affix-*` ·
+  `--control-inline-affix-*` · `--select-*` · `--cascader-*` · `--search-select-*` ·
+  `--time-picker-*` · `--tree-select-*` · `--calendar-*` · `--transfer-*` · `--month-picker-*` ·
+  `--button-xs-*` · `--input-file-button-*` resolved to nothing. Nothing caught it — the tier
+  guard read the file line by line, the geometry ratchet only reads `.tsx`, and jsdom does not
+  resolve the cascade — so `check-token-tiers` passed on a file where a third of the tokens did
+  not exist. They are now in a plain `:root`, and `check-token-tiers` walks the brace structure so
+  a declaration outside any rule fails the build with its line number and the at-rule it is
+  trapped in.
+- **`--space-9` never existed.** Two control tokens referenced it (`foundation.css` jumps
+  `--space-8` → `--space-10`), so the inline room a trigger reserves for its affix resolved to
+  nothing. Both now carry a raw `2.25rem`, matching the flat `pe-9` step they replaced.
+- **Calendar day cells lost their padding reset to Button.** `.ui-button--default-size` is
+  declared later in `control.css` than `.ui-calendar-day-button` and at equal specificity, so its
+  block padding re-applied to a day cell. The calendar rule is now scoped to `.ui-calendar`.
+- **`check-no-hardcoded-geometry` counted class lists written inside comments.** Card's
+  `className="border-2"` explainer and Topbar's JSDoc `<Avatar className="rounded-md">` example
+  were both reported as debt in files that have none. Comments are stripped before scanning.
+
 ### Added
 
+- **Skeleton bars are token-themeable (#319) — 14 literals → 0.** Bar heights and fixed widths
+  were literal, so a service could not match the loading state to its own type scale:
+  `--skeleton-block-height` · `--skeleton-caption-height` · `--skeleton-title-height` ·
+  `--skeleton-label-width` · `--skeleton-detail-value-max-width` · `--skeleton-stat-value-width` ·
+  `--skeleton-stat-caption-width`. These carry RAW rem rather than `var(--space-N)` on purpose:
+  the literals they replace are flat Tailwind steps, not density-scaled ones, so routing them
+  through the spacing scale would have made the loading state track the density axis while the
+  content it stands in for does not.
 - **DatePicker and DateRangePicker are token-themeable (#319) — 22 literals → 0 across both — and
   three more shapes moved up to control level.** DatePicker parks the same clear+calendar affix
   pair TimePicker does, and DateRangePicker uses the same bordered two-input shell as
