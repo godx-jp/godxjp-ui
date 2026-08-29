@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **A shadcn-compatible registry, publishing the design language rather than the components
+  (#316 Phase 5).** `@godxjp/theme` (the token system) and `@godxjp/styles` (the stylesheets it
+  drives) resolve at `https://godx-jp.github.io/godxjp-ui/registry/{name}.json` through the
+  existing Pages deploy — no new infrastructure. A consumer adds one line to their own
+  `components.json` and runs `npx shadcn add @godxjp/theme`.
+  **The 165 components are deliberately NOT published.** A registry is a copy-paste channel;
+  copying them would fork a consumer's copy from the package, so they would stop receiving token
+  and a11y fixes while carrying ~73k lines they did not write. The library is an npm package and
+  stays one. What a registry is genuinely right for here is the half the package cannot hand you:
+  `docs/showcase/acme-portal.tsx` reproduces an entire brand — gold and navy, Source Sans 3, a
+  14px radius, tinted shadows — by configuring tokens alone, with no component edits. Tokens are
+  values rather than logic, so a copied theme cannot drift into a broken component.
+  The theme ships its CSS files verbatim instead of flattening them into `cssVars`: the system is
+  layered on purpose and the density axis resolves through `calc(… * var(--scaling))`, so a
+  flattened value map would compute that away and hand over a frozen snapshot that no longer
+  answers to `--scaling` or a scoped `[data-tenant]`.
+
 ### Changed
 
 - **Dependencies: everything that can move is on its latest, and the two that cannot are
