@@ -42,6 +42,17 @@
     --control-padding-x: var(--app-setting-picker-compact-padding-x);
     --control-font-size: var(--app-setting-picker-compact-font-size);
   }
+  /* Tabs root — the flex box that stacks the strip above its panel (#319). The strip↔panel gap is
+   * a token so a service can retune the tab rhythm to its own grid; `min-inline-size: 0` is NOT a
+   * knob but the flexbox shrink idiom that used to ride along as `min-w-0`: without it the strip's
+   * intrinsic width forces every ancestor wider instead of letting the strip scroll its own
+   * overflow (gh#175). `display:flex` / the vertical column stay on the component — they are
+   * structure, not a service-tunable constant. */
+  [data-slot="tabs"] {
+    min-inline-size: 0;
+    gap: var(--tabs-root-gap);
+  }
+
   [data-slot="tabs-list"] {
     max-inline-size: var(--tabs-list-max-inline-size);
     overflow-x: var(--tabs-list-overflow);
@@ -86,6 +97,16 @@
     [data-slot="tabs-list"][data-variant="line"] [data-slot="tabs-trigger"]::after {
       transition: none;
     }
+  }
+
+  /* Pagination chevrons (#319). The `simple` form draws Prev/Next as size="sm" Buttons whose only
+   * content is the glyph, so it must NOT inherit the small-button icon tier — the chevron is the
+   * whole control. Pagination lives in styles/layout.css, but this override has to out-specify
+   * `.ui-button--sm svg` (0,1,1) from styles/control.css, so it is authored here at (0,2,1); a
+   * plain `.ui-pagination svg` rule would lose the cascade and silently shrink both chevrons. */
+  .ui-pagination .ui-button svg {
+    inline-size: var(--pagination-icon-size);
+    block-size: var(--pagination-icon-size);
   }
 
   .ui-context-menu-content {

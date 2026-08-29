@@ -46,6 +46,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Tabs, Pagination, ScrollArea and InfiniteQueryState are token-themeable (#319) — 17 literals → 0.** Tabs' line variant carried its whole box on the component: `--tabs-root-gap` ·
+  `--tabs-list-line-space-inset` · `--tabs-trigger-line-radius` ·
+  `--tabs-trigger-line-padding-x` · `--tabs-trigger-line-padding-y`. Two of its literals were
+  neither: `shadow-sm` duplicated the base trigger rule and `mt-0` was dead, so both are gone
+  rather than tokenized. The root's `min-w-0` moved into the stylesheet instead of becoming a
+  knob — a flexbox shrink floor is an idiom, not a constant a service should be able to reach.
+  ScrollArea had no CSS rule at all: `--scroll-area-bar-size` (raw rem, because the Tailwind step
+  it replaces is flat rather than density-scaled) · `--scroll-area-bar-padding` ·
+  `--scroll-area-thumb-radius`. InfiniteQueryState gained
+  `--query-load-more-space-block-start` / `--query-loading-more-space-block-start`.
+  **Pagination's chevrons kept their `size-4` as a token-backed utility rather than moving to
+  CSS**: `.ui-button--sm svg` sizes them at 0.875rem and Tailwind v4 orders utilities after
+  components, so a components-layer rule would have silently shrunk both chevrons — the utility
+  now reads `--pagination-icon-size`, whose default is `var(--control-icon-size)` — identical to
+  the old `size-4` at default density, but it now tracks the density axis where the flat literal
+  did not. That is the intended behaviour for a control glyph; it is a change only under
+  compact/comfortable density.
 - **PermissionMatrix is token-themeable (#319) — 9 literals → 0.** `.ui-permission-matrix` had
   existed as a bare hook with no CSS rule anywhere, so every constant lived on the component and a
   JA/VI service whose role names run longer than the English ones could not widen the label column

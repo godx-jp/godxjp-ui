@@ -675,3 +675,25 @@
     block-size: var(--permission-matrix-cell-icon-size);
   }
 }
+
+@layer components {
+  /* SCROLL AREA — the custom scrollbar rail (#319). There was no `.ui-scroll*` rule anywhere: the
+   * rail's whole geometry lived on the component as Tailwind literals, so a service could not
+   * retune it. Logical sizing (inline-/block-size) keeps the rail correct in RTL and in vertical
+   * writing modes; the thumb radius is a knob so a sharp-cornered theme squares it once. */
+  .ui-scroll-area-bar {
+    padding: var(--scroll-area-bar-padding);
+  }
+
+  .ui-scroll-area-bar--vertical {
+    inline-size: var(--scroll-area-bar-size);
+  }
+
+  .ui-scroll-area-bar--horizontal {
+    block-size: var(--scroll-area-bar-size);
+  }
+
+  .ui-scroll-area-thumb {
+    border-radius: var(--scroll-area-thumb-radius);
+  }
+}

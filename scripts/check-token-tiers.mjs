@@ -90,7 +90,19 @@ const componentPrefixes = {
     "cascader",
   ],
   // `banner` is the page-level Alert treatment (gh#255) — same component file, own measure knobs.
-  feedback: ["dialog", "alert", "banner", "empty-state", "skeleton", "sheet", "tooltip", "popover"],
+  // `query` = the InfiniteQueryState/DataState lifecycle footers — query feedback surfaces with no
+  // stylesheet of their own, so their knobs live in the feedback tier (gh#319).
+  feedback: [
+    "dialog",
+    "alert",
+    "banner",
+    "empty-state",
+    "skeleton",
+    "sheet",
+    "tooltip",
+    "popover",
+    "query",
+  ],
   navigation: [
     "pagination",
     "menu",
@@ -119,6 +131,7 @@ const componentPrefixes = {
     "list-row",
     "descriptions",
     "qr-code",
+    "scroll-area",
   ],
   "data-entry": ["password-strength"],
   shell: [

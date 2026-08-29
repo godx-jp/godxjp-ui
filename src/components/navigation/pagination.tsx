@@ -183,7 +183,10 @@ export function Pagination({
           aria-label={t("navigation.pagination.prev")}
           onClick={() => go(safeCurrent - 1)}
         >
-          <ChevronLeft className="size-4" aria-hidden="true" />
+          {/* Glyph size is owned by --pagination-icon-size in styles/navigation-layout.css — a
+           * literal here could not be re-themed, and simply dropping it would hand the chevron to
+           * the small-button icon tier (#319). */}
+          <ChevronLeft aria-hidden="true" />
         </Button>
         <span className="ui-pagination-count">
           {safeCurrent} / {totalPages}
@@ -196,7 +199,7 @@ export function Pagination({
           aria-label={t("navigation.pagination.next")}
           onClick={() => go(safeCurrent + 1)}
         >
-          <ChevronRight className="size-4" aria-hidden="true" />
+          <ChevronRight aria-hidden="true" />
         </Button>
       </nav>
     );

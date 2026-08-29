@@ -1,9 +1,20 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import * as React from "react";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
+
+/** Prettier wraps long selectors across lines — compare on a whitespace-normalized copy. */
+const navigationCss = readFileSync(
+  resolve(process.cwd(), "src/styles/navigation-layout.css"),
+  "utf8",
+)
+  .replace(/\s+/g, " ")
+  .trim();
 
 /**
  * Regression coverage for gh#175 — two confirmed Tabs framework defects:
@@ -146,9 +157,18 @@ describe("Tabs — horizontal tablist scrolls instead of clipping long labels (g
     );
   });
 
-  it("the Tabs root is a shrinkable flex container (min-w-0) so it never forces an ancestor wider", () => {
+  it("the Tabs root is a shrinkable flex container so it never forces an ancestor wider", () => {
     const { container } = render(<Tabs items={FIRST_DISABLED} />);
-    expect(container.querySelector('[data-slot="tabs"]')?.className).toContain("min-w-0");
+    const root = container.querySelector('[data-slot="tabs"]');
+    expect(root?.className).toContain("flex");
+    // The shrink floor used to be a `min-w-0` Tailwind literal on the component. Tokenizing the
+    // tab box (#319) moved it — and only it — into styles/navigation-layout.css, keyed off the
+    // very same data-slot, so the floor still applies to exactly this element. It is asserted on
+    // the stylesheet because a service theme must never be able to reach it: unlike the strip↔panel
+    // gap next to it, `min-inline-size: 0` is the flexbox shrink idiom, not a tunable constant.
+    expect(navigationCss).toContain(
+      '[data-slot="tabs"] { min-inline-size: 0; gap: var(--tabs-root-gap); }',
+    );
   });
 
   it("vertical orientation keeps the horizontal-only scroll utility ATTRIBUTE-GATED (data-[orientation=horizontal]:*), so it never applies to the vertical rail", () => {

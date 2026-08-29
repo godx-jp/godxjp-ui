@@ -1574,6 +1574,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."
   },
   {
+    "name": "--scroll-area-bar-size",
+    "value": "0.625rem",
+    "description": "SCROLL AREA — the custom scrollbar rail. `.ui-scroll-area-*` did not exist at all: the whole * rail shipped as Tailwind literals on the component (`w-2.5 p-px` / `h-2.5 p-px`, * `rounded-full`), so a service could not widen the bar for a touch/coarse-pointer console or * square the thumb to match a sharp-cornered theme without forking ScrollArea (rule #45). * --scroll-area-bar-size is a RAW rem on purpose: it replaces a FLAT Tailwind step (2.5 = 10px), * not a --space-* step, so binding it to the density-scaled scale would silently change today's * rendering under a non-default --scaling. Defaults reproduce the previous rail exactly."
+  },
+  {
+    "name": "--scroll-area-bar-padding",
+    "value": "1px",
+    "description": "Hairline inset that keeps the thumb off the rail edge — a service running a thicker bar * usually wants a proportionally larger gutter here."
+  },
+  {
+    "name": "--scroll-area-thumb-radius",
+    "value": "var(--radius-pill)",
+    "description": "Hairline inset that keeps the thumb off the rail edge — a service running a thicker bar * usually wants a proportionally larger gutter here."
+  },
+  {
     "name": "--permission-matrix-label-width",
     "value": "16rem",
     "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant * lived on the component (#319). A JA/VI service whose role names run longer than the English * ones could not widen the label column without forking."
@@ -2164,6 +2179,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
   },
   {
+    "name": "--query-load-more-space-block-start",
+    "value": "var(--space-stack-md)",
+    "description": "QUERY LIFECYCLE FOOTERS — the two rows `<InfiniteQueryState>` appends under a paginated feed: * the \"load more\" button row and the \"loading more…\" caption. Both gaps were Tailwind literals * on the component (`pt-4` / `pt-2`), so a service running a denser (or airier) feed could not * align them to its own vertical rhythm without forking the component (rule #45). They live in * the feedback tier because these ARE query feedback surfaces and there is no query stylesheet. * Defaults = var(--space-stack-md) (16px) and var(--space-stack-sm) (8px) — the exact values the * Tailwind steps resolved to, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--query-loading-more-space-block-start",
+    "value": "var(--space-stack-sm)",
+    "description": "QUERY LIFECYCLE FOOTERS — the two rows `<InfiniteQueryState>` appends under a paginated feed: * the \"load more\" button row and the \"loading more…\" caption. Both gaps were Tailwind literals * on the component (`pt-4` / `pt-2`), so a service running a denser (or airier) feed could not * align them to its own vertical rhythm without forking the component (rule #45). They live in * the feedback tier because these ARE query feedback surfaces and there is no query stylesheet. * Defaults = var(--space-stack-md) (16px) and var(--space-stack-sm) (8px) — the exact values the * Tailwind steps resolved to, so adopting this changes nothing until a theme opts in."
+  },
+  {
     "name": "--tooltip-max-width",
     "value": "20rem",
     "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
@@ -2659,49 +2684,54 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
+    "name": "--pagination-icon-size",
+    "value": "var(--control-icon-size)",
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
+  },
+  {
     "name": "--filter-bar-gap",
     "value": "var(--space-3)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--filter-bar-padding-y",
     "value": "var(--space-2)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--filter-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--filter-picker-width-sm",
     "value": "11rem",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--filter-picker-width-md",
     "value": "14rem",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--steps-inline-gap",
     "value": "var(--space-2)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--steps-inline-item-gap",
     "value": "var(--space-1)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--steps-inline-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--steps-inline-separator-size",
     "value": "var(--control-icon-size-sm)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--steps-inline-index-font-weight",
@@ -2772,6 +2802,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--tabs-indicator-offset",
     "value": "0px",
     "description": "Tabs `line` active indicator (gh#248) — the ONLY selected-state decoration the line variant * paints. The surrounding active ring belongs to the default/card lists, so `:focus-visible` * keeps its own distinct keyboard ring here (WCAG 2.4.7). `--tabs-indicator-background` is a * role-mirror knob: `initial` so hsl(var(--primary)) re-resolves at the CALL SITE under a scoped * [data-tenant]/.dark theme (a :root binding to a role var would freeze at :root). * Default = hsl(var(--primary)) · 2px thick · flush with the trigger edge (offset 0 = quietest, * rule #44); a service raises the offset to park the bar on a thicker strip hairline."
+  },
+  {
+    "name": "--tabs-root-gap",
+    "value": "0.5rem",
+    "description": "Gap between the tab strip and the panel below it."
+  },
+  {
+    "name": "--tabs-list-line-space-inset",
+    "value": "0px",
+    "description": "Inset of the `line` strip. The default/pill strip keeps its own padding box; the line strip is * a flat underlined rail, so its default is the quietest value — none (rule #44). Raise it to * give the rail breathing room above its hairline."
+  },
+  {
+    "name": "--tabs-trigger-line-radius",
+    "value": "0px",
+    "description": "`line` trigger box. Square corners because the selected state is the token-owned ::after bar, * never a pill; the hit box is wider/taller than the pill trigger so the underline spans a real * column of the rail."
+  },
+  {
+    "name": "--tabs-trigger-line-padding-x",
+    "value": "1rem",
+    "description": "`line` trigger box. Square corners because the selected state is the token-owned ::after bar, * never a pill; the hit box is wider/taller than the pill trigger so the underline spans a real * column of the rail."
+  },
+  {
+    "name": "--tabs-trigger-line-padding-y",
+    "value": "0.5rem",
+    "description": "`line` trigger box. Square corners because the selected state is the token-owned ::after bar, * never a pill; the hit box is wider/taller than the pill trigger so the underline spans a real * column of the rail."
   },
   {
     "name": "--menubar-item-hover-background",

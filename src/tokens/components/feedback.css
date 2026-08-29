@@ -113,6 +113,16 @@
   --skeleton-stat-value-width: 8rem;
   --skeleton-stat-caption-width: 5rem;
 
+  /* QUERY LIFECYCLE FOOTERS — the two rows `<InfiniteQueryState>` appends under a paginated feed:
+   * the "load more" button row and the "loading more…" caption. Both gaps were Tailwind literals
+   * on the component (`pt-4` / `pt-2`), so a service running a denser (or airier) feed could not
+   * align them to its own vertical rhythm without forking the component (rule #45). They live in
+   * the feedback tier because these ARE query feedback surfaces and there is no query stylesheet.
+   * Defaults = var(--space-stack-md) (16px) and var(--space-stack-sm) (8px) — the exact values the
+   * Tailwind steps resolved to, so adopting this changes nothing until a theme opts in. */
+  --query-load-more-space-block-start: var(--space-stack-md);
+  --query-loading-more-space-block-start: var(--space-stack-sm);
+
   /* TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into
    * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not
    * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce

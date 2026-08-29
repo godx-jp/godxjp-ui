@@ -81,7 +81,7 @@ export function InfiniteQueryState<TPage, TFlat>({
   const footer =
     showLoadMore && query.hasNextPage
       ? (loadMore ?? (
-          <div className="flex justify-center pt-4">
+          <div className="flex justify-center pt-[var(--query-load-more-space-block-start)]">
             <Button
               type="button"
               variant="outline"
@@ -104,7 +104,9 @@ export function InfiniteQueryState<TPage, TFlat>({
       })}
       {query.isFetchingNextPage &&
         (loadingMore ?? (
-          <p className="text-muted-foreground pt-2 text-center text-xs">{t("common.working")}</p>
+          <p className="text-muted-foreground pt-[var(--query-loading-more-space-block-start)] text-center text-xs">
+            {t("common.working")}
+          </p>
         ))}
       {footer}
     </>
