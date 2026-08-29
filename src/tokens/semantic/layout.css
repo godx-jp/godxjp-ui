@@ -83,13 +83,16 @@
    *                   `className="bg-card"` at the call site: that is hand-laid page chrome, it
    *                   paints only under `variant="flush"` gutters correctly by accident, and it
    *                   cannot be re-themed per tenant.
-   *   pad-block 0   — the container's --space-section-active gap already spaces the band from the
-   *                   header and the body; a service that opts into the background or the divider
-   *                   gives the band its own inset HERE (`--page-toolbar-pad-block: var(--space-2)`)
-   *                   instead of padding the strip at the call site. Deliberately still 0 now that
-   *                   the band can be painted: a transparent band has no inside for the inset to
-   *                   breathe, and under `fill` every pixel of it comes straight off the scroll
-   *                   viewport the slot exists to protect.
+   *   pad-block 0   — the band's ONLY breathing room, and the only one it should ever have. The
+   *                   band is chrome, so it sits FLUSH against the header above and the body
+   *                   below (src/styles/layout.css cancels the container's --page-band-gap from
+   *                   the band itself); there is deliberately no outside space to tune, because a
+   *                   ruled, painted band floating in a void divides nothing. A service that opts
+   *                   into the background or the divider gives the band its inset HERE
+   *                   (`--page-toolbar-pad-block: var(--space-2)`) instead of padding the strip at
+   *                   the call site. Still 0 by default: a transparent band is not a surface and
+   *                   has no inside to breathe, and under `fill` every pixel of it comes straight
+   *                   off the scroll viewport the slot exists to protect.
    *   divider       — declared `initial` so the CALL SITE can fall back to --page-header-divider
    *                   (`var(--page-toolbar-divider, var(--page-header-divider))`). One theme
    *                   declaration therefore rules the whole page chrome consistently, and a
@@ -101,10 +104,27 @@
   --page-toolbar-pad-block: 0px;
   --page-toolbar-divider: initial;
 
+  /* Top rule of the PageContainer `footer` — the third page chrome band, brought onto the same
+   * contract as the header and the toolbar (its rule used to be a hard literal in layout.css, so
+   * a page could not turn it off at all). Declared `initial` like the toolbar's, so the CALL SITE
+   * resolves it as `var(--page-footer-divider, 1px solid hsl(var(--border)))` and a scoped
+   * [data-tenant]/.dark override still reaches it (docs/TOKENS.md · "Role-mirror knobs MUST be
+   * `initial`").
+   *
+   * It is the ONE chrome knob whose default is a RULE rather than silence, and deliberately so:
+   * `footer` is the shared slot a form's Save/Cancel bar lands in, where the line separating the
+   * actions from the page content is the behaviour every existing page already depends on. The
+   * old literal is the fallback verbatim, so unset is byte-identical. A page whose footer content
+   * already carries its own frame — a chat composer is a bordered Card — silences the duplicate
+   * with `--page-footer-divider: none`. */
+  --page-footer-divider: initial;
+
   /* Bottom inset of the page header, sized so title→body distance (this pad + the
    * --space-section-active container gap) EQUALS the page's top padding — the title
    * band reads vertically balanced (24 above / 24 below by default), instead of the
-   * old fixed 16px pad that left 24 above vs 32 below. */
+   * old fixed 16px pad that left 24 above vs 32 below. A page that passes a `toolbar`
+   * measures title→BAND instead (this pad alone, the gap being cancelled): the band is
+   * chrome attached to the header, not the next section down. */
   --page-header-pad-bottom: calc(var(--space-page-active-y) - var(--space-section-active));
 
   /* Inline measure of the header `extra` region while the page header is in `responsive-inline`

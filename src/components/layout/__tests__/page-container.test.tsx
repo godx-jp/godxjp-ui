@@ -452,8 +452,42 @@ describe("PageContainer", () => {
       expect(layoutTokens).toMatch(/--page-header-divider:\s*none;/);
       expect(layoutCss).toMatch(/border-bottom: var\(--page-header-divider\);/);
       expect(layoutCss).toMatch(
-        /\.ui-page-container--ghost \.ui-page-header \{\s*border-bottom: none;\s*padding-bottom: 0;/,
+        /\.ui-page-container--ghost \.ui-page-header \{\s*border-bottom: var\(--page-header-divider, none\);\s*padding-bottom: 0;/,
       );
+    });
+
+    it("ghost silences an INHERITED header divider, never an explicit one", () => {
+      // The same bug the toolbar band already had, one element up. Hard-setting `none` here threw
+      // away an EXPLICIT `--page-header-divider` as well as the nothing it meant to block, so a
+      // service could opt its page chrome into a rule and a ghost page would still refuse to draw
+      // it. Measured against a consumer chat design: the design carries TWO rules in the top chrome
+      // (channel head y=47, work band y=88) and the app rendered ONE (y=133) — the missing y=47 is
+      // this declaration eating the divider the service had already turned on. Re-declaring the
+      // property from the SAME knob with a `none` fallback keeps "nothing inherits in" while
+      // letting the opt-in through, and the default (--page-header-divider: none) is byte-identical
+      // to the hard-set version.
+      const ghostHeader =
+        layoutCss.match(/\.ui-page-container--ghost \.ui-page-header \{[^}]*\}/)?.[0] ?? "";
+      expect(ghostHeader).toMatch(/border-bottom: var\(--page-header-divider, none\);/);
+      expect(ghostHeader).not.toMatch(/border-bottom: none;/);
+      // Header and band answer the question the same way — one page chrome, not two policies.
+      const ghostBand =
+        layoutCss.match(/\.ui-page-container--ghost \.ui-page-toolbar \{[^}]*\}/)?.[0] ?? "";
+      expect(ghostBand).toMatch(/border-block-end: var\(--page-toolbar-divider, none\);/);
+    });
+
+    it("does NOT touch ghost's padding-bottom: 0 — that half really is the quiet one", () => {
+      // The two halves of the ghost header rule are different kinds of decision. The pad answers
+      // "how loud is this chrome", no token mediates it, and it is the half a quiet page actually
+      // wants; only the border half was ever a policy about someone else's opt-in. A fix to one
+      // must not drift into the other.
+      const ghostHeader =
+        layoutCss.match(/\.ui-page-container--ghost \.ui-page-header \{[^}]*\}/)?.[0] ?? "";
+      expect(ghostHeader).toMatch(/padding-bottom: 0;/);
+      expect(ghostHeader).not.toMatch(/padding-bottom: var\(/);
+      // …and the non-ghost header still takes the token-owned pad, so ghost is the only page that
+      // drops it.
+      expect(layoutCss).toMatch(/padding-bottom: var\(--page-header-pad-bottom\);/);
     });
 
     it("has no a11y violations in the bounded quiet feed composition", async () => {
@@ -485,6 +519,25 @@ describe("PageContainer", () => {
       resolve(process.cwd(), "src/tokens/semantic/layout.css"),
       "utf8",
     );
+
+    /** Body of the block opened by `pattern`, brace-matched so a nested rule cannot truncate it. */
+    const bodyOf = (css: string, pattern: RegExp): string => {
+      const open = new RegExp(pattern.source, "g");
+      if (!open.exec(css)) return "";
+      let depth = 1;
+      let index = open.lastIndex;
+      while (index < css.length && depth > 0) {
+        if (css[index] === "{") depth += 1;
+        else if (css[index] === "}") depth -= 1;
+        index += 1;
+      }
+      return css.slice(open.lastIndex, index - 1);
+    };
+
+    /** The band's own rule — several blocks mention `.ui-page-toolbar`, only this one IS it. */
+    const toolbarBand = layoutCss.match(/\n {2}\.ui-page-toolbar \{[^}]*\}/)?.[0] ?? "";
+    // The compact step re-decides the container's spacing tokens, so it has to be read apart.
+    const compactCss = bodyOf(layoutCss, /@media \(max-width: 720px\) \{/);
 
     it("renders NOTHING when the prop is omitted — no element, no gap", () => {
       const { container } = renderWithUi(
@@ -623,12 +676,13 @@ describe("PageContainer", () => {
     });
 
     it("keeps --page-toolbar-pad-block at 0 — the DECISION, not an oversight", () => {
-      // Re-examined when the ground knob landed and deliberately left alone. A TRANSPARENT band has
-      // no inside for an inset to breathe; the container's --space-section-active gap already
-      // separates it from the header and the body; and under `fill` every pixel of band height is
-      // taken straight from the scroll viewport this slot exists to protect. A theme that PAINTS or
-      // RULES the band sets the inset in the same declaration — which is why `pad-block` sits beside
-      // `background` in the token file rather than being folded into the band's rule.
+      // Re-examined when the ground knob landed, and again when the band went flush, and left alone
+      // both times. A TRANSPARENT band is not a surface and has no inside for an inset to breathe;
+      // under `fill` every pixel of band height is taken straight from the scroll viewport this slot
+      // exists to protect. A theme that PAINTS or RULES the band sets the inset in the same
+      // declaration — which is why `pad-block` sits beside `background` in the token file rather than
+      // being folded into the band's rule. It is now the band's ONLY breathing room: the outside is
+      // flush by contract (see the flush cases below), so this knob is where the air comes from.
       expect(layoutTokens).toMatch(/--page-toolbar-pad-block:\s*0px;/);
       expect(layoutTokens).toMatch(
         /--page-toolbar-background:[\s\S]{0,80}--page-toolbar-pad-block:[\s\S]{0,80}--page-toolbar-divider:/,
@@ -643,6 +697,127 @@ describe("PageContainer", () => {
       const band = container.querySelector(".ui-page-toolbar")!;
       expect(band.getAttribute("class")).toBe("ui-page-toolbar");
       expect(band.hasAttribute("style")).toBe(false);
+    });
+
+    it("sits FLUSH against the band above and the band below — chrome is attached, not floating", () => {
+      // The hole a consumer chat screen measured (1512×805): header 24/69 · band 85/134 · body
+      // 150/685 — 16px of nothing on EACH side of the one element whose job is to divide. The band
+      // carries a ground and a bottom rule, so floating it between two voids made the rule separate
+      // nothing and cost 32px of transcript. The container's gap is right for a document page and
+      // wrong for chrome, so the band cancels it from ITSELF: one declaration, and the rhythm every
+      // toolbar-less page depends on is untouched.
+      expect(toolbarBand).toMatch(/margin-block: calc\(-1 \* var\(--page-band-gap\)\);/);
+      // …and the gap it cancels is the very number the container spaces by — read from one
+      // variable, never restated as a length here (rule #46).
+      expect(layoutCss).toMatch(
+        /\.ui-page-container \{\s*--page-band-gap: var\(--space-section-active\);[\s\S]*?gap: var\(--page-band-gap\);/,
+      );
+      expect(toolbarBand).not.toMatch(/margin-block:[^;]*\d+(?:px|rem)/);
+    });
+
+    it("tracks the gap through EVERY scope that re-decides it — ghost, the 720px step, the preset", () => {
+      // Why the number goes through a variable instead of `calc(-1 * var(--space-section-active))`
+      // straight in the band's rule: three separate scopes re-decide the container's gap, and a
+      // hard-coded negation would only LOOK right today, because --space-stack-md and
+      // --space-section-active both resolve to 16px. Retune --space-section in a service theme and
+      // a ghost page's band would overlap or float by the difference, silently.
+      //
+      // ghost swaps the gap token outright — it must do that by moving --page-band-gap, not by
+      // re-declaring `gap`, or the band would cancel a gap the container is no longer using.
+      expect(layoutCss).toMatch(
+        /\.ui-page-container--ghost \{\s*--page-band-gap: var\(--space-stack-md\);\s*\}/,
+      );
+      expect(layoutCss).not.toMatch(/\.ui-page-container--ghost \{\s*gap:/);
+      // The 720px step and the admin-collection preset both move --space-section-active ON THE
+      // CONTAINER, so --page-band-gap re-resolves there and the band's margin follows by
+      // inheritance. Neither one may restate a gap or a band margin of its own.
+      expect(compactCss).toMatch(/\.ui-page-container \{[^}]*--space-section-active:/);
+      expect(compactCss).not.toMatch(/--page-band-gap|\.ui-page-toolbar/);
+      const presetRule =
+        layoutCss.match(/\.ui-page-container\[data-preset="admin-collection"\] \{[^}]*\}/)?.[0] ??
+        "";
+      expect(presetRule).toMatch(/--space-section-active: var\(--admin-collection-section-gap\);/);
+      expect(presetRule).not.toMatch(/gap:/);
+      // Exactly one band cancels the gap. The header, the body and the footer keep the container's
+      // rhythm — a page of three document blocks is what that rhythm is FOR.
+      const rules = layoutCss.replace(/\/\*[\s\S]*?\*\//g, "");
+      const cancelling = [...rules.matchAll(/margin-block[^;]*calc\(-1 \*/g)].map((match) => {
+        const open = rules.lastIndexOf("{", match.index);
+        return rules.slice(rules.lastIndexOf("}", open) + 1, open).trim();
+      });
+      expect(cancelling).toEqual([".ui-page-toolbar"]);
+    });
+
+    it("does not eat the page's own bottom padding when the band has nothing under it", () => {
+      // The band is never the first child (the header always renders) but it CAN be the last —
+      // `toolbar` with no `children`. There is no gap under a last flex item to cancel, so an
+      // unguarded negation would pull the page's bottom padding in by a whole gap instead.
+      expect(layoutCss).toMatch(/\.ui-page-toolbar:last-child \{\s*margin-block-end: 0;\s*\}/);
+      const { container } = renderWithUi(
+        <PageContainer title="Channel" toolbar={<Button>Unread</Button>} />,
+      );
+      const root = container.firstChild as HTMLElement;
+      expect(root.lastElementChild).toHaveClass("ui-page-toolbar");
+    });
+
+    it("leaves the body↔footer gap ALONE — a known hole, and a deliberate one", () => {
+      // Measured on the same chat page: body ends 684, 16px of air, the footer's hairline at 700,
+      // its own 16px inset, composer at 717. Symmetric — a rule with equal air on both sides reads
+      // as a separator, which is the opposite of the toolbar's defect (a painted band adrift in a
+      // void). The footer is also the SHARED slot every form's Save/Cancel bar lands in, and its
+      // 16px inset is a plain `padding-top`, not a knob a service could turn back up. So the chat
+      // composer keeps 16px above it; closing that gap is a separate decision with a far wider
+      // blast radius than one chrome band.
+      // `.ui-page-footer` also closes the shared page-gutter group above; the rule that draws the
+      // band is the one carrying the border.
+      const footerRule =
+        layoutCss.match(/\n {2}\.ui-page-footer \{[^}]*border-top[^}]*\}/)?.[0] ?? "";
+      expect(footerRule).toMatch(/padding-top: var\(--space-stack-md\);/);
+      expect(footerRule).toMatch(/border-top: var\(--page-footer-divider,/);
+      expect(footerRule).not.toMatch(/margin-block/);
+    });
+
+    it("puts the footer's rule on the SAME contract as the other two bands — a token, not a literal", () => {
+      // The third chrome band was the odd one out: the header reads --page-header-divider and the
+      // band reads --page-toolbar-divider, but the footer's line was a hard-copied literal, so a
+      // page could not turn it off at all. Measured on a consumer chat screen, where the composer
+      // lives in this slot and is itself a bordered Card: a pixel diff against the design caught a
+      // 100%-wide rule at y=701 that the design does not have — the shell's line stacked on the
+      // Card's own.
+      const footerRule =
+        layoutCss.match(/\n {2}\.ui-page-footer \{[^}]*border-top[^}]*\}/)?.[0] ?? "";
+      expect(footerRule).toMatch(
+        /border-top: var\(--page-footer-divider, 1px solid hsl\(var\(--border\)\)\);/,
+      );
+      expect(footerRule).not.toMatch(/border-top: 1px solid/);
+      // `initial` at the semantic tier, beside the other two, so a scoped [data-tenant]/.dark
+      // override still reaches it — a `:root` binding would freeze it (docs/TOKENS.md).
+      expect(layoutTokens).toMatch(/--page-footer-divider:\s*initial;/);
+      expect(layoutTokens).toMatch(
+        /--page-toolbar-divider:\s*initial;[\s\S]{0,1400}--page-footer-divider:\s*initial;/,
+      );
+      // All three bands now answer the same way: a knob, resolved at the CALL SITE with a fallback.
+      expect(layoutCss).toMatch(/border-bottom: var\(--page-header-divider\);/);
+      expect(layoutCss).toMatch(
+        /border-block-end: var\(--page-toolbar-divider, var\(--page-header-divider\)\);/,
+      );
+    });
+
+    it("keeps the footer's DEFAULT a rule — the one chrome knob that is loud by default", () => {
+      // The other two default to silence; this one must not, and the reason is not symmetry but
+      // behaviour: `footer` is the shared slot a form's Save/Cancel bar lands in, where the line
+      // separating the actions from the content is what every existing page already draws. The old
+      // literal is the fallback VERBATIM, so an unset token is byte-identical to the hard-coded
+      // version, and `--page-footer-divider: none` is the opt-OUT (a chat composer that already
+      // carries its own Card frame).
+      expect(layoutTokens).toMatch(/--page-header-divider: none;/);
+      expect(layoutTokens).toMatch(/--page-toolbar-divider:\s*initial;/);
+      const footerRule =
+        layoutCss.match(/\n {2}\.ui-page-footer \{[^}]*border-top[^}]*\}/)?.[0] ?? "";
+      // The fallback is the OLD literal, verbatim — that is what makes "unset" byte-identical.
+      expect(footerRule).toContain(
+        "border-top: var(--page-footer-divider, 1px solid hsl(var(--border)));",
+      );
     });
 
     it("ghost silences the INHERITED rule, not an explicit one, and leaves the GROUND alone", () => {

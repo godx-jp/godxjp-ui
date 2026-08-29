@@ -32,10 +32,13 @@ import { Plus, Download, Filter } from "lucide-react";
  * the default band can sit beside the painted one. NEVER put `className="bg-card"` on the strip at
  * the call site: that is hand-laid page chrome, and it cannot be re-themed per tenant.
  *
- * The inset comes with it. `--page-toolbar-pad-block` stays `0` by default on purpose · a
- * transparent band has no inside to breathe, and under `fill` every pixel of it is taken from the
- * transcript. A band that is PAINTED does have an inside, so the theme that paints it also sets
- * its inset here rather than reaching for a `py-*` utility on the strip.
+ * The inset comes with it, and it is the band's ONLY breathing room: the band sits FLUSH against
+ * the header above and the body below, because chrome is attached · a painted, ruled band adrift
+ * between two 16px voids divides nothing. `--page-toolbar-pad-block` still stays `0` by default on
+ * purpose · a transparent band is not a surface and has no inside to breathe, and under `fill`
+ * every pixel of it is taken from the transcript. A band that is PAINTED does have an inside, so
+ * the theme that paints it also sets its inset here rather than reaching for a `py-*` utility on
+ * the strip.
  */
 const TOOLBAR_CHROME_TOKENS = {
   "--page-toolbar-background": "hsl(var(--card))",
@@ -257,7 +260,11 @@ export default function Demo() {
         </PageContainer.Inset>
       </PageContainer>
 
-      {/* ── 4. Ghost variant + breadcrumb depth ── */}
+      {/* ── 4. Ghost variant + breadcrumb depth ──
+          ghost は「クロムをどこまで静かにするか」を答える variant です。下余白は落とします
+          （padding-bottom: 0 · これが本当の静かさ）が、罫線は打ち消しません · サービスが
+          --page-header-divider を明示的に立てたなら ghost でも引かれます。帯（toolbar）の
+          --page-toolbar-divider と同じ規則で、ページのクロム 3 本が一つの契約に揃います。 */}
       <PageContainer
         variant="ghost"
         title="取引先詳細"
@@ -574,14 +581,17 @@ export default function Demo() {
           fill のとき本文（.ui-page-body）がスクロール領域になるので、帯はその SIBLING として
           スクロール領域の外に置かれる（flex: none）。呼び出し側で position: sticky を手置き
           しないための唯一の正規スロット。ページ余白と measure はヘッダー／本文と共有され、
-          帯の内側余白と下罫線はトークン所有（--page-toolbar-pad-block / --page-toolbar-divider）。 */}
+          帯の内側余白と下罫線はトークン所有（--page-toolbar-pad-block / --page-toolbar-divider）。
+          帯は上下の帯に密着します（.ui-page-container の段間はこの帯だけ打ち消される）· クロムは
+          くっつくものであり、空白に浮く「3 つ目のセクション」ではないからです。呼吸する場所は
+          帯の内側（--page-toolbar-pad-block）だけ。 */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
         {/* fill · 帯は固定、トランスクリプトだけがその下でスクロールする（帯の下に潜り込まない）。 */}
         <div className="h-80 overflow-auto rounded-md border">
           <PageContainer
             fill
             title="#経理チャンネル"
-            subtitle="toolbar 帯はスクロールしません"
+            subtitle="toolbar 帯はスクロールせず · 上下の帯に密着します"
             toolbar={
               <Toolbar>
                 <ToolbarGroup label="表示">
@@ -682,7 +692,10 @@ export default function Demo() {
         </PageContainer>
 
         {/* チャット面の正準構成: chrome（型段）× ghost（クロムの重さ）× fill × toolbar ×
-            stickyFooter。チャンネル名は「今いる場所の名前」であって記事の見出しではない。 */}
+            stickyFooter。チャンネル名は「今いる場所の名前」であって記事の見出しではない。
+            footer の上罫線も --page-footer-divider で消せます · 入力欄が自前で枠を持つ Card の
+            場合、全幅の罫線がその真上に重なって 2 本目の線になるためです。既定は「引く」のまま
+            （フォームの保存／取消バーはこの線で本文と分かれる）。 */}
         <div className="h-80 overflow-auto rounded-md border">
           <PageContainer
             fill

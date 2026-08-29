@@ -167,6 +167,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`PageContainer` `toolbar` sits FLUSH against the header and the body — chrome is attached,
+  not a third page section.** `.ui-page-container` is a flex column with one `gap` between every
+  band, which is right for a document page (header / body / footer are three separate blocks) and
+  wrong for chrome. Measured on a consumer chat page at 1512×805: header 24/69 · band 85/134 ·
+  body 150/685 — 16px of nothing on EACH side of the one element whose job is to divide. The band
+  carries a ground (`--page-toolbar-background`) and a bottom rule, so floating it between two
+  voids made the rule separate nothing and cost 32px of transcript on the surface where height is
+  scarcest. The band now cancels the gap from ITSELF (`margin-block: calc(-1 * var(--page-band-gap))`),
+  so the same page measures header 24/68 · band 68/109 · body 109/684 and the body keeps the 32px.
+  `--page-band-gap` is internal plumbing, not a new theming knob: it is the ONE resolved number the
+  container spaces by, introduced because three scopes re-decide that number (`variant="ghost"`
+  swaps it for `--space-stack-md`, the 720px step and the `admin-collection` preset swap the
+  section token underneath it) and a band that hard-coded `calc(-1 * var(--space-section-active))`
+  would have been right in some of them and silently a few pixels wrong in the rest. Verified flush
+  on both sides of the 720px step and under ghost / the preset / a retuned gap. A page that passes
+  no `toolbar` is untouched — DOM and geometry byte-identical — and `--page-toolbar-pad-block` is
+  unchanged at `0`, now the band's ONLY breathing room: a theme that paints or rules the band sets
+  its inset there, and the band has no outside space left to tune. The band is also guarded against
+  being the LAST child (`toolbar` with no `children`), where there is no gap under it to cancel and
+  the negation would otherwise eat the page's own bottom padding.
+  KNOWN AND DELIBERATELY LEFT: the 16px of SPACE between the body and the `footer` (its rule is a
+  separate matter, fixed below). Measured on the same
+  page — body ends 684, 16px of air, the footer's hairline at 700, its own 16px inset, composer at
+  717 — that rule has equal air on both sides, so it reads as a separator rather than as a surface
+  adrift, which was the toolbar's actual defect. `footer` is also the shared slot every form's
+  Save/Cancel bar lands in, and its 16px is a plain `padding-top`, not a knob a service could turn
+  back up; closing it is a separate decision with a far wider blast radius than one chrome band. A
+  chat composer therefore still keeps 16px above it.
+
+- **`variant="ghost"` no longer swallows an explicit `--page-header-divider`.**
+  `.ui-page-container--ghost .ui-page-header` hard-set `border-bottom: none`, which threw away not
+  just the nothing it meant to block but a rule the service had deliberately turned on — so page
+  chrome could be opted into a divider and a ghost page would still refuse to draw it. This is the
+  identical bug fixed on `.ui-page-toolbar` one release earlier, and it takes the identical cure:
+  re-declare the property from the SAME knob with a `none` fallback,
+  `border-bottom: var(--page-header-divider, none)`. Nothing inherits in, the opt-in passes through,
+  and with the token at its default (`none`) the result is byte-identical to the hard-set version —
+  verified in Chromium: a ghost page with `--page-header-divider: 1px solid hsl(var(--border))`
+  measured `0px none` before and `1px solid` after, while the same page with the token unset is
+  unchanged. Caught by a pixel diff against a consumer chat design, which carries TWO horizontal
+  rules in the top chrome (channel head at y=47, work band at y=88) where the app rendered ONE
+  (y=133) — the missing y=47 was this declaration. `padding-bottom: 0` in the same rule is
+  UNTOUCHED and has its own guard: that half answers "how loud is this chrome", no token mediates
+  it, and it is the half a quiet page actually wants.
+
+- **`PageContainer`'s footer rule is a token now — `--page-footer-divider`.** The three page-chrome
+  bands had drifted onto three different contracts: the header read `--page-header-divider`, the
+  toolbar read `--page-toolbar-divider`, and the footer hard-copied
+  `border-top: 1px solid hsl(var(--border))`, so a page could not turn it off at all. Measured on a
+  consumer chat screen, where the composer lives in this slot and is itself a bordered `Card`: the
+  shell's full-width rule landed directly above it as a SECOND line — a pixel diff against the
+  design caught a 100%-wide rule at y=701 the design does not have. The literal moves into the
+  fallback, `border-top: var(--page-footer-divider, 1px solid hsl(var(--border)))`, so an unset
+  token is byte-identical to what the rule drew before and `--page-footer-divider: none` is the
+  opt-out (verified in Chromium: `1px solid` → `0px none` with the token set, unchanged without).
+  Declared `initial` at the semantic tier beside the other two, so a scoped `[data-tenant]` / `.dark`
+  override still reaches it. It is the ONE chrome divider whose default is a RULE rather than
+  silence, and that asymmetry is deliberate rather than an oversight: `footer` is the shared slot a
+  form's Save/Cancel bar lands in, where the line separating the actions from the page content is
+  the behaviour every existing page already depends on. Three bands, one contract: each rule is a
+  knob resolved at the call site with a fallback, and none of them is a `border-*` utility at the
+  call site.
+
 - **Frame-coverage ledger: `Card.sizes` / `StatCard.sizes` reclassified** from
   `covered:prop-evidence:size` to `not-applicable:api-manifest`, and the issue #163 ratchet floor
   moved 65 → 63 covered cells. This is the one case where the floor going down is not a violation:
