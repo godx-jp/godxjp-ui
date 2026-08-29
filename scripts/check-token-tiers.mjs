@@ -55,6 +55,7 @@ const componentPrefixes = {
   feedback: ["dialog", "alert", "banner", "empty-state", "skeleton", "sheet", "tooltip", "popover"],
   navigation: [
     "pagination",
+    "menu",
     "filter",
     "filter-bar",
     "breadcrumb",

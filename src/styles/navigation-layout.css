@@ -89,8 +89,8 @@
   }
 
   .ui-context-menu-content {
-    z-index: 50;
-    min-width: 10rem;
+    z-index: var(--overlay-z-index);
+    min-width: var(--menu-content-min-width);
     overflow: hidden;
     border-radius: var(--radius-md);
     border: 1px solid hsl(var(--border));
@@ -111,14 +111,27 @@
   .ui-menubar-trigger,
   .ui-menubar-sub-trigger,
   .ui-menubar-checkbox-item,
-  .ui-menubar-radio-item {
-    border-radius: var(--radius-sm);
-    padding-inline: var(--space-2);
-    height: 2rem;
+  .ui-menubar-radio-item,
+  .ui-dropdown-menu-item,
+  .ui-dropdown-menu-label,
+  .ui-dropdown-menu-sub-trigger,
+  .ui-dropdown-menu-checkbox-item,
+  .ui-dropdown-menu-radio-item,
+  .ui-dropdown-menu-shortcut {
+    border-radius: var(--menu-item-radius);
+    padding-inline: var(--menu-item-space-inline);
+    height: var(--menu-item-height);
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    font-size: var(--font-size-base);
+    gap: var(--menu-item-space-gap);
+    font-size: var(--menu-item-font-size);
+  }
+
+  /* A row marked inset reserves the indicator column so its label lines up with checked siblings. */
+  .ui-dropdown-menu-item[data-inset="true"],
+  .ui-dropdown-menu-label[data-inset="true"],
+  .ui-dropdown-menu-sub-trigger[data-inset="true"] {
+    padding-inline-start: var(--menu-item-inset-space-inline-start);
   }
 
   .ui-context-menu-item,
@@ -129,6 +142,10 @@
   .ui-menubar-checkbox-item,
   .ui-menubar-radio-item,
   .ui-menubar-sub-trigger,
+  .ui-dropdown-menu-item,
+  .ui-dropdown-menu-checkbox-item,
+  .ui-dropdown-menu-radio-item,
+  .ui-dropdown-menu-sub-trigger,
   .ui-navigation-menu-link {
     cursor: pointer;
     outline: none;
@@ -142,6 +159,8 @@
   .ui-context-menu-sub-trigger:hover,
   .ui-menubar-item:hover,
   .ui-menubar-sub-trigger:hover,
+  .ui-dropdown-menu-item:hover,
+  .ui-dropdown-menu-sub-trigger:hover,
   .ui-navigation-menu-link:hover,
   .ui-navigation-menu-item:hover {
     background: var(--menubar-item-hover-background, hsl(var(--accent)));
@@ -155,6 +174,11 @@
   .ui-menubar-item[data-state="active"],
   .ui-menubar-item[data-state="checked"],
   .ui-menubar-sub-trigger[data-state="open"],
+  .ui-dropdown-menu-item[data-state="open"],
+  .ui-dropdown-menu-item[data-highlighted],
+  .ui-dropdown-menu-checkbox-item[data-highlighted],
+  .ui-dropdown-menu-radio-item[data-highlighted],
+  .ui-dropdown-menu-sub-trigger[data-state="open"],
   .ui-navigation-menu-link[data-highlighted],
   .ui-navigation-menu-item[data-focus-visible] {
     background: var(--menubar-item-hover-background, hsl(var(--accent)));
@@ -162,7 +186,8 @@
   }
 
   .ui-context-menu-item[data-variant="destructive"],
-  .ui-menubar-item[data-variant="destructive"] {
+  .ui-menubar-item[data-variant="destructive"],
+  .ui-dropdown-menu-item[data-variant="destructive"] {
     color: hsl(var(--destructive));
   }
 
@@ -173,21 +198,25 @@
   }
 
   .ui-context-menu-separator,
-  .ui-menubar-separator {
-    margin: var(--space-1) 0;
+  .ui-menubar-separator,
+  .ui-dropdown-menu-separator {
+    margin-block: var(--menu-separator-space-block);
+    margin-inline: var(--menu-separator-space-inline);
     height: 1px;
     background: hsl(var(--border));
   }
 
   .ui-context-menu-label,
-  .ui-menubar-label {
-    min-height: 2rem;
+  .ui-menubar-label,
+  .ui-dropdown-menu-label {
+    min-height: var(--menu-item-height);
     color: hsl(var(--muted-foreground));
     font-weight: var(--font-weight-medium);
   }
 
   .ui-context-menu-shortcut,
-  .ui-menubar-shortcut {
+  .ui-menubar-shortcut,
+  .ui-dropdown-menu-shortcut {
     margin-inline-start: auto;
     text-align: end;
     color: hsl(var(--muted-foreground));
@@ -196,6 +225,7 @@
 
   .ui-context-menu-item-indicator,
   .ui-menubar-item-indicator,
+  .ui-dropdown-menu-item-indicator,
   .ui-navigation-menu-item-indicator {
     display: inline-flex;
     width: 1rem;
@@ -428,5 +458,90 @@
     height: var(--steps-inline-separator-size);
     flex: none;
     color: var(--steps-inline-separator-color, hsl(var(--muted-foreground)));
+  }
+
+  /* DROPDOWN MENU — the third Radix menu surface. It was the only one still carrying its whole
+   * box as Tailwind literals on the component (#319); it now joins ContextMenu and Menubar on the
+   * shared row rhythm above, and scopes the one value that legitimately differs. */
+  .ui-dropdown-menu-content,
+  .ui-dropdown-menu-sub-content {
+    --menu-content-min-width: var(--dropdown-content-min-width);
+
+    z-index: var(--overlay-z-index);
+    min-width: var(--menu-content-min-width);
+    border-radius: var(--radius-md);
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--popover));
+    color: hsl(var(--popover-foreground));
+    padding: var(--menu-content-space-inset);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
+  }
+
+  .ui-dropdown-menu-content {
+    max-height: var(--radix-dropdown-menu-content-available-height);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .ui-dropdown-menu-sub-content {
+    overflow: hidden;
+  }
+
+  /* The checkbox indicator is absolutely placed in the reserved inset column. */
+  .ui-dropdown-menu-indicator-slot {
+    pointer-events: none;
+    position: absolute;
+    inset-inline-start: var(--menu-indicator-inset-inline-start);
+    display: flex;
+    inline-size: var(--menu-indicator-size);
+    block-size: var(--menu-indicator-size);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ui-dropdown-menu-check,
+  .ui-dropdown-menu-sub-trigger-icon {
+    inline-size: var(--menu-icon-size);
+    block-size: var(--menu-icon-size);
+  }
+
+  .ui-dropdown-menu-sub-trigger-icon {
+    margin-inline-start: auto;
+  }
+
+  /* Checkbox and radio rows are inset by construction — they always reserve the marker column. */
+  .ui-dropdown-menu-checkbox-item {
+    position: relative;
+    padding-inline-start: var(--menu-item-inset-space-inline-start);
+    padding-inline-end: var(--menu-item-space-inline);
+  }
+
+  .ui-dropdown-menu-item,
+  .ui-dropdown-menu-radio-item {
+    position: relative;
+  }
+
+  .ui-dropdown-menu-radio-item[data-state="checked"] {
+    background: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-dropdown-menu-item[data-variant="destructive"][data-highlighted] {
+    background: hsl(var(--destructive) / 0.1);
+    color: hsl(var(--destructive));
+  }
+
+  .ui-dropdown-menu-item[data-disabled],
+  .ui-dropdown-menu-checkbox-item[data-disabled],
+  .ui-dropdown-menu-radio-item[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-dropdown-menu-item svg,
+  .ui-dropdown-menu-sub-trigger svg {
+    pointer-events: none;
+    flex-shrink: 0;
   }
 }

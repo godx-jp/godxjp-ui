@@ -22,6 +22,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **DropdownMenu joins the menu family (#319) — 29 literals → 0.** ContextMenu and Menubar were
+  already converted and share one row-rhythm rule; DropdownMenu was the only Radix menu surface
+  still carrying its whole box as Tailwind literals, so the three drifted apart silently. It now
+  uses the same `.ui-*-item / -label / -separator / -shortcut` groups, and the row rhythm they
+  share became knobs instead of a literal `2rem` in the stylesheet: `--menu-item-height` ·
+  `--menu-item-radius` · `--menu-item-space-inline` · `--menu-item-space-gap` ·
+  `--menu-item-font-size` · `--menu-item-inset-space-inline-start` · `--menu-indicator-*` ·
+  `--menu-content-*` · `--menu-separator-*`. A service tunes menu density once for all three.
+  DropdownMenu opens off a small trigger so it stays narrower — it scopes
+  `--dropdown-content-min-width` (8rem) over the shared 10rem rather than forcing one width.
+  The menu surfaces also stop hard-coding `z-index: 50` and read `--overlay-z-index`.
 - **Cascader is token-themeable (#319) — 30 literals → 0.** Column widths, panel heights and both
   row rhythms were literals, so a service could not widen a column to fit longer JA labels or
   tighten the row without forking: `--cascader-column-min-width` ·

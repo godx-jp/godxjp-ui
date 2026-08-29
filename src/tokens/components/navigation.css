@@ -83,4 +83,26 @@
   --filter-bar-filter-width: var(--filter-picker-width-md);
   --filter-bar-chip-gap: var(--space-2);
   --filter-bar-section-gap: var(--space-2);
+
+  /* MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are
+   * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu
+   * had not been converted at all, so it carried the whole box as Tailwind literals on the
+   * component (#319). A service tunes the menu rhythm once here instead of three times. */
+  --menu-item-height: 2rem;
+  --menu-item-radius: var(--radius-sm);
+  --menu-item-space-inline: var(--space-2);
+  --menu-item-space-gap: var(--space-2);
+  --menu-item-font-size: var(--font-size-base);
+  /* Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so
+   * labels stay aligned with their checked siblings. */
+  --menu-item-inset-space-inline-start: var(--space-8);
+  --menu-indicator-size: 0.875rem;
+  --menu-indicator-inset-inline-start: var(--space-2);
+  --menu-icon-size: 1rem;
+  --menu-content-space-inset: var(--space-1);
+  --menu-content-min-width: 10rem;
+  /* DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu. */
+  --dropdown-content-min-width: 8rem;
+  --menu-separator-space-block: var(--space-1);
+  --menu-separator-space-inline: calc(var(--space-1) * -1);
 }

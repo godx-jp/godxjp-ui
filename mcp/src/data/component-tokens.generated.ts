@@ -2244,6 +2244,76 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME * search width, filter width, chip rhythm and section stacking without page-local CSS. * All are rule-#45 knobs: a service theme retunes them once, props/className override per * instance. Below 640px the strip stacks (search/filters full-width); the widths apply from * the 640px breakpoint up, always clamped by min(100%, …) so a narrow container never * overflows at 390px with long JA/EN/VI labels."
   },
   {
+    "name": "--menu-item-height",
+    "value": "2rem",
+    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+  },
+  {
+    "name": "--menu-item-radius",
+    "value": "var(--radius-sm)",
+    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+  },
+  {
+    "name": "--menu-item-space-inline",
+    "value": "var(--space-2)",
+    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+  },
+  {
+    "name": "--menu-item-space-gap",
+    "value": "var(--space-2)",
+    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+  },
+  {
+    "name": "--menu-item-font-size",
+    "value": "var(--font-size-base)",
+    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+  },
+  {
+    "name": "--menu-item-inset-space-inline-start",
+    "value": "var(--space-8)",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--menu-indicator-size",
+    "value": "0.875rem",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--menu-indicator-inset-inline-start",
+    "value": "var(--space-2)",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--menu-icon-size",
+    "value": "1rem",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--menu-content-space-inset",
+    "value": "var(--space-1)",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--menu-content-min-width",
+    "value": "10rem",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--dropdown-content-min-width",
+    "value": "8rem",
+    "description": "DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu."
+  },
+  {
+    "name": "--menu-separator-space-block",
+    "value": "var(--space-1)",
+    "description": "DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu."
+  },
+  {
+    "name": "--menu-separator-space-inline",
+    "value": "calc(var(--space-1) * -1)",
+    "description": "DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu."
+  },
+  {
     "name": "--sheet-responsive-breakpoint-width",
     "value": "48rem",
     "description": "Viewport width at and below which `SheetContent responsive=\"auto\"` renders the mobile bottom * sheet instead of the desktop side panel. Read at runtime by useSheetResponsiveMode() (a CSS * @media cannot resolve a custom property), so a service moves the drawer breakpoint from ONE * knob for every overlay that opts into the responsive contract — Sheet and OrgSwitcher alike. * 48rem = 768px mirrors the library's canonical mobile line (useIsMobile). Accepts px/rem/em."
