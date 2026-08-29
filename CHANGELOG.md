@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Transfer is token-themeable (#319) — 21 literals → 0.** Pane height, header rhythm and row
+  density were literal, so a service could not fit the panes to its own page grid or tighten the
+  row for a dense admin screen without forking: `--transfer-pane-*` · `--transfer-header-*` ·
+  `--transfer-search-space-inset` · `--transfer-list-space-inset` · `--transfer-row-*` ·
+  `--transfer-empty-space-block` · `--transfer-actions-space-gap` ·
+  `--transfer-action-icon-size`. The disabled search state moved from a `pointer-events-none
+opacity-50` pair to `data-disabled` reading `--disabled-opacity`, so it dims by the same amount
+  as every other disabled affordance in the system.
 - **Sheet's inner chrome rhythm is token-themeable (#319) — 23 literals → 0.** `--sheet-pad-x/-y`
   already governed the panel inset, but the gaps INSIDE that chrome were literal, so a service
   could retune the sheet's outer padding and still be stuck with the header stack, the

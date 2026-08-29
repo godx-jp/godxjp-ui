@@ -26,7 +26,8 @@ describe("Transfer — search without descriptions", () => {
     renderWithUi(
       <Transfer dataSource={DATA} targetKeys={[]} showSearch disabled onValueChange={vi.fn()} />,
     );
-    // the SearchInput gets the pointer-events-none/opacity class when disabled
-    expect(search().closest(".pointer-events-none")).not.toBeNull();
+    // The dimmed/inert state moved onto the search wrapper as `data-disabled`, so the alpha is
+    // the system --disabled-opacity rather than a literal utility (#319).
+    expect(search().closest(".ui-transfer-search")).toHaveAttribute("data-disabled");
   });
 });

@@ -65,9 +65,9 @@ function TransferPanel({
   };
 
   return (
-    <div className="bg-background flex min-h-[14rem] flex-1 flex-col rounded-md border">
-      <div className="flex items-center justify-between border-b px-3 py-2 text-sm">
-        <label className="flex cursor-pointer items-center gap-2 font-medium">
+    <div className="ui-transfer-pane">
+      <div className="ui-transfer-pane-header">
+        <label className="ui-transfer-pane-check">
           <Checkbox
             checked={allChecked ? true : indeterminate ? "indeterminate" : false}
             disabled={Boolean(disabled) || enabledItems.length === 0}
@@ -85,26 +85,25 @@ function TransferPanel({
         </span>
       </div>
       {showSearch && (
-        <div className="border-b p-2">
+        <div className="ui-transfer-search" data-disabled={disabled ? "" : undefined}>
           <SearchInput
             onSearch={setQuery}
             placeholder={searchPlaceholder}
             ariaLabel={searchPlaceholder}
             debounce={0}
-            className={disabled ? "pointer-events-none opacity-50" : undefined}
           />
         </div>
       )}
       <ScrollArea className="flex-1">
-        <ul className="p-1" aria-labelledby={titleId}>
+        <ul className="ui-transfer-list" aria-labelledby={titleId}>
           {filtered.length === 0 ? (
-            <li className="text-muted-foreground py-8 text-center text-sm">{emptyText}</li>
+            <li className="ui-transfer-empty">{emptyText}</li>
           ) : (
             filtered.map((item) => (
               <li key={item.key}>
                 <label
                   className={cn(
-                    "flex cursor-pointer items-start gap-2 rounded-sm px-2 py-2 text-sm",
+                    "ui-transfer-row",
                     "hover:bg-accent hover:text-accent-foreground",
                     item.disabled && "bg-muted/40 text-muted-foreground pointer-events-none",
                   )}
@@ -113,12 +112,12 @@ function TransferPanel({
                     checked={selectedKeys.includes(item.key)}
                     disabled={Boolean(disabled) || Boolean(item.disabled)}
                     onCheckedChange={(v) => toggleKey(item.key, v === true)}
-                    className="mt-0.5"
+                    className="ui-transfer-row-check"
                   />
-                  <span className="min-w-0 flex-1">
+                  <span className="ui-transfer-row-body">
                     <span className="block truncate font-medium">{item.title}</span>
                     {item.description && (
-                      <span className="text-muted-foreground block truncate text-xs">
+                      <span className="ui-transfer-row-description text-muted-foreground block truncate">
                         {item.description}
                       </span>
                     )}
@@ -189,7 +188,7 @@ export function Transfer({
       id={id}
       {...groupA11y}
       aria-disabled={disabled ? true : undefined}
-      className={cn("flex flex-wrap items-stretch gap-3", className)}
+      className={cn("ui-transfer", className)}
     >
       <TransferPanel
         direction="left"
@@ -206,7 +205,7 @@ export function Transfer({
         emptyText={t("dataEntry.transfer.empty")}
       />
 
-      <div className="flex flex-col justify-center gap-2">
+      <div className="ui-transfer-actions">
         <Button
           type="button"
           size="icon"
@@ -215,7 +214,7 @@ export function Transfer({
           aria-label={t("dataEntry.transfer.moveRight")}
           onClick={() => move("right")}
         >
-          <ChevronRight className="size-4" aria-hidden="true" />
+          <ChevronRight className="ui-transfer-action-icon" aria-hidden="true" />
         </Button>
         {!oneWay && (
           <Button
@@ -226,7 +225,7 @@ export function Transfer({
             aria-label={t("dataEntry.transfer.moveLeft")}
             onClick={() => move("left")}
           >
-            <ChevronLeft className="size-4" aria-hidden="true" />
+            <ChevronLeft className="ui-transfer-action-icon" aria-hidden="true" />
           </Button>
         )}
       </div>

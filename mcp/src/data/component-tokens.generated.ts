@@ -1194,6 +1194,101 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
   },
   {
+    "name": "--transfer-pane-min-height",
+    "value": "14rem",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-pane-radius",
+    "value": "var(--radius-md)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-panes-space-gap",
+    "value": "var(--space-3)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-header-space-inline",
+    "value": "var(--space-3)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-header-space-block",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-header-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-header-space-gap",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-search-space-inset",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-list-space-inset",
+    "value": "var(--space-1)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-space-inline",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-space-block",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-space-gap",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-radius",
+    "value": "var(--radius-sm)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-check-space-block-start",
+    "value": "0.125rem",
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+  },
+  {
+    "name": "--transfer-row-description-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+  },
+  {
+    "name": "--transfer-empty-space-block",
+    "value": "var(--space-8)",
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+  },
+  {
+    "name": "--transfer-actions-space-gap",
+    "value": "var(--space-2)",
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+  },
+  {
+    "name": "--transfer-action-icon-size",
+    "value": "1rem",
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+  },
+  {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
     "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."

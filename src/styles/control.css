@@ -1666,3 +1666,100 @@
     opacity: var(--disabled-opacity);
   }
 }
+
+@layer components {
+  /* TRANSFER — two-pane list mover. */
+  .ui-transfer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: var(--transfer-panes-space-gap);
+  }
+
+  .ui-transfer-pane {
+    display: flex;
+    min-block-size: var(--transfer-pane-min-height);
+    flex: 1 1 0%;
+    flex-direction: column;
+    border-radius: var(--transfer-pane-radius);
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--background));
+  }
+
+  .ui-transfer-pane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: var(--transfer-header-space-inline);
+    padding-block: var(--transfer-header-space-block);
+    border-block-end: 1px solid hsl(var(--border));
+    font-size: var(--transfer-header-font-size);
+  }
+
+  .ui-transfer-pane-check {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    gap: var(--transfer-header-space-gap);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-transfer-search {
+    padding: var(--transfer-search-space-inset);
+    border-block-end: 1px solid hsl(var(--border));
+  }
+
+  .ui-transfer-search[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-transfer-list {
+    padding: var(--transfer-list-space-inset);
+  }
+
+  .ui-transfer-empty {
+    padding-block: var(--transfer-empty-space-block);
+    text-align: center;
+    font-size: var(--transfer-row-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-transfer-row {
+    display: flex;
+    cursor: pointer;
+    align-items: flex-start;
+    gap: var(--transfer-row-space-gap);
+    border-radius: var(--transfer-row-radius);
+    padding-inline: var(--transfer-row-space-inline);
+    padding-block: var(--transfer-row-space-block);
+    font-size: var(--transfer-row-font-size);
+  }
+
+  /* Top-aligned against a two-line row, so it takes a hair of optical offset to sit level with
+   * the first line's cap height rather than its box. */
+  .ui-transfer-row-check {
+    margin-block-start: var(--transfer-row-check-space-block-start);
+  }
+
+  .ui-transfer-row-body {
+    min-inline-size: 0;
+    flex: 1 1 0%;
+  }
+
+  .ui-transfer-row-description {
+    font-size: var(--transfer-row-description-font-size);
+  }
+
+  .ui-transfer-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--transfer-actions-space-gap);
+  }
+
+  .ui-transfer-action-icon {
+    inline-size: var(--transfer-action-icon-size);
+    block-size: var(--transfer-action-icon-size);
+  }
+}

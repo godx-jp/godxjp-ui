@@ -262,4 +262,29 @@
   --calendar-day-font-size: var(--font-size-sm);
   --calendar-day-radius: var(--radius-md);
   --calendar-chevron-size: 1rem;
+
+  /* TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal
+   * on the component (#319), so a service could not fit the panes to its own page grid or
+   * tighten the row for a dense admin table without forking. */
+  --transfer-pane-min-height: 14rem;
+  --transfer-pane-radius: var(--radius-md);
+  --transfer-panes-space-gap: var(--space-3);
+  --transfer-header-space-inline: var(--space-3);
+  --transfer-header-space-block: var(--space-2);
+  --transfer-header-font-size: var(--font-size-sm);
+  --transfer-header-space-gap: var(--space-2);
+  --transfer-search-space-inset: var(--space-2);
+  --transfer-list-space-inset: var(--space-1);
+  --transfer-row-space-inline: var(--space-2);
+  --transfer-row-space-block: var(--space-2);
+  --transfer-row-space-gap: var(--space-2);
+  --transfer-row-radius: var(--radius-sm);
+  --transfer-row-font-size: var(--font-size-sm);
+  /* The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to
+   * sit level with the first line's cap height rather than its box. */
+  --transfer-row-check-space-block-start: 0.125rem;
+  --transfer-row-description-font-size: var(--font-size-xs);
+  --transfer-empty-space-block: var(--space-8);
+  --transfer-actions-space-gap: var(--space-2);
+  --transfer-action-icon-size: 1rem;
 }
