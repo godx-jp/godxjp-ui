@@ -635,3 +635,43 @@
     inline-size: var(--qr-code-size-lg);
   }
 }
+
+@layer components {
+  /* PERMISSION MATRIX — `.ui-permission-matrix` was a bare hook with no rule anywhere, so every
+   * constant sat on the component (#319). */
+  .ui-permission-matrix-table {
+    min-inline-size: var(--permission-matrix-min-width);
+  }
+
+  /* Sticky first column: the scrolling grid passes UNDER it, so it needs an opaque ground.
+   * Scoped through the matrix root because `[data-slot="table-head"]` sets its own background at
+   * the same specificity — an unscoped rule would win only by import order, which is not a
+   * property worth depending on. */
+  .ui-permission-matrix .ui-permission-matrix-pin {
+    position: sticky;
+    inset-inline-start: 0;
+    /* Above the scrolling cells, below any portaled overlay (--overlay-z-index). */
+    z-index: 20;
+    background-color: inherit;
+    border-inline-end: 1px solid hsl(var(--border));
+    inline-size: var(--permission-matrix-label-width);
+    min-inline-size: var(--permission-matrix-label-width);
+  }
+
+  .ui-permission-matrix-role {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--permission-matrix-role-space-gap);
+  }
+
+  .ui-permission-matrix-name {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--permission-matrix-name-space-gap);
+  }
+
+  .ui-permission-matrix-cell-icon {
+    inline-size: var(--permission-matrix-cell-icon-size);
+    block-size: var(--permission-matrix-cell-icon-size);
+  }
+}

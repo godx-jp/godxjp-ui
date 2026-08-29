@@ -41,7 +41,7 @@ function toGrantSet(grants: PermissionMatrixGrantsProp): ReadonlySet<string> {
 }
 
 /** Sticky first column (権限): the scrolling grid passes under it, so opaque bg + token edge. */
-const PIN_START = "sticky start-0 z-20 bg-inherit border-e border-border";
+const PIN_START = "ui-permission-matrix-pin";
 
 /**
  * PermissionMatrix — the canonical role × permission grid (gh#257 / DXS platform#311).
@@ -201,10 +201,10 @@ export const PermissionMatrix = React.forwardRef<HTMLDivElement, PermissionMatri
         data-editable={editable || undefined}
         className={cn("ui-permission-matrix overflow-x-auto", className)}
       >
-        <Table className="min-w-[48rem]" aria-label={accessibleName}>
+        <Table className="ui-permission-matrix-table" aria-label={accessibleName}>
           <TableHeader className="bg-secondary [&_tr]:bg-secondary">
             <TableRow className="bg-secondary hover:bg-secondary">
-              <TableHead className={cn(PIN_START, "w-64 min-w-64")}>
+              <TableHead className={PIN_START}>
                 {t("dataDisplay.permissionMatrix.permissionColumn")}
               </TableHead>
               {roles.map((role) => {
@@ -215,7 +215,7 @@ export const PermissionMatrix = React.forwardRef<HTMLDivElement, PermissionMatri
                     className={cn("text-center", isCompared && "bg-primary/[0.06]")}
                   >
                     <span className="inline-flex flex-col items-center leading-tight">
-                      <span className="inline-flex items-center gap-1">
+                      <span className="ui-permission-matrix-role">
                         <Text weight="medium">{role.name}</Text>
                         {role.locked && (
                           <Badge tone="default" variant="outline">
@@ -245,9 +245,9 @@ export const PermissionMatrix = React.forwardRef<HTMLDivElement, PermissionMatri
                   key={permission.id}
                   className={cn(isDiffRow && "bg-warning/[0.07] hover:bg-warning/10")}
                 >
-                  <TableCell className={cn(PIN_START, "w-64 min-w-64 align-middle")}>
+                  <TableCell className={cn(PIN_START, "align-middle")}>
                     <div className="flex flex-col leading-tight">
-                      <span className="inline-flex items-center gap-1.5">
+                      <span className="ui-permission-matrix-name">
                         <Text weight="medium">{permission.name}</Text>
                         {isDiffRow && (
                           <Badge tone="warning" variant="outline">
@@ -296,7 +296,7 @@ export const PermissionMatrix = React.forwardRef<HTMLDivElement, PermissionMatri
                           </Badge>
                         ) : (
                           <span className="text-muted-foreground inline-flex items-center justify-center">
-                            <Minus aria-hidden="true" className="size-4" />
+                            <Minus aria-hidden="true" className="ui-permission-matrix-cell-icon" />
                             <span className="sr-only">
                               {t("dataDisplay.permissionMatrix.notGranted")}
                             </span>

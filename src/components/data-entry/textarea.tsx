@@ -92,7 +92,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           value={value}
           defaultValue={defaultValue}
           onChange={handleChange}
-          className={cn(base, showClear && "pe-9", className)}
+          className={cn(base, showClear && "ui-input--trailing-affix", className)}
           {...props}
         />
         {showClear ? (
@@ -101,9 +101,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             tabIndex={-1}
             aria-label={t("common.clear") ?? "Clear"}
             onClick={clear}
-            className="text-muted-foreground hover:text-foreground absolute end-2 top-2 inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100"
+            className="ui-control-inline-affix-action ui-textarea-clear"
           >
-            <X className="size-4" aria-hidden="true" />
+            <X className="ui-control-inline-affix-icon" aria-hidden="true" />
           </button>
         ) : null}
       </span>

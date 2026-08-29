@@ -869,6 +869,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Inline room the field reserves so its text never runs under a single affix."
   },
   {
+    "name": "--textarea-clear-inset-block-start",
+    "value": "var(--space-2)",
+    "description": "Input centres its affix on the field's single line; a textarea has no single line to centre * on, so its clear control parks at the top-end corner instead."
+  },
+  {
     "name": "--control-inline-affix-pair-space-inline-end",
     "value": "3.5rem",
     "description": "A field parking TWO inline affixes (TimePicker's clear+clock, DatePicker's clear+calendar) * reserves a wider end than the single-affix case."
@@ -1567,6 +1572,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--qr-code-size-lg",
     "value": "12.5rem",
     "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."
+  },
+  {
+    "name": "--permission-matrix-label-width",
+    "value": "16rem",
+    "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant * lived on the component (#319). A JA/VI service whose role names run longer than the English * ones could not widen the label column without forking."
+  },
+  {
+    "name": "--permission-matrix-role-space-gap",
+    "value": "var(--space-1)",
+    "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant * lived on the component (#319). A JA/VI service whose role names run longer than the English * ones could not widen the label column without forking."
+  },
+  {
+    "name": "--permission-matrix-name-space-gap",
+    "value": "0.375rem",
+    "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant * lived on the component (#319). A JA/VI service whose role names run longer than the English * ones could not widen the label column without forking."
+  },
+  {
+    "name": "--permission-matrix-cell-icon-size",
+    "value": "var(--control-icon-size)",
+    "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant * lived on the component (#319). A JA/VI service whose role names run longer than the English * ones could not widen the label column without forking."
+  },
+  {
+    "name": "--permission-matrix-min-width",
+    "value": "48rem",
+    "description": "Floor for the scrolling body — below this the columns collapse into unreadable slivers, so * the table scrolls instead. Mirrors --table-surface-min-inline-size on DataTable."
   },
   {
     "name": "--password-strength-score-font-size",

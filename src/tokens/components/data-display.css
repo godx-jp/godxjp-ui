@@ -69,4 +69,16 @@
   --qr-code-size-sm: 8rem;
   --qr-code-size-md: 10rem;
   --qr-code-size-lg: 12.5rem;
+
+  /* PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class
+   * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant
+   * lived on the component (#319). A JA/VI service whose role names run longer than the English
+   * ones could not widen the label column without forking. */
+  --permission-matrix-label-width: 16rem;
+  --permission-matrix-role-space-gap: var(--space-1);
+  --permission-matrix-name-space-gap: 0.375rem;
+  --permission-matrix-cell-icon-size: var(--control-icon-size);
+  /* Floor for the scrolling body — below this the columns collapse into unreadable slivers, so
+   * the table scrolls instead. Mirrors --table-surface-min-inline-size on DataTable. */
+  --permission-matrix-min-width: 48rem;
 }

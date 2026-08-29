@@ -46,6 +46,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **PermissionMatrix is token-themeable (#319) — 9 literals → 0.** `.ui-permission-matrix` had
+  existed as a bare hook with no CSS rule anywhere, so every constant lived on the component and a
+  JA/VI service whose role names run longer than the English ones could not widen the label column
+  without forking: `--permission-matrix-label-width` · `--permission-matrix-role-space-gap` ·
+  `--permission-matrix-name-space-gap` · `--permission-matrix-cell-icon-size` ·
+  `--permission-matrix-min-width`. The sticky column's rule is scoped through the matrix root
+  because `[data-slot="table-head"]` sets its own background at the same specificity — unscoped it
+  would win only by import order, which is not a property worth depending on.
+- **Textarea's clear control now shares Input's affix (#319) — 9 literals → 0, 8 of them by reuse.**
+  The two carried a byte-identical stack; Textarea now uses `.ui-control-inline-affix-action` and
+  `.ui-control-inline-affix-icon`. Only one thing is genuinely its own:
+  `--textarea-clear-inset-block-start`, because Input centres its affix on the field's single line
+  and a textarea has no single line to centre on, so its control parks at the top-end corner.
 - **Skeleton bars are token-themeable (#319) — 14 literals → 0.** Bar heights and fixed widths
   were literal, so a service could not match the loading state to its own type scale:
   `--skeleton-block-height` · `--skeleton-caption-height` · `--skeleton-title-height` ·

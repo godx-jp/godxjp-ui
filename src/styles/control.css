@@ -1501,6 +1501,15 @@
     inset-inline-end: var(--control-inline-affix-inset-inline);
   }
 
+  /* A textarea has no single line to centre an affix on, so its clear control parks at the
+   * top-end corner. Everything else — box, radius, resting alpha, hover — is the shared
+   * inside-field affix it borrows from Input. */
+  .ui-textarea-clear {
+    position: absolute;
+    inset-block-start: var(--textarea-clear-inset-block-start);
+    inset-inline-end: var(--control-inline-affix-inset-inline);
+  }
+
   /* The field reserves room on whichever side carries an affix, so its text never runs under. */
   .ui-input--leading-affix {
     padding-inline-start: var(--control-inline-affix-space-inline-end);

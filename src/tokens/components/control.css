@@ -175,6 +175,9 @@
   --control-inline-affix-rest-alpha: 0.7;
   /* Inline room the field reserves so its text never runs under a single affix. */
   --control-inline-affix-space-inline-end: 2.25rem;
+  /* Input centres its affix on the field's single line; a textarea has no single line to centre
+   * on, so its clear control parks at the top-end corner instead. */
+  --textarea-clear-inset-block-start: var(--space-2);
   /* A field parking TWO inline affixes (TimePicker's clear+clock, DatePicker's clear+calendar)
    * reserves a wider end than the single-affix case. */
   --control-inline-affix-pair-space-inline-end: 3.5rem;

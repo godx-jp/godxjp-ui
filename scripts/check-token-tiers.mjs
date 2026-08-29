@@ -110,6 +110,7 @@ const componentPrefixes = {
   table: ["table"],
   "data-display": [
     "progress",
+    "permission-matrix",
     "tree",
     "timeline",
     "avatar",
