@@ -27,7 +27,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--overlay-z-index",
     category: "semantic",
     tier: "semantic",
-    role: "The ONE stacking layer every portaled overlay sits on — Tooltip, Popover, Select, DropdownMenu, Sheet. Each of those used to hard-code `z-50` independently, so an app that mounts the library under its own stacking context (a sticky masthead, a third-party chat widget) had to fight five separate literals. Stacking is a SYSTEM decision, not a per-primitive one: raise every overlay together by overriding this once. Default 50.",
+    role: "The ONE stacking layer every portaled overlay sits on — Tooltip, Popover, Select, DropdownMenu, ContextMenu/Menubar, Sheet (overlay AND panel), and since #319 also Dialog, AlertDialog and the CommandPalette, scrim and content alike. Each of those used to hard-code `z-50` independently, so an app that mounts the library under its own stacking context (a sticky masthead, a third-party chat widget) had to fight a separate literal per primitive — and whichever one it missed rendered underneath. Stacking is a SYSTEM decision, not a per-primitive one: raise every overlay together by overriding this once. Default 50, byte-identical to the literals it replaced. The DataTable sticky header deliberately stays BELOW it, so a menu opened from a sticky column header still wins. NOTE: overlays render into a portal on document.body, so a scoped `[data-tenant]` / `.dark` override must also sit on the portal container to reach them.",
   },
   {
     name: "--font-size-*",
@@ -207,6 +207,30 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "Shared form control heights, padding, icons, and focus chrome.",
+  },
+  {
+    name: "--control-affix-{inset-inline-end,action-size,action-radius,icon-size,rest-alpha} / --control-trigger-space-inline-end",
+    category: "component",
+    tier: "component",
+    role: "OVERLAY trailing affix — the clear ✕ / chevron a select-family trigger parks ON TOP of its inline end. One set for Select, SearchSelect, Cascader and TreeSelect (`.ui-control-affix-action` / `-icon` / `-indicator`); the Dialog and Sheet close ✕ borrow `--control-affix-icon-size` so every overlay ✕ in the system is one size. Before #319 each of those hard-coded the same `end-2 size-6 rounded-sm opacity-50` stack, so retuning affix weight meant chasing the same literal through four components and missing one. `--control-affix-rest-alpha` (0.5) is the resting weight and is deliberately QUIETER than the inside-field set's 0.7 (`--control-inline-affix-rest-alpha`): an overlay affix floats over the selected value, so at equal weight the ✕ starts reading as content. `--control-trigger-space-inline-end` (2.25rem, a raw rem because the `pe-9` it replaced is a flat Tailwind step, not a density-scaled one) is the inline room the trigger reserves so a long selected label never runs UNDER the affix — grow the affix without growing this and the label collides with it; shrink it without shrinking this and you ship dead space at every trigger's end.",
+  },
+  {
+    name: "--control-inline-affix-{size,icon-size,space-gap,inset-inline,rest-alpha,space-inline-end,pair-space-inline-end}",
+    category: "component",
+    tier: "component",
+    role: "INSIDE-FIELD affix — the leading/trailing controls Input, Textarea, TimePicker and DatePicker render WITHIN the field box, as opposed to the overlay set (`--control-affix-*`) that a select-family trigger parks on top of. Kept a SEPARATE set on purpose, not an alias: these sit on the field's own surface rather than over it, so they rest heavier — `--control-inline-affix-rest-alpha` is 0.7 against the overlay's 0.5. Collapse the two into one knob and one side always loses: either the inline affixes go too faint to find, or the overlay ✕ starts fighting the value it sits on. `--control-inline-affix-space-inline-end` (2.25rem) reserves room for ONE affix; a field parking TWO (TimePicker's clear+clock, DatePicker's clear+calendar) reserves `--control-inline-affix-pair-space-inline-end` (3.5rem) instead — retune only the single knob and the two-affix fields run their own text under the icons. Textarea has no single line to centre on, so it pins its clear to the top-end corner via `--textarea-clear-inset-block-start` rather than centring like Input.",
+  },
+  {
+    name: "--control-composite-field-*",
+    category: "component",
+    tier: "component",
+    role: "The bordered two-input shell (`.ui-control-composite-field`) shared by DateRangePicker, MonthPicker and MonthRangePicker: one field box wrapping two inputs plus a separator so the pair reads as a SINGLE control instead of two adjacent ones. `--control-composite-field-space-gap` (`--space-2`) is the rhythm between the halves and the separator. Shared deliberately — before #319 each picker carried its own literal and the range fields drifted into slightly different boxes, the tell that a design system is not actually one system. The box's height, border, disabled state and focus chrome still come from `--control-*` / `.ui-control`, so retune this only for the internal gap; anything else belongs on the control family.",
+  },
+  {
+    name: "--menu-item-{height,radius,space-inline,space-gap,font-size,inset-space-inline-start} / --menu-content-{space-inset,min-width}",
+    category: "component",
+    tier: "component",
+    role: "ONE row rhythm for every popup list surface: ContextMenu, Menubar, DropdownMenu AND Select's listbox all lay their rows out against these (`.ui-select-item` sits in the same rule as `.ui-dropdown-menu-item`), so a service retunes menu density once instead of four times. Before #319 the height was a literal `2rem` in the CSS and DropdownMenu had not been converted at all — it carried its whole box as Tailwind literals on the component. Set `--menu-item-height` and all four surfaces resize together; patch one component's padding instead and you get the four-menus-that-almost-match tell. `--menu-item-inset-space-inline-start` is the indicator column an inset row (a checkbox/radio row with no indicator of its own) reserves so its label stays aligned with its checked siblings — move it whenever you change `--menu-indicator-size`, or the two columns desynchronise. `--menu-content-min-width` (10rem) and `--menu-content-space-inset` are the panel, not the row; DropdownMenu re-points the min-width at `--dropdown-content-min-width` (8rem) because it anchors to a small trigger, so override that one to widen dropdowns alone.",
   },
   { name: "--table-*", category: "component", tier: "component", role: "Table row/cell sizing." },
   {

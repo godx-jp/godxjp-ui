@@ -246,6 +246,10 @@ const AlertDialogContent = React.forwardRef<
         <AlertDialogPrimitive.Cancel asChild>
           <button
             type="button"
+            // Same slot as DialogContent's close: `[data-slot="dialog-close"]`
+            // (styles/dialog-layout.css) is what pins the ✕ to the corner and gives it the rest
+            // opacity. Without it this button rendered inline, in flow, under the footer.
+            data-slot="dialog-close"
             // Same single-source ring as DialogContent's close (styles/focus-ring.css).
             className="ui-focus-ring transition-opacity focus:outline-hidden disabled:pointer-events-none"
             aria-label={t("feedback.alert.dismiss")}

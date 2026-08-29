@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **AlertDialog's close button was never pinned.** `DialogContent` sets
+  `data-slot="dialog-close"`, which is the only selector that positions the overlay ✕;
+  `AlertDialogContent` rendered a bare `<button>` without it, so the button stayed `position:
+static` and fell inline after the children at full opacity instead of resting at
+  `--dialog-close-rest-alpha`. It is opt-in there (`showCloseButton` defaults to `false`), which
+  is why it went unnoticed.
 - **DataTable's #319 rules were trapped in the responsive layer.** The same append mistake that
   killed 122 tokens hit a stylesheet too: the block targeted `table-layout.css`'s last `}`, which
   closes `@layer godxjp-ui-responsive` rather than ending it, so a dozen static rules landed in a
@@ -74,6 +80,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   themeable despite living inside a library config object; `--empty-state-icon-size` and
   `--empty-state-icon-glyph-size` must move together or the glyph stops sitting centred in its
   medallion, so both are knobs.
+- **`check-no-hardcoded-css-values`** — the geometry ratchet only ever read `.tsx`, so a literal
+  pushed from a component into `src/styles/*.css` left the count looking clean while the debt was
+  unchanged. It reads 0 in components and **121 across 11 stylesheets**; `shell-layout.css` alone
+  holds 40. The clearest case is `.kbd`, where `font-size` is already a token while
+  `padding: 1px 5px`, `border-radius: 4px` and `line-height: 1.2` sit beside it as literals.
+  Percentages, viewport-relative units, `1px` hairlines, anything containing `var(…)`, and
+  `@media`/`@container` conditions are deliberately not flagged — a percentage is proportional to
+  its parent, so it is layout rather than a constant.
+- **`check-no-inline-magic-numbers`** — a component can put a constant somewhere no theme can
+  reach and no class-based guard can see. TreeSelect computed its depth indent as
+  `` `${depth * 1.25 + 0.5}rem` `` inline. That one is fixed, so the guard lands at 0 and exists
+  to keep it that way; `scale(${scale})` and other genuinely dynamic values are not flagged.
 - **`check-no-tailwind-class-assertions`** — a ratchet guard for tests that pin a Tailwind utility
   instead of the contract. Sixteen tests broke during this refactor without a single behaviour
   changing, and two were not merely brittle but wrong: `[class*="opacity-0"]` also matches
