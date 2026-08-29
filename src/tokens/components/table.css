@@ -147,4 +147,19 @@
   --table-stacked-collection-card-gap: var(--space-stack-sm);
   --table-stacked-collection-cell-padding-y: var(--space-stack-xs);
   --table-stacked-collection-label-font-size: var(--font-size-xs);
+
+  /* DATA TABLE odds and ends that were still literal on the component (#319). The table's cell
+   * rhythm, widths and action-collection tiers were already tokenized; these are the pieces
+   * around them — the select column, sort glyphs, sticky header layer and skeleton shapes. */
+  --table-select-column-width: 2.5rem;
+  --table-sort-icon-size: 0.75rem;
+  --table-toolbar-icon-size: 1rem;
+  --table-pagination-icon-size: 1rem;
+  --table-pagination-font-size: var(--font-size-sm);
+  /* Skeleton placeholders mimic the real content they stand in for: a checkbox square and a
+   * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading
+   * state the same height as the loaded one. */
+  --table-skeleton-check-size: 1rem;
+  --table-skeleton-line-height: 1rem;
+  --table-skeleton-radius: var(--radius-sm);
 }

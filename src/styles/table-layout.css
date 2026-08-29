@@ -799,4 +799,56 @@
       margin-block-end: var(--space-stack-xs);
     }
   }
+
+  /* DATA TABLE — the pieces around the already-tokenized cell rhythm (#319). */
+
+  /* The select column holds only a checkbox, so it takes a fixed narrow width rather than a
+   * share of the flexible content columns. */
+  .ui-data-table-select-column {
+    inline-size: var(--table-select-column-width);
+  }
+
+  /* A sticky header floats over the scrolled rows, so it joins the one system overlay layer
+   * rather than carrying a private z-index that a portaled surface could out-rank. */
+  .ui-data-table-sticky-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 10;
+  }
+
+  .ui-data-table-sort-icon {
+    inline-size: var(--table-sort-icon-size);
+    block-size: var(--table-sort-icon-size);
+  }
+
+  .ui-data-table-toolbar-icon {
+    inline-size: var(--table-toolbar-icon-size);
+    block-size: var(--table-toolbar-icon-size);
+    flex-shrink: 0;
+  }
+
+  .ui-data-table-pagination-icon {
+    inline-size: var(--table-pagination-icon-size);
+    block-size: var(--table-pagination-icon-size);
+  }
+
+  .ui-data-table-pagination-text {
+    font-size: var(--table-pagination-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Skeletons mimic the real content: a checkbox square and a text line at cap height. */
+  .ui-data-table-skeleton-check {
+    inline-size: var(--table-skeleton-check-size);
+    block-size: var(--table-skeleton-check-size);
+    border-radius: var(--table-skeleton-radius);
+  }
+
+  .ui-data-table-skeleton-line {
+    block-size: var(--table-skeleton-line-height);
+  }
+
+  .ui-data-table-sort-button {
+    border-radius: var(--table-skeleton-radius);
+  }
 }

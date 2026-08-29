@@ -538,7 +538,7 @@ DataTable.ViewOptions = function DataTableViewOptions({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className={className}>
-          <SlidersHorizontal className="size-4 shrink-0" aria-hidden="true" />
+          <SlidersHorizontal className="ui-data-table-toolbar-icon" aria-hidden="true" />
           {label ?? t("dataGrid.view")}
         </Button>
       </DropdownMenuTrigger>
@@ -690,7 +690,7 @@ DataTable.DensityToggle = function DataTableDensityToggle() {
       aria-label={t("dataTable.densitySwitch", { density: nextLabel })}
     >
       <Flex direction="row" wrap align="center" gap="xs">
-        <Icon className="size-4" aria-hidden="true" />
+        <Icon className="ui-data-table-toolbar-icon" aria-hidden="true" />
         {density === "compact" ? t("dataTable.densityCompact") : t("dataTable.densityComfortable")}
       </Flex>
     </Button>
@@ -851,10 +851,12 @@ DataTable.Content = function DataTableContent() {
             the preset that wrapper is the keyboard-reachable scroll region (exactly the bare
             `Table` behaviour), scrolling inside the surface border. */}
         <Table scrollable={preset !== "default"} preset={preset} collapseBelow={collapseBelow}>
-          <TableHeader className={cn("bg-secondary", stickyHeader && "sticky top-0 z-10")}>
+          <TableHeader
+            className={cn("bg-secondary", stickyHeader && "ui-data-table-sticky-header")}
+          >
             <TableRow>
               {selectable && (
-                <TableHead className="w-10">
+                <TableHead className="ui-data-table-select-column">
                   <DataTable.SelectAll />
                 </TableHead>
               )}
@@ -864,12 +866,15 @@ DataTable.Content = function DataTableContent() {
                 const sortIndicator = isSortable ? (
                   isActiveSort ? (
                     activeSort?.direction === "asc" ? (
-                      <ArrowUp className="size-3" aria-hidden="true" />
+                      <ArrowUp className="ui-data-table-sort-icon" aria-hidden="true" />
                     ) : (
-                      <ArrowDown className="size-3" aria-hidden="true" />
+                      <ArrowDown className="ui-data-table-sort-icon" aria-hidden="true" />
                     )
                   ) : (
-                    <ChevronsUpDown className="text-muted-foreground size-3" aria-hidden="true" />
+                    <ChevronsUpDown
+                      className="ui-data-table-sort-icon text-muted-foreground"
+                      aria-hidden="true"
+                    />
                   )
                 ) : null;
                 const headerEmpty = isEmptyHeader(col.header);
@@ -922,7 +927,7 @@ DataTable.Content = function DataTableContent() {
                     {isSortable ? (
                       <button
                         type="button"
-                        className="ui-data-table-sort-button ui-focus-ring rounded-sm"
+                        className="ui-data-table-sort-button ui-focus-ring"
                         onClick={() => {
                           onHeaderClick(col);
                         }}
@@ -947,7 +952,7 @@ DataTable.Content = function DataTableContent() {
                 <TableRow key={`skeleton-${i}`} className={cn(rowPadding, "hover:bg-transparent")}>
                   {selectable && (
                     <TableCell className={cellPadding}>
-                      <div className="ui-skeleton-block size-4 rounded-sm" />
+                      <div className="ui-skeleton-block ui-data-table-skeleton-check" />
                     </TableCell>
                   )}
                   {visibleColumns.map((col, j) => (
@@ -966,7 +971,7 @@ DataTable.Content = function DataTableContent() {
                     >
                       <div
                         className={cn(
-                          "ui-skeleton-block h-4",
+                          "ui-skeleton-block ui-data-table-skeleton-line",
                           j === 0 ? "w-1/2" : "w-3/4",
                           col.align === "right" && "ms-auto",
                           col.align === "center" && "mx-auto",
@@ -1223,7 +1228,7 @@ function NumberedPagination({
       className={cn("ui-data-table-pagination ui-data-table-pagination--numbered", className)}
     >
       <Flex direction="row" align="center" gap="sm" className="ui-data-table-page-size">
-        <span className="ui-data-table-page-size-label text-muted-foreground text-sm">
+        <span className="ui-data-table-page-size-label ui-data-table-pagination-text">
           {t("dataGrid.rowsPerPage")}
         </span>
         <Select
@@ -1247,7 +1252,7 @@ function NumberedPagination({
         </Select>
       </Flex>
       <Flex direction="row" align="center" gap="sm" className="ui-data-table-page-nav">
-        <span className="text-muted-foreground text-sm tabular-nums">
+        <span className="ui-data-table-pagination-text tabular-nums">
           {t("dataGrid.pageOf", { page: pageIndex + 1, total: Math.max(1, pageCount) })}
         </span>
         <Button
@@ -1257,7 +1262,7 @@ function NumberedPagination({
           onClick={() => table.previousPage()}
           aria-label={t("common.previous") ?? "Previous"}
         >
-          <ChevronLeft className="size-4" aria-hidden="true" />
+          <ChevronLeft className="ui-data-table-pagination-icon" aria-hidden="true" />
         </Button>
         <Button
           variant="outline"
@@ -1266,7 +1271,7 @@ function NumberedPagination({
           onClick={() => table.nextPage()}
           aria-label={t("common.next") ?? "Next"}
         >
-          <ChevronRight className="size-4" aria-hidden="true" />
+          <ChevronRight className="ui-data-table-pagination-icon" aria-hidden="true" />
         </Button>
       </Flex>
     </Flex>
@@ -1291,7 +1296,7 @@ DataTable.RowActions = function DataTableRowActions({ ariaLabel, children }: Row
       aria-label={ariaLabel ?? t("dataTable.rowActions")}
       className={controlIconSmClass}
     >
-      <MoreHorizontal className="size-4" aria-hidden="true" />
+      <MoreHorizontal className="ui-data-table-toolbar-icon" aria-hidden="true" />
       {children}
     </Button>
   );

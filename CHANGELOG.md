@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **DataTable's remaining chrome is token-themeable (#319) — 17 literals → 0.** Its cell rhythm,
+  column widths and action-collection tiers were already tokenized; what was left sat around
+  them — the select column, sort glyphs, sticky-header layer, pagination text and the loading
+  skeletons: `--table-select-column-width` · `--table-sort-icon-size` ·
+  `--table-toolbar-icon-size` · `--table-pagination-*` · `--table-skeleton-*`. The skeleton
+  shapes are named for what they stand in for (a checkbox square, a text line at cap height), so
+  a service retuning `--table-cell-padding-y` can keep the loading state the same height as the
+  loaded one instead of discovering the rows jump.
 - **AppSettingPicker's per-kind widths are themeable (#319) — 18 literals → 0.** Each picker is
   sized to the longest value it can show — a timezone name is far wider than a theme name — but
   those widths were `sm:w-*` steps in a lookup table, so a service whose locale renders longer

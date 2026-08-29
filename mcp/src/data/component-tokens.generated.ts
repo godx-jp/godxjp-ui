@@ -3909,6 +3909,46 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no * column-priority measure to retune — the whole row becomes one block)."
   },
   {
+    "name": "--table-select-column-width",
+    "value": "2.5rem",
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+  },
+  {
+    "name": "--table-sort-icon-size",
+    "value": "0.75rem",
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+  },
+  {
+    "name": "--table-toolbar-icon-size",
+    "value": "1rem",
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+  },
+  {
+    "name": "--table-pagination-icon-size",
+    "value": "1rem",
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+  },
+  {
+    "name": "--table-pagination-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+  },
+  {
+    "name": "--table-skeleton-check-size",
+    "value": "1rem",
+    "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading * state the same height as the loaded one."
+  },
+  {
+    "name": "--table-skeleton-line-height",
+    "value": "1rem",
+    "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading * state the same height as the loaded one."
+  },
+  {
+    "name": "--table-skeleton-radius",
+    "value": "var(--radius-sm)",
+    "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading * state the same height as the loaded one."
+  },
+  {
     "name": "--upload-dropzone-space-inset",
     "value": "var(--space-10)",
     "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
