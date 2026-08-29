@@ -1614,24 +1614,84 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
   },
   {
+    "name": "--sheet-shadow",
+    "value": "var(--shadow-lg)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-header-space-gap",
+    "value": "0.375rem",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-title-block-space-gap",
+    "value": "var(--space-1)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-title-row-space-gap",
+    "value": "var(--space-3)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-extra-space-gap",
+    "value": "var(--space-2)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-footer-space-gap",
+    "value": "var(--space-2)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-title-font-size",
+    "value": "var(--font-size-lg)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-description-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-body-space-block",
+    "value": "var(--space-1)",
+    "description": "The scroll region keeps a sliver of padding so a focused control's ring is never clipped at * the scroll edges — retune together with --focus-ring-width."
+  },
+  {
+    "name": "--sheet-close-offset",
+    "value": "var(--space-4)",
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
+  },
+  {
+    "name": "--sheet-close-rest-alpha",
+    "value": "0.7",
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
+  },
+  {
+    "name": "--sheet-header-close-space-inline-end",
+    "value": "var(--space-8)",
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
+  },
+  {
     "name": "--dialog-width-default",
     "value": "32rem",
-    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
   },
   {
     "name": "--dialog-viewport-inset",
     "value": "1.5rem",
-    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
   },
   {
     "name": "--dialog-overlay-background",
     "value": "initial",
-    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
   },
   {
     "name": "--dialog-overlay-alpha",
     "value": "60%",
-    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
   },
   {
     "name": "--dialog-space-x",

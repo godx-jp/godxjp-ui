@@ -22,6 +22,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Sheet's inner chrome rhythm is token-themeable (#319) — 23 literals → 0.** `--sheet-pad-x/-y`
+  already governed the panel inset, but the gaps INSIDE that chrome were literal, so a service
+  could retune the sheet's outer padding and still be stuck with the header stack, the
+  title/subtitle pair and the footer row: `--sheet-header-space-gap` ·
+  `--sheet-title-block-space-gap` · `--sheet-title-row-space-gap` · `--sheet-extra-space-gap` ·
+  `--sheet-footer-space-gap` · `--sheet-title-font-size` · `--sheet-description-font-size` ·
+  `--sheet-body-space-block` · `--sheet-close-*` · `--sheet-shadow`. The header's reserved inline
+  end and the close button's corner offset now derive from the same
+  `--sheet-header-close-space-inline-end` / `--sheet-close-offset` pair, so they can no longer
+  drift apart and let a long title slide under the ✕. Overlay and panel join `--overlay-z-index`
+  instead of a private `z-50`.
 - **Calendar is token-themeable (#319) — 24 literals → 0.** Day and weekday cells already sized
   from `--control-height` (a system tier decision that stays), but the frame around them — root
   inset, month gaps, nav offset, grid rhythm — was literal inside the react-day-picker

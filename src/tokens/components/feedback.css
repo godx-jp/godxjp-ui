@@ -10,6 +10,25 @@
    * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog). */
   --sheet-overlay-background: initial;
   --sheet-overlay-alpha: 40%;
+  /* Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps
+   * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so
+   * a service could retune the sheet's outer padding and still be stuck with the inner rhythm. */
+  --sheet-shadow: var(--shadow-lg);
+  --sheet-header-space-gap: 0.375rem;
+  --sheet-title-block-space-gap: var(--space-1);
+  --sheet-title-row-space-gap: var(--space-3);
+  --sheet-extra-space-gap: var(--space-2);
+  --sheet-footer-space-gap: var(--space-2);
+  --sheet-title-font-size: var(--font-size-lg);
+  --sheet-description-font-size: var(--font-size-sm);
+  /* The scroll region keeps a sliver of padding so a focused control's ring is never clipped at
+   * the scroll edges — retune together with --focus-ring-width. */
+  --sheet-body-space-block: var(--space-1);
+  /* Close button: offset from the panel corner, and the inline room the header reserves so a
+   * title never runs under it. */
+  --sheet-close-offset: var(--space-4);
+  --sheet-close-rest-alpha: 0.7;
+  --sheet-header-close-space-inline-end: var(--space-8);
   --dialog-width-default: 32rem;
   --dialog-viewport-inset: 1.5rem;
   --dialog-overlay-background: initial;

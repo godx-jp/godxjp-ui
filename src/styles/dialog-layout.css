@@ -284,3 +284,110 @@
     font-size: var(--popover-header-font-size);
   }
 }
+
+@layer components {
+  /* SHEET chrome rhythm — --sheet-pad-x/-y already governed the panel inset; these are the gaps
+   * INSIDE that chrome, which were literal on the component (#319). */
+  .ui-sheet-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sheet-header-space-gap);
+  }
+
+  /* Reserves inline room for the absolutely-positioned close button so a long title or the
+   * extra slot never runs under it. Moves with --sheet-close-offset. */
+  .ui-sheet-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sheet-title-row-space-gap);
+    padding-inline-end: var(--sheet-header-close-space-inline-end);
+  }
+
+  .ui-sheet-title-block {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--sheet-title-block-space-gap);
+  }
+
+  .ui-sheet-extra {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--sheet-extra-space-gap);
+    white-space: nowrap;
+  }
+
+  .ui-sheet-title {
+    font-size: var(--sheet-title-font-size);
+    font-weight: var(--font-weight-medium);
+    color: hsl(var(--foreground));
+  }
+
+  .ui-sheet-description {
+    font-size: var(--sheet-description-font-size);
+    color: hsl(var(--foreground) / 0.8);
+  }
+
+  .ui-sheet-body-space {
+    padding-block: var(--sheet-body-space-block);
+    scroll-padding-block: var(--sheet-body-space-block);
+  }
+
+  .ui-sheet-footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--sheet-footer-space-gap);
+  }
+
+  .ui-sheet-close {
+    position: absolute;
+    inset-block-start: var(--sheet-close-offset);
+    inset-inline-end: var(--sheet-close-offset);
+    border-radius: var(--radius-sm);
+    opacity: var(--sheet-close-rest-alpha);
+    transition: opacity 150ms ease;
+  }
+
+  .ui-sheet-close:hover {
+    opacity: 1;
+  }
+
+  .ui-sheet-close-icon {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+  }
+
+  /* Overlay + panel stacking joins the one system layer instead of a private z-50. */
+  .ui-sheet-overlay,
+  .ui-sheet-panel {
+    z-index: var(--overlay-z-index);
+  }
+
+  .ui-sheet-overlay {
+    inset: 0;
+  }
+
+  .ui-sheet-panel {
+    box-shadow: var(--sheet-shadow);
+  }
+
+  .ui-sheet-panel[data-side="top"] {
+    inset-block-start: 0;
+    border-block-end: 1px solid hsl(var(--border));
+  }
+
+  .ui-sheet-panel[data-side="bottom"] {
+    inset-block-end: 0;
+    border-block-start: 1px solid hsl(var(--border));
+  }
+
+  /* The scroll region must be allowed to shrink inside the flex column, or it grows past the
+   * panel and the footer is pushed out of view. */
+  .ui-sheet-body-space {
+    min-block-size: 0;
+  }
+}

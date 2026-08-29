@@ -1,5 +1,5 @@
 {
-  "total": 268,
+  "total": 245,
   "files": {
     "src/components/data-display/card.tsx": 1,
     "src/components/data-display/data-table.tsx": 17,
@@ -24,7 +24,6 @@
     "src/components/data-entry/upload-crop-dialog.tsx": 4,
     "src/components/feedback/alert.tsx": 5,
     "src/components/feedback/dialog.tsx": 6,
-    "src/components/feedback/sheet.tsx": 23,
     "src/components/feedback/skeleton.tsx": 14,
     "src/components/feedback/sonner.tsx": 5,
     "src/components/general/button.tsx": 18,
