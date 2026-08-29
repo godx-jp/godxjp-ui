@@ -1435,3 +1435,116 @@
     block-size: var(--control-affix-icon-size);
   }
 }
+
+@layer components {
+  /* TREE SELECT — a Select whose panel holds a tree. */
+  .ui-tree-select-popover {
+    inline-size: var(--radix-popover-trigger-width);
+    padding: 0;
+  }
+
+  .ui-tree-select-list {
+    max-block-size: var(--tree-select-list-max-height);
+  }
+
+  .ui-tree-select-panel {
+    padding: var(--menu-content-space-inset);
+  }
+
+  .ui-tree-select-empty {
+    padding-block: var(--tree-select-empty-space-block);
+    text-align: center;
+    font-size: var(--tree-select-row-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Indent is base + depth × step, driven by `--tree-select-depth` on the row. It used to be a
+   * magic expression inline in JSX, so no theme could reach it. */
+  .ui-tree-select-row {
+    display: flex;
+    align-items: center;
+    border-radius: var(--tree-select-row-radius);
+    padding-block: var(--tree-select-row-space-block);
+    padding-inline-end: var(--tree-select-row-space-inline-end);
+    padding-inline-start: calc(
+      var(--tree-select-depth-space-base) + var(--tree-select-depth, 0) *
+        var(--tree-select-depth-space-step)
+    );
+    font-size: var(--tree-select-row-font-size);
+    outline: none;
+  }
+
+  .ui-tree-select-row:hover {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-tree-select-row[data-selected="true"] {
+    background: hsl(var(--accent) / 0.6);
+  }
+
+  .ui-tree-select-row[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-tree-select-toggle {
+    display: flex;
+    inline-size: var(--tree-select-toggle-size);
+    block-size: var(--tree-select-toggle-size);
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin-inline-end: var(--tree-select-toggle-space-inline-end);
+    border-radius: var(--tree-select-row-radius);
+  }
+
+  .ui-tree-select-toggle[data-leaf] {
+    visibility: hidden;
+  }
+
+  .ui-tree-select-toggle-icon,
+  .ui-tree-select-chevron {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+  }
+
+  .ui-tree-select-chevron {
+    opacity: var(--control-affix-rest-alpha);
+  }
+
+  .ui-tree-select-label {
+    display: flex;
+    flex: 1 1 0%;
+    cursor: pointer;
+    align-items: center;
+    gap: var(--tree-select-label-space-gap);
+  }
+
+  /* Its clear control is vertically centred against the whole field rather than laid out in a
+   * flex overlay, so it keeps its own rule — but reads the shared affix knobs. */
+  .ui-tree-select-clear {
+    position: absolute;
+    inset-inline-end: var(--space-3);
+    inset-block-start: 50%;
+    translate: 0 -50%;
+    z-index: 10;
+    display: flex;
+    inline-size: var(--control-affix-action-size);
+    block-size: var(--control-affix-action-size);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--control-affix-action-radius);
+    opacity: var(--control-affix-rest-alpha);
+  }
+
+  .ui-tree-select-clear:hover,
+  .ui-tree-select-clear:focus-visible {
+    opacity: 1;
+  }
+
+  /* Reserves room for a clear control that sits further in than the standard overlay affix. */
+  .ui-tree-select-trigger-affixed {
+    padding-inline-end: var(--space-10);
+  }
+}

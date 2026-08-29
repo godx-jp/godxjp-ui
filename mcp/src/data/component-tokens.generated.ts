@@ -1069,6 +1069,61 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "These affix glyphs sit inside the field rather than overlaying it, so they rest a touch * heavier than the overlay affix used by Select/SearchSelect."
   },
   {
+    "name": "--tree-select-list-max-height",
+    "value": "min(300px, 50vh)",
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+  },
+  {
+    "name": "--tree-select-row-space-block",
+    "value": "0.375rem",
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+  },
+  {
+    "name": "--tree-select-row-space-inline-end",
+    "value": "var(--space-2)",
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+  },
+  {
+    "name": "--tree-select-row-radius",
+    "value": "var(--radius-sm)",
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+  },
+  {
+    "name": "--tree-select-row-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+  },
+  {
+    "name": "--tree-select-depth-space-base",
+    "value": "var(--space-2)",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--tree-select-depth-space-step",
+    "value": "1.25rem",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--tree-select-toggle-size",
+    "value": "1.25rem",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--tree-select-toggle-space-inline-end",
+    "value": "var(--space-1)",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--tree-select-label-space-gap",
+    "value": "var(--space-2)",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--tree-select-empty-space-block",
+    "value": "var(--space-6)",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
     "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."

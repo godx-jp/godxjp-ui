@@ -22,6 +22,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **TreeSelect is token-themeable (#319) — 25 literals → 0, and its depth indent is finally
+  reachable.** The indent was a magic expression inline in JSX (`depth * 1.25 + 0.5` rem), so no
+  theme could touch it at any price — the guard never even saw it, because it is not a Tailwind
+  class. Depth now flows through `--tree-select-depth` on the row and the indent resolves as
+  `--tree-select-depth-space-base + depth × --tree-select-depth-space-step`, so a dense service
+  can tighten or flatten the tree without forking. Also `--tree-select-row-*` ·
+  `--tree-select-toggle-*` · `--tree-select-list-max-height` · `--tree-select-empty-space-block`.
+  Its clear control is centred against the whole field rather than laid out in a flex overlay, so
+  it keeps its own rule while reading the shared `--control-affix-*` knobs.
 - **TimePicker is token-themeable (#319) — 25 literals → 0.** Column height, panel width, row
   rhythm and the inline affix pair were all literal on the component, so a service could not
   shorten the scroll column or widen the panel for its own type scale without forking:

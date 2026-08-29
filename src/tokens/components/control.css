@@ -226,4 +226,20 @@
   /* These affix glyphs sit inside the field rather than overlaying it, so they rest a touch
    * heavier than the overlay affix used by Select/SearchSelect. */
   --time-picker-affix-rest-alpha: 0.7;
+
+  /* TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal
+   * on the component, and the depth indent was a magic expression in JSX
+   * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319). */
+  --tree-select-list-max-height: min(300px, 50vh);
+  --tree-select-row-space-block: 0.375rem;
+  --tree-select-row-space-inline-end: var(--space-2);
+  --tree-select-row-radius: var(--radius-sm);
+  --tree-select-row-font-size: var(--font-size-sm);
+  /* Indent = base + depth × step. A denser service dials the step down without touching JSX. */
+  --tree-select-depth-space-base: var(--space-2);
+  --tree-select-depth-space-step: 1.25rem;
+  --tree-select-toggle-size: 1.25rem;
+  --tree-select-toggle-space-inline-end: var(--space-1);
+  --tree-select-label-space-gap: var(--space-2);
+  --tree-select-empty-space-block: var(--space-6);
 }
