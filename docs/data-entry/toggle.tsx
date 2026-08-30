@@ -5,7 +5,7 @@ import { Toggle } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Toggle — a single pressed/unpressed button (Radix Toggle). Use for toolbar
+ * Toggle · a single pressed/unpressed button (Radix Toggle). Use for toolbar
  * actions and pinned filters. For multi-option selection use ToggleGroup.
  * Composed only from real @godxjp/ui components.
  */
@@ -94,7 +94,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Count</CardTitle>
             <CardDescription>
-              count / overflowCount / showZero / countLabel — Button と同じ語彙。押下状態と数字が 1
+              count / overflowCount / showZero / countLabel · Button と同じ語彙。押下状態と数字が 1
               つのコントロールに乗るので、ファセットフィルタチップやリアクションチップが real
               primitive だけで書ける。数字は Intl.NumberFormat
               でロケール整形され、アクセシブル名は「未読, 12 件」のように読み上げられる。

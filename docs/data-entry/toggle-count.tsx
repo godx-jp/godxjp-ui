@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Eye, PartyPopper, ThumbsUp } from "lucide-react";
 
 import {
   Card,
@@ -184,7 +185,7 @@ export default function Demo() {
                   count={reactions.includes("thumbsup") ? 12 : 11}
                   countLabel="件"
                 >
-                  👍
+                  <ThumbsUp aria-hidden="true" />
                 </ToggleGroupItem>
                 <ToggleGroupItem
                   value="party"
@@ -192,7 +193,7 @@ export default function Demo() {
                   count={reactions.includes("party") ? 4 : 3}
                   countLabel="件"
                 >
-                  🎉
+                  <PartyPopper aria-hidden="true" />
                 </ToggleGroupItem>
                 <ToggleGroupItem
                   value="eyes"
@@ -201,7 +202,7 @@ export default function Demo() {
                   overflowCount={999}
                   countLabel="件"
                 >
-                  👀
+                  <Eye aria-hidden="true" />
                 </ToggleGroupItem>
               </ToggleGroup>
             </Flex>

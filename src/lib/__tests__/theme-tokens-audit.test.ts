@@ -89,6 +89,21 @@ function findAllViolations(patterns: RegExp[], content: string): string[] {
   return [...new Set(hits)];
 }
 
+/**
+ * Blank out comments before scanning.
+ *
+ * These audits look for a class NAME in the file text, and a comment is free to quote one: Avatar's
+ * presence block explains that consumers kept hand-rolling `bg-green-500 ring-2`, which is the very
+ * thing the prop exists to stop. Counting that as a violation reports debt in a file that has none
+ * and sends someone off to "fix" prose — the same phantom-debt bug `check-no-hardcoded-geometry`
+ * was taught to avoid. Whitespace is preserved so reported offsets do not shift.
+ */
+function stripComments(source: string): string {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "))
+    .replace(/(^|[^:])\/\/[^\n]*/g, (m, p: string) => p + " ".repeat(m.length - p.length));
+}
+
 describe("theme token audit (components)", () => {
   const files = listTsxFiles(componentsRoot);
 
@@ -96,7 +111,7 @@ describe("theme token audit (components)", () => {
     const offenders: string[] = [];
     for (const file of files) {
       const rel = relative(componentsRoot, file);
-      const content = readFileSync(file, "utf8");
+      const content = stripComments(readFileSync(file, "utf8"));
       const hits = findAllViolations(FORBIDDEN_PALETTE, content);
       if (hits.length > 0) offenders.push(`${rel}: ${hits.join(", ")}`);
     }

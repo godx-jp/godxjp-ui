@@ -102,7 +102,7 @@ const THEME = `
   --muted: 216 33% 97%;              /* neutral-50 */
   --muted-foreground: 216 16% 40%;   /* neutral-600, darkened to clear WCAG AA 4.5:1 on cards */
   --border: 217 24% 89%;             /* neutral-200 */
-  --input: 216 20% 57%;              /* neutral-500 — a CONTROL boundary, not chrome: neutral-300
+  --input: 216 20% 57%;              /* neutral-500 · a CONTROL boundary, not chrome. neutral-300
                                         was 1.65:1 on the white card and failed WCAG SC 1.4.11.
                                         3.38:1 on card, 3.14:1 on --muted. --border stays neutral-200. */
   /* Fixed status signalling (ACME semantic palette) */

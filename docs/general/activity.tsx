@@ -11,14 +11,14 @@ import { Textarea } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
 
 /**
- * Activity — the official AMBIENT-motion primitive: a continuous, unbounded "something is happening
+ * Activity · the official AMBIENT-motion primitive: a continuous, unbounded "something is happening
  * right now, elsewhere". The LOOP counterpart to `Reveal`'s one-shot entrance (gh#313).
  *
  * Reads the DS motion tokens (`--activity-interval`, `--activity-stagger-step`,
  * `--activity-mark-offset`, `--activity-color`, `--ease-standard`) so a consumer never hand-rolls a
  * looping `@keyframes` + its own `prefers-reduced-motion` guard. Under reduced motion the loop is
- * dropped and each mark falls back to a DESIGNED resting state — three solid dots, a solid pulse
- * mark, a bar segment parked at the reading-start — never to nothing.
+ * dropped and each mark falls back to a DESIGNED resting state · three solid dots, a solid pulse
+ * mark, a bar segment parked at the reading-start · never to nothing.
  *
  * Composed only from real @godxjp/ui components. All copy is consumer-owned and localized.
  */
@@ -30,13 +30,13 @@ const MESSAGES = [
 ];
 
 const TONES = [
-  { tone: "muted", label: "muted — 既定（環境音）" },
-  { tone: "default", label: "default — 前景色" },
-  { tone: "primary", label: "primary — 主要導線" },
-  { tone: "success", label: "success — 接続中" },
-  { tone: "warning", label: "warning — 再接続中" },
-  { tone: "destructive", label: "destructive — 録画中" },
-  { tone: "info", label: "info — 同期中" },
+  { tone: "muted", label: "muted · 既定（環境音）" },
+  { tone: "default", label: "default · 前景色" },
+  { tone: "primary", label: "primary · 主要導線" },
+  { tone: "success", label: "success · 接続中" },
+  { tone: "warning", label: "warning · 再接続中" },
+  { tone: "destructive", label: "destructive · 録画中" },
+  { tone: "info", label: "info · 同期中" },
 ] as const;
 
 const SIZES = [
@@ -60,7 +60,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              {/* Ambient sync state at the top of the channel — the same primitive, `bar` mark. */}
+              {/* Ambient sync state at the top of the channel · the same primitive, `bar` mark. */}
               <Activity variant="bar" tone="info" label="同期中…" />
 
               {MESSAGES.map((message) => (
@@ -93,7 +93,7 @@ export default function Demo() {
         {/* ── variant × every union value ── */}
         <Card>
           <CardHeader>
-            <CardTitle level={2}>variant — 3 つのマーク</CardTitle>
+            <CardTitle level={2}>variant · 3 つのマーク</CardTitle>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
@@ -105,13 +105,13 @@ export default function Demo() {
               </Flex>
               <Flex direction="col" gap="xs">
                 <Text size="xs" tone="muted">
-                  pulse — 単一の呼吸するマーク。ライブ / 録画中。
+                  pulse · 単一の呼吸するマーク。ライブ / 録画中。
                 </Text>
                 <Activity variant="pulse" tone="destructive" label="録画中" />
               </Flex>
               <Flex direction="col" gap="xs">
                 <Text size="xs" tone="muted">
-                  bar — 不確定スイープ。同期中 / ストリーミング中。
+                  bar · 不確定スイープ。同期中 / ストリーミング中。
                 </Text>
                 <Activity variant="bar" tone="info" label="仕訳を同期しています…" />
               </Flex>
@@ -122,7 +122,7 @@ export default function Demo() {
         {/* ── size × every union value ── */}
         <Card>
           <CardHeader>
-            <CardTitle level={2}>size — マークとラベルが同時にスケール</CardTitle>
+            <CardTitle level={2}>size · マークとラベルが同時にスケール</CardTitle>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="sm">
@@ -136,7 +136,7 @@ export default function Demo() {
         {/* ── tone × every union value ── */}
         <Card>
           <CardHeader>
-            <CardTitle level={2}>tone — 意味づけされた配色（既定は muted）</CardTitle>
+            <CardTitle level={2}>tone · 意味づけされた配色（既定は muted）</CardTitle>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="sm">
@@ -164,7 +164,7 @@ export default function Demo() {
 
               <Flex direction="col" gap="xs">
                 <Text size="xs" tone="muted">
-                  children + label — children が可視スロットを持ち、label は sr-only の説明になる。
+                  children + label · children が可視スロットを持ち、label は sr-only の説明になる。
                 </Text>
                 <Activity label="佐藤さんが入力しています…">
                   <Text size="xs" tone="muted">
@@ -178,7 +178,7 @@ export default function Demo() {
 
               <Flex direction="col" gap="xs">
                 <Text size="xs" tone="muted">
-                  announce=&quot;polite&quot; — ライブリージョンは label だけを包む。既定は
+                  announce=&quot;polite&quot; · ライブリージョンは label だけを包む。既定は
                   false（リージョンを一切出さない）。ソケットのたびに読み上げが走る面では使わないこと。
                 </Text>
                 <Activity announce="polite" tone="warning" label="接続を再試行しています…" />
@@ -186,7 +186,7 @@ export default function Demo() {
 
               <Flex direction="col" gap="xs">
                 <Text size="xs" tone="muted">
-                  label なし — 装飾のみ。支援技術には何も伝わらないので、意味を持つ場面では必ず
+                  label なし · 装飾のみ。支援技術には何も伝わらないので、意味を持つ場面では必ず
                   label を渡す。
                 </Text>
                 <Activity variant="pulse" />

@@ -314,6 +314,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Two text-scanning audits were reporting on prose, and one demo shipped emoji.** The raw-palette
+  audit counted `bg-green-500` where Avatar's presence block _explains_ the hand-rolled workaround
+  the prop exists to replace, so a file with no debt was reported as having some — the same
+  phantom-debt shape `check-no-hardcoded-geometry` was taught to avoid, and it now strips comments
+  the same way (proved still to bite by putting the class back into real markup). The `docs`
+  typography audit was right about the other 19: 21 em-dashes in Japanese product copy became
+  middots per the repo's own standard, and the reaction-chip demo's 👍/🎉/👀 became lucide marks —
+  emoji render at a size and weight the host font decides, which is the same reason this system
+  bans emoji flags, and a counter pill has to stay legible beside the glyph.
+
 - **Table/DataTable: a full-bleed table no longer doubles the card frame (gh#305).** The frame
   suppression inside `<CardContent flush>` now covers BOTH full-bleed surfaces in one rule —
   `.ui-data-table-surface` (DataTable's own frame) and `.ui-table-bordered` (`<Table bordered>`) —
