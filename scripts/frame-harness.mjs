@@ -44,16 +44,39 @@ export async function loadDeps({ axe = true } = {}) {
   return { chromium, AxeBuilder: axeMod.default ?? axeMod.AxeBuilder };
 }
 
+/**
+ * Is a preview answering at `url`?
+ *
+ * Probes the loopback ADDRESS as well as the name. `vite preview` binds 127.0.0.1 and says so
+ * ("Network: use --host to expose"), while `localhost` may resolve to ::1 first — and on a host
+ * where the IPv4 fallback is slower than the probe's own abort, every attempt times out while the
+ * server sits there perfectly healthy. Asking both removes name resolution from the question
+ * entirely; the abort is also 3s rather than 1500ms, since the old budget could expire during a
+ * fallback rather than because nothing was listening.
+ */
 async function reachable(url) {
+  const candidates = [url];
   try {
-    const c = new AbortController();
-    const t = setTimeout(() => c.abort(), 1500);
-    await fetch(url, { signal: c.signal });
-    clearTimeout(t);
-    return true;
+    const u = new URL(url);
+    if (u.hostname === "localhost") {
+      u.hostname = "127.0.0.1";
+      candidates.push(u.toString());
+    }
   } catch {
-    return false;
+    /* not a URL we can rewrite — probe it as given */
   }
+  for (const candidate of candidates) {
+    try {
+      const c = new AbortController();
+      const t = setTimeout(() => c.abort(), 3000);
+      await fetch(candidate, { signal: c.signal });
+      clearTimeout(t);
+      return true;
+    } catch {
+      /* try the next candidate */
+    }
+  }
+  return false;
 }
 
 function run(cmd, args) {
@@ -119,10 +142,17 @@ export async function ensurePreviewServer(base = DEFAULT_BASE) {
     // being thrown away.
     { stdio: ["ignore", "pipe", "pipe"], detached: true, cwd: REPO_ROOT },
   );
+  // Echoed LIVE, not buffered for the error path. A previous attempt captured stdout into a
+  // variable and then failed to print it — the string edit that was meant to add it to the
+  // timeout message silently did not match, so seven rounds of instrumenting produced a log that
+  // still said nothing. Streaming it to the console cannot be defeated that way: whatever the
+  // server prints appears in CI, whether the wait succeeds or not.
   let serverStderr = "";
-  let serverStdout = "";
-  proc.stderr?.on("data", (c) => (serverStderr += String(c)));
-  proc.stdout?.on("data", (c) => (serverStdout += String(c)));
+  proc.stdout?.on("data", (c) => process.stdout.write(`[vite preview] ${c}`));
+  proc.stderr?.on("data", (c) => {
+    serverStderr += String(c);
+    process.stdout.write(`[vite preview:err] ${c}`);
+  });
 
   const cleanup = () => {
     try {
@@ -143,10 +173,10 @@ export async function ensurePreviewServer(base = DEFAULT_BASE) {
   }
   cleanup();
   throw new Error(
-    `static preview server did not come up in ${budget}s on ${base}` +
-      (serverStderr
-        ? `\n--- vite preview stderr ---\n${serverStderr}`
-        : "\n(vite preview printed nothing to stderr)"),
+    `static preview server did not come up in ${budget}s on ${base}.\n` +
+      `Everything the server printed is above, prefixed [vite preview]. If there is no such line ` +
+      `at all, it never reported listening.` +
+      (serverStderr ? `\n--- stderr ---\n${serverStderr}` : ""),
   );
 }
 
