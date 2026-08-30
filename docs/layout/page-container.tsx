@@ -18,7 +18,7 @@ import { Button, Text } from "@godxjp/ui/general";
 import { SearchInput } from "@godxjp/ui/data-entry";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
 import { Toolbar, ToolbarGroup } from "@godxjp/ui/navigation";
-import { Plus, Download, Filter } from "lucide-react";
+import { Plus, Download, Filter, Search } from "lucide-react";
 
 /**
  * Router Link stub passed to `linkComponent` · proves breadcrumb segments can render
@@ -671,6 +671,14 @@ export default function Demo() {
           上端だけ --page-pad-block-start-chrome（既定 0）に切り替わり、下端は従来どおり
           stickyFooter の担当。設計がクロムに余白を求めるならテーマでこのトークンを一度だけ
           調整します（呼び出し側の padding や負マージンは不可）。
+          同じ事実の帰結はあと 2 つ。subtitle は --page-subtitle-font-size-chrome
+          （--font-size-2xs / 約 11px）に落ちます · クロムの下の一行はチャンネルの目的や
+          メールの抜粋であって文書のリードではなく、既定の --font-size-base のままだと
+          chrome のタイトルと同じ型段になって階層が立たないからです。行送りは
+          --line-height-body のままなので、折り返す日本語の一行も従来の律動を保ちます。
+          そして extra は行が「行」である 640px 以上で帯の中央に揃います（align-self: center）·
+          先頭寄せは背の高い h1 の一行目にアクションを並べる文書の作法であって、
+          揃える見出しを持たない帯には合いません。実測で 8.65px のずれでした。
           variant="ghost"（罫線と下余白を落とす）と組み合わせると静かなクロムヘッダーになります。 */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
         <PageContainer
@@ -694,6 +702,13 @@ export default function Demo() {
                 <Descriptions.Item label="ページ上端の余白">
                   --space-page-active-y（24px）· chrome では --page-pad-block-start-chrome（0）
                 </Descriptions.Item>
+                <Descriptions.Item label="subtitle の型段">
+                  --page-subtitle-font-size（14px）· chrome では
+                  --page-subtitle-font-size-chrome（約 11px）
+                </Descriptions.Item>
+                <Descriptions.Item label="extra の縦位置">
+                  行の先頭寄せ（flex-start）· chrome では帯の中央（align-self: center）
+                </Descriptions.Item>
               </Descriptions>
             </CardContent>
           </Card>
@@ -710,7 +725,13 @@ export default function Demo() {
             headerScale="chrome"
             variant="ghost"
             title="# 経理チャンネル"
+            subtitle="請求書と入金の相談 · 締めは毎月 25 日"
             status={<Badge tone="info">接続中</Badge>}
+            extra={
+              <Button size="sm" variant="ghost" aria-label="チャンネル内を検索">
+                <Search aria-hidden="true" />
+              </Button>
+            }
             toolbar={
               <Toolbar>
                 <ToolbarGroup label="表示">
@@ -736,6 +757,8 @@ export default function Demo() {
             <Flex direction="col" gap="md">
               {[
                 "チャンネル名は本文と同じ 14px · 見出しではなく面のラベルとして読ませます。",
+                "その下の一行はさらに 2 段小さい約 11px · 名前と説明の階層が立ちます。",
+                "検索アイコンは帯の中央 · 文書の先頭寄せではありません。",
                 "h1 のままなので、見出し階層は document と同じ。",
                 "帯の高さが下がったぶんは、そのまま会話の高さになります。",
                 "縮めたいだけの理由で通常の文書ページに使わないこと。",

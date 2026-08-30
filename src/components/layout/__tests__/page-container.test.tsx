@@ -884,6 +884,10 @@ describe("PageContainer", () => {
     // so the two halves have to be read apart.
     const compactCss = bodyOf(layoutCss, /@media \(max-width: 720px\) \{/);
 
+    // THE row step (640px) — the FIRST `min-width: 640px` block in the file is the header row's,
+    // and it is where `align-items` on the row is decided, so the chrome exception lives there too.
+    const rowCss = bodyOf(layoutCss, /@media \(min-width: 640px\) \{/);
+
     it("emits NO attribute by default — an existing page is byte-identical", () => {
       const { container } = renderWithUi(<PageContainer title="Invoice INV-2041" />);
       const root = container.firstChild as HTMLElement;
@@ -990,6 +994,91 @@ describe("PageContainer", () => {
       expect(root).toHaveAttribute("data-measure", "medium");
       expect(root).toHaveClass("ui-page-container--ghost", "ui-page-container--fill");
       expect(container.querySelector(".ui-page-toolbar")).not.toBeNull();
+    });
+
+    /*
+     * Third consequence of the same fact: the line UNDER a chrome title is a caption on that
+     * chrome, so it drops two steps of the golden scale. It shipped at --font-size-base, the
+     * IDENTICAL step the chrome title takes — same size is not a hierarchy — and because the step
+     * drives the line box (14px × 1.7 = 23.8px vs 11px × 1.7 = 18.9px) the band was also spending
+     * ~5px of the transcript's room on it. Measured on the reference chat screen: design subtitle
+     * line 14px, app 24px.
+     */
+    it("drops the subtitle two steps, through its own token", () => {
+      const { container } = renderWithUi(
+        <PageContainer headerScale="chrome" title="# accounting" subtitle="Sổ sách và hoá đơn" />,
+      );
+      expect(container.querySelector(".ui-page-subtitle")?.textContent).toBe("Sổ sách và hoá đơn");
+      expect(layoutCss).toMatch(
+        /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-subtitle \{\s*font-size: var\(--page-subtitle-font-size-chrome\);\s*\}/,
+      );
+      // A step of the shared golden scale, never a literal (rule #46) — and a SEPARATE knob that
+      // sits beside the two document steps rather than redefining either of them.
+      expect(layoutTokens).toMatch(/--page-subtitle-font-size-chrome:\s*var\(--font-size-2xs\);/);
+      expect(layoutCss).not.toMatch(/--page-subtitle-font-size-chrome:/);
+      expect(layoutTokens).toMatch(/--page-subtitle-font-size: var\(--font-size-base\);/);
+      expect(layoutTokens).toMatch(/--page-subtitle-font-size-compact: var\(--font-size-sm\);/);
+      // Type only. --line-height-body still owns the rhythm, so a wrapped JA/VI purpose line stays
+      // readable at the smaller step; colour/weight belong to the base rule for both scales.
+      const chromeSubtitleRule =
+        layoutCss.match(
+          /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-subtitle \{[^}]*\}/,
+        )?.[0] ?? "";
+      expect(chromeSubtitleRule).toMatch(/font-size:/);
+      expect(chromeSubtitleRule).not.toMatch(/line-height:|color:|font-weight:|margin/);
+    });
+
+    it("out-ranks the 720px subtitle step instead of being overwritten by it", () => {
+      // The compact step is already a COMPOUND selector (0,2,0) — unlike the bare `.ui-page-title`
+      // — so the chrome rule only wins by carrying the container attribute on top of its own class.
+      expect(compactCss).toMatch(
+        /\.ui-page-header \.ui-page-subtitle \{\s*font-size: var\(--page-subtitle-font-size-compact\);/,
+      );
+      expect(compactCss).not.toMatch(/data-header-scale/);
+      expect(layoutCss).toMatch(
+        /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-subtitle/,
+      );
+      // Both halves of the responsive document step survive untouched.
+      expect(compactCss).toMatch(
+        /\.ui-page-title \{\s*font-size: var\(--page-title-font-size-compact\);/,
+      );
+    });
+
+    /*
+     * The second consequence: a chrome band's actions sit on the bar's MIDDLE. `align-items:
+     * flex-start` is right for a document (actions on the first line of a tall <h1>) and wrong for
+     * a bar with no tall heading — measured 8.65px of it on the reference chat screen, the icons
+     * centred at y=14 against a 45.3px row whose title block centres at y=22.65.
+     */
+    it("centres the extra cluster on the bar, only where the row IS a row", () => {
+      const { container } = renderWithUi(
+        <PageContainer
+          headerScale="chrome"
+          title="# accounting"
+          extra={<Button aria-label="Search">S</Button>}
+        />,
+      );
+      expect(container.querySelector(".ui-page-header-extra")).not.toBeNull();
+      // `align-self` on the extra box, not `align-items` on the row: the heading keeps the stretch
+      // it has today, and the two alignments stay independent axes.
+      expect(rowCss).toMatch(
+        /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-header-extra \{\s*align-self: center;\s*\}/,
+      );
+      // …and the document row it composes with is untouched.
+      expect(rowCss).toMatch(
+        /\.ui-page-header-row \{[^}]*flex-direction: row;[^}]*align-items: flex-start;/,
+      );
+      // Below 640px the row is a COLUMN: there the cross axis is horizontal, so the very same
+      // declaration would centre `extra` sideways and release the full-width stretch the base rule
+      // gives it. It must therefore live INSIDE the row block and nowhere else.
+      const chromeExtraRules = layoutCss.match(
+        /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-header-extra/g,
+      );
+      expect(chromeExtraRules).toHaveLength(1);
+      expect(layoutCss).toMatch(
+        /\.ui-page-header-row \{\s*display: flex;\s*flex-direction: column;\s*align-items: stretch;/,
+      );
+      expect(compactCss).not.toMatch(/align-self/);
     });
 
     it("has no a11y violations on a chrome-scaled chat page", async () => {

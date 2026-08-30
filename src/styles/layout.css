@@ -806,12 +806,49 @@
       min-inline-size: 0;
       justify-content: flex-end;
     }
+
+    /* `headerScale="chrome"`, second consequence of the SAME fact. The row's `align-items:
+     * flex-start` above is right for a DOCUMENT: a `Save`/`Publish` group belongs on the first
+     * line of a tall `<h1>`, not floating beside its second line. A chrome band has no tall
+     * heading to align to — it is one bar, and its actions sit on the bar's middle. Measured
+     * against the reference chat screen the difference was 8.65px: the header row is 45.3px, the
+     * icon buttons 28px, so top-packing put their centres at y=14 while the title block's centre
+     * sat at y=22.65. That gap is what reads, correctly, as "the icons are not centred".
+     *
+     * `align-self` on the EXTRA box, not `align-items` on the row: the heading keeps the stretch
+     * it has today (nothing about the title's own alignment is in question), and the two axes stay
+     * independent. Scoped INSIDE the 640px block on purpose — below it the row is a COLUMN, where
+     * the cross axis is horizontal and this same declaration would centre `extra` sideways and
+     * release its full-width stretch. `headerLayout="responsive-inline"` runs its own row
+     * arrangement under 640px and keeps its own flex-start; that arrangement exists to hold ONE
+     * compact control beside a wrapping title band, which is the document case again. */
+    .ui-page-container[data-header-scale="chrome"] .ui-page-header-extra {
+      align-self: center;
+    }
   }
 
   .ui-page-subtitle {
     font-size: var(--page-subtitle-font-size);
     color: hsl(var(--muted-foreground));
     margin-top: var(--space-1);
+  }
+
+  /* `headerScale="chrome"`, third consequence of the SAME fact: if the top row is chrome, the line
+   * under it is a caption ON that chrome (a channel purpose, a mail preview), not a document's
+   * standfirst. The document step is --font-size-base — the identical step the chrome TITLE takes —
+   * so a chrome header was shipping a title and its subtitle at one size, which is not a hierarchy.
+   * Same size is also not the expensive half: the step drives the LINE BOX (14px × 1.7 = 23.8px vs
+   * 11px × 1.7 = 18.9px), and a band that exists to give the transcript room was spending 5px of it
+   * on a caption. Type only — no line-height, no colour, no weight: `--line-height-body` still owns
+   * the rhythm so a wrapped JA/VI purpose line stays readable at the smaller step.
+   *
+   * The specificity is load-bearing exactly as it is on the title above: the 720px block declares
+   * `.ui-page-header .ui-page-subtitle` (0,2,0) — already compounded, unlike the bare `.ui-page-title`
+   * — so this rule out-ranks it only because the container attribute makes it (0,3,0). Without that
+   * the compact step would win below 720px and a chrome subtitle would step UP to 14px on a phone,
+   * i.e. exactly where the band's height is worth the most. */
+  .ui-page-container[data-header-scale="chrome"] .ui-page-subtitle {
+    font-size: var(--page-subtitle-font-size-chrome);
   }
 
   /* `headerLoading` placeholders — the real `<h1>`/`<p>` wearing the shared `.ui-skeleton-block`

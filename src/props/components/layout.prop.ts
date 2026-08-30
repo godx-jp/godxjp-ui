@@ -147,9 +147,17 @@ export type PageContainerProp = {
    * The same answer also puts the band ON the frame's edge: the container's block-start padding
    * becomes `--page-pad-block-start-chrome` (0) instead of `--space-page-active-y`, because a
    * document title needs air above it and a channel head IS the top edge (measured on a consumer
-   * chat screen as 24px that pushed the head off y=0 and came off the transcript viewport). Two
-   * consequences of ONE fact, so they ride one prop; the page's bottom edge is untouched, that
-   * being `stickyFooter`'s.
+   * chat screen as 24px that pushed the head off y=0 and came off the transcript viewport). The
+   * page's bottom edge is untouched, that being `stickyFooter`'s.
+   *
+   * It carries two more consequences of the same fact. The SUBTITLE drops to
+   * `--page-subtitle-font-size-chrome` (`--font-size-2xs`, ≈11px): a caption on chrome, not a
+   * document's standfirst, and at the document step it was rendering at the very same size as the
+   * chrome title, which is not a hierarchy. And the `extra` cluster CENTRES on the bar
+   * (`align-self: center`) wherever the header row is a row (>=640px), because top-packing actions
+   * is a document behaviour — they belong on the first line of a tall `<h1>` — and a bar has no
+   * tall heading to align to. Measured on a consumer chat screen, that was 8.65px: 28px icon
+   * buttons pinned at y=14 inside a 45.3px row whose title block centred at y=22.65.
    *
    * The heading stays an `<h1>` throughout, so the screen-reader outline is unchanged. Compose it
    * with `variant="ghost"` for the full quiet chrome header (ghost drops the divider and the

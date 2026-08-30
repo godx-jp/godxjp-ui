@@ -181,6 +181,16 @@
    * that never passes `headerScale` never reads this token (rule #44). */
   --page-title-font-size-chrome: var(--heading-h3);
 
+  /* The SUBTITLE step of the same fact. Measured against the reference chat screen, the chrome
+   * title and the chrome subtitle were rendering at the SAME step (both --font-size-base), which
+   * is not a hierarchy — a channel name and the channel's purpose line read as one undifferentiated
+   * block. The design puts the purpose line two steps down (`Text size="2xs"`), and the size is
+   * what carries the LINE BOX: at 14px/1.7 the subtitle line is 23.8px tall, at 11px/1.7 it is
+   * 18.9px, so the whole header band loses ~5px it was spending on a caption. `--font-size-2xs`
+   * (ratio⁻², ≈11px) is that step, and it is the same golden scale the title step reads — never a
+   * literal. Quiet by default: a page that never passes `headerScale` never resolves it (#44). */
+  --page-subtitle-font-size-chrome: var(--font-size-2xs);
+
   /* The page's TOP inset under `headerScale="chrome"`, the second half of the same fact: chrome
    * sits on the frame's edge. A document page opens with --space-page-active-y (24px, 16px below
    * the 720px step) because a title needs air above it; a chat channel head, a mail subject bar or
