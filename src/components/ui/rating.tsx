@@ -50,7 +50,9 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, star: number) => {
       if (!interactive) return;
-      let next: number | null = null;
+      // Every case either assigns or returns, so this needs no initialiser — and the type
+      // narrows to number, which is what select() actually wants.
+      let next: number;
       switch (e.key) {
         case "ArrowRight":
         case "ArrowUp":

@@ -1,0 +1,107 @@
+/* Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row.
+ *
+ * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library
+ * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and
+ * EVERY one of them baked its box straight onto the component: a service could not resize the
+ * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid
+ * without forking. That is precisely the gap cardinal rule #45 exists to close.
+ *
+ * Radius defaults mirror the utilities they replace, verified against the built CSS:
+ *   rounded-lg   = var(--radius)                            → --radius-lg
+ *   rounded-md   = calc(var(--radius) / var(--radius-ratio)) → --radius-md
+ *   rounded-full                                             → --radius-pill
+ */
+
+:root {
+  /* DROPZONE — the large drag target. Its inset is deliberately generous; a dense service
+   * dials it back with one override instead of forking the variant. */
+  --upload-dropzone-space-inset: var(--space-10);
+  --upload-dropzone-radius: var(--radius-lg);
+  --upload-dropzone-border-width: 2px;
+  --upload-dropzone-icon-size: 2.5rem;
+  --upload-dropzone-hint-space-block-start: var(--space-3);
+  --upload-dropzone-hint-font-size: var(--font-size-sm);
+  --upload-dropzone-meta-space-block-start: var(--space-1);
+  --upload-dropzone-meta-font-size: var(--font-size-xs);
+
+  /* TILE — the 96px square shared by picture-card thumbnails and the "add image" button.
+   * One knob resizes the whole gallery; picture-card grids are the most common thing a service
+   * re-grids to match its own column rhythm. */
+  --upload-tile-size: 6rem;
+  --upload-tile-radius: var(--radius-md);
+  --upload-tile-space-gap: var(--space-3);
+  --upload-tile-icon-size: 1.5rem;
+  --upload-tile-label-space-block-start: var(--space-1);
+  --upload-tile-label-font-size: var(--font-size-xs);
+  --upload-tile-overlay-font-size: var(--font-size-xs);
+  /* Busy scrim over a tile/frame — role-mirror knob, `initial` so --background re-resolves at the
+   * CALL SITE under a scoped [data-tenant]/.dark theme. Default = hsl(var(--background) / 0.7). */
+  --upload-overlay-background: initial;
+  --upload-overlay-alpha: 70%;
+
+  /* REMOVE affordance — the ✕ / trash chip pinned to a tile or avatar. */
+  --upload-remove-space-inset: var(--space-1);
+  --upload-remove-offset: var(--space-1);
+  --upload-remove-icon-size: 0.875rem;
+
+  /* PICTURE — the single wide preview variant. */
+  --upload-picture-max-width: 20rem;
+  --upload-picture-radius: var(--radius-md);
+  --upload-picture-preview-max-height: 12rem;
+  --upload-picture-empty-height: 8rem;
+  --upload-picture-empty-label-space-block-start: var(--space-2);
+  --upload-picture-empty-label-font-size: var(--font-size-sm);
+  --upload-picture-overlay-font-size: var(--font-size-sm);
+  /* "Pending replace" chip. The radius previously came from a bare `rounded`, which resolves to a
+   * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss.
+   * It now follows the tile radius like every other chip in the component. */
+  --upload-picture-badge-radius: var(--radius-md);
+  --upload-picture-badge-offset: var(--space-2);
+  --upload-picture-badge-space-inline: var(--space-2);
+  --upload-picture-badge-space-block: 0.125rem;
+  --upload-picture-badge-font-size: var(--font-size-xs);
+
+  /* AVATAR — the round single-image variant. */
+  --upload-avatar-size: 6rem;
+  --upload-avatar-border-width: 2px;
+  --upload-avatar-change-space-block: var(--space-1);
+  /* The "change" strip sits ON the photo, so its scrim is intentionally a fixed dark wash rather
+   * than a surface role — it must stay legible over an arbitrary user image in either theme. */
+  --upload-avatar-change-background: rgb(0 0 0 / 0.7);
+  --upload-avatar-change-foreground: #fff;
+  /* Alpha of an image the user has marked for deletion but not yet committed. */
+  --upload-avatar-pending-delete-alpha: 0.4;
+
+  /* DRAFT BAR — the undo strip shown after a pending remove/replace. */
+  --upload-draft-space-inline: var(--space-3);
+  --upload-draft-space-block: var(--space-2);
+  --upload-draft-space-gap: var(--space-2);
+  --upload-draft-radius: var(--radius-md);
+  --upload-draft-font-size: var(--font-size-sm);
+  --upload-draft-icon-size: 0.875rem;
+
+  /* FILE ROW — the list rendered under the dropzone/button variants. */
+  --upload-row-space-inline: var(--space-3);
+  --upload-row-space-block: var(--space-2);
+  --upload-row-space-gap: var(--space-3);
+  --upload-row-radius: var(--radius-md);
+  --upload-row-font-size: var(--font-size-sm);
+  --upload-row-icon-size: 1rem;
+
+  /* CROP DIALOG — the 1:1 avatar cropper (`UploadCropDialog`). The 66-literal upload pass above
+   * never reached this file, so the whole cropper was still baked on the component: the dialog was
+   * pinned to `max-w-sm`, the round preview to `size-48`, the zoom row to `px-2`. An avatar is one
+   * of the most service-specific sizes there is (a 96px tile service wants a smaller crop stage
+   * than a 200px one), and the crop stage must stay in proportion with --upload-avatar-size —
+   * which is exactly the pair rule #45 exists to keep tunable together.
+   *
+   * The dialog width intentionally stays a knob of its own rather than reading
+   * --dialog-width-default: the cropper is deliberately NARROWER than a normal dialog so the round
+   * stage reads as the subject, not as a small element in a wide box. */
+  --upload-crop-dialog-max-width: 24rem;
+  --upload-crop-preview-size: 12rem;
+  --upload-crop-preview-radius: var(--radius-pill);
+  /* Zoom row inset — the slider is inset from the dialog edge so its thumb's focus ring is never
+   * flush against the dialog padding. */
+  --upload-crop-zoom-space-inline: var(--space-2);
+}

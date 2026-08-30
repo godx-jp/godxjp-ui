@@ -50,3 +50,181 @@
     }
   }
 }
+
+/*
+ * AMBIENT MOTION — the `Activity` primitive (gh#313): a continuous, unbounded "something is
+ * happening right now, elsewhere" mark. The LOOP counterpart to `.ui-reveal`'s one-shot entrance,
+ * living in the same file so the library keeps exactly one place where motion is written.
+ *
+ * NOT `.ui-skeleton-block` (content is loading — `aria-busy`), NOT the Button spinner (this action
+ * is in flight). Every interval, offset, size and colour reads a token, so a service retunes the
+ * whole ambient feel from its theme instead of forking a `@keyframes` (cardinal rule #45).
+ *
+ * REDUCED MOTION IS A DESIGNED FRAME, NOT AN ABSENCE. Under `prefers-reduced-motion: reduce` the
+ * loops are dropped and every mark falls back to its BASE rule, which is authored to be a legible
+ * resting state: three solid dots (a static ellipsis — the same "…" convention the animation
+ * spells out), a solid pulse mark, and a bar segment parked at the reading-start of its track so
+ * the bar can never read as "complete". Nothing is hidden, nothing collapses, no box changes size
+ * — so there is no layout shift either way (WCAG 2.2 SC 2.3.3 / 2.2.2).
+ */
+@layer components {
+  .ui-activity {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--activity-gap);
+    font-size: var(--activity-font-size-sm);
+  }
+  .ui-activity[data-size="xs"] {
+    font-size: var(--activity-font-size-xs);
+  }
+  .ui-activity[data-size="md"] {
+    font-size: var(--activity-font-size-md);
+  }
+  .ui-activity[data-size="lg"] {
+    font-size: var(--activity-font-size-lg);
+  }
+
+  /* The mark row. `block-size` reserves the loop's full travel so a dot at the top of its arc is
+   * never clipped and the row never grows mid-cycle. */
+  .ui-activity-mark {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: var(--activity-gap);
+    block-size: calc(var(--activity-mark-size) + var(--activity-mark-offset));
+    color: hsl(var(--activity-color, var(--muted-foreground)));
+  }
+
+  /* Tone → mark ink. Two-attribute selectors (0,2,0) outrank the muted base (0,1,0). `muted` has
+   * no rule of its own: it IS the base, and therefore the one tone `--activity-color` retints. */
+  .ui-activity[data-tone="default"] .ui-activity-mark {
+    color: hsl(var(--foreground));
+  }
+  .ui-activity[data-tone="primary"] .ui-activity-mark {
+    color: hsl(var(--primary));
+  }
+  .ui-activity[data-tone="success"] .ui-activity-mark {
+    color: hsl(var(--success));
+  }
+  .ui-activity[data-tone="warning"] .ui-activity-mark {
+    color: hsl(var(--warning));
+  }
+  .ui-activity[data-tone="destructive"] .ui-activity-mark {
+    color: hsl(var(--destructive));
+  }
+  .ui-activity[data-tone="info"] .ui-activity-mark {
+    color: hsl(var(--info));
+  }
+
+  /* dots — the ellipsis convention. Resting state (= the reduced-motion frame): three solid dots. */
+  .ui-activity-dot {
+    inline-size: var(--activity-mark-size);
+    block-size: var(--activity-mark-size);
+    border-radius: var(--radius-pill);
+    background: currentColor;
+    opacity: 1;
+    animation: ui-activity-bounce var(--activity-interval) var(--ease-standard) infinite;
+  }
+  /* nth-child, not a physical offset: in RTL the flex row lays the dots end→start, so the cascade
+   * follows the reading direction with no `[dir]` rule. */
+  .ui-activity-dot:nth-child(2) {
+    animation-delay: calc(var(--activity-stagger-step) * 1);
+  }
+  .ui-activity-dot:nth-child(3) {
+    animation-delay: calc(var(--activity-stagger-step) * 2);
+  }
+
+  /* pulse — a single breathing mark (live / recording). Opacity only: the reference design keeps
+   * motion LOW, and an opacity loop degrades to a solid mark instead of a resized box. */
+  .ui-activity-pulse {
+    inline-size: var(--activity-pulse-mark-size);
+    block-size: var(--activity-pulse-mark-size);
+    border-radius: var(--radius-pill);
+    background: currentColor;
+    opacity: 1;
+    animation: ui-activity-breathe var(--activity-interval) var(--ease-standard) infinite;
+  }
+
+  /* bar — an indeterminate sweep (syncing). */
+  .ui-activity-bar {
+    position: relative;
+    overflow: hidden;
+    inline-size: var(--activity-bar-width);
+    block-size: var(--activity-bar-height);
+    border-radius: var(--activity-bar-radius);
+    background: hsl(
+      var(--activity-color, var(--muted-foreground)) / var(--activity-bar-track-alpha)
+    );
+  }
+  .ui-activity-bar-segment {
+    position: absolute;
+    inset-block: 0;
+    /* Parked at the reading-start when the animation is dropped: a partial bar, never a full one
+     * (a full track would read as "complete", which is the opposite of indeterminate). */
+    inset-inline-start: 0;
+    inline-size: var(--activity-bar-segment-width);
+    border-radius: inherit;
+    background: currentColor;
+    animation: ui-activity-sweep var(--activity-interval) var(--ease-standard) infinite;
+  }
+
+  /* The label is a real `Text`; it only needs to stop the mark's travel box stretching the row. */
+  .ui-activity-label {
+    min-inline-size: 0;
+  }
+
+  @keyframes ui-activity-bounce {
+    0%,
+    70%,
+    100% {
+      transform: translateY(0);
+      opacity: var(--activity-mark-rest-alpha);
+    }
+    35% {
+      transform: translateY(calc(-1 * var(--activity-mark-offset)));
+      opacity: 1;
+    }
+  }
+
+  @keyframes ui-activity-breathe {
+    0%,
+    100% {
+      opacity: var(--activity-mark-rest-alpha);
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes ui-activity-sweep {
+    from {
+      inset-inline-start: calc(-1 * var(--activity-bar-segment-width));
+    }
+    to {
+      inset-inline-start: 100%;
+    }
+  }
+
+  /* Accessibility: no motion → no loop. Every mark falls back to the legible resting state
+   * authored above; the label is visible text either way, so the affordance still says what it
+   * means (WCAG 2.2 SC 2.3.3 Animation from Interactions, SC 2.2.2 Pause/Stop/Hide — an
+   * indefinite loop runs longer than five seconds and the user cannot pause it). */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-activity-dot,
+    .ui-activity-pulse,
+    .ui-activity-bar-segment {
+      animation: none;
+    }
+  }
+
+  /* Forced colours: the OS palette replaces the token ink, so the mark must not depend on it. */
+  @media (forced-colors: active) {
+    .ui-activity-dot,
+    .ui-activity-pulse,
+    .ui-activity-bar-segment {
+      background: CanvasText;
+    }
+    .ui-activity-bar {
+      border: 1px solid CanvasText;
+    }
+  }
+}

@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
 
 import { cn } from "../../lib/utils";
-import { toggleVariants, type ToggleProps } from "./toggle";
+import { toggleVariants, useCounterPill, type ToggleCountFields, type ToggleProp } from "./toggle";
 
-type ToggleGroupVariant = ToggleProps["variant"];
-type ToggleGroupSize = ToggleProps["size"];
+type ToggleGroupVariant = ToggleProp["variant"];
+type ToggleGroupSize = ToggleProp["size"];
 
 /**
  * Group-level `variant`/`size`, provided to every item (upstream shadcn pattern).
@@ -48,26 +48,63 @@ export const ToggleGroup = React.forwardRef<
 });
 ToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName;
 
-export const ToggleGroupItem = React.forwardRef<
-  React.ComponentRef<typeof ToggleGroupPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item> & {
+/**
+ * `variant`/`size` come from the group through context; the COUNT stays per item, because the
+ * number is per-item data (gh#312). Same vocabulary as `Toggle` and `Button` — one counter pill
+ * for the whole library.
+ */
+export type ToggleGroupItemProp = React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item> &
+  ToggleCountFields & {
     variant?: ToggleGroupVariant;
     size?: ToggleGroupSize;
-  }
->(({ className, variant, size, ...props }, ref) => {
-  const context = React.useContext(ToggleGroupContext);
-  // An explicit item prop ALWAYS wins; context fills in only where the item said nothing.
-  const resolvedVariant = variant ?? context.variant;
-  const resolvedSize = size ?? context.size;
-  return (
-    <ToggleGroupPrimitive.Item
-      ref={ref}
-      data-slot="toggle-group-item"
-      data-variant={resolvedVariant}
-      data-size={resolvedSize}
-      className={cn(toggleVariants({ variant: resolvedVariant, size: resolvedSize }), className)}
-      {...props}
-    />
-  );
-});
+  };
+
+export type ToggleGroupItemProps = ToggleGroupItemProp;
+
+export const ToggleGroupItem = React.forwardRef<
+  React.ComponentRef<typeof ToggleGroupPrimitive.Item>,
+  ToggleGroupItemProp
+>(
+  (
+    {
+      className,
+      variant,
+      size,
+      count,
+      overflowCount,
+      showZero,
+      countLabel,
+      children,
+      "aria-label": ariaLabel,
+      ...props
+    },
+    ref,
+  ) => {
+    const context = React.useContext(ToggleGroupContext);
+    // An explicit item prop ALWAYS wins; context fills in only where the item said nothing.
+    const resolvedVariant = variant ?? context.variant;
+    const resolvedSize = size ?? context.size;
+    const { pill, resolvedAriaLabel } = useCounterPill({
+      count,
+      overflowCount,
+      showZero,
+      countLabel,
+      ariaLabel,
+    });
+    return (
+      <ToggleGroupPrimitive.Item
+        ref={ref}
+        data-slot="toggle-group-item"
+        data-variant={resolvedVariant}
+        data-size={resolvedSize}
+        aria-label={resolvedAriaLabel}
+        className={cn(toggleVariants({ variant: resolvedVariant, size: resolvedSize }), className)}
+        {...props}
+      >
+        {children}
+        {pill}
+      </ToggleGroupPrimitive.Item>
+    );
+  },
+);
 ToggleGroupItem.displayName = ToggleGroupPrimitive.Item.displayName;

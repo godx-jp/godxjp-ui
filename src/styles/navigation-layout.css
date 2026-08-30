@@ -42,6 +42,17 @@
     --control-padding-x: var(--app-setting-picker-compact-padding-x);
     --control-font-size: var(--app-setting-picker-compact-font-size);
   }
+  /* Tabs root — the flex box that stacks the strip above its panel (#319). The strip↔panel gap is
+   * a token so a service can retune the tab rhythm to its own grid; `min-inline-size: 0` is NOT a
+   * knob but the flexbox shrink idiom that used to ride along as `min-w-0`: without it the strip's
+   * intrinsic width forces every ancestor wider instead of letting the strip scroll its own
+   * overflow (gh#175). `display:flex` / the vertical column stay on the component — they are
+   * structure, not a service-tunable constant. */
+  [data-slot="tabs"] {
+    min-inline-size: 0;
+    gap: var(--tabs-root-gap);
+  }
+
   [data-slot="tabs-list"] {
     max-inline-size: var(--tabs-list-max-inline-size);
     overflow-x: var(--tabs-list-overflow);
@@ -88,9 +99,19 @@
     }
   }
 
+  /* Pagination chevrons (#319). The `simple` form draws Prev/Next as size="sm" Buttons whose only
+   * content is the glyph, so it must NOT inherit the small-button icon tier — the chevron is the
+   * whole control. Pagination lives in styles/layout.css, but this override has to out-specify
+   * `.ui-button--sm svg` (0,1,1) from styles/control.css, so it is authored here at (0,2,1); a
+   * plain `.ui-pagination svg` rule would lose the cascade and silently shrink both chevrons. */
+  .ui-pagination .ui-button svg {
+    inline-size: var(--pagination-icon-size);
+    block-size: var(--pagination-icon-size);
+  }
+
   .ui-context-menu-content {
-    z-index: 50;
-    min-width: 10rem;
+    z-index: var(--overlay-z-index);
+    min-width: var(--menu-content-min-width);
     overflow: hidden;
     border-radius: var(--radius-md);
     border: 1px solid hsl(var(--border));
@@ -111,14 +132,29 @@
   .ui-menubar-trigger,
   .ui-menubar-sub-trigger,
   .ui-menubar-checkbox-item,
-  .ui-menubar-radio-item {
-    border-radius: var(--radius-sm);
-    padding-inline: var(--space-2);
-    height: 2rem;
+  .ui-menubar-radio-item,
+  .ui-dropdown-menu-item,
+  .ui-dropdown-menu-label,
+  .ui-dropdown-menu-sub-trigger,
+  .ui-dropdown-menu-checkbox-item,
+  .ui-dropdown-menu-radio-item,
+  .ui-dropdown-menu-shortcut,
+  .ui-select-item,
+  .ui-select-label {
+    border-radius: var(--menu-item-radius);
+    padding-inline: var(--menu-item-space-inline);
+    height: var(--menu-item-height);
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    font-size: var(--font-size-base);
+    gap: var(--menu-item-space-gap);
+    font-size: var(--menu-item-font-size);
+  }
+
+  /* A row marked inset reserves the indicator column so its label lines up with checked siblings. */
+  .ui-dropdown-menu-item[data-inset="true"],
+  .ui-dropdown-menu-label[data-inset="true"],
+  .ui-dropdown-menu-sub-trigger[data-inset="true"] {
+    padding-inline-start: var(--menu-item-inset-space-inline-start);
   }
 
   .ui-context-menu-item,
@@ -129,6 +165,10 @@
   .ui-menubar-checkbox-item,
   .ui-menubar-radio-item,
   .ui-menubar-sub-trigger,
+  .ui-dropdown-menu-item,
+  .ui-dropdown-menu-checkbox-item,
+  .ui-dropdown-menu-radio-item,
+  .ui-dropdown-menu-sub-trigger,
   .ui-navigation-menu-link {
     cursor: pointer;
     outline: none;
@@ -142,6 +182,8 @@
   .ui-context-menu-sub-trigger:hover,
   .ui-menubar-item:hover,
   .ui-menubar-sub-trigger:hover,
+  .ui-dropdown-menu-item:hover,
+  .ui-dropdown-menu-sub-trigger:hover,
   .ui-navigation-menu-link:hover,
   .ui-navigation-menu-item:hover {
     background: var(--menubar-item-hover-background, hsl(var(--accent)));
@@ -155,6 +197,11 @@
   .ui-menubar-item[data-state="active"],
   .ui-menubar-item[data-state="checked"],
   .ui-menubar-sub-trigger[data-state="open"],
+  .ui-dropdown-menu-item[data-state="open"],
+  .ui-dropdown-menu-item[data-highlighted],
+  .ui-dropdown-menu-checkbox-item[data-highlighted],
+  .ui-dropdown-menu-radio-item[data-highlighted],
+  .ui-dropdown-menu-sub-trigger[data-state="open"],
   .ui-navigation-menu-link[data-highlighted],
   .ui-navigation-menu-item[data-focus-visible] {
     background: var(--menubar-item-hover-background, hsl(var(--accent)));
@@ -162,7 +209,8 @@
   }
 
   .ui-context-menu-item[data-variant="destructive"],
-  .ui-menubar-item[data-variant="destructive"] {
+  .ui-menubar-item[data-variant="destructive"],
+  .ui-dropdown-menu-item[data-variant="destructive"] {
     color: hsl(var(--destructive));
   }
 
@@ -173,21 +221,26 @@
   }
 
   .ui-context-menu-separator,
-  .ui-menubar-separator {
-    margin: var(--space-1) 0;
+  .ui-menubar-separator,
+  .ui-dropdown-menu-separator,
+  .ui-select-separator {
+    margin-block: var(--menu-separator-space-block);
+    margin-inline: var(--menu-separator-space-inline);
     height: 1px;
     background: hsl(var(--border));
   }
 
   .ui-context-menu-label,
-  .ui-menubar-label {
-    min-height: 2rem;
+  .ui-menubar-label,
+  .ui-dropdown-menu-label {
+    min-height: var(--menu-item-height);
     color: hsl(var(--muted-foreground));
     font-weight: var(--font-weight-medium);
   }
 
   .ui-context-menu-shortcut,
-  .ui-menubar-shortcut {
+  .ui-menubar-shortcut,
+  .ui-dropdown-menu-shortcut {
     margin-inline-start: auto;
     text-align: end;
     color: hsl(var(--muted-foreground));
@@ -196,6 +249,7 @@
 
   .ui-context-menu-item-indicator,
   .ui-menubar-item-indicator,
+  .ui-dropdown-menu-item-indicator,
   .ui-navigation-menu-item-indicator {
     display: inline-flex;
     width: 1rem;
@@ -428,5 +482,327 @@
     height: var(--steps-inline-separator-size);
     flex: none;
     color: var(--steps-inline-separator-color, hsl(var(--muted-foreground)));
+  }
+
+  /* DROPDOWN MENU — the third Radix menu surface. It was the only one still carrying its whole
+   * box as Tailwind literals on the component (#319); it now joins ContextMenu and Menubar on the
+   * shared row rhythm above, and scopes the one value that legitimately differs. */
+  .ui-dropdown-menu-content,
+  .ui-dropdown-menu-sub-content {
+    --menu-content-min-width: var(--dropdown-content-min-width);
+
+    z-index: var(--overlay-z-index);
+    min-width: var(--menu-content-min-width);
+    border-radius: var(--radius-md);
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--popover));
+    color: hsl(var(--popover-foreground));
+    padding: var(--menu-content-space-inset);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
+  }
+
+  .ui-dropdown-menu-content {
+    max-height: var(--radix-dropdown-menu-content-available-height);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .ui-dropdown-menu-sub-content {
+    overflow: hidden;
+  }
+
+  /* The checkbox indicator is absolutely placed in the reserved inset column. */
+  .ui-dropdown-menu-indicator-slot {
+    pointer-events: none;
+    position: absolute;
+    inset-inline-start: var(--menu-indicator-inset-inline-start);
+    display: flex;
+    inline-size: var(--menu-indicator-size);
+    block-size: var(--menu-indicator-size);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ui-dropdown-menu-check,
+  .ui-dropdown-menu-sub-trigger-icon {
+    inline-size: var(--menu-icon-size);
+    block-size: var(--menu-icon-size);
+  }
+
+  .ui-dropdown-menu-sub-trigger-icon {
+    margin-inline-start: auto;
+  }
+
+  /* Checkbox and radio rows are inset by construction — they always reserve the marker column. */
+  .ui-dropdown-menu-checkbox-item {
+    position: relative;
+    padding-inline-start: var(--menu-item-inset-space-inline-start);
+    padding-inline-end: var(--menu-item-space-inline);
+  }
+
+  .ui-dropdown-menu-item,
+  .ui-dropdown-menu-radio-item {
+    position: relative;
+  }
+
+  .ui-dropdown-menu-radio-item[data-state="checked"] {
+    background: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-dropdown-menu-item[data-variant="destructive"][data-highlighted] {
+    background: hsl(var(--destructive) / 0.1);
+    color: hsl(var(--destructive));
+  }
+
+  .ui-dropdown-menu-item[data-disabled],
+  .ui-dropdown-menu-checkbox-item[data-disabled],
+  .ui-dropdown-menu-radio-item[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-dropdown-menu-item svg,
+  .ui-dropdown-menu-sub-trigger svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+}
+
+@layer components {
+  /* STEPS — full (non-inline) variant. The inline form keeps its own --steps-inline-* set. */
+  .ui-steps-dot {
+    display: block;
+    inline-size: var(--steps-dot-size);
+    block-size: var(--steps-dot-size);
+    border-radius: var(--radius-pill);
+  }
+
+  .ui-steps-dot[data-status="finish"],
+  .ui-steps-dot[data-status="process"] {
+    background: hsl(var(--primary));
+  }
+
+  .ui-steps-dot[data-status="process"] {
+    box-shadow: 0 0 0 var(--steps-dot-process-ring-width) hsl(var(--primary) / 0.2);
+  }
+
+  .ui-steps-dot[data-status="error"] {
+    background: hsl(var(--destructive));
+  }
+
+  .ui-steps-dot[data-status="wait"] {
+    background: hsl(var(--muted-foreground) / 0.3);
+  }
+
+  .ui-steps-marker {
+    border-radius: var(--radius-pill);
+    border: var(--steps-marker-border-width) solid transparent;
+    font-size: var(--steps-marker-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-steps-marker[data-status="finish"] {
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .ui-steps-marker[data-status="process"] {
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+  }
+
+  .ui-steps-marker[data-status="error"] {
+    border-color: hsl(var(--destructive));
+    background: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
+  }
+
+  .ui-steps-marker[data-status="wait"] {
+    border-color: hsl(var(--muted-foreground) / 0.3);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-steps-marker-icon {
+    inline-size: var(--steps-marker-icon-size);
+    block-size: var(--steps-marker-icon-size);
+  }
+
+  .ui-steps-wait-icon {
+    inline-size: var(--steps-wait-icon-size);
+    block-size: var(--steps-wait-icon-size);
+    fill: currentColor;
+  }
+
+  .ui-steps-text {
+    min-inline-size: 0;
+  }
+
+  .ui-steps-item[data-direction="vertical"] .ui-steps-text {
+    padding-block-start: var(--steps-vertical-text-space-block-start);
+    text-align: start;
+  }
+
+  .ui-steps-item[data-direction="horizontal"] .ui-steps-text {
+    margin-block-start: var(--steps-horizontal-text-space-block-start);
+    padding-inline: var(--steps-horizontal-text-space-inline);
+  }
+
+  .ui-steps-item[data-direction="horizontal"][data-title-placement="vertical"] .ui-steps-text {
+    margin-block-start: var(--steps-vertical-text-space-block-start);
+  }
+
+  .ui-steps-title {
+    font-weight: var(--font-weight-medium);
+    font-size: var(--steps-title-font-size);
+  }
+
+  .ui-steps-title[data-compact] {
+    font-size: var(--steps-title-font-size-compact);
+  }
+
+  .ui-steps-title[data-status="process"] {
+    color: hsl(var(--foreground));
+  }
+
+  .ui-steps-title[data-status="wait"] {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-steps-title[data-status="error"] {
+    color: hsl(var(--destructive));
+  }
+
+  .ui-steps-subtitle {
+    font-size: var(--steps-subtitle-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-steps-description {
+    font-size: var(--steps-title-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-steps-description[data-compact] {
+    font-size: var(--steps-title-font-size-compact);
+  }
+
+  .ui-steps-list[data-direction="vertical"] {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .ui-steps-list[data-direction="horizontal"] {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .ui-steps-control {
+    display: flex;
+    min-inline-size: 0;
+  }
+
+  .ui-steps-control[data-direction="vertical"] {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--steps-vertical-space-gap);
+  }
+
+  .ui-steps-control[data-direction="horizontal"] {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ui-steps-item {
+    position: relative;
+    display: flex;
+    min-inline-size: 0;
+  }
+
+  .ui-steps-item[data-direction="vertical"] {
+    flex-direction: row;
+    gap: var(--steps-vertical-space-gap);
+    padding-block-end: var(--steps-vertical-space-block-end);
+  }
+
+  .ui-steps-item[data-direction="vertical"]:last-child {
+    padding-block-end: 0;
+  }
+
+  .ui-steps-item[data-direction="horizontal"] {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* The connector spans between two markers, inset by the marker radius at each end so it never
+   * runs underneath one. Both ends move together when --steps-connector-inset is retuned. */
+  .ui-steps-item[data-direction="horizontal"][data-connector]::after {
+    content: "";
+    position: absolute;
+    inset-block-start: var(--steps-connector-space-block-start);
+    inset-inline-start: calc(50% + var(--steps-connector-inset));
+    inline-size: calc(100% - var(--steps-connector-inset) * 2);
+    block-size: 1px;
+    background: hsl(var(--border));
+  }
+
+  /* APP SETTING PICKER — icon-only box + per-kind labelled widths (#319). */
+
+  /* Structurally icon-only: square to the density-aware --control-height tap target and drop the
+   * form-input chrome so it sits among the topbar's ghost icon buttons. The open-state and
+   * focus-visible rings from controlTriggerClass are untouched. */
+  .ui-app-setting-picker-icon {
+    inline-size: var(--control-height);
+    justify-content: center;
+    border-color: transparent;
+    background: transparent;
+    padding-inline: 0;
+    box-shadow: none;
+  }
+
+  .ui-app-setting-picker-glyph {
+    inline-size: var(--app-setting-picker-icon-size);
+    block-size: var(--app-setting-picker-icon-size);
+    flex-shrink: 0;
+    opacity: var(--app-setting-picker-icon-rest-alpha);
+  }
+
+  /* Each kind is sized to the longest value it can show — a timezone name is far wider than a
+   * theme name. Below the breakpoint every kind hugs its content instead. */
+  @media (min-width: 40rem) {
+    .ui-app-setting-picker-trigger[data-kind="locale"] {
+      inline-size: var(--app-setting-picker-locale-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="timezone"] {
+      inline-size: var(--app-setting-picker-timezone-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="dateFormat"] {
+      inline-size: var(--app-setting-picker-date-format-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="timeFormat"] {
+      inline-size: var(--app-setting-picker-time-format-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="theme"] {
+      inline-size: var(--app-setting-picker-theme-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="brand"] {
+      inline-size: var(--app-setting-picker-brand-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="density"] {
+      inline-size: var(--app-setting-picker-density-width);
+    }
+
+    .ui-app-setting-picker-trigger[data-kind="fontSize"] {
+      inline-size: var(--app-setting-picker-font-size-width);
+    }
   }
 }

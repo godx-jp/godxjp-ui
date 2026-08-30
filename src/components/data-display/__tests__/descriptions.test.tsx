@@ -22,7 +22,9 @@ describe("Descriptions — column layout", () => {
       </Descriptions>,
     );
     const dl = container.querySelector("dl")!;
-    expect(dl.className).toContain("grid-cols-1");
+    // `data-columns` is what the consumer asked for; the responsive `grid-cols-*` utilities are
+    // only how it is painted this week.
+    expect(dl).toHaveAttribute("data-columns", "1");
     expect(dl.className).not.toContain("sm:grid-cols-2");
   });
 
@@ -57,7 +59,8 @@ describe("Descriptions.Item", () => {
         </Descriptions.Item>
       </Descriptions>,
     );
-    expect(screen.getByText("ord_123").className).toContain("font-mono");
+    // The mono TYPOGRAPHY CONTRACT, not the utility that currently supplies the face.
+    expect(screen.getByText("ord_123")).toHaveAttribute("data-mono", "");
   });
 
   it("defaults to a VERTICAL item (label stacked over value)", () => {
@@ -109,7 +112,7 @@ describe("Descriptions labelAlign (gh#294 — Form parity)", () => {
         <Descriptions.Item label="lbl">val</Descriptions.Item>
       </Descriptions>,
     );
-    expect(screen.getByText("lbl").className).not.toContain("text-end");
+    expect(screen.getByText("lbl")).not.toHaveAttribute("data-label-align");
   });
 
   it('end-aligns the label when labelAlign="end", in horizontal layout', () => {
@@ -118,7 +121,7 @@ describe("Descriptions labelAlign (gh#294 — Form parity)", () => {
         <Descriptions.Item label="lbl">val</Descriptions.Item>
       </Descriptions>,
     );
-    expect(screen.getByText("lbl").className).toContain("text-end");
+    expect(screen.getByText("lbl")).toHaveAttribute("data-label-align", "end");
   });
 
   it("never end-aligns a VERTICAL item — same guard Form uses for its own labelAlign", () => {
@@ -127,7 +130,8 @@ describe("Descriptions labelAlign (gh#294 — Form parity)", () => {
         <Descriptions.Item label="lbl">val</Descriptions.Item>
       </Descriptions>,
     );
-    expect(screen.getByText("lbl").className).not.toContain("text-end");
+    // The vertical guard leaves the label at its default alignment — no attribute at all.
+    expect(screen.getByText("lbl")).not.toHaveAttribute("data-label-align");
   });
 });
 
@@ -140,6 +144,8 @@ describe("Descriptions row gap (gh#294 — themeable, not hardcoded)", () => {
     );
     const dl = container.querySelector("dl")!;
     expect(dl.className).toContain("gap-y-[var(--descriptions-row-gap)]");
-    expect(dl.className).not.toContain("gap-y-3");
+    // …and NO fixed row-gap step survives beside it. A regex over the whole `gap-y-<n>` family,
+    // rather than the single historical `gap-y-3`, so re-hardcoding any other step fails too.
+    expect(dl.className).not.toMatch(/\bgap-y-\d/);
   });
 });

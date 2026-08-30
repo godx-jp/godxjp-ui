@@ -116,7 +116,14 @@ describe("FormField staticText (gh#294 — a read-only VALUE row on the same For
     renderWithUi(<FormField label="Name" staticText="ANH THU NGO" />);
     const value = screen.getByText("ANH THU NGO");
     expect(value.tagName).toBe("SPAN");
-    expect(value.className).toContain("text-sm");
+    // #319 — the literal `text-sm` is now the shared --descriptions-value-* token pair. Asserting
+    // the TOKENS (not a Tailwind step) is what actually enforces the gh#294 mirror: Descriptions'
+    // <dd> reads the same two, so retuning one call site can no longer silently desync the other.
+    // The line-height companion is asserted too — `text-sm` used to carry Tailwind's
+    // `--text-sm--line-height` implicitly, and dropping it would leave the value on ambient
+    // leading (the gh#260 bug).
+    expect(value.className).toContain("text-[length:var(--descriptions-value-font-size)]");
+    expect(value.className).toContain("leading-[var(--descriptions-value-line-height)]");
     expect(value.className).toContain("break-all");
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   });

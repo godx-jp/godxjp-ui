@@ -100,7 +100,15 @@ export function AppShell({
               aria-label={t("layout.appShell.openNav")}
               aria-haspopup="dialog"
             >
-              <Menu className="size-5" aria-hidden="true" />
+              {/* The hamburger glyph is DELIBERATELY larger than this `size="sm"` Button's own
+               * icon size (--control-icon-size-sm, 0.875rem): on a phone it is the only
+               * navigation affordance there is. Passed as a utility reading the knob, not as a
+               * `.app-mobile-nav-trigger svg` rule, for the same reason as
+               * --app-shell-mobile-nav-inset below: shell-layout.css is imported BEFORE
+               * control.css and both live in `@layer components`, so a rule at the identical
+               * (0,1,1) specificity of `.ui-button--sm svg` would silently LOSE and the glyph
+               * would shrink back to 0.875rem. */}
+              <Menu className="size-[var(--app-shell-mobile-nav-icon-size)]" aria-hidden="true" />
             </Button>
           </SheetTrigger>
           <SheetContent

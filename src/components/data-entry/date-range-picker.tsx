@@ -105,8 +105,7 @@ export function DateRangePicker({
 
   // Bare inputs: the BORDER lives on the shared container (one control, antd
   // RangePicker style) — an Input here would draw a second border inside it.
-  const innerInputClass =
-    "min-w-0 flex-1 bg-transparent tabular-nums outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed";
+  const innerInputClass = "ui-month-picker-input";
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -119,12 +118,11 @@ export function DateRangePicker({
           {...groupA11y}
           aria-disabled={disabled ? true : undefined}
           className={cn(
-            // One input-styled shell for the whole range — mirrors Input's control
-            // tokens (border/radius/ring) so it reads as a single form field.
-            "ui-control border-input bg-background flex w-full min-w-0 items-center gap-2 rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
+            // One input-styled shell for the whole range — the shared composite-field box, so
+            // this and the month range picker cannot drift into two slightly different fields.
+            "ui-control ui-control-composite-field",
             "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
             open && "border-ring ring-ring/50 ring-[3px]",
-            disabled && "pointer-events-none cursor-not-allowed opacity-50",
             className,
           )}
           onClick={() => {
@@ -151,7 +149,7 @@ export function DateRangePicker({
               setFromText(parsed ? toIsoDate(parsed) : toIsoDate(value?.from));
             }}
           />
-          <ArrowRight className="text-muted-foreground size-3.5 shrink-0" aria-hidden="true" />
+          <ArrowRight className="ui-month-picker-separator-icon" aria-hidden="true" />
           <input
             id={toId}
             name={name ? `${name}_to` : undefined}
@@ -185,7 +183,7 @@ export function DateRangePicker({
                 clear();
               }}
             >
-              <X className="size-4 shrink-0" aria-hidden="true" />
+              <X className="ui-month-picker-icon" aria-hidden="true" />
             </button>
           ) : null}
           <PopoverTrigger asChild>
@@ -196,11 +194,11 @@ export function DateRangePicker({
               aria-label={t("dataEntry.dateRangePicker.openCalendar") ?? "Open calendar"}
               className="text-muted-foreground hover:text-foreground shrink-0"
             >
-              <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
+              <CalendarIcon className="ui-month-picker-icon" aria-hidden="true" />
             </button>
           </PopoverTrigger>
           <PopoverContent
-            className="w-auto p-0"
+            className="ui-control-panel-flush"
             align="start"
             onOpenAutoFocus={(event) => event.preventDefault()}
           >

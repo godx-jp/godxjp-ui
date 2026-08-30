@@ -18,7 +18,7 @@ describe("Steps — status resolution + default icons", () => {
     // step 1 is the current 'process' step → spinning loader icon
     expect(container.querySelector(".animate-spin")).not.toBeNull();
     // step 0 finished → a filled primary marker
-    expect(container.querySelector('[class*="bg-primary"]')).not.toBeNull();
+    expect(container.querySelector('.ui-steps-marker[data-status="finish"]')).not.toBeNull();
     // subtitle + description render
     expect(screen.getByText("1-2日")).toBeInTheDocument();
     expect(screen.getByText("書類確認")).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe("Steps — status resolution + default icons", () => {
 
   it("renders an explicit error status marker", () => {
     const { container } = render(<Steps items={[{ title: "失敗", status: "error" }]} />);
-    expect(container.querySelector('[class*="bg-destructive"]')).not.toBeNull();
+    expect(container.querySelector('.ui-steps-marker[data-status="error"]')).not.toBeNull();
   });
 
   it("renders a custom icon when provided", () => {
@@ -41,7 +41,7 @@ describe("Steps — dot type", () => {
     // no loader/check icons in dot mode
     expect(container.querySelector(".animate-spin")).toBeNull();
     // a small round dot marker exists
-    expect(container.querySelector('[class*="size-2.5"]')).not.toBeNull();
+    expect(container.querySelector(".ui-steps-dot")).not.toBeNull();
   });
 });
 
@@ -64,6 +64,6 @@ describe("Steps — interactivity", () => {
 
   it("vertical orientation stacks the list", () => {
     const { container } = render(<Steps items={ITEMS} orientation="vertical" />);
-    expect(container.querySelector("ol")).toHaveClass("flex-col");
+    expect(container.querySelector("ol")).toHaveAttribute("data-direction", "vertical");
   });
 });

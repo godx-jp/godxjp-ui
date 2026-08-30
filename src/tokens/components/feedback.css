@@ -10,6 +10,25 @@
    * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog). */
   --sheet-overlay-background: initial;
   --sheet-overlay-alpha: 40%;
+  /* Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps
+   * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so
+   * a service could retune the sheet's outer padding and still be stuck with the inner rhythm. */
+  --sheet-shadow: var(--shadow-lg);
+  --sheet-header-space-gap: 0.375rem;
+  --sheet-title-block-space-gap: var(--space-1);
+  --sheet-title-row-space-gap: var(--space-3);
+  --sheet-extra-space-gap: var(--space-2);
+  --sheet-footer-space-gap: var(--space-2);
+  --sheet-title-font-size: var(--font-size-lg);
+  --sheet-description-font-size: var(--font-size-sm);
+  /* The scroll region keeps a sliver of padding so a focused control's ring is never clipped at
+   * the scroll edges — retune together with --focus-ring-width. */
+  --sheet-body-space-block: var(--space-1);
+  /* Close button: offset from the panel corner, and the inline room the header reserves so a
+   * title never runs under it. */
+  --sheet-close-offset: var(--space-4);
+  --sheet-close-rest-alpha: 0.7;
+  --sheet-header-close-space-inline-end: var(--space-8);
   --dialog-width-default: 32rem;
   --dialog-viewport-inset: 1.5rem;
   --dialog-overlay-background: initial;
@@ -21,6 +40,26 @@
   --dialog-space-inset: var(--dialog-space-y) var(--dialog-space-x);
   --dialog-space-gap: var(--space-stack-md);
   --dialog-close-space-offset: var(--space-4);
+  /* Dialog chrome rhythm (#319) — the exact mirror of the --sheet-* set above, because Dialog's
+   * header markup is byte-identical to Sheet's. --dialog-space-x/-y already governed the panel
+   * inset, but every gap INSIDE the chrome (header stack, title/subtitle pair, the extra-slot row)
+   * was a literal on the component, so a service could retune the outer padding and still be stuck
+   * with the inner rhythm. Defaults are the values the literals resolved to. */
+  --dialog-header-space-gap: var(--space-stack-xs);
+  --dialog-title-row-space-gap: var(--space-3);
+  --dialog-title-block-space-gap: var(--space-1);
+  --dialog-extra-space-gap: var(--space-2);
+  /* Inline room the header reserves so a long title or the extra slot never runs under the
+   * absolutely-positioned close button; retune together with --dialog-close-space-offset.
+   * Mirrors --sheet-header-close-space-inline-end. */
+  --dialog-header-close-space-inline-end: var(--space-8);
+  /* Close button rest opacity — quiet at rest, full on hover (rule #44). Was a hard 0.7 baked into
+   * dialog-layout.css with no way for a theme to make the ✕ louder. Mirrors
+   * --sheet-close-rest-alpha so the two overlay siblings retune together. */
+  --dialog-close-rest-alpha: 0.7;
+  /* Type-to-confirm challenge: the step-up failure line under the input. Its size + ink were
+   * `text-sm text-destructive` on the component, i.e. unreachable from a theme. */
+  --dialog-step-up-error-font-size: var(--font-size-sm);
   /* Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the
    * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by
    * overriding this once. Default keeps the historical --radius-md. */
@@ -29,6 +68,14 @@
   --alert-space-gap: var(--space-inline-md);
   --alert-inner-space-gap: var(--space-stack-sm);
   --alert-dismiss-space-offset: var(--space-3);
+  /* Dismiss ✕ — rest opacity (quiet at rest, full on hover, rule #44) and glyph size. The rest
+   * alpha was a hard 0.7 in alert-layout.css whose `:hover` companion lived on the COMPONENT as
+   * `hover:opacity-100`, so the two halves of one affordance sat in two files and neither was
+   * themeable. Mirrors --sheet-close-rest-alpha. The icon size carries a raw rem, not
+   * var(--space-N): it replaces a flat Tailwind `size-4` step and must not start tracking the
+   * density axis. */
+  --alert-dismiss-rest-alpha: 0.7;
+  --alert-dismiss-icon-size: 1rem;
   /* Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec
    * (a brand's success-bg/-border are often more present than the faint 5%/30% default). */
   --alert-bg-alpha: 0.05;
@@ -73,6 +120,12 @@
    * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill. */
   --empty-state-icon-foreground: initial;
   --empty-state-icon-tint: initial;
+  /* Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a
+   * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own
+   * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its
+   * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one. */
+  --empty-state-icon-size: 3rem;
+  --empty-state-icon-glyph-size: 1.5rem;
   --skeleton-row-gap: var(--space-stack-sm);
   --skeleton-cell-gap: var(--space-inline-lg);
   --skeleton-card-inset: var(--space-section-active);
@@ -81,4 +134,77 @@
    * a scoped theme (a :root binding to a role var freezes at :root). A service tints the shimmer to
    * its surface (rule #44) without forking the keyframes. Default = hsl(var(--muted)). */
   --skeleton-background: initial;
+  /* Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals
+   * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them
+   * through the spacing scale would silently make the loading state track the density axis while
+   * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a
+   * service retuning its type scale knows which one to move. */
+  --skeleton-block-height: 1rem;
+  --skeleton-caption-height: 0.75rem;
+  --skeleton-title-height: 1.75rem;
+  --skeleton-label-width: 6rem;
+  --skeleton-detail-value-max-width: 28rem;
+  --skeleton-stat-value-width: 8rem;
+  --skeleton-stat-caption-width: 5rem;
+
+  /* QUERY LIFECYCLE FOOTERS — the two rows `<InfiniteQueryState>` appends under a paginated feed:
+   * the "load more" button row and the "loading more…" caption. Both gaps were Tailwind literals
+   * on the component (`pt-4` / `pt-2`), so a service running a denser (or airier) feed could not
+   * align them to its own vertical rhythm without forking the component (rule #45). They live in
+   * the feedback tier because these ARE query feedback surfaces and there is no query stylesheet.
+   * Defaults = var(--space-stack-md) (16px) and var(--space-stack-sm) (8px) — the exact values the
+   * Tailwind steps resolved to, so adopting this changes nothing until a theme opts in. */
+  --query-load-more-space-block-start: var(--space-stack-md);
+  --query-loading-more-space-block-start: var(--space-stack-sm);
+
+  /* TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into
+   * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not
+   * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce
+   * the previous look exactly, so adopting this changes nothing until a theme opts in. */
+  --tooltip-max-width: 20rem;
+  --tooltip-space-inline: var(--space-2);
+  --tooltip-space-block: var(--space-1);
+  --tooltip-radius: var(--radius);
+  --tooltip-font-size: var(--font-size-xs);
+  /* Raised-surface depth — role-mirror knob, so a flat service theme sets `none` once. */
+  --tooltip-shadow: var(--shadow-md);
+  /* Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped
+   * [data-tenant]/.dark theme (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`").
+   * Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text. */
+  --tooltip-background: initial;
+  --tooltip-foreground: initial;
+  --tooltip-border-color: initial;
+
+  /* POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md`
+   * were literals, so a service could not align the panel to its own grid or width scale. */
+  --popover-width: 18rem;
+  --popover-space-inset: var(--space-4);
+  --popover-radius: var(--radius);
+  --popover-shadow: var(--shadow-md);
+  --popover-header-space-gap: var(--space-1);
+  --popover-header-font-size: var(--font-size-sm);
+  /* Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above). */
+  --popover-surface-background: initial;
+  --popover-surface-foreground: initial;
+  --popover-surface-border-color: initial;
+
+  /* TOAST (Sonner) — the status glyph in the toast's leading slot.
+   *
+   * WHY A KNOB AND NOT A UTILITY: sonner renders the toast body itself and takes the five status
+   * glyphs through ONE `icons={{ success, info, warning, error, loading }}` config prop. That prop
+   * is all-or-nothing — a consumer who wants a different glyph size must re-declare all five icons,
+   * re-importing lucide and re-deriving the aria wiring. Routing the size through a token makes it
+   * a one-line theme override instead (rule #45).
+   *
+   * Raw rem, not var(--space-N): it replaces a flat Tailwind `size-4` step, and the 16px box sonner
+   * gives `[data-icon]` is itself fixed — scaling the glyph with density alone would overflow it.
+   *
+   * NAMESPACE NOTE: sonner publishes its own `--toast-*` custom properties (--toast-icon-margin-*,
+   * --toast-svg-margin-*, --toast-button-margin-*, --toast-close-button-*). Neither name below
+   * collides with those; keep it that way when adding to this group. */
+  --toast-icon-size: 1rem;
+  /* Viewport gutter of the mobile toast stack. Sonner passes `mobileOffset` straight into inline
+   * CSS, so a var() string resolves normally. Flat 16px on purpose: this is a fixed inset from the
+   * device edge (thumb reach / safe area), not a density-scaled gap inside a surface. */
+  --toast-mobile-offset: 16px;
 }

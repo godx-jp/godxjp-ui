@@ -12,6 +12,12 @@ const columns = [{ key: "name", header: "名前" }];
 const surface = (c: HTMLElement) => c.querySelector(".ui-data-table-surface")!;
 const header = (c: HTMLElement) => c.querySelector("thead")!;
 
+/**
+ * The tint a CONSUMER returns from `rowClassName`, hoisted so the literal is a FIXTURE: what is
+ * under test is that the returned class reaches the row (and only the row it was returned for).
+ */
+const ROW_TINT = "bg-destructive/10";
+
 describe("DataTable display props", () => {
   it("opts into zebra striping via `striped`", () => {
     const { container } = renderWithUi(
@@ -57,12 +63,12 @@ describe("DataTable display props", () => {
         data={rows}
         columns={columns}
         getRowId={(r) => r.id}
-        rowClassName={(r) => (r.id === "1" ? "bg-destructive/10" : undefined)}
+        rowClassName={(r) => (r.id === "1" ? ROW_TINT : undefined)}
       />,
     );
     const bodyRows = container.querySelectorAll("tbody tr");
-    expect(bodyRows[0].className).toContain("bg-destructive/10");
-    expect(bodyRows[1].className).not.toContain("bg-destructive/10");
+    expect(bodyRows[0].className).toContain(ROW_TINT);
+    expect(bodyRows[1].className).not.toContain(ROW_TINT);
   });
 
   it("is unstyled (no stripe/hover attrs) by default", () => {

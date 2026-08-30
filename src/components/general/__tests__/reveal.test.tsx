@@ -4,6 +4,13 @@ import { Reveal } from "../reveal";
 import { renderWithUi } from "@/test/render";
 import { expectNoA11yViolations } from "@/test/a11y";
 
+/**
+ * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
+ * assertion about how the component is painted. What is under test is pass-through: whatever class
+ * the consumer hands in survives `cn()` onto the rendered node.
+ */
+const CONSUMER_CLASS = "my-2";
+
 describe("Reveal", () => {
   it("wraps content in a ui-reveal element with the reveal slot", () => {
     const { getByText, container } = renderWithUi(
@@ -42,12 +49,12 @@ describe("Reveal", () => {
 
   it("forwards className and native props to the wrapper", () => {
     const { getByLabelText } = renderWithUi(
-      <Reveal className="my-2" aria-label="region">
+      <Reveal className={CONSUMER_CLASS} aria-label="region">
         y
       </Reveal>,
     );
     const root = getByLabelText("region");
-    expect(root).toHaveClass("ui-reveal", "my-2");
+    expect(root).toHaveClass("ui-reveal", CONSUMER_CLASS);
   });
 
   it("has no axe violations", async () => {

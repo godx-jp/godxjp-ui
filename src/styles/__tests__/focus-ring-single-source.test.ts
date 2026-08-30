@@ -48,7 +48,16 @@ describe("focus ring — single source", () => {
       // Every `:focus-visible {…}` block in this file, with its declarations.
       for (const match of css.matchAll(/:focus-visible[^{]*\{([^}]*)\}/g)) {
         const body = match[1];
-        const paintsRing = /box-shadow:\s*(?!none)/.test(body) || /outline:\s*(?!none)/.test(body);
+        // Read each declaration's VALUE rather than negative-lookahead on the property. With
+        // `/box-shadow:\s*(?!none)/` the `\s*` backtracks to zero width, the lookahead then sees
+        // " none" rather than "none", and EVERY `box-shadow: none` was reported as a hand-written
+        // ring. That false positive sat here undetected — suppressing a ring is the opposite of
+        // painting one.
+        const paints = (prop: string) =>
+          [...body.matchAll(new RegExp(`${prop}\\s*:\\s*([^;]+)`, "g"))].some(
+            (d) => d[1].trim() !== "none",
+          );
+        const paintsRing = paints("box-shadow") || paints("outline");
         if (!paintsRing) continue;
         if (ALLOWED[file]) continue;
         offenders.push(`${file}: ${body.trim().slice(0, 80)}`);

@@ -78,9 +78,19 @@
     transition-duration: 150ms;
   }
 
-  .ui-button:disabled {
+  .ui-button {
+    flex-shrink: 0;
+    font-size: var(--font-size-sm);
+    outline: none;
+  }
+
+  .ui-button:disabled,
+  .ui-button[data-loading] {
     pointer-events: none;
-    opacity: 0.5;
+  }
+
+  .ui-button:disabled {
+    opacity: var(--disabled-opacity);
   }
 
   .ui-button svg {
@@ -239,11 +249,93 @@
 
   .ui-control-multiline {
     min-height: calc(var(--control-height) * 2.75);
-    padding: var(--space-2) var(--control-padding-x);
+    padding-block: var(--control-multiline-padding-block);
+    padding-inline: var(--control-padding-x);
     font-size: var(--control-font-size);
     border-width: var(--control-border-width);
     border-style: solid;
     box-shadow: var(--control-shadow);
+  }
+
+  /* TEXTAREA AUTO-GROW (gh#310) — the box grows with its content, bounded in TEXT ROWS.
+   *
+   * TECHNIQUE: the replicated-content grid. The wrapper is a one-cell grid; a hidden `::after`
+   * carrying the same text in the same typography occupies that cell and SIZES the row, and the
+   * textarea (a grid item, `align-self: stretch` by default) fills whatever the row became. The
+   * JS side therefore only ever WRITES one attribute — it never reads `scrollHeight`, never sets
+   * `style.height`, and so never forces a synchronous reflow per keystroke, and never touches
+   * `scrollTop` (which is what makes typing in the middle of a long value jump).
+   *
+   * Both bounds live on the PSEUDO-ELEMENT rather than on the textarea, deliberately: a
+   * pseudo-element is out of reach of Tailwind utilities, so `variant="ghost"`'s `min-h-0`
+   * (@layer utilities, which beats anything here in @layer components) cannot silently defeat
+   * the floor the way it would if the bounds sat on the control itself. */
+  .ui-textarea-autogrow {
+    position: relative;
+    display: grid;
+    /* `minmax(0, 1fr)`, never the default `auto`: an auto column is sized by the replica's
+     * MAX-CONTENT, so a single unbroken 2,000-character token would widen the column — and with
+     * it the control — to 18,000px instead of wrapping. Measured, not assumed. */
+    grid-template-columns: minmax(0, 1fr);
+    inline-size: 100%;
+  }
+
+  .ui-textarea-autogrow > .ui-control-multiline,
+  .ui-textarea-autogrow::after {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .ui-textarea-autogrow::after {
+    content: attr(data-autogrow-value) " ";
+    visibility: hidden;
+    /* Explicit, not inherited from preflight: the replica's bounds are BORDER-box measures, and a
+     * content-box replica overshoots every height by the box inset. */
+    box-sizing: border-box;
+    margin: 0;
+    /* `pre-wrap` + `break-word` is the UA treatment of a textarea's own text: newlines are kept,
+     * an unbroken 2,000-character token wraps instead of widening the box. The trailing " " is
+     * what keeps a value ending in a newline one row taller, exactly as the control renders it. */
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    font-size: var(--control-font-size);
+    line-height: var(--textarea-autogrow-line-height, var(--line-height-normal));
+    padding-block: var(--control-multiline-padding-block);
+    padding-inline: var(--control-padding-x);
+    border: var(--control-border-width) solid transparent;
+    /* The floor never undercuts the control tier, so a resting one-row composer still lines up
+     * with the Input / Button on its row; above it the box counts in rows. */
+    min-block-size: max(
+      var(--control-height),
+      calc(
+        var(--textarea-autogrow-min-height-rows) *
+          var(--textarea-autogrow-line-height, var(--line-height-normal)) *
+          var(--control-font-size) + var(--textarea-autogrow-box-inset)
+      )
+    );
+    max-block-size: calc(
+      var(--textarea-autogrow-max-height-rows) *
+        var(--textarea-autogrow-line-height, var(--line-height-normal)) * var(--control-font-size) +
+        var(--textarea-autogrow-box-inset)
+    );
+  }
+
+  /* The ghost variant draws no border, so the row maths must not add one back. */
+  .ui-textarea-autogrow--ghost {
+    --textarea-autogrow-box-inset: calc(var(--control-multiline-padding-block) * 2);
+  }
+
+  .ui-textarea-autogrow--ghost::after {
+    border-width: 0;
+  }
+
+  .ui-textarea-autogrow > .ui-control-multiline {
+    /* The mirror owns the floor; the control must be free to stretch down to it. */
+    min-block-size: 0;
+    /* Growth is the box's job, not a drag handle's, and past the ceiling the control scrolls
+     * itself rather than pushing the page. */
+    resize: none;
+    overflow-y: auto;
+    line-height: var(--textarea-autogrow-line-height, var(--line-height-normal));
   }
 
   .ui-table-row {
@@ -299,6 +391,36 @@
     font-size: var(--choice-description-font-size);
   }
 
+  /* Label primitive (#319). Its box and type were Tailwind literals on label.tsx
+   * (`flex items-center gap-2 text-sm leading-none select-none`), so a service theme could not
+   * retune the label type ramp or the label→addon gap without forking the component.
+   *
+   * SOURCE ORDER IS LOAD-BEARING — this rule MUST stay AFTER `.ui-choice-label` above.
+   * `Field` renders `<Label className="ui-choice-label">`, so that element carries both classes at
+   * equal specificity (0,1,0) in the same layer and the LATER rule wins. Today the `text-sm`
+   * utility out-ranks `.ui-choice-label`'s `font-size: var(--font-size-base)` outright (utilities
+   * are layered after components); putting `.ui-label` EARLIER would hand every checkbox/radio
+   * label back to `.ui-choice-label` and silently change its type. `font-weight` is deliberately
+   * NOT declared here for the same reason: `.ui-choice-label` sets `--font-weight-normal` and
+   * Label's `font-medium` utility beats it today, so `font-medium` stays a utility.
+   *
+   * The disabled states stay utilities too (`peer-disabled:` / `group-data-[disabled=true]:`):
+   * a state must out-rank the resting rule, which in Tailwind v4 means the utilities layer. So
+   * does `line-height` — the `leading-none` it replaces existed precisely to beat the companion
+   * line-height that every `text-*` utility carries, and only a utility can still do that when a
+   * consumer passes their own `text-lg`. Its value is --control-label-line-height all the same.
+   *
+   * Not a regression for the auth shell: the canonical field-label override in shell-layout.css is
+   * INTENTIONALLY UNLAYERED (gh#263) and unlayered author CSS still beats every layer, so it keeps
+   * winning over these declarations exactly as it won over the utilities. */
+  .ui-label {
+    display: flex;
+    align-items: center;
+    gap: var(--control-label-space-gap);
+    font-size: var(--control-label-font-size);
+    user-select: none;
+  }
+
   .ui-checkbox,
   .ui-radio {
     width: var(--checkbox-size);
@@ -317,12 +439,19 @@
     border-radius: var(--radius-pill);
   }
 
+  /* `:disabled` only matches form elements, so a purely visual checkbox rendered as a <span>
+   * (Cascader's CheckboxVisual, Transfer's row marks) never picked this up and had to repeat
+   * `cursor-not-allowed opacity-50` on the component instead (#319). Matching [data-disabled]
+   * too lets those share the one rule. The alpha is the system token, not a literal 0.5. */
   .ui-checkbox:disabled,
   .ui-radio:disabled,
   .ui-slider-thumb:disabled,
-  .ui-switch:disabled {
+  .ui-switch:disabled,
+  .ui-checkbox[data-disabled],
+  .ui-radio[data-disabled],
+  .ui-switch[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--disabled-opacity);
   }
 
   .ui-checkbox[data-state="checked"] {
@@ -367,7 +496,7 @@
   }
 
   .ui-switch[data-state="unchecked"] {
-    background: hsl(var(--input));
+    background: var(--switch-unchecked-background, hsl(var(--input)));
   }
 
   .ui-switch-thumb {
@@ -980,4 +1109,1018 @@
 .ui-number-input-step svg {
   inline-size: 0.75rem;
   block-size: 0.75rem;
+}
+
+@layer components {
+  /* SELECT-FAMILY TRAILING AFFIX — the clear ✕ / chevron overlay parked at a trigger's inline
+   * end. Select, SearchSelect and TagInput each repeated the same literal stack (#319); these
+   * are the one shared set of knobs. */
+  .ui-control-affix {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: var(--control-affix-inset-inline-end);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .ui-control-affix-action {
+    pointer-events: auto;
+    display: flex;
+    inline-size: var(--control-affix-action-size);
+    block-size: var(--control-affix-action-size);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--control-affix-action-radius);
+    opacity: var(--control-affix-rest-alpha);
+  }
+
+  .ui-control-affix-action:hover,
+  .ui-control-affix-action:focus-visible {
+    opacity: 1;
+  }
+
+  .ui-control-affix-icon {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+    flex-shrink: 0;
+  }
+
+  /* The chevron is decorative and never interactive, so it keeps the resting weight. */
+  .ui-control-affix-indicator {
+    opacity: var(--control-affix-rest-alpha);
+  }
+
+  .ui-control-trigger-affixed {
+    padding-inline-end: var(--control-trigger-space-inline-end);
+  }
+
+  /* SEARCH-SELECT — Popover + Command combobox. */
+  .ui-search-select-panel {
+    display: flex;
+    flex-direction: column;
+    max-block-size: var(--radix-popover-content-available-height);
+    inline-size: max-content;
+    max-inline-size: min(
+      var(--search-select-panel-max-width),
+      calc(100vw - var(--search-select-panel-viewport-inset))
+    );
+    min-inline-size: var(--radix-popover-trigger-width);
+    padding: 0;
+  }
+
+  .ui-search-select-command {
+    display: flex;
+    min-block-size: 0;
+    flex-direction: column;
+  }
+
+  .ui-search-select-search {
+    flex-shrink: 0;
+    border-block-end: 1px solid hsl(var(--border));
+  }
+
+  /* The search field is the panel's own header, so it drops the standalone input chrome. */
+  .ui-search-select-search-input {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* The panel itself is the focused surface, so the inner search field suppresses its own RING
+   * (this replaces a `focus-visible:ring-0` utility). It must NOT suppress the outline as well —
+   * that would leave keyboard users with no focus affordance at all inside the panel. */
+  .ui-search-select-search-input:focus-visible {
+    box-shadow: none;
+  }
+
+  .ui-search-select-list {
+    max-block-size: none;
+    min-block-size: 0;
+    flex: 1 1 0%;
+    overflow-y: auto;
+    padding: var(--search-select-list-space-inset);
+  }
+
+  /* The consumer's renderOption output — it must be able to truncate inside the row, which is
+   * what min-inline-size:0 buys in a flex child. */
+  .ui-search-select-option-slot {
+    min-inline-size: 0;
+    flex: 1 1 0%;
+  }
+
+  .ui-search-select-option-body {
+    display: flex;
+    min-inline-size: 0;
+    flex: 1 1 0%;
+    align-items: center;
+    gap: var(--search-select-option-space-gap);
+  }
+
+  .ui-search-select-option-text {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+  }
+
+  .ui-search-select-option-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--search-select-option-font-size);
+  }
+
+  .ui-search-select-option-sublabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--search-select-option-sublabel-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-search-select-status {
+    display: flex;
+    align-items: center;
+    gap: var(--search-select-option-space-gap);
+    padding-inline: var(--search-select-status-space-inline);
+    padding-block: var(--search-select-status-space-block);
+    font-size: var(--search-select-status-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-search-select-spinner {
+    inline-size: var(--search-select-spinner-size);
+    block-size: var(--search-select-spinner-size);
+  }
+
+  /* Empty / error occupy the panel alone, so they get a taller centred block. */
+  .ui-search-select-placeholder {
+    padding-inline: var(--search-select-status-space-inline);
+    padding-block: var(--search-select-placeholder-space-block);
+    text-align: center;
+    font-size: var(--search-select-status-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-search-select-placeholder[data-tone="destructive"] {
+    color: hsl(var(--destructive));
+  }
+
+  .ui-search-select-footer {
+    flex-shrink: 0;
+    padding: var(--search-select-footer-space-inset);
+    border-block-start: 1px solid hsl(var(--border));
+  }
+}
+
+@layer components {
+  /* CASCADER — column browser (desktop) + flat search list (query mode). */
+  .ui-cascader-columns {
+    display: flex;
+    max-block-size: var(--cascader-columns-max-height);
+  }
+
+  .ui-cascader-column {
+    min-inline-size: var(--cascader-column-min-width);
+    border-inline-end: 1px solid hsl(var(--border));
+  }
+
+  .ui-cascader-column:last-child {
+    border-inline-end: 0;
+  }
+
+  .ui-cascader-option {
+    display: flex;
+    inline-size: 100%;
+    align-items: center;
+    gap: var(--cascader-option-space-gap);
+    padding-inline: var(--cascader-option-space-inline);
+    padding-block: var(--cascader-option-space-block);
+    font-size: var(--cascader-option-font-size);
+    outline: none;
+  }
+
+  .ui-cascader-option-icon {
+    margin-inline-end: var(--cascader-option-space-gap);
+    inline-size: var(--cascader-option-icon-size);
+    block-size: var(--cascader-option-icon-size);
+    flex-shrink: 0;
+  }
+
+  /* The chevron marks "has children"; it is decorative, so it keeps the resting weight. */
+  .ui-cascader-option-chevron {
+    inline-size: var(--cascader-option-icon-size);
+    block-size: var(--cascader-option-icon-size);
+    flex-shrink: 0;
+    opacity: var(--control-affix-rest-alpha);
+  }
+
+  .ui-cascader-list {
+    max-block-size: var(--cascader-list-max-height);
+  }
+
+  .ui-cascader-panel {
+    padding: var(--cascader-panel-space-inset);
+  }
+
+  .ui-cascader-popover {
+    inline-size: auto;
+    min-inline-size: var(--radix-popover-trigger-width);
+    padding: 0;
+  }
+
+  .ui-cascader-empty {
+    padding-block: var(--cascader-empty-space-block);
+    text-align: center;
+    font-size: var(--cascader-option-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Flat search result row — denser than a column row (no chevron to balance). */
+  .ui-cascader-result {
+    display: flex;
+    inline-size: 100%;
+    align-items: center;
+    border-radius: var(--cascader-result-radius);
+    padding-inline: var(--cascader-result-space-inline);
+    padding-block: var(--cascader-result-space-block);
+    font-size: var(--cascader-option-font-size);
+    outline: none;
+  }
+
+  .ui-cascader-result-icon {
+    margin-inline-end: var(--cascader-result-icon-space-inline-end);
+    inline-size: var(--cascader-option-icon-size);
+    block-size: var(--cascader-option-icon-size);
+    flex-shrink: 0;
+  }
+
+  /* Reserve the check column even when unselected so labels do not jump on select. */
+  .ui-cascader-result-icon[data-selected="false"] {
+    opacity: 0;
+  }
+
+  /* Cascader parks a SMALLER affix closer to the edge than SearchSelect does. Same shared knobs,
+   * component-scoped values — the vocabulary is shared, the calibration is not. */
+  .ui-cascader-affix {
+    --control-affix-inset-inline-end: var(--space-3);
+    --control-affix-action-size: var(--control-affix-icon-size);
+  }
+
+  /* Disabled option rows keep pointer-events off and take the one system alpha. */
+  .ui-cascader-option[data-disabled],
+  .ui-cascader-trigger[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
+  }
+}
+
+@layer components {
+  /* SELECT — the Radix listbox popup. Its row rhythm, separator and label come from the shared
+   * menu rules in navigation-layout.css (the same surface ContextMenu/Menubar/DropdownMenu use);
+   * only what is genuinely Select's own lives here (#319). */
+  .ui-select-content {
+    position: relative;
+    z-index: var(--overlay-z-index);
+    max-height: var(--select-content-max-height);
+    min-width: var(--menu-content-min-width);
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--popover));
+    color: hsl(var(--popover-foreground));
+    box-shadow: var(--shadow-md);
+  }
+
+  .ui-select-viewport {
+    padding: var(--menu-content-space-inset);
+  }
+
+  /* A listbox row has no leading icon column, so it takes a slightly wider inline inset to read
+   * level with a menu row that does. */
+  .ui-select-item {
+    position: relative;
+    inline-size: 100%;
+    cursor: default;
+    padding-inline: var(--select-item-space-inline);
+    outline: none;
+    user-select: none;
+  }
+
+  .ui-select-item[data-state="checked"] {
+    background: hsl(var(--accent));
+    color: hsl(var(--foreground));
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-select-item[data-highlighted] {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-select-item[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-select-item svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  .ui-select-label {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-select-scroll-button {
+    display: flex;
+    cursor: default;
+    align-items: center;
+    justify-content: center;
+    padding-block: var(--select-scroll-button-space-block);
+  }
+
+  .ui-select-scroll-icon,
+  .ui-select-chevron {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+  }
+
+  .ui-select-chevron {
+    flex-shrink: 0;
+    opacity: var(--control-affix-rest-alpha);
+  }
+}
+
+@layer components {
+  /* TIME PICKER — hour/minute/second scroll columns + an inline affix pair. */
+  .ui-time-picker-panel {
+    inline-size: var(--time-picker-panel-width);
+  }
+
+  .ui-time-picker-panel[data-hour-cycle="h12"] {
+    inline-size: var(--time-picker-panel-width-12h);
+  }
+
+  .ui-time-picker-column {
+    display: flex;
+    min-inline-size: 0;
+    flex: 1 1 0%;
+    flex-direction: column;
+  }
+
+  .ui-time-picker-column-heading {
+    padding-inline: var(--time-picker-heading-space-inline);
+    padding-block: var(--time-picker-heading-space-block);
+    border-block-end: 1px solid hsl(var(--border));
+    text-align: center;
+    font-size: var(--time-picker-heading-font-size);
+    font-weight: var(--font-weight-medium);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-time-picker-column-scroll {
+    block-size: var(--time-picker-column-height);
+    padding: var(--time-picker-column-space-inset);
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+  }
+
+  .ui-time-picker-option {
+    display: flex;
+    inline-size: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--time-picker-option-radius);
+    padding-block: var(--time-picker-option-space-block);
+    font-size: var(--time-picker-option-font-size);
+    font-variant-numeric: tabular-nums;
+    transition: background-color 150ms ease;
+  }
+
+  .ui-time-picker-option:hover {
+    background: hsl(var(--accent));
+  }
+
+  .ui-time-picker-option[data-selected="true"] {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .ui-time-picker-option[data-selected="true"]:hover {
+    background: hsl(var(--primary) / 0.9);
+  }
+
+  .ui-time-picker-footer {
+    padding: var(--time-picker-footer-space-inset);
+    border-block-start: 1px solid hsl(var(--border));
+  }
+
+  .ui-time-picker-popover {
+    inline-size: auto;
+    padding: 0;
+  }
+
+  /* Two affix controls (clear + clock), so a wider reserved end than the single-affix triggers. */
+  /* A popover whose content owns its own padding (a Calendar, a month grid) — the panel just
+   * hugs it. Shared by the date/time pickers. */
+  .ui-control-panel-flush {
+    inline-size: auto;
+    padding: 0;
+  }
+
+  .ui-control-inline-affix-pair-affixed {
+    padding-inline-end: var(--control-inline-affix-pair-space-inline-end);
+  }
+
+  .ui-time-picker-affix {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--time-picker-affix-space-gap);
+  }
+
+  /* Sits INSIDE the field rather than overlaying it, so it rests a touch heavier than the
+   * overlay affix Select/SearchSelect use. Shared by Input and TimePicker. */
+  .ui-control-inline-affix-action {
+    display: inline-flex;
+    inline-size: var(--control-inline-affix-size);
+    block-size: var(--control-inline-affix-size);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--control-affix-action-radius);
+    color: hsl(var(--muted-foreground));
+    opacity: var(--control-inline-affix-rest-alpha);
+    transition: opacity 150ms ease;
+  }
+
+  .ui-control-inline-affix-action:hover,
+  .ui-control-inline-affix-action:focus-visible {
+    color: hsl(var(--foreground));
+    opacity: 1;
+  }
+
+  .ui-control-inline-affix-icon {
+    inline-size: var(--control-inline-affix-icon-size);
+    block-size: var(--control-inline-affix-icon-size);
+  }
+
+  /* The browser-owned file button, restyled to read as a control inside the control. */
+  .ui-input::file-selector-button {
+    display: inline-flex;
+    block-size: var(--input-file-button-height);
+    border: 0;
+    background: transparent;
+    color: hsl(var(--foreground));
+    font-size: var(--input-file-button-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* A field in a flex row must be allowed to shrink below its content, or a long value pushes
+   * the row wider instead of the text truncating. */
+  .ui-input {
+    min-inline-size: 0;
+  }
+
+  .ui-input:disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  /* INPUT affix slots — leading/trailing controls parked inside the field box. */
+  .ui-input-affix-wrapper {
+    position: relative;
+    display: inline-flex;
+    inline-size: 100%;
+    align-items: center;
+  }
+
+  .ui-input-leading,
+  .ui-input-trailing {
+    position: absolute;
+    inset-block: 0;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .ui-input-leading {
+    inset-inline-start: var(--control-inline-affix-inset-inline);
+    pointer-events: none;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-input-trailing {
+    inset-inline-end: var(--control-inline-affix-inset-inline);
+  }
+
+  /* A textarea has no single line to centre an affix on, so its clear control parks at the
+   * top-end corner. Everything else — box, radius, resting alpha, hover — is the shared
+   * inside-field affix it borrows from Input. */
+  .ui-textarea-clear {
+    position: absolute;
+    inset-block-start: var(--textarea-clear-inset-block-start);
+    inset-inline-end: var(--control-inline-affix-inset-inline);
+  }
+
+  /* The field reserves room on whichever side carries an affix, so its text never runs under. */
+  .ui-input--leading-affix {
+    padding-inline-start: var(--control-inline-affix-space-inline-end);
+  }
+
+  .ui-input--trailing-affix {
+    padding-inline-end: var(--control-inline-affix-space-inline-end);
+  }
+}
+
+@layer components {
+  /* TREE SELECT — a Select whose panel holds a tree. */
+  .ui-tree-select-popover {
+    inline-size: var(--radix-popover-trigger-width);
+    padding: 0;
+  }
+
+  .ui-tree-select-list {
+    max-block-size: var(--tree-select-list-max-height);
+  }
+
+  .ui-tree-select-panel {
+    padding: var(--menu-content-space-inset);
+  }
+
+  .ui-tree-select-empty {
+    padding-block: var(--tree-select-empty-space-block);
+    text-align: center;
+    font-size: var(--tree-select-row-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Indent is base + depth × step, driven by `--tree-select-depth` on the row. It used to be a
+   * magic expression inline in JSX, so no theme could reach it. */
+  .ui-tree-select-row {
+    display: flex;
+    align-items: center;
+    border-radius: var(--tree-select-row-radius);
+    padding-block: var(--tree-select-row-space-block);
+    padding-inline-end: var(--tree-select-row-space-inline-end);
+    padding-inline-start: calc(
+      var(--tree-select-depth-space-base) + var(--tree-select-depth, 0) *
+        var(--tree-select-depth-space-step)
+    );
+    font-size: var(--tree-select-row-font-size);
+    outline: none;
+  }
+
+  .ui-tree-select-row:hover {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-tree-select-row[data-selected="true"] {
+    background: hsl(var(--accent) / 0.6);
+  }
+
+  .ui-tree-select-row[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-tree-select-toggle {
+    display: flex;
+    inline-size: var(--tree-select-toggle-size);
+    block-size: var(--tree-select-toggle-size);
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin-inline-end: var(--tree-select-toggle-space-inline-end);
+    border-radius: var(--tree-select-row-radius);
+  }
+
+  .ui-tree-select-toggle[data-leaf] {
+    visibility: hidden;
+  }
+
+  .ui-tree-select-toggle-icon,
+  .ui-tree-select-chevron {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+  }
+
+  .ui-tree-select-chevron {
+    opacity: var(--control-affix-rest-alpha);
+  }
+
+  .ui-tree-select-label {
+    display: flex;
+    flex: 1 1 0%;
+    cursor: pointer;
+    align-items: center;
+    gap: var(--tree-select-label-space-gap);
+  }
+
+  /* Its clear control is vertically centred against the whole field rather than laid out in a
+   * flex overlay, so it keeps its own rule — but reads the shared affix knobs. */
+  .ui-tree-select-clear {
+    position: absolute;
+    inset-inline-end: var(--space-3);
+    inset-block-start: 50%;
+    translate: 0 -50%;
+    z-index: 10;
+    display: flex;
+    inline-size: var(--control-affix-action-size);
+    block-size: var(--control-affix-action-size);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--control-affix-action-radius);
+    opacity: var(--control-affix-rest-alpha);
+  }
+
+  .ui-tree-select-clear:hover,
+  .ui-tree-select-clear:focus-visible {
+    opacity: 1;
+  }
+
+  /* Reserves room for a clear control that sits further in than the standard overlay affix. */
+  .ui-tree-select-trigger-affixed {
+    padding-inline-end: var(--space-10);
+  }
+}
+
+@layer components {
+  /* CALENDAR — react-day-picker frame. The day/weekday cells keep sizing from --control-height
+   * (a system tier decision); everything around them is now a knob. */
+  .ui-calendar {
+    position: relative;
+    inline-size: fit-content;
+    padding: var(--calendar-space-inset);
+  }
+
+  .ui-calendar-months {
+    display: flex;
+    flex-direction: column;
+    gap: var(--calendar-month-space-gap);
+  }
+
+  @media (min-width: 40rem) {
+    .ui-calendar-months {
+      flex-direction: row;
+    }
+  }
+
+  .ui-calendar-month {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--calendar-month-space-gap);
+  }
+
+  .ui-calendar-caption {
+    display: flex;
+    block-size: var(--control-height);
+    inline-size: 100%;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--calendar-caption-space-inline);
+  }
+
+  .ui-calendar-caption-label {
+    font-size: var(--calendar-caption-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-calendar-nav {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: var(--calendar-nav-space-block-start);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: var(--calendar-nav-space-inline);
+  }
+
+  .ui-calendar-nav-button {
+    background: transparent;
+    padding: 0;
+    opacity: var(--calendar-nav-rest-alpha);
+  }
+
+  .ui-calendar-nav-button:hover {
+    opacity: 1;
+  }
+
+  .ui-calendar-chevron {
+    inline-size: var(--calendar-chevron-size);
+    block-size: var(--calendar-chevron-size);
+  }
+
+  .ui-calendar-grid {
+    margin-block-start: var(--calendar-grid-space-block-start);
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+
+  .ui-calendar-weekday {
+    inline-size: var(--control-height);
+    border-radius: var(--calendar-weekday-radius);
+    font-size: var(--calendar-weekday-font-size);
+    font-weight: var(--font-weight-normal);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-calendar-week {
+    margin-block-start: var(--calendar-week-space-block-start);
+    display: flex;
+    inline-size: 100%;
+  }
+
+  .ui-calendar-day {
+    position: relative;
+    padding: 0;
+    text-align: center;
+    font-size: var(--calendar-day-font-size);
+  }
+
+  .ui-calendar-day:focus-within {
+    position: relative;
+    z-index: 20;
+  }
+
+  /* Scoped to the calendar root so it out-ranks `.ui-button--default-size`, which is declared
+   * later in this file and would otherwise re-apply its block padding to a day cell. */
+  .ui-calendar .ui-calendar-day-button {
+    inline-size: var(--control-height);
+    block-size: var(--control-height);
+    padding: 0;
+    font-weight: var(--font-weight-normal);
+    border-radius: var(--calendar-day-radius);
+  }
+
+  .ui-calendar .ui-calendar-day-button[aria-selected] {
+    opacity: 1;
+  }
+
+  .ui-calendar-day-disabled {
+    color: hsl(var(--muted-foreground));
+    opacity: var(--disabled-opacity);
+  }
+}
+
+@layer components {
+  /* TRANSFER — two-pane list mover. */
+  .ui-transfer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: var(--transfer-panes-space-gap);
+  }
+
+  .ui-transfer-pane {
+    display: flex;
+    min-block-size: var(--transfer-pane-min-height);
+    flex: 1 1 0%;
+    flex-direction: column;
+    border-radius: var(--transfer-pane-radius);
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--background));
+  }
+
+  .ui-transfer-pane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: var(--transfer-header-space-inline);
+    padding-block: var(--transfer-header-space-block);
+    border-block-end: 1px solid hsl(var(--border));
+    font-size: var(--transfer-header-font-size);
+  }
+
+  .ui-transfer-pane-check {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    gap: var(--transfer-header-space-gap);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-transfer-search {
+    padding: var(--transfer-search-space-inset);
+    border-block-end: 1px solid hsl(var(--border));
+  }
+
+  .ui-transfer-search[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-transfer-list {
+    padding: var(--transfer-list-space-inset);
+  }
+
+  .ui-transfer-empty {
+    padding-block: var(--transfer-empty-space-block);
+    text-align: center;
+    font-size: var(--transfer-row-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-transfer-row {
+    display: flex;
+    cursor: pointer;
+    align-items: flex-start;
+    gap: var(--transfer-row-space-gap);
+    border-radius: var(--transfer-row-radius);
+    padding-inline: var(--transfer-row-space-inline);
+    padding-block: var(--transfer-row-space-block);
+    font-size: var(--transfer-row-font-size);
+  }
+
+  /* Top-aligned against a two-line row, so it takes a hair of optical offset to sit level with
+   * the first line's cap height rather than its box. */
+  .ui-transfer-row-check {
+    margin-block-start: var(--transfer-row-check-space-block-start);
+  }
+
+  .ui-transfer-row-body {
+    min-inline-size: 0;
+    flex: 1 1 0%;
+  }
+
+  .ui-transfer-row-description {
+    font-size: var(--transfer-row-description-font-size);
+  }
+
+  .ui-transfer-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--transfer-actions-space-gap);
+  }
+
+  .ui-transfer-action-icon {
+    inline-size: var(--transfer-action-icon-size);
+    block-size: var(--transfer-action-icon-size);
+  }
+}
+
+@layer components {
+  /* MONTH PICKER — the year-nav + 3-column month grid shared by MonthPicker and
+   * MonthRangePicker. One rule set for both; they used to hold identical copies. */
+  .ui-control-composite-field {
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--control-composite-field-space-gap);
+    border-radius: var(--control-radius);
+    border: 1px solid hsl(var(--input));
+    background: hsl(var(--background));
+    outline: none;
+    transition:
+      color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .ui-control-composite-field[data-disabled] {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-month-picker-input {
+    min-inline-size: 0;
+    flex: 1 1 0%;
+    background: transparent;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+  }
+
+  .ui-month-picker-input::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-month-picker-input:disabled {
+    cursor: not-allowed;
+  }
+
+  .ui-month-picker-icon {
+    inline-size: var(--month-picker-icon-size);
+    block-size: var(--month-picker-icon-size);
+    flex-shrink: 0;
+  }
+
+  .ui-month-picker-separator-icon {
+    inline-size: var(--month-picker-separator-icon-size);
+    block-size: var(--month-picker-separator-icon-size);
+    flex-shrink: 0;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-month-picker-panel {
+    inline-size: auto;
+    padding: var(--month-picker-panel-space-inset);
+  }
+
+  .ui-month-picker-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ui-month-picker-nav-button {
+    background: transparent;
+    opacity: var(--month-picker-nav-rest-alpha);
+  }
+
+  .ui-month-picker-nav-button:hover {
+    opacity: 1;
+  }
+
+  .ui-month-picker-nav-label {
+    font-size: var(--month-picker-nav-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-month-picker-grid {
+    margin-block-start: var(--month-picker-grid-space-block-start);
+    display: grid;
+    /* 3 columns × 4 rows is the month grid's shape, not a service knob — 12 months only read
+     * as a calendar year in this arrangement. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--month-picker-grid-space-gap);
+  }
+
+  .ui-month-picker-cell {
+    padding-inline: var(--month-picker-cell-space-inline);
+    font-weight: var(--font-weight-normal);
+  }
+
+  /* BUTTON size-xs + icon-adjacent padding + the count pill (#319). */
+  .ui-button--xs {
+    height: var(--button-xs-height);
+    gap: var(--button-xs-space-gap);
+    padding-inline: var(--button-xs-space-inline);
+    font-size: var(--button-xs-font-size);
+  }
+
+  .ui-button--default-size,
+  .ui-button--md {
+    padding-block: var(--button-space-block);
+  }
+
+  /* An icon-only child needs less inline room than a label, or the glyph floats in a wide box. */
+  .ui-button--default-size:has(> svg),
+  .ui-button--md:has(> svg) {
+    padding-inline: var(--button-icon-space-inline-md);
+  }
+
+  .ui-button--sm:has(> svg) {
+    padding-inline: var(--button-icon-space-inline-sm);
+  }
+
+  .ui-button--lg:has(> svg) {
+    padding-inline: var(--button-icon-space-inline-lg);
+  }
+
+  .ui-button--xs:has(> svg) {
+    padding-inline: var(--button-icon-space-inline-xs);
+  }
+
+  /* COUNT PILL (gh#320). Opaque role fills, not a translucent tint over the button's surface: a
+   * tint takes its contrast from whatever is behind it, and five variant×theme×hover combinations
+   * measured below WCAG 1.4.3's 4.5:1 for small text. The measurements and the share-vs-split
+   * reasoning live in tokens/components/control.css beside the knobs. Same treatment gh#312
+   * validated on Toggle. */
+  .ui-button-count {
+    display: inline-flex;
+    min-inline-size: var(--button-count-min-width);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    padding-inline: var(--button-count-space-inline);
+    background: var(--button-count-background, hsl(var(--muted)));
+    color: var(--button-count-color, hsl(var(--foreground)));
+    font-size: var(--button-count-font-size);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Each filled variant wears its OWN label pair, swapped. That makes the pill exactly as legible
+   * as the label it sits beside — it cannot be less legible under any theme that keeps the button
+   * itself readable, which a fixed colour could not promise. */
+  .ui-button--default .ui-button-count {
+    background: var(--button-count-default-background, hsl(var(--primary-foreground)));
+    color: var(--button-count-default-color, hsl(var(--primary)));
+  }
+
+  .ui-button--destructive .ui-button-count {
+    background: var(--button-count-destructive-background, hsl(var(--destructive-foreground)));
+    color: var(--button-count-destructive-color, hsl(var(--destructive)));
+  }
+
+  .ui-button--secondary .ui-button-count {
+    background: var(--button-count-secondary-background, hsl(var(--secondary-foreground)));
+    color: var(--button-count-secondary-color, hsl(var(--secondary)));
+  }
 }

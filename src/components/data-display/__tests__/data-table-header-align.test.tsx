@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { DataTable } from "../data-table";
+import { ruleSelector } from "@/test/css-selector";
 
 /**
  * Heading alignment, separately from the rows.
@@ -16,6 +17,21 @@ import { DataTable } from "../data-table";
  */
 const rows = [{ id: 1, subject: "a long subject that reads from the left" }];
 
+const tableCss = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), "../../../styles/table-layout.css"),
+  "utf8",
+);
+
+/**
+ * The ANCESTOR half of the shipped centring rule — the part that decides which header cell the
+ * rule reaches — taken out of the stylesheet rather than retyped. `data-align` says what the
+ * table promised; this says the promise and the paint still land on the same node.
+ */
+const centredHeaderSelector = ruleSelector(
+  tableCss,
+  /\.text-center > \.ui-data-table-sort-button > \.ui-data-table-sort-label \{/,
+).split(" > ")[0];
+
 describe("DataTable headerAlign", () => {
   it("centres the heading while the rows stay where they were", () => {
     render(
@@ -26,8 +42,12 @@ describe("DataTable headerAlign", () => {
       />,
     );
 
-    expect(screen.getByRole("columnheader", { name: "Subject" })).toHaveClass("text-center");
-    expect(screen.getByRole("cell", { name: rows[0].subject })).not.toHaveClass("text-center");
+    const heading = screen.getByRole("columnheader", { name: "Subject" });
+    expect(heading).toHaveAttribute("data-align", "center");
+    // …and the shipped centring rule really selects that heading.
+    expect(heading.matches(centredHeaderSelector)).toBe(true);
+    // The row keeps its start alignment — it asked for none, so it carries no align attribute.
+    expect(screen.getByRole("cell", { name: rows[0].subject })).not.toHaveAttribute("data-align");
   });
 
   it("follows align when headerAlign is not given", () => {
@@ -40,7 +60,10 @@ describe("DataTable headerAlign", () => {
       />,
     );
 
-    expect(screen.getByRole("columnheader", { name: "Subject" })).toHaveClass("text-center");
+    expect(screen.getByRole("columnheader", { name: "Subject" })).toHaveAttribute(
+      "data-align",
+      "center",
+    );
   });
 
   it("lets headerAlign override align rather than merging with it", () => {
@@ -54,8 +77,14 @@ describe("DataTable headerAlign", () => {
 
     const heading = screen.getByRole("columnheader", { name: "Subject" });
 
-    expect(heading).toHaveClass("text-end");
-    expect(heading).not.toHaveClass("text-center");
+    // One value, not two: `headerAlign` REPLACES `align` on the heading rather than merging with
+    // it, which a single-valued attribute states outright.
+    expect(heading).toHaveAttribute("data-align", "right");
+    // …while the body cell still follows `align`.
+    expect(screen.getByRole("cell", { name: rows[0].subject })).toHaveAttribute(
+      "data-align",
+      "center",
+    );
   });
 
   /* The assertions above all read class names, and a class name is only half

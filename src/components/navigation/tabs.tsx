@@ -53,11 +53,19 @@ export function Tabs({
     <TabsPrimitive.Root
       data-slot="tabs"
       data-orientation={orientation}
+      // The variant AS ASKED FOR. The list deliberately collapses `card` into
+      // `data-variant="default"` (its chrome IS the default strip, gh#248), so the root is the
+      // only node that can still say which of the three variants a consumer selected — which is
+      // what a service theme, and a test, need to key on.
+      data-variant={variant}
       orientation={orientation}
       value={value}
       defaultValue={value === undefined ? resolvedDefault : undefined}
       className={cn(
-        "group/tabs flex min-w-0 gap-2 data-[orientation=horizontal]:flex-col",
+        // Structure only. The shrink floor (`min-inline-size: 0`, gh#175) and the strip↔panel gap
+        // live in src/styles/navigation-layout.css so the gap reads --tabs-root-gap and a service
+        // can retune the tab rhythm without forking this file (#319).
+        "group/tabs flex data-[orientation=horizontal]:flex-col",
         className,
       )}
       {...props}
@@ -72,7 +80,11 @@ export function Tabs({
             // default list chrome, exactly like a hand-composed <TabsList> with no variant.
             variant={variant === "line" ? "line" : "default"}
             className={cn(
-              variant === "line" && "h-auto w-full justify-start border-b p-0",
+              // The padding override is an arbitrary value reading the knob (never `p-0`): it must
+              // stay a UTILITY so tailwind-merge still drops the strip's own padding step, and a
+              // components-layer rule could not beat that utility anyway (#319).
+              variant === "line" &&
+                "h-auto w-full justify-start border-b p-[var(--tabs-list-line-space-inset)]",
               variant === "card" && "w-full justify-start",
               listClassName,
             )}
@@ -85,8 +97,14 @@ export function Tabs({
                 className={cn(
                   // Geometry only — the active underline is the token-owned `::after` bar the
                   // line variant already owns (never a second, hand-rolled border-b indicator).
-                  variant === "line" && "rounded-none px-4 py-2",
-                  variant === "card" && "data-[state=active]:shadow-sm",
+                  // Token-reading arbitrary values, not Tailwind steps (#319): they have to stay
+                  // utilities so tailwind-merge keeps dropping the pill trigger's own radius /
+                  // padding steps from the base class list.
+                  // `card` adds NOTHING here — its list is forwarded as data-variant="default", so
+                  // the active lift already comes from the base trigger's
+                  // `group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm`.
+                  variant === "line" &&
+                    "rounded-[var(--tabs-trigger-line-radius)] px-[var(--tabs-trigger-line-padding-x)] py-[var(--tabs-trigger-line-padding-y)]",
                 )}
               >
                 {item.label}
@@ -98,7 +116,9 @@ export function Tabs({
               key={item.value}
               value={item.value}
               data-slot="tabs-panel"
-              className={cn(variant === "line" && "mt-0", contentClassName)}
+              // No variant geometry: the panel has never carried a top margin (the root is a flex
+              // box whose gap does the spacing), so the old `mt-0` reset was resetting nothing.
+              className={contentClassName}
             >
               {item.content}
             </TabsContent>

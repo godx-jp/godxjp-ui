@@ -147,4 +147,45 @@
   --table-stacked-collection-card-gap: var(--space-stack-sm);
   --table-stacked-collection-cell-padding-y: var(--space-stack-xs);
   --table-stacked-collection-label-font-size: var(--font-size-xs);
+
+  /* DATA TABLE odds and ends that were still literal on the component (#319). The table's cell
+   * rhythm, widths and action-collection tiers were already tokenized; these are the pieces
+   * around them — the select column, sort glyphs, sticky header layer and skeleton shapes. */
+  --table-select-column-width: 2.5rem;
+  --table-sort-icon-size: 0.75rem;
+  --table-toolbar-icon-size: 1rem;
+  --table-pagination-icon-size: 1rem;
+  --table-pagination-font-size: var(--font-size-sm);
+  /* Skeleton placeholders mimic the real content they stand in for: a checkbox square and a
+   * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading
+   * state the same height as the loaded one. */
+  --table-skeleton-check-size: 1rem;
+  --table-skeleton-line-height: 1rem;
+  --table-skeleton-radius: var(--radius-sm);
+
+  /* The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme
+   * remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical. */
+  --table-font-size: var(--font-size-sm);
+  /* MANDATORY companion to --table-font-size — the gh#260 trap, again. `text-sm` also set
+   * line-height from Tailwind's `--text-sm--line-height`, and styles/base.css remaps `--text-sm`
+   * but NOT that companion. Without this the table would silently inherit ambient page leading
+   * the moment the font-size moved into CSS. Same unitless ratio Tailwind ships. */
+  --table-line-height: calc(1.25 / 0.875);
+  /* Horizontal row rule (chrome, #44) — the divider between body rows AND under the header row.
+   * Owned here rather than as TableRow's `border-b` utility so the "last row draws no rule"
+   * rule in `@layer components` can actually zero it; a utility would outrank it by layer.
+   * Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }`
+   * so a scoped [data-tenant]/.dark override of --border still reaches every row. */
+  --table-row-border-width: 1px;
+  /* Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside
+   * `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three
+   * edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind
+   * it, so without it the header band floats (gh#306). Scoped by construction to the case that
+   * needs it — a BANDED header, a CardBar or a headerless card already draw their own line there
+   * and never reach this token — so a service tunes only the plain-header divider: `0` for a
+   * borderless full-bleed table, heavier for a stronger band. Colour and style are NOT set here:
+   * only the width is restored, so the surface's own border declaration still owns them and a
+   * scoped [data-tenant]/.dark override of --border reaches it.
+   * Default = the same hairline the table's other rules draw. */
+  --table-flush-divider-width: var(--table-row-border-width);
 }

@@ -240,7 +240,7 @@ function TreeSelectRoot({
             disabled={disabled}
             className={cn(
               "w-full justify-between font-normal",
-              allowClear && displayKeys.length > 0 && !disabled && "pe-10",
+              allowClear && displayKeys.length > 0 && !disabled && "ui-tree-select-trigger-affixed",
               controlOpenRingClass,
               !displayKeys.length && "text-muted-foreground",
               className,
@@ -251,7 +251,7 @@ function TreeSelectRoot({
             </span>
             <span className="ms-2 flex shrink-0 items-center">
               {!(allowClear && displayKeys.length > 0 && !disabled) && (
-                <ChevronsUpDown className="size-4 opacity-50" aria-hidden="true" />
+                <ChevronsUpDown className="ui-tree-select-chevron" aria-hidden="true" />
               )}
             </span>
           </Button>
@@ -260,14 +260,14 @@ function TreeSelectRoot({
           <button
             type="button"
             aria-label={t("dataEntry.treeSelect.clear")}
-            className="absolute end-3 top-1/2 z-10 flex size-6 -translate-y-1/2 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
+            className="ui-tree-select-clear"
             onClick={clearValue}
           >
-            <X className="size-4" aria-hidden="true" />
+            <X className="ui-control-affix-icon" aria-hidden="true" />
           </button>
         )}
       </div>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+      <PopoverContent className="ui-tree-select-popover" align="start">
         {/* CommandInput already draws ONE bottom separator + its own inline padding — don't
             wrap it in another bordered/padded box (that double-borders the search row). */}
         {showSearch && (
@@ -279,17 +279,15 @@ function TreeSelectRoot({
             />
           </Command>
         )}
-        <ScrollArea className="max-h-[min(300px,50vh)]">
+        <ScrollArea className="ui-tree-select-list">
           <div
             id={treeId}
             role="tree"
             aria-multiselectable={Boolean(checkable) || Boolean(multiple)}
-            className="p-1"
+            className="ui-tree-select-panel"
           >
             {visible.length === 0 ? (
-              <p className="text-muted-foreground py-6 text-center text-sm">
-                {t("dataEntry.treeSelect.empty")}
-              </p>
+              <p className="ui-tree-select-empty">{t("dataEntry.treeSelect.empty")}</p>
             ) : (
               visible.map(({ node, depth, hasChildren }) => {
                 const expanded = expandedKeys.has(node.value);
@@ -306,14 +304,12 @@ function TreeSelectRoot({
                     aria-selected={isSelected}
                     onFocus={() => setActiveKey(node.value)}
                     onKeyDown={(event) => onTreeItemKeyDown(event, node, hasChildren, expanded)}
-                    className={cn(
-                      "flex items-center rounded-sm py-1.5 pe-2 text-sm outline-none",
-                      "hover:bg-accent hover:text-accent-foreground",
-                      "ui-focus-ring",
-                      isSelected && "bg-accent/60",
-                      node.disabled && "pointer-events-none opacity-50",
-                    )}
-                    style={{ paddingInlineStart: `${depth * 1.25 + 0.5}rem` }}
+                    data-selected={isSelected ? "true" : "false"}
+                    data-disabled={node.disabled ? "" : undefined}
+                    className="ui-tree-select-row ui-focus-ring"
+                    // Depth drives the indent through a token, so a service can retune the step
+                    // (or flatten it) without touching this component.
+                    style={{ "--tree-select-depth": depth } as React.CSSProperties}
                   >
                     <button
                       type="button"
@@ -323,20 +319,18 @@ function TreeSelectRoot({
                           ? t("dataEntry.treeSelect.collapse")
                           : t("dataEntry.treeSelect.expand")
                       }
-                      className={cn(
-                        "me-1 flex size-5 shrink-0 items-center justify-center rounded-sm",
-                        !hasChildren && "invisible",
-                      )}
+                      data-leaf={hasChildren ? undefined : ""}
+                      className="ui-tree-select-toggle"
                       onClick={() => toggleExpand(node.value)}
                     >
                       {expanded ? (
-                        <ChevronDown className="size-4" aria-hidden="true" />
+                        <ChevronDown className="ui-tree-select-toggle-icon" aria-hidden="true" />
                       ) : (
-                        <ChevronRight className="size-4" aria-hidden="true" />
+                        <ChevronRight className="ui-tree-select-toggle-icon" aria-hidden="true" />
                       )}
                     </button>
                     {checkable ? (
-                      <label className="flex flex-1 cursor-pointer items-center gap-2">
+                      <label className="ui-tree-select-label">
                         <Checkbox
                           checked={isSelected}
                           tabIndex={-1}

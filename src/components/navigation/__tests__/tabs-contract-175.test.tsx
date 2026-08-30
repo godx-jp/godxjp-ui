@@ -1,9 +1,42 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import * as React from "react";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
+import { ruleSelector } from "@/test/css-selector";
+
+/** Prettier wraps long selectors across lines — compare on a whitespace-normalized copy. */
+const navigationCss = readFileSync(
+  resolve(process.cwd(), "src/styles/navigation-layout.css"),
+  "utf8",
+)
+  .replace(/\s+/g, " ")
+  .trim();
+
+/** The same file unnormalized — `ruleSelector` anchors on the declaration under the brace. */
+const navigationCssRaw = readFileSync(
+  resolve(process.cwd(), "src/styles/navigation-layout.css"),
+  "utf8",
+);
+
+/**
+ * The two shipped rules that actually implement gh#175, with their selectors taken OUT of the
+ * stylesheet: the root's flexbox shrink floor (what `min-w-0` used to ride along as) and the
+ * strip's width cap plus own-overflow scroll (what `max-w-full` used to). Running them with
+ * `.matches()` proves the rules reach the rendered nodes — a class name only proves a string.
+ */
+const shrinkFloorSelector = ruleSelector(
+  navigationCssRaw,
+  /\[data-slot="tabs"\] \{\s*\n\s*min-inline-size: 0;/,
+);
+const widthCapSelector = ruleSelector(
+  navigationCssRaw,
+  /\[data-slot="tabs-list"\] \{\s*\n\s*max-inline-size:/,
+);
 
 /**
  * Regression coverage for gh#175 — two confirmed Tabs framework defects:
@@ -115,11 +148,16 @@ describe("Tabs — fallback selection skips disabled items (gh#175)", () => {
 
 describe("Tabs — horizontal tablist scrolls instead of clipping long labels (gh#175)", () => {
   it("horizontal tablist (default orientation) is width-bounded, shrinkable and scrolls its own overflow", () => {
-    render(<Tabs items={FIRST_DISABLED} />);
+    const { container } = render(<Tabs items={FIRST_DISABLED} />);
     const tablist = screen.getByRole("tablist");
     expect(tablist).toHaveAttribute("data-orientation", "horizontal");
-    expect(tablist.className).toContain("min-w-0");
-    expect(tablist.className).toContain("max-w-full");
+    // The shrink floor lives on the ROOT: without it the strip's intrinsic width forces every
+    // ancestor wider instead of letting the strip scroll.
+    expect(container.querySelector('[data-slot="tabs"]')!.matches(shrinkFloorSelector)).toBe(true);
+    // …and the cap plus own-overflow scroll are the strip's own rule, token-driven.
+    expect(tablist.matches(widthCapSelector)).toBe(true);
+    expect(navigationCss).toContain("max-inline-size: var(--tabs-list-max-inline-size)");
+    expect(navigationCss).toContain("overflow-x: var(--tabs-list-overflow)");
     expect(tablist.className).toContain("data-[orientation=horizontal]:overflow-x-auto");
   });
 
@@ -146,9 +184,18 @@ describe("Tabs — horizontal tablist scrolls instead of clipping long labels (g
     );
   });
 
-  it("the Tabs root is a shrinkable flex container (min-w-0) so it never forces an ancestor wider", () => {
+  it("the Tabs root is a shrinkable flex container so it never forces an ancestor wider", () => {
     const { container } = render(<Tabs items={FIRST_DISABLED} />);
-    expect(container.querySelector('[data-slot="tabs"]')?.className).toContain("min-w-0");
+    const root = container.querySelector('[data-slot="tabs"]');
+    expect(root?.className).toContain("flex");
+    // The shrink floor used to be a `min-w-0` Tailwind literal on the component. Tokenizing the
+    // tab box (#319) moved it — and only it — into styles/navigation-layout.css, keyed off the
+    // very same data-slot, so the floor still applies to exactly this element. It is asserted on
+    // the stylesheet because a service theme must never be able to reach it: unlike the strip↔panel
+    // gap next to it, `min-inline-size: 0` is the flexbox shrink idiom, not a tunable constant.
+    expect(navigationCss).toContain(
+      '[data-slot="tabs"] { min-inline-size: 0; gap: var(--tabs-root-gap); }',
+    );
   });
 
   it("vertical orientation keeps the horizontal-only scroll utility ATTRIBUTE-GATED (data-[orientation=horizontal]:*), so it never applies to the vertical rail", () => {

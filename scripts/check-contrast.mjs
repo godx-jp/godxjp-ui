@@ -23,8 +23,14 @@ const routeArgs = process.argv.slice(2).filter((a) => !a.startsWith("http"));
 const ROUTES = routeArgs.length
   ? routeArgs
   : [
-      "/showcase/tiximax-portal",
-      "/showcase/tiximax-website",
+      // The brand re-theme showcases — a consumer's design reproduced from tokens alone must be AA
+      // clean. These read `acme-*`, not the `tiximax-*` this list carried for a long time after the
+      // rename: those two routes rendered "Showcase not found" and the sweep reported the empty
+      // page AA clean, so the coverage this comment claims did not exist. The not-found guard below
+      // is what makes that impossible to repeat. `futurelastic-web` is the dark-ground third brand.
+      "/showcase/acme-portal",
+      "/showcase/acme-website",
+      "/showcase/futurelastic-web",
       "/showcase/case1-warehouse-dashboard",
       "/isolate/feedback-alert",
       "/isolate/data-display-badge",
@@ -34,7 +40,10 @@ const ROUTES = routeArgs.length
       // which only covered default-theme text). Deterministic token coverage: destructive-contrast.test.
       "/isolate/feedback-alert-dialog",
       "/isolate/feedback-alert-dialog?theme=dark",
-      "/isolate/general-button?theme=dark",
+      // gh#320 — the Button counter pill. The id is `general-button-index` (docs/general/button/
+      // index.tsx); `general-button` resolves to nothing.
+      "/isolate/general-button-index",
+      "/isolate/general-button-index?theme=dark",
     ];
 
 const EXEC =
@@ -166,6 +175,23 @@ async function main() {
     try {
       await page.goto(url, { waitUntil: "networkidle", timeout: 30000 });
       await page.waitForTimeout(1200);
+      // A route that does not resolve renders a small "not found" card, and a card with four
+      // legible words passes every contrast check there is. Two showcases and the Button page sat
+      // in this list for months reporting "AA clean" on exactly that page. A sweep that cannot
+      // tell "nothing failed" from "nothing was there" is not evidence, so this is now an error.
+      const missing = await page.evaluate(() => {
+        const text = document.body.innerText;
+        const m = text.match(/(Showcase|Preview) not found[\s\S]{0,40}?Unknown id: (\S+)/);
+        return m ? m[2] : null;
+      });
+      if (missing) {
+        console.error(
+          `✗ ${route}: route does not resolve (unknown id "${missing}") — the page rendered a ` +
+            `not-found card, so auditing it proves nothing. Fix the route, do not delete it.`,
+        );
+        total++;
+        continue;
+      }
       items = await page.evaluate(collect);
     } catch (e) {
       console.error(

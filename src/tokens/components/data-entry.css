@@ -3,4 +3,28 @@
 :root {
   --password-strength-score-font-size: var(--font-size-xs);
   --password-strength-checklist-font-size: var(--font-size-xs);
+
+  /* BranchScopePicker (gh#319). `.ui-branch-scope-picker` was a bare hook with no rule anywhere:
+   * every measure lived as a Tailwind literal on the component, so a service could only retune
+   * the control by forking it (#45).
+   *
+   * All four are FLAT rems, not `--space-*` aliases, on purpose: the literals they replace read
+   * Tailwind's own `--spacing` grid, which this package never remaps and which does NOT move with
+   * the density axis. Aliasing them to `--space-3`/`--space-2`/`--space-1` would silently start
+   * scaling the control inside a `.ui-density-*` subtree — a visual change, not a refactor. */
+  /* Stack rhythm between the mode radios, the subset box and the error line (was `gap-3`). */
+  --branch-scope-picker-gap: 0.75rem;
+  /* Read-only summary: the wrapped run of branch Badges (was `gap-1.5`). */
+  --branch-scope-picker-badges-gap: 0.375rem;
+  /* The `mode="selected"` subset box — its inner stack rhythm and the inset that clears its
+   * indent rule (was `gap-2` / `ps-4`). */
+  --branch-scope-picker-subset-gap: 0.5rem;
+  --branch-scope-picker-subset-padding-inline: 1rem;
+  /* The indent rule itself is CHROME (#44), so it is a knob: a service that wants the flat
+   * treatment sets it to 0 rather than forking the component. Default = today's `border-s-2`. */
+  --branch-scope-picker-subset-border-width: 2px;
+  /* Bounded height of the scrollable branch list (was `max-h-64`). Flat by design: the box is a
+   * keyboard-reachable scroll region whose job is to cap the control's measure, so it must not
+   * grow with density and push the surrounding form off a 390px frame. */
+  --branch-scope-picker-list-max-height: 16rem;
 }

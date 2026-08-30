@@ -9,6 +9,81 @@ export interface ComponentToken {
 
 export const COMPONENT_TOKENS: ComponentToken[] = [
   {
+    "name": "--activity-mark-size",
+    "value": "0.25em",
+    "description": "Mark geometry. `em`-based so the whole mark tracks `--activity-font-size-*` (and therefore * `--font-size-base` and the density axis) instead of pinning a px diameter per size step."
+  },
+  {
+    "name": "--activity-mark-offset",
+    "value": "0.25em",
+    "description": "Travel of one `dots` step — the loop counterpart to `--reveal-distance`, named to match. * It is ALSO the height the mark row reserves, so the indicator appearing under a composer * never shifts the row."
+  },
+  {
+    "name": "--activity-mark-rest-alpha",
+    "value": "0.35",
+    "description": "Resting opacity of a dot at the bottom of its cycle. Never 0: a dot that vanishes reads as a * rendering bug at the trough, and the reduced-motion resting state must stay fully legible."
+  },
+  {
+    "name": "--activity-pulse-mark-size",
+    "value": "0.5em",
+    "description": "The single `pulse` mark — a breathing dot (live / recording), bigger than one `dots` dot * because it carries the whole affordance alone."
+  },
+  {
+    "name": "--activity-gap",
+    "value": "var(--space-1)",
+    "description": "Mark-to-mark and mark-to-label gap."
+  },
+  {
+    "name": "--activity-font-size-xs",
+    "value": "var(--font-size-2xs)",
+    "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
+  },
+  {
+    "name": "--activity-font-size-sm",
+    "value": "var(--font-size-xs)",
+    "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
+  },
+  {
+    "name": "--activity-font-size-md",
+    "value": "var(--font-size-sm)",
+    "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
+  },
+  {
+    "name": "--activity-font-size-lg",
+    "value": "var(--font-size-lg)",
+    "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
+  },
+  {
+    "name": "--activity-bar-width",
+    "value": "4rem",
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-bar-height",
+    "value": "0.25em",
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-bar-radius",
+    "value": "var(--radius-pill)",
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-bar-segment-width",
+    "value": "40%",
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-bar-track-alpha",
+    "value": "0.2",
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-color",
+    "value": "initial",
+    "description": "Mark colour. ROLE-MIRROR KNOB ⇒ declared `initial` here with the role default at the CALL SITE * (`hsl(var(--activity-color, var(--muted-foreground)))` in styles/motion.css). Written as * `--activity-color: var(--muted-foreground)` it would freeze at the `:root` role value and a * scoped `[data-tenant]` / `.dark` override of `--muted-foreground` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\". * Documented default: --activity-color = var(--muted-foreground) (tone=\"muted\")."
+  },
+  {
     "name": "--badge-space-gap",
     "value": "var(--space-inline-xs)",
     "description": "Badge component tokens."
@@ -524,7 +599,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
   {
-    "name": "--toggle-focus-ring-opacity",
+    "name": "--toggle-focus-ring-alpha",
     "value": "0.35",
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
@@ -534,7 +609,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
   {
-    "name": "--time-input-focus-ring-opacity",
+    "name": "--time-input-focus-ring-alpha",
     "value": "0.3",
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
@@ -699,124 +774,829 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
+    "name": "--switch-unchecked-background",
+    "value": "initial",
+    "description": "Switch OFF track fill (gh#315) — `initial`, default hsl(var(--input)). Its own knob so a * service can quieten the off-track without dragging the --input control-boundary role back * below the WCAG SC 1.4.11 floor (rule #45); whatever you set still owes 3:1 against the page * and against the thumb (--background), or \"off\" stops being a visible state."
+  },
+  {
     "name": "--color-picker-input-width",
     "value": "6.5rem",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "ColorPicker — width of the hex text field beside the swatch."
   },
   {
     "name": "--command-list-max-height",
     "value": "min(300px, 50vh)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-input-padding-x",
     "value": "var(--space-3)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-group-padding",
     "value": "var(--space-1)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-item-padding-y",
     "value": "var(--space-2)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-item-padding-x",
     "value": "var(--space-2)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-width",
     "value": "35rem",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-inset-top",
     "value": "calc(var(--space-6) * 4)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-viewport-inset",
     "value": "var(--space-3)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-hint-padding-y",
     "value": "var(--space-2)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-hint-padding-x",
     "value": "var(--space-4)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-hint-gap",
     "value": "var(--space-4)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--search-input-edge-inset",
     "value": "var(--space-3)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "SearchInput — the inset the leading/trailing icons sit at, and the field padding derived * from it so the text never runs under an icon."
   },
   {
     "name": "--search-input-start-padding",
     "value": "calc( var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap) )",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "SearchInput — the inset the leading/trailing icons sit at, and the field padding derived * from it so the text never runs under an icon."
   },
   {
     "name": "--search-input-end-padding",
     "value": "calc( var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap) )",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "SearchInput — the inset the leading/trailing icons sit at, and the field padding derived * from it so the text never runs under an icon."
   },
   {
     "name": "--choice-description-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--color-picker-hex-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--command-group-heading-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--search-input-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--tag-input-chip-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--toggle-sm-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--button-sm-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
+  },
+  {
+    "name": "--control-affix-inset-inline-end",
+    "value": "var(--space-2)",
+    "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
+  },
+  {
+    "name": "--control-affix-action-size",
+    "value": "1.5rem",
+    "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
+  },
+  {
+    "name": "--control-affix-action-radius",
+    "value": "var(--radius-sm)",
+    "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
+  },
+  {
+    "name": "--control-affix-icon-size",
+    "value": "1rem",
+    "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
+  },
+  {
+    "name": "--control-affix-rest-alpha",
+    "value": "0.5",
+    "description": "Resting weight of an affix glyph — it must read as secondary until hovered/focused."
+  },
+  {
+    "name": "--control-trigger-space-inline-end",
+    "value": "2.25rem",
+    "description": "2.25rem — the room a single trailing affix needs. Written as a raw rem because the * literal it replaced (`pe-9`) is a flat Tailwind step, not a density-scaled one."
+  },
+  {
+    "name": "--control-inline-affix-size",
+    "value": "1.25rem",
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+  },
+  {
+    "name": "--control-inline-affix-icon-size",
+    "value": "var(--control-affix-icon-size)",
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+  },
+  {
+    "name": "--control-inline-affix-space-gap",
+    "value": "var(--space-1)",
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+  },
+  {
+    "name": "--control-inline-affix-inset-inline",
+    "value": "var(--space-2)",
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+  },
+  {
+    "name": "--control-inline-affix-rest-alpha",
+    "value": "0.7",
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+  },
+  {
+    "name": "--control-inline-affix-space-inline-end",
+    "value": "2.25rem",
+    "description": "Inline room the field reserves so its text never runs under a single affix."
+  },
+  {
+    "name": "--textarea-clear-inset-block-start",
+    "value": "var(--space-2)",
+    "description": "Input centres its affix on the field's single line; a textarea has no single line to centre * on, so its clear control parks at the top-end corner instead."
+  },
+  {
+    "name": "--control-multiline-padding-block",
+    "value": "var(--space-2)",
+    "description": "MULTILINE BOX — the block padding of `.ui-control-multiline` (Textarea). It was a bare * `--space-2` inside the padding shorthand, which made it unreachable for a service that runs a * denser composer, AND it is the constant the auto-grow row maths has to add back, so the two * had to read the same knob or drift (#45)."
+  },
+  {
+    "name": "--textarea-autogrow-line-height",
+    "value": "initial",
+    "description": "The unit a \"row\" is measured in. `initial` on purpose: the call site reads * `var(--textarea-autogrow-line-height, var(--line-height-normal))`, so a service that retunes * the multiline line-height for CJK legibility retunes the ceiling with it (#46). Unitless — * it is multiplied by `--control-font-size`."
+  },
+  {
+    "name": "--textarea-autogrow-min-height-rows",
+    "value": "1",
+    "description": "Floor of the grown box, in text rows. The `minRows` prop overrides per instance — the same * theme-global / prop-local priority as `--form-label-width` vs `labelWidth`. The floor is * additionally clamped up to `--control-height` so a resting one-row composer still lines up * with the Input / Button beside it instead of undercutting the control tier."
+  },
+  {
+    "name": "--textarea-autogrow-max-height-rows",
+    "value": "8",
+    "description": "Ceiling of the grown box, in text rows; past it the control scrolls internally instead of * pushing the page. `maxRows={0}` sets this to `infinity` for an unbounded box."
+  },
+  {
+    "name": "--textarea-autogrow-box-inset",
+    "value": "calc( (var(--control-multiline-padding-block) + var(--control-border-width)) * 2 )",
+    "description": "The non-text part of the box the row maths must add back: block padding + border, both * edges. `.ui-textarea-autogrow--ghost` re-declares it without the border, because the ghost * variant drops its own chrome."
+  },
+  {
+    "name": "--control-inline-affix-pair-space-inline-end",
+    "value": "3.5rem",
+    "description": "A field parking TWO inline affixes (TimePicker's clear+clock, DatePicker's clear+calendar) * reserves a wider end than the single-affix case."
+  },
+  {
+    "name": "--control-composite-field-space-gap",
+    "value": "var(--space-2)",
+    "description": "COMPOSITE FIELD — the bordered box that wraps two inputs plus a separator (date/month * range pickers) or one input plus affixes. Shared so the four range/picker fields cannot * drift into four slightly different boxes."
+  },
+  {
+    "name": "--input-file-button-height",
+    "value": "1.75rem",
+    "description": "The <input type=file> button is a browser-owned box we restyle; it sits one tier below the * field so it reads as a control INSIDE the control."
+  },
+  {
+    "name": "--input-file-button-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "The <input type=file> button is a browser-owned box we restyle; it sits one tier below the * field so it reads as a control INSIDE the control."
+  },
+  {
+    "name": "--search-select-panel-max-width",
+    "value": "32rem",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-panel-viewport-inset",
+    "value": "var(--space-6)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-list-space-inset",
+    "value": "var(--space-1)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-footer-space-inset",
+    "value": "var(--space-1)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-option-space-gap",
+    "value": "var(--space-2)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-option-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-option-sublabel-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-status-space-inline",
+    "value": "var(--space-2)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-status-space-block",
+    "value": "var(--space-3)",
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+  },
+  {
+    "name": "--search-select-placeholder-space-block",
+    "value": "var(--space-6)",
+    "description": "Empty/error states sit alone in the panel, so they get a taller, centred block."
+  },
+  {
+    "name": "--search-select-status-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Empty/error states sit alone in the panel, so they get a taller, centred block."
+  },
+  {
+    "name": "--search-select-spinner-size",
+    "value": "1rem",
+    "description": "Empty/error states sit alone in the panel, so they get a taller, centred block."
+  },
+  {
+    "name": "--cascader-column-min-width",
+    "value": "9rem",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-columns-max-height",
+    "value": "min(280px, 50vh)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-list-max-height",
+    "value": "min(300px, 50vh)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-panel-space-inset",
+    "value": "var(--space-1)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-option-space-inline",
+    "value": "var(--space-3)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-option-space-block",
+    "value": "var(--space-2)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-option-space-gap",
+    "value": "var(--space-1)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-option-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-option-icon-size",
+    "value": "1rem",
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+  },
+  {
+    "name": "--cascader-result-space-inline",
+    "value": "var(--space-2)",
+    "description": "The flat search result row is denser than a column row — it has no chevron to balance."
+  },
+  {
+    "name": "--cascader-result-space-block",
+    "value": "0.375rem",
+    "description": "The flat search result row is denser than a column row — it has no chevron to balance."
+  },
+  {
+    "name": "--cascader-result-radius",
+    "value": "var(--radius-sm)",
+    "description": "The flat search result row is denser than a column row — it has no chevron to balance."
+  },
+  {
+    "name": "--cascader-result-icon-space-inline-end",
+    "value": "var(--space-2)",
+    "description": "The flat search result row is denser than a column row — it has no chevron to balance."
+  },
+  {
+    "name": "--cascader-empty-space-block",
+    "value": "var(--space-6)",
+    "description": "The flat search result row is denser than a column row — it has no chevron to balance."
+  },
+  {
+    "name": "--select-content-max-height",
+    "value": "24rem",
+    "description": "SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*), * so only what is genuinely its own lives here (#319)."
+  },
+  {
+    "name": "--select-scroll-button-space-block",
+    "value": "var(--space-1)",
+    "description": "SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*), * so only what is genuinely its own lives here (#319)."
+  },
+  {
+    "name": "--select-item-space-inline",
+    "value": "0.625rem",
+    "description": "Select rows sit slightly wider than a menu row: a listbox has no leading icon column to * absorb the optical inset, so 2.5 reads level with a menu's 2 + icon."
+  },
+  {
+    "name": "--time-picker-column-height",
+    "value": "13rem",
+    "description": "TIME PICKER — scroll columns of hour/minute/second plus an inline affix pair. All of its * geometry was literal on the component (#319): a service could not shorten the column, widen * the panel for a 12-hour layout, or retune the row rhythm without forking."
+  },
+  {
+    "name": "--time-picker-panel-width",
+    "value": "9rem",
+    "description": "TIME PICKER — scroll columns of hour/minute/second plus an inline affix pair. All of its * geometry was literal on the component (#319): a service could not shorten the column, widen * the panel for a 12-hour layout, or retune the row rhythm without forking."
+  },
+  {
+    "name": "--time-picker-panel-width-12h",
+    "value": "13rem",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-heading-space-inline",
+    "value": "var(--space-1)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-heading-space-block",
+    "value": "0.375rem",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-heading-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-column-space-inset",
+    "value": "var(--space-1)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-option-space-block",
+    "value": "0.375rem",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-option-radius",
+    "value": "var(--radius-md)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-option-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-footer-space-inset",
+    "value": "var(--space-2)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--time-picker-affix-space-gap",
+    "value": "var(--control-inline-affix-space-gap)",
+    "description": "12-hour mode adds an AM/PM column, so the panel is wider."
+  },
+  {
+    "name": "--tree-select-list-max-height",
+    "value": "min(300px, 50vh)",
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+  },
+  {
+    "name": "--tree-select-row-space-block",
+    "value": "0.375rem",
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+  },
+  {
+    "name": "--tree-select-row-space-inline-end",
+    "value": "var(--space-2)",
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+  },
+  {
+    "name": "--tree-select-row-radius",
+    "value": "var(--radius-sm)",
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+  },
+  {
+    "name": "--tree-select-row-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+  },
+  {
+    "name": "--tree-select-depth-space-base",
+    "value": "var(--space-2)",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--tree-select-depth-space-step",
+    "value": "1.25rem",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--tree-select-toggle-size",
+    "value": "1.25rem",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--tree-select-toggle-space-inline-end",
+    "value": "var(--space-1)",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--tree-select-label-space-gap",
+    "value": "var(--space-2)",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--tree-select-empty-space-block",
+    "value": "var(--space-6)",
+    "description": "Indent = base + depth × step. A denser service dials the step down without touching JSX."
+  },
+  {
+    "name": "--calendar-space-inset",
+    "value": "var(--space-3)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-month-space-gap",
+    "value": "var(--space-4)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-caption-space-inline",
+    "value": "var(--space-8)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-caption-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-nav-space-block-start",
+    "value": "var(--space-3)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-nav-space-inline",
+    "value": "var(--space-1)",
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+  },
+  {
+    "name": "--calendar-nav-rest-alpha",
+    "value": "0.7",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-grid-space-block-start",
+    "value": "var(--space-4)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-week-space-block-start",
+    "value": "var(--space-2)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-weekday-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-weekday-radius",
+    "value": "var(--radius-md)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-day-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-day-radius",
+    "value": "var(--radius-md)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-chevron-size",
+    "value": "1rem",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--transfer-pane-min-height",
+    "value": "14rem",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-pane-radius",
+    "value": "var(--radius-md)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-panes-space-gap",
+    "value": "var(--space-3)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-header-space-inline",
+    "value": "var(--space-3)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-header-space-block",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-header-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-header-space-gap",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-search-space-inset",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-list-space-inset",
+    "value": "var(--space-1)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-space-inline",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-space-block",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-space-gap",
+    "value": "var(--space-2)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-radius",
+    "value": "var(--radius-sm)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+  },
+  {
+    "name": "--transfer-row-check-space-block-start",
+    "value": "0.125rem",
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+  },
+  {
+    "name": "--transfer-row-description-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+  },
+  {
+    "name": "--transfer-empty-space-block",
+    "value": "var(--space-8)",
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+  },
+  {
+    "name": "--transfer-actions-space-gap",
+    "value": "var(--space-2)",
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+  },
+  {
+    "name": "--transfer-action-icon-size",
+    "value": "1rem",
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+  },
+  {
+    "name": "--month-picker-panel-space-inset",
+    "value": "var(--space-3)",
+    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+  },
+  {
+    "name": "--month-picker-grid-space-block-start",
+    "value": "var(--space-3)",
+    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+  },
+  {
+    "name": "--month-picker-grid-space-gap",
+    "value": "var(--space-1)",
+    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+  },
+  {
+    "name": "--month-picker-cell-space-inline",
+    "value": "var(--space-4)",
+    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+  },
+  {
+    "name": "--month-picker-nav-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+  },
+  {
+    "name": "--month-picker-nav-rest-alpha",
+    "value": "var(--calendar-nav-rest-alpha)",
+    "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
+  },
+  {
+    "name": "--month-picker-icon-size",
+    "value": "1rem",
+    "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
+  },
+  {
+    "name": "--month-picker-separator-icon-size",
+    "value": "0.875rem",
+    "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
+  },
+  {
+    "name": "--button-xs-height",
+    "value": "var(--control-height-xs)",
+    "description": "BUTTON size-xs box + the count pill (#319, reconciled in #316). * * `size=\"xs\"` now reads the tier, like every other control in the library. It used to be * `calc(var(--control-height) - 0.75rem)` = 1.25rem, which sat 4px BELOW `--control-height-xs` * (1.5rem) that `size=\"icon-xs\"` already used — the same tier name, two heights, so an xs * Button never lined up with the xs control beside it. It was also the exact shape this repo's * own rule forbids: an ad-hoc `calc(var(--control-height) ± length)` silently re-derives a tier * and drifts from its siblings (the bug that made Pagination's size-changer taller than its * page buttons), and being a raw length rather than a `--scaling`-multiplied step, it did not * move with density while the tier did. * * What settled it was not consistency but MEASUREMENT: an xs Button rendered 20px tall, under * the 24x24 CSS px that WCAG 2.2 SC 2.5.8 (Target Size, Minimum) requires, while icon-xs beside * it rendered 24px and passed. So this is an accessibility fix that happens to also remove an * inconsistency, not a visual preference. It is a real visual change on the most-used component * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets * --button-xs-height back."
+  },
+  {
+    "name": "--button-xs-space-inline",
+    "value": "var(--space-2)",
+    "description": "BUTTON size-xs box + the count pill (#319, reconciled in #316). * * `size=\"xs\"` now reads the tier, like every other control in the library. It used to be * `calc(var(--control-height) - 0.75rem)` = 1.25rem, which sat 4px BELOW `--control-height-xs` * (1.5rem) that `size=\"icon-xs\"` already used — the same tier name, two heights, so an xs * Button never lined up with the xs control beside it. It was also the exact shape this repo's * own rule forbids: an ad-hoc `calc(var(--control-height) ± length)` silently re-derives a tier * and drifts from its siblings (the bug that made Pagination's size-changer taller than its * page buttons), and being a raw length rather than a `--scaling`-multiplied step, it did not * move with density while the tier did. * * What settled it was not consistency but MEASUREMENT: an xs Button rendered 20px tall, under * the 24x24 CSS px that WCAG 2.2 SC 2.5.8 (Target Size, Minimum) requires, while icon-xs beside * it rendered 24px and passed. So this is an accessibility fix that happens to also remove an * inconsistency, not a visual preference. It is a real visual change on the most-used component * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets * --button-xs-height back."
+  },
+  {
+    "name": "--button-xs-space-gap",
+    "value": "var(--space-1)",
+    "description": "BUTTON size-xs box + the count pill (#319, reconciled in #316). * * `size=\"xs\"` now reads the tier, like every other control in the library. It used to be * `calc(var(--control-height) - 0.75rem)` = 1.25rem, which sat 4px BELOW `--control-height-xs` * (1.5rem) that `size=\"icon-xs\"` already used — the same tier name, two heights, so an xs * Button never lined up with the xs control beside it. It was also the exact shape this repo's * own rule forbids: an ad-hoc `calc(var(--control-height) ± length)` silently re-derives a tier * and drifts from its siblings (the bug that made Pagination's size-changer taller than its * page buttons), and being a raw length rather than a `--scaling`-multiplied step, it did not * move with density while the tier did. * * What settled it was not consistency but MEASUREMENT: an xs Button rendered 20px tall, under * the 24x24 CSS px that WCAG 2.2 SC 2.5.8 (Target Size, Minimum) requires, while icon-xs beside * it rendered 24px and passed. So this is an accessibility fix that happens to also remove an * inconsistency, not a visual preference. It is a real visual change on the most-used component * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets * --button-xs-height back."
+  },
+  {
+    "name": "--button-xs-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "BUTTON size-xs box + the count pill (#319, reconciled in #316). * * `size=\"xs\"` now reads the tier, like every other control in the library. It used to be * `calc(var(--control-height) - 0.75rem)` = 1.25rem, which sat 4px BELOW `--control-height-xs` * (1.5rem) that `size=\"icon-xs\"` already used — the same tier name, two heights, so an xs * Button never lined up with the xs control beside it. It was also the exact shape this repo's * own rule forbids: an ad-hoc `calc(var(--control-height) ± length)` silently re-derives a tier * and drifts from its siblings (the bug that made Pagination's size-changer taller than its * page buttons), and being a raw length rather than a `--scaling`-multiplied step, it did not * move with density while the tier did. * * What settled it was not consistency but MEASUREMENT: an xs Button rendered 20px tall, under * the 24x24 CSS px that WCAG 2.2 SC 2.5.8 (Target Size, Minimum) requires, while icon-xs beside * it rendered 24px and passed. So this is an accessibility fix that happens to also remove an * inconsistency, not a visual preference. It is a real visual change on the most-used component * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets * --button-xs-height back."
+  },
+  {
+    "name": "--button-xs-icon-size",
+    "value": "0.75rem",
+    "description": "BUTTON size-xs box + the count pill (#319, reconciled in #316). * * `size=\"xs\"` now reads the tier, like every other control in the library. It used to be * `calc(var(--control-height) - 0.75rem)` = 1.25rem, which sat 4px BELOW `--control-height-xs` * (1.5rem) that `size=\"icon-xs\"` already used — the same tier name, two heights, so an xs * Button never lined up with the xs control beside it. It was also the exact shape this repo's * own rule forbids: an ad-hoc `calc(var(--control-height) ± length)` silently re-derives a tier * and drifts from its siblings (the bug that made Pagination's size-changer taller than its * page buttons), and being a raw length rather than a `--scaling`-multiplied step, it did not * move with density while the tier did. * * What settled it was not consistency but MEASUREMENT: an xs Button rendered 20px tall, under * the 24x24 CSS px that WCAG 2.2 SC 2.5.8 (Target Size, Minimum) requires, while icon-xs beside * it rendered 24px and passed. So this is an accessibility fix that happens to also remove an * inconsistency, not a visual preference. It is a real visual change on the most-used component * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets * --button-xs-height back."
+  },
+  {
+    "name": "--button-icon-space-inline-md",
+    "value": "var(--space-3)",
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+  },
+  {
+    "name": "--button-icon-space-inline-sm",
+    "value": "0.625rem",
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+  },
+  {
+    "name": "--button-icon-space-inline-lg",
+    "value": "var(--space-4)",
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+  },
+  {
+    "name": "--button-icon-space-inline-xs",
+    "value": "0.375rem",
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+  },
+  {
+    "name": "--button-space-block",
+    "value": "var(--space-2)",
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+  },
+  {
+    "name": "--button-count-min-width",
+    "value": "var(--space-4)",
+    "description": "Count pill — a borderless counter that reads on the button's own surface."
+  },
+  {
+    "name": "--button-count-space-inline",
+    "value": "var(--space-1)",
+    "description": "Count pill — a borderless counter that reads on the button's own surface."
+  },
+  {
+    "name": "--button-count-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Count pill — a borderless counter that reads on the button's own surface."
+  },
+  {
+    "name": "--button-count-background",
+    "value": "initial",
+    "description": "Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means * its contrast was a FUNCTION of that surface — and five of those combinations measured below * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text: * * default (light) 3.88 · destructive (dark) 4.29 * outline family (light, at rest) 4.32 · outline family (light, hover) 3.64 * outline family (dark, hover) 3.68 * * The hover rows are the reason a static sweep never caught this: `--accent` only appears under * the cursor, so no screenshot of a resting page contains the failing state. Same shape as * gh#299 and gh#315 — a value that passes on the surface someone happened to check. * * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's * contrast independent of the button's variant AND of hover. Each filled variant uses its own * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less * legible under any theme that keeps that button readable at all: * * default --primary on --primary-foreground 5.04 light · 7.07 dark * destructive --destructive on --destructive-foreground 6.10 light · 5.53 dark * secondary --secondary on --secondary-foreground 14.25 light · 12.40 dark * outline family --foreground on --muted 14.25 light · 12.40 dark * * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS * that went up, not loudness of the pill. * * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--button-count-color",
+    "value": "initial",
+    "description": "Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means * its contrast was a FUNCTION of that surface — and five of those combinations measured below * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text: * * default (light) 3.88 · destructive (dark) 4.29 * outline family (light, at rest) 4.32 · outline family (light, hover) 3.64 * outline family (dark, hover) 3.68 * * The hover rows are the reason a static sweep never caught this: `--accent` only appears under * the cursor, so no screenshot of a resting page contains the failing state. Same shape as * gh#299 and gh#315 — a value that passes on the surface someone happened to check. * * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's * contrast independent of the button's variant AND of hover. Each filled variant uses its own * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less * legible under any theme that keeps that button readable at all: * * default --primary on --primary-foreground 5.04 light · 7.07 dark * destructive --destructive on --destructive-foreground 6.10 light · 5.53 dark * secondary --secondary on --secondary-foreground 14.25 light · 12.40 dark * outline family --foreground on --muted 14.25 light · 12.40 dark * * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS * that went up, not loudness of the pill. * * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--button-count-default-background",
+    "value": "initial",
+    "description": "Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means * its contrast was a FUNCTION of that surface — and five of those combinations measured below * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text: * * default (light) 3.88 · destructive (dark) 4.29 * outline family (light, at rest) 4.32 · outline family (light, hover) 3.64 * outline family (dark, hover) 3.68 * * The hover rows are the reason a static sweep never caught this: `--accent` only appears under * the cursor, so no screenshot of a resting page contains the failing state. Same shape as * gh#299 and gh#315 — a value that passes on the surface someone happened to check. * * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's * contrast independent of the button's variant AND of hover. Each filled variant uses its own * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less * legible under any theme that keeps that button readable at all: * * default --primary on --primary-foreground 5.04 light · 7.07 dark * destructive --destructive on --destructive-foreground 6.10 light · 5.53 dark * secondary --secondary on --secondary-foreground 14.25 light · 12.40 dark * outline family --foreground on --muted 14.25 light · 12.40 dark * * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS * that went up, not loudness of the pill. * * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--button-count-default-color",
+    "value": "initial",
+    "description": "Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means * its contrast was a FUNCTION of that surface — and five of those combinations measured below * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text: * * default (light) 3.88 · destructive (dark) 4.29 * outline family (light, at rest) 4.32 · outline family (light, hover) 3.64 * outline family (dark, hover) 3.68 * * The hover rows are the reason a static sweep never caught this: `--accent` only appears under * the cursor, so no screenshot of a resting page contains the failing state. Same shape as * gh#299 and gh#315 — a value that passes on the surface someone happened to check. * * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's * contrast independent of the button's variant AND of hover. Each filled variant uses its own * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less * legible under any theme that keeps that button readable at all: * * default --primary on --primary-foreground 5.04 light · 7.07 dark * destructive --destructive on --destructive-foreground 6.10 light · 5.53 dark * secondary --secondary on --secondary-foreground 14.25 light · 12.40 dark * outline family --foreground on --muted 14.25 light · 12.40 dark * * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS * that went up, not loudness of the pill. * * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--button-count-destructive-background",
+    "value": "initial",
+    "description": "Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means * its contrast was a FUNCTION of that surface — and five of those combinations measured below * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text: * * default (light) 3.88 · destructive (dark) 4.29 * outline family (light, at rest) 4.32 · outline family (light, hover) 3.64 * outline family (dark, hover) 3.68 * * The hover rows are the reason a static sweep never caught this: `--accent` only appears under * the cursor, so no screenshot of a resting page contains the failing state. Same shape as * gh#299 and gh#315 — a value that passes on the surface someone happened to check. * * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's * contrast independent of the button's variant AND of hover. Each filled variant uses its own * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less * legible under any theme that keeps that button readable at all: * * default --primary on --primary-foreground 5.04 light · 7.07 dark * destructive --destructive on --destructive-foreground 6.10 light · 5.53 dark * secondary --secondary on --secondary-foreground 14.25 light · 12.40 dark * outline family --foreground on --muted 14.25 light · 12.40 dark * * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS * that went up, not loudness of the pill. * * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--button-count-destructive-color",
+    "value": "initial",
+    "description": "Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means * its contrast was a FUNCTION of that surface — and five of those combinations measured below * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text: * * default (light) 3.88 · destructive (dark) 4.29 * outline family (light, at rest) 4.32 · outline family (light, hover) 3.64 * outline family (dark, hover) 3.68 * * The hover rows are the reason a static sweep never caught this: `--accent` only appears under * the cursor, so no screenshot of a resting page contains the failing state. Same shape as * gh#299 and gh#315 — a value that passes on the surface someone happened to check. * * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's * contrast independent of the button's variant AND of hover. Each filled variant uses its own * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less * legible under any theme that keeps that button readable at all: * * default --primary on --primary-foreground 5.04 light · 7.07 dark * destructive --destructive on --destructive-foreground 6.10 light · 5.53 dark * secondary --secondary on --secondary-foreground 14.25 light · 12.40 dark * outline family --foreground on --muted 14.25 light · 12.40 dark * * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS * that went up, not loudness of the pill. * * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--button-count-secondary-background",
+    "value": "initial",
+    "description": "Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means * its contrast was a FUNCTION of that surface — and five of those combinations measured below * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text: * * default (light) 3.88 · destructive (dark) 4.29 * outline family (light, at rest) 4.32 · outline family (light, hover) 3.64 * outline family (dark, hover) 3.68 * * The hover rows are the reason a static sweep never caught this: `--accent` only appears under * the cursor, so no screenshot of a resting page contains the failing state. Same shape as * gh#299 and gh#315 — a value that passes on the surface someone happened to check. * * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's * contrast independent of the button's variant AND of hover. Each filled variant uses its own * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less * legible under any theme that keeps that button readable at all: * * default --primary on --primary-foreground 5.04 light · 7.07 dark * destructive --destructive on --destructive-foreground 6.10 light · 5.53 dark * secondary --secondary on --secondary-foreground 14.25 light · 12.40 dark * outline family --foreground on --muted 14.25 light · 12.40 dark * * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS * that went up, not loudness of the pill. * * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--button-count-secondary-color",
+    "value": "initial",
+    "description": "Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means * its contrast was a FUNCTION of that surface — and five of those combinations measured below * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text: * * default (light) 3.88 · destructive (dark) 4.29 * outline family (light, at rest) 4.32 · outline family (light, hover) 3.64 * outline family (dark, hover) 3.68 * * The hover rows are the reason a static sweep never caught this: `--accent` only appears under * the cursor, so no screenshot of a resting page contains the failing state. Same shape as * gh#299 and gh#315 — a value that passes on the surface someone happened to check. * * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's * contrast independent of the button's variant AND of hover. Each filled variant uses its own * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less * legible under any theme that keeps that button readable at all: * * default --primary on --primary-foreground 5.04 light · 7.07 dark * destructive --destructive on --destructive-foreground 6.10 light · 5.53 dark * secondary --secondary on --secondary-foreground 14.25 light · 12.40 dark * outline family --foreground on --muted 14.25 light · 12.40 dark * * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS * that went up, not loudness of the pill. * * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\")."
+  },
+  {
+    "name": "--control-label-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "LABEL — the Label primitive's own box and type (#319). Every one of these was a Tailwind * literal baked into label.tsx (`text-sm leading-none flex items-center gap-2`), so a service * whose form grid wanted a smaller/denser label had to hand-write font-size on every call site * (which is exactly why --form-label-font-size had to be invented as a per-instance escape). * They live under the `control` prefix because Label is a control-family primitive and * src/tokens/components/ has no `label` file of its own. * * Defaults reproduce today's rendering exactly: * font-size ← `text-sm` → --text-sm → var(--font-size-sm) * line-height ← `leading-none` → 1 (leading-none beats text-sm's companion line-height)"
+  },
+  {
+    "name": "--control-label-line-height",
+    "value": "1",
+    "description": "LABEL — the Label primitive's own box and type (#319). Every one of these was a Tailwind * literal baked into label.tsx (`text-sm leading-none flex items-center gap-2`), so a service * whose form grid wanted a smaller/denser label had to hand-write font-size on every call site * (which is exactly why --form-label-font-size had to be invented as a per-instance escape). * They live under the `control` prefix because Label is a control-family primitive and * src/tokens/components/ has no `label` file of its own. * * Defaults reproduce today's rendering exactly: * font-size ← `text-sm` → --text-sm → var(--font-size-sm) * line-height ← `leading-none` → 1 (leading-none beats text-sm's companion line-height)"
+  },
+  {
+    "name": "--control-label-space-gap",
+    "value": "0.5rem",
+    "description": "Label → addon/required-marker gap. A RAW rem, deliberately NOT var(--space-2): the `gap-2` it * replaces reads Tailwind's own --spacing grid, which this repo does NOT density-scale, so a * --space-* default would silently resize every label row under a compact/comfortable density. * A service that WANTS it to follow density points the knob at var(--space-2) itself."
+  },
+  {
+    "name": "--control-label-disabled-alpha",
+    "value": "0.7",
+    "description": "Weight of a label whose `peer` control is disabled. Deliberately its OWN knob rather than the * global --disabled-opacity (0.5): a label must stay READABLE next to a disabled control — it is * still the field's accessible name — so it rests one step heavier than the control it names. * Default = the historical `peer-disabled:opacity-70`."
   },
   {
     "name": "--control-height-compact",
     "value": "2.75rem",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
+    "description": "Weight of a label whose `peer` control is disabled. Deliberately its OWN knob rather than the * global --disabled-opacity (0.5): a label must stay READABLE next to a disabled control — it is * still the field's accessible name — so it rests one step heavier than the control it names. * Default = the historical `peer-disabled:opacity-70`."
   },
   {
     "name": "--control-height-default",
     "value": "2.75rem",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
+    "description": "Weight of a label whose `peer` control is disabled. Deliberately its OWN knob rather than the * global --disabled-opacity (0.5): a label must stay READABLE next to a disabled control — it is * still the field's accessible name — so it rests one step heavier than the control it names. * Default = the historical `peer-disabled:opacity-70`."
   },
   {
     "name": "--accordion-focus-ring-offset",
@@ -894,6 +1674,66 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Capability medallion — `<Avatar appearance=\"tinted\">` (gh#12): the tinted plate a capability / feature glyph sits on, as opposed to the SOLID entity mark above. Pair it with shape=\"square\" for the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are role-mirror knobs (`initial`, docs/TOKENS.md) so the --primary defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches them — the exact reason this is a token and not the `hsl(var(--primary) / 0.1)` literal consumers were writing in page CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph · --control-icon-size glyph box."
   },
   {
+    "name": "--avatar-presence-size",
+    "value": "30%",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-min-size",
+    "value": "var(--space-2)",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-inset",
+    "value": "0",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-ring-width",
+    "value": "2px",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-stroke-width",
+    "value": "1.5px",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-bar-inline-size",
+    "value": "56%",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-bar-block-size",
+    "value": "1.5px",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-ring-color",
+    "value": "initial",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-online-color",
+    "value": "initial",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-away-color",
+    "value": "initial",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-busy-color",
+    "value": "initial",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-offline-color",
+    "value": "initial",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
     "name": "--progress-track-background",
     "value": "initial",
     "description": "Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme. Track reads --secondary, fill reads --success; a service re-tones once. Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill."
@@ -959,6 +1799,46 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."
   },
   {
+    "name": "--scroll-area-bar-size",
+    "value": "0.625rem",
+    "description": "SCROLL AREA — the custom scrollbar rail. `.ui-scroll-area-*` did not exist at all: the whole * rail shipped as Tailwind literals on the component (`w-2.5 p-px` / `h-2.5 p-px`, * `rounded-full`), so a service could not widen the bar for a touch/coarse-pointer console or * square the thumb to match a sharp-cornered theme without forking ScrollArea (rule #45). * --scroll-area-bar-size is a RAW rem on purpose: it replaces a FLAT Tailwind step (2.5 = 10px), * not a --space-* step, so binding it to the density-scaled scale would silently change today's * rendering under a non-default --scaling. Defaults reproduce the previous rail exactly."
+  },
+  {
+    "name": "--scroll-area-bar-padding",
+    "value": "1px",
+    "description": "Hairline inset that keeps the thumb off the rail edge — a service running a thicker bar * usually wants a proportionally larger gutter here."
+  },
+  {
+    "name": "--scroll-area-thumb-radius",
+    "value": "var(--radius-pill)",
+    "description": "Hairline inset that keeps the thumb off the rail edge — a service running a thicker bar * usually wants a proportionally larger gutter here."
+  },
+  {
+    "name": "--permission-matrix-label-width",
+    "value": "16rem",
+    "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant * lived on the component (#319). A JA/VI service whose role names run longer than the English * ones could not widen the label column without forking."
+  },
+  {
+    "name": "--permission-matrix-role-space-gap",
+    "value": "var(--space-1)",
+    "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant * lived on the component (#319). A JA/VI service whose role names run longer than the English * ones could not widen the label column without forking."
+  },
+  {
+    "name": "--permission-matrix-name-space-gap",
+    "value": "0.375rem",
+    "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant * lived on the component (#319). A JA/VI service whose role names run longer than the English * ones could not widen the label column without forking."
+  },
+  {
+    "name": "--permission-matrix-cell-icon-size",
+    "value": "var(--control-icon-size)",
+    "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant * lived on the component (#319). A JA/VI service whose role names run longer than the English * ones could not widen the label column without forking."
+  },
+  {
+    "name": "--permission-matrix-min-width",
+    "value": "48rem",
+    "description": "Floor for the scrolling body — below this the columns collapse into unreadable slivers, so * the table scrolls instead. Mirrors --table-surface-min-inline-size on DataTable."
+  },
+  {
     "name": "--password-strength-score-font-size",
     "value": "var(--font-size-xs)",
     "description": "Data-entry component tokens — small-by-design text knobs (rule #45/#46)."
@@ -969,6 +1849,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-entry component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--branch-scope-picker-gap",
+    "value": "0.75rem",
+    "description": "Stack rhythm between the mode radios, the subset box and the error line (was `gap-3`)."
+  },
+  {
+    "name": "--branch-scope-picker-badges-gap",
+    "value": "0.375rem",
+    "description": "Read-only summary: the wrapped run of branch Badges (was `gap-1.5`)."
+  },
+  {
+    "name": "--branch-scope-picker-subset-gap",
+    "value": "0.5rem",
+    "description": "The `mode=\"selected\"` subset box — its inner stack rhythm and the inset that clears its * indent rule (was `gap-2` / `ps-4`)."
+  },
+  {
+    "name": "--branch-scope-picker-subset-padding-inline",
+    "value": "1rem",
+    "description": "The `mode=\"selected\"` subset box — its inner stack rhythm and the inset that clears its * indent rule (was `gap-2` / `ps-4`)."
+  },
+  {
+    "name": "--branch-scope-picker-subset-border-width",
+    "value": "2px",
+    "description": "The indent rule itself is CHROME (#44), so it is a knob: a service that wants the flat * treatment sets it to 0 rather than forking the component. Default = today's `border-s-2`."
+  },
+  {
+    "name": "--branch-scope-picker-list-max-height",
+    "value": "16rem",
+    "description": "Bounded height of the scrollable branch list (was `max-h-64`). Flat by design: the box is a * keyboard-reachable scroll region whose job is to cap the control's measure, so it must not * grow with density and push the surrounding form off a 390px frame."
+  },
+  {
     "name": "--descriptions-label-width",
     "value": "8rem",
     "description": "Width of the label column when <Descriptions layout=\"horizontal\">. Labels align to this * shared column so the values line up (the horizontal-detail look, mirroring <Form layout>). * A rem value gives a fixed aligned column; set `max-content` to size each label to its text. * (rule #44/#45 — a service theme tunes it here instead of forking CSS.)"
@@ -977,6 +1887,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--descriptions-row-gap",
     "value": "var(--space-3)",
     "description": "Row-to-row gap (gh#294). Default = the historical hardcoded `gap-y-3`, so nothing changes * visually by default. A consumer composing Descriptions beside a Form/FormField (a read-only * block above an editable field on the same card) retunes this to `var(--space-4)` to match * Form's own field-to-field rhythm instead of the two blocks reading as visually unrelated."
+  },
+  {
+    "name": "--descriptions-column-gap",
+    "value": "1.5rem",
+    "description": "Column-to-column gap of the <dl> grid (#319). Was a hardcoded `gap-x-6`, the one axis of the * grid rhythm a service could NOT reach while --descriptions-row-gap was already a knob — so a * 2/3-column detail block could be retuned vertically but never horizontally. * A RAW rem, deliberately NOT var(--space-6): `gap-x-6` reads Tailwind's own --spacing grid, * which this repo does NOT density-scale, so a --space-* default would silently rescale the * column gap under a compact/comfortable density. Point it at var(--space-6) to opt in."
+  },
+  {
+    "name": "--descriptions-label-gap",
+    "value": "0.75rem",
+    "description": "Label → value gap inside ONE item when layout=\"horizontal\" (was `gap-x-3`). Pairs with * --descriptions-label-width: a service that narrows the label column usually wants to close * this gap in the same step. Raw rem for the same --spacing reason as above."
+  },
+  {
+    "name": "--descriptions-value-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "VALUE TYPOGRAPHY (gh#294 + #319). `FormField staticText` renders its read-only value with the * SAME typography as a <dd> so a static Form row and a Descriptions value are indistinguishable * when mixed on one card. That contract used to be two copies of the literal `text-sm` plus a * comment asking future editors to keep them in sync; both call sites now read these tokens, so * the mirror is mechanical and a service retunes BOTH from one place."
+  },
+  {
+    "name": "--descriptions-value-line-height",
+    "value": "calc(1.25 / 0.875)",
+    "description": "Companion to --descriptions-value-font-size (the gh#260 bug). The `text-sm` utility this * replaces ALSO set a line-height, via Tailwind's default `--text-sm--line-height` * (= calc(1.25 / 0.875)); the theme remaps --text-sm but never that companion. Without this the * value would silently inherit ambient leading instead of its own 20px line box."
   },
   {
     "name": "--email-shell-width",
@@ -1239,24 +2169,84 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
   },
   {
+    "name": "--sheet-shadow",
+    "value": "var(--shadow-lg)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-header-space-gap",
+    "value": "0.375rem",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-title-block-space-gap",
+    "value": "var(--space-1)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-title-row-space-gap",
+    "value": "var(--space-3)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-extra-space-gap",
+    "value": "var(--space-2)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-footer-space-gap",
+    "value": "var(--space-2)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-title-font-size",
+    "value": "var(--font-size-lg)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-description-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+  },
+  {
+    "name": "--sheet-body-space-block",
+    "value": "var(--space-1)",
+    "description": "The scroll region keeps a sliver of padding so a focused control's ring is never clipped at * the scroll edges — retune together with --focus-ring-width."
+  },
+  {
+    "name": "--sheet-close-offset",
+    "value": "var(--space-4)",
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
+  },
+  {
+    "name": "--sheet-close-rest-alpha",
+    "value": "0.7",
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
+  },
+  {
+    "name": "--sheet-header-close-space-inline-end",
+    "value": "var(--space-8)",
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
+  },
+  {
     "name": "--dialog-width-default",
     "value": "32rem",
-    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
   },
   {
     "name": "--dialog-viewport-inset",
     "value": "1.5rem",
-    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
   },
   {
     "name": "--dialog-overlay-background",
     "value": "initial",
-    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
   },
   {
     "name": "--dialog-overlay-alpha",
     "value": "60%",
-    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
   },
   {
     "name": "--dialog-space-x",
@@ -1284,6 +2274,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Dialog inset defaults to the shared global chrome tokens (override --space-chrome-* once for the * whole system, or --dialog-space-x/-y for dialogs only)."
   },
   {
+    "name": "--dialog-header-space-gap",
+    "value": "var(--space-stack-xs)",
+    "description": "Dialog chrome rhythm (#319) — the exact mirror of the --sheet-* set above, because Dialog's * header markup is byte-identical to Sheet's. --dialog-space-x/-y already governed the panel * inset, but every gap INSIDE the chrome (header stack, title/subtitle pair, the extra-slot row) * was a literal on the component, so a service could retune the outer padding and still be stuck * with the inner rhythm. Defaults are the values the literals resolved to."
+  },
+  {
+    "name": "--dialog-title-row-space-gap",
+    "value": "var(--space-3)",
+    "description": "Dialog chrome rhythm (#319) — the exact mirror of the --sheet-* set above, because Dialog's * header markup is byte-identical to Sheet's. --dialog-space-x/-y already governed the panel * inset, but every gap INSIDE the chrome (header stack, title/subtitle pair, the extra-slot row) * was a literal on the component, so a service could retune the outer padding and still be stuck * with the inner rhythm. Defaults are the values the literals resolved to."
+  },
+  {
+    "name": "--dialog-title-block-space-gap",
+    "value": "var(--space-1)",
+    "description": "Dialog chrome rhythm (#319) — the exact mirror of the --sheet-* set above, because Dialog's * header markup is byte-identical to Sheet's. --dialog-space-x/-y already governed the panel * inset, but every gap INSIDE the chrome (header stack, title/subtitle pair, the extra-slot row) * was a literal on the component, so a service could retune the outer padding and still be stuck * with the inner rhythm. Defaults are the values the literals resolved to."
+  },
+  {
+    "name": "--dialog-extra-space-gap",
+    "value": "var(--space-2)",
+    "description": "Dialog chrome rhythm (#319) — the exact mirror of the --sheet-* set above, because Dialog's * header markup is byte-identical to Sheet's. --dialog-space-x/-y already governed the panel * inset, but every gap INSIDE the chrome (header stack, title/subtitle pair, the extra-slot row) * was a literal on the component, so a service could retune the outer padding and still be stuck * with the inner rhythm. Defaults are the values the literals resolved to."
+  },
+  {
+    "name": "--dialog-header-close-space-inline-end",
+    "value": "var(--space-8)",
+    "description": "Inline room the header reserves so a long title or the extra slot never runs under the * absolutely-positioned close button; retune together with --dialog-close-space-offset. * Mirrors --sheet-header-close-space-inline-end."
+  },
+  {
+    "name": "--dialog-close-rest-alpha",
+    "value": "0.7",
+    "description": "Close button rest opacity — quiet at rest, full on hover (rule #44). Was a hard 0.7 baked into * dialog-layout.css with no way for a theme to make the ✕ louder. Mirrors * --sheet-close-rest-alpha so the two overlay siblings retune together."
+  },
+  {
+    "name": "--dialog-step-up-error-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Type-to-confirm challenge: the step-up failure line under the input. Its size + ink were * `text-sm text-destructive` on the component, i.e. unreachable from a theme."
+  },
+  {
     "name": "--alert-radius",
     "value": "var(--card-radius)",
     "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by * overriding this once. Default keeps the historical --radius-md."
@@ -1307,6 +2332,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--alert-dismiss-space-offset",
     "value": "var(--space-3)",
     "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by * overriding this once. Default keeps the historical --radius-md."
+  },
+  {
+    "name": "--alert-dismiss-rest-alpha",
+    "value": "0.7",
+    "description": "Dismiss ✕ — rest opacity (quiet at rest, full on hover, rule #44) and glyph size. The rest * alpha was a hard 0.7 in alert-layout.css whose `:hover` companion lived on the COMPONENT as * `hover:opacity-100`, so the two halves of one affordance sat in two files and neither was * themeable. Mirrors --sheet-close-rest-alpha. The icon size carries a raw rem, not * var(--space-N): it replaces a flat Tailwind `size-4` step and must not start tracking the * density axis."
+  },
+  {
+    "name": "--alert-dismiss-icon-size",
+    "value": "1rem",
+    "description": "Dismiss ✕ — rest opacity (quiet at rest, full on hover, rule #44) and glyph size. The rest * alpha was a hard 0.7 in alert-layout.css whose `:hover` companion lived on the COMPONENT as * `hover:opacity-100`, so the two halves of one affordance sat in two files and neither was * themeable. Mirrors --sheet-close-rest-alpha. The icon size carries a raw rem, not * var(--space-N): it replaces a flat Tailwind `size-4` step and must not start tracking the * density axis."
   },
   {
     "name": "--alert-bg-alpha",
@@ -1404,29 +2439,184 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
   },
   {
+    "name": "--empty-state-icon-size",
+    "value": "3rem",
+    "description": "Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one."
+  },
+  {
+    "name": "--empty-state-icon-glyph-size",
+    "value": "1.5rem",
+    "description": "Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one."
+  },
+  {
     "name": "--skeleton-row-gap",
     "value": "var(--space-stack-sm)",
-    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
+    "description": "Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one."
   },
   {
     "name": "--skeleton-cell-gap",
     "value": "var(--space-inline-lg)",
-    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
+    "description": "Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one."
   },
   {
     "name": "--skeleton-card-inset",
     "value": "var(--space-section-active)",
-    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
+    "description": "Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one."
   },
   {
     "name": "--skeleton-radius",
     "value": "var(--radius)",
-    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
+    "description": "Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one."
   },
   {
     "name": "--skeleton-background",
     "value": "initial",
     "description": "Skeleton placeholder fill — `initial` so the --muted default re-resolves at the call site under * a scoped theme (a :root binding to a role var freezes at :root). A service tints the shimmer to * its surface (rule #44) without forking the keyframes. Default = hsl(var(--muted))."
+  },
+  {
+    "name": "--skeleton-block-height",
+    "value": "1rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-caption-height",
+    "value": "0.75rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-title-height",
+    "value": "1.75rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-label-width",
+    "value": "6rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-detail-value-max-width",
+    "value": "28rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-stat-value-width",
+    "value": "8rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--skeleton-stat-caption-width",
+    "value": "5rem",
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+  },
+  {
+    "name": "--query-load-more-space-block-start",
+    "value": "var(--space-stack-md)",
+    "description": "QUERY LIFECYCLE FOOTERS — the two rows `<InfiniteQueryState>` appends under a paginated feed: * the \"load more\" button row and the \"loading more…\" caption. Both gaps were Tailwind literals * on the component (`pt-4` / `pt-2`), so a service running a denser (or airier) feed could not * align them to its own vertical rhythm without forking the component (rule #45). They live in * the feedback tier because these ARE query feedback surfaces and there is no query stylesheet. * Defaults = var(--space-stack-md) (16px) and var(--space-stack-sm) (8px) — the exact values the * Tailwind steps resolved to, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--query-loading-more-space-block-start",
+    "value": "var(--space-stack-sm)",
+    "description": "QUERY LIFECYCLE FOOTERS — the two rows `<InfiniteQueryState>` appends under a paginated feed: * the \"load more\" button row and the \"loading more…\" caption. Both gaps were Tailwind literals * on the component (`pt-4` / `pt-2`), so a service running a denser (or airier) feed could not * align them to its own vertical rhythm without forking the component (rule #45). They live in * the feedback tier because these ARE query feedback surfaces and there is no query stylesheet. * Defaults = var(--space-stack-md) (16px) and var(--space-stack-sm) (8px) — the exact values the * Tailwind steps resolved to, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-max-width",
+    "value": "20rem",
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-space-inline",
+    "value": "var(--space-2)",
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-space-block",
+    "value": "var(--space-1)",
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-radius",
+    "value": "var(--radius)",
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+  },
+  {
+    "name": "--tooltip-shadow",
+    "value": "var(--shadow-md)",
+    "description": "Raised-surface depth — role-mirror knob, so a flat service theme sets `none` once."
+  },
+  {
+    "name": "--tooltip-background",
+    "value": "initial",
+    "description": "Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped * [data-tenant]/.dark theme (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). * Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text."
+  },
+  {
+    "name": "--tooltip-foreground",
+    "value": "initial",
+    "description": "Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped * [data-tenant]/.dark theme (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). * Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text."
+  },
+  {
+    "name": "--tooltip-border-color",
+    "value": "initial",
+    "description": "Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped * [data-tenant]/.dark theme (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). * Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text."
+  },
+  {
+    "name": "--popover-width",
+    "value": "18rem",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-space-inset",
+    "value": "var(--space-4)",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-radius",
+    "value": "var(--radius)",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-shadow",
+    "value": "var(--shadow-md)",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-header-space-gap",
+    "value": "var(--space-1)",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-header-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+  },
+  {
+    "name": "--popover-surface-background",
+    "value": "initial",
+    "description": "Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above)."
+  },
+  {
+    "name": "--popover-surface-foreground",
+    "value": "initial",
+    "description": "Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above)."
+  },
+  {
+    "name": "--popover-surface-border-color",
+    "value": "initial",
+    "description": "Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above)."
+  },
+  {
+    "name": "--toast-icon-size",
+    "value": "1rem",
+    "description": "TOAST (Sonner) — the status glyph in the toast's leading slot. * * WHY A KNOB AND NOT A UTILITY: sonner renders the toast body itself and takes the five status * glyphs through ONE `icons={{ success, info, warning, error, loading }}` config prop. That prop * is all-or-nothing — a consumer who wants a different glyph size must re-declare all five icons, * re-importing lucide and re-deriving the aria wiring. Routing the size through a token makes it * a one-line theme override instead (rule #45). * * Raw rem, not var(--space-N): it replaces a flat Tailwind `size-4` step, and the 16px box sonner * gives `[data-icon]` is itself fixed — scaling the glyph with density alone would overflow it. * * NAMESPACE NOTE: sonner publishes its own `--toast-*` custom properties (--toast-icon-margin-*, * --toast-svg-margin-*, --toast-button-margin-*, --toast-close-button-*). Neither name below * collides with those; keep it that way when adding to this group."
+  },
+  {
+    "name": "--toast-mobile-offset",
+    "value": "16px",
+    "description": "Viewport gutter of the mobile toast stack. Sonner passes `mobileOffset` straight into inline * CSS, so a var() string resolves normally. Flat 16px on purpose: this is a fixed inset from the * device edge (thumb reach / safe area), not a density-scaled gap inside a surface."
   },
   {
     "name": "--form-label-width",
@@ -1452,6 +2642,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--form-field-row-gap",
     "value": "var(--space-3)",
     "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value * mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical * rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, * which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` * composition every real Save-button form needs), so it holds at any DOM depth relative to Form."
+  },
+  {
+    "name": "--form-grid-row-gap",
+    "value": "var(--form-field-row-gap)",
+    "description": "Row rhythm between the ROWS of a `<Form columns={n}>` grid (gh#304). The grid path cannot use * the margin above — a per-item margin inside a grid double-counts the track gap AND leaves the * first item of row 1 unshifted while its row-mates drop, so row 1's columns end up misaligned. * The rhythm therefore rides the grid's own `row-gap`, and it DEFAULTS TO THE SAME * --form-field-row-gap the stacked path uses so `columns={1}` — and every `columns={n}` form once * it collapses to one column on a narrow container — is pixel-identical to a Form with no * `columns` at all. Retune this alone only to give multi-column forms a looser row rhythm than * stacked ones; retune --form-field-row-gap to move both together."
+  },
+  {
+    "name": "--form-grid-column-gap",
+    "value": "var(--space-4)",
+    "description": "Gutter between the COLUMNS of a `<Form columns={n}>` grid (gh#304). Was ResponsiveGrid's * generic 16px stack gap with no way to say otherwise; it is a form's inter-field gutter and a * service aligning forms to its design grid needs it as a knob (rule #45). The default keeps the * historical 16px, so nothing moves unless a theme opts in."
   },
   {
     "name": "--legal-document-section-focus-ring-offset",
@@ -1834,49 +3034,54 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
+    "name": "--pagination-icon-size",
+    "value": "var(--control-icon-size)",
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
+  },
+  {
     "name": "--filter-bar-gap",
     "value": "var(--space-3)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--filter-bar-padding-y",
     "value": "var(--space-2)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--filter-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--filter-picker-width-sm",
     "value": "11rem",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--filter-picker-width-md",
     "value": "14rem",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--steps-inline-gap",
     "value": "var(--space-2)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--steps-inline-item-gap",
     "value": "var(--space-1)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--steps-inline-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--steps-inline-separator-size",
     "value": "var(--control-icon-size-sm)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--steps-inline-index-font-weight",
@@ -1949,6 +3154,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Tabs `line` active indicator (gh#248) — the ONLY selected-state decoration the line variant * paints. The surrounding active ring belongs to the default/card lists, so `:focus-visible` * keeps its own distinct keyboard ring here (WCAG 2.4.7). `--tabs-indicator-background` is a * role-mirror knob: `initial` so hsl(var(--primary)) re-resolves at the CALL SITE under a scoped * [data-tenant]/.dark theme (a :root binding to a role var would freeze at :root). * Default = hsl(var(--primary)) · 2px thick · flush with the trigger edge (offset 0 = quietest, * rule #44); a service raises the offset to park the bar on a thicker strip hairline."
   },
   {
+    "name": "--tabs-root-gap",
+    "value": "0.5rem",
+    "description": "Gap between the tab strip and the panel below it."
+  },
+  {
+    "name": "--tabs-list-line-space-inset",
+    "value": "0px",
+    "description": "Inset of the `line` strip. The default/pill strip keeps its own padding box; the line strip is * a flat underlined rail, so its default is the quietest value — none (rule #44). Raise it to * give the rail breathing room above its hairline."
+  },
+  {
+    "name": "--tabs-trigger-line-radius",
+    "value": "0px",
+    "description": "`line` trigger box. Square corners because the selected state is the token-owned ::after bar, * never a pill; the hit box is wider/taller than the pill trigger so the underline spans a real * column of the rail."
+  },
+  {
+    "name": "--tabs-trigger-line-padding-x",
+    "value": "1rem",
+    "description": "`line` trigger box. Square corners because the selected state is the token-owned ::after bar, * never a pill; the hit box is wider/taller than the pill trigger so the underline spans a real * column of the rail."
+  },
+  {
+    "name": "--tabs-trigger-line-padding-y",
+    "value": "0.5rem",
+    "description": "`line` trigger box. Square corners because the selected state is the token-owned ::after bar, * never a pill; the hit box is wider/taller than the pill trigger so the underline spans a real * column of the rail."
+  },
+  {
     "name": "--menubar-item-hover-background",
     "value": "initial",
     "description": "Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text."
@@ -1992,6 +3222,316 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--filter-bar-section-gap",
     "value": "var(--space-2)",
     "description": "FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME * search width, filter width, chip rhythm and section stacking without page-local CSS. * All are rule-#45 knobs: a service theme retunes them once, props/className override per * instance. Below 640px the strip stacks (search/filters full-width); the widths apply from * the 640px breakpoint up, always clamped by min(100%, …) so a narrow container never * overflows at 390px with long JA/EN/VI labels."
+  },
+  {
+    "name": "--menu-item-height",
+    "value": "2rem",
+    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+  },
+  {
+    "name": "--menu-item-radius",
+    "value": "var(--radius-sm)",
+    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+  },
+  {
+    "name": "--menu-item-space-inline",
+    "value": "var(--space-2)",
+    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+  },
+  {
+    "name": "--menu-item-space-gap",
+    "value": "var(--space-2)",
+    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+  },
+  {
+    "name": "--menu-item-font-size",
+    "value": "var(--font-size-base)",
+    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+  },
+  {
+    "name": "--menu-item-inset-space-inline-start",
+    "value": "var(--space-8)",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--menu-indicator-size",
+    "value": "0.875rem",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--menu-indicator-inset-inline-start",
+    "value": "var(--space-2)",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--menu-icon-size",
+    "value": "1rem",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--menu-content-space-inset",
+    "value": "var(--space-1)",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--menu-content-min-width",
+    "value": "10rem",
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+  },
+  {
+    "name": "--dropdown-content-min-width",
+    "value": "8rem",
+    "description": "DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu."
+  },
+  {
+    "name": "--menu-separator-space-block",
+    "value": "var(--space-1)",
+    "description": "DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu."
+  },
+  {
+    "name": "--menu-separator-space-inline",
+    "value": "calc(var(--space-1) * -1)",
+    "description": "DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu."
+  },
+  {
+    "name": "--steps-dot-size",
+    "value": "0.625rem",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-dot-process-ring-width",
+    "value": "4px",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-marker-border-width",
+    "value": "2px",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-marker-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-marker-icon-size",
+    "value": "1rem",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-wait-icon-size",
+    "value": "0.75rem",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-title-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-title-font-size-compact",
+    "value": "var(--font-size-xs)",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-subtitle-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+  },
+  {
+    "name": "--steps-vertical-space-gap",
+    "value": "var(--space-3)",
+    "description": "Vertical run: gap between marker and text, and the drop to the next step."
+  },
+  {
+    "name": "--steps-vertical-space-block-end",
+    "value": "var(--space-8)",
+    "description": "Vertical run: gap between marker and text, and the drop to the next step."
+  },
+  {
+    "name": "--steps-vertical-text-space-block-start",
+    "value": "var(--space-1)",
+    "description": "Vertical run: gap between marker and text, and the drop to the next step."
+  },
+  {
+    "name": "--steps-horizontal-text-space-block-start",
+    "value": "var(--space-2)",
+    "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between * two markers — inset by the marker radius on each side so it never runs under a marker."
+  },
+  {
+    "name": "--steps-horizontal-text-space-inline",
+    "value": "var(--space-2)",
+    "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between * two markers — inset by the marker radius on each side so it never runs under a marker."
+  },
+  {
+    "name": "--steps-connector-inset",
+    "value": "1.25rem",
+    "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between * two markers — inset by the marker radius on each side so it never runs under a marker."
+  },
+  {
+    "name": "--steps-connector-space-block-start",
+    "value": "var(--space-4)",
+    "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between * two markers — inset by the marker radius on each side so it never runs under a marker."
+  },
+  {
+    "name": "--app-setting-picker-locale-width",
+    "value": "10rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-timezone-width",
+    "value": "14rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-date-format-width",
+    "value": "11rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-time-format-width",
+    "value": "11rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-theme-width",
+    "value": "9rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-brand-width",
+    "value": "11rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-density-width",
+    "value": "10rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-font-size-width",
+    "value": "9rem",
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+  },
+  {
+    "name": "--app-setting-picker-width-breakpoint",
+    "value": "40rem",
+    "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."
+  },
+  {
+    "name": "--app-setting-picker-icon-size",
+    "value": "1rem",
+    "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."
+  },
+  {
+    "name": "--app-setting-picker-icon-rest-alpha",
+    "value": "0.7",
+    "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."
+  },
+  {
+    "name": "--scroll-area-anchor-offset",
+    "value": "3rem",
+    "description": "How close to the bottom edge the reader still counts as \"following the stream\" for * `<ScrollArea anchor=\"bottom\">`. Inside this band new content keeps the viewport pinned to the * newest item; one pixel beyond it the reader is reading history and anchoring NEVER moves them * again until they come back (WCAG 3.2.5 — no change of context on request of the machine). * * It is a rule #45 knob because the right distance is a function of the row height a service * renders: one line of a dense audit log is ~20px, a chat bubble with an avatar is ~64px, and * \"one row from the bottom\" is what the reader actually means. Expressed in rem on purpose — it * then tracks the user's font size, so the band is still one row at 200% zoom (WCAG 1.4.4) * instead of collapsing to a third of a row. The `anchorOffset` prop overrides it per instance; * px/rem/em are all accepted."
+  },
+  {
+    "name": "--separator-rule-size",
+    "value": "1px",
+    "description": "Rule weight, both orientations and both halves of a labelled rule."
+  },
+  {
+    "name": "--separator-rule-color",
+    "value": "initial",
+    "description": "Rule colour. Role-mirror knob → declared `initial` so the --border default re-resolves at the * CALL SITE under a scoped [data-tenant] / .dark theme (docs/TOKENS.md — the :root freeze rule). * Documented default = hsl(var(--border))."
+  },
+  {
+    "name": "--separator-label-gap",
+    "value": "initial",
+    "description": "Gap between the label and each rule half. `initial` so the default re-resolves at the call * site: --space-* is density-scaled and re-declared inside a `.ui-density-*` subtree, so a * :root binding would freeze the gap at the :root density. Documented default = var(--space-3)."
+  },
+  {
+    "name": "--separator-label-inset",
+    "value": "initial",
+    "description": "Length of the SHORT rule half when labelAlign is `start` / `end` — the label's inset from the * inline edge (the Slack/Mattermost stream convention). It is a grid track on the INLINE axis, * so it flips with the writing direction under dir=\"rtl\" with no extra rule. `initial` for the * same density reason as the gap. Documented default = var(--space-6)."
+  },
+  {
+    "name": "--separator-label-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Label type ramp (#46) — steps of the modular scale, never a literal. `xs` is the quiet * stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks * intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark * without touching the day divider."
+  },
+  {
+    "name": "--separator-label-line-height",
+    "value": "var(--line-height-normal)",
+    "description": "Label type ramp (#46) — steps of the modular scale, never a literal. `xs` is the quiet * stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks * intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark * without touching the day divider."
+  },
+  {
+    "name": "--separator-label-font-weight",
+    "value": "var(--font-weight-medium)",
+    "description": "Label type ramp (#46) — steps of the modular scale, never a literal. `xs` is the quiet * stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks * intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark * without touching the day divider."
+  },
+  {
+    "name": "--separator-label-color",
+    "value": "initial",
+    "description": "Label colour. Role-mirror → `initial`; documented default = hsl(var(--muted-foreground))."
+  },
+  {
+    "name": "--separator-tone-muted-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-muted-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-primary-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-primary-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-success-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-success-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-warning-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-warning-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-destructive-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-destructive-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-info-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-info-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
   },
   {
     "name": "--sheet-responsive-breakpoint-width",
@@ -2039,12 +3579,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The EMPHASIS pair, read only by `SidebarItemProp.badgeTone=\"destructive\"` (rule #44 — a * neutral row never resolves them). Defaults = hsl(var(--destructive)) fill · * hsl(var(--destructive-foreground)) text, the canonical AA-checked pair."
   },
   {
-    "name": "--sidebar-user-focus-ring-opacity",
+    "name": "--sidebar-user-focus-ring-alpha",
     "value": "0.45",
     "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
-    "name": "--topbar-icon-focus-ring-opacity",
+    "name": "--topbar-icon-focus-ring-alpha",
     "value": "0.45",
     "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
@@ -2164,19 +3704,44 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
+    "name": "--app-shell-mobile-nav-icon-size",
+    "value": "1.25rem",
+    "description": "Hamburger glyph in the drawer trigger. Bigger ON PURPOSE than the trigger Button's own * `size=\"sm\"` icon step (--control-icon-size-sm, 0.875rem) — it is the ONLY navigation * affordance on a phone, so it reads at the 1.25rem step. A flat rem, not a density-scaled * alias: it must not move with the density axis, or the one tap target that opens navigation * shrinks on a compact page. Consumed as a `size-[var(...)]` utility so it outranks * `.ui-button--sm svg` (see the comment at the call site in app-shell.tsx)."
+  },
+  {
+    "name": "--service-role-panel-list-gap",
+    "value": "0.25rem",
+    "description": "ServiceRolePanel (gh#319). `.ui-service-role-panel` shipped as a bare hook — the class was on * the root but no rule existed anywhere, so the role rail's rhythm lived entirely as Tailwind * literals inside the component and no theme could reach it (#45). The panel is a thin * composition over MasterDetail, which still owns ALL the two-track geometry; these knobs cover * only the role LIST inside the master rail. * * Flat rems, not `--space-*`: the literals they replace read Tailwind's own `--spacing` grid, * which this package never remaps and which does not follow the density axis. Aliasing them * would start scaling the rail inside a `.ui-density-*` subtree — a visual change, not a * refactor."
+  },
+  {
+    "name": "--service-role-panel-row-gap",
+    "value": "0.25rem",
+    "description": "between role rows (was `gap-1`)"
+  },
+  {
+    "name": "--service-role-panel-item-title-gap",
+    "value": "0.375rem",
+    "description": "select button ↔ delete button (was `gap-1`)"
+  },
+  {
+    "name": "--service-role-panel-item-padding-block",
+    "value": "0.5rem",
+    "description": "The role row is a MULTI-LINE button (name over a description/member-count line), so it opts * out of the control height grid (`h-auto`) and sets its own block padding — that is what the * `py-2` literal was doing. It needs the raised `.ui-service-role-panel` ancestor specificity * (0,2,0) to beat `.ui-button--md { padding-block: var(--button-space-block) }` (0,1,0): * layout.css is imported BEFORE control.css and both are `@layer components`, so an equal * (0,1,0) rule here would silently lose."
+  },
+  {
     "name": "--sidebar-brand-mark-size",
     "value": "1.375rem",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "The role row is a MULTI-LINE button (name over a description/member-count line), so it opts * out of the control height grid (`h-auto`) and sets its own block padding — that is what the * `py-2` literal was doing. It needs the raised `.ui-service-role-panel` ancestor specificity * (0,2,0) to beat `.ui-button--md { padding-block: var(--button-space-block) }` (0,1,0): * layout.css is imported BEFORE control.css and both are `@layer components`, so an equal * (0,1,0) rule here would silently lose."
   },
   {
     "name": "--sidebar-nav-item-height",
     "value": "2rem",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "The role row is a MULTI-LINE button (name over a description/member-count line), so it opts * out of the control height grid (`h-auto`) and sets its own block padding — that is what the * `py-2` literal was doing. It needs the raised `.ui-service-role-panel` ancestor specificity * (0,2,0) to beat `.ui-button--md { padding-block: var(--button-space-block) }` (0,1,0): * layout.css is imported BEFORE control.css and both are `@layer components`, so an equal * (0,1,0) rule here would silently lose."
   },
   {
     "name": "--sidebar-nav-item-font-size",
     "value": "0.8125rem",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "The role row is a MULTI-LINE button (name over a description/member-count line), so it opts * out of the control height grid (`h-auto`) and sets its own block padding — that is what the * `py-2` literal was doing. It needs the raised `.ui-service-role-panel` ancestor specificity * (0,2,0) to beat `.ui-button--md { padding-block: var(--button-space-block) }` (0,1,0): * layout.css is imported BEFORE control.css and both are `@layer components`, so an equal * (0,1,0) rule here would silently lose."
   },
   {
     "name": "--sidebar-nav-item-line-height",
@@ -2992,5 +4557,390 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-stacked-collection-label-font-size",
     "value": "var(--font-size-xs)",
     "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no * column-priority measure to retune — the whole row becomes one block)."
+  },
+  {
+    "name": "--table-select-column-width",
+    "value": "2.5rem",
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+  },
+  {
+    "name": "--table-sort-icon-size",
+    "value": "0.75rem",
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+  },
+  {
+    "name": "--table-toolbar-icon-size",
+    "value": "1rem",
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+  },
+  {
+    "name": "--table-pagination-icon-size",
+    "value": "1rem",
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+  },
+  {
+    "name": "--table-pagination-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+  },
+  {
+    "name": "--table-skeleton-check-size",
+    "value": "1rem",
+    "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading * state the same height as the loaded one."
+  },
+  {
+    "name": "--table-skeleton-line-height",
+    "value": "1rem",
+    "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading * state the same height as the loaded one."
+  },
+  {
+    "name": "--table-skeleton-radius",
+    "value": "var(--radius-sm)",
+    "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading * state the same height as the loaded one."
+  },
+  {
+    "name": "--table-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme * remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical."
+  },
+  {
+    "name": "--table-line-height",
+    "value": "calc(1.25 / 0.875)",
+    "description": "MANDATORY companion to --table-font-size — the gh#260 trap, again. `text-sm` also set * line-height from Tailwind's `--text-sm--line-height`, and styles/base.css remaps `--text-sm` * but NOT that companion. Without this the table would silently inherit ambient page leading * the moment the font-size moved into CSS. Same unitless ratio Tailwind ships."
+  },
+  {
+    "name": "--table-row-border-width",
+    "value": "1px",
+    "description": "Horizontal row rule (chrome, #44) — the divider between body rows AND under the header row. * Owned here rather than as TableRow's `border-b` utility so the \"last row draws no rule\" * rule in `@layer components` can actually zero it; a utility would outrank it by layer. * Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }` * so a scoped [data-tenant]/.dark override of --border still reaches every row."
+  },
+  {
+    "name": "--table-flush-divider-width",
+    "value": "var(--table-row-border-width)",
+    "description": "Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside * `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three * edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind * it, so without it the header band floats (gh#306). Scoped by construction to the case that * needs it — a BANDED header, a CardBar or a headerless card already draw their own line there * and never reach this token — so a service tunes only the plain-header divider: `0` for a * borderless full-bleed table, heavier for a stronger band. Colour and style are NOT set here: * only the width is restored, so the surface's own border declaration still owns them and a * scoped [data-tenant]/.dark override of --border reaches it. * Default = the same hairline the table's other rules draw."
+  },
+  {
+    "name": "--toggle-count-min-width",
+    "value": "var(--space-4)",
+    "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read * the same primitive tokens, so the two pills render the same size and a Toggle count set beside * a Button count is indistinguishable — asserted by * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. * * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` * fallback because check:typography requires a bare `var(--token)` for every font-size, and a * split shape across the five geometry knobs would be worse than a consistent one.)"
+  },
+  {
+    "name": "--toggle-count-space-inline",
+    "value": "var(--space-1)",
+    "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read * the same primitive tokens, so the two pills render the same size and a Toggle count set beside * a Button count is indistinguishable — asserted by * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. * * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` * fallback because check:typography requires a bare `var(--token)` for every font-size, and a * split shape across the five geometry knobs would be worse than a consistent one.)"
+  },
+  {
+    "name": "--toggle-count-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read * the same primitive tokens, so the two pills render the same size and a Toggle count set beside * a Button count is indistinguishable — asserted by * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. * * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` * fallback because check:typography requires a bare `var(--token)` for every font-size, and a * split shape across the five geometry knobs would be worse than a consistent one.)"
+  },
+  {
+    "name": "--toggle-count-radius",
+    "value": "var(--radius-pill)",
+    "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read * the same primitive tokens, so the two pills render the same size and a Toggle count set beside * a Button count is indistinguishable — asserted by * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. * * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` * fallback because check:typography requires a bare `var(--token)` for every font-size, and a * split shape across the five geometry knobs would be worse than a consistent one.)"
+  },
+  {
+    "name": "--toggle-count-gap",
+    "value": "0",
+    "description": "Quiet default (#44) — the toggle's own flex gap already separates label from pill; this knob * ADDS to it for a service whose design grid wants the counter pushed further out."
+  },
+  {
+    "name": "--toggle-count-background",
+    "value": "initial",
+    "description": "── Counter pill · unpressed colours. Defaults = hsl(var(--muted)) fill (quiet: 1.09:1 against * the chip's own surface, so at rest the count reads as text, #44) and hsl(var(--foreground)) * text (14.25:1 on that fill). Opaque on purpose — a translucent fill would take its contrast * from whatever surface the chip currently has, and lose ~0.7 on hover."
+  },
+  {
+    "name": "--toggle-count-color",
+    "value": "initial",
+    "description": "── Counter pill · unpressed colours. Defaults = hsl(var(--muted)) fill (quiet: 1.09:1 against * the chip's own surface, so at rest the count reads as text, #44) and hsl(var(--foreground)) * text (14.25:1 on that fill). Opaque on purpose — a translucent fill would take its contrast * from whatever surface the chip currently has, and lose ~0.7 on hover."
+  },
+  {
+    "name": "--toggle-pressed-count-background",
+    "value": "initial",
+    "description": "── Counter pill · PRESSED colours. Defaults = hsl(var(--primary-foreground)) fill, * hsl(var(--primary)) text — the pressed chip's OWN pair, swapped. Not `--primary` on * `--primary`: the pressed chip is already filled with --primary, so a --primary pill would be * invisible on it. The swap also flips the pill from near-invisible to solid, which is one of * the encodings that keeps the pressed state off colour alone (WCAG 1.4.1)."
+  },
+  {
+    "name": "--toggle-pressed-count-color",
+    "value": "initial",
+    "description": "── Counter pill · PRESSED colours. Defaults = hsl(var(--primary-foreground)) fill, * hsl(var(--primary)) text — the pressed chip's OWN pair, swapped. Not `--primary` on * `--primary`: the pressed chip is already filled with --primary, so a --primary pill would be * invisible on it. The swap also flips the pill from near-invisible to solid, which is one of * the encodings that keeps the pressed state off colour alone (WCAG 1.4.1)."
+  },
+  {
+    "name": "--toggle-pressed-border-color",
+    "value": "initial",
+    "description": "── Pressed chrome. Default = hsl(var(--primary)), i.e. the pressed fill itself, so out of the * box this border is quiet (#44) and the pressed state is carried by the fill inversion + the * pill inversion + the forced-colors rule below. A service whose pressed fill is a PALE tint * (where those inversions get weak) opts into a visible outline by overriding this."
+  },
+  {
+    "name": "--toggle-count-forced-outline-width",
+    "value": "1px",
+    "description": "Under forced-colors every fill is flattened to a system colour, so neither inversion encodes * anything any more. This outline is the state's structural fallback there — drawn on the * PRESSED pill only, and as `outline` (not `border`) so it costs no layout."
+  },
+  {
+    "name": "--upload-dropzone-space-inset",
+    "value": "var(--space-10)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-radius",
+    "value": "var(--radius-lg)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-border-width",
+    "value": "2px",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-icon-size",
+    "value": "2.5rem",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-hint-space-block-start",
+    "value": "var(--space-3)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-hint-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-meta-space-block-start",
+    "value": "var(--space-1)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-dropzone-meta-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+  },
+  {
+    "name": "--upload-tile-size",
+    "value": "6rem",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-radius",
+    "value": "var(--radius-md)",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-space-gap",
+    "value": "var(--space-3)",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-icon-size",
+    "value": "1.5rem",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-label-space-block-start",
+    "value": "var(--space-1)",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-label-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-tile-overlay-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+  },
+  {
+    "name": "--upload-overlay-background",
+    "value": "initial",
+    "description": "Busy scrim over a tile/frame — role-mirror knob, `initial` so --background re-resolves at the * CALL SITE under a scoped [data-tenant]/.dark theme. Default = hsl(var(--background) / 0.7)."
+  },
+  {
+    "name": "--upload-overlay-alpha",
+    "value": "70%",
+    "description": "Busy scrim over a tile/frame — role-mirror knob, `initial` so --background re-resolves at the * CALL SITE under a scoped [data-tenant]/.dark theme. Default = hsl(var(--background) / 0.7)."
+  },
+  {
+    "name": "--upload-remove-space-inset",
+    "value": "var(--space-1)",
+    "description": "REMOVE affordance — the ✕ / trash chip pinned to a tile or avatar."
+  },
+  {
+    "name": "--upload-remove-offset",
+    "value": "var(--space-1)",
+    "description": "REMOVE affordance — the ✕ / trash chip pinned to a tile or avatar."
+  },
+  {
+    "name": "--upload-remove-icon-size",
+    "value": "0.875rem",
+    "description": "REMOVE affordance — the ✕ / trash chip pinned to a tile or avatar."
+  },
+  {
+    "name": "--upload-picture-max-width",
+    "value": "20rem",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-radius",
+    "value": "var(--radius-md)",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-preview-max-height",
+    "value": "12rem",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-empty-height",
+    "value": "8rem",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-empty-label-space-block-start",
+    "value": "var(--space-2)",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-empty-label-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-overlay-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "PICTURE — the single wide preview variant."
+  },
+  {
+    "name": "--upload-picture-badge-radius",
+    "value": "var(--radius-md)",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+  },
+  {
+    "name": "--upload-picture-badge-offset",
+    "value": "var(--space-2)",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+  },
+  {
+    "name": "--upload-picture-badge-space-inline",
+    "value": "var(--space-2)",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+  },
+  {
+    "name": "--upload-picture-badge-space-block",
+    "value": "0.125rem",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+  },
+  {
+    "name": "--upload-picture-badge-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+  },
+  {
+    "name": "--upload-avatar-size",
+    "value": "6rem",
+    "description": "AVATAR — the round single-image variant."
+  },
+  {
+    "name": "--upload-avatar-border-width",
+    "value": "2px",
+    "description": "AVATAR — the round single-image variant."
+  },
+  {
+    "name": "--upload-avatar-change-space-block",
+    "value": "var(--space-1)",
+    "description": "AVATAR — the round single-image variant."
+  },
+  {
+    "name": "--upload-avatar-change-background",
+    "value": "rgb(0 0 0 / 0.7)",
+    "description": "The \"change\" strip sits ON the photo, so its scrim is intentionally a fixed dark wash rather * than a surface role — it must stay legible over an arbitrary user image in either theme."
+  },
+  {
+    "name": "--upload-avatar-change-foreground",
+    "value": "#fff",
+    "description": "The \"change\" strip sits ON the photo, so its scrim is intentionally a fixed dark wash rather * than a surface role — it must stay legible over an arbitrary user image in either theme."
+  },
+  {
+    "name": "--upload-avatar-pending-delete-alpha",
+    "value": "0.4",
+    "description": "Alpha of an image the user has marked for deletion but not yet committed."
+  },
+  {
+    "name": "--upload-draft-space-inline",
+    "value": "var(--space-3)",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-draft-space-block",
+    "value": "var(--space-2)",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-draft-space-gap",
+    "value": "var(--space-2)",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-draft-radius",
+    "value": "var(--radius-md)",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-draft-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-draft-icon-size",
+    "value": "0.875rem",
+    "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
+  },
+  {
+    "name": "--upload-row-space-inline",
+    "value": "var(--space-3)",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-row-space-block",
+    "value": "var(--space-2)",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-row-space-gap",
+    "value": "var(--space-3)",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-row-radius",
+    "value": "var(--radius-md)",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-row-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-row-icon-size",
+    "value": "1rem",
+    "description": "FILE ROW — the list rendered under the dropzone/button variants."
+  },
+  {
+    "name": "--upload-crop-dialog-max-width",
+    "value": "24rem",
+    "description": "CROP DIALOG — the 1:1 avatar cropper (`UploadCropDialog`). The 66-literal upload pass above * never reached this file, so the whole cropper was still baked on the component: the dialog was * pinned to `max-w-sm`, the round preview to `size-48`, the zoom row to `px-2`. An avatar is one * of the most service-specific sizes there is (a 96px tile service wants a smaller crop stage * than a 200px one), and the crop stage must stay in proportion with --upload-avatar-size — * which is exactly the pair rule #45 exists to keep tunable together. * * The dialog width intentionally stays a knob of its own rather than reading * --dialog-width-default: the cropper is deliberately NARROWER than a normal dialog so the round * stage reads as the subject, not as a small element in a wide box."
+  },
+  {
+    "name": "--upload-crop-preview-size",
+    "value": "12rem",
+    "description": "CROP DIALOG — the 1:1 avatar cropper (`UploadCropDialog`). The 66-literal upload pass above * never reached this file, so the whole cropper was still baked on the component: the dialog was * pinned to `max-w-sm`, the round preview to `size-48`, the zoom row to `px-2`. An avatar is one * of the most service-specific sizes there is (a 96px tile service wants a smaller crop stage * than a 200px one), and the crop stage must stay in proportion with --upload-avatar-size — * which is exactly the pair rule #45 exists to keep tunable together. * * The dialog width intentionally stays a knob of its own rather than reading * --dialog-width-default: the cropper is deliberately NARROWER than a normal dialog so the round * stage reads as the subject, not as a small element in a wide box."
+  },
+  {
+    "name": "--upload-crop-preview-radius",
+    "value": "var(--radius-pill)",
+    "description": "CROP DIALOG — the 1:1 avatar cropper (`UploadCropDialog`). The 66-literal upload pass above * never reached this file, so the whole cropper was still baked on the component: the dialog was * pinned to `max-w-sm`, the round preview to `size-48`, the zoom row to `px-2`. An avatar is one * of the most service-specific sizes there is (a 96px tile service wants a smaller crop stage * than a 200px one), and the crop stage must stay in proportion with --upload-avatar-size — * which is exactly the pair rule #45 exists to keep tunable together. * * The dialog width intentionally stays a knob of its own rather than reading * --dialog-width-default: the cropper is deliberately NARROWER than a normal dialog so the round * stage reads as the subject, not as a small element in a wide box."
+  },
+  {
+    "name": "--upload-crop-zoom-space-inline",
+    "value": "var(--space-2)",
+    "description": "Zoom row inset — the slider is inset from the dialog edge so its thumb's focus ring is never * flush against the dialog padding."
   }
 ];

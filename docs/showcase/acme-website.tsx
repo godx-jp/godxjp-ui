@@ -48,7 +48,9 @@ const THEME = `
   --card: 0 0% 100%; --card-foreground: 217 61% 12%;
   --secondary: 217 61% 12%; --secondary-foreground: 0 0% 100%;
   --muted: 214 27% 95%; --muted-foreground: 216 14% 37%;
-  --border: 214 27% 90%; --input: 216 16% 80%;
+  /* --input is the CONTROL boundary, held to 3:1 (SC 1.4.11): 3.33 on the page, 3.57 on a card,
+     3.18 on --muted. It was 216 16% 80% = 1.46:1. --border is decorative chrome; it stays. */
+  --border: 214 27% 90%; --input: 216 16% 55%;
   --success: 152 100% 25%; --warning: 41 73% 53%; --destructive: 11 82% 56%; --info: 203 100% 37%;
   --radius: 0.875rem; --radius-md: 10px; --radius-lg: 14px;
   --card-radius: var(--radius); --control-radius: var(--radius);

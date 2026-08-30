@@ -33,14 +33,29 @@ describe("Tabs — items API", () => {
 });
 
 describe("Tabs — variants + orientation", () => {
-  it("variant=line gives the list a bottom border", () => {
-    render(<Tabs items={ITEMS} variant="line" />);
-    expect(screen.getByRole("tablist").className).toContain("border-b");
+  it("variant=line reaches BOTH the root and the list, which is what selects the line chrome", () => {
+    const { container } = render(<Tabs items={ITEMS} variant="line" />);
+    // The root records what the consumer asked for…
+    expect(container.querySelector('[data-slot="tabs"]')).toHaveAttribute("data-variant", "line");
+    // …and the list carries it too, because every line rule (the ruled strip, the token-owned
+    // active bar, the triggers' `group-data-[variant=line]/tabs-list:` chrome) keys off it.
+    expect(screen.getByRole("tablist")).toHaveAttribute("data-variant", "line");
   });
 
-  it("variant=card stretches the list full width", () => {
-    render(<Tabs items={ITEMS} variant="card" />);
-    expect(screen.getByRole("tablist").className).toContain("w-full");
+  it("variant=card is recorded on the root while the list keeps the DEFAULT strip chrome", () => {
+    const { container } = render(<Tabs items={ITEMS} variant="card" />);
+    expect(container.querySelector('[data-slot="tabs"]')).toHaveAttribute("data-variant", "card");
+    // Deliberate (gh#248): card's chrome IS the default strip, so the list is forwarded as
+    // `default` and the active lift comes from the base trigger's default-list rules.
+    expect(screen.getByRole("tablist")).toHaveAttribute("data-variant", "default");
+  });
+
+  it("default variant is recorded as such on the root", () => {
+    const { container } = render(<Tabs items={ITEMS} />);
+    expect(container.querySelector('[data-slot="tabs"]')).toHaveAttribute(
+      "data-variant",
+      "default",
+    );
   });
 
   it("vertical orientation is reflected on the root", () => {

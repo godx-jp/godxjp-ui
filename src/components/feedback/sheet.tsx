@@ -96,7 +96,7 @@ export const SheetOverlay = React.forwardRef<
     className={cn(
       // Scrim colour comes from the shared --overlay-background token (see dialog-layout.css),
       // so a service tints every overlay's backdrop from one knob instead of a baked bg-black/50.
-      "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed inset-0 z-50",
+      "ui-sheet-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed",
       className,
     )}
     {...props}
@@ -105,7 +105,7 @@ export const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-  "fixed z-50 flex flex-col gap-[var(--space-chrome-gap)] bg-background px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)] shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
+  "ui-sheet-panel fixed flex flex-col gap-[var(--space-chrome-gap)] bg-background px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)] transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
   {
     variants: {
       // `side` is a deliberately PHYSICAL API (left/right/top/bottom) — a sheet
@@ -115,9 +115,9 @@ const sheetVariants = cva(
         /* rtl-ignore: named physical side */ right:
           "inset-y-0 right-0 h-full w-[min(var(--sheet-width-default),100%)] max-w-none border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
         /* rtl-ignore: named physical side */ left: "inset-y-0 left-0 h-full w-[min(var(--sheet-width-default),100%)] max-w-none border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
-        top: "inset-x-0 top-0 h-auto border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
+        top: "inset-x-0 h-auto data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
         bottom:
-          "inset-x-0 bottom-0 h-auto border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+          "inset-x-0 h-auto data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
       },
     },
     defaultVariants: { side: "right" },
@@ -201,9 +201,9 @@ export const SheetContent = React.forwardRef<
           {showCloseButton ? (
             <DialogPrimitive.Close
               data-slot="sheet-close"
-              className="ring-offset-background focus:ring-ring absolute end-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+              className="ui-sheet-close ring-offset-background focus:ring-ring focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
             >
-              <X className="size-4" aria-hidden="true" />
+              <X className="ui-sheet-close-icon" aria-hidden="true" />
               <span className="sr-only">{t("feedback.alert.dismiss")}</span>
             </DialogPrimitive.Close>
           ) : null}
@@ -242,7 +242,7 @@ export const SheetHeader = ({
       // inset; `tone` adds a soft bg band. The divider border is added by CSS ONLY when a SheetBody is
       // present (dialog-layout.css) — so a body-less sheet never shows a doubled header/footer line.
       className={cn(
-        "-mx-[var(--sheet-pad-x)] -mt-[var(--sheet-pad-y)] flex flex-col gap-1.5 px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)]",
+        "ui-sheet-header -mx-[var(--sheet-pad-x)] -mt-[var(--sheet-pad-y)] px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)]",
         overlayHeaderToneClass[tone],
         className,
       )}
@@ -250,14 +250,12 @@ export const SheetHeader = ({
     >
       {children ?? (
         // `pe-8` reserves room for the absolute close button (end-4) so title/extra never sit under it.
-        <div className="flex items-start justify-between gap-3 pe-8">
-          <div className="flex min-w-0 flex-col gap-1">
+        <div className="ui-sheet-title-row">
+          <div className="ui-sheet-title-block">
             {title != null && <SheetTitle>{title}</SheetTitle>}
             {subtitle != null && <SheetDescription>{subtitle}</SheetDescription>}
           </div>
-          {extra != null && (
-            <div className="flex shrink-0 items-center gap-2 whitespace-nowrap">{extra}</div>
-          )}
+          {extra != null && <div className="ui-sheet-extra">{extra}</div>}
         </div>
       )}
     </div>
@@ -273,7 +271,7 @@ export const SheetBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivE
   <div
     data-slot="sheet-body"
     className={cn(
-      "-mx-[var(--sheet-pad-x)] min-h-0 flex-1 scroll-py-1 overflow-y-auto px-[var(--sheet-pad-x)] py-1",
+      "ui-sheet-body-space -mx-[var(--sheet-pad-x)] flex-1 overflow-y-auto px-[var(--sheet-pad-x)]",
       className,
     )}
     {...props}
@@ -289,7 +287,7 @@ export const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDi
   <div
     data-slot="sheet-footer"
     className={cn(
-      "-mx-[var(--sheet-pad-x)] mt-auto -mb-[var(--sheet-pad-y)] flex flex-wrap items-center justify-end gap-2 px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)]",
+      "ui-sheet-footer-row -mx-[var(--sheet-pad-x)] mt-auto -mb-[var(--sheet-pad-y)] px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)]",
       className,
     )}
     {...props}
@@ -303,7 +301,7 @@ export const SheetTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     data-slot="sheet-title"
-    className={cn("text-foreground text-lg font-medium", className)}
+    className={cn("ui-sheet-title", className)}
     {...props}
   />
 ));
@@ -316,7 +314,7 @@ export const SheetDescription = React.forwardRef<
   <DialogPrimitive.Description
     ref={ref}
     data-slot="sheet-description"
-    className={cn("text-foreground/80 text-sm", className)}
+    className={cn("ui-sheet-description", className)}
     {...props}
   />
 ));

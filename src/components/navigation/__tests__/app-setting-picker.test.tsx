@@ -1,20 +1,37 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { describe, expect, it, vi } from "vitest";
 import { render } from "@testing-library/react";
 
 import { AppSettingPicker } from "../app-setting-picker";
-import { renderWithUi, screen, userEvent } from "@/test/render";
+import { cleanup, renderWithUi, screen, userEvent } from "@/test/render";
+import { ruleSelector } from "@/test/css-selector";
+
+const navigationCss = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), "../../../styles/navigation-layout.css"),
+  "utf8",
+);
+
+/**
+ * The shipped rule that gives a locale picker its OWNED per-kind width — selector extracted from
+ * the stylesheet, never retyped. "Hugs its value" means precisely that this rule stops selecting
+ * the trigger, which is a thing `.matches()` can settle and a class name cannot.
+ */
+const perKindWidthSelector = ruleSelector(
+  navigationCss,
+  /\.ui-app-setting-picker-trigger\[data-kind="locale"\] \{\s*\n\s*inline-size:/,
+);
 
 describe("AppSettingPicker", () => {
   it("renders the inline appearance without field-like trigger chrome", () => {
     renderWithUi(
       <AppSettingPicker kind="locale" appearance="inline" value="en" onValueChange={() => {}} />,
     );
-    expect(screen.getByRole("combobox")).toHaveClass(
-      "ui-app-setting-picker-inline",
-      "border-0",
-      "bg-transparent",
-      "shadow-none",
-    );
+    // The chrome-less box lives in `.ui-app-setting-picker-inline`'s own rule now, so the
+    // component no longer repeats border-0/bg-transparent/shadow-none as utilities (#319).
+    expect(screen.getByRole("combobox")).toHaveClass("ui-app-setting-picker-inline");
   });
 
   it.each([
@@ -138,12 +155,7 @@ describe("AppSettingPicker", () => {
     renderWithUi(
       <AppSettingPicker kind="locale" appearance="icon" value="ja" onValueChange={vi.fn()} />,
     );
-    expect(screen.getByRole("combobox")).toHaveClass(
-      "ui-app-setting-picker-icon",
-      "border-transparent",
-      "bg-transparent",
-      "shadow-none",
-    );
+    expect(screen.getByRole("combobox")).toHaveClass("ui-app-setting-picker-icon");
   });
 
   it('appearance="icon": still opens and fires onValueChange with localized options', async () => {
@@ -180,11 +192,20 @@ describe("AppSettingPicker", () => {
     );
     const trigger = screen.getByRole("combobox");
     expect(trigger).toHaveClass("ui-app-setting-picker-compact");
-    expect(trigger).not.toHaveClass("sm:w-40");
-    expect(trigger).toHaveClass("w-auto");
+    // The owned width is GONE: the shipped per-kind rule no longer selects this trigger, so it
+    // hugs its value instead of stretching.
+    expect(trigger.matches(perKindWidthSelector)).toBe(false);
     // Accessible name (localized aria-label) and the visible value are both preserved.
     expect(trigger).toHaveAccessibleName();
     expect(trigger.textContent ?? "").not.toBe("");
+
+    // Positive control — without `compact` the SAME rule does select the trigger, so the `false`
+    // above is the compact opt-out and not a selector that matches nothing anywhere.
+    cleanup();
+    renderWithUi(
+      <AppSettingPicker kind="locale" appearance="labeled" value="ja" onValueChange={vi.fn()} />,
+    );
+    expect(screen.getByRole("combobox").matches(perKindWidthSelector)).toBe(true);
   });
 
   it("compact: still opens and fires onValueChange with localized options", async () => {
@@ -223,7 +244,10 @@ describe("AppSettingPicker", () => {
     renderWithUi(<AppSettingPicker kind="dateFormat" value="iso" onValueChange={vi.fn()} />);
     const trigger = screen.getByRole("combobox");
     expect(trigger).not.toHaveClass("ui-app-setting-picker-compact");
-    expect(trigger).toHaveClass("sm:w-44");
+    // Per-kind width moved from a `sm:w-*` lookup table to a token selected by `data-kind`,
+    // so a service can widen just the picker whose locale overflows (#319).
+    expect(trigger).toHaveClass("ui-app-setting-picker-trigger");
+    expect(trigger).toHaveAttribute("data-kind", "dateFormat");
   });
 
   it("renders an id and name through to the Select", () => {

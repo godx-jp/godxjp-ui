@@ -17,6 +17,13 @@ import { AuthFooter } from "../auth-footer";
  * index key, toggling the optional `locale` slot re-keys every following item and React remounts
  * the consumer's real link/locale control.
  */
+/**
+ * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
+ * assertion about how the component is painted. What is under test is pass-through: whatever class
+ * the consumer hands in survives `cn()` onto the rendered node.
+ */
+const CONSUMER_CLASS = "mt-auto";
+
 describe("AuthFooter", () => {
   const links = {
     terms: <a href="/terms">Terms</a>,
@@ -65,9 +72,11 @@ describe("AuthFooter", () => {
   });
 
   it("merges className onto the root without dropping the canonical class", () => {
-    const { container } = render(<AuthFooter product="GoDX ID" {...links} className="mt-auto" />);
+    const { container } = render(
+      <AuthFooter product="GoDX ID" {...links} className={CONSUMER_CLASS} />,
+    );
     const root = container.querySelector('[data-slot="auth-legal-footer"]')!;
-    expect(root).toHaveClass("ui-auth-legal-footer", "mt-auto");
+    expect(root).toHaveClass("ui-auth-legal-footer", CONSUMER_CLASS);
   });
 
   it("needs no page CSS — every knob is a component token (rule #45)", () => {

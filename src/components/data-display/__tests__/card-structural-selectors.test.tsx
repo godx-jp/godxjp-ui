@@ -393,60 +393,10 @@ describe("card-layout.css structural selectors select the rendered DOM", () => {
     expect(q(container, "tight-body").matches(selector)).toBe(false);
   });
 
-  it("a flush body zeroes its block padding only when it hosts a table", () => {
-    const selector = ruleSelector(
-      css,
-      '[data-slot="card-content"][data-flush]:not([data-tight]):not([data-solo]):has(table)',
-    );
-    const { container } = renderWithUi(
-      <>
-        <Card>
-          <CardContent flush data-testid="flush-table-body">
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell>a</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent flush data-testid="flush-text-body">
-            a
-          </CardContent>
-        </Card>
-      </>,
-    );
-
-    expect(q(container, "flush-table-body").matches(selector)).toBe(true);
-    expect(q(container, "flush-text-body").matches(selector)).toBe(false);
-  });
-
-  it("a plain header before a flush full-bleed table supplies its own bottom gap", () => {
-    const selector = ruleSelector(
-      css,
-      ':has([data-slot="card-content"][data-flush] [data-slot="table"])',
-    );
-    const { container } = renderWithUi(
-      <Card>
-        <CardHeader data-testid="header-before-table">
-          <CardTitle>t</CardTitle>
-        </CardHeader>
-        <CardContent flush>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>a</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>,
-    );
-
-    expect(q(container, "header-before-table").matches(selector)).toBe(true);
-  });
+  // The flush body's block axis and the header gap that follows it both used to be gated on the
+  // body containing a `<table>`; that gate is what left gh#307 open. Their coverage now lives in
+  // the "flush content owns its block axis (gh#307)" describe at the bottom of this file, which
+  // asserts the WIDE contract plus the tight/solo counter-cases.
 
   it("mobile separated-footer row rule refuses a flush footer", () => {
     const selector = ruleSelector(
@@ -496,7 +446,97 @@ describe("card-layout.css structural selectors select the rendered DOM", () => {
   });
 });
 
-describe("described header × flush content (gh#307)", () => {
+describe("flush content owns its block axis (gh#307)", () => {
+  // The reported symptom was a flush body floating 18.4px off its header in a described-header
+  // card, next to a sibling flush body that measured 0px. Guarding the describedBody pair with
+  // :not([data-flush]) is necessary but was NOT sufficient: the padding that actually landed came
+  // from the GENERIC content rules, because the flush block-zero was gated on `:has(table)` and
+  // the floating section was a file LIST, not a table. So the contract under test is the wide
+  // one — a flush body has no block padding, whatever it happens to contain.
+  it("the flush block-zero rule matches a flush body that contains no table at all", () => {
+    const selector = ruleSelector(
+      css,
+      /\[data-slot="card-content"\]\[data-flush\]:not\(\[data-tight\]\):not\(\[data-solo\]\)\s*\{/,
+    );
+    renderWithUi(
+      <>
+        <Card>
+          <CardHeader>
+            <CardTitle>関連ファイル</CardTitle>
+            <CardDescription>note</CardDescription>
+          </CardHeader>
+          <CardContent flush data-testid="flush-list">
+            <ul>
+              <li>a</li>
+            </ul>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>備考</CardTitle>
+          </CardHeader>
+          <CardContent flush data-testid="flush-table">
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>a</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent flush tight data-testid="flush-tight" />
+        </Card>
+        <Card>
+          <CardContent flush solo data-testid="flush-solo" />
+        </Card>
+        <Card>
+          <CardContent data-testid="padded" />
+        </Card>
+      </>,
+    );
+    // The two sections the issue compared now agree.
+    expect(screen.getByTestId("flush-list").matches(selector)).toBe(true);
+    expect(screen.getByTestId("flush-table").matches(selector)).toBe(true);
+    // tight / solo own the block axis themselves, and a padded body must still pad.
+    expect(screen.getByTestId("flush-tight").matches(selector)).toBe(false);
+    expect(screen.getByTestId("flush-solo").matches(selector)).toBe(false);
+    expect(screen.getByTestId("padded").matches(selector)).toBe(false);
+  });
+
+  it("the header's own bottom gap follows every flush body, not only a flush table", () => {
+    // The body no longer pads itself, so the plain header above it has to supply the gap —
+    // for a flush LIST exactly as for a flush table, or the title butts against the first row.
+    const selector = ruleSelector(
+      css,
+      /\[data-slot="card"\]:has\(\[data-slot="card-content"\]\[data-flush\]:not/,
+      '"card-header"',
+    );
+    const { container } = renderWithUi(
+      <>
+        <Card>
+          <CardHeader data-testid="header-over-flush-list">
+            <CardTitle>関連ファイル</CardTitle>
+          </CardHeader>
+          <CardContent flush>
+            <ul>
+              <li>a</li>
+            </ul>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader data-testid="header-over-padded">
+            <CardTitle>備考</CardTitle>
+          </CardHeader>
+          <CardContent>body</CardContent>
+        </Card>
+      </>,
+    );
+    expect(q(container, "header-over-flush-list").matches(selector)).toBe(true);
+    expect(q(container, "header-over-padded").matches(selector)).toBe(false);
+  });
+
   // The describedBody restore must NOT reach flush content: flush zeroes its own padding, and
   // before the :not([data-flush]) guard the description half overrode that zero and floated a
   // flush table 18px off its header (measured on a consumer 関連ファイル section).

@@ -18,6 +18,13 @@
   --space-inline-md: var(--space-3); /* 12px */
   --space-inline-lg: var(--space-4); /* 16px */
 
+  /* OVERLAY STACKING — one system-level layer for every portaled surface (rule #44/#45).
+   * Tooltip, Popover, Select, DropdownMenu and Sheet all hard-coded `z-50` independently, so a
+   * host app that mounts @godxjp/ui under its own stacking context (a sticky masthead, a
+   * third-party chat widget) had to fight five separate literals. Stacking is a SYSTEM decision,
+   * not a per-primitive one: a service raises every overlay together by setting this once. */
+  --overlay-z-index: 50;
+
   /* Master-detail geometry. Consumers choose a semantic rail preset; they never author grid tracks. */
   --master-detail-rail-compact: 18.75rem; /* 300px */
   --master-detail-rail-standard: 20rem; /* 320px */

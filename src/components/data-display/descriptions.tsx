@@ -49,11 +49,23 @@ export function Descriptions({
   const context = React.useMemo(() => ({ layout, labelAlign }), [layout, labelAlign]);
   return (
     <DescriptionsLayoutContext.Provider value={context}>
-      {/* Row gap is a TOKEN (`--descriptions-row-gap`, rule #44/#45), not a hardcoded utility, so a
-       * consumer composing this beside a Form/FormField can retune it to the same rhythm
-       * (`--space-4`) instead of the two blocks reading as visually unrelated (gh#294). Default
-       * unchanged from the historical `gap-y-3`, so no existing consumer's render changes. */}
-      <dl className={cn("grid gap-x-6 gap-y-[var(--descriptions-row-gap)]", colsClass, className)}>
+      {/* BOTH grid axes are TOKENS (rule #44/#45), not hardcoded utilities, so a consumer composing
+       * this beside a Form/FormField can retune the rhythm (`--space-4`) instead of the two blocks
+       * reading as visually unrelated (gh#294). They stay ARBITRARY UTILITIES rather than moving
+       * into a components-layer class on purpose: a consumer's own `gap-*` on `className` must
+       * still win, and Tailwind v4 layers utilities after components. Defaults unchanged from the
+       * historical `gap-x-6` / `gap-y-3`, so no existing consumer's render changes. */}
+      <dl
+        data-slot="descriptions"
+        // The grid shape as a CONTRACT: `columns` is the thing a consumer asked for, and it stays
+        // assertable / themeable whichever responsive `grid-cols-*` utilities happen to paint it.
+        data-columns={columns}
+        className={cn(
+          "grid gap-x-[var(--descriptions-column-gap)] gap-y-[var(--descriptions-row-gap)]",
+          colsClass,
+          className,
+        )}
+      >
         {children}
       </dl>
     </DescriptionsLayoutContext.Provider>
@@ -79,13 +91,19 @@ Descriptions.Item = function DescriptionsItem({
 }: DescriptionsItemProps) {
   const { layout, labelAlign } = React.useContext(DescriptionsLayoutContext);
   const spanClass = span === 2 ? "sm:col-span-2" : span === 3 ? "sm:col-span-2 lg:col-span-3" : "";
+  // The EFFECTIVE label alignment, after the vertical guard below. Reflected only when it is the
+  // non-default `end` so an untouched item gains no attribute (the `data-priority` rule).
+  const endAlignedLabel = layout === "horizontal" && labelAlign === "end";
   return (
     <div
+      data-slot="descriptions-item"
       className={cn(
         layout === "horizontal"
           ? // Label beside value — a token-aligned label column so the values line up. The
-            // `--descriptions-label-width` knob aligns labels (rule #44/#45).
-            "grid grid-cols-[var(--descriptions-label-width)_minmax(0,1fr)] items-baseline gap-x-3"
+            // `--descriptions-label-width` / `--descriptions-label-gap` knobs align labels and set
+            // the label→value gap (rule #44/#45); a service that narrows the column usually wants
+            // to close the gap in the same step.
+            "grid grid-cols-[var(--descriptions-label-width)_minmax(0,1fr)] items-baseline gap-x-[var(--descriptions-label-gap)]"
           : // Vertical (default): label over value. The shared --field-label-gap matches
             // FormField / Form so the label→value gap is consistent everywhere.
             "grid gap-[var(--field-label-gap)]",
@@ -94,16 +112,38 @@ Descriptions.Item = function DescriptionsItem({
       )}
     >
       <dt
+        data-slot="descriptions-label"
+        data-label-align={endAlignedLabel ? "end" : undefined}
         className={cn(
           "text-muted-foreground text-xs",
           // `end`-align only ever applies in horizontal layout — same guard `Form` uses, so a
           // vertical label (already above its value) never mistakenly end-aligns (gh#294).
-          layout === "horizontal" && labelAlign === "end" && "text-end",
+          endAlignedLabel && "text-end",
         )}
       >
         {label}
       </dt>
-      <dd className={cn("text-sm break-all", mono && "font-mono")}>{children}</dd>
+      {/* Value typography is a TOKEN PAIR, and `FormField staticText` renders the SAME two
+       * utilities so a read-only Form row and a Descriptions value stay indistinguishable when
+       * mixed on one card (gh#294). The pair is deliberately a token rather than a shared CSS
+       * class: a class would have to live in one stylesheet, and a slim build importing only
+       * `styles/data-display` (or only the form layers) would miss it — tokens ship in the
+       * REQUIRED foundation, so both call sites always resolve.
+       * `--descriptions-value-line-height` is not optional: `text-sm` also carried Tailwind's
+       * companion `--text-sm--line-height`, which the theme never remaps (the gh#260 bug), so
+       * dropping it would leave the value inheriting ambient leading. */}
+      <dd
+        data-slot="descriptions-value"
+        // `mono` is a typography CONTRACT (IDs / paths / JSON read in the mono face), reflected so
+        // it survives the face moving from a utility to a token.
+        data-mono={mono ? "" : undefined}
+        className={cn(
+          "text-[length:var(--descriptions-value-font-size)] leading-[var(--descriptions-value-line-height)] break-all",
+          mono && "font-mono",
+        )}
+      >
+        {children}
+      </dd>
     </div>
   );
 };

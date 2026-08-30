@@ -5,6 +5,13 @@ import { Inbox } from "lucide-react";
 import { EmptyState } from "../empty-state";
 import { expectNoA11yViolations } from "@/test/a11y";
 
+/**
+ * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
+ * assertion about how the component is painted. What is under test is pass-through: whatever class
+ * the consumer hands in survives `cn()` onto the rendered node.
+ */
+const CONSUMER_CLASS = "my-8";
+
 describe("EmptyState", () => {
   it("renders title only (no icon / description / action)", () => {
     const { getByRole, container } = render(<EmptyState title="データなし" />);
@@ -29,8 +36,8 @@ describe("EmptyState", () => {
   });
 
   it("forwards className to the status root", () => {
-    const { getByRole } = render(<EmptyState title="x" className="my-8" />);
-    expect(getByRole("status")).toHaveClass("my-8");
+    const { getByRole } = render(<EmptyState title="x" className={CONSUMER_CLASS} />);
+    expect(getByRole("status")).toHaveClass(CONSUMER_CLASS);
   });
 
   it("exposes restrained section and compact variants", () => {

@@ -1,0 +1,52 @@
+/* Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label`
+ * interrupts: a message stream's day divider, an unread "new messages" watermark, an auth
+ * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider,
+ * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the
+ * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned
+ * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them.
+ *
+ * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding
+ * padding. A service opts IN to a louder watermark from its theme, never by forking CSS. */
+:root {
+  /* Rule weight, both orientations and both halves of a labelled rule. */
+  --separator-rule-size: 1px;
+  /* Rule colour. Role-mirror knob → declared `initial` so the --border default re-resolves at the
+   * CALL SITE under a scoped [data-tenant] / .dark theme (docs/TOKENS.md — the :root freeze rule).
+   * Documented default = hsl(var(--border)). */
+  --separator-rule-color: initial;
+  /* Gap between the label and each rule half. `initial` so the default re-resolves at the call
+   * site: --space-* is density-scaled and re-declared inside a `.ui-density-*` subtree, so a
+   * :root binding would freeze the gap at the :root density. Documented default = var(--space-3). */
+  --separator-label-gap: initial;
+  /* Length of the SHORT rule half when labelAlign is `start` / `end` — the label's inset from the
+   * inline edge (the Slack/Mattermost stream convention). It is a grid track on the INLINE axis,
+   * so it flips with the writing direction under dir="rtl" with no extra rule. `initial` for the
+   * same density reason as the gap. Documented default = var(--space-6). */
+  --separator-label-inset: initial;
+  /* Label type ramp (#46) — steps of the modular scale, never a literal. `xs` is the quiet
+   * stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks
+   * intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark
+   * without touching the day divider. */
+  --separator-label-font-size: var(--font-size-xs);
+  --separator-label-line-height: var(--line-height-normal);
+  --separator-label-font-weight: var(--font-weight-medium);
+  /* Label colour. Role-mirror → `initial`; documented default = hsl(var(--muted-foreground)). */
+  --separator-label-color: initial;
+  /* Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule
+   * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and
+   * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching
+   * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the
+   * two voices later without a breaking change. */
+  --separator-tone-muted-rule-color: initial;
+  --separator-tone-muted-label-color: initial;
+  --separator-tone-primary-rule-color: initial;
+  --separator-tone-primary-label-color: initial;
+  --separator-tone-success-rule-color: initial;
+  --separator-tone-success-label-color: initial;
+  --separator-tone-warning-rule-color: initial;
+  --separator-tone-warning-label-color: initial;
+  --separator-tone-destructive-rule-color: initial;
+  --separator-tone-destructive-label-color: initial;
+  --separator-tone-info-rule-color: initial;
+  --separator-tone-info-label-color: initial;
+}

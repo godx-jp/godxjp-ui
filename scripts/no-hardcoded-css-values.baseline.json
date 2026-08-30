@@ -1,0 +1,16 @@
+{
+  "total": 121,
+  "files": {
+    "src/styles/alert-layout.css": 4,
+    "src/styles/badge-layout.css": 2,
+    "src/styles/card-layout.css": 2,
+    "src/styles/control.css": 21,
+    "src/styles/data-display-layout.css": 22,
+    "src/styles/data-entry-layout.css": 6,
+    "src/styles/dialog-layout.css": 5,
+    "src/styles/layout.css": 4,
+    "src/styles/navigation-layout.css": 14,
+    "src/styles/shell-layout.css": 40,
+    "src/styles/table-layout.css": 1
+  }
+}

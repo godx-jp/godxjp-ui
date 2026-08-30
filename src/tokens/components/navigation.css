@@ -13,6 +13,13 @@
    * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px. */
   --pagination-page-padding-x: var(--space-1);
   --pagination-total-font-size: var(--font-size-sm);
+  /* Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size="sm"
+   * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component
+   * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron
+   * IS the control — there is no label beside it to carry the affordance. The knob keeps that
+   * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now
+   * follows density like every other control glyph instead of staying a flat 1rem. */
+  --pagination-icon-size: var(--control-icon-size);
   --filter-bar-gap: var(--space-3);
   --filter-bar-padding-y: var(--space-2);
   --filter-label-font-size: var(--font-size-xs);
@@ -56,6 +63,28 @@
   --tabs-indicator-size: 2px;
   --tabs-indicator-offset: 0px;
 
+  /* TABS BOX GEOMETRY (#319) — the strip↔panel gap and the whole `line` trigger box were Tailwind
+   * scale literals on tabs.tsx, so a service could only retune the tab rhythm by forking the
+   * component (rule #45).
+   * Every default below is a RAW rem/px, deliberately NOT a --space-* step: the classes they
+   * replace (`gap-2`, `p-0`, `rounded-none`, `px-4`, `py-2`) read Tailwind's own --spacing grid,
+   * which this repo does NOT density-scale, so a --space-* default would silently resize the tabs
+   * under a compact/comfortable density. A service that WANTS a knob to follow density simply
+   * points it at var(--space-2) itself. */
+
+  /* Gap between the tab strip and the panel below it. */
+  --tabs-root-gap: 0.5rem;
+  /* Inset of the `line` strip. The default/pill strip keeps its own padding box; the line strip is
+   * a flat underlined rail, so its default is the quietest value — none (rule #44). Raise it to
+   * give the rail breathing room above its hairline. */
+  --tabs-list-line-space-inset: 0px;
+  /* `line` trigger box. Square corners because the selected state is the token-owned ::after bar,
+   * never a pill; the hit box is wider/taller than the pill trigger so the underline spans a real
+   * column of the rail. */
+  --tabs-trigger-line-radius: 0px;
+  --tabs-trigger-line-padding-x: 1rem;
+  --tabs-trigger-line-padding-y: 0.5rem;
+
   /* Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site
    * under a scoped theme (a :root binding to a role var freezes at :root).
    * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text. */
@@ -83,4 +112,68 @@
   --filter-bar-filter-width: var(--filter-picker-width-md);
   --filter-bar-chip-gap: var(--space-2);
   --filter-bar-section-gap: var(--space-2);
+
+  /* MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are
+   * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu
+   * had not been converted at all, so it carried the whole box as Tailwind literals on the
+   * component (#319). A service tunes the menu rhythm once here instead of three times. */
+  --menu-item-height: 2rem;
+  --menu-item-radius: var(--radius-sm);
+  --menu-item-space-inline: var(--space-2);
+  --menu-item-space-gap: var(--space-2);
+  --menu-item-font-size: var(--font-size-base);
+  /* Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so
+   * labels stay aligned with their checked siblings. */
+  --menu-item-inset-space-inline-start: var(--space-8);
+  --menu-indicator-size: 0.875rem;
+  --menu-indicator-inset-inline-start: var(--space-2);
+  --menu-icon-size: 1rem;
+  --menu-content-space-inset: var(--space-1);
+  --menu-content-min-width: 10rem;
+  /* DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu. */
+  --dropdown-content-min-width: 8rem;
+  --menu-separator-space-block: var(--space-1);
+  --menu-separator-space-inline: calc(var(--space-1) * -1);
+
+  /* STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline
+   * form; the marker, connector and text rhythm of the main variant were still literal on the
+   * component (#319), so a service could not resize the dot, retighten the vertical run, or move
+   * the horizontal connector to match its own grid. */
+  --steps-dot-size: 0.625rem;
+  --steps-dot-process-ring-width: 4px;
+  --steps-marker-border-width: 2px;
+  --steps-marker-font-size: var(--font-size-sm);
+  --steps-marker-icon-size: 1rem;
+  --steps-wait-icon-size: 0.75rem;
+  --steps-title-font-size: var(--font-size-sm);
+  --steps-title-font-size-compact: var(--font-size-xs);
+  --steps-subtitle-font-size: var(--font-size-xs);
+  /* Vertical run: gap between marker and text, and the drop to the next step. */
+  --steps-vertical-space-gap: var(--space-3);
+  --steps-vertical-space-block-end: var(--space-8);
+  --steps-vertical-text-space-block-start: var(--space-1);
+  /* Horizontal run: the text sits under the marker, and the connector spans the gap between
+   * two markers — inset by the marker radius on each side so it never runs under a marker. */
+  --steps-horizontal-text-space-block-start: var(--space-2);
+  --steps-horizontal-text-space-inline: var(--space-2);
+  --steps-connector-inset: 1.25rem;
+  --steps-connector-space-block-start: var(--space-4);
+
+  /* APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest
+   * value it can show: a timezone name is far wider than a theme name. These were literal
+   * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German
+   * timezone list, a Japanese density label) could not widen just the one that overflows. */
+  --app-setting-picker-locale-width: 10rem;
+  --app-setting-picker-timezone-width: 14rem;
+  --app-setting-picker-date-format-width: 11rem;
+  --app-setting-picker-time-format-width: 11rem;
+  --app-setting-picker-theme-width: 9rem;
+  --app-setting-picker-brand-width: 11rem;
+  --app-setting-picker-density-width: 10rem;
+  --app-setting-picker-font-size-width: 9rem;
+  /* Below this the trigger hugs its content instead of taking the per-kind width, so a picker
+   * dropped into a narrow topbar never stretches the bar (gh#165). */
+  --app-setting-picker-width-breakpoint: 40rem;
+  --app-setting-picker-icon-size: 1rem;
+  --app-setting-picker-icon-rest-alpha: 0.7;
 }

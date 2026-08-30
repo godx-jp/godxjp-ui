@@ -51,17 +51,6 @@ const ICON: Record<AppSettingKind, LucideIcon> = {
   fontSize: Type,
 };
 
-const TRIGGER_WIDTH: Record<AppSettingKind, string> = {
-  locale: "sm:w-40",
-  timezone: "sm:w-56",
-  dateFormat: "sm:w-44",
-  timeFormat: "sm:w-44",
-  theme: "sm:w-36",
-  brand: "sm:w-44",
-  density: "sm:w-40",
-  fontSize: "sm:w-36",
-};
-
 const ARIA_KEY: Record<AppSettingKind, string> = {
   locale: "navigation.localePicker.ariaLabel",
   timezone: "navigation.timezonePicker.ariaLabel",
@@ -159,7 +148,9 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
     const inline = resolvedAppearance === "inline";
     // `compact` (gh#217) re-tiers the trigger box to --control-height-sm and drops the picker's
     // owned per-kind width, so a LABELLED footer locale switch hugs its value instead of stretching
-    // to `sm:w-40`. `inline` is already chrome-less, so compact is a no-op there.
+    // to the width its kind would otherwise claim (#319 moved those into
+    // `.ui-app-setting-picker-trigger[data-kind]`). `inline` is already chrome-less, so compact is
+    // a no-op there.
     const isCompact = compact && !inline;
 
     return (
@@ -177,7 +168,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
           showIndicator={!iconOnly && !inline}
           className={cn(
             inline
-              ? "ui-app-setting-picker-inline h-auto min-h-0 w-auto rounded-none border-0 bg-transparent p-0 shadow-none"
+              ? "ui-app-setting-picker-inline"
               : iconOnly
                 ? // Structurally icon-only: drop the owned width + value spacing and square the box to
                   // the density-aware --control-height tap target, centring the icon. Visually it
@@ -188,14 +179,14 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                   // (`data-[state=open]:border-ring`, from controlTriggerClass) and the
                   // focus-visible ring are untouched, so keyboard and "is this open" affordance
                   // still hold.
-                  "ui-app-setting-picker-icon hover:bg-accent hover:text-accent-foreground w-[length:var(--control-height)] justify-center border-transparent bg-transparent ps-0 pe-0 shadow-none"
+                  "ui-app-setting-picker-icon hover:bg-accent hover:text-accent-foreground"
                 : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
                   // caps at the container (`w-auto max-w-full`) instead of the old UNCONDITIONAL
                   // `w-full` — so a labeled picker dropped into a narrow topbar no longer stretches to
                   // fill the bar (gh#165). A form field that wants a full-width control passes
                   // `className="w-full"`, which wins over `w-auto`.
                   // `compact` drops the per-kind width entirely so the trigger hugs its value.
-                  cn("w-auto max-w-full", !isCompact && TRIGGER_WIDTH[kind]),
+                  cn("w-auto max-w-full", !isCompact && "ui-app-setting-picker-trigger"),
             // Compact re-tiers the box through tokens (--app-setting-picker-compact-*); the height
             // still comes from the official --control-height-sm tier, never a literal. The gap is a
             // utility (not the class rule) so it beats SelectTrigger's own `gap-2`.
@@ -203,6 +194,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
               "ui-app-setting-picker-compact gap-[length:var(--app-setting-picker-compact-gap)]",
             className,
           )}
+          data-kind={kind}
           // The localized aria-label is ALWAYS applied — an icon-only trigger drops the visible
           // value text, so this is its only accessible name; it can never ship nameless.
           aria-label={t(ARIA_KEY[kind])}
@@ -210,7 +202,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
           {inline ? null : (
             <Icon
               className={cn(
-                "size-4 shrink-0 opacity-70",
+                "ui-app-setting-picker-glyph",
                 // Compact relies on the trigger's tokenized flex gap instead of an icon margin.
                 !iconOnly && !isCompact && "me-2",
               )}

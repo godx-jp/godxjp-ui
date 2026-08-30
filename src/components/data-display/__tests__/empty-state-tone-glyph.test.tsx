@@ -38,8 +38,13 @@ describe("EmptyState tone → glyph colour", () => {
     // The exact bug: any text-* colour utility re-pins the glyph and defeats every tone.
     expect(svg.getAttribute("class")).not.toMatch(/\btext-[a-z-]*foreground\b/);
     expect(svg.getAttribute("class")).not.toMatch(/\btext-(muted|primary|destructive)\b/);
-    // Geometry is unchanged — only the colour utility went away.
-    expect(svg).toHaveClass("size-6");
+    // Geometry moved into `.ui-empty-state-icon svg` so the glyph and its medallion scale
+    // together from --empty-state-icon-glyph-size / --empty-state-icon-size (#319). The glyph
+    // now carries NO class at all, which is the stronger statement: nothing on it can re-pin
+    // either the colour this test guards or the size.
+    // (lucide stamps its own `lucide-*` marker, so assert the absence of a SIZE utility rather
+    // than the absence of any class.)
+    expect(svg.getAttribute("class") ?? "").not.toMatch(/\bsize-\d/);
   });
 
   it("stamps every tone on the root so the CSS rule can retarget the token", () => {

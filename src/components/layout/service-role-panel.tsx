@@ -186,21 +186,24 @@ export const ServiceRolePanel = React.forwardRef<HTMLDivElement, ServiceRolePane
           detailLabel={detailLabel ?? t("layout.serviceRolePanel.detailLabel")}
           detailId={detailId}
           master={
-            <ul className="flex list-none flex-col gap-1" data-slot="service-role-panel-list">
+            <ul className="ui-service-role-panel-list" data-slot="service-role-panel-list">
               {roles.map((role) => {
                 const selected = role.id === value;
                 return (
-                  <li key={role.id} className="flex items-center gap-1">
+                  // NOT `.ui-inline-xs`: that helper adds `flex-wrap: wrap`, and this row holds a
+                  // flex-1 select button next to an icon-only delete button that must never wrap
+                  // onto its own line.
+                  <li key={role.id} className="ui-service-role-panel-row">
                     {/* Select and delete stay SIBLINGS — never nested interactive controls. */}
                     <Button
                       variant={selected ? "secondary" : "ghost"}
-                      className="h-auto flex-1 justify-start py-2 text-start"
+                      className="ui-service-role-panel-item h-auto flex-1 justify-start text-start"
                       aria-current={selected ? "true" : undefined}
                       aria-controls={detailId}
                       onClick={() => select(role.id)}
                     >
-                      <span className="flex min-w-0 flex-col items-start leading-tight">
-                        <span className="inline-flex max-w-full items-center gap-1.5">
+                      <span className="ui-service-role-panel-item-body">
+                        <span className="ui-service-role-panel-item-title">
                           <Text weight="medium" className="truncate">
                             {role.name}
                           </Text>

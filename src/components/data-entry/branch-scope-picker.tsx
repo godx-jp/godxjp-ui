@@ -108,7 +108,7 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
         id={rootId}
         data-slot="branch-scope-picker"
         data-readonly={readOnly || undefined}
-        className={cn("ui-branch-scope-picker flex flex-col gap-3", className)}
+        className={cn("ui-branch-scope-picker", className)}
       >
         {children}
       </div>
@@ -175,7 +175,7 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
             {value.mode === "all" ? resolvedAllLabel : resolvedSelectedLabel}
           </Text>
           {value.mode === "selected" && (
-            <div className="flex flex-wrap gap-1.5">
+            <div className="ui-branch-scope-picker-badges">
               {selectedBranches.map((branch) => (
                 <Badge key={branch.id} variant="outline">
                   {branch.name}
@@ -221,7 +221,7 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
         />
 
         {value.mode === "selected" && (
-          <div className="border-border flex flex-col gap-2 border-s-2 ps-4">
+          <div className="ui-branch-scope-picker-subset">
             {searchable && branches.length > 0 && (
               <SearchInput
                 value={search}
@@ -246,7 +246,7 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
                 role="group"
                 aria-label={t("dataEntry.branchScope.listLabel")}
                 tabIndex={0}
-                className="max-h-64 overflow-y-auto"
+                className="ui-branch-scope-picker-list"
               >
                 <CheckboxGroup
                   value={[...branchIds]}

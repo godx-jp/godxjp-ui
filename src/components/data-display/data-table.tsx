@@ -5,7 +5,7 @@
 // gh#216, precedence loading > denied > error > empty > rows), sorting, global
 // search, column visibility,
 // and BOTH cursor and numbered pagination. Internally driven by
-// `@tanstack/react-table` (useReactTable) so sorting / filtering / column
+// `@tanstack/react-table` (useTable) so sorting / filtering / column
 // visibility / pagination / selection are all real table state — but the SIMPLE
 // `data` + `columns` (lean ColumnDef) entry path is preserved as the default
 // usage, so a consumer who only passes `data` + `columns` still gets a rendered
@@ -27,21 +27,27 @@
 // runtime-neutral root barrel (src/index.ts / admin) — see check-core-isolation.
 import * as React from "react";
 import {
+  columnFilteringFeature,
+  columnVisibilityFeature,
+  createCoreRowModel,
+  createFilteredRowModel,
+  createPaginatedRowModel,
+  createSortedRowModel,
   flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+  globalFilteringFeature,
+  rowPaginationFeature,
+  rowSelectionFeature,
+  rowSortingFeature,
+  tableFeatures,
+  useTable,
   type ColumnDef as TanstackColumnDef,
   type ColumnFiltersState,
+  type ColumnVisibilityState,
   type OnChangeFn,
   type PaginationState,
-  type RowData,
   type RowSelectionState,
   type SortingState,
-  type Table as TanstackTable,
-  type VisibilityState,
+  type ReactTable,
 } from "@tanstack/react-table";
 import {
   AlertCircle,
@@ -117,21 +123,86 @@ export type ColumnDef<T> = ColumnDefProp<T>;
 
 // ── lean ColumnDef → TanStack column adapter ───────────────────────────────
 // We keep the lean ColumnDef as the public column shape and translate it into a
-// TanStack column. The original lean column is stashed in `meta.lean` so the
-// (lean-rendered) Content can read render/align/width/pin/hiddenOnMobile/priority
-// back — `meta.lean` is THE declared home for every custom column option here, so
-// `priority` needs no second TanStack channel (see the ColumnMeta augmentation).
-declare module "@tanstack/react-table" {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- generics required by the augmented interface signature
-  interface ColumnMeta<TData extends RowData, TValue> {
-    lean?: ColumnDef<TData>;
-  }
+/**
+ * Per-column metadata this table hangs off every TanStack column.
+ *
+ * v8 declared this by module-augmenting `ColumnMeta`, which was global: EVERY table in the
+ * consumer's app inherited our `lean` key. v9 replaced that with a per-table `columnMeta` slot on
+ * the features object, so the type is scoped to this component and stays parameterised by the row
+ * type instead of leaking into anyone else's tables.
+ */
+interface DataTableColumnMeta<T> {
+  /**
+   * The original lean column. It is THE declared home for every custom column option here
+   * (render/align/width/pin/hiddenOnMobile/priority), so `priority` needs no second TanStack
+   * channel — Content reads it all back off `meta.lean`.
+   */
+  lean?: ColumnDef<T>;
 }
 
-function toTanstackColumns<T>(columns: ColumnDef<T>[]): TanstackColumnDef<T, unknown>[] {
+/**
+ * The TanStack v9 feature set this table opts into.
+ *
+ * v9 made features explicit: a table carries only the state, options and row-model plumbing it
+ * declares, and every generic (`ColumnDef`, `Table`, `TableState`) is parameterised by that set.
+ * Declaring it in one place keeps the rest of this file reading like the v8 wiring did, while
+ * being the honest inventory of what DataTable supports — v8 only ever implied that list through
+ * which `get*RowModel` helpers happened to be passed in.
+ *
+ * The row-model factories are registered unconditionally. v8 omitted them to disable a stage;
+ * v9 keys that off the `manual*` options instead — `table_getSortedRowModel` returns the
+ * pre-sorted model whenever `manualSorting` is set — so the behaviour is unchanged and the
+ * feature set stays a single static shape.
+ *
+ * It is a function only so `columnMeta` can carry the row type; the runtime object is identical
+ * for every `T`, so callers memoise one per table.
+ */
+function dataTableFeatures<T>() {
+  return tableFeatures({
+    rowSortingFeature,
+    columnFilteringFeature,
+    globalFilteringFeature,
+    rowPaginationFeature,
+    rowSelectionFeature,
+    columnVisibilityFeature,
+    coreRowModel: createCoreRowModel(),
+    filteredRowModel: createFilteredRowModel(),
+    sortedRowModel: createSortedRowModel(),
+    paginatedRowModel: createPaginatedRowModel(),
+    columnMeta: {} as DataTableColumnMeta<T>,
+  });
+}
+
+type DataTableFeatures<T> = ReturnType<typeof dataTableFeatures<T>>;
+
+/**
+ * v9 constrains its row type to `RowData` (`Record<string, any> | Array<any>`). A consumer's row
+ * is normally an `interface`, and an interface has no index signature, so `DataTable<Order>` would
+ * stop compiling for every consumer that did not redeclare `Order` as a type alias — a breaking
+ * change for a purely internal upgrade. Intersecting with an indexed type satisfies the constraint
+ * without touching the public generic: `T & Record<string, unknown>` is still a subtype of `T`, so
+ * `row.original` keeps flowing back out as the consumer's own row type. The bridge is types only —
+ * nothing about the data changes at runtime.
+ */
+type TanstackRow<T> = T & Record<string, unknown>;
+
+/**
+ * The TanStack table instance this component drives, with our feature set applied.
+ *
+ * The React adapter's type, not table-core's: v9 moved render-time state reads off
+ * `table.state` onto `table.state`, which only the React instance carries (it is the
+ * store-subscribed projection that actually re-renders).
+ */
+type DataTableInstance<T> = ReactTable<DataTableFeatures<T>, TanstackRow<T>>;
+
+// Lean columns are translated once into TanStack columns. The original lean column is stashed in
+// `meta.lean` so the (lean-rendered) Content can read it back — see DataTableColumnMeta.
+function toTanstackColumns<T>(
+  columns: ColumnDef<T>[],
+): TanstackColumnDef<DataTableFeatures<T>, TanstackRow<T>, unknown>[] {
   return columns.map((col) => ({
     id: col.key,
-    accessorFn: (row: T) => (row as Record<string, unknown>)[col.key],
+    accessorFn: (row: TanstackRow<T>) => row[col.key],
     header: () => col.header,
     enableSorting: !!col.sortable,
     enableHiding: col.enableHiding ?? true,
@@ -141,7 +212,7 @@ function toTanstackColumns<T>(columns: ColumnDef<T>[]): TanstackColumnDef<T, unk
 }
 
 interface DataTableContextValue<T = unknown> {
-  table: TanstackTable<T>;
+  table: DataTableInstance<T>;
   density: Density;
   setDensity: (d: Density) => void;
   selectable: boolean;
@@ -197,8 +268,8 @@ interface DataTableProps<T> {
   /** Total server row count (manual pagination) — drives the page count. */
   rowCount?: number;
   /** Column show/hide state, surfaced by DataTable.ViewOptions. */
-  columnVisibility?: VisibilityState;
-  onColumnVisibilityChange?: OnChangeFn<VisibilityState>;
+  columnVisibility?: ColumnVisibilityState;
+  onColumnVisibilityChange?: OnChangeFn<ColumnVisibilityState>;
   /**
    * Manual (server) flags. Default `false` so the simple `data`+`columns` case
    * sorts / filters in-browser with no extra wiring. Client pagination slices
@@ -336,7 +407,7 @@ export function DataTable<T>({
     pageSize: 10,
   });
   const [internalSelection, setInternalSelection] = React.useState<RowSelectionState>({});
-  const [internalVisibility, setInternalVisibility] = React.useState<VisibilityState>({});
+  const [internalVisibility, setInternalVisibility] = React.useState<ColumnVisibilityState>({});
 
   // ── selection: keep the legacy Set<string> surface, bridged to TanStack. ──
   const selectionFromSet = React.useCallback(
@@ -398,19 +469,21 @@ export function DataTable<T>({
     onPaginationChange !== undefined ||
     hasNumberedPager;
 
-  const table = useReactTable<T>({
-    data,
+  // One feature set per table instance. The object is the same for every T, but the table is
+  // built from it, so it must stay referentially stable across renders.
+  const features = React.useMemo(() => dataTableFeatures<T>(), []);
+
+  const table = useTable<DataTableFeatures<T>, TanstackRow<T>>({
+    features,
+    data: data as TanstackRow<T>[],
     columns: tanstackColumns,
     getRowId,
-    getCoreRowModel: getCoreRowModel(),
-    ...(manualSorting ? {} : { getSortedRowModel: getSortedRowModel() }),
-    ...(manualFiltering ? {} : { getFilteredRowModel: getFilteredRowModel() }),
-    ...(manualPagination || !paginationEngaged
-      ? {}
-      : { getPaginationRowModel: getPaginationRowModel() }),
     manualSorting,
     manualFiltering,
-    manualPagination,
+    // v8 disengaged pagination by withholding the row model; v9 has one static feature set, so
+    // "no pager on this table" is expressed the same way as "the server paginates" — leave the
+    // rows unsliced. Page count still derives from `rowCount`/the pre-paginated model either way.
+    manualPagination: manualPagination || !paginationEngaged,
     rowCount,
     enableRowSelection: selectable,
     state: {
@@ -501,7 +574,7 @@ DataTable.Search = function DataTableSearch({
 }) {
   const { table } = useDataTableContext();
   const { t } = useTranslation();
-  const value = (table.getState().globalFilter as string) ?? "";
+  const value = (table.state.globalFilter as string) ?? "";
   return (
     <SearchInput
       value={value}
@@ -538,7 +611,7 @@ DataTable.ViewOptions = function DataTableViewOptions({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className={className}>
-          <SlidersHorizontal className="size-4 shrink-0" aria-hidden="true" />
+          <SlidersHorizontal className="ui-data-table-toolbar-icon" aria-hidden="true" />
           {label ?? t("dataGrid.view")}
         </Button>
       </DropdownMenuTrigger>
@@ -690,7 +763,7 @@ DataTable.DensityToggle = function DataTableDensityToggle() {
       aria-label={t("dataTable.densitySwitch", { density: nextLabel })}
     >
       <Flex direction="row" wrap align="center" gap="xs">
-        <Icon className="size-4" aria-hidden="true" />
+        <Icon className="ui-data-table-toolbar-icon" aria-hidden="true" />
         {density === "compact" ? t("dataTable.densityCompact") : t("dataTable.densityComfortable")}
       </Flex>
     </Button>
@@ -790,7 +863,7 @@ DataTable.Content = function DataTableContent() {
 
   // Active sort for header indicators — prefer the lean `sort` prop, else read
   // it back from the internal TanStack sorting state.
-  const activeSort = sort ?? sortingStateToSort(table.getState().sorting);
+  const activeSort = sort ?? sortingStateToSort(table.state.sorting);
   const isControlledSort = sort !== undefined || !!onSortChange;
 
   const onHeaderClick = (col: ColumnDef<unknown>) => {
@@ -851,10 +924,12 @@ DataTable.Content = function DataTableContent() {
             the preset that wrapper is the keyboard-reachable scroll region (exactly the bare
             `Table` behaviour), scrolling inside the surface border. */}
         <Table scrollable={preset !== "default"} preset={preset} collapseBelow={collapseBelow}>
-          <TableHeader className={cn("bg-secondary", stickyHeader && "sticky top-0 z-10")}>
+          <TableHeader
+            className={cn("bg-secondary", stickyHeader && "ui-data-table-sticky-header")}
+          >
             <TableRow>
               {selectable && (
-                <TableHead className="w-10">
+                <TableHead className="ui-data-table-select-column">
                   <DataTable.SelectAll />
                 </TableHead>
               )}
@@ -864,12 +939,15 @@ DataTable.Content = function DataTableContent() {
                 const sortIndicator = isSortable ? (
                   isActiveSort ? (
                     activeSort?.direction === "asc" ? (
-                      <ArrowUp className="size-3" aria-hidden="true" />
+                      <ArrowUp className="ui-data-table-sort-icon" aria-hidden="true" />
                     ) : (
-                      <ArrowDown className="size-3" aria-hidden="true" />
+                      <ArrowDown className="ui-data-table-sort-icon" aria-hidden="true" />
                     )
                   ) : (
-                    <ChevronsUpDown className="text-muted-foreground size-3" aria-hidden="true" />
+                    <ChevronsUpDown
+                      className="ui-data-table-sort-icon text-muted-foreground"
+                      aria-hidden="true"
+                    />
                   )
                 ) : null;
                 const headerEmpty = isEmptyHeader(col.header);
@@ -896,6 +974,11 @@ DataTable.Content = function DataTableContent() {
                     // gains no attribute (see ColumnDefProp.priority).
                     priority={col.priority}
                     data-empty={headerEmpty || undefined}
+                    // The RESOLVED heading alignment, reflected so alignment is assertable and
+                    // themeable at the contract level rather than through whichever text-* utility
+                    // paints it today. Absent (not `"left"`) when the column never asked for one,
+                    // so an ordinary table gains no attribute — same rule as `data-priority`.
+                    data-align={col.headerAlign ?? col.align}
                     aria-sort={
                       isSortable
                         ? isActiveSort
@@ -922,7 +1005,7 @@ DataTable.Content = function DataTableContent() {
                     {isSortable ? (
                       <button
                         type="button"
-                        className="ui-data-table-sort-button ui-focus-ring rounded-sm"
+                        className="ui-data-table-sort-button ui-focus-ring"
                         onClick={() => {
                           onHeaderClick(col);
                         }}
@@ -947,13 +1030,14 @@ DataTable.Content = function DataTableContent() {
                 <TableRow key={`skeleton-${i}`} className={cn(rowPadding, "hover:bg-transparent")}>
                   {selectable && (
                     <TableCell className={cellPadding}>
-                      <div className="ui-skeleton-block size-4 rounded-sm" />
+                      <div className="ui-skeleton-block ui-data-table-skeleton-check" />
                     </TableCell>
                   )}
                   {visibleColumns.map((col, j) => (
                     <TableCell
                       key={col.key}
                       priority={col.priority}
+                      data-align={col.align}
                       style={columnWidth(col.width).style}
                       className={cn(
                         cellPadding,
@@ -966,7 +1050,7 @@ DataTable.Content = function DataTableContent() {
                     >
                       <div
                         className={cn(
-                          "ui-skeleton-block h-4",
+                          "ui-skeleton-block ui-data-table-skeleton-line",
                           j === 0 ? "w-1/2" : "w-3/4",
                           col.align === "right" && "ms-auto",
                           col.align === "center" && "mx-auto",
@@ -1102,6 +1186,7 @@ DataTable.Content = function DataTableContent() {
                       <TableCell
                         key={col.key}
                         priority={col.priority}
+                        data-align={col.align}
                         style={columnWidth(col.width).style}
                         className={cn(
                           cellPadding,
@@ -1210,7 +1295,7 @@ function NumberedPagination({
 }: NumberedPaginationProps) {
   const { table } = useDataTableContext();
   const { t } = useTranslation();
-  const { pageIndex, pageSize } = table.getState().pagination;
+  const { pageIndex, pageSize } = table.state.pagination;
   const pageCount = table.getPageCount();
 
   return (
@@ -1223,7 +1308,7 @@ function NumberedPagination({
       className={cn("ui-data-table-pagination ui-data-table-pagination--numbered", className)}
     >
       <Flex direction="row" align="center" gap="sm" className="ui-data-table-page-size">
-        <span className="ui-data-table-page-size-label text-muted-foreground text-sm">
+        <span className="ui-data-table-page-size-label ui-data-table-pagination-text">
           {t("dataGrid.rowsPerPage")}
         </span>
         <Select
@@ -1247,7 +1332,7 @@ function NumberedPagination({
         </Select>
       </Flex>
       <Flex direction="row" align="center" gap="sm" className="ui-data-table-page-nav">
-        <span className="text-muted-foreground text-sm tabular-nums">
+        <span className="ui-data-table-pagination-text tabular-nums">
           {t("dataGrid.pageOf", { page: pageIndex + 1, total: Math.max(1, pageCount) })}
         </span>
         <Button
@@ -1257,7 +1342,7 @@ function NumberedPagination({
           onClick={() => table.previousPage()}
           aria-label={t("common.previous") ?? "Previous"}
         >
-          <ChevronLeft className="size-4" aria-hidden="true" />
+          <ChevronLeft className="ui-data-table-pagination-icon" aria-hidden="true" />
         </Button>
         <Button
           variant="outline"
@@ -1266,7 +1351,7 @@ function NumberedPagination({
           onClick={() => table.nextPage()}
           aria-label={t("common.next") ?? "Next"}
         >
-          <ChevronRight className="size-4" aria-hidden="true" />
+          <ChevronRight className="ui-data-table-pagination-icon" aria-hidden="true" />
         </Button>
       </Flex>
     </Flex>
@@ -1291,7 +1376,7 @@ DataTable.RowActions = function DataTableRowActions({ ariaLabel, children }: Row
       aria-label={ariaLabel ?? t("dataTable.rowActions")}
       className={controlIconSmClass}
     >
-      <MoreHorizontal className="size-4" aria-hidden="true" />
+      <MoreHorizontal className="ui-data-table-toolbar-icon" aria-hidden="true" />
       {children}
     </Button>
   );

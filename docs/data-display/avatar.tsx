@@ -7,6 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  ListRow,
 } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -168,6 +169,138 @@ export default function Demo() {
                 </Avatar>
               </Flex>
             </Flex>
+          </CardContent>
+        </Card>
+
+        {/* presence — the realtime reachability dot (gh#309) */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>プレゼンス · presence</CardTitle>
+            <CardDescription>
+              「今つながるか」はマークの上に出る。presence を渡すとドットとローカライズ済みの
+              sr-only テキストが同時に付く（色だけで状態を伝えない · WCAG 1.4.1）。 4
+              つの値は色に加えて形でも区別する。online は塗り、away は下半分塗り、busy
+              は横棒入り、offline は中空リング。 グレースケールでも、色覚特性があっても、Windows
+              ハイコントラストでも 4 状態が判別できる。 直径・食い込み・リング幅・リング色は
+              --avatar-presence-* トークン所有（#44 / #45）。 直径はマークに対する比率なので、size-8
+              でも size-12 でも組織マークでも同じ 1 つの値で追従する。 presence
+              を渡さない＝「プレゼンスという概念が無い」（組織マーク）で、DOM
+              には何も出ない。presence=&quot;offline&quot; は「不在だと分かっている」で、別の意味。
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <ListRow
+              leading={
+                <Avatar presence="online">
+                  <AvatarImage src="https://picsum.photos/seed/godxjp-a/96/96" alt="" />
+                  <AvatarFallback>田</AvatarFallback>
+                </Avatar>
+              }
+              title="田中 未来"
+              description="プロダクト · #general"
+            />
+            <ListRow
+              leading={
+                <Avatar presence="busy">
+                  <AvatarImage src="https://picsum.photos/seed/godxjp-b/96/96" alt="" />
+                  <AvatarFallback>佐</AvatarFallback>
+                </Avatar>
+              }
+              title="佐藤 玲"
+              description="デザイン · #general"
+            />
+            <ListRow
+              leading={
+                <Avatar presence="away">
+                  <AvatarFallback>鈴</AvatarFallback>
+                </Avatar>
+              }
+              title="鈴木 大輔"
+              description="エンジニアリング · #general"
+            />
+            <ListRow
+              leading={
+                <Avatar presence="offline">
+                  <AvatarFallback>山</AvatarFallback>
+                </Avatar>
+              }
+              title="山本 彩"
+              description="サポート · #general"
+            />
+            {/* No presence at all — an organization mark has no reachability to report. */}
+            <ListRow
+              leading={
+                <Avatar shape="square">
+                  <AvatarFallback>山</AvatarFallback>
+                </Avatar>
+              }
+              title="株式会社山田商事"
+              description="組織 · プレゼンスの概念なし"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>プレゼンス · 4 状態と寸法追従</CardTitle>
+            <CardDescription>
+              上段は 4 状態を写真の上に重ねたもの。リングが写真から
+              ドットを切り離すために幅を稼いでいることが分かる。 中段は同じ
+              presence=&quot;online&quot; を size-8 / 既定 / size-12 / 組織マークに載せたもので、
+              ドットが px 固定ではなくマーク比で追従することを示す。下段は密度の高い行（36px
+              マーク）での見え方。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" wrap align="center" gap="md">
+                <Avatar presence="online">
+                  <AvatarImage src="https://picsum.photos/seed/godxjp-c/96/96" alt="オンライン" />
+                  <AvatarFallback>在</AvatarFallback>
+                </Avatar>
+                <Avatar presence="away">
+                  <AvatarImage src="https://picsum.photos/seed/godxjp-d/96/96" alt="離席中" />
+                  <AvatarFallback>離</AvatarFallback>
+                </Avatar>
+                <Avatar presence="busy">
+                  <AvatarImage src="https://picsum.photos/seed/godxjp-e/96/96" alt="取り込み中" />
+                  <AvatarFallback>取</AvatarFallback>
+                </Avatar>
+                <Avatar presence="offline">
+                  <AvatarImage src="https://picsum.photos/seed/godxjp-f/96/96" alt="オフライン" />
+                  <AvatarFallback>離</AvatarFallback>
+                </Avatar>
+              </Flex>
+              <Flex direction="row" wrap align="center" gap="md">
+                <Avatar className="size-8" presence="online">
+                  <AvatarFallback>S</AvatarFallback>
+                </Avatar>
+                <Avatar presence="online">
+                  <AvatarFallback>D</AvatarFallback>
+                </Avatar>
+                <Avatar className="size-12" presence="online">
+                  <AvatarFallback>L</AvatarFallback>
+                </Avatar>
+                <Avatar shape="square" presence="online">
+                  <AvatarFallback>山</AvatarFallback>
+                </Avatar>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent flush>
+            <ListRow
+              density="compact"
+              leading={
+                <Avatar className="size-9" presence="busy" presenceLabel="会議中 · 15:00まで">
+                  <AvatarFallback>佐</AvatarFallback>
+                </Avatar>
+              }
+              title="佐藤 玲"
+              description="presenceLabel でプロダクト側の言い回しに差し替え（表示はされない）"
+            />
           </CardContent>
         </Card>
 

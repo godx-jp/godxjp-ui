@@ -38,9 +38,9 @@
    * second border. Values preserve the look these controls always had; they are
    * knobs now instead of hand-written box-shadows (styles/focus-ring.css). */
   --toggle-focus-ring-width: 3px;
-  --toggle-focus-ring-opacity: 0.35;
+  --toggle-focus-ring-alpha: 0.35;
   --time-input-focus-ring-width: 3px;
-  --time-input-focus-ring-opacity: 0.3;
+  --time-input-focus-ring-alpha: 0.3;
 
   /* Outline-form gaps — marks where a radius-hugging ring would touch the glyph. */
   --rating-focus-ring-offset: 2px;
@@ -106,8 +106,16 @@
   --slider-track-background: initial;
   --slider-range-background: initial;
 
+  /* Switch OFF track fill (gh#315) — `initial`, default hsl(var(--input)). Its own knob so a
+   * service can quieten the off-track without dragging the --input control-boundary role back
+   * below the WCAG SC 1.4.11 floor (rule #45); whatever you set still owes 3:1 against the page
+   * and against the thumb (--background), or "off" stops being a visible state. */
+  --switch-unchecked-background: initial;
+
+  /* ColorPicker — width of the hex text field beside the swatch. */
   --color-picker-input-width: 6.5rem;
 
+  /* Command / CommandPalette — list height, inner paddings and the palette's own box. */
   --command-list-max-height: min(300px, 50vh);
   --command-input-padding-x: var(--space-3);
   --command-group-padding: var(--space-1);
@@ -119,6 +127,9 @@
   --command-palette-hint-padding-y: var(--space-2);
   --command-palette-hint-padding-x: var(--space-4);
   --command-palette-hint-gap: var(--space-4);
+
+  /* SearchInput — the inset the leading/trailing icons sit at, and the field padding derived
+   * from it so the text never runs under an icon. */
   --search-input-edge-inset: var(--space-3);
   --search-input-start-padding: calc(
     var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap)
@@ -127,6 +138,8 @@
     var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap)
   );
 
+  /* The --font-size-xs tier, spelled once per control that reads it, so a service can retune a
+   * single one of them without moving the whole scale. */
   --choice-description-font-size: var(--font-size-xs);
   --color-picker-hex-font-size: var(--font-size-xs);
   --command-group-heading-font-size: var(--font-size-xs);
@@ -139,6 +152,319 @@
 /* Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target
  * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height
  * resolves through these via var(), so inputs/buttons/selects/table rows all bump together. */
+/* Control-family tokens added for #319.
+ *
+ * These MUST live in a plain :root, not inside the @media (pointer: coarse) block below —
+ * bare declarations in a conditional group rule are invalid CSS and the parser drops them
+ * silently. They spent this whole refactor dead for exactly that reason: the guards read the
+ * file textually, so check-token-tiers and the geometry ratchet both passed while every one of
+ * these resolved to nothing. */
+:root {
+  /* TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline
+   * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm
+   * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the
+   * literal through several components. One shared set of knobs instead — this is a CONTROL-level
+   * concern, not a per-component one. */
+  --control-affix-inset-inline-end: var(--space-2);
+  --control-affix-action-size: 1.5rem;
+  --control-affix-action-radius: var(--radius-sm);
+  --control-affix-icon-size: 1rem;
+  /* Resting weight of an affix glyph — it must read as secondary until hovered/focused. */
+  --control-affix-rest-alpha: 0.5;
+  /* Room a trigger reserves so its label never runs under the affix. */
+  /* 2.25rem — the room a single trailing affix needs. Written as a raw rem because the
+   * literal it replaced (`pe-9`) is a flat Tailwind step, not a density-scaled one. */
+  --control-trigger-space-inline-end: 2.25rem;
+
+  /* INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the
+   * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect
+   * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit
+   * on the field's own surface rather than over it, they rest a touch heavier than the overlay
+   * pair — that difference is the reason the two sets stay separate. */
+  --control-inline-affix-size: 1.25rem;
+  --control-inline-affix-icon-size: var(--control-affix-icon-size);
+  --control-inline-affix-space-gap: var(--space-1);
+  --control-inline-affix-inset-inline: var(--space-2);
+  --control-inline-affix-rest-alpha: 0.7;
+  /* Inline room the field reserves so its text never runs under a single affix. */
+  --control-inline-affix-space-inline-end: 2.25rem;
+  /* Input centres its affix on the field's single line; a textarea has no single line to centre
+   * on, so its clear control parks at the top-end corner instead. */
+  --textarea-clear-inset-block-start: var(--space-2);
+  /* MULTILINE BOX — the block padding of `.ui-control-multiline` (Textarea). It was a bare
+   * `--space-2` inside the padding shorthand, which made it unreachable for a service that runs a
+   * denser composer, AND it is the constant the auto-grow row maths has to add back, so the two
+   * had to read the same knob or drift (#45). */
+  --control-multiline-padding-block: var(--space-2);
+  /* TEXTAREA AUTO-GROW (gh#310) — `autoGrow` grows the box with its content between a floor and a
+   * ceiling expressed in TEXT ROWS. Rows, not pixels, because a row count survives a density
+   * change and a `--font-size-base` retheme where a px ceiling would silently stop matching the
+   * visible line count. Defaults reproduce today's geometry when `autoGrow` is absent (#44). */
+  /* The unit a "row" is measured in. `initial` on purpose: the call site reads
+   * `var(--textarea-autogrow-line-height, var(--line-height-normal))`, so a service that retunes
+   * the multiline line-height for CJK legibility retunes the ceiling with it (#46). Unitless —
+   * it is multiplied by `--control-font-size`. */
+  --textarea-autogrow-line-height: initial;
+  /* Floor of the grown box, in text rows. The `minRows` prop overrides per instance — the same
+   * theme-global / prop-local priority as `--form-label-width` vs `labelWidth`. The floor is
+   * additionally clamped up to `--control-height` so a resting one-row composer still lines up
+   * with the Input / Button beside it instead of undercutting the control tier. */
+  --textarea-autogrow-min-height-rows: 1;
+  /* Ceiling of the grown box, in text rows; past it the control scrolls internally instead of
+   * pushing the page. `maxRows={0}` sets this to `infinity` for an unbounded box. */
+  --textarea-autogrow-max-height-rows: 8;
+  /* The non-text part of the box the row maths must add back: block padding + border, both
+   * edges. `.ui-textarea-autogrow--ghost` re-declares it without the border, because the ghost
+   * variant drops its own chrome. */
+  --textarea-autogrow-box-inset: calc(
+    (var(--control-multiline-padding-block) + var(--control-border-width)) * 2
+  );
+  /* A field parking TWO inline affixes (TimePicker's clear+clock, DatePicker's clear+calendar)
+   * reserves a wider end than the single-affix case. */
+  --control-inline-affix-pair-space-inline-end: 3.5rem;
+  /* COMPOSITE FIELD — the bordered box that wraps two inputs plus a separator (date/month
+   * range pickers) or one input plus affixes. Shared so the four range/picker fields cannot
+   * drift into four slightly different boxes. */
+  --control-composite-field-space-gap: var(--space-2);
+  /* The <input type=file> button is a browser-owned box we restyle; it sits one tier below the
+   * field so it reads as a control INSIDE the control. */
+  --input-file-button-height: 1.75rem;
+  --input-file-button-font-size: var(--font-size-sm);
+
+  /* SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the
+   * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could
+   * not widen the panel or change the viewport gutter without forking. */
+  --search-select-panel-max-width: 32rem;
+  --search-select-panel-viewport-inset: var(--space-6);
+  --search-select-list-space-inset: var(--space-1);
+  --search-select-footer-space-inset: var(--space-1);
+  --search-select-option-space-gap: var(--space-2);
+  --search-select-option-font-size: var(--font-size-sm);
+  --search-select-option-sublabel-font-size: var(--font-size-xs);
+  --search-select-status-space-inline: var(--space-2);
+  --search-select-status-space-block: var(--space-3);
+  /* Empty/error states sit alone in the panel, so they get a taller, centred block. */
+  --search-select-placeholder-space-block: var(--space-6);
+  --search-select-status-font-size: var(--font-size-sm);
+  --search-select-spinner-size: 1rem;
+
+  /* CASCADER — column browser + flat search list. Its option rows, column widths and panel
+   * paddings were literals on the component (#319), so a service could not widen a column to fit
+   * longer JA labels or tighten the row rhythm without forking. */
+  --cascader-column-min-width: 9rem;
+  --cascader-columns-max-height: min(280px, 50vh);
+  --cascader-list-max-height: min(300px, 50vh);
+  --cascader-panel-space-inset: var(--space-1);
+  --cascader-option-space-inline: var(--space-3);
+  --cascader-option-space-block: var(--space-2);
+  --cascader-option-space-gap: var(--space-1);
+  --cascader-option-font-size: var(--font-size-sm);
+  --cascader-option-icon-size: 1rem;
+  /* The flat search result row is denser than a column row — it has no chevron to balance. */
+  --cascader-result-space-inline: var(--space-2);
+  --cascader-result-space-block: 0.375rem;
+  --cascader-result-radius: var(--radius-sm);
+  --cascader-result-icon-space-inline-end: var(--space-2);
+  --cascader-empty-space-block: var(--space-6);
+
+  /* SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*),
+   * so only what is genuinely its own lives here (#319). */
+  --select-content-max-height: 24rem;
+  --select-scroll-button-space-block: var(--space-1);
+  /* Select rows sit slightly wider than a menu row: a listbox has no leading icon column to
+   * absorb the optical inset, so 2.5 reads level with a menu's 2 + icon. */
+  --select-item-space-inline: 0.625rem;
+
+  /* TIME PICKER — scroll columns of hour/minute/second plus an inline affix pair. All of its
+   * geometry was literal on the component (#319): a service could not shorten the column, widen
+   * the panel for a 12-hour layout, or retune the row rhythm without forking. */
+  --time-picker-column-height: 13rem;
+  --time-picker-panel-width: 9rem;
+  /* 12-hour mode adds an AM/PM column, so the panel is wider. */
+  --time-picker-panel-width-12h: 13rem;
+  --time-picker-heading-space-inline: var(--space-1);
+  --time-picker-heading-space-block: 0.375rem;
+  --time-picker-heading-font-size: var(--font-size-xs);
+  --time-picker-column-space-inset: var(--space-1);
+  --time-picker-option-space-block: 0.375rem;
+  --time-picker-option-radius: var(--radius-md);
+  --time-picker-option-font-size: var(--font-size-sm);
+  --time-picker-footer-space-inset: var(--space-2);
+
+  --time-picker-affix-space-gap: var(--control-inline-affix-space-gap);
+
+  /* TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal
+   * on the component, and the depth indent was a magic expression in JSX
+   * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319). */
+  --tree-select-list-max-height: min(300px, 50vh);
+  --tree-select-row-space-block: 0.375rem;
+  --tree-select-row-space-inline-end: var(--space-2);
+  --tree-select-row-radius: var(--radius-sm);
+  --tree-select-row-font-size: var(--font-size-sm);
+  /* Indent = base + depth × step. A denser service dials the step down without touching JSX. */
+  --tree-select-depth-space-base: var(--space-2);
+  --tree-select-depth-space-step: 1.25rem;
+  --tree-select-toggle-size: 1.25rem;
+  --tree-select-toggle-space-inline-end: var(--space-1);
+  --tree-select-label-space-gap: var(--space-2);
+  --tree-select-empty-space-block: var(--space-6);
+
+  /* CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height
+   * (the system control tier), but the frame around them — root inset, month gaps, nav offset,
+   * grid rhythm — was literal on the component (#319), so a service could not tighten the
+   * calendar to its own density without forking the classNames map. */
+  --calendar-space-inset: var(--space-3);
+  --calendar-month-space-gap: var(--space-4);
+  --calendar-caption-space-inline: var(--space-8);
+  --calendar-caption-font-size: var(--font-size-sm);
+  --calendar-nav-space-block-start: var(--space-3);
+  --calendar-nav-space-inline: var(--space-1);
+  /* Nav chevrons read as secondary until hovered — they frame the month, they are not the point. */
+  --calendar-nav-rest-alpha: 0.7;
+  --calendar-grid-space-block-start: var(--space-4);
+  --calendar-week-space-block-start: var(--space-2);
+  --calendar-weekday-font-size: var(--font-size-xs);
+  --calendar-weekday-radius: var(--radius-md);
+  --calendar-day-font-size: var(--font-size-sm);
+  --calendar-day-radius: var(--radius-md);
+  --calendar-chevron-size: 1rem;
+
+  /* TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal
+   * on the component (#319), so a service could not fit the panes to its own page grid or
+   * tighten the row for a dense admin table without forking. */
+  --transfer-pane-min-height: 14rem;
+  --transfer-pane-radius: var(--radius-md);
+  --transfer-panes-space-gap: var(--space-3);
+  --transfer-header-space-inline: var(--space-3);
+  --transfer-header-space-block: var(--space-2);
+  --transfer-header-font-size: var(--font-size-sm);
+  --transfer-header-space-gap: var(--space-2);
+  --transfer-search-space-inset: var(--space-2);
+  --transfer-list-space-inset: var(--space-1);
+  --transfer-row-space-inline: var(--space-2);
+  --transfer-row-space-block: var(--space-2);
+  --transfer-row-space-gap: var(--space-2);
+  --transfer-row-radius: var(--radius-sm);
+  --transfer-row-font-size: var(--font-size-sm);
+  /* The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to
+   * sit level with the first line's cap height rather than its box. */
+  --transfer-row-check-space-block-start: 0.125rem;
+  --transfer-row-description-font-size: var(--font-size-xs);
+  --transfer-empty-space-block: var(--space-8);
+  --transfer-actions-space-gap: var(--space-2);
+  --transfer-action-icon-size: 1rem;
+
+  /* MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav +
+   * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs
+   * now drives both, so they cannot drift apart the way Select and DropdownMenu once did. */
+  --month-picker-panel-space-inset: var(--space-3);
+  --month-picker-grid-space-block-start: var(--space-3);
+  --month-picker-grid-space-gap: var(--space-1);
+  --month-picker-cell-space-inline: var(--space-4);
+  --month-picker-nav-font-size: var(--font-size-sm);
+  /* Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so
+   * the two panels stay visually consistent when either is retuned. */
+  --month-picker-nav-rest-alpha: var(--calendar-nav-rest-alpha);
+  --month-picker-icon-size: 1rem;
+  --month-picker-separator-icon-size: 0.875rem;
+
+  /* BUTTON size-xs box + the count pill (#319, reconciled in #316).
+   *
+   * `size="xs"` now reads the tier, like every other control in the library. It used to be
+   * `calc(var(--control-height) - 0.75rem)` = 1.25rem, which sat 4px BELOW `--control-height-xs`
+   * (1.5rem) that `size="icon-xs"` already used — the same tier name, two heights, so an xs
+   * Button never lined up with the xs control beside it. It was also the exact shape this repo's
+   * own rule forbids: an ad-hoc `calc(var(--control-height) ± length)` silently re-derives a tier
+   * and drifts from its siblings (the bug that made Pagination's size-changer taller than its
+   * page buttons), and being a raw length rather than a `--scaling`-multiplied step, it did not
+   * move with density while the tier did.
+   *
+   * What settled it was not consistency but MEASUREMENT: an xs Button rendered 20px tall, under
+   * the 24x24 CSS px that WCAG 2.2 SC 2.5.8 (Target Size, Minimum) requires, while icon-xs beside
+   * it rendered 24px and passed. So this is an accessibility fix that happens to also remove an
+   * inconsistency, not a visual preference. It is a real visual change on the most-used component
+   * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets
+   * --button-xs-height back. */
+  --button-xs-height: var(--control-height-xs);
+  --button-xs-space-inline: var(--space-2);
+  --button-xs-space-gap: var(--space-1);
+  --button-xs-font-size: var(--font-size-xs);
+  --button-xs-icon-size: 0.75rem;
+  /* Icon-adjacent padding: a button whose only child is an icon needs less inline room than one
+   * carrying a label, or the glyph floats in a too-wide box. One knob per size tier. */
+  --button-icon-space-inline-md: var(--space-3);
+  --button-icon-space-inline-sm: 0.625rem;
+  --button-icon-space-inline-lg: var(--space-4);
+  --button-icon-space-inline-xs: 0.375rem;
+  --button-space-block: var(--space-2);
+  /* Count pill — a borderless counter that reads on the button's own surface. */
+  --button-count-min-width: var(--space-4);
+  --button-count-space-inline: var(--space-1);
+  --button-count-font-size: var(--font-size-xs);
+
+  /* Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the
+   * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means
+   * its contrast was a FUNCTION of that surface — and five of those combinations measured below
+   * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text:
+   *
+   *   default (light)                  3.88   ·  destructive (dark)              4.29
+   *   outline family (light, at rest)  4.32   ·  outline family (light, hover)   3.64
+   *   outline family (dark, hover)     3.68
+   *
+   * The hover rows are the reason a static sweep never caught this: `--accent` only appears under
+   * the cursor, so no screenshot of a resting page contains the failing state. Same shape as
+   * gh#299 and gh#315 — a value that passes on the surface someone happened to check.
+   *
+   * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's
+   * contrast independent of the button's variant AND of hover. Each filled variant uses its own
+   * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less
+   * legible under any theme that keeps that button readable at all:
+   *
+   *   default      --primary     on --primary-foreground       5.04 light · 7.07 dark
+   *   destructive  --destructive on --destructive-foreground   6.10 light · 5.53 dark
+   *   secondary    --secondary   on --secondary-foreground    14.25 light · 12.40 dark
+   *   outline family --foreground on --muted                  14.25 light · 12.40 dark
+   *
+   * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the
+   * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS
+   * that went up, not loudness of the pill.
+   *
+   * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so
+   * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md ·
+   * "Role-mirror knobs MUST be `initial`"). */
+  --button-count-background: initial;
+  --button-count-color: initial;
+  --button-count-default-background: initial;
+  --button-count-default-color: initial;
+  --button-count-destructive-background: initial;
+  --button-count-destructive-color: initial;
+  --button-count-secondary-background: initial;
+  --button-count-secondary-color: initial;
+
+  /* LABEL — the Label primitive's own box and type (#319). Every one of these was a Tailwind
+   * literal baked into label.tsx (`text-sm leading-none flex items-center gap-2`), so a service
+   * whose form grid wanted a smaller/denser label had to hand-write font-size on every call site
+   * (which is exactly why --form-label-font-size had to be invented as a per-instance escape).
+   * They live under the `control` prefix because Label is a control-family primitive and
+   * src/tokens/components/ has no `label` file of its own.
+   *
+   * Defaults reproduce today's rendering exactly:
+   *   font-size   ← `text-sm`      → --text-sm → var(--font-size-sm)
+   *   line-height ← `leading-none` → 1 (leading-none beats text-sm's companion line-height) */
+  --control-label-font-size: var(--font-size-sm);
+  --control-label-line-height: 1;
+  /* Label → addon/required-marker gap. A RAW rem, deliberately NOT var(--space-2): the `gap-2` it
+   * replaces reads Tailwind's own --spacing grid, which this repo does NOT density-scale, so a
+   * --space-* default would silently resize every label row under a compact/comfortable density.
+   * A service that WANTS it to follow density points the knob at var(--space-2) itself. */
+  --control-label-space-gap: 0.5rem;
+  /* Weight of a label whose `peer` control is disabled. Deliberately its OWN knob rather than the
+   * global --disabled-opacity (0.5): a label must stay READABLE next to a disabled control — it is
+   * still the field's accessible name — so it rests one step heavier than the control it names.
+   * Default = the historical `peer-disabled:opacity-70`. */
+  --control-label-disabled-alpha: 0.7;
+}
+
 @media (pointer: coarse) {
   :root {
     --control-height-compact: 2.75rem;

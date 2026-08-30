@@ -58,12 +58,13 @@ function CheckboxVisual({
       aria-hidden="true"
       data-slot="checkbox"
       data-state={state}
+      data-disabled={disabled ? "" : undefined}
       className={cn(
         "ui-checkbox inline-flex items-center justify-center",
         // The shared CSS fills the box for [data-state=checked]; mirror that fill for the
         // indeterminate ("some children selected") state so a partial parent reads as partial.
         "data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground",
-        disabled && "cursor-not-allowed opacity-50",
+
         className,
       )}
     >
@@ -240,14 +241,14 @@ export function Cascader({
 
   const renderCascadeColumns = () => (
     <ScrollArea className="w-full">
-      <div className="flex max-h-[min(280px,50vh)]">
+      <div className="ui-cascader-columns">
         {columns.map((col, colIndex) => (
           <ul
             key={colIndex}
             role="listbox"
             aria-orientation="vertical"
             aria-multiselectable={multiple ? true : undefined}
-            className="min-w-[9rem] border-e last:border-e-0"
+            className="ui-cascader-column"
           >
             {col.map((node) => {
               const path = [...activePath.slice(0, colIndex), node.value];
@@ -271,11 +272,11 @@ export function Cascader({
                     aria-haspopup={hasChildren ? "menu" : undefined}
                     aria-expanded={hasChildren ? active : undefined}
                     disabled={node.disabled}
+                    data-disabled={node.disabled ? "" : undefined}
                     className={cn(
-                      "flex w-full items-center gap-1 px-3 py-2 text-sm outline-none",
+                      "ui-cascader-option",
                       "hover:bg-accent hover:text-accent-foreground",
                       active && "bg-accent/70 font-medium",
-                      node.disabled && "pointer-events-none opacity-50",
                     )}
                     onMouseEnter={
                       // Hover-expand: a parent opens its children column; a leaf collapses any
@@ -297,11 +298,11 @@ export function Cascader({
                       />
                     )}
                     {!multiple && selected && (
-                      <Check className="me-1 size-4 shrink-0" aria-hidden="true" />
+                      <Check className="ui-cascader-option-icon" aria-hidden="true" />
                     )}
                     <span className="flex-1 truncate text-start">{node.label}</span>
                     {hasChildren && (
-                      <ChevronRight className="size-4 shrink-0 opacity-50" aria-hidden="true" />
+                      <ChevronRight className="ui-cascader-option-chevron" aria-hidden="true" />
                     )}
                   </button>
                 </li>
@@ -334,18 +335,14 @@ export function Cascader({
               "w-full justify-start font-normal",
               controlOpenRingClass,
               // Reserve trailing room for the single clear-or-chevron overlay rendered below.
-              "pe-9",
+              "ui-control-trigger-affixed",
               !displayLabel && "text-muted-foreground",
             )}
           >
             <span className="truncate">{displayLabel ?? resolvedPlaceholder}</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          id={panelId}
-          className="w-auto min-w-[var(--radix-popover-trigger-width)] p-0"
-          align="start"
-        >
+        <PopoverContent id={panelId} className="ui-cascader-popover" align="start">
           {/* CommandInput already draws ONE bottom separator + its own inline padding — don't
               wrap it in another bordered/padded box (that double-borders the search row). */}
           {showSearch && (
@@ -358,16 +355,14 @@ export function Cascader({
             </Command>
           )}
           {isSearching ? (
-            <ScrollArea className="max-h-[min(300px,50vh)]">
+            <ScrollArea className="ui-cascader-list">
               <div
-                className="p-1"
+                className="ui-cascader-panel"
                 role="listbox"
                 aria-multiselectable={multiple ? true : undefined}
               >
                 {searchResults.length === 0 ? (
-                  <p className="text-muted-foreground py-6 text-center text-sm">
-                    {t("dataEntry.cascader.empty")}
-                  </p>
+                  <p className="ui-cascader-empty">{t("dataEntry.cascader.empty")}</p>
                 ) : (
                   searchResults.map(({ path, labels }) => {
                     const label = labels.join(" / ");
@@ -381,7 +376,7 @@ export function Cascader({
                         role="option"
                         aria-selected={selected}
                         className={cn(
-                          "flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none",
+                          "ui-cascader-result",
                           "hover:bg-accent hover:text-accent-foreground",
                           selected && "bg-accent/60",
                         )}
@@ -391,10 +386,8 @@ export function Cascader({
                           <CheckboxVisual checked={selected} className="me-2" />
                         ) : (
                           <Check
-                            className={cn(
-                              "me-2 size-4 shrink-0",
-                              selected ? "opacity-100" : "opacity-0",
-                            )}
+                            className="ui-cascader-result-icon"
+                            data-selected={selected ? "true" : "false"}
                             aria-hidden="true"
                           />
                         )}
@@ -415,18 +408,21 @@ export function Cascader({
           falls through to the trigger to open it; only the clear control re-enables them. */}
       {/* ONE trailing icon: the clear (×) replaces the chevron while a value is selected; a
           click on the field still opens the panel (the chevron is only an affordance). */}
-      <div className="pointer-events-none absolute inset-y-0 end-3 flex items-center">
+      <div className="ui-control-affix ui-cascader-affix">
         {showClear ? (
           <button
             type="button"
             aria-label={t("dataEntry.cascader.clear")}
-            className="pointer-events-auto flex size-4 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
+            className="ui-control-affix-action"
             onClick={clearValue}
           >
-            <X className="size-4" aria-hidden="true" />
+            <X className="ui-control-affix-icon" aria-hidden="true" />
           </button>
         ) : (
-          <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
+          <ChevronsUpDown
+            className="ui-control-affix-icon ui-control-affix-indicator"
+            aria-hidden="true"
+          />
         )}
       </div>
     </div>

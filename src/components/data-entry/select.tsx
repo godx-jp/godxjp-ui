@@ -135,7 +135,7 @@ export const SelectTrigger = React.forwardRef<
       data-size={size}
       className={cn(
         controlTriggerClass,
-        "aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground w-full gap-2 whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",
+        "aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground w-full whitespace-nowrap transition-[color,box-shadow] outline-none *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center",
         className,
       )}
       {...props}
@@ -146,7 +146,7 @@ export const SelectTrigger = React.forwardRef<
         <SelectPrimitive.Icon asChild>
           <ChevronDown
             data-slot="select-chevron"
-            className="size-4 shrink-0 opacity-50"
+            className="ui-select-chevron"
             aria-hidden="true"
           />
         </SelectPrimitive.Icon>
@@ -163,10 +163,10 @@ export const SelectScrollUpButton = React.forwardRef<
   <SelectPrimitive.ScrollUpButton
     ref={ref}
     data-slot="select-scroll-up-button"
-    className={cn("flex cursor-default items-center justify-center py-1", className)}
+    className={cn("ui-select-scroll-button", className)}
     {...props}
   >
-    <ChevronUp className="size-4" aria-hidden="true" />
+    <ChevronUp className="ui-select-scroll-icon" aria-hidden="true" />
   </SelectPrimitive.ScrollUpButton>
 ));
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName;
@@ -178,10 +178,10 @@ export const SelectScrollDownButton = React.forwardRef<
   <SelectPrimitive.ScrollDownButton
     ref={ref}
     data-slot="select-scroll-down-button"
-    className={cn("flex cursor-default items-center justify-center py-1", className)}
+    className={cn("ui-select-scroll-button", className)}
     {...props}
   >
-    <ChevronDown className="size-4" aria-hidden="true" />
+    <ChevronDown className="ui-select-scroll-icon" aria-hidden="true" />
   </SelectPrimitive.ScrollDownButton>
 ));
 SelectScrollDownButton.displayName = SelectPrimitive.ScrollDownButton.displayName;
@@ -195,7 +195,7 @@ export const SelectContent = React.forwardRef<
       ref={ref}
       data-slot="select-content"
       className={cn(
-        "bg-popover text-popover-foreground data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-96 min-w-32 overflow-hidden rounded-md border shadow-md",
+        "ui-select-content data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         position === "popper" && "translate-y-1",
         className,
       )}
@@ -206,7 +206,7 @@ export const SelectContent = React.forwardRef<
       <SelectPrimitive.Viewport
         data-slot="select-viewport"
         className={cn(
-          "p-1",
+          "ui-select-viewport",
           position === "popper" &&
             "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]",
         )}
@@ -226,7 +226,7 @@ export const SelectLabel = React.forwardRef<
   <SelectPrimitive.Label
     ref={ref}
     data-slot="select-label"
-    className={cn("px-2 py-1.5 text-sm font-medium", className)}
+    className={cn("ui-select-label", className)}
     {...props}
   />
 ));
@@ -239,10 +239,7 @@ export const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     data-slot="select-item"
-    className={cn(
-      "focus:bg-accent focus:text-accent-foreground data-[state=checked]:bg-accent data-[state=checked]:text-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm px-2.5 py-1.5 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[state=checked]:font-medium [&_svg]:pointer-events-none [&_svg]:shrink-0",
-      className,
-    )}
+    className={cn("ui-select-item [&_svg:not([class*='text-'])]:text-muted-foreground", className)}
     {...props}
   >
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -257,7 +254,7 @@ export const SelectSeparator = React.forwardRef<
   <SelectPrimitive.Separator
     ref={ref}
     data-slot="select-separator"
-    className={cn("bg-border -mx-1 my-1 h-px", className)}
+    className={cn("ui-select-separator", className)}
     {...props}
   />
 ));
@@ -407,7 +404,7 @@ function DataSelect({
       <SelectTrigger
         id={id}
         data-testid={dataTestId}
-        className={cn(showClear && "pe-9", canClear ? undefined : className)}
+        className={cn(showClear && "ui-control-trigger-affixed", canClear ? undefined : className)}
         showIndicator={!showClear}
         {...ariaProps}
       >
@@ -434,15 +431,15 @@ function DataSelect({
     <div className={cn("relative", className)}>
       {select}
       {showClear ? (
-        <div className="absolute inset-y-0 end-2 flex items-center">
+        <div className="ui-control-affix">
           <button
             type="button"
             aria-label={clearLabel ?? t("dataEntry.searchSelect.clear")}
             data-testid={dataTestId ? `${dataTestId}-clear` : undefined}
-            className="flex size-6 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
+            className="ui-control-affix-action"
             onClick={() => onValueChange?.("", undefined)}
           >
-            <X className="size-4" aria-hidden="true" />
+            <X className="ui-control-affix-icon" aria-hidden="true" />
           </button>
         </div>
       ) : null}

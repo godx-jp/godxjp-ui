@@ -31,7 +31,13 @@ export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive
           checked={isChecked}
           onCheckedChange={handleCheckedChange}
           className={cn(
-            "peer ui-switch shadow-xs transition-all outline-none disabled:cursor-not-allowed disabled:opacity-50",
+            // `disabled:cursor-not-allowed disabled:opacity-50` DELETED, not moved (#319):
+            // `.ui-switch:disabled, .ui-switch[data-disabled]` in styles/control.css already
+            // declares both and reads --disabled-opacity. The utility was layered after
+            // components, so it silently outranked that token. Byte-identical: the token
+            // defaults to 0.5. (`shadow-xs` STAYS — .ui-switch declares --shadow-sm, so this
+            // utility is the switch's real resting elevation, not a duplicate.)
+            "peer ui-switch shadow-xs transition-all outline-none",
             className,
           )}
           {...props}

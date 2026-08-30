@@ -24,11 +24,9 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const inputBaseClass = [
-  "ui-control border-input bg-background w-full min-w-0 rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
+  "ui-control ui-input border-input bg-background w-full rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
   "selection:bg-primary selection:text-primary-foreground",
-  "file:text-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium",
   "placeholder:text-muted-foreground",
-  "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
   "aria-invalid:border-destructive aria-invalid:ring-destructive/20",
 ];
 
@@ -126,22 +124,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         tabIndex={-1}
         aria-label={t("common.clear") ?? "Clear"}
         onClick={clear}
-        className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100"
+        className="ui-control-inline-affix-action"
       >
-        <X className="size-4" aria-hidden="true" />
+        <X className="ui-control-inline-affix-icon" aria-hidden="true" />
       </button>
     ) : (
       trailingIcon
     );
 
     return (
-      <span data-slot="input-affix-wrapper" className="relative inline-flex w-full items-center">
+      <span data-slot="input-affix-wrapper" className="ui-input-affix-wrapper">
         {leadingIcon != null ? (
-          <span
-            data-slot="input-leading"
-            aria-hidden="true"
-            className="text-muted-foreground pointer-events-none absolute inset-y-0 start-2 inline-flex items-center"
-          >
+          <span data-slot="input-leading" aria-hidden="true" className="ui-input-leading">
             {leadingIcon}
           </span>
         ) : null}
@@ -154,16 +148,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           onChange={handleChange}
           className={cn(
             inputBaseClass,
-            leadingIcon != null && "ps-9",
-            (showClear || trailingIcon != null) && "pe-9",
+            leadingIcon != null && "ui-input--leading-affix",
+            (showClear || trailingIcon != null) && "ui-input--trailing-affix",
             className,
           )}
           {...props}
           {...nameFallback}
         />
-        {trailing != null ? (
-          <span className="absolute inset-y-0 end-2 inline-flex items-center">{trailing}</span>
-        ) : null}
+        {trailing != null ? <span className="ui-input-trailing">{trailing}</span> : null}
       </span>
     );
   },

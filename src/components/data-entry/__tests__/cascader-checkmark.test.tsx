@@ -15,7 +15,10 @@ describe("Cascader — selected-leaf checkmark in search results", () => {
 
     const q1 = await screen.findByRole("option", { name: /quận 1/i });
     const q3 = screen.getByRole("option", { name: /quận 3/i });
-    expect(q1.querySelector('[class*="opacity-100"]')).not.toBeNull(); // selected → visible
-    expect(q3.querySelector('[class*="opacity-0"]')).not.toBeNull(); // unselected → hidden
+    // The checkmark's visibility moved from an opacity utility to `data-selected` so the row is
+    // themeable (#319). Matching the attribute also states the contract plainly — the old
+    // `[class*=…]` SUBSTRING match would just as happily have matched `opacity-05`.
+    expect(q1.querySelector('[data-selected="true"]')).not.toBeNull(); // selected → visible
+    expect(q3.querySelector('[data-selected="false"]')).not.toBeNull(); // unselected → hidden
   });
 });

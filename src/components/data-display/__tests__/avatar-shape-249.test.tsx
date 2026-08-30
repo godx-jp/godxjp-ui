@@ -27,6 +27,13 @@ const dataDisplayTokens = readFileSync(
   "utf8",
 );
 
+/**
+ * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
+ * assertion about how the component is painted. What is under test is pass-through: whatever class
+ * the consumer hands in survives `cn()` onto the rendered node.
+ */
+const CONSUMER_CLASS = "size-12";
+
 describe("Avatar shape (gh#249)", () => {
   it("is inert by default — no shape attribute, byte-identical to the pre-#249 avatar", () => {
     const { container } = render(
@@ -67,14 +74,14 @@ describe("Avatar shape (gh#249)", () => {
   it("still forwards ref, className and arbitrary props on a square avatar", () => {
     const ref = React.createRef<HTMLSpanElement>();
     const { container } = render(
-      <Avatar ref={ref} shape="square" className="size-12" data-testid="entity">
+      <Avatar ref={ref} shape="square" className={CONSUMER_CLASS} data-testid="entity">
         <AvatarImage src="/org.png" alt="組織ロゴ" />
         <AvatarFallback>山</AvatarFallback>
       </Avatar>,
     );
     const root = container.querySelector('[data-slot="avatar"]')!;
     expect(ref.current).toBe(root);
-    expect(root).toHaveClass("size-12");
+    expect(root).toHaveClass(CONSUMER_CLASS);
     expect(root).toHaveAttribute("data-testid", "entity");
     expect(root).toHaveAttribute("data-shape", "square");
   });

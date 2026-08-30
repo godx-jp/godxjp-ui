@@ -4,6 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  ListRow,
   Table,
   TableBody,
   TableCell,
@@ -127,6 +128,121 @@ export default function Demo() {
                 </TableRow>
               </TableBody>
             </Table>
+          </CardContent>
+        </Card>
+
+        {/* ── The flush full-bleed FRAME contract (gh#305 · gh#306) ───────────────────────────
+            Four cards, side by side, so the whole rule is visible at once: which edges a
+            full-bleed table keeps inside a card, and who draws the line under the header. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>出荷伝票一覧 · bordered, flush</CardTitle>
+            <CardDescription>
+              `bordered` draws the full cell grid for merged (rowSpan) cells. Inside a flush
+              CardContent the three edges that coincide with the CARD frame are dropped, so there is
+              no doubled frame. The block-start edge stays, as the divider under this header. Its
+              width is `--table-flush-divider-width`.
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <Table bordered>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>倉庫</TableHead>
+                  <TableHead>伝票番号</TableHead>
+                  <TableHead className="text-end">個数</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell rowSpan={2}>東京第一</TableCell>
+                  <TableCell>SH-2026-0412</TableCell>
+                  <TableCell className="text-end tabular-nums">18</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>SH-2026-0413</TableCell>
+                  <TableCell className="text-end tabular-nums">6</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>大阪南</TableCell>
+                  <TableCell>SH-2026-0414</TableCell>
+                  <TableCell className="text-end tabular-nums">24</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>出荷伝票一覧 · bordered, NOT flush</CardTitle>
+            <CardDescription>
+              The same table in a padded CardContent. Nothing frames it here, so it keeps its own
+              full frame. The suppression above is scoped to a flush body, never to `bordered`.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table bordered>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>倉庫</TableHead>
+                  <TableHead>伝票番号</TableHead>
+                  <TableHead className="text-end">個数</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>東京第一</TableCell>
+                  <TableCell>SH-2026-0412</TableCell>
+                  <TableCell className="text-end tabular-nums">18</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader banded>
+            <CardTitle level={2}>出荷伝票一覧 · banded header</CardTitle>
+            <CardDescription>
+              A banded header already draws its own bottom border, so the flush table below stands
+              its divider down instead of stacking a second hairline on it. Same for a CardBar or a
+              DataTable.Toolbar above the table. Same again for a card with no header at all, where
+              the card frame IS the top edge.
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <Table bordered>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>倉庫</TableHead>
+                  <TableHead>伝票番号</TableHead>
+                  <TableHead className="text-end">個数</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>東京第一</TableCell>
+                  <TableCell>SH-2026-0412</TableCell>
+                  <TableCell className="text-end tabular-nums">18</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>関連ファイル · flush, no table</CardTitle>
+            <CardDescription>
+              A flush body that is not a table at all. `flush` zeroes BOTH block edges for every
+              full-bleed body, so these rows butt against the header band exactly like the tables
+              above. The header supplies the gap, not the body.
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <ListRow title="出荷指図書_2026-04.pdf" description="1.2 MB · 2026-04-12" />
+            <ListRow title="検品記録_2026-04.csv" description="18 KB · 2026-04-12" />
           </CardContent>
         </Card>
       </Flex>

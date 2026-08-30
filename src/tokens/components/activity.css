@@ -1,0 +1,60 @@
+/*
+ * ACTIVITY — the ambient/looping motion primitive (gh#313).
+ *
+ * The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while
+ * something is happening elsewhere (someone typing, a sync in flight, a response streaming, a
+ * recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme
+ * retunes the whole ambient feel in one place instead of forking a `@keyframes`.
+ *
+ * TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and
+ * `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow`
+ * and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next
+ * to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name
+ * shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour
+ * and alpha — everything the shape rule DOES cover — live here.
+ *
+ * Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel.
+ */
+
+:root {
+  /* Mark geometry. `em`-based so the whole mark tracks `--activity-font-size-*` (and therefore
+   * `--font-size-base` and the density axis) instead of pinning a px diameter per size step. */
+  --activity-mark-size: 0.25em;
+  /* Travel of one `dots` step — the loop counterpart to `--reveal-distance`, named to match.
+   * It is ALSO the height the mark row reserves, so the indicator appearing under a composer
+   * never shifts the row. */
+  --activity-mark-offset: 0.25em;
+  /* Resting opacity of a dot at the bottom of its cycle. Never 0: a dot that vanishes reads as a
+   * rendering bug at the trough, and the reduced-motion resting state must stay fully legible. */
+  --activity-mark-rest-alpha: 0.35;
+  /* The single `pulse` mark — a breathing dot (live / recording), bigger than one `dots` dot
+   * because it carries the whole affordance alone. */
+  --activity-pulse-mark-size: 0.5em;
+
+  /* Mark-to-mark and mark-to-label gap. */
+  --activity-gap: var(--space-1);
+
+  /* Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator.
+   * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically
+   * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias). */
+  --activity-font-size-xs: var(--font-size-2xs);
+  --activity-font-size-sm: var(--font-size-xs);
+  --activity-font-size-md: var(--font-size-sm);
+  --activity-font-size-lg: var(--font-size-lg);
+
+  /* Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a
+   * label in a row, so `100%` would eat the label's space. */
+  --activity-bar-width: 4rem;
+  --activity-bar-height: 0.25em;
+  --activity-bar-radius: var(--radius-pill);
+  --activity-bar-segment-width: 40%;
+  --activity-bar-track-alpha: 0.2;
+
+  /* Mark colour. ROLE-MIRROR KNOB ⇒ declared `initial` here with the role default at the CALL SITE
+   * (`hsl(var(--activity-color, var(--muted-foreground)))` in styles/motion.css). Written as
+   * `--activity-color: var(--muted-foreground)` it would freeze at the `:root` role value and a
+   * scoped `[data-tenant]` / `.dark` override of `--muted-foreground` would never reach it.
+   * @see docs/TOKENS.md · "Role-mirror knobs MUST be `initial`".
+   * Documented default: --activity-color = var(--muted-foreground) (tone="muted"). */
+  --activity-color: initial;
+}

@@ -39,17 +39,21 @@
     );
   }
 
+  /* Stacking joins the ONE system layer (--overlay-z-index) instead of a private z-50 — Sheet,
+   * Tooltip and Popover already do, so a service that lifts its overlays above an app-owned
+   * fixed element no longer has to fork the dialog to bring it along. Default is 50, the literal
+   * this replaces. */
   .ui-dialog-overlay {
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: var(--overlay-z-index);
   }
 
   [data-slot="dialog-content"] {
     position: fixed;
     inset-inline-start: 50%;
     top: 50%;
-    z-index: 50;
+    z-index: var(--overlay-z-index);
     display: grid;
     width: min(var(--dialog-width-default), calc(100% - var(--dialog-viewport-inset)));
     max-width: none;
@@ -88,8 +92,50 @@
   [data-slot="dialog-header"] {
     display: flex;
     flex-direction: column;
-    gap: var(--space-stack-xs);
+    gap: var(--dialog-header-space-gap);
     text-align: start;
+  }
+
+  /* DIALOG chrome rhythm — the exact mirror of the `.ui-sheet-*` set at the foot of this file.
+   * Dialog's default header markup is byte-identical to Sheet's, but its gaps were literal on the
+   * component (`gap-[var(--space-3)] pe-[var(--space-8)]`, `min-w-0 flex-col gap-[var(--space-1)]`,
+   * `shrink-0 gap-[var(--space-2)]`), so the two siblings could not be retuned together (#319). */
+  .ui-dialog-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--dialog-title-row-space-gap);
+    /* Reserves inline room for the absolutely-positioned close button so a long title or the extra
+     * slot never runs under it. Moves with --dialog-close-space-offset. */
+    padding-inline-end: var(--dialog-header-close-space-inline-end);
+  }
+
+  .ui-dialog-title-block {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--dialog-title-block-space-gap);
+  }
+
+  .ui-dialog-extra {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--dialog-extra-space-gap);
+    white-space: nowrap;
+  }
+
+  /* Close glyph — mirrors `.ui-sheet-close-icon`, so both overlay ✕ marks follow the one control
+   * affix size instead of a per-component `size-4`. */
+  .ui-dialog-close-icon {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+  }
+
+  /* Type-to-confirm challenge: the step-up failure line under the input. */
+  .ui-dialog-step-up-error {
+    font-size: var(--dialog-step-up-error-font-size);
+    color: hsl(var(--destructive));
   }
 
   [data-slot="dialog-footer"] {
@@ -127,7 +173,7 @@
     inset-inline-end: var(--dialog-close-space-offset);
     top: var(--dialog-close-space-offset);
     border-radius: var(--radius-sm);
-    opacity: 0.7;
+    opacity: var(--dialog-close-rest-alpha);
   }
 
   [data-slot="dialog-close"]:hover {
@@ -236,5 +282,158 @@
   .ui-command-palette {
     animation: none;
     transition: none;
+  }
+}
+
+@layer components {
+  /* TOOLTIP / POPOVER — the two portaled overlay surfaces.
+   *
+   * Both shipped their entire box as Tailwind literals on the component
+   * (`z-50 max-w-xs px-2 py-1 rounded-md text-xs shadow-md`, `w-72 p-4`), so a service
+   * theme could not retune tooltip density, popover width, or overlay stacking without
+   * forking the component — exactly the gap cardinal rule #45 exists to close.
+   *
+   * Colours read the popover ROLE at the call site (not bound at :root) so a scoped
+   * [data-tenant]/.dark override still reaches the portaled node — docs/TOKENS.md ·
+   * "Role-mirror knobs MUST be `initial`". */
+  .ui-tooltip-content {
+    z-index: var(--overlay-z-index);
+    width: fit-content;
+    max-width: var(--tooltip-max-width);
+    padding-inline: var(--tooltip-space-inline);
+    padding-block: var(--tooltip-space-block);
+    border-radius: var(--tooltip-radius);
+    border: 1px solid var(--tooltip-border-color, hsl(var(--border)));
+    background-color: var(--tooltip-background, hsl(var(--popover)));
+    color: var(--tooltip-foreground, hsl(var(--popover-foreground)));
+    font-size: var(--tooltip-font-size);
+    box-shadow: var(--tooltip-shadow);
+    outline: none;
+  }
+
+  .ui-popover-content {
+    z-index: var(--overlay-z-index);
+    width: var(--popover-width);
+    padding: var(--popover-space-inset);
+    border-radius: var(--popover-radius);
+    border: 1px solid var(--popover-surface-border-color, hsl(var(--border)));
+    background-color: var(--popover-surface-background, hsl(var(--popover)));
+    color: var(--popover-surface-foreground, hsl(var(--popover-foreground)));
+    box-shadow: var(--popover-shadow);
+    outline: none;
+  }
+
+  .ui-popover-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--popover-header-space-gap);
+    font-size: var(--popover-header-font-size);
+  }
+}
+
+@layer components {
+  /* SHEET chrome rhythm — --sheet-pad-x/-y already governed the panel inset; these are the gaps
+   * INSIDE that chrome, which were literal on the component (#319). */
+  .ui-sheet-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sheet-header-space-gap);
+  }
+
+  /* Reserves inline room for the absolutely-positioned close button so a long title or the
+   * extra slot never runs under it. Moves with --sheet-close-offset. */
+  .ui-sheet-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sheet-title-row-space-gap);
+    padding-inline-end: var(--sheet-header-close-space-inline-end);
+  }
+
+  .ui-sheet-title-block {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--sheet-title-block-space-gap);
+  }
+
+  .ui-sheet-extra {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--sheet-extra-space-gap);
+    white-space: nowrap;
+  }
+
+  .ui-sheet-title {
+    font-size: var(--sheet-title-font-size);
+    font-weight: var(--font-weight-medium);
+    color: hsl(var(--foreground));
+  }
+
+  .ui-sheet-description {
+    font-size: var(--sheet-description-font-size);
+    color: hsl(var(--foreground) / 0.8);
+  }
+
+  .ui-sheet-body-space {
+    padding-block: var(--sheet-body-space-block);
+    scroll-padding-block: var(--sheet-body-space-block);
+  }
+
+  .ui-sheet-footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--sheet-footer-space-gap);
+  }
+
+  .ui-sheet-close {
+    position: absolute;
+    inset-block-start: var(--sheet-close-offset);
+    inset-inline-end: var(--sheet-close-offset);
+    border-radius: var(--radius-sm);
+    opacity: var(--sheet-close-rest-alpha);
+    transition: opacity 150ms ease;
+  }
+
+  .ui-sheet-close:hover {
+    opacity: 1;
+  }
+
+  .ui-sheet-close-icon {
+    inline-size: var(--control-affix-icon-size);
+    block-size: var(--control-affix-icon-size);
+  }
+
+  /* Overlay + panel stacking joins the one system layer instead of a private z-50. */
+  .ui-sheet-overlay,
+  .ui-sheet-panel {
+    z-index: var(--overlay-z-index);
+  }
+
+  .ui-sheet-overlay {
+    inset: 0;
+  }
+
+  .ui-sheet-panel {
+    box-shadow: var(--sheet-shadow);
+  }
+
+  .ui-sheet-panel[data-side="top"] {
+    inset-block-start: 0;
+    border-block-end: 1px solid hsl(var(--border));
+  }
+
+  .ui-sheet-panel[data-side="bottom"] {
+    inset-block-end: 0;
+    border-block-start: 1px solid hsl(var(--border));
+  }
+
+  /* The scroll region must be allowed to shrink inside the flex column, or it grows past the
+   * panel and the footer is pushed out of view. */
+  .ui-sheet-body-space {
+    min-block-size: 0;
   }
 }

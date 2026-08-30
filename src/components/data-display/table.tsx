@@ -89,7 +89,9 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
       <table
         ref={ref}
         data-slot="table"
-        className={cn("w-full caption-bottom text-sm", bordered && "ui-table-bordered", className)}
+        // Type metrics live on `[data-slot="table"]` in table-layout.css
+        // (--table-font-size / --table-line-height), not on a `text-sm` utility (gh#319).
+        className={cn("w-full caption-bottom", bordered && "ui-table-bordered", className)}
         {...props}
       />
     </div>
@@ -109,7 +111,11 @@ export const TableBody = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <tbody ref={ref} className={cn("[&_tr:last-child]:border-0", className)} {...props} />
+  // "The last row draws no rule" is an idiom, not a service-tunable constant, so it is a CSS
+  // rule (`[data-slot="table-body"] .ui-table-row:last-child`) rather than a utility. That only
+  // works because TableRow's own bottom rule moved to `.ui-table-row` in the same layer: while
+  // the row carried a `border-b` UTILITY, no `components` rule could ever zero it (gh#412).
+  <tbody ref={ref} data-slot="table-body" className={cn(className)} {...props} />
 ));
 TableBody.displayName = "TableBody";
 
@@ -120,7 +126,10 @@ export const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      "ui-table-row hover:bg-accent/70 data-[state=selected]:bg-primary/[0.06] border-b transition-colors",
+      // The row rule itself is `.ui-table-row` in table-layout.css (--table-row-border-width),
+      // NOT a `border-b` utility — a utility sits in `@layer utilities` and would outrank the
+      // `components` rule that has to zero it on the last row (gh#319).
+      "ui-table-row hover:bg-accent/70 data-[state=selected]:bg-primary/[0.06] transition-colors",
       className,
     )}
     {...props}

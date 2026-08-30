@@ -29,7 +29,28 @@
   --destructive: 357 64% 44%; /* 茜 #b7282e */
   --destructive-foreground: 60 33% 99%;
   --border: 30 7% 83%; /* #d6d3d0 SmartHR BORDER */
-  --input: 30 7% 83%;
+  /* CONTROL BOUNDARY role — deliberately NOT the same value as --border (gh#315).
+   *
+   * The two roles answer different questions and are held to different bars:
+   *   · --border is DECORATIVE chrome — table rules, card edges, section dividers. WCAG 2.2
+   *     SC 1.4.11 does not reach it (nothing about a divider is "required to identify a
+   *     component or its state"), and darkening it would make the JP-dense table grid roar.
+   *     It stays exactly where it is.
+   *   · --input is the boundary that IS the control — the 1px edge of Input, Textarea, Select,
+   *     the outline Button, TagInput, the composite date field, the topbar search. `--input`
+   *     also fills the Switch's unchecked track. A text field here has NO fill of its own
+   *     (`background: hsl(var(--background))`) and NO shadow to speak of, so that edge is the
+   *     only thing that says "you may type here". That is squarely SC 1.4.11's 3:1 minimum.
+   *
+   * They shipped sharing `30 7% 83%`, which measured 1.46:1 on --background/--card — the one
+   * live WCAG failure a full DXS Platform sweep turned up. 53% clears 3:1 with margin on every
+   * surface a control actually sits on, not just the plain page (the gh#299 lesson: a value that
+   * passes on a card and fails inside a filter bar is not a line anyone can defend):
+   * --background/--card/--popover 3.47:1 · --muted/--secondary 3.18:1 · zebra stripe 3.35:1 ·
+   * row hover 3.32:1. It also lifts the Switch's unchecked track from 1.46:1 to 3.47:1 against
+   * both the page and its own white thumb, so "off" is finally a visible state.
+   * Guarded by src/tokens/__tests__/input-boundary-contrast.test.ts. */
+  --input: 30 7% 53%; /* #90877f — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
   --ring: 204 100% 39%;
   --success: 146 40% 58%; /* 若竹 #68be8d */
   --success-foreground: 60 33% 99%;
@@ -397,6 +418,21 @@
   /* One step of the Reveal stagger ladder — `<Reveal delay={n}>` waits n × this before entering,
    * so a column of reveals cascades. Read instead of a literal `.04s`/`.09s` per-item delay. */
   --reveal-stagger-step: 60ms;
+
+  /* AMBIENT/LOOPING motion (gh#313) — the cycle member of the motion tier. `--duration-fast|base|
+   * slow` time a TRANSITION (something moves from A to B and stops); a loop needs an INTERVAL, so
+   * every ambient affordance in the product breathes at one rate. `Activity` reads these; the
+   * remaining Activity knobs (geometry / colour) live in tokens/components/activity.css.
+   * NOTE these two are Activity-scoped but live HERE, beside `--reveal-*`, because the motion tier
+   * is where timing belongs and because component-token names must carry a geometry/colour
+   * property word (`check-token-tiers`) — there is none for a duration. */
+  --duration-loop: 1400ms;
+  /* Per-component override (#45): a service tunes its typing rhythm without moving every loop. */
+  --activity-interval: var(--duration-loop);
+  /* Offset between the three `dots` marks — the loop counterpart to `--reveal-stagger-step`,
+   * named to match. In RTL the dots reverse with the row, so the cascade follows the reading
+   * direction with no extra rule. */
+  --activity-stagger-step: 160ms;
 }
 
 .dark,
@@ -425,7 +461,13 @@
   --destructive: 357 55% 48%;
   --destructive-foreground: 0 0% 100%;
   --border: 45 6% 22%;
-  --input: 45 6% 22%;
+  /* Control boundary (dark) — recomputed on the dark spine, not merely lightened by eye
+   * (gh#315). The dark pair shared `45 6% 22%`, which sat at 1.55:1 on --background and 1.43:1
+   * on the --card/--popover surface where dialogs put their fields. 47% gives
+   * --background 4.22:1 · --card/--popover 3.88:1 · --muted/--secondary 3.17:1 · zebra 3.81:1 ·
+   * hover 3.71:1. --border stays at 22%: dividers are decorative and a dark grid at 47% would
+   * read as a wireframe. See the light block above for the full reasoning. */
+  --input: 45 6% 47%; /* #7f7b71 — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
   --ring: 204 90% 60%;
   --success: 146 45% 55%;
   --success-foreground: 48 9% 9%;

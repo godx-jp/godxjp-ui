@@ -43,15 +43,31 @@ const cases = [
 const server = spawn(
   "pnpm",
   ["exec", "vite", "--config", "preview/vite.config.ts", "--port", String(port), "--strictPort"],
-  { stdio: "ignore", env: process.env },
+  // stderr is piped, not ignored: when the server fails to bind we need to SAY why.
+  { stdio: ["ignore", "ignore", "pipe"], env: process.env },
 );
-for (let attempt = 0; attempt < 80; attempt += 1) {
+let serverStderr = "";
+server.stderr?.on("data", (chunk) => {
+  serverStderr += String(chunk);
+});
+let serverUp = false;
+for (let attempt = 0; attempt < 600; attempt += 1) {
   try {
-    if ((await fetch(base)).ok) break;
+    if ((await fetch(base)).ok) {
+      serverUp = true;
+      break;
+    }
   } catch {
     /* server chưa lên — thử lại */
   }
   await new Promise((resolve) => setTimeout(resolve, 100));
+}
+// Without this the loop just falls through and the browser runs against a dead
+// server, reporting a confusing per-story failure instead of the real cause.
+if (!serverUp) {
+  throw new Error(
+    "preview server did not start within 60s" + (serverStderr ? `\n${serverStderr}` : ""),
+  );
 }
 let browser;
 try {

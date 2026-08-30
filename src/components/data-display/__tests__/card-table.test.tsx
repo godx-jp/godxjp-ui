@@ -313,11 +313,13 @@ describe("Card", () => {
   it("StatCard color-codes signed deltas and supports inverse semantics", () => {
     const { rerender } = renderWithUi(<StatCard label="Churn" value="4%" delta="-2%" />);
 
-    expect(screen.getByText("-2%")).toHaveClass("text-error-strong");
+    // The TONE the card computed for the delta — the semantic reading of the sign, which is what
+    // `inverse` flips. The colour utility is only how that tone is painted.
+    expect(screen.getByText("-2%")).toHaveAttribute("data-delta-tone", "negative");
 
     rerender(<StatCard label="Churn" value="4%" delta="-2%" inverse />);
 
-    expect(screen.getByText("-2%")).toHaveClass("text-success-strong");
+    expect(screen.getByText("-2%")).toHaveAttribute("data-delta-tone", "positive");
   });
 });
 
@@ -361,39 +363,36 @@ describe("StatCard delta tone", () => {
     const { container } = renderWithUi(<StatCard label="x" value="1" delta="+12%" />);
     const delta = deltaEl(container);
     expect(delta.getAttribute("data-delta-tone")).toBe("positive");
-    expect(delta.className).toContain("text-success-strong");
   });
 
   it("colours a negative delta (-) with the destructive tone", () => {
     const { container } = renderWithUi(<StatCard label="x" value="1" delta="-5%" />);
     const delta = deltaEl(container);
     expect(delta.getAttribute("data-delta-tone")).toBe("negative");
-    expect(delta.className).toContain("text-error-strong");
   });
 
   it("flips delta semantics when inverse is set (lower is better)", () => {
     const { container } = renderWithUi(<StatCard label="x" value="1" delta="+12%" inverse />);
     const delta = deltaEl(container);
     expect(delta.getAttribute("data-delta-tone")).toBe("negative");
-    expect(delta.className).toContain("text-error-strong");
   });
 });
 
 describe("bordered Table flush inside a Card (gh#305)", () => {
-  // The rule kills only the table's OUTER frame when the card already frames it.
-  // Selector is pulled from the shipped CSS and run with .matches() against real
-  // rendered DOM — a string assertion alone stayed green while a selector chose
-  // nothing (the headerAlign lesson, 505f0e6).
+  // The frame contract itself — which edges are erased, which one survives, and on which
+  // surfaces — lives in card-table-flush-chrome.test.tsx, where it is exercised against the
+  // canonical `<Card><CardContent flush><DataTable/></CardContent></Card>` as well as the bare
+  // `<Table bordered>` this issue was measured on. What stays here is the one thing this file
+  // owns: the suppression is CARD-scoped, so the same prop outside a flush body is untouched.
   const layoutCss = readFileSync(join(__dirname, "../../../styles/table-layout.css"), "utf8");
-  const rule = layoutCss.match(
-    /(\[data-slot="card-content"\]\[data-flush\] \.ui-table-bordered)\s*\{\s*border: 0;\s*border-block-start: 1px solid/,
-  );
 
-  it("ships the frame-suppression rule", () => {
-    expect(rule).not.toBeNull();
+  it("keeps the frame suppression in the stylesheet, never in the component", () => {
+    const tableTsx = readFileSync(join(__dirname, "../table.tsx"), "utf8");
+    expect(tableTsx).not.toMatch(/border-block-start|card-content/);
+    expect(layoutCss).toMatch(/\[data-slot="card-content"\]\[data-flush\]/);
   });
 
-  it("the selector actually matches a bordered table in a flush CardContent, and only there", () => {
+  it("renders the same `bordered` class in and out of a flush body — the CSS decides, not the DOM", () => {
     renderWithUi(
       <>
         <Card>
@@ -420,8 +419,7 @@ describe("bordered Table flush inside a Card (gh#305)", () => {
         </Card>
       </>,
     );
-    const selector = rule![1];
-    expect(screen.getByTestId("flush-table").matches(selector)).toBe(true);
-    expect(screen.getByTestId("padded-table").matches(selector)).toBe(false);
+    expect(screen.getByTestId("flush-table")).toHaveClass("ui-table-bordered");
+    expect(screen.getByTestId("padded-table")).toHaveClass("ui-table-bordered");
   });
 });

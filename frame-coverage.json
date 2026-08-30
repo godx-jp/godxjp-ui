@@ -1675,6 +1675,10 @@
       "async": {
         "status": "not-applicable",
         "reason": "Flex is a synchronous CSS layout primitive with no async lifecycle."
+      },
+      "screenReader": {
+        "status": "not-applicable",
+        "reason": "Layout primitive: a bare flex div with no role, name, state or focusable element. There is no announcement for a screen reader to verify — every announced element inside belongs to another owner. Reviewed under issue #171."
       }
     },
     "layout/resizable": {
@@ -1707,6 +1711,10 @@
       "async": {
         "status": "not-applicable",
         "reason": "AspectRatio is a synchronous sizing primitive."
+      },
+      "screenReader": {
+        "status": "not-applicable",
+        "reason": "Layout primitive: reserves a ratio box and contributes no role, name, state or focus target to the accessibility tree. Reviewed under issue #171."
       }
     },
     "layout/auth-shell": {
@@ -1747,6 +1755,10 @@
       "async": {
         "status": "not-applicable",
         "reason": "Separator is a synchronous static primitive."
+      },
+      "screenReader": {
+        "status": "not-applicable",
+        "reason": "Presentational rule: native separator semantics, stateless, not focusable, no journey to walk. Reviewed under issue #171."
       }
     },
     "layout/split-pane": {
@@ -1855,6 +1867,10 @@
       "async": {
         "status": "not-applicable",
         "reason": "ResponsiveGrid is a synchronous CSS layout primitive with no async lifecycle."
+      },
+      "screenReader": {
+        "status": "not-applicable",
+        "reason": "Layout primitive: grid geometry on a bare div, with no role, name, state or focusable element of its own. Reviewed under issue #171."
       }
     },
     "layout/sidebar": {
@@ -2727,6 +2743,18 @@
       "touch": {
         "status": "not-applicable",
         "reason": "Hover/focus prefetch is an enhancement unavailable to coarse pointers; tap navigation remains the underlying Link contract."
+      }
+    },
+    "layout/auth-divider": {
+      "screenReader": {
+        "status": "not-applicable",
+        "reason": "Presentational rule with a static label: no state, nothing focusable, no journey of its own. Reviewed under issue #171."
+      }
+    },
+    "layout/auth-footer": {
+      "screenReader": {
+        "status": "not-applicable",
+        "reason": "Slot container: wrapper spans plus an aria-hidden middot; every announced element in the legal line is consumer-supplied and owned elsewhere. Reviewed under issue #171."
       }
     }
   },

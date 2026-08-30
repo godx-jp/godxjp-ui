@@ -86,11 +86,11 @@ export function MonthPicker({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverAnchor asChild>
         <div
+          data-disabled={disabled ? "" : undefined}
           className={cn(
-            "ui-control border-input bg-background flex w-full min-w-0 items-center gap-2 rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
+            "ui-control ui-control-composite-field",
             "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
             open && "border-ring ring-ring/50 ring-[3px]",
-            disabled && "pointer-events-none cursor-not-allowed opacity-50",
             className,
           )}
           onClick={() => {
@@ -110,7 +110,7 @@ export function MonthPicker({
             aria-haspopup="dialog"
             aria-controls={open ? dialogId : undefined}
             {...fieldA11y}
-            className="placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent tabular-nums outline-none disabled:cursor-not-allowed"
+            className="ui-month-picker-input"
             onKeyDown={(event) => {
               if (event.key === "ArrowDown") {
                 event.preventDefault();
@@ -142,7 +142,7 @@ export function MonthPicker({
                 setText("");
               }}
             >
-              <X className="size-4 shrink-0" aria-hidden="true" />
+              <X className="ui-month-picker-icon" aria-hidden="true" />
             </button>
           ) : null}
           <PopoverTrigger asChild>
@@ -153,14 +153,14 @@ export function MonthPicker({
               aria-label={t("dataEntry.monthPicker.openGrid") ?? "Open month grid"}
               className="text-muted-foreground hover:text-foreground shrink-0"
             >
-              <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
+              <CalendarIcon className="ui-month-picker-icon" aria-hidden="true" />
             </button>
           </PopoverTrigger>
           <PopoverContent
             id={dialogId}
             role="dialog"
             aria-label={t("dataEntry.monthPicker.openGrid") ?? "Month grid"}
-            className="w-auto p-3"
+            className="ui-month-picker-panel"
             align="start"
             onOpenAutoFocus={(event) => event.preventDefault()}
             // The content is portaled but stays a React child of the shell div,
@@ -168,19 +168,19 @@ export function MonthPicker({
             // re-open the popover right after a selecting pick closed it.
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex items-center justify-between">
+            <div className="ui-month-picker-nav">
               <Button
                 type="button"
                 variant="outline"
                 size="icon-sm"
                 disabled={prevDisabled}
                 aria-label={t("dataEntry.monthPicker.previousYear") ?? "Previous year"}
-                className="bg-transparent opacity-70 hover:opacity-100"
+                className="ui-month-picker-nav-button"
                 onClick={() => setViewYear((y) => y - 1)}
               >
-                <ChevronLeft className="size-4" aria-hidden="true" />
+                <ChevronLeft className="ui-month-picker-icon" aria-hidden="true" />
               </Button>
-              <span className="text-sm font-medium" aria-live="polite">
+              <span className="ui-month-picker-nav-label" aria-live="polite">
                 {viewYear}
               </span>
               <Button
@@ -189,13 +189,13 @@ export function MonthPicker({
                 size="icon-sm"
                 disabled={nextDisabled}
                 aria-label={t("dataEntry.monthPicker.nextYear") ?? "Next year"}
-                className="bg-transparent opacity-70 hover:opacity-100"
+                className="ui-month-picker-nav-button"
                 onClick={() => setViewYear((y) => y + 1)}
               >
-                <ChevronRight className="size-4" aria-hidden="true" />
+                <ChevronRight className="ui-month-picker-icon" aria-hidden="true" />
               </Button>
             </div>
-            <div role="grid" aria-label={String(viewYear)} className="mt-3 grid grid-cols-3 gap-1">
+            <div role="grid" aria-label={String(viewYear)} className="ui-month-picker-grid">
               {monthLabels.map((label, i) => {
                 const selected = value?.getFullYear() === viewYear && value?.getMonth() === i;
                 return (
@@ -205,7 +205,7 @@ export function MonthPicker({
                     variant={selected ? "default" : "ghost"}
                     size="sm"
                     aria-pressed={selected}
-                    className="px-4 font-normal"
+                    className="ui-month-picker-cell"
                     onClick={() => {
                       emit(new Date(viewYear, i, 1));
                       setOpen(false);

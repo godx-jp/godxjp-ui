@@ -7,6 +7,13 @@ import { render, screen } from "@testing-library/react";
 
 import { Logo } from "../logo";
 
+/**
+ * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
+ * assertion about how the component is painted. What is under test is pass-through: whatever class
+ * the consumer hands in survives `cn()` onto the rendered node.
+ */
+const CONSUMER_CLASS = "shadow-sm";
+
 describe("Logo", () => {
   it("renders the default glyph at md size, decorative by default", () => {
     const { container } = render(<Logo />);
@@ -49,10 +56,10 @@ describe("Logo", () => {
 
   it("forwards ref and merges className onto the mark", () => {
     const ref = createRef<HTMLSpanElement>();
-    const { container } = render(<Logo ref={ref} className="shadow-sm" />);
+    const { container } = render(<Logo ref={ref} className={CONSUMER_CLASS} />);
     const mark = container.querySelector('[data-slot="logo"]')!;
     expect(ref.current).toBe(mark);
-    expect(mark).toHaveClass("ui-logo", "shadow-sm");
+    expect(mark).toHaveClass("ui-logo", CONSUMER_CLASS);
   });
 });
 
@@ -95,10 +102,10 @@ describe("Logo wordmark lockup", () => {
 
   it("forwards ref and className to the lockup root (the element a consumer positions)", () => {
     const ref = createRef<HTMLSpanElement>();
-    const { container } = render(<Logo ref={ref} wordmark="GoDX" className="shadow-sm" />);
+    const { container } = render(<Logo ref={ref} wordmark="GoDX" className={CONSUMER_CLASS} />);
     const lockup = container.querySelector('[data-slot="logo-lockup"]')!;
     expect(ref.current).toBe(lockup);
-    expect(lockup).toHaveClass("ui-logo-lockup", "shadow-sm");
+    expect(lockup).toHaveClass("ui-logo-lockup", CONSUMER_CLASS);
     // …and the inner mark keeps its own class untouched.
     expect(container.querySelector('[data-slot="logo"]')).toHaveClass("ui-logo");
   });

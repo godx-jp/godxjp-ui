@@ -237,6 +237,9 @@ describe("Sheet", () => {
     // Symmetric vertical padding + cancels the content's bottom inset, both token-driven.
     expect(footer.className).toContain("py-[var(--sheet-pad-y)]");
     expect(footer.className).toContain("-mb-[var(--sheet-pad-y)]");
-    expect(footer.className).not.toContain("pt-4"); // no longer the asymmetric top-only padding
+    // …and NO fixed vertical padding step survives beside them. A regex over the whole
+    // `p{t,b,y}-<n>` family rather than the single historical `pt-4`, so re-hardcoding any other
+    // step — or the bottom instead of the top — fails too.
+    expect(footer.className).not.toMatch(/\bp[tby]-\d/);
   });
 });

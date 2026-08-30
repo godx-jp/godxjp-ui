@@ -178,12 +178,42 @@
     }
   }
 
+  /* Dismiss ✕ — BOTH halves of the affordance now live here. The rest opacity was a hard 0.7 in
+   * this file while its `:hover` companion sat on the component as `hover:opacity-100`, so the
+   * quiet-at-rest chrome (rule #44) was split across two files and a theme could reach neither.
+   * The hover rule is load-bearing: without it the ✕ stays at the rest alpha forever. */
   [data-slot="alert-dismiss"] {
     position: absolute;
     top: var(--alert-dismiss-space-offset);
     inset-inline-end: var(--alert-dismiss-space-offset);
     border-radius: var(--radius-sm);
-    opacity: 0.7;
+    opacity: var(--alert-dismiss-rest-alpha);
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  [data-slot="alert-dismiss"]:hover {
+    opacity: 1;
+  }
+
+  .ui-alert-dismiss-icon {
+    inline-size: var(--alert-dismiss-icon-size);
+    block-size: var(--alert-dismiss-icon-size);
+  }
+
+  /* AlertContent fills the body column but stays shrinkable, so a long unbroken token truncates
+   * instead of widening the alert. Was `min-w-0 flex-1` on the component. */
+  [data-slot="alert-content"] {
+    min-inline-size: 0;
+    flex: 1 1 0%;
+  }
+
+  /* TOAST (Sonner) — the status glyph handed to sonner through its all-or-nothing `icons` config
+   * prop. Sonner sizes the `[data-icon]` WRAPPER to a fixed 16px box and only sets `flex-shrink`
+   * + margins on the svg inside it, so the glyph's own size is ours to own; the token is what
+   * lets a consumer retune it without re-declaring all five icons. */
+  .ui-toast-icon {
+    inline-size: var(--toast-icon-size);
+    block-size: var(--toast-icon-size);
   }
 
   .ui-skeleton-block {
@@ -247,6 +277,42 @@
     border: 1px solid hsl(var(--border));
     border-radius: var(--skeleton-radius);
     padding: var(--skeleton-card-inset);
+
+    /* Skeleton bars, named for what they stand in for rather than their size (#319). */
+    .ui-skeleton-line {
+      block-size: var(--skeleton-block-height);
+    }
+
+    .ui-skeleton-caption {
+      block-size: var(--skeleton-caption-height);
+    }
+
+    .ui-skeleton-title {
+      block-size: var(--skeleton-title-height);
+    }
+
+    .ui-skeleton-detail-label {
+      block-size: var(--skeleton-caption-height);
+      inline-size: var(--skeleton-label-width);
+    }
+
+    /* Fills its grid track but stops at a readable measure — both are load-bearing: without the
+   * fill it would size to content, without the cap it would run the full track. */
+    .ui-skeleton-detail-value {
+      block-size: var(--skeleton-block-height);
+      inline-size: 100%;
+      max-inline-size: var(--skeleton-detail-value-max-width);
+    }
+
+    .ui-skeleton-stat-value {
+      block-size: var(--control-height);
+      inline-size: var(--skeleton-stat-value-width);
+    }
+
+    .ui-skeleton-stat-caption {
+      block-size: var(--skeleton-caption-height);
+      inline-size: var(--skeleton-stat-caption-width);
+    }
   }
 
   @keyframes pulse {

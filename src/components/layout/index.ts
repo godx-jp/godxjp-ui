@@ -68,6 +68,7 @@ export type { MasterDetailProps } from "./master-detail";
 export { SplitPane } from "./split-pane";
 export type { SplitPaneProps } from "./split-pane";
 export { Separator } from "./separator";
+export type { SeparatorProp, SeparatorProps } from "./separator";
 export { AspectRatio } from "./aspect-ratio";
 export { LegalDocumentShell } from "./legal-document-shell";
 export type {

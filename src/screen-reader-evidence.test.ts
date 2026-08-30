@@ -137,8 +137,12 @@ describe("screen-reader evidence gate (#171)", { timeout: 60_000 }, () => {
         cohorts: Array<{ id: string; owners: string[]; requiredPhases: string[] }>;
       };
     };
-    expect(evidence.policy.cohorts.map((cohort) => cohort.id).sort()).toEqual(
-      [
+    // The seven issue-171 cohorts must all still be there. The gate lets policy ADD cohorts (it
+    // only refuses to see a baseline one omitted or weakened), which is how owners that are
+    // announced but never operated — a role="img" chart summary, an aria-busy skeleton — get a
+    // truthful phase set instead of being forced to evidence an `activation` they cannot have.
+    expect(evidence.policy.cohorts.map((cohort) => cohort.id)).toEqual(
+      expect.arrayContaining([
         "data-structures",
         "landmarks-page-structure",
         "live-async-feedback",
@@ -146,7 +150,7 @@ describe("screen-reader evidence gate (#171)", { timeout: 60_000 }, () => {
         "native-form-controls",
         "overlays",
         "selection-composites",
-      ].sort(),
+      ]),
     );
     expect(evidence.policy.requiredLocales).toEqual(["ja-JP", "vi-VN"]);
     expect(evidence.policy.combinations.map((combination) => combination.id)).toEqual([
@@ -243,8 +247,11 @@ describe("screen-reader evidence gate (#171)", { timeout: 60_000 }, () => {
   });
 
   it("rejects evidence for an owner that is not mapped to a cohort", () => {
+    // `layout/flex` is a reviewed not-applicable owner: a bare flex div owns no announcement, so
+    // it belongs to no cohort and cannot carry AT evidence either. (Every other owner is mapped,
+    // which is the point — an unmapped owner can never be promoted out of untested.)
     const evidence = readJson(EVIDENCE_CONFIG) as Json & { records: Json[] };
-    evidence.records = [fixtureRecord({ owner: "general/typography" })];
+    evidence.records = [fixtureRecord({ owner: "layout/flex" })];
     expect(() => runGate({ evidence })).toThrow(/is not mapped to a policy cohort/);
   });
 

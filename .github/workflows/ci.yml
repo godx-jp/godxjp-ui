@@ -1,0 +1,74 @@
+name: CI
+
+# Browser-free validation. Everything here runs on GitHub-hosted ubuntu-latest so it is
+# reproducible and independent of the self-hosted fleet — that fleet is heterogeneous
+# (some hosts run as root, some as a user; none ship apt-get) and every one of its
+# failures so far has been infrastructure, not code.
+#
+# Browser-dependent gates live in ci-browser.yml; delivery lives in cd.yml.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify (build · typecheck · lint · guards · test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6.0.9
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # verify:ci == verify:static minus check:contrast / check:visual-audit, the only
+      # two gates in it that need Chromium. Those run in ci-browser.yml.
+      - name: verify:ci (all browser-free publish gates + test)
+        run: pnpm verify:ci
+
+  # NOTE: no lockstep job here on purpose — release-integrity.yml already owns the
+  # @godxjp/ui ↔ @godxjp/ui-mcp release contract (and does it far more thoroughly),
+  # runs browser-free on ubuntu-latest, and is green. Duplicating it would just double
+  # the runtime and give two places to keep in sync.
+
+  contracts:
+    name: Static frame contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6.0.9
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm preview:build
+      - run: pnpm check:frame-contracts
+
+  coverage:
+    name: Frame coverage (contract inventory)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6.0.9
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Coverage report (report-only)
+        run: pnpm check:frame-coverage
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: frame-coverage
+          path: |
+            audit-evidence/frame-coverage/coverage.json
+            docs/FRAME-COVERAGE-REPORT.md
+          if-no-files-found: ignore

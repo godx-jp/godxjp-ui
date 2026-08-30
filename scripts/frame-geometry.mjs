@@ -72,7 +72,9 @@ async function main() {
   }
   const { chromium } = deps;
 
-  let stopServer = () => {};
+  // No initialiser: the catch below returns, so past this point stopServer is always the
+  // real teardown returned by ensurePreviewServer.
+  let stopServer;
   try {
     stopServer = await ensurePreviewServer(base);
   } catch (e) {

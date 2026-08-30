@@ -6,6 +6,794 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`Activity` — the official ambient/looping motion primitive (`@godxjp/ui/general`, gh#313).** The
+  loop counterpart to `Reveal`'s one-shot entrance: a continuous, unbounded "something is happening
+  right now, elsewhere" mark (someone typing, a sync running, a response streaming, a recording
+  live). Three marks — `dots` (the ellipsis convention), `pulse` (a breathing mark), `bar` (an
+  indeterminate sweep) — on the standard `size` (`xs|sm|md|lg`) and `tone` ladders. It exists so a
+  consumer never hand-rolls a looping `@keyframes` plus its own `prefers-reduced-motion` guard, and
+  never reaches for `Skeleton` (which means _content is loading_ and hard-codes `aria-busy` +
+  an unconditional `aria-live`) or `Button loading` (which means _this action is in flight_).
+  - **`announce` defaults to `false`, and then emits no live region at all.** An ambient indicator
+    flickers on and off with every socket event; a live region there re-announces continuously.
+    `announce="polite"` wraps **only** the label in one `aria-live="polite" aria-atomic="true"`
+    region, with the mark outside it and `aria-hidden`. No `aria-busy` is ever emitted; the
+    indicator is not focusable and carries no role.
+  - **Reduced motion is a designed frame, not an absence.** Under `prefers-reduced-motion: reduce`
+    the loop is dropped and each mark falls back to a legible resting state — three solid dots, a
+    solid pulse mark, a bar segment parked at the reading-start (a full track would read as
+    "complete") — with the label still visible and no layout shift (WCAG 2.2 SC 2.3.3 / SC 2.2.2).
+  - Copy stays consumer-owned: pass a `t()`-translated `label`, and pluralize "N people are typing"
+    with your own `Intl.PluralRules`. The library ships no string for it.
+- **`--duration-loop` (1400ms)** — the cycle member of the motion tier. `--duration-{fast,base,slow}`
+  time a transition; a loop needs an interval, so every ambient affordance breathes at one rate.
+- **Activity component tokens** (cardinal rule #45): `--activity-interval` (defaults to
+  `--duration-loop`), `--activity-stagger-step` (160ms — the loop counterpart to
+  `--reveal-stagger-step`), `--activity-mark-size`, `--activity-mark-offset` (the loop counterpart
+  to `--reveal-distance`), `--activity-mark-rest-alpha`, `--activity-pulse-mark-size`,
+  `--activity-gap`, `--activity-font-size-{xs,sm,md,lg}`,
+  `--activity-bar-{width,height,radius,segment-width,track-alpha}`, and `--activity-color` —
+  a role-mirror knob declared `initial` at `:root` with the role default at the call site, so a
+  scoped `[data-tenant]` / `.dark` override of `--muted-foreground` still reaches the mark.
+- Docs: `docs/general/activity.tsx` — a real channel screen with a typing affordance under the
+  composer, plus every `variant` × `size` × `tone`, the `children`+`label` split, `announce`, and
+  the reduced-motion contract.
+
+- **`Separator` — a labelled variant (gh#308).** `label` now INTERRUPTS the rule, so a message
+  stream's day divider and its "new messages" unread watermark finally have a primitive: the root
+  becomes the three-cell grid `rule · label · rule`, and because "new messages" is content rather
+  than decoration it flips `decorative` to `false` — a real `role="separator"` whose accessible name
+  IS the label, with the visible node `aria-hidden` so the string is announced exactly once.
+  `labelAlign` (`start | center | end`, the shared `TextAlignProp`) places the label by re-measuring
+  a grid TRACK on the inline axis, so `start` and `end` swap under `dir="rtl"`; `tone`
+  (`TextToneProp`) moves the rule AND the label together so an attention rule is never colour-only.
+  Without a `label` the DOM, `data-slot="separator"` and `.ui-separator` are unchanged — an inert
+  default, no migration. Consumers no longer have to misuse the auth-scoped `AuthDivider` or
+  hand-roll a `<div>` grid of two `<span>` rules.
+- **`--separator-*` component tokens** (`src/tokens/components/separator.css`) — `rule-size`,
+  `rule-color`, `label-gap`, `label-inset`, `label-font-size`, `label-line-height`,
+  `label-font-weight`, `label-color` plus `tone-{muted,primary,success,warning,destructive,info}-{rule,label}-color`.
+  Every constant the labelled rule needs is now a documented knob (rules #44/#45); the defaults are
+  the quietest state (one hairline, a muted `xs` label, no padding). Colour knobs and the two
+  density-scaled spacing knobs are declared `initial` with the default at the call site, so a scoped
+  `[data-tenant]` / `.dark` / `.ui-density-*` override actually reaches them.
+- **`OrientationProp`** (`horizontal | vertical`) promoted into the shared prop vocabulary, so
+  `orientation` means one thing across the library instead of being re-spelled per component file.
+- **`SeparatorProp` / `SeparatorProps`** exported from `@godxjp/ui/layout` and registered in
+  `src/props/registry.ts`.
+
+- **Avatar `presence`** (gh#309) — a realtime reachability indicator on the mark itself:
+  `presence="online | away | busy | offline"`, plus `presenceLabel` to override the wording. The
+  prop ships the dot, its geometry tokens and a localized `sr-only` label together, so presence is
+  never colour-only (WCAG 1.4.1): each value also has its own silhouette — `online` a filled disc,
+  `away` a half-filled disc, `busy` a filled disc cut by a do-not-disturb bar, `offline` a hollow
+  ring — which keeps the four apart in greyscale, for a deuteranope and under forced colors. Omit
+  the prop for an entity with no presence concept (an organization mark, a capability medallion):
+  no node and no attribute are emitted and the DOM is byte-identical to before. `presence="offline"`
+  stays the different, positive statement "known to be unreachable", the same distinction `ListRow`
+  draws between an omitted and a `false` `unread`. The dot carries no `aria-live` on purpose — a
+  socket-fed roster of 40 marks resyncing would flood a screen reader, so announcing a _change_ is
+  the consumer's call in the consumer's own live region.
+
+  This replaces the hand-rolled `<span className="relative">` + absolutely-positioned
+  `bg-green-500 ring-2 ring-background` wrapper, which could never be got right from outside the
+  component: the dot's inset is a function of the mark's own `--avatar-*` radius/size tokens and of
+  the root's clip, neither of which a page can read.
+
+- **`--avatar-presence-{size,min-size,inset,ring-width,ring-color,stroke-width,bar-inline-size,bar-block-size,online-color,away-color,busy-color,offline-color}`**
+  (gh#309, cardinal rules #44/#45) — every constant of the presence indicator is a documented knob.
+  `--avatar-presence-size` is a **proportion** of the mark (default `30%`, floored by
+  `--avatar-presence-min-size`), not a px step, so one value tracks every avatar the system paints:
+  the `--control-height` box and its xs/sm/lg steps, `--avatar-square-size`,
+  `--org-switcher-avatar-size`, `--upload-avatar-size`, a call site's own `size-12`, and the 36px
+  `ListRow density="compact"` mark. `--avatar-presence-ring-color` and the four state colours are
+  role-mirror knobs declared `initial` with the role default at the call site
+  (`var(--knob, var(--role))`), so a scoped `[data-tenant]` / `.dark` override of `--background`,
+  `--success`, `--warning`, `--destructive` or `--muted-foreground` reaches them instead of the ring
+  freezing light-mode-white on a dark avatar.
+
+- **`dataDisplay.avatar.presence.{online,away,busy,offline}`** in `en` / `ja` / `vi`.
+
+- **`Textarea` — `autoGrow` (gh#310).** Opt-in auto-grow on the primitive: the box grows with its
+  content between `minRows` and `maxRows`, and scrolls internally past the ceiling instead of
+  pushing the page. Works controlled and uncontrolled, and re-measures on a paste, a programmatic
+  value change, `form.reset()`, the `allowClear` ✕ and the end of an IME composition — not only on
+  typing. Sizing is done in CSS by a hidden replica of the text (the replicated-content grid), so
+  the component never writes `style.height`, never reads `scrollHeight` (no forced reflow per
+  keystroke) and never moves `scrollTop`; the first paint is already the right height. Replaces the
+  hand-rolled `onInput` + `style.height` workaround the MCP catalogue used to instruct consumers to
+  write.
+- **Textarea auto-grow tokens** — `--textarea-autogrow-line-height` (`initial`, read as
+  `var(…, var(--line-height-normal))`), `--textarea-autogrow-min-height-rows` (1),
+  `--textarea-autogrow-max-height-rows` (8) and `--textarea-autogrow-box-inset`, plus
+  `--control-multiline-padding-block` (`--space-2`) for the multiline box's own block padding
+  (rules #44/#45). Bounds are counted in TEXT ROWS so they survive a density change and a
+  `--font-size-base` retheme; the floor is clamped up to `--control-height` so a resting one-row
+  composer still lines up with the Input/Button beside it. Every default reproduces today's
+  geometry when `autoGrow` is absent.
+
+- **ScrollArea `viewportRef`** (#311) — a typed ref to the element that actually scrolls. The
+  forwarded `ref` lands on the Radix `Root`, which is `overflow: hidden` and never scrolls, so
+  `scrollTop`, `scrollHeight`, `scrollTo()` and a `scroll` listener had no public route at all. The
+  only workarounds were `querySelector("[data-radix-scroll-area-viewport]")` — a Radix internal that
+  a major bump renames silently and that matches the wrong node as soon as two ScrollAreas nest —
+  or replacing the component with a raw `overflow-auto` div, which throws away the tokenized rail
+  and the WCAG 2.1.1 tab stop.
+- **ScrollArea `anchor="bottom"`** (#311) — bottom anchoring for a live stream (chat, log tail,
+  streaming response, activity feed), with `anchorOffset` and `onAnchoredChange`. Default `"none"`
+  keeps every existing ScrollArea byte-identical. The behaviour is deliberately _not_ "scroll to the
+  bottom when content arrives" — that is the bug it replaces: the viewport mounts on the newest
+  item, follows new content only while the reader is within `anchorOffset` of the bottom, and once
+  they scroll up to read history nothing moves them again until they come back. Content inserted
+  ABOVE the read position is compensated so the row under their eyes stays put; that compensation
+  restores a recorded (anchor row, offset-from-top-edge) pair, which makes it idempotent with native
+  CSS `overflow-anchor` and therefore a fallback for the two cases native anchoring does not cover
+  (Safari, which does not implement scroll anchoring, and a scroller sitting at `scrollTop === 0`).
+  Anchoring writes the scroll offset and nothing else: it never moves focus, never animates
+  (`behavior: "instant"`, so a theme's `scroll-behavior: smooth` cannot turn it into motion —
+  WCAG 2.3.3), and adds no `aria-live` region. `onAnchoredChange` exists so the consumer can render
+  a real focusable "jump to newest" Button — the anchor must not be the only route back to new
+  content.
+- **`--scroll-area-anchor-offset`** (default `3rem`, #311) — the stickiness band, i.e. how close to
+  the bottom still counts as "following the stream" (cardinal rule #45). The right distance is a
+  function of the row height a service renders, and in rem it is still one row at 200% zoom. The
+  `anchorOffset` prop overrides it per instance.
+
+- **Toggle / ToggleGroupItem: the counter-pill vocabulary** (`count` / `overflowCount` /
+  `showZero` / `countLabel`) — gh#312. `Button` owned the count and `Toggle` owned the pressed
+  state, so a counted pressed chip (a faceted filter chip "Open 42", a counted segmented toggle, a
+  reaction chip) had no primitive. `count` is now the SAME vocabulary `Button` defines, lifted
+  verbatim, so a counted filter tab and a counted pressed chip read identically: the number is
+  formatted with `Intl.NumberFormat` on the active locale, capped as `{overflowCount}+` above the
+  cap (default 99, the cap itself locale-formatted), and `showZero` (default `true`) controls the 0
+  case. The chip stays ONE `button[aria-pressed]` — one tab stop, one focus ring, one accessible
+  name — so no `Badge` is ever nested inside a Toggle for a count. `countLabel` folds the count's
+  unit into that name, which always resolves to "&lt;label&gt;, &lt;count&gt; &lt;unit&gt;"
+  ("Unread, 12 items"; "thumbs up, 3 reactions" for an emoji chip whose name comes from
+  `aria-label`). The count is announced exactly once and deliberately has no `aria-live`: a count
+  driven by other people is not this control's status. On `ToggleGroupItem` the count is per item —
+  `variant`/`size` still come from the group's context.
+- **Toggle counter-pill + pressed-state tokens** (`src/tokens/components/toggle.css`, gh#312, rules
+  #44/#45): `--toggle-count-min-width`, `--toggle-count-space-inline`, `--toggle-count-font-size`,
+  `--toggle-count-radius`, `--toggle-count-gap` (quiet default `0`, additive to the toggle's own
+  flex gap), `--toggle-count-background`, `--toggle-count-color`,
+  `--toggle-pressed-count-background`, `--toggle-pressed-count-color`,
+  `--toggle-pressed-border-color` and `--toggle-count-forced-outline-width`. The geometry knobs
+  carry Button's exact counter values off the same primitive scale — a Toggle count set beside a
+  Button count measures identically in a browser (12.47px · min-inline 16px · 4px inline padding ·
+  pill radius · tabular-nums), and a token-parity test fails if either side moves alone. The COLOUR
+  knobs are deliberately Toggle's own and are role-mirror knobs (`initial` at `:root`, role default
+  at the call site): Toggle's pill sits on a surface that inverts when pressed, and Button's
+  translucent-tint treatment cannot clear WCAG 1.4.3 AA over it (measured 3.82:1 at the xs step, and
+  4.39:1 even at the lowest usable alpha). Toggle's pill uses opaque role fills that invert with the
+  state instead — measured 5.04:1 pressed / 14.18:1 unpressed in light, 7.05:1 / 12.44:1 in dark.
+- **`docs/data-entry/toggle-count.tsx`** — a real screen (ticket inbox) showing a faceted filter
+  chip row driving a `DataTable`, a reaction row, a Toggle count beside a Button count, and the
+  size × variant × pressed × disabled grid.
+
+- `--table-flush-divider-width` (`src/tokens/components/table.css`) — the width of the ONE edge a
+  full-bleed table keeps inside `<CardContent flush>`: the divider between a plain `CardHeader` and
+  the first row. Default `var(--table-row-border-width)`. A theme sets it to `0` for a borderless
+  full-bleed table, or heavier for a stronger band (cardinal rules #44/#45).
+
+- `--switch-unchecked-background` (component token, `initial`, call-site default
+  `hsl(var(--input))`) — the Switch's off-track fill is now its own knob, so a service can quieten
+  it without dragging the `--input` control-boundary role back below the SC 1.4.11 floor
+  (cardinal rule #45). Whatever it is set to still owes 3:1 against the page and against the
+  thumb (`--background`).
+- `src/tokens/__tests__/input-boundary-contrast.test.ts` — deterministic guard that recomputes the
+  ratios straight from `foundation.css` for both themes across page / card / popover / muted /
+  secondary / striped row / hovered row, fails below 3:1, and fails outright if `--input` and
+  `--border` are ever given the same value again.
+
+- **`--form-grid-row-gap`** — row rhythm between the rows of a `<Form columns={n}>` grid. Defaults
+  to `--form-field-row-gap`, so the stacked and grid paths cannot drift; retune it alone only to
+  give multi-column forms a looser row rhythm than stacked ones.
+- **`--form-grid-column-gap`** — gutter between the columns of a `<Form columns={n}>` grid
+  (cardinal rule #45; previously ResponsiveGrid's generic stack gap with no knob). Default keeps
+  the historical 16px, so nothing moves unless a theme opts in.
+
+- **`check-dist-tokens-resolve`** — the first guard that reads the SHIPPED artifact rather than
+  the source. Two checks, no baseline, because a token that does not resolve does not exist:
+  every custom property in `dist/` must sit inside a real rule body (the 122-dead-token shape),
+  and every `var(--x)` without a fallback must resolve to one that survived (the `--space-9`
+  shape, where two tokens referenced a rung `foundation.css` skips). It reports **1,189 live
+  declarations across 46 shipped stylesheets and 0 dead**, and was proved against both bug shapes
+  by reintroducing them and watching it name the file and line.
+- **A shadcn-compatible registry, publishing the design language rather than the components
+  (#316 Phase 5).** `@godxjp/theme` (the token system) and `@godxjp/styles` (the stylesheets it
+  drives) resolve at `https://godx-jp.github.io/godxjp-ui/registry/{name}.json` through the
+  existing Pages deploy — no new infrastructure. A consumer adds one line to their own
+  `components.json` and runs `npx shadcn add @godxjp/theme`.
+  **The 165 components are deliberately NOT published.** A registry is a copy-paste channel;
+  copying them would fork a consumer's copy from the package, so they would stop receiving token
+  and a11y fixes while carrying ~73k lines they did not write. The library is an npm package and
+  stays one. What a registry is genuinely right for here is the half the package cannot hand you:
+  `docs/showcase/acme-portal.tsx` reproduces an entire brand — gold and navy, Source Sans 3, a
+  14px radius, tinted shadows — by configuring tokens alone, with no component edits. Tokens are
+  values rather than logic, so a copied theme cannot drift into a broken component.
+  The theme ships its CSS files verbatim instead of flattening them into `cssVars`: the system is
+  layered on purpose and the density axis resolves through `calc(… * var(--scaling))`, so a
+  flattened value map would compute that away and hand over a frozen snapshot that no longer
+  answers to `--scaling` or a scoped `[data-tenant]`.
+
+### Changed
+
+- **`CI (browser)` moved from the self-hosted fleet to GitHub-hosted `ubuntu-latest` (gh#316).**
+  Those jobs had been red for weeks because the hosts lack Chromium's shared libraries
+  (`libnspr4`, `libnss3`, `libasound2`) and `--with-deps` could not install them there: it shells
+  out to apt-get, which is absent, so the step died at exit 127 before the browser was even
+  downloaded. On ubuntu-latest apt-get exists, so `--with-deps` is not merely safe, it is the call
+  that installs them. Same reasoning `ci.yml` already carried — the fleet is heterogeneous and
+  every failure it has produced so far was infrastructure, not code. The Node-18 bootstrap the
+  self-hosted jobs needed is gone with it. All of these gates were run locally against an
+  installed Chromium first, so the change is known to be green rather than hoped to be:
+  `check:contrast` (11/11 routes), `check:visual-audit`, `check:frame-axe`, `check:button-icon-xs`,
+  and `check:frame-geometry` — the last of which found a real WCAG 2.1.1 defect (gh#321).
+
+- **`AuthDivider` is now a thin preset over `Separator label` (gh#308)**, not a parallel
+  implementation. `.ui-auth-divider` no longer restates the grid or the rule — it only re-points
+  Separator's `--separator-*` knobs at the `--auth-shell-divider-*` layer, so #263's canonical login
+  geometry is unchanged while the coupling the issue reported is broken: a service retuning its
+  login divider no longer retunes every day divider in its message streams. The hard-coded
+  `height: 1px` on `.ui-auth-divider-rule` (a rule #44 violation) is gone with it. The public API,
+  the `data-slot="auth-divider"` hook and the accessible-name contract are unchanged; the internal
+  `.ui-auth-divider-rule` / `.ui-auth-divider-label` classes are replaced by
+  `.ui-separator-rule` / `.ui-separator-label`.
+- `.ui-separator` reads `--separator-rule-{size,color}` instead of the literal `1px` and a direct
+  `hsl(var(--border))`. The defaults are those same values, so the plain rule is visually unchanged.
+
+- **MCP catalogue — `Textarea`.** Removed the DON'T that told consumers "the component does not
+  auto-resize; if you need auto-grow behaviour you must wire a custom `onInput` handler that adjusts
+  `style.height` explicitly". It is replaced by the `autoGrow`/`minRows`/`maxRows` props, an
+  explicit DON'T against the `scrollHeight` → `style.height` pattern (with the reasons: forced
+  reflow, re-deriving the library's box model, freezing the height against density and tenant
+  rethemes, and missing paste / IME / programmatic-reset / webfont-swap), and a composer DO. The
+  entry's example also no longer passes `onValueChange` to a `Textarea` — a prop it never had.
+
+- **Toggle: the pressed state is no longer carried by hue alone** (WCAG 1.4.1, gh#312). Beyond the
+  chip's existing fill/label inversion, the pressed chip's border is now a documented token
+  (`--toggle-pressed-border-color`, quiet by default), the counter pill inverts from a near-
+  invisible chip to a solid one, and under `forced-colors: active` the pressed chip's border follows
+  the system `Highlight` while its pill gains an outline — so the state survives greyscale, a
+  deuteranope reader and a flattened palette.
+- `ToggleProps` is now also exported as `ToggleProp`, and `ToggleGroupItem`'s props are exported as
+  `ToggleGroupItemProp` / `ToggleGroupItemProps` (both registered in `src/props/registry.ts`).
+
+- **Dependencies: everything that can move is on its latest, and the two that cannot are
+  documented.** Landed: `@types/node` 22→26 · `globals` 15→17 ·
+  `prettier-plugin-tailwindcss` 0.6→0.8 · `eslint` 9→10 (+ `@eslint/js`) · `jsdom` 29→30 ·
+  `@testing-library/jest-dom` 6→7, plus 13 minor/patch bumps including React 19.2.8,
+  `lucide-react` 1.37 and `zod` 4.5.
+  **ESLint 10 needed one config change:** `eslint-plugin-react@7.37.5` (its latest) declares a
+  peer range stopping at `^9.7` and crashes in `resolveBasedir` while probing the React version,
+  so `settings.react.version` is pinned to `19.2` instead of `"detect"`. Revert to `"detect"` once
+  the plugin ships ESLint 10 support — a pinned version drifts when React moves.
+  **TypeScript 7 is held back by `typescript-eslint`**, which does not support the 7.0 API
+  (upstream: typescript-eslint#10940, targeting TS ≥ 7.1). `tsc --noEmit` passes clean on 7.0 for
+  both `src` and `docs`, so the codebase is ready and only the lint toolchain is not.
+  **`@tanstack/react-table` 8.21 → 9.2 is done, and it is a migration, not a bump** — see below.
+- **`@tanstack/react-table` 8.21 → 9.2 — migrated, with no change to DataTable's public API.**
+  v9 is a rewrite of the type layer: features are explicit (a table carries only the state, options
+  and row models it declares), every generic gained a `TFeatures` parameter, `useReactTable` became
+  `useTable`, the `get*RowModel()` helpers became `create*RowModel()` factories registered as slots
+  on the feature set, and render-time state reads moved from `table.getState()` to `table.state`.
+  DataTable now declares its feature set once (`dataTableFeatures()`) — which is also the first
+  honest inventory of what it supports; v8 only ever implied that list through which row-model
+  helpers happened to be passed in.
+
+  Two decisions are worth recording:
+
+  - **The row-model factories are now registered unconditionally.** v8 disabled a stage by
+    withholding its row model; v9 keys that off the `manual*` options, so `manualSorting` alone
+    makes `getSortedRowModel()` return the pre-sorted rows. The one case with no v9 option behind
+    it — a table with no pager, where v8 simply withheld the pagination row model — is expressed as
+    `manualPagination: manualPagination || !paginationEngaged`, i.e. leave the rows unsliced.
+  - **Consumers keep their own row types.** v9 constrains its row type to
+    `RowData = Record<string, any> | Array<any>`, and an `interface` has no index signature, so a
+    naive migration would break `DataTable<Order>` for every consumer whose row is an interface.
+    An internal `T & Record<string, unknown>` bridge satisfies the constraint while staying a
+    subtype of `T`, so `row.original`, `getRowId` and `onRowClick` still speak the consumer's type.
+    The exported `ColumnDef<T>` was always this repo's own `ColumnDefProp<T>`, never TanStack's, so
+    nothing in the public API moved. 112 DataTable tests pass unchanged.
+
+  Also gone: the global `declare module "@tanstack/react-table"` augmentation of `ColumnMeta`,
+  which used to add our `lean` key to **every** table in the consumer's app. v9's per-table
+  `columnMeta` slot scopes it to DataTable and keeps it parameterised by the row type.
+
+- **ESLint 10's `no-useless-assignment` found six dead initialisers**, each overwritten on every
+  path: Rating's `next` (the switch's `default` returns, so the type also narrows to `number`),
+  Dialog's `ok` (both the try and the catch assign), and `stopServer` / `captured` / `command` in
+  three scripts. The `stopServer` no-ops were checked against their `catch` before removal — had
+  the catch fallen through to a `finally`, that initialiser would have been load-bearing rather
+  than dead.
+
+### Changed (BREAKING)
+
+- **Focus-ring knob dùng đuôi `-alpha`, không phải `-opacity`.** Bốn component token ra mắt ở
+  18.15.x đặt tên lệch khỏi vocabulary của chính repo (`--alert-bg-alpha`,
+  `--card-header-background-alpha`…) và không qua được `check:token-tiers` — gate này đã đỏ âm
+  thầm trên `main` kể từ đó vì release đi tắt qua `pnpm verify`. Đổi tên cho khớp thay vì nới
+  guard: thêm một từ đồng nghĩa thứ hai đúng là thứ cardinal rule #44/#45 muốn tránh.
+  `--toggle-focus-ring-opacity` → `--toggle-focus-ring-alpha`,
+  `--time-input-focus-ring-opacity` → `--time-input-focus-ring-alpha`,
+  `--sidebar-user-focus-ring-opacity` → `--sidebar-user-focus-ring-alpha`,
+  `--topbar-icon-focus-ring-opacity` → `--topbar-icon-focus-ring-alpha`.
+  Theme nào đang set bốn tên cũ phải đổi; giá trị mặc định giữ nguyên nên không đổi hình ảnh.
+  `--focus-ring-opacity` ở `foundation.css` là token nền tier khác và **không** đổi.
+
+### Fixed
+
+- **a11y: `Button size="xs"` was 20px tall, under WCAG 2.2 SC 2.5.8's 24x24 minimum target size
+  (gh#316).** It read `calc(var(--control-height) - 0.75rem)` = 1.25rem while `size="icon-xs"`
+  beside it read `--control-height-xs` = 1.5rem: the same tier name, two heights, 4px apart. The
+  gap was recorded as a visual decision to make later; measuring it settled it as an accessibility
+  one, because 20px fails the target-size minimum and the 24px sibling passes. The old value was
+  also the exact shape this repo's own rule forbids — an ad-hoc `calc(var(--control-height) +/- length)`
+  that silently re-derives a tier and drifts from its siblings — and, being a raw length rather
+  than a `--scaling`-multiplied step, it did not move with density while the tier did.
+  `--button-xs-height` now defaults to `--control-height-xs`. This IS a visible change on the most
+  used component in the library (20px -> 24px) and it stays a knob: a service that wants the old
+  box sets the token back.
+
+- **a11y: `colSpan` on a one-column form grid collapsed a field to 0px and put its clear button
+  out of reach (gh#321).** `FormField` set the span as an inline `grid-column: span N`. On a grid
+  that is one column below its 40rem container query, that does not degrade to one column — per
+  spec it FABRICATES an implicit second track, which auto-sizes to its content and leaves the real
+  `minmax(0, 1fr)` track with the remainder: `0px 196px` inside a 212px grid at 320px. The field in
+  the starved track rendered at zero width, and its Input's absolutely-positioned trailing affix
+  (the clear button, `inset-inline-end: 8px` measured off a zero-width box) landed at `x = 2` while
+  the frame began at `x = 20`, with nothing scrollable in between — focusable, invisible,
+  unreachable (WCAG 2.1.1 / 2.4.7). `overflowX` was `false` throughout, which is exactly why no
+  other gate saw it: the field does not overflow, it disappears.
+  The span now travels as `--form-field-col-span` so the STYLESHEET decides where it is safe, and
+  is applied from the same breakpoint at which ResponsiveGrid's second column appears — a test
+  reads both files and fails if the two ever drift apart. Measured after the fix: 320 / 375 / 640 /
+  768 resolve to a single track with every span `auto` and the button inside the frame; 1280
+  resolves to `557px 557px` with `span 1 | span 1 | span 2`.
+  Pre-existing, not from this batch — the identical measurement reproduces at `fe5f681`. It
+  surfaced only because `check:frame-geometry` could finally run: its baseline predated the
+  breakage, the same staleness that had hidden `DropdownMenuTrigger` in the API manifest.
+
+- **a11y: the Button counter pill was below WCAG SC 1.4.3, in five combinations, not the two that
+  were reported (gh#320).** The pill tinted itself translucently over whatever surface the button
+  had (`bg-primary-foreground/15` on filled variants, `bg-foreground/8` on the outline family), so
+  its contrast was a function of that surface rather than a property of the pill: `default` 3.88:1
+  light, `destructive` 4.29:1 dark, and the outline family 4.32:1 light at rest, **3.64:1 light on
+  hover**, 3.68:1 dark on hover — against the 4.5:1 small text requires. The two worst are HOVER
+  states, which is why no screenshot sweep found them: `--accent` only exists under the cursor.
+  The pill now uses the opaque role fills gh#312 validated on Toggle, so the ratio no longer
+  depends on the variant or on hover. Each filled variant wears its own label pair SWAPPED
+  (`default` 5.04:1 light / 7.07:1 dark, `destructive` 6.10 / 5.53, `secondary` 14.25 / 12.40),
+  which makes the pill exactly as legible as the label beside it and impossible to make worse
+  without making the button itself unreadable first — a promise a fixed colour could not keep
+  across re-themes. The outline family reads `--foreground` on `--muted` (14.25 / 12.40), whose
+  fill sits 1.09:1 against the button's own ground, so at rest a count still reads as quiet text
+  rather than a badge (#44): the DIGITS got legible, the pill did not get loud.
+  The other two translucent-over-variable-surface tints in the library were measured rather than
+  assumed — the overlay header band (13.25–14.65:1) and the permission-matrix diff row (4.76:1 at
+  its worst, on hover) — and both clear AA, so the counter pill was the only exposure.
+
+- **`check:contrast` was auditing three routes that do not exist, and reporting them clean.**
+  `/showcase/tiximax-portal` and `/showcase/tiximax-website` have been `acme-*` since the rename,
+  and the Button page is `general-button-index`, not `general-button`. All three rendered a
+  "not found" card — four legible words, which passes every contrast check there is — so the two
+  brand re-theme showcases and the gh#199 dark-theme Button coverage this gate's own comment
+  claims had silently not existed. The routes are corrected (and `futurelastic-web`, the dark-ground
+  third brand, added), but the real fix is structural: the sweep now FAILS on a route that resolves
+  to a not-found card. A sweep that cannot tell "nothing failed" from "nothing was there" is not
+  evidence.
+
+- **Two text-scanning audits were reporting on prose, and one demo shipped emoji.** The raw-palette
+  audit counted `bg-green-500` where Avatar's presence block _explains_ the hand-rolled workaround
+  the prop exists to replace, so a file with no debt was reported as having some — the same
+  phantom-debt shape `check-no-hardcoded-geometry` was taught to avoid, and it now strips comments
+  the same way (proved still to bite by putting the class back into real markup). The `docs`
+  typography audit was right about the other 19: 21 em-dashes in Japanese product copy became
+  middots per the repo's own standard, and the reaction-chip demo's 👍/🎉/👀 became lucide marks —
+  emoji render at a size and weight the host font decides, which is the same reason this system
+  bans emoji flags, and a counter pill has to stay legible beside the glyph.
+
+- **Table/DataTable: a full-bleed table no longer doubles the card frame (gh#305).** The frame
+  suppression inside `<CardContent flush>` now covers BOTH full-bleed surfaces in one rule —
+  `.ui-data-table-surface` (DataTable's own frame) and `.ui-table-bordered` (`<Table bordered>`) —
+  and it only ERASES widths, never repaints chrome. The previous shape (`border: 0` followed by a
+  hard-coded `border-block-start: 1px solid …`) painted chrome unconditionally, which re-drew the
+  line even where the card already had one.
+- **Table/DataTable: the flush table's top divider is back in the canonical composition (gh#306).**
+  The gh#306 repair had reached only `<Table bordered>`, so
+  `<Card><CardContent flush><DataTable/></CardContent></Card>` still rendered a frameless surface
+  and its header floated with no line under it (measured: `border-top-width: 0px`). The divider is
+  now restored by an adjacent-sibling rule that fires only where the edge actually separates
+  something: a plain `CardHeader` directly above the flush body. A banded header, a `CardBar`, a
+  `DataTable.Toolbar` or a headerless card each already draw that line and no longer get a second
+  hairline stacked on it. `SkeletonTable` is covered by the same contract, so the loading→loaded
+  swap does not move a hairline.
+- **Card: `flush` zeroes both block edges for every full-bleed body, not only one containing a
+  `<table>` (gh#307).** The zero was gated on `:has(table)`, so a flush body of anything else (a
+  file list, `ListRow` rows, a DataTable in its empty state) still took the generic body padding and
+  floated off its header — measured at 18.4px on a consumer's 関連ファイル section against 0px for
+  the flush table beside it. Guarding the `describedBody` pair with `:not([data-flush])` could not
+  fix that (the padding came from the generic content rules) and its ACTION half additionally
+  stripped the `padding-top: 0` those bodies used to get. The flush body now owns its block axis
+  outright, and a plain header above ANY flush body supplies the gap from its own
+  `--card-space-body-y`. `tight` and `solo` keep owning that axis themselves; a non-flush
+  `CardContent` is unchanged.
+
+- **a11y: `--input` no longer shares `--border`'s value — control boundaries now clear WCAG 2.2 SC 1.4.11 (gh#315).**
+  A text field's 1px edge is the only thing that says "you may type here" (the field has no fill of
+  its own and no shadow), and it measured **1.46:1** on `--background`/`--card` in light and
+  **1.55:1 / 1.43:1** in dark — the one live WCAG failure a full DXS Platform sweep turned up.
+  `--input` is now the CONTROL BOUNDARY role with its own value, held to 3:1 on every surface a
+  control actually sits on: light `30 7% 53%` (`#90877f` — 3.47:1 on `--background`/`--card`/
+  `--popover`, 3.18:1 on `--muted`/`--secondary`, 3.35:1 on a zebra row, 3.32:1 on a hovered row)
+  and dark `45 6% 47%` (`#7f7b71` — 4.22:1 / 3.88:1 / 3.17:1 / 3.81:1 / 3.71:1). It also lifts the
+  Switch's unchecked track from 1.46:1 to 3.47:1 against both the page and its own thumb, so "off"
+  is finally a visible state. `--border` is deliberately UNCHANGED: table rules, card edges and
+  section dividers are decorative chrome that SC 1.4.11 does not reach, and darkening them would
+  make the dense JP grid roar. **Services re-theming neutrals must now move the two roles
+  independently** — `--input: var(--border)` re-opens the bug.
+
+- **Form `columns={n}` — one canonical row rhythm on both layout paths (gh#304).** The gh#295
+  field rhythm is a per-field `margin-block-start`, and it reached the fields a `columns` Form lays
+  out as ResponsiveGrid items — a spacing mechanism fighting a layout mechanism. The first item of
+  row 1 has no preceding sibling and took no margin while its row-mates took the full one, so row
+  1's columns started 12px apart, and every track then carried the margin on top of the grid's own
+  gap (row pitch 89px against a 73px stack). Zeroing the margin on grid items levelled the columns
+  but handed the rhythm to ResponsiveGrid's generic 16px stack gap, so a `columns={1}` form — and
+  any `columns={n}` form once a narrow container collapses it to one column, i.e. every phone —
+  still sat 16px apart where the identical fields without `columns` sat 12px. The grid's own
+  `row-gap` now carries the form's rhythm, keyed on the grid HAVING FormField items rather than on
+  where it sits, so `columns={1}` is pixel-identical to no `columns`, a hand-written
+  `<ResponsiveGrid columns={2}>` of fields inside a `CardContent` (what a form with several titled
+  Card sections has to write) matches `columns={2}` exactly, and every column count (1–4), LTR and
+  RTL, wide and collapsed, resolves to the same 73px pitch. A card/tile grid inside a form has no
+  FormField items and keeps ResponsiveGrid's stack gap.
+
+- **`check:screen-reader-evidence` is green again — the `landmarks-page-structure` cohort listed an
+  owner the library does not have.** `layout/page-header` entered the cohort in `0916c56`; there is
+  no `PageHeader` export (page chrome lives on `PageContainer`, already listed one line above), so
+  the gate had been failing on `unknown owner` ever since. Removed the stale line. This was the
+  third of three gates that had been quietly red on `main`.
+- **`preview/frame-coverage.ledger.json` — `DropdownMenuTrigger`'s ratchet floor raised by one
+  reasoned-N/A.** The generator no longer infers `disabled` off the Radix `Trigger`, so `states`
+  flipped from `untested` to `not-applicable:api-manifest` and the ratchet, correctly, refused it.
+  Regenerating from a pristine checkout of the previous commit reproduces the same flip, so this is
+  drift between the committed manifest and the current dependency graph, NOT coverage being
+  deleted — the floor was raised for that one export rather than re-minting all 283 with
+  `--reset-baseline`, which would have erased the ratchet's memory the day nine changes landed.
+
+- **AlertDialog's close button was never pinned.** `DialogContent` sets
+  `data-slot="dialog-close"`, which is the only selector that positions the overlay ✕;
+  `AlertDialogContent` rendered a bare `<button>` without it, so the button stayed `position:
+static` and fell inline after the children at full opacity instead of resting at
+  `--dialog-close-rest-alpha`. It is opt-in there (`showCloseButton` defaults to `false`), which
+  is why it went unnoticed.
+- **DataTable's #319 rules were trapped in the responsive layer.** The same append mistake that
+  killed 122 tokens hit a stylesheet too: the block targeted `table-layout.css`'s last `}`, which
+  closes `@layer godxjp-ui-responsive` rather than ending it, so a dozen static rules landed in a
+  layer reserved for container-query re-points. Four of them are now scoped through
+  `.ui-data-table-root` — the last layer had been doing their cascade work, and demoting them bare
+  would have shrunk the toolbar/pagination glyphs (`.ui-button svg` outranks a bare class) and
+  re-rounded the loading chips (`.ui-skeleton-block` is imported later).
+- **`--checkbox-checked-background` was completely dead.** Checkbox carried
+  `data-[state=checked]:bg-primary` as a utility, and Tailwind v4 orders utilities after
+  components, so it outranked `.ui-checkbox[data-state="checked"]` — a service overriding the
+  token got no fill change at all. The utility is gone; the knob works.
+- **SearchSelect's inner search field suppressed its focus outline, not just its ring.**
+  Tokenizing it earlier in this same release turned a `focus-visible:ring-0` utility into
+  `box-shadow: none; outline: none`, leaving keyboard users with no focus affordance inside the
+  panel. Only the ring is suppressed now.
+- **Three tests were not brittle but silently vacuous, found while driving utility assertions to
+  zero.** `app-setting-picker` asserted `not.toHaveClass("sm:w-40")` for a class that no longer
+  exists anywhere in `src/` — it could never fail. `badge-status` used
+  `toContain("bg-primary")`, which `bg-primary/10` also satisfies, so the _soft_ pill would have
+  passed the _solid fill_ test. `data-table-align` used `not.toHaveClass("text-end",
+"text-center")`, and jest-dom's multi-name form asserts all are present, so negating it only
+  required one to be missing — a cell wrongly carrying `text-end` passed. All three now assert
+  data attributes, with a positive control where the assertion is a negative.
+- **`check-token-tiers` would have missed the very bug it was written for, on a multi-line
+  token.** Its brace walker read a declaration as `buffer.split("\n").pop()`, and this repo wraps
+  long values onto the next line (`--shadow-md:` then the value). For such a token the walker read
+  the VALUE line, which does not start with `--`, so a multi-line token stranded inside an
+  `@media` block would have slipped straight through. It now reads the whole buffer; proved by
+  planting a multi-line token in a conditional group and watching it fail.
+- **`focus-ring-single-source` reported every `box-shadow: none` as a hand-written ring.** Its
+  `/box-shadow:\s*(?!none)/` backtracks `\s*` to zero width, so the lookahead compared against
+  `" none"` rather than `"none"` and matched. It now reads each declaration's value — suppressing
+  a ring is the opposite of painting one, and the check could not tell them apart.
+- **122 control tokens were silently dead for most of the v19 refactor.** Every token appended to
+  `src/tokens/components/control.css` during #319 landed _after_ the closing brace of `:root` but
+  _inside_ the trailing `@media (pointer: coarse)` block. A bare declaration in a conditional
+  group rule is invalid CSS, so browsers dropped all of them: `--control-affix-*` ·
+  `--control-inline-affix-*` · `--select-*` · `--cascader-*` · `--search-select-*` ·
+  `--time-picker-*` · `--tree-select-*` · `--calendar-*` · `--transfer-*` · `--month-picker-*` ·
+  `--button-xs-*` · `--input-file-button-*` resolved to nothing. Nothing caught it — the tier
+  guard read the file line by line, the geometry ratchet only reads `.tsx`, and jsdom does not
+  resolve the cascade — so `check-token-tiers` passed on a file where a third of the tokens did
+  not exist. They are now in a plain `:root`, and `check-token-tiers` walks the brace structure so
+  a declaration outside any rule fails the build with its line number and the at-rule it is
+  trapped in.
+- **`--space-9` never existed.** Two control tokens referenced it (`foundation.css` jumps
+  `--space-8` → `--space-10`), so the inline room a trigger reserves for its affix resolved to
+  nothing. Both now carry a raw `2.25rem`, matching the flat `pe-9` step they replaced.
+- **Calendar day cells lost their padding reset to Button.** `.ui-button--default-size` is
+  declared later in `control.css` than `.ui-calendar-day-button` and at equal specificity, so its
+  block padding re-applied to a day cell. The calendar rule is now scoped to `.ui-calendar`.
+- **`check-no-hardcoded-geometry` counted class lists written inside comments.** Card's
+  `className="border-2"` explainer and Topbar's JSDoc `<Avatar className="rounded-md">` example
+  were both reported as debt in files that have none. Comments are stripped before scanning.
+
+### Added
+
+- **#319 Phase 1 is complete: 608 hard-coded geometry/chrome literals → 0.** Every component in
+  `src/components/` now expresses its box through tokens rather than Tailwind scale steps, so a
+  service can retune density, measure and chrome without forking. The final wave covered Dialog,
+  Alert, Sonner, UploadCropDialog, Label, Checkbox, Radio, Switch, FormField, Descriptions,
+  BranchScopePicker, ServiceRolePanel, PageContainer, Table, AppShell and EmptyState. Dialog
+  mirrors the `--sheet-*` chrome set rather than inventing a second shape; Sonner's icons became
+  themeable despite living inside a library config object; `--empty-state-icon-size` and
+  `--empty-state-icon-glyph-size` must move together or the glyph stops sitting centred in its
+  medallion, so both are knobs.
+- **`check-no-hardcoded-css-values`** — the geometry ratchet only ever read `.tsx`, so a literal
+  pushed from a component into `src/styles/*.css` left the count looking clean while the debt was
+  unchanged. It reads 0 in components and **121 across 11 stylesheets**; `shell-layout.css` alone
+  holds 40. The clearest case is `.kbd`, where `font-size` is already a token while
+  `padding: 1px 5px`, `border-radius: 4px` and `line-height: 1.2` sit beside it as literals.
+  Percentages, viewport-relative units, `1px` hairlines, anything containing `var(…)`, and
+  `@media`/`@container` conditions are deliberately not flagged — a percentage is proportional to
+  its parent, so it is layout rather than a constant.
+- **`check-no-inline-magic-numbers`** — a component can put a constant somewhere no theme can
+  reach and no class-based guard can see. TreeSelect computed its depth indent as
+  `` `${depth * 1.25 + 0.5}rem` `` inline. That one is fixed, so the guard lands at 0 and exists
+  to keep it that way; `scale(${scale})` and other genuinely dynamic values are not flagged.
+- **Test assertions on Tailwind utilities: 53 → 0.** Every one now asserts the contract — a
+  `data-*` attribute, a semantic class, or the shipped CSS rule matched against the rendered node
+  via `.matches()`. Three components gained the attribute the assertion needed, which makes the
+  state themeable and assertable at once: DataTable emits `data-align` (only when a column asks
+  for one), Descriptions emits `data-slot`/`data-columns`/`data-label-align`/`data-mono`, and Tabs
+  emits `data-variant` on its root — the list deliberately collapses `card` → `default` (gh#248),
+  so until now no node published which of the three variants the consumer chose.
+- **`check-no-tailwind-class-assertions`** — a ratchet guard for tests that pin a Tailwind utility
+  instead of the contract. Sixteen tests broke during this refactor without a single behaviour
+  changing, and two were not merely brittle but wrong: `[class*="opacity-0"]` also matches
+  `opacity-05`, and one called `dragLeave` while asserting nothing about it, so a dropzone stuck
+  in the active state passed. DataTable is the proof this is avoidable — 24 test files, 112 cases,
+  zero utility assertions, and it needed no changes when its chrome was tokenized.
+- **Sonner no longer loses its theme when a consumer passes `style`.** `{...props}` was spread
+  after `style={{…}}`, so any consumer `style` replaced the whole object and the toast rendered
+  transparent. The two are merged now.
+- **Tabs, Pagination, ScrollArea and InfiniteQueryState are token-themeable (#319) — 17 literals → 0.** Tabs' line variant carried its whole box on the component: `--tabs-root-gap` ·
+  `--tabs-list-line-space-inset` · `--tabs-trigger-line-radius` ·
+  `--tabs-trigger-line-padding-x` · `--tabs-trigger-line-padding-y`. Two of its literals were
+  neither: `shadow-sm` duplicated the base trigger rule and `mt-0` was dead, so both are gone
+  rather than tokenized. The root's `min-w-0` moved into the stylesheet instead of becoming a
+  knob — a flexbox shrink floor is an idiom, not a constant a service should be able to reach.
+  ScrollArea had no CSS rule at all: `--scroll-area-bar-size` (raw rem, because the Tailwind step
+  it replaces is flat rather than density-scaled) · `--scroll-area-bar-padding` ·
+  `--scroll-area-thumb-radius`. InfiniteQueryState gained
+  `--query-load-more-space-block-start` / `--query-loading-more-space-block-start`.
+  **Pagination's chevrons kept their `size-4` as a token-backed utility rather than moving to
+  CSS**: `.ui-button--sm svg` sizes them at 0.875rem and Tailwind v4 orders utilities after
+  components, so a components-layer rule would have silently shrunk both chevrons — the utility
+  now reads `--pagination-icon-size`, whose default is `var(--control-icon-size)` — identical to
+  the old `size-4` at default density, but it now tracks the density axis where the flat literal
+  did not. That is the intended behaviour for a control glyph; it is a change only under
+  compact/comfortable density.
+- **PermissionMatrix is token-themeable (#319) — 9 literals → 0.** `.ui-permission-matrix` had
+  existed as a bare hook with no CSS rule anywhere, so every constant lived on the component and a
+  JA/VI service whose role names run longer than the English ones could not widen the label column
+  without forking: `--permission-matrix-label-width` · `--permission-matrix-role-space-gap` ·
+  `--permission-matrix-name-space-gap` · `--permission-matrix-cell-icon-size` ·
+  `--permission-matrix-min-width`. The sticky column's rule is scoped through the matrix root
+  because `[data-slot="table-head"]` sets its own background at the same specificity — unscoped it
+  would win only by import order, which is not a property worth depending on.
+- **Textarea's clear control now shares Input's affix (#319) — 9 literals → 0, 8 of them by reuse.**
+  The two carried a byte-identical stack; Textarea now uses `.ui-control-inline-affix-action` and
+  `.ui-control-inline-affix-icon`. Only one thing is genuinely its own:
+  `--textarea-clear-inset-block-start`, because Input centres its affix on the field's single line
+  and a textarea has no single line to centre on, so its control parks at the top-end corner.
+- **Skeleton bars are token-themeable (#319) — 14 literals → 0.** Bar heights and fixed widths
+  were literal, so a service could not match the loading state to its own type scale:
+  `--skeleton-block-height` · `--skeleton-caption-height` · `--skeleton-title-height` ·
+  `--skeleton-label-width` · `--skeleton-detail-value-max-width` · `--skeleton-stat-value-width` ·
+  `--skeleton-stat-caption-width`. These carry RAW rem rather than `var(--space-N)` on purpose:
+  the literals they replace are flat Tailwind steps, not density-scaled ones, so routing them
+  through the spacing scale would have made the loading state track the density axis while the
+  content it stands in for does not.
+- **DatePicker and DateRangePicker are token-themeable (#319) — 22 literals → 0 across both — and
+  three more shapes moved up to control level.** DatePicker parks the same clear+calendar affix
+  pair TimePicker does, and DateRangePicker uses the same bordered two-input shell as
+  MonthRangePicker, so the reserve, the shell and the flush calendar panel became shared:
+  `--control-inline-affix-pair-space-inline-end` (a field with TWO inline affixes reserves more
+  than one with a single) · `--control-composite-field-space-gap` (the box wrapping two inputs and
+  a separator, now shared by all four range/picker fields so they cannot drift into four slightly
+  different boxes) · `.ui-control-panel-flush` (a popover whose content owns its padding).
+- **Input is token-themeable, and the inside-field affix is now shared (#319) — 15 literals → 0.**
+  Input and TimePicker carried a byte-identical affix stack, so that became one control-level set:
+  `--control-inline-affix-size` · `--control-inline-affix-icon-size` ·
+  `--control-inline-affix-space-gap` · `--control-inline-affix-inset-inline` ·
+  `--control-inline-affix-rest-alpha` · `--control-inline-affix-space-inline-end`. It stays
+  SEPARATE from the overlay `--control-affix-*` pair that Select and SearchSelect park on top of a
+  trigger: an affix sitting on the field's own surface rests heavier (0.7) than one floating over
+  it (0.5), and collapsing the two would have flattened that. Input also gained
+  `--input-file-button-*` for the browser-owned file button, and its disabled state now dims by
+  `--disabled-opacity` rather than a literal `0.5`.
+- **DataTable's remaining chrome is token-themeable (#319) — 17 literals → 0.** Its cell rhythm,
+  column widths and action-collection tiers were already tokenized; what was left sat around
+  them — the select column, sort glyphs, sticky-header layer, pagination text and the loading
+  skeletons: `--table-select-column-width` · `--table-sort-icon-size` ·
+  `--table-toolbar-icon-size` · `--table-pagination-*` · `--table-skeleton-*`. The skeleton
+  shapes are named for what they stand in for (a checkbox square, a text line at cap height), so
+  a service retuning `--table-cell-padding-y` can keep the loading state the same height as the
+  loaded one instead of discovering the rows jump.
+- **AppSettingPicker's per-kind widths are themeable (#319) — 18 literals → 0.** Each picker is
+  sized to the longest value it can show — a timezone name is far wider than a theme name — but
+  those widths were `sm:w-*` steps in a lookup table, so a service whose locale renders longer
+  labels could not widen just the one that overflows. Width now comes from `data-kind` selecting
+  `--app-setting-picker-{locale,timezone,date-format,time-format,theme,brand,density,font-size}-width`,
+  with `--app-setting-picker-width-breakpoint` documenting where the trigger stops hugging its
+  content. The inline variant also stopped repeating the chrome-less box as utilities —
+  `.ui-app-setting-picker-inline` already declared every one of them — and the icon-only variant
+  gained the matching rule it never had.
+- **Button is token-themeable (#319) — 18 literals → 0.** Its `ui-button--*` classes already
+  carried most of the box; what was left sat inside the cva variant strings and the count pill:
+  `--button-xs-*` · `--button-icon-space-inline-{xs,sm,md,lg}` · `--button-space-block` ·
+  `--button-count-*`. The base string also duplicated what `.ui-button` already declares, and
+  `.ui-button:disabled` dimmed by a literal `0.5` rather than `--disabled-opacity` — both fixed.
+  **Two things deliberately did NOT change.** `size="xs"` stays at
+  `calc(var(--control-height) - 0.75rem)` (1.25rem) even though `size="icon-xs"` uses
+  `--control-height-xs` (1.5rem): same tier name, 4px apart, and the xs form does not scale with
+  `--scaling` while the tier does. That is a real inconsistency, but Button is the most-used
+  component here, so this change only lifts the value into `--button-xs-height` — reconciling the
+  two is a visual decision for #319 to make, not a side effect of tokenizing. And the icon-glyph
+  rules stay Tailwind _utilities_ rather than moving into the components layer: Tailwind v4 orders
+  utilities after components, so only a utility can out-rank a child's own `size-4`. They now read
+  `--button-xs-icon-size` instead of a literal step, keeping both the precedence and the knob.
+- **MonthPicker and MonthRangePicker share one token set (#319) — 35 literals → 0 across both.**
+  They render the same year-nav + 3-column month grid and each held an identical copy of every
+  literal, so the two could drift apart silently — the same failure DropdownMenu had against
+  ContextMenu/Menubar. One set now drives both: `--month-picker-panel-space-inset` ·
+  `--month-picker-grid-*` · `--month-picker-cell-space-inline` · `--month-picker-nav-*` ·
+  `--month-picker-field-space-gap` · `--month-picker-icon-size` ·
+  `--month-picker-separator-icon-size`. The nav's resting alpha defaults to
+  `--calendar-nav-rest-alpha`, so retuning the calendar's chevrons keeps the month panel in step.
+  The 3×4 grid shape stays hard-coded on purpose — twelve months only read as a calendar year in
+  that arrangement, so it is layout, not a service knob.
+- **Transfer is token-themeable (#319) — 21 literals → 0.** Pane height, header rhythm and row
+  density were literal, so a service could not fit the panes to its own page grid or tighten the
+  row for a dense admin screen without forking: `--transfer-pane-*` · `--transfer-header-*` ·
+  `--transfer-search-space-inset` · `--transfer-list-space-inset` · `--transfer-row-*` ·
+  `--transfer-empty-space-block` · `--transfer-actions-space-gap` ·
+  `--transfer-action-icon-size`. The disabled search state moved from a `pointer-events-none
+opacity-50` pair to `data-disabled` reading `--disabled-opacity`, so it dims by the same amount
+  as every other disabled affordance in the system.
+- **Sheet's inner chrome rhythm is token-themeable (#319) — 23 literals → 0.** `--sheet-pad-x/-y`
+  already governed the panel inset, but the gaps INSIDE that chrome were literal, so a service
+  could retune the sheet's outer padding and still be stuck with the header stack, the
+  title/subtitle pair and the footer row: `--sheet-header-space-gap` ·
+  `--sheet-title-block-space-gap` · `--sheet-title-row-space-gap` · `--sheet-extra-space-gap` ·
+  `--sheet-footer-space-gap` · `--sheet-title-font-size` · `--sheet-description-font-size` ·
+  `--sheet-body-space-block` · `--sheet-close-*` · `--sheet-shadow`. The header's reserved inline
+  end and the close button's corner offset now derive from the same
+  `--sheet-header-close-space-inline-end` / `--sheet-close-offset` pair, so they can no longer
+  drift apart and let a long title slide under the ✕. Overlay and panel join `--overlay-z-index`
+  instead of a private `z-50`.
+- **Calendar is token-themeable (#319) — 24 literals → 0.** Day and weekday cells already sized
+  from `--control-height` (a system tier decision that stays), but the frame around them — root
+  inset, month gaps, nav offset, grid rhythm — was literal inside the react-day-picker
+  `classNames` map, which is exactly the place a consumer cannot reach without replacing the
+  whole map: `--calendar-space-inset` · `--calendar-month-space-gap` · `--calendar-caption-*` ·
+  `--calendar-nav-*` · `--calendar-grid-space-block-start` · `--calendar-week-space-block-start`
+  · `--calendar-weekday-*` · `--calendar-day-*` · `--calendar-chevron-size`. Every `classNames`
+  slot still merges the caller's override exactly as before.
+- **Steps is token-themeable (#319) — 25 literals → 0.** `--steps-inline-*` already covered the
+  compact inline form; the main variant's marker, connector and text rhythm were still literal,
+  so a service could not resize the dot, retighten the vertical run, or move the horizontal
+  connector onto its own grid: `--steps-dot-*` · `--steps-marker-*` · `--steps-title-*` ·
+  `--steps-vertical-*` · `--steps-horizontal-*` · `--steps-connector-*`. Step status, direction
+  and title placement now drive the styling through data attributes rather than conditional
+  class strings, so both ends of the horizontal connector move together when
+  `--steps-connector-inset` is retuned instead of needing two hand-matched `calc()` literals.
+- **TreeSelect is token-themeable (#319) — 25 literals → 0, and its depth indent is finally
+  reachable.** The indent was a magic expression inline in JSX (`depth * 1.25 + 0.5` rem), so no
+  theme could touch it at any price — the guard never even saw it, because it is not a Tailwind
+  class. Depth now flows through `--tree-select-depth` on the row and the indent resolves as
+  `--tree-select-depth-space-base + depth × --tree-select-depth-space-step`, so a dense service
+  can tighten or flatten the tree without forking. Also `--tree-select-row-*` ·
+  `--tree-select-toggle-*` · `--tree-select-list-max-height` · `--tree-select-empty-space-block`.
+  Its clear control is centred against the whole field rather than laid out in a flex overlay, so
+  it keeps its own rule while reading the shared `--control-affix-*` knobs.
+- **TimePicker is token-themeable (#319) — 25 literals → 0.** Column height, panel width, row
+  rhythm and the inline affix pair were all literal on the component, so a service could not
+  shorten the scroll column or widen the panel for its own type scale without forking:
+  `--time-picker-column-height` · `--time-picker-panel-width` (+ `-12h`, since a 12-hour layout
+  adds an AM/PM column) · `--time-picker-heading-*` · `--time-picker-option-*` ·
+  `--time-picker-footer-space-inset` · `--time-picker-affix-*`. Unlike Select and SearchSelect,
+  TimePicker's affix sits INSIDE the field rather than overlaying it and carries two controls
+  (clear + clock), so it keeps its own reserve and resting alpha instead of the shared overlay
+  values — shared vocabulary where it fits, separate where it genuinely differs.
+- **Select is token-themeable (#319) — 27 literals → 0, mostly by reusing what already existed.**
+  Select's popup is the same surface ContextMenu/Menubar/DropdownMenu use, so its rows, label and
+  separator join those shared rules rather than getting a fourth private copy; its trailing clear
+  affix matched SearchSelect's calibration exactly, so it reads `--control-affix-*` with no
+  scoping. Only three knobs are genuinely Select's own: `--select-content-max-height` ·
+  `--select-scroll-button-space-block` · `--select-item-space-inline` (a listbox row has no
+  leading icon column, so it takes a slightly wider inline inset to read level with a menu row
+  that does). The popup also stops hard-coding `z-index: 50` and reads `--overlay-z-index`.
+- **DropdownMenu joins the menu family (#319) — 29 literals → 0.** ContextMenu and Menubar were
+  already converted and share one row-rhythm rule; DropdownMenu was the only Radix menu surface
+  still carrying its whole box as Tailwind literals, so the three drifted apart silently. It now
+  uses the same `.ui-*-item / -label / -separator / -shortcut` groups, and the row rhythm they
+  share became knobs instead of a literal `2rem` in the stylesheet: `--menu-item-height` ·
+  `--menu-item-radius` · `--menu-item-space-inline` · `--menu-item-space-gap` ·
+  `--menu-item-font-size` · `--menu-item-inset-space-inline-start` · `--menu-indicator-*` ·
+  `--menu-content-*` · `--menu-separator-*`. A service tunes menu density once for all three.
+  DropdownMenu opens off a small trigger so it stays narrower — it scopes
+  `--dropdown-content-min-width` (8rem) over the shared 10rem rather than forcing one width.
+  The menu surfaces also stop hard-coding `z-index: 50` and read `--overlay-z-index`.
+- **Cascader is token-themeable (#319) — 30 literals → 0.** Column widths, panel heights and both
+  row rhythms were literals, so a service could not widen a column to fit longer JA labels or
+  tighten the row without forking: `--cascader-column-min-width` ·
+  `--cascader-columns-max-height` · `--cascader-list-max-height` · `--cascader-option-*` ·
+  `--cascader-result-*` · `--cascader-empty-space-block`. Cascader parks a smaller affix closer
+  to the edge than SearchSelect, so it scopes the shared `--control-affix-*` knobs rather than
+  forcing one calibration on both — shared vocabulary, per-component values.
+- **Purely visual checkboxes now pick up the shared disabled styling.** `.ui-checkbox:disabled`
+  only matches form elements, so a checkbox rendered as a `<span>` (Cascader's `CheckboxVisual`)
+  never matched it and repeated `cursor-not-allowed opacity-50` on the component instead. The
+  rule now also matches `[data-disabled]`, and its alpha is `--disabled-opacity` rather than a
+  hard-coded `0.5`.
+- **SearchSelect is token-themeable, and the select-family trailing affix is now shared (#319).**
+  37 literals → 0. Panel geometry was baked on as arbitrary values
+  (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could not widen the panel or change its
+  viewport inset without forking: `--search-select-panel-max-width` ·
+  `--search-select-panel-viewport-inset` · `--search-select-list-space-inset` ·
+  `--search-select-option-*` · `--search-select-status-*` · `--search-select-placeholder-space-block`.
+  Select, SearchSelect and TagInput each repeated the same `end-2 size-6 rounded-sm opacity-50`
+  affix stack, so that moved to ONE control-level set — `--control-affix-inset-inline-end` ·
+  `--control-affix-action-size` · `--control-affix-action-radius` · `--control-affix-icon-size` ·
+  `--control-affix-rest-alpha` · `--control-trigger-space-inline-end` — which Select and TagInput
+  will adopt as they are converted.
+- **Upload is token-themeable (#319) — 66 literals → 0, the worst file in the library.** All five
+  variants (dropzone · button · picture · picture-card · avatar) baked their entire box onto the
+  component, so a service could not resize the avatar, dial back the dropzone's 40px inset, or
+  align the file row to its own grid without forking. 47 new knobs across six regions:
+  `--upload-dropzone-*` · `--upload-tile-*` · `--upload-remove-*` · `--upload-picture-*` ·
+  `--upload-avatar-*` · `--upload-draft-*` · `--upload-row-*`. Markup now carries semantic
+  `.ui-upload-*` classes; state moved to data attributes (`data-drag-active`,
+  `data-pending-delete`, `data-disabled`) so it is themeable and assertable.
+  Radius defaults were verified against the built CSS (`rounded-lg` = `--radius`,
+  `rounded-md` = `--radius / --radius-ratio`), so the look is unchanged — with **one deliberate
+  normalization**: the "pending replace" chip used a bare `rounded`, which resolves to a flat
+  `.25rem` and ignored the radius scale entirely (itself a rule #44 miss). It now follows the
+  tile radius, a ~0.3px difference.
+- **Tooltip + Popover are token-themeable (#316 Phase 1).** Both shipped their entire box as
+  Tailwind literals on the component (`z-50 max-w-xs px-2 py-1 rounded-md text-xs shadow-md`,
+  `w-72 p-4`), so a service theme could not retune tooltip density, popover width, or overlay
+  stacking without forking the component — the gap cardinal rule #45 exists to close. New knobs:
+  `--tooltip-max-width` · `--tooltip-space-inline` · `--tooltip-space-block` · `--tooltip-radius`
+  · `--tooltip-font-size` · `--tooltip-shadow` · `--tooltip-background` ·
+  `--tooltip-foreground` · `--tooltip-border-color` · `--popover-width` ·
+  `--popover-space-inset` · `--popover-radius` · `--popover-shadow` ·
+  `--popover-header-space-gap` · `--popover-header-font-size` ·
+  `--popover-surface-{background,foreground,border-color}`. Colour knobs are declared `initial`
+  with the role default at the call site, so a scoped `[data-tenant]`/`.dark` override still
+  reaches the portaled node. **Defaults reproduce the previous look exactly** — nothing changes
+  until a theme opts in.
+- **`--overlay-z-index`** (semantic tier) — the ONE stacking layer for every portaled overlay.
+  Tooltip, Popover, Select, DropdownMenu and Sheet each hard-coded `z-50`, so an app mounting the
+  library under its own stacking context had to fight five literals. Stacking is a system
+  decision, not a per-primitive one. Default `50`.
+- **`scripts/audit-shadcn-overlap.mjs`** — đo giá trị thật của 47 component trùng tên shadcn/ui.
+  Đếm hằng số hình học/chrome hard-code (thứ khiến service theme không chỉnh được), bỏ qua role
+  utility vì chúng đã token-backed qua Tailwind v4 `@theme`. Kết quả khởi điểm: 45/47 đáng giữ,
+  272 hằng số cần tokenize trên 23 component — xem `docs/AUDIT-shadcn-overlap.md` và #316.
+- **`time-input` vào `componentPrefixes.control`** của `check-token-tiers` — thiếu sót thuần khiến
+  `--time-input-focus-ring-*` không qua được guard.
+
 ### Removed
 
 - **`Card` / `StatCard` `size` — a prop that never did anything.** It shipped in the v6 snapshot

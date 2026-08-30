@@ -134,7 +134,13 @@ function PageContainerRoot({
               {breadcrumb.map((item, i) => {
                 const isLast = i === breadcrumb.length - 1;
                 return (
-                  <li key={i} className="ui-inline-xs">
+                  // The package's own breadcrumb item hook (gh#319): same
+                  // `--space-inline-xs` gap the previous `.ui-inline-xs` gave, and it brings
+                  // `.ui-breadcrumb-item svg { 0.75rem }` with it, so the separator glyph no
+                  // longer carries a `size-3` literal. It also drops `.ui-inline-xs`'s
+                  // `flex-wrap: wrap` — a crumb must not break between its label and its
+                  // chevron; the LIST wraps instead, exactly as <Breadcrumb> already behaves.
+                  <li key={i} className="ui-breadcrumb-item">
                     {item.to && !isLast ? (
                       <LinkComponent
                         href={item.to}
@@ -151,7 +157,7 @@ function PageContainerRoot({
                         {item.label}
                       </span>
                     )}
-                    {!isLast && <ChevronRight className="size-3" aria-hidden="true" />}
+                    {!isLast && <ChevronRight aria-hidden="true" />}
                   </li>
                 );
               })}
@@ -159,7 +165,7 @@ function PageContainerRoot({
           </nav>
         )}
         <div className="ui-page-header-row">
-          <div className="ui-page-header-heading min-w-0">
+          <div className="ui-page-header-heading">
             {/* `status` (godxjp-ui#255): the status/meta band shares the title line at the
                 token-owned --page-header-status-gap and wraps UNDER the title on compact
                 viewports. The wrapper row exists only when `status` is passed, so a page

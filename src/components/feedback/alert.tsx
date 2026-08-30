@@ -13,7 +13,6 @@ import {
 import { useTranslation } from "../../i18n/use-translation";
 import { humanError } from "../../lib/format";
 import { type QueryErrorCategory } from "../../lib/query-error";
-import { cn } from "../../lib/utils";
 import { Flex } from "../layout/flex";
 import { Button } from "../general/button";
 import type { ToneProp } from "../../props/vocabulary";
@@ -87,10 +86,13 @@ const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
                 void onDismiss();
               }}
               data-slot="alert-dismiss"
-              className="ui-focus-ring transition-opacity hover:opacity-100"
+              // Rest alpha, its hover companion and the transition all live in alert-layout.css
+              // now — the `hover:opacity-100` that used to sit here was the ONLY thing lifting the
+              // ✕ off its 0.7 rest state, with the two halves split across two files.
+              className="ui-focus-ring"
               aria-label={t("feedback.alert.dismiss")}
             >
-              <X className="size-4" aria-hidden="true" />
+              <X className="ui-alert-dismiss-icon" aria-hidden="true" />
             </button>
           )}
         </div>
@@ -111,13 +113,10 @@ export const AlertTitle = React.forwardRef<HTMLParagraphElement, AlertTitleProp>
 AlertTitle.displayName = "AlertTitle";
 
 export const AlertContent = React.forwardRef<HTMLDivElement, AlertContentProp>(
+  // `min-w-0 flex-1` moved to alert-layout.css [data-slot="alert-content"] — same box, but a
+  // consumer className now overrides it from the utilities layer instead of tying with it.
   ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      data-slot="alert-content"
-      className={cn("min-w-0 flex-1", className)}
-      {...props}
-    />
+    <div ref={ref} data-slot="alert-content" className={className} {...props} />
   ),
 );
 AlertContent.displayName = "AlertContent";
@@ -160,8 +159,12 @@ function RetryButton({ onRetry }: { onRetry: NonNullable<AlertQueryErrorProp["on
           void onRetry();
         }}
       >
+        {/* No `size-*` on the glyph: `.ui-button--sm svg` already sizes it from
+            --control-icon-size-sm. The `size-4` that used to sit here was a utility-layer
+            override of that rule, so this one icon rendered 1rem while every other sm-button
+            icon in the system rendered 0.875rem. */}
         <Flex direction="row" wrap align="center" gap="xs">
-          <RefreshCw className="size-4" aria-hidden="true" />
+          <RefreshCw aria-hidden="true" />
           {t("common.retry")}
         </Flex>
       </Button>
@@ -212,8 +215,9 @@ export function AlertQueryError({
               void onAuthAction();
             }}
           >
+            {/* Sized by `.ui-button--sm svg` — see RetryButton above. */}
             <Flex direction="row" wrap align="center" gap="xs">
-              <LogIn className="size-4" aria-hidden="true" />
+              <LogIn aria-hidden="true" />
               {t("query.error.action.signIn")}
             </Flex>
           </Button>

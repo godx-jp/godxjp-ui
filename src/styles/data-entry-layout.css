@@ -161,3 +161,355 @@
     color: hsl(var(--destructive));
   }
 }
+
+@layer components {
+  /* UPLOAD — five variants (dropzone · button · picture · picture-card · avatar) that used to
+   * carry their entire box as Tailwind literals on the component: 66 of them, the worst file in
+   * the library (#319). A service could not resize the avatar, dial back the dropzone's generous
+   * inset, or align the file row to its own grid without forking. Every constant is now a knob
+   * (rule #45); colour scrims are role-mirror knobs resolved at the CALL SITE so a scoped
+   * [data-tenant]/.dark override reaches them (docs/TOKENS.md). */
+
+  .ui-upload-dropzone {
+    cursor: pointer;
+    padding: var(--upload-dropzone-space-inset);
+    border-radius: var(--upload-dropzone-radius);
+    border: var(--upload-dropzone-border-width) dashed hsl(var(--border));
+    text-align: center;
+    transition: border-color 150ms ease;
+  }
+
+  .ui-upload-dropzone[data-drag-active] {
+    border-color: hsl(var(--primary));
+    background-color: hsl(var(--primary) / 0.05);
+  }
+
+  .ui-upload-dropzone:not([data-drag-active]):hover {
+    border-color: hsl(var(--primary) / 0.5);
+  }
+
+  .ui-upload-dropzone-icon {
+    display: block;
+    margin-inline: auto;
+    inline-size: var(--upload-dropzone-icon-size);
+    block-size: var(--upload-dropzone-icon-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-upload-dropzone-hint {
+    margin-block-start: var(--upload-dropzone-hint-space-block-start);
+    font-size: var(--upload-dropzone-hint-font-size);
+  }
+
+  .ui-upload-dropzone-meta {
+    margin-block-start: var(--upload-dropzone-meta-space-block-start);
+    font-size: var(--upload-dropzone-meta-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-upload-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--upload-tile-space-gap);
+  }
+
+  .ui-upload-tile {
+    position: relative;
+    inline-size: var(--upload-tile-size);
+    block-size: var(--upload-tile-size);
+    overflow: hidden;
+    border-radius: var(--upload-tile-radius);
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--muted));
+  }
+
+  .ui-upload-tile-add {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--upload-tile-size);
+    block-size: var(--upload-tile-size);
+    border-radius: var(--upload-tile-radius);
+    border: 1px dashed hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+    transition:
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .ui-upload-tile-add:hover {
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+  }
+
+  .ui-upload-tile-add-icon {
+    inline-size: var(--upload-tile-icon-size);
+    block-size: var(--upload-tile-icon-size);
+  }
+
+  .ui-upload-tile-add-label {
+    margin-block-start: var(--upload-tile-label-space-block-start);
+    font-size: var(--upload-tile-label-font-size);
+  }
+
+  /* Busy scrim — one share of the surface role, resolved here so a scoped theme reaches it. */
+  .ui-upload-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(
+      --upload-overlay-background,
+      color-mix(in srgb, hsl(var(--background)) var(--upload-overlay-alpha), transparent)
+    );
+    font-size: var(--upload-tile-overlay-font-size);
+  }
+
+  .ui-upload-tile-placeholder {
+    display: flex;
+    inline-size: 100%;
+    block-size: 100%;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--upload-tile-overlay-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-upload-tile-remove {
+    position: absolute;
+    inset-block-start: var(--upload-remove-offset);
+    inset-inline-end: var(--upload-remove-offset);
+    padding: calc(var(--upload-remove-space-inset) / 2);
+    border-radius: var(--radius-pill);
+    background-color: hsl(var(--background) / 0.9);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .ui-upload-tile-remove:hover {
+    background-color: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
+  }
+
+  .ui-upload-remove-icon {
+    inline-size: var(--upload-remove-icon-size);
+    block-size: var(--upload-remove-icon-size);
+  }
+
+  .ui-upload-picture {
+    max-inline-size: var(--upload-picture-max-width);
+  }
+
+  .ui-upload-picture-frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--upload-picture-radius);
+    border: 1px solid hsl(var(--border));
+  }
+
+  .ui-upload-picture-img {
+    inline-size: 100%;
+    max-block-size: var(--upload-picture-preview-max-height);
+    object-fit: cover;
+  }
+
+  .ui-upload-picture-overlay {
+    font-size: var(--upload-picture-overlay-font-size);
+  }
+
+  .ui-upload-picture-badge {
+    position: absolute;
+    inset-block-start: var(--upload-picture-badge-offset);
+    inset-inline-start: var(--upload-picture-badge-offset);
+    padding-inline: var(--upload-picture-badge-space-inline);
+    padding-block: var(--upload-picture-badge-space-block);
+    border-radius: var(--upload-picture-badge-radius);
+    background-color: hsl(var(--warning));
+    color: hsl(var(--warning-foreground));
+    font-size: var(--upload-picture-badge-font-size);
+  }
+
+  .ui-upload-picture-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    inline-size: 100%;
+    block-size: var(--upload-picture-empty-height);
+    border-radius: var(--upload-picture-radius);
+    border: 1px dashed hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-upload-picture-empty:hover {
+    border-color: hsl(var(--primary));
+  }
+
+  .ui-upload-picture-empty-label {
+    margin-block-start: var(--upload-picture-empty-label-space-block-start);
+    font-size: var(--upload-picture-empty-label-font-size);
+  }
+
+  .ui-upload-avatar {
+    position: relative;
+    inline-size: var(--upload-avatar-size);
+    block-size: var(--upload-avatar-size);
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    border: var(--upload-avatar-border-width) solid hsl(var(--border));
+    background-color: hsl(var(--muted));
+  }
+
+  .ui-upload-avatar[data-pending-delete] {
+    opacity: var(--upload-avatar-pending-delete-alpha);
+  }
+
+  .ui-upload-avatar-image {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .ui-upload-avatar-placeholder {
+    display: flex;
+    inline-size: 100%;
+    block-size: 100%;
+    align-items: center;
+    justify-content: center;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Sits ON the photo, so the wash is a fixed dark scrim rather than a surface role — it must
+   * stay legible over an arbitrary user image in either theme. */
+  .ui-upload-avatar-change {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    padding-block: var(--upload-avatar-change-space-block);
+    background-color: var(--upload-avatar-change-background);
+    color: var(--upload-avatar-change-foreground);
+    text-align: center;
+  }
+
+  .ui-upload-avatar-remove {
+    position: absolute;
+    inset-block-start: calc(var(--upload-remove-offset) * -1);
+    inset-inline-end: calc(var(--upload-remove-offset) * -1);
+    padding: var(--upload-remove-space-inset);
+    border-radius: var(--radius-pill);
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--background));
+    box-shadow: var(--shadow-sm);
+  }
+
+  .ui-upload-avatar-remove:hover {
+    background-color: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
+  }
+
+  .ui-upload-draft-undo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--upload-draft-space-gap);
+    padding-inline: var(--upload-draft-space-inline);
+    padding-block: var(--upload-draft-space-block);
+    border-radius: var(--upload-draft-radius);
+    border: 1px dashed hsl(var(--destructive) / 0.4);
+    background-color: hsl(var(--destructive) / 0.05);
+    font-size: var(--upload-draft-font-size);
+  }
+
+  .ui-upload-draft-hint {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--upload-draft-space-gap);
+    font-size: var(--upload-draft-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-upload-draft-icon {
+    margin-inline-end: calc(var(--upload-draft-space-gap) / 2);
+    inline-size: var(--upload-draft-icon-size);
+    block-size: var(--upload-draft-icon-size);
+  }
+
+  .ui-upload-row {
+    display: flex;
+    align-items: center;
+    gap: var(--upload-row-space-gap);
+    padding-inline: var(--upload-row-space-inline);
+    padding-block: var(--upload-row-space-block);
+    border-radius: var(--upload-row-radius);
+    border: 1px solid hsl(var(--border));
+    font-size: var(--upload-row-font-size);
+  }
+
+  .ui-upload-row-main {
+    min-inline-size: 0;
+    flex: 1 1 0%;
+  }
+
+  .ui-upload-row-icon {
+    inline-size: var(--upload-row-icon-size);
+    block-size: var(--upload-row-icon-size);
+  }
+
+  .ui-upload-trigger-icon {
+    inline-size: var(--upload-row-icon-size);
+    block-size: var(--upload-row-icon-size);
+  }
+
+  .ui-upload-trigger-icon[data-with-label] {
+    margin-inline-end: var(--space-2);
+  }
+
+  /* Disabled affordances share the one system alpha rather than a per-variant literal. */
+  .ui-upload-dropzone[data-disabled],
+  .ui-upload-tile-add[data-disabled],
+  .ui-upload-avatar[data-disabled] {
+    pointer-events: none;
+    opacity: var(--disabled-opacity);
+  }
+
+  /* ── BranchScopePicker (gh#319) ────────────────────────────────────────────────
+   * `.ui-branch-scope-picker` shipped as a bare hook: the class existed but no rule did, so all
+   * of the control's geometry sat on the component as Tailwind literals. It composes RadioGroup +
+   * CheckboxGroup + SearchInput and has no field box of its own, so none of the control-affix
+   * machinery applies — these four rules are the whole surface. Every measure is a documented
+   * token (#45); see tokens/components/data-entry.css for why each default is a flat rem. */
+  .ui-branch-scope-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--branch-scope-picker-gap);
+  }
+
+  .ui-branch-scope-picker-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--branch-scope-picker-badges-gap);
+  }
+
+  /* The `mode="selected"` subset, indented under its radio by a rule on the inline-start edge.
+   * Logical properties throughout, so the indent flips with the writing direction (the utilities
+   * this replaces, `border-s-2 ps-4`, already did). The colour is left to the global
+   * `* { border-color: hsl(var(--border)) }` so a scoped [data-tenant]/.dark override of
+   * `--border` still reaches it. */
+  .ui-branch-scope-picker-subset {
+    display: flex;
+    flex-direction: column;
+    gap: var(--branch-scope-picker-subset-gap);
+    padding-inline-start: var(--branch-scope-picker-subset-padding-inline);
+    border-inline-start-width: var(--branch-scope-picker-subset-border-width);
+  }
+
+  /* A bounded scroll region — the component gives it `tabIndex={0}` + a group name so it stays
+   * keyboard-reachable (WCAG 2.1.1 / axe scrollable-region-focusable) even when every checkbox
+   * in it is disabled. The cap is the token; the overflow is not negotiable. */
+  .ui-branch-scope-picker-list {
+    max-block-size: var(--branch-scope-picker-list-max-height);
+    overflow-y: auto;
+  }
+}

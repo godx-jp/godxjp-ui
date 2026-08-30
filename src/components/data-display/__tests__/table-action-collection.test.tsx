@@ -242,10 +242,18 @@ describe("Table action-collection compact tier — the layer contract (gh#412)",
     expect(baseCss.slice(0, tailwindAt)).not.toContain("godxjp-ui-responsive");
   });
 
-  it("puts the compact re-point in that layer — `@layer components` cannot beat `text-sm`", () => {
-    // The reason the token was dead: Table emits a Tailwind utility for its type, and `utilities`
-    // outranks `components` by LAYER ORDER — no selector written in `components` can win.
-    expect(read("../table.tsx")).toContain("caption-bottom text-sm");
+  it("puts the compact re-point in that layer — `@layer components` cannot beat a `text-*` utility", () => {
+    // The reason the token was dead: Table emitted a Tailwind utility for its type, and
+    // `utilities` outranks `components` by LAYER ORDER — no selector written in `components`
+    // could win. gh#319 removed that utility (the base step is now
+    // `[data-slot="table"] { font-size: var(--table-font-size) }`), but the compact tier stays in
+    // the last layer, because a CONSUMER `text-*` utility on the table would beat `components`
+    // exactly the same way.
+    const tableTsx = read("../table.tsx");
+    expect(tableTsx).toContain("caption-bottom");
+    expect(tableTsx).not.toMatch(/"w-full caption-bottom text-sm"/);
+    expect(tableCss).toContain("font-size: var(--table-font-size)");
+    expect(tableCss).toContain("line-height: var(--table-line-height)");
 
     const responsiveAt = tableCss.indexOf("@layer godxjp-ui-responsive {");
     expect(responsiveAt).toBeGreaterThan(0);
