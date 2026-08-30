@@ -64,6 +64,30 @@
     column-gap: var(--form-grid-column-gap);
   }
 
+  /* colSpan is honoured only where the grid ACTUALLY HAS more than one column.
+   *
+   * `grid-column: span 2` on a one-column grid does not quietly degrade to one column: per spec it
+   * FABRICATES an implicit second track, that track auto-sizes to its content, and the real
+   * `minmax(0, 1fr)` track is left with the remainder — which at 320px is 0px. The field in it
+   * collapsed to zero width, and its Input's absolutely-positioned trailing affix (the clear
+   * button, `inset-inline-end: 8px` off a zero-width box) landed outside the frame with no
+   * scrollable ancestor between them: a control the keyboard could focus and the user could never
+   * see. That is a WCAG 2.1.1 failure, and a resting screenshot cannot show it because the field
+   * does not overflow — it disappears.
+   *
+   * The breakpoint mirrors ResponsiveGrid's own 2-column container query in layout.css, so the
+   * span turns on exactly when the second column does. Below it, `auto` puts the field in the
+   * single real track like every other field. */
+  .ui-responsive-grid > .ui-form-field {
+    grid-column: auto;
+  }
+
+  @container responsive-grid (min-width: 40rem) {
+    .ui-responsive-grid > .ui-form-field {
+      grid-column: span var(--form-field-col-span, 1);
+    }
+  }
+
   /* Vertical (default + collapsed state): label stacked above the control column, LEFT-aligned.
    * Gap = the shared --field-label-gap so FormField matches Descriptions and every label-above stack. */
   .ui-form-field {

@@ -26,7 +26,10 @@ describe("FormField — layout props", () => {
     const el = root(container);
     expect(el.style.getPropertyValue("--form-label-width")).toBe("120px"); // number → px
     expect(el.style.getPropertyValue("--form-control-width")).toBe("20rem"); // string passthrough
-    expect(el.style.gridColumn).toBe("span 2");
+    // gh#321: the span is a custom property so the stylesheet can withhold it on a one-column
+    // grid, where `grid-column: span 2` would fabricate an implicit track rather than degrade.
+    expect(el.style.getPropertyValue("--form-field-col-span")).toBe("2");
+    expect(el.style.gridColumn).toBe("");
   });
 
   it("sets no inline style when no width/span props are given", () => {

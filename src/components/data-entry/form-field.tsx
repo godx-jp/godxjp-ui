@@ -143,7 +143,12 @@ export function FormField({
     (style as Record<string, string>)["--form-label-width"] = toCssLength(labelWidth);
   if (controlWidth != null)
     (style as Record<string, string>)["--form-control-width"] = toCssLength(controlWidth);
-  if (colSpan != null) style.gridColumn = `span ${colSpan}`;
+  // colSpan travels as a custom property, NOT as `grid-column` directly, so the STYLESHEET can
+  // decide where the span is safe to honour. Setting `grid-column: span 2` unconditionally does not
+  // degrade to one column on a narrow grid — it fabricates an implicit second track, which then
+  // auto-sizes to its content and starves the real `minmax(0, 1fr)` track to 0px. See
+  // form-layout.css for the rule and the reachability failure that came out of it.
+  if (colSpan != null) (style as Record<string, string>)["--form-field-col-span"] = String(colSpan);
 
   return (
     <div

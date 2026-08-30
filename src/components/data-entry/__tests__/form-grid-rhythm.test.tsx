@@ -331,3 +331,38 @@ describe("Form grid spacing knobs (cardinal rule #45)", () => {
     expect(winning(nested, "gap")).toBe("var(--space-stack-md)");
   });
 });
+
+describe("colSpan is honoured only where the grid has the columns (gh#321)", () => {
+  const css = read("src/styles/form-layout.css");
+
+  it("neutralises the span outside the multi-column container query", () => {
+    // `grid-column: span 2` on a one-column grid does not degrade to one column — per spec it
+    // creates an implicit second track, that track auto-sizes to its content, and the real
+    // `minmax(0, 1fr)` track gets the remainder, which at 320px is 0px. The field collapsed to
+    // zero width and its Input's absolutely-positioned trailing affix landed outside the frame
+    // with nothing scrollable in between: focusable, invisible, unreachable (WCAG 2.1.1).
+    const base = css.match(/\.ui-responsive-grid > \.ui-form-field \{[^}]*\}/);
+    expect(base?.[0]).toMatch(/grid-column:\s*auto/);
+  });
+
+  it("applies the span from the same breakpoint at which the second column appears", () => {
+    // The gate is only correct if it turns on exactly when ResponsiveGrid's second column does.
+    // Reading BOTH files is the point: a test that pinned 40rem in one place would pass happily
+    // after someone moved the other.
+    const gridQuery = read("src/styles/layout.css").match(
+      /@container responsive-grid \(min-width: ([\d.]+rem)\) \{\s*\.ui-responsive-grid \{\s*grid-template-columns: repeat\(var\(--responsive-grid-sm/,
+    );
+    expect(gridQuery?.[1]).toBeDefined();
+
+    const spanQuery = css.match(
+      /@container responsive-grid \(min-width: ([\d.]+rem)\) \{\s*\.ui-responsive-grid > \.ui-form-field \{\s*grid-column: span var\(--form-field-col-span/,
+    );
+    expect(spanQuery?.[1]).toBe(gridQuery?.[1]);
+  });
+
+  it("FormField hands the span to CSS as a custom property, never as grid-column", () => {
+    const source = read("src/components/data-entry/form-field.tsx");
+    expect(source).toContain('"--form-field-col-span"');
+    expect(source).not.toMatch(/style\.gridColumn\s*=/);
+  });
+});

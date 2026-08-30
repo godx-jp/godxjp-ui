@@ -314,6 +314,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **a11y: `colSpan` on a one-column form grid collapsed a field to 0px and put its clear button
+  out of reach (gh#321).** `FormField` set the span as an inline `grid-column: span N`. On a grid
+  that is one column below its 40rem container query, that does not degrade to one column — per
+  spec it FABRICATES an implicit second track, which auto-sizes to its content and leaves the real
+  `minmax(0, 1fr)` track with the remainder: `0px 196px` inside a 212px grid at 320px. The field in
+  the starved track rendered at zero width, and its Input's absolutely-positioned trailing affix
+  (the clear button, `inset-inline-end: 8px` measured off a zero-width box) landed at `x = 2` while
+  the frame began at `x = 20`, with nothing scrollable in between — focusable, invisible,
+  unreachable (WCAG 2.1.1 / 2.4.7). `overflowX` was `false` throughout, which is exactly why no
+  other gate saw it: the field does not overflow, it disappears.
+  The span now travels as `--form-field-col-span` so the STYLESHEET decides where it is safe, and
+  is applied from the same breakpoint at which ResponsiveGrid's second column appears — a test
+  reads both files and fails if the two ever drift apart. Measured after the fix: 320 / 375 / 640 /
+  768 resolve to a single track with every span `auto` and the button inside the frame; 1280
+  resolves to `557px 557px` with `span 1 | span 1 | span 2`.
+  Pre-existing, not from this batch — the identical measurement reproduces at `fe5f681`. It
+  surfaced only because `check:frame-geometry` could finally run: its baseline predated the
+  breakage, the same staleness that had hidden `DropdownMenuTrigger` in the API manifest.
+
 - **a11y: the Button counter pill was below WCAG SC 1.4.3, in five combinations, not the two that
   were reported (gh#320).** The pill tinted itself translucently over whatever surface the button
   had (`bg-primary-foreground/15` on filled variants, `bg-foreground/8` on the outline family), so

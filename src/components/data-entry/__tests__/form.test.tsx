@@ -63,7 +63,12 @@ describe("Form — layout context flows to FormField", () => {
     );
     expect(document.querySelector(".ui-responsive-grid")).toBeInTheDocument();
     const fields = document.querySelectorAll('[data-slot="form-field"]');
-    expect((fields[1] as HTMLElement).style.gridColumn).toBe("span 2");
+    // The span travels as a custom property, not as `grid-column`: on a one-column grid
+    // `grid-column: span 2` fabricates an implicit track and starves the real one to 0px (gh#321),
+    // so the STYLESHEET decides where the span applies. This asserts the value reaches CSS; the
+    // gating itself is asserted against the shipped stylesheet in form-grid-rhythm.test.tsx.
+    expect((fields[1] as HTMLElement).style.getPropertyValue("--form-field-col-span")).toBe("2");
+    expect((fields[1] as HTMLElement).style.gridColumn).toBe("");
   });
 
   it("a standalone FormField (no Form) defaults to vertical and still wires a11y", () => {
