@@ -3,9 +3,26 @@ import { spawn } from "node:child_process";
 
 const port = 6010;
 const base = `http://localhost:${port}`;
+// Serve a BUILT preview, not a dev server. This used to spawn `vite --config …`, the DEV server,
+// and poll for it. On a self-hosted runner with no warm Vite cache that never came up in time:
+// dependency optimisation plus on-demand compilation of the whole app is not "a bit slow", it is
+// structurally slower than any poll worth writing — raising the budget 60s -> 180s changed
+// nothing, which is what proved the timeout was the wrong suspect. The three browser gates that
+// were always green (frame-axe, frame-geometry, contrast) build once and serve the output with
+// `vite preview`; these now do the same, so there is one way to stand a preview up and it is the
+// one already proven on CI.
 const server = spawn(
   "pnpm",
-  ["exec", "vite", "--config", "preview/vite.config.ts", "--port", String(port), "--strictPort"],
+  [
+    "exec",
+    "vite",
+    "preview",
+    "--config",
+    "preview/vite.config.ts",
+    "--port",
+    String(port),
+    "--strictPort",
+  ],
   // stderr is piped, not ignored: when the server fails to bind we need to SAY why.
   { stdio: ["ignore", "ignore", "pipe"], env: process.env },
 );

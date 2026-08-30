@@ -614,6 +614,16 @@ within 60s`.** They run in parallel on one self-hosted host, each cold-starting 
 
 ### Fixed
 
+- **The rendered-runtime gates were serving a DEV server on a machine that had never compiled the
+  app.** Four gates spawned `vite --config preview/vite.config.ts` and polled for it; on a cold
+  self-hosted runner, dependency optimisation plus on-demand compilation of the whole app is not
+  marginally slow, it is structurally slower than any poll worth writing. That is why raising the
+  budget from 60s to 180s changed nothing — the timeout was never the suspect, and the three
+  browser gates that were always green (`frame-axe`, `frame-geometry`, `contrast`) had the answer
+  in them all along: they build once and serve the output with `vite preview`. All four gates now
+  do the same, and the workflow builds the preview before running them, so there is one way to
+  stand a preview up and it is the one already proven on CI.
+
 - **A CI gate was killing another job's preview server, and the failure surfaced everywhere but
   there.** `preview/scripts/kill-port.mjs` hard-coded `const PORT = 6008` and
   `check-layout-nav-frames.mjs` called it unconditionally, then bound 6008 itself — ignoring the
