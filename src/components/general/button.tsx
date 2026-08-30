@@ -6,19 +6,6 @@ import { cn } from "../../lib/utils";
 import { useTranslation } from "../../i18n/use-translation";
 import type { ButtonProp } from "../../props/components/general.prop";
 
-// Borderless counter pill for `count` (filter tabs / segmented toggles). Keyed by variant so it
-// reads on the button's own surface — translucent foreground on filled variants, muted fill on
-// light variants. Never a bordered Badge nested in a bordered Button (that double-borders).
-const buttonCountClass: Record<string, string> = {
-  default: "bg-primary-foreground/15",
-  destructive: "bg-destructive-foreground/15",
-  secondary: "bg-secondary-foreground/15",
-  outline: "bg-foreground/8 text-muted-foreground",
-  dashed: "bg-foreground/8 text-muted-foreground",
-  ghost: "bg-foreground/8 text-muted-foreground",
-  link: "bg-foreground/8 text-muted-foreground",
-};
-
 const buttonVariants = cva("ui-button", {
   variants: {
     variant: {
@@ -109,7 +96,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
     const countNode = showCount ? (
       <span
         data-slot="button-count"
-        className={cn("ui-button-count", buttonCountClass[variant ?? "default"])}
+        className="ui-button-count"
       >
         {countLabel}
       </span>

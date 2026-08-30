@@ -2087,6 +2087,11 @@
     padding-inline: var(--button-icon-space-inline-xs);
   }
 
+  /* COUNT PILL (gh#320). Opaque role fills, not a translucent tint over the button's surface: a
+   * tint takes its contrast from whatever is behind it, and five variant×theme×hover combinations
+   * measured below WCAG 1.4.3's 4.5:1 for small text. The measurements and the share-vs-split
+   * reasoning live in tokens/components/control.css beside the knobs. Same treatment gh#312
+   * validated on Toggle. */
   .ui-button-count {
     display: inline-flex;
     min-inline-size: var(--button-count-min-width);
@@ -2094,8 +2099,28 @@
     justify-content: center;
     border-radius: var(--radius-pill);
     padding-inline: var(--button-count-space-inline);
+    background: var(--button-count-background, hsl(var(--muted)));
+    color: var(--button-count-color, hsl(var(--foreground)));
     font-size: var(--button-count-font-size);
     line-height: 1;
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Each filled variant wears its OWN label pair, swapped. That makes the pill exactly as legible
+   * as the label it sits beside — it cannot be less legible under any theme that keeps the button
+   * itself readable, which a fixed colour could not promise. */
+  .ui-button--default .ui-button-count {
+    background: var(--button-count-default-background, hsl(var(--primary-foreground)));
+    color: var(--button-count-default-color, hsl(var(--primary)));
+  }
+
+  .ui-button--destructive .ui-button-count {
+    background: var(--button-count-destructive-background, hsl(var(--destructive-foreground)));
+    color: var(--button-count-destructive-color, hsl(var(--destructive)));
+  }
+
+  .ui-button--secondary .ui-button-count {
+    background: var(--button-count-secondary-background, hsl(var(--secondary-foreground)));
+    color: var(--button-count-secondary-color, hsl(var(--secondary)));
   }
 }

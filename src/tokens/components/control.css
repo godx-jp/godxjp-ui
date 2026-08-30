@@ -394,6 +394,45 @@
   --button-count-space-inline: var(--space-1);
   --button-count-font-size: var(--font-size-xs);
 
+  /* Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the
+   * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means
+   * its contrast was a FUNCTION of that surface — and five of those combinations measured below
+   * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text:
+   *
+   *   default (light)                  3.88   ·  destructive (dark)              4.29
+   *   outline family (light, at rest)  4.32   ·  outline family (light, hover)   3.64
+   *   outline family (dark, hover)     3.68
+   *
+   * The hover rows are the reason a static sweep never caught this: `--accent` only appears under
+   * the cursor, so no screenshot of a resting page contains the failing state. Same shape as
+   * gh#299 and gh#315 — a value that passes on the surface someone happened to check.
+   *
+   * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's
+   * contrast independent of the button's variant AND of hover. Each filled variant uses its own
+   * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less
+   * legible under any theme that keeps that button readable at all:
+   *
+   *   default      --primary     on --primary-foreground       5.04 light · 7.07 dark
+   *   destructive  --destructive on --destructive-foreground   6.10 light · 5.53 dark
+   *   secondary    --secondary   on --secondary-foreground    14.25 light · 12.40 dark
+   *   outline family --foreground on --muted                  14.25 light · 12.40 dark
+   *
+   * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the
+   * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS
+   * that went up, not loudness of the pill.
+   *
+   * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so
+   * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md ·
+   * "Role-mirror knobs MUST be `initial`"). */
+  --button-count-background: initial;
+  --button-count-color: initial;
+  --button-count-default-background: initial;
+  --button-count-default-color: initial;
+  --button-count-destructive-background: initial;
+  --button-count-destructive-color: initial;
+  --button-count-secondary-background: initial;
+  --button-count-secondary-color: initial;
+
   /* LABEL — the Label primitive's own box and type (#319). Every one of these was a Tailwind
    * literal baked into label.tsx (`text-sm leading-none flex items-center gap-2`), so a service
    * whose form grid wanted a smaller/denser label had to hand-write font-size on every call site

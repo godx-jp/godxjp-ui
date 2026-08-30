@@ -314,6 +314,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **a11y: the Button counter pill was below WCAG SC 1.4.3, in five combinations, not the two that
+  were reported (gh#320).** The pill tinted itself translucently over whatever surface the button
+  had (`bg-primary-foreground/15` on filled variants, `bg-foreground/8` on the outline family), so
+  its contrast was a function of that surface rather than a property of the pill: `default` 3.88:1
+  light, `destructive` 4.29:1 dark, and the outline family 4.32:1 light at rest, **3.64:1 light on
+  hover**, 3.68:1 dark on hover — against the 4.5:1 small text requires. The two worst are HOVER
+  states, which is why no screenshot sweep found them: `--accent` only exists under the cursor.
+  The pill now uses the opaque role fills gh#312 validated on Toggle, so the ratio no longer
+  depends on the variant or on hover. Each filled variant wears its own label pair SWAPPED
+  (`default` 5.04:1 light / 7.07:1 dark, `destructive` 6.10 / 5.53, `secondary` 14.25 / 12.40),
+  which makes the pill exactly as legible as the label beside it and impossible to make worse
+  without making the button itself unreadable first — a promise a fixed colour could not keep
+  across re-themes. The outline family reads `--foreground` on `--muted` (14.25 / 12.40), whose
+  fill sits 1.09:1 against the button's own ground, so at rest a count still reads as quiet text
+  rather than a badge (#44): the DIGITS got legible, the pill did not get loud.
+  The other two translucent-over-variable-surface tints in the library were measured rather than
+  assumed — the overlay header band (13.25–14.65:1) and the permission-matrix diff row (4.76:1 at
+  its worst, on hover) — and both clear AA, so the counter pill was the only exposure.
+
+- **`check:contrast` was auditing three routes that do not exist, and reporting them clean.**
+  `/showcase/tiximax-portal` and `/showcase/tiximax-website` have been `acme-*` since the rename,
+  and the Button page is `general-button-index`, not `general-button`. All three rendered a
+  "not found" card — four legible words, which passes every contrast check there is — so the two
+  brand re-theme showcases and the gh#199 dark-theme Button coverage this gate's own comment
+  claims had silently not existed. The routes are corrected (and `futurelastic-web`, the dark-ground
+  third brand, added), but the real fix is structural: the sweep now FAILS on a route that resolves
+  to a not-found card. A sweep that cannot tell "nothing failed" from "nothing was there" is not
+  evidence.
+
 - **Two text-scanning audits were reporting on prose, and one demo shipped emoji.** The raw-palette
   audit counted `bg-green-500` where Avatar's presence block _explains_ the hand-rolled workaround
   the prop exists to replace, so a file with no debt was reported as having some — the same

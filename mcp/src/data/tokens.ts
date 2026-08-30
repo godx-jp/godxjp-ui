@@ -257,6 +257,12 @@ export const TOKENS: TokenEntry[] = [
   },
   { name: "--badge-space-*", category: "component", tier: "component", role: "Badge spacing." },
   {
+    name: "--button-count-{min-width,space-inline,font-size} / --button-count-{background,color} / --button-count-{default,destructive,secondary}-{background,color}",
+    category: "component",
+    tier: "component",
+    role: "Button's COUNTER PILL (`count` / `overflowCount` / `showZero`). The COLOUR knobs exist because the pill used to tint itself translucently over whatever surface the button happened to have (`bg-primary-foreground/15` on filled variants, `bg-foreground/8` on the outline family), which means its contrast was a FUNCTION of that surface rather than a property of the pill — and five variant x theme x hover combinations measured below the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text (gh#320): default 3.88 light, destructive 4.29 dark, and the outline family 4.32 light at rest, 3.64 light on hover, 3.68 dark on hover. The two worst were HOVER states, which is exactly why a screenshot sweep never found them: `--accent` only exists under the cursor. The fix is the treatment gh#312 validated on Toggle: OPAQUE role fills, so the ratio no longer depends on the variant or on hover. Each filled variant wears its OWN label pair SWAPPED (default --primary on --primary-foreground = 5.04 light / 7.07 dark; destructive 6.10 / 5.53; secondary 14.25 / 12.40), which makes the pill exactly as legible as the label beside it and impossible to make worse without making the button itself unreadable first — a promise a fixed colour could not make across re-themes. The outline family shares one pill, --foreground on --muted (14.25 / 12.40), whose --muted fill sits 1.09:1 against the button's own ground, so at rest the counter still reads as quiet text rather than a badge (#44): it is the legibility of the DIGITS that rose, not the loudness of the pill. All eight colour knobs are ROLE-MIRROR knobs -- `initial` at :root with the role default at the CALL SITE -- so a scoped `.dark`/`[data-tenant]` override of the role reaches the pill. The geometry knobs are byte-identical to Toggle's, asserted by a token-parity test.",
+  },
+  {
     name: "--toggle-count-{min-width,space-inline,font-size,radius,gap} / --toggle-count-{background,color} / --toggle-pressed-count-{background,color} / --toggle-pressed-border-color / --toggle-count-forced-outline-width",
     category: "component",
     tier: "component",
