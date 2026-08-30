@@ -45,14 +45,78 @@ for (const [name, entry] of Object.entries(manifest.components)) {
 // Props any React/DOM element accepts, plus the DS-wide escape hatches. A component inheriting
 // HTMLAttributes accepts far more than the manifest lists, so these can never be a finding.
 const UNIVERSAL = new Set([
-  "className", "style", "id", "key", "ref", "children", "asChild", "role", "tabIndex", "title",
-  "hidden", "slot", "dir", "lang", "translate", "inert", "draggable", "spellCheck", "autoFocus",
-  "type", "name", "value", "defaultValue", "placeholder", "disabled", "required", "readOnly",
-  "href", "target", "rel", "src", "alt", "width", "height", "htmlFor", "form", "action", "method",
-  "min", "max", "step", "rows", "cols", "maxLength", "minLength", "pattern", "multiple", "accept",
-  "checked", "defaultChecked", "selected", "open", "colSpan", "rowSpan", "scope", "download",
-  "autoComplete", "inputMode", "enterKeyHint", "capture", "list", "wrap", "start", "reversed",
-  "controls", "autoPlay", "loop", "muted", "playsInline", "poster", "preload", "crossOrigin",
+  "className",
+  "style",
+  "id",
+  "key",
+  "ref",
+  "children",
+  "asChild",
+  "role",
+  "tabIndex",
+  "title",
+  "hidden",
+  "slot",
+  "dir",
+  "lang",
+  "translate",
+  "inert",
+  "draggable",
+  "spellCheck",
+  "autoFocus",
+  "type",
+  "name",
+  "value",
+  "defaultValue",
+  "placeholder",
+  "disabled",
+  "required",
+  "readOnly",
+  "href",
+  "target",
+  "rel",
+  "src",
+  "alt",
+  "width",
+  "height",
+  "htmlFor",
+  "form",
+  "action",
+  "method",
+  "min",
+  "max",
+  "step",
+  "rows",
+  "cols",
+  "maxLength",
+  "minLength",
+  "pattern",
+  "multiple",
+  "accept",
+  "checked",
+  "defaultChecked",
+  "selected",
+  "open",
+  "colSpan",
+  "rowSpan",
+  "scope",
+  "download",
+  "autoComplete",
+  "inputMode",
+  "enterKeyHint",
+  "capture",
+  "list",
+  "wrap",
+  "start",
+  "reversed",
+  "controls",
+  "autoPlay",
+  "loop",
+  "muted",
+  "playsInline",
+  "poster",
+  "preload",
+  "crossOrigin",
 ]);
 
 // Verified exceptions — each one was checked by hand against the component and is REAL code.
@@ -121,6 +185,14 @@ for (const file of files) {
     const comp = t[1];
     const own = resolve(comp);
     if (!own) continue; // not ours, or a component this guard cannot judge (see SKIPPED)
+    // A REMOVED line in a diff block is, by definition, the old API — and showing the old API is
+    // the entire job of a migration guide. Without this, `- <Card size="compact">` in
+    // docs/MIGRATION-v19.md is reported as a doc using a prop that does not exist, which is both
+    // true and exactly what the document is for. Only `-` is skipped: a `+` line is the API the
+    // guide is telling people to WRITE, and that must still be real.
+    const lineStart = src.lastIndexOf("\n", t.index) + 1;
+    if (/^\s*-\s*</.test(src.slice(lineStart, t.index + 1))) continue;
+
     const allowed = ALLOW.get(comp.replaceAll(".", ""));
     for (const { name } of attributesOf(src, tagRe.lastIndex)) {
       if (UNIVERSAL.has(name) || allowed?.has(name)) continue;
@@ -143,7 +215,9 @@ if (findings.length > 0) {
     `✗ check:doc-prop-existence — ${findings.length} documentation example(s) use a prop the component does not have:\n`,
   );
   for (const f of findings) {
-    console.error(`  ${f.file}:${f.line}  <${f.comp} ${f.name}=…>  — ${f.comp} has no \`${f.name}\``);
+    console.error(
+      `  ${f.file}:${f.line}  <${f.comp} ${f.name}=…>  — ${f.comp} has no \`${f.name}\``,
+    );
     console.error(`      ${f.near}`);
   }
   console.error(

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.0.0] - 2026-08-30
+
+Published to npm as `@godxjp/ui@19.0.0` and `@godxjp/ui-mcp@19.0.0` (lockstep).
+Upgrading from 18.x: see **[docs/MIGRATION-v19.md](docs/MIGRATION-v19.md)** — one removed prop,
+four renamed tokens, and seven deliberate pixel-level changes that a pinned design will notice.
+
 ### Added
 
 - **Icon size scale — the last geometric axis gets a name (gh#326).** `--icon-size-2xs` …
