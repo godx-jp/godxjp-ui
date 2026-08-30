@@ -19,6 +19,13 @@ jobs:
     runs-on: [self-hosted, swarm-pool]
     steps:
       - uses: actions/checkout@v6
+      # Bootstrap Node BEFORE pnpm/action-setup. The swarm-pool hosts ship Node 18, and the pnpm
+      # self-installer (npm 11) refuses to run there — it fails inside @pnpm/exe's setup.js with
+      # `paths[0] must be of type string`, long before any repo code executes. `setup-node` after
+      # `action-setup` is too late: the installer has already run.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
       - uses: actions/setup-node@v6
         with:
