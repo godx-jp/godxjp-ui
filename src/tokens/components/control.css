@@ -368,16 +368,24 @@
   --month-picker-icon-size: 1rem;
   --month-picker-separator-icon-size: 0.875rem;
 
-  /* BUTTON size-xs box + the count pill (#319).
+  /* BUTTON size-xs box + the count pill (#319, reconciled in #316).
    *
-   * ⚠️ --button-xs-height is DELIBERATELY not --control-height-xs, because today they differ:
-   *      size="icon-xs"  → --control-height-xs                      = 1.5rem
-   *      size="xs"       → calc(var(--control-height) - 0.75rem)    = 1.25rem
-   *    Same tier name, 4px apart — and the xs form does not scale with --scaling while the tier
-   *    does. That is a real inconsistency, but Button is the most-used component in the library,
-   *    so this change only LIFTS the value into a token; it does not move it. Reconciling the two
-   *    is a deliberate visual decision for #319 to make, not a side effect of tokenizing. */
-  --button-xs-height: calc(var(--control-height) - 0.75rem);
+   * `size="xs"` now reads the tier, like every other control in the library. It used to be
+   * `calc(var(--control-height) - 0.75rem)` = 1.25rem, which sat 4px BELOW `--control-height-xs`
+   * (1.5rem) that `size="icon-xs"` already used — the same tier name, two heights, so an xs
+   * Button never lined up with the xs control beside it. It was also the exact shape this repo's
+   * own rule forbids: an ad-hoc `calc(var(--control-height) ± length)` silently re-derives a tier
+   * and drifts from its siblings (the bug that made Pagination's size-changer taller than its
+   * page buttons), and being a raw length rather than a `--scaling`-multiplied step, it did not
+   * move with density while the tier did.
+   *
+   * What settled it was not consistency but MEASUREMENT: an xs Button rendered 20px tall, under
+   * the 24x24 CSS px that WCAG 2.2 SC 2.5.8 (Target Size, Minimum) requires, while icon-xs beside
+   * it rendered 24px and passed. So this is an accessibility fix that happens to also remove an
+   * inconsistency, not a visual preference. It is a real visual change on the most-used component
+   * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets
+   * --button-xs-height back. */
+  --button-xs-height: var(--control-height-xs);
   --button-xs-space-inline: var(--space-2);
   --button-xs-space-gap: var(--space-1);
   --button-xs-font-size: var(--font-size-xs);

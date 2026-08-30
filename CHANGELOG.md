@@ -221,6 +221,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`CI (browser)` moved from the self-hosted fleet to GitHub-hosted `ubuntu-latest` (gh#316).**
+  Those jobs had been red for weeks because the hosts lack Chromium's shared libraries
+  (`libnspr4`, `libnss3`, `libasound2`) and `--with-deps` could not install them there: it shells
+  out to apt-get, which is absent, so the step died at exit 127 before the browser was even
+  downloaded. On ubuntu-latest apt-get exists, so `--with-deps` is not merely safe, it is the call
+  that installs them. Same reasoning `ci.yml` already carried — the fleet is heterogeneous and
+  every failure it has produced so far was infrastructure, not code. The Node-18 bootstrap the
+  self-hosted jobs needed is gone with it. All of these gates were run locally against an
+  installed Chromium first, so the change is known to be green rather than hoped to be:
+  `check:contrast` (11/11 routes), `check:visual-audit`, `check:frame-axe`, `check:button-icon-xs`,
+  and `check:frame-geometry` — the last of which found a real WCAG 2.1.1 defect (gh#321).
+
 - **`AuthDivider` is now a thin preset over `Separator label` (gh#308)**, not a parallel
   implementation. `.ui-auth-divider` no longer restates the grid or the rule — it only re-points
   Separator's `--separator-*` knobs at the `--auth-shell-divider-*` layer, so #263's canonical login
@@ -313,6 +325,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--focus-ring-opacity` ở `foundation.css` là token nền tier khác và **không** đổi.
 
 ### Fixed
+
+- **a11y: `Button size="xs"` was 20px tall, under WCAG 2.2 SC 2.5.8's 24x24 minimum target size
+  (gh#316).** It read `calc(var(--control-height) - 0.75rem)` = 1.25rem while `size="icon-xs"`
+  beside it read `--control-height-xs` = 1.5rem: the same tier name, two heights, 4px apart. The
+  gap was recorded as a visual decision to make later; measuring it settled it as an accessibility
+  one, because 20px fails the target-size minimum and the 24px sibling passes. The old value was
+  also the exact shape this repo's own rule forbids — an ad-hoc `calc(var(--control-height) +/- length)`
+  that silently re-derives a tier and drifts from its siblings — and, being a raw length rather
+  than a `--scaling`-multiplied step, it did not move with density while the tier did.
+  `--button-xs-height` now defaults to `--control-height-xs`. This IS a visible change on the most
+  used component in the library (20px -> 24px) and it stays a knob: a service that wants the old
+  box sets the token back.
 
 - **a11y: `colSpan` on a one-column form grid collapsed a field to 0px and put its clear button
   out of reach (gh#321).** `FormField` set the span as an inline `grid-column: span N`. On a grid

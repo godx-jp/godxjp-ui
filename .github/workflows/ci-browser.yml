@@ -12,11 +12,18 @@ name: CI (browser)
 #   • visual         — check:contrast + check:visual-audit (the browser half of verify:static).
 #   • rendered-runtime — per-shard data-entry / layout runtime contracts.
 #
-# RUNNER NOTE — do NOT add `--with-deps` to `playwright install` here. These are
-# self-hosted hosts that are not Debian/Ubuntu: `--with-deps` shells out to apt-get,
-# which does not exist, and the step dies with `sh: apt-get: command not found`
-# (exit 127) BEFORE the browser binary is even downloaded. The host must provide
-# Chromium's shared libraries (libnspr4, libnss3, libasound2) out of band.
+# RUNNER — GitHub-hosted `ubuntu-latest`, for the same reason ci.yml gives: the self-hosted
+# fleet is heterogeneous (some hosts run as root, some as a user; none are Debian) and every
+# failure it has produced so far was infrastructure, not code. These jobs sat red for weeks
+# because the hosts lacked Chromium's shared libraries (libnspr4, libnss3, libasound2) and
+# `--with-deps` could not install them — it shells out to apt-get, which is absent there, so the
+# step died at exit 127 before the browser was even downloaded.
+#
+# On ubuntu-latest apt-get exists, so `--with-deps` is not merely safe but the correct call: it
+# is what installs those libraries. The Node-18 bootstrap dance the self-hosted jobs needed is
+# gone too (ubuntu-latest images ship a modern Node, so `pnpm/action-setup` works directly), and
+# each job gets its own VM, so the per-job preview ports no longer have to avoid each other —
+# they are kept only because the runtime scripts read them from the environment.
 on:
   pull_request:
   push:
@@ -31,48 +38,36 @@ concurrency:
 jobs:
   visual:
     name: Contrast + visual audit
-    runs-on: [self-hosted, Linux, X64]
-    # Port preview riêng mỗi job (self-hosted chung host) — xem frame-harness.mjs DEFAULT_BASE.
+    runs-on: ubuntu-latest
+    # Each job now has its own VM, so the port only has to match what the harness reads.
     env:
       PREVIEW_BASE: http://localhost:6008
     steps:
       - uses: actions/checkout@v6
-      # Bootstrap Node BEFORE pnpm/action-setup: self-hosted runners default to
-      # Node 18, and the pnpm self-installer (npm 11) refuses to run on it.
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
-        with:
-          dest: ${{ runner.temp }}/setup-pnpm
       - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install chromium
+      - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm preview:build
       - run: pnpm verify:browser
 
   axe:
     name: Per-frame axe (chrome blocking, component allowlisted)
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-latest
     env:
       PREVIEW_BASE: http://localhost:6028
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
-        with:
-          dest: ${{ runner.temp }}/setup-pnpm
       - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install chromium
+      - run: pnpm exec playwright install --with-deps chromium
       - name: axe every frame (desktop + mobile-sm)
         run: pnpm check:frame-axe
       - uses: actions/upload-artifact@v7
@@ -84,23 +79,18 @@ jobs:
 
   geometry:
     name: Viewport-matrix geometry sweep
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-latest
     env:
       PREVIEW_BASE: http://localhost:6038
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
-        with:
-          dest: ${{ runner.temp }}/setup-pnpm
       - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install chromium
+      - run: pnpm exec playwright install --with-deps chromium
       - name: geometry sweep (320→1920)
         run: pnpm check:frame-geometry
       - uses: actions/upload-artifact@v7
@@ -112,7 +102,7 @@ jobs:
 
   rendered-runtime:
     name: rendered-runtime (${{ matrix.name }})
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -139,21 +129,15 @@ jobs:
             command: pnpm check:layout-nav-closure && pnpm check:final-touch-rtl
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
-        with:
-          dest: ${{ runner.temp }}/setup-pnpm
       - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install chromium
+      - run: pnpm exec playwright install --with-deps chromium
       - run: ${{ matrix.command }}
         env:
           DATA_ENTRY_STORIES: ${{ matrix.stories }}
-          # Port preview riêng mỗi shard (self-hosted chung host) — check-data-entry-frame-runtime
-          # đọc PREVIEW_PORT; các script khác giữ port riêng của chúng (không đụng nhau).
+          # check-data-entry-frame-runtime reads PREVIEW_PORT; the other scripts keep their own.
           PREVIEW_PORT: ${{ matrix.port }}
