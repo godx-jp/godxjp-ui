@@ -160,6 +160,11 @@ jobs:
     runs-on: [self-hosted, swarm-pool]
     strategy:
       fail-fast: false
+      # Two at a time, not five. These runners share one physical host, so five shards each
+      # building a preview and standing up a `vite preview` — beside CI · code's five test shards
+      # on the same pool — is oversubscription, and it showed up as the preview server failing to
+      # bind rather than as anything that names the real cause.
+      max-parallel: 2
       matrix:
         include:
           - name: data-entry-core

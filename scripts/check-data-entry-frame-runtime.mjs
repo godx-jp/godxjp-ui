@@ -52,8 +52,15 @@ const ignoredPageShellRules = new Set([
 // check, an explicit cwd), they now call the function that works. One way to stand a preview up.
 const stopServer = await ensurePreviewServer(base);
 
-async function waitForFrame(page, story) {
-  await page.locator(".preview-runtime-loading").waitFor({ state: "hidden" });
+async function waitForFrame(page, story, width) {
+  // Name the story and the width in the failure. Playwright's own timeout says only that a
+  // `.preview-runtime-loading` stayed visible, which tells you a story hung but not WHICH — and a
+  // gate that will not name its failing input is a gate someone has to bisect by hand.
+  try {
+    await page.locator(".preview-runtime-loading").waitFor({ state: "hidden" });
+  } catch (cause) {
+    throw new Error(`${story} @ ${width}px: stuck on the loading placeholder`, { cause });
+  }
   const runtimeError = page.locator(".preview-runtime-error");
   if (await runtimeError.count()) throw new Error(`${story}: ${await runtimeError.innerText()}`);
   await page.locator("#root > *").first().waitFor();
@@ -67,7 +74,7 @@ try {
     const page = await context.newPage();
     for (const story of stories) {
       await page.goto(`${base}/isolate/${story}`, { waitUntil: "domcontentloaded" });
-      await waitForFrame(page, story);
+      await waitForFrame(page, story, width);
       const storyRoot = page.locator("#root");
       if ((await storyRoot.innerText()).trim().length === 0)
         throw new Error(`${story}@${width}: story did not render`);

@@ -106,12 +106,18 @@ export async function ensurePreviewServer(base = DEFAULT_BASE) {
       /* noop */
     }
   };
-  for (let i = 0; i < 60; i++) {
+  // 60s was enough when one gate ran at a time. The rendered-runtime matrix puts five of these
+  // on one self-hosted host at once, beside another workflow's five test shards, and `vite preview`
+  // then takes longer than a minute just to bind. Env-tunable so a busier pool can raise it without
+  // a code change — but note the matrix is also throttled with `max-parallel`, because a budget is
+  // the wrong place to absorb oversubscription.
+  const budget = Number(process.env.PREVIEW_START_TIMEOUT_MS ?? 180_000) / 1000;
+  for (let i = 0; i < budget; i++) {
     await new Promise((r) => setTimeout(r, 1000));
     if (await reachable(base)) return cleanup;
   }
   cleanup();
-  throw new Error("static preview server did not come up in 60s");
+  throw new Error(`static preview server did not come up in ${budget}s on ${base}`);
 }
 
 /**
