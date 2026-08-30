@@ -846,7 +846,39 @@ opacity-50` pair to `data-disabled` reading `--disabled-opacity`, so it dims by 
   `stickyFooter`'s, which zeroes `padding-block-end` for its own documented reason. The 720px step
   re-declares the TOKEN, never this padding, and the attribute selector out-ranks the base rule, so
   the flush edge holds identically at every width; a page that never passes `headerScale` emits no
-  attribute and is geometrically byte-identical.
+  attribute and is geometrically byte-identical. Two further consequences of the SAME answer, found
+  by measuring every element of the reference chat screen's top band against the app's, element by
+  element: the left column matched to the pixel, the header did not. The SUBTITLE now takes
+  `--page-subtitle-font-size-chrome` (`--font-size-2xs`, ~11px). It had been left at
+  `--page-subtitle-font-size` on the reasoning that the token was already `--font-size-base`, the
+  same step the chrome title takes, so nothing would be gained — but that equality IS the defect:
+  a channel name and its purpose line rendering at one size is not a hierarchy, and the design puts
+  the caption two steps down. Size also buys height, because it drives the line box at the inherited
+  `--line-height-body`: 14px × 1.7 = 23.8px against 11px × 1.7 = 18.9px, so the band stops spending
+  ~5px on a caption. Type only — line-height, colour and weight stay with the base rule, so a
+  wrapped JA/VI purpose line keeps its rhythm. Its specificity is load-bearing in a way the title's
+  is not quite: the 720px compact step declares `.ui-page-header .ui-page-subtitle`, ALREADY a
+  compound selector, so the chrome rule wins only by carrying the container attribute on top of its
+  own class. And the `extra` cluster now CENTRES on the bar (`align-self: center`) wherever the
+  header row is a row (>=640px). `align-items: flex-start` there is right for a document — a
+  Save/Publish group belongs on the first line of a tall `<h1>`, not beside its second — and wrong
+  for a bar, which has no tall heading to align to. Measured, that was 8.65px: 28px icon buttons
+  pinned at y=14 inside a 45.3px header row whose title block centred at y=22.65, which is what a
+  reader sees, correctly, as "the icons are not centred". `align-self` on the extra box rather than
+  `align-items` on the row, so the heading keeps the stretch it has today and the two alignments
+  stay independent; scoped INSIDE the 640px block, because below it the row is a COLUMN, where the
+  same declaration would centre `extra` sideways and release the full-width stretch the base rule
+  gives it. `headerLayout="responsive-inline"` keeps its own flex-start under 640px: that
+  arrangement exists to hold one compact control beside a wrapping title band, which is the
+  document case again.
+- **`--page-subtitle-font-size-chrome`** — the chrome SUBTITLE step, `var(--font-size-2xs)`
+  (ratio⁻², ~11px), for the caption under a chrome top row: a channel's purpose line, a mail
+  preview. A fourth knob beside `--page-subtitle-font-size` / `-compact` for the same reason the
+  title step is a third one — those two are one document subtitle at two viewport sizes, this is a
+  different kind of page and holds at every width. Read only when the prop is passed (rule #44); a
+  service retunes the caption step here once rather than hanging a `text-*` utility on the subtitle
+  at a call site, which would be invisible to the responsive step and put chrome typography back in
+  the app.
 - **`--page-title-font-size-chrome`** — the chrome title step, `var(--heading-h3)`
   (= `--font-size-base`, 14px), so the row reads as a label ON the surface rather than the page's
   headline. A deliberate THIRD knob beside `--page-title-font-size` / `-compact`: those two are one

@@ -226,6 +226,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'PageContainer title step under `headerScale="chrome"` — a page whose top row IS chrome (a chat channel name, a mail subject, an IDE tab) rather than a document title. Default `var(--heading-h3)` = `--font-size-base` (14px), the body step, so the row reads as a label ON the surface instead of the page\'s headline; a consumer chat header measured 61px with a 20px h1 against a design that wanted ~40px at the `sm` step. Deliberately a THIRD knob beside `--page-title-font-size` / `--page-title-font-size-compact`: those two are one document title at two viewport sizes (a responsive step), this is a different KIND of page and holds at every width — the compact rule must not pull a chrome header back up to h2. Read ONLY when the prop is passed, so a document page never touches it (rule #44). A service retunes the chrome step here once; never override `--page-title-font-size` at a call site to fake it.',
   },
   {
+    name: "--page-subtitle-font-size-chrome",
+    category: "semantic",
+    tier: "semantic",
+    role: 'PageContainer SUBTITLE step under `headerScale="chrome"` — the caption under a chrome top row (a channel purpose line, a mail preview), not a document\'s standfirst. Default `var(--font-size-2xs)` (ratio⁻², ~11px), two steps below the document default `--font-size-base`. It is a fourth knob beside `--page-subtitle-font-size` / `-compact` for the same reason the title step is: those two are ONE document subtitle at two viewport sizes, this is a different KIND of page and holds at every width — and it has to out-rank the 720px compact rule, which is already a compound selector, or a chrome caption would step back UP on a phone. Two things it fixes at once. Hierarchy: at the document step the chrome subtitle rendered at `--font-size-base`, the IDENTICAL step the chrome TITLE takes, so a channel name and its purpose line read as one undifferentiated block. Height: the step drives the LINE BOX at the inherited `--line-height-body` (14px x 1.7 = 23.8px vs 11px x 1.7 = 18.9px), so a band whose whole point is to leave room for the transcript stops spending ~5px of it on a caption. Type only — line-height, colour and weight stay with the base rule, so a wrapped JA/VI purpose line keeps its rhythm. Read ONLY when the prop is passed (rule #44); a service retunes the caption step here once, never with a `text-*` utility at the call site.',
+  },
+  {
     name: "--page-pad-block-start-chrome",
     category: "semantic",
     tier: "semantic",
