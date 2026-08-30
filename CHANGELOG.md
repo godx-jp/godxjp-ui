@@ -810,6 +810,190 @@ opacity-50` pair to `data-disabled` reading `--disabled-opacity`, so it dims by 
 
 ### Added
 
+- **`PageContainer` `headerScale="chrome"` — a page whose top row is CHROME, not a document
+  title.** `.ui-page-title` was locked to `--page-title-font-size` (`--heading-h1`, 20px) with
+  exactly one step down, `--page-title-font-size-compact`, inside `@media (max-width: 720px)` — a
+  RESPONSIVE step for one document title, not an axis a consumer can steer; `density` never
+  touched it. So a page whose first row is furniture rather than a headline — a chat channel, a
+  mail thread, an IDE tab — had no legitimate way to make that row compact: measured in a consumer
+  chat page at a 61px header band carrying a 24px channel name, against a design that budgeted the
+  whole row at ~40px with the name at the `sm` step. On a surface where height is what the
+  conversation needs, those 21px are real. `headerScale` asks what the row IS rather than how big
+  it should be: `document` (the default) is every record, form, collection and report, byte-
+  identical — no attribute is even emitted; `chrome` publishes `data-header-scale="chrome"` on the
+  container and the `<h1>` takes `--page-title-font-size-chrome` at EVERY width. The compound
+  selector out-ranks the bare `.ui-page-title` inside the 720px block deliberately: the compact
+  DOCUMENT step is h2 (18px), _larger_ than the chrome step, so without that the band would swell
+  on a phone — the responsive step itself is untouched and still governs every document page.
+  Extending `variant="ghost"` instead was the alternative and was rejected: ghost is the quiet
+  chrome WEIGHT (no divider, no header bottom pad, tighter title→body gap) and all seven ghost
+  frames in `docs/layout/page-container.tsx` are ordinary document pages — a partner detail, three
+  density samples, two member lists, the notification feed — whose `<h1>` is a headline; folding a
+  type step into it would move all of them and conflate two questions. They compose instead:
+  `headerScale="chrome" variant="ghost"` is the chat header. The heading stays an `<h1>` in both
+  states — this moves a type step, never a heading level, so the screen-reader outline is
+  unchanged. It also opens the page FLUSH with the frame. `.ui-page-container` pads every page with
+  `--space-page-active-y` (24px, 16px below the 720px step), which is a document's top margin: a
+  title needs air above it, a channel head does not — it IS the top edge. Measured on the same
+  consumer chat screen at 1512×805, the design's channel head occupies y 0..47 while the app's
+  identical-height head started at y 24, pushing the whole top chrome down 30px and taking the same
+  30px off the transcript (design 617px of scroll viewport, app 587px). The band heights already
+  matched; the page was simply floating inside its own shell. So `chrome` swaps the container's
+  block-start padding for `--page-pad-block-start-chrome` — the same attribute, because "is this row
+  a document title or the surface's own furniture" is ONE question and the type step and the flush
+  edge are two consequences of its answer, not two props a call site would have to keep in lockstep.
+  BLOCK-START only, and a longhand: `headerScale` names the HEADER, so the page's bottom edge stays
+  `stickyFooter`'s, which zeroes `padding-block-end` for its own documented reason. The 720px step
+  re-declares the TOKEN, never this padding, and the attribute selector out-ranks the base rule, so
+  the flush edge holds identically at every width; a page that never passes `headerScale` emits no
+  attribute and is geometrically byte-identical. Two further consequences of the SAME answer, found
+  by measuring every element of the reference chat screen's top band against the app's, element by
+  element: the left column matched to the pixel, the header did not. The SUBTITLE now takes
+  `--page-subtitle-font-size-chrome` (`--font-size-2xs`, ~11px). It had been left at
+  `--page-subtitle-font-size` on the reasoning that the token was already `--font-size-base`, the
+  same step the chrome title takes, so nothing would be gained — but that equality IS the defect:
+  a channel name and its purpose line rendering at one size is not a hierarchy, and the design puts
+  the caption two steps down. Size also buys height, because it drives the line box at the inherited
+  `--line-height-body`: 14px × 1.7 = 23.8px against 11px × 1.7 = 18.9px, so the band stops spending
+  ~5px on a caption. Type only — line-height, colour and weight stay with the base rule, so a
+  wrapped JA/VI purpose line keeps its rhythm. Its specificity is load-bearing in a way the title's
+  is not quite: the 720px compact step declares `.ui-page-header .ui-page-subtitle`, ALREADY a
+  compound selector, so the chrome rule wins only by carrying the container attribute on top of its
+  own class. And the `extra` cluster now CENTRES on the bar (`align-self: center`) wherever the
+  header row is a row (>=640px). `align-items: flex-start` there is right for a document — a
+  Save/Publish group belongs on the first line of a tall `<h1>`, not beside its second — and wrong
+  for a bar, which has no tall heading to align to. Measured, that was 8.65px: 28px icon buttons
+  pinned at y=14 inside a 45.3px header row whose title block centred at y=22.65, which is what a
+  reader sees, correctly, as "the icons are not centred". `align-self` on the extra box rather than
+  `align-items` on the row, so the heading keeps the stretch it has today and the two alignments
+  stay independent; scoped INSIDE the 640px block, because below it the row is a COLUMN, where the
+  same declaration would centre `extra` sideways and release the full-width stretch the base rule
+  gives it. `headerLayout="responsive-inline"` keeps its own flex-start under 640px: that
+  arrangement exists to hold one compact control beside a wrapping title band, which is the
+  document case again.
+- **`--page-subtitle-font-size-chrome`** — the chrome SUBTITLE step, `var(--font-size-2xs)`
+  (ratio⁻², ~11px), for the caption under a chrome top row: a channel's purpose line, a mail
+  preview. A fourth knob beside `--page-subtitle-font-size` / `-compact` for the same reason the
+  title step is a third one — those two are one document subtitle at two viewport sizes, this is a
+  different kind of page and holds at every width. Read only when the prop is passed (rule #44); a
+  service retunes the caption step here once rather than hanging a `text-*` utility on the subtitle
+  at a call site, which would be invisible to the responsive step and put chrome typography back in
+  the app.
+- **`--page-title-font-size-chrome`** — the chrome title step, `var(--heading-h3)`
+  (= `--font-size-base`, 14px), so the row reads as a label ON the surface rather than the page's
+  headline. A deliberate THIRD knob beside `--page-title-font-size` / `-compact`: those two are one
+  title at two viewport sizes, this is a different kind of page and holds at every width. Read only
+  when the prop is passed (rule #44), so no existing page resolves it; a service retunes the chrome
+  step here once instead of overriding `--page-title-font-size` at a call site, which would
+  re-theme every page in the subtree and still lose to the 720px rule.
+- **`--page-pad-block-start-chrome`** — the page's TOP inset under `headerScale="chrome"`, `0px`,
+  so chrome opens on the frame's edge while a document page keeps `--space-page-active-y`. Flush is
+  the quiet state for chrome (rule #44), and it is a knob rather than a literal so a service whose
+  design grid wants its chrome to breathe writes `--page-pad-block-start-chrome: var(--space-2)`
+  once in its theme instead of padding — or negative-margining — the page shell at the call site.
+  Read only when the prop is passed, so no document page resolves it.
+- **`AppShell` renders NO top bar when all four bar slots are omitted.** The grid reserved
+  `--app-shell-bar-height` unconditionally, and with `topbar` undefined the shell fell back to a
+  `.app-topbar-rail` holding `logo` — so a shell whose PAGE owns the top row (chat, mail, an IDE)
+  got two stacked rows of chrome, measured in a consumer chat shell at ~48px bar + ~60px page
+  header, over exactly the region that needs the height most. With `topbar`, `topbarLeft`,
+  `topbarRight` and `logo` all `undefined` there is now no `<header class="app-topbar">` at all
+  and the row is published as `data-topbar="none"` on `.app-root`, which collapses it to `auto`
+  (0 in practice) in the default template, under `data-topbar-span="full"` — which re-declares
+  areas only — and inside the narrow-width block, which must not restate the rows. One exception,
+  deliberate: below the responsive breakpoint the docked sidebar is hidden and AppShell's own
+  hamburger is the only route to navigation, so when a drawer exists the `<header>` is still
+  rendered carrying that trigger alone, and CSS — not the row — keeps it off the wide layout. The
+  trigger is `undefined`, not empty: `topbar={<></>}` or a conditional resolving to `null` still
+  renders the header and still eats the row.
+- **`SplitPane` closes its rail with `aside={null}` — without remounting `children`.** The aside
+  column was rendered unconditionally, so a collapsible panel (a Slack thread, a Linear detail
+  rail) forced the call site to drop the whole component when closed. That changes React tree
+  depth, so `children` remount: measured in a consumer chat shell as a reader at `scrollTop 400`
+  being thrown to 1522.5 on opening a thread. Keeping the component mounted with an empty aside
+  was the only alternative and it leaves a blank 22rem column. Now `null` renders no `<aside>` and
+  the grid falls to one column with no gap, while `.ui-split-pane-scope` / `.ui-split-pane` /
+  `.ui-split-pane-main` stay put at the same depth — which is what lets React reuse the DOM node.
+  `aside` stays REQUIRED so the call site is explicit about open vs closed. Also corrected in the
+  catalog: the stacking threshold has been a container query on the pane's own width (48rem, and
+  64rem for `lg`) since gh#165, not the `1080px` viewport media query still documented.
+- **`PageContainer` `toolbar` — the missing page-chrome slot between the header and the body.**
+  The shell owned the page header (title/subtitle/status/extra/breadcrumb) and the footer
+  (`footer` + `stickyFooter`), but there was NO slot for a fixed strip in between — a filter bar,
+  a status band, a chat channel's workflow rail. A page had to either put the strip inside
+  `children`, where `fill` scrolls it away, or hand-lay `position: sticky` at the call site, which
+  is exactly the "never hand-lay page chrome" the system forbids (and sticky is not even the same
+  thing: content keeps flowing UNDER a pinned box, which is the half-sliced row every hand-rolled
+  version produces). `toolbar` renders a `.ui-page-toolbar` band between the header and
+  `.ui-page-body` as a `flex: none` sibling, so under `fill` — where the body IS the scroll
+  viewport — it sits outside the scroller entirely. It shares the page gutters and the `measure`
+  cap with the header and body from the same rules (that is what keeps the three bands flush at
+  both edges), goes full-bleed under `variant="flush"` where `PageContainer.Inset` re-aligns its
+  content, and emits NO element and no flex gap when the prop is omitted.
+- **`--page-toolbar-pad-block` / `--page-toolbar-divider`** — the `toolbar` band's inset and
+  bottom rule, both quiet by default (rule #44). The inset is `0`: the container's
+  `--space-section-active` gap already spaces the band from the header and the body. The divider
+  is declared `initial` and resolved at the CALL SITE as
+  `var(--page-toolbar-divider, var(--page-header-divider))`, so one `--page-header-divider`
+  opt-in rules the whole page chrome consistently, a scoped `[data-tenant]` / `.dark` override of
+  it still reaches the band (a `:root` binding would freeze it), and
+  `--page-toolbar-divider: none` silences just the band. `variant="ghost"` keeps both quiet.
+- **`--page-toolbar-background` — the `toolbar` band had a rule knob and an inset knob but no
+  GROUND knob.** The band that `toolbar` had just introduced could be spaced and ruled from a
+  theme, but not painted, and the consuming design put its chat channel's workflow rail on
+  `hsl(var(--card))` so the strip reads as chrome rather than as the top of the transcript. With
+  no knob the call site's only route was `className="bg-card"` on the strip — the exact
+  "never hand-lay page chrome" the system forbids — and, on being told to remove it, that project
+  ended up with a band that is fully TRANSPARENT: worse than before the slot was patched in. The
+  utility was never equivalent anyway: it paints the STRIP, so the colour stops at the content box
+  instead of running the band's full page width (and full-bleed under `variant="flush"`), and it
+  is invisible to a `[data-tenant]` re-theme. `--page-toolbar-background` defaults to
+  `transparent`, so a page that never themes it is byte-identical (rule #44); it is bound at
+  `:root` rather than `initial` — unlike the divider beside it — because its default is a plain
+  CSS keyword and not another role token, so there is nothing for a scoped override to re-resolve
+  and `initial` would only hide the default from anyone reading the token file. It is the
+  `background` shorthand, so a gradient works as well as a colour. `variant="ghost"` silences the
+  band's RULE and deliberately leaves the GROUND alone: ghost is the quiet chrome WEIGHT (rules
+  and pads), and a chat page has to be able to be both quiet and painted.
+- **`--page-toolbar-pad-block` stays `0` — re-examined when the ground knob landed, and kept.**
+  The obvious follow-up was to give the band a small default inset off the space scale now that it
+  can be painted. It is still `0`, for three reasons that all point the same way: a TRANSPARENT
+  band has no inside for an inset to breathe, so the default would buy height and nothing else;
+  the container's `--space-section-active` gap is already the one thing that spaces all three page
+  bands, and a second source would double up on this one; and under `fill` every pixel of band
+  height comes straight off the scroll viewport the slot exists to protect. What was actually
+  missing was not a different default but the instruction, so the MCP catalog now says it in both
+  directions: a theme that PAINTS or RULES the band sets `--page-toolbar-pad-block: var(--space-2)`
+  in the SAME declaration, and a `py-1.5` at the call site is a DON'T — it pads the strip, never
+  the band.
+- **`SidebarItemProp.badgeTone` — a nav row's count had no way to say what it MEANS.** `.sb-badge`
+  carried a single font-size knob and no colour knob at all, so a rail that has to tell "unread"
+  from "mentions you" — every chat, mail and review queue does — could only push a
+  `<Badge tone="destructive">` INSIDE `badge`. The row already wraps whatever it is given in its
+  own pill, so that renders a pill inside a pill: measured at a 37.11x19.14 `.sb-badge` around a
+  25.11x19.14 `<Badge>` with its own border. `badgeTone` is `"neutral"` (default) or
+  `"destructive"`, an `Extract<>` subset of the shared `ToneProp` vocabulary rather than a new one
+  (rule #23), and deliberately two values: a nav rail answers exactly one question about a count,
+  "does this need me personally?", and a five-colour rail is decoration rather than information.
+  Changing `badge` itself to `{ label, tone }` was the alternative and was rejected — it breaks
+  every existing call site and turns a ReactNode slot into a union — while a token-only fix was
+  rejected because it can only recolour EVERY badge in the rail, and the whole point is that two
+  rows differ at the same time. The default emits no attribute at all (rule #44), so an existing
+  rail renders the identical `<span class="sb-badge">` node; `destructive` adds
+  `data-tone="destructive"` to that same node and swaps two colours, leaving min-width, radius,
+  inline pad and font size on the shared base rule so a mention row and an unread row still line
+  up in one column. It rides the library-composed row (gh#213), so `href`, `linkComponent` and
+  `asChild` rows all carry it without touching their markup.
+- **`--sidebar-badge-{background,foreground}` / `--sidebar-badge-destructive-{background,foreground}`**
+  — the pill's colour, split into a resting pair and an emphasis pair. The resting defaults are the
+  literals `.sb-badge` always carried (`hsl(var(--secondary))` fill, `hsl(var(--muted-foreground))`
+  text), now reachable from a theme instead of frozen in the stylesheet; the `-destructive-` pair
+  defaults to the canonical AA-checked `hsl(var(--destructive))` / `hsl(var(--destructive-foreground))`
+  and is read ONLY by a row that passes `badgeTone="destructive"`. All four are declared `initial`
+  with the role default resolved at the call site, so a scoped `[data-tenant]` / `.dark` override
+  of the role still reaches the pill (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`").
+  Colour only — the pill's geometry stays shared, which is what a nested `<Badge>` could never
+  promise.
 - **`check:doc-prop-existence`** — a guard for the class of bug above, wired into `verify` and
   `verify:static`. `check:mcp-prop-sync` only checked that every declared prop is documented;
   nothing checked that every documented prop is declared, which is why examples could hand readers
@@ -822,6 +1006,69 @@ opacity-50` pair to `data-disabled` reading `--disabled-opacity`, so it dims by 
   `Form loading` each turns it red on its own.
 
 ### Changed
+
+- **`PageContainer` `toolbar` sits FLUSH against the header and the body — chrome is attached,
+  not a third page section.** `.ui-page-container` is a flex column with one `gap` between every
+  band, which is right for a document page (header / body / footer are three separate blocks) and
+  wrong for chrome. Measured on a consumer chat page at 1512×805: header 24/69 · band 85/134 ·
+  body 150/685 — 16px of nothing on EACH side of the one element whose job is to divide. The band
+  carries a ground (`--page-toolbar-background`) and a bottom rule, so floating it between two
+  voids made the rule separate nothing and cost 32px of transcript on the surface where height is
+  scarcest. The band now cancels the gap from ITSELF (`margin-block: calc(-1 * var(--page-band-gap))`),
+  so the same page measures header 24/68 · band 68/109 · body 109/684 and the body keeps the 32px.
+  `--page-band-gap` is internal plumbing, not a new theming knob: it is the ONE resolved number the
+  container spaces by, introduced because three scopes re-decide that number (`variant="ghost"`
+  swaps it for `--space-stack-md`, the 720px step and the `admin-collection` preset swap the
+  section token underneath it) and a band that hard-coded `calc(-1 * var(--space-section-active))`
+  would have been right in some of them and silently a few pixels wrong in the rest. Verified flush
+  on both sides of the 720px step and under ghost / the preset / a retuned gap. A page that passes
+  no `toolbar` is untouched — DOM and geometry byte-identical — and `--page-toolbar-pad-block` is
+  unchanged at `0`, now the band's ONLY breathing room: a theme that paints or rules the band sets
+  its inset there, and the band has no outside space left to tune. The band is also guarded against
+  being the LAST child (`toolbar` with no `children`), where there is no gap under it to cancel and
+  the negation would otherwise eat the page's own bottom padding.
+  KNOWN AND DELIBERATELY LEFT: the 16px of SPACE between the body and the `footer` (its rule is a
+  separate matter, fixed below). Measured on the same
+  page — body ends 684, 16px of air, the footer's hairline at 700, its own 16px inset, composer at
+  717 — that rule has equal air on both sides, so it reads as a separator rather than as a surface
+  adrift, which was the toolbar's actual defect. `footer` is also the shared slot every form's
+  Save/Cancel bar lands in, and its 16px is a plain `padding-top`, not a knob a service could turn
+  back up; closing it is a separate decision with a far wider blast radius than one chrome band. A
+  chat composer therefore still keeps 16px above it.
+
+- **`variant="ghost"` no longer swallows an explicit `--page-header-divider`.**
+  `.ui-page-container--ghost .ui-page-header` hard-set `border-bottom: none`, which threw away not
+  just the nothing it meant to block but a rule the service had deliberately turned on — so page
+  chrome could be opted into a divider and a ghost page would still refuse to draw it. This is the
+  identical bug fixed on `.ui-page-toolbar` one release earlier, and it takes the identical cure:
+  re-declare the property from the SAME knob with a `none` fallback,
+  `border-bottom: var(--page-header-divider, none)`. Nothing inherits in, the opt-in passes through,
+  and with the token at its default (`none`) the result is byte-identical to the hard-set version —
+  verified in Chromium: a ghost page with `--page-header-divider: 1px solid hsl(var(--border))`
+  measured `0px none` before and `1px solid` after, while the same page with the token unset is
+  unchanged. Caught by a pixel diff against a consumer chat design, which carries TWO horizontal
+  rules in the top chrome (channel head at y=47, work band at y=88) where the app rendered ONE
+  (y=133) — the missing y=47 was this declaration. `padding-bottom: 0` in the same rule is
+  UNTOUCHED and has its own guard: that half answers "how loud is this chrome", no token mediates
+  it, and it is the half a quiet page actually wants.
+
+- **`PageContainer`'s footer rule is a token now — `--page-footer-divider`.** The three page-chrome
+  bands had drifted onto three different contracts: the header read `--page-header-divider`, the
+  toolbar read `--page-toolbar-divider`, and the footer hard-copied
+  `border-top: 1px solid hsl(var(--border))`, so a page could not turn it off at all. Measured on a
+  consumer chat screen, where the composer lives in this slot and is itself a bordered `Card`: the
+  shell's full-width rule landed directly above it as a SECOND line — a pixel diff against the
+  design caught a 100%-wide rule at y=701 the design does not have. The literal moves into the
+  fallback, `border-top: var(--page-footer-divider, 1px solid hsl(var(--border)))`, so an unset
+  token is byte-identical to what the rule drew before and `--page-footer-divider: none` is the
+  opt-out (verified in Chromium: `1px solid` → `0px none` with the token set, unchanged without).
+  Declared `initial` at the semantic tier beside the other two, so a scoped `[data-tenant]` / `.dark`
+  override still reaches it. It is the ONE chrome divider whose default is a RULE rather than
+  silence, and that asymmetry is deliberate rather than an oversight: `footer` is the shared slot a
+  form's Save/Cancel bar lands in, where the line separating the actions from the page content is
+  the behaviour every existing page already depends on. Three bands, one contract: each rule is a
+  knob resolved at the call site with a fallback, and none of them is a `border-*` utility at the
+  call site.
 
 - **Frame-coverage ledger: `Card.sizes` / `StatCard.sizes` reclassified** from
   `covered:prop-evidence:size` to `not-applicable:api-manifest`, and the issue #163 ratchet floor

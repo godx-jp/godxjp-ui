@@ -77,6 +77,18 @@ const STATUS_TONE = {
   未承認: "destructive",
 } as const;
 
+const CHANNEL_MESSAGES = [
+  { author: "田中", at: "09:12", body: "今月の請求書、承認お願いします。" },
+  { author: "佐藤", at: "09:20", body: "アクメ社の分だけ金額が前月と違うようです。" },
+  { author: "鈴木", at: "09:31", body: "内訳を確認してスレッドに貼りました。" },
+];
+
+const THREAD_REPLIES = [
+  { author: "鈴木", body: "追加の保守費用が乗っています。" },
+  { author: "田中", body: "了解、契約書と突き合わせます。" },
+  { author: "佐藤", body: "ではこのまま承認で問題なさそうです。" },
+];
+
 const yenFormat = new Intl.NumberFormat("ja-JP", {
   style: "currency",
   currency: "JPY",
@@ -88,6 +100,7 @@ const toNumber = (amount: string) => Number(amount.replace(/[^0-9]/g, ""));
 export default function Demo() {
   const [selectedId, setSelectedId] = useState<string>("INV-0241");
   const [asideWidth, setAsideWidth] = useState<"sm" | "md">("md");
+  const [threadOpen, setThreadOpen] = useState(true);
 
   const selected = INVOICES.find((inv) => inv.id === selectedId) ?? INVOICES[0];
   const base = toNumber(selected.amount);
@@ -306,6 +319,91 @@ export default function Demo() {
             </div>
           </Flex>
         </SplitPane>
+
+        {/* ── Example 3: Collapsible rail — aside={null} closes it WITHOUT remounting main ── */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>開閉できるパネル · {"aside={null}"}</CardTitle>
+            <CardDescription>
+              {"aside={null}"} を渡すと <code>&lt;aside&gt;</code> は描画されず、1 カラム（gap
+              なし）に戻る。ラッパー（scope / pane / main）は残るので <code>children</code> の React
+              ツリー上の位置は変わらず、
+              再マウントされない（＝一覧のスクロール位置と状態が保たれる）。 閉じるときに{" "}
+              <code>SplitPane</code> ごと外す書き方は、ツリーの深さが変わるため
+              主カラムが再マウントされる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" align="center" gap="sm">
+                <Button
+                  size="sm"
+                  variant={threadOpen ? "default" : "outline"}
+                  onClick={() => setThreadOpen((open) => !open)}
+                >
+                  {threadOpen ? "スレッドを閉じる" : "スレッドを開く"}
+                </Button>
+                <Text size="xs" tone="muted" mono>
+                  {threadOpen ? "aside={<Thread />}" : "aside={null}"}
+                </Text>
+              </Flex>
+              <SplitPane
+                asideLabel="スレッド"
+                asideWidth="md"
+                aside={
+                  threadOpen ? (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle level={3} className="text-sm">
+                          スレッド
+                        </CardTitle>
+                        <CardDescription>返信 3 件</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <Flex direction="col" gap="sm">
+                          {THREAD_REPLIES.map((reply) => (
+                            <Flex key={reply.author} direction="col" gap="xs">
+                              <Text size="xs" tone="muted">
+                                {reply.author}
+                              </Text>
+                              <Text>{reply.body}</Text>
+                            </Flex>
+                          ))}
+                        </Flex>
+                      </CardContent>
+                    </Card>
+                  ) : null
+                }
+              >
+                <Card>
+                  <CardHeader>
+                    <CardTitle level={3} className="text-sm">
+                      #general
+                    </CardTitle>
+                    <CardDescription>
+                      パネルを開閉しても、この一覧は再マウントされない
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Flex direction="col" gap="sm">
+                      {CHANNEL_MESSAGES.map((message) => (
+                        <Flex key={message.author} direction="col" gap="xs">
+                          <Flex direction="row" justify="between" align="baseline" gap="sm">
+                            <Text weight="medium">{message.author}</Text>
+                            <Text size="xs" tone="muted" tabular>
+                              {message.at}
+                            </Text>
+                          </Flex>
+                          <Text tone="muted">{message.body}</Text>
+                        </Flex>
+                      ))}
+                    </Flex>
+                  </CardContent>
+                </Card>
+              </SplitPane>
+            </Flex>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>

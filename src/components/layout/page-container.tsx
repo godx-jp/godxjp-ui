@@ -65,6 +65,7 @@ function PageContainerRoot({
   subtitle,
   status,
   extra,
+  toolbar,
   footer,
   breadcrumb,
   breadcrumbLabel,
@@ -75,6 +76,7 @@ function PageContainerRoot({
   variant = "default",
   preset = "default",
   headerLayout = "stack",
+  headerScale = "document",
   measure = "default",
   stickyFooter = false,
   footerReveal = "always",
@@ -89,10 +91,15 @@ function PageContainerRoot({
   // `data-measure` caps the HEADER and the BODY to one shared token-owned measure so a header
   // action ends flush with the body surface (gh#245/gh#247). `default` matches no rule in the
   // stylesheet, so a page that never sets `measure` is geometrically untouched.
+  //
+  // `data-header-scale` is emitted ONLY for `chrome` (rule #44: present-when-on, absent-when-off),
+  // so a document page's DOM is byte-identical to before and no consumer selector has to out-
+  // specify a marker that means "nothing changed".
   return (
     <div
       data-preset={preset}
       data-measure={measure}
+      data-header-scale={headerScale === "chrome" ? "chrome" : undefined}
       data-revealed={revealed ? "true" : undefined}
       className={cn(
         "ui-page-container",
@@ -196,6 +203,14 @@ function PageContainerRoot({
           {extra && <div className="ui-page-header-extra">{extra}</div>}
         </div>
       </header>
+
+      {/* `toolbar` — the fixed chrome band between the header and the body: a filter strip, a
+          status bar, a channel workflow rail. It is a SIBLING of `.ui-page-body`, never a child,
+          because under `fill` the body is the scroll viewport: as a `flex: none` sibling the band
+          stays put and the transcript scrolls beneath NOTHING, whereas a `position: sticky` strip
+          inside the scroller keeps content flowing under it (the half-sliced row a hand-laid page
+          chrome always produces). Absent → no element and no gap at all. */}
+      {toolbar != null && <div className="ui-page-toolbar">{toolbar}</div>}
 
       {children != null && <div className="ui-page-body">{children}</div>}
 

@@ -76,10 +76,62 @@
    * `--page-header-divider: 1px solid hsl(var(--border));` */
   --page-header-divider: none;
 
+  /* PageContainer `toolbar` — the fixed chrome band between the header and the (scrolling) body.
+   * ALL THREE knobs are quiet by default (rule #44):
+   *   background    — `transparent`, i.e. the band shows the page ground exactly as it did before
+   *                   the knob existed. It is bound at `:root` and NOT `initial`, unlike the
+   *                   divider below, because the default is a plain CSS keyword rather than
+   *                   another role token: there is nothing for a scoped [data-tenant]/.dark
+   *                   override to re-resolve, so the `initial` + call-site-fallback dance would
+   *                   buy nothing and only hide the default from anyone reading this file. A
+   *                   service that wants the band to read as its own surface — the design that
+   *                   asked for this knob puts a chat channel's workflow rail on the card ground —
+   *                   sets `--page-toolbar-background: hsl(var(--card));` ONCE in its theme. Never
+   *                   `className="bg-card"` at the call site: that is hand-laid page chrome, it
+   *                   paints only under `variant="flush"` gutters correctly by accident, and it
+   *                   cannot be re-themed per tenant.
+   *   pad-block 0   — the band's ONLY breathing room, and the only one it should ever have. The
+   *                   band is chrome, so it sits FLUSH against the header above and the body
+   *                   below (src/styles/layout.css cancels the container's --page-band-gap from
+   *                   the band itself); there is deliberately no outside space to tune, because a
+   *                   ruled, painted band floating in a void divides nothing. A service that opts
+   *                   into the background or the divider gives the band its inset HERE
+   *                   (`--page-toolbar-pad-block: var(--space-2)`) instead of padding the strip at
+   *                   the call site. Still 0 by default: a transparent band is not a surface and
+   *                   has no inside to breathe, and under `fill` every pixel of it comes straight
+   *                   off the scroll viewport the slot exists to protect.
+   *   divider       — declared `initial` so the CALL SITE can fall back to --page-header-divider
+   *                   (`var(--page-toolbar-divider, var(--page-header-divider))`). One theme
+   *                   declaration therefore rules the whole page chrome consistently, and a
+   *                   scoped [data-tenant]/.dark override of the header divider still reaches the
+   *                   band — a `:root` binding would freeze it at the :root value
+   *                   (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). Set
+   *                   `--page-toolbar-divider: none` to silence just this band. */
+  --page-toolbar-background: transparent;
+  --page-toolbar-pad-block: 0px;
+  --page-toolbar-divider: initial;
+
+  /* Top rule of the PageContainer `footer` — the third page chrome band, brought onto the same
+   * contract as the header and the toolbar (its rule used to be a hard literal in layout.css, so
+   * a page could not turn it off at all). Declared `initial` like the toolbar's, so the CALL SITE
+   * resolves it as `var(--page-footer-divider, 1px solid hsl(var(--border)))` and a scoped
+   * [data-tenant]/.dark override still reaches it (docs/TOKENS.md · "Role-mirror knobs MUST be
+   * `initial`").
+   *
+   * It is the ONE chrome knob whose default is a RULE rather than silence, and deliberately so:
+   * `footer` is the shared slot a form's Save/Cancel bar lands in, where the line separating the
+   * actions from the page content is the behaviour every existing page already depends on. The
+   * old literal is the fallback verbatim, so unset is byte-identical. A page whose footer content
+   * already carries its own frame — a chat composer is a bordered Card — silences the duplicate
+   * with `--page-footer-divider: none`. */
+  --page-footer-divider: initial;
+
   /* Bottom inset of the page header, sized so title→body distance (this pad + the
    * --space-section-active container gap) EQUALS the page's top padding — the title
    * band reads vertically balanced (24 above / 24 below by default), instead of the
-   * old fixed 16px pad that left 24 above vs 32 below. */
+   * old fixed 16px pad that left 24 above vs 32 below. A page that passes a `toolbar`
+   * measures title→BAND instead (this pad alone, the gap being cancelled): the band is
+   * chrome attached to the header, not the next section down. */
   --page-header-pad-bottom: calc(var(--space-page-active-y) - var(--space-section-active));
 
   /* Inline measure of the header `extra` region while the page header is in `responsive-inline`
@@ -125,6 +177,37 @@
   --page-title-font-size-compact: var(--heading-h2);
   --page-subtitle-font-size: var(--font-size-base);
   --page-subtitle-font-size-compact: var(--font-size-sm);
+
+  /* PageContainer `headerScale="chrome"` — the title step for a page whose top row IS CHROME
+   * rather than a document title: a chat channel name, a mail subject line, an IDE tab. It is a
+   * SEPARATE knob from the two above on purpose: those are ONE document title at two viewport
+   * sizes (a responsive step), while this is a different KIND of page and holds at every width.
+   * `--heading-h3` (= --font-size-base, 14px) is the body step, which is the point — the row
+   * reads as a label ON the surface, not as the page's headline, and the header band collapses
+   * from the measured 61px to ~40px once it stops carrying a 20px h1. Quiet by default: a page
+   * that never passes `headerScale` never reads this token (rule #44). */
+  --page-title-font-size-chrome: var(--heading-h3);
+
+  /* The SUBTITLE step of the same fact. Measured against the reference chat screen, the chrome
+   * title and the chrome subtitle were rendering at the SAME step (both --font-size-base), which
+   * is not a hierarchy — a channel name and the channel's purpose line read as one undifferentiated
+   * block. The design puts the purpose line two steps down (`Text size="2xs"`), and the size is
+   * what carries the LINE BOX: at 14px/1.7 the subtitle line is 23.8px tall, at 11px/1.7 it is
+   * 18.9px, so the whole header band loses ~5px it was spending on a caption. `--font-size-2xs`
+   * (ratio⁻², ≈11px) is that step, and it is the same golden scale the title step reads — never a
+   * literal. Quiet by default: a page that never passes `headerScale` never resolves it (#44). */
+  --page-subtitle-font-size-chrome: var(--font-size-2xs);
+
+  /* The page's TOP inset under `headerScale="chrome"`, the second half of the same fact: chrome
+   * sits on the frame's edge. A document page opens with --space-page-active-y (24px, 16px below
+   * the 720px step) because a title needs air above it; a chat channel head, a mail subject bar or
+   * an IDE tab strip is the frame itself, and 24px of margin above it reads as a page floating
+   * inside its own shell — measured on a consumer chat screen as 24px lost off the top of the
+   * transcript viewport, against a design whose channel head starts at y=0. 0 is therefore the
+   * quiet default (rule #44), and it is a knob rather than a literal so a service whose grid wants
+   * its chrome inset (`--page-pad-block-start-chrome: var(--space-2)`) retunes it once instead of
+   * forking the page shell. Read ONLY when the prop is passed, so no document page resolves it. */
+  --page-pad-block-start-chrome: 0px;
 
   /* Section "chrome" padding — the SHARED inset for header / body / footer of every overlay-ish
    * surface (Dialog · Sheet · Drawer · Card). One global knob: a service sets these once instead of

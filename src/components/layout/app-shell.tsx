@@ -51,6 +51,18 @@ export function AppShell({
     }
   };
 
+  // A shell whose PAGE owns the top row — chat, mail, an IDE — has nothing to put in the bar, and
+  // an empty bar is not free: the grid reserves --app-shell-bar-height and the <header> paints a
+  // border plus a card background under it, so the page's own header lands on a SECOND row of
+  // chrome (measured at ~48px bar + ~60px page header in a consumer chat shell, over exactly the
+  // region that needs the height most). With all four bar slots undefined there is no <header> at
+  // all and the row is published as data-topbar="none", which collapses it to zero.
+  const hasTopbarContent =
+    topbar !== undefined ||
+    topbarLeft !== undefined ||
+    topbarRight !== undefined ||
+    logo !== undefined;
+
   const resolvedTopbar =
     topbar !== undefined ? (
       topbar
@@ -69,7 +81,13 @@ export function AppShell({
     </aside>
   );
 
-  const bar = (
+  // The ONE thing that survives in a bar-less shell: AppShell's own hamburger. Below the 900px
+  // breakpoint the docked sidebar is hidden, so dropping the bar there as well would leave the
+  // shell with no reachable navigation at all — a worse bug than the double chrome this state
+  // exists to fix (gh#165). When a drawer exists the <header> is therefore still rendered, holding
+  // the trigger and nothing else; CSS (`[data-topbar="none"] > .app-topbar`) keeps it out of the
+  // layout entirely above the breakpoint and brings it back below it.
+  const bar = !hasTopbarContent && !hasDrawer ? null : (
     <header className="app-topbar ui-scale-fixed" aria-label={t("layout.appShell.headerLabel")}>
       {hasDrawer && (
         <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
@@ -117,7 +135,7 @@ export function AppShell({
           </SheetContent>
         </Sheet>
       )}
-      {resolvedTopbar}
+      {hasTopbarContent && resolvedTopbar}
     </header>
   );
 
@@ -126,6 +144,7 @@ export function AppShell({
       className="app-root"
       data-collapsed={sidebarCollapsed ? "true" : undefined}
       data-responsive-navigation={responsiveNavigation}
+      data-topbar={hasTopbarContent ? undefined : "none"}
       data-topbar-span={topbarSpan === "full" ? "full" : undefined}
     >
       {/* Grid areas place these regardless of source order, so source order is free to be the

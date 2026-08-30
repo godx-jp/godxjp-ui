@@ -6,6 +6,18 @@
   --sidebar-section-label-font-size: var(--font-size-2xs);
   --sidebar-product-tenant-font-size: var(--font-size-2xs);
   --sidebar-badge-font-size: var(--font-size-2xs);
+  /* Sidebar nav count pill colours — the pill had a font-size knob and NO colour knob, so a rail
+   * that needed to tell "unread" from "mentions you" had to nest a <Badge> inside `badge` and got
+   * two pills, one inside the other. `initial` so the role defaults re-resolve at the call site
+   * under a scoped theme (a :root binding to a role var freezes at :root).
+   * Defaults = hsl(var(--secondary)) fill · hsl(var(--muted-foreground)) text. */
+  --sidebar-badge-background: initial;
+  --sidebar-badge-foreground: initial;
+  /* The EMPHASIS pair, read only by `SidebarItemProp.badgeTone="destructive"` (rule #44 — a
+   * neutral row never resolves them). Defaults = hsl(var(--destructive)) fill ·
+   * hsl(var(--destructive-foreground)) text, the canonical AA-checked pair. */
+  --sidebar-badge-destructive-background: initial;
+  --sidebar-badge-destructive-foreground: initial;
   /* Softened focus ring on the tinted shell grounds: at full alpha the ring
    * reads as a SELECTED item rather than a focused one (styles/focus-ring.css). */
   --sidebar-user-focus-ring-alpha: 0.45;

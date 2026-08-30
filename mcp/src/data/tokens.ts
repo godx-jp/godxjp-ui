@@ -202,10 +202,40 @@ export const TOKENS: TokenEntry[] = [
     role: "PageContainer header bottom divider. Default none; a service theme opts in with `1px solid hsl(var(--border))`.",
   },
   {
+    name: "--page-footer-divider",
+    category: "semantic",
+    tier: "semantic",
+    role: "PageContainer footer top divider — the third page-chrome band, on the same contract as `--page-header-divider` and `--page-toolbar-divider` (its rule used to be a hard literal in layout.css, so a page could not turn it off at all). Declared `initial` and resolved at the CALL SITE as `var(--page-footer-divider, 1px solid hsl(var(--border)))`, so a scoped [data-tenant]/.dark override still reaches it. It is the ONE chrome divider whose default is a RULE rather than silence, deliberately: `footer` is the shared slot a form's Save/Cancel bar lands in, where the line separating the actions from the page content is the behaviour every existing page already draws — the old literal IS the fallback, so unset is byte-identical. Set `--page-footer-divider: none` when the footer content already carries its own frame (a chat composer is a bordered Card, and the shell's full-width rule otherwise stacks a second line right above it).",
+  },
+  {
     name: "--overlay-background",
     category: "semantic",
     tier: "semantic",
     role: "Modal scrim — the single backdrop colour shared by every overlay (Dialog, AlertDialog, Sheet, Drawer, AppShell mobile nav). Default `rgb(0 0 0 / 0.5)`. A service tints it once, e.g. a navy `rgb(12 26 49 / .55)`. HOW IT REACHES AN OVERLAY (gh#215 — until v18 it reached NOTHING; every overlay carried a private literal and this token was dead): each surface declares its own `--*-overlay-background` knob `initial` and resolves a SHARE of this colour at the call site, `color-mix(in srgb, var(--overlay-background) var(--*-overlay-alpha), transparent)`, so the calibrated per-surface depth survives (Sheet/drawer 40% = 0.2, Dialog 60% = 0.3) while ONE override here retints them all. NOTE: portaled overlays render outside a [data-tenant] subtree, so for multi-tenant scoping put the tenant attribute on the portal container too.",
+  },
+  {
+    name: "--page-toolbar-{background,pad-block,divider}",
+    category: "semantic",
+    tier: "semantic",
+    role: "PageContainer `toolbar` band chrome — the FIXED strip between the page header and the (scrolling) body. All three knobs are quiet by default (rule #44). `--page-toolbar-background` (default `transparent`) is the band's GROUND: set it ONCE in a service theme — `--page-toolbar-background: hsl(var(--card));` — to lift the band off the page ground the way a chat channel's workflow rail or a collection's filter strip usually wants. It is bound at `:root` rather than `initial` because its default is a plain CSS keyword, not another role token, so there is nothing for a scoped override to re-resolve; it is the `background` shorthand, so a gradient works too. NEVER write `className=\"bg-card\"` on the strip at the call site — that is hand-laid page chrome, it is invisible to per-tenant theming, and it paints the strip rather than the band (so it misses the page gutters and the `measure` cap). `--page-toolbar-pad-block` (default 0) is the band's own block inset. It is the band's ONLY breathing room: the band sits FLUSH against the header and the body (the container's band gap is cancelled on the band itself — chrome is attached, not a third section floating between two voids), so there is no outside space to tune. It stays 0 even now that the band can be painted: a TRANSPARENT band is not a surface and has no inside for an inset to breathe, and under `fill` every pixel of band height is taken from the scroll viewport the slot exists to protect. The corollary is that a theme which PAINTS the band must also set the inset here (`--page-toolbar-pad-block: var(--space-2)`) — the two go together, and neither belongs in a `py-*` utility at the call site. `--page-toolbar-divider` is declared `initial` and resolved at the CALL SITE as `var(--page-toolbar-divider, var(--page-header-divider))` — so ONE `--page-header-divider` opt-in rules the whole page chrome consistently, a scoped [data-tenant]/.dark override of it still reaches the band (a `:root` binding would freeze it), and `--page-toolbar-divider: none` silences just the band. `variant=\"ghost\"` keeps the divider quiet regardless (it does NOT clear the background — ghost is about rules and pads, not grounds). The band's inline gutters and its `measure` cap are shared with the header and body — they are not separate knobs, which is what keeps the three bands aligned.",
+  },
+  {
+    name: "--page-title-font-size-chrome",
+    category: "semantic",
+    tier: "semantic",
+    role: 'PageContainer title step under `headerScale="chrome"` — a page whose top row IS chrome (a chat channel name, a mail subject, an IDE tab) rather than a document title. Default `var(--heading-h3)` = `--font-size-base` (14px), the body step, so the row reads as a label ON the surface instead of the page\'s headline; a consumer chat header measured 61px with a 20px h1 against a design that wanted ~40px at the `sm` step. Deliberately a THIRD knob beside `--page-title-font-size` / `--page-title-font-size-compact`: those two are one document title at two viewport sizes (a responsive step), this is a different KIND of page and holds at every width — the compact rule must not pull a chrome header back up to h2. Read ONLY when the prop is passed, so a document page never touches it (rule #44). A service retunes the chrome step here once; never override `--page-title-font-size` at a call site to fake it.',
+  },
+  {
+    name: "--page-subtitle-font-size-chrome",
+    category: "semantic",
+    tier: "semantic",
+    role: 'PageContainer SUBTITLE step under `headerScale="chrome"` — the caption under a chrome top row (a channel purpose line, a mail preview), not a document\'s standfirst. Default `var(--font-size-2xs)` (ratio⁻², ~11px), two steps below the document default `--font-size-base`. It is a fourth knob beside `--page-subtitle-font-size` / `-compact` for the same reason the title step is: those two are ONE document subtitle at two viewport sizes, this is a different KIND of page and holds at every width — and it has to out-rank the 720px compact rule, which is already a compound selector, or a chrome caption would step back UP on a phone. Two things it fixes at once. Hierarchy: at the document step the chrome subtitle rendered at `--font-size-base`, the IDENTICAL step the chrome TITLE takes, so a channel name and its purpose line read as one undifferentiated block. Height: the step drives the LINE BOX at the inherited `--line-height-body` (14px x 1.7 = 23.8px vs 11px x 1.7 = 18.9px), so a band whose whole point is to leave room for the transcript stops spending ~5px of it on a caption. Type only — line-height, colour and weight stay with the base rule, so a wrapped JA/VI purpose line keeps its rhythm. Read ONLY when the prop is passed (rule #44); a service retunes the caption step here once, never with a `text-*` utility at the call site.',
+  },
+  {
+    name: "--page-pad-block-start-chrome",
+    category: "semantic",
+    tier: "semantic",
+    role: "PageContainer TOP inset under `headerScale=\"chrome\"` — the second half of the same fact the title step answers: chrome sits ON the frame's edge. Default `0px`, so a chrome page opens flush; a document page keeps `--space-page-active-y` (24px, 16px below the 720px step) because a title needs air above it. Measured on a consumer chat screen: an otherwise correctly-sized channel head started at y=24 against a design that starts it at y=0, and those 24px came straight off the transcript viewport (617px in the design, 587px in the app). It is a knob rather than a literal (rule #44) so a service whose grid wants its chrome inset writes `--page-pad-block-start-chrome: var(--space-2)` once instead of forking the page shell, and it is read ONLY when the prop is passed, so no document page resolves it. Block-start only — the page's bottom edge belongs to `stickyFooter`, which zeroes it for its own reason.",
   },
   {
     name: "--page-header-pad-bottom",
@@ -592,6 +622,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "EmptyState description MEASURE (gh#221) — default 28rem (~65 Latin characters per line). A service or locale that needs a shorter/longer measure for its own copy (JA/VI error-page descriptions, a narrow system surface) retunes this one knob instead of forking `.ui-empty-state-description` (rule #45).",
+  },
+  {
+    name: "--sidebar-badge-{background,foreground} / --sidebar-badge-destructive-{background,foreground}",
+    category: "component",
+    tier: "component",
+    role: 'Sidebar nav COUNT PILL colour, split into a resting pair and an emphasis pair. Before these knobs `.sb-badge` had a font-size token and no colour token at all, so a rail that had to tell "unread" from "mentions you" could only nest a `<Badge>` INSIDE `SidebarItemProp.badge` — which renders a pill inside a pill (measured: a 37.11x19.14 `.sb-badge` wrapping a 25.11x19.14 `<Badge>` with its own border). The resting pair is what every badge has always looked like (hsl(var(--secondary)) fill, hsl(var(--muted-foreground)) text); the `-destructive-` pair is read ONLY by rows that pass `badgeTone="destructive"`, which is the only thing that emits `data-tone` on the pill (rule #44), so a rail that never sets the prop renders exactly the node it always did. All four are role-mirror knobs declared `initial` with the role default resolved at the call site, so a scoped [data-tenant]/.dark override reaches them. Colour ONLY — the pill\'s min-width, radius, inline pad and font size are shared by both tones, which is what keeps a mention row and an unread row aligned in the same column.',
   },
   {
     name: "--sidebar-nav-item-{foreground,hover-foreground,disabled-foreground} / --sidebar-nav-icon-{foreground,hover-foreground,active-foreground,disabled-foreground}",

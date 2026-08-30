@@ -3559,6 +3559,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
+    "name": "--sidebar-badge-background",
+    "value": "initial",
+    "description": "Sidebar nav count pill colours — the pill had a font-size knob and NO colour knob, so a rail * that needed to tell \"unread\" from \"mentions you\" had to nest a <Badge> inside `badge` and got * two pills, one inside the other. `initial` so the role defaults re-resolve at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--secondary)) fill · hsl(var(--muted-foreground)) text."
+  },
+  {
+    "name": "--sidebar-badge-foreground",
+    "value": "initial",
+    "description": "Sidebar nav count pill colours — the pill had a font-size knob and NO colour knob, so a rail * that needed to tell \"unread\" from \"mentions you\" had to nest a <Badge> inside `badge` and got * two pills, one inside the other. `initial` so the role defaults re-resolve at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--secondary)) fill · hsl(var(--muted-foreground)) text."
+  },
+  {
+    "name": "--sidebar-badge-destructive-background",
+    "value": "initial",
+    "description": "The EMPHASIS pair, read only by `SidebarItemProp.badgeTone=\"destructive\"` (rule #44 — a * neutral row never resolves them). Defaults = hsl(var(--destructive)) fill · * hsl(var(--destructive-foreground)) text, the canonical AA-checked pair."
+  },
+  {
+    "name": "--sidebar-badge-destructive-foreground",
+    "value": "initial",
+    "description": "The EMPHASIS pair, read only by `SidebarItemProp.badgeTone=\"destructive\"` (rule #44 — a * neutral row never resolves them). Defaults = hsl(var(--destructive)) fill · * hsl(var(--destructive-foreground)) text, the canonical AA-checked pair."
+  },
+  {
     "name": "--sidebar-user-focus-ring-alpha",
     "value": "0.45",
     "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."

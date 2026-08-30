@@ -446,6 +446,17 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* CLOSED rail — `aside={null}`. The `<aside>` element is gone, so the pane is one full-width
+   * column and there is nothing left for the gap to separate. The wrappers stay mounted (that is
+   * what keeps `children` from remounting), so this attribute is the ONLY thing that changes.
+   * The second attribute is deliberate: it lifts the rule above the `[data-aside-width]` presets
+   * in the container queries below, which sit at equal specificity, so a closed pane stays one
+   * column no matter where those blocks end up in source order. */
+  .ui-split-pane[data-aside="closed"][data-aside-width] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
   .ui-resizable-panel-group {
     display: flex;
     min-height: 0;
@@ -522,18 +533,60 @@
     min-width: 0;
   }
 
+  /* `--page-band-gap` is INTERNAL plumbing, not a theming knob (the same shape as
+   * --master-detail-rail-size above): the ONE resolved number that separates the page's bands,
+   * so the container's `gap` and the toolbar band's negation of it can never disagree. It has to
+   * be a named variable because the number is not always --space-section-active — `ghost` swaps
+   * it for --space-stack-md, while the 720px step and the admin-collection preset swap the
+   * section token underneath it. A toolbar rule that hard-coded
+   * `calc(-1 * var(--space-section-active))` would look correct only because those two tokens
+   * both resolve to 16px today: retune --space-section in a service theme and a ghost page's
+   * band would overlap or float by the difference, silently. Services still retune the SPACING
+   * through --space-section / --space-section-compact, exactly as before. */
   .ui-page-container {
+    --page-band-gap: var(--space-section-active);
+
     display: flex;
     flex-direction: column;
     min-height: 100%;
     padding: var(--space-page-active-y) 0;
-    gap: var(--space-section-active);
+    gap: var(--page-band-gap);
+  }
+
+  /* `headerScale="chrome"` — the top band is CHROME, so it sits ON the frame's edge, not in a
+   * document's top margin. The shorthand above opens every page with --space-page-active-y (24px,
+   * 16px below the 720px step), which is right for a document: a title needs air above it. Chrome
+   * does not. A chat channel head, a mail thread's subject bar, an IDE tab strip are the FRAME —
+   * measured against the design of a consumer chat screen at 1512x805, the design's channel head
+   * occupies y 0..47 while the app's identical-height head started at y 24, pushing the whole top
+   * chrome down and taking those 24px straight off the scroll viewport (design 617px of transcript,
+   * app 587px). The band heights already matched; the page was simply floating.
+   *
+   * This is the SAME question `headerScale` already answers, not a second one: "is the first row a
+   * document title or the surface's own furniture". The type step (see .ui-page-title below) and
+   * the flush edge are two consequences of that one fact, which is why they ride the same
+   * attribute rather than a second prop that every real call site would have to set in lockstep.
+   *
+   * BLOCK-START ONLY, deliberately. `headerScale` names the HEADER, so it may only speak for the
+   * top edge; the bottom belongs to `stickyFooter`, which already zeroes `padding-block-end` for
+   * its own (documented) reason. A longhand, so that contract is untouched and the shorthand above
+   * still owns the default page.
+   *
+   * Chrome is a token, default quiet (rule #44): the inset is `--page-pad-block-start-chrome`,
+   * 0 by default (flush IS the quiet state for chrome), so a service whose design grid wants its
+   * chrome to breathe retunes it once instead of forking the page shell. The specificity (0,2,0)
+   * out-ranks both the base rule and the 720px block — which re-declares the TOKEN, never this
+   * padding — so the mechanism holds identically on both sides of that step. A page that never
+   * passes `headerScale` emits no attribute and is geometrically byte-identical. */
+  .ui-page-container[data-header-scale="chrome"] {
+    padding-block-start: var(--page-pad-block-start-chrome);
   }
 
   /* Horizontal page insets live on the header/body/footer — NOT the container —
    * so the header divider and footer border span the full page width
    * (full-bleed) while their content stays aligned with the body. */
   .ui-page-header,
+  .ui-page-toolbar,
   .ui-page-body,
   .ui-page-footer {
     padding-inline-start: var(--space-page-active-x);
@@ -558,16 +611,21 @@
    * the full compact-gutter surface. The footer is deliberately NOT capped: its border/background
    * is page-level chrome that must span the page when `stickyFooter` pins it. */
   .ui-page-container[data-measure="narrow"] .ui-page-header,
+  .ui-page-container[data-measure="narrow"] .ui-page-toolbar,
   .ui-page-container[data-measure="narrow"] .ui-page-body {
     max-inline-size: var(--page-measure-narrow);
   }
 
   .ui-page-container[data-measure="medium"] .ui-page-header,
+  .ui-page-container[data-measure="medium"] .ui-page-toolbar,
   .ui-page-container[data-measure="medium"] .ui-page-body {
     max-inline-size: var(--page-measure-medium);
   }
 
-  /* flush = full-bleed body (DataTable); header/footer keep their inset. */
+  /* flush = full-bleed body AND toolbar band (DataTable, a full-width filter strip);
+   * header/footer keep their inset. `PageContainer.Inset` re-applies the page gutter to any
+   * padded strip inside either one, so a toolbar's own content can still align with the title. */
+  .ui-page-container--flush .ui-page-toolbar,
   .ui-page-container--flush .ui-page-body {
     padding-inline-start: 0;
     padding-inline-end: 0;
@@ -579,13 +637,44 @@
     padding-inline-end: var(--space-page-active-x);
   }
 
+  /* `ghost` is the quiet chrome WEIGHT: no header rule, no header bottom pad. The two halves are
+   * NOT the same kind of decision, and the border half used to get it wrong.
+   *
+   * Hard-setting `none` here threw away an EXPLICIT `--page-header-divider` as well as the
+   * nothing it was meant to block — so a service could opt the page chrome into a rule and a
+   * ghost page would still refuse to draw it. Measured against the design of a consumer chat
+   * screen: the design carries TWO horizontal rules in the top chrome (channel head at y=47, work
+   * band at y=88) and the app rendered ONE (y=133) — the missing y=47 is this line eating the
+   * divider the service had already turned on. It is the identical bug that was fixed on
+   * `.ui-page-toolbar` below, and it takes the identical cure: re-declare the property from the
+   * SAME knob with a `none` fallback. Nothing inherits in, the opt-in passes through, and the
+   * default (`--page-header-divider: none`) is byte-identical to the hard-set version.
+   *
+   * `padding-bottom: 0` is untouched — THAT is the real quiet half of ghost, it answers "how loud
+   * is the chrome", not "did the service ask for a rule", and no token mediates it. */
   .ui-page-container--ghost .ui-page-header {
-    border-bottom: none;
+    border-bottom: var(--page-header-divider, none);
     padding-bottom: 0;
   }
 
+  /* The band's half of the same contract, and it must stay in step with the header rule above:
+   * neither one lets a divider INHERIT in, and both let an explicit opt-in through — otherwise a
+   * ghost page would draw a rule under the band that the header itself refuses to draw, or vice
+   * versa.
+   *
+   * Inherited, and only inherited. An earlier version hard-set `none` here, which also threw away
+   * an EXPLICIT `--page-toolbar-divider` — so a service could paint the band (ghost deliberately
+   * leaves the ground alone) but could never rule it, and the two knobs disagreed about who ghost
+   * outranks. A chat shell is the case that exposed it: a quiet header, and a workflow band that
+   * has to read as a separate surface from the transcript below it. Re-declaring the property with
+   * a `none` fallback keeps the original guarantee (nothing inherits in) while letting the opt-in
+   * through, which is what the paragraph above always meant. */
+  .ui-page-container--ghost .ui-page-toolbar {
+    border-block-end: var(--page-toolbar-divider, none);
+  }
+
   .ui-page-container--ghost {
-    gap: var(--space-stack-md);
+    --page-band-gap: var(--space-stack-md);
   }
 
   .ui-page-container--sticky-footer {
@@ -652,6 +741,53 @@
     background-image: var(--gradient-hero);
   }
 
+  /* `toolbar` — the FIXED chrome band between the page header and the body: a filter strip, a
+   * status bar, a channel workflow rail. There was no slot for it before, so a page either put
+   * the strip inside the body (where `fill` scrolls it away) or hand-laid `position: sticky` at
+   * the call site — the exact "never hand-lay page chrome" the system forbids.
+   *
+   * `flex: none` is the whole contract: under `fill` the BODY is the scroll viewport (see
+   * .ui-page-container--fill below), so the band is a plain flex item OUTSIDE the scroller and
+   * cannot be squeezed by it. Sticky could not give that — sticky keeps content flowing
+   * BENEATH the pinned box, which is the half-sliced row a hand-rolled strip always shows.
+   *
+   * Chrome is a token, default quiet (rule #44): the band draws NO rule of its own, and its
+   * bottom rule falls back — at the CALL SITE, never bound at :root — to whatever the page
+   * header's divider is, so a service opting into `--page-header-divider` gets a consistent
+   * page chrome in ONE declaration and can still silence just this band with
+   * `--page-toolbar-divider: none`.
+   *
+   * The GROUND is a knob too, defaulting to `transparent` so the band looks exactly as it did
+   * before the token existed. Without it the only way to lift the band off the page ground was a
+   * `bg-card` utility at the call site — hand-laid page chrome, which is what this whole slot
+   * exists to abolish, and which cannot be re-themed per tenant. It is the `background`
+   * shorthand, not `background-color`, so a service may equally hand it a gradient.
+   *
+   * The NEGATIVE block margins are what make it read as chrome rather than as a third section.
+   * The container is a flex column with a `--page-band-gap` between every band, which is right
+   * for a document page (header / body / footer are three separate blocks) and wrong here: a
+   * band that carries a ground and a bottom rule and then FLOATS between two 16px voids divides
+   * nothing — measured on a 1512×805 chat page, 24/69 header · 85/134 band · 150/685 body, i.e.
+   * 32px of dead air wrapped around the one element whose job is to be attached. Chrome sits
+   * between the header and the scrolling body; chrome is flush. Cancelling the gap from the band
+   * itself keeps that in ONE declaration, leaves the container's rhythm intact for every page
+   * that passes no `toolbar`, and keeps `--page-toolbar-pad-block` as what it always was: the
+   * band's own INSIDE, the only place it is allowed to breathe. */
+  .ui-page-toolbar {
+    flex: none;
+    margin-block: calc(-1 * var(--page-band-gap));
+    padding-block: var(--page-toolbar-pad-block);
+    background: var(--page-toolbar-background);
+    border-block-end: var(--page-toolbar-divider, var(--page-header-divider));
+  }
+
+  /* The band is never the FIRST child — the header always renders — but it CAN be the last one
+   * (a page given a `toolbar` and no `children`). There is no gap under a last flex item to
+   * cancel, so the negation would eat the container's own bottom padding instead. */
+  .ui-page-toolbar:last-child {
+    margin-block-end: 0;
+  }
+
   .ui-page-header-row {
     display: flex;
     flex-direction: column;
@@ -705,6 +841,20 @@
     letter-spacing: var(--letter-spacing-tight);
     line-height: var(--line-height-tight);
     overflow-wrap: anywhere;
+  }
+
+  /* `headerScale="chrome"` — the page's top row is CHROME (a chat channel, a mail thread, an IDE
+   * tab), not a document title, so the `<h1>` takes the body type step. The ELEMENT is untouched:
+   * still an `<h1>`, still the page's one level-1 heading, because the screen-reader outline is
+   * what a page is navigated by — only the type step moves, and only through a token.
+   *
+   * The compound selector's specificity (0,2,0) is load-bearing, not decoration: the 720px block
+   * below re-declares `.ui-page-title` (0,1,0) at the COMPACT DOCUMENT step, which is h2 (18px) —
+   * BIGGER than this. Without out-ranking it, a chrome header would swell on a phone, i.e. exactly
+   * where the height matters most. The responsive step itself is untouched and still governs every
+   * document-scaled page. */
+  .ui-page-container[data-header-scale="chrome"] .ui-page-title {
+    font-size: var(--page-title-font-size-chrome);
   }
 
   /* Compact viewports use a responsive type step, not compact density: body/control text and
@@ -788,12 +938,49 @@
       min-inline-size: 0;
       justify-content: flex-end;
     }
+
+    /* `headerScale="chrome"`, second consequence of the SAME fact. The row's `align-items:
+     * flex-start` above is right for a DOCUMENT: a `Save`/`Publish` group belongs on the first
+     * line of a tall `<h1>`, not floating beside its second line. A chrome band has no tall
+     * heading to align to — it is one bar, and its actions sit on the bar's middle. Measured
+     * against the reference chat screen the difference was 8.65px: the header row is 45.3px, the
+     * icon buttons 28px, so top-packing put their centres at y=14 while the title block's centre
+     * sat at y=22.65. That gap is what reads, correctly, as "the icons are not centred".
+     *
+     * `align-self` on the EXTRA box, not `align-items` on the row: the heading keeps the stretch
+     * it has today (nothing about the title's own alignment is in question), and the two axes stay
+     * independent. Scoped INSIDE the 640px block on purpose — below it the row is a COLUMN, where
+     * the cross axis is horizontal and this same declaration would centre `extra` sideways and
+     * release its full-width stretch. `headerLayout="responsive-inline"` runs its own row
+     * arrangement under 640px and keeps its own flex-start; that arrangement exists to hold ONE
+     * compact control beside a wrapping title band, which is the document case again. */
+    .ui-page-container[data-header-scale="chrome"] .ui-page-header-extra {
+      align-self: center;
+    }
   }
 
   .ui-page-subtitle {
     font-size: var(--page-subtitle-font-size);
     color: hsl(var(--muted-foreground));
     margin-top: var(--space-1);
+  }
+
+  /* `headerScale="chrome"`, third consequence of the SAME fact: if the top row is chrome, the line
+   * under it is a caption ON that chrome (a channel purpose, a mail preview), not a document's
+   * standfirst. The document step is --font-size-base — the identical step the chrome TITLE takes —
+   * so a chrome header was shipping a title and its subtitle at one size, which is not a hierarchy.
+   * Same size is also not the expensive half: the step drives the LINE BOX (14px × 1.7 = 23.8px vs
+   * 11px × 1.7 = 18.9px), and a band that exists to give the transcript room was spending 5px of it
+   * on a caption. Type only — no line-height, no colour, no weight: `--line-height-body` still owns
+   * the rhythm so a wrapped JA/VI purpose line stays readable at the smaller step.
+   *
+   * The specificity is load-bearing exactly as it is on the title above: the 720px block declares
+   * `.ui-page-header .ui-page-subtitle` (0,2,0) — already compounded, unlike the bare `.ui-page-title`
+   * — so this rule out-ranks it only because the container attribute makes it (0,3,0). Without that
+   * the compact step would win below 720px and a chrome subtitle would step UP to 14px on a phone,
+   * i.e. exactly where the band's height is worth the most. */
+  .ui-page-container[data-header-scale="chrome"] .ui-page-subtitle {
+    font-size: var(--page-subtitle-font-size-chrome);
   }
 
   /* `headerLoading` placeholders — the real `<h1>`/`<p>` wearing the shared `.ui-skeleton-block`
@@ -844,13 +1031,26 @@
     overflow-y: auto;
   }
 
+  /* The THIRD chrome band, and until now the only one whose rule was not a knob. The header reads
+   * --page-header-divider and the toolbar reads --page-toolbar-divider, but this line was a
+   * hard-copied literal, so a page could not turn it off at all. Measured on a consumer chat
+   * screen: the composer lives in this slot and is itself a bordered Card, so the full-width rule
+   * landed straight above it as a SECOND line — a pixel diff against the design caught a 100%-wide
+   * rule at y=701 that the design does not have.
+   *
+   * Unlike the other two, the default here is a rule rather than silence, and that is deliberate:
+   * `footer` is the shared slot a form's Save/Cancel bar lands in, where the line separating the
+   * actions from the content is the behaviour every existing page already depends on. The literal
+   * simply moves into the fallback, so `--page-footer-divider` unset is byte-identical to what
+   * this rule drew before, and `--page-footer-divider: none` is the opt-OUT the chat composer
+   * needed. */
   .ui-page-footer {
     display: flex;
     flex-direction: column-reverse;
     align-items: stretch;
     gap: var(--space-inline-sm);
     padding-top: var(--space-stack-md);
-    border-top: 1px solid hsl(var(--border));
+    border-top: var(--page-footer-divider, 1px solid hsl(var(--border)));
   }
 
   .ui-page-footer > * {

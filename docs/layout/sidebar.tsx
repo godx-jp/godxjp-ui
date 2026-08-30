@@ -65,7 +65,7 @@ const FULL_SECTIONS: SidebarSectionProp[] = [
           { id: "coa", label: "勘定科目", icon: CreditCard },
         ],
       },
-      { id: "invoices", label: "請求書", icon: Receipt, badge: <Badge tone="info">3</Badge> },
+      { id: "invoices", label: "請求書", icon: Receipt, badge: 3 },
       { id: "bills", label: "仕入請求書", icon: FileText },
     ],
   },
@@ -110,6 +110,23 @@ const FAVOURITE_SECTIONS: SidebarSectionProp[] = [
 const FAVOURITE_IDS = new Set(["overview", "members"]);
 
 /**
+ * badgeTone · what a count MEANS, not what colour it is. `neutral`（既定）は「未読」、
+ * `destructive` は「自分宛て」（メンション・DM）。`badge` には数値や文字列だけを渡します ·
+ * ここに <Badge> を入れると .sb-badge の中にもう一枚ピルが入り、二重の丸が出ます。
+ */
+const MENTION_SECTIONS: SidebarSectionProp[] = [
+  {
+    label: "チャンネル",
+    items: [
+      { id: "general", label: "general", icon: Boxes, badge: 12 },
+      { id: "accounting", label: "経理", icon: Receipt, badge: 3, badgeTone: "destructive" },
+      { id: "design", label: "design", icon: Star, badge: "9+", badgeTone: "neutral" },
+      { id: "random", label: "random", icon: LayoutDashboard },
+    ],
+  },
+];
+
+/**
  * gh#228 · nav row and nav icon read SEPARATE colour tokens. A service normally sets these once in
  * its theme.css (`:root` or a scoped `[data-tenant] .app-sidebar`); here they are scoped to one
  * demo frame so the default rail can sit next to the themed one. Icons only — geometry (16px icon,
@@ -140,7 +157,7 @@ const ROUTED_SECTIONS: SidebarSectionProp[] = [
         label: "レポート",
         icon: FileText,
         href: "/reports",
-        badge: <Badge tone="info">5</Badge>,
+        badge: 5,
       },
       {
         id: "ledger",
@@ -196,6 +213,7 @@ export default function Demo() {
   const [routedActiveId, setRoutedActiveId] = useState("reports");
   const [composedActiveId, setComposedActiveId] = useState("starred-1");
   const [tokenActiveId, setTokenActiveId] = useState("overview");
+  const [mentionActiveId, setMentionActiveId] = useState("general");
 
   const sidebar = (
     <Sidebar
@@ -450,6 +468,34 @@ export default function Demo() {
             </CardContent>
           </Card>
 
+          {/* badgeTone · 未読（中立）と「自分宛て」（強調）を一本の軸で分ける。 */}
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>badgeTone プロップ（未読と自分宛ての区別）</CardTitle>
+              <CardDescription>
+                行のカウントが「未読」なのか「自分宛て（メンション・DM）」なのかを badgeTone
+                で表します。既定の neutral は従来のピルとバイト単位で同一で、
+                属性すら出しません。destructive のときだけ data-tone が付き、
+                --sidebar-badge-destructive-background / -foreground を読みます。 badge
+                には数値や文字列だけを渡してください · そこに &lt;Badge&gt; を入れると .sb-badge
+                の中にもう一枚ピルが入って丸が二重になります（実測 37.11×19.14 の 中に
+                25.11×19.14）。 色は 2 トークンだけが動き、ピルの高さも角丸も左右余白も
+                共通なので、未読行とメンション行は同じ列に揃ったままです。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
+                <Sidebar
+                  ariaLabel="チャンネル一覧のナビゲーション"
+                  activeId={mentionActiveId}
+                  onSelect={setMentionActiveId}
+                  sections={MENTION_SECTIONS}
+                  aria-label="badgeTone 例のナビゲーション"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Nav colour tokens · icon and label are themed SEPARATELY (gh#228). */}
           <Card>
             <CardHeader>
@@ -501,7 +547,8 @@ export default function Demo() {
                   "collapsed=true でアイコンのみのレール表示に切替",
                   "children[] を持つ item は自動で折りたたみグループになる",
                   "activeId が子孫にマッチすると親グループが自動展開",
-                  "badge prop で件数バッジをアイテムに付与可能",
+                  "badge prop で件数バッジをアイテムに付与可能（中身は数値・文字列のみ）",
+                  "badgeTone で未読（neutral）と自分宛て（destructive）を色だけで区別",
                   "disabled=true で項目を非活性化（クリック不可）",
                   "footer prop でスクロール外にユーザー情報を固定",
                   "linkComponent · ルーター Link は「要素だけ」渡す。行の中身はライブラリが組み立てる（gh#213）",

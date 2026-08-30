@@ -1,5 +1,5 @@
 import { forwardRef, useState } from "react";
-import type { AnchorHTMLAttributes } from "react";
+import type { AnchorHTMLAttributes, CSSProperties } from "react";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
   Card,
@@ -17,13 +17,35 @@ import type { ColumnDef } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { SearchInput } from "@godxjp/ui/data-entry";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
-import { Plus, Download, Filter } from "lucide-react";
+import { Toolbar, ToolbarGroup } from "@godxjp/ui/navigation";
+import { Plus, Download, Filter, Search } from "lucide-react";
 
 /**
  * Router Link stub passed to `linkComponent` · proves breadcrumb segments can render
  * through a router primitive (react-router / next/link) instead of a plain <a>.
  * PageContainer forwards both `href` and `to`; a real Link reads `to`.
  */
+/**
+ * `--page-toolbar-background` · the toolbar band's GROUND, quiet (`transparent`) by default so the
+ * band looks exactly as it did before the knob existed. A service normally declares these once in
+ * its theme.css (`:root`, or a scoped `[data-tenant]`); they are scoped to one demo frame here so
+ * the default band can sit beside the painted one. NEVER put `className="bg-card"` on the strip at
+ * the call site: that is hand-laid page chrome, and it cannot be re-themed per tenant.
+ *
+ * The inset comes with it, and it is the band's ONLY breathing room: the band sits FLUSH against
+ * the header above and the body below, because chrome is attached · a painted, ruled band adrift
+ * between two 16px voids divides nothing. `--page-toolbar-pad-block` still stays `0` by default on
+ * purpose · a transparent band is not a surface and has no inside to breathe, and under `fill`
+ * every pixel of it is taken from the transcript. A band that is PAINTED does have an inside, so
+ * the theme that paints it also sets its inset here rather than reaching for a `py-*` utility on
+ * the strip.
+ */
+const TOOLBAR_CHROME_TOKENS = {
+  "--page-toolbar-background": "hsl(var(--card))",
+  "--page-toolbar-pad-block": "var(--space-2)",
+  "--page-toolbar-divider": "1px solid hsl(var(--border))",
+} as CSSProperties;
+
 const RouterLink = forwardRef<
   HTMLAnchorElement,
   AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }
@@ -238,7 +260,11 @@ export default function Demo() {
         </PageContainer.Inset>
       </PageContainer>
 
-      {/* ── 4. Ghost variant + breadcrumb depth ── */}
+      {/* ── 4. Ghost variant + breadcrumb depth ──
+          ghost は「クロムをどこまで静かにするか」を答える variant です。下余白は落とします
+          （padding-bottom: 0 · これが本当の静かさ）が、罫線は打ち消しません · サービスが
+          --page-header-divider を明示的に立てたなら ghost でも引かれます。帯（toolbar）の
+          --page-toolbar-divider と同じ規則で、ページのクロム 3 本が一つの契約に揃います。 */}
       <PageContainer
         variant="ghost"
         title="取引先詳細"
@@ -550,6 +576,283 @@ export default function Demo() {
           </CardContent>
         </Card>
       </PageContainer>
+
+      {/* ── 9. toolbar · ヘッダーと本文の間に固定されるクロム帯 ──
+          fill のとき本文（.ui-page-body）がスクロール領域になるので、帯はその SIBLING として
+          スクロール領域の外に置かれる（flex: none）。呼び出し側で position: sticky を手置き
+          しないための唯一の正規スロット。ページ余白と measure はヘッダー／本文と共有され、
+          帯の内側余白と下罫線はトークン所有（--page-toolbar-pad-block / --page-toolbar-divider）。
+          帯は上下の帯に密着します（.ui-page-container の段間はこの帯だけ打ち消される）· クロムは
+          くっつくものであり、空白に浮く「3 つ目のセクション」ではないからです。呼吸する場所は
+          帯の内側（--page-toolbar-pad-block）だけ。 */}
+      <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+        {/* fill · 帯は固定、トランスクリプトだけがその下でスクロールする（帯の下に潜り込まない）。 */}
+        <div className="h-80 overflow-auto rounded-md border">
+          <PageContainer
+            fill
+            title="#経理チャンネル"
+            subtitle="toolbar 帯はスクロールせず · 上下の帯に密着します"
+            toolbar={
+              <Toolbar>
+                <ToolbarGroup label="表示">
+                  <Button size="sm" variant="outline">
+                    すべて
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    未読
+                  </Button>
+                </ToolbarGroup>
+                <Badge tone="info">接続中</Badge>
+              </Toolbar>
+            }
+            footer={
+              <Flex gap="sm" align="center">
+                <Button size="sm" variant="outline">
+                  添付
+                </Button>
+                <Button size="sm">送信</Button>
+              </Flex>
+            }
+            stickyFooter
+          >
+            <Flex direction="col" gap="md">
+              {[
+                "月次締めの締切は 8/31 です。",
+                "経費精算の申請が 3 件あります。",
+                "監査資料を共有しました。",
+                "請求書 INV-2041 を承認しました。",
+                "来週の定例は水曜 10:00 です。",
+              ].map((message) => (
+                <Card key={message}>
+                  <CardContent>
+                    <Text as="p" tone="muted">
+                      {message}
+                    </Text>
+                  </CardContent>
+                </Card>
+              ))}
+            </Flex>
+          </PageContainer>
+        </div>
+
+        {/* variant="flush" · 帯も本文と同じく全幅になるため、中身は PageContainer.Inset で
+            ヘッダーと同じ左右余白に戻す。DataTable は全幅のまま。 */}
+        <PageContainer
+          variant="flush"
+          title="仕訳一覧"
+          subtitle='variant="flush" では帯も全幅 · 中身は PageContainer.Inset で整列'
+          toolbar={
+            <PageContainer.Inset>
+              <Toolbar>
+                <ToolbarGroup label="状態">
+                  <Button size="sm" variant="outline">
+                    承認済
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    保留中
+                  </Button>
+                </ToolbarGroup>
+              </Toolbar>
+            </PageContainer.Inset>
+          }
+        >
+          <DataTable data={journalEntries} columns={journalColumns} getRowId={(r) => r.id} />
+        </PageContainer>
+      </ResponsiveGrid>
+
+      {/* ── 10. headerScale · 先頭行は「文書の見出し」か、それとも「クロム」か ──
+          headerScale="document"（既定）は従来どおり h1 = --page-title-font-size（20px）＋ 720px
+          未満での縮小ステップ。headerScale="chrome" は先頭行が画面そのものの家具（チャットの
+          チャンネル名、メールの件名、IDE のタブ）である場合で、h1 は本文と同じ型段
+          （--page-title-font-size-chrome = --heading-h3 / 14px）になり、720px 未満でも戻りません。
+          要素は h1 のまま — 見出しレベルは下げないので、スクリーンリーダーの見出し階層は不変。
+          同じ属性でページ上端の余白も落ちます · 既定の --space-page-active-y（24px · 720px 未満は
+          16px）は「文書の見出しの上の余白」であって、チャンネル名やタブは枠そのものだからです。
+          上端だけ --page-pad-block-start-chrome（既定 0）に切り替わり、下端は従来どおり
+          stickyFooter の担当。設計がクロムに余白を求めるならテーマでこのトークンを一度だけ
+          調整します（呼び出し側の padding や負マージンは不可）。
+          同じ事実の帰結はあと 2 つ。subtitle は --page-subtitle-font-size-chrome
+          （--font-size-2xs / 約 11px）に落ちます · クロムの下の一行はチャンネルの目的や
+          メールの抜粋であって文書のリードではなく、既定の --font-size-base のままだと
+          chrome のタイトルと同じ型段になって階層が立たないからです。行送りは
+          --line-height-body のままなので、折り返す日本語の一行も従来の律動を保ちます。
+          そして extra は行が「行」である 640px 以上で帯の中央に揃います（align-self: center）·
+          先頭寄せは背の高い h1 の一行目にアクションを並べる文書の作法であって、
+          揃える見出しを持たない帯には合いません。実測で 8.65px のずれでした。
+          variant="ghost"（罫線と下余白を落とす）と組み合わせると静かなクロムヘッダーになります。 */}
+      <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+        <PageContainer
+          title="請求書 INV-2041"
+          subtitle='headerScale="document"（既定）· 先頭行はこのページの見出し'
+          extra={
+            <Button size="sm" variant="outline">
+              PDF
+            </Button>
+          }
+        >
+          <Card>
+            <CardContent>
+              <Descriptions columns={1}>
+                <Descriptions.Item label="タイトルの型段">
+                  --page-title-font-size（h1 · 20px）
+                </Descriptions.Item>
+                <Descriptions.Item label="720px 未満">
+                  --page-title-font-size-compact（h2 · 18px）
+                </Descriptions.Item>
+                <Descriptions.Item label="ページ上端の余白">
+                  --space-page-active-y（24px）· chrome では --page-pad-block-start-chrome（0）
+                </Descriptions.Item>
+                <Descriptions.Item label="subtitle の型段">
+                  --page-subtitle-font-size（14px）· chrome では
+                  --page-subtitle-font-size-chrome（約 11px）
+                </Descriptions.Item>
+                <Descriptions.Item label="extra の縦位置">
+                  行の先頭寄せ（flex-start）· chrome では帯の中央（align-self: center）
+                </Descriptions.Item>
+              </Descriptions>
+            </CardContent>
+          </Card>
+        </PageContainer>
+
+        {/* チャット面の正準構成: chrome（型段）× ghost（クロムの重さ）× fill × toolbar ×
+            stickyFooter。チャンネル名は「今いる場所の名前」であって記事の見出しではない。
+            footer の上罫線も --page-footer-divider で消せます · 入力欄が自前で枠を持つ Card の
+            場合、全幅の罫線がその真上に重なって 2 本目の線になるためです。既定は「引く」のまま
+            （フォームの保存／取消バーはこの線で本文と分かれる）。 */}
+        <div className="h-80 overflow-auto rounded-md border">
+          <PageContainer
+            fill
+            headerScale="chrome"
+            variant="ghost"
+            title="# 経理チャンネル"
+            subtitle="請求書と入金の相談 · 締めは毎月 25 日"
+            status={<Badge tone="info">接続中</Badge>}
+            extra={
+              <Button size="sm" variant="ghost" aria-label="チャンネル内を検索">
+                <Search aria-hidden="true" />
+              </Button>
+            }
+            toolbar={
+              <Toolbar>
+                <ToolbarGroup label="表示">
+                  <Button size="sm" variant="outline">
+                    すべて
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    未読
+                  </Button>
+                </ToolbarGroup>
+              </Toolbar>
+            }
+            footer={
+              <Flex gap="sm" align="center">
+                <Button size="sm" variant="outline">
+                  添付
+                </Button>
+                <Button size="sm">送信</Button>
+              </Flex>
+            }
+            stickyFooter
+          >
+            <Flex direction="col" gap="md">
+              {[
+                "チャンネル名は本文と同じ 14px · 見出しではなく面のラベルとして読ませます。",
+                "その下の一行はさらに 2 段小さい約 11px · 名前と説明の階層が立ちます。",
+                "検索アイコンは帯の中央 · 文書の先頭寄せではありません。",
+                "h1 のままなので、見出し階層は document と同じ。",
+                "帯の高さが下がったぶんは、そのまま会話の高さになります。",
+                "縮めたいだけの理由で通常の文書ページに使わないこと。",
+              ].map((message) => (
+                <Card key={message}>
+                  <CardContent>
+                    <Text as="p" tone="muted">
+                      {message}
+                    </Text>
+                  </CardContent>
+                </Card>
+              ))}
+            </Flex>
+          </PageContainer>
+        </div>
+      </ResponsiveGrid>
+
+      {/* ── 11. --page-toolbar-background · 帯の地の色もトークン ──
+          既定は transparent（＝トークン導入前と完全に同じ見え方）。設計が「帯だけカード面に
+          乗せる」と言うときは、呼び出し側に className="bg-card" を書くのではなく、テーマで
+          --page-toolbar-background を一度だけ宣言します。手置きのページクロムは禁止であり、
+          テナントごとの再テーマも効かなくなるためです。帯を塗るなら内側の余白も一緒に
+          （--page-toolbar-pad-block）· 既定の 0 は「透明な帯には内側がない」ことに由来します。 */}
+      <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+        <div className="h-80 overflow-auto rounded-md border">
+          <PageContainer
+            fill
+            headerScale="chrome"
+            variant="ghost"
+            title="# 経理チャンネル"
+            subtitle="既定 · --page-toolbar-background は transparent"
+            toolbar={
+              <Toolbar>
+                <ToolbarGroup label="表示">
+                  <Button size="sm" variant="outline">
+                    未読
+                  </Button>
+                </ToolbarGroup>
+              </Toolbar>
+            }
+          >
+            <Flex direction="col" gap="md">
+              {[
+                "帯はページの地の色のまま · header と body の間に浮いて見えます。",
+                "トークンを足すまで DOM もスタイルも従来どおりです。",
+              ].map((message) => (
+                <Card key={message}>
+                  <CardContent>
+                    <Text as="p" tone="muted">
+                      {message}
+                    </Text>
+                  </CardContent>
+                </Card>
+              ))}
+            </Flex>
+          </PageContainer>
+        </div>
+
+        <div className="h-80 overflow-auto rounded-md border" style={TOOLBAR_CHROME_TOKENS}>
+          <PageContainer
+            fill
+            headerScale="chrome"
+            variant="ghost"
+            title="# 経理チャンネル"
+            subtitle="テーマで --page-toolbar-background: hsl(var(--card))"
+            toolbar={
+              <Toolbar>
+                <ToolbarGroup label="表示">
+                  <Button size="sm" variant="outline">
+                    未読
+                  </Button>
+                </ToolbarGroup>
+                <Badge tone="info">接続中</Badge>
+              </Toolbar>
+            }
+          >
+            <Flex direction="col" gap="md">
+              {[
+                "帯がカード面に乗り、本文から分離して読めます。",
+                "塗った帯には内側の余白が要るので pad-block も同じテーマで指定します。",
+                "呼び出し側の bg-card / py-1.5 は不要 · どちらもトークンの仕事です。",
+              ].map((message) => (
+                <Card key={message}>
+                  <CardContent>
+                    <Text as="p" tone="muted">
+                      {message}
+                    </Text>
+                  </CardContent>
+                </Card>
+              ))}
+            </Flex>
+          </PageContainer>
+        </div>
+      </ResponsiveGrid>
     </Flex>
   );
 }
