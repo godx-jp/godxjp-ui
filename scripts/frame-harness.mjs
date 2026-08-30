@@ -55,15 +55,19 @@ export async function loadDeps({ axe = true } = {}) {
  * fallback rather than because nothing was listening.
  */
 async function reachable(url) {
-  const candidates = [url];
+  // Address first: that is what --host binds. The name is kept as a fallback for a base someone
+  // passed explicitly (PREVIEW_BASE), which may legitimately not be loopback at all.
+  const candidates = [];
   try {
     const u = new URL(url);
     if (u.hostname === "localhost") {
       u.hostname = "127.0.0.1";
       candidates.push(u.toString());
     }
+    candidates.push(url);
   } catch {
     /* not a URL we can rewrite — probe it as given */
+    candidates.push(url);
   }
   for (const candidate of candidates) {
     try {
@@ -134,6 +138,12 @@ export async function ensurePreviewServer(base = DEFAULT_BASE) {
       "--port",
       port,
       "--strictPort",
+      // Bind an ADDRESS, not a name. On CI the server reported `Local: http://localhost:PORT/`
+      // within a second and then neither `localhost` nor `127.0.0.1` could reach it for three
+      // minutes — so it was listening somewhere neither probe was asking. `localhost` is resolver
+      // policy (::1 or 127.0.0.1, order varying by host and Node version); an address is not.
+      "--host",
+      "127.0.0.1",
     ],
     // BOTH streams captured. stderr alone was not enough: it held only a config warning while the
     // server sat there not answering for three minutes. `vite preview` announces the address it is

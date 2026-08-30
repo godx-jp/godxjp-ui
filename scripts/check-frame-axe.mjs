@@ -96,6 +96,12 @@ async function main() {
   } catch (e) {
     if (asJson)
       process.stdout.write(JSON.stringify({ status: "error", message: e.message }) + "\n");
+    // A preview that will not start is a BROKEN GATE, not a gate with nothing to do. Skipping it
+    // let three browser gates report success on CI for weeks while never once loading a page —
+    // and that green is what made me spend six rounds asking why the OTHER shards were red, when
+    // none of them had ever worked. `CI=true` is the honest line: locally a missing browser or a
+    // busy port is a reason to step aside, but on CI it is the failure itself.
+    if (process.env.CI) throw e;
     else console.warn(`⚠ check:frame-axe skipped — ${e.message}.`);
     return;
   }
