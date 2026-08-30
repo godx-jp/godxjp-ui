@@ -18,6 +18,8 @@ import { dirname, join, resolve, sep } from "node:path";
 
 export const RELEASE_STEPS = Object.freeze({
   ApplyTargetMetadata: "apply-target-metadata",
+  VerifyReleaseTag: "verify-release-tag",
+  VerifyCommitProvenance: "verify-commit-provenance",
   VerifyRoot: "verify-root",
   InstallMcp: "install-mcp",
   BuildMcp: "build-mcp",
@@ -25,6 +27,7 @@ export const RELEASE_STEPS = Object.freeze({
   VerifyLockstep: "verify-lockstep",
   PackTargetManifests: "pack-target-manifests",
   VerifyNpmAuth: "verify-npm-auth",
+  VerifyTargetOutranksLatest: "verify-target-outranks-latest",
   VerifyTargetAvailability: "verify-target-availability",
   RecordPreviousLatestTags: "record-previous-latest-tags",
   VerifyPublishTree: "verify-publish-tree",
@@ -58,9 +61,17 @@ const LEGACY_STAGE_TAG_FOR = (targetVersion) => `godx-staging-${targetVersion}`;
  * published. Issue #230: `npm version` + immediate `npm publish` made the UI tarball immutable on
  * npm while it still declared the previous `godxUiMcp`, and any MCP failure was discovered too late
  * to repair. The target metadata is therefore written FIRST and every gate observes it.
+ *
+ * `assertPreflightOrder` requires EVERY entry below to appear before the first publish, so this
+ * list is the enforcement, not documentation. Three of them are the answers to the three defects:
+ * `VerifyReleaseTag` (the tag's claim matches the tree and the commit is on main),
+ * `VerifyCommitProvenance` (CI proved this exact SHA green — or --full-verify re-proved it here),
+ * and `VerifyTargetOutranksLatest` (the version ASCENDS; `latest` can never move backwards).
  */
 export const PREFLIGHT_STEPS = Object.freeze([
   RELEASE_STEPS.ApplyTargetMetadata,
+  RELEASE_STEPS.VerifyReleaseTag,
+  RELEASE_STEPS.VerifyCommitProvenance,
   RELEASE_STEPS.VerifyRoot,
   RELEASE_STEPS.InstallMcp,
   RELEASE_STEPS.BuildMcp,
@@ -68,6 +79,7 @@ export const PREFLIGHT_STEPS = Object.freeze([
   RELEASE_STEPS.VerifyLockstep,
   RELEASE_STEPS.PackTargetManifests,
   RELEASE_STEPS.VerifyNpmAuth,
+  RELEASE_STEPS.VerifyTargetOutranksLatest,
   RELEASE_STEPS.VerifyTargetAvailability,
   RELEASE_STEPS.VerifyPublishTree,
 ]);
@@ -109,6 +121,301 @@ export function compatibilityFor(version) {
   return `${match[1]}.${match[2]}.x`;
 }
 
+/* ------------------------------------------------------------------------------------------- *
+ * The tag IS the release trigger (see .github/workflows/npm-publish.yml).
+ *
+ * A human pushes `vX.Y.Z` at a commit already on `main`; the workflow publishes exactly that
+ * commit. Nothing in this file ever CREATES or MOVES a tag — a tag written before a publish that
+ * then fails is a lie that can only be corrected by force-deleting a public ref, and a tag written
+ * after the publish is a record nobody is waiting for. The tag is a promise made by a person, and
+ * the release's job is to refuse when the promise and the tree disagree.
+ * ------------------------------------------------------------------------------------------- */
+
+const RELEASE_TAG = /^v(\d+\.\d+\.\d+)$/;
+
+/** `refs/tags/v19.1.0` | `v19.1.0` → `19.1.0`. Anything else is refused, never guessed. */
+export function versionFromReleaseTag(tagRef) {
+  const name = String(tagRef ?? "").replace(/^refs\/tags\//, "");
+  const match = RELEASE_TAG.exec(name);
+  if (!match) {
+    throw new Error(
+      `Release tag "${tagRef}" is not a plain vX.Y.Z release tag; refusing to guess a version.`,
+    );
+  }
+  return match[1];
+}
+
+export function releaseTagFor(version) {
+  if (!SEMVER.test(version)) throw new Error(`Cannot form a release tag for "${version}".`);
+  return `v${version}`;
+}
+
+/** -1 | 0 | 1 over plain x.y.z. Throws rather than guessing for anything else. */
+export function compareVersions(left, right) {
+  const parse = (value) => {
+    const match = SEMVER.exec(String(value ?? ""));
+    if (!match) throw new Error(`"${value}" is not plain x.y.z semver.`);
+    return match.slice(1).map(Number);
+  };
+  const a = parse(left);
+  const b = parse(right);
+  for (let index = 0; index < 3; index += 1) {
+    if (a[index] !== b[index]) return a[index] < b[index] ? -1 : 1;
+  }
+  return 0;
+}
+
+/**
+ * Issue: `assertFreshTargets` only ever refused re-publishing the SAME version, so a release cut
+ * from a stale checkout could publish a LOWER one — npm accepts it, and `PromoteUiLatest` then
+ * drags the `latest` dist-tag BACKWARDS onto it, silently downgrading every consumer on `^18` or
+ * `latest`. Freshness is not monotonicity; this gate is the monotonicity half.
+ *
+ * `allowEqual` exists only for the two recovery modes (`--recovery`, `--adopt-staged`), which
+ * deliberately re-drive a version that may ALREADY be `latest` because the interrupted release got
+ * as far as promoting it. A fresh release never sets it: an equal target is caught one step later
+ * by `assertFreshTargets` with a sharper message.
+ */
+export function assertTargetOutranksLatest({
+  targetVersion,
+  latest,
+  allowEqual = false,
+  mode = "release",
+}) {
+  const problems = [];
+  for (const [packageName, publishedLatest] of Object.entries(latest)) {
+    // A package with no `latest` has never been published (or the tag was removed): any version
+    // is an ascent from nothing, so a first-ever publish is not blocked.
+    if (publishedLatest === null || publishedLatest === undefined) continue;
+    if (!SEMVER.test(publishedLatest)) {
+      problems.push(
+        `${packageName} latest=${publishedLatest} is not plain x.y.z, so "${targetVersion}" ` +
+          "cannot be proven to outrank it",
+      );
+      continue;
+    }
+    const order = compareVersions(targetVersion, publishedLatest);
+    if (order > 0) continue;
+    if (order === 0 && allowEqual) continue;
+    problems.push(
+      `${packageName} latest=${publishedLatest} target=${targetVersion} ` +
+        `(target is ${order === 0 ? "THE SAME" : "LOWER"})`,
+    );
+  }
+  if (!problems.length) return;
+  throw new Error(
+    `Refusing to release ${targetVersion}: it does not outrank the published latest.\n` +
+      problems.map((problem) => `  - ${problem}`).join("\n") +
+      '\nPublishing it would move the "latest" dist-tag BACKWARDS and silently downgrade every ' +
+      `consumer on a caret range or on latest. Rebase this ${mode} onto the released HEAD, bump ` +
+      "past the published version, and tag again.",
+  );
+}
+
+/**
+ * The tag is a claim about a tree. Three things must hold before a byte is published, and each is
+ * checked here rather than assumed:
+ *   1. the tag names the version the manifests already carry — a `v19.1.0` tag on a tree that says
+ *      19.0.0 would publish 19.1.0 bytes whose own package.json disagrees with the tag;
+ *   2. the tag points at the commit being released — not at some other commit that happens to
+ *      share the name;
+ *   3. that commit is an ancestor of `origin/main` — a tag can be pushed at ANY commit, including
+ *      one that never went through review or CI, and `ci.yml` only runs on `main`. Without this,
+ *      "CI is green on this SHA" is vacuous because there would be no CI run at all.
+ */
+export function assertReleaseTagMatchesTree({
+  tag,
+  targetVersion,
+  manifestVersion,
+  tagCommit,
+  sourceHead,
+  onMain,
+}) {
+  const problems = [];
+  if (manifestVersion !== targetVersion) {
+    problems.push(
+      `tag ${tag} claims ${targetVersion} but package.json carries ${manifestVersion}; the ` +
+        "version bump must be merged to main FIRST, then tagged",
+    );
+  }
+  if (tagCommit === null) problems.push(`tag ${tag} does not exist`);
+  else if (tagCommit !== sourceHead) {
+    problems.push(`tag ${tag} points at ${tagCommit}, not at the released commit ${sourceHead}`);
+  }
+  if (!onMain) {
+    problems.push(
+      `${sourceHead} is not an ancestor of origin/main; only a reviewed, CI-verified main commit ` +
+        "may be released",
+    );
+  }
+  if (problems.length) {
+    throw new Error(
+      `Release tag does not match the tree:\n${problems.map((p) => `  - ${p}`).join("\n")}`,
+    );
+  }
+}
+
+/**
+ * `git ls-remote --tags origin <tag> <tag>^{}` → the COMMIT the tag resolves to, or null.
+ * Annotated tags print two lines; the peeled `^{}` line is the commit and wins.
+ */
+export function commitFromLsRemote(output, tag) {
+  let object = null;
+  for (const line of String(output ?? "").split("\n")) {
+    const [sha, ref] = line.trim().split(/\s+/);
+    if (!sha || !ref) continue;
+    if (ref === `refs/tags/${tag}^{}`) return sha;
+    if (ref === `refs/tags/${tag}`) object = sha;
+  }
+  return object;
+}
+
+/* ------------------------------------------------------------------------------------------- *
+ * Commit provenance — why CD no longer re-runs the suite CI just ran.
+ *
+ * `verify:release` used to run inside the publish job: verify:static (build + ~25 guards +
+ * check:contrast + check:visual-audit + the WHOLE vitest suite) then check:frame-contracts,
+ * check:frame-coverage and check:frame-axe. On a tag-triggered release that is ~20 minutes of
+ * tests plus the Chromium gates, re-executed on a commit `main` CI already proved green.
+ *
+ * Deleting the gate is not the answer — nothing may be published that nobody verified. The answer
+ * is that a CI verdict on the exact SHA is a STRICTLY STRONGER proof than a local re-run, provided
+ * three things are true, and all three are now asserted:
+ *   • the SHA being published is the tagged commit and it is on main   (VerifyReleaseTag)
+ *   • every CI gate that `verify:release` would have run concluded `success` on that SHA  (here)
+ *   • the working tree being packed is byte-identical to that commit   (VerifyPublishTree)
+ *
+ * The third used to be false: `ApplyTargetMetadata` wrote the new version into package.json BEFORE
+ * VerifyRoot, so CI's verdict covered the commit but not the mutated tree. Under the tag trigger
+ * the bump is merged to main and CI'd before the tag is cut, so ApplyTargetMetadata finds the
+ * metadata already correct and writes nothing — the packed tree and the verified commit are the
+ * same bytes. That is what makes the substitution honest rather than merely cheaper.
+ *
+ * The map below is the substitution, gate by gate. It exists so that adding a gate to
+ * `verify:release` without a CI counterpart is a visible omission rather than a silent hole.
+ *
+ * The values are GitHub check-run names, which are a workflow's JOB display names (a job's `name:`,
+ * or its id when it has none) — steps do not produce check runs, so several gates share the job that
+ * contains them. `release-workflow.test.ts` parses the workflow files and asserts every name below
+ * still exists, so renaming or re-homing a CI job fails a test instead of blocking a release.
+ */
+export const CI_PROOF_FOR_RELEASE_GATE = Object.freeze({
+  // verify:release → verify:static → verify:ci:static, plus the two frame gates that now run as
+  // further STEPS of the same ci.yml job (so they are covered by that job's single check run).
+  "verify:ci:static (build, packed contract, typecheck, lint, preview, ~25 guards)":
+    "Build · typecheck · lint · guards",
+  "check:frame-contracts (a step of the same ci.yml `static` job)":
+    "Build · typecheck · lint · guards",
+  "check:frame-coverage (a step of the same ci.yml `static` job, report-only)":
+    "Build · typecheck · lint · guards",
+  "pnpm test (the whole vitest suite, sharded)": [
+    "Tests (shard 1/4)",
+    "Tests (shard 2/4)",
+    "Tests (shard 3/4)",
+    "Tests (shard 4/4)",
+  ],
+  "check:contrast + check:visual-audit (verify:browser)": "Contrast + visual audit",
+  "check:frame-axe": "Per-frame axe (chrome blocking, component allowlisted)",
+  // Not part of verify:release, but the release contract itself must be green on the SHA.
+  "MCP build/test + release command plan (release-integrity.yml)": "lockstep",
+});
+
+export const REQUIRED_CI_CHECK_RUNS = Object.freeze(
+  [...new Set(Object.values(CI_PROOF_FOR_RELEASE_GATE).flat())].sort(),
+);
+
+const FAILED_CONCLUSIONS = new Set([
+  "failure",
+  "timed_out",
+  "cancelled",
+  "action_required",
+  "startup_failure",
+  "stale",
+]);
+
+/**
+ * Fail-closed over the `gh api repos/:slug/commits/:sha/check-runs` payload. Absence is failure:
+ * a SHA with no check runs, a truncated page, an unfinished run or a `skipped`/`neutral`
+ * conclusion all refuse, because none of them is evidence that the gate actually ran and passed.
+ */
+export function assertCiProvenance({ sha, checkRuns, totalCount }) {
+  const runs = Array.isArray(checkRuns) ? checkRuns : [];
+  if (typeof totalCount === "number" && totalCount > runs.length) {
+    throw new Error(
+      `CI provenance for ${sha} is truncated (${runs.length} of ${totalCount} check runs read); ` +
+        "refusing to publish on a partial view.",
+    );
+  }
+  // Keep the newest attempt per check-run name, so a re-run that turned a job green is what counts.
+  const latestByName = new Map();
+  for (const run of runs) {
+    if (!run || typeof run.name !== "string") continue;
+    const previous = latestByName.get(run.name);
+    if (!previous || String(run.started_at ?? "") >= String(previous.started_at ?? "")) {
+      latestByName.set(run.name, run);
+    }
+  }
+  const missing = [];
+  const unfinished = [];
+  const notSuccessful = [];
+  for (const name of REQUIRED_CI_CHECK_RUNS) {
+    const run = latestByName.get(name);
+    if (!run) {
+      missing.push(name);
+      continue;
+    }
+    if (run.status !== "completed") {
+      unfinished.push(`${name} (status=${run.status})`);
+      continue;
+    }
+    if (run.conclusion !== "success") notSuccessful.push(`${name} (${run.conclusion})`);
+  }
+  // Also refuse on any OTHER red check on the same SHA: a gate we do not name is still a gate.
+  const collateral = [...latestByName.values()]
+    .filter(
+      (run) =>
+        !REQUIRED_CI_CHECK_RUNS.includes(run.name) &&
+        run.status === "completed" &&
+        FAILED_CONCLUSIONS.has(run.conclusion),
+    )
+    .map((run) => `${run.name} (${run.conclusion})`);
+
+  const problems = [
+    ...missing.map((name) => `never ran: ${name}`),
+    ...unfinished.map((entry) => `still running: ${entry}`),
+    ...notSuccessful.map((entry) => `not successful: ${entry}`),
+    ...collateral.map((entry) => `other red check: ${entry}`),
+  ];
+  if (!problems.length) return { verified: REQUIRED_CI_CHECK_RUNS.length };
+  throw new Error(
+    `Refusing to publish ${sha}: CI has not proven this commit green.\n` +
+      problems.map((problem) => `  - ${problem}`).join("\n") +
+      "\nEvery gate in verify:release is delegated to a CI check run on this exact SHA (see " +
+      "CI_PROOF_FOR_RELEASE_GATE). Wait for CI, fix it, or re-run the release with --full-verify " +
+      "to verify this tree locally instead.",
+  );
+}
+
+/**
+ * The two mutually exclusive ways a release may prove the tree it publishes was verified. There is
+ * no third way and no way to have neither: `assertReleaseCommandPlan` enforces that the narrow
+ * publish-tree script is only ever planned alongside a CI-provenance gate.
+ */
+export const VERIFY_ROOT_SCRIPTS = Object.freeze({
+  /** Re-verify everything locally, browsers included. Slow; the escape hatch when CI cannot answer. */
+  full: "verify:release",
+  /**
+   * Only what CI's verdict on the commit cannot cover: `dist/` is not in git, so it must be built
+   * here, and the three gates that read the built artifact plus the version lockstep must observe
+   * the bytes that are about to be packed.
+   */
+  delta: "verify:publish-tree",
+});
+
+export function verifyRootScriptFor(plan) {
+  return plan?.fullVerify ? VERIFY_ROOT_SCRIPTS.full : VERIFY_ROOT_SCRIPTS.delta;
+}
+
 function packageProgress() {
   return {
     publishAttempted: false,
@@ -144,16 +451,42 @@ export function buildReleasePlan({
   sourceHead = "dry-run",
   recoveryState = null,
   adoptStagedVersion = null,
+  tagRef = null,
+  fullVerify = false,
 }) {
   if (!VALID_UI_BUMPS.has(uiBump) || !VALID_MCP_BUMPS.has(mcpBump)) {
     throw new Error(
-      "Usage: node scripts/release.mjs --ui <patch|minor|major> --mcp sync [--metadata-plan]",
+      "Usage: node scripts/release.mjs --tag vX.Y.Z | --ui <patch|minor|major> --mcp sync [--metadata-plan]",
     );
   }
+  const modes = [
+    tagRef && "--tag",
+    recoveryState && "--recovery",
+    adoptStagedVersion && "--adopt-staged",
+  ].filter(Boolean);
+  if (modes.length > 1)
+    throw new Error(`Release modes are mutually exclusive: ${modes.join(" + ")}.`);
   if (recoveryState && adoptStagedVersion) {
     throw new Error("Recovery state and staged adoption are mutually exclusive.");
   }
-  if (adoptStagedVersion) {
+  // TAG-TRIGGERED RELEASE — the version comes from the tag, and the tree must ALREADY carry it.
+  // Nothing is bumped here: the bump is an ordinary reviewed change that lands on main and is
+  // CI-verified before anybody cuts the tag. That is what keeps the packed bytes identical to the
+  // commit CI proved green (see CI_PROOF_FOR_RELEASE_GATE).
+  const tagVersion = tagRef ? versionFromReleaseTag(tagRef) : null;
+  if (tagVersion) {
+    if (uiBump !== "skip" || mcpBump !== "sync") {
+      throw new Error(
+        "A tag-triggered release must use --tag vX.Y.Z (implies --ui skip --mcp sync).",
+      );
+    }
+    if (tagVersion !== currentVersion) {
+      throw new Error(
+        `Release tag ${releaseTagFor(tagVersion)} claims ${tagVersion} but package.json carries ` +
+          `${currentVersion}. Merge the version bump to main first, then tag that commit.`,
+      );
+    }
+  } else if (adoptStagedVersion) {
     if (!SEMVER.test(adoptStagedVersion) || adoptStagedVersion === currentVersion) {
       throw new Error("Staged adoption requires a different plain x.y.z target version.");
     }
@@ -172,7 +505,10 @@ export function buildReleasePlan({
   }
 
   const targetVersion =
-    recoveryState?.targetVersion ?? adoptStagedVersion ?? targetVersionFor(currentVersion, uiBump);
+    recoveryState?.targetVersion ??
+    adoptStagedVersion ??
+    tagVersion ??
+    targetVersionFor(currentVersion, uiBump);
   // Recovery keeps whatever tag the interrupted release actually published under — including the
   // legacy per-version `godx-staging-${targetVersion}` from pre-#266 recovery files.
   const stageTag = recoveryState?.stageTag ?? STAGE_TAG;
@@ -187,6 +523,8 @@ export function buildReleasePlan({
   }
   const steps = [
     RELEASE_STEPS.ApplyTargetMetadata,
+    RELEASE_STEPS.VerifyReleaseTag,
+    RELEASE_STEPS.VerifyCommitProvenance,
     RELEASE_STEPS.VerifyRoot,
     RELEASE_STEPS.InstallMcp,
     RELEASE_STEPS.BuildMcp,
@@ -194,6 +532,7 @@ export function buildReleasePlan({
     RELEASE_STEPS.VerifyLockstep,
     RELEASE_STEPS.PackTargetManifests,
     RELEASE_STEPS.VerifyNpmAuth,
+    RELEASE_STEPS.VerifyTargetOutranksLatest,
     RELEASE_STEPS.VerifyTargetAvailability,
   ];
   if (!progress.latestRecorded) steps.push(RELEASE_STEPS.RecordPreviousLatestTags);
@@ -210,6 +549,10 @@ export function buildReleasePlan({
     stageTag,
     recovery: Boolean(recoveryState),
     adoptStaged: Boolean(adoptStagedVersion),
+    // Tag-triggered is the normal path; the tag is the trigger AND the version claim.
+    tagged: Boolean(tagVersion),
+    releaseTag: tagVersion ? releaseTagFor(tagVersion) : null,
+    fullVerify: Boolean(fullVerify),
     progress,
     steps,
   };
@@ -235,16 +578,31 @@ function restoreManifests(rootDir, snapshot) {
   writeFileSync(packagePath(rootDir, "mcp"), snapshot.mcp);
 }
 
+/**
+ * Writes the coordinated target metadata — but only if it is not ALREADY there.
+ *
+ * Under the tag trigger the version bump is merged to main and CI-verified before the tag is cut,
+ * so this is a no-op on the normal path, and skipping the write is not an optimisation: it keeps
+ * the publish tree BYTE-IDENTICAL to the commit CI proved green, which is the whole basis for
+ * `VerifyCommitProvenance` standing in for a local re-run of the suite. Re-serialising the same
+ * values would produce a formatting-only diff and quietly break that equality.
+ */
 export function applyTargetMetadata(rootDir, targetVersion) {
   const ui = readPackage(rootDir);
   const mcp = readPackage(rootDir, "mcp");
+  try {
+    assertTargetMetadata(ui, mcp, targetVersion, "working tree");
+    return { ui, mcp, written: false };
+  } catch {
+    // Fall through: the legacy `--ui <bump>` path still has to write the new version.
+  }
   ui.version = targetVersion;
   ui.godxUiMcp = targetVersion;
   mcp.version = targetVersion;
   mcp.godxUiCompatibility = compatibilityFor(targetVersion);
   writeFileSync(packagePath(rootDir, "."), `${JSON.stringify(ui, null, 2)}\n`);
   writeFileSync(packagePath(rootDir, "mcp"), `${JSON.stringify(mcp, null, 2)}\n`);
-  return { ui, mcp };
+  return { ui, mcp, written: true };
 }
 
 export function integrityFor(path) {
@@ -475,6 +833,11 @@ export function reconcilePackagePublication({
   );
 }
 
+/**
+ * Freshness only. Monotonicity is a SEPARATE gate — `assertTargetOutranksLatest`, run one step
+ * earlier — because "this exact version is unpublished" says nothing about whether it is an ascent:
+ * 18.9.1 is fresh while 19.0.0 is latest, and publishing it would drag `latest` backwards.
+ */
 export function assertFreshTargets(uiRegistry, mcpRegistry) {
   if (uiRegistry.exists || mcpRegistry.exists)
     throw new Error("Target version already exists; refusing partial/overwrite release.");
@@ -576,9 +939,9 @@ const publishCommand = (tarball, plan, packageName) => {
 };
 
 const STEP_COMMANDS = Object.freeze({
-  [RELEASE_STEPS.VerifyRoot]: () => ({
+  [RELEASE_STEPS.VerifyRoot]: (plan) => ({
     binary: "pnpm",
-    args: ["run", "verify:release"],
+    args: ["run", verifyRootScriptFor(plan)],
     cwd: "root",
   }),
   [RELEASE_STEPS.InstallMcp]: () => ({
@@ -642,7 +1005,29 @@ const GATE_COMMAND_STEPS = Object.freeze([
  * Pure guard over a planned command sequence: versions are never mutated by a package manager
  * (the coordinated manifests are written first instead), and no publish runs before every gate.
  */
-export function assertReleaseCommandPlan(commands) {
+export function assertReleaseCommandPlan(commands, plan = null) {
+  const verifyRoot = commands.find((entry) => entry.step === RELEASE_STEPS.VerifyRoot);
+  if (verifyRoot) {
+    const script = verifyRoot.args?.[1];
+    if (!Object.values(VERIFY_ROOT_SCRIPTS).includes(script)) {
+      throw new Error(
+        `Release plan verifies the root with unknown script "${script}"; it must be ` +
+          `${VERIFY_ROOT_SCRIPTS.full} or ${VERIFY_ROOT_SCRIPTS.delta}.`,
+      );
+    }
+    // The narrow publish-tree verification is only sound because a CI verdict on the exact commit
+    // covers everything it skips. A plan may never have neither proof.
+    if (
+      script === VERIFY_ROOT_SCRIPTS.delta &&
+      plan &&
+      !plan.steps.includes(RELEASE_STEPS.VerifyCommitProvenance)
+    ) {
+      throw new Error(
+        `Release plan runs the narrow "${VERIFY_ROOT_SCRIPTS.delta}" without the ` +
+          `"${RELEASE_STEPS.VerifyCommitProvenance}" gate; that would publish a tree nobody verified.`,
+      );
+    }
+  }
   const mutation = commands.find(
     (entry) => (entry.binary === "npm" || entry.binary === "pnpm") && entry.args[0] === "version",
   );
@@ -684,6 +1069,8 @@ export function createReleaseRuntime({
   repositoryRoot,
   run,
   capture,
+  repositorySlug = process.env.GITHUB_REPOSITORY ?? null,
+  mainRef = "refs/remotes/origin/main",
   wait = (milliseconds) =>
     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds),
   registryVerificationAttempts = 6,
@@ -765,12 +1152,126 @@ export function createReleaseRuntime({
     return { observed, restored };
   };
 
+  /** The COMMIT a tag resolves to on the remote, or null. Network failure is refusal, not "absent". */
+  const remoteTagCommit = (tag) => {
+    const result = capture(
+      "git",
+      ["ls-remote", "--tags", "origin", tag, `${tag}^{}`],
+      repositoryRoot,
+    );
+    if (result.status !== 0) {
+      throw new Error(
+        `Cannot read tag ${tag} from origin (${(result.stderr ?? "").trim() || "git ls-remote failed"}); ` +
+          "refusing to publish without knowing what the tag points at.",
+      );
+    }
+    return commitFromLsRemote(result.stdout ?? "", tag);
+  };
+
+  const isAncestorOfMain = (sha) => {
+    const resolved = capture(
+      "git",
+      ["rev-parse", "--verify", "--quiet", `${mainRef}^{commit}`],
+      repositoryRoot,
+    );
+    if (resolved.status !== 0 || !(resolved.stdout ?? "").trim()) {
+      throw new Error(
+        `Cannot resolve ${mainRef}; the release checkout must fetch main ` +
+          `(\`git fetch --no-tags origin +refs/heads/main:${mainRef}\`) before a tag can be proven reviewed.`,
+      );
+    }
+    return (
+      capture("git", ["merge-base", "--is-ancestor", sha, mainRef], repositoryRoot).status === 0
+    );
+  };
+
+  const ciProvenance = (sha) => {
+    if (!repositorySlug) {
+      throw new Error(
+        "Cannot prove CI provenance: no repository slug (set GITHUB_REPOSITORY). Re-run with " +
+          "--full-verify to verify this tree locally instead.",
+      );
+    }
+    const result = capture(
+      "gh",
+      [
+        "api",
+        "-H",
+        "Accept: application/vnd.github+json",
+        `repos/${repositorySlug}/commits/${sha}/check-runs?per_page=100`,
+      ],
+      repositoryRoot,
+    );
+    if (result.status !== 0) {
+      throw new Error(
+        `Cannot prove CI provenance for ${sha}: \`gh api\` failed ` +
+          `(${(result.stderr ?? result.stdout ?? "").trim() || "no output"}). Re-run with ` +
+          "--full-verify to verify this tree locally instead.",
+      );
+    }
+    let payload;
+    try {
+      payload = JSON.parse(result.stdout || "null");
+    } catch {
+      throw new Error(`Cannot prove CI provenance for ${sha}: \`gh api\` returned non-JSON.`);
+    }
+    return assertCiProvenance({
+      sha,
+      checkRuns: payload?.check_runs,
+      totalCount: payload?.total_count,
+    });
+  };
+
   const runStep = (step, plan, artifacts, progress) => {
     if (stepHasCommand(step)) {
       execute(releaseCommandForStep(step, plan, artifacts));
       return;
     }
     switch (step) {
+      case RELEASE_STEPS.VerifyReleaseTag: {
+        const tag = releaseTagFor(plan.targetVersion);
+        const tagCommit = remoteTagCommit(tag);
+        if (!plan.tagged) {
+          // Dispatch/recovery modes are not started BY a tag, but a tag for this version pointing
+          // somewhere else still means the version was already claimed by another tree.
+          if (tagCommit !== null && tagCommit !== progress.sourceHead) {
+            throw new Error(
+              `Refusing to release ${plan.targetVersion}: tag ${tag} already exists at ${tagCommit}, ` +
+                `which is not the commit being released (${progress.sourceHead}).`,
+            );
+          }
+          return;
+        }
+        assertReleaseTagMatchesTree({
+          tag,
+          targetVersion: plan.targetVersion,
+          manifestVersion: readPackage(repositoryRoot).version,
+          tagCommit,
+          sourceHead: progress.sourceHead,
+          onMain: isAncestorOfMain(progress.sourceHead),
+        });
+        return;
+      }
+      case RELEASE_STEPS.VerifyCommitProvenance:
+        // --full-verify satisfies the same obligation the expensive way: VerifyRoot re-runs the
+        // entire verify:release locally instead of trusting CI's verdict on the commit.
+        if (plan.fullVerify) return;
+        ciProvenance(progress.sourceHead);
+        return;
+      case RELEASE_STEPS.VerifyTargetOutranksLatest:
+        assertTargetOutranksLatest({
+          targetVersion: plan.targetVersion,
+          latest: {
+            "@godxjp/ui": registryState("@godxjp/ui", plan.targetVersion).tags.latest ?? null,
+            "@godxjp/ui-mcp":
+              registryState("@godxjp/ui-mcp", plan.targetVersion).tags.latest ?? null,
+          },
+          // Recovery and staged adoption deliberately re-drive a version that may already BE
+          // latest, because the interrupted release got as far as promoting it.
+          allowEqual: Boolean(plan.recovery || plan.adoptStaged),
+          mode: plan.tagged ? `tag ${releaseTagFor(plan.targetVersion)}` : "release",
+        });
+        return;
       case RELEASE_STEPS.VerifyTargetAvailability: {
         const uiRegistry = registryState("@godxjp/ui", plan.targetVersion);
         const mcpRegistry = registryState("@godxjp/ui-mcp", plan.targetVersion);
@@ -819,9 +1320,22 @@ export function createReleaseRuntime({
         progress.mcp.previousLatest =
           registryState("@godxjp/ui-mcp", plan.targetVersion).tags.latest ?? null;
         return;
-      case RELEASE_STEPS.VerifyPublishTree:
-        assertOnlyCoordinatedManifestChanges(gitStatus());
+      case RELEASE_STEPS.VerifyPublishTree: {
+        const status = gitStatus();
+        // Tag-triggered: the bump was merged and CI-verified BEFORE the tag, so ApplyTargetMetadata
+        // wrote nothing and the tree about to be packed must be byte-identical to the verified
+        // commit. This is the third leg of the provenance argument — without it, "CI is green on
+        // this SHA" would say nothing about the bytes in the tarball.
+        if (plan.tagged && status) {
+          throw new Error(
+            `Refusing to publish tag ${releaseTagFor(plan.targetVersion)}: the working tree differs ` +
+              `from the verified commit ${progress.sourceHead}:\n- ` +
+              status.split("\0").filter(Boolean).join("\n- "),
+          );
+        }
+        assertOnlyCoordinatedManifestChanges(status);
         return;
+      }
       case RELEASE_STEPS.VerifyPublishedVersions: {
         let verificationError;
         for (let attempt = 1; attempt <= registryVerificationAttempts; attempt += 1) {
@@ -875,6 +1389,8 @@ export function runRelease({
   sourceHead = "dry-run",
   recoveryState = null,
   adoptStagedVersion = null,
+  tagRef = null,
+  fullVerify = false,
   recoveryDirectory = null,
   dryRun = false,
   runStep,
@@ -892,6 +1408,8 @@ export function runRelease({
     sourceHead,
     recoveryState,
     adoptStagedVersion,
+    tagRef,
+    fullVerify,
   });
   const progress = plan.progress;
   progress.failedStep = null;

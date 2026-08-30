@@ -152,9 +152,9 @@
    * rhythm, widths and action-collection tiers were already tokenized; these are the pieces
    * around them — the select column, sort glyphs, sticky header layer and skeleton shapes. */
   --table-select-column-width: 2.5rem;
-  --table-sort-icon-size: 0.75rem;
-  --table-toolbar-icon-size: 1rem;
-  --table-pagination-icon-size: 1rem;
+  --table-sort-icon-size: var(--icon-size-xs);
+  --table-toolbar-icon-size: var(--icon-size-md);
+  --table-pagination-icon-size: var(--icon-size-md);
   --table-pagination-font-size: var(--font-size-sm);
   /* Skeleton placeholders mimic the real content they stand in for: a checkbox square and a
    * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading

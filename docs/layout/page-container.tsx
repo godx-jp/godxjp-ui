@@ -46,6 +46,22 @@ const TOOLBAR_CHROME_TOKENS = {
   "--page-toolbar-divider": "1px solid hsl(var(--border))",
 } as CSSProperties;
 
+/**
+ * `--page-header-min-block-size-chrome` · クロム帯の「高さ」（gh#331）。文書のヘッダーは中身なりの
+ * 高さで正しい · 見出しは見出しの高さだからです。クロムは逆で、家具には「ものが中央に収まる帯」が
+ * 要ります。既定は `auto`（＝rule #44 の最も静かな状態）なので、このトークンを置くまで DOM も
+ * 見え方も従来どおり · 文書ページはそもそもこの規則に一致しません。
+ *
+ * 帯の高さ軸の持ち主は `--app-shell-bar-height` です（`--centered-shell-bar-height` も既にそれを
+ * 読んでいます）。だからサービス側の一行はこれ ·
+ * `--page-header-min-block-size-chrome: var(--app-shell-bar-height)` · で、ページのクロム帯と
+ * AppShell のトップバーが同じ帯に乗ります。min であって height ではないのは、`lg` のボタンや
+ * 折り返した日本語のチャンネル名がはみ出さずに収まる必要があるためです。
+ */
+const CHROME_BAND_TOKENS = {
+  "--page-header-min-block-size-chrome": "var(--app-shell-bar-height)",
+} as CSSProperties;
+
 const RouterLink = forwardRef<
   HTMLAnchorElement,
   AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }
@@ -709,6 +725,10 @@ export default function Demo() {
                 <Descriptions.Item label="extra の縦位置">
                   行の先頭寄せ（flex-start）· chrome では帯の中央（align-self: center）
                 </Descriptions.Item>
+                <Descriptions.Item label="帯の高さ">
+                  中身なり · chrome では --page-header-min-block-size-chrome（既定 auto · テーマで
+                  --app-shell-bar-height を読ませると 48px 固定）
+                </Descriptions.Item>
               </Descriptions>
             </CardContent>
           </Card>
@@ -840,6 +860,74 @@ export default function Demo() {
                 "帯がカード面に乗り、本文から分離して読めます。",
                 "塗った帯には内側の余白が要るので pad-block も同じテーマで指定します。",
                 "呼び出し側の bg-card / py-1.5 は不要 · どちらもトークンの仕事です。",
+              ].map((message) => (
+                <Card key={message}>
+                  <CardContent>
+                    <Text as="p" tone="muted">
+                      {message}
+                    </Text>
+                  </CardContent>
+                </Card>
+              ))}
+            </Flex>
+          </PageContainer>
+        </div>
+      </ResponsiveGrid>
+
+      {/* ── 12. --page-header-min-block-size-chrome · クロム帯に「高さ」を与える ──
+          既定（左）は auto · 帯は中身なりの高さになるので、副題や extra の有無で帯の縦中心が
+          動きます（Chromium 実測 · extra ありで 42.02px、なしで 40.38px）。動く中心には何も
+          揃えられません。テーマで一行（右）· --page-header-min-block-size-chrome を
+          --app-shell-bar-height にすると帯は 48px に固定され、タイトル列も extra も帯の中心
+          （y=24）に載ります。min なので、より背の高い extra は今までどおり収まります。 */}
+      <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+        <div className="h-80 overflow-auto rounded-md border">
+          <PageContainer
+            fill
+            headerScale="chrome"
+            variant="ghost"
+            title="# 経理チャンネル"
+            subtitle="既定 · --page-header-min-block-size-chrome は auto"
+            extra={
+              <Button size="sm" variant="ghost" aria-label="チャンネル内を検索">
+                <Search aria-hidden="true" />
+              </Button>
+            }
+          >
+            <Flex direction="col" gap="md">
+              {[
+                "帯の高さは中身なり · 副題を短くすると縦中心がそのぶん動きます。",
+                "48px のトップバーと中心を合わせる方法がありません。",
+              ].map((message) => (
+                <Card key={message}>
+                  <CardContent>
+                    <Text as="p" tone="muted">
+                      {message}
+                    </Text>
+                  </CardContent>
+                </Card>
+              ))}
+            </Flex>
+          </PageContainer>
+        </div>
+
+        <div className="h-80 overflow-auto rounded-md border" style={CHROME_BAND_TOKENS}>
+          <PageContainer
+            fill
+            headerScale="chrome"
+            variant="ghost"
+            title="# 経理チャンネル"
+            subtitle="テーマで --app-shell-bar-height を読ませた 48px の帯"
+            extra={
+              <Button size="sm" variant="ghost" aria-label="チャンネル内を検索">
+                <Search aria-hidden="true" />
+              </Button>
+            }
+          >
+            <Flex direction="col" gap="md">
+              {[
+                "帯は 48px 固定 · AppShell のトップバーと同じ帯に乗ります。",
+                "タイトル列も検索アイコンも帯の中央 · 中身が変わっても動きません。",
               ].map((message) => (
                 <Card key={message}>
                   <CardContent>

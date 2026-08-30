@@ -94,8 +94,8 @@
   --stat-card-value-font-weight: var(--font-weight-semibold);
   --stat-card-hint-font-size: var(--font-size-xs);
   --stat-card-gap: var(--space-stack-xs);
-  --stat-card-icon-size: 2.25rem;
-  --stat-card-icon-glyph-size: 1.25rem;
+  --stat-card-icon-size: var(--icon-size-2xl);
+  --stat-card-icon-glyph-size: var(--icon-size-lg);
   --stat-card-icon-radius: var(--radius-md);
   /* Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding
    * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default
@@ -111,7 +111,7 @@
   /* Semantic icon surface. `--control-height-lg` is the 36px control tier the hi-fi calls for —
    * a tier token, never a literal, so the medallion tracks --scaling with its sibling controls. */
   --card-service-launcher-icon-size: var(--control-height-lg);
-  --card-service-launcher-icon-glyph-size: var(--space-5);
+  --card-service-launcher-icon-glyph-size: calc(var(--icon-size-lg) * var(--scaling));
   --card-service-launcher-icon-radius: var(--radius-md);
   /* Available-service medallion tint. `initial` (role-mirror rule, docs/TOKENS.md) so the role
    * defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override reaches them.

@@ -44,10 +44,31 @@
   /* (the coarse-pointer override lives at the end of this file — Rule #24 grows
    * controls to 44px, and a 48px bar cannot hold a 44px control plus its 3px
    * focus ring at the very top of the viewport, where overflow cannot help.) */
-  /* Inline inset and slot gap of the AppShell top bar. `-compact` applies below the shell
-   * breakpoint (the docked sidebar is gone, so the bar tightens against the viewport edge). */
-  --app-shell-bar-inset: var(--space-4);
-  --app-shell-bar-inset-compact: var(--space-3);
+  /* Inline inset and slot gap of the AppShell top bar.
+   *
+   * ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS (gh#330). The bar sits in the SAME grid track as
+   * `.app-main`, directly above the page, so its first control and the page title are on one
+   * vertical edge — or they are supposed to be. These two knobs used to name their own values
+   * (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and
+   * nothing reconciled them: measured in Chromium on /isolate/layout-app-shell the topbar's
+   * content started at x=80 while the page header's started at x=88 (1512px), and because the two
+   * sides also stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even
+   * constant — 8px at 1512, 12px between 720 and 900, 4px below 720. A consumer cannot correct a
+   * drift that changes with the viewport.
+   *
+   * The page gutter WINS the axis, for three reasons: it is read by seven regions (page header,
+   * toolbar, body, footer, PageContainer.Inset, the DataTable full-bleed compensation, Banner)
+   * against this knob's one element; the bar is the region that must line up with the page, not
+   * the other way round (the rail is a different track with its own inset); and moving the bar
+   * moves exactly one element in one composition, while moving --space-page-x would move every
+   * page in every consumer app.
+   *
+   * The NAMES stay — a theme that already sets `--app-shell-bar-inset` keeps working, and a bar
+   * that genuinely wants to sit tighter than its page still has its own knob. Only the DEFAULTS
+   * now point at the owner. `-compact` applies below the PAGE's 720px step (not the shell's 900px
+   * restructure), so both sides tighten on the same line — see styles/shell-layout.css. */
+  --app-shell-bar-inset: var(--space-page-x);
+  --app-shell-bar-inset-compact: var(--space-page-compact-x);
   --app-shell-bar-gap: var(--space-3);
   /* Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service
    * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once
@@ -77,7 +98,7 @@
    * alias: it must not move with the density axis, or the one tap target that opens navigation
    * shrinks on a compact page. Consumed as a `size-[var(...)]` utility so it outranks
    * `.ui-button--sm svg` (see the comment at the call site in app-shell.tsx). */
-  --app-shell-mobile-nav-icon-size: 1.25rem;
+  --app-shell-mobile-nav-icon-size: var(--icon-size-lg);
 
   /* ServiceRolePanel (gh#319). `.ui-service-role-panel` shipped as a bare hook — the class was on
    * the root but no rule existed anywhere, so the role rail's rhythm lived entirely as Tailwind
@@ -101,7 +122,18 @@
   --service-role-panel-item-padding-block: 0.5rem;
   --sidebar-brand-mark-size: 1.375rem;
   --sidebar-nav-item-height: 2rem;
-  --sidebar-nav-item-font-size: 0.8125rem;
+  /* ON the type scale (gh#329). This was `0.8125rem` — 13px, which is not a step: the golden scale
+   * runs …/ratio² ≈ 11.1 · /ratio ≈ 12.5 · base 14…, so 13 sat BETWEEN two steps and every nav row
+   * in the rail read off the system's type rhythm. It had no mechanical anchor either — unlike the
+   * auth field label below, which is pinned to an artboard y-coordinate and keeps its literal with
+   * a declared `scale-exempt` — only the checked-in hi-fi source's number.
+   *
+   * GEOMETRY MOVES, by 0.53px: 13px → --font-size-xs (≈12.47px), the step the sub-row
+   * (--sidebar-nav-sub-font-size) and the flyout title already take. Nothing reflows — the row is a
+   * fixed 2rem with `align-items: center`, and 1.5 × 12.47 = 18.7px sits inside it with the same
+   * headroom 19.5px had. What is gained is that a service overriding --font-size-base now moves the
+   * rail's labels with the rest of its type, instead of leaving one constant behind. */
+  --sidebar-nav-item-font-size: var(--font-size-xs);
   /* Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip
    * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2. */
   --sidebar-nav-item-line-height: 1.5;
@@ -111,7 +143,7 @@
    * tone marks exactly as the sidebar label did. Keep >= 1.2. */
   --auth-account-summary-email-line-height: 1.5;
   --topbar-start-truncate-line-height: 1.5;
-  --sidebar-nav-icon-size: 1rem;
+  --sidebar-nav-icon-size: var(--icon-size-md);
   --sidebar-nav-item-gap: 0.625rem;
   --sidebar-nav-item-padding-x: 0.625rem;
   --sidebar-nav-gap: 2px;
@@ -322,20 +354,27 @@
    * content instead. */
   --auth-shell-registration-identity-slot-block-size: 7rem;
 
-  /* Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px
+  /* Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px
    * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line
-   * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the
-   * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the
-   * whole lower half of the Login card 8px high (gh#263). */
+   * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step
+   * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1`
+   * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263).
+   *
+   * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now
+   * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section
+   * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the
+   * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth
+   * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a
+   * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were. */
   --auth-shell-divider-gap: 0.625rem;
-  --auth-shell-divider-label-font-size: 0.6875rem;
+  --auth-shell-divider-label-font-size: var(--font-size-2xs);
   --auth-shell-divider-label-line-height: calc(19 / 11);
   --auth-shell-divider-rule-color: var(--border);
   --auth-shell-divider-label-color: var(--muted-foreground);
   --auth-identity-gap: 0.375rem;
   --auth-requester-gap: 0.375rem;
-  --auth-requester-icon-size: 1rem;
-  --auth-requester-glyph-size: 0.625rem;
+  --auth-requester-icon-size: var(--icon-size-md);
+  --auth-requester-glyph-size: var(--icon-size-2xs);
   --auth-account-summary-min-height: var(--control-height-comfortable);
   --auth-account-summary-gap: var(--space-2);
   --auth-account-summary-padding: var(--space-1) var(--space-2);
@@ -344,13 +383,23 @@
   --auth-account-summary-avatar-glyph-size: var(--control-icon-size-sm);
   --auth-account-summary-email-font-size: var(--font-size-sm);
   --auth-footer-content-gap: 0.375rem;
-  --auth-footer-text-font-size: 0.6875rem;
+  /* The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard
+   * anchor at all, only the literal. GEOMETRY MOVES by 0.11px. */
+  --auth-footer-text-font-size: var(--font-size-2xs);
   --auth-stack-gap: var(--space-3);
   --auth-shell-field-label-gap: var(--space-1);
   /* Canonical SCR-001 field label: a LITERAL 12px (the golden-ratio --font-size-xs ≈ 12.47px would
    * drift the 18px line box to 18.7px and push the email input off its y=489 anchor) with a 1.5
    * line box = 18px. The former var(--font-size-xs)/1.25 pair rendered a 14px box, sitting the
-   * email input 4px high (gh#263). */
+   * email input 4px high (gh#263).
+   *
+   * gh#329 asked whether this is merely a long way of writing --font-size-xs. It is NOT: the xs
+   * step is base/ratio ≈ 12.47px, not 12. This is the system's TIER 2 — a value that is off every
+   * step because it is anchored to something outside the system (an artboard coordinate), which is
+   * a real need and must have a sanctioned route rather than becoming a fork or an !important. The
+   * route is the marker below, which the scale-bypass guard honours and PRINTS, so the exception is
+   * declared once and stays visible instead of hiding in prose. */
+  /* scale-exempt: SCR-001 pins the email input at y=489; --font-size-xs (12.47px) drifts the 18px label box to 18.7px (gh#263) */
   --auth-shell-field-label-font-size: 0.75rem;
   --auth-shell-field-label-line-height: 1.5;
 

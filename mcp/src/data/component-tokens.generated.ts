@@ -305,12 +305,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--stat-card-icon-size",
-    "value": "2.25rem",
+    "value": "var(--icon-size-2xl)",
     "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--stat-card-icon-glyph-size",
-    "value": "1.25rem",
+    "value": "var(--icon-size-lg)",
     "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
@@ -345,7 +345,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-service-launcher-icon-glyph-size",
-    "value": "var(--space-5)",
+    "value": "calc(var(--icon-size-lg) * var(--scaling))",
     "description": "Semantic icon surface. `--control-height-lg` is the 36px control tier the hi-fi calls for — * a tier token, never a literal, so the medallion tracks --scaling with its sibling controls."
   },
   {
@@ -580,12 +580,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-icon-size",
-    "value": "calc(1rem * var(--scaling))",
+    "value": "calc(var(--icon-size-md) * var(--scaling))",
     "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
   },
   {
     "name": "--control-icon-size-sm",
-    "value": "calc(0.875rem * var(--scaling))",
+    "value": "calc(var(--icon-size-sm) * var(--scaling))",
     "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
   },
   {
@@ -905,7 +905,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-affix-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
   },
   {
@@ -1100,7 +1100,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--cascader-option-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
   },
   {
@@ -1420,7 +1420,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--transfer-action-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
   },
   {
@@ -1455,12 +1455,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--month-picker-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
   },
   {
     "name": "--month-picker-separator-icon-size",
-    "value": "0.875rem",
+    "value": "var(--icon-size-sm)",
     "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
   },
   {
@@ -1485,7 +1485,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--button-xs-icon-size",
-    "value": "0.75rem",
+    "value": "var(--icon-size-xs)",
     "description": "BUTTON size-xs box + the count pill (#319, reconciled in #316). * * `size=\"xs\"` now reads the tier, like every other control in the library. It used to be * `calc(var(--control-height) - 0.75rem)` = 1.25rem, which sat 4px BELOW `--control-height-xs` * (1.5rem) that `size=\"icon-xs\"` already used — the same tier name, two heights, so an xs * Button never lined up with the xs control beside it. It was also the exact shape this repo's * own rule forbids: an ad-hoc `calc(var(--control-height) ± length)` silently re-derives a tier * and drifts from its siblings (the bug that made Pagination's size-changer taller than its * page buttons), and being a raw length rather than a `--scaling`-multiplied step, it did not * move with density while the tier did. * * What settled it was not consistency but MEASUREMENT: an xs Button rendered 20px tall, under * the 24x24 CSS px that WCAG 2.2 SC 2.5.8 (Target Size, Minimum) requires, while icon-xs beside * it rendered 24px and passed. So this is an accessibility fix that happens to also remove an * inconsistency, not a visual preference. It is a real visual change on the most-used component * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets * --button-xs-height back."
   },
   {
@@ -2340,7 +2340,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--alert-dismiss-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "Dismiss ✕ — rest opacity (quiet at rest, full on hover, rule #44) and glyph size. The rest * alpha was a hard 0.7 in alert-layout.css whose `:hover` companion lived on the COMPONENT as * `hover:opacity-100`, so the two halves of one affordance sat in two files and neither was * themeable. Mirrors --sheet-close-rest-alpha. The icon size carries a raw rem, not * var(--space-N): it replaces a flat Tailwind `size-4` step and must not start tracking the * density axis."
   },
   {
@@ -2440,12 +2440,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--empty-state-icon-size",
-    "value": "3rem",
+    "value": "var(--icon-size-4xl)",
     "description": "Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one."
   },
   {
     "name": "--empty-state-icon-glyph-size",
-    "value": "1.5rem",
+    "value": "var(--icon-size-xl)",
     "description": "Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one."
   },
   {
@@ -2610,7 +2610,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--toast-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "TOAST (Sonner) — the status glyph in the toast's leading slot. * * WHY A KNOB AND NOT A UTILITY: sonner renders the toast body itself and takes the five status * glyphs through ONE `icons={{ success, info, warning, error, loading }}` config prop. That prop * is all-or-nothing — a consumer who wants a different glyph size must re-declare all five icons, * re-importing lucide and re-deriving the aria wiring. Routing the size through a token makes it * a one-line theme override instead (rule #45). * * Raw rem, not var(--space-N): it replaces a flat Tailwind `size-4` step, and the 16px box sonner * gives `[data-icon]` is itself fixed — scaling the glyph with density alone would overflow it. * * NAMESPACE NOTE: sonner publishes its own `--toast-*` custom properties (--toast-icon-margin-*, * --toast-svg-margin-*, --toast-button-margin-*, --toast-close-button-*). Neither name below * collides with those; keep it that way when adding to this group."
   },
   {
@@ -3265,7 +3265,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--menu-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
   },
   {
@@ -3315,12 +3315,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--steps-marker-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
   },
   {
     "name": "--steps-wait-icon-size",
-    "value": "0.75rem",
+    "value": "var(--icon-size-xs)",
     "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
   },
   {
@@ -3420,7 +3420,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-setting-picker-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."
   },
   {
@@ -3650,18 +3650,18 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-shell-bar-inset",
-    "value": "var(--space-4)",
-    "description": "Inline inset and slot gap of the AppShell top bar. `-compact` applies below the shell * breakpoint (the docked sidebar is gone, so the bar tightens against the viewport edge)."
+    "value": "var(--space-page-x)",
+    "description": "Inline inset and slot gap of the AppShell top bar. * * ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS (gh#330). The bar sits in the SAME grid track as * `.app-main`, directly above the page, so its first control and the page title are on one * vertical edge — or they are supposed to be. These two knobs used to name their own values * (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and * nothing reconciled them: measured in Chromium on /isolate/layout-app-shell the topbar's * content started at x=80 while the page header's started at x=88 (1512px), and because the two * sides also stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even * constant — 8px at 1512, 12px between 720 and 900, 4px below 720. A consumer cannot correct a * drift that changes with the viewport. * * The page gutter WINS the axis, for three reasons: it is read by seven regions (page header, * toolbar, body, footer, PageContainer.Inset, the DataTable full-bleed compensation, Banner) * against this knob's one element; the bar is the region that must line up with the page, not * the other way round (the rail is a different track with its own inset); and moving the bar * moves exactly one element in one composition, while moving --space-page-x would move every * page in every consumer app. * * The NAMES stay — a theme that already sets `--app-shell-bar-inset` keeps working, and a bar * that genuinely wants to sit tighter than its page still has its own knob. Only the DEFAULTS * now point at the owner. `-compact` applies below the PAGE's 720px step (not the shell's 900px * restructure), so both sides tighten on the same line — see styles/shell-layout.css."
   },
   {
     "name": "--app-shell-bar-inset-compact",
-    "value": "var(--space-3)",
-    "description": "Inline inset and slot gap of the AppShell top bar. `-compact` applies below the shell * breakpoint (the docked sidebar is gone, so the bar tightens against the viewport edge)."
+    "value": "var(--space-page-compact-x)",
+    "description": "Inline inset and slot gap of the AppShell top bar. * * ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS (gh#330). The bar sits in the SAME grid track as * `.app-main`, directly above the page, so its first control and the page title are on one * vertical edge — or they are supposed to be. These two knobs used to name their own values * (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and * nothing reconciled them: measured in Chromium on /isolate/layout-app-shell the topbar's * content started at x=80 while the page header's started at x=88 (1512px), and because the two * sides also stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even * constant — 8px at 1512, 12px between 720 and 900, 4px below 720. A consumer cannot correct a * drift that changes with the viewport. * * The page gutter WINS the axis, for three reasons: it is read by seven regions (page header, * toolbar, body, footer, PageContainer.Inset, the DataTable full-bleed compensation, Banner) * against this knob's one element; the bar is the region that must line up with the page, not * the other way round (the rail is a different track with its own inset); and moving the bar * moves exactly one element in one composition, while moving --space-page-x would move every * page in every consumer app. * * The NAMES stay — a theme that already sets `--app-shell-bar-inset` keeps working, and a bar * that genuinely wants to sit tighter than its page still has its own knob. Only the DEFAULTS * now point at the owner. `-compact` applies below the PAGE's 720px step (not the shell's 900px * restructure), so both sides tighten on the same line — see styles/shell-layout.css."
   },
   {
     "name": "--app-shell-bar-gap",
     "value": "var(--space-3)",
-    "description": "Inline inset and slot gap of the AppShell top bar. `-compact` applies below the shell * breakpoint (the docked sidebar is gone, so the bar tightens against the viewport edge)."
+    "description": "Inline inset and slot gap of the AppShell top bar. * * ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS (gh#330). The bar sits in the SAME grid track as * `.app-main`, directly above the page, so its first control and the page title are on one * vertical edge — or they are supposed to be. These two knobs used to name their own values * (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and * nothing reconciled them: measured in Chromium on /isolate/layout-app-shell the topbar's * content started at x=80 while the page header's started at x=88 (1512px), and because the two * sides also stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even * constant — 8px at 1512, 12px between 720 and 900, 4px below 720. A consumer cannot correct a * drift that changes with the viewport. * * The page gutter WINS the axis, for three reasons: it is read by seven regions (page header, * toolbar, body, footer, PageContainer.Inset, the DataTable full-bleed compensation, Banner) * against this knob's one element; the bar is the region that must line up with the page, not * the other way round (the rail is a different track with its own inset); and moving the bar * moves exactly one element in one composition, while moving --space-page-x would move every * page in every consumer app. * * The NAMES stay — a theme that already sets `--app-shell-bar-inset` keeps working, and a bar * that genuinely wants to sit tighter than its page still has its own knob. Only the DEFAULTS * now point at the owner. `-compact` applies below the PAGE's 720px step (not the shell's 900px * restructure), so both sides tighten on the same line — see styles/shell-layout.css."
   },
   {
     "name": "--app-shell-sidebar-width",
@@ -3705,7 +3705,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-shell-mobile-nav-icon-size",
-    "value": "1.25rem",
+    "value": "var(--icon-size-lg)",
     "description": "Hamburger glyph in the drawer trigger. Bigger ON PURPOSE than the trigger Button's own * `size=\"sm\"` icon step (--control-icon-size-sm, 0.875rem) — it is the ONLY navigation * affordance on a phone, so it reads at the 1.25rem step. A flat rem, not a density-scaled * alias: it must not move with the density axis, or the one tap target that opens navigation * shrinks on a compact page. Consumed as a `size-[var(...)]` utility so it outranks * `.ui-button--sm svg` (see the comment at the call site in app-shell.tsx)."
   },
   {
@@ -3740,8 +3740,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sidebar-nav-item-font-size",
-    "value": "0.8125rem",
-    "description": "The role row is a MULTI-LINE button (name over a description/member-count line), so it opts * out of the control height grid (`h-auto`) and sets its own block padding — that is what the * `py-2` literal was doing. It needs the raised `.ui-service-role-panel` ancestor specificity * (0,2,0) to beat `.ui-button--md { padding-block: var(--button-space-block) }` (0,1,0): * layout.css is imported BEFORE control.css and both are `@layer components`, so an equal * (0,1,0) rule here would silently lose."
+    "value": "var(--font-size-xs)",
+    "description": "ON the type scale (gh#329). This was `0.8125rem` — 13px, which is not a step: the golden scale * runs …/ratio² ≈ 11.1 · /ratio ≈ 12.5 · base 14…, so 13 sat BETWEEN two steps and every nav row * in the rail read off the system's type rhythm. It had no mechanical anchor either — unlike the * auth field label below, which is pinned to an artboard y-coordinate and keeps its literal with * a declared `scale-exempt` — only the checked-in hi-fi source's number. * * GEOMETRY MOVES, by 0.53px: 13px → --font-size-xs (≈12.47px), the step the sub-row * (--sidebar-nav-sub-font-size) and the flyout title already take. Nothing reflows — the row is a * fixed 2rem with `align-items: center`, and 1.5 × 12.47 = 18.7px sits inside it with the same * headroom 19.5px had. What is gained is that a service overriding --font-size-base now moves the * rail's labels with the rest of its type, instead of leaving one constant behind."
   },
   {
     "name": "--sidebar-nav-item-line-height",
@@ -3760,7 +3760,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sidebar-nav-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
@@ -4116,112 +4116,112 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--auth-shell-divider-gap",
     "value": "0.625rem",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-shell-divider-label-font-size",
-    "value": "0.6875rem",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "value": "var(--font-size-2xs)",
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-shell-divider-label-line-height",
     "value": "calc(19 / 11)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-shell-divider-rule-color",
     "value": "var(--border)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-shell-divider-label-color",
     "value": "var(--muted-foreground)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-identity-gap",
     "value": "0.375rem",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-requester-gap",
     "value": "0.375rem",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-requester-icon-size",
-    "value": "1rem",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "value": "var(--icon-size-md)",
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-requester-glyph-size",
-    "value": "0.625rem",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "value": "var(--icon-size-2xs)",
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-account-summary-min-height",
     "value": "var(--control-height-comfortable)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-account-summary-gap",
     "value": "var(--space-2)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-account-summary-padding",
     "value": "var(--space-1) var(--space-2)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-account-summary-identity-min-width",
     "value": "12rem",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-account-summary-avatar-size",
     "value": "var(--control-height-sm)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-account-summary-avatar-glyph-size",
     "value": "var(--control-icon-size-sm)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-account-summary-email-font-size",
     "value": "var(--font-size-sm)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-footer-content-gap",
     "value": "0.375rem",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-footer-text-font-size",
-    "value": "0.6875rem",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "value": "var(--font-size-2xs)",
+    "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard * anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
   },
   {
     "name": "--auth-stack-gap",
     "value": "var(--space-3)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard * anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
   },
   {
     "name": "--auth-shell-field-label-gap",
     "value": "var(--space-1)",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+    "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard * anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
   },
   {
     "name": "--auth-shell-field-label-font-size",
     "value": "0.75rem",
-    "description": "Canonical SCR-001 field label: a LITERAL 12px (the golden-ratio --font-size-xs ≈ 12.47px would * drift the 18px line box to 18.7px and push the email input off its y=489 anchor) with a 1.5 * line box = 18px. The former var(--font-size-xs)/1.25 pair rendered a 14px box, sitting the * email input 4px high (gh#263)."
+    "description": "scale-exempt: SCR-001 pins the email input at y=489; --font-size-xs (12.47px) drifts the 18px label box to 18.7px (gh#263)"
   },
   {
     "name": "--auth-shell-field-label-line-height",
     "value": "1.5",
-    "description": "Canonical SCR-001 field label: a LITERAL 12px (the golden-ratio --font-size-xs ≈ 12.47px would * drift the 18px line box to 18.7px and push the email input off its y=489 anchor) with a 1.5 * line box = 18px. The former var(--font-size-xs)/1.25 pair rendered a 14px box, sitting the * email input 4px high (gh#263)."
+    "description": "scale-exempt: SCR-001 pins the email input at y=489; --font-size-xs (12.47px) drifts the 18px label box to 18.7px (gh#263)"
   },
   {
     "name": "--centered-shell-bar-height",
@@ -4565,17 +4565,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-sort-icon-size",
-    "value": "0.75rem",
+    "value": "var(--icon-size-xs)",
     "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
   },
   {
     "name": "--table-toolbar-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
   },
   {
     "name": "--table-pagination-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
   },
   {
@@ -4690,7 +4690,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-dropzone-icon-size",
-    "value": "2.5rem",
+    "value": "var(--icon-size-3xl)",
     "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
   },
   {
@@ -4730,7 +4730,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-tile-icon-size",
-    "value": "1.5rem",
+    "value": "var(--icon-size-xl)",
     "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
   },
   {
@@ -4770,7 +4770,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-remove-icon-size",
-    "value": "0.875rem",
+    "value": "var(--icon-size-sm)",
     "description": "REMOVE affordance — the ✕ / trash chip pinned to a tile or avatar."
   },
   {
@@ -4890,7 +4890,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-draft-icon-size",
-    "value": "0.875rem",
+    "value": "var(--icon-size-sm)",
     "description": "DRAFT BAR — the undo strip shown after a pending remove/replace."
   },
   {
@@ -4920,7 +4920,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-row-icon-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "FILE ROW — the list rendered under the dropzone/button variants."
   },
   {

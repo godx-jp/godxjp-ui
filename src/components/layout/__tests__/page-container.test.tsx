@@ -956,6 +956,39 @@ describe("PageContainer", () => {
       expect(compactCss).not.toMatch(/padding-block-start/);
     });
 
+    /*
+     * The BAND-HEIGHT half of the same fact (gh#331). A document header is content-height, which
+     * is right — a title is as tall as the title is. Chrome is furniture, and furniture has a band
+     * that things centre INTO; without one, the band's vertical centre is a function of its own
+     * copy. Measured in Chromium on /isolate/layout-page-container: 42.02px with an `extra`
+     * control, 40.38px without, so nothing in the page could ever be aligned to it. jsdom runs no
+     * layout, so the mechanism is asserted from the CSS SOURCE like every other half above; the
+     * numbers came from a real engine.
+     */
+    it("gives the chrome band a height knob, quiet by default (gh#331)", () => {
+      const bandRule =
+        layoutCss.match(
+          /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-header \{[^}]*\}/,
+        )?.[0] ?? "";
+      expect(bandRule).toMatch(/min-block-size: var\(--page-header-min-block-size-chrome\);/);
+      // The floor alone would only add dead air under top-packed content; centring is the half
+      // that makes it useful, and it is inert while the knob is `auto` (a column whose min IS its
+      // content height has nothing to distribute).
+      expect(bandRule).toMatch(/justify-content: center;/);
+      // Quiet default (rule #44): `auto` is no floor at all, so every page shipped before this
+      // token — document AND chrome — is byte-identical. The knob is a token, never a literal.
+      expect(layoutTokens).toMatch(/--page-header-min-block-size-chrome:\s*auto;/);
+      expect(layoutCss).not.toMatch(/--page-header-min-block-size-chrome:/);
+      // A MIN, never a height: a taller `extra` must still fit rather than overflow its band.
+      expect(bandRule).not.toMatch(/(?<!min-)block-size:|height:/);
+      // The band-height axis has ONE owner, and it is the shell bar — the value a service writes
+      // to put its page chrome on the same band. --centered-shell-bar-height already reads it.
+      expect(layoutTokens).toMatch(/--app-shell-bar-height/);
+      // Only `headerScale="chrome"` engages it: a document page emits no attribute and matches
+      // nothing here, and the 720px block re-declares tokens, never these properties.
+      expect(compactCss).not.toMatch(/min-block-size|justify-content/);
+    });
+
     it("does NOT break the 720px document step — and is not pulled back UP by it", () => {
       expect(compactCss).not.toBe("");
       // The existing responsive step is untouched: a document page still steps down to h2 <=720px.

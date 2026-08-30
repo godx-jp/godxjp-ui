@@ -140,7 +140,9 @@ describe("Sidebar nav foreground tokens (gh#228)", () => {
   });
 
   it("changes COLOUR only — 16px icons and 32px/10px row geometry are untouched", () => {
-    expect(shellTokens).toMatch(/--sidebar-nav-icon-size:\s*1rem;/);
+    // gh#326 named the icon scale: --icon-size-md IS 1rem/16px, and
+    // src/tokens/__tests__/icon-size-scale.test.ts pins that step and every token that reads it.
+    expect(shellTokens).toMatch(/--sidebar-nav-icon-size:\s*var\(--icon-size-md\);/);
     expect(shellTokens).toMatch(/--sidebar-nav-item-height:\s*2rem;/);
     expect(shellTokens).toMatch(/--sidebar-nav-item-gap:\s*0\.625rem;/);
     const icon = rule(".sb-icon");

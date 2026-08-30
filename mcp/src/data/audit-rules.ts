@@ -77,6 +77,15 @@ export const AUDIT_RULES: AuditRule[] = [
     fix: "No rounded-[6px]; use rounded-sm/md/lg radius tokens.",
   },
   {
+    id: "no-off-scale-token-value",
+    severity: "warn",
+    category: "tokens",
+    standard: null,
+    // Off-grid values are NOT forbidden, they are DECLARED. Say so in the fix: a catalog that
+    // teaches "always a step" is the reason exceptions turn into !important and forked CSS.
+    fix: "A design-system knob you override takes a step (style={{ '--card-space-inset': 'var(--space-4)' }}) or a calc() from one (calc(var(--space-4) + 2px)), not a raw 13px. Only axes that HAVE a scale count: space/padding/gap/margin, font-size, radius, icon-size (width/height/size/offset have none yet, so a number there is fine). A value that is genuinely off the grid keeps its literal and says why in place, with a /* scale-exempt: 6px status dot, below --space-1 */ comment on that line or the one above.",
+  },
+  {
     id: "no-dark-color-override",
     severity: "warn",
     category: "tokens",

@@ -29,8 +29,8 @@
   --control-font-size: var(--font-size-base);
   --control-border-width: 1px;
   --control-shadow: var(--shadow-xs);
-  --control-icon-size: calc(1rem * var(--scaling));
-  --control-icon-size-sm: calc(0.875rem * var(--scaling));
+  --control-icon-size: calc(var(--icon-size-md) * var(--scaling));
+  --control-icon-size-sm: calc(var(--icon-size-sm) * var(--scaling));
   --control-focus-ring-width: var(--focus-ring-width);
 
   /* Ring knobs for the two controls that need a softer, heavier mark than the
@@ -168,7 +168,7 @@
   --control-affix-inset-inline-end: var(--space-2);
   --control-affix-action-size: 1.5rem;
   --control-affix-action-radius: var(--radius-sm);
-  --control-affix-icon-size: 1rem;
+  --control-affix-icon-size: var(--icon-size-md);
   /* Resting weight of an affix glyph — it must read as secondary until hovered/focused. */
   --control-affix-rest-alpha: 0.5;
   /* Room a trigger reserves so its label never runs under the affix. */
@@ -259,7 +259,7 @@
   --cascader-option-space-block: var(--space-2);
   --cascader-option-space-gap: var(--space-1);
   --cascader-option-font-size: var(--font-size-sm);
-  --cascader-option-icon-size: 1rem;
+  --cascader-option-icon-size: var(--icon-size-md);
   /* The flat search result row is denser than a column row — it has no chevron to balance. */
   --cascader-result-space-inline: var(--space-2);
   --cascader-result-space-block: 0.375rem;
@@ -352,7 +352,7 @@
   --transfer-row-description-font-size: var(--font-size-xs);
   --transfer-empty-space-block: var(--space-8);
   --transfer-actions-space-gap: var(--space-2);
-  --transfer-action-icon-size: 1rem;
+  --transfer-action-icon-size: var(--icon-size-md);
 
   /* MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav +
    * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs
@@ -365,8 +365,8 @@
   /* Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so
    * the two panels stay visually consistent when either is retuned. */
   --month-picker-nav-rest-alpha: var(--calendar-nav-rest-alpha);
-  --month-picker-icon-size: 1rem;
-  --month-picker-separator-icon-size: 0.875rem;
+  --month-picker-icon-size: var(--icon-size-md);
+  --month-picker-separator-icon-size: var(--icon-size-sm);
 
   /* BUTTON size-xs box + the count pill (#319, reconciled in #316).
    *
@@ -389,7 +389,7 @@
   --button-xs-space-inline: var(--space-2);
   --button-xs-space-gap: var(--space-1);
   --button-xs-font-size: var(--font-size-xs);
-  --button-xs-icon-size: 0.75rem;
+  --button-xs-icon-size: var(--icon-size-xs);
   /* Icon-adjacent padding: a button whose only child is an icon needs less inline room than one
    * carrying a label, or the glyph floats in a too-wide box. One knob per size tier. */
   --button-icon-space-inline-md: var(--space-3);

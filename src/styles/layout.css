@@ -582,6 +582,28 @@
     padding-block-start: var(--page-pad-block-start-chrome);
   }
 
+  /* `headerScale="chrome"`, the BAND-HEIGHT consequence of that same fact (gh#331). A document
+   * header is content-height — correctly, a title is as tall as the title is. Chrome is furniture,
+   * and furniture has a band that things centre INTO; without one, the band's vertical centre is a
+   * function of the copy inside it (measured here: 42.02px with an `extra` control, 40.38px
+   * without), so nothing in the page can ever be aligned to it and no service can aim at a number.
+   *
+   * A MIN, not a height: an `lg` control or a wrapped JA/VI channel name must still fit, and
+   * `min-block-size` floors the band without ever clipping it. `justify-content: center` is the
+   * half that makes the floor useful — a taller band with top-packed content is a band with dead
+   * air under it, not a centred one — and it is inert while the knob is `auto`, because a column
+   * whose min IS its content height has nothing to distribute. Both declarations are therefore
+   * byte-identical for every page shipped before this token existed, chrome pages included.
+   *
+   * Scoped to the container attribute (0,2,0), like every other half of the chrome contract, so a
+   * document page never matches and the 720px block (which re-declares tokens, never these
+   * properties) cannot out-rank it. The band-height axis has ONE owner and it is
+   * `--app-shell-bar-height`: see tokens/semantic/layout.css for why the DEFAULT still is not it. */
+  .ui-page-container[data-header-scale="chrome"] .ui-page-header {
+    min-block-size: var(--page-header-min-block-size-chrome);
+    justify-content: center;
+  }
+
   /* Horizontal page insets live on the header/body/footer — NOT the container —
    * so the header divider and footer border span the full page width
    * (full-bleed) while their content stays aligned with the body. */

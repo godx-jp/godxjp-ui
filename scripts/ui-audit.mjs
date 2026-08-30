@@ -40,7 +40,12 @@ const EMOJI = /\p{Extended_Pictographic}/u;
 const EMOJI_FLAG = /\p{Regional_Indicator}/u;
 
 /**
- * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string}[]}
+ * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string, exempt?:RegExp}[]}
+ *
+ * `exempt` is an optional SECOND escape a rule may declare, matched against the ORIGINAL (un-blanked)
+ * line or the one above it. `ui-audit-disable-line <id>` silences any rule; an `exempt` marker is for
+ * a rule whose correct answer is sometimes "this value is deliberate" rather than "skip the check",
+ * and it makes the reason part of the source instead of a bare opt-out.
  *
  * `standard` cites the international spec a rule enforces, so a finding is auditable
  * against a real norm rather than house taste alone:
@@ -128,6 +133,39 @@ const RULES = [
     severity: "error",
     test: /\brounded(?:-[a-z]+)?-\[-?\.?\d/,
     message: "No arbitrary radius (rounded-[6px]…). Use rounded-sm/md/lg radius tokens (rules §4).",
+  },
+  // The token-override half of the arbitrary-value rules above. Those catch a raw number in a
+  // Tailwind class; this catches one in a design-system KNOB the app sets itself
+  // (`style={{ "--card-space-inset": "13px" }}`), which is the sanctioned per-instance override
+  // route and therefore the one place an app can silently leave the scale. Framework-side the same
+  // check runs over `src/tokens/**` as `pnpm check:token-scale-bypass` (gh#332).
+  //
+  // Only axes that HAVE named steps are flagged — space, font-size, radius, icon-size. width /
+  // height / size / offset have no scale yet, so a number there is the only thing to write and is
+  // NOT a finding; the name pattern's two lookaheads exist to let `--x-space-offset` and
+  // `--x-font-size-width` fall out on their trailing axis, matching the framework guard's
+  // "furthest-right axis wins" resolution (verified name-for-name against all 982 published
+  // component tokens). `var(--space-4)` and `calc(var(--radius) - 1px)` derive from a scale, `0`
+  // and `1px` (the device hairline) are steps of nothing, and `100%` / `1.5` are not lengths.
+  {
+    id: "no-off-scale-token-value",
+    severity: "warn",
+    test: new RegExp(
+      // --<component>-<…>-<axis-with-a-scale>… , unless a trailing axis WITHOUT one wins
+      String.raw`--(?![a-z0-9-]*-(?:offset|width|height)(?=["'\s]*:))` +
+        String.raw`(?![a-z0-9-]*(?<!font)(?<!icon)-size(?=["'\s]*:))` +
+        String.raw`[a-z0-9-]*-(?:font-size|icon-size|padding|gap|margin|radius|space)(?:-[a-z0-9]+)*` +
+        // : "<value>" — no `var(--<that axis's scale>)` anywhere in it …
+        String.raw`\s*["']?\s*:\s*["'\`]?(?![^"'\`;,}\n]*var\(\s*--(?:font-size|space|radius|icon-size)[-)])` +
+        // … and it bakes a length that is neither 0 nor the 1px hairline.
+        String.raw`[^"'\`;,}\n]*(?<![\w.])(?!0(?![\d.]))(?!1px\b)\d*\.?\d+(?:rem|px|em|ch|ex|pt|pc|cm|mm|in|q)\b`,
+    ),
+    /** The one sanctioned off-grid escape, mirroring the framework guard: a block comment reading
+     *  `scale-exempt: <why>` (12+ chars of real prose) on this line or the one above. Read from the
+     *  ORIGINAL line, since the scanner blanks comments before the `test` runs. */
+    exempt: /\/\*+\s*scale-exempt:\s*\S[^*]{11,}?\*\//,
+    message:
+      "This token override leaves a scale that exists. Write a step (var(--space-4), var(--font-size-sm), var(--radius-md), var(--icon-size-md)), or derive from one (calc(var(--space-4) + 2px)). A value that is genuinely off-grid stays a literal and says so in place: /* scale-exempt: 6px status dot, below --space-1 */.",
   },
   {
     id: "no-raw-select",
@@ -372,6 +410,13 @@ function isSuppressed(ruleId, sameLine, prevLine) {
   return onSame || onPrev;
 }
 
+/** A rule's own in-place escape (see the `exempt` note on RULES), on the same line or the one above.
+ *  Read from the ORIGINAL lines, because the scanner blanks comments before `rule.test` runs. */
+function isExempt(rule, sameLine, prevLine) {
+  if (!rule.exempt) return false;
+  return rule.exempt.test(sameLine ?? "") || rule.exempt.test(prevLine ?? "");
+}
+
 function walk(dir, acc = []) {
   // Accept a FILE path directly (the per-file editor hook passes one), not just a directory.
   try {
@@ -429,7 +474,11 @@ for (const dir of SCAN_DIRS) {
     const scanLines = scanContent.split("\n");
     scanLines.forEach((line, i) => {
       for (const rule of RULES) {
-        if (rule.test.test(line) && !isSuppressed(rule.id, origLines[i], origLines[i - 1])) {
+        if (
+          rule.test.test(line) &&
+          !isSuppressed(rule.id, origLines[i], origLines[i - 1]) &&
+          !isExempt(rule, origLines[i], origLines[i - 1])
+        ) {
           findings.push({
             file: rel,
             line: i + 1,

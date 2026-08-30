@@ -338,6 +338,41 @@
   --space-10: calc(2.5rem * var(--scaling));
   --space-12: calc(3rem * var(--scaling));
 
+  /* ── ICON SIZE — the geometric axis that had a vocabulary but no name (gh#326).
+   *
+   * 28 component tokens were declaring raw numbers, and between them they only ever used NINE
+   * values. The scale was already there; nobody had written it down. These nine names ARE that
+   * list — naming an existing vocabulary, not inventing a new one.
+   *
+   * A FIXED LIST, NOT A RATIO. Unlike --font-size-* there is no `base * ratio^n` here, and that
+   * is deliberate: 14/16 = 0.875 but 20/16 = 1.25, so no single ratio generates these steps.
+   * Type can sit between pixels because hinting and antialiasing carry it; a 1px-stroke glyph
+   * cannot — half a pixel of icon is a blurred icon. So every step is a whole pixel at the 16px
+   * root, and a service retunes a STEP rather than a ratio.
+   *
+   * NOT SCALED HERE. --scaling is applied by the tokens that opt IN
+   * (`calc(var(--icon-size-md) * var(--scaling))`, as --control-icon-size does), so the scale
+   * itself stays the crisp whole-pixel list. Density is a per-token decision, not a property of
+   * the vocabulary.
+   *
+   * TIER 1 / TIER 2 — where the boundary sits. These nine steps are tier 1: the value appears in
+   * more than one place, so it earns a name and a service retunes it once. A value that appears
+   * in exactly ONE place (the 6px status dot) is tier 2 and does NOT belong on the scale — set
+   * that component's own `--*-icon-size` / `--*-glyph-size` token at the call site instead
+   * (`style={{ "--menu-icon-size": "6px" }}` or a `[data-…]`-scoped rule in the app theme). An
+   * inline custom property wins by inheritance proximity, so tier 2 needs no `!important`, no
+   * `:root` override and no fork. Every icon rule in src/styles reads its token through `var()`
+   * with no literal fallback, which is what keeps that route open — see docs/TOKENS.md. */
+  --icon-size-2xs: 0.625rem; /* 10px */
+  --icon-size-xs: 0.75rem; /* 12px */
+  --icon-size-sm: 0.875rem; /* 14px */
+  --icon-size-md: 1rem; /* 16px — the default icon step */
+  --icon-size-lg: 1.25rem; /* 20px */
+  --icon-size-xl: 1.5rem; /* 24px */
+  --icon-size-2xl: 2.25rem; /* 36px */
+  --icon-size-3xl: 2.5rem; /* 40px */
+  --icon-size-4xl: 3rem; /* 48px */
+
   /* Golden ratio scale */
   --ratio-phi: 1.6180339887;
   --phi-unit: var(--space-4);
@@ -373,8 +408,8 @@
   --control-height-sm: 1.75rem;
   --control-height-lg: 2.25rem;
   --control-height-xs: 1.5rem;
-  --control-icon-size: 1rem;
-  --control-icon-size-sm: 0.875rem;
+  --control-icon-size: var(--icon-size-md);
+  --control-icon-size-sm: var(--icon-size-sm);
   --control-padding-x: var(--space-3);
   --control-gap: var(--space-2);
   --control-gap-sm: var(--space-1);

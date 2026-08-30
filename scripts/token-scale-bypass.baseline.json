@@ -1,0 +1,85 @@
+{
+  "_comment": "Ratchet baseline for scripts/check-token-scale-bypass.mjs (gh#332). Tokens listed here declare a raw number on an axis that already has a scale. The list may only SHRINK — removing one and re-running with --update is the whole workflow. Do not add a name by hand.",
+  "enforcedAxes": [
+    "font-size",
+    "padding",
+    "gap",
+    "margin",
+    "radius",
+    "icon-size"
+  ],
+  "total": 55,
+  "files": {
+    "src/tokens/components/control.css": [
+      "--button-icon-space-inline-sm",
+      "--button-icon-space-inline-xs",
+      "--cascader-result-space-block",
+      "--choice-description-gap",
+      "--control-inline-affix-pair-space-inline-end",
+      "--control-inline-affix-space-inline-end",
+      "--control-label-space-gap",
+      "--control-trigger-space-inline-end",
+      "--select-item-space-inline",
+      "--time-picker-heading-space-block",
+      "--time-picker-option-space-block",
+      "--transfer-row-check-space-block-start",
+      "--tree-select-depth-space-step",
+      "--tree-select-row-space-block"
+    ],
+    "src/tokens/components/data-display.css": [
+      "--permission-matrix-name-space-gap"
+    ],
+    "src/tokens/components/data-entry.css": [
+      "--branch-scope-picker-badges-gap",
+      "--branch-scope-picker-gap",
+      "--branch-scope-picker-subset-gap",
+      "--branch-scope-picker-subset-padding-inline"
+    ],
+    "src/tokens/components/descriptions.css": [
+      "--descriptions-column-gap",
+      "--descriptions-label-gap"
+    ],
+    "src/tokens/components/feedback.css": [
+      "--sheet-header-space-gap"
+    ],
+    "src/tokens/components/navigation.css": [
+      "--tabs-root-gap",
+      "--tabs-trigger-line-padding-x",
+      "--tabs-trigger-line-padding-y"
+    ],
+    "src/tokens/components/shell.css": [
+      "--auth-footer-content-gap",
+      "--auth-identity-gap",
+      "--auth-requester-gap",
+      "--auth-shell-canonical-main-padding",
+      "--auth-shell-canonical-main-padding-mobile",
+      "--auth-shell-context-card-stack-gap",
+      "--auth-shell-device-main-padding",
+      "--auth-shell-device-main-padding-mobile",
+      "--auth-shell-divider-gap",
+      "--auth-shell-login-card-stack-gap",
+      "--auth-shell-login-main-padding-block-end",
+      "--auth-shell-login-main-padding-inline",
+      "--auth-shell-login-main-padding-inline-mobile",
+      "--auth-shell-recovery-main-padding",
+      "--auth-shell-recovery-main-padding-mobile",
+      "--auth-shell-registration-card-stack-gap",
+      "--auth-shell-registration-main-padding-block-end",
+      "--auth-shell-registration-main-padding-block-end-mobile",
+      "--auth-shell-registration-main-padding-block-start",
+      "--auth-shell-registration-main-padding-block-start-mobile",
+      "--auth-shell-registration-main-padding-inline",
+      "--auth-shell-registration-main-padding-inline-mobile",
+      "--service-role-panel-item-padding-block",
+      "--service-role-panel-item-title-gap",
+      "--service-role-panel-list-gap",
+      "--service-role-panel-row-gap",
+      "--sidebar-nav-gap",
+      "--sidebar-nav-item-gap",
+      "--sidebar-nav-item-padding-x"
+    ],
+    "src/tokens/components/upload.css": [
+      "--upload-picture-badge-space-block"
+    ]
+  }
+}

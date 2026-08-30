@@ -18,7 +18,7 @@
   --upload-dropzone-space-inset: var(--space-10);
   --upload-dropzone-radius: var(--radius-lg);
   --upload-dropzone-border-width: 2px;
-  --upload-dropzone-icon-size: 2.5rem;
+  --upload-dropzone-icon-size: var(--icon-size-3xl);
   --upload-dropzone-hint-space-block-start: var(--space-3);
   --upload-dropzone-hint-font-size: var(--font-size-sm);
   --upload-dropzone-meta-space-block-start: var(--space-1);
@@ -30,7 +30,7 @@
   --upload-tile-size: 6rem;
   --upload-tile-radius: var(--radius-md);
   --upload-tile-space-gap: var(--space-3);
-  --upload-tile-icon-size: 1.5rem;
+  --upload-tile-icon-size: var(--icon-size-xl);
   --upload-tile-label-space-block-start: var(--space-1);
   --upload-tile-label-font-size: var(--font-size-xs);
   --upload-tile-overlay-font-size: var(--font-size-xs);
@@ -42,7 +42,7 @@
   /* REMOVE affordance — the ✕ / trash chip pinned to a tile or avatar. */
   --upload-remove-space-inset: var(--space-1);
   --upload-remove-offset: var(--space-1);
-  --upload-remove-icon-size: 0.875rem;
+  --upload-remove-icon-size: var(--icon-size-sm);
 
   /* PICTURE — the single wide preview variant. */
   --upload-picture-max-width: 20rem;
@@ -78,7 +78,7 @@
   --upload-draft-space-gap: var(--space-2);
   --upload-draft-radius: var(--radius-md);
   --upload-draft-font-size: var(--font-size-sm);
-  --upload-draft-icon-size: 0.875rem;
+  --upload-draft-icon-size: var(--icon-size-sm);
 
   /* FILE ROW — the list rendered under the dropzone/button variants. */
   --upload-row-space-inline: var(--space-3);
@@ -86,7 +86,7 @@
   --upload-row-space-gap: var(--space-3);
   --upload-row-radius: var(--radius-md);
   --upload-row-font-size: var(--font-size-sm);
-  --upload-row-icon-size: 1rem;
+  --upload-row-icon-size: var(--icon-size-md);
 
   /* CROP DIALOG — the 1:1 avatar cropper (`UploadCropDialog`). The 66-literal upload pass above
    * never reached this file, so the whole cropper was still baked on the component: the dialog was

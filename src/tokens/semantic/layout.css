@@ -209,6 +209,35 @@
    * forking the page shell. Read ONLY when the prop is passed, so no document page resolves it. */
   --page-pad-block-start-chrome: 0px;
 
+  /* The BAND HEIGHT of the same fact (gh#331). A document header is content-height by definition —
+   * a title is as tall as the title is. A chrome band is the opposite: it is furniture, and
+   * furniture has a height that things centre INTO. `AppShell` has had `--app-shell-bar-height`
+   * for exactly that since it shipped; `PageContainer` had no equivalent, so a `headerScale="chrome"`
+   * band's vertical centre drifted with its own copy — measured in Chromium on
+   * /isolate/layout-page-container, 42.02px with an `extra` control and 40.38px without, i.e. the
+   * centre moves 0.8px for a change of content and there is no value a service can aim at.
+   *
+   * WHO OWNS THE BAND-HEIGHT AXIS (the question gh#331 defers to gh#330). `--app-shell-bar-height`
+   * does: it is the system's one declared chrome-band height, and `--centered-shell-bar-height`
+   * already reads it. A service that wants its page chrome to sit on the shell bar's band writes
+   * ONE line — `--page-header-min-block-size-chrome: var(--app-shell-bar-height)` — and the two
+   * bands are on one axis for good.
+   *
+   * It is NOT that value by DEFAULT, and the reason is not timidity: a `PageContainer` with a
+   * chrome header is not necessarily inside an `AppShell` (the canonical chat composition renders
+   * one inside a bordered region, a SplitPane pane, a Card), and a band that is not trying to line
+   * up with a bar has no business inheriting that bar's height. `auto` is the quiet state (rule
+   * #44): no floor, content-height, byte-identical to every page rendered before this token
+   * existed — document AND chrome.
+   *
+   * A MIN, never a fixed height: a taller `extra` (an `lg` control, a wrapped JA/VI channel name)
+   * must still fit rather than overflow its own band. The header centres its content in whatever
+   * band it ends up with — see `justify-content` in styles/layout.css — so raising this knob
+   * centres, it does not top-pack. The header's own `--page-header-pad-bottom` lives INSIDE the
+   * band (border-box); under the canonical chrome composition (`variant="ghost"`) that pad is 0
+   * and the centring is exact. */
+  --page-header-min-block-size-chrome: auto;
+
   /* Section "chrome" padding — the SHARED inset for header / body / footer of every overlay-ish
    * surface (Dialog · Sheet · Drawer · Card). One global knob: a service sets these once instead of
    * per-component. Vertical is tightened (16 vs the old 24) and density-aware (see density.css);

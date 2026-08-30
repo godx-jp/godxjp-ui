@@ -1,19 +1,44 @@
 name: CD · publish to npm
 
-# Manual, credential-safe release. Reuses scripts/release.mjs (the single source of
-# truth) so @godxjp/ui and its pinned @godxjp/ui-mcp publish in lockstep — the script
-# refuses a ui-only bump and fail-closes on scripts/check-release-lockstep.mjs, so the two
-# packages can never ship at drifting versions (issue #140). Drift is also caught earlier,
-# on every PR, by the separate release-integrity.yml workflow.
+# PIPELINE: merge to `main` → CI. Push a `vX.Y.Z` tag → this workflow.
 #
-# One-time setup: add a repo secret NPM_TOKEN (an npm "Automation" access token with
-# publish rights to the @godxjp scope). Then run this workflow from the Actions tab.
-# Keep the "mcp" input on `sync` for any release that bumps the UI.
+# The tag is the trigger AND the release's claim. A human bumps the version in an ordinary PR,
+# it lands on main, CI judges that commit, and only then is `vX.Y.Z` pushed at it. This workflow
+# publishes exactly that commit — it does not bump, does not commit and does not create a tag.
+# Nothing here may move a public ref: a tag written before a publish that fails is a lie only a
+# force-delete can correct, and this repo already learned from #266 what it costs to need delete
+# rights on a registry it does not own.
+#
+# The script fail-closes on all three of these before the first byte is published:
+#   • VerifyReleaseTag          the tag names the version package.json already carries, points at
+#                               THIS commit, and that commit is an ancestor of origin/main
+#   • VerifyCommitProvenance    every CI check run that verify:release delegates to concluded
+#                               `success` on this exact SHA (or --full-verify re-ran them here)
+#   • VerifyTargetOutranksLatest  the version is STRICTLY GREATER than the published `latest` for
+#                               both packages, so promoting `latest` can never move it backwards
+# Lockstep between @godxjp/ui and its pinned @godxjp/ui-mcp is enforced as before (issue #140),
+# and again on every merge by release-integrity.yml.
+#
+# WHY THE SUITE IS NOT RE-RUN HERE. `verify:release` used to run in this job: the whole vitest
+# suite plus the Chromium gates, on a commit CI had already proved green — roughly twenty minutes
+# of duplicated work. It is not deleted, it is DELEGATED: `VerifyCommitProvenance` requires a
+# green CI check run on the exact SHA for every gate verify:release would have run (the map lives
+# in scripts/release-core.mjs · CI_PROOF_FOR_RELEASE_GATE), `VerifyPublishTree` proves the tree
+# being packed is byte-identical to that commit, and `verify:publish-tree` still runs here for the
+# one thing CI's verdict cannot cover — `dist/` is not in git, so it is built and re-checked
+# against the bytes about to be packed. Set `full_verify` to fall back to the local re-run.
+#
+# One-time setup: a repo secret NPM_TOKEN (an npm "Automation" token with publish rights to the
+# @godxjp scope).
 on:
+  push:
+    tags: ["v*"]
+  # Manual escape hatch: the legacy bump-and-commit release, and the --adopt-staged recovery for a
+  # release that published but did not promote.
   workflow_dispatch:
     inputs:
       ui:
-        description: "@godxjp/ui version bump"
+        description: "@godxjp/ui version bump (ignored when adopt_staged_version is set)"
         type: choice
         default: minor
         options: [patch, minor, major, skip]
@@ -26,17 +51,27 @@ on:
         description: "Recover an exact already-published staging pair (x.y.z; blank for normal release)"
         type: string
         default: ""
+      full_verify:
+        description: "Re-run the whole verify:release locally instead of trusting CI's verdict on the commit"
+        type: boolean
+        default: false
 
 permissions:
-  contents: write # push the chore(release) commit back to main
+  contents: write # push the chore(release) commit back to main (workflow_dispatch path only)
+  checks: read # read the CI check-run conclusions for the commit being published
 
 jobs:
   publish:
     runs-on: [self-hosted, swarm-pool]
     steps:
+      # fetch-depth: 0 — the release must prove the tagged commit is an ancestor of origin/main.
+      # A shallow checkout cannot answer that, and "cannot answer" is refusal, not a pass.
       - uses: actions/checkout@v6
         with:
-          ref: main
+          ref: ${{ github.event_name == 'push' && github.ref || 'main' }}
+          fetch-depth: 0
+      - name: Fetch main (so the tag can be proven to be on main)
+        run: git fetch --no-tags --force origin +refs/heads/main:refs/remotes/origin/main
       # Bootstrap Node BEFORE pnpm/action-setup. The swarm-pool hosts ship Node 18, and the pnpm
       # self-installer (npm 11) refuses to run there — it fails inside @pnpm/exe's setup.js with
       # `paths[0] must be of type string`, long before any repo code executes. `setup-node` after
@@ -52,9 +87,11 @@ jobs:
           registry-url: https://registry.npmjs.org # writes ~/.npmrc using NODE_AUTH_TOKEN
       - run: pnpm install --frozen-lockfile
 
-      # verify:release runs check:contrast + check:visual-audit, which launch headless
-      # Chromium via Playwright — the browser binary isn't in the runner image, so install it.
-      - name: Install Playwright Chromium (for check:contrast + check:visual-audit)
+      # Only `full_verify` re-runs check:contrast / check:visual-audit / check:frame-axe here, and
+      # only those need a browser. The default path reads CI's verdict instead, so the Chromium
+      # download is skipped along with the gates it exists for.
+      - name: Install Playwright Chromium (full_verify only)
+        if: inputs.full_verify
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Configure git author
@@ -62,15 +99,25 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Release (verify → version → publish → commit)
+      - name: Release (verify tag → verify CI green → publish → promote)
         run: |
-          if [ -n "${{ inputs.adopt_staged_version }}" ]; then
-            node scripts/release.mjs --adopt-staged "${{ inputs.adopt_staged_version }}" --mcp sync
+          set -euo pipefail
+          FULL=""
+          if [ "${{ inputs.full_verify }}" = "true" ]; then FULL="--full-verify"; fi
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            node scripts/release.mjs --tag "${{ github.ref_name }}" $FULL
+          elif [ -n "${{ inputs.adopt_staged_version }}" ]; then
+            node scripts/release.mjs --adopt-staged "${{ inputs.adopt_staged_version }}" --mcp sync $FULL
           else
-            node scripts/release.mjs --ui "${{ inputs.ui }}" --mcp "${{ inputs.mcp }}"
+            node scripts/release.mjs --ui "${{ inputs.ui }}" --mcp "${{ inputs.mcp }}" $FULL
           fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # `gh api` reads the commit's check runs
+          GITHUB_REPOSITORY: ${{ github.repository }}
 
+      # Tag-triggered releases publish a commit that is ALREADY on main and write nothing, so there
+      # is nothing to push. Only the manual bump-and-commit path produces a commit.
       - name: Push release commit
+        if: github.event_name == 'workflow_dispatch' && github.ref_type != 'tag'
         run: git push origin HEAD:main

@@ -8,6 +8,121 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Icon size scale — the last geometric axis gets a name (gh#326).** `--icon-size-2xs` …
+  `--icon-size-4xl` in `src/tokens/foundation.css`: 10 · 12 · 14 · 16 (`md`, the default) · 20 ·
+  24 · 36 · 40 · 48 px. This names an EXISTING vocabulary rather than inventing one — 28 component
+  tokens were declaring raw numbers, and between them they used exactly these nine values. It is a
+  **fixed list, not a ratio scale** like `--font-size-*`, deliberately: 14/16 = 0.875 but
+  20/16 = 1.25, so no single ratio generates the steps, and a stroked glyph that lands on half a
+  pixel is a blurred glyph. The scale is NOT `--scaling`-multiplied; density is opted into by the
+  tokens that want it (`calc(var(--icon-size-md) * var(--scaling))`, as `--control-icon-size`
+  does). Documented in `docs/TOKENS.md` § Icon size and in the MCP token catalog.
+- **A stated tier-1 / tier-2 boundary for icon sizing (gh#326).** Tier 1 = a value used in more
+  than one place; it earns a step and a service retunes it once. Tier 2 = a value used in exactly
+  one place (the 6px status dot); set that component's own `--*-icon-size` / `--*-glyph-size`
+  token **at the call site** — `style={{ "--menu-icon-size": "6px" }}` or a `[data-…]`-scoped
+  theme rule. An inline custom property wins by inheritance proximity, so tier 2 needs no
+  `!important`, no `:root` override and no fork. `src/tokens/__tests__/icon-size-scale.test.ts`
+  keeps that route open by asserting every icon rule reads its token through `var()`.
+- `src/tokens/__tests__/css-token-resolve.ts` — resolves the token graph from the CSS source
+  (cascade order read from `base.css`'s `@import` list, brace-walked selectors, `initial`
+  fallthrough, injectable `--scaling`). jsdom applies no author cascade, so this is the only way
+  to assert a token did not move.
+
+- **`--page-header-min-block-size-chrome` — a band height for `PageContainer`'s chrome header
+  (gh#331).** A document header is content-height, correctly: a title is as tall as the title is.
+  Chrome is furniture, and furniture needs a band that things centre INTO — `AppShell` has had
+  `--app-shell-bar-height` for exactly that, `PageContainer` had no equivalent, so a
+  `headerScale="chrome"` band's vertical centre drifted with its own copy (measured in Chromium on
+  `/isolate/layout-page-container`: 42.02px with an `extra` control, 40.38px without) and nothing in
+  the page could be aligned to it. Default `auto` — the quiet state (rule #44): no floor,
+  content-height, byte-identical to every page shipped before it, document AND chrome. **The
+  band-height axis has ONE owner and it is `--app-shell-bar-height`** (`--centered-shell-bar-height`
+  already reads it), so the one line a service writes to put its page chrome on the shell bar's band
+  is `--page-header-min-block-size-chrome: var(--app-shell-bar-height)` — the band becomes 48px and
+  the title column and `extra` both centre at y=24 regardless of copy length. It is not that value
+  by default because a chrome `PageContainer` is not necessarily inside an `AppShell` (the canonical
+  chat composition renders one inside a bordered region, a `SplitPane` pane, a `Card`), and a band
+  that is not trying to line up with a bar has no business inheriting that bar's height. A MIN,
+  never a height: a taller `extra` still fits instead of overflowing. The rule adds
+  `justify-content: center` alongside it — a floor with top-packed content is dead air, not a
+  centred band — and that declaration is inert while the knob is `auto`.
+
+- **`check:token-scale-bypass` — a token that declares a raw number on an axis that already has a
+  scale now fails CI (gh#332).** gh#324 measured a near-perfect correlation across every geometry
+  token: an axis WITH a named scale stays disciplined (font-size 4% raw), an axis WITHOUT one is
+  almost all raw numbers (width 91%). But a scale alone was not enough — four type tokens went
+  around the most disciplined axis in the system, and `--sidebar-nav-item-font-size: 0.8125rem`
+  put every sidebar nav row 13px off the type rhythm with nothing in CI to notice. The guard
+  enforces only axes that have steps to write instead of a number — today font-size, padding, gap,
+  margin, radius and (since gh#326) icon-size — and declares the rest (width, height, size, offset)
+  with the reason each is still waiting, so switching one on later is a one-line change.
+  It is a ratchet like the other value guards: `scripts/token-scale-bypass.baseline.json` records
+  today's 55 bypasses by token name and may only shrink; a stale baseline fails too, so a cleanup
+  cannot silently creep back. `src/tokens/components/email.css` is excluded with the reason
+  recorded in the guard header — HTML email cannot read custom properties, so every value there
+  must be a literal.
+- **A sanctioned route to an off-grid value.** A literal keeps its place when the declaration (or
+  the line above it) carries a block comment reading `scale-exempt: <reason>` — a real reason, 12
+  characters or more. Every exemption honoured is PRINTED on a passing run, so the exceptions stay
+  countable and reviewable instead of hiding in prose. This is the second tier gh#325's consumers
+  asked for: named steps for the common case, plus a legitimate way to write the 6px status dot
+  that will never be on any scale — no `!important`, no global token override, no fork.
+
+- **`no-off-scale-token-value` — the consumer-facing half of the scale-bypass rule (gh#324).**
+  `check:token-scale-bypass` (gh#332) reads this repo's own `src/tokens/**` and so teaches nobody
+  building WITH the library. The static `ui-audit` CLI now carries the same rule for the one place
+  an app can silently leave the scale: a design-system knob it overrides itself
+  (`style={{ "--card-space-inset": "13px" }}`), which is the sanctioned per-instance override
+  route. It is the token-override sibling of `no-arbitrary-spacing` / `-size` / `-typography` /
+  `-radius`, which only see a raw number in a Tailwind class.
+  - Only axes that HAVE named steps are flagged: space/padding/gap/margin, font-size, radius,
+    icon-size. width, height, size and offset have no scale yet, so a number there is the only
+    thing to write and is not a finding. The name pattern resolves an axis exactly the way the
+    framework guard does (furthest-right wins, so `--x-space-offset` is an offset and
+    `--x-font-size-width` is a width); it was checked name-for-name against all 982 published
+    component tokens, with zero disagreement.
+  - `var(--space-4)` and `calc(var(--radius) - 1px)` derive from a scale, `0` and the `1px` device
+    hairline are steps of nothing, and `100%` / `1.5` are not lengths. None of them are findings.
+  - It is a **warning**, not an error. The framework guard could ship as a hard gate because it had
+    a ratchet baseline to stand on; a consumer repo has none, and the CLI exits non-zero on errors
+    only. A warning is the honest analogue: agent guidance on a surface nobody has been linted on
+    before.
+- **`scale-exempt:` works in a consumer app too.** A rule may now declare its own in-place escape
+  alongside the generic `ui-audit-disable-line <id>`. `no-off-scale-token-value` uses it: a value
+  that is genuinely off the grid keeps its literal and carries a
+  `/* scale-exempt: 6px status dot, below --space-1 */` block comment on that line or the one
+  above, the same marker and the same 12-character minimum the framework guard honours. The point
+  is that off-grid values are not forbidden, they are DECLARED — a catalogue that teaches "always a
+  step" is exactly what turns a real exception into `!important` or a forked component. Documented
+  in the MCP `list_audit_rules` catalogue, so an app-dev's agent reads the escape along with the
+  rule.
+
+- **Release trigger is now a git tag.** `.github/workflows/npm-publish.yml` fires on `push: tags: ["v*"]`.
+  The pipeline is: merge to `main` → CI; push `vX.Y.Z` → release. `workflow_dispatch` is kept as the
+  manual escape hatch and for `--adopt-staged` recovery. `scripts/release.mjs` gains
+  `--tag vX.Y.Z`, which takes the target version from the tag and refuses if `package.json` does not
+  already carry it — the version bump must be merged and CI-verified _before_ the tag is cut.
+- **`verify-release-tag` preflight gate.** Before the first publish the release proves the tag names the
+  version the manifests carry, points at the commit being released, and that the commit is an ancestor
+  of `origin/main`. A tag for the target version that already claims a different commit refuses even on
+  the non-tag paths. The release never creates, moves or force-writes a tag.
+- **`verify-target-outranks-latest` preflight gate.** The target must be _strictly greater_ by semver
+  than the published `latest` for both `@godxjp/ui` and `@godxjp/ui-mcp`. `assertFreshTargets` only ever
+  refused re-publishing the _same_ version, so a release cut from a stale checkout could publish a
+  _lower_ one and `PromoteUiLatest` would drag `latest` backwards, silently downgrading every consumer
+  on a caret range. A first-ever publish (no `latest`) is unaffected; `--recovery` and `--adopt-staged`
+  may re-drive a version that is already `latest`, but never a lower one.
+- **`verify-commit-provenance` preflight gate.** The release requires a `success` CI check run on the
+  exact SHA being published for every gate `verify:release` would have run (the map is
+  `CI_PROOF_FOR_RELEASE_GATE` in `scripts/release-core.mjs`). Absence, an unfinished run, a `skipped`
+  conclusion, a truncated page or any other red check on the same commit all refuse.
+- `verify:publish-tree` script: `build && check:packed-public-contract && check:use-client &&
+check:dist-tokens-resolve && check:mcp-lockstep` — the part of the publish tree a CI verdict on the
+  commit cannot cover, because `dist/` is not in git.
+- `--full-verify` flag (and a `full_verify` workflow input): re-run the whole `verify:release` locally
+  instead of trusting CI's verdict. It only ever adds work.
+
 - **`Activity` — the official ambient/looping motion primitive (`@godxjp/ui/general`, gh#313).** The
   loop counterpart to `Reveal`'s one-shot entrance: a continuous, unbounded "something is happening
   right now, elsewhere" mark (someone typing, a sync running, a response streaming, a recording
@@ -221,6 +336,112 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **All 30 icon/glyph size declarations now read the scale (gh#326).** `--control-icon-size`,
+  `--stat-card-icon-size`, `--upload-dropzone-icon-size`, `--sidebar-nav-icon-size` … every one.
+  **No resolved value moved**: all 37 icon tokens verified identical at default, compact (.92),
+  comfortable (1.08) density, inside `.ui-scale-fixed`, and inside a `.ui-density-*` subtree.
+  Every existing token name is kept — nothing renamed, nothing deleted — so a theme overriding an
+  old name is unaffected.
+- **`--card-service-launcher-icon-glyph-size` no longer reads the spacing scale (gh#328).** It was
+  `var(--space-5)` — a glyph size borrowing the SPACING axis, so a density retune moved it along
+  an axis nobody chose. It is now `calc(var(--icon-size-lg) * var(--scaling))`: the right axis,
+  and the `* var(--scaling)` preserves the density tracking its sibling `--card-service-launcher-icon-size`
+  (which reads `--control-height-lg`) has. Resolved value unchanged at every density — a plain
+  `var(--icon-size-lg)` would have silently frozen a glyph that used to breathe.
+
+- **gh#327 is a false alarm; the `foundation.css` declaration must NOT be deleted.**
+  `--control-icon-size` / `--control-icon-size-sm` at `foundation.css` are inside
+  **`.ui-scale-fixed`**, not `:root`, so they never compete with `components/control.css`'s `:root`
+  declarations and are not shadowed by import order. They are load-bearing: `.ui-scale-fixed` pins
+  persistent chrome (the AppShell topbar, the search palette) to baseline density, and because
+  `var(--scaling)` is substituted at the element that DECLARES a token, setting `--scaling: 1`
+  alone cannot un-bake the `:root` values — every `--scaling`-derived token must be re-declared,
+  which is exactly what that block does (`src/lib/__tests__/theme-tokens-css.test.ts` already
+  guards the list). Deleting them would silently make the topbar track density.
+  Recorded as an assertion so the deletion is not attempted again.
+- **The shadowed-token sweep gh#327 asked for: two, neither on the icon axis.**
+  `--banner-radius` (same value) and `--banner-border-width` (**different values** — `0` in
+  `components/feedback.css:89`, `1px` in `components/banner.css:11`; `banner.css` is imported
+  later and wins, so the `feedback.css` copies never apply). Left for the owner of those files;
+  frozen in `icon-size-scale.test.ts` so a third cannot appear unnoticed.
+- **Seven icon rules still bake a literal size and are unreachable from an app.**
+  `[data-slot="alert-icon"]` 1.25rem · `[data-slot="badge-icon"]` 0.75rem ·
+  `.ui-otp-separator-icon` 1rem · `.ui-menubar-sub-trigger-icon` 1rem ·
+  `.ui-navigation-menu-trigger-icon` **0.9rem (14.4px, off-grid)** · `.tb-chip-icon`
+  **1.125rem (18px, off-grid)** · `.tb-icon-btn svg` 1rem. No token exists for any of them, so
+  tier 2 does not reach them at any price. Frozen as a shrink-only ratchet; fixing them needs new
+  component tokens plus a `no-hardcoded-css-values` re-baseline.
+- **Six more cross-axis reads on non-icon axes (gh#328's scan, outside this change).**
+  `--button-count-min-width` and `--toggle-count-min-width` (`--space-4`),
+  `--card-service-launcher-skeleton-title-width` (`--space-12`),
+  `--card-service-launcher-skeleton-status-width` (`--space-10`), `--avatar-presence-min-size` and
+  `--list-row-indicator-size` (`--space-2`). The last two are 8px INDICATOR dots — a different
+  axis from icons, and evidence that a 6px dot belongs in tier 2, not on the icon scale.
+
+- **The horizontal page-inset axis has ONE owner: the page gutter (gh#330). `AppShell`'s top bar
+  MOVES.** `--app-shell-bar-inset` / `--app-shell-bar-inset-compact` named their own values
+  (`--space-4` / `--space-3`) while the page named `--space-page-x` / `--space-page-compact-x`, and
+  nothing reconciled them — even though the bar sits in the SAME grid track as `.app-main`, directly
+  above the page. Re-measured in Chromium on `/isolate/layout-app-shell` before the change: the
+  topbar's content edge at x=80 against the page header's at x=88 (1512px), and because the two
+  sides also stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even
+  constant — **8px at 1512, 12px between 720 and 900, 4px below 720**. A drift that changes with the
+  viewport is one a consumer cannot correct by hand. The page gutter wins the axis (it is read by
+  seven regions against the bar's one element; the bar is the side that must line up with the page;
+  and moving the bar moves one element in one composition, where moving `--space-page-x` would move
+  every page in every consumer app), so both knobs now read it and the compact step moved to the
+  page's `(max-width: 720px)`. **Geometry moved on the bar only:** inline padding 16px → 24px
+  (12px → 16px compact, and 12px → 24px between 720 and 900); the page did not move. After: 88/88,
+  24/24, 16/16, 16/16 at 1512 / 880 / 700 / 390. The token NAMES are unchanged, so a theme that
+  already overrides either keeps working and a bar that genuinely wants to sit tighter than its page
+  still has its own knob. The docked-narrow `padding-inline` undo is gone with the old step — it
+  existed only to cancel it, and a docked page tightens its own gutters at 720px too.
+- **Three font-size tokens snapped onto the type scale (gh#329).** The type axis is the system's
+  most disciplined and these went around it anyway, which is the point: a scale alone is not enough.
+  `--sidebar-nav-item-font-size` `0.8125rem` → `var(--font-size-xs)` — 13px is not a step (the
+  golden scale runs ≈11.1 · ≈12.5 · 14), so every nav row in the rail read off the system's type
+  rhythm and stayed behind whenever a service retuned `--font-size-base`. **Geometry moves 0.53px**
+  (13 → 12.4699px); nothing reflows — the row is a fixed 2rem with `align-items: center` and
+  1.5 × 12.47 = 18.7px keeps the headroom 19.5px had (measured: row still 32px).
+  `--auth-shell-divider-label-font-size` and `--auth-footer-text-font-size` `0.6875rem` →
+  `var(--font-size-2xs)`: 11 was never a step, it was the ratio⁻² step (≈11.107px) rounded to a whole
+  pixel and then written down as if it were. **Geometry moves 0.107px** on the label and 0.188px on
+  the divider row (19 → 19.188px, measured), whose `calc(19 / 11)` line-height was always a ratio
+  rather than a pin.
+- **`--auth-shell-field-label-font-size` stays the literal `0.75rem`, now as a DECLARED tier-2
+  exception (gh#329).** The issue asked whether this is merely a long way of writing
+  `--font-size-xs`. It is not: the xs step is base/ratio ≈ 12.47px, not 12. The value is anchored
+  outside the system — SCR-001 pins the email input at y=489, and 12.47px drifts the 18px label line
+  box to 18.7px and pushes it off that anchor (the gh#263 regression). It now carries a
+  `scale-exempt:` marker, which the scale-bypass guard honours and PRINTS, so the exception is
+  declared once and stays visible instead of hiding in prose.
+
+- **`check:token-scale-bypass` now runs in every verify chain, not only `verify:ci:static`
+  (gh#332).** It was reachable from one of four, so `pnpm verify` locally could pass on a violation
+  that CI then rejected — the exact gap that lets a red gate reach `main`. It now sits next to
+  `check:token-tiers` in `verify`, `verify:static`, `verify:ci` and `verify:ci:static`
+  (`verify:release` inherits it through `verify:static`). `verify:browser` is unchanged: it is the
+  two Chromium gates alone, not a verify pass.
+
+- **CD no longer re-runs the test suite CI just ran.** The publish job ran `pnpm run verify:release`
+  (~25 guards + the whole vitest suite + the Chromium contrast/visual/axe gates) on a commit `main` CI
+  had already proved green. It now runs `verify:publish-tree` and delegates the rest to
+  `verify-commit-provenance`. The Playwright Chromium install is skipped unless `full_verify` is set.
+- `applyTargetMetadata` is byte-preserving when the tree already carries the coordinated target
+  metadata. On the tag path it writes nothing, so the packed tree is byte-identical to the CI-verified
+  commit — which is what makes the provenance substitution sound rather than merely cheaper.
+- `verify-publish-tree` (the step) requires a fully clean working tree on a tag-triggered release, not
+  merely "only the two manifests changed".
+- `actions/checkout` in the publish workflow now uses `fetch-depth: 0` and explicitly fetches
+  `origin/main`, so the tag's ancestry can be proven; the `git push origin HEAD:main` step now runs
+  only on the `workflow_dispatch` path (a tag release commits nothing).
+
+`REQUIRED_CI_CHECK_RUNS` names GitHub **job** display names (steps do not produce check runs).
+`ci.yml` now runs `check:frame-contracts` and `check:frame-coverage` as steps of its `static` job,
+so all three are proven by the one "Build · typecheck · lint · guards" check run. A test parses the
+workflow files and fails if any named job disappears or is renamed — so a CI refactor breaks a test
+rather than blocking every release.
+
 - **CI was running the same work several times per merge; the pipeline is now merge-then-tag.**
   Four separate duplications, each measured rather than guessed:
   `ci.yml` and `ci-browser.yml` triggered on **both** `pull_request` and `push: [main]`, so
@@ -373,6 +594,8 @@ within 60s`.** They run in parallel on one self-hosted host, each cold-starting 
   `--focus-ring-opacity` ở `foundation.css` là token nền tier khác và **không** đổi.
 
 ### Fixed
+
+- Nothing. See "Investigated, no change needed" below — gh#327's reported dead code is not dead.
 
 - **a11y: `Button size="xs"` was 20px tall, under WCAG 2.2 SC 2.5.8's 24x24 minimum target size
   (gh#316).** It read `calc(var(--control-height) - 0.75rem)` = 1.25rem while `size="icon-xs"`

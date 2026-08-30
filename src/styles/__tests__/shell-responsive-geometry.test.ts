@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 
 const shellStyles = readFileSync(resolve(process.cwd(), "src/styles/shell-layout.css"), "utf8");
 const shellTokens = readFileSync(resolve(process.cwd(), "src/tokens/components/shell.css"), "utf8");
+const layoutStyles = readFileSync(resolve(process.cwd(), "src/styles/layout.css"), "utf8");
 const appShell = readFileSync(
   resolve(process.cwd(), "src/components/layout/app-shell.tsx"),
   "utf8",
@@ -248,14 +249,43 @@ describe("responsive shell geometry", () => {
     // …and nothing anywhere hides the footer landmark.
     expect(declarationsFor(shellStyles, ".app-footer")).not.toMatch(/display:\s*none/);
     // The compact bar inset is a knob, not a raw space token.
-    expect(shellTokens).toContain("--app-shell-bar-inset: var(--space-4);");
-    expect(shellTokens).toContain("--app-shell-bar-inset-compact: var(--space-3);");
     expect(shellTokens).toContain("--app-shell-bar-gap: var(--space-3);");
-    expect(restructuring[0].body).toMatch(
-      /\.app-topbar\s*\{[^}]*padding-inline:\s*var\(--app-shell-bar-inset-compact\);/s,
-    );
+    // The bar's inset is NOT the shell restructure's business any more (gh#330) — see the
+    // horizontal-page-inset-axis test below. Nothing in this block may touch it.
+    expect(restructuring[0].body).not.toMatch(/padding-inline:/);
     // The TSX hamburger variant must state the SAME number as the CSS breakpoint.
     expect(appShell).toContain("max-[900px]:inline-flex");
+  });
+
+  it("gives the horizontal page-inset axis ONE owner, stepping on ONE breakpoint (gh#330)", () => {
+    // Two independent inset tokens used to own one horizontal row: --app-shell-bar-inset
+    // (--space-4) for the bar and --space-page-x (--space-6) for the page directly under it.
+    // Measured in Chromium on /isolate/layout-app-shell BEFORE the fix, the topbar's content
+    // started at x=80 and the page header's at x=88, and because the two sides stepped at
+    // DIFFERENT breakpoints (shell 900px, page 720px) the error was not even constant: 8px at
+    // 1512, 12px between 720 and 900, 4px below 720. The page gutter owns the axis; the bar reads
+    // it. AFTER: 88/88, 24/24, 16/16, 16/16 at 1512 / 880 / 700 / 390.
+    expect(shellTokens).toContain("--app-shell-bar-inset: var(--space-page-x);");
+    expect(shellTokens).toContain("--app-shell-bar-inset-compact: var(--space-page-compact-x);");
+    // The names survive as knobs — a theme that already overrides them keeps working.
+    expect(declarationsFor(shellStyles, ".app-topbar")).toMatch(
+      /padding-inline:\s*var\(--app-shell-bar-inset\);/,
+    );
+    // The compact step lives at the PAGE's breakpoint, stated identically on both sides so the two
+    // can never drift apart again.
+    const pageStep = "@media (max-width: 720px)";
+    expect(shellStyles).toContain(pageStep);
+    expect(layoutStyles).toContain(pageStep);
+    const compact = mediaBlocksMentioning(shellStyles, ".app-topbar").filter((block) =>
+      /--app-shell-bar-inset-compact/.test(block.body),
+    );
+    expect(compact).toHaveLength(1);
+    expect(compact[0].condition).toBe("(max-width: 720px)");
+    // The shell's 900px restructure no longer says anything about the inset, in either direction:
+    // the docked-mode "undo" that used to cancel the old 900px step is gone with it.
+    expect(shellStyles).not.toMatch(
+      /data-responsive-navigation="docked"\]\s*>\s*\.app-topbar\s*\{[^}]*padding-inline/s,
+    );
   });
 
   it("offers an opt-in docked narrow contract without consumer media queries (gh#242)", () => {

@@ -296,6 +296,19 @@ export default function Demo() {
                 navigation を失わせないため）。空の <code>{"topbar={<></>}"}</code>
                 で代用しないこと ― それは 4 スロットが埋まった状態と同じで、バーの行は残る。
               </CardDescription>
+              <CardDescription>
+                横方向のページ余白軸の持ち主は <code>--space-page-x</code> ひとつ（gh#330）。
+                トップバーは <code>.app-main</code> と同じグリッド列に載っている ―
+                つまりバー先頭のコントロールとページタイトルは同じ縦線に並ぶべきもので、
+                <code>--app-shell-bar-inset</code> はその持ち主を読む （
+                <code>--app-shell-bar-inset-compact</code> も同様に
+                <code>--space-page-compact-x</code>）。以前は両者が別々の値 （16px と
+                24px）を名乗り、しかも段が変わる幅まで違った（shell 900px · page
+                720px）ため、ズレは画面幅で変わった ― 1512px で 8px、720〜900px で 12px、 720px
+                未満で 4px。幅で変わる誤差はテーマ側で補正しようがない。 いまは狭幅の段も{" "}
+                <code>(max-width: 720px)</code> でページと同時に動く。 Frame の Dimensions
+                を切り替えて、バーとページ本文の左端が どの幅でも一致することを確認できる。
+              </CardDescription>
             </CardHeader>
           </Card>
           <ResponsiveGrid columns={{ sm: 2, md: 4 }}>

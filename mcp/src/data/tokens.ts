@@ -24,6 +24,12 @@ export const TOKENS: TokenEntry[] = [
   },
   { name: "--space-0..12", category: "primitive", tier: "primitive", role: "Raw spacing scale." },
   {
+    name: "--icon-size-{2xs,xs,sm,md,lg,xl,2xl,3xl,4xl}",
+    category: "primitive",
+    tier: "primitive",
+    role: 'Raw ICON scale — 10 / 12 / 14 / 16 (md, the default) / 20 / 24 / 36 / 40 / 48 px (gh#326). Icon was the last geometric axis with no scale: 28 component tokens declared raw numbers and between them used only these nine values, so this NAMES an existing vocabulary rather than inventing one. It is a FIXED LIST, not a `base * ratio^n` scale like --font-size-*, and deliberately so: 14/16 = 0.875 but 20/16 = 1.25, no single ratio generates the steps. Type can sit between pixels because hinting and antialiasing carry it; a 1px-stroke glyph cannot, so every step lands on a whole pixel at a 16px root. NOT --scaling-multiplied here: density is opted into by the tokens that want it (`calc(var(--icon-size-md) * var(--scaling))`, as --control-icon-size does), which keeps the scale itself the crisp whole-pixel list. TIER 1 vs TIER 2 — a value used in MORE THAN ONE place belongs on the scale and a service retunes it once; a value used in exactly ONE place (a 6px status dot) does NOT, and is set at the call site on that component\'s own --*-icon-size / --*-glyph-size token (`style={{ "--menu-icon-size": "6px" }}` or a `[data-…]`-scoped theme rule). An inline custom property wins by inheritance proximity, so tier 2 never needs !important, a :root override, or a fork.',
+  },
+  {
     name: "--overlay-z-index",
     category: "semantic",
     tier: "semantic",
@@ -236,6 +242,12 @@ export const TOKENS: TokenEntry[] = [
     category: "semantic",
     tier: "semantic",
     role: "PageContainer TOP inset under `headerScale=\"chrome\"` — the second half of the same fact the title step answers: chrome sits ON the frame's edge. Default `0px`, so a chrome page opens flush; a document page keeps `--space-page-active-y` (24px, 16px below the 720px step) because a title needs air above it. Measured on a consumer chat screen: an otherwise correctly-sized channel head started at y=24 against a design that starts it at y=0, and those 24px came straight off the transcript viewport (617px in the design, 587px in the app). It is a knob rather than a literal (rule #44) so a service whose grid wants its chrome inset writes `--page-pad-block-start-chrome: var(--space-2)` once instead of forking the page shell, and it is read ONLY when the prop is passed, so no document page resolves it. Block-start only — the page's bottom edge belongs to `stickyFooter`, which zeroes it for its own reason.",
+  },
+  {
+    name: "--page-header-min-block-size-chrome",
+    category: "semantic",
+    tier: "semantic",
+    role: "PageContainer BAND HEIGHT under `headerScale=\"chrome\"` (gh#331) — the third half of the same fact the title step and the flush top edge answer. A document header is content-height, correctly: a title is as tall as the title is. Chrome is furniture, and furniture needs a band that things centre INTO. Without one, the band's vertical centre is a function of its own copy — measured in Chromium on the catalogue page, 42.02px with an `extra` control and 40.38px without — so nothing in the page can be aligned to it and no service can aim at a number. Default `auto` (rule #44, the quiet state): no floor, content-height, byte-identical to every page shipped before the token existed, chrome pages included. The BAND-HEIGHT AXIS HAS ONE OWNER and it is `--app-shell-bar-height` (`--centered-shell-bar-height` already reads it), so the one line a service writes to put its page chrome on the shell bar's band is `--page-header-min-block-size-chrome: var(--app-shell-bar-height)` — the band becomes 48px and the title column and `extra` both centre at y=24 regardless of copy length. It is NOT that value by default because a chrome `PageContainer` is not necessarily inside an `AppShell` (the canonical chat composition renders one inside a bordered region, a SplitPane pane, a Card), and a band that is not trying to line up with a bar has no business inheriting that bar's height. A MIN, never a height: a taller `extra` (an `lg` control, a wrapped JA/VI channel name) still fits instead of overflowing. The header's own `--page-header-pad-bottom` lives INSIDE the band (border-box); under the canonical chrome composition (`variant=\"ghost\"`) that pad is 0 and the centring is exact.",
   },
   {
     name: "--page-header-pad-bottom",
@@ -669,7 +681,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--app-shell-bar-{inset,inset-compact,gap}",
     category: "component",
     tier: "component",
-    role: "AppShell top-bar chrome (gh#213) — `--app-shell-bar-inset` is the bar's inline padding (default --space-4), `--app-shell-bar-inset-compact` the tighter value applied below the 900px breakpoint where the docked rail is gone (default --space-3), `--app-shell-bar-gap` the gap between the bar's direct children (default --space-3). Height stays `--app-shell-bar-height` (3rem), which now holds at EVERY width — a duplicate 768px rule used to override it with a literal.",
+    role: "AppShell top-bar chrome (gh#213, re-owned gh#330) — `--app-shell-bar-inset` is the bar's inline padding, `--app-shell-bar-inset-compact` the tighter value below the compact step, `--app-shell-bar-gap` the gap between the bar's direct children (default --space-3). ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS: the bar sits in the SAME grid track as `.app-main`, directly above the page, so its first control and the page title are on one vertical edge. The two insets used to name their own values (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and nothing reconciled them — measured in Chromium, the bar's content started at x=80 and the page header's at x=88 (1512px), and because the two sides stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even constant (8px at 1512, 12px between 720 and 900, 4px below 720), which a consumer cannot correct by hand. The page gutter now OWNS the axis and these knobs read it: `--app-shell-bar-inset: var(--space-page-x)` (24px), `--app-shell-bar-inset-compact: var(--space-page-compact-x)` (16px), stepping at the PAGE's `(max-width: 720px)`, not the shell's 900px restructure. GEOMETRY MOVED — the bar's inline padding went 16px → 24px (12px → 16px compact, and 12px → 24px between 720 and 900); the page did not move. The NAMES are unchanged, so a theme that already sets either knob keeps working, and a bar that genuinely wants to sit tighter than its page still has its own. Height stays `--app-shell-bar-height` (3rem) at EVERY width, and it is also the owner of the chrome BAND-HEIGHT axis — see `--page-header-min-block-size-chrome`.",
   },
   {
     name: "--topbar-{height,inset,gap}",

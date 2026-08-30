@@ -8,6 +8,15 @@
  * `planReleaseCommands`, so `src/test/__tests__/release-workflow.test.ts` can prove offline that
  * the coordinated target metadata and every preflight gate precede the first `npm publish`
  * (issue #230).
+ *
+ * PIPELINE: merge to `main` → CI. Push a `vX.Y.Z` tag → this script.
+ *
+ *   node scripts/release.mjs --tag v19.1.0        the normal path (npm-publish.yml, tag push)
+ *   node scripts/release.mjs --ui minor --mcp sync  manual escape hatch: bump, publish, commit
+ *   node scripts/release.mjs --adopt-staged 19.1.0 --mcp sync   promote an already-published pair
+ *   node scripts/release.mjs --recovery           resume a recorded, interrupted release
+ *   … --full-verify                               re-verify the tree locally instead of trusting
+ *                                                 CI's verdict on the commit
  */
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync } from "node:fs";
@@ -32,8 +41,18 @@ const flag = (name, fallback) => {
 const recovery = args.includes("--recovery");
 const metadataPlan = args.includes("--metadata-plan") || args.includes("--dry-run");
 const adoptStagedVersion = flag("--adopt-staged", null);
-const uiBump = recovery || adoptStagedVersion ? "skip" : flag("--ui", "skip");
-const mcpBump = recovery ? "sync" : flag("--mcp", "skip");
+/**
+ * `--tag vX.Y.Z` is the normal path: a tag push starts the release, the tag names the version, and
+ * the tree must already carry it. `--ui <bump>` remains for the manual workflow_dispatch escape
+ * hatch, which still bumps and commits.
+ */
+const tagRef =
+  flag("--tag", null) ??
+  (process.env.GITHUB_REF_TYPE === "tag" ? process.env.GITHUB_REF_NAME : null);
+/** Opt OUT of trusting CI's verdict on the commit: re-verify the whole tree locally instead. */
+const fullVerify = args.includes("--full-verify");
+const uiBump = recovery || adoptStagedVersion || tagRef ? "skip" : flag("--ui", "skip");
+const mcpBump = recovery || tagRef ? "sync" : flag("--mcp", "skip");
 const repositoryRoot = process.cwd();
 const sourceHead = execFileSync("git", ["rev-parse", "HEAD"], {
   cwd: repositoryRoot,
@@ -78,6 +97,8 @@ try {
     sourceHead,
     recoveryState,
     adoptStagedVersion,
+    tagRef,
+    fullVerify,
   });
 
   if (!metadataPlan) {
@@ -99,6 +120,8 @@ try {
     sourceHead,
     recoveryState,
     adoptStagedVersion,
+    tagRef,
+    fullVerify,
     recoveryDirectory: metadataPlan ? null : recoveryDirectory,
     dryRun: metadataPlan,
     runStep: runtime.runStep,

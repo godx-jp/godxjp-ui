@@ -75,7 +75,8 @@ describe("gh#254 — a clipping single-line box owns its line-height", () => {
     const row = rule(".sb-nav-item");
     expect(row).toContain("height: var(--sidebar-nav-item-height);");
     expect(row).toContain("align-items: center;");
-    // 1.5 × 0.8125rem = 19.5px, comfortably inside the 32px row, so nothing reflows.
-    expect(shellTokens).toMatch(/--sidebar-nav-item-font-size:\s*0\.8125rem;/);
+    // 1.5 × --font-size-xs (≈12.47px) = 18.7px, comfortably inside the 32px row, so nothing
+    // reflows — the same headroom the pre-gh#329 19.5px had, one step lower.
+    expect(shellTokens).toMatch(/--sidebar-nav-item-font-size:\s*var\(--font-size-xs\);/);
   });
 });

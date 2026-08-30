@@ -701,11 +701,6 @@
       display: none;
     }
 
-    /* The docked rail is gone, so the bar tightens against the viewport edge (knob, not a literal). */
-    .app-topbar {
-      padding-inline: var(--app-shell-bar-inset-compact);
-    }
-
     /* Bar-less shell (data-topbar="none") at narrow widths: the bar comes back for the hamburger
      * ALONE — the only route to navigation once the docked rail is hidden. The `auto` row picks up
      * its height from the header's min-height, so no grid-template-rows is restated here, and none
@@ -752,12 +747,27 @@
       display: flex;
     }
 
-    .app-root[data-responsive-navigation="docked"] > .app-topbar {
-      padding-inline: var(--app-shell-bar-inset);
-    }
-
+    /* (There is deliberately no `padding-inline` undo for docked mode any more. It existed to
+     * cancel a bar inset that stepped on the SHELL's 900px restructure; since gh#330 the inset
+     * steps on the PAGE's 720px step instead, and a docked page tightens its own gutters at that
+     * same step — so undoing the bar here would re-open the misalignment the step exists to
+     * keep closed.) */
     .app-root[data-responsive-navigation="docked"] .app-mobile-nav-trigger {
       display: none;
+    }
+  }
+
+  /* The compact step of the HORIZONTAL PAGE-INSET AXIS (gh#330). It is deliberately NOT the shell's
+   * 900px restructure breakpoint: the bar's inset is not a fact about whether a rail is docked, it
+   * is a fact about where the page's content edge is — and the page steps its gutters to
+   * --space-page-compact-x at exactly `(max-width: 720px)` (see styles/layout.css ·
+   * `.ui-page-container`). Stated with the identical condition so the two sides can never drift
+   * apart again; the shell's own restructure block above still owns everything that IS about the
+   * rail. This block mentions `.app-topbar` only, so the one-breakpoint `.app-root` contract
+   * (gh#213) is untouched. */
+  @media (max-width: 720px) {
+    .app-topbar {
+      padding-inline: var(--app-shell-bar-inset-compact);
     }
   }
 

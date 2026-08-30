@@ -6,7 +6,7 @@ Every visual dimension has **one canonical owner**. Apps never patch spacing, de
 
 ```
 src/tokens/base.css          ← token manifest; imports every base token file
-src/tokens/foundation.css    ← primitive color accents, typography, raw spacing, ratio, radius, shadow
+src/tokens/foundation.css    ← primitive color accents, typography, raw spacing, icon size, ratio, radius, shadow
 src/tokens/semantic/         ← semantic aliases by UI role
   layout.css                 ← page/section/stack/inline tokens
 src/tokens/components/       ← component token files
@@ -94,6 +94,71 @@ Runtime scale: app `theme.css` overrides → `--font-size-sm` on root.
 | `<Table>` cells                   | `table-layout.css` `[data-slot="table-*"]` |
 
 **Apps:** no Tailwind `p-*`, `m-*`, `gap-*`, `space-*`.
+
+### Icon size (gh#326)
+
+Icon was the last geometric axis without a scale. Twenty-eight component tokens declared raw
+numbers, and between them they used exactly **nine values** — the vocabulary was already there,
+nobody had written it down. `foundation.css` now does:
+
+| Token             | rem        | px     |                             |
+| ----------------- | ---------- | ------ | --------------------------- |
+| `--icon-size-2xs` | `0.625rem` | **10** | presence dot on an avatar   |
+| `--icon-size-xs`  | `0.75rem`  | **12** | table sort caret, xs button |
+| `--icon-size-sm`  | `0.875rem` | **14** | `size="sm"` controls        |
+| `--icon-size-md`  | `1rem`     | **16** | **the default icon step**   |
+| `--icon-size-lg`  | `1.25rem`  | **20** | alert / launcher glyph      |
+| `--icon-size-xl`  | `1.5rem`   | **24** | upload tile, empty state    |
+| `--icon-size-2xl` | `2.25rem`  | **36** | StatCard medallion          |
+| `--icon-size-3xl` | `2.5rem`   | **40** | dropzone                    |
+| `--icon-size-4xl` | `3rem`     | **48** | empty-state box             |
+
+**A fixed list, not a ratio.** Unlike `--font-size-*` there is no `base * ratio^n` here, and that
+is deliberate: 14/16 = 0.875 but 20/16 = 1.25, so no single ratio generates these steps. Type can
+sit between pixels because hinting and antialiasing carry it; a 1px-stroke glyph cannot — half a
+pixel of icon is a blurred icon. Every step is a whole pixel at the 16px root, and a service
+retunes a **step**, never a ratio.
+
+**Not `--scaling`-multiplied.** The scale is the crisp pixel list; density is opted into by the
+tokens that want it — `--control-icon-size: calc(var(--icon-size-md) * var(--scaling))`. Whether a
+given icon tracks density stays a per-token decision. Do **not** point an icon token at
+`--space-*` to get density: that is the gh#328 category error — `--space-*` is a _spacing_ scale
+that happens to be scaled, so a density retune moves the glyph along an axis nobody chose.
+
+#### Two tiers, and where the boundary sits
+
+|            | When                                         | How                                                                   |
+| ---------- | -------------------------------------------- | --------------------------------------------------------------------- |
+| **Tier 1** | the value appears in **more than one place** | it earns a step on the scale; a service retunes the step once         |
+| **Tier 2** | the value appears in **exactly one place**   | set that component's own token **at the call site** — never the scale |
+
+A system with only tier 1 turns every exception into a hack (`!important`, a global override, a
+forked stylesheet); a system with only tier 2 loses consistency. The 6px status dot is the proof
+case: it will never be on an icon scale, and it is a real need.
+
+```tsx
+// Tier 2 — one instance, one arbitrary value. No !important, no :root override, no fork.
+<DropdownMenuItem style={{ "--menu-icon-size": "6px" } as React.CSSProperties}>…</DropdownMenuItem>
+```
+
+```css
+/* Tier 2, the theme form — scope it, don't globalise it. */
+[data-tenant="acme"] [data-slot="alert-icon"] {
+  --alert-dismiss-icon-size: 0.375rem;
+}
+```
+
+An inline custom property wins by **inheritance proximity**, not specificity, so it beats the
+`:root` default without any weight games. What keeps the route open is that every icon rule in
+`src/styles` reads its token through `var()` with no baked literal —
+`src/tokens/__tests__/icon-size-scale.test.ts` asserts exactly that, and carries a shrink-only
+list of the seven pre-existing rules that still bake a literal and are therefore unreachable from
+an app (`.ui-navigation-menu-trigger-icon` at `0.9rem` and `.tb-chip-icon` at `1.125rem` are also
+off-grid — 14.4px and 18px — and should be fixed first).
+
+**Before you add a step:** if a value is wanted in two places it belongs on the scale, and if it
+is wanted in one it does not. Adding a tenth step to serve a single call site is how a scale stops
+meaning anything.
 
 ### Component Tokens
 

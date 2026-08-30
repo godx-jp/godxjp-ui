@@ -75,7 +75,7 @@
    * var(--space-N): it replaces a flat Tailwind `size-4` step and must not start tracking the
    * density axis. */
   --alert-dismiss-rest-alpha: 0.7;
-  --alert-dismiss-icon-size: 1rem;
+  --alert-dismiss-icon-size: var(--icon-size-md);
   /* Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec
    * (a brand's success-bg/-border are often more present than the faint 5%/30% default). */
   --alert-bg-alpha: 0.05;
@@ -124,8 +124,8 @@
    * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own
    * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its
    * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one. */
-  --empty-state-icon-size: 3rem;
-  --empty-state-icon-glyph-size: 1.5rem;
+  --empty-state-icon-size: var(--icon-size-4xl);
+  --empty-state-icon-glyph-size: var(--icon-size-xl);
   --skeleton-row-gap: var(--space-stack-sm);
   --skeleton-cell-gap: var(--space-inline-lg);
   --skeleton-card-inset: var(--space-section-active);
@@ -202,7 +202,7 @@
    * NAMESPACE NOTE: sonner publishes its own `--toast-*` custom properties (--toast-icon-margin-*,
    * --toast-svg-margin-*, --toast-button-margin-*, --toast-close-button-*). Neither name below
    * collides with those; keep it that way when adding to this group. */
-  --toast-icon-size: 1rem;
+  --toast-icon-size: var(--icon-size-md);
   /* Viewport gutter of the mobile toast stack. Sonner passes `mobileOffset` straight into inline
    * CSS, so a var() string resolves normally. Flat 16px on purpose: this is a fixed inset from the
    * device edge (thumb reach / safe area), not a density-scaled gap inside a surface. */

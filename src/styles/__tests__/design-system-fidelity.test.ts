@@ -39,7 +39,13 @@ describe("DXS hi-fi visual contract", () => {
     const shell = read("../shell-layout.css");
 
     expect(tokens).toMatch(/--sidebar-nav-item-height:\s*2rem/);
-    expect(tokens).toMatch(/--sidebar-nav-item-font-size:\s*0\.8125rem/);
+    // The rail's label step is a STEP, not the hi-fi source's 13px (gh#329). 13 sits between
+    // --font-size-xs (≈12.47) and the 14px base, so the whole rail read off the system's type
+    // rhythm and stayed behind whenever a service retuned --font-size-base. The row's own rhythm —
+    // the 2rem height this test is really about — is unchanged, and 1.5 × 12.47 = 18.7px keeps the
+    // same headroom inside it.
+    expect(tokens).toMatch(/--sidebar-nav-item-font-size:\s*var\(--font-size-xs\)/);
+    expect(tokens).not.toMatch(/--sidebar-nav-item-font-size:\s*[\d.]/);
     expect(shell).toMatch(/@media \(width <= 56\.25rem\)/);
     expect(shell).toMatch(/\.sb-section \+ \.sb-section\s*\{[^}]*margin-top:/s);
   });
