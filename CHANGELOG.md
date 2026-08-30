@@ -221,8 +221,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **`CI (browser)` moved from the self-hosted fleet to GitHub-hosted `ubuntu-latest` (gh#316).**
-  Those jobs had been red for weeks because the hosts lack Chromium's shared libraries
+- **CI and CD are separate workflows, and now say so in their names.** They always were separate
+  files; what made the split look absent was a comment in `ci.yml` pointing at a `cd.yml` that
+  does not exist. The Actions tab now reads `CI · code`, `CI · browser`, `CI · release contract`,
+  `CD · publish to npm`, `CD · deploy preview to Pages`. The files keep their paths, so no run
+  history is orphaned.
+
+- **The test suite ran one file at a time. That single line was the hour.** `vitest.config.ts`
+  carried `fileParallelism: false`, so 455 test files each built a fresh module graph and a fresh
+  jsdom, in series, on a 10-core machine. The profile said so plainly: of 3409s, `import` was
+  2267s (67%) and `environment` 544s (16%), while the assertions themselves were 275s — **8%**.
+  Almost none of the wall clock was spent testing; it was spent rebuilding the world 455 times.
+  The line arrived with the first v6 snapshot commit and carried no rationale, so it had been
+  inherited rather than chosen — and it is the right setting only for a suite with cross-file
+  state leakage, which a full parallel run proves this one does not have.
+  Measured, same machine, same files: a 38-file slice went **323s → 90s**, and the full suite
+  **3409s → 1168s** (57 min → 19.5 min) with **470 files / 3126 tests all passing**.
+  CI gets the same win twice over: `verify:ci` was a single serial chain (build → 28 guards →
+  the whole suite), so it is now two jobs that run side by side, and the suite is sharded across
+  four more. `fail-fast: false` on the shards, because one red shard must not hide what the other
+  three would have said.
+- **`ci.yml` pointed at a `cd.yml` that does not exist.** Delivery has always been its own set of
+  workflows — `npm-publish.yml`, `preview-pages.yml`, `release-integrity.yml` — so the split was
+  real and only the comment was wrong, which made it look absent. Named them.
+
+- **`CI (browser)` was unblocked, then pointed at the `swarm-pool` self-hosted runners.** The
+  first move was to GitHub-hosted `ubuntu-latest`; the repo owner then chose the `swarm-pool`
+  fleet, so every workflow now targets `[self-hosted, swarm-pool]`. The lesson from the old fleet
+  is kept rather than re-learned: the Chromium step now DETECTS `apt-get` instead of assuming it,
+  and Node is bootstrapped before `pnpm/action-setup` because self-hosted images often ship 18.
+  The original diagnosis, unchanged:
+  those jobs had been red for weeks because the hosts lack Chromium's shared libraries
   (`libnspr4`, `libnss3`, `libasound2`) and `--with-deps` could not install them there: it shells
   out to apt-get, which is absent, so the step died at exit 127 before the browser was even
   downloaded. On ubuntu-latest apt-get exists, so `--with-deps` is not merely safe, it is the call

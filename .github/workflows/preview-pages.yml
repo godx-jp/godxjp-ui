@@ -1,4 +1,4 @@
-name: Deploy preview to Pages
+name: CD · deploy preview to Pages
 
 on:
   push:
@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, swarm-pool]
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6.0.9
@@ -36,7 +36,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, swarm-pool]
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}

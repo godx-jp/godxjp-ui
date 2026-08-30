@@ -1,11 +1,30 @@
-name: CI
+name: CI · code
 
-# Browser-free validation. Everything here runs on GitHub-hosted ubuntu-latest so it is
-# reproducible and independent of the self-hosted fleet — that fleet is heterogeneous
-# (some hosts run as root, some as a user; none ship apt-get) and every one of its
-# failures so far has been infrastructure, not code.
+# Browser-free validation, on the self-hosted `swarm-pool`.
 #
-# Browser-dependent gates live in ci-browser.yml; delivery lives in cd.yml.
+# CI / CD SPLIT — visible from the workflow names, which all carry the side they belong to:
+#   CI · code             this file        build, typecheck, lint, guards, the test suite
+#   CI · browser          ci-browser.yml   axe, geometry, contrast/visual, rendered runtime
+#   CI · release contract release-integrity.yml   @godxjp/ui <-> @godxjp/ui-mcp lockstep, every PR
+#   CD · publish to npm   npm-publish.yml  manual, credential-gated, publishes both in lockstep
+#   CD · deploy preview   preview-pages.yml the Pages deploy
+# The files were always separate; only an earlier comment here pointed at a `cd.yml` that does
+# not exist, which made the split look absent when it was merely mis-named.
+#
+# RUNNER — `[self-hosted, swarm-pool]`. Two things this pool must provide, both learned the hard
+# way from the previous fleet: a modern Node (the pnpm self-installer refuses to run on 18, so
+# Node is bootstrapped BEFORE pnpm/action-setup), and, for ci-browser.yml, Chromium's shared
+# libraries (libnspr4, libnss3, libasound2) unless the host is Debian-based — that workflow now
+# detects apt-get rather than assuming it, because assuming it is what made those jobs die at
+# exit 127 before the browser was even downloaded.
+#
+# WHY THIS IS TWO JOBS AND THE SUITE IS SHARDED
+# `verify:ci` was one serial chain: build, then 28 guards, then the whole vitest suite. On a
+# 4-core runner that is a single critical path with nothing overlapping. The guards do not
+# need the tests and the tests do not need the guards, so they run side by side, and the
+# suite is split across shards that run at the same time. The suite itself was also the
+# larger problem: it ran with `fileParallelism: false`, one file at a time — see
+# vitest.config.ts for the profile and the measurement.
 on:
   pull_request:
   push:
@@ -16,21 +35,53 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify:
-    name: Verify (build · typecheck · lint · guards · test)
-    runs-on: ubuntu-latest
+  static:
+    name: Build · typecheck · lint · guards
+    runs-on: [self-hosted, swarm-pool]
     steps:
       - uses: actions/checkout@v6
+      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
+      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
       - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # verify:ci == verify:static minus check:contrast / check:visual-audit, the only
-      # two gates in it that need Chromium. Those run in ci-browser.yml.
-      - name: verify:ci (all browser-free publish gates + test)
-        run: pnpm verify:ci
+      # verify:ci:static == verify:ci minus `pnpm test`, and verify:ci itself is verify:static
+      # minus check:contrast / check:visual-audit — the only two gates that need Chromium, which
+      # run in ci-browser.yml.
+      - name: verify:ci:static (every browser-free publish gate)
+        run: pnpm verify:ci:static
+
+  test:
+    name: Tests (shard ${{ matrix.shard }}/4)
+    runs-on: [self-hosted, swarm-pool]
+    strategy:
+      # Every shard runs to completion: one shard failing must not cancel the others, or a
+      # single red file hides whatever the rest would have told you.
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v6
+      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
+      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v6.0.9
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # No build step: the suite imports from `src`, not from `dist`. The `static` job owns the
+      # build and every gate that reads the shipped artifact.
+      - run: pnpm test -- --shard=${{ matrix.shard }}/4
 
   # NOTE: no lockstep job here on purpose — release-integrity.yml already owns the
   # @godxjp/ui ↔ @godxjp/ui-mcp release contract (and does it far more thoroughly),
@@ -39,9 +90,14 @@ jobs:
 
   contracts:
     name: Static frame contracts
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, swarm-pool]
     steps:
       - uses: actions/checkout@v6
+      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
+      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
       - uses: actions/setup-node@v6
         with:
@@ -53,9 +109,14 @@ jobs:
 
   coverage:
     name: Frame coverage (contract inventory)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, swarm-pool]
     steps:
       - uses: actions/checkout@v6
+      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
+      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - uses: pnpm/action-setup@v6.0.9
       - uses: actions/setup-node@v6
         with:
