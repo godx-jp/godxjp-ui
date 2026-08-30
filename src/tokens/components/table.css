@@ -177,4 +177,15 @@
    * Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }`
    * so a scoped [data-tenant]/.dark override of --border still reaches every row. */
   --table-row-border-width: 1px;
+  /* Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside
+   * `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three
+   * edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind
+   * it, so without it the header band floats (gh#306). Scoped by construction to the case that
+   * needs it — a BANDED header, a CardBar or a headerless card already draw their own line there
+   * and never reach this token — so a service tunes only the plain-header divider: `0` for a
+   * borderless full-bleed table, heavier for a stronger band. Colour and style are NOT set here:
+   * only the width is restored, so the surface's own border declaration still owns them and a
+   * scoped [data-tenant]/.dark override of --border reaches it.
+   * Default = the same hairline the table's other rules draw. */
+  --table-flush-divider-width: var(--table-row-border-width);
 }

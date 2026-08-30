@@ -42,7 +42,9 @@ const THEME = `
   --secondary: 218 43% 40%;          /* Ai blue #3A5A91 */
   --secondary-foreground: 0 0% 100%;
   --muted: 40 30% 10%; --muted-foreground: 39 28% 70%;  /* text-secondary #C8BAA0 (AA on dark) */
-  --border: 36 22% 14%; --input: 36 18% 22%;
+  /* --input is the CONTROL boundary and is held to 3:1 (SC 1.4.11) — 3.70 on the page, 3.56 on
+     a card, 3.21 on --muted. It was 36 18% 22% = 1.52:1. --border is decorative chrome; it stays. */
+  --border: 36 22% 14%; --input: 36 18% 40%;
   --success: 145 63% 49%; --warning: 33 90% 44%; --destructive: 0 84% 60%; --info: 213 94% 68%;
   --radius: 1rem; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 20px; --radius-2xl: 24px;
   --card-radius: var(--radius-2xl); --control-radius: var(--radius-lg);

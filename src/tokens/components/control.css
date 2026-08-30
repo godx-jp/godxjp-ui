@@ -106,8 +106,16 @@
   --slider-track-background: initial;
   --slider-range-background: initial;
 
+  /* Switch OFF track fill (gh#315) — `initial`, default hsl(var(--input)). Its own knob so a
+   * service can quieten the off-track without dragging the --input control-boundary role back
+   * below the WCAG SC 1.4.11 floor (rule #45); whatever you set still owes 3:1 against the page
+   * and against the thumb (--background), or "off" stops being a visible state. */
+  --switch-unchecked-background: initial;
+
+  /* ColorPicker — width of the hex text field beside the swatch. */
   --color-picker-input-width: 6.5rem;
 
+  /* Command / CommandPalette — list height, inner paddings and the palette's own box. */
   --command-list-max-height: min(300px, 50vh);
   --command-input-padding-x: var(--space-3);
   --command-group-padding: var(--space-1);
@@ -119,6 +127,9 @@
   --command-palette-hint-padding-y: var(--space-2);
   --command-palette-hint-padding-x: var(--space-4);
   --command-palette-hint-gap: var(--space-4);
+
+  /* SearchInput — the inset the leading/trailing icons sit at, and the field padding derived
+   * from it so the text never runs under an icon. */
   --search-input-edge-inset: var(--space-3);
   --search-input-start-padding: calc(
     var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap)
@@ -127,6 +138,8 @@
     var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap)
   );
 
+  /* The --font-size-xs tier, spelled once per control that reads it, so a service can retune a
+   * single one of them without moving the whole scale. */
   --choice-description-font-size: var(--font-size-xs);
   --color-picker-hex-font-size: var(--font-size-xs);
   --command-group-heading-font-size: var(--font-size-xs);
@@ -178,6 +191,34 @@
   /* Input centres its affix on the field's single line; a textarea has no single line to centre
    * on, so its clear control parks at the top-end corner instead. */
   --textarea-clear-inset-block-start: var(--space-2);
+  /* MULTILINE BOX — the block padding of `.ui-control-multiline` (Textarea). It was a bare
+   * `--space-2` inside the padding shorthand, which made it unreachable for a service that runs a
+   * denser composer, AND it is the constant the auto-grow row maths has to add back, so the two
+   * had to read the same knob or drift (#45). */
+  --control-multiline-padding-block: var(--space-2);
+  /* TEXTAREA AUTO-GROW (gh#310) — `autoGrow` grows the box with its content between a floor and a
+   * ceiling expressed in TEXT ROWS. Rows, not pixels, because a row count survives a density
+   * change and a `--font-size-base` retheme where a px ceiling would silently stop matching the
+   * visible line count. Defaults reproduce today's geometry when `autoGrow` is absent (#44). */
+  /* The unit a "row" is measured in. `initial` on purpose: the call site reads
+   * `var(--textarea-autogrow-line-height, var(--line-height-normal))`, so a service that retunes
+   * the multiline line-height for CJK legibility retunes the ceiling with it (#46). Unitless —
+   * it is multiplied by `--control-font-size`. */
+  --textarea-autogrow-line-height: initial;
+  /* Floor of the grown box, in text rows. The `minRows` prop overrides per instance — the same
+   * theme-global / prop-local priority as `--form-label-width` vs `labelWidth`. The floor is
+   * additionally clamped up to `--control-height` so a resting one-row composer still lines up
+   * with the Input / Button beside it instead of undercutting the control tier. */
+  --textarea-autogrow-min-height-rows: 1;
+  /* Ceiling of the grown box, in text rows; past it the control scrolls internally instead of
+   * pushing the page. `maxRows={0}` sets this to `infinity` for an unbounded box. */
+  --textarea-autogrow-max-height-rows: 8;
+  /* The non-text part of the box the row maths must add back: block padding + border, both
+   * edges. `.ui-textarea-autogrow--ghost` re-declares it without the border, because the ghost
+   * variant drops its own chrome. */
+  --textarea-autogrow-box-inset: calc(
+    (var(--control-multiline-padding-block) + var(--control-border-width)) * 2
+  );
   /* A field parking TWO inline affixes (TimePicker's clear+clock, DatePicker's clear+calendar)
    * reserves a wider end than the single-affix case. */
   --control-inline-affix-pair-space-inline-end: 3.5rem;

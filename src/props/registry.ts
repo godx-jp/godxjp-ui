@@ -241,6 +241,12 @@ export const VOCABULARY_REGISTRY = {
     description:
       "HTTP status an ErrorSurface presents — 400 | 403 | 404 | 500 | 503 (numeric); drives the default icon, tone and mode",
   },
+  OrientationProp: {
+    file: "vocabulary/layout.prop.ts",
+    category: "layout",
+    description:
+      "Axis of a rule / track / group — horizontal (inline axis, the default) | vertical (block axis). One shared meaning for `orientation` across Separator, Steps, RadioGroup and Toolbar.",
+  },
   AuthShellPresetProp: {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
@@ -371,6 +377,18 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description:
       "Reveal entrance-stagger ordinal (0..6) — an index into the motion ladder, never a raw ms",
+  },
+  ActivityVariantProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "Activity ambient mark — dots (typing) | pulse (live/recording) | bar (indeterminate sync)",
+  },
+  ActivityAnnounceProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "Whether an ambient indicator announces its label — false (default, no live region) | polite",
   },
 
   // navigation.prop.ts
@@ -653,6 +671,29 @@ export const COMPONENT_PROP_REGISTRY = {
         reason: "Auth-specific vertical-density scope for card descendants.",
       },
       "AuthShellPresetProp",
+    ],
+  },
+  SeparatorProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "OrientationProp",
+      "LabelProp",
+      "TextAlignProp",
+      "TextToneProp",
+      "ClassNameProp",
+      {
+        field: "labelAlign",
+        local: true,
+        reason:
+          "Placement of the label ON the rule (which half is short), not the text alignment of a block — it reads the shared TextAlignProp start|center|end vocabulary so it stays logical under RTL.",
+      },
+      {
+        field: "decorative",
+        local: true,
+        reason:
+          "Radix Separator a11y fork: role=none vs a real role=separator. A `label` flips the default to false because the text is content, not decoration.",
+      },
     ],
   },
   AuthDividerProp: {
@@ -968,6 +1009,25 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  ActivityProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "ActivityVariantProp",
+      "SizeProp",
+      "TextToneProp",
+      "LabelProp",
+      "ChildrenProp",
+      "ActivityAnnounceProp",
+      "ClassNameProp",
+      {
+        field: "announce",
+        local: true,
+        reason:
+          "Ambient live-region opt-in — ActivityAnnounceProp vocabulary; deliberately NOT a boolean so the value names the politeness level.",
+      },
+    ],
+  },
   TextProp: {
     group: "general",
     file: "components/general.prop.ts",
@@ -992,7 +1052,15 @@ export const COMPONENT_PROP_REGISTRY = {
   TextareaProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["PlaceholderProp", "DisabledProp"],
+    vocabulary: [
+      "PlaceholderProp",
+      "DisabledProp",
+      "ValueProp",
+      "DefaultValueProp",
+      "OnChangeProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
   },
   NumberInputProp: {
     group: "data-entry",
@@ -1263,9 +1331,14 @@ export const COMPONENT_PROP_REGISTRY = {
   AvatarProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["AvatarShapeProp", "ChildrenProp", "ClassNameProp"],
+    vocabulary: ["AvatarShapeProp", "LabelProp", "ChildrenProp", "ClassNameProp"],
   },
   AvatarAppearanceProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
+  AvatarPresenceProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
     vocabulary: [],
@@ -1332,6 +1405,48 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/data-display.prop.ts",
     vocabulary: ["ValueProp", "LabelProp", "SizeProp", "ClassNameProp", "IdProp"],
+  },
+  ScrollAreaAnchorProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "anchor",
+        local: true,
+        reason:
+          'Edge the scrolling viewport sticks to as content grows ("none" | "bottom"). A closed union, not a boolean pair — the third edge ("top", for an inverted feed) is a value, not another flag.',
+      },
+    ],
+  },
+  ScrollAreaProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "OnValueChangeProp",
+      {
+        field: "viewportRef",
+        local: true,
+        reason:
+          "Ref to the SCROLLING element (the Radix viewport), which the component's own `ref` cannot reach — the root is overflow:hidden.",
+      },
+      {
+        field: "anchor",
+        local: true,
+        reason: "See ScrollAreaAnchorProp — the sticky edge vocabulary.",
+      },
+      {
+        field: "anchorOffset",
+        local: true,
+        reason:
+          'Per-instance override of --scroll-area-anchor-offset: how close to the bottom still counts as "following".',
+      },
+      {
+        field: "onAnchoredChange",
+        local: true,
+        reason:
+          'Pinned-state change handler (boolean), so the consumer can render its own focusable "jump to newest" affordance.',
+      },
+    ],
   },
   ChartSeriesProp: {
     group: "data-display",
@@ -1715,7 +1830,36 @@ export const COMPONENT_PROP_REGISTRY = {
   ToggleProp: {
     group: "data-entry",
     file: "components/ui/toggle.tsx",
-    vocabulary: ["SizeProp", "ClassNameProp"],
+    vocabulary: [
+      "SizeProp",
+      "ClassNameProp",
+      {
+        field: "count",
+        local: true,
+        reason:
+          "Counter-pill vocabulary shared VERBATIM with ButtonProp (count/overflowCount/showZero) so a counted filter tab and a counted pressed chip are one vocabulary — gh#312.",
+      },
+      {
+        field: "countLabel",
+        local: true,
+        reason:
+          "Localized unit folded into the accessible name so a counted icon/emoji chip never announces as a bare number.",
+      },
+    ],
+  },
+  ToggleGroupItemProp: {
+    group: "data-entry",
+    file: "components/ui/toggle-group.tsx",
+    vocabulary: [
+      "SizeProp",
+      "ClassNameProp",
+      {
+        field: "count",
+        local: true,
+        reason:
+          "Per-item counter pill — variant/size come from group context, but the number is per-item data (gh#312).",
+      },
+    ],
   },
   CommandPaletteProp: {
     group: "data-entry",

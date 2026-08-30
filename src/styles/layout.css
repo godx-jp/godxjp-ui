@@ -4,19 +4,94 @@
  */
 
 @layer components {
+  /* SEPARATOR — a tokenized rule, optionally INTERRUPTED by a label (gh#308).
+   *
+   * Two shapes share one class. WITHOUT a label the element IS the rule, exactly as before: the
+   * `:not([data-labelled])` guard keeps the plain form byte-identical (the `1px` and the `--border`
+   * are now `--separator-rule-{size,color}`, whose defaults are those same values). WITH a label
+   * the root becomes the three-cell grid `rule · label · rule` — `minmax(0, 1fr)` on both halves so
+   * a long ja/vi label clamps the rules instead of overflowing the container, and `auto` on the
+   * label so it is never squeezed to zero. `labelAlign` only re-measures the SHORT half, and it is
+   * a grid TRACK on the inline axis, so start/end swap under `dir="rtl"` with no extra rule.
+   *
+   * `tone` re-points the two colour knobs on the root rather than restating `background`/`color`
+   * per tone, so one declaration paints both shapes and a service override still wins. */
   .ui-separator {
     flex-shrink: 0;
-    background: hsl(var(--border));
   }
 
-  .ui-separator[data-orientation="horizontal"] {
+  .ui-separator:not([data-labelled])[data-orientation="horizontal"] {
     width: 100%;
-    height: 1px;
+    height: var(--separator-rule-size);
+    background: hsl(var(--separator-rule-color, var(--border)));
   }
 
-  .ui-separator[data-orientation="vertical"] {
-    width: 1px;
+  .ui-separator:not([data-labelled])[data-orientation="vertical"] {
+    width: var(--separator-rule-size);
     height: 100%;
+    background: hsl(var(--separator-rule-color, var(--border)));
+  }
+
+  .ui-separator[data-labelled] {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--separator-label-gap, var(--space-3));
+  }
+
+  .ui-separator[data-labelled][data-label-align="start"] {
+    grid-template-columns: var(--separator-label-inset, var(--space-6)) auto minmax(0, 1fr);
+  }
+
+  .ui-separator[data-labelled][data-label-align="end"] {
+    grid-template-columns: minmax(0, 1fr) auto var(--separator-label-inset, var(--space-6));
+  }
+
+  .ui-separator-rule {
+    block-size: var(--separator-rule-size);
+    background: hsl(var(--separator-rule-color, var(--border)));
+  }
+
+  .ui-separator-label {
+    min-inline-size: 0;
+    color: hsl(var(--separator-label-color, var(--muted-foreground)));
+    font-size: var(--separator-label-font-size);
+    font-weight: var(--separator-label-font-weight);
+    line-height: var(--separator-label-line-height);
+    /* A single unbroken token (a URL, a long ja compound) must still wrap rather than push the
+     * grid past its container. */
+    overflow-wrap: anywhere;
+  }
+
+  .ui-separator[data-tone="muted"] {
+    --separator-rule-color: var(--separator-tone-muted-rule-color, var(--border));
+    --separator-label-color: var(--separator-tone-muted-label-color, var(--muted-foreground));
+  }
+
+  .ui-separator[data-tone="primary"] {
+    --separator-rule-color: var(--separator-tone-primary-rule-color, var(--primary));
+    --separator-label-color: var(--separator-tone-primary-label-color, var(--primary));
+  }
+
+  .ui-separator[data-tone="success"] {
+    --separator-rule-color: var(--separator-tone-success-rule-color, var(--success));
+    --separator-label-color: var(--separator-tone-success-label-color, var(--success));
+  }
+
+  .ui-separator[data-tone="warning"] {
+    --separator-rule-color: var(--separator-tone-warning-rule-color, var(--warning));
+    --separator-label-color: var(--separator-tone-warning-label-color, var(--warning));
+  }
+
+  .ui-separator[data-tone="destructive"] {
+    --separator-rule-color: var(--separator-tone-destructive-rule-color, var(--destructive));
+    --separator-label-color: var(--separator-tone-destructive-label-color, var(--destructive));
+  }
+
+  .ui-separator[data-tone="info"] {
+    --separator-rule-color: var(--separator-tone-info-rule-color, var(--info));
+    --separator-label-color: var(--separator-tone-info-label-color, var(--info));
   }
 
   .ui-aspect-ratio {

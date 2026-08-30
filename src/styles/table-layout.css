@@ -289,10 +289,9 @@
     inset-inline-end: 0;
   }
 
-  [data-slot="card-content"][data-flush] .ui-data-table-surface {
-    border-width: 0;
-    border-radius: 0;
-  }
+  /* The flush frame contract lives in ONE place, next to `.ui-table-bordered` below — it has to
+   * cover BOTH full-bleed surfaces (`.ui-data-table-surface` and `<Table bordered>`) or the fix
+   * for one silently regresses the other (gh#305 → gh#306). */
 
   @media (min-width: 640px) {
     .ui-data-table-scroll {
@@ -368,17 +367,60 @@
     border-inline-end: 1px solid var(--table-border-color, hsl(var(--border)));
   }
 
-  /* A bordered table sitting FLUSH inside a Card already has the card's frame around it —
-   * its own outer frame doubles up as two nested rounded borders (measured on
-   * customer-inquiries detail: TABLE 1px inside .ui-card 1px, gh#305). Drop the three edges
-   * that coincide with the card frame, but KEEP border-block-start: the top edge meets the
-   * CardHeader area, not the card border, and without it the header band floats with no
-   * separating line (measured on a rental detail's 出荷伝票一覧 section, gh#306). The
-   * vertical column rules above and TableRow's horizontal rules stay, so the grid inside
-   * the card is unchanged. A bordered table NOT in a flush card keeps its full frame. */
-  [data-slot="card-content"][data-flush] .ui-table-bordered {
-    border: 0;
-    border-block-start: 1px solid var(--table-border-color, hsl(var(--border)));
+  /* ── The flush full-bleed frame contract (gh#305 · gh#306) ────────────────────────────────
+   * A full-bleed surface inside `<CardContent flush>` already has the CARD's 1px frame around
+   * it, so its own outer frame doubles up as two nested rounded borders (measured on
+   * customer-inquiries detail: TABLE 1px inside the card's 1px, gh#305). Both full-bleed
+   * surfaces are covered by ONE rule: `.ui-data-table-surface` (the DataTable's own frame) and
+   * `.ui-table-bordered` (`<Table bordered>`). They used to be two rules a hundred lines apart
+   * and the gh#306 repair reached only the second — the canonical
+   * `<Card><CardContent flush><DataTable/></CardContent></Card>` kept a frameless surface, so
+   * the header still floated with no line under it (measured at HEAD: surface
+   * border-top-width 0px).
+   *
+   * ERASE, never repaint (rule #44). The earlier repair spelled this `border: 0` followed by a
+   * hard-coded `border-block-start: 1px solid …` — chrome painted unconditionally, which is the
+   * bug pattern the rule exists to forbid: it re-drew the line even where the card already had
+   * one (a banded header's own bottom border → a doubled 2px rule) and even where the card frame
+   * itself sits (a headerless card → a doubled top edge). Here only the WIDTH is zeroed, so the
+   * style and colour stay whatever the surface's own border declared, and the block-start edge is
+   * restored only where something actually needs separating.
+   *
+   * `.ui-skeleton-table` rides along in BOTH lists on purpose. It is the placeholder the real
+   * DataTable swaps for, and alert-layout.css says so in as many words ("mirrors
+   * `.ui-data-table-surface` … so the skeleton placeholder and the real DataTable it swaps for
+   * sit identically"). Give the surface a divider without giving the skeleton one and that
+   * promise breaks: a 1px line appears the instant the data lands. (alert-layout.css keeps its
+   * own copy of the erase half so Skeleton is still framed correctly for a consumer who imports
+   * it WITHOUT this layer.) */
+  [data-slot="card-content"][data-flush]
+    :is(.ui-data-table-surface, .ui-table-bordered, .ui-skeleton-table) {
+    border-width: 0;
+    border-radius: 0;
+  }
+
+  /* …restored ONLY when a plain CardHeader sits DIRECTLY above the flush body. That edge is the
+   * one place a flush surface's border does NOT coincide with something the card already draws:
+   * above it is the header's whitespace, not the card frame (gh#306, measured on a rental
+   * detail's 出荷伝票一覧 section). Adjacent-sibling, not `:has()` on the card, so the three
+   * counter-cases fall out by construction and need no extra rule: no header above → the card
+   * frame is the top edge; a BANDED header → its own `border-bottom` is the divider; a CardBar
+   * above → its own `border-block` is. Width comes from a token (rules #44/#45) whose default is
+   * the same hairline the surface itself draws, so a service quiets the divider once instead of
+   * forking this file. */
+  [data-slot="card-header"]:not([data-banded])
+    + [data-slot="card-content"][data-flush]
+    :is(.ui-data-table-surface, .ui-table-bordered, .ui-skeleton-table) {
+    border-block-start-width: var(--table-flush-divider-width);
+  }
+
+  /* …and quieted again when a DataTable TOOLBAR sits between the header and the surface: the
+   * flush toolbar already draws that dividing line (see `.ui-data-table-toolbar` above), so the
+   * surface below it would stack a second hairline on top of it. Done by setting the token on the
+   * root rather than by another `border-*` rule, so it INHERITS down to whichever surface ends up
+   * under the toolbar and cannot get into a specificity race with the restore rule. */
+  [data-slot="card-content"][data-flush] .ui-data-table-root:has(.ui-data-table-toolbar) {
+    --table-flush-divider-width: 0px;
   }
 }
 

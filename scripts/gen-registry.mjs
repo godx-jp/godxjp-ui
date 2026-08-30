@@ -133,7 +133,7 @@ const registry = {
   homepage: HOMEPAGE,
   items: items.map(({ files, ...meta }) => ({
     ...meta,
-    files: files.map(({ content, ...f }) => f),
+    files: files.map(({ content: _content, ...f }) => f),
   })),
 };
 

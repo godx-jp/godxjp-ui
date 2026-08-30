@@ -207,6 +207,14 @@
     }
   },
   "dataDisplay": {
+    "avatar": {
+      "presence": {
+        "online": "Trực tuyến",
+        "away": "Vắng mặt",
+        "busy": "Bận",
+        "offline": "Ngoại tuyến"
+      }
+    },
     "carousel": {
       "roleDescription": "băng chuyền",
       "ariaLabel": "Băng chuyền",

@@ -9,6 +9,81 @@ export interface ComponentToken {
 
 export const COMPONENT_TOKENS: ComponentToken[] = [
   {
+    "name": "--activity-mark-size",
+    "value": "0.25em",
+    "description": "Mark geometry. `em`-based so the whole mark tracks `--activity-font-size-*` (and therefore * `--font-size-base` and the density axis) instead of pinning a px diameter per size step."
+  },
+  {
+    "name": "--activity-mark-offset",
+    "value": "0.25em",
+    "description": "Travel of one `dots` step — the loop counterpart to `--reveal-distance`, named to match. * It is ALSO the height the mark row reserves, so the indicator appearing under a composer * never shifts the row."
+  },
+  {
+    "name": "--activity-mark-rest-alpha",
+    "value": "0.35",
+    "description": "Resting opacity of a dot at the bottom of its cycle. Never 0: a dot that vanishes reads as a * rendering bug at the trough, and the reduced-motion resting state must stay fully legible."
+  },
+  {
+    "name": "--activity-pulse-mark-size",
+    "value": "0.5em",
+    "description": "The single `pulse` mark — a breathing dot (live / recording), bigger than one `dots` dot * because it carries the whole affordance alone."
+  },
+  {
+    "name": "--activity-gap",
+    "value": "var(--space-1)",
+    "description": "Mark-to-mark and mark-to-label gap."
+  },
+  {
+    "name": "--activity-font-size-xs",
+    "value": "var(--font-size-2xs)",
+    "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
+  },
+  {
+    "name": "--activity-font-size-sm",
+    "value": "var(--font-size-xs)",
+    "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
+  },
+  {
+    "name": "--activity-font-size-md",
+    "value": "var(--font-size-sm)",
+    "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
+  },
+  {
+    "name": "--activity-font-size-lg",
+    "value": "var(--font-size-lg)",
+    "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
+  },
+  {
+    "name": "--activity-bar-width",
+    "value": "4rem",
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-bar-height",
+    "value": "0.25em",
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-bar-radius",
+    "value": "var(--radius-pill)",
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-bar-segment-width",
+    "value": "40%",
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-bar-track-alpha",
+    "value": "0.2",
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-color",
+    "value": "initial",
+    "description": "Mark colour. ROLE-MIRROR KNOB ⇒ declared `initial` here with the role default at the CALL SITE * (`hsl(var(--activity-color, var(--muted-foreground)))` in styles/motion.css). Written as * `--activity-color: var(--muted-foreground)` it would freeze at the `:root` role value and a * scoped `[data-tenant]` / `.dark` override of `--muted-foreground` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\". * Documented default: --activity-color = var(--muted-foreground) (tone=\"muted\")."
+  },
+  {
     "name": "--badge-space-gap",
     "value": "var(--space-inline-xs)",
     "description": "Badge component tokens."
@@ -699,114 +774,119 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
+    "name": "--switch-unchecked-background",
+    "value": "initial",
+    "description": "Switch OFF track fill (gh#315) — `initial`, default hsl(var(--input)). Its own knob so a * service can quieten the off-track without dragging the --input control-boundary role back * below the WCAG SC 1.4.11 floor (rule #45); whatever you set still owes 3:1 against the page * and against the thumb (--background), or \"off\" stops being a visible state."
+  },
+  {
     "name": "--color-picker-input-width",
     "value": "6.5rem",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "ColorPicker — width of the hex text field beside the swatch."
   },
   {
     "name": "--command-list-max-height",
     "value": "min(300px, 50vh)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-input-padding-x",
     "value": "var(--space-3)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-group-padding",
     "value": "var(--space-1)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-item-padding-y",
     "value": "var(--space-2)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-item-padding-x",
     "value": "var(--space-2)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-width",
     "value": "35rem",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-inset-top",
     "value": "calc(var(--space-6) * 4)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-viewport-inset",
     "value": "var(--space-3)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-hint-padding-y",
     "value": "var(--space-2)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-hint-padding-x",
     "value": "var(--space-4)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--command-palette-hint-gap",
     "value": "var(--space-4)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
   },
   {
     "name": "--search-input-edge-inset",
     "value": "var(--space-3)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "SearchInput — the inset the leading/trailing icons sit at, and the field padding derived * from it so the text never runs under an icon."
   },
   {
     "name": "--search-input-start-padding",
     "value": "calc( var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap) )",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "SearchInput — the inset the leading/trailing icons sit at, and the field padding derived * from it so the text never runs under an icon."
   },
   {
     "name": "--search-input-end-padding",
     "value": "calc( var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap) )",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "SearchInput — the inset the leading/trailing icons sit at, and the field padding derived * from it so the text never runs under an icon."
   },
   {
     "name": "--choice-description-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--color-picker-hex-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--command-group-heading-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--search-input-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--tag-input-chip-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--toggle-sm-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--button-sm-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--control-affix-inset-inline-end",
@@ -872,6 +952,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--textarea-clear-inset-block-start",
     "value": "var(--space-2)",
     "description": "Input centres its affix on the field's single line; a textarea has no single line to centre * on, so its clear control parks at the top-end corner instead."
+  },
+  {
+    "name": "--control-multiline-padding-block",
+    "value": "var(--space-2)",
+    "description": "MULTILINE BOX — the block padding of `.ui-control-multiline` (Textarea). It was a bare * `--space-2` inside the padding shorthand, which made it unreachable for a service that runs a * denser composer, AND it is the constant the auto-grow row maths has to add back, so the two * had to read the same knob or drift (#45)."
+  },
+  {
+    "name": "--textarea-autogrow-line-height",
+    "value": "initial",
+    "description": "The unit a \"row\" is measured in. `initial` on purpose: the call site reads * `var(--textarea-autogrow-line-height, var(--line-height-normal))`, so a service that retunes * the multiline line-height for CJK legibility retunes the ceiling with it (#46). Unitless — * it is multiplied by `--control-font-size`."
+  },
+  {
+    "name": "--textarea-autogrow-min-height-rows",
+    "value": "1",
+    "description": "Floor of the grown box, in text rows. The `minRows` prop overrides per instance — the same * theme-global / prop-local priority as `--form-label-width` vs `labelWidth`. The floor is * additionally clamped up to `--control-height` so a resting one-row composer still lines up * with the Input / Button beside it instead of undercutting the control tier."
+  },
+  {
+    "name": "--textarea-autogrow-max-height-rows",
+    "value": "8",
+    "description": "Ceiling of the grown box, in text rows; past it the control scrolls internally instead of * pushing the page. `maxRows={0}` sets this to `infinity` for an unbounded box."
+  },
+  {
+    "name": "--textarea-autogrow-box-inset",
+    "value": "calc( (var(--control-multiline-padding-block) + var(--control-border-width)) * 2 )",
+    "description": "The non-text part of the box the row maths must add back: block padding + border, both * edges. `.ui-textarea-autogrow--ghost` re-declares it without the border, because the ghost * variant drops its own chrome."
   },
   {
     "name": "--control-inline-affix-pair-space-inline-end",
@@ -1527,6 +1632,66 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--avatar-tinted-glyph-size",
     "value": "var(--control-icon-size)",
     "description": "Capability medallion — `<Avatar appearance=\"tinted\">` (gh#12): the tinted plate a capability / feature glyph sits on, as opposed to the SOLID entity mark above. Pair it with shape=\"square\" for the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are role-mirror knobs (`initial`, docs/TOKENS.md) so the --primary defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches them — the exact reason this is a token and not the `hsl(var(--primary) / 0.1)` literal consumers were writing in page CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph · --control-icon-size glyph box."
+  },
+  {
+    "name": "--avatar-presence-size",
+    "value": "30%",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-min-size",
+    "value": "var(--space-2)",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-inset",
+    "value": "0",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-ring-width",
+    "value": "2px",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-stroke-width",
+    "value": "1.5px",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-bar-inline-size",
+    "value": "56%",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-bar-block-size",
+    "value": "1.5px",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-ring-color",
+    "value": "initial",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-online-color",
+    "value": "initial",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-away-color",
+    "value": "initial",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-busy-color",
+    "value": "initial",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
+  },
+  {
+    "name": "--avatar-presence-offline-color",
+    "value": "initial",
+    "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
   },
   {
     "name": "--progress-track-background",
@@ -2439,6 +2604,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value * mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical * rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, * which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` * composition every real Save-button form needs), so it holds at any DOM depth relative to Form."
   },
   {
+    "name": "--form-grid-row-gap",
+    "value": "var(--form-field-row-gap)",
+    "description": "Row rhythm between the ROWS of a `<Form columns={n}>` grid (gh#304). The grid path cannot use * the margin above — a per-item margin inside a grid double-counts the track gap AND leaves the * first item of row 1 unshifted while its row-mates drop, so row 1's columns end up misaligned. * The rhythm therefore rides the grid's own `row-gap`, and it DEFAULTS TO THE SAME * --form-field-row-gap the stacked path uses so `columns={1}` — and every `columns={n}` form once * it collapses to one column on a narrow container — is pixel-identical to a Form with no * `columns` at all. Retune this alone only to give multi-column forms a looser row rhythm than * stacked ones; retune --form-field-row-gap to move both together."
+  },
+  {
+    "name": "--form-grid-column-gap",
+    "value": "var(--space-4)",
+    "description": "Gutter between the COLUMNS of a `<Form columns={n}>` grid (gh#304). Was ResponsiveGrid's * generic 16px stack gap with no way to say otherwise; it is a form's inter-field gutter and a * service aligning forms to its design grid needs it as a knob (rule #45). The default keeps the * historical 16px, so nothing moves unless a theme opts in."
+  },
+  {
     "name": "--legal-document-section-focus-ring-offset",
     "value": "var(--space-1)",
     "description": "Section anchor ring needs a gap so the mark does not touch the heading * (outline form — styles/focus-ring.css)."
@@ -3212,6 +3387,111 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--app-setting-picker-icon-rest-alpha",
     "value": "0.7",
     "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."
+  },
+  {
+    "name": "--scroll-area-anchor-offset",
+    "value": "3rem",
+    "description": "How close to the bottom edge the reader still counts as \"following the stream\" for * `<ScrollArea anchor=\"bottom\">`. Inside this band new content keeps the viewport pinned to the * newest item; one pixel beyond it the reader is reading history and anchoring NEVER moves them * again until they come back (WCAG 3.2.5 — no change of context on request of the machine). * * It is a rule #45 knob because the right distance is a function of the row height a service * renders: one line of a dense audit log is ~20px, a chat bubble with an avatar is ~64px, and * \"one row from the bottom\" is what the reader actually means. Expressed in rem on purpose — it * then tracks the user's font size, so the band is still one row at 200% zoom (WCAG 1.4.4) * instead of collapsing to a third of a row. The `anchorOffset` prop overrides it per instance; * px/rem/em are all accepted."
+  },
+  {
+    "name": "--separator-rule-size",
+    "value": "1px",
+    "description": "Rule weight, both orientations and both halves of a labelled rule."
+  },
+  {
+    "name": "--separator-rule-color",
+    "value": "initial",
+    "description": "Rule colour. Role-mirror knob → declared `initial` so the --border default re-resolves at the * CALL SITE under a scoped [data-tenant] / .dark theme (docs/TOKENS.md — the :root freeze rule). * Documented default = hsl(var(--border))."
+  },
+  {
+    "name": "--separator-label-gap",
+    "value": "initial",
+    "description": "Gap between the label and each rule half. `initial` so the default re-resolves at the call * site: --space-* is density-scaled and re-declared inside a `.ui-density-*` subtree, so a * :root binding would freeze the gap at the :root density. Documented default = var(--space-3)."
+  },
+  {
+    "name": "--separator-label-inset",
+    "value": "initial",
+    "description": "Length of the SHORT rule half when labelAlign is `start` / `end` — the label's inset from the * inline edge (the Slack/Mattermost stream convention). It is a grid track on the INLINE axis, * so it flips with the writing direction under dir=\"rtl\" with no extra rule. `initial` for the * same density reason as the gap. Documented default = var(--space-6)."
+  },
+  {
+    "name": "--separator-label-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Label type ramp (#46) — steps of the modular scale, never a literal. `xs` is the quiet * stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks * intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark * without touching the day divider."
+  },
+  {
+    "name": "--separator-label-line-height",
+    "value": "var(--line-height-normal)",
+    "description": "Label type ramp (#46) — steps of the modular scale, never a literal. `xs` is the quiet * stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks * intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark * without touching the day divider."
+  },
+  {
+    "name": "--separator-label-font-weight",
+    "value": "var(--font-weight-medium)",
+    "description": "Label type ramp (#46) — steps of the modular scale, never a literal. `xs` is the quiet * stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks * intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark * without touching the day divider."
+  },
+  {
+    "name": "--separator-label-color",
+    "value": "initial",
+    "description": "Label colour. Role-mirror → `initial`; documented default = hsl(var(--muted-foreground))."
+  },
+  {
+    "name": "--separator-tone-muted-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-muted-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-primary-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-primary-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-success-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-success-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-warning-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-warning-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-destructive-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-destructive-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-info-rule-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+  },
+  {
+    "name": "--separator-tone-info-label-color",
+    "value": "initial",
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
   },
   {
     "name": "--sheet-responsive-breakpoint-width",
@@ -4272,6 +4552,66 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-row-border-width",
     "value": "1px",
     "description": "Horizontal row rule (chrome, #44) — the divider between body rows AND under the header row. * Owned here rather than as TableRow's `border-b` utility so the \"last row draws no rule\" * rule in `@layer components` can actually zero it; a utility would outrank it by layer. * Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }` * so a scoped [data-tenant]/.dark override of --border still reaches every row."
+  },
+  {
+    "name": "--table-flush-divider-width",
+    "value": "var(--table-row-border-width)",
+    "description": "Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside * `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three * edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind * it, so without it the header band floats (gh#306). Scoped by construction to the case that * needs it — a BANDED header, a CardBar or a headerless card already draw their own line there * and never reach this token — so a service tunes only the plain-header divider: `0` for a * borderless full-bleed table, heavier for a stronger band. Colour and style are NOT set here: * only the width is restored, so the surface's own border declaration still owns them and a * scoped [data-tenant]/.dark override of --border reaches it. * Default = the same hairline the table's other rules draw."
+  },
+  {
+    "name": "--toggle-count-min-width",
+    "value": "var(--space-4)",
+    "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read * the same primitive tokens, so the two pills render the same size and a Toggle count set beside * a Button count is indistinguishable — asserted by * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. * * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` * fallback because check:typography requires a bare `var(--token)` for every font-size, and a * split shape across the five geometry knobs would be worse than a consistent one.)"
+  },
+  {
+    "name": "--toggle-count-space-inline",
+    "value": "var(--space-1)",
+    "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read * the same primitive tokens, so the two pills render the same size and a Toggle count set beside * a Button count is indistinguishable — asserted by * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. * * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` * fallback because check:typography requires a bare `var(--token)` for every font-size, and a * split shape across the five geometry knobs would be worse than a consistent one.)"
+  },
+  {
+    "name": "--toggle-count-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read * the same primitive tokens, so the two pills render the same size and a Toggle count set beside * a Button count is indistinguishable — asserted by * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. * * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` * fallback because check:typography requires a bare `var(--token)` for every font-size, and a * split shape across the five geometry knobs would be worse than a consistent one.)"
+  },
+  {
+    "name": "--toggle-count-radius",
+    "value": "var(--radius-pill)",
+    "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read * the same primitive tokens, so the two pills render the same size and a Toggle count set beside * a Button count is indistinguishable — asserted by * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. * * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` * fallback because check:typography requires a bare `var(--token)` for every font-size, and a * split shape across the five geometry knobs would be worse than a consistent one.)"
+  },
+  {
+    "name": "--toggle-count-gap",
+    "value": "0",
+    "description": "Quiet default (#44) — the toggle's own flex gap already separates label from pill; this knob * ADDS to it for a service whose design grid wants the counter pushed further out."
+  },
+  {
+    "name": "--toggle-count-background",
+    "value": "initial",
+    "description": "── Counter pill · unpressed colours. Defaults = hsl(var(--muted)) fill (quiet: 1.09:1 against * the chip's own surface, so at rest the count reads as text, #44) and hsl(var(--foreground)) * text (14.25:1 on that fill). Opaque on purpose — a translucent fill would take its contrast * from whatever surface the chip currently has, and lose ~0.7 on hover."
+  },
+  {
+    "name": "--toggle-count-color",
+    "value": "initial",
+    "description": "── Counter pill · unpressed colours. Defaults = hsl(var(--muted)) fill (quiet: 1.09:1 against * the chip's own surface, so at rest the count reads as text, #44) and hsl(var(--foreground)) * text (14.25:1 on that fill). Opaque on purpose — a translucent fill would take its contrast * from whatever surface the chip currently has, and lose ~0.7 on hover."
+  },
+  {
+    "name": "--toggle-pressed-count-background",
+    "value": "initial",
+    "description": "── Counter pill · PRESSED colours. Defaults = hsl(var(--primary-foreground)) fill, * hsl(var(--primary)) text — the pressed chip's OWN pair, swapped. Not `--primary` on * `--primary`: the pressed chip is already filled with --primary, so a --primary pill would be * invisible on it. The swap also flips the pill from near-invisible to solid, which is one of * the encodings that keeps the pressed state off colour alone (WCAG 1.4.1)."
+  },
+  {
+    "name": "--toggle-pressed-count-color",
+    "value": "initial",
+    "description": "── Counter pill · PRESSED colours. Defaults = hsl(var(--primary-foreground)) fill, * hsl(var(--primary)) text — the pressed chip's OWN pair, swapped. Not `--primary` on * `--primary`: the pressed chip is already filled with --primary, so a --primary pill would be * invisible on it. The swap also flips the pill from near-invisible to solid, which is one of * the encodings that keeps the pressed state off colour alone (WCAG 1.4.1)."
+  },
+  {
+    "name": "--toggle-pressed-border-color",
+    "value": "initial",
+    "description": "── Pressed chrome. Default = hsl(var(--primary)), i.e. the pressed fill itself, so out of the * box this border is quiet (#44) and the pressed state is carried by the fill inversion + the * pill inversion + the forced-colors rule below. A service whose pressed fill is a PALE tint * (where those inversions get weak) opts into a visible outline by overriding this."
+  },
+  {
+    "name": "--toggle-count-forced-outline-width",
+    "value": "1px",
+    "description": "Under forced-colors every fill is flattened to a system colour, so neither inversion encodes * anything any more. This outline is the state's structural fallback there — drawn on the * PRESSED pill only, and as `outline` (not `border`) so it costs no layout."
   },
   {
     "name": "--upload-dropzone-space-inset",

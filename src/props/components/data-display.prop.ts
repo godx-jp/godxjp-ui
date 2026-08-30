@@ -107,9 +107,46 @@ export type DescriptionsItemProp = {
 export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
   shape?: AvatarShapeProp;
   appearance?: AvatarAppearanceProp;
+  /**
+   * Presence — WHO is reachable right now, drawn as an indicator at the block-end/inline-end
+   * corner of the mark with a localized `sr-only` label folded into the avatar's accessible text.
+   * Never colour alone (WCAG 1.4.1): each value also has its own silhouette (filled · half-filled ·
+   * barred · hollow).
+   *
+   * OMIT the prop entirely for an entity that has no presence concept (an organization mark, a
+   * capability medallion) — an absent prop emits no node and no attribute, so the DOM stays
+   * byte-identical to today's. Pass `"offline"` for a person KNOWN to be unreachable; that is a
+   * different statement, exactly as `ListRow`'s omitted vs `false` `unread` is.
+   */
+  presence?: AvatarPresenceProp;
+  /**
+   * Override the localized presence text (`t("dataDisplay.avatar.presence.online")` …) when the
+   * product has a more precise phrasing ("In a meeting until 15:00"). Visually hidden either way —
+   * a presence dot never carries visible text; that is `Badge status`.
+   */
+  presenceLabel?: LabelProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };
+
+/**
+ * Avatar presence status — a person's realtime reachability.
+ *
+ * A DELIBERATELY separate vocabulary from the lifecycle `BadgeStatusProp`: presence is volatile,
+ * per-person and pushed over a socket, while a lifecycle status is a record's state and renders as
+ * a labelled chip. Each value is encoded twice over — a semantic role colour AND a shape — so the
+ * four are told apart in greyscale, by a deuteranope and under forced colors:
+ *
+ * - `"online"` — filled disc (`--success`).
+ * - `"away"` — half-filled disc (`--warning`).
+ * - `"busy"` — filled disc cut by a horizontal bar, the do-not-disturb mark (`--destructive`).
+ * - `"offline"` — hollow ring (`--muted-foreground`).
+ *
+ * Retune every constant with `--avatar-presence-*`.
+ *
+ * @see Avatar
+ */
+export type AvatarPresenceProp = "online" | "away" | "busy" | "offline";
 
 /**
  * Avatar fill treatment.
@@ -348,4 +385,43 @@ export type PermissionMatrixProp = {
   onRetry?: HandlerProp;
   className?: ClassNameProp;
   id?: IdProp;
+};
+
+/**
+ * Edge the ScrollArea viewport sticks to as its content grows (gh#311).
+ *
+ * - `none` — the scroll offset is left entirely alone. This is the default and is exactly the
+ *   behaviour a ScrollArea has always had.
+ * - `bottom` — a live stream (chat, log tail, streaming response, activity feed). While the reader
+ *   is within `anchorOffset` of the bottom, arriving content keeps the newest item in view; once
+ *   they scroll away to read history, growth NEVER moves them, and content inserted ABOVE the
+ *   read position is compensated so the item under their eyes stays put.
+ */
+export type ScrollAreaAnchorProp = "none" | "bottom";
+
+/** @see ScrollArea */
+export type ScrollAreaProp = {
+  /**
+   * Ref to the element that actually SCROLLS — the Radix viewport — not the root. The root is
+   * `overflow: hidden` and never scrolls, so the component's own `ref` cannot serve. Use this to
+   * read `scrollTop`/`scrollHeight`, call `scrollTo()`, restore a saved position, or drive a
+   * "jump to newest" button. It is the typed, supported alternative to querying the Radix-internal
+   * `[data-radix-scroll-area-viewport]` attribute, which is not a public contract and is ambiguous
+   * the moment two ScrollAreas nest.
+   */
+  viewportRef?: React.Ref<HTMLDivElement>;
+  /** Edge the viewport sticks to as content grows. Default `none` (inert). */
+  anchor?: ScrollAreaAnchorProp;
+  /**
+   * Distance in px from the bottom edge inside which the reader still counts as "at the bottom"
+   * for `anchor="bottom"`. Defaults to the `--scroll-area-anchor-offset` token (3rem), read off
+   * the element at mount so a theme — or a `[data-tenant]` scope — moves it globally.
+   */
+  anchorOffset?: number;
+  /**
+   * Fires when the pinned state flips: `false` when the reader scrolls away from the bottom,
+   * `true` when they come back inside `anchorOffset`. Render a focusable "jump to newest" button
+   * from it — anchoring must never be the only route back to new content.
+   */
+  onAnchoredChange?: (anchored: boolean) => void;
 };

@@ -44,6 +44,46 @@
   --avatar-tinted-foreground: initial;
   --avatar-tinted-glyph-size: var(--control-icon-size);
 
+  /* PRESENCE INDICATOR — `<Avatar presence="online|away|busy|offline">` (gh#309): the realtime
+     reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is
+     a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the
+     hand-rolled workaround this replaces —
+     `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four
+     service-tunable constants and a raw palette colour into a consumer page.
+
+     --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks
+     EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the
+     --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size
+     (6rem), the 36px ListRow density="compact" leading mark — instead of freezing one diameter that
+     is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the
+     legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot
+     further into a round mark than into a square one.
+
+     --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared
+     `initial` here so the --background / --success / --warning / --destructive / --muted-foreground
+     defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still
+     reaches them (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). Binding them to the role
+     here would freeze the ring light-mode-white on a dark avatar.
+
+     Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half
+     filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and
+     --avatar-presence-bar-* are part of the accessible encoding, not decoration.
+
+     Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in
+     --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar. */
+  --avatar-presence-size: 30%;
+  --avatar-presence-min-size: var(--space-2);
+  --avatar-presence-inset: 0;
+  --avatar-presence-ring-width: 2px;
+  --avatar-presence-stroke-width: 1.5px;
+  --avatar-presence-bar-inline-size: 56%;
+  --avatar-presence-bar-block-size: 1.5px;
+  --avatar-presence-ring-color: initial;
+  --avatar-presence-online-color: initial;
+  --avatar-presence-away-color: initial;
+  --avatar-presence-busy-color: initial;
+  --avatar-presence-offline-color: initial;
+
   /* Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme.
      Track reads --secondary, fill reads --success; a service re-tones once.
      Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill. */

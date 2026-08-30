@@ -1,6 +1,8 @@
 /** Foundation component prop types — @see docs/COMPONENTS.md#foundation */
 import type * as React from "react";
 import type {
+  ActivityAnnounceProp,
+  ActivityVariantProp,
   AsChildProp,
   ButtonSizeProp,
   ButtonVariantProp,
@@ -9,10 +11,12 @@ import type {
   DisabledProp,
   FontWeightProp,
   HeadingLevelProp,
+  LabelProp,
   OnClickProp,
   PendingProp,
   RevealDelayProp,
   ShapeProp,
+  SizeProp,
   TextAlignProp,
   TextSizeProp,
   TextToneProp,
@@ -131,5 +135,57 @@ export type RevealProp = React.HTMLAttributes<HTMLDivElement> & {
    * wrapper `<div>` — use when an extra box would break a grid/flex layout. Default `false`.
    */
   asChild?: AsChildProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see Activity — the official AMBIENT-motion primitive (a continuous, unbounded "in progress"),
+ * the LOOP counterpart to `Reveal`'s one-shot entrance. Reads the DS motion tokens
+ * (`--activity-interval`, `--activity-stagger-step`, `--ease-standard`, `--activity-mark-offset`)
+ * so a consumer never hand-rolls a looping `@keyframes`. Under `prefers-reduced-motion` the loop is
+ * dropped and the mark renders in a static, fully-visible resting state — three solid dots, a solid
+ * pulse mark, or a bar segment parked at the reading-start — with no layout shift, the same
+ * guarantee `Reveal` gives.
+ *
+ * NOT `Skeleton` (content is loading — `aria-busy` + an unconditional live region), NOT
+ * `Button loading` (this action is in flight). `Activity` means: something is happening,
+ * indefinitely, elsewhere — someone typing, a sync running, a response streaming, a recording live.
+ *
+ * There is deliberately no `asChild`: unlike `Reveal` (which owns no DOM), `Activity` renders its
+ * own mark structure, so there is no single child to merge onto.
+ */
+export type ActivityProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> & {
+  /**
+   * The mark. Default `dots` — three dots rising in sequence, the ellipsis convention.
+   * `pulse` is a single breathing mark (live / recording); `bar` an indeterminate sweep (syncing).
+   */
+  variant?: ActivityVariantProp;
+  /**
+   * Size step, the standard ladder. Default `sm` — an ambient mark is never the loudest thing on
+   * screen. Scales the mark AND the label together (the mark is `em`-based).
+   */
+  size?: SizeProp;
+  /** Semantic colour intent. Default `muted` — ambient, not an alert. */
+  tone?: TextToneProp;
+  /**
+   * Localized description of WHAT is happening ("Hưng đang nhập…", "同期中…"). Rendered as visible
+   * `Text` beside the mark when `children` are absent; when `children` ARE present it becomes an
+   * `sr-only` description instead, so the indicator is never animation-only. Consumer-owned copy —
+   * the library never invents it, and the plural form of "N people are typing" must come from the
+   * consumer's `Intl.PluralRules`.
+   */
+  label?: LabelProp;
+  /**
+   * Richer visible content in place of `label` (a name in a `<strong>`, a `Badge`, …). The mark
+   * stays `aria-hidden`; pass `label` alongside for the sr-only description.
+   */
+  children?: ChildrenProp;
+  /**
+   * Announce the label to assistive technology. Default `false` — the DELIBERATE default, because
+   * an ambient indicator that fires a live region on every socket event is a screen-reader flood.
+   * With `false` NO live region is emitted at all. `"polite"` wraps ONLY the label in a single
+   * `aria-live="polite" aria-atomic="true"` region; the mark stays outside it and `aria-hidden`.
+   */
+  announce?: ActivityAnnounceProp;
   className?: ClassNameProp;
 };

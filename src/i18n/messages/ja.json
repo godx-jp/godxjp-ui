@@ -207,6 +207,14 @@
     }
   },
   "dataDisplay": {
+    "avatar": {
+      "presence": {
+        "online": "オンライン",
+        "away": "離席中",
+        "busy": "取り込み中",
+        "offline": "オフライン"
+      }
+    },
     "carousel": {
       "roleDescription": "カルーセル",
       "ariaLabel": "カルーセル",

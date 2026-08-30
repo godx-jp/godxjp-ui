@@ -98,3 +98,20 @@ export type SortStateProp = { key: string; direction: SortDirectionProp };
  * revealed rows cascades in. Reduced-motion collapses every step to 0 (content stays visible).
  */
 export type RevealDelayProp = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+/**
+ * Ambient-activity mark for `Activity` — the LOOP counterpart to `RevealDelayProp`'s one-shot
+ * ladder. `dots` (default) is the three-dot ellipsis convention (someone is typing); `pulse` a
+ * single breathing mark (live / recording); `bar` an indeterminate sweep (syncing).
+ */
+export type ActivityVariantProp = "dots" | "pulse" | "bar";
+
+/**
+ * Whether an ambient indicator announces its label to assistive technology.
+ *
+ * Default `false` — DELIBERATELY. An ambient affordance flickers on and off with every socket
+ * event; a live region there re-announces continuously and makes the surface unusable with a
+ * screen reader (`Skeleton`'s unconditional `aria-live="polite"` is the anti-pattern this default
+ * exists to avoid). `"polite"` opts in for the rare case where the change genuinely must be heard.
+ */
+export type ActivityAnnounceProp = false | "polite";

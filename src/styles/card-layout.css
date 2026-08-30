@@ -299,9 +299,12 @@
    * and Chrome drops the whole rule (measured, Chrome 151), so the toolbar body never lost its
    * top padding. Valid equivalent: zero it for any header-hosted action, then the described
    * (non-toolbar) header restores the gap in the equal-specificity rule after this one. */
-  /* Both halves of the pair exclude [data-flush]: flush content zeroes its padding by its own
-   * contract, and the description half would otherwise OVERRIDE that zero and float a flush
-   * table 18px off its header (measured on a consumer 関連ファイル section, gh#307). */
+  /* Both halves of the pair exclude [data-flush]: a flush body owns its block axis outright in
+   * the flush rule below, so neither half has anything to say about it. Excluding it from the
+   * DESCRIPTION half is what stops that half re-adding the gap a flush body just zeroed (gh#307);
+   * excluding it from the ACTION half is only consistency — that half zeroes the same value the
+   * flush rule already sets, and leaving it in place would let a service that retunes the flush
+   * block axis be silently overridden in an action-headed card. */
   [data-slot="card"]:has([data-slot="card-header"] [data-slot="card-action"])
     [data-slot="card-content"]:not([data-tight]):not([data-flush]) {
     padding-top: 0;
@@ -359,14 +362,28 @@
     padding-inline: 0;
   }
 
-  [data-slot="card-content"][data-flush]:not([data-tight]):not([data-solo]):has(table) {
+  /* The flush body owns its BLOCK axis outright, and it does so for EVERY flush body — not only
+   * one that happens to contain a `<table>` (gh#307). The `:has(table)` gate made the "flush has
+   * no padding" contract accidental: a full-bleed body of anything else (a file list, a
+   * DataTable rendering its empty state, a media strip) still took the generic body padding, so
+   * it floated off the header — measured at 18.4px on a consumer's 関連ファイル section while the
+   * 備考 section next to it, a flush TABLE, measured 0px. The narrow repair for that report
+   * (`:not([data-flush])` on the describedBody pair) could not fix it: the padding was coming
+   * from the generic `[data-slot="card-content"]` rules, not from the described one, and adding
+   * the guard to the header-ACTION half of that pair even took the `padding-top: 0` those bodies
+   * used to get. Owning the axis here at (0,4,0) settles all of it: this out-ranks every generic
+   * content rule, and the two guarded pair-halves below no longer reach a flush body at all, so
+   * neither can override the zero again. `tight` and `solo` own the block axis themselves. */
+  [data-slot="card-content"][data-flush]:not([data-tight]):not([data-solo]) {
     padding-block: 0;
   }
 
-  /* A non-banded header before a FLUSH full-bleed table supplies its OWN bottom gap: the table's
-   * content padding is zeroed above, so without this the title/subtitle butt against the header
-   * row. Match the header's top inset so the header block reads balanced top↕bottom. */
-  [data-slot="card"]:has([data-slot="card-content"][data-flush] [data-slot="table"])
+  /* A plain header above ANY flush body therefore supplies its OWN bottom gap — the body's block
+   * padding is zeroed above, so without this the title/subtitle butt against the first row. Match
+   * the header's top inset so the header block reads balanced top↕bottom. The `:has()` argument
+   * mirrors the flush rule's own guards exactly: a tight/solo body keeps its padding, so widening
+   * this to it would double the gap. */
+  [data-slot="card"]:has([data-slot="card-content"][data-flush]:not([data-tight]):not([data-solo]))
     [data-slot="card-header"]:not([data-banded]) {
     padding-bottom: var(--card-space-body-y);
   }

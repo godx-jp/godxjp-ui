@@ -16,6 +16,9 @@ import type {
   ErrorSurfaceModeProp,
   ErrorSurfaceStatusProp,
   AuthShellPresetProp,
+  OrientationProp,
+  TextAlignProp,
+  TextToneProp,
   BreakpointProp,
   GapProp,
   ClassNameProp,
@@ -349,7 +352,53 @@ export type AuthShellProp = {
   className?: ClassNameProp;
 };
 
-/** @see AuthDivider */
+/**
+ * @see Separator — the tokenized rule, optionally INTERRUPTED by a localized label.
+ *
+ * With no `label` the DOM, the `data-slot="separator"` and the `.ui-separator` class are exactly
+ * what they have always been: an inert Radix rule, `decorative` by default, nothing announced.
+ * With a `label` the root becomes the three-cell grid `rule · label · rule` and, because
+ * "new messages" is CONTENT rather than decoration, a real `role="separator"` carrying the label
+ * as its accessible name (gh#308). Every constant — rule weight, label gap, label inset, label
+ * type ramp, rule and label colour per tone — is a `--separator-*` component token (rules #44/#45),
+ * so a service retunes a day divider or an unread watermark from its theme and never forks CSS.
+ */
+export type SeparatorProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
+  /** Rule axis. Default `"horizontal"`. */
+  orientation?: OrientationProp;
+  /**
+   * Localized text that INTERRUPTS the rule — a day divider, a "new messages" watermark, an auth
+   * conjunction. The rule splits into two halves around it and the grid keeps the label optically
+   * placed regardless of translation length. `horizontal` only: with `orientation="vertical"` the
+   * label is ignored and dev builds warn. Omit for a plain rule.
+   *
+   * A `string`, not the `LabelProp` ReactNode, because this text IS the separator's accessible
+   * name — a node cannot be announced. The library never invents the copy: the consumer passes a
+   * `t()` string, and a date is formatted with `Intl.DateTimeFormat` on the active locale.
+   */
+  label?: string;
+  /**
+   * Where the label sits on the rule. Default `"center"` (the classic conjunction). `"start"` is
+   * the Slack/Mattermost stream convention — the label hugs the inline-start edge with the long
+   * half of the rule running to the inline-end. Logical, so it flips under `dir="rtl"`.
+   */
+  labelAlign?: TextAlignProp;
+  /**
+   * Semantic emphasis of the label AND the rule together — `"default"` is the quiet chrome (#44);
+   * a semantic role marks an attention rule such as an unread watermark. Never colour-only: the
+   * tone re-points both halves, so the distinction survives forced-colors. Default `"default"`.
+   */
+  tone?: TextToneProp;
+  /**
+   * `true` (the default for an UNLABELLED rule) keeps Radix's decorative behaviour — `role="none"`,
+   * nothing announced. A `label` flips the default to `false`, so the rule becomes a real
+   * `role="separator"` named by the label. Pass it explicitly to override either default.
+   */
+  decorative?: boolean;
+  className?: ClassNameProp;
+};
+
+/** @see AuthDivider — the auth-scoped preset over `Separator label` (gh#308). */
 export type AuthDividerProp = {
   /** Short localized conjunction rendered between the two separator rules (for example, "or"). */
   label: string;

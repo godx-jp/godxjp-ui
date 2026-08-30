@@ -249,11 +249,93 @@
 
   .ui-control-multiline {
     min-height: calc(var(--control-height) * 2.75);
-    padding: var(--space-2) var(--control-padding-x);
+    padding-block: var(--control-multiline-padding-block);
+    padding-inline: var(--control-padding-x);
     font-size: var(--control-font-size);
     border-width: var(--control-border-width);
     border-style: solid;
     box-shadow: var(--control-shadow);
+  }
+
+  /* TEXTAREA AUTO-GROW (gh#310) — the box grows with its content, bounded in TEXT ROWS.
+   *
+   * TECHNIQUE: the replicated-content grid. The wrapper is a one-cell grid; a hidden `::after`
+   * carrying the same text in the same typography occupies that cell and SIZES the row, and the
+   * textarea (a grid item, `align-self: stretch` by default) fills whatever the row became. The
+   * JS side therefore only ever WRITES one attribute — it never reads `scrollHeight`, never sets
+   * `style.height`, and so never forces a synchronous reflow per keystroke, and never touches
+   * `scrollTop` (which is what makes typing in the middle of a long value jump).
+   *
+   * Both bounds live on the PSEUDO-ELEMENT rather than on the textarea, deliberately: a
+   * pseudo-element is out of reach of Tailwind utilities, so `variant="ghost"`'s `min-h-0`
+   * (@layer utilities, which beats anything here in @layer components) cannot silently defeat
+   * the floor the way it would if the bounds sat on the control itself. */
+  .ui-textarea-autogrow {
+    position: relative;
+    display: grid;
+    /* `minmax(0, 1fr)`, never the default `auto`: an auto column is sized by the replica's
+     * MAX-CONTENT, so a single unbroken 2,000-character token would widen the column — and with
+     * it the control — to 18,000px instead of wrapping. Measured, not assumed. */
+    grid-template-columns: minmax(0, 1fr);
+    inline-size: 100%;
+  }
+
+  .ui-textarea-autogrow > .ui-control-multiline,
+  .ui-textarea-autogrow::after {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .ui-textarea-autogrow::after {
+    content: attr(data-autogrow-value) " ";
+    visibility: hidden;
+    /* Explicit, not inherited from preflight: the replica's bounds are BORDER-box measures, and a
+     * content-box replica overshoots every height by the box inset. */
+    box-sizing: border-box;
+    margin: 0;
+    /* `pre-wrap` + `break-word` is the UA treatment of a textarea's own text: newlines are kept,
+     * an unbroken 2,000-character token wraps instead of widening the box. The trailing " " is
+     * what keeps a value ending in a newline one row taller, exactly as the control renders it. */
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    font-size: var(--control-font-size);
+    line-height: var(--textarea-autogrow-line-height, var(--line-height-normal));
+    padding-block: var(--control-multiline-padding-block);
+    padding-inline: var(--control-padding-x);
+    border: var(--control-border-width) solid transparent;
+    /* The floor never undercuts the control tier, so a resting one-row composer still lines up
+     * with the Input / Button on its row; above it the box counts in rows. */
+    min-block-size: max(
+      var(--control-height),
+      calc(
+        var(--textarea-autogrow-min-height-rows) *
+          var(--textarea-autogrow-line-height, var(--line-height-normal)) *
+          var(--control-font-size) + var(--textarea-autogrow-box-inset)
+      )
+    );
+    max-block-size: calc(
+      var(--textarea-autogrow-max-height-rows) *
+        var(--textarea-autogrow-line-height, var(--line-height-normal)) * var(--control-font-size) +
+        var(--textarea-autogrow-box-inset)
+    );
+  }
+
+  /* The ghost variant draws no border, so the row maths must not add one back. */
+  .ui-textarea-autogrow--ghost {
+    --textarea-autogrow-box-inset: calc(var(--control-multiline-padding-block) * 2);
+  }
+
+  .ui-textarea-autogrow--ghost::after {
+    border-width: 0;
+  }
+
+  .ui-textarea-autogrow > .ui-control-multiline {
+    /* The mirror owns the floor; the control must be free to stretch down to it. */
+    min-block-size: 0;
+    /* Growth is the box's job, not a drag handle's, and past the ceiling the control scrolls
+     * itself rather than pushing the page. */
+    resize: none;
+    overflow-y: auto;
+    line-height: var(--textarea-autogrow-line-height, var(--line-height-normal));
   }
 
   .ui-table-row {
@@ -414,7 +496,7 @@
   }
 
   .ui-switch[data-state="unchecked"] {
-    background: hsl(var(--input));
+    background: var(--switch-unchecked-background, hsl(var(--input)));
   }
 
   .ui-switch-thumb {

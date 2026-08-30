@@ -50,6 +50,7 @@ export type {
   ErrorSurfaceModeProp,
   ErrorSurfaceStatusProp,
   AuthShellPresetProp,
+  OrientationProp,
   TableDensityProp,
   DensityProp,
   GapProp,
@@ -78,6 +79,8 @@ export type {
   ColumnAlignProp,
   SortStateProp,
   RevealDelayProp,
+  ActivityVariantProp,
+  ActivityAnnounceProp,
 } from "./interaction.prop";
 
 export type { BreadcrumbItemProp, BreadcrumbProp } from "./navigation.prop";

@@ -436,20 +436,20 @@
     --card-space-gap: var(--auth-shell-card-gap-compact);
   }
 
+  /* AuthDivider is the auth-scoped PRESET over the labelled `Separator` (gh#308). It no longer
+   * re-implements the grid, the rule or the accessible-name contract — it only re-points
+   * Separator's knobs at the `--auth-shell-divider-*` layer, so the auth micro-scale (11px, not
+   * the stream's xs) and the auth rule/label colours stay exactly where a service already tunes
+   * them, while a day divider in a message stream is no longer coupled to a login form.
+   * `--separator-label-font-weight` is pinned to normal because the auth conjunction has always
+   * inherited the body weight, whereas the generic labelled rule defaults to medium. */
   .ui-auth-divider {
-    display: grid;
-    width: 100%;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    gap: var(--auth-shell-divider-gap);
-    color: hsl(var(--auth-shell-divider-label-color));
-    font-size: var(--auth-shell-divider-label-font-size);
-    line-height: var(--auth-shell-divider-label-line-height);
-  }
-
-  .ui-auth-divider-rule {
-    height: 1px;
-    background: hsl(var(--auth-shell-divider-rule-color));
+    --separator-label-gap: var(--auth-shell-divider-gap);
+    --separator-label-font-size: var(--auth-shell-divider-label-font-size);
+    --separator-label-line-height: var(--auth-shell-divider-label-line-height);
+    --separator-label-font-weight: var(--font-weight-normal);
+    --separator-rule-color: var(--auth-shell-divider-rule-color);
+    --separator-label-color: var(--auth-shell-divider-label-color);
   }
 
   @media (max-width: 30rem) {

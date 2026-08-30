@@ -1890,6 +1890,91 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
     storyPath: "general/Reveal.stories.tsx",
     rules: [],
   },
+  {
+    name: "Activity",
+    group: "general",
+    tagline:
+      "The official AMBIENT-motion primitive — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live). The LOOP counterpart to Reveal's one-shot entrance: it reads the DS motion tokens and ships the prefers-reduced-motion guard once, so a consumer never hand-rolls a looping @keyframes.",
+    props: [
+      {
+        name: "variant",
+        type: '"dots" | "pulse" | "bar"',
+        defaultValue: '"dots"',
+        description:
+          "The mark. `dots` = three dots rising in sequence, the ellipsis convention (someone is typing). `pulse` = a single breathing mark (live / recording). `bar` = an indeterminate sweep (syncing / streaming).",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"sm"',
+        description:
+          "Size step. Default `sm` — an ambient mark is never the loudest thing on screen. Scales the mark AND the label together (the mark is em-based off `--activity-font-size-*`).",
+      },
+      {
+        name: "tone",
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        defaultValue: '"muted"',
+        description:
+          "Semantic colour intent for the mark and the label. Default `muted` — ambient, not an alert (cardinal rule #44: chrome defaults to the quietest state).",
+      },
+      {
+        name: "label",
+        type: "ReactNode",
+        description:
+          "Localized description of WHAT is happening ('佐藤さんが入力しています…', 'Hưng đang nhập…'). Rendered as visible Text beside the mark when `children` are absent; when `children` ARE present it becomes an sr-only description instead. Consumer-owned copy — the library never invents it, and 'N people are typing' must be pluralized with the consumer's Intl.PluralRules.",
+      },
+      {
+        name: "children",
+        type: "ReactNode",
+        description:
+          "Richer visible content in place of `label` (a name in a <strong>, a Badge…). The mark stays aria-hidden; pass `label` alongside for the sr-only description.",
+      },
+      {
+        name: "announce",
+        type: 'false | "polite"',
+        defaultValue: "false",
+        description:
+          "Announce the label to assistive technology. Default `false` and then NO live region is emitted at all — the DELIBERATE default, because an ambient indicator that fires a live region on every socket event is a screen-reader flood. `'polite'` wraps ONLY the label in one aria-live='polite' aria-atomic='true' region; the mark stays outside it and aria-hidden.",
+      },
+    ],
+    usage: [
+      "DO use <Activity> INSTEAD of hand-rolling `@keyframes typing-bounce` in a consumer app CSS. That re-derives interval/amplitude/stagger the DS owns as tokens (`--duration-loop`, `--activity-interval`, `--activity-stagger-step`, `--activity-mark-offset`) and needs its own prefers-reduced-motion guard — the guard consumers forget.",
+      "DO NOT reuse Skeleton for an ambient indicator. Skeleton hard-codes `aria-busy='true'` + `aria-live='polite'` because it means CONTENT IS LOADING; a persistent typing indicator built on it tells every screen reader the region is busy for as long as anyone is typing, and re-announces. Activity emits neither by default.",
+      "DO NOT reuse Button `loading`. That is a spinner bound to an in-flight action, on a control. Activity means something is happening indefinitely, ELSEWHERE.",
+      "DO leave `announce` at its default `false` for a flickering affordance (typing, presence). Opt into `announce='polite'` only when the change genuinely must be heard (a reconnect banner, a recording that just started) — and never on a value that changes on every socket event.",
+      "DO always pass a localized `label` (or `children`) when the indicator carries meaning: the mark alone announces nothing and communicates nothing under reduced motion. Route the string through your app's t()/Intl.PluralRules — the library ships no copy for it.",
+      "DO rely on the built-in reduced-motion behaviour — under `prefers-reduced-motion: reduce` the loop is dropped and each mark falls back to a DESIGNED resting state (three solid dots / a solid pulse mark / a bar segment parked at the reading-start), never to nothing, with no layout shift (WCAG 2.2 SC 2.3.3 and SC 2.2.2).",
+      "DO retune the ambient feel from a service theme, not per call site: `--activity-interval` (rhythm), `--activity-stagger-step` (dot offset), `--activity-mark-size` / `--activity-mark-offset` (mark and travel), `--activity-mark-rest-alpha`, `--activity-pulse-mark-size`, `--activity-gap`, `--activity-font-size-{xs,sm,md,lg}`, `--activity-bar-{width,height,radius,segment-width,track-alpha}`, `--activity-color`.",
+      "DO reserve the indicator's row height in the surrounding layout (it sits above a composer): Activity itself never changes size, but the row appearing and disappearing is the consumer's layout to keep stable.",
+      "DO NOT add `role='status'` yourself — that implies an unconditional polite live region, which is exactly what the `announce` default exists to keep off. Activity is not focusable and is not a tab stop.",
+    ],
+    useCases: [
+      "A chat channel's typing affordance under the composer: `<Activity label={t('channel.typing', { name })} />` — appears and disappears on socket events without ever announcing.",
+      "A live-sync pulse in a page header: `<Activity variant='bar' tone='info' label='同期中…' />`.",
+      "A streaming assistant response: `<Activity variant='dots' label='生成しています…' />` under the partial answer.",
+      "A recording / live mark: `<Activity variant='pulse' tone='destructive' label='録画中' />`.",
+      "A live-updating dashboard tile: `<Activity variant='pulse' size='xs' label='リアルタイム更新中' />` beside the metric.",
+      "A reconnect notice that MUST be heard once: `<Activity announce='polite' tone='warning' label='接続を再試行しています…' />`.",
+    ],
+    related: [
+      "Reveal — the one-shot ENTRANCE counterpart. Reveal runs once on mount; Activity runs forever. Both live in styles/motion.css and both drop their animation under prefers-reduced-motion.",
+      "Skeleton — content is LOADING (aria-busy + a shaped placeholder). Use Skeleton when the content itself has not arrived; use Activity when content is present and something is happening elsewhere.",
+      "Button (loading) — THIS action is in flight, on a control. Not an ambient state.",
+      "Progress — a DETERMINATE amount is done. Activity's `bar` variant is the indeterminate case, where no percentage exists.",
+    ],
+    example: `import { Activity } from "@godxjp/ui/general";
+
+// a channel typing indicator — no live region by default (it flickers with every socket event)
+<Activity label={t("channel.typing", { name: "佐藤" })} />
+
+// an ambient sync mark in a header
+<Activity variant="bar" tone="info" label={t("sync.running")} />
+
+// a reconnect notice that must actually be heard, announced once and politely
+<Activity announce="polite" tone="warning" label={t("realtime.reconnecting")} />`,
+    storyPath: "general/Activity.stories.tsx",
+    rules: [],
+  },
   // ─── data-display ───────────────────────────────────────────────────────
   {
     name: "DataTable",
@@ -2221,7 +2306,7 @@ export default function InvoiceList({
       "DO use <CardCover> as the first child for full-bleed cover media — the header below it uses card-section top spacing, not the card shell.",
       'DO reach for `accentPlacement="perimeter"` when the whole card needs attention, not one edge: `<Card accent="attention" accentPlacement="perimeter">` is the semantic-tone equivalent of `variant="featured"` (which is brand-toned by definition). Never hand-roll it with `className="border-2 border-[--attention]"` or a page-local `.card--attention` rule — the placement owns the border weight, the outer ring AND the slot-padding compensation, so text stays on the same column as an unaccented sibling.',
       "DON'T hand-roll a stat/KPI tile with <Card> + raw divs — use <StatCard> (label, value, hint, delta, layout, inverse props) which is already a Card internally with correct token-driven layout.",
-      "SPACING IS BORDER-AWARE & token-driven (theme via src/tokens/components/card.css, never hard-code padding on slots): `--card-space-inset` is the shared horizontal column every slot (header/content/footer) aligns to. A DIVIDED section — a `banded` header or a `separated` footer, i.e. one carrying a divider border — pads SYMMETRICALLY top+bottom from `--card-space-divided-y` (a band reads as its own region). A PLAIN header flows into the body instead: top `--card-space-shell-y`, no bottom, and the body supplies the gap via `--card-space-body-y`. THE TWO AXES ARE INDEPENDENT (gh#232): `--card-space-inset` is inline-only, while `--card-space-shell-y` owns the BLOCK shell edges (plain-header top, `solo` body top, terminal slot bottom) and defaults to the inset — so a shell/theme can make a card SHORTER without narrowing its column by overriding `--card-space-shell-y` alone (this is how AuthShell's `--auth-shell-card-padding-block-compact` reaches CardContent). Never bridge it with a consumer selector on the card-content slot. Special case: a header above `<CardContent flush>` with a <Table> gets its own `--card-space-body-y` bottom gap (the flush table zeroes its top), so the title never butts the table. `--card-space-gap` is the in-slot stack gap (title↕description). Tune the band rhythm once at `--card-space-divided-y`; tune the accent stripe width at `--card-accent-rail-width` (default 6px).",
+      "SPACING IS BORDER-AWARE & token-driven (theme via src/tokens/components/card.css, never hard-code padding on slots): `--card-space-inset` is the shared horizontal column every slot (header/content/footer) aligns to. A DIVIDED section — a `banded` header or a `separated` footer, i.e. one carrying a divider border — pads SYMMETRICALLY top+bottom from `--card-space-divided-y` (a band reads as its own region). A PLAIN header flows into the body instead: top `--card-space-shell-y`, no bottom, and the body supplies the gap via `--card-space-body-y`. THE TWO AXES ARE INDEPENDENT (gh#232): `--card-space-inset` is inline-only, while `--card-space-shell-y` owns the BLOCK shell edges (plain-header top, `solo` body top, terminal slot bottom) and defaults to the inset — so a shell/theme can make a card SHORTER without narrowing its column by overriding `--card-space-shell-y` alone (this is how AuthShell's `--auth-shell-card-padding-block-compact` reaches CardContent). Never bridge it with a consumer selector on the card-content slot. Special case: `<CardContent flush>` zeroes BOTH of its block edges — for ANY full-bleed body, not only one containing a <Table> (gh#307: the old `:has(table)` gate left a flush file LIST floating 18px off its header while the flush table beside it sat at 0) — so the plain header above it supplies the gap from its own `--card-space-body-y` bottom padding instead. `tight` and `solo` still own that axis themselves. `--card-space-gap` is the in-slot stack gap (title↕description). Tune the band rhythm once at `--card-space-divided-y`; tune the accent stripe width at `--card-accent-rail-width` (default 6px).",
     ],
     useCases: [
       'Dashboard KPI summary row: wrap each metric in <StatCard> (or a plain <Card density="tight"> with <CardContent>) to render a uniform grid of labeled value tiles with optional trend deltas.',
@@ -3140,6 +3225,13 @@ import { Flex } from "@godxjp/ui/layout";
           "Whether Table owns its own horizontal-scroll region (default true). Leave true for a standalone table so a table wider than its container scrolls in a keyboard-reachable wrapper. Set false only when an ancestor already provides the scroll region (DataTable does) to avoid a redundant nested scroller + duplicate keyboard tab stop.",
       },
       {
+        name: "bordered",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Draw the full cell GRID (gh#274): an outer frame plus vertical rules between columns (the horizontal row rules already come from TableRow). Reach for it whenever the table carries rowSpan/colSpan merged cells — without column rules the merge relationships are unreadable. Colour comes from --table-border-color (default --border). Default false emits nothing. Inside `<CardContent flush>` the three edges that COINCIDE with the card's own frame are dropped so the table does not draw a second nested frame (gh#305); the block-start edge survives as the divider under a plain CardHeader (gh#306) and takes its width from --table-flush-divider-width — set that to 0 in a theme for a borderless full-bleed table. A banded CardHeader, a CardBar or a DataTable.Toolbar above the table already draws that line, so the divider stands down there on its own.",
+      },
+      {
         name: "preset",
         type: '"default" | "action-collection"',
         defaultValue: '"default"',
@@ -3377,6 +3469,7 @@ import { Flex } from "@godxjp/ui/layout";
       "DO set `layout`, `labelWidth`, `controlWidth` ONCE on `<Form>` — every `<FormField>` inside inherits them. Override a single field by passing the same prop on that `<FormField>` (Form → FormField priority).",
       "DO rely on mobile-first collapse: `layout='horizontal'` automatically stacks to vertical below `collapseBelow` (default `md`). Pass `collapseBelow={false}` only when a field MUST stay label-beside-control even on phones.",
       "DO use `columns` for multi-field forms (e.g. `columns={2}`) — it reuses ResponsiveGrid (1 column on small screens, more on md/lg). Span a wide field across columns with `<FormField colSpan={2}>`.",
+      "ROW RHYTHM IS THE SAME ON EVERY PATH (gh#304): a grid of FormFields hands its row spacing to the grid's own `row-gap` (--form-grid-row-gap, defaulting to --form-field-row-gap) instead of the per-field margin a stacked Form uses. So `columns={1}` — and any `columns={n}` form once a narrow container collapses it to one column — is pixel-identical to a Form with no `columns`, and a hand-written `<ResponsiveGrid columns={2}>` of FormFields inside a `CardContent` (what a form with several titled Card sections has to write) matches `columns={2}` exactly. Retune --form-field-row-gap to move every path together; --form-grid-row-gap / --form-grid-column-gap to retune the grid rows / gutter alone. Never add margin to a FormField to space a grid row: a per-item margin inside a grid misaligns row 1 and double-counts the track gap.",
       "DON'T hand-roll a `<form>` + Flex stack for spacing — `<Form>` provides the vertical rhythm and the layout context FormField reads. Wire react-hook-form by spreading `onSubmit={handleSubmit(...)}` onto `<Form>`.",
       "SERVER ERROR BAG: pass `errors={form.errors}` (Inertia) ONCE on `<Form>`, give each field a `name`, and put `<FormErrors />` at the top of the form. A named field resolves its message from the bag automatically (no per-field `error={errors.x}`), and FormErrors catches validation errors on hidden/derived keys (`action_mode`, `page`, a source-record id) that no visible field could display — without it those submits fail SILENTLY.",
       "SIBLING FORMS: an edit screen split into several Card+Form sections shares ONE bag by wrapping the region in `<FormErrorsProvider errors={form.errors}>` instead of passing `errors` to each Form — the section Forms (without their own `errors`) join the shared registry, and one `<FormErrors />` anywhere in the region renders the unclaimed remainder.",
@@ -4239,6 +4332,27 @@ export function PrioritySelect({ value, onValueChange }) {
         description: "Called after the field is cleared via the inline ✕ (requires `allowClear`).",
       },
       {
+        name: "autoGrow",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Grow the control with its content instead of holding a fixed `rows` height. The floor is `minRows` (or `rows`, when that is the only one given) and never undercuts the `--control-height` tier, so a resting one-row composer still lines up with the Button beside it; past `maxRows` the control stops growing and scrolls internally. Sizing happens in CSS from a hidden replica of the text, so it follows a paste, an IME composition, a programmatic value change, a font swap and a container resize — not just typing — and the component never writes `style.height`, never reads `scrollHeight` and never moves `scrollTop`. Works controlled and uncontrolled. Off by default: an existing Textarea keeps the exact geometry it has today.",
+      },
+      {
+        name: "minRows",
+        type: "number",
+        defaultValue: "1 (--textarea-autogrow-min-height-rows)",
+        description:
+          "Floor in text rows while `autoGrow`. Theme-global default is the `--textarea-autogrow-min-height-rows` token; this prop overrides it per instance. Ignored when `autoGrow` is false.",
+      },
+      {
+        name: "maxRows",
+        type: "number",
+        defaultValue: "8 (--textarea-autogrow-max-height-rows)",
+        description:
+          "Ceiling in text rows while `autoGrow`; beyond it the box stops growing and scrolls internally rather than pushing the page. Pass `0` for no ceiling — only correct inside an owning scroll container. Theme-global default is the `--textarea-autogrow-max-height-rows` token. Ignored when `autoGrow` is false.",
+      },
+      {
         name: "variant",
         type: '"default" | "ghost"',
         defaultValue: '"default"',
@@ -4247,12 +4361,14 @@ export function PrioritySelect({ value, onValueChange }) {
       },
     ],
     usage: [
-      "DO reach for `variant=\"ghost\"` ONLY when a parent surface already draws the box and owns focus — the composer Card, an inline edit cell. A standalone field keeps the default: without its own border it reads as plain text, not something you can type into.",
+      'DO reach for `variant="ghost"` ONLY when a parent surface already draws the box and owns focus — the composer Card, an inline edit cell. A standalone field keeps the default: without its own border it reads as plain text, not something you can type into.',
       "DO always wrap Textarea in FormField when it appears in a form — FormField clones aria-describedby, aria-required, and aria-invalid onto the child, giving error/helper announcements and screen-reader labelling for free. Pass matching id props to both.",
       "DO use the godx-ui Textarea (`import { Textarea } from '@godxjp/ui/data-entry'`) — never a raw `<textarea>`. The component applies the `ui-control-multiline` token class that picks up density, focus-ring, and border tokens from the design system.",
       "DO control the value with `value` + `onChange` in React-managed forms (e.g. Inertia `useForm`). Textarea is a plain `forwardRef` over the native element so it accepts all standard `HTMLTextAreaElement` attributes — `rows`, `maxLength`, `disabled`, `name`, `placeholder`, `readOnly` all pass through directly.",
       "DO pass `name` when the textarea sits inside an HTML `<form>` for native form submission or when Inertia's `useForm` destructures field values by key — the `name` attribute maps the value into the form data bag.",
-      "DON'T apply manual height or padding classes directly on Textarea to simulate a taller field — use the `rows` prop instead. The component does not auto-resize; if you need auto-grow behaviour you must wire a custom `onInput` handler that adjusts `style.height` explicitly.",
+      "DON'T apply manual height or padding classes directly on Textarea to simulate a taller field — use `rows` for a fixed height, or `autoGrow` for a box that grows with its content.",
+      "DON'T hand-roll auto-grow with an `onInput` handler that sets `style.height` from `scrollHeight` — that is a forced synchronous reflow on every keystroke, it re-derives the library's own box model (`--control-height`, `--control-padding-x`, `--control-border-width`), it freezes the height against the density axis and a tenant retheme, and it misses the paths that matter: a paste, an IME composition in ja/vi, a programmatic reset after submit, and a webfont swap. Pass `autoGrow` instead — the library owns the measurement in CSS.",
+      'DO reach for `autoGrow` + `minRows`/`maxRows` for a chat or comment composer: `<Textarea autoGrow minRows={1} maxRows={8} />` starts one row tall, grows line by line as the author types or pastes, scrolls internally past the ceiling, and collapses back to `minRows` the moment a controlled value is reset to `""` after send. Bound it in ROWS, never in px — a row count survives a density change and a `--font-size-base` retheme.',
       "DON'T hand-roll label + error markup next to a bare Textarea. Always use FormField: it injects aria-invalid (red ring on the control), renders a `role='alert'` error paragraph, and links them via aria-describedby automatically.",
     ],
     useCases: [
@@ -4270,7 +4386,10 @@ export function PrioritySelect({ value, onValueChange }) {
     ],
     example: `import { Textarea } from "@godxjp/ui/data-entry";
 
-<Textarea id="notes" rows={4} placeholder="自由記述" value={notes} onValueChange={(e) => setNotes(e.target.value)} />`,
+<Textarea id="notes" rows={4} placeholder="自由記述" value={notes} onChange={(e) => setNotes(e.target.value)} />
+
+// Chat / comment composer — grows with its content, scrolls past 8 rows, collapses on send.
+<Textarea autoGrow minRows={1} maxRows={8} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="メッセージを入力..." />`,
     storyPath: "data-entry/Textarea.stories.tsx",
     rules: [],
   },
@@ -6742,14 +6861,14 @@ export function AccountMapping() {
         name: "triggerSize",
         type: '"default" | "md" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg"',
         description:
-          "`variant=\"button\"` only — size of the visible trigger, forwarded to Button. An icon size renders it icon-only and moves the label to `aria-label`: a 32px square beside other icon buttons rather than a 147px labelled one that outweighs them.",
+          '`variant="button"` only — size of the visible trigger, forwarded to Button. An icon size renders it icon-only and moves the label to `aria-label`: a 32px square beside other icon buttons rather than a 147px labelled one that outweighs them.',
       },
       {
         name: "triggerVariant",
         type: '"default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link"',
         defaultValue: '"outline"',
         description:
-          "`variant=\"button\"` only — visual weight of the visible trigger, forwarded to Button. Default `outline` suits a standalone form field. Pass `ghost` when the trigger sits in a toolbar row beside other icon buttons — inside a chat composer, say — where a bordered square reads as the odd one out.",
+          '`variant="button"` only — visual weight of the visible trigger, forwarded to Button. Default `outline` suits a standalone form field. Pass `ghost` when the trigger sits in a toolbar row beside other icon buttons — inside a chat composer, say — where a bordered square reads as the odd one out.',
       },
     ],
     usage: [
@@ -8068,7 +8187,7 @@ export function ControlledPopover() {
     name: "ScrollArea",
     group: "data-display",
     tagline:
-      "Radix-backed custom scrollbar container — always set an explicit height/max-height on the wrapper or the scrollbar never appears.",
+      "Radix-backed custom scrollbar container — always set an explicit height/max-height on the wrapper or the scrollbar never appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
     props: [
       {
         name: "className",
@@ -8103,6 +8222,32 @@ export function ControlledPopover() {
         description:
           "Scrollbar visibility strategy. 'auto' mirrors browser overflow; 'always' keeps it visible; 'scroll' shows while scrolling; 'hover' shows while hovering the scroll area.",
       },
+      {
+        name: "viewportRef",
+        type: "React.Ref<HTMLDivElement>",
+        description:
+          "Ref to the element that actually SCROLLS (the internal Radix viewport) — NOT the root, which is overflow:hidden and never scrolls, which is why the component's own `ref` cannot serve. Use it to read scrollTop/scrollHeight, call scrollTo(), restore a saved position or drive a 'jump to newest' button. This is the supported replacement for querying `[data-radix-scroll-area-viewport]`, which is a Radix internal and is ambiguous as soon as two ScrollAreas nest.",
+      },
+      {
+        name: "anchor",
+        type: '"none" | "bottom"',
+        defaultValue: '"none"',
+        description:
+          "Edge the viewport sticks to as its content grows. 'none' leaves the scroll offset entirely alone (today's behaviour). 'bottom' is the live-stream contract: mount lands on the newest item; while the reader is within `anchorOffset` of the bottom, arriving content keeps them there; once they scroll up to read history nothing moves the viewport again until they come back; and content inserted ABOVE the read position is compensated so the row under their eyes stays put.",
+      },
+      {
+        name: "anchorOffset",
+        type: "number",
+        defaultValue: "--scroll-area-anchor-offset (3rem)",
+        description:
+          "Distance in px from the bottom edge inside which the reader still counts as 'following' for anchor=\"bottom\". Read from the --scroll-area-anchor-offset token at mount, so a theme moves it globally; this prop overrides it per instance. Size it to the row height the service renders (a dense log line vs a chat bubble with an avatar).",
+      },
+      {
+        name: "onAnchoredChange",
+        type: "(anchored: boolean) => void",
+        description:
+          "Fires when the pinned state flips — false when the reader scrolls away from the bottom, true when they return inside anchorOffset. Render a real focusable 'jump to newest' Button from it: anchoring must never be the only route back to new content.",
+      },
     ],
     usage: [
       'DO set an explicit height or max-height on ScrollArea via className (e.g. `className="h-64"` or `className="max-h-[min(300px,50vh)]"`). Without a height constraint the viewport grows to fit content and the scrollbar is never rendered.',
@@ -8111,6 +8256,12 @@ export function ControlledPopover() {
       "DON'T use a native browser `overflow-auto` div as an alternative — ScrollArea provides the design-system-styled thumb/track and respects the semantic token palette.",
       "DON'T put ScrollArea inside a flex parent without giving it a `flex-1` or fixed size — it will collapse to zero height and appear broken.",
       'For horizontal-only scrolling, still wrap in ScrollArea with `className="w-full"`, put the wide content inside, and place `<ScrollBar orientation="horizontal" />` explicitly after the content.',
+      'DO use `viewportRef` when you need the scrolling element. DON\'T reach for `container.querySelector("[data-radix-scroll-area-viewport]")` — that attribute is a Radix internal with no public contract (a major bump renames it and breaks the app at runtime with no type error), and it matches the wrong node the moment two ScrollAreas nest.',
+      'DO build a live stream (chat, log tail, streaming response, activity feed) with `anchor="bottom"` instead of writing `viewport.scrollTop = viewport.scrollHeight` in an effect. That naive version is the BUG, not the feature: it yanks a reader who has scrolled up back to the bottom on every arriving message (WCAG 3.2.5).',
+      'DO pair `anchor="bottom"` with `onAnchoredChange` and a real Button ("jump to newest"). A keyboard user who has scrolled up needs a focusable route back to new content — the anchor alone is a pointer affordance.',
+      "DON'T remove the viewport's `tabIndex={0}`, and don't wrap the scrolling content in something that swallows arrow keys: the region must stay keyboard-scrollable (WCAG 2.1.1 / axe scrollable-region-focusable).",
+      "DON'T add an `aria-live` region to the ScrollArea to announce arriving items — a live region on a scroll container re-announces on reflow. Announce from your own small status region next to it.",
+      "Retune the stickiness once per service with the `--scroll-area-anchor-offset` token rather than passing `anchorOffset` on every instance.",
     ],
     useCases: [
       "Long dropdown lists inside Popovers or Selects where the list height must be capped (e.g. TreeSelect, Cascader columns, Combobox options).",
@@ -8119,6 +8270,7 @@ export function ControlledPopover() {
       "Cascader multi-column layouts where the horizontal axis may overflow (use ScrollBar orientation=horizontal).",
       "Detail panels or audit-log timelines inside a fixed-height Card that should not stretch the page.",
       "Code or JSON viewers with a fixed max-height needing both axes scrollable.",
+      'Live message streams and log tails: `anchor="bottom"` pins to the newest item while the reader is at the bottom, freezes when they scroll up to read history, and preserves their position when a page of older history is prepended.',
     ],
     related: [
       "DataTable — use DataTable (not ScrollArea) when data is tabular and needs sorting/selection; DataTable manages its own overflow internally.",
@@ -8146,7 +8298,32 @@ export function ControlledPopover() {
     ))}
   </div>
   <ScrollBar orientation="horizontal" />
-</ScrollArea>`,
+</ScrollArea>
+
+// Live stream — pinned to the newest post, never yanked while reading history
+const viewport = React.useRef<HTMLDivElement>(null);
+const [atNewest, setAtNewest] = React.useState(true);
+
+<ScrollArea
+  anchor="bottom"
+  viewportRef={viewport}
+  onAnchoredChange={setAtNewest}
+  className="h-64 w-full rounded-md border"
+>
+  <div className="px-3">
+    {posts.map((post) => <PostRow key={post.id} post={post} />)}
+  </div>
+</ScrollArea>
+<Button
+  type="button"
+  disabled={atNewest}
+  onClick={() => {
+    const node = viewport.current;
+    if (node) node.scrollTop = node.scrollHeight;
+  }}
+>
+  {t("chat.jumpToNewest")}
+</Button>`,
     storyPath: "data-display/ScrollArea.stories.tsx",
     rules: [2, 3, 24, 31],
   },
@@ -8572,6 +8749,18 @@ import { fetchInvoice } from "@/api/invoices";
           'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION (gh#12): a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on. Retune with --avatar-tinted-{background,foreground,glyph-size}.',
       },
       {
+        name: "presence",
+        type: '"online" | "away" | "busy" | "offline"',
+        description:
+          'Realtime reachability, drawn as an indicator at the block-end/inline-end corner of the mark (gh#309). Ships the dot, its geometry tokens and a localized sr-only label TOGETHER, so presence is never colour-only (WCAG 1.4.1): each value also has its own silhouette — online = filled disc (--success), away = half-filled (--warning), busy = filled + a horizontal do-not-disturb bar (--destructive), offline = hollow ring (--muted-foreground). OMIT the prop for an entity with no presence concept (an organization mark, a capability medallion): no node and no attribute are emitted. `presence="offline"` is the DIFFERENT, positive statement "known to be unreachable" — the same distinction ListRow draws between an omitted and a `false` `unread`. Retune every constant with --avatar-presence-*.',
+      },
+      {
+        name: "presenceLabel",
+        type: "string",
+        description:
+          'Override the localized presence text (t("dataDisplay.avatar.presence.online") …) when the product has a more precise phrasing ("In a meeting until 15:00"). Visually hidden either way — a presence dot never carries visible text; that is Badge status.',
+      },
+      {
         name: "children",
         type: "ReactNode",
         description: "Compose AvatarImage and AvatarFallback.",
@@ -8580,6 +8769,9 @@ import { fetchInvoice } from "@/api/invoices";
     ],
     usage: [
       "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
+      'DO use `presence` for who is reachable RIGHT NOW — a chat member list, a DM row, a message-stream author, the topbar account mark. It is the only supported way to put a status dot on an avatar: the dot\'s inset is a function of the mark\'s own --avatar-* radius/size and of the root\'s clip, neither of which a page can read, which is why the hand-rolled `<span className="relative"><Avatar/><span className="absolute -end-0.5 -bottom-0.5 size-2.5 rounded-full bg-green-500 ring-2 ring-background"/></span>` wrapper can never be got right from outside (and fails the DS audit on the raw palette).',
+      "DON'T announce a presence CHANGE from the avatar — it carries no aria-live on purpose. A roster of 40 marks resyncing over a socket would flood a screen reader; announce the change in the consumer's own live region if the product wants it.",
+      "DON'T reach for `Badge status` for presence, or `presence` for lifecycle. Presence is volatile, per-person and realtime and renders as a dot; a lifecycle status is a record's state and renders as a labelled chip.",
       'DO render a capability / feature icon as `<Avatar shape="square" appearance="tinted"><AvatarFallback><Sparkles aria-hidden /></AvatarFallback></Avatar>` — the medallion is a COMPOSITION (Avatar + a Lucide glyph, per docs/COMPOSITION-VS-COMPONENT.md), and `appearance="tinted"` is the token-owned tint that composition needs. A BARE glyph beside a card title, or a hand-derived `hsl(var(--primary) / 0.1)` plate in page CSS, are both the anti-pattern this replaces. Left-aligned capability card: `<Card><CardHeader className="flex flex-row items-center gap-3"><Avatar shape="square" appearance="tinted">…</Avatar><CardTitle>…</CardTitle></CardHeader>…`.',
       'DO use `shape="square"` for an organization / service / tenant mark in an entity header, and keep the default `shape="circle"` for people. The square appearance already carries the brand surface and an AA-contrast glyph colour — a className/colour override on the call site is never needed (and is forbidden by the API-first redesign policy).',
       "DON'T retune the entity mark per call site: set --avatar-square-{radius,size,background,foreground} ONCE in the service theme (e.g. --avatar-square-background: hsl(var(--muted)) for a neutral mark).",
@@ -8590,8 +8782,12 @@ import { fetchInvoice } from "@/api/invoices";
       "Team member lists",
       "Account owner cells in a DataTable",
       'Organization / service entity headers (shape="square" beside the entity name and code)',
+      'Chat / collaboration people surfaces (presence="online|away|busy|offline" on DM rows, channel member lists, message-stream authors)',
     ],
-    related: ["Badge — use beside Avatar for role/status metadata."],
+    related: [
+      "Badge — use beside Avatar for role/status metadata. Badge `status` is the LIFECYCLE chip (a record's state, with a visible label); Avatar `presence` is the realtime person dot. Different vocabularies on purpose — do not swap them.",
+      "ListRow — its `unread` prop is the same bargain one level up (a dot + localized sr-only text + tokens). Use ListRow `unread` for a row's read state, Avatar `presence` for the person on it.",
+    ],
     example: `import { Avatar, AvatarFallback, AvatarImage } from "@godxjp/ui/data-display";
 
 <Avatar>
@@ -8602,6 +8798,12 @@ import { fetchInvoice } from "@/api/invoices";
 // Organization entity header mark
 <Avatar shape="square">
   <AvatarFallback>山</AvatarFallback>
+</Avatar>
+
+// A chat member with realtime presence — dot + localized sr-only text, never colour alone
+<Avatar presence="busy">
+  <AvatarImage src="/rei.png" alt="佐藤 玲" />
+  <AvatarFallback>佐</AvatarFallback>
 </Avatar>`,
     storyPath: "data-display/Avatar.stories.tsx",
     rules: [3, 35],
@@ -8609,7 +8811,8 @@ import { fetchInvoice } from "@/api/invoices";
   {
     name: "Separator",
     group: "layout",
-    tagline: "Radix Separator wrapper for tokenized horizontal or vertical dividers.",
+    tagline:
+      "Tokenized horizontal or vertical rule, optionally INTERRUPTED by a localized label (day divider, unread watermark, auth conjunction).",
     props: [
       {
         name: "orientation",
@@ -8618,27 +8821,67 @@ import { fetchInvoice } from "@/api/invoices";
         description: "Divider direction.",
       },
       {
+        name: "label",
+        type: "string",
+        description:
+          "Localized text that interrupts the rule — the rule splits into two halves around it. Horizontal only (ignored with a dev warning when vertical). A string, not a node, because it becomes the separator's ACCESSIBLE NAME. Omit for a plain rule.",
+      },
+      {
+        name: "labelAlign",
+        type: '"start" | "center" | "end"',
+        defaultValue: '"center"',
+        description:
+          'Where the label sits on the rule. `center` is the classic conjunction; `start` is the Slack/Mattermost stream convention. Logical — it flips under dir="rtl".',
+      },
+      {
+        name: "tone",
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        defaultValue: '"default"',
+        description:
+          "Semantic emphasis of the label AND the rule together (never colour-only). `default` is the quiet chrome; use a role for an attention rule such as an unread watermark.",
+      },
+      {
         name: "decorative",
         type: "boolean",
-        defaultValue: "true",
-        description: "Whether the separator is decorative for assistive tech.",
+        defaultValue: "true (false when `label` is set)",
+        description:
+          'Whether the separator is decorative for assistive tech. A `label` flips the default to false so the rule becomes a real role="separator" named by the label.',
       },
     ],
     usage: [
       "DO use Separator for section dividers instead of raw border divs.",
       "DO set orientation='vertical' only when the parent gives it a stable height.",
+      'DO use `label` for a message stream\'s day divider or a "new messages" unread watermark — it is the generic primitive AuthDivider was being misused for (gh#308). Never hand-roll a <div> grid of two <span> rules.',
+      "DO format a day divider's date with the package's Intl/CLDR date subsystem (`formatDate(iso, { kind: \"long\" })` from @godxjp/ui/datetime) on the active locale — never hand-build the string.",
+      "DO pass `label` as a t() string. It becomes the separator's accessible name, and the visible node is aria-hidden so it is announced EXACTLY once.",
+      'DON\'T set `decorative` on a labelled rule unless you mean it: role="none" cannot carry a name, so the rule stops being announced as a milestone.',
+      "DON'T reach for AuthDivider outside an auth form — it is the auth-scoped preset over this and drags the --auth-shell-divider-* micro-scale with it.",
+      "DON'T bake the rule weight, the label gap/inset or the label type ramp into page CSS — they are --separator-* component tokens (rules #44/#45); retune them from theme.css.",
     ],
     useCases: [
       "Separating toolbar groups",
       "Dividing stacked page sections",
       "Vertical split between metadata groups",
+      "A message stream's calendar-boundary day divider",
+      'A "new messages" unread watermark above the first unread post',
     ],
-    related: ["Flex direction='col' — use for vertical spacing without a visible rule."],
-    example: `import { Separator } from "@godxjp/ui/layout";
+    related: [
+      "Flex direction='col' — use for vertical spacing without a visible rule.",
+      "AuthDivider — the auth-scoped preset over `Separator label` (it only re-points the --separator-* knobs at the --auth-shell-divider-* layer).",
+    ],
+    example: `import { formatDate } from "@godxjp/ui/datetime";
+import { Separator } from "@godxjp/ui/layout";
 
-<Separator />`,
+// Plain section rule — decorative, nothing announced.
+<Separator />
+
+// Day divider: the label is the calendar boundary, formatted on the active locale.
+<Separator label={formatDate("2026-08-22", { kind: "long" })} labelAlign="start" />
+
+// Unread watermark: content, not decoration — announced once as the separator's name.
+<Separator label={t("chat.newMessages")} tone="primary" />`,
     storyPath: "layout/Separator.stories.tsx",
-    rules: [2, 3],
+    rules: [2, 3, 44, 45],
   },
   {
     name: "Skeleton",
@@ -8686,18 +8929,61 @@ import { fetchInvoice } from "@/api/invoices";
         defaultValue: '"md"',
         description: "Control size.",
       },
+      {
+        name: "count",
+        type: "number",
+        description:
+          "Optional numeric count rendered as a borderless counter pill after the label — the SAME vocabulary Button defines (count/overflowCount/showZero), so a counted filter tab and a counted PRESSED chip read identically. This is what makes a faceted filter chip ('Open 42', selected or not) or a reaction chip ONE control: one button[aria-pressed], one tab stop, one focus ring, one accessible name. Formatted with Intl.NumberFormat in the active locale — never String(n), never a hand-rolled separator. NEVER nest a Badge inside a Toggle for this (a Badge is a status chip with its own surface: it double-borders the chip and puts two boxes where there is one control), and never hand-write a <span> counter inside a Toggle (that re-derives the Intl formatting, the cap and the pill's type ramp page-side). The pill takes its colour from the toggle's OWN pressed state, so pressed and unpressed chips differ without reading the number.",
+      },
+      {
+        name: "overflowCount",
+        type: "number",
+        defaultValue: "99",
+        description:
+          "Cap for `count` — above it the pill shows `{overflowCount}+` (e.g. 99+). The cap itself is locale-formatted too (vi: 1.000+). Same default and semantics as Button.",
+      },
+      {
+        name: "showZero",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Render the pill when `count` is 0. Same default as Button. Set false to hide an empty facet's pill while keeping the chip.",
+      },
+      {
+        name: "countLabel",
+        type: "string",
+        description:
+          "Localized description of what the count MEANS, folded into the accessible name so the control never announces as a bare number. The name always comes out as '<label>, <count> <unit>' — from contents for a text chip ('Unread, 12 items'), or folded into `aria-label` for an icon/emoji chip ('thumbs up, 3 reactions'). REQUIRED in practice whenever the visible label is an icon or emoji. Pass a t()-resolved string; the library does not own this wording. The count is announced exactly ONCE and there is deliberately no aria-live: a count that ticks up as other people react is not this control's status — a product that wants it announced owns its own live region.",
+      },
     ],
     usage: [
       "DO provide an accessible label when the toggle only contains an icon.",
       "DON'T use Toggle for multi-option selection; use ToggleGroup.",
+      "DO reach for `count` for a faceted filter chip, a counted segmented toggle or a reaction chip — Toggle is the primitive that owns BOTH the count and the pressed state.",
+      "DON'T write `<Button count={n} aria-pressed>` for this: buttonVariants has no pressed branch, so the state paints nothing and the chip is indistinguishable from an unpressed one.",
+      "DON'T nest a Badge (or a hand-written span) inside a Toggle to show a count — use `count`.",
+      "DO pass `countLabel` whenever the label is an icon or an emoji, so the chip does not announce as a bare number.",
+      "DON'T wrap the chip in a live region to announce count changes — Toggle deliberately does not, because a count driven by other people is not this control's status.",
     ],
-    useCases: ["Bold/italic toolbar buttons", "Pinned filter toggles", "Compact view mode buttons"],
-    related: ["ToggleGroup", "Button"],
+    useCases: [
+      "Bold/italic toolbar buttons",
+      "Pinned filter toggles",
+      "Compact view mode buttons",
+      "Faceted filter chips with facet sizes (Open 42 / Closed 118)",
+      "Reaction chips (emoji + how many reacted + whether YOU did)",
+    ],
+    related: ["ToggleGroup", "Button", "Badge"],
     example: `import { Toggle } from "@godxjp/ui/data-entry";
 
-<Toggle aria-label="Bold">B</Toggle>`,
+<Toggle aria-label="Bold">B</Toggle>
+
+// A counted filter chip — one control, one accessible name ("Unread, 12 items").
+// Drive the state with the usual Radix pair: pressed / defaultPressed / onPressedChange.
+<Toggle onPressedChange={setUnreadOnly} count={12} countLabel={t("common.items")}>
+  {t("inbox.unread")}
+</Toggle>`,
     storyPath: "data-entry/Toggle.stories.tsx",
-    rules: [3, 13],
+    rules: [3, 13, 45],
   },
   {
     name: "ToggleGroup",
@@ -8739,6 +9025,12 @@ import { fetchInvoice } from "@/api/invoices";
         name: "disabled",
         type: "boolean",
         description: "Disables the whole group; individual items also accept `disabled`.",
+      },
+      {
+        name: "ToggleGroupItem count / overflowCount / showZero / countLabel",
+        type: "number | number | boolean | string",
+        description:
+          "The counter-pill vocabulary is available PER ITEM (gh#312), because variant/size are a group decision but the number is per-item data. Same vocabulary and same rendering as Toggle and Button: Intl.NumberFormat on the active locale, `{overflowCount}+` above the cap, and the count folded into that item's own accessible name. This is the faceted filter chip row (Open 42 / Closed 118) and the reaction row.",
       },
     ],
     usage: [
@@ -10262,7 +10554,8 @@ export function NotifyRow() {
   {
     name: "AuthDivider",
     group: "layout",
-    tagline: "Localized auth-form divider with equal rules and an accessible separator label.",
+    tagline:
+      "The auth-scoped PRESET over `Separator label` — a localized conjunction between two equal rules.",
     props: [
       {
         name: "label",
@@ -10272,11 +10565,19 @@ export function NotifyRow() {
       },
       { name: "className", type: "string", description: "Optional structural class override." },
     ],
+    usage: [
+      "DO use AuthDivider only INSIDE an auth form. Since gh#308 it is a thin preset over `<Separator label>`: it re-points the --separator-* knobs at the --auth-shell-divider-* layer (the 11px auth micro-scale, the auth rule/label colours), so using it elsewhere drags auth geometry into an unrelated screen.",
+      "DON'T use it for a message stream's day divider or a \"new messages\" watermark — that is `<Separator label>` with a `labelAlign` and a `tone`. Misusing AuthDivider is the exact defect gh#308 fixed: a service retuning its login divider silently retuned every divider in its chat.",
+    ],
+    useCases: ["An “or” conjunction between a credential form and a provider action row"],
+    related: [
+      "Separator — the primitive this presets; use it directly for any labelled rule outside auth.",
+    ],
     example: `import { AuthDivider } from "@godxjp/ui/layout";
 
 <AuthDivider label="or" />`,
     storyPath: "layout/AuthDivider.stories.tsx",
-    rules: [],
+    rules: [44, 45],
   },
   {
     name: "AuthFooter",

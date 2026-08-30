@@ -1,0 +1,21 @@
+/* SCROLL AREA — the bottom-anchoring contract (gh#311).
+ *
+ * The rail geometry (--scroll-area-bar-size / --scroll-area-bar-padding / --scroll-area-thumb-radius)
+ * lives with the other data-display knobs in ./data-display.css, because it is styled from
+ * styles/data-display-layout.css. What lives HERE is the one constant that is read by JavaScript
+ * rather than by CSS, so it needs no layout rule to hang off.
+ */
+:root {
+  /* How close to the bottom edge the reader still counts as "following the stream" for
+   * `<ScrollArea anchor="bottom">`. Inside this band new content keeps the viewport pinned to the
+   * newest item; one pixel beyond it the reader is reading history and anchoring NEVER moves them
+   * again until they come back (WCAG 3.2.5 — no change of context on request of the machine).
+   *
+   * It is a rule #45 knob because the right distance is a function of the row height a service
+   * renders: one line of a dense audit log is ~20px, a chat bubble with an avatar is ~64px, and
+   * "one row from the bottom" is what the reader actually means. Expressed in rem on purpose — it
+   * then tracks the user's font size, so the band is still one row at 200% zoom (WCAG 1.4.4)
+   * instead of collapsing to a third of a row. The `anchorOffset` prop overrides it per instance;
+   * px/rem/em are all accepted. */
+  --scroll-area-anchor-offset: 3rem;
+}

@@ -34,13 +34,34 @@
   }
 
   /* …except when the fields are ResponsiveGrid ITEMS (Form columns={n}): there the grid's own
-   * `gap` owns the rhythm, and a per-item margin double-spaces every row AND breaks column
-   * alignment — the FIRST field has no preceding sibling so no margin, while its row-mate does,
-   * shifting row 1's columns 11px apart and inflating every grid track by the margin. Fields
-   * merely NESTED somewhere inside a grid cell (a stacked pair in one cell) are not direct
-   * children, keep the margin, and are unaffected. */
+   * `row-gap` owns the rhythm (see the rule below), and a per-item margin double-spaces every row
+   * AND breaks column alignment — the FIRST field has no preceding sibling so no margin, while its
+   * row-mate does, shifting row 1's columns apart by exactly --form-field-row-gap and inflating
+   * every grid track by the same amount (gh#304: measured 0 / +12px tops on row 1, 89px pitch
+   * against a 77px track). Fields merely NESTED somewhere inside a grid cell (a stacked pair in one
+   * cell) are not direct children, keep the margin, and are unaffected. */
   .ui-responsive-grid > .ui-form-field + .ui-form-field {
     margin-block-start: 0;
+  }
+
+  /* …and the rhythm the grid takes over is the FORM'S, not ResponsiveGrid's generic 16px stack gap
+   * (gh#304). Handing the rows to the grid fixed the alignment but silently re-tuned the spacing:
+   * a `columns={1}` form — and every `columns={n}` form once a narrow container collapses it to one
+   * column, i.e. every phone — laid its rows out 16px apart where the SAME fields without `columns`
+   * sat 12px apart. One canonical field rhythm on both paths: --form-grid-row-gap defaults to
+   * --form-field-row-gap, and the gutter becomes a knob at the same time (rule #45, 16px default).
+   *
+   * `:has(> .ui-form-field)` — a grid whose ITEMS are FormFields is a field grid, and that is the
+   * exact condition the margin reset above tests, so the two rules can never disagree about which
+   * mechanism owns a row. Deliberately NOT `.ui-form > …`: `columns={n}` is only one way to write
+   * this layout, and the Card-framed hand-written one (`Form > Card > CardContent > ResponsiveGrid
+   * > FormField*` — what a form with several titled sections must do, and what docs' invoice-form
+   * does) is the other. Keying on ancestry would give the two identical-looking layouts different
+   * row rhythms, which is the depth-dependence gh#295 removed from this file in the first place.
+   * A card/tile grid inside a form has no FormField items and keeps ResponsiveGrid's stack gap. */
+  .ui-responsive-grid:has(> .ui-form-field) {
+    row-gap: var(--form-grid-row-gap);
+    column-gap: var(--form-grid-column-gap);
   }
 
   /* Vertical (default + collapsed state): label stacked above the control column, LEFT-aligned.

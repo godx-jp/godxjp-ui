@@ -44,6 +44,33 @@ src/styles/
 
 Default brand tokens use the GodX Agent Portal palette: navy primary, 朱 orange focus/accent, warm neutral surfaces. App or customer identity colors belong in the consuming app theme, not in package tokens.
 
+#### `--border` vs `--input` — decorative chrome vs control boundary (gh#315)
+
+These two look like synonyms and are not. They shipped sharing one value, which is how a text
+field's edge ended up at **1.46:1** against the page — the one live WCAG failure a full DXS
+Platform sweep found. Keep them apart:
+
+| Role       | What it draws                                                                                                                                                   | Contrast bar                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--border` | Decorative chrome — table rules, card edges, section dividers, `<Separator>`                                                                                    | **None.** WCAG 2.2 SC 1.4.11 does not reach a divider; this system's dense JP grid depends on it staying quiet                                         |
+| `--input`  | The boundary that **is** the control — Input, Textarea, Select, outline Button, TagInput, composite date field, topbar search, and the Switch's unchecked track | **≥ 3:1** (SC 1.4.11 Non-text Contrast) against every surface a control sits on — page, card, popover, muted/secondary panel, striped and hovered rows |
+
+A field here has no fill of its own (`background: hsl(var(--background))`) and no shadow to speak
+of, so that 1px edge is the whole visual claim that you may type there. Current values:
+`30 7% 53%` light (3.47:1 on `--background`/`--card`, 3.18:1 on `--muted`) and `45 6% 47%` dark
+(4.22:1 on `--background`, 3.88:1 on `--card`/`--popover`, 3.17:1 on `--muted`).
+
+**Re-theming rule:** a service theme that retints neutrals must move these two **independently** —
+setting `--input: var(--border)` re-opens the bug. `src/tokens/__tests__/input-boundary-contrast.test.ts`
+recomputes the ratios from `foundation.css` and fails below 3:1, and fails outright if the two
+roles are given the same value again.
+
+The Switch's off-track borrows `--input` by default. If a service wants it quieter than the
+boundary role, override `--switch-unchecked-background` (component token, `initial`, call-site
+default `hsl(var(--input))`) rather than dragging `--input` back down — but whatever you set still
+owes 3:1 against the page and against the thumb (`--background`), or "off" stops being a visible
+state.
+
 ### Typography
 
 | Owner               | Rule                                                                                            |

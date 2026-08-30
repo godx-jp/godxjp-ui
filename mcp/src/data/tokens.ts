@@ -72,6 +72,72 @@ export const TOKENS: TokenEntry[] = [
     role: "One step (60ms) of the Reveal stagger ladder — `<Reveal delay={n}>` waits n × this before entering, so a column of reveals cascades. Read instead of a literal `.04s`/`.09s` per-item delay.",
   },
   {
+    name: "--duration-loop",
+    category: "primitive",
+    tier: "primitive",
+    role: "The AMBIENT/LOOPING interval (1400ms) — the cycle member of the motion tier, and the one gh#313 added. `--duration-{fast,base,slow}` time a TRANSITION (A to B, then stop); a loop needs an interval, so every ambient affordance in the product breathes at one rate. `Activity` reads it through `--activity-interval`.",
+  },
+  {
+    name: "--activity-interval",
+    category: "component",
+    tier: "component",
+    role: "Per-component override of the ambient loop interval (defaults to `var(--duration-loop)`). A service tunes its typing/sync rhythm without moving every loop in the product (cardinal rule #45). Declared in the MOTION tier (tokens/foundation.css) beside `--reveal-stagger-step`, not in tokens/components/activity.css, because component-token names must carry a geometry/colour property word and there is none for a duration.",
+  },
+  {
+    name: "--activity-stagger-step",
+    category: "component",
+    tier: "component",
+    role: "Offset (160ms) between the three `Activity variant='dots'` marks — the LOOP counterpart to `--reveal-stagger-step`, named to match. In RTL the dots reverse with the flex row, so the cascade follows the reading direction with no extra rule. Declared in the motion tier for the same reason as `--activity-interval`.",
+  },
+  {
+    name: "--activity-mark-size",
+    category: "component",
+    tier: "component",
+    role: "Diameter (0.25em) of one `dots` mark. `em`-based so the whole mark tracks `--activity-font-size-*` (and therefore `--font-size-base` and the density axis) instead of pinning a px per size step.",
+  },
+  {
+    name: "--activity-mark-offset",
+    category: "component",
+    tier: "component",
+    role: "Travel (0.25em) of one `dots` step — the LOOP counterpart to `--reveal-distance`, named to match. It is ALSO the height the mark row reserves, so a dot at the top of its arc is never clipped and the row never grows mid-cycle.",
+  },
+  {
+    name: "--activity-mark-rest-alpha",
+    category: "component",
+    tier: "component",
+    role: "Opacity (0.35) of a mark at the trough of its cycle. Deliberately never 0: a mark that vanishes reads as a rendering bug, and it is what makes the `prefers-reduced-motion` frame (animation dropped) land on a legible resting state.",
+  },
+  {
+    name: "--activity-pulse-mark-size",
+    category: "component",
+    tier: "component",
+    role: "Diameter (0.5em) of the single `variant='pulse'` mark — bigger than one `dots` dot because it carries the whole affordance alone.",
+  },
+  {
+    name: "--activity-gap",
+    category: "component",
+    tier: "component",
+    role: "Mark-to-mark and mark-to-label gap (defaults to `var(--space-1)`).",
+  },
+  {
+    name: "--activity-font-size-{xs,sm,md,lg}",
+    category: "component",
+    tier: "component",
+    role: "Root size ladder for `Activity`. The mark is em-based, so this ONE value scales the whole indicator; the steps mirror the `Text` size the label renders at, so mark and label stay optically paired.",
+  },
+  {
+    name: "--activity-bar-{width,height,radius,segment-width,track-alpha}",
+    category: "component",
+    tier: "component",
+    role: "The indeterminate `variant='bar'` sweep: track measure (4rem — an inline measure beside a label, not a 100% fill), thickness, corner, the moving segment's share of the track (40%), and the track's tint alpha (0.2).",
+  },
+  {
+    name: "--activity-color",
+    category: "component",
+    tier: "component",
+    role: "Mark ink for `Activity`. ROLE-MIRROR KNOB — declared `initial` at :root with the role default at the CALL SITE (`hsl(var(--activity-color, var(--muted-foreground)))`), so a scoped `[data-tenant]` / `.dark` override of `--muted-foreground` still reaches it (docs/TOKENS.md · 'Role-mirror knobs MUST be initial'). It retints the default `tone='muted'`; an explicit non-muted `tone` sets its own semantic role.",
+  },
+  {
     name: "--shadow-color",
     category: "primitive",
     tier: "primitive",
@@ -123,6 +189,12 @@ export const TOKENS: TokenEntry[] = [
   },
   { name: "--info", category: "semantic", tier: "semantic", role: "Information status role." },
   { name: "--attention", category: "semantic", tier: "semantic", role: "Attention status role." },
+  {
+    name: "--border / --input",
+    category: "semantic",
+    tier: "semantic",
+    role: "TWO roles, NOT synonyms — never set one to the other (gh#315). --border is DECORATIVE chrome: table rules, card edges, section dividers, Separator. WCAG 2.2 SC 1.4.11 does not reach it (a divider is not \"required to identify a component or its state\") and this system's dense JP grid depends on it staying quiet — light `30 7% 83%`, dark `45 6% 22%`. --input is the CONTROL BOUNDARY: the 1px edge of Input/Textarea/Select/outline Button/TagInput/the composite date field/the topbar search (the Tailwind `border-input` utility reads it), plus the Switch's unchecked track fill. A field has no fill of its own and no shadow, so that edge is the whole visual claim that you may type there — it owes SC 1.4.11's 3:1 against EVERY surface a control sits on, not just the plain page: light `30 7% 53%` (3.47:1 on --background/--card/--popover, 3.18:1 on --muted/--secondary, 3.35:1 on a zebra row), dark `45 6% 47%` (4.22:1 on --background, 3.88:1 on --card/--popover, 3.17:1 on --muted). They shipped sharing one value and put every text field at 1.46:1. A service re-theming neutrals MUST move the two independently; `src/tokens/__tests__/input-boundary-contrast.test.ts` recomputes the ratios and fails below 3:1 or if the two roles are re-coupled. To quieten the Switch off-track without dragging --input back down, override --switch-unchecked-background instead.",
+  },
   {
     name: "--page-header-divider",
     category: "semantic",
@@ -185,6 +257,12 @@ export const TOKENS: TokenEntry[] = [
   },
   { name: "--badge-space-*", category: "component", tier: "component", role: "Badge spacing." },
   {
+    name: "--toggle-count-{min-width,space-inline,font-size,radius,gap} / --toggle-count-{background,color} / --toggle-pressed-count-{background,color} / --toggle-pressed-border-color / --toggle-count-forced-outline-width",
+    category: "component",
+    tier: "component",
+    role: "Toggle's COUNTER PILL (`count` / `overflowCount` / `showZero` / `countLabel`, gh#312) — the counted, PRESSED chip Button could not express. SHARE vs SPLIT is the whole point of this group. GEOMETRY is shared: the five geometry knobs carry Button's exact counter values off the same primitive scale (var(--space-4) / var(--space-1) / var(--font-size-xs) / var(--radius-pill) / 0), so a Toggle count set beside a Button count measures identically in a browser (12.47px, 16px min-inline, 4px inline padding, pill radius, tabular-nums) and a token-parity test fails if either side moves alone. `--toggle-count-gap` is ADDITIVE to the toggle's own flex gap and defaults to the quiet 0 (rule #44). COLOUR is deliberately NOT shared: Button's pill sits on a static variant surface and tints itself translucently, but Toggle's pill sits on a surface that INVERTS when pressed, where that treatment cannot clear WCAG 1.4.3 AA at the xs step (measured 3.82:1, and 4.39:1 even at the lowest usable alpha — the ceiling is the chip label's own 5.04:1 and any tint only lowers it). So Toggle uses OPAQUE role fills that make its contrast independent of the chip's variant and hover surface, and inverts them with the state: unpressed --foreground on --muted (14.18:1 light / 12.44:1 dark), pressed --primary on --primary-foreground — the chip label's own pair, swapped (5.04:1 light / 7.05:1 dark), so the pill is exactly as legible as the label beside it. All five colour knobs are ROLE-MIRROR knobs: `initial` at :root with the role default at the CALL SITE, so a scoped `.dark`/`[data-tenant]` override of the role actually reaches the pill. `--toggle-pressed-border-color` defaults to the pressed fill itself (quiet, #44) and is the knob a service overrides when its pressed fill is a PALE tint that weakens the inversions. `--toggle-count-forced-outline-width` (1px) draws the pressed pill's outline under `forced-colors: active`, where every fill is flattened and neither inversion encodes anything — together with the chip border following the system Highlight, that keeps the pressed state off colour alone (WCAG 1.4.1).",
+  },
+  {
     name: "--logo-godx-{size,size-xs|sm|md|lg,color} / --logo-success-{background,foreground} / --logo-identity-foreground",
     category: "component",
     tier: "component",
@@ -219,6 +297,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "INSIDE-FIELD affix — the leading/trailing controls Input, Textarea, TimePicker and DatePicker render WITHIN the field box, as opposed to the overlay set (`--control-affix-*`) that a select-family trigger parks on top of. Kept a SEPARATE set on purpose, not an alias: these sit on the field's own surface rather than over it, so they rest heavier — `--control-inline-affix-rest-alpha` is 0.7 against the overlay's 0.5. Collapse the two into one knob and one side always loses: either the inline affixes go too faint to find, or the overlay ✕ starts fighting the value it sits on. `--control-inline-affix-space-inline-end` (2.25rem) reserves room for ONE affix; a field parking TWO (TimePicker's clear+clock, DatePicker's clear+calendar) reserves `--control-inline-affix-pair-space-inline-end` (3.5rem) instead — retune only the single knob and the two-affix fields run their own text under the icons. Textarea has no single line to centre on, so it pins its clear to the top-end corner via `--textarea-clear-inset-block-start` rather than centring like Input.",
+  },
+  {
+    name: "--textarea-autogrow-{line-height,min-height-rows,max-height-rows,box-inset} / --control-multiline-padding-block",
+    category: "component",
+    tier: "component",
+    role: "Textarea `autoGrow` geometry (gh#310) — the box that grows with its content. The floor and ceiling are counted in TEXT ROWS (`--textarea-autogrow-min-height-rows` 1, `--textarea-autogrow-max-height-rows` 8), not pixels, because a row count survives a density change and a `--font-size-base` retheme while a px ceiling silently stops matching the visible line count. A service sets its composer's resting and maximum height once in theme; the `minRows` / `maxRows` props override per instance — the same theme-global / prop-local priority as `--form-label-width` vs `labelWidth`. `--textarea-autogrow-line-height` is `initial` at :root and read as `var(--textarea-autogrow-line-height, var(--line-height-normal))` at the call site, so a service that retunes the multiline line-height for CJK legibility retunes the row unit with it instead of getting a ceiling that no longer means eight visible lines. `--textarea-autogrow-box-inset` is the non-text part of the box the row maths adds back (block padding + border, both edges) and `--control-multiline-padding-block` is that block padding, shared with `.ui-control-multiline` itself so the two cannot drift. The floor is additionally clamped up to `--control-height`, so a resting one-row composer still lines up with the Input / Button on its row rather than undercutting the control tier. Every default reproduces today's geometry when `autoGrow` is absent (#44, default quiet).",
   },
   {
     name: "--control-composite-field-*",
@@ -280,6 +364,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: 'The responsive drawer / detail-panel contract (SheetContent responsive="auto"). --sheet-responsive-breakpoint-width (default 48rem = 768px, the library\'s canonical mobile line) is the viewport width at and below which the desktop side panel becomes a mobile bottom sheet; --sheet-bottom-max-height (default 85dvh) caps THAT bottom presentation only (a plain side="bottom" sheet stays content-sized). Because a CSS @media cannot resolve a custom property, the breakpoint is read off :root at runtime by the exported useSheetResponsiveMode() hook — which is also what OrgSwitcher responsive="auto" uses, so ONE knob moves the popover→sheet and side→bottom line for every overlay at once. Accepts px/rem/em.',
+  },
+  {
+    name: "--scroll-area-anchor-offset",
+    category: "component",
+    tier: "component",
+    role: 'ScrollArea `anchor="bottom"` stickiness band (gh#311, default 3rem): how close to the bottom edge the reader still counts as "following the stream". Inside it, arriving content keeps the viewport pinned to the newest item; one pixel beyond it the reader is reading history and anchoring never moves them again until they come back (WCAG 3.2.5). Sized to the row height a service renders — a dense audit line is ~20px, a chat bubble with an avatar ~64px, and "one row from the bottom" is what the reader means. In rem so the band is still one row at 200% zoom. A CSS comparison cannot express it, so the component reads the token off the element at mount (px/rem/em accepted); the `anchorOffset` prop overrides it per instance. The rail geometry knobs (--scroll-area-bar-size / -bar-padding / --scroll-area-thumb-radius) live with the data-display tier.',
   },
   {
     name: "--qr-code-*",
@@ -406,6 +496,18 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: 'Avatar `appearance="tinted"` — the CAPABILITY MEDALLION (gh#12): the tinted plate a feature/capability glyph sits on, as opposed to the solid entity mark above. Orthogonal to `shape`, so `shape="square" appearance="tinted"` is the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are declared `initial` so the hsl(var(--primary) / 0.1) / hsl(var(--primary)) defaults re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme — which is the whole point: consumers were writing that 0.1 alpha literal into page CSS, or giving up and rendering a bare glyph, because the medallion is a composition (Avatar + a Lucide glyph) whose tint had no token. Defaults = 10% primary wash · primary glyph · --control-icon-size glyph box.',
+  },
+  {
+    name: "--avatar-presence-{size,min-size,inset,ring-width,ring-color,stroke-width,bar-inline-size,bar-block-size,online-color,away-color,busy-color,offline-color}",
+    category: "component",
+    tier: "component",
+    role: 'Avatar `presence` — the realtime reachability dot on the mark (gh#309). Every constant is a knob because the workaround it replaces baked four of them plus a raw palette colour into consumer page CSS (`-end-0.5 -bottom-0.5 size-2.5 ring-2 bg-green-500`). --avatar-presence-size is a PROPORTION of the mark (default 30%, floored by --avatar-presence-min-size = --space-2), NOT a px step, so one value tracks every avatar the system paints — the --control-height box and its xs/sm/lg steps, --avatar-square-size, --org-switcher-avatar-size, --upload-avatar-size, a call site\'s own `size-12`, the 36px ListRow density="compact" mark — instead of freezing a diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs declared `initial`, with the role default at the CALL SITE (`var(--knob, var(--role))`), so a scoped [data-tenant]/.dark override of --background / --success / --warning / --destructive / --muted-foreground reaches them — bound at :root the ring would freeze light-mode-white on a dark avatar. --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the ACCESSIBLE encoding, not decoration: they draw the per-state silhouette (filled / half-filled / barred / hollow) that keeps presence off colour-alone (WCAG 1.4.1) in greyscale, for a deuteranope and under forced colors. Defaults = 30% diameter (floor 0.5rem) · flush with the corner (inset 0) · a 2px --background separator ring · a 1.5px state stroke · a 56%-wide 1.5px dnd bar.',
+  },
+  {
+    name: "--separator-{rule-size,rule-color,label-gap,label-inset,label-font-size,label-line-height,label-font-weight,label-color,tone-<tone>-rule-color,tone-<tone>-label-color}",
+    category: "component",
+    tier: "component",
+    role: "Separator, including the LABELLED rule a `label` interrupts — a message stream's day divider, a \"new messages\" unread watermark, an auth conjunction (gh#308). Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, which baked `height: 1px` into shell-layout.css and read the `--auth-shell-divider-*` micro-scale, so a service retuning its login divider silently retuned every day divider in its chat. Defaults are the QUIETEST state (#44): a 1px hairline, a muted --font-size-xs label at --font-weight-medium, no surrounding padding. --separator-label-gap and --separator-label-inset (the SHORT rule half under labelAlign start/end — a grid track on the inline axis, so it flips under RTL) are declared `initial` because --space-* is density-scaled and re-declared inside a `.ui-density-*` subtree; a :root binding would freeze them at the :root density. Every colour knob is a role-mirror and is likewise `initial`, with the role default at the CALL SITE — --separator-rule-color → --border, --separator-label-color → --muted-foreground, and --separator-tone-{muted,primary,success,warning,destructive,info}-{rule,label}-color → the matching semantic role. `tone` re-points the rule AND the label, never the rule alone, so an attention rule is not colour-only (WCAG 1.4.1) and survives forced-colors. AuthDivider now only re-points these knobs at the --auth-shell-divider-* layer, so #263's canonical login geometry is unchanged.",
   },
   {
     name: "--steps-inline-{gap,item-gap,font-size,separator-size,index-font-weight,index-color,separator-color}",

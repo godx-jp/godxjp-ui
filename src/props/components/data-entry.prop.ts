@@ -70,6 +70,14 @@ export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   allowClear?: boolean;
   /** Called after the field is cleared via the inline ✕. */
   onClear?: () => void;
+  /** `ghost` drops the field's own border/background/ring for a textarea inside a surface that already draws the box. */
+  variant?: "default" | "ghost";
+  /** Grow the box with its content between `minRows` and `maxRows` instead of a fixed `rows` height (default false). */
+  autoGrow?: boolean;
+  /** Floor in text rows while `autoGrow`; never undercuts the `--control-height` tier. */
+  minRows?: number;
+  /** Ceiling in text rows while `autoGrow` — past it the control scrolls internally. `0` = unbounded. */
+  maxRows?: number;
 };
 
 /**
@@ -596,7 +604,8 @@ export type UploadProp = FieldA11yProps & {
    *
    * @see Button — same variant scale
    */
-  triggerVariant?: "default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link";
+  triggerVariant?:
+    "default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link";
   className?: ClassNameProp;
   children?: React.ReactNode;
 };

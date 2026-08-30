@@ -1,0 +1,82 @@
+/* TOGGLE — counter-pill + pressed-state knobs (gh#312).
+ *
+ * Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` /
+ * `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip "Unread 12", a
+ * reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it
+ * grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45).
+ *
+ * SHARE vs SPLIT — the rule this file follows, and why each half falls where it does:
+ *
+ *   • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle
+ *     keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same
+ *     primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside
+ *     a Button count is indistinguishable and cannot drift unnoticed, while a service can still
+ *     move one without the other.
+ *
+ *   • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant
+ *     surface and tints itself with a translucent foreground (`bg-primary-foreground/15`,
+ *     `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a
+ *     translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles,
+ *     `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in
+ *     light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can
+ *     only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping
+ *     to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship
+ *     a known #299-class failure.
+ *
+ *     So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's
+ *     variant and hover surface, and inverts them with the state:
+ *       unpressed  --foreground on --muted              → 14.25:1 light · 12.40:1 dark
+ *       pressed    --primary   on --primary-foreground  →  5.04:1 light ·  7.07:1 dark
+ *     The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as
+ *     the label it sits next to, never worse, under any theme that keeps that pair legible.
+ *
+ * Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call
+ * site (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). A `:root` binding to
+ * `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override
+ * of the role would never reach it.
+ */
+:root {
+  /* ── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape:
+   * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs
+   * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read
+   * the same primitive tokens, so the two pills render the same size and a Toggle count set beside
+   * a Button count is indistinguishable — asserted by
+   * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently.
+   *
+   * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))`
+   * fallback because check:typography requires a bare `var(--token)` for every font-size, and a
+   * split shape across the five geometry knobs would be worse than a consistent one.) */
+  --toggle-count-min-width: var(--space-4);
+  --toggle-count-space-inline: var(--space-1);
+  --toggle-count-font-size: var(--font-size-xs);
+  --toggle-count-radius: var(--radius-pill);
+  /* Quiet default (#44) — the toggle's own flex gap already separates label from pill; this knob
+   * ADDS to it for a service whose design grid wants the counter pushed further out. */
+  --toggle-count-gap: 0;
+
+  /* ── Counter pill · unpressed colours. Defaults = hsl(var(--muted)) fill (quiet: 1.09:1 against
+   * the chip's own surface, so at rest the count reads as text, #44) and hsl(var(--foreground))
+   * text (14.25:1 on that fill). Opaque on purpose — a translucent fill would take its contrast
+   * from whatever surface the chip currently has, and lose ~0.7 on hover. */
+  --toggle-count-background: initial;
+  --toggle-count-color: initial;
+
+  /* ── Counter pill · PRESSED colours. Defaults = hsl(var(--primary-foreground)) fill,
+   * hsl(var(--primary)) text — the pressed chip's OWN pair, swapped. Not `--primary` on
+   * `--primary`: the pressed chip is already filled with --primary, so a --primary pill would be
+   * invisible on it. The swap also flips the pill from near-invisible to solid, which is one of
+   * the encodings that keeps the pressed state off colour alone (WCAG 1.4.1). */
+  --toggle-pressed-count-background: initial;
+  --toggle-pressed-count-color: initial;
+
+  /* ── Pressed chrome. Default = hsl(var(--primary)), i.e. the pressed fill itself, so out of the
+   * box this border is quiet (#44) and the pressed state is carried by the fill inversion + the
+   * pill inversion + the forced-colors rule below. A service whose pressed fill is a PALE tint
+   * (where those inversions get weak) opts into a visible outline by overriding this. */
+  --toggle-pressed-border-color: initial;
+
+  /* Under forced-colors every fill is flattened to a system colour, so neither inversion encodes
+   * anything any more. This outline is the state's structural fallback there — drawn on the
+   * PRESSED pill only, and as `outline` (not `border`) so it costs no layout. */
+  --toggle-count-forced-outline-width: 1px;
+}

@@ -8,8 +8,8 @@ describe("AuthDivider", () => {
   it("renders a named separator with two decorative rules and a centred label", () => {
     const { container, getByRole } = render(<AuthDivider label="or" />);
     expect(getByRole("separator", { name: "or" })).toBeInTheDocument();
-    expect(container.querySelectorAll(".ui-auth-divider-rule")).toHaveLength(2);
-    expect(container.querySelector(".ui-auth-divider-label")).toHaveTextContent("or");
+    expect(container.querySelectorAll(".ui-separator-rule")).toHaveLength(2);
+    expect(container.querySelector(".ui-separator-label")).toHaveTextContent("or");
   });
 
   it("merges className onto the public root", () => {
@@ -18,6 +18,18 @@ describe("AuthDivider", () => {
       "ui-auth-divider",
       "auth-choice",
     );
+  });
+
+  it("is a PRESET over the labelled Separator, not a parallel implementation (gh#308)", () => {
+    const { container } = render(<AuthDivider label="or" />);
+    const root = container.querySelector('[data-slot="auth-divider"]')!;
+    // Same primitive: the Separator class, its labelled grid flag and its centred default.
+    expect(root).toHaveClass("ui-separator");
+    expect(root).toHaveAttribute("data-labelled", "");
+    expect(root).toHaveAttribute("data-label-align", "center");
+    expect(root).toHaveAttribute("data-orientation", "horizontal");
+    // The auth-scoped slot name is preserved, so an existing consumer selector still resolves.
+    expect(root).toHaveAttribute("data-slot", "auth-divider");
   });
 
   it("has no axe violations", async () => {

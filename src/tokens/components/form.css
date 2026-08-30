@@ -31,4 +31,20 @@
    * which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*`
    * composition every real Save-button form needs), so it holds at any DOM depth relative to Form. */
   --form-field-row-gap: var(--space-3); /* 12px */
+
+  /* Row rhythm between the ROWS of a `<Form columns={n}>` grid (gh#304). The grid path cannot use
+   * the margin above — a per-item margin inside a grid double-counts the track gap AND leaves the
+   * first item of row 1 unshifted while its row-mates drop, so row 1's columns end up misaligned.
+   * The rhythm therefore rides the grid's own `row-gap`, and it DEFAULTS TO THE SAME
+   * --form-field-row-gap the stacked path uses so `columns={1}` — and every `columns={n}` form once
+   * it collapses to one column on a narrow container — is pixel-identical to a Form with no
+   * `columns` at all. Retune this alone only to give multi-column forms a looser row rhythm than
+   * stacked ones; retune --form-field-row-gap to move both together. */
+  --form-grid-row-gap: var(--form-field-row-gap); /* 12px */
+
+  /* Gutter between the COLUMNS of a `<Form columns={n}>` grid (gh#304). Was ResponsiveGrid's
+   * generic 16px stack gap with no way to say otherwise; it is a form's inter-field gutter and a
+   * service aligning forms to its design grid needs it as a knob (rule #45). The default keeps the
+   * historical 16px, so nothing moves unless a theme opts in. */
+  --form-grid-column-gap: var(--space-4); /* 16px */
 }

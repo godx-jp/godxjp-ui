@@ -88,3 +88,12 @@ export type TableDensityProp = Exclude<DensityProp, "default">;
  * each of which fails the Framework-Component Test) needs no page-local CSS.
  */
 export type CenteredShellPresetProp = "default" | "public-landing";
+
+/**
+ * Axis of a rule / track / group — the shared inline↔block vocabulary (gh#308).
+ * `"horizontal"` (the default everywhere) runs along the INLINE axis, `"vertical"` along the
+ * BLOCK axis, so both flip correctly under `dir="rtl"` with no per-component rule. Promoted out
+ * of the inline `"horizontal" | "vertical"` unions each component file used to spell for itself,
+ * so `orientation` means one thing across Separator, Steps, RadioGroup and Toolbar.
+ */
+export type OrientationProp = "horizontal" | "vertical";

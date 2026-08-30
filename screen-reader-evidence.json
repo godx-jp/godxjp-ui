@@ -44,7 +44,6 @@
           "layout/legal-document-shell",
           "layout/master-detail",
           "layout/page-container",
-          "layout/page-header",
           "layout/resizable",
           "layout/sidebar",
           "layout/split-pane",

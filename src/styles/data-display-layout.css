@@ -61,6 +61,125 @@
     background: var(--avatar-background, hsl(var(--muted)));
   }
 
+  /* PRESENCE (gh#309) — the realtime reachability dot on the mark itself.
+   *
+   * Opt-in ONLY: with no `presence` prop the avatar emits neither the attribute nor the node, so
+   * every existing call site keeps today's DOM and today's clip. WITH it the ROOT stops clipping —
+   * the dot straddles the mark's edge, which is exactly why a consumer could never place it from
+   * outside — and the clip moves down onto the image/fallback, which is where it was doing the real
+   * work. `border-radius: inherit` keeps that clip correct for both shapes: --radius-pill for a
+   * person, --avatar-square-radius for an entity mark. */
+  .ui-avatar[data-presence] {
+    overflow: visible;
+  }
+
+  .ui-avatar[data-presence] > .ui-avatar-image,
+  .ui-avatar[data-presence] > .ui-avatar-fallback {
+    overflow: hidden;
+    border-radius: inherit;
+  }
+
+  /* NEVER COLOUR-ALONE (WCAG 1.4.1). Three independent encodings ride together: the localized
+   * sr-only string inside this span, a semantic ROLE colour, and a SHAPE — filled · half-filled ·
+   * barred · hollow — so the four states stay apart in greyscale, for a deuteranope, and under
+   * forced colors. `box-sizing: border-box` makes --avatar-presence-size the OUTER diameter, so the
+   * state stroke never changes the dot's footprint between states.
+   *
+   * The dot is a state, not an event: nothing here animates, so there is nothing for
+   * prefers-reduced-motion to switch off. Presence is deliberately NOT a live region either — a
+   * roster of 40 avatars resyncing over a socket would flood a screen reader; announcing a CHANGE is
+   * the consumer's call, in the consumer's own live region. */
+  [data-slot="avatar-presence"] {
+    position: absolute;
+    inset-block-end: var(--avatar-presence-inset);
+    inset-inline-end: var(--avatar-presence-inset);
+    display: block;
+    box-sizing: border-box;
+    inline-size: var(--avatar-presence-size);
+    block-size: var(--avatar-presence-size);
+    min-inline-size: var(--avatar-presence-min-size);
+    min-block-size: var(--avatar-presence-min-size);
+    border: var(--avatar-presence-stroke-width) solid transparent;
+    border-radius: var(--radius-pill);
+    background-origin: border-box;
+    /* Separator ring — chrome, therefore a knob (#44). It is what keeps the dot legible over a busy
+     * photo; a service that puts the avatar on a coloured surface retunes the colour once. */
+    box-shadow: 0 0 0 var(--avatar-presence-ring-width)
+      hsl(var(--avatar-presence-ring-color, var(--background)));
+  }
+
+  /* ONLINE — a SOLID disc. */
+  [data-slot="avatar-presence"][data-presence="online"] {
+    border-color: hsl(var(--avatar-presence-online-color, var(--success)));
+    background-color: hsl(var(--avatar-presence-online-color, var(--success)));
+  }
+
+  /* AWAY — a HALF-FILLED disc (block-end half), the one silhouette that survives greyscale next to
+   * both the solid and the hollow states. */
+  [data-slot="avatar-presence"][data-presence="away"] {
+    border-color: hsl(var(--avatar-presence-away-color, var(--warning)));
+    background-color: hsl(var(--avatar-presence-ring-color, var(--background)));
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0 50%,
+      hsl(var(--avatar-presence-away-color, var(--warning))) 50%
+    );
+  }
+
+  /* BUSY (do-not-disturb) — a solid disc CUT by a horizontal bar. */
+  [data-slot="avatar-presence"][data-presence="busy"] {
+    border-color: hsl(var(--avatar-presence-busy-color, var(--destructive)));
+    background-color: hsl(var(--avatar-presence-busy-color, var(--destructive)));
+  }
+
+  /* `inset: 0; margin: auto` centres the bar in BOTH axes with no translate, so it stays centred
+   * under dir="rtl" (a start-anchored `translate(-50%)` would slide it off-centre when the inline
+   * axis flips). */
+  [data-slot="avatar-presence"][data-presence="busy"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    inline-size: var(--avatar-presence-bar-inline-size);
+    block-size: var(--avatar-presence-bar-block-size);
+    border-radius: var(--radius-pill);
+    background: hsl(var(--avatar-presence-ring-color, var(--background)));
+  }
+
+  /* OFFLINE — a HOLLOW ring. Distinct from an ABSENT `presence`, which draws nothing at all: absent
+   * means "this entity has no presence concept" (an organization mark), offline means "known to be
+   * unreachable" — the same distinction ListRow draws between an omitted and a `false` `unread`. */
+  [data-slot="avatar-presence"][data-presence="offline"] {
+    border-color: hsl(var(--avatar-presence-offline-color, var(--muted-foreground)));
+    background-color: hsl(var(--avatar-presence-ring-color, var(--background)));
+  }
+
+  /* FORCED COLORS — the UA replaces author colours, and box-shadow is dropped outright, so the
+   * separator ring would vanish into the mark and all four states would collapse to one swatch.
+   * System-colour keywords ARE honoured inside this block, so re-draw the ring as an outline and
+   * re-state each silhouette in Canvas / CanvasText: the shape encoding survives, which is the half
+   * of WCAG 1.4.1 that a colour-only dot loses here first. */
+  @media (forced-colors: active) {
+    [data-slot="avatar-presence"] {
+      border-color: CanvasText;
+      background-color: CanvasText;
+      background-image: none;
+      outline: var(--avatar-presence-ring-width) solid Canvas;
+    }
+
+    [data-slot="avatar-presence"][data-presence="away"] {
+      background-image: linear-gradient(to bottom, Canvas 0 50%, CanvasText 50%);
+    }
+
+    [data-slot="avatar-presence"][data-presence="offline"] {
+      background-color: Canvas;
+    }
+
+    [data-slot="avatar-presence"][data-presence="busy"]::before {
+      background: Canvas;
+    }
+  }
+
   .ui-progress {
     display: flex;
     flex-direction: column;

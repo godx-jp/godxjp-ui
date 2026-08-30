@@ -8,6 +8,193 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Activity` — the official ambient/looping motion primitive (`@godxjp/ui/general`, gh#313).** The
+  loop counterpart to `Reveal`'s one-shot entrance: a continuous, unbounded "something is happening
+  right now, elsewhere" mark (someone typing, a sync running, a response streaming, a recording
+  live). Three marks — `dots` (the ellipsis convention), `pulse` (a breathing mark), `bar` (an
+  indeterminate sweep) — on the standard `size` (`xs|sm|md|lg`) and `tone` ladders. It exists so a
+  consumer never hand-rolls a looping `@keyframes` plus its own `prefers-reduced-motion` guard, and
+  never reaches for `Skeleton` (which means _content is loading_ and hard-codes `aria-busy` +
+  an unconditional `aria-live`) or `Button loading` (which means _this action is in flight_).
+  - **`announce` defaults to `false`, and then emits no live region at all.** An ambient indicator
+    flickers on and off with every socket event; a live region there re-announces continuously.
+    `announce="polite"` wraps **only** the label in one `aria-live="polite" aria-atomic="true"`
+    region, with the mark outside it and `aria-hidden`. No `aria-busy` is ever emitted; the
+    indicator is not focusable and carries no role.
+  - **Reduced motion is a designed frame, not an absence.** Under `prefers-reduced-motion: reduce`
+    the loop is dropped and each mark falls back to a legible resting state — three solid dots, a
+    solid pulse mark, a bar segment parked at the reading-start (a full track would read as
+    "complete") — with the label still visible and no layout shift (WCAG 2.2 SC 2.3.3 / SC 2.2.2).
+  - Copy stays consumer-owned: pass a `t()`-translated `label`, and pluralize "N people are typing"
+    with your own `Intl.PluralRules`. The library ships no string for it.
+- **`--duration-loop` (1400ms)** — the cycle member of the motion tier. `--duration-{fast,base,slow}`
+  time a transition; a loop needs an interval, so every ambient affordance breathes at one rate.
+- **Activity component tokens** (cardinal rule #45): `--activity-interval` (defaults to
+  `--duration-loop`), `--activity-stagger-step` (160ms — the loop counterpart to
+  `--reveal-stagger-step`), `--activity-mark-size`, `--activity-mark-offset` (the loop counterpart
+  to `--reveal-distance`), `--activity-mark-rest-alpha`, `--activity-pulse-mark-size`,
+  `--activity-gap`, `--activity-font-size-{xs,sm,md,lg}`,
+  `--activity-bar-{width,height,radius,segment-width,track-alpha}`, and `--activity-color` —
+  a role-mirror knob declared `initial` at `:root` with the role default at the call site, so a
+  scoped `[data-tenant]` / `.dark` override of `--muted-foreground` still reaches the mark.
+- Docs: `docs/general/activity.tsx` — a real channel screen with a typing affordance under the
+  composer, plus every `variant` × `size` × `tone`, the `children`+`label` split, `announce`, and
+  the reduced-motion contract.
+
+- **`Separator` — a labelled variant (gh#308).** `label` now INTERRUPTS the rule, so a message
+  stream's day divider and its "new messages" unread watermark finally have a primitive: the root
+  becomes the three-cell grid `rule · label · rule`, and because "new messages" is content rather
+  than decoration it flips `decorative` to `false` — a real `role="separator"` whose accessible name
+  IS the label, with the visible node `aria-hidden` so the string is announced exactly once.
+  `labelAlign` (`start | center | end`, the shared `TextAlignProp`) places the label by re-measuring
+  a grid TRACK on the inline axis, so `start` and `end` swap under `dir="rtl"`; `tone`
+  (`TextToneProp`) moves the rule AND the label together so an attention rule is never colour-only.
+  Without a `label` the DOM, `data-slot="separator"` and `.ui-separator` are unchanged — an inert
+  default, no migration. Consumers no longer have to misuse the auth-scoped `AuthDivider` or
+  hand-roll a `<div>` grid of two `<span>` rules.
+- **`--separator-*` component tokens** (`src/tokens/components/separator.css`) — `rule-size`,
+  `rule-color`, `label-gap`, `label-inset`, `label-font-size`, `label-line-height`,
+  `label-font-weight`, `label-color` plus `tone-{muted,primary,success,warning,destructive,info}-{rule,label}-color`.
+  Every constant the labelled rule needs is now a documented knob (rules #44/#45); the defaults are
+  the quietest state (one hairline, a muted `xs` label, no padding). Colour knobs and the two
+  density-scaled spacing knobs are declared `initial` with the default at the call site, so a scoped
+  `[data-tenant]` / `.dark` / `.ui-density-*` override actually reaches them.
+- **`OrientationProp`** (`horizontal | vertical`) promoted into the shared prop vocabulary, so
+  `orientation` means one thing across the library instead of being re-spelled per component file.
+- **`SeparatorProp` / `SeparatorProps`** exported from `@godxjp/ui/layout` and registered in
+  `src/props/registry.ts`.
+
+- **Avatar `presence`** (gh#309) — a realtime reachability indicator on the mark itself:
+  `presence="online | away | busy | offline"`, plus `presenceLabel` to override the wording. The
+  prop ships the dot, its geometry tokens and a localized `sr-only` label together, so presence is
+  never colour-only (WCAG 1.4.1): each value also has its own silhouette — `online` a filled disc,
+  `away` a half-filled disc, `busy` a filled disc cut by a do-not-disturb bar, `offline` a hollow
+  ring — which keeps the four apart in greyscale, for a deuteranope and under forced colors. Omit
+  the prop for an entity with no presence concept (an organization mark, a capability medallion):
+  no node and no attribute are emitted and the DOM is byte-identical to before. `presence="offline"`
+  stays the different, positive statement "known to be unreachable", the same distinction `ListRow`
+  draws between an omitted and a `false` `unread`. The dot carries no `aria-live` on purpose — a
+  socket-fed roster of 40 marks resyncing would flood a screen reader, so announcing a _change_ is
+  the consumer's call in the consumer's own live region.
+
+  This replaces the hand-rolled `<span className="relative">` + absolutely-positioned
+  `bg-green-500 ring-2 ring-background` wrapper, which could never be got right from outside the
+  component: the dot's inset is a function of the mark's own `--avatar-*` radius/size tokens and of
+  the root's clip, neither of which a page can read.
+
+- **`--avatar-presence-{size,min-size,inset,ring-width,ring-color,stroke-width,bar-inline-size,bar-block-size,online-color,away-color,busy-color,offline-color}`**
+  (gh#309, cardinal rules #44/#45) — every constant of the presence indicator is a documented knob.
+  `--avatar-presence-size` is a **proportion** of the mark (default `30%`, floored by
+  `--avatar-presence-min-size`), not a px step, so one value tracks every avatar the system paints:
+  the `--control-height` box and its xs/sm/lg steps, `--avatar-square-size`,
+  `--org-switcher-avatar-size`, `--upload-avatar-size`, a call site's own `size-12`, and the 36px
+  `ListRow density="compact"` mark. `--avatar-presence-ring-color` and the four state colours are
+  role-mirror knobs declared `initial` with the role default at the call site
+  (`var(--knob, var(--role))`), so a scoped `[data-tenant]` / `.dark` override of `--background`,
+  `--success`, `--warning`, `--destructive` or `--muted-foreground` reaches them instead of the ring
+  freezing light-mode-white on a dark avatar.
+
+- **`dataDisplay.avatar.presence.{online,away,busy,offline}`** in `en` / `ja` / `vi`.
+
+- **`Textarea` — `autoGrow` (gh#310).** Opt-in auto-grow on the primitive: the box grows with its
+  content between `minRows` and `maxRows`, and scrolls internally past the ceiling instead of
+  pushing the page. Works controlled and uncontrolled, and re-measures on a paste, a programmatic
+  value change, `form.reset()`, the `allowClear` ✕ and the end of an IME composition — not only on
+  typing. Sizing is done in CSS by a hidden replica of the text (the replicated-content grid), so
+  the component never writes `style.height`, never reads `scrollHeight` (no forced reflow per
+  keystroke) and never moves `scrollTop`; the first paint is already the right height. Replaces the
+  hand-rolled `onInput` + `style.height` workaround the MCP catalogue used to instruct consumers to
+  write.
+- **Textarea auto-grow tokens** — `--textarea-autogrow-line-height` (`initial`, read as
+  `var(…, var(--line-height-normal))`), `--textarea-autogrow-min-height-rows` (1),
+  `--textarea-autogrow-max-height-rows` (8) and `--textarea-autogrow-box-inset`, plus
+  `--control-multiline-padding-block` (`--space-2`) for the multiline box's own block padding
+  (rules #44/#45). Bounds are counted in TEXT ROWS so they survive a density change and a
+  `--font-size-base` retheme; the floor is clamped up to `--control-height` so a resting one-row
+  composer still lines up with the Input/Button beside it. Every default reproduces today's
+  geometry when `autoGrow` is absent.
+
+- **ScrollArea `viewportRef`** (#311) — a typed ref to the element that actually scrolls. The
+  forwarded `ref` lands on the Radix `Root`, which is `overflow: hidden` and never scrolls, so
+  `scrollTop`, `scrollHeight`, `scrollTo()` and a `scroll` listener had no public route at all. The
+  only workarounds were `querySelector("[data-radix-scroll-area-viewport]")` — a Radix internal that
+  a major bump renames silently and that matches the wrong node as soon as two ScrollAreas nest —
+  or replacing the component with a raw `overflow-auto` div, which throws away the tokenized rail
+  and the WCAG 2.1.1 tab stop.
+- **ScrollArea `anchor="bottom"`** (#311) — bottom anchoring for a live stream (chat, log tail,
+  streaming response, activity feed), with `anchorOffset` and `onAnchoredChange`. Default `"none"`
+  keeps every existing ScrollArea byte-identical. The behaviour is deliberately _not_ "scroll to the
+  bottom when content arrives" — that is the bug it replaces: the viewport mounts on the newest
+  item, follows new content only while the reader is within `anchorOffset` of the bottom, and once
+  they scroll up to read history nothing moves them again until they come back. Content inserted
+  ABOVE the read position is compensated so the row under their eyes stays put; that compensation
+  restores a recorded (anchor row, offset-from-top-edge) pair, which makes it idempotent with native
+  CSS `overflow-anchor` and therefore a fallback for the two cases native anchoring does not cover
+  (Safari, which does not implement scroll anchoring, and a scroller sitting at `scrollTop === 0`).
+  Anchoring writes the scroll offset and nothing else: it never moves focus, never animates
+  (`behavior: "instant"`, so a theme's `scroll-behavior: smooth` cannot turn it into motion —
+  WCAG 2.3.3), and adds no `aria-live` region. `onAnchoredChange` exists so the consumer can render
+  a real focusable "jump to newest" Button — the anchor must not be the only route back to new
+  content.
+- **`--scroll-area-anchor-offset`** (default `3rem`, #311) — the stickiness band, i.e. how close to
+  the bottom still counts as "following the stream" (cardinal rule #45). The right distance is a
+  function of the row height a service renders, and in rem it is still one row at 200% zoom. The
+  `anchorOffset` prop overrides it per instance.
+
+- **Toggle / ToggleGroupItem: the counter-pill vocabulary** (`count` / `overflowCount` /
+  `showZero` / `countLabel`) — gh#312. `Button` owned the count and `Toggle` owned the pressed
+  state, so a counted pressed chip (a faceted filter chip "Open 42", a counted segmented toggle, a
+  reaction chip) had no primitive. `count` is now the SAME vocabulary `Button` defines, lifted
+  verbatim, so a counted filter tab and a counted pressed chip read identically: the number is
+  formatted with `Intl.NumberFormat` on the active locale, capped as `{overflowCount}+` above the
+  cap (default 99, the cap itself locale-formatted), and `showZero` (default `true`) controls the 0
+  case. The chip stays ONE `button[aria-pressed]` — one tab stop, one focus ring, one accessible
+  name — so no `Badge` is ever nested inside a Toggle for a count. `countLabel` folds the count's
+  unit into that name, which always resolves to "&lt;label&gt;, &lt;count&gt; &lt;unit&gt;"
+  ("Unread, 12 items"; "thumbs up, 3 reactions" for an emoji chip whose name comes from
+  `aria-label`). The count is announced exactly once and deliberately has no `aria-live`: a count
+  driven by other people is not this control's status. On `ToggleGroupItem` the count is per item —
+  `variant`/`size` still come from the group's context.
+- **Toggle counter-pill + pressed-state tokens** (`src/tokens/components/toggle.css`, gh#312, rules
+  #44/#45): `--toggle-count-min-width`, `--toggle-count-space-inline`, `--toggle-count-font-size`,
+  `--toggle-count-radius`, `--toggle-count-gap` (quiet default `0`, additive to the toggle's own
+  flex gap), `--toggle-count-background`, `--toggle-count-color`,
+  `--toggle-pressed-count-background`, `--toggle-pressed-count-color`,
+  `--toggle-pressed-border-color` and `--toggle-count-forced-outline-width`. The geometry knobs
+  carry Button's exact counter values off the same primitive scale — a Toggle count set beside a
+  Button count measures identically in a browser (12.47px · min-inline 16px · 4px inline padding ·
+  pill radius · tabular-nums), and a token-parity test fails if either side moves alone. The COLOUR
+  knobs are deliberately Toggle's own and are role-mirror knobs (`initial` at `:root`, role default
+  at the call site): Toggle's pill sits on a surface that inverts when pressed, and Button's
+  translucent-tint treatment cannot clear WCAG 1.4.3 AA over it (measured 3.82:1 at the xs step, and
+  4.39:1 even at the lowest usable alpha). Toggle's pill uses opaque role fills that invert with the
+  state instead — measured 5.04:1 pressed / 14.18:1 unpressed in light, 7.05:1 / 12.44:1 in dark.
+- **`docs/data-entry/toggle-count.tsx`** — a real screen (ticket inbox) showing a faceted filter
+  chip row driving a `DataTable`, a reaction row, a Toggle count beside a Button count, and the
+  size × variant × pressed × disabled grid.
+
+- `--table-flush-divider-width` (`src/tokens/components/table.css`) — the width of the ONE edge a
+  full-bleed table keeps inside `<CardContent flush>`: the divider between a plain `CardHeader` and
+  the first row. Default `var(--table-row-border-width)`. A theme sets it to `0` for a borderless
+  full-bleed table, or heavier for a stronger band (cardinal rules #44/#45).
+
+- `--switch-unchecked-background` (component token, `initial`, call-site default
+  `hsl(var(--input))`) — the Switch's off-track fill is now its own knob, so a service can quieten
+  it without dragging the `--input` control-boundary role back below the SC 1.4.11 floor
+  (cardinal rule #45). Whatever it is set to still owes 3:1 against the page and against the
+  thumb (`--background`).
+- `src/tokens/__tests__/input-boundary-contrast.test.ts` — deterministic guard that recomputes the
+  ratios straight from `foundation.css` for both themes across page / card / popover / muted /
+  secondary / striped row / hovered row, fails below 3:1, and fails outright if `--input` and
+  `--border` are ever given the same value again.
+
+- **`--form-grid-row-gap`** — row rhythm between the rows of a `<Form columns={n}>` grid. Defaults
+  to `--form-field-row-gap`, so the stacked and grid paths cannot drift; retune it alone only to
+  give multi-column forms a looser row rhythm than stacked ones.
+- **`--form-grid-column-gap`** — gutter between the columns of a `<Form columns={n}>` grid
+  (cardinal rule #45; previously ResponsiveGrid's generic stack gap with no knob). Default keeps
+  the historical 16px, so nothing moves unless a theme opts in.
+
 - **`check-dist-tokens-resolve`** — the first guard that reads the SHIPPED artifact rather than
   the source. Two checks, no baseline, because a token that does not resolve does not exist:
   every custom property in `dist/` must sit inside a real rule body (the 122-dead-token shape),
@@ -33,6 +220,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   answers to `--scaling` or a scoped `[data-tenant]`.
 
 ### Changed
+
+- **`AuthDivider` is now a thin preset over `Separator label` (gh#308)**, not a parallel
+  implementation. `.ui-auth-divider` no longer restates the grid or the rule — it only re-points
+  Separator's `--separator-*` knobs at the `--auth-shell-divider-*` layer, so #263's canonical login
+  geometry is unchanged while the coupling the issue reported is broken: a service retuning its
+  login divider no longer retunes every day divider in its message streams. The hard-coded
+  `height: 1px` on `.ui-auth-divider-rule` (a rule #44 violation) is gone with it. The public API,
+  the `data-slot="auth-divider"` hook and the accessible-name contract are unchanged; the internal
+  `.ui-auth-divider-rule` / `.ui-auth-divider-label` classes are replaced by
+  `.ui-separator-rule` / `.ui-separator-label`.
+- `.ui-separator` reads `--separator-rule-{size,color}` instead of the literal `1px` and a direct
+  `hsl(var(--border))`. The defaults are those same values, so the plain rule is visually unchanged.
+
+- **MCP catalogue — `Textarea`.** Removed the DON'T that told consumers "the component does not
+  auto-resize; if you need auto-grow behaviour you must wire a custom `onInput` handler that adjusts
+  `style.height` explicitly". It is replaced by the `autoGrow`/`minRows`/`maxRows` props, an
+  explicit DON'T against the `scrollHeight` → `style.height` pattern (with the reasons: forced
+  reflow, re-deriving the library's box model, freezing the height against density and tenant
+  rethemes, and missing paste / IME / programmatic-reset / webfont-swap), and a composer DO. The
+  entry's example also no longer passes `onValueChange` to a `Textarea` — a prop it never had.
+
+- **Toggle: the pressed state is no longer carried by hue alone** (WCAG 1.4.1, gh#312). Beyond the
+  chip's existing fill/label inversion, the pressed chip's border is now a documented token
+  (`--toggle-pressed-border-color`, quiet by default), the counter pill inverts from a near-
+  invisible chip to a solid one, and under `forced-colors: active` the pressed chip's border follows
+  the system `Highlight` while its pill gains an outline — so the state survives greyscale, a
+  deuteranope reader and a flattened palette.
+- `ToggleProps` is now also exported as `ToggleProp`, and `ToggleGroupItem`'s props are exported as
+  `ToggleGroupItemProp` / `ToggleGroupItemProps` (both registered in `src/props/registry.ts`).
 
 - **Dependencies: everything that can move is on its latest, and the two that cannot are
   documented.** Landed: `@types/node` 22→26 · `globals` 15→17 ·
@@ -97,6 +313,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--focus-ring-opacity` ở `foundation.css` là token nền tier khác và **không** đổi.
 
 ### Fixed
+
+- **Table/DataTable: a full-bleed table no longer doubles the card frame (gh#305).** The frame
+  suppression inside `<CardContent flush>` now covers BOTH full-bleed surfaces in one rule —
+  `.ui-data-table-surface` (DataTable's own frame) and `.ui-table-bordered` (`<Table bordered>`) —
+  and it only ERASES widths, never repaints chrome. The previous shape (`border: 0` followed by a
+  hard-coded `border-block-start: 1px solid …`) painted chrome unconditionally, which re-drew the
+  line even where the card already had one.
+- **Table/DataTable: the flush table's top divider is back in the canonical composition (gh#306).**
+  The gh#306 repair had reached only `<Table bordered>`, so
+  `<Card><CardContent flush><DataTable/></CardContent></Card>` still rendered a frameless surface
+  and its header floated with no line under it (measured: `border-top-width: 0px`). The divider is
+  now restored by an adjacent-sibling rule that fires only where the edge actually separates
+  something: a plain `CardHeader` directly above the flush body. A banded header, a `CardBar`, a
+  `DataTable.Toolbar` or a headerless card each already draw that line and no longer get a second
+  hairline stacked on it. `SkeletonTable` is covered by the same contract, so the loading→loaded
+  swap does not move a hairline.
+- **Card: `flush` zeroes both block edges for every full-bleed body, not only one containing a
+  `<table>` (gh#307).** The zero was gated on `:has(table)`, so a flush body of anything else (a
+  file list, `ListRow` rows, a DataTable in its empty state) still took the generic body padding and
+  floated off its header — measured at 18.4px on a consumer's 関連ファイル section against 0px for
+  the flush table beside it. Guarding the `describedBody` pair with `:not([data-flush])` could not
+  fix that (the padding came from the generic content rules) and its ACTION half additionally
+  stripped the `padding-top: 0` those bodies used to get. The flush body now owns its block axis
+  outright, and a plain header above ANY flush body supplies the gap from its own
+  `--card-space-body-y`. `tight` and `solo` keep owning that axis themselves; a non-flush
+  `CardContent` is unchanged.
+
+- **a11y: `--input` no longer shares `--border`'s value — control boundaries now clear WCAG 2.2 SC 1.4.11 (gh#315).**
+  A text field's 1px edge is the only thing that says "you may type here" (the field has no fill of
+  its own and no shadow), and it measured **1.46:1** on `--background`/`--card` in light and
+  **1.55:1 / 1.43:1** in dark — the one live WCAG failure a full DXS Platform sweep turned up.
+  `--input` is now the CONTROL BOUNDARY role with its own value, held to 3:1 on every surface a
+  control actually sits on: light `30 7% 53%` (`#90877f` — 3.47:1 on `--background`/`--card`/
+  `--popover`, 3.18:1 on `--muted`/`--secondary`, 3.35:1 on a zebra row, 3.32:1 on a hovered row)
+  and dark `45 6% 47%` (`#7f7b71` — 4.22:1 / 3.88:1 / 3.17:1 / 3.81:1 / 3.71:1). It also lifts the
+  Switch's unchecked track from 1.46:1 to 3.47:1 against both the page and its own thumb, so "off"
+  is finally a visible state. `--border` is deliberately UNCHANGED: table rules, card edges and
+  section dividers are decorative chrome that SC 1.4.11 does not reach, and darkening them would
+  make the dense JP grid roar. **Services re-theming neutrals must now move the two roles
+  independently** — `--input: var(--border)` re-opens the bug.
+
+- **Form `columns={n}` — one canonical row rhythm on both layout paths (gh#304).** The gh#295
+  field rhythm is a per-field `margin-block-start`, and it reached the fields a `columns` Form lays
+  out as ResponsiveGrid items — a spacing mechanism fighting a layout mechanism. The first item of
+  row 1 has no preceding sibling and took no margin while its row-mates took the full one, so row
+  1's columns started 12px apart, and every track then carried the margin on top of the grid's own
+  gap (row pitch 89px against a 73px stack). Zeroing the margin on grid items levelled the columns
+  but handed the rhythm to ResponsiveGrid's generic 16px stack gap, so a `columns={1}` form — and
+  any `columns={n}` form once a narrow container collapses it to one column, i.e. every phone —
+  still sat 16px apart where the identical fields without `columns` sat 12px. The grid's own
+  `row-gap` now carries the form's rhythm, keyed on the grid HAVING FormField items rather than on
+  where it sits, so `columns={1}` is pixel-identical to no `columns`, a hand-written
+  `<ResponsiveGrid columns={2}>` of fields inside a `CardContent` (what a form with several titled
+  Card sections has to write) matches `columns={2}` exactly, and every column count (1–4), LTR and
+  RTL, wide and collapsed, resolves to the same 73px pitch. A card/tile grid inside a form has no
+  FormField items and keeps ResponsiveGrid's stack gap.
+
+- **`check:screen-reader-evidence` is green again — the `landmarks-page-structure` cohort listed an
+  owner the library does not have.** `layout/page-header` entered the cohort in `0916c56`; there is
+  no `PageHeader` export (page chrome lives on `PageContainer`, already listed one line above), so
+  the gate had been failing on `unknown owner` ever since. Removed the stale line. This was the
+  third of three gates that had been quietly red on `main`.
+- **`preview/frame-coverage.ledger.json` — `DropdownMenuTrigger`'s ratchet floor raised by one
+  reasoned-N/A.** The generator no longer infers `disabled` off the Radix `Trigger`, so `states`
+  flipped from `untested` to `not-applicable:api-manifest` and the ratchet, correctly, refused it.
+  Regenerating from a pristine checkout of the previous commit reproduces the same flip, so this is
+  drift between the committed manifest and the current dependency graph, NOT coverage being
+  deleted — the floor was raised for that one export rather than re-minting all 283 with
+  `--reset-baseline`, which would have erased the ratchet's memory the day nine changes landed.
 
 - **AlertDialog's close button was never pinned.** `DialogContent` sets
   `data-slot="dialog-close"`, which is the only selector that positions the overlay ✕;

@@ -13,6 +13,7 @@ export default function Demo() {
   const [bold, setBold] = useState(false);
   const [pinned, setPinned] = useState(true);
   const [outline, setOutline] = useState(false);
+  const [unread, setUnread] = useState(true);
 
   return (
     <PageContainer
@@ -84,6 +85,38 @@ export default function Demo() {
               </Toggle>
               <Toggle size="lg" aria-label="大サイズ">
                 大
+              </Toggle>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Count</CardTitle>
+            <CardDescription>
+              count / overflowCount / showZero / countLabel — Button と同じ語彙。押下状態と数字が 1
+              つのコントロールに乗るので、ファセットフィルタチップやリアクションチップが real
+              primitive だけで書ける。数字は Intl.NumberFormat
+              でロケール整形され、アクセシブル名は「未読, 12 件」のように読み上げられる。
+              さらに詳しい実画面は Toggle Count のページを参照。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" gap="md" align="center" wrap>
+              <Toggle
+                pressed={unread}
+                onPressedChange={setUnread}
+                count={12}
+                countLabel="件"
+                variant="outline"
+              >
+                未読
+              </Toggle>
+              <Toggle count={1240} overflowCount={999} countLabel="件" variant="outline">
+                すべて
+              </Toggle>
+              <Toggle count={0} showZero={false} countLabel="件" variant="outline">
+                下書き
               </Toggle>
             </Flex>
           </CardContent>
