@@ -112,12 +112,17 @@ export async function ensurePreviewServer(base = DEFAULT_BASE) {
       port,
       "--strictPort",
     ],
-    // stderr is captured, not discarded: when this server does not answer we have had to guess
-    // four times in a row, because the only thing the failure said was "did not come up".
-    { stdio: ["ignore", "ignore", "pipe"], detached: true, cwd: REPO_ROOT },
+    // BOTH streams captured. stderr alone was not enough: it held only a config warning while the
+    // server sat there not answering for three minutes. `vite preview` announces the address it is
+    // actually listening on via STDOUT — which was being discarded — so the one line that
+    // distinguishes "never listened" from "listened but nothing could reach it" was the one line
+    // being thrown away.
+    { stdio: ["ignore", "pipe", "pipe"], detached: true, cwd: REPO_ROOT },
   );
   let serverStderr = "";
+  let serverStdout = "";
   proc.stderr?.on("data", (c) => (serverStderr += String(c)));
+  proc.stdout?.on("data", (c) => (serverStdout += String(c)));
 
   const cleanup = () => {
     try {
