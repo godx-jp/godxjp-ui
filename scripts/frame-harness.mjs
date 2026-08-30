@@ -83,6 +83,21 @@ export async function ensurePreviewServer(base = DEFAULT_BASE) {
   console.log("· building static preview (pnpm preview:build)…");
   await run("pnpm", ["preview:build"]);
 
+  // Assert the build produced an artefact instead of trusting its exit code. `pnpm preview:build`
+  // finished in 2.4s on CI — too fast to have built this app — and then `vite preview` served
+  // nothing for three minutes while the error blamed the server. An exit code says a command ran;
+  // it does not say it wrote anything.
+  const { existsSync, readdirSync } = await import("node:fs");
+  const outDir = path.join(REPO_ROOT, "preview/dist");
+  if (!existsSync(path.join(outDir, "index.html"))) {
+    throw new Error(
+      `preview:build exited 0 but produced no preview/dist/index.html` +
+        (existsSync(outDir)
+          ? ` (dir holds: ${readdirSync(outDir).slice(0, 8).join(", ")})`
+          : " (no dir at all)"),
+    );
+  }
+
   const { spawn } = await import("node:child_process");
   console.log(`· serving built preview on :${port} (vite preview)…`);
   const proc = spawn(
@@ -97,8 +112,13 @@ export async function ensurePreviewServer(base = DEFAULT_BASE) {
       port,
       "--strictPort",
     ],
-    { stdio: "ignore", detached: true, cwd: REPO_ROOT },
+    // stderr is captured, not discarded: when this server does not answer we have had to guess
+    // four times in a row, because the only thing the failure said was "did not come up".
+    { stdio: ["ignore", "ignore", "pipe"], detached: true, cwd: REPO_ROOT },
   );
+  let serverStderr = "";
+  proc.stderr?.on("data", (c) => (serverStderr += String(c)));
+
   const cleanup = () => {
     try {
       process.kill(-proc.pid);
@@ -117,7 +137,12 @@ export async function ensurePreviewServer(base = DEFAULT_BASE) {
     if (await reachable(base)) return cleanup;
   }
   cleanup();
-  throw new Error(`static preview server did not come up in ${budget}s on ${base}`);
+  throw new Error(
+    `static preview server did not come up in ${budget}s on ${base}` +
+      (serverStderr
+        ? `\n--- vite preview stderr ---\n${serverStderr}`
+        : "\n(vite preview printed nothing to stderr)"),
+  );
 }
 
 /**
