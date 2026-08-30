@@ -152,13 +152,110 @@ An inline custom property wins by **inheritance proximity**, not specificity, so
 `:root` default without any weight games. What keeps the route open is that every icon rule in
 `src/styles` reads its token through `var()` with no baked literal —
 `src/tokens/__tests__/icon-size-scale.test.ts` asserts exactly that, and carries a shrink-only
-list of the seven pre-existing rules that still bake a literal and are therefore unreachable from
-an app (`.ui-navigation-menu-trigger-icon` at `0.9rem` and `.tb-chip-icon` at `1.125rem` are also
-off-grid — 14.4px and 18px — and should be fixed first).
+list of the rules that still bake a literal and are therefore unreachable from an app. It started
+at seven; gh#333 took it to three by minting `--alert-icon-size` and `--badge-icon-size`, pointing
+the ContextMenu/Menubar sub-trigger chevrons at the `--menu-icon-size` that DropdownMenu's chevron
+already read, and snapping `.ui-navigation-menu-trigger-icon` from `0.9rem` (14.4px — off the
+scale _and_ off the pixel grid, so the stroke rendered on half pixels) to `--icon-size-sm`, 14px.
+
+The three left need tokens in `components/control.css` (`.ui-otp-separator-icon`) and
+`components/shell.css` (`.tb-icon-btn svg`, `.tb-chip-icon`). Note that `.tb-chip-icon`'s
+`1.125rem` is **not** a snap case even though 18px is off the scale: it is a whole pixel, and the
+box is a letter medallion (`display: grid`, `place-items: center`, a radius, `color: white`), not
+a stroked glyph — so it wants a `scale-exempt:` marker, not the nearest step. Off-scale and
+off-grid are different findings; decide each on what the icon actually is.
 
 **Before you add a step:** if a value is wanted in two places it belongs on the scale, and if it
 is wanted in one it does not. Adding a tenth step to serve a single call site is how a scale stops
 meaning anything.
+
+### Stroke and band height (gh#324)
+
+gh#324 measured every geometry token and found the same correlation gh#326 had acted on — an axis
+_with_ a scale stays disciplined, an axis _without_ one is almost all raw numbers — with `width`
+at **91% raw**, the loudest row in the table. The census confirmed the number and rejected the
+diagnosis: **`width` is not one axis.** Three unrelated concerns wear the suffix.
+
+| concern                  | example                                      | verdict                      |
+| ------------------------ | -------------------------------------------- | ---------------------------- |
+| thickness of a line      | `--control-border-width: 1px`                | **one vocabulary** → a scale |
+| measure of a container   | `--dialog-width-default: 32rem`              | not a scale — tier 2         |
+| content width of a field | `--app-setting-picker-timezone-width: 14rem` | not a scale — tier 2         |
+
+`height` split the same way: a control, a table row, a menu item, a nav row and the app-shell top
+bar are one decision sharing one vocabulary; a chart plot's height and a popover's max-height are
+container measures chosen per surface. `size` and `offset` came out no-scale on the same test.
+**Naming a scale is the fix for an axis; declaring that an axis is _not_ one is the fix for the
+rest** — both verdicts, and the census behind them, live in
+`scripts/token-scale-bypass-rules.mjs` so the question is not re-asked every quarter.
+
+#### `--stroke-*` — the thickness of a painted line
+
+| Token               | px      |                                                         |
+| ------------------- | ------- | ------------------------------------------------------- |
+| `--stroke-hairline` | **1**   | every resting border, divider and rule                  |
+| `--stroke-sm`       | **1.5** | avatar presence stroke                                  |
+| `--stroke-md`       | **2**   | **the emphasis stroke** — focus rings, selected markers |
+| `--stroke-lg`       | **3**   | the open/focus ring on toggles                          |
+| `--stroke-xl`       | **4**   | Steps process ring                                      |
+| `--stroke-2xl`      | **6**   | the Card accent rail                                    |
+
+**Px, never rem.** A stroke is a _device_ line: its job is to read as one crisp rule at any type
+size, so it must not grow when the root font-size does. Every token that moved onto this scale was
+already `px` for that reason; a `rem` thickness (`--slider-track-height: 0.375rem`) is a different
+decision and stayed where it was. **Not `--scaling`-multiplied** either — `--scaling` is a density
+knob, and a 1px divider at 0.92px would blur rather than tighten.
+
+`--focus-ring-width` is now a member (`var(--stroke-md)`) rather than a parallel authority, so a
+high-contrast theme that wants every emphasis stroke at 3px sets one token.
+`--stroke-hairline` sits _below_ `--stroke-sm` rather than being called `xs` because 1px is not
+really a step: it is the device hairline, the one thickness a service retunes the _existence_ of
+rather than the value (cardinal rule #44).
+
+#### `--band-height-*` — the vertical extent of a horizontal band
+
+| Token               | rem       | px     |                                          |
+| ------------------- | --------- | ------ | ---------------------------------------- |
+| `--band-height-xs`  | `1.5rem`  | **24** | `--control-height-xs`                    |
+| `--band-height-sm`  | `1.75rem` | **28** | compact control / table row, file button |
+| `--band-height-md`  | `2rem`    | **32** | **the default control and row band**     |
+| `--band-height-lg`  | `2.25rem` | **36** | the canonical DXS auth control           |
+| `--band-height-xl`  | `2.75rem` | **44** | the WCAG 2.2 AA touch floor (rule #24)   |
+| `--band-height-2xl` | `3rem`    | **48** | the AppShell top bar                     |
+| `--band-height-3xl` | `3.5rem`  | **56** | the AppShell top bar on a coarse pointer |
+
+**This is not a replacement for `--control-height-*`, and the difference matters.** The control
+tier is a **runtime ladder**: it multiplies by `--scaling`, steps ±`--space-1` for `sm`/`lg`/`xs`,
+and `@media (pointer: coarse)` lifts the whole thing to the 44px tap floor. `--band-height-*` is
+the **static vocabulary the ladder is anchored on** — `--control-height-default:
+var(--band-height-md)` — exactly as `--font-size-base` anchors the type scale.
+
+> Point a band token at `--control-height-*` to "reuse a step" and you silently enrol it in
+> density **and** in the coarse-pointer growth. That is a geometry change, not a rename.
+> `--table-row-height-default` reads `var(--band-height-md)`, not `var(--control-height-default)`,
+> for precisely that reason.
+
+That trap had already been sprung once: `--card-service-launcher-icon-size` read
+`var(--control-height-lg)` — a control tier sizing an _icon_ box. Invisible at the desk and wrong
+on a phone, where the medallion inflated 36px → 48px while the glyph inside it stayed 20px. It is
+`calc(var(--icon-size-2xl) * var(--scaling))` now: right axis, same value on every density, and it
+stops growing on touch.
+
+**Not `--scaling`-multiplied here** for the gh#328 reason: whether a band breathes with density is
+a per-token decision made long ago (`--control-height` opts in, `--app-shell-bar-height`
+deliberately does not), and baking `--scaling` into the scale would flip all of them at once.
+
+`src/tokens/__tests__/geometry-axis-scales.test.ts` resolves every touched token from the CSS
+source across default / compact (.92) / comfortable (1.08) / `.ui-scale-fixed` and asserts the
+migration moved nothing — plus a coarse-pointer column for the one value that was _meant_ to move.
+
+#### Mis-named axes are worth renaming, with an alias
+
+`--table-skeleton-line-height` was a **length** on the line-height axis, whose scale is a set of
+unitless _ratios_ — so it was never a bypass, it was a mis-named height, and while it stood the
+axis could not be gated at all. It is now `--table-skeleton-line-block-size`, with the old name
+kept as a published alias (`var(--table-skeleton-line-block-size)`) because a consumer theme may
+already override it. One rename unlocked a whole axis at zero baseline cost.
 
 ### Component Tokens
 

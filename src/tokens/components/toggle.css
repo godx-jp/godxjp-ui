@@ -78,5 +78,5 @@
   /* Under forced-colors every fill is flattened to a system colour, so neither inversion encodes
    * anything any more. This outline is the state's structural fallback there — drawn on the
    * PRESSED pill only, and as `outline` (not `border`) so it costs no layout. */
-  --toggle-count-forced-outline-width: 1px;
+  --toggle-count-forced-outline-width: var(--stroke-hairline);
 }

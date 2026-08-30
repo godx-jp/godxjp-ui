@@ -595,6 +595,27 @@ within 60s`.** They run in parallel on one self-hosted host, each cold-starting 
 
 ### Fixed
 
+- **A CI gate was killing another job's preview server, and the failure surfaced everywhere but
+  there.** `preview/scripts/kill-port.mjs` hard-coded `const PORT = 6008` and
+  `check-layout-nav-frames.mjs` called it unconditionally, then bound 6008 itself — ignoring the
+  `PREVIEW_PORT` its CI shard was given. On a self-hosted host where several browser jobs share a
+  machine it SIGKILLed whatever held that port, which was another gate's server; the victim logged
+  over a thousand `ERR_CONNECTION_REFUSED` against a server that no longer existed. That is the
+  real reason the rendered-runtime shards were red, and it is why raising the startup timeout only
+  treated the symptom. The port is now an argument, the gate owns its own, and every URL in it
+  reads that port instead of a literal.
+- **Five more icon rules were sizing glyphs with literals, invisible to the ratchet** because it
+  recognised an icon by whether the selector contained the word "icon" — `.ui-otp-caret`,
+  `.ui-accordion-chevron`, `.ui-carousel-arrow`, `.sb-product-caret svg`, `.tb-chip-caret svg`,
+  plus a raw `--calendar-chevron-size`. The pattern now knows `caret|chevron|arrow`, with
+  boundaries: a bare `/arrow/` matches inside `--n·arrow·`, so
+  `.ui-page-container--narrow .ui-page-body { max-width: 42rem }` was briefly reported as an
+  oversized icon, and a guard that cries wolf is one somebody eventually silences. Widening it
+  also exposed that the token-name pattern had NOT been widened with the selector pattern, so
+  `--accordion-chevron-size` was frozen in a table and invisible to the scanner reading it back.
+  `.ui-combobox-caret` is left listed rather than tokenized: nothing renders `.ui-combobox-*`, so
+  giving it a knob would document a capability the library does not have.
+
 - Nothing. See "Investigated, no change needed" below — gh#327's reported dead code is not dead.
 
 - **a11y: `Button size="xs"` was 20px tall, under WCAG 2.2 SC 2.5.8's 24x24 minimum target size

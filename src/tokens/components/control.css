@@ -1,9 +1,9 @@
 /* Control primitive tokens: heights, horizontal padding, adjacent control sizes. */
 
 :root {
-  --control-height-compact: 1.75rem;
-  --control-height-default: 2rem;
-  --control-height-comfortable: 2.75rem;
+  --control-height-compact: var(--band-height-sm);
+  --control-height-default: var(--band-height-md);
+  --control-height-comfortable: var(--band-height-xl);
   --control-padding-x-compact: var(--space-2);
   --control-padding-x-default: var(--space-3);
   --control-padding-x-comfortable: var(--space-4);
@@ -27,7 +27,7 @@
    * once instead of each component hard-coding Tailwind utilities. Defaults preserve
    * the historical look (font-size-base, 1px border, shadow-xs). */
   --control-font-size: var(--font-size-base);
-  --control-border-width: 1px;
+  --control-border-width: var(--stroke-hairline);
   --control-shadow: var(--shadow-xs);
   --control-icon-size: calc(var(--icon-size-md) * var(--scaling));
   --control-icon-size-sm: calc(var(--icon-size-sm) * var(--scaling));
@@ -37,9 +37,9 @@
    * global default — both are filled surfaces where a hard 2px ring reads as a
    * second border. Values preserve the look these controls always had; they are
    * knobs now instead of hand-written box-shadows (styles/focus-ring.css). */
-  --toggle-focus-ring-width: 3px;
+  --toggle-focus-ring-width: var(--stroke-lg);
   --toggle-focus-ring-alpha: 0.35;
-  --time-input-focus-ring-width: 3px;
+  --time-input-focus-ring-width: var(--stroke-lg);
   --time-input-focus-ring-alpha: 0.3;
 
   /* Outline-form gaps — marks where a radius-hugging ring would touch the glyph. */
@@ -228,7 +228,7 @@
   --control-composite-field-space-gap: var(--space-2);
   /* The <input type=file> button is a browser-owned box we restyle; it sits one tier below the
    * field so it reads as a control INSIDE the control. */
-  --input-file-button-height: 1.75rem;
+  --input-file-button-height: var(--band-height-sm);
   --input-file-button-font-size: var(--font-size-sm);
 
   /* SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the
@@ -327,7 +327,7 @@
   --calendar-weekday-radius: var(--radius-md);
   --calendar-day-font-size: var(--font-size-sm);
   --calendar-day-radius: var(--radius-md);
-  --calendar-chevron-size: 1rem;
+  --calendar-chevron-size: var(--icon-size-md);
 
   /* TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal
    * on the component (#319), so a service could not fit the panes to its own page grid or
@@ -398,6 +398,18 @@
   --button-icon-space-inline-xs: 0.375rem;
   --button-space-block: var(--space-2);
   /* Count pill — a borderless counter that reads on the button's own surface. */
+  /* OTP separator glyph. Was a bare 1rem in styles/control.css, so the two-tier contract had no
+   * tier-2 route here at all: a consumer wanting a different separator could only use !important
+   * or fork the stylesheet. Same value, now reachable. */
+  /* The OTP blinking caret. The ratchet catches it because the selector says "caret", but it is a
+   * text CURSOR, not a chevron: a 1px bar as tall as the digit's line box. Its width belongs to
+   * the stroke scale; its height belongs to neither the icon nor the band scale, so it is declared
+   * rather than forced onto one.
+   * scale-exempt: text-caret height, tracks the OTP digit's line box, not an icon or a band */
+  --otp-caret-block-size: 1rem;
+  --otp-caret-inline-size: var(--stroke-hairline);
+  --otp-separator-icon-size: var(--icon-size-md);
+
   --button-count-min-width: var(--space-4);
   --button-count-space-inline: var(--space-1);
   --button-count-font-size: var(--font-size-xs);
@@ -467,7 +479,7 @@
 
 @media (pointer: coarse) {
   :root {
-    --control-height-compact: 2.75rem;
-    --control-height-default: 2.75rem;
+    --control-height-compact: var(--band-height-xl);
+    --control-height-default: var(--band-height-xl);
   }
 }

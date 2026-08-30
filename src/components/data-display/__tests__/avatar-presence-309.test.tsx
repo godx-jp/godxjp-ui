@@ -226,10 +226,13 @@ describe("Avatar presence — never colour-only (WCAG 1.4.1, gh#309)", () => {
 describe("Avatar presence — every constant is a knob (rules #44/#45, gh#309)", () => {
   it("declares the geometry knobs so a service can retune the dot from its theme", () => {
     expect(tokens).toMatch(/--avatar-presence-inset:\s*0;/);
-    expect(tokens).toMatch(/--avatar-presence-ring-width:\s*2px;/);
-    expect(tokens).toMatch(/--avatar-presence-stroke-width:\s*1\.5px;/);
+    // The three line weights read the stroke scale since gh#324 — --stroke-md IS 2px and
+    // --stroke-sm IS 1.5px, pinned in src/tokens/__tests__/geometry-axis-scales.test.ts. A theme
+    // that wants heavier presence rings now has both routes: the step, or these knobs.
+    expect(tokens).toMatch(/--avatar-presence-ring-width:\s*var\(--stroke-md\);/);
+    expect(tokens).toMatch(/--avatar-presence-stroke-width:\s*var\(--stroke-sm\);/);
     expect(tokens).toMatch(/--avatar-presence-bar-inline-size:\s*56%;/);
-    expect(tokens).toMatch(/--avatar-presence-bar-block-size:\s*1\.5px;/);
+    expect(tokens).toMatch(/--avatar-presence-bar-block-size:\s*var\(--stroke-sm\);/);
     expect(tokens).toMatch(/--avatar-presence-min-size:\s*var\(--space-2\);/);
   });
 

@@ -68,6 +68,12 @@
   --alert-space-gap: var(--space-inline-md);
   --alert-inner-space-gap: var(--space-stack-sm);
   --alert-dismiss-space-offset: var(--space-3);
+  /* Leading tone glyph (the ⚠/✓/ⓘ at the start of the strip). It was a bare `1.25rem` in
+   * alert-layout.css with no token at all, so the ONLY ways to resize it were `!important` or a
+   * forked stylesheet — the two things the icon axis's tier 2 exists to abolish (gh#326). Same
+   * step, so nothing moves; a service now scopes `--alert-icon-size` to one Alert instead.
+   * Deliberately NOT --scaling-multiplied: the literal it replaces did not track density. */
+  --alert-icon-size: var(--icon-size-lg);
   /* Dismiss ✕ — rest opacity (quiet at rest, full on hover, rule #44) and glyph size. The rest
    * alpha was a hard 0.7 in alert-layout.css whose `:hover` companion lived on the COMPONENT as
    * `hover:opacity-100`, so the two halves of one affordance sat in two files and neither was
@@ -81,12 +87,19 @@
   --alert-bg-alpha: 0.05;
   --alert-border-alpha: 0.3;
   /* BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to
-   * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card
-   * language sets --banner-radius, one that rules its top edge too sets --banner-border-width.
+   * match to its page grid is a knob (rule #45).
+   *
+   * --banner-radius and --banner-border-width are NOT declared here (gh#327). They used to be,
+   * and both copies were dead: components/banner.css declares the same two names at the same
+   * `:root`, base.css imports banner AFTER feedback, so banner won every time. Radius agreed at
+   * `0`, but border-width did not — this file said `0` and banner.css says `1px`, and `1px` is
+   * what alert-layout.css actually paints as the strip's block-end hairline. So anyone who read
+   * THIS file for the default was told the strip has no rule when it has one, and the MCP token
+   * catalog carried both entries with the two conflicting values. banner.css owns the strip
+   * geometry; these two live there and only there.
+   *
    * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines
    * its text up with the page title instead of sitting at a second, unrelated margin. */
-  --banner-radius: 0;
-  --banner-border-width: 0;
   --banner-border-block-end-width: 1px;
   --banner-space-block: var(--space-3);
   /* Inline inset tracks the page gutter so a banner's text lines up with the page title.

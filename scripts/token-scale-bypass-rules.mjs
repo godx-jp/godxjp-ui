@@ -67,43 +67,102 @@ export const AXES = [
     scaleRef: /var\(\s*--icon-size(?:[-)])/,
   },
   {
+    id: "stroke",
+    /** `--stroke-{hairline,sm,md,lg,xl,2xl}` (foundation.css), landed by gh#324 as the FIRST of
+     *  the two coherent axes hiding inside `width`. A stroke is the thickness of a painted line:
+     *  borders, focus rings, accent rails, selected-state markers, presence strokes. Six values
+     *  across ~20 tokens, all in `px` on purpose (a device line must not grow with the root
+     *  font-size). See the census verdict on `width`, below. */
+    enforced: true,
+    scale: "--stroke-*",
+    scaleRef: /var\(\s*--stroke(?:[-)])/,
+  },
+  {
+    id: "band-height",
+    /** `--band-height-{xs…3xl}` (foundation.css), landed by gh#324 as the SECOND. A band is the
+     *  vertical extent of a horizontal strip that content is centred in — a control, a table row,
+     *  a menu item, a nav row, the app-shell top bar. Seven values, each declared by two to five
+     *  tokens.
+     *
+     *  `--control-height-*` is accepted as scale-derived because it IS on this scale: the control
+     *  ladder is anchored on `--band-height-md` and steps off it (`calc(var(--control-height) -
+     *  var(--space-1))`), which is the sanctioned tier-2 route. That does NOT make it a substitute
+     *  for a step — a token pointed at `--control-height-*` inherits density AND the coarse-pointer
+     *  44px growth, which is a geometry change. See foundation.css. */
+    enforced: true,
+    scale: "--band-height-*",
+    scaleRef: /var\(\s*--(?:band-height|control-height)(?:[-)])/,
+  },
+  {
+    id: "line-height",
+    /** ENFORCED since gh#324, and it is the odd one out: `--line-height-{tight,normal,body}` are
+     *  UNITLESS ratios, so a LENGTH here is never a step of anything — it is a mis-named height.
+     *  There was exactly one (`--table-skeleton-line-height: 1rem`, a skeleton bar), and while it
+     *  stood the axis could not be gated. It is now `--table-skeleton-line-block-size` with the
+     *  old name kept as a published alias, so this axis gates at zero baseline cost and the next
+     *  mis-named height fails on arrival. */
+    enforced: true,
+    scale: "--line-height-* (unitless ratios — a LENGTH here is a mis-named height)",
+    scaleRef: /var\(\s*--line-height(?:[-)])/,
+  },
+  {
     id: "size",
-    /** WAITING ON a scale (gh#325 "S1"). 80% raw. */
+    /** NOT A SCALE — verdict recorded by gh#324 after the census, not a to-do.
+     *
+     *  64% raw, and the raw values are four unrelated things: small square boxes that are really
+     *  icons under another name (`--calendar-chevron-size`, `--search-select-spinner-size`), media
+     *  boxes chosen per surface (QR codes at 6/8/10/12.5rem, an upload tile at 6rem), font-relative
+     *  `em` marks that must track their label, and a handful of `px` strokes wearing `-size`
+     *  (those moved onto `--stroke-*`). Naming a scale across that set would mean inventing one —
+     *  the values barely repeat, and the ones that do already have a home on `--icon-size-*`. */
     enforced: false,
     scale: null,
     scaleRef: /(?!)/,
   },
   {
     id: "width",
-    /** WAITING ON a scale. 93% raw — the worst axis in the system, and the clearest evidence for
-     *  the correlation gh#324 measured. */
+    /** NOT A SCALE — verdict recorded by gh#324. This is the axis the issue called the worst in
+     *  the system at 91% raw, and the census says the number is real but the diagnosis was not:
+     *  `-width` is THREE concerns.
+     *    1. stroke — the thickness of a painted line. One vocabulary, six values, heavy repeats.
+     *       Split out and gated above as `--stroke-*`.
+     *    2. container measure — a dialog, a sheet, a reading column, a page max-width, an auth
+     *       card. ~26 tokens over 15 distinct values, most appearing exactly ONCE, several pinned
+     *       to an artboard coordinate (the auth cards at 22.5/23.75/25/27rem).
+     *    3. field width — how wide a picker must be to hold its longest label
+     *       (`--app-setting-picker-timezone-width: 14rem`). Content-driven, per control.
+     *  2 and 3 are tier-2 by nature: the value appears in one place, so it earns a token, not a
+     *  step. Putting them on a scale would force `23.75rem` onto a grid it was measured off. */
     enforced: false,
     scale: null,
     scaleRef: /(?!)/,
   },
   {
     id: "height",
-    /** WAITING ON a scale. 76% raw. */
+    /** NOT A SCALE as a whole — verdict recorded by gh#324. Same split as `width`: the BAND half
+     *  (a control, a row, a menu item, a bar) is one vocabulary and is gated above as
+     *  `--band-height-*`. What is left here is the container half — a chart plot's height, a
+     *  transfer pane's min-height, a popover's max-height, an upload preview — chosen per surface
+     *  with almost no repeated value. Those stay literal, and the two are told apart by NAME
+     *  (`-bar|row|item|trigger|control|button-height` is a band) rather than by guesswork. */
     enforced: false,
     scale: null,
     scaleRef: /(?!)/,
   },
   {
     id: "offset",
-    /** WAITING ON a decision: an offset is spacing, so `--space-*` may already be its scale, but
-     *  focus-ring offsets (2px) sit below every step. Do not enforce until that is settled. */
+    /** NOT A SCALE — verdict recorded by gh#324, answering the question this entry used to ask.
+     *
+     *  `--space-*` already covers the half that is spacing (11 of 20 tokens read it: dismiss-button
+     *  insets, scroll offsets, badge offsets). The other half is not spacing at all and never lands
+     *  on the 4px grid: four focus-ring offsets at 2px (ring geometry, deliberately below
+     *  `--space-1`), an `em` mark offset that tracks its text, a 48px scroll-anchor clearance that
+     *  must NOT breathe with density, and two auth flow offsets pinned to an artboard y-coordinate.
+     *  Enforcing would buy nine gated tokens for seven `scale-exempt:` markers — the guard would be
+     *  documenting exceptions rather than catching mistakes. */
     enforced: false,
     scale: null,
     scaleRef: /var\(\s*--space(?:[-)])/,
-  },
-  {
-    id: "line-height",
-    /** NOT ENFORCEABLE as written. `--line-height-{tight,normal,body}` are UNITLESS ratios, so a
-     *  length on this axis is not a bypass — it is a mis-named height (`--table-skeleton-line-height:
-     *  1rem` is a skeleton bar). Renaming those is a separate job. */
-    enforced: false,
-    scale: null,
-    scaleRef: /(?!)/,
   },
 ];
 
@@ -120,6 +179,15 @@ export const AXES = [
  * `-space-` is this repo's logical-property spelling of padding (`--card-space-inset`,
  * `--badge-space-x`, `--button-space-block`), so it maps to padding — unless a more specific
  * `-gap` / `-offset` sits to its right (`--alert-space-gap` is a gap).
+ *
+ * `stroke` and `band-height` (gh#324) are the two coherent axes that were hiding inside `width`
+ * and `height`. They are told apart from their container-measure siblings BY NAME, and the
+ * longest-on-a-tie rule is what makes that work: `-border-width` and `-row-height` both end where
+ * the bare `-width` / `-height` they contain ends, so the specific one wins. A name that does not
+ * say it is a line or a band stays on the unenforced axis, which is the conservative direction —
+ * `--legal-document-toc-marker-width` is a 2px rule but reads as a measure, so it is not gated.
+ * `-rail-width` was tried and dropped: `--card-accent-rail-width` is a 6px painted stripe but
+ * `--app-shell-rail-width` is the 4rem icon sidebar COLUMN, and one word cannot mean both.
  */
 const AXIS_PATTERNS = [
   ["gap", /-gap(?=-|$)/g],
@@ -132,7 +200,9 @@ const AXIS_PATTERNS = [
   ["icon-size", /-icon-size(?=-|$)/g],
   ["size", /-size(?=-|$)/g],
   ["width", /-width(?=-|$)/g],
+  ["stroke", /-(?:border|ring|stroke|outline|rule|divider)-width(?=-|$)/g],
   ["height", /-height(?=-|$)/g],
+  ["band-height", /-(?:band|bar|row|item|trigger|control|button)-height(?=-|$)/g],
 ];
 
 /** The axis a custom-property name sits on, or `null` when it carries no geometry at all. */

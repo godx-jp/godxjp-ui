@@ -71,7 +71,9 @@ describe("gh#254 — a clipping single-line box owns its line-height", () => {
   });
 
   it("changes the LABEL's line box only — row geometry is untouched", () => {
-    expect(shellTokens).toMatch(/--sidebar-nav-item-height:\s*2rem;/);
+    // The 32px row reads the band step since gh#324 — `--band-height-md` IS 2rem, pinned in
+    // src/tokens/__tests__/geometry-axis-scales.test.ts along with every token that reads it.
+    expect(shellTokens).toMatch(/--sidebar-nav-item-height:\s*var\(--band-height-md\);/);
     const row = rule(".sb-nav-item");
     expect(row).toContain("height: var(--sidebar-nav-item-height);");
     expect(row).toContain("align-items: center;");

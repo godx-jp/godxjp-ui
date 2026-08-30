@@ -117,7 +117,7 @@
    * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu
    * had not been converted at all, so it carried the whole box as Tailwind literals on the
    * component (#319). A service tunes the menu rhythm once here instead of three times. */
-  --menu-item-height: 2rem;
+  --menu-item-height: var(--band-height-md);
   --menu-item-radius: var(--radius-sm);
   --menu-item-space-inline: var(--space-2);
   --menu-item-space-gap: var(--space-2);
@@ -135,13 +135,24 @@
   --menu-separator-space-block: var(--space-1);
   --menu-separator-space-inline: calc(var(--space-1) * -1);
 
+  /* NAVIGATION MENU — the disclosure chevron on a top-level trigger. It was a bare `0.9rem` in
+   * navigation-layout.css: no token, so unreachable from an app (gh#326), and 14.4px, so off the
+   * icon scale AND off the pixel grid. A stroked chevron drawn into a 14.4px box lands its path
+   * on half pixels at 1x, which is a rendering defect rather than a rounding preference, so this
+   * SNAPS to the nearest step — --icon-size-sm, 14px, −0.4px. The nearest step upward is 16px
+   * (+1.6px) and would also fight the `opacity: 0.7` that makes this chevron deliberately quiet.
+   * `sm` rather than `md` is the same call the other quiet chevrons in the system already made
+   * (--month-picker-separator-icon-size, --steps-inline-separator-size). NOT
+   * --scaling-multiplied: the literal it replaces did not track density. */
+  --navigation-menu-trigger-icon-size: var(--icon-size-sm);
+
   /* STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline
    * form; the marker, connector and text rhythm of the main variant were still literal on the
    * component (#319), so a service could not resize the dot, retighten the vertical run, or move
    * the horizontal connector to match its own grid. */
   --steps-dot-size: 0.625rem;
-  --steps-dot-process-ring-width: 4px;
-  --steps-marker-border-width: 2px;
+  --steps-dot-process-ring-width: var(--stroke-xl);
+  --steps-marker-border-width: var(--stroke-md);
   --steps-marker-font-size: var(--font-size-sm);
   --steps-marker-icon-size: var(--icon-size-md);
   --steps-wait-icon-size: var(--icon-size-xs);

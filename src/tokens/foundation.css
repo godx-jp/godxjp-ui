@@ -182,7 +182,7 @@
    * rule reads it with the live-role fallback `hsl(var(--focus-ring-color, var(--ring)))`, so the
    * default re-resolves at the element that paints the ring while an explicit override still wins. */
   --focus-ring-color: initial; /* default = the live --ring role */
-  --focus-ring-width: 2px;
+  --focus-ring-width: var(--stroke-md);
   /* Alpha of the ring fill. Exists so a component that needs a SOFTER ring
    * (a filled toggle, tinted shell chrome) tunes one knob instead of writing
    * its own `hsl(... / 0.35)` — which is how four incompatible ring shapes
@@ -373,6 +373,79 @@
   --icon-size-3xl: 2.5rem; /* 40px */
   --icon-size-4xl: 3rem; /* 48px */
 
+  /* ── STROKE — the thickness of a painted LINE (gh#324, the second axis to be named).
+   *
+   * gh#324 measured `width` at 91% raw and called it the worst axis in the system. It is not one
+   * axis. Three unrelated concerns wear the `-width` suffix: the thickness of a drawn line, the
+   * measure of a container (a dialog, a reading column, a sidebar), and the content width of a
+   * field (how wide a locale picker must be to hold its longest label). Only the FIRST is a
+   * vocabulary — see the verdict recorded in `scripts/token-scale-bypass-rules.mjs`.
+   *
+   * The vocabulary was already there and repeats hard: SIX values across ~20 tokens spanning
+   * borders, focus rings, accent rails, selected-state markers and presence strokes. Naming it is
+   * what lets a service retune line weight once — a hi-dpi theme that wants 1.5px hairlines, or a
+   * high-contrast theme that wants every emphasis stroke at 3px — instead of hunting 20 tokens.
+   *
+   * PIXELS, NOT REM, AND DELIBERATELY SO. A stroke is a DEVICE line: its job is to read as one
+   * crisp rule at any type size, so it must not grow when the root font-size does. Every token
+   * that moves onto this scale was already `px` for that reason; a `rem` thickness
+   * (`--slider-track-height: 0.375rem`) is a different decision and stays where it is.
+   *
+   * NOT SCALED. `--scaling` is a DENSITY knob — it tightens the spacing rhythm, and a 1px divider
+   * that became 0.92px under compact density would blur, not tighten. No token on this axis
+   * multiplies by it today and none should.
+   *
+   * `--stroke-hairline` sits BELOW `--stroke-sm` rather than being called `xs`, because 1px is
+   * not really a step: it is the device hairline, the one thickness a service retunes the
+   * EXISTENCE of rather than the value (cardinal rule #44). The scale-bypass guard exempts a bare
+   * `1px` for the same reason. Naming it anyway gives the retune-the-value route to the themes
+   * that want it.
+   *
+   * TIER 2 — a thickness that appears in exactly one place does not belong here. Set that
+   * component's own `--*-border-width` / `--*-ring-width` token at the call site or in the app
+   * theme; every stroke rule in src/styles reads its token through `var()`. */
+  --stroke-hairline: 1px; /* every resting border, divider and rule */
+  --stroke-sm: 1.5px;
+  --stroke-md: 2px; /* the emphasis stroke — focus rings, selected markers */
+  --stroke-lg: 3px;
+  --stroke-xl: 4px;
+  --stroke-2xl: 6px;
+
+  /* ── BAND HEIGHT — the vertical extent of a horizontal band that content is centred in
+   * (gh#324, the third axis to be named).
+   *
+   * Same split as `width`: `height` is TWO concerns wearing one suffix. A control, a table row, a
+   * menu item, a sidebar nav row and the app-shell top bar are all the same decision — how tall
+   * is the band this content sits in — and they share ONE vocabulary of seven values, each of
+   * which is declared by two to five tokens. A chart plot's height, a transfer pane's min-height
+   * and a select popover's max-height are the OTHER concern: container measures, chosen per
+   * surface, with almost no repeated value between them. Those are tier 2 and stay literal.
+   *
+   * gh#324's fourth case is the whole argument: `PageContainer`'s chrome band had no height token
+   * while `AppShell`'s bar did, so nothing could be aligned to it. The two were never conceived
+   * as members of one axis, because the axis had no name.
+   *
+   * WHY THIS IS NOT `--control-height-*`. The control tier is a RUNTIME LADDER: `--control-height`
+   * multiplies by `--scaling`, `-sm`/`-lg`/`-xs` step off it, and `@media (pointer: coarse)` lifts
+   * the whole ladder to the 44px tap floor. This scale is the STATIC vocabulary that the ladder is
+   * anchored on — `--control-height-default: var(--band-height-md)` — exactly as `--font-size-base`
+   * anchors the type scale. Do NOT point a band token at `--control-height-*` to "reuse a step":
+   * that silently enrols it in density AND in the coarse-pointer growth, which is a geometry
+   * change, not a rename. `--table-row-height-default` is `var(--band-height-md)` and NOT
+   * `var(--control-height-default)` for precisely that reason.
+   *
+   * NOT SCALED HERE, for the gh#328 reason: whether a band breathes with density is a per-token
+   * decision made long ago. `--control-height` opts in (`calc(… * var(--scaling))`);
+   * `--app-shell-bar-height` deliberately does not. Baking `--scaling` into the scale would flip
+   * every one of them at once. */
+  --band-height-xs: 1.5rem; /* 24px */
+  --band-height-sm: 1.75rem; /* 28px */
+  --band-height-md: 2rem; /* 32px — the default control/row band */
+  --band-height-lg: 2.25rem; /* 36px */
+  --band-height-xl: 2.75rem; /* 44px — the WCAG 2.2 AA touch floor (rule #24) */
+  --band-height-2xl: 3rem; /* 48px */
+  --band-height-3xl: 3.5rem; /* 56px */
+
   /* Golden ratio scale */
   --ratio-phi: 1.6180339887;
   --phi-unit: var(--space-4);
@@ -403,11 +476,13 @@
   --space-12: 3rem;
   --radius: 0.375rem;
   --control-height: var(--control-height-default);
-  /* baseline tier values (2rem ∓ step) as literals — keeps the control-sizing
-   * guard happy and avoids re-deriving from the (baked) active --control-height. */
-  --control-height-sm: 1.75rem;
-  --control-height-lg: 2.25rem;
-  --control-height-xs: 1.5rem;
+  /* baseline tier values (2rem ∓ step) read straight off the band scale — keeps the
+   * control-sizing guard happy and avoids re-deriving from the (baked) active
+   * --control-height. Scale steps rather than literals since gh#324, so a service that
+   * retunes --band-height-* retunes the scale-fixed chrome with everything else. */
+  --control-height-sm: var(--band-height-sm);
+  --control-height-lg: var(--band-height-lg);
+  --control-height-xs: var(--band-height-xs);
   --control-icon-size: var(--icon-size-md);
   --control-icon-size-sm: var(--icon-size-sm);
   --control-padding-x: var(--space-3);

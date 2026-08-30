@@ -9,7 +9,7 @@
  * padding. A service opts IN to a louder watermark from its theme, never by forking CSS. */
 :root {
   /* Rule weight, both orientations and both halves of a labelled rule. */
-  --separator-rule-size: 1px;
+  --separator-rule-size: var(--stroke-hairline);
   /* Rule colour. Role-mirror knob → declared `initial` so the --border default re-resolves at the
    * CALL SITE under a scoped [data-tenant] / .dark theme (docs/TOKENS.md — the :root freeze rule).
    * Documented default = hsl(var(--border)). */

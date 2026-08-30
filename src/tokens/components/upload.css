@@ -17,7 +17,7 @@
    * dials it back with one override instead of forking the variant. */
   --upload-dropzone-space-inset: var(--space-10);
   --upload-dropzone-radius: var(--radius-lg);
-  --upload-dropzone-border-width: 2px;
+  --upload-dropzone-border-width: var(--stroke-md);
   --upload-dropzone-icon-size: var(--icon-size-3xl);
   --upload-dropzone-hint-space-block-start: var(--space-3);
   --upload-dropzone-hint-font-size: var(--font-size-sm);
@@ -63,7 +63,7 @@
 
   /* AVATAR — the round single-image variant. */
   --upload-avatar-size: 6rem;
-  --upload-avatar-border-width: 2px;
+  --upload-avatar-border-width: var(--stroke-md);
   --upload-avatar-change-space-block: var(--space-1);
   /* The "change" strip sits ON the photo, so its scrim is intentionally a fixed dark wash rather
    * than a surface role — it must stay legible over an arbitrary user image in either theme. */

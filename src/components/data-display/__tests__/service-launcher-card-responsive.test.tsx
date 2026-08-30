@@ -143,8 +143,15 @@ describe("ServiceLauncherCard overflow CSS contract (gh#219)", () => {
     );
   });
 
-  it("sizes the 36px semantic icon surface from the control tier, never a literal", () => {
-    expect(tokenCss).toMatch(/--card-service-launcher-icon-size:\s*var\(--control-height-lg\)/);
+  it("sizes the 36px semantic icon surface from the icon scale, never a literal", () => {
+    // It read `var(--control-height-lg)` until gh#324 — a CONTROL tier sizing an ICON box, which
+    // was invisible at the desk and wrong on a phone: `@media (pointer: coarse)` lifts the control
+    // ladder to the 44px tap floor, so the medallion inflated 36px → 48px while its glyph stayed
+    // 20px. `--icon-size-2xl` is the same 36px; the explicit `* var(--scaling)` keeps the density
+    // behaviour the control tier used to supply (the gh#328 rule).
+    expect(tokenCss).toMatch(
+      /--card-service-launcher-icon-size:\s*calc\(var\(--icon-size-2xl\) \* var\(--scaling\)\)/,
+    );
     const icon = rule(cardCss, '[data-slot="service-launcher-icon"]');
     expect(icon).toMatch(/width:\s*var\(--card-service-launcher-icon-size\)/);
     expect(icon).toMatch(/height:\s*var\(--card-service-launcher-icon-size\)/);

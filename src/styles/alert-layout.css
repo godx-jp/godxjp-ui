@@ -71,8 +71,8 @@
   }
 
   [data-slot="alert-icon"] {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: var(--alert-icon-size);
+    height: var(--alert-icon-size);
     flex-shrink: 0;
     margin-top: 0.125rem;
   }

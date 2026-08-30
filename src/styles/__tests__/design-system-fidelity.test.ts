@@ -10,7 +10,9 @@ describe("DXS hi-fi visual contract", () => {
     const tokens = read("../../tokens/components/shell.css");
     const shell = read("../shell-layout.css");
 
-    expect(tokens).toMatch(/--app-shell-bar-height:\s*3rem/);
+    // The 48px band reads its step since gh#324 — `--band-height-2xl` IS 3rem.
+    expect(tokens).toMatch(/--app-shell-bar-height:\s*var\(--band-height-2xl\)/);
+    expect(read("../../tokens/foundation.css")).toMatch(/--band-height-2xl:\s*3rem;/);
     expect(shell).toMatch(
       /grid-template-rows:\s*var\(--app-shell-bar-height\) minmax\(0, 1fr\) auto/,
     );
@@ -38,7 +40,8 @@ describe("DXS hi-fi visual contract", () => {
     const tokens = read("../../tokens/components/shell.css");
     const shell = read("../shell-layout.css");
 
-    expect(tokens).toMatch(/--sidebar-nav-item-height:\s*2rem/);
+    expect(tokens).toMatch(/--sidebar-nav-item-height:\s*var\(--band-height-md\)/);
+    expect(read("../../tokens/foundation.css")).toMatch(/--band-height-md:\s*2rem;/);
     // The rail's label step is a STEP, not the hi-fi source's 13px (gh#329). 13 sits between
     // --font-size-xs (≈12.47) and the 14px base, so the whole rail read off the system's type
     // rhythm and stayed behind whenever a service retuned --font-size-base. The row's own rhythm —

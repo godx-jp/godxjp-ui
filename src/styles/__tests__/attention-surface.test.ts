@@ -19,6 +19,7 @@ import { describe, expect, it } from "vitest";
  */
 const read = (rel: string) => readFileSync(resolve(process.cwd(), rel), "utf8");
 const cardTokens = read("src/tokens/components/card.css");
+const foundationTokens = read("src/tokens/foundation.css");
 const cardStyles = read("src/styles/card-layout.css");
 const displayTokens = read("src/tokens/components/data-display.css");
 const displayStyles = read("src/styles/data-display-layout.css");
@@ -55,8 +56,11 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
     // the surface treatment every other card on the page has.
     expect(perimeter).toMatch(/var\(--card-shadow\)/);
     expect(perimeter).toMatch(/var\(--card-glow\)/);
-    expect(cardTokens).toContain("--card-accent-perimeter-width: 1px;");
-    expect(cardTokens).toContain("--card-accent-perimeter-ring-width: 1px;");
+    // The two weights read the hairline step since gh#324 (`--stroke-hairline` IS 1px), so assert
+    // the step rather than a literal the file no longer carries.
+    expect(cardTokens).toContain("--card-accent-perimeter-width: var(--stroke-hairline);");
+    expect(cardTokens).toContain("--card-accent-perimeter-ring-width: var(--stroke-hairline);");
+    expect(foundationTokens).toContain("--stroke-hairline: 1px;");
   });
 
   it("undoes the rail's slot-padding compensation so the body text never shifts", () => {

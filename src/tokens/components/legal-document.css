@@ -41,7 +41,7 @@
   --legal-document-toc-font-size: var(--font-size-xs);
   /* Leading marker on the active contents entry — a non-colour affordance so the
    * active state is never colour-only (WCAG 1.4.1). */
-  --legal-document-toc-marker-width: 2px;
+  --legal-document-toc-marker-width: var(--stroke-md);
   /* Gap between the `documentNavigation` slot and the contents list inside the rail. */
   --legal-document-nav-gap: var(--space-4);
   --legal-document-header-gap: var(--space-2);

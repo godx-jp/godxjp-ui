@@ -23,6 +23,7 @@ import { APP_BRANDS, isAppBrand, type AppBrand } from "../../app/theme-axes";
 const axes = readFileSync(resolve(process.cwd(), "src/tokens/axes.css"), "utf8");
 const canonicalTheme = readFileSync(resolve(process.cwd(), "src/theme/dxs.canonical.css"), "utf8");
 const shellTokens = readFileSync(resolve(process.cwd(), "src/tokens/components/shell.css"), "utf8");
+const foundationTokens = readFileSync(resolve(process.cwd(), "src/tokens/foundation.css"), "utf8");
 const pkg = JSON.parse(readFileSync(resolve(process.cwd(), "package.json"), "utf8"));
 
 /** Every `--token: value;` declaration inside the first block matching `selector`. */
@@ -83,7 +84,10 @@ describe("dxs brand axis — the canonical DXS preset", () => {
       "var(--auth-shell-canonical-main-padding)",
     );
     // …and those referenced tokens really are the canonical 36px / 22.5rem / 16px measures.
-    expect(shellTokens).toContain("--auth-shell-canonical-control-height: 2.25rem;");
+    // The control height reads the band scale since gh#324 (`--band-height-lg` IS 2.25rem/36px),
+    // so assert the step and the step's value rather than a literal that no longer appears.
+    expect(shellTokens).toContain("--auth-shell-canonical-control-height: var(--band-height-lg);");
+    expect(foundationTokens).toContain("--band-height-lg: 2.25rem;");
     expect(shellTokens).toContain("--auth-shell-canonical-card-max-width: 22.5rem;");
     expect(shellTokens).toContain("--auth-shell-canonical-main-padding: 1rem;");
   });

@@ -6,9 +6,12 @@
     "gap",
     "margin",
     "radius",
-    "icon-size"
+    "icon-size",
+    "stroke",
+    "band-height",
+    "line-height"
   ],
-  "total": 55,
+  "total": 56,
   "files": {
     "src/tokens/components/control.css": [
       "--button-icon-space-inline-sm",
@@ -76,7 +79,8 @@
       "--service-role-panel-row-gap",
       "--sidebar-nav-gap",
       "--sidebar-nav-item-gap",
-      "--sidebar-nav-item-padding-x"
+      "--sidebar-nav-item-padding-x",
+      "--topbar-chip-icon-size"
     ],
     "src/tokens/components/upload.css": [
       "--upload-picture-badge-space-block"

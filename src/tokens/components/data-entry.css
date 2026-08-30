@@ -1,6 +1,7 @@
 /* Data-entry component tokens — small-by-design text knobs (rule #45/#46). */
 
 :root {
+
   --password-strength-score-font-size: var(--font-size-xs);
   --password-strength-checklist-font-size: var(--font-size-xs);
 
@@ -22,7 +23,7 @@
   --branch-scope-picker-subset-padding-inline: 1rem;
   /* The indent rule itself is CHROME (#44), so it is a knob: a service that wants the flat
    * treatment sets it to 0 rather than forking the component. Default = today's `border-s-2`. */
-  --branch-scope-picker-subset-border-width: 2px;
+  --branch-scope-picker-subset-border-width: var(--stroke-md);
   /* Bounded height of the scrollable branch list (was `max-h-64`). Flat by design: the box is a
    * keyboard-reachable scroll region whose job is to cap the control's measure, so it must not
    * grow with density and push the surrounding form off a 390px frame. */

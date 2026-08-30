@@ -143,7 +143,9 @@ describe("Sidebar nav foreground tokens (gh#228)", () => {
     // gh#326 named the icon scale: --icon-size-md IS 1rem/16px, and
     // src/tokens/__tests__/icon-size-scale.test.ts pins that step and every token that reads it.
     expect(shellTokens).toMatch(/--sidebar-nav-icon-size:\s*var\(--icon-size-md\);/);
-    expect(shellTokens).toMatch(/--sidebar-nav-item-height:\s*2rem;/);
+    // gh#324 named the band scale the same way: --band-height-md IS 2rem/32px, and
+    // src/tokens/__tests__/geometry-axis-scales.test.ts pins that step.
+    expect(shellTokens).toMatch(/--sidebar-nav-item-height:\s*var\(--band-height-md\);/);
     expect(shellTokens).toMatch(/--sidebar-nav-item-gap:\s*0\.625rem;/);
     const icon = rule(".sb-icon");
     expect(icon).toContain("width: var(--sidebar-nav-icon-size);");

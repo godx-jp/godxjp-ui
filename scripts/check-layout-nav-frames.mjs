@@ -57,8 +57,15 @@ async function waitForFocusedTabIndex(page, index, message) {
   );
 }
 
-execFileSync(process.execPath, ["preview/scripts/kill-port.mjs"], { stdio: "ignore" });
-const server = await createServer({ configFile: "preview/vite.config.ts" });
+// This gate runs beside other browser gates on a shared host, so it must own a port nobody else
+// is using. It used to free and bind 6008 unconditionally — the port `pnpm preview` and three
+// other gates use — which killed their servers out from under them.
+const port = Number(process.env.PREVIEW_PORT) || 6041;
+execFileSync(process.execPath, ["preview/scripts/kill-port.mjs", String(port)], { stdio: "ignore" });
+const server = await createServer({
+  configFile: "preview/vite.config.ts",
+  server: { port, strictPort: true },
+});
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext();
 const widths = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
@@ -84,7 +91,7 @@ try {
     activeFrame = frame;
     for (const width of widths) {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(`http://localhost:6008/frame/${frame}`, { waitUntil: "networkidle" });
+      await page.goto(`http://localhost:${port}/frame/${frame}`, { waitUntil: "networkidle" });
       const result = await page.evaluate(() => ({
         viewport: innerWidth,
         scrollWidth: document.documentElement.scrollWidth,
@@ -99,7 +106,7 @@ try {
   }
 
   await page.setViewportSize({ width: 1024, height: 900 });
-  await page.goto("http://localhost:6008/frame/navigation-tabs", { waitUntil: "networkidle" });
+  await page.goto(`http://localhost:${port}/frame/navigation-tabs`, { waitUntil: "networkidle" });
   let tabs = page.getByRole("tab");
   await waitForRovingTablist(page);
   await tabs.first().focus();
@@ -114,7 +121,7 @@ try {
       document.documentElement.lang = "ar";
     }
   });
-  await page.goto("http://localhost:6008/frame/navigation-tabs-rtl", { waitUntil: "networkidle" });
+  await page.goto(`http://localhost:${port}/frame/navigation-tabs-rtl`, { waitUntil: "networkidle" });
   tabs = page.getByRole("tab");
   if ((await page.locator('[dir="rtl"]').count()) === 0) throw new Error("RTL was not initialized");
   await waitForRovingTablist(page);
@@ -122,7 +129,7 @@ try {
   await page.keyboard.press("ArrowLeft");
   const rtlFocusedIndex = await waitForFocusedTabIndex(page, 1, "RTL Tabs ArrowLeft focus failed");
 
-  await page.goto("http://localhost:6008/frame/navigation-pagination", {
+  await page.goto(`http://localhost:${port}/frame/navigation-pagination`, {
     waitUntil: "networkidle",
   });
   const nextButtons = page.getByRole("button", { name: /次|next/i });

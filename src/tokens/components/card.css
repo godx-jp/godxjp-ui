@@ -73,19 +73,19 @@
    * Tokenised (rule #44) so a service theme can re-tune it without forking CSS.
    * The slot padding compensation in card-layout.css subtracts the same token,
    * so content stays aligned on the shell whatever the rail width. */
-  --card-accent-rail-width: 6px;
+  --card-accent-rail-width: var(--stroke-2xl);
   /* Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can
    * tune the edge weight and the outer ring independently; the defaults reproduce the optical
    * weight of `variant="featured"` (1px border + 1px ring) in the card's own semantic accent tone
    * instead of --primary. Structural 1px literals, like the base card hairline. */
-  --card-accent-perimeter-width: 1px;
-  --card-accent-perimeter-ring-width: 1px;
+  --card-accent-perimeter-width: var(--stroke-hairline);
+  --card-accent-perimeter-ring-width: var(--stroke-hairline);
   /* `variant="featured"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary
    * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary
    * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card
    * at once. Default = hsl(var(--primary)). */
   --card-featured-border-color: initial;
-  --card-featured-ring-width: 1px;
+  --card-featured-ring-width: var(--stroke-hairline);
   --stat-card-label-font-size: var(--font-size-xs);
   --stat-card-label-font-weight: var(--font-weight-medium);
   --stat-card-label-letter-spacing: 0.04em;
@@ -108,9 +108,13 @@
    * Internal rhythm of a launcher tile: one gap knob drives the vertical stack AND the
    * icon↔title↔status row, so a service theme retunes the whole tile density once. */
   --card-service-launcher-space-gap: var(--space-stack-sm);
-  /* Semantic icon surface. `--control-height-lg` is the 36px control tier the hi-fi calls for —
-   * a tier token, never a literal, so the medallion tracks --scaling with its sibling controls. */
-  --card-service-launcher-icon-size: var(--control-height-lg);
+  /* Semantic icon surface — 36px, the `--icon-size-2xl` step, multiplied by --scaling so the
+   * medallion still breathes with its sibling controls (the gh#328 rule: an icon that wants
+   * density says so itself). It read `var(--control-height-lg)` until gh#324: a CONTROL tier is
+   * the wrong axis for an icon box, and the bug was visible — `@media (pointer: coarse)` lifts
+   * the control ladder to the 44px tap floor, so on every touch device the medallion silently
+   * inflated to 48px while the glyph inside it stayed 20px. */
+  --card-service-launcher-icon-size: calc(var(--icon-size-2xl) * var(--scaling));
   --card-service-launcher-icon-glyph-size: calc(var(--icon-size-lg) * var(--scaling));
   --card-service-launcher-icon-radius: var(--radius-md);
   /* Available-service medallion tint. `initial` (role-mirror rule, docs/TOKENS.md) so the role

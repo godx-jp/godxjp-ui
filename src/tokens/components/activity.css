@@ -45,10 +45,14 @@
   /* Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a
    * label in a row, so `100%` would eat the label's space. */
   --activity-bar-width: 4rem;
-  --activity-bar-height: 0.25em;
   --activity-bar-radius: var(--radius-pill);
   --activity-bar-segment-width: 40%;
   --activity-bar-track-alpha: 0.2;
+  /* Bar THICKNESS, declared last in the group because it carries the axis exemption below.
+   * Drawn at TEXT scale, not band scale: the bar sits inline beside its label, so it tracks the
+   * type it accompanies instead of a fixed step (gh#324). */
+  /* scale-exempt: an em thickness that must track the label beside it, not a fixed band step */
+  --activity-bar-height: 0.25em;
 
   /* Mark colour. ROLE-MIRROR KNOB ⇒ declared `initial` here with the role default at the CALL SITE
    * (`hsl(var(--activity-color, var(--muted-foreground)))` in styles/motion.css). Written as

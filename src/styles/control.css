@@ -915,8 +915,8 @@
   justify-content: center;
 }
 .ui-otp-caret {
-  width: 1px;
-  height: 1rem;
+  width: var(--otp-caret-inline-size);
+  height: var(--otp-caret-block-size);
   background: hsl(var(--foreground));
   animation: ui-otp-blink 1s step-end infinite;
 }
@@ -926,8 +926,8 @@
   }
 }
 .ui-otp-separator-icon {
-  width: 1rem;
-  height: 1rem;
+  width: var(--otp-separator-icon-size);
+  height: var(--otp-separator-icon-size);
   color: hsl(var(--muted-foreground));
 }
 

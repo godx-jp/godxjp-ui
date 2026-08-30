@@ -59,11 +59,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
   },
   {
-    "name": "--activity-bar-height",
-    "value": "0.25em",
-    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
-  },
-  {
     "name": "--activity-bar-radius",
     "value": "var(--radius-pill)",
     "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
@@ -77,6 +72,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--activity-bar-track-alpha",
     "value": "0.2",
     "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+  },
+  {
+    "name": "--activity-bar-height",
+    "value": "0.25em",
+    "description": "scale-exempt: an em thickness that must track the label beside it, not a fixed band step"
   },
   {
     "name": "--activity-color",
@@ -107,6 +107,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--badge-line-height",
     "value": "calc(1 / 0.75)",
     "description": "Companion to --badge-font-size (gh#260). The cva's old `text-xs` utility also set * line-height via Tailwind's default `--text-xs--line-height: calc(1 / 0.75)` (the theme * remaps --text-xs but never that companion). Same unitless ratio here keeps the default * badge pixel-identical now that badge-layout.css owns the type metrics."
+  },
+  {
+    "name": "--badge-icon-size",
+    "value": "var(--icon-size-xs)",
+    "description": "Leading/trailing glyph inside the pill. It was a bare `0.75rem` in badge-layout.css with no * token at all, so a service could only resize it with `!important` or a forked stylesheet — * the two routes the icon axis's tier 2 exists to abolish (gh#326). Same step, so nothing * moves. Matches --badge-font-size's step by design: the glyph reads as a character in the * label's run, so the two retune together. Deliberately NOT --scaling-multiplied — the literal * it replaces did not track density."
   },
   {
     "name": "--banner-radius",
@@ -240,17 +245,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-accent-rail-width",
-    "value": "6px",
+    "value": "var(--stroke-2xl)",
     "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--card-accent-perimeter-width",
-    "value": "1px",
+    "value": "var(--stroke-hairline)",
     "description": "Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can * tune the edge weight and the outer ring independently; the defaults reproduce the optical * weight of `variant=\"featured\"` (1px border + 1px ring) in the card's own semantic accent tone * instead of --primary. Structural 1px literals, like the base card hairline."
   },
   {
     "name": "--card-accent-perimeter-ring-width",
-    "value": "1px",
+    "value": "var(--stroke-hairline)",
     "description": "Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can * tune the edge weight and the outer ring independently; the defaults reproduce the optical * weight of `variant=\"featured\"` (1px border + 1px ring) in the card's own semantic accent tone * instead of --primary. Structural 1px literals, like the base card hairline."
   },
   {
@@ -260,7 +265,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-featured-ring-width",
-    "value": "1px",
+    "value": "var(--stroke-hairline)",
     "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
   },
   {
@@ -340,18 +345,18 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-service-launcher-icon-size",
-    "value": "var(--control-height-lg)",
-    "description": "Semantic icon surface. `--control-height-lg` is the 36px control tier the hi-fi calls for — * a tier token, never a literal, so the medallion tracks --scaling with its sibling controls."
+    "value": "calc(var(--icon-size-2xl) * var(--scaling))",
+    "description": "Semantic icon surface — 36px, the `--icon-size-2xl` step, multiplied by --scaling so the * medallion still breathes with its sibling controls (the gh#328 rule: an icon that wants * density says so itself). It read `var(--control-height-lg)` until gh#324: a CONTROL tier is * the wrong axis for an icon box, and the bug was visible — `@media (pointer: coarse)` lifts * the control ladder to the 44px tap floor, so on every touch device the medallion silently * inflated to 48px while the glyph inside it stayed 20px."
   },
   {
     "name": "--card-service-launcher-icon-glyph-size",
     "value": "calc(var(--icon-size-lg) * var(--scaling))",
-    "description": "Semantic icon surface. `--control-height-lg` is the 36px control tier the hi-fi calls for — * a tier token, never a literal, so the medallion tracks --scaling with its sibling controls."
+    "description": "Semantic icon surface — 36px, the `--icon-size-2xl` step, multiplied by --scaling so the * medallion still breathes with its sibling controls (the gh#328 rule: an icon that wants * density says so itself). It read `var(--control-height-lg)` until gh#324: a CONTROL tier is * the wrong axis for an icon box, and the bug was visible — `@media (pointer: coarse)` lifts * the control ladder to the 44px tap floor, so on every touch device the medallion silently * inflated to 48px while the glyph inside it stayed 20px."
   },
   {
     "name": "--card-service-launcher-icon-radius",
     "value": "var(--radius-md)",
-    "description": "Semantic icon surface. `--control-height-lg` is the 36px control tier the hi-fi calls for — * a tier token, never a literal, so the medallion tracks --scaling with its sibling controls."
+    "description": "Semantic icon surface — 36px, the `--icon-size-2xl` step, multiplied by --scaling so the * medallion still breathes with its sibling controls (the gh#328 rule: an icon that wants * density says so itself). It read `var(--control-height-lg)` until gh#324: a CONTROL tier is * the wrong axis for an icon box, and the bug was visible — `@media (pointer: coarse)` lifts * the control ladder to the 44px tap floor, so on every touch device the medallion silently * inflated to 48px while the glyph inside it stayed 20px."
   },
   {
     "name": "--card-service-launcher-icon-background",
@@ -450,7 +455,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--chart-trend-bar-min-height",
-    "value": "2px",
+    "value": "var(--stroke-md)",
     "description": "Floor so a zero/absent value still reads as a plotted category rather than a hole."
   },
   {
@@ -490,17 +495,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-height-compact",
-    "value": "1.75rem",
+    "value": "var(--band-height-sm)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--control-height-default",
-    "value": "2rem",
+    "value": "var(--band-height-md)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--control-height-comfortable",
-    "value": "2.75rem",
+    "value": "var(--band-height-xl)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -570,7 +575,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-border-width",
-    "value": "1px",
+    "value": "var(--stroke-hairline)",
     "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
   },
   {
@@ -595,7 +600,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--toggle-focus-ring-width",
-    "value": "3px",
+    "value": "var(--stroke-lg)",
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
   {
@@ -605,7 +610,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--time-input-focus-ring-width",
-    "value": "3px",
+    "value": "var(--stroke-lg)",
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
   {
@@ -990,7 +995,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--input-file-button-height",
-    "value": "1.75rem",
+    "value": "var(--band-height-sm)",
     "description": "The <input type=file> button is a browser-owned box we restyle; it sits one tier below the * field so it reads as a control INSIDE the control."
   },
   {
@@ -1325,7 +1330,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--calendar-chevron-size",
-    "value": "1rem",
+    "value": "var(--icon-size-md)",
     "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
   },
   {
@@ -1514,19 +1519,34 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
   },
   {
+    "name": "--otp-caret-block-size",
+    "value": "1rem",
+    "description": "The OTP blinking caret. The ratchet catches it because the selector says \"caret\", but it is a * text CURSOR, not a chevron: a 1px bar as tall as the digit's line box. Its width belongs to * the stroke scale; its height belongs to neither the icon nor the band scale, so it is declared * rather than forced onto one. * scale-exempt: text-caret height, tracks the OTP digit's line box, not an icon or a band"
+  },
+  {
+    "name": "--otp-caret-inline-size",
+    "value": "var(--stroke-hairline)",
+    "description": "The OTP blinking caret. The ratchet catches it because the selector says \"caret\", but it is a * text CURSOR, not a chevron: a 1px bar as tall as the digit's line box. Its width belongs to * the stroke scale; its height belongs to neither the icon nor the band scale, so it is declared * rather than forced onto one. * scale-exempt: text-caret height, tracks the OTP digit's line box, not an icon or a band"
+  },
+  {
+    "name": "--otp-separator-icon-size",
+    "value": "var(--icon-size-md)",
+    "description": "The OTP blinking caret. The ratchet catches it because the selector says \"caret\", but it is a * text CURSOR, not a chevron: a 1px bar as tall as the digit's line box. Its width belongs to * the stroke scale; its height belongs to neither the icon nor the band scale, so it is declared * rather than forced onto one. * scale-exempt: text-caret height, tracks the OTP digit's line box, not an icon or a band"
+  },
+  {
     "name": "--button-count-min-width",
     "value": "var(--space-4)",
-    "description": "Count pill — a borderless counter that reads on the button's own surface."
+    "description": "The OTP blinking caret. The ratchet catches it because the selector says \"caret\", but it is a * text CURSOR, not a chevron: a 1px bar as tall as the digit's line box. Its width belongs to * the stroke scale; its height belongs to neither the icon nor the band scale, so it is declared * rather than forced onto one. * scale-exempt: text-caret height, tracks the OTP digit's line box, not an icon or a band"
   },
   {
     "name": "--button-count-space-inline",
     "value": "var(--space-1)",
-    "description": "Count pill — a borderless counter that reads on the button's own surface."
+    "description": "The OTP blinking caret. The ratchet catches it because the selector says \"caret\", but it is a * text CURSOR, not a chevron: a 1px bar as tall as the digit's line box. Its width belongs to * the stroke scale; its height belongs to neither the icon nor the band scale, so it is declared * rather than forced onto one. * scale-exempt: text-caret height, tracks the OTP digit's line box, not an icon or a band"
   },
   {
     "name": "--button-count-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Count pill — a borderless counter that reads on the button's own surface."
+    "description": "The OTP blinking caret. The ratchet catches it because the selector says \"caret\", but it is a * text CURSOR, not a chevron: a 1px bar as tall as the digit's line box. Its width belongs to * the stroke scale; its height belongs to neither the icon nor the band scale, so it is declared * rather than forced onto one. * scale-exempt: text-caret height, tracks the OTP digit's line box, not an icon or a band"
   },
   {
     "name": "--button-count-background",
@@ -1590,13 +1610,23 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-height-compact",
-    "value": "2.75rem",
+    "value": "var(--band-height-xl)",
     "description": "Weight of a label whose `peer` control is disabled. Deliberately its OWN knob rather than the * global --disabled-opacity (0.5): a label must stay READABLE next to a disabled control — it is * still the field's accessible name — so it rests one step heavier than the control it names. * Default = the historical `peer-disabled:opacity-70`."
   },
   {
     "name": "--control-height-default",
-    "value": "2.75rem",
+    "value": "var(--band-height-xl)",
     "description": "Weight of a label whose `peer` control is disabled. Deliberately its OWN knob rather than the * global --disabled-opacity (0.5): a label must stay READABLE next to a disabled control — it is * still the field's accessible name — so it rests one step heavier than the control it names. * Default = the historical `peer-disabled:opacity-70`."
+  },
+  {
+    "name": "--accordion-chevron-size",
+    "value": "var(--icon-size-md)",
+    "description": "Accordion chevron and Carousel arrow. Both were bare 1rem literals in * data-display-layout.css — glyphs with no tier-2 route, invisible to the icon ratchet because * neither selector contains the word \"icon\"."
+  },
+  {
+    "name": "--carousel-arrow-icon-size",
+    "value": "var(--icon-size-md)",
+    "description": "Accordion chevron and Carousel arrow. Both were bare 1rem literals in * data-display-layout.css — glyphs with no tier-2 route, invisible to the icon ratchet because * neither selector contains the word \"icon\"."
   },
   {
     "name": "--accordion-focus-ring-offset",
@@ -1690,12 +1720,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--avatar-presence-ring-width",
-    "value": "2px",
+    "value": "var(--stroke-md)",
     "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
   },
   {
     "name": "--avatar-presence-stroke-width",
-    "value": "1.5px",
+    "value": "var(--stroke-sm)",
     "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
   },
   {
@@ -1705,7 +1735,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--avatar-presence-bar-block-size",
-    "value": "1.5px",
+    "value": "var(--stroke-sm)",
     "description": "PRESENCE INDICATOR — `<Avatar presence=\"online|away|busy|offline\">` (gh#309): the realtime reachability dot pinned to the block-end/inline-end corner of the mark. Every constant below is a knob (rule #45) and the separator ring is chrome that reads a token (rule #44), because the hand-rolled workaround this replaces — `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` on a wrapper span — bakes four service-tunable constants and a raw palette colour into a consumer page. --avatar-presence-size is a PROPORTION of the mark, not a px step. One value therefore tracks EVERY avatar the system paints — the --control-height default box, a `size-12` call site, the --avatar-square-size entity mark, --org-switcher-avatar-size (1.75rem), --upload-avatar-size (6rem), the 36px ListRow density=\"compact\" leading mark — instead of freezing one diameter that is a boulder on a 24px mark and a speck on a 96px one. --avatar-presence-min-size is the legibility floor for the smallest marks; --avatar-presence-inset lets a service pull the dot further into a round mark than into a square one. --avatar-presence-ring-color and the four state colours are ROLE-MIRROR knobs: declared `initial` here so the --background / --success / --warning / --destructive / --muted-foreground defaults resolve at the CALL SITE and a scoped [data-tenant] / .dark override of the ROLE still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Binding them to the role here would freeze the ring light-mode-white on a dark avatar. Presence is never colour-alone (WCAG 1.4.1): the colour rides with a SHAPE — filled · half filled · barred · hollow — and a localized sr-only string, so --avatar-presence-stroke-width and --avatar-presence-bar-* are part of the accessible encoding, not decoration. Defaults = 30% of the mark, floor 0.5rem · flush with the mark's corner · 2px separator ring in --background · 1.5px state stroke · a 56%-wide, 1.5px dnd bar."
   },
   {
@@ -1870,7 +1900,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--branch-scope-picker-subset-border-width",
-    "value": "2px",
+    "value": "var(--stroke-md)",
     "description": "The indent rule itself is CHROME (#44), so it is a knob: a service that wants the flat * treatment sets it to 0 rather than forking the component. Default = today's `border-s-2`."
   },
   {
@@ -2334,6 +2364,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by * overriding this once. Default keeps the historical --radius-md."
   },
   {
+    "name": "--alert-icon-size",
+    "value": "var(--icon-size-lg)",
+    "description": "Leading tone glyph (the ⚠/✓/ⓘ at the start of the strip). It was a bare `1.25rem` in * alert-layout.css with no token at all, so the ONLY ways to resize it were `!important` or a * forked stylesheet — the two things the icon axis's tier 2 exists to abolish (gh#326). Same * step, so nothing moves; a service now scopes `--alert-icon-size` to one Alert instead. * Deliberately NOT --scaling-multiplied: the literal it replaces did not track density."
+  },
+  {
     "name": "--alert-dismiss-rest-alpha",
     "value": "0.7",
     "description": "Dismiss ✕ — rest opacity (quiet at rest, full on hover, rule #44) and glyph size. The rest * alpha was a hard 0.7 in alert-layout.css whose `:hover` companion lived on the COMPONENT as * `hover:opacity-100`, so the two halves of one affordance sat in two files and neither was * themeable. Mirrors --sheet-close-rest-alpha. The icon size carries a raw rem, not * var(--space-N): it replaces a flat Tailwind `size-4` step and must not start tracking the * density axis."
@@ -2354,24 +2389,14 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
   },
   {
-    "name": "--banner-radius",
-    "value": "0",
-    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
-  },
-  {
-    "name": "--banner-border-width",
-    "value": "0",
-    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
-  },
-  {
     "name": "--banner-border-block-end-width",
     "value": "1px",
-    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45). * * --banner-radius and --banner-border-width are NOT declared here (gh#327). They used to be, * and both copies were dead: components/banner.css declares the same two names at the same * `:root`, base.css imports banner AFTER feedback, so banner won every time. Radius agreed at * `0`, but border-width did not — this file said `0` and banner.css says `1px`, and `1px` is * what alert-layout.css actually paints as the strip's block-end hairline. So anyone who read * THIS file for the default was told the strip has no rule when it has one, and the MCP token * catalog carried both entries with the two conflicting values. banner.css owns the strip * geometry; these two live there and only there. * * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
   },
   {
     "name": "--banner-space-block",
     "value": "var(--space-3)",
-    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45). * * --banner-radius and --banner-border-width are NOT declared here (gh#327). They used to be, * and both copies were dead: components/banner.css declares the same two names at the same * `:root`, base.css imports banner AFTER feedback, so banner won every time. Radius agreed at * `0`, but border-width did not — this file said `0` and banner.css says `1px`, and `1px` is * what alert-layout.css actually paints as the strip's block-end hairline. So anyone who read * THIS file for the default was told the strip has no rule when it has one, and the MCP token * catalog carried both entries with the two conflicting values. banner.css owns the strip * geometry; these two live there and only there. * * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
   },
   {
     "name": "--banner-space-inline",
@@ -2710,7 +2735,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--legal-document-toc-marker-width",
-    "value": "2px",
+    "value": "var(--stroke-md)",
     "description": "Leading marker on the active contents entry — a non-colour affordance so the * active state is never colour-only (WCAG 1.4.1)."
   },
   {
@@ -3225,7 +3250,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--menu-item-height",
-    "value": "2rem",
+    "value": "var(--band-height-md)",
     "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
   },
   {
@@ -3294,18 +3319,23 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu."
   },
   {
+    "name": "--navigation-menu-trigger-icon-size",
+    "value": "var(--icon-size-sm)",
+    "description": "NAVIGATION MENU — the disclosure chevron on a top-level trigger. It was a bare `0.9rem` in * navigation-layout.css: no token, so unreachable from an app (gh#326), and 14.4px, so off the * icon scale AND off the pixel grid. A stroked chevron drawn into a 14.4px box lands its path * on half pixels at 1x, which is a rendering defect rather than a rounding preference, so this * SNAPS to the nearest step — --icon-size-sm, 14px, −0.4px. The nearest step upward is 16px * (+1.6px) and would also fight the `opacity: 0.7` that makes this chevron deliberately quiet. * `sm` rather than `md` is the same call the other quiet chevrons in the system already made * (--month-picker-separator-icon-size, --steps-inline-separator-size). NOT * --scaling-multiplied: the literal it replaces did not track density."
+  },
+  {
     "name": "--steps-dot-size",
     "value": "0.625rem",
     "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
   },
   {
     "name": "--steps-dot-process-ring-width",
-    "value": "4px",
+    "value": "var(--stroke-xl)",
     "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
   },
   {
     "name": "--steps-marker-border-width",
-    "value": "2px",
+    "value": "var(--stroke-md)",
     "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
   },
   {
@@ -3435,7 +3465,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--separator-rule-size",
-    "value": "1px",
+    "value": "var(--stroke-hairline)",
     "description": "Rule weight, both orientations and both halves of a labelled rule."
   },
   {
@@ -3584,54 +3614,74 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
   },
   {
+    "name": "--topbar-chip-icon-size",
+    "value": "1.125rem",
+    "description": "Topbar glyphs. Three separate sizes, all previously baked as literals in shell-layout.css. * * --topbar-chip-icon-size is off the SCALE but on the pixel GRID, and those are different * findings. Read the rule it styles: `display: grid; place-items: center; font-weight: 700` — * it is a letter MEDALLION, not a glyph, so the half-pixel-stroke argument that made the * NavigationMenu chevron snap from 14.4px to 14px does not apply here. 18px is a whole pixel * sitting between --icon-size-md (16) and -lg (20); snapping it would be a visible 2px box * change bought for nothing. Declared, not silently tolerated. * scale-exempt: 18px letter medallion, a whole pixel between two icon steps, not a glyph"
+  },
+  {
+    "name": "--sidebar-product-caret-icon-size",
+    "value": "var(--icon-size-sm)",
+    "description": "Sidebar product-switcher caret — a real glyph, previously a bare 0.875rem."
+  },
+  {
+    "name": "--topbar-icon-size",
+    "value": "var(--icon-size-md)",
+    "description": "Sidebar product-switcher caret — a real glyph, previously a bare 0.875rem."
+  },
+  {
+    "name": "--topbar-caret-icon-size",
+    "value": "var(--icon-size-xs)",
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+  },
+  {
     "name": "--topbar-icon-focus-ring-alpha",
     "value": "0.45",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
   },
   {
     "name": "--sidebar-user-role-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
   },
   {
     "name": "--org-switcher-meta-foreground",
     "value": "var(--muted-foreground)",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
   },
   {
     "name": "--sidebar-nav-sub-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
   },
   {
     "name": "--sidebar-flyout-title-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
   },
   {
     "name": "--topbar-chip-icon-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
   },
   {
     "name": "--kbd-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
   },
   {
     "name": "--sidebar-logo-mark-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
   },
   {
     "name": "--sidebar-avatar-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
   },
   {
     "name": "--sidebar-user-name-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
   },
   {
     "name": "--sidebar-gradient",
@@ -3645,7 +3695,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-shell-bar-height",
-    "value": "3rem",
+    "value": "var(--band-height-2xl)",
     "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
   },
   {
@@ -3735,7 +3785,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sidebar-nav-item-height",
-    "value": "2rem",
+    "value": "var(--band-height-md)",
     "description": "The role row is a MULTI-LINE button (name over a description/member-count line), so it opts * out of the control height grid (`h-auto`) and sets its own block padding — that is what the * `py-2` literal was doing. It needs the raised `.ui-service-role-panel` ancestor specificity * (0,2,0) to beat `.ui-button--md { padding-block: var(--button-space-block) }` (0,1,0): * layout.css is imported BEFORE control.css and both are `@layer components`, so an equal * (0,1,0) rule here would silently lose."
   },
   {
@@ -3830,7 +3880,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--org-switcher-trigger-height",
-    "value": "2.75rem",
+    "value": "var(--band-height-xl)",
     "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
   },
   {
@@ -3910,7 +3960,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--auth-shell-canonical-control-height",
-    "value": "2.25rem",
+    "value": "var(--band-height-lg)",
     "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
   },
   {
@@ -4325,7 +4375,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-shell-bar-height",
-    "value": "3.5rem",
+    "value": "var(--band-height-3xl)",
     "description": "Rule #24 companion (gh#291): on coarse pointers --control-height grows to 2.75rem * (44px tap floor), and the shell bar sits flush with the viewport top — a 3rem bar * leaves the control's 3px focus ring painting ABOVE y=0, off-screen, which no * overflow setting can recover. 3.5rem gives 6px of breathing per side."
   },
   {
@@ -4365,17 +4415,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-row-height-compact",
-    "value": "1.75rem",
+    "value": "var(--band-height-sm)",
     "description": "Table component tokens: row height, cell padding."
   },
   {
     "name": "--table-row-height-default",
-    "value": "2rem",
+    "value": "var(--band-height-md)",
     "description": "Table component tokens: row height, cell padding."
   },
   {
     "name": "--table-row-height-comfortable",
-    "value": "2.75rem",
+    "value": "var(--band-height-xl)",
     "description": "Table component tokens: row height, cell padding."
   },
   {
@@ -4589,14 +4639,19 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading * state the same height as the loaded one."
   },
   {
-    "name": "--table-skeleton-line-height",
+    "name": "--table-skeleton-line-block-size",
     "value": "1rem",
-    "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading * state the same height as the loaded one."
+    "description": "The skeleton bar's BLOCK SIZE. `--table-skeleton-line-height` was a length on the * line-height axis, whose scale is unitless ratios (gh#324) — a mis-named height, and the * only raw value on that axis, which is what kept the axis ungated. Renamed rather than * left, with the old name kept as a DEPRECATED ALIAS: it is a published token a consumer * theme may already override, and styles/table-layout.css still reads the old name, so an * override of either spelling keeps working. Prefer the new name; the alias may be removed * in a future major."
+  },
+  {
+    "name": "--table-skeleton-line-height",
+    "value": "var(--table-skeleton-line-block-size)",
+    "description": "The skeleton bar's BLOCK SIZE. `--table-skeleton-line-height` was a length on the * line-height axis, whose scale is unitless ratios (gh#324) — a mis-named height, and the * only raw value on that axis, which is what kept the axis ungated. Renamed rather than * left, with the old name kept as a DEPRECATED ALIAS: it is a published token a consumer * theme may already override, and styles/table-layout.css still reads the old name, so an * override of either spelling keeps working. Prefer the new name; the alias may be removed * in a future major."
   },
   {
     "name": "--table-skeleton-radius",
     "value": "var(--radius-sm)",
-    "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading * state the same height as the loaded one."
+    "description": "The skeleton bar's BLOCK SIZE. `--table-skeleton-line-height` was a length on the * line-height axis, whose scale is unitless ratios (gh#324) — a mis-named height, and the * only raw value on that axis, which is what kept the axis ungated. Renamed rather than * left, with the old name kept as a DEPRECATED ALIAS: it is a published token a consumer * theme may already override, and styles/table-layout.css still reads the old name, so an * override of either spelling keeps working. Prefer the new name; the alias may be removed * in a future major."
   },
   {
     "name": "--table-font-size",
@@ -4610,7 +4665,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-row-border-width",
-    "value": "1px",
+    "value": "var(--stroke-hairline)",
     "description": "Horizontal row rule (chrome, #44) — the divider between body rows AND under the header row. * Owned here rather than as TableRow's `border-b` utility so the \"last row draws no rule\" * rule in `@layer components` can actually zero it; a utility would outrank it by layer. * Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }` * so a scoped [data-tenant]/.dark override of --border still reaches every row."
   },
   {
@@ -4670,7 +4725,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--toggle-count-forced-outline-width",
-    "value": "1px",
+    "value": "var(--stroke-hairline)",
     "description": "Under forced-colors every fill is flattened to a system colour, so neither inversion encodes * anything any more. This outline is the state's structural fallback there — drawn on the * PRESSED pill only, and as `outline` (not `border`) so it costs no layout."
   },
   {
@@ -4685,7 +4740,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-dropzone-border-width",
-    "value": "2px",
+    "value": "var(--stroke-md)",
     "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
   },
   {
@@ -4840,7 +4895,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-avatar-border-width",
-    "value": "2px",
+    "value": "var(--stroke-md)",
     "description": "AVATAR — the round single-image variant."
   },
   {

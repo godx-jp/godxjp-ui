@@ -21,6 +21,24 @@
   /* Softened focus ring on the tinted shell grounds: at full alpha the ring
    * reads as a SELECTED item rather than a focused one (styles/focus-ring.css). */
   --sidebar-user-focus-ring-alpha: 0.45;
+  /* Topbar glyphs. Three separate sizes, all previously baked as literals in shell-layout.css.
+   *
+   * --topbar-chip-icon-size is off the SCALE but on the pixel GRID, and those are different
+   * findings. Read the rule it styles: `display: grid; place-items: center; font-weight: 700` —
+   * it is a letter MEDALLION, not a glyph, so the half-pixel-stroke argument that made the
+   * NavigationMenu chevron snap from 14.4px to 14px does not apply here. 18px is a whole pixel
+   * sitting between --icon-size-md (16) and -lg (20); snapping it would be a visible 2px box
+   * change bought for nothing. Declared, not silently tolerated.
+   * scale-exempt: 18px letter medallion, a whole pixel between two icon steps, not a glyph */
+  --topbar-chip-icon-size: 1.125rem;
+  /* Sidebar product-switcher caret — a real glyph, previously a bare 0.875rem. */
+  --sidebar-product-caret-icon-size: var(--icon-size-sm);
+  --topbar-icon-size: var(--icon-size-md);
+  /* The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because
+   * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been
+   * taught the wider vocabulary. */
+  --topbar-caret-icon-size: var(--icon-size-xs);
+
   --topbar-icon-focus-ring-alpha: 0.45;
 
   --sidebar-user-role-font-size: var(--font-size-2xs);
@@ -40,7 +58,7 @@
 
   /* DXS application-shell geometry. These defaults mirror the checked-in
    * Admin/Console hi-fi source while remaining themeable by consumers. */
-  --app-shell-bar-height: 3rem;
+  --app-shell-bar-height: var(--band-height-2xl);
   /* (the coarse-pointer override lives at the end of this file — Rule #24 grows
    * controls to 44px, and a 48px bar cannot hold a 44px control plus its 3px
    * focus ring at the very top of the viewport, where overflow cannot help.) */
@@ -121,7 +139,7 @@
    * (0,1,0) rule here would silently lose. */
   --service-role-panel-item-padding-block: 0.5rem;
   --sidebar-brand-mark-size: 1.375rem;
-  --sidebar-nav-item-height: 2rem;
+  --sidebar-nav-item-height: var(--band-height-md);
   /* ON the type scale (gh#329). This was `0.8125rem` — 13px, which is not a step: the golden scale
    * runs …/ratio² ≈ 11.1 · /ratio ≈ 12.5 · base 14…, so 13 sat BETWEEN two steps and every nav row
    * in the rail read off the system's type rhythm. It had no mechanical anchor either — unlike the
@@ -188,7 +206,7 @@
    * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob
    * replaces. */
   --topbar-center-compact-display: none;
-  --org-switcher-trigger-height: 2.75rem;
+  --org-switcher-trigger-height: var(--band-height-xl);
   --org-switcher-trigger-padding-x: var(--space-2);
   --org-switcher-avatar-size: 1.75rem;
   --org-switcher-menu-width: 16rem;
@@ -220,7 +238,7 @@
 
   /* Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on
    * AuthShell and may retune the product theme here rather than overriding individual fields. */
-  --auth-shell-canonical-control-height: 2.25rem;
+  --auth-shell-canonical-control-height: var(--band-height-lg);
   --auth-shell-canonical-card-max-width: 22.5rem;
   --auth-shell-canonical-heading-size: var(--font-size-base);
   --auth-shell-canonical-main-padding: 1rem;
@@ -461,6 +479,6 @@
  * overflow setting can recover. 3.5rem gives 6px of breathing per side. */
 @media (pointer: coarse) {
   :root {
-    --app-shell-bar-height: 3.5rem;
+    --app-shell-bar-height: var(--band-height-3xl);
   }
 }

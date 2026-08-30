@@ -12,7 +12,7 @@
  *       width               8    80     91%   ← no scale
  *       size               10    34     77%   ← no scale
  *       icon-size           9    28     76%   ← no scale AT THE TIME; gh#326 has since given it one
- *       height             18    40     69%   ← no scale
+ *       height             18    40     69%   ← no scale AT THE TIME; gh#324 split out --band-height-*
  *       padding            82    34     29%   ← --space-*
  *       gap                86    26     23%   ← --space-*
  *       radius             34     3      8%   ← --radius-*
@@ -27,6 +27,17 @@
  *   this guard's `enforced` flag on for that axis cost ZERO baseline entries. Scale first, gate
  *   second — in that order the gate is free.
  *
+ *   gh#324 then did the top two rows, and found the interesting half of the answer: the loudest
+ *   axis is not one axis. `-width` at 91% raw is THREE concerns wearing one suffix — the thickness
+ *   of a painted line, the measure of a container, and the content width of a field — and only the
+ *   first is a vocabulary. So `--stroke-*` was named and gated; the other two are recorded in the
+ *   rules module as NOT A SCALE, with the census behind the verdict, because putting a dialog's
+ *   32rem and an auth card's 23.75rem on a shared grid would be worse than leaving them literal.
+ *   `height` split the same way: `--band-height-*` (control, row, menu item, top bar — one
+ *   vocabulary, seven values) versus container measures that stay literal. `size` and `offset`
+ *   came out as no-scale on the same test. Naming a scale is the fix for an axis; declaring that
+ *   an axis is not one is the fix for the rest, and it has to be written down or it gets re-asked.
+ *
  *   But a scale alone is not sufficient either, and that is what this guard is for. font-size is
  *   the most disciplined axis in the system and FOUR tokens still went around it —
  *   `--sidebar-nav-item-font-size: 0.8125rem` (13px) sits between two steps, so every sidebar nav
@@ -36,8 +47,8 @@
  * WHAT COUNTS AS A VIOLATION
  *   A custom-property declaration in `src/tokens/components/**` or `src/tokens/semantic/**` whose
  *   NAME sits on an ENFORCED axis (one that has a scale today: font-size, padding, gap, margin,
- *   radius, icon-size) and whose VALUE bakes a length literal without deriving from that axis's
- *   scale.
+ *   radius, icon-size, stroke, band-height, line-height) and whose VALUE bakes a length literal
+ *   without deriving from that axis's scale.
  *   `token-scale-bypass-rules.mjs` owns the axis table and flips an axis on when its scale lands.
  *
  * WHAT DOES NOT COUNT — the allow-list, and why each entry is on it
@@ -54,11 +65,13 @@
  *     annotations on scale-derived values are blanked before parsing — two guards in this repo
  *     have already shipped reporting on their own comments, and a phantom violation sends someone
  *     off to "fix" prose.
- *   • Axes with no scale yet: width, height, size, offset (and line-height, whose scale is a set
- *     of unitless RATIOS, so a length there is a mis-named height, not a bypass). Enforcing an
- *     axis with no steps would demand people write something that does not exist. Each is
- *     DECLARED in the rules module with the reason it is waiting, so switching one on later is a
- *     one-line change plus a re-baseline.
+ *   • Axes with no scale: width, height, size, offset. Enforcing an axis with no steps would
+ *     demand people write something that does not exist. Each is DECLARED in the rules module —
+ *     since gh#324 with a VERDICT rather than a to-do, because the census says these four are
+ *     several concerns each rather than one undernamed axis. The coherent halves that were hiding
+ *     inside `width` and `height` have been split out and ARE enforced (`stroke`, `band-height`).
+ *     line-height is enforced too, and is the odd member: its scale is a set of unitless RATIOS,
+ *     so a LENGTH there is never a step — it is a mis-named height, and now fails as one.
  *   • `src/tokens/foundation.css`. That file DECLARES the scales; its literals are the steps
  *     themselves. Same for `src/styles/**`, which is `check-no-hardcoded-css-values.mjs`'s beat —
  *     that guard explicitly skips custom-property declarations, and this one is its other half.
@@ -87,7 +100,10 @@
  *   a passing run, so they stay countable and reviewable.
  *
  * RATCHET, NOT A CLIFF
- *   55 declarations bypassed an enforced scale the day this landed. Failing all of them at once
+ *   55 declarations bypassed an enforced scale the day this landed, and 59 after gh#324 turned on
+ *   three more axes — the four additions are `--menu-item-height`, `--steps-dot-process-ring-width`,
+ *   `--steps-marker-border-width` and `--branch-scope-picker-subset-border-width`, each a one-line
+ *   swap in a file that a different owner had open at the time. Failing all of them at once
  *   gets the guard switched off, so the baseline records them BY TOKEN NAME per file. A name not
  *   in the baseline fails, naming the file, line, token and value. A baselined name that is no
  *   longer a violation ALSO fails, telling you to re-baseline — that is what stops the number

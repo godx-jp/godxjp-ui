@@ -292,10 +292,14 @@
     box-shadow: var(--shadow-md), var(--shadow-glow);
   }
 
+  /* Reads --menu-icon-size, the same knob DropdownMenu's sub-trigger chevron already reads
+   * (`.ui-dropdown-menu-sub-trigger-icon`, below). The three menu surfaces share one row rhythm,
+   * so the literal `1rem` here meant setting --menu-icon-size resized the dropdown chevron and
+   * silently left these two behind. Same resolved value, one owner (gh#326). */
   .ui-context-menu-sub-trigger-icon,
   .ui-menubar-sub-trigger-icon {
-    width: 1rem;
-    height: 1rem;
+    width: var(--menu-icon-size);
+    height: var(--menu-icon-size);
     margin-inline-start: auto;
     opacity: 0.75;
   }
@@ -358,8 +362,8 @@
   }
 
   .ui-navigation-menu-trigger-icon {
-    width: 0.9rem;
-    height: 0.9rem;
+    width: var(--navigation-menu-trigger-icon-size);
+    height: var(--navigation-menu-trigger-icon-size);
     margin-inline-start: var(--space-2);
     opacity: 0.7;
   }

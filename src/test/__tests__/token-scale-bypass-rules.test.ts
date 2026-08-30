@@ -50,6 +50,38 @@ describe("axisOf — which axis is this token on", () => {
     expect(axisOf("--x-max-width")).toBe("width");
   });
 
+  // gh#324 split the two coherent axes out of `width` and `height` BY NAME, which only works
+  // because of the longest-on-a-tie rule above: `-border-width` and `-row-height` end exactly
+  // where the bare `-width` / `-height` they contain ends.
+  it("separates a painted line from a container measure", () => {
+    expect(axisOf("--control-border-width")).toBe("stroke");
+    expect(axisOf("--avatar-presence-ring-width")).toBe("stroke");
+    expect(axisOf("--table-flush-divider-width")).toBe("stroke");
+    expect(axisOf("--toggle-count-forced-outline-width")).toBe("stroke");
+    // …and leaves the measures alone.
+    expect(axisOf("--auth-shell-card-max-width")).toBe("width");
+    expect(axisOf("--app-setting-picker-timezone-width")).toBe("width");
+  });
+
+  // The false positive that made gh#324 drop `-rail-width` from the stroke patterns: one word
+  // meant both a 6px painted stripe and the 4rem icon sidebar COLUMN.
+  it("does not call the AppShell rail a stroke", () => {
+    expect(axisOf("--app-shell-rail-width")).toBe("width");
+  });
+
+  it("separates a band from a container height", () => {
+    expect(axisOf("--control-height-default")).toBe("band-height");
+    expect(axisOf("--table-row-height-compact")).toBe("band-height");
+    expect(axisOf("--menu-item-height")).toBe("band-height");
+    expect(axisOf("--org-switcher-trigger-height")).toBe("band-height");
+    expect(axisOf("--app-shell-bar-height")).toBe("band-height");
+    expect(axisOf("--input-file-button-height")).toBe("band-height");
+    // …and leaves the container measures alone.
+    expect(axisOf("--select-content-max-height")).toBe("height");
+    expect(axisOf("--chart-trend-plot-height-xs")).toBe("height");
+    expect(axisOf("--transfer-pane-min-height")).toBe("height");
+  });
+
   it("returns null for tokens that carry no geometry", () => {
     expect(axisOf("--card-background")).toBeNull();
     expect(axisOf("--badge-font-weight")).toBeNull();
@@ -192,5 +224,39 @@ describe("the axis table itself", () => {
     expect(ENFORCED_AXES).toEqual(
       expect.arrayContaining(["font-size", "padding", "gap", "radius"]),
     );
+  });
+
+  it("enforces the three axes gh#324 unlocked", () => {
+    // stroke and band-height got a scale; line-height was unlocked by RENAMING the one length
+    // that sat on an axis of unitless ratios. Both routes end in the same place — a gate.
+    expect(ENFORCED_AXES).toEqual(expect.arrayContaining(["stroke", "band-height", "line-height"]));
+  });
+
+  it("records a VERDICT, not a to-do, on the four axes that are not scales", () => {
+    // gh#324's finding: the loudest axis is not one axis. Leaving these as "waiting on a scale"
+    // invites someone to invent one and force a dialog's 32rem onto a grid with an auth card's
+    // 23.75rem. The reason has to survive in the table, so assert it is written there.
+    for (const id of ["width", "height", "size", "offset"]) {
+      const axis = AXES.find((entry: { id: string }) => entry.id === id)!;
+      expect(axis.enforced, `${id} must stay unenforced`).toBe(false);
+      expect(axis.scale, `${id} must name no scale`).toBeNull();
+    }
+  });
+
+  // The tier-2 route, which is what keeps the two new gates honest.
+  it("accepts a value derived from a step on the new axes", () => {
+    expect(isScaleBypass("var(--stroke-md)", "stroke")).toBe(false);
+    expect(isScaleBypass("calc(var(--stroke-md) + 1px)", "stroke")).toBe(false);
+    expect(isScaleBypass("2px", "stroke")).toBe(true);
+    expect(isScaleBypass("var(--band-height-md)", "band-height")).toBe(false);
+    // The control ladder IS on the band scale, so stepping off it is tier 2, not a bypass.
+    expect(
+      isScaleBypass("calc(var(--control-height) - calc(0.25rem * var(--scaling)))", "band-height"),
+    ).toBe(false);
+    expect(isScaleBypass("2rem", "band-height")).toBe(true);
+    // A LENGTH on the ratio axis is always a bypass — there is no step it could be.
+    expect(isScaleBypass("1rem", "line-height")).toBe(true);
+    expect(isScaleBypass("1.5", "line-height")).toBe(false);
+    expect(isScaleBypass("calc(1.25 / 0.875)", "line-height")).toBe(false);
   });
 });

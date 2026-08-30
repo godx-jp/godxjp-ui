@@ -90,7 +90,10 @@ describe("focus ring — single source", () => {
   // shipped default is on (WCAG 2.4.7), and width:0 is the documented switch.
   it("ships the ring ON by default and documents width:0 as the off switch", () => {
     const foundation = readFileSync(join(STYLES_DIR, "../tokens/foundation.css"), "utf8");
-    expect(foundation).toMatch(/--focus-ring-width:\s*2px/);
+    // gh#324: the ring's thickness is a member of the stroke scale rather than a parallel
+    // authority, so a theme retunes rings and borders together. --stroke-md IS 2px.
+    expect(foundation).toMatch(/--focus-ring-width:\s*var\(--stroke-md\)/);
+    expect(foundation).toMatch(/--stroke-md:\s*2px;/);
     expect(foundation).toMatch(/--focus-ring-opacity:\s*1/);
     expect(FOCUS_RING_CSS).toContain("--focus-ring-width: 0");
   });

@@ -25,7 +25,7 @@
   /* Ceiling on a single mark so a 3-point trend does not render slabs. */
   --chart-trend-bar-max-width: 1.5rem;
   /* Floor so a zero/absent value still reads as a plotted category rather than a hole. */
-  --chart-trend-bar-min-height: 2px;
+  --chart-trend-bar-min-height: var(--stroke-md);
   /* Muted mark fill — role-mirror knob, declared `initial` so the role default re-resolves
    * at the CALL SITE under `.dark` / `[data-tenant]` (docs/TOKENS.md · "Role-mirror knobs
    * MUST be `initial`"). Default = hsl(var(--muted-foreground) / 0.75), which clears the

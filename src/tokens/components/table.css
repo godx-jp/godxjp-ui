@@ -1,9 +1,9 @@
 /* Table component tokens: row height, cell padding. */
 
 :root {
-  --table-row-height-compact: 1.75rem;
-  --table-row-height-default: 2rem;
-  --table-row-height-comfortable: 2.75rem;
+  --table-row-height-compact: var(--band-height-sm);
+  --table-row-height-default: var(--band-height-md);
+  --table-row-height-comfortable: var(--band-height-xl);
   --table-row-height: calc(var(--table-row-height-default) * var(--scaling));
   --table-cell-padding-y: var(--space-2);
   --table-cell-space-x: var(--control-padding-x);
@@ -160,7 +160,15 @@
    * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading
    * state the same height as the loaded one. */
   --table-skeleton-check-size: 1rem;
-  --table-skeleton-line-height: 1rem;
+  /* The skeleton bar's BLOCK SIZE. `--table-skeleton-line-height` was a length on the
+   * line-height axis, whose scale is unitless ratios (gh#324) — a mis-named height, and the
+   * only raw value on that axis, which is what kept the axis ungated. Renamed rather than
+   * left, with the old name kept as a DEPRECATED ALIAS: it is a published token a consumer
+   * theme may already override, and styles/table-layout.css still reads the old name, so an
+   * override of either spelling keeps working. Prefer the new name; the alias may be removed
+   * in a future major. */
+  --table-skeleton-line-block-size: 1rem;
+  --table-skeleton-line-height: var(--table-skeleton-line-block-size);
   --table-skeleton-radius: var(--radius-sm);
 
   /* The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme
@@ -176,7 +184,7 @@
    * rule in `@layer components` can actually zero it; a utility would outrank it by layer.
    * Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }`
    * so a scoped [data-tenant]/.dark override of --border still reaches every row. */
-  --table-row-border-width: 1px;
+  --table-row-border-width: var(--stroke-hairline);
   /* Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside
    * `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three
    * edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind

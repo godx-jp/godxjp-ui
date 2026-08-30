@@ -40,8 +40,8 @@
   }
 
   [data-slot="badge-icon"] {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: var(--badge-icon-size);
+    height: var(--badge-icon-size);
     flex-shrink: 0;
   }
 }

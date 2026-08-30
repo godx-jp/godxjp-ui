@@ -1,6 +1,12 @@
 /* Data-display component tokens — small-by-design text knobs (rule #45/#46). */
 
 :root {
+  /* Accordion chevron and Carousel arrow. Both were bare 1rem literals in
+   * data-display-layout.css — glyphs with no tier-2 route, invisible to the icon ratchet because
+   * neither selector contains the word "icon". */
+  --accordion-chevron-size: var(--icon-size-md);
+  --carousel-arrow-icon-size: var(--icon-size-md);
+
   /* Outline-form ring gaps — a hugging ring would touch these marks
    * (styles/focus-ring.css). */
   --accordion-focus-ring-offset: 2px;
@@ -74,10 +80,10 @@
   --avatar-presence-size: 30%;
   --avatar-presence-min-size: var(--space-2);
   --avatar-presence-inset: 0;
-  --avatar-presence-ring-width: 2px;
-  --avatar-presence-stroke-width: 1.5px;
+  --avatar-presence-ring-width: var(--stroke-md);
+  --avatar-presence-stroke-width: var(--stroke-sm);
   --avatar-presence-bar-inline-size: 56%;
-  --avatar-presence-bar-block-size: 1.5px;
+  --avatar-presence-bar-block-size: var(--stroke-sm);
   --avatar-presence-ring-color: initial;
   --avatar-presence-online-color: initial;
   --avatar-presence-away-color: initial;
