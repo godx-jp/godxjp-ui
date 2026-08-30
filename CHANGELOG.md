@@ -46,10 +46,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   **TypeScript 7 is held back by `typescript-eslint`**, which does not support the 7.0 API
   (upstream: typescript-eslint#10940, targeting TS ≥ 7.1). `tsc --noEmit` passes clean on 7.0 for
   both `src` and `docs`, so the codebase is ready and only the lint toolchain is not.
-  **`@tanstack/react-table` 9 is a migration, not a bump** — `Table<T>` now takes two type
-  parameters, `ColumnDef.meta` moved to `ExtractColumnMeta`, and the feature-map rewrite drops
-  inference at 12 call sites in `data-table.tsx` (1,304 LOC, 112 tests). Held at 8.21 pending a
-  dedicated pass.
+  **`@tanstack/react-table` 8.21 → 9.2 is done, and it is a migration, not a bump** — see below.
+- **`@tanstack/react-table` 8.21 → 9.2 — migrated, with no change to DataTable's public API.**
+  v9 is a rewrite of the type layer: features are explicit (a table carries only the state, options
+  and row models it declares), every generic gained a `TFeatures` parameter, `useReactTable` became
+  `useTable`, the `get*RowModel()` helpers became `create*RowModel()` factories registered as slots
+  on the feature set, and render-time state reads moved from `table.getState()` to `table.state`.
+  DataTable now declares its feature set once (`dataTableFeatures()`) — which is also the first
+  honest inventory of what it supports; v8 only ever implied that list through which row-model
+  helpers happened to be passed in.
+
+  Two decisions are worth recording:
+
+  - **The row-model factories are now registered unconditionally.** v8 disabled a stage by
+    withholding its row model; v9 keys that off the `manual*` options, so `manualSorting` alone
+    makes `getSortedRowModel()` return the pre-sorted rows. The one case with no v9 option behind
+    it — a table with no pager, where v8 simply withheld the pagination row model — is expressed as
+    `manualPagination: manualPagination || !paginationEngaged`, i.e. leave the rows unsliced.
+  - **Consumers keep their own row types.** v9 constrains its row type to
+    `RowData = Record<string, any> | Array<any>`, and an `interface` has no index signature, so a
+    naive migration would break `DataTable<Order>` for every consumer whose row is an interface.
+    An internal `T & Record<string, unknown>` bridge satisfies the constraint while staying a
+    subtype of `T`, so `row.original`, `getRowId` and `onRowClick` still speak the consumer's type.
+    The exported `ColumnDef<T>` was always this repo's own `ColumnDefProp<T>`, never TanStack's, so
+    nothing in the public API moved. 112 DataTable tests pass unchanged.
+
+  Also gone: the global `declare module "@tanstack/react-table"` augmentation of `ColumnMeta`,
+  which used to add our `lean` key to **every** table in the consumer's app. v9's per-table
+  `columnMeta` slot scopes it to DataTable and keeps it parameterised by the row type.
+
 - **ESLint 10's `no-useless-assignment` found six dead initialisers**, each overwritten on every
   path: Rating's `next` (the switch's `default` returns, so the type also narrows to `number`),
   Dialog's `ok` (both the try and the catch assign), and `stopServer` / `captured` / `command` in
