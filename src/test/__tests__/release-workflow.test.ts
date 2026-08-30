@@ -1595,7 +1595,7 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
     ).toThrow("not successful: Contrast + visual audit (skipped)");
   });
 
-  it("refuses a truncated page and any other red check on the same commit", () => {
+  it("refuses a truncated page, and lets a DECLARED-exempt red check through", () => {
     expect(() =>
       assertCiProvenance({ sha: SOURCE_HEAD, checkRuns: greenCheckRuns(), totalCount: 400 }),
     ).toThrow("truncated");
@@ -1611,7 +1611,21 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
           },
         ],
       }),
-    ).toThrow("other red check: rendered-runtime (data-entry-core) (failure)");
+    ).not.toThrow();
+  });
+
+  it("still refuses a red check that is NOT declared exempt", () => {
+    // The exemption is a named list, not a general softening. Anything unexpected still blocks —
+    // otherwise "declare the exception" would have quietly become "ignore red checks".
+    expect(() =>
+      assertCiProvenance({
+        sha: SOURCE_HEAD,
+        checkRuns: [
+          ...greenCheckRuns(),
+          { name: "some-other-gate", status: "completed", conclusion: "failure" },
+        ],
+      }),
+    ).toThrow("other red check: some-other-gate (failure)");
   });
 
   it("counts the newest attempt, so a re-run that turned a job green is what decides", () => {

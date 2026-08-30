@@ -336,6 +336,15 @@ check:dist-tokens-resolve && check:mcp-lockstep` — the part of the publish tre
 
 ### Changed
 
+- **A release may now proceed past a check that is red for a DECLARED reason (gh#333).** The
+  provenance gate fail-closed on any red check on the commit, including ones outside its own
+  required list — so the five `rendered-runtime` shards, which are failing on their own harness
+  rather than on the library, blocked a release whose eight required checks were all green.
+  `RELEASE_BLOCK_EXEMPT` names them with the reason, the same shape as the token guard's
+  `scale-exempt:`: an exception has to be written down and defended, not achieved by quietly
+  deleting a name from the required list. `REQUIRED_CI_CHECK_RUNS` is unchanged, any red check
+  outside the exemption still blocks, and a test asserts both directions.
+
 - **TypeScript 7 now judges the code, side by side with the 6 that `typescript-eslint` needs
   (gh#322).** The block was real but narrower than the issue recorded: `typescript-eslint@8.68.0`
   does not merely declare a conservative peer range, it **hard-throws** on TS >= 7 with a pointer
