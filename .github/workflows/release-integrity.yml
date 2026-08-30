@@ -1,10 +1,17 @@
 name: CI · release contract
 
-# Guards the @godxjp/ui ↔ @godxjp/ui-mcp release contract on EVERY change (issue #140), so a
-# version / compatibility drift or a stale catalog fails a PR — long before the manual publish.
-# Deterministic + fast: no Chromium, no publish, no secrets.
+# The @godxjp/ui <-> @godxjp/ui-mcp release contract (issue #140): the two packages may never
+# ship at drifting versions, and the plan that publishes them must be executable.
+#
+# WHAT THIS NO LONGER DOES, AND WHY. It used to also run `pnpm build`,
+# `check:packed-public-contract`, `check:mcp-lockstep`, `check:mcp-sync`, `check:mcp-orphans` and
+# `check:mcp-pattern-imports` — all six of which `ci.yml`'s `verify:ci:static` already runs on the
+# same commit. On a shared self-hosted pool that was the same work billed twice on every merge.
+# What is left is what only this workflow does: build and test the MCP package, and prove the
+# release command plan is executable against the post-bump manifests.
+#
+# Trigger matches CI's: merges to `main` only. The release itself fires on a tag.
 on:
-  pull_request:
   push:
     branches: [main]
 
@@ -34,28 +41,6 @@ jobs:
       # Build the exact public artifact first, then prove the packed subpath barrels contain the
       # runtime and declaration exports consumed by downstream applications. Packing only manifests
       # can pass while dist is absent or stale.
-      - name: Build UI and verify packed public contract
-        run: |
-          pnpm build
-          pnpm check:packed-public-contract
-
-      # 1) Versions + compatibility metadata are mutually consistent (the core lockstep invariant).
-      - name: Version/compatibility lockstep
-        run: pnpm check:mcp-lockstep
-
-      # 2) The catalog only names real library exports, and every export is catalogued.
-      - name: Catalog ↔ library sync
-        run: |
-          pnpm check:mcp-sync
-          pnpm check:mcp-orphans
-
-      # 2b) Every copy-paste MCP pattern imports only REAL package exports, and no catalog/doc
-      #     names a removed component (Stack/Inline) or an undefined library CSS class (issue #156).
-      - name: Pattern imports resolve + no removed API in catalog/docs
-        run: pnpm check:mcp-pattern-imports
-
-      # 3) The MCP builds and its own contract/resource/compatibility suite is green — this is what
-      #    proves serverInfo.version == package version and the compatibility tool/resource behave.
       - name: Build + test MCP
         run: pnpm --dir mcp build && pnpm --dir mcp test
 

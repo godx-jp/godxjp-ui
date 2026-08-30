@@ -221,6 +221,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **CI was running the same work several times per merge; the pipeline is now merge-then-tag.**
+  Four separate duplications, each measured rather than guessed:
+  `ci.yml` and `ci-browser.yml` triggered on **both** `pull_request` and `push: [main]`, so
+  merging a PR paid for every job twice on the same commit. `release-integrity.yml` re-ran six
+  gates — `pnpm build`, `check:packed-public-contract`, `check:mcp-lockstep`, `check:mcp-sync`,
+  `check:mcp-orphans`, `check:mcp-pattern-imports` — that `verify:ci:static` had already run on
+  the same commit; it now keeps only what nothing else does (build + test the MCP package, and
+  prove the release command plan is executable). Inside `ci.yml`, `contracts` reinstalled and
+  re-ran `preview:build` that `static` had just produced, and `coverage` paid a second install for
+  one report-only artifact; both fold into `static`. And `preview-pages.yml` rebuilt the whole
+  preview on every merge to publish a site nobody had asked for yet.
+  The pipeline is now what it should always have been: **merge to `main` runs CI; creating a `v*`
+  tag runs release and deploy.**
+- **`CI · browser`'s five rendered-runtime shards all died on `preview server did not start
+within 60s`.** They run in parallel on one self-hosted host, each cold-starting its own Vite dev
+  server beside a full CI job. The three non-shard jobs passed, which is what identified it as
+  contention rather than code. The budget is now 180s, tunable with `PREVIEW_START_TIMEOUT_MS`,
+  and the message reports how long it actually waited instead of a hard-coded "60s".
+
 - **CI and CD are separate workflows, and now say so in their names.** They always were separate
   files; what made the split look absent was a comment in `ci.yml` pointing at a `cd.yml` that
   does not exist. The Actions tab now reads `CI · code`, `CI · browser`, `CI · release contract`,

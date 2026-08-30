@@ -1,8 +1,13 @@
 name: CD · deploy preview to Pages
 
+# TRIGGER — a tag. Deployment is part of a release, not of every merge.
+#
+# It used to fire on every push to `main`, which meant a full `preview:build` per merge on a
+# shared self-hosted pool, publishing a Pages site nobody had asked for yet. The pipeline is now:
+# merge to `main` runs CI; creating a `v*` tag runs release and deploy.
 on:
   push:
-    branches: [main]
+    tags: ["v*"]
   workflow_dispatch:
 
 permissions:

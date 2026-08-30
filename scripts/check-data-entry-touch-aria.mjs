@@ -51,7 +51,10 @@ server.stderr?.on("data", (chunk) => {
   serverStderr += String(chunk);
 });
 let serverUp = false;
-for (let attempt = 0; attempt < 600; attempt += 1) {
+// See check-data-entry-frame-runtime.mjs for why this is 180s and env-tunable: five
+// rendered-runtime shards cold-start their own Vite in parallel on one self-hosted host.
+const PREVIEW_START_TIMEOUT_MS = Number(process.env.PREVIEW_START_TIMEOUT_MS ?? 180_000);
+for (let attempt = 0; attempt < Math.ceil(PREVIEW_START_TIMEOUT_MS / 100); attempt += 1) {
   try {
     if ((await fetch(base)).ok) {
       serverUp = true;
@@ -66,7 +69,8 @@ for (let attempt = 0; attempt < 600; attempt += 1) {
 // server, reporting a confusing per-story failure instead of the real cause.
 if (!serverUp) {
   throw new Error(
-    "preview server did not start within 60s" + (serverStderr ? `\n${serverStderr}` : ""),
+    `preview server did not start within ${Math.round(PREVIEW_START_TIMEOUT_MS / 1000)}s` +
+      (serverStderr ? `\n${serverStderr}` : ""),
   );
 }
 let browser;

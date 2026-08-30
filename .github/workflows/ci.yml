@@ -25,8 +25,12 @@ name: CI · code
 # suite is split across shards that run at the same time. The suite itself was also the
 # larger problem: it ran with `fileParallelism: false`, one file at a time — see
 # vitest.config.ts for the profile and the measurement.
+# TRIGGER — merge to `main`, and nothing else.
+#
+# It used to be `pull_request` AND `push: [main]`. A PR merge fired both, so every merge paid for
+# the same work twice on a shared self-hosted pool. `pull_request` is gone; the branch that lands
+# on main is the branch CI judges.
 on:
-  pull_request:
   push:
     branches: [main]
 
@@ -57,6 +61,24 @@ jobs:
       - name: verify:ci:static (every browser-free publish gate)
         run: pnpm verify:ci:static
 
+      - name: Static frame contracts
+        run: pnpm check:frame-contracts
+
+      # Report-only: it prints the contract inventory and never fails the build. It runs here
+      # rather than in a job of its own because a whole extra install + checkout to produce one
+      # report is not worth a runner slot on a shared pool.
+      - name: Frame coverage (report-only)
+        run: pnpm check:frame-coverage
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: frame-coverage
+          path: |
+            audit-evidence/frame-coverage/coverage.json
+            docs/FRAME-COVERAGE-REPORT.md
+          if-no-files-found: ignore
+
+
   test:
     name: Tests (shard ${{ matrix.shard }}/4)
     runs-on: [self-hosted, swarm-pool]
@@ -83,53 +105,8 @@ jobs:
       # build and every gate that reads the shipped artifact.
       - run: pnpm test -- --shard=${{ matrix.shard }}/4
 
-  # NOTE: no lockstep job here on purpose — release-integrity.yml already owns the
-  # @godxjp/ui ↔ @godxjp/ui-mcp release contract (and does it far more thoroughly),
-  # runs browser-free on ubuntu-latest, and is green. Duplicating it would just double
-  # the runtime and give two places to keep in sync.
-
-  contracts:
-    name: Static frame contracts
-    runs-on: [self-hosted, swarm-pool]
-    steps:
-      - uses: actions/checkout@v6
-      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
-      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: pnpm/action-setup@v6.0.9
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm preview:build
-      - run: pnpm check:frame-contracts
-
-  coverage:
-    name: Frame coverage (contract inventory)
-    runs-on: [self-hosted, swarm-pool]
-    steps:
-      - uses: actions/checkout@v6
-      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
-      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: pnpm/action-setup@v6.0.9
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Coverage report (report-only)
-        run: pnpm check:frame-coverage
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: frame-coverage
-          path: |
-            audit-evidence/frame-coverage/coverage.json
-            docs/FRAME-COVERAGE-REPORT.md
-          if-no-files-found: ignore
+  # The @godxjp/ui <-> @godxjp/ui-mcp lockstep gates (`check:mcp-lockstep`, `check:mcp-sync`,
+  # `check:mcp-orphans`, `check:mcp-pattern-imports`, `check:packed-public-contract`) run HERE,
+  # inside `verify:ci:static`. `release-integrity.yml` used to run all five again on the same
+  # commit; it now keeps only what nothing else does — building and testing the MCP package, and
+  # proving the release command plan is executable against the post-bump manifests.

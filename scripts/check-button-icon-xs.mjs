@@ -15,8 +15,16 @@ server.stderr?.on("data", (chunk) => {
   serverStderr += String(chunk);
 });
 
+// How long to wait for Vite to come up. 60s is plenty for one server on an idle machine and far
+// too little for five: the rendered-runtime shards run in PARALLEL on a single self-hosted host,
+// each cold-starting its own Vite dev server while a full CI job runs beside them, and all five
+// died on this line at once. The budget is env-tunable so a busier pool can raise it without a
+// code change, and the error now says how long it actually waited.
+const PREVIEW_START_TIMEOUT_MS = Number(process.env.PREVIEW_START_TIMEOUT_MS ?? 180_000);
+
 async function waitForServer() {
-  for (let attempt = 0; attempt < 600; attempt += 1) {
+  const attempts = Math.ceil(PREVIEW_START_TIMEOUT_MS / 100);
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
     try {
       if ((await fetch(base)).ok) return;
     } catch {
@@ -25,7 +33,7 @@ async function waitForServer() {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   throw new Error(
-    "button icon-xs preview server did not start within 60s" +
+    `button icon-xs preview server did not start within ${Math.round(PREVIEW_START_TIMEOUT_MS / 1000)}s` +
       (serverStderr ? `\n${serverStderr}` : ""),
   );
 }

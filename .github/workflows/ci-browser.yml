@@ -26,12 +26,14 @@ name: CI · browser
 #
 # Per-job preview ports stay distinct — self-hosted jobs can share a host, so two jobs binding
 # 6008 at once would collide.
+# TRIGGER — merge to `main`, and nothing else.
+#
+# It used to be `pull_request` AND `push: [main]`. A PR merge fired both, so every merge paid for
+# the same work twice on a shared self-hosted pool. `pull_request` is gone; the branch that lands
+# on main is the branch CI judges.
 on:
-  pull_request:
   push:
     branches: [main]
-  schedule:
-    - cron: "0 3 * * *"
 
 concurrency:
   group: ci-browser-${{ github.ref }}
