@@ -614,8 +614,17 @@ within 60s`.** They run in parallel on one self-hosted host, each cold-starting 
 
 ### Fixed
 
-- **The rendered-runtime gates were serving a DEV server on a machine that had never compiled the
-  app.** Four gates spawned `vite --config preview/vite.config.ts` and polled for it; on a cold
+- **The rendered-runtime gates stood their own preview server up, and none of the ways they tried
+  worked on CI.** They spawned `vite --config …`, the DEV server, and polled for it; on a cold
+  self-hosted runner, dependency optimisation plus on-demand compilation is not marginally slow,
+  it is slower than any poll worth writing — which is why raising the budget 60s -> 180s changed
+  nothing. Switching them to `vite preview` over a built output did not fix it either. The three
+  browser gates that were always green (`frame-axe`, `frame-geometry`, `contrast`) had the answer
+  the whole time: they call `frame-harness.ensurePreviewServer`. Rather than keep guessing which
+  of the small differences mattered — a detached process group, an early reachability check, an
+  explicit cwd — all four gates now call that function. One way to stand a preview up, and it is
+  the one with a green record on this pool.
+  Superseded detail, kept because it was the wrong turn worth remembering: Four gates spawned `vite --config preview/vite.config.ts` and polled for it; on a cold
   self-hosted runner, dependency optimisation plus on-demand compilation of the whole app is not
   marginally slow, it is structurally slower than any poll worth writing. That is why raising the
   budget from 60s to 180s changed nothing — the timeout was never the suspect, and the three

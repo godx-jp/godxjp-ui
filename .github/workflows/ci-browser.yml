@@ -208,9 +208,9 @@ jobs:
             echo "apt-get not present — installing the browser only; host must supply Chromium's shared libraries."
             pnpm exec playwright install chromium
           fi
-      # The gates below serve a BUILT preview (`vite preview`), not a dev server — a dev server
-      # never came up in time on a cold runner. So the build has to happen here.
-      - run: pnpm preview:build
+      # No `preview:build` step: `frame-harness.ensurePreviewServer`, which these gates now use,
+      # builds and serves the preview itself — the same way frame-axe / frame-geometry / contrast
+      # have always done it. Building here too would just build twice.
       - run: ${{ matrix.command }}
         env:
           DATA_ENTRY_STORIES: ${{ matrix.stories }}
