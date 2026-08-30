@@ -336,6 +336,25 @@ check:dist-tokens-resolve && check:mcp-lockstep` — the part of the publish tre
 
 ### Changed
 
+- **TypeScript 7 now judges the code, side by side with the 6 that `typescript-eslint` needs
+  (gh#322).** The block was real but narrower than the issue recorded: `typescript-eslint@8.68.0`
+  does not merely declare a conservative peer range, it **hard-throws** on TS >= 7 with a pointer
+  to Microsoft's own side-by-side guidance. What made side-by-side viable here is a fact nobody
+  had checked: this repo runs `tseslint.configs.recommended`, the NON-type-checked preset, with no
+  `project` / `projectService` anywhere — so typescript-eslint is a syntactic parser here and
+  touches none of the checker API the peer range exists to protect. The warning written into #322
+  ("never force it — the type-aware rules will degrade silently") was sound in general and did not
+  apply to this configuration.
+  `typescript` stays 6.0.3, which is what typescript-eslint and tsup's `.d.ts` build resolve;
+  TS 7.0.2 is installed as `typescript-7` and runs `typecheck` and `typecheck:docs`. Both
+  compilers therefore run on every CI pass — 7 checks the source, 6 builds the shipped types — so
+  "the codebase is ready for 7" stops being a one-off measurement and becomes a standing gate.
+  `typecheck:ts6` remains for checking the version consumers actually resolve.
+  Two attempts that did NOT work, recorded so nobody repeats them: raising `typescript` to 7
+  outright breaks `pnpm lint` at load time, and pnpm `overrides` of the form
+  `"typescript-eslint>typescript"` do not help, because `typescript` is a PEER of those packages
+  and peers resolve from the importer, not through an override.
+
 - **All 30 icon/glyph size declarations now read the scale (gh#326).** `--control-icon-size`,
   `--stat-card-icon-size`, `--upload-dropzone-icon-size`, `--sidebar-nav-icon-size` … every one.
   **No resolved value moved**: all 37 icon tokens verified identical at default, compact (.92),

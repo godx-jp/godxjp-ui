@@ -299,8 +299,9 @@
     }
   },
   "scripts": {
-    "typecheck": "tsc --noEmit -p tsconfig.json",
-    "typecheck:docs": "tsc --noEmit -p tsconfig.docs.json",
+    "typecheck": "node node_modules/typescript-7/bin/tsc --noEmit -p tsconfig.json",
+    "typecheck:ts6": "tsc --noEmit -p tsconfig.json",
+    "typecheck:docs": "node node_modules/typescript-7/bin/tsc --noEmit -p tsconfig.docs.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --check .",
@@ -497,6 +498,7 @@
     "tailwindcss": "^4.3.3",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",
+    "typescript-7": "npm:typescript@7.0.2",
     "typescript-eslint": "^8.68.0",
     "vite": "^8.2.2",
     "vitest": "^4.1.11",
