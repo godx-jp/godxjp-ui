@@ -629,6 +629,22 @@ within 60s`.** They run in parallel on one self-hosted host, each cold-starting 
 
 ### Fixed
 
+- **Two docs pages fetched their images from the public internet, and that is what had been
+  reported as "infrastructure errors" for weeks (gh#333).** `docs/data-display/avatar.tsx` and
+  `docs/data-display/card/index.tsx` loaded portraits from `picsum.photos`. The browser gates
+  navigate with `waitUntil: "networkidle"`, so a request that never settles means the page never
+  finishes loading and `page.goto` dies at 30s — both frames failed at EVERY viewport in both the
+  axe and geometry sweeps. The tell was that the failures were not scattered: load scatters, and
+  these hit the same two frames every time, at every width, in both gates. That is a property of
+  the page, not of the machine. Measured after inlining them as `data:` URIs: card-index
+  30s timeout -> 1.9s, avatar -> 1.0s, and zero requests leave the origin.
+  `check:no-external-assets` now fails a docs page that would fetch across the network at render
+  time. It matches only what the RENDERER blocks on — `src`, `poster`, CSS `url()`, `<link href>`
+  — so an `<a href>` to `billing.example.com` is left alone, and Google Fonts on the three brand
+  showcases is declared with its reason: the showcase exists to prove a consumer's design can be
+  reproduced from tokens, and that design IS its typeface, while the request degrades fast instead
+  of hanging.
+
 - **The rendered-runtime gates stood their own preview server up, and none of the ways they tried
   worked on CI.** They spawned `vite --config …`, the DEV server, and polled for it; on a cold
   self-hosted runner, dependency optimisation plus on-demand compilation is not marginally slow,

@@ -13,6 +13,24 @@ import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Building2, KeyRound, ShieldCheck, Sparkles } from "lucide-react";
 
+/* A placeholder portrait, drawn inline.
+ *
+ * These used to be `https://picsum.photos/...`. A docs page that fetches a THIRD-PARTY image is a
+ * docs page that cannot render without the public internet — and on CI it does not merely look
+ * wrong, it hangs: the request never settles, `networkidle` never fires, and `page.goto` times out
+ * at 30s. That is what made `data-display-avatar` and `data-display-card-index` fail at every
+ * viewport in both the axe and geometry sweeps (gh#333), long after the preview server itself was
+ * fixed. An inline SVG is deterministic, offline, and costs no request at all.
+ */
+const portrait = (hue: number, size = 96) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">` +
+      `<rect width="${size}" height="${size}" fill="hsl(${hue} 42% 62%)"/>` +
+      `<circle cx="${size / 2}" cy="${size * 0.42}" r="${size * 0.2}" fill="hsl(${hue} 42% 82%)"/>` +
+      `<path d="M${size * 0.22} ${size} a${size * 0.28} ${size * 0.34} 0 0 1 ${size * 0.56} 0 z" fill="hsl(${hue} 42% 82%)"/>` +
+      `</svg>`,
+  )}`;
+
 /**
  * Avatar — identity image with a readable fallback (users, teams, entities).
  * Always compose AvatarImage + AvatarFallback so broken/missing images degrade
@@ -33,11 +51,11 @@ export default function Demo() {
           <CardContent>
             <Flex direction="row" wrap align="center" gap="md">
               <Avatar>
-                <AvatarImage src="https://picsum.photos/seed/godxjp-a/96/96" alt="担当者" />
+                <AvatarImage src={portrait(212)} alt="担当者" />
                 <AvatarFallback>NA</AvatarFallback>
               </Avatar>
               <Avatar>
-                <AvatarImage src="https://picsum.photos/seed/godxjp-b/96/96" alt="担当者" />
+                <AvatarImage src={portrait(340)} alt="担当者" />
                 <AvatarFallback>TK</AvatarFallback>
               </Avatar>
               <Avatar>
@@ -99,7 +117,7 @@ export default function Demo() {
               </Flex>
               <Flex direction="row" wrap align="center" gap="md">
                 <Avatar shape="square">
-                  <AvatarImage src="https://picsum.photos/seed/godxjp-org/96/96" alt="組織ロゴ" />
+                  <AvatarImage src={portrait(224)} alt="組織ロゴ" />
                   <AvatarFallback>山</AvatarFallback>
                 </Avatar>
                 <Avatar shape="square">
@@ -192,7 +210,7 @@ export default function Demo() {
             <ListRow
               leading={
                 <Avatar presence="online">
-                  <AvatarImage src="https://picsum.photos/seed/godxjp-a/96/96" alt="" />
+                  <AvatarImage src={portrait(212)} alt="" />
                   <AvatarFallback>田</AvatarFallback>
                 </Avatar>
               }
@@ -202,7 +220,7 @@ export default function Demo() {
             <ListRow
               leading={
                 <Avatar presence="busy">
-                  <AvatarImage src="https://picsum.photos/seed/godxjp-b/96/96" alt="" />
+                  <AvatarImage src={portrait(340)} alt="" />
                   <AvatarFallback>佐</AvatarFallback>
                 </Avatar>
               }
@@ -255,19 +273,19 @@ export default function Demo() {
             <Flex direction="col" gap="md">
               <Flex direction="row" wrap align="center" gap="md">
                 <Avatar presence="online">
-                  <AvatarImage src="https://picsum.photos/seed/godxjp-c/96/96" alt="オンライン" />
+                  <AvatarImage src={portrait(152)} alt="オンライン" />
                   <AvatarFallback>在</AvatarFallback>
                 </Avatar>
                 <Avatar presence="away">
-                  <AvatarImage src="https://picsum.photos/seed/godxjp-d/96/96" alt="離席中" />
+                  <AvatarImage src={portrait(41)} alt="離席中" />
                   <AvatarFallback>離</AvatarFallback>
                 </Avatar>
                 <Avatar presence="busy">
-                  <AvatarImage src="https://picsum.photos/seed/godxjp-e/96/96" alt="取り込み中" />
+                  <AvatarImage src={portrait(12)} alt="取り込み中" />
                   <AvatarFallback>取</AvatarFallback>
                 </Avatar>
                 <Avatar presence="offline">
-                  <AvatarImage src="https://picsum.photos/seed/godxjp-f/96/96" alt="オフライン" />
+                  <AvatarImage src={portrait(264)} alt="オフライン" />
                   <AvatarFallback>離</AvatarFallback>
                 </Avatar>
               </Flex>

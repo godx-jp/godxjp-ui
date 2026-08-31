@@ -256,7 +256,7 @@ export default function Demo() {
               <CardCover>
                 <AspectRatio ratio={16 / 9}>
                   <img
-                    src="https://picsum.photos/seed/godxjp-card/480/270"
+                    src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22480%22%20height%3D%22270%22%20viewBox%3D%220%200%20480%20270%22%3E%3Crect%20width%3D%22480%22%20height%3D%22270%22%20fill%3D%22hsl%28208%2038%25%2066%25%29%22%2F%3E%3Ccircle%20cx%3D%22355%22%20cy%3D%2281%22%20r%3D%2238%22%20fill%3D%22hsl%28208%2038%25%2084%25%29%22%2F%3E%3Cpath%20d%3D%22M0%20270%20L163%20113%20L288%20270%20Z%22%20fill%3D%22hsl%28208%2038%25%2050%25%29%22%2F%3E%3Cpath%20d%3D%22M192%20270%20L346%20151%20L480%20270%20Z%22%20fill%3D%22hsl%28208%2038%25%2058%25%29%22%2F%3E%3C%2Fsvg%3E"
                     alt="オフィスビルの外観"
                     className="h-full w-full object-cover"
                   />
