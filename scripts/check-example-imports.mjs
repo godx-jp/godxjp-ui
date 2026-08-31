@@ -27,6 +27,22 @@ function resolvesToComponent(resolved) {
   return existsSync(`${resolved}.tsx`) || existsSync(path.join(resolved, "index.tsx"));
 }
 
+/**
+ * Does a relative specifier resolve to a committed STATIC ASSET?
+ *
+ * An image is not the `./_kit` anti-pattern this guard exists to stop. That rule is about local
+ * COMPONENT modules, which fork a consumer's copy away from the real API; an <img src> is a value,
+ * like the `./_data` modules already allowed. What matters is that the file is COMMITTED and
+ * resolved by the bundler: the docs pages used to point at picsum.photos, and a third-party image
+ * that never settles hung `networkidle` until `page.goto` timed out at 30s in CI (gh#333). An
+ * absolute "/assets/…" would be equally wrong for a different reason — it 404s wherever the site
+ * is served from a sub-path. Import it, and the URL gets rewritten against the base.
+ */
+const ASSET_EXTENSIONS = /\.(?:svg|png|jpe?g|webp|avif|gif|woff2?)$/;
+function resolvesToAsset(resolved) {
+  return ASSET_EXTENSIONS.test(resolved) && existsSync(resolved);
+}
+
 /** Does a relative specifier resolve to a TS (data/fixture) module? */
 function resolvesToData(resolved) {
   return existsSync(`${resolved}.ts`) || existsSync(path.join(resolved, "index.ts"));
@@ -54,6 +70,10 @@ function classifySpecifier(specifier, filePath) {
       };
     }
     if (resolvesToData(resolved)) return { ok: true };
+    if (resolvesToAsset(resolved)) return { ok: true };
+    if (ASSET_EXTENSIONS.test(resolved)) {
+      return { ok: false, reason: "asset import does not resolve to a committed file" };
+    }
     return { ok: false, reason: "unresolved relative import" };
   }
 

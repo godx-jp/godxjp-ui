@@ -13,23 +13,25 @@ import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Building2, KeyRound, ShieldCheck, Sparkles } from "lucide-react";
 
-/* A placeholder portrait, drawn inline.
+import portraitAmber from "../assets/portrait-amber.svg";
+import portraitClay from "../assets/portrait-clay.svg";
+import portraitIndigo from "../assets/portrait-indigo.svg";
+import portraitIris from "../assets/portrait-iris.svg";
+import portraitMoss from "../assets/portrait-moss.svg";
+import portraitPlum from "../assets/portrait-plum.svg";
+import portraitSlate from "../assets/portrait-slate.svg";
+
+/* The portraits are committed SVG files under docs/assets, imported so the bundler rewrites each
+ * URL against PREVIEW_BASE — an absolute "/assets/…" would 404 wherever the site is served from a
+ * sub-path.
  *
- * These used to be `https://picsum.photos/...`. A docs page that fetches a THIRD-PARTY image is a
- * docs page that cannot render without the public internet — and on CI it does not merely look
- * wrong, it hangs: the request never settles, `networkidle` never fires, and `page.goto` times out
- * at 30s. That is what made `data-display-avatar` and `data-display-card-index` fail at every
- * viewport in both the axe and geometry sweeps (gh#333), long after the preview server itself was
- * fixed. An inline SVG is deterministic, offline, and costs no request at all.
+ * They used to be `https://picsum.photos/...`. A docs page that fetches a THIRD-PARTY image cannot
+ * render without the public internet, and on CI it does not merely look wrong — it hangs: the
+ * request never settles, `networkidle` never fires, and `page.goto` times out at 30s. That is what
+ * failed `data-display-avatar` and `data-display-card-index` at every viewport in both the axe and
+ * geometry sweeps (gh#333), long after the preview server itself was fixed. Committed files cost
+ * no request that can hang and no service that can disappear.
  */
-const portrait = (hue: number, size = 96) =>
-  `data:image/svg+xml,${encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">` +
-      `<rect width="${size}" height="${size}" fill="hsl(${hue} 42% 62%)"/>` +
-      `<circle cx="${size / 2}" cy="${size * 0.42}" r="${size * 0.2}" fill="hsl(${hue} 42% 82%)"/>` +
-      `<path d="M${size * 0.22} ${size} a${size * 0.28} ${size * 0.34} 0 0 1 ${size * 0.56} 0 z" fill="hsl(${hue} 42% 82%)"/>` +
-      `</svg>`,
-  )}`;
 
 /**
  * Avatar — identity image with a readable fallback (users, teams, entities).
@@ -51,11 +53,11 @@ export default function Demo() {
           <CardContent>
             <Flex direction="row" wrap align="center" gap="md">
               <Avatar>
-                <AvatarImage src={portrait(212)} alt="担当者" />
+                <AvatarImage src={portraitSlate} alt="担当者" />
                 <AvatarFallback>NA</AvatarFallback>
               </Avatar>
               <Avatar>
-                <AvatarImage src={portrait(340)} alt="担当者" />
+                <AvatarImage src={portraitPlum} alt="担当者" />
                 <AvatarFallback>TK</AvatarFallback>
               </Avatar>
               <Avatar>
@@ -117,7 +119,7 @@ export default function Demo() {
               </Flex>
               <Flex direction="row" wrap align="center" gap="md">
                 <Avatar shape="square">
-                  <AvatarImage src={portrait(224)} alt="組織ロゴ" />
+                  <AvatarImage src={portraitIndigo} alt="組織ロゴ" />
                   <AvatarFallback>山</AvatarFallback>
                 </Avatar>
                 <Avatar shape="square">
@@ -210,7 +212,7 @@ export default function Demo() {
             <ListRow
               leading={
                 <Avatar presence="online">
-                  <AvatarImage src={portrait(212)} alt="" />
+                  <AvatarImage src={portraitSlate} alt="" />
                   <AvatarFallback>田</AvatarFallback>
                 </Avatar>
               }
@@ -220,7 +222,7 @@ export default function Demo() {
             <ListRow
               leading={
                 <Avatar presence="busy">
-                  <AvatarImage src={portrait(340)} alt="" />
+                  <AvatarImage src={portraitPlum} alt="" />
                   <AvatarFallback>佐</AvatarFallback>
                 </Avatar>
               }
@@ -273,19 +275,19 @@ export default function Demo() {
             <Flex direction="col" gap="md">
               <Flex direction="row" wrap align="center" gap="md">
                 <Avatar presence="online">
-                  <AvatarImage src={portrait(152)} alt="オンライン" />
+                  <AvatarImage src={portraitMoss} alt="オンライン" />
                   <AvatarFallback>在</AvatarFallback>
                 </Avatar>
                 <Avatar presence="away">
-                  <AvatarImage src={portrait(41)} alt="離席中" />
+                  <AvatarImage src={portraitAmber} alt="離席中" />
                   <AvatarFallback>離</AvatarFallback>
                 </Avatar>
                 <Avatar presence="busy">
-                  <AvatarImage src={portrait(12)} alt="取り込み中" />
+                  <AvatarImage src={portraitClay} alt="取り込み中" />
                   <AvatarFallback>取</AvatarFallback>
                 </Avatar>
                 <Avatar presence="offline">
-                  <AvatarImage src={portrait(264)} alt="オフライン" />
+                  <AvatarImage src={portraitIris} alt="オフライン" />
                   <AvatarFallback>離</AvatarFallback>
                 </Avatar>
               </Flex>

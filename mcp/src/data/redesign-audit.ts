@@ -110,7 +110,7 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
   {
     category: "color-surface",
     symptom: "Empty flat sections with no visual depth.",
-    fix: "Add subtle background imagery at low opacity (`/picsum.photos/seed/{name}/1920/1080`) OR ambient gradient at 0.02-0.05 opacity. Empty flat = unfinished.",
+    fix: "Add depth with an ambient gradient at 0.02-0.05 opacity, or background imagery you COMMIT to the repo. Never a hotlinked placeholder service: a third-party image that never settles blocks `networkidle`, which times out a page load outright — it cost this repo two docs pages failing every browser gate (gh#333). Empty flat = unfinished.",
   },
 
   // ── layout ─────────────────────────────────────────────────────
