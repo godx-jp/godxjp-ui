@@ -1595,10 +1595,18 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
     ).toThrow("not successful: Contrast + visual audit (skipped)");
   });
 
-  it("refuses a truncated page, and lets a DECLARED-exempt red check through", () => {
+  it("refuses a truncated page", () => {
     expect(() =>
       assertCiProvenance({ sha: SOURCE_HEAD, checkRuns: greenCheckRuns(), totalCount: 400 }),
     ).toThrow("truncated");
+  });
+
+  it("has no exemptions left — the browser shards block a release like everything else", () => {
+    // RELEASE_BLOCK_EXEMPT briefly held /^rendered-runtime \(/ while those shards were red on what
+    // was believed to be their own harness (gh#333). The real cause was two docs pages fetching
+    // images from picsum.photos, the shards went green, and the entry came out. This asserts the
+    // debt was actually PAID rather than left behind as a permanent softening: the very name that
+    // was once waved through must now block.
     expect(() =>
       assertCiProvenance({
         sha: SOURCE_HEAD,
@@ -1611,7 +1619,7 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
           },
         ],
       }),
-    ).not.toThrow();
+    ).toThrow("rendered-runtime (data-entry-core) (failure)");
   });
 
   it("still refuses a red check that is NOT declared exempt", () => {

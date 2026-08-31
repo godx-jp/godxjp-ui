@@ -374,18 +374,19 @@ export function assertCiProvenance({ sha, checkRuns, totalCount }) {
   /**
    * Check runs that may be red WITHOUT blocking a release, each with the reason it is exempt.
    *
-   * This exists so a known-broken gate is DECLARED rather than quietly dropped from the required
-   * list — the same shape as the `scale-exempt:` marker the token guard honours. An exemption here
-   * is a claim someone has to defend in review; deleting a name from REQUIRED_CI_CHECK_RUNS would
-   * hide the same decision.
+   * EMPTY, and it should stay that way. It exists so that a known-broken gate is DECLARED rather
+   * than quietly dropped from the required list — the same shape as the `scale-exempt:` marker the
+   * token guard honours. An exemption is a claim someone has to defend in review; deleting a name
+   * from REQUIRED_CI_CHECK_RUNS would hide the identical decision with nothing to review.
    *
-   * `rendered-runtime (…)` — the five browser shards are failing on their own harness, not on the
-   * library: every one of them passes locally when run serially on an unloaded machine, and the
-   * failure text is "preview server did not come up", i.e. a server that never started, never an
-   * assertion about the UI. Tracked in gh#333; remove this entry the moment the shards
-   * are green, and do not add to this list to make a release pass.
+   * It briefly held `rendered-runtime (…)` while the five browser shards were red (gh#333). Being
+   * forced to write the justification down is what kept the search going: the claim was "the
+   * harness, not the library", and it did not survive contact with the real cause — two docs pages
+   * fetching images from picsum.photos, which hung `networkidle` until `page.goto` timed out. The
+   * shards went green and the entry came out the same day. That is the intended lifecycle: an
+   * exemption is a debt with an owner and a tracking issue, never a setting to make a release pass.
    */
-  const RELEASE_BLOCK_EXEMPT = [/^rendered-runtime \(/];
+  const RELEASE_BLOCK_EXEMPT = [];
 
   const collateral = [...latestByName.values()]
     .filter(
