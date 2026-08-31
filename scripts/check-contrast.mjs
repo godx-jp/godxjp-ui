@@ -106,34 +106,15 @@ function collect() {
   return out;
 }
 
-async function reachable(url) {
-  try {
-    const c = new AbortController();
-    const t = setTimeout(() => c.abort(), 1500);
-    await fetch(url, { signal: c.signal });
-    clearTimeout(t);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 async function ensureServer() {
-  if (await reachable(base)) return null;
-  if (!base.includes("localhost")) return null; // remote URL the caller owns
-  const { spawn } = await import("node:child_process");
-  console.log("· starting `pnpm preview` for the contrast audit…");
-  const proc = spawn("pnpm", ["preview"], { stdio: "ignore", detached: true });
-  for (let i = 0; i < 60; i++) {
-    await new Promise((r) => setTimeout(r, 1000));
-    if (await reachable(base)) return proc;
-  }
-  try {
-    process.kill(-proc.pid);
-  } catch {
-    /* noop */
-  }
-  throw new Error("preview server did not come up in 60s");
+  // Delegates to the ONE preview-server implementation CI has proven, instead of a fourth
+  // hand-rolled copy. This gate used to spawn `pnpm preview` — the DEV server — with
+  // `stdio: "ignore"`, a 60s budget, and a probe that asked only the NAME `localhost`. Every
+  // failure mode fixed elsewhere in gh#333 lived here at once, which is exactly why this gate was
+  // still red after the other five went green. The helper builds, serves the static output, binds
+  // 127.0.0.1 explicitly, echoes what the server prints, and waits a budget suited to CI.
+  const { ensurePreviewServer } = await import("./frame-harness.mjs");
+  return ensurePreviewServer(base);
 }
 
 async function main() {
@@ -144,9 +125,9 @@ async function main() {
     console.warn("⚠ check:contrast skipped — playwright not installed (browser-only gate).");
     return; // skip in a browser-less CI rather than fail the build
   }
-  let server;
+  let stopServer;
   try {
-    server = await ensureServer();
+    stopServer = await ensureServer();
   } catch (e) {
     // A preview that will not start is a BROKEN GATE, not a gate with nothing to do. Skipping it
     // let three browser gates report success on CI for weeks while never once loading a page —
@@ -157,15 +138,7 @@ async function main() {
     console.warn(`⚠ check:contrast skipped — ${e.message}.`);
     return;
   }
-  const cleanup = () => {
-    if (server) {
-      try {
-        process.kill(-server.pid);
-      } catch {
-        /* noop */
-      }
-    }
-  };
+  const cleanup = () => stopServer?.();
   // Use the pinned executable only when it actually exists (dev machines /
   // self-hosted runners with a fixed /opt browser). Otherwise fall back to
   // Playwright's own resolution so `playwright install chromium` on a stock CI
