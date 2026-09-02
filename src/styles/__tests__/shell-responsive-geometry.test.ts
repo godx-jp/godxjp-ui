@@ -288,6 +288,40 @@ describe("responsive shell geometry", () => {
     );
   });
 
+  it("puts CenteredShell on that same axis — the shell gh#330 missed", () => {
+    // gh#330 gave AppShell's horizontal row one owner and left CenteredShell hard-coding
+    // --space-4 (16px) for the bar while its own main and footer used --space-6 (24px). Measured
+    // in Chromium on /isolate/layout-centered-shell BEFORE: the bar's content sat at x=16 and the
+    // column at x=24 — a constant 8px error at every width from 784px (the md tier, 46rem, plus
+    // the two 24px gutters — below which the column stops being centred and pins to the gutter)
+    // down to 320px. AFTER: 24/24 at 784 · 760 · 721, and 16/16 at 720 · 700 · 390 · 320.
+    expect(shellTokens).toContain("--centered-shell-bar-padding-x: var(--space-page-x);");
+    expect(shellTokens).toContain(
+      "--centered-shell-bar-padding-x-compact: var(--space-page-compact-x);",
+    );
+
+    // All THREE sides step, and on the page's line — two of them stepping is what re-opens the
+    // gap, since the bar is only ever aligned relative to the column beneath it.
+    const compact = mediaBlocksMentioning(shellStyles, ".ui-centered-shell-bar").filter((block) =>
+      /--centered-shell-bar-padding-x-compact/.test(block.body),
+    );
+    expect(compact).toHaveLength(1);
+    expect(compact[0].condition).toBe("(max-width: 720px)");
+    expect(compact[0].body).toMatch(
+      /\.ui-centered-shell-main\s*\{[^}]*--centered-shell-main-padding-inline-compact/s,
+    );
+    expect(compact[0].body).toMatch(
+      /\.ui-centered-shell-footer\s*\{[^}]*--centered-shell-footer-padding-inline-compact/s,
+    );
+
+    // Only the inline axis steps: the block shorthands stay whole, so a service that already sets
+    // --centered-shell-main-padding keeps controlling all four sides above the step.
+    expect(compact[0].body).not.toMatch(/padding:\s*var\(--centered-shell-main-padding\)/);
+    expect(declarationsFor(shellStyles, ".ui-centered-shell-main")).toMatch(
+      /padding:\s*var\(--centered-shell-main-padding\);/,
+    );
+  });
+
   it("offers an opt-in docked narrow contract without consumer media queries (gh#242)", () => {
     const restructuring = mediaBlocksMentioning(
       shellStyles,

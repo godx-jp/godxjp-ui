@@ -422,13 +422,32 @@
   --auth-shell-field-label-line-height: 1.5;
 
   /* CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
-   * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height +
-   * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A
-   * service retunes the bar inset, block padding and each width tier without forking CSS. */
+   * account, standalone settings). The bar mirrors AppShell's `.app-topbar`: the same fixed height,
+   * and now the same HORIZONTAL PAGE-INSET AXIS (gh#330) — bar, main and footer all read the page
+   * gutter and all step to the compact gutter on the page's own `(max-width: 720px)` line, so the
+   * bar's content and the column beneath it share one content edge at every width.
+   *
+   * The comment here used to claim the bar mirrored `.app-topbar`'s inline padding. It did not, and
+   * had not since gh#330 moved that side onto --space-page-x: the bar was left hard-coding
+   * --space-4 (16px) while main and footer used --space-6 (24px). Measured in Chromium on
+   * /isolate/layout-centered-shell BEFORE this fix, the bar's content sat at x=16 and the column at
+   * x=24 — a constant 8px misalignment at every width from 784px down to 390px. 784 is not
+   * arbitrary: it is the md tier (46rem) plus the two 24px main gutters, the width below which the
+   * column stops being centred and pins to the gutter, which is what makes the error visible.
+   * AFTER: 24/24 at 784 and 760, 16/16 at 700 and 390.
+   *
+   * The column max-width has three tiers, all wider than the 24rem auth card. A service retunes the
+   * inset, block padding and each width tier without forking CSS. */
   --centered-shell-bar-height: var(--app-shell-bar-height);
-  --centered-shell-bar-padding-x: var(--space-4);
+  --centered-shell-bar-padding-x: var(--space-page-x);
+  --centered-shell-bar-padding-x-compact: var(--space-page-compact-x);
   --centered-shell-main-padding: var(--space-6);
+  /* Inline-only compact steps. They exist as their own knobs rather than as a redefinition of the
+   * shorthands above, so `--centered-shell-main-padding` keeps meaning all four sides and a service
+   * that already sets it is not broken by this fix. */
+  --centered-shell-main-padding-inline-compact: var(--space-page-compact-x);
   --centered-shell-footer-padding: var(--space-3) var(--space-6) var(--space-4);
+  --centered-shell-footer-padding-inline-compact: var(--space-page-compact-x);
   /* Block offset of the centred column inside the 100dvh shell. `0` (default, the quietest state —
    * rule #44) keeps the top-aligned flowing page; `auto` centres the column in the viewport, which
    * is what CenteredShell `align="center"` sets for a SYSTEM-level standalone surface (500/503

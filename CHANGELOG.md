@@ -6,6 +6,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`--centered-shell-bar-padding-x-compact`, `--centered-shell-main-padding-inline-compact`,
+  `--centered-shell-footer-padding-inline-compact`** — the compact step of the horizontal
+  page-inset axis for CenteredShell. They are separate inline-only knobs rather than a
+  redefinition of the existing shorthands, so `--centered-shell-main-padding` and
+  `--centered-shell-footer-padding` keep meaning all four sides.
+
+### Changed
+
+- **CenteredShell joins the horizontal page-inset axis (gh#330, applied to the shell it missed).**
+  `--centered-shell-bar-padding-x` now defaults to `var(--space-page-x)` (24px) instead of
+  `var(--space-4)` (16px), and the bar, main and footer all step to `--space-page-compact-x` at
+  the page's own `(max-width: 720px)` line. gh#330 gave AppShell's horizontal row one owner and
+  left this shell hard-coding the bar's inset while its own main and footer used a different
+  value. Measured in Chromium on `/isolate/layout-centered-shell`, the bar's content sat at x=16
+  and the column at x=24 — a constant **8px misalignment** at every width from 784px (the `md`
+  tier, 46rem, plus the two 24px gutters, below which the column stops being centred and pins to
+  the gutter) down to 320px. Now 24/24 at 784 · 760 · 721 and 16/16 at 720 · 700 · 390 · 320.
+
+  The token comment claimed the bar mirrored `.app-topbar`'s inline padding; it had not since
+  gh#330 moved that side onto `--space-page-x`, and that false claim was being shipped as the
+  MCP catalog description for three tokens. A service that sets these knobs is unaffected above
+  the step; below 720px the inline sides now come from the new compact knobs.
+
+### Fixed
+
+- **`check:visual-audit` could hang forever instead of failing (scripts/visual-audit-smoke.mjs).**
+  Its 2-minute watchdog called `child.kill("SIGKILL")`, which signals the `node` child only and
+  leaves the Chromium grandchild alive holding the inherited stdio pipes. `"close"` does not fire
+  until the process has exited _and_ its stdio has ended, so the promise stayed pending and the
+  gate hung rather than failing — the worst of the three outcomes, since a hang has no log to
+  read. The child is now `detached` and the watchdog kills the whole process group, resolves the
+  promise itself rather than waiting on the child to cooperate, and reports the timeout as its own
+  failure instead of letting a truncated stdout surface as "did not emit valid JSON". Established
+  sockets are dropped before `server.close()`, which would otherwise stay pending for the same
+  reason.
+
 ## [19.1.0] - 2026-09-02
 
 Published to npm as `@godxjp/ui@19.1.0` and `@godxjp/ui-mcp@19.1.0` (lockstep).

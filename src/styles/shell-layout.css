@@ -529,8 +529,8 @@
   /*
    * CENTERED SHELL — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
    * account / self-service, standalone settings). A flex column over the same brand-wash surface as
-   * the app/auth shells: a padded top bar that MIRRORS `.app-topbar` chrome (fixed height + inline
-   * padding + border + backdrop) but WITHOUT a sidebar grid, a scrollable `main` whose content is a
+   * the app/auth shells: a padded top bar that MIRRORS `.app-topbar` chrome (fixed height + the
+   * page-inset axis of gh#330 + border + backdrop) but WITHOUT a sidebar grid, a scrollable `main` whose content is a
    * width-tiered centred column that is TOP-aligned (sections flow + scroll, never vertically
    * centred like the auth card), and an optional footer. Every knob reads a token.
    */
@@ -595,6 +595,26 @@
     border-top: 1px solid hsl(var(--border));
     text-align: center;
     color: hsl(var(--muted-foreground));
+  }
+
+  /* The compact step of the HORIZONTAL PAGE-INSET AXIS for CenteredShell (gh#330 applied to the
+   * shell it missed). Same condition, word for word, as the `.app-topbar` block above and as
+   * `.ui-page-container` in styles/layout.css: the inset is a fact about where the page's content
+   * edge is, so all three sides must step on the same line or the row drifts apart again — which is
+   * precisely how the bar came to sit 8px outboard of its own column. Only the INLINE axis steps;
+   * the block padding is a separate concern and keeps its shorthand. */
+  @media (max-width: 720px) {
+    .ui-centered-shell-bar {
+      padding-inline: var(--centered-shell-bar-padding-x-compact);
+    }
+
+    .ui-centered-shell-main {
+      padding-inline: var(--centered-shell-main-padding-inline-compact);
+    }
+
+    .ui-centered-shell-footer {
+      padding-inline: var(--centered-shell-footer-padding-inline-compact);
+    }
   }
 
   .app-topbar-rail {
