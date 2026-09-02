@@ -19,6 +19,7 @@ import { spawn } from "node:child_process";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FIXTURE = readFileSync(join(HERE, "__fixtures__", "visual-audit-fixture.html"));
 const SCRIPT = join(HERE, "visual-audit.mjs");
+const TIMEOUT_MS = 120_000;
 const EXPECTED = [
   "axe-violations",
   "target-size-min",
@@ -56,17 +57,56 @@ async function main() {
     // Async spawn (NOT spawnSync) so this process's HTTP server keeps serving the
     // fixture to the child's Chromium — a synchronous spawn would block the event loop.
     const run = await new Promise((resolve) => {
-      const child = spawn("node", [SCRIPT, base, "--format", "json"], { encoding: "utf8" });
+      // `detached` puts the child at the head of its own process group. Without it the timeout
+      // below was unable to do its job: `child.kill()` signals the `node` child ONLY, leaving its
+      // Chromium grandchild alive, and the grandchild inherited the stdout/stderr pipes. "close"
+      // does not fire until the process has exited AND its stdio has ended, so the watchdog meant
+      // to bound this at 2 minutes instead left the promise pending forever — the gate hung rather
+      // than failing, which is the worst of the three possible outcomes.
+      const child = spawn("node", [SCRIPT, base, "--format", "json"], {
+        detached: true,
+        stdio: ["ignore", "pipe", "pipe"],
+      });
       let stdout = "";
       let stderr = "";
-      const timer = setTimeout(() => child.kill("SIGKILL"), 120_000);
+      child.stdout.setEncoding("utf8");
+      child.stderr.setEncoding("utf8");
       child.stdout.on("data", (d) => (stdout += d));
       child.stderr.on("data", (d) => (stderr += d));
-      child.on("close", () => {
+
+      // Second half of the same lesson: never make settling depend on the child cooperating.
+      // `resolve` is idempotent, so whichever of the three paths arrives first decides.
+      const settle = (extra) => {
         clearTimeout(timer);
-        resolve({ stdout, stderr });
-      });
+        resolve({ stdout, stderr, ...extra });
+      };
+      const timer = setTimeout(() => {
+        try {
+          process.kill(-child.pid, "SIGKILL"); // the whole group, Chromium included
+        } catch {
+          child.kill("SIGKILL"); // no group (or already gone) — do what we can
+        }
+        settle({ timedOut: true });
+      }, TIMEOUT_MS);
+      child.on("close", () => settle({}));
+      child.on("error", (spawnError) => settle({ spawnError }));
     });
+
+    if (run.spawnError) {
+      console.error(`✗ check:visual-audit — could not spawn the audit: ${run.spawnError.message}`);
+      process.exit(1);
+    }
+
+    if (run.timedOut) {
+      // Reported on its own rather than falling through to "did not emit valid JSON", which is
+      // what a truncated stdout would otherwise look like — a misleading message for a hang.
+      console.error(
+        `✗ check:visual-audit — the audit did not finish within ${TIMEOUT_MS / 1000}s and was killed.`,
+      );
+      console.error("stdout so far:\n" + run.stdout);
+      console.error("stderr so far:\n" + run.stderr);
+      process.exit(1);
+    }
 
     let result;
     try {
@@ -98,6 +138,10 @@ async function main() {
         `all ${EXPECTED.length} rule families fired (${result.findings.length} finding(s)).`,
     );
   } finally {
+    // `server.close()` only stops NEW connections; it stays pending while any established socket is
+    // open, so a killed-but-still-connected Chromium would hang the exit right after the hang we
+    // just fixed. Drop the live sockets first.
+    server.closeAllConnections?.();
     server.close();
   }
 }
