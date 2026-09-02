@@ -2,6 +2,7 @@ import * as React from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { useFieldIdentity } from "../../lib/field-a11y";
 import { controlMultilineClass, controlMultilineGhostClass } from "../../lib/control-styles";
 
 export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
@@ -65,6 +66,13 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ) => {
     const { t } = useTranslation();
     const base = variant === "ghost" ? controlMultilineGhostClass : controlMultilineClass;
+    // gh#337 — the machine key for a textarea NESTED under a layout wrapper. `{}` in every other
+    // case (see useFieldIdentity), so a standalone Textarea is untouched.
+    const identity = useFieldIdentity({
+      id: props.id,
+      name: props.name,
+      "data-field": (props as { "data-field"?: string })["data-field"],
+    });
     const innerRef = React.useRef<HTMLTextAreaElement | null>(null);
     const setRefs = React.useCallback(
       (node: HTMLTextAreaElement | null) => {
@@ -186,6 +194,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         style={style}
         className={cn(base, showClear && "ui-input--trailing-affix", className)}
         {...props}
+        {...identity}
       />
     );
 

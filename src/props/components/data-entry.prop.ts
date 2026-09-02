@@ -164,10 +164,22 @@ export type FormFieldProp =
       /**
        * Error-bag key of this field. When the surrounding `Form` carries `errors`, the field
        * resolves its message from `errors[name]` automatically (an explicit `error` prop wins)
-       * and CLAIMS the key so `<FormErrors />` does not repeat it. Not injected into the child —
-       * pass `name` on the control itself for native form submission.
+       * and CLAIMS the key so `<FormErrors />` does not repeat it. Also the default source of
+       * {@link FormFieldProp.field} (below), so a field that already names its error key does not
+       * repeat itself.
        */
       name?: NameProp;
+      /**
+       * Stable MACHINE key of this field — the bare column/parameter name (`project_name`), not a
+       * bracketed legacy path (gh#337). Rendered on the control as `data-field`, and as a native
+       * `name` when the app opted in via `<AppProvider emitFieldNames>`.
+       *
+       * Defaults to `name`, then `id` — which is why an app whose fields already carry a
+       * column-named `id` gets the attribute on every control without editing a single screen.
+       * Set it explicitly only where `id` is a DOM-uniqueness artefact rather than the field key
+       * (`id="source_slip_field"` for `field="source_slip_id"`).
+       */
+      field?: NameProp;
       label: LabelProp;
       required?: RequiredProp;
       helper?: HelperProp;
@@ -195,6 +207,8 @@ export type FormFieldProp =
        * and CLAIMS the key so `<FormErrors />` does not repeat it.
        */
       name?: NameProp;
+      /** Stable machine key — see the `children` variant above. Unused on a read-only row. */
+      field?: NameProp;
       label: LabelProp;
       required?: RequiredProp;
       helper?: HelperProp;
@@ -544,6 +558,8 @@ export type SearchSelectProp = {
   "aria-invalid"?: boolean | "true" | "false";
   "aria-required"?: boolean | "true" | "false";
   "data-testid"?: string;
+  /** Stable machine key, forwarded to the trigger (gh#337). Normally injected by `FormField`. */
+  "data-field"?: string;
 };
 
 /**

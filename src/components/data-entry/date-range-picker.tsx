@@ -4,7 +4,7 @@ import type { DateRange } from "react-day-picker";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime";
 import { useControlledLatch } from "../../lib/hooks";
-import { pickGroupFieldA11y } from "../../lib/field-a11y";
+import { pickGroupFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
@@ -52,6 +52,12 @@ export function DateRangePicker({
   const groupId = id ?? autoId;
   const fromId = `${groupId}-from`;
   const toId = `${groupId}-to`;
+  // gh#337 — the machine key. The two inner inputs take the SAME `_from`/`_to` suffixes this
+  // control already uses for `name`, so the pair is addressable the way it already submits;
+  // the group keeps the bare key. `identity` covers the NESTED case (no cloneElement reach).
+  const identity = useFieldIdentity({ id: groupId, name, "data-field": groupA11y["data-field"] });
+  const rangeField = groupA11y["data-field"] ?? identity["data-field"];
+  const rangeName = name ?? identity.name;
   // Controlled once a defined `value` has EVER been passed (an empty form may
   // restore a saved value later); uncontrolled state seeds from `defaultValue`.
   const isControlled = useControlledLatch(valueProp !== undefined);
@@ -116,6 +122,7 @@ export function DateRangePicker({
           role="group"
           id={groupId}
           {...groupA11y}
+          data-field={rangeField}
           aria-disabled={disabled ? true : undefined}
           className={cn(
             // One input-styled shell for the whole range — the shared composite-field box, so
@@ -131,7 +138,8 @@ export function DateRangePicker({
         >
           <input
             id={fromId}
-            name={name ? `${name}_from` : undefined}
+            data-field={rangeField ? `${rangeField}_from` : undefined}
+            name={rangeName ? `${rangeName}_from` : undefined}
             value={fromText}
             disabled={disabled}
             placeholder={resolvedPlaceholder}
@@ -152,7 +160,8 @@ export function DateRangePicker({
           <ArrowRight className="ui-month-picker-separator-icon" aria-hidden="true" />
           <input
             id={toId}
-            name={name ? `${name}_to` : undefined}
+            data-field={rangeField ? `${rangeField}_to` : undefined}
+            name={rangeName ? `${rangeName}_to` : undefined}
             value={toText}
             disabled={disabled}
             placeholder={resolvedPlaceholder}

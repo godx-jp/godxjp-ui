@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Form, FormField, Input, Select } from "@godxjp/ui/data-entry";
+import { Checkbox, Form, FormField, Input, Select } from "@godxjp/ui/data-entry";
 import {
   Dialog,
   DialogBody,
@@ -123,6 +123,52 @@ export default function Demo() {
                 colSpan={2}
               >
                 <Input defaultValue="invalid@example" />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Field identity · data-field (gh#337)</CardTitle>
+            <CardDescription>
+              項目キーを control の data-field に出す。既定は id から導出。id が DOM
+              一意化のためのもので項目キーと違う場合だけ field を明示する。AppProvider
+              emitFieldNames を立てたアプリでは同じキーが name にも出る。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form columns={2}>
+              <FormField id="project_name" label="案件名" helper="data-field は id から導出">
+                <Input defaultValue="ABC商事 更新案件" />
+              </FormField>
+              <FormField
+                id="source_slip_field"
+                field="source_slip_id"
+                label="ソース伝票番号"
+                helper="id は枠の一意化用。項目キーは field で明示"
+              >
+                <Input defaultValue="2024-00871" />
+              </FormField>
+              <FormField
+                id="fax_field"
+                label="FAX"
+                helper="ラッパー越しでも各控えが自分の id で名乗る"
+              >
+                <Flex gap="sm" align="center">
+                  <Input id="fax" defaultValue="03-1234-5678" />
+                  <Checkbox id="fax_unknown" aria-label="不明" />
+                </Flex>
+              </FormField>
+              <FormField id="branch_cd" label="拠点" helper="trigger は data-value に選択コード">
+                <Select
+                  options={[
+                    { value: "52", label: "東京本社" },
+                    { value: "53", label: "大阪支社" },
+                  ]}
+                  value="52"
+                  onValueChange={() => undefined}
+                />
               </FormField>
             </Form>
           </CardContent>

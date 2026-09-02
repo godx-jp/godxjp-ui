@@ -66,6 +66,19 @@ export type AppProviderProp = {
    * number (e.g. `0.95`) overrides it. Type is a separate axis — not scaled.
    */
   scaling?: number | null;
+  /**
+   * Emit a native `name` on every control a `FormField` wraps, taken from the field's key
+   * (`field` → `name` → `id`). Default `false`, and deliberately opt-in (gh#337).
+   *
+   * `data-field` is inert metadata and is always emitted; `name` is NOT — it changes what a
+   * native `<form>` submit sends. An app whose controls have never carried a `name` would start
+   * posting extra keys to its backend the moment it upgraded the library. That is a behaviour
+   * change no shared package may make by default, so the app that WANTS it (a screen-automation /
+   * RPA contract, native form posts) turns it on here, once, and every FormField in it obeys.
+   *
+   * A `name` written on the control itself always wins over the injected one.
+   */
+  emitFieldNames?: boolean;
   onLocaleChange?: (locale: AppLocale) => void;
   onTimezoneChange?: (timezone: AppTimezone) => void;
   onTimeFormatChange?: (timeFormat: AppTimeFormat) => void;
@@ -138,6 +151,8 @@ export type AppContextValue = {
   density: AppDensity;
   fontSize: AppFontSize;
   scaling: number | null;
+  /** Whether `FormField` injects a native `name` onto its control (gh#337). Default `false`. */
+  emitFieldNames: boolean;
   setLocale: (locale: AppLocale) => void;
   setTimezone: (timezone: AppTimezone) => void;
   setTimeFormat: (timeFormat: AppTimeFormat) => void;

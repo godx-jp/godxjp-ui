@@ -2,7 +2,8 @@ import * as React from "react";
 
 import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
-import { FieldNameContext, mergeAriaIds } from "../../lib/field-a11y";
+import { FieldIdentityContext, FieldNameContext, mergeAriaIds } from "../../lib/field-a11y";
+import { useOptionalAppContext } from "../../app/app-provider";
 import { useFormLayout } from "./form";
 import { firstBagMessage, useClaimErrorKey, useFormErrorsRegistry } from "./form-errors";
 import type { FormFieldProp } from "../../props/components/data-entry.prop";
@@ -22,6 +23,7 @@ const FOCUSABLE_SELECTOR =
 export function FormField({
   id,
   name,
+  field,
   label,
   required,
   helper,
@@ -62,6 +64,20 @@ export function FormField({
   const helperId = helper ? `${resolvedId}-helper` : undefined;
   const errorId = error ? `${resolvedId}-error` : undefined;
 
+  // gh#337 — the field's stable MACHINE key, injected onto the control below.
+  //
+  // `id` is the last fallback and not the first because an id is a DOM-uniqueness token: two
+  // fields for the same column on one screen (a search panel and a dialog) must differ, and a
+  // read-only row's id is often a wrapper artefact (`…_field`). `name` — the error-bag key —
+  // is already the server's own name for the field wherever it is set, so it outranks the id.
+  // Never `autoId`: a generated `«r3»` is not a key anything can be automated against, and
+  // emitting one would put noise into every DOM that never asked for it.
+  const fieldKey = field ?? name ?? id;
+  // `name` changes what a native form submit sends, so it is opt-in per APP, not per field
+  // (@see AppProviderProp.emitFieldNames). `data-field` is inert and always emitted.
+  // Optional context: FormField must keep working with no AppProvider above it.
+  const emitFieldNames = useOptionalAppContext()?.emitFieldNames ?? false;
+
   // `staticText` (gh#294) is a read-only VALUE, not a control — none of the id/aria-* wiring
   // below applies (there is nothing to label), so it takes an entirely separate render path.
   const isStatic = staticText !== undefined;
@@ -89,6 +105,15 @@ export function FormField({
     [labelId, label],
   );
 
+  // gh#337 — the same republishing, for the machine key. `cloneElement` below reaches the direct
+  // child; a control NESTED under a layout wrapper reads this instead and names itself from its own
+  // id (see FieldIdentityContext). `null` when this field has no key of its own: a field that
+  // cannot name itself must not make its children guess.
+  const fieldIdentityContext = React.useMemo(
+    () => (fieldKey === undefined ? null : { emitName: emitFieldNames }),
+    [fieldKey, emitFieldNames],
+  );
+
   const childProps = React.isValidElement(children)
     ? (children.props as Record<string, unknown>)
     : undefined;
@@ -109,6 +134,13 @@ export function FormField({
       // controls (Radio.Group, checkbox lists, range pairs) have no labelable root,
       // and a dangling `for` triggers Chrome's "Incorrect use of <label>" issue.
       id: (childProps?.id as string | undefined) ?? resolvedId,
+      // gh#337 — the machine key. Read the child's own value first in BOTH cases: cloneElement
+      // overwrites every key present in the config bag, `undefined` included, so a bare
+      // `"data-field": fieldKey` would erase a value the control set for itself.
+      "data-field": (childProps?.["data-field"] as string | undefined) ?? fieldKey,
+      ...(emitFieldNames
+        ? { name: (childProps?.name as string | undefined) ?? fieldKey }
+        : undefined),
       "aria-labelledby": (childProps?.["aria-labelledby"] as string | undefined) ?? labelId,
       // Redundant `aria-label` fallback (belt-and-suspenders): the accessible name is the
       // SAME string as the visible label, just reachable even if an aria-labelledby lookup
@@ -204,7 +236,9 @@ export function FormField({
           childWithA11y
         ) : (
           <FieldNameContext.Provider value={fieldNameContext}>
-            {childWithA11y}
+            <FieldIdentityContext.Provider value={fieldIdentityContext}>
+              {childWithA11y}
+            </FieldIdentityContext.Provider>
           </FieldNameContext.Provider>
         )}
         {helper ? (

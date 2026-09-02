@@ -3,7 +3,7 @@ import { CalendarIcon, X } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime/parse";
 import { useControlledLatch } from "../../lib/hooks";
-import { pickFieldA11y } from "../../lib/field-a11y";
+import { pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Input } from "./input";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -44,6 +44,13 @@ export function DatePicker({
   // The typeable <input> is the semantic focus target: forward the FormField label/helper/error
   // contract onto it (never the wrapper div) so the visible label names the control for AT.
   const fieldA11y = pickFieldA11y(ariaProps);
+  // gh#337 — the machine key for a DatePicker NESTED under a layout wrapper (the 請求日 from/to
+  // pair is the measured shape). Resolved HERE rather than left to the inner `Input`, because this
+  // component — not the input — decides which element owns the native `name`. Passing `data-field`
+  // down also tells Input's own resolver to keep its hands off (see useFieldIdentity).
+  const identity = useFieldIdentity({ id, name, "data-field": fieldA11y["data-field"] });
+  const resolvedName = name ?? identity.name;
+  const resolvedField = fieldA11y["data-field"] ?? identity["data-field"];
   const reactId = React.useId();
   const dialogId = `${id ?? reactId}-dialog`;
   // Controlled once a defined `value` has EVER been passed — a controlled
@@ -106,7 +113,8 @@ export function DatePicker({
               BESIDE the calendar trigger, never in place of it — see `showClear` above. */}
           <Input
             id={id}
-            name={name}
+            name={resolvedName}
+            data-field={resolvedField}
             value={text}
             disabled={disabled}
             placeholder={resolvedPlaceholder}

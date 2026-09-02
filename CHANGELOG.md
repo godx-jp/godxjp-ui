@@ -6,6 +6,78 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.1.0] - 2026-09-02
+
+Published to npm as `@godxjp/ui@19.1.0` and `@godxjp/ui-mcp@19.1.0` (lockstep).
+ADDITIVE ONLY — nothing is removed or renamed. `data-field` is inert, read-only metadata; the
+native `name` is opt-in behind `<AppProvider emitFieldNames>` (default `false`); a consumer that
+upgrades and changes nothing renders and submits exactly what it did on 19.0.0.
+
+### Added
+
+- **Field IDENTITY on every control — `data-field` always, native `name` opt-in** (#337) — a
+  ported Japanese back office is driven by screen automation (RPA) as well as by people, and the
+  rewrite silently took away the attributes that automation stands on. Measured by the customer on
+  one screen (案件): `name` fell from **98 of 100** controls to **3 of 67**, and `id` from 82 to 42 —
+  the 42 being text inputs only, with no select, radio or checkbox addressable at all. Their
+  automation stops at cutover, which is why they filed it as 【切替可否に関わる】.
+
+  This is not tool-chasing. `name` on a form control is basic HTML semantics, `data-field` is the
+  industry-standard `data-testid` role under a name that says what it holds, and an id on a
+  select/radio/checkbox is an accessibility requirement. The library's own e2e selectors get less
+  brittle for the same reason.
+
+  **`FormField` now injects the field's machine key onto its control**, resolved `field` → `name` →
+  `id`. The new `field` prop exists for the case those diverge (`id="source_slip_field"` for
+  `field="source_slip_id"`); it is needed rarely, because an app whose fields already carry
+  column-named ids gets the attribute on every control **without editing a single call site** — in
+  the Exseli port, 1,281 of 1,281 `<FormField>`s. A generated id is never used as a key: a `«r3»`
+  token is not something anything outside React can be pointed at.
+
+  The key travels the SAME route as the ARIA relationships (`pickFieldA11y` / `pickGroupFieldA11y`
+  in `src/lib/field-a11y.ts`), so it lands on the semantic focus target of every control rather
+  than a wrapper div, and a control added later inherits the behaviour instead of being forgotten.
+  Verified in the DOM on Input, Textarea, NumberInput, Select (both APIs), SearchSelect,
+  RadioGroup, CheckboxGroup, Checkbox, Switch, DatePicker, MonthPicker, TimePicker, the two range
+  pickers, Cascader and TreeSelect.
+
+  **NESTED controls too — `cloneElement` alone reaches 77%, and the acceptance condition is 100%.**
+  Measured across the whole ported app: **322 of 1,410 controls (23%)** sit one level below their
+  FormField, because the direct child is a `Flex` holding a from/to pair, a 年/月 combo, or a value
+  beside a 「不明」 checkbox. `cloneElement` reaches exactly one level, so all 322 stopped on the
+  wrapper `div`. FormField therefore also publishes the field through `FieldIdentityContext` and
+  each control resolves its own key (`useFieldIdentity`) — the same mechanism `Select` already used
+  to get past Radix's prop-swallowing root.
+
+  A nested control's key is **its own `id`**, and that is a finding rather than a convention: of the
+  322, **250 already carry a static id**, and the ambiguity a shared wrapper would create is already
+  resolved at the call site (`search_billing_date_from` / `..._to`, `fax` / `fax_unknown`). So two
+  controls can never end up sharing a key. The remaining **72 get nothing** — 48 have a computed id
+  and 24 have none — because a fabricated key is worse than a missing one: automation binds to it
+  and breaks silently on the next render. Those two groups are reported, not filled.
+
+  Composites that own their own submit contract resolve the key themselves and hand it down, so the
+  leaf resolver stands aside: `DatePicker` / `MonthPicker` keep `name` on the field they own rather
+  than letting the `Input` they compose second-guess it, `Select`'s stays on the Radix native
+  `<select>`, `SearchSelect`'s on its hidden input, and the range pickers keep their
+  `${name}_from` / `${name}_to` split — now mirrored by `${field}_from` / `${field}_to`, which is
+  the first time those two inputs have been addressable at all.
+
+  **`name` is opt-in per app — `<AppProvider emitFieldNames>` (default `false`).** `data-field` is
+  inert metadata; `name` decides what a native `<form>` submit sends. An app whose controls have
+  never carried a `name` would start posting extra keys to its backend the moment it upgraded, and
+  a package shared across services (omnify, dxs, exseli) may not make that decision for them. A
+  `name` or `data-field` written on the control itself always wins over the injected one.
+
+- **`Select` publishes the selected CODE as `data-value` on its trigger** (#337) — the trigger
+  displays the option's LABEL (「東京本社」) while the row's value is `52`, and the only other place
+  that code exists is Radix's `aria-hidden`, 1×1px native `<select>`. Reading it required either
+  parsing the Japanese label or reaching into an element the customer reasonably described as
+  invisible. Now on the visible element, in both the data-driven and compound APIs, tracking
+  uncontrolled picks too, and omitted entirely while nothing is selected. **No DOM structure
+  changed** — the hidden native `<select>` stays exactly as Radix renders it, which is what the
+  customer asked for (「内部構造の変更までは求めません」).
+
 ## [19.0.0] - 2026-08-30
 
 Published to npm as `@godxjp/ui@19.0.0` and `@godxjp/ui-mcp@19.0.0` (lockstep).

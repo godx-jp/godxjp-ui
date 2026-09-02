@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { cn } from "../../lib/utils";
-import { pickGroupFieldA11y } from "../../lib/field-a11y";
+import { pickGroupFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { Checkbox } from "./checkbox";
 import { Field } from "./field";
 import { choiceGroupClassName, type ChoiceOption } from "./choice-option";
@@ -47,6 +47,16 @@ export function CheckboxGroup({
   // supports the two id-reference relationships per ARIA 1.2 — pickGroupFieldA11y folds the error
   // id into aria-describedby so the message is still announced without an invalid-ARIA violation.
   const groupA11y = pickGroupFieldA11y(ariaProps);
+  // gh#337 — the machine key for a group NESTED under a layout wrapper. `name` is handed to each
+  // Checkbox, whose Radix hidden input is what a native submit reads.
+  const identity = useFieldIdentity({ id, name, "data-field": groupA11y["data-field"] });
+  const resolvedName = name ?? identity.name;
+  const resolvedField = groupA11y["data-field"] ?? identity["data-field"];
+  // Per-option DOM id (gh#337) — same reasoning as Radio.Group: the group carries the field's id,
+  // so each box needs its own, and a `React.useId()` value is regenerated on every mount and so
+  // cannot be addressed from outside React. Derive it from the group's own id when there is one.
+  const optionDomId = (optionValue: string, index: number) =>
+    id ? `${id}-${optionValue}` : `${reactId}-${optionValue}-${index}`;
 
   const toggle = (optionValue: string) => {
     const next = value.includes(optionValue)
@@ -62,18 +72,20 @@ export function CheckboxGroup({
         role="group"
         id={id}
         {...groupA11y}
+        data-field={resolvedField}
         aria-disabled={disabled ? true : undefined}
         data-orientation={orientation}
         className={choiceGroupClassName(orientation, className)}
       >
         {options.map((opt: ChoiceOption, index) => {
-          const id = `${reactId}-${opt.value}-${index}`;
+          const optionId = optionDomId(opt.value, index);
           const checked = value.includes(opt.value);
           return (
-            <Field key={opt.value} id={id} label={opt.label} description={opt.description}>
+            <Field key={opt.value} id={optionId} label={opt.label} description={opt.description}>
               <Checkbox
-                id={id}
-                name={name}
+                id={optionId}
+                name={resolvedName}
+                data-field={resolvedField}
                 value={opt.value}
                 checked={checked}
                 disabled={Boolean(disabled) || Boolean(opt.disabled)}
@@ -93,6 +105,7 @@ export function CheckboxGroup({
       role="group"
       id={id}
       {...groupA11y}
+      data-field={resolvedField}
       aria-disabled={disabled ? true : undefined}
       data-orientation={orientation}
       className={cn(choiceGroupClassName(orientation), className)}

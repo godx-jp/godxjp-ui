@@ -2,7 +2,7 @@ import * as React from "react";
 import { CalendarIcon, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { useControlledLatch } from "../../lib/hooks";
-import { pickFieldA11y } from "../../lib/field-a11y";
+import { pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -54,6 +54,10 @@ export function MonthPicker({
   const dialogId = `${inputId}-dialog`;
   // Forward the FormField label/helper/error contract onto the typeable input (focus target).
   const fieldA11y = pickFieldA11y(ariaProps);
+  // gh#337 — the machine key for a MonthPicker NESTED under a layout wrapper (a 年/月 combo is the
+  // measured shape). Resolved here, not in the inner `Input`, because this component owns which
+  // element carries the native `name`.
+  const identity = useFieldIdentity({ id, name, "data-field": fieldA11y["data-field"] });
 
   // Controlled once a defined `value` has EVER been passed (an empty form may
   // restore a saved value later); uncontrolled state seeds from `defaultValue`.
@@ -99,7 +103,8 @@ export function MonthPicker({
         >
           <input
             id={inputId}
-            name={name}
+            name={name ?? identity.name}
+            data-field={fieldA11y["data-field"] ?? identity["data-field"]}
             value={text}
             disabled={disabled}
             placeholder={placeholder ?? t("dataEntry.monthPicker.placeholder") ?? YM_HINT}

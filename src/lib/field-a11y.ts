@@ -14,6 +14,12 @@ import * as React from "react";
  * - `aria-errormessage` + `aria-invalid` — the validation message, announced when invalid.
  * - `aria-required` — required-field semantics.
  * - `aria-label` — a name supplied directly (used when there is no visible label element).
+ *
+ * `data-field` travels the SAME route (gh#337) and is therefore part of this bag even though it is
+ * not an ARIA attribute. It is the field's stable machine key — the `data-testid` role, standardised
+ * on one attribute so a control never has to be found by a generated id or by its visible Japanese
+ * label. It is inert (read-only metadata) and must land on the same semantic focus target the aria
+ * relationships do; routing it through a second, parallel mechanism is how a control gets missed.
  */
 export interface FieldA11yProps {
   "aria-label"?: string;
@@ -22,6 +28,8 @@ export interface FieldA11yProps {
   "aria-errormessage"?: string;
   "aria-invalid"?: React.AriaAttributes["aria-invalid"];
   "aria-required"?: React.AriaAttributes["aria-required"];
+  /** Stable machine key of the field (gh#337) — see the interface doc above. */
+  "data-field"?: string;
 }
 
 const FIELD_A11Y_KEYS = [
@@ -31,6 +39,7 @@ const FIELD_A11Y_KEYS = [
   "aria-errormessage",
   "aria-invalid",
   "aria-required",
+  "data-field",
 ] as const;
 
 /**
@@ -141,6 +150,55 @@ export function useFieldNameFallback(
 }
 
 /**
+ * The enclosing `FormField`, made reachable by NESTED controls (gh#337).
+ *
+ * `cloneElement` reaches FormField's single DIRECT child only. In the real screens this library
+ * serves, 322 of 1,410 controls (23%) sit one level deeper — the direct child is a `Flex` holding a
+ * from/to pair, a 年/月 combo, or a value + 「不明」 checkbox — so the machine key stopped on the
+ * wrapper `div` and the controls inside stayed anonymous. The customer's acceptance condition is
+ * 「画面に見えている入力欄の100%に付与されていること」; 77% does not pass.
+ *
+ * The key for such a control is its OWN `id`, and that is a finding, not a convention invented
+ * here: of those 322, **250 already carry a static id** and the ambiguous case the wrapper creates
+ * — two controls under one field — is already distinguished at the call site
+ * (`search_billing_date_from` / `..._to`, `fax` / `fax_unknown`). So a nested control names itself
+ * and no two controls can ever end up sharing a key. The remaining 72 (48 computed ids, 24 with no
+ * id at all) get NOTHING: a fabricated key is worse than a missing one, because automation would
+ * bind to it and break silently on the next render.
+ */
+export interface FieldIdentityContextValue {
+  /** Whether the app opted into a native `name` (@see AppProviderProp.emitFieldNames). */
+  emitName: boolean;
+}
+
+export const FieldIdentityContext = React.createContext<FieldIdentityContextValue | null>(null);
+
+/**
+ * Resolve `data-field` / `name` for a control nested under a `FormField` (see
+ * {@link FieldIdentityContext}). Returns `{}` — adding nothing — in every case but the one it
+ * exists for, which is what keeps it safe to call from every control:
+ *
+ * - **outside a FormField** → `{}`. A control elsewhere on the page is untouched.
+ * - **`data-field` already present** → `{}`. Either `FormField` cloned it onto its direct child, or
+ *   a composite (DatePicker, Select) already resolved this field and is passing it down. Whoever
+ *   owns the field owns BOTH attributes, so `name` is not second-guessed here either — that is what
+ *   keeps DatePicker's ISO mirror (`name` belongs to the hidden `yyyy-MM-dd` input, not the visible
+ *   `yyyy/MM/dd` one) and Select's native `<select>` intact.
+ * - **no `id` of its own** → `{}`. Nothing to derive a stable key from; see the interface doc.
+ */
+export function useFieldIdentity(own: { id?: string; name?: string; "data-field"?: string }): {
+  "data-field"?: string;
+  name?: string;
+} {
+  const ctx = React.useContext(FieldIdentityContext);
+  if (!ctx || own["data-field"] !== undefined || own.id === undefined) return {};
+  return {
+    "data-field": own.id,
+    ...(ctx.emitName && own.name === undefined ? { name: own.id } : {}),
+  };
+}
+
+/**
  * The field-a11y attributes valid on a **group container** (`role="group"`), used by composite
  * controls that have no single labelable focus target — CheckboxGroup, and the two-input range
  * pickers / Transfer shuttle.
@@ -157,6 +215,7 @@ export function useFieldNameFallback(
 export function pickGroupFieldA11y(props: FieldA11yProps): {
   "aria-labelledby"?: string;
   "aria-describedby"?: string;
+  "data-field"?: string;
 } {
   const describedBy = mergeAriaIds(props["aria-describedby"], props["aria-errormessage"]);
   return {
@@ -164,5 +223,8 @@ export function pickGroupFieldA11y(props: FieldA11yProps): {
       ? { "aria-labelledby": props["aria-labelledby"] }
       : {}),
     ...(describedBy !== undefined ? { "aria-describedby": describedBy } : {}),
+    // Not an ARIA attribute and so not subject to the role="group" restriction above — a group
+    // still has to be findable by its field key (gh#337).
+    ...(props["data-field"] !== undefined ? { "data-field": props["data-field"] } : {}),
   };
 }

@@ -614,6 +614,24 @@
             "docs/data-entry/checkbox.tsx",
             "src/components/data-entry/__tests__/checkbox.a11y.test.tsx"
           ]
+        },
+        "name": {
+          "cases": [
+            "explicit",
+            "resolved-from-id"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/form-field-identity-337.test.tsx"
+          ]
+        },
+        "value": {
+          "cases": [
+            "on",
+            "option-code"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/form-field-identity-337.test.tsx"
+          ]
         }
       }
     },
@@ -1137,6 +1155,16 @@
             "docs/data-entry/form.tsx",
             "src/components/data-entry/__tests__/form-errors.test.tsx"
           ]
+        },
+        "field": {
+          "cases": [
+            "derived-from-id",
+            "explicit"
+          ],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "src/components/data-entry/__tests__/form-field-identity-337.test.tsx"
+          ]
         }
       }
     },
@@ -1234,6 +1262,15 @@
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/input-interactions.test.tsx"
+          ]
+        },
+        "name": {
+          "cases": [
+            "explicit",
+            "resolved-from-id"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/form-field-identity-337.test.tsx"
           ]
         }
       }

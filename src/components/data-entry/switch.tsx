@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as SwitchPrimitive from "@radix-ui/react-switch";
 import { cn } from "../../lib/utils";
+import { useFieldIdentity } from "../../lib/field-a11y";
 import type { SwitchProp } from "../../props/components/data-entry.prop";
 
 export type { SwitchProp, SwitchProp as SwitchProps } from "../../props/components/data-entry.prop";
@@ -10,6 +11,14 @@ export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive
     { className, size = "md", name, checked, defaultChecked = false, onCheckedChange, ...props },
     ref,
   ) => {
+    // gh#337 — the machine key for a Switch NESTED under a layout wrapper. `{}` otherwise; the
+    // resolved `name` also feeds the hidden input below, so the toggle still submits natively.
+    const identity = useFieldIdentity({
+      id: props.id,
+      name,
+      "data-field": (props as { "data-field"?: string })["data-field"],
+    });
+    const resolvedName = name ?? identity.name;
     const [internalChecked, setInternalChecked] = React.useState(defaultChecked);
     const isControlled = checked !== undefined;
     const isChecked = isControlled ? checked : internalChecked;
@@ -23,7 +32,9 @@ export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive
 
     return (
       <>
-        {name ? <input type="hidden" name={name} value={isChecked ? "1" : "0"} readOnly /> : null}
+        {resolvedName ? (
+          <input type="hidden" name={resolvedName} value={isChecked ? "1" : "0"} readOnly />
+        ) : null}
         <SwitchPrimitive.Root
           ref={ref}
           data-slot="switch"
@@ -41,6 +52,7 @@ export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive
             className,
           )}
           {...props}
+          data-field={identity["data-field"] ?? (props as { "data-field"?: string })["data-field"]}
         >
           <SwitchPrimitive.Thumb data-slot="switch-thumb" className="ui-switch-thumb" />
         </SwitchPrimitive.Root>

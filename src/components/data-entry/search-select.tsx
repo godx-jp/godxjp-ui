@@ -2,7 +2,7 @@ import * as React from "react";
 import { ChevronsUpDown, Loader2, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
-import { useFieldNameFallback } from "../../lib/field-a11y";
+import { useFieldIdentity, useFieldNameFallback } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { controlOpenRingClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
@@ -64,6 +64,7 @@ export function SearchSelect({
   id,
   className,
   "data-testid": dataTestId,
+  "data-field": dataField,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledby,
   "aria-describedby": ariaDescribedby,
@@ -78,6 +79,11 @@ export function SearchSelect({
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledby,
   });
+  // gh#337 — the machine key for a SearchSelect NESTED under a layout wrapper. `name` stays on the
+  // hidden input below (a combobox trigger is a <button>, which submits nothing).
+  const identity = useFieldIdentity({ id, name, "data-field": dataField });
+  const resolvedName = name ?? identity.name;
+  const resolvedField = dataField ?? identity["data-field"];
   const triggerAriaLabel = ariaLabel ?? nameFallback["aria-label"];
   const triggerAriaLabelledby = ariaLabelledby ?? nameFallback["aria-labelledby"];
   const reactId = React.useId();
@@ -331,6 +337,10 @@ export function SearchSelect({
             aria-readonly={readOnly || undefined}
             disabled={disabled}
             data-testid={dataTestId}
+            data-field={resolvedField}
+            // gh#337 — the selected CODE on the visible trigger, which otherwise shows only the
+            // label. `""` (nothing selected) is omitted rather than rendered as an empty attribute.
+            data-value={value || undefined}
             className={cn(
               "w-full justify-start font-normal",
               controlOpenRingClass,
@@ -360,7 +370,7 @@ export function SearchSelect({
           </Button>
         </PopoverTrigger>
         {/* Hidden field so the selection submits with a native form. */}
-        {name ? <input type="hidden" name={name} value={value} readOnly /> : null}
+        {resolvedName ? <input type="hidden" name={resolvedName} value={value} readOnly /> : null}
         <PopoverContent
           aria-label={triggerAriaLabelledby ? undefined : (triggerAriaLabel ?? resolvedPlaceholder)}
           aria-labelledby={triggerAriaLabelledby}

@@ -3,7 +3,7 @@ import { ChevronDown, ChevronRight, ChevronsUpDown, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
-import { pickFieldA11y } from "../../lib/field-a11y";
+import { pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { controlOpenRingClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -80,6 +80,10 @@ function TreeSelectRoot({
   const { t } = useTranslation();
   // Forward the FormField label/helper/error contract onto the combobox trigger (focus target).
   const fieldA11y = pickFieldA11y(ariaProps);
+  // gh#337 — the machine key for a TreeSelect NESTED under a layout wrapper. This control has
+  // no native-submit path at all (documented: read the value through onValueChange), so only
+  // `data-field` is resolved here — there is no element a `name` could honestly go on.
+  const identity = useFieldIdentity({ id, "data-field": fieldA11y["data-field"] });
   const reactId = React.useId();
   const treeId = `${id ?? reactId}-tree`;
   const options = React.useMemo(
@@ -230,6 +234,7 @@ function TreeSelectRoot({
         <PopoverTrigger asChild>
           <Button
             id={id}
+            data-field={fieldA11y["data-field"] ?? identity["data-field"]}
             type="button"
             variant="outline"
             role="combobox"

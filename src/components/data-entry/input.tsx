@@ -1,7 +1,7 @@
 import * as React from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
-import { useFieldNameFallback } from "../../lib/field-a11y";
+import { useFieldIdentity, useFieldNameFallback } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
@@ -55,6 +55,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const nameFallback = useFieldNameFallback({
       "aria-label": props["aria-label"],
       "aria-labelledby": props["aria-labelledby"],
+    });
+    // gh#337 — the machine key, for an input NESTED under a layout wrapper that FormField's
+    // cloneElement cannot reach (a from/to pair, a value + 「不明」 checkbox). `{}` unless this
+    // input is inside a FormField, has an id of its own, and nothing upstream resolved the key.
+    const identity = useFieldIdentity({
+      id: props.id,
+      name: props.name,
+      "data-field": (props as { "data-field"?: string })["data-field"],
     });
     const innerRef = React.useRef<HTMLInputElement | null>(null);
     // Callback ref forwards the real DOM node to the parent's ref (so `ref.current`
@@ -111,6 +119,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={cn(inputBaseClass, className)}
           {...props}
           {...nameFallback}
+          {...identity}
         />
       );
     }
@@ -154,6 +163,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
           {...props}
           {...nameFallback}
+          {...identity}
         />
         {trailing != null ? <span className="ui-input-trailing">{trailing}</span> : null}
       </span>
