@@ -66,6 +66,16 @@ jobs:
     steps:
       # fetch-depth: 0 — the release must prove the tagged commit is an ancestor of origin/main.
       # A shallow checkout cannot answer that, and "cannot answer" is refusal, not a pass.
+      # `github.event_name == 'push'` is correct for the triggers this workflow declares: the tag
+      # push, and workflow_dispatch. On the tag push `github.ref` is the tag being released; on a
+      # dispatch there is no tag to publish, so the checkout falls back to `main`.
+      #
+      # IF THIS EVER MOVES TO `workflow_run`: `github.event_name` becomes `workflow_run` on every
+      # run, this condition goes permanently false, and the release would silently check out `main`
+      # instead of the tag — a wrong publish with nothing red to say so. The test would have to
+      # become `github.event.workflow_run.event == 'push'`, and `github.ref` would have to be read
+      # from `github.event.workflow_run.head_branch` / `head_sha`, since the workflow_run event
+      # runs against the default branch, not against the ref that started it.
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.event_name == 'push' && github.ref || 'main' }}

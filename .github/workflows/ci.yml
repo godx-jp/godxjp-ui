@@ -37,10 +37,10 @@ on:
     # audit-evidence/** and artifacts/** are read by check:screen-reader-evidence and
     # check:display-runtime-evidence. Only genuinely inert paths are listed.
     paths-ignore:
-      - 'debate/**'
-      - '.agent-notes/**'
-      - '.design-sync/**'
-      - 'LICENSE'
+      - "debate/**"
+      - ".agent-notes/**"
+      - ".design-sync/**"
+      - "LICENSE"
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -85,33 +85,20 @@ jobs:
       - name: verify:ci:static (every browser-free publish gate)
         run: pnpm verify:ci:static
 
+      # A HARD gate, and one of the release's own: `verify:release` is verify:static +
+      # check:frame-contracts + check:frame-coverage + check:frame-axe, and the first two are
+      # delegated to THIS job's check run by scripts/release-core.mjs · CI_PROOF_FOR_RELEASE_GATE.
+      # The step chains seven real checks (check:component-api-manifest, audit:component-cases,
+      # check:frame-coverage, check:frame-coverage-ledger, check:screen-reader-evidence,
+      # check:data-entry-owner-source, check:display-runtime-evidence), so dropping it would not
+      # save a report — it would empty seven release gates while the release still claims them.
+      #
+      # It also covers `check:frame-coverage` on its own: scripts/frame-coverage.mjs runs inside
+      # this chain, which is why there is no separate report-only step for it. That script exits 0
+      # without `--strict` (0.03s, 124 components); check:frame-coverage-ledger, one link later,
+      # is where a real coverage regression is caught.
       - name: Static frame contracts
         run: pnpm check:frame-contracts
-
-      # Report-only, and now enforced as such (CONTRACT.md L5). `scripts/frame-coverage.mjs`
-      # exits 0 without `--strict` — measured 0.03s, 124 components, exit 0 — so the WORD was
-      # already true. The mechanism was not: the same script was also wired as npm's `pretest`
-      # hook, which meant a crash in a report-only inventory (a corrupt ledger, an unreadable
-      # docs tree) turned all four `Tests (shard N/4)` jobs red — and those four names ARE in
-      # REQUIRED_CI_CHECK_RUNS, so it could refuse a release for a reason that is not a defect
-      # in the product. The `pretest` hook is gone (nothing reads its output as a test input),
-      # and `continue-on-error` here says the same thing at the one place it still runs on the
-      # merge path. It stays in this job rather than a lane of its own because a whole extra
-      # install + checkout to produce one 0.03s report is not worth a runner slot on a shared
-      # pool. `check:frame-contracts` above still runs it as a hard gate paired with
-      # check:frame-coverage-ledger, which is where a real coverage regression should be caught.
-      - name: Frame coverage (report-only)
-        continue-on-error: true
-        run: pnpm check:frame-coverage
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: frame-coverage
-          path: |
-            audit-evidence/frame-coverage/coverage.json
-            docs/FRAME-COVERAGE-REPORT.md
-          if-no-files-found: ignore
-
 
   test:
     name: Tests (shard ${{ matrix.shard }}/4)

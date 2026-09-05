@@ -275,7 +275,7 @@ export const CI_PROOF_FOR_RELEASE_GATE = Object.freeze({
     "Build · typecheck · lint · guards",
   "check:frame-contracts (a step of the same ci.yml `static` job)":
     "Build · typecheck · lint · guards",
-  "check:frame-coverage (a step of the same ci.yml `static` job, report-only)":
+  "check:frame-coverage (runs inside check:frame-contracts, same ci.yml `static` job)":
     "Build · typecheck · lint · guards",
   "pnpm test (the whole vitest suite, sharded)": [
     "Tests (shard 1/4)",
