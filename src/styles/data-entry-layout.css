@@ -69,27 +69,6 @@
     opacity: 0.7;
   }
 
-  .ui-time-input {
-    width: 100%;
-    min-height: var(--control-height);
-    border-radius: var(--radius-md);
-    border: 1px solid hsl(var(--input));
-    background: hsl(var(--background));
-    padding-inline: var(--space-3);
-    padding-block: 0;
-    font-size: var(--font-size-base);
-    color: hsl(var(--foreground));
-    outline: none;
-  }
-
-  .ui-time-input:focus-visible {
-    border-color: hsl(var(--focus-ring-color, var(--ring)));
-  }
-
-  .ui-time-input[aria-invalid="true"] {
-    border-color: hsl(var(--destructive));
-  }
-
   .ui-password-strength {
     display: grid;
     gap: var(--space-1);

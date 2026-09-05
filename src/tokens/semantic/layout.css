@@ -74,6 +74,8 @@
   /* Full-bleed rule under the PageContainer header. OFF by default — the title/body
    * gap already separates them; a divider is a service-theme opt-in:
    * `--page-header-divider: 1px solid hsl(var(--border));` */
+  /* Block-end inset of the page footer band; symmetric with its block-start rhythm. */
+  --page-footer-pad-block-end: var(--space-stack-md);
   --page-header-divider: none;
 
   /* PageContainer `toolbar` — the fixed chrome band between the header and the (scrolling) body.

@@ -91,7 +91,11 @@ export function MonthPicker({
         <div
           data-disabled={disabled ? "" : undefined}
           data-state={open ? "open" : "closed"}
-          className={cn("ui-control ui-control-composite-field", className)}
+          className={cn(
+            "ui-control ui-control-composite-field",
+            "aria-invalid:border-destructive",
+            className,
+          )}
           onClick={() => {
             if (!disabled) setOpen(true);
           }}

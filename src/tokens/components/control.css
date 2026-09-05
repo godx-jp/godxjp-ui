@@ -31,7 +31,6 @@
   --control-shadow: var(--shadow-xs);
   --control-icon-size: calc(var(--icon-size-md) * var(--scaling));
   --control-icon-size-sm: calc(var(--icon-size-sm) * var(--scaling));
-  --control-focus-ring-width: var(--focus-ring-width);
 
   /* Ring knobs for the two controls that need a softer, heavier mark than the
    * global default — both are filled surfaces where a hard 2px ring reads as a
@@ -39,8 +38,6 @@
    * knobs now instead of hand-written box-shadows (styles/focus-ring.css). */
   --toggle-focus-ring-width: var(--stroke-lg);
   --toggle-focus-ring-alpha: 0.35;
-  --time-input-focus-ring-width: var(--stroke-lg);
-  --time-input-focus-ring-alpha: 0.3;
 
   /* Outline-form gaps — marks where a radius-hugging ring would touch the glyph. */
   --rating-focus-ring-offset: 2px;

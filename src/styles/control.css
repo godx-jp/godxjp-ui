@@ -68,6 +68,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     gap: var(--control-gap);
     white-space: nowrap;
     border-radius: var(--control-radius);
@@ -243,6 +244,13 @@
     border-width: var(--control-border-width);
     border-style: solid;
     box-shadow: var(--control-shadow);
+  }
+
+  .ui-control:disabled,
+  .ui-control[data-disabled],
+  .ui-control-multiline:disabled {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
   }
 
   /* TEXTAREA AUTO-GROW (gh#310) — the box grows with its content, bounded in TEXT ROWS.
@@ -440,6 +448,16 @@
     width: calc(var(--checkbox-size) * 0.45);
     height: calc(var(--checkbox-size) * 0.45);
     fill: currentColor;
+  }
+
+  .ui-switch[aria-invalid="true"] {
+    --tw-ring-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
+  }
+
+  .ui-tag-input[aria-invalid="true"],
+  .ui-tag-input:has([aria-invalid="true"]) {
+    border-color: hsl(var(--destructive));
   }
 
   .ui-switch {
@@ -756,324 +774,327 @@
 }
 
 /* PasswordInput */
-.ui-password-input {
-  position: relative;
-  display: block;
-}
-.ui-password-input-field {
-  padding-inline-end: 2.5rem;
-}
-.ui-password-input-toggle {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  color: hsl(var(--muted-foreground));
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-}
-.ui-password-input-toggle:hover {
-  color: hsl(var(--foreground));
-}
-.ui-password-input-toggle svg {
-  width: 1rem;
-  height: 1rem;
-}
+@layer components {
+  .ui-password-input {
+    position: relative;
+    display: block;
+  }
+  .ui-password-input-field {
+    padding-inline-end: 2.5rem;
+  }
+  .ui-password-input-toggle {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    color: hsl(var(--muted-foreground));
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  .ui-password-input-toggle:hover {
+    color: hsl(var(--foreground));
+  }
+  .ui-password-input-toggle svg {
+    width: 1rem;
+    height: 1rem;
+  }
 
-/* InputOTP */
-.ui-otp-container {
-  display: flex;
-  align-items: center;
-  justify-content: var(--otp-container-align, flex-start);
-  gap: var(--space-2);
-}
-/* `align` on InputOTP lands on the hidden <input> (input-otp owns the container element), so the
+  /* InputOTP */
+  .ui-otp-container {
+    display: flex;
+    align-items: center;
+    justify-content: var(--otp-container-align, flex-start);
+    gap: var(--space-2);
+  }
+  /* `align` on InputOTP lands on the hidden <input> (input-otp owns the container element), so the
  * container reads it through :has() — the same mechanism this file already uses for the invalid
  * and disabled states. */
-.ui-otp-container:has(.ui-otp-input[data-align="center"]) {
-  justify-content: center;
-}
-.ui-otp-container:has(.ui-otp-input[data-align="end"]) {
-  justify-content: flex-end;
-}
-.ui-otp-input:disabled {
-  cursor: not-allowed;
-}
-.ui-otp-group {
-  display: flex;
-  align-items: center;
-}
-.ui-otp-slot {
-  position: relative;
-  display: flex;
-  width: var(--otp-slot-inline-size, var(--otp-slot-size, var(--control-height)));
-  height: var(--otp-slot-block-size, var(--otp-slot-size, var(--control-height)));
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-base);
-  border: 1px solid hsl(var(--border));
-  border-inline-start-width: 0;
-  background: hsl(var(--background));
-  transition: box-shadow 0.15s ease;
-}
-.ui-otp-group .ui-otp-slot:first-child {
-  border-inline-start-width: 1px;
-  border-start-start-radius: var(--radius-md);
-  border-end-start-radius: var(--radius-md);
-}
-.ui-otp-group .ui-otp-slot:last-child {
-  border-start-end-radius: var(--radius-md);
-  border-end-end-radius: var(--radius-md);
-}
-.ui-otp-group[data-appearance="grouped"] {
-  overflow: hidden;
-  border: 1px solid hsl(var(--border));
-  border-radius: var(--radius-md);
-  background: hsl(var(--background));
-}
-.ui-otp-group[data-appearance="grouped"] .ui-otp-slot {
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-.ui-otp-group[data-appearance="grouped"] .ui-otp-slot[data-active="true"] {
-  box-shadow: none;
-}
-.ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
-  border-color: hsl(var(--focus-ring-color, var(--ring)));
-  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
-}
-.ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-group[data-appearance="grouped"] {
-  border-color: hsl(var(--destructive));
-}
-.ui-otp-container:has(.ui-otp-input[aria-invalid="true"])
-  .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
-  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
-}
-.ui-otp-container:has(.ui-otp-input:disabled) .ui-otp-group[data-appearance="grouped"] {
-  background: hsl(var(--muted));
-}
-.ui-otp-slot[data-active="true"] {
-  z-index: 1;
-  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
-}
-.ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot {
-  border-color: hsl(var(--destructive));
-}
-.ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot[data-active="true"] {
-  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
-}
-.ui-otp-container:has(.ui-otp-input:disabled) .ui-otp-slot {
-  cursor: not-allowed;
-  background: hsl(var(--muted));
-  color: hsl(var(--muted-foreground));
-}
-.ui-otp-caret-wrapper {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.ui-otp-caret {
-  width: var(--otp-caret-inline-size);
-  height: var(--otp-caret-block-size);
-  background: hsl(var(--foreground));
-  animation: ui-otp-blink 1s step-end infinite;
-}
-@keyframes ui-otp-blink {
-  50% {
-    opacity: 0;
+  .ui-otp-container:has(.ui-otp-input[data-align="center"]) {
+    justify-content: center;
   }
-}
-.ui-otp-separator-icon {
-  width: var(--otp-separator-icon-size);
-  height: var(--otp-separator-icon-size);
-  color: hsl(var(--muted-foreground));
-}
+  .ui-otp-container:has(.ui-otp-input[data-align="end"]) {
+    justify-content: flex-end;
+  }
+  .ui-otp-input:disabled {
+    cursor: not-allowed;
+  }
+  .ui-otp-group {
+    display: flex;
+    align-items: center;
+  }
+  .ui-otp-slot {
+    position: relative;
+    display: flex;
+    width: var(--otp-slot-inline-size, var(--otp-slot-size, var(--control-height)));
+    height: var(--otp-slot-block-size, var(--otp-slot-size, var(--control-height)));
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-base);
+    border: var(--control-border-width) solid hsl(var(--border));
+    border-inline-start-width: 0;
+    background: hsl(var(--background));
+    transition: box-shadow 0.15s ease;
+  }
+  .ui-otp-group .ui-otp-slot:first-child {
+    border-inline-start-width: var(--control-border-width);
+    border-start-start-radius: var(--radius-md);
+    border-end-start-radius: var(--radius-md);
+  }
+  .ui-otp-group .ui-otp-slot:last-child {
+    border-start-end-radius: var(--radius-md);
+    border-end-end-radius: var(--radius-md);
+  }
+  .ui-otp-group[data-appearance="grouped"] {
+    overflow: hidden;
+    border: var(--control-border-width) solid hsl(var(--border));
+    border-radius: var(--radius-md);
+    background: hsl(var(--background));
+  }
+  .ui-otp-group[data-appearance="grouped"] .ui-otp-slot {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .ui-otp-group[data-appearance="grouped"] .ui-otp-slot[data-active="true"] {
+    box-shadow: none;
+  }
+  .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
+    border-color: hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1));
+    box-shadow: 0 0 0 var(--focus-ring-width)
+      hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1));
+  }
+  .ui-otp-container:has(.ui-otp-input[aria-invalid="true"])
+    .ui-otp-group[data-appearance="grouped"] {
+    border-color: hsl(var(--destructive));
+  }
+  .ui-otp-container:has(.ui-otp-input[aria-invalid="true"])
+    .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
+  }
+  .ui-otp-container:has(.ui-otp-input:disabled) .ui-otp-group[data-appearance="grouped"] {
+    background: hsl(var(--muted));
+  }
+  .ui-otp-slot[data-active="true"] {
+    z-index: 1;
+    box-shadow: 0 0 0 var(--focus-ring-width)
+      hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1));
+  }
+  .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot {
+    border-color: hsl(var(--destructive));
+  }
+  .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot[data-active="true"] {
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
+  }
+  .ui-otp-container:has(.ui-otp-input:disabled) .ui-otp-slot {
+    cursor: not-allowed;
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+  }
+  .ui-otp-caret-wrapper {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ui-otp-caret {
+    width: var(--otp-caret-inline-size);
+    height: var(--otp-caret-block-size);
+    background: hsl(var(--foreground));
+    animation: ui-otp-blink 1s step-end infinite;
+  }
+  @keyframes ui-otp-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  .ui-otp-separator-icon {
+    width: var(--otp-separator-icon-size);
+    height: var(--otp-separator-icon-size);
+    color: hsl(var(--muted-foreground));
+  }
 
-/* Rating */
-.ui-rating {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  /* A 10-star scale needs ~276px of hit area; a 320px viewport offers ~212 inside a card. */
-  flex-wrap: wrap;
-}
-.ui-rating-star {
-  /* ≥24px hit area (WCAG 2.5.8) around the 20px glyph */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.5rem;
-  min-height: 1.5rem;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  color: hsl(var(--muted-foreground) / 0.45);
-  line-height: 0;
-}
-.ui-rating-star:disabled {
-  cursor: default;
-}
-.ui-rating-star svg {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-.ui-rating-star-filled {
-  color: hsl(var(--warning));
-}
-.ui-rating-star-filled svg {
-  fill: currentColor;
-}
-.ui-rating-star:focus-visible {
-  border-radius: var(--radius-sm);
-}
+  /* Rating */
+  .ui-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    /* A 10-star scale needs ~276px of hit area; a 320px viewport offers ~212 inside a card. */
+    flex-wrap: wrap;
+  }
+  .ui-rating-star {
+    /* ≥24px hit area (WCAG 2.5.8) around the 20px glyph */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    color: hsl(var(--muted-foreground) / 0.45);
+    line-height: 0;
+  }
+  .ui-rating-star:disabled {
+    cursor: default;
+  }
+  .ui-rating-star svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .ui-rating-star-filled {
+    color: hsl(var(--warning));
+  }
+  .ui-rating-star-filled svg {
+    fill: currentColor;
+  }
+  .ui-rating-star:focus-visible {
+    border-radius: var(--radius-sm);
+  }
 
-/* TagInput */
-.ui-tag-input {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: var(--control-height);
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid hsl(var(--input));
-  border-radius: var(--radius-md);
-  background: hsl(var(--background));
-}
-.ui-tag-input:focus-within {
-  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
-  border-color: hsl(var(--focus-ring-color, var(--ring)));
-}
-.ui-tag-input-disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-/* The chip list is its own flex row: a real `gap` separates peer chips on the 8px step (distinct
+  /* TagInput */
+  .ui-tag-input {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--control-height);
+    padding: var(--space-1) var(--control-padding-x);
+    border: var(--control-border-width) solid hsl(var(--input));
+    border-radius: var(--control-radius);
+    background: hsl(var(--background));
+    box-shadow: var(--control-shadow);
+  }
+  .ui-tag-input-disabled {
+    opacity: var(--disabled-opacity);
+    cursor: not-allowed;
+  }
+  /* The chip list is its own flex row: a real `gap` separates peer chips on the 8px step (distinct
  * concepts, not a tight group) instead of relying on collapsed inline whitespace, and flex drops
  * the inter-element whitespace. */
-.ui-tag-input-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.ui-tag-input-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  font-size: var(--tag-input-chip-font-size);
-  padding: 0.0625rem var(--space-2);
-  border-radius: var(--radius-sm);
-  background: hsl(var(--secondary));
-  color: hsl(var(--secondary-foreground));
-}
-.ui-tag-input-remove {
-  /* ≥24px hit area (WCAG 2.5.8) around the 12px glyph; negative inline margin keeps the chip tight */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.5rem;
-  min-height: 1.5rem;
-  margin-inline-end: -0.25rem;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  color: inherit;
-  opacity: 0.7;
-}
-.ui-tag-input-remove:hover {
-  opacity: 1;
-}
-.ui-tag-input-remove svg {
-  width: 0.75rem;
-  height: 0.75rem;
-}
-.ui-tag-input-field {
-  flex: 1;
-  min-width: 6rem;
-  border: 0;
-  outline: none;
-  background: transparent;
-  font-size: var(--font-size-base);
-  color: inherit;
-}
+  .ui-tag-input-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ui-tag-input-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--tag-input-chip-font-size);
+    padding: 0.0625rem var(--space-2);
+    border-radius: var(--radius-sm);
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+  }
+  .ui-tag-input-remove {
+    /* ≥24px hit area (WCAG 2.5.8) around the 12px glyph; negative inline margin keeps the chip tight */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    margin-inline-end: -0.25rem;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+  }
+  .ui-tag-input-remove:hover {
+    opacity: 1;
+  }
+  .ui-tag-input-remove svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+  .ui-tag-input-field {
+    flex: 1;
+    min-width: 6rem;
+    block-size: calc(var(--control-height) - var(--space-1) * 2 - var(--control-border-width) * 2);
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-size: var(--control-font-size);
+    color: inherit;
+  }
 
-/* NumberInput — spinbutton: composed Input + leading/trailing affix + stepper Buttons. */
-.ui-number-input {
-  position: relative;
-  display: inline-flex;
-  align-items: stretch;
-  inline-size: 100%;
-}
-.ui-number-input[data-size="xs"] {
-  --control-height: var(--control-height-xs);
-}
-.ui-input[data-size="sm"] {
-  --control-height: var(--control-height-sm);
-}
+  /* NumberInput — spinbutton: composed Input + leading/trailing affix + stepper Buttons. */
+  .ui-number-input {
+    position: relative;
+    display: inline-flex;
+    align-items: stretch;
+    inline-size: 100%;
+  }
+  .ui-number-input[data-size="xs"] {
+    --control-height: var(--control-height-xs);
+  }
+  .ui-input[data-size="sm"] {
+    --control-height: var(--control-height-sm);
+  }
 
-.ui-number-input[data-size="sm"] {
-  --control-height: var(--control-height-sm);
-}
-.ui-number-input[data-size="lg"] {
-  --control-height: var(--control-height-lg);
-}
-/* Reserve room on the trailing edge for the stacked steppers (logical inline-end). */
-.ui-number-input-field {
-  inline-size: 100%;
-  text-align: end;
-  padding-inline-end: calc(var(--control-height) + var(--space-2));
-}
-/* A leading/trailing decorative affix (¥, %) — overlays inside the field. */
-.ui-number-input-affix {
-  position: absolute;
-  inset-block: 0;
-  display: inline-flex;
-  align-items: center;
-  color: hsl(var(--muted-foreground));
-  font-size: var(--font-size-base);
-  pointer-events: none;
-}
-.ui-number-input-affix:first-of-type {
-  inset-inline-start: var(--control-padding-x);
-}
-/* With a leading affix, pad the field's inline-start so digits don't sit under it. */
-.ui-number-input:has(.ui-number-input-affix:first-of-type) .ui-number-input-field {
-  padding-inline-start: calc(var(--control-padding-x) + 1.25rem);
-}
-.ui-number-input-affix:last-of-type {
-  inset-inline-end: calc(var(--control-height) + var(--space-2));
-}
-.ui-number-input-steppers {
-  position: absolute;
-  inset-inline-end: var(--space-1);
-  inset-block: 0;
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.0625rem;
-  pointer-events: none;
-}
-.ui-number-input-step {
-  pointer-events: auto;
-  block-size: calc(var(--control-height) / 2 - 0.1875rem);
-  min-block-size: 0;
-  inline-size: 1.5rem;
-}
-.ui-number-input-step svg {
-  inline-size: 0.75rem;
-  block-size: 0.75rem;
+  .ui-number-input[data-size="sm"] {
+    --control-height: var(--control-height-sm);
+  }
+  .ui-number-input[data-size="lg"] {
+    --control-height: var(--control-height-lg);
+  }
+  /* Reserve room on the trailing edge for the stacked steppers (logical inline-end). */
+  .ui-number-input-field {
+    inline-size: 100%;
+    text-align: end;
+    padding-inline-end: calc(var(--control-height) + var(--space-2));
+  }
+  /* A leading/trailing decorative affix (¥, %) — overlays inside the field. */
+  .ui-number-input-affix {
+    position: absolute;
+    inset-block: 0;
+    display: inline-flex;
+    align-items: center;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-base);
+    pointer-events: none;
+  }
+  .ui-number-input-affix:first-of-type {
+    inset-inline-start: var(--control-padding-x);
+  }
+  /* With a leading affix, pad the field's inline-start so digits don't sit under it. */
+  .ui-number-input:has(.ui-number-input-affix:first-of-type) .ui-number-input-field {
+    padding-inline-start: calc(var(--control-padding-x) + 1.25rem);
+  }
+  .ui-number-input-affix:last-of-type {
+    inset-inline-end: calc(var(--control-height) + var(--space-2));
+  }
+  .ui-number-input-steppers {
+    position: absolute;
+    inset-inline-end: var(--space-1);
+    inset-block: 0;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.0625rem;
+    pointer-events: none;
+  }
+  .ui-number-input-step {
+    pointer-events: auto;
+    block-size: calc(var(--control-height) / 2 - 0.1875rem);
+    min-block-size: 0;
+    inline-size: 1.5rem;
+  }
+  .ui-number-input-step svg {
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+  }
 }
 
 @layer components {
@@ -1955,7 +1976,7 @@
     align-items: center;
     gap: var(--control-composite-field-space-gap);
     border-radius: var(--control-radius);
-    border: 1px solid hsl(var(--input));
+    border-color: hsl(var(--input));
     background: hsl(var(--background));
     outline: none;
     transition:

@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  controlFieldClass,
   controlIconClass,
   controlIconSmClass,
   controlMultilineClass,
@@ -17,12 +16,6 @@ import {
 
 describe("control-styles (token wiring)", () => {
   describe("form controls", () => {
-    it("controlFieldClass uses ui-control + ring token", () => {
-      expect(controlFieldClass).toContain("ui-control");
-      expect(controlFieldClass).toContain("border-input");
-      expect(controlFieldClass).not.toMatch(/ring-\[|ring-ring\//);
-    });
-
     it("controlMultilineClass uses ui-control-multiline", () => {
       expect(controlMultilineClass).toContain("ui-control-multiline");
       expect(controlMultilineClass).toContain("border-input");

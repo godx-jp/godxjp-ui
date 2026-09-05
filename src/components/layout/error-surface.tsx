@@ -25,13 +25,24 @@ export type { ErrorSurfaceModeProp, ErrorSurfaceStatusProp } from "../../props/v
  * Status → default icon + tone. Closed set (RFC 9110 §15.5.1 / §15.5.4 / §15.5.5 / §15.6.1 /
  * §15.6.4): the five exception pages every application ships.
  */
-const STATUS_META: Record<ErrorSurfaceStatusProp, { icon: IconProp; tone: EmptyStateToneProp }> = {
+type StatusMeta = { icon: IconProp; tone: EmptyStateToneProp };
+const STATUS_META: Partial<Record<number, StatusMeta>> = {
   400: { icon: TriangleAlert, tone: "warning" },
   403: { icon: ShieldAlert, tone: "warning" },
   404: { icon: SearchX, tone: "muted" },
   500: { icon: ServerCrash, tone: "destructive" },
   503: { icon: Wrench, tone: "warning" },
 };
+
+/** Any status outside the curated five renders by class: 4xx is the caller's request, 5xx the server. */
+function statusMeta(status: number): StatusMeta {
+  return (
+    STATUS_META[status] ??
+    (status >= 500 && status < 600
+      ? { icon: ServerCrash, tone: "destructive" }
+      : { icon: TriangleAlert, tone: "warning" })
+  );
+}
 
 /**
  * EXACTLY ONE recovery action, enforced structurally. The slot is single by construction; this
@@ -114,7 +125,7 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
     ref,
   ) {
     const { t, locale } = useTranslation();
-    const meta = STATUS_META[status];
+    const meta = statusMeta(status);
     const resolvedIcon = icon ?? meta.icon;
     const resolvedTone = tone ?? meta.tone;
     // The surface IS the page in system mode (h1); in application mode a PageContainer h1 sits

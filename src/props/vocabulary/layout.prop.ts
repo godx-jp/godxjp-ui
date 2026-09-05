@@ -35,7 +35,8 @@ export type ErrorSurfaceModeProp = "application" | "system";
  * app ships (RFC 9110 §15.5.1 / §15.5.4 / §15.5.5 / §15.6.1 / §15.6.4); it drives the default
  * icon, tone and the recommended `mode`.
  */
-export type ErrorSurfaceStatusProp = 400 | 403 | 404 | 500 | 503;
+/** Five curated statuses carry their own glyph and tone; any other HTTP status renders with a class-based fallback (4xx warning, 5xx destructive). */
+export type ErrorSurfaceStatusProp = 400 | 403 | 404 | 500 | 503 | (number & {});
 
 /**
  * AuthShell named flow preset — the page MEASURE contract for a canonical hosted-identity flow

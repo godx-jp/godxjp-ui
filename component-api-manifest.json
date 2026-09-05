@@ -5525,7 +5525,7 @@
           "origin": "owned",
           "required": true,
           "type": "ErrorSurfaceStatusProp",
-          "values": [400, 403, 404, 500, 503],
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {

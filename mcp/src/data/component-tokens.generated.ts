@@ -594,11 +594,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
   },
   {
-    "name": "--control-focus-ring-width",
-    "value": "var(--focus-ring-width)",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
-  },
-  {
     "name": "--toggle-focus-ring-width",
     "value": "var(--stroke-lg)",
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
@@ -606,16 +601,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--toggle-focus-ring-alpha",
     "value": "0.35",
-    "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
-  },
-  {
-    "name": "--time-input-focus-ring-width",
-    "value": "var(--stroke-lg)",
-    "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
-  },
-  {
-    "name": "--time-input-focus-ring-alpha",
-    "value": "0.3",
     "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
   },
   {

@@ -1,9 +1,6 @@
 /** Shared control sizing — reads `--control-height`, `--font-size-*` from density / theme. */
-export const controlFieldClass =
-  "ui-control w-full rounded-[var(--control-radius)] border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
-
 export const controlMultilineClass =
-  "ui-control-multiline w-full rounded-[var(--control-radius)] border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
+  "ui-control-multiline aria-invalid:border-destructive w-full rounded-[var(--control-radius)] border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none";
 
 /**
  * Multiline control with its own chrome removed, for a textarea EMBEDDED in a surface that already
@@ -11,7 +8,7 @@ export const controlMultilineClass =
  * Two nested rounded borders is the tell that this was missing.
  */
 export const controlMultilineGhostClass =
-  "ui-control-multiline w-full min-h-0 border-0 bg-transparent shadow-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50";
+  "ui-control-multiline w-full min-h-0 border-0 bg-transparent shadow-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0";
 
 /**
  * Open-state ring for popup-style triggers (Select / Cascader / TreeSelect / SearchSelect). Radix
@@ -21,7 +18,7 @@ export const controlMultilineGhostClass =
 export const controlOpenRingClass = "ui-control-trigger";
 
 export const controlTriggerClass =
-  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] border border-input bg-background shadow-sm transition-[color,box-shadow] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1";
+  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] border-input bg-background transition-[color,box-shadow] focus-visible:outline-none [&>span]:line-clamp-1";
 
 export const controlIconClass = "size-[length:var(--control-height)] shrink-0";
 

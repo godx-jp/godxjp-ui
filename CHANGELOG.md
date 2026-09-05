@@ -6,6 +6,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.2.0] - 2026-09-05
+
+### Fixed
+
+- **Control tokens reach every control (#334).** `--control-border-width`, `--control-shadow`
+  and `--disabled-opacity` now paint Textarea, SelectTrigger, MonthPicker, MonthRangePicker,
+  DateRangePicker, TagInput and InputOTP, not only Input. The `border`, `shadow-sm` and
+  `disabled:opacity-50` utilities that outranked them are gone from `controlTriggerClass` and
+  `controlMultilineClass`; `.ui-control:disabled` owns the disabled affordance.
+- **Invalid state paints on every control (#334).** Textarea, TagInput, Switch and the composite
+  pickers honour `aria-invalid`.
+- **Buttons show `cursor: pointer` (#334).**
+- **TagInput sits on the control geometry (#334).** Height, radius, shadow, padding and font size
+  read the `--control-*` tokens; its focus ring comes from `focus-ring.css` like every other field.
+- **InputOTP rings read `--focus-ring-opacity` (#334).**
+- **The whole of `control.css` is layered (#334).** The PasswordInput, InputOTP, Rating, TagInput
+  and NumberInput block sat outside `@layer components` and outranked utilities.
+- **`ErrorSurface` accepts any HTTP status (#336).** Unknown 4xx render as warning, unknown 5xx
+  as destructive.
+- **`PageContainer` footer keeps its bottom inset (#340).** `--page-footer-pad-block-end`.
+- **`NumberInput` forwards `data-field` (#337).**
+
+### Removed
+
+- `controlFieldClass` (dead export), `--control-focus-ring-width` and the `--time-input-focus-ring-*`
+  tokens and `.ui-time-input` rules (TimeInput no longer exists).
+
 ### Fixed
 
 - **`scripts/ui-audit.mjs` cut its JSON report at 64 KB.** It called `process.exit()` on the

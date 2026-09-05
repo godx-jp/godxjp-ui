@@ -129,6 +129,7 @@ export function DateRangePicker({
             // One input-styled shell for the whole range — the shared composite-field box, so
             // this and the month range picker cannot drift into two slightly different fields.
             "ui-control ui-control-composite-field",
+            "aria-invalid:border-destructive",
             className,
           )}
           onClick={() => {

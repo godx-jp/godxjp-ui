@@ -512,6 +512,7 @@
   .ui-page-footer {
     padding-inline-start: var(--space-page-active-x);
     padding-inline-end: var(--space-page-active-x);
+    padding-block-end: var(--page-footer-pad-block-end);
   }
 
   .ui-page-container--narrow .ui-page-body {

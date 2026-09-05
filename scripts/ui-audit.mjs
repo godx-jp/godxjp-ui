@@ -352,23 +352,24 @@ const RULES = [
  * so the executable rules and the agent-facing docs never drift.
  */
 if (args.includes("--rules")) {
-  process.stdout.write(
-    JSON.stringify(
-      RULES.map((r) => ({
-        id: r.id,
-        severity: r.severity,
-        standard: r.standard ?? null,
-        message: r.message,
-      })),
-      null,
-      2,
-    ) + "\n",
+  await new Promise((resolve) =>
+    process.stdout.write(
+      JSON.stringify(
+        RULES.map((r) => ({
+          id: r.id,
+          severity: r.severity,
+          standard: r.standard ?? null,
+          message: r.message,
+        })),
+        null,
+        2,
+      ) + "\n",
+      resolve,
+    ),
   );
-  // Not process.exit(): stdout to a pipe is asynchronous, and exiting on
-  // the next line cut the report at 64 KB for a consumer with many findings
-  // (measured: 65536 of 367635 bytes reached Laravel's Process, and its
-  // JSON parse failed). Setting the code lets the stream drain.
-  process.exitCode = 0;
+  // Exit only once the pipe has drained (a bare process.exit() cut a 367 KB report at 64 KB),
+  // and never fall through to the scan, whose summary line would corrupt the JSON.
+  process.exit(0);
 }
 
 /**

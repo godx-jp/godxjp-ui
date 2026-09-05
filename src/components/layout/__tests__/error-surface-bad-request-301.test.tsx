@@ -54,7 +54,9 @@ describe("ErrorSurface status=400 (gh#301)", () => {
   it("admits 400 into the closed status vocabulary — no consumer cast", () => {
     // Erased at runtime; enforced by `pnpm typecheck`. A consumer writing `status={400}` compiles
     // only while 400 is a member, which is the entire point of the issue.
-    expectTypeOf<ErrorSurfaceStatusProp>().toEqualTypeOf<400 | 403 | 404 | 500 | 503>();
+    expectTypeOf<ErrorSurfaceStatusProp>().toEqualTypeOf<
+      400 | 403 | 404 | 500 | 503 | (number & {})
+    >();
     expectTypeOf<400>().toMatchTypeOf<ErrorSurfaceStatusProp>();
   });
 
@@ -120,6 +122,54 @@ describe("ErrorSurface status=400 (gh#301)", () => {
           <BadRequestSurface />
         </PageContainer>
       </AppShell>,
+    );
+  });
+});
+
+describe("ErrorSurface — statuses outside the curated five render by class (gh#336)", () => {
+  it.each([
+    [409, "warning"],
+    [422, "warning"],
+    [429, "warning"],
+    [502, "destructive"],
+    [504, "destructive"],
+  ] as const)("renders %i with the %s fallback tone instead of throwing", (status, tone) => {
+    const { container } = renderWithUi(
+      <ErrorSurface
+        mode="system"
+        status={status}
+        title="Conflict"
+        action={<Button>Back</Button>}
+      />,
+    );
+    expect(container.querySelector('[data-slot="error-surface"]')).not.toBeNull();
+    expect(container.querySelector('[data-slot="empty-state"]')).toHaveAttribute("data-tone", tone);
+  });
+
+  it("keeps the curated entries ahead of the fallback", () => {
+    const { container } = renderWithUi(
+      <ErrorSurface mode="system" status={404} title="Not found" action={<Button>Back</Button>} />,
+    );
+    expect(container.querySelector('[data-slot="empty-state"]')).toHaveAttribute(
+      "data-tone",
+      "muted",
+    );
+  });
+
+  it("an explicit icon/tone override never reads the table", () => {
+    const { container } = renderWithUi(
+      <ErrorSurface
+        mode="system"
+        status={418}
+        title="Teapot"
+        icon={ShieldAlert}
+        tone="muted"
+        action={<Button>Back</Button>}
+      />,
+    );
+    expect(container.querySelector('[data-slot="empty-state"]')).toHaveAttribute(
+      "data-tone",
+      "muted",
     );
   });
 });

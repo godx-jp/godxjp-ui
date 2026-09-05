@@ -197,6 +197,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
           role="spinbutton"
           data-slot="number-input-field"
           data-testid={dataTestId}
+          data-field={(ariaProps as { "data-field"?: string })["data-field"]}
           className="ui-number-input-field"
           value={draft}
           placeholder={placeholder}
