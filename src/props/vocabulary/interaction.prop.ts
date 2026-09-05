@@ -30,7 +30,7 @@ export type TextToneProp =
 
 /** Font weight — the reference-design canon is THREE weights only: `regular` (400 body), `medium` (500
  *  heading/label), `bold` (700 emphasis). 600/`semibold` is forbidden. */
-export type FontWeightProp = "regular" | "medium" | "bold";
+export type FontWeightProp = "regular" | "medium" | "semibold" | "bold";
 
 /** Heading level — drives both the `--heading-h*` size token and the semantic `<h1..h4>` element. */
 export type HeadingLevelProp = 1 | 2 | 3 | 4;

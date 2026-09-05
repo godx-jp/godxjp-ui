@@ -1,11 +1,11 @@
 /* ─────────────────────────────────────────────────────────────────────────
  * ALL-IN-ONE stylesheet — fonts + foundation + EVERY component layout layer.
  * Zero-config: `@import "@godxjp/ui/styles";` and everything is styled.
+ * Without the bundled fonts: `@import "@godxjp/ui/styles/core";` (same layers, no @font-face).
+ * Do NOT cherry-pick `*-layout.css` files — layers depend on each other (Select rows, menu
+ * surfaces, form rhythm) and a missing one fails silently. `core` is the supported subset.
  *
  * For a smaller build that ships only what you render, DON'T use this. Instead:
- *   @import "@godxjp/ui/styles/base";        // required foundation
- *   @import "@godxjp/ui/styles/control";     // + only the layout layers you use
- *   @import "@godxjp/ui/styles/dialog-layout";
  *   ...
  * and add `@godxjp/ui/styles/fonts` AFTER `styles/base` if you want the bundled
  * faces. See src/styles/base.css for the full list and rules.

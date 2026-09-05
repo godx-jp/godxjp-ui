@@ -545,6 +545,8 @@
    * through --space-section / --space-section-compact, exactly as before. */
   .ui-page-container {
     --page-band-gap: var(--space-section-active);
+    --page-body-gap: var(--space-section-active);
+    --page-body-gap: var(--space-section-active);
 
     display: flex;
     flex-direction: column;
@@ -1028,6 +1030,26 @@
   .ui-page-body {
     min-width: 0;
     container-type: inline-size;
+  }
+
+  /* Sections in the body are spaced by DEFAULT. Before this rule the body was plain block flow:
+   * two Cards dropped straight into PageContainer touched each other, and the only cure was a
+   * consumer-side `<Flex direction="col">` the docs mentioned and nobody was forced to read
+   * (Bug Shot shipped 7 cards with 0px between them). The gap now comes from the page, at the
+   * section step; a consumer that already wraps its sections in one Flex sees no change (one
+   * child, no sibling margin). Token-owned so a service can retune it; `0` opts out. */
+  .ui-page-body > * + * {
+    margin-block-start: var(--page-body-gap);
+  }
+
+  /* Sections in the body are spaced by DEFAULT. Before this rule the body was plain block flow:
+   * two Cards dropped straight into PageContainer touched each other, and the only cure was a
+   * consumer-side `<Flex direction="col">` the docs mentioned and nobody was forced to read
+   * (Bug Shot shipped 7 cards with 0px between them). The gap now comes from the page, at the
+   * section step; a consumer that already wraps its sections in one Flex sees no change (one
+   * child, no sibling margin). Token-owned so a service can retune it; `0` opts out. */
+  .ui-page-body > * + * {
+    margin-block-start: var(--page-body-gap);
   }
 
   /* fill = body grows to fill the remaining shell height (full-height DataTable,

@@ -128,79 +128,25 @@ font `<link>`:
 ```css
 /* resources/css/app.css */
 @import "@godxjp/ui/styles";
-@source '../js/**/*.{ts,tsx}';
-@source '../views';
+@source "../js/**/*.{ts,tsx}";
+@source "../views";
 ```
 
 ### Slim build — ship only the CSS you use
 
 `@godxjp/ui/styles` is the zero-config all-in-one (every component's CSS +
-bundled fonts). To ship only what you render, import the foundation plus the
-per-layer files you need (mirrors the JS subpaths — the CSS tree-shakes too):
+bundled fonts). Managing fonts yourself (next/font, a system stack, an extension
+that must not ship font files)? Load the same layers without the faces:
 
 ```css
-@import "@godxjp/ui/styles/base"; /* required: tokens + tailwind + base layer */
-@import "@godxjp/ui/styles/control"; /* Button, Input, Select, Textarea, toggles */
-@import "@godxjp/ui/styles/form-layout"; /* FormField */
-@import "@godxjp/ui/styles/dialog-layout"; /* Dialog */
-/* …only the layers you use. Layer files need `base` first (they use @layer/@apply). */
-@import "@godxjp/ui/styles/fonts"; /* optional bundled faces — MUST come after `base` */
+@import "@godxjp/ui/styles/core"; /* every component layer, no @font-face */
 ```
 
-Skip `@godxjp/ui/styles/fonts` when you manage fonts yourself (next/font, etc.)
-and set the font tokens instead (see below). A marketing site using ~10
-components typically drops component CSS from ~142K → ~26K gzip.
-
-> **Import order rule — `fonts` after `base`.** `styles/base` pulls in the token
-> layers, whose font-agnostic `:root { --font-sans-base: <system stack> }` sits at
-> the same specificity (0,1,0) as the bundle's fill, so the later import wins.
-> Import `styles/fonts` first and the bundled faces silently never apply while the
-> ~800 KB of `@font-face` still ships. The all-in-one `@godxjp/ui/styles` entry
-> already orders this correctly.
-
-### Fonts — token-driven, per-language, no library hardcoding
-
-The base ships NO hardcoded brand face. Supply your own faces and set tokens —
-one face everywhere, or per-language (no `[lang]` selectors to write):
-
-```css
-:root {
-  --font-sans-base: var(--my-latin), system-ui, sans-serif; /* default face */
-  --font-sans-ja: "Noto Sans JP", var(--font-sans-base); /* lang="ja" */
-  --font-sans-vi: "Montserrat", var(--font-sans-base); /* lang="vi" */
-  /* also: --font-sans-ko, --font-sans-zh-hans, --font-sans-zh-hant */
-}
-```
-
-`styles/base.css` wires each `[lang]` to its slot (falling back to
-`--font-sans-base`); the opt-in `styles/fonts` overwrites `--font-sans-base` (and
-`--font-sans-vi`) with the bundled DXS stack — **M PLUS 2** primary with **Noto
-Sans JP** as the CJK fallback.
-
-> **The bundled faces changed in v18.** v16 bundled Noto Sans JP + Montserrat;
-> v18 bundles M PLUS 2 (primary, incl. Vietnamese coverage) + Noto Sans JP (CJK
-> fallback). If your design spec named the v16 faces, set the tokens yourself
-> instead of relying on the bundle.
-
-```tsx
-import { AppProvider } from "@godxjp/ui/app"; // locale, tz, date/time format
-import { PageContainer } from "@godxjp/ui/layout"; // every page wraps in this
-```
-
-### Mandatory consumer rules
-
-1. **Every page** uses `<PageContainer title subtitle extra footer>`.
-2. **Mobile-first** — verify at 320–390px in preview / browser.
-3. **Spacing via `Flex` `gap` + `ResponsiveGrid`** — no Tailwind `p-*` /
-   `gap-*` / `space-x|y-*` for app layout (see `docs/SPACING.md`).
-4. **Semantic tokens only** — no raw colors / hex / `dark:` overrides.
-5. **Dates** display via `formatDate` from `@godxjp/ui/datetime`.
-6. **`AppProvider`** wraps the app for locale / timezone / date-time format.
-7. **Audit** — `npm run ui:audit` must report 0 errors for touched files.
-
-Full app-developer rules: [ui-standardization.md](../../.claude/skills/frontend-design/rules/ui-standardization.md).
-
----
+> **Do not cherry-pick `*-layout.css` files.** Layers depend on each other (a
+> Select's rows, a menu's surface, a form's rhythm live in shared rules) and a
+> missing layer fails silently: menus render with no background, rows with no
+> height. `styles` and `styles/core` are the two supported entries; the runtime
+> `visual-audit` flags a page whose layers are incomplete (`css-layers-missing`).
 
 ## Golden ratio (φ ≈ 1.618)
 

@@ -40,6 +40,10 @@ import {
   isUndersizedTarget,
   hasEmoji,
   alertControlIssues,
+  missingCssLayers,
+  controlHeightMismatches,
+  tightCardPairs,
+  starvedRowTexts,
 } from "./visual-audit-rules.mjs";
 
 /**
@@ -195,7 +199,80 @@ function collectInPage() {
     });
   }
 
-  return { accents, targets, text, alerts };
+  // Layer completeness — one probe per layer, each checks a rule only that layer sets.
+  const probe = (layer, className, prop, bad) => {
+    const el = document.createElement("div");
+    el.className = className;
+    el.style.position = "absolute";
+    el.style.visibility = "hidden";
+    document.body.appendChild(el);
+    const v = getComputedStyle(el)[prop];
+    el.remove();
+    return { layer, ok: v !== bad && v !== "" };
+  };
+  const layers = [
+    probe("control", "ui-button", "borderRadius", "0px"),
+    probe("navigation-layout", "ui-dropdown-menu-content", "borderTopWidth", "0px"),
+    probe("card-layout", "ui-card", "borderTopWidth", "0px"),
+    probe("layout", "ui-page-container", "display", "block"),
+    probe("dialog-layout", "ui-dialog-content", "position", "static"),
+    probe("form-layout", "ui-form-field", "display", "inline"),
+  ];
+  // Control rows — every control in a row shares the control tier height.
+  const rows = [];
+  for (const row of document.querySelectorAll(
+    ".ui-flex[data-direction=row], .ui-page-header-extra, .ui-page-footer .ui-flex, [data-slot=card-bar]",
+  )) {
+    if (!visible(row)) continue;
+    const controls = [...row.children].filter(
+      (c) =>
+        visible(c) &&
+        (c.matches(
+          "button, [role=combobox], [role=button], input, [data-slot=avatar], .ui-control, .ui-button",
+        ) ||
+          c.querySelector(":scope > button, :scope > [role=combobox]")),
+    );
+    if (controls.length < 2) continue;
+    rows.push({
+      name: (row.className || row.tagName).toString().slice(0, 40),
+      heights: controls.map((c) => Math.round(c.getBoundingClientRect().height)),
+    });
+  }
+  // Sibling cards — the gap between consecutive cards in one parent.
+  const cardPairs = [];
+  const seen = new Set();
+  for (const card of document.querySelectorAll(".ui-card, [data-slot=card]")) {
+    const parent = card.parentElement;
+    if (!parent || seen.has(parent)) continue;
+    seen.add(parent);
+    const cards = [...parent.children].filter(
+      (c) => c.matches(".ui-card, [data-slot=card]") && visible(c),
+    );
+    for (let i = 1; i < cards.length; i++) {
+      const a = cards[i - 1].getBoundingClientRect();
+      const b = cards[i].getBoundingClientRect();
+      const gap =
+        b.top >= a.bottom - 1 ? Math.round(b.top - a.bottom) : Math.round(b.left - a.right);
+      cardPairs.push({ gap });
+    }
+  }
+  // Starved text — a text node in a control row squeezed far below what it needs.
+  const rowTexts = [];
+  for (const row of document.querySelectorAll(
+    ".ui-flex[data-direction=row], .ui-page-footer .ui-flex",
+  )) {
+    for (const t of row.querySelectorAll("[data-slot=text], span, label")) {
+      if (!visible(t) || t.children.length) continue;
+      const cs = getComputedStyle(t);
+      if (cs.overflow !== "hidden" && cs.textOverflow !== "ellipsis") continue;
+      rowTexts.push({
+        text: (t.textContent || "").trim().slice(0, 30),
+        visible: Math.round(t.clientWidth),
+        needed: Math.round(t.scrollWidth),
+      });
+    }
+  }
+  return { accents, targets, text, alerts, layers, rows, cardPairs, rowTexts };
 }
 /* c8 ignore stop */
 
@@ -296,6 +373,39 @@ async function audit(targets, { chromium, AxeBuilder }) {
             buildFinding("emoji-rendered", url, `emoji rendered in product text: ${found}`),
           );
         }
+        for (const layer of missingCssLayers(m.layers || []))
+          findings.push(
+            buildFinding(
+              "css-layers-missing",
+              url,
+              `component layer "${layer}" is not loaded — its rules do not resolve`,
+            ),
+          );
+        for (const r of controlHeightMismatches(m.rows || []))
+          findings.push(
+            buildFinding(
+              "control-height-mismatch",
+              url,
+              `row "${r.name}" mixes control heights ${[...new Set(r.heights)].join("/")}px`,
+            ),
+          );
+        const tight = tightCardPairs(m.cardPairs || []);
+        if (tight.length)
+          findings.push(
+            buildFinding(
+              "sibling-card-gap",
+              url,
+              `${tight.length} adjacent Card pair(s) closer than 8px (min gap ${Math.min(...tight.map((p) => p.gap))}px)`,
+            ),
+          );
+        for (const t of starvedRowTexts(m.rowTexts || []))
+          findings.push(
+            buildFinding(
+              "row-content-starved",
+              url,
+              `text "${t.text}" squeezed to ${t.visible}px of ${t.needed}px by a sibling in its row`,
+            ),
+          );
         m.alerts.forEach((al, i) => {
           for (const issue of alertControlIssues(al))
             findings.push(

@@ -9,7 +9,7 @@
  * left to an EXPLICIT `npx @godxjp/ui init-agent`, since hooks change the dev loop and
  * should be opted into, not forced on install. Set GODXJP_UI_SKIP_SETUP=1 to disable.
  */
-import { ensureMcpJson, shouldSkip } from "./_agent-setup.mjs";
+import { ensureClaudeMd, ensureMcpJson, shouldSkip, writeWorkflowMd } from "./_agent-setup.mjs";
 
 const root = process.env.INIT_CWD || process.cwd();
 
@@ -18,11 +18,17 @@ if (skip) process.exit(0); // silent: CI / opt-out / self-install / no consumer 
 
 try {
   const r = ensureMcpJson(root);
-  if (r === "present") process.exit(0); // already configured — stay quiet
+  // The mandate is plain text the agent reads every turn (CLAUDE.md block + workflow file). It
+  // changes nothing in the dev loop, so it is installed by default: an agent that never saw the
+  // rules cannot follow them (a consumer hand-rolled 76 utility classes with the MCP registered
+  // but no mandate). Only the hooks — which DO change the loop — stay behind `init-agent`.
+  const md = ensureClaudeMd(root);
+  const wf = writeWorkflowMd(root);
+  if (r === "present" && md === "present" && !wf) process.exit(0); // already configured — stay quiet
   console.log(
-    `\n  @godxjp/ui → registered the godx-ui MCP in .mcp.json (${r}).\n` +
+    `\n  @godxjp/ui → MCP in .mcp.json (${r}); workflow mandate in CLAUDE.md (${md}).\n` +
       "  Your agent now has live component + audit guidance. Restart it to pick up the MCP.\n" +
-      "  For the full forcing-kit (auto-audit on every edit + workflow mandate):\n" +
+      "  For auto-audit on every edit (PostToolUse + SessionStart hooks):\n" +
       "    npx @godxjp/ui init-agent\n",
   );
 } catch {

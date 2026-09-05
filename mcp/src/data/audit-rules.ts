@@ -33,6 +33,35 @@ export const AUDIT_COMMAND =
   "node node_modules/@godxjp/ui/scripts/ui-audit.mjs  (add --format json for machine output, --rules to print this catalog)";
 
 export const AUDIT_RULES: AuditRule[] = [
+  // ── composition (layout owners, not utilities) ───────────────────────────
+  {
+    id: "no-utility-spacing",
+    severity: "error",
+    category: "composition",
+    standard: null,
+    fix: "Remove gap-*/p-*/m-* from your own markup; space siblings with <Flex gap> / <ResponsiveGrid>. Page sections are spaced by <PageContainer> (docs/CONSUMER-RULES.md §3).",
+  },
+  {
+    id: "no-utility-layout",
+    severity: "error",
+    category: "composition",
+    standard: null,
+    fix: 'Replace className="flex …" / "grid …" with <Flex> (row), <Flex direction="col"> (stack) or <ResponsiveGrid columns>.',
+  },
+  {
+    id: "no-hand-rolled-surface",
+    severity: "warn",
+    category: "composition",
+    standard: null,
+    fix: "A rounded+border/bg div is a fake surface — use Card, Badge, Avatar, ListRow, Descriptions or EmptyState so height, padding and radius come from tokens.",
+  },
+  {
+    id: "sibling-cards-need-flex",
+    severity: "warn",
+    category: "composition",
+    standard: null,
+    fix: 'Wrap adjacent <Card>s in <Flex direction="col" gap="lg"> or <ResponsiveGrid>; direct children of PageContainer are spaced by the page already.',
+  },
   // ── tokens (house design-system: semantic tokens only) ──────────────────
   {
     id: "no-raw-palette-color",

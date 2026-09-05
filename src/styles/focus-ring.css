@@ -54,10 +54,17 @@
  * (`src/styles/__tests__/focus-ring-single-source.test.ts`).
  * ───────────────────────────────────────────────────────────────────────── */
 @layer components {
-  /* Shadow form — the default. Hugs the radius, no layout shift. */
+  /* Shadow form — the default. Hugs the radius, no layout shift.
+   * `.ui-input`, `.ui-control-multiline` and `.ui-control-trigger` ARE in this list: 19.1.0 shipped
+   * the Input with no ring at all, while the Select trigger and the Textarea drew a DIFFERENT ring
+   * from private `ring-[3px] ring-ring/25` utilities — three controls in one form, two ring styles
+   * and one missing (measured in a consumer, WCAG 2.4.7). One list, one token pair, every control. */
   :is(
     .ui-focus-ring,
     .ui-button,
+    .ui-input,
+    .ui-control-multiline,
+    .ui-control-trigger,
     .ui-toggle,
     .ui-checkbox,
     .ui-radio,

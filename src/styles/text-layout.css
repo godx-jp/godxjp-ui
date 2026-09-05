@@ -44,6 +44,11 @@
   [data-slot="heading"][data-weight="medium"] {
     font-weight: var(--font-weight-medium);
   }
+  [data-slot="text"][data-weight="semibold"],
+  [data-slot="heading"][data-weight="semibold"] {
+    font-weight: var(--font-weight-semibold);
+  }
+
   [data-slot="text"][data-weight="bold"],
   [data-slot="heading"][data-weight="bold"] {
     font-weight: var(--font-weight-bold);

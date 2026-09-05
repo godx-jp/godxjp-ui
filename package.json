@@ -32,7 +32,8 @@
     "scripts/init-agent-kit.mjs",
     "scripts/postinstall.mjs",
     "scripts/_agent-setup.mjs",
-    "scripts/cli.mjs"
+    "scripts/cli.mjs",
+    "docs"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

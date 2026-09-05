@@ -55,6 +55,37 @@ const EMOJI_FLAG = /\p{Regional_Indicator}/u;
  */
 const RULES = [
   {
+    id: "no-utility-spacing",
+    scope: "consumer",
+    severity: "error",
+    // Any Tailwind spacing step on the consumer's own markup. Arbitrary values ([13px]) have their
+    // own rule; this is README rule 3, documented for a long time and never enforced: rhythm
+    // comes from Flex gap / ResponsiveGrid / PageContainer, never from gap-*/p-*/m-* utilities.
+    test: /\b(?:gap|gap-x|gap-y|p|px|py|pt|pb|ps|pe|pl|pr|m|mx|my|mt|mb|ms|me|ml|mr)-(?:\d+(?:\.\d+)?|px)\b/,
+    message:
+      "No Tailwind spacing utilities (gap-*/p-*/m-*) for layout — space siblings with <Flex gap> / <ResponsiveGrid>; sections of a page are spaced by <PageContainer> (docs/CONSUMER-RULES.md §3).",
+  },
+  {
+    id: "no-utility-layout",
+    scope: "consumer",
+    severity: "error",
+    // A hand-rolled flex/grid container. The primitives exist precisely so a row is <Flex>, a
+    // stack is <Flex direction="col">, a grid is <ResponsiveGrid> — token gaps, RTL, density.
+    test: /className=(?:"[^"]*|'[^']*|\{`[^`]*)(?<![\w-])(?:flex|inline-flex|grid|inline-grid)(?![\w-])/,
+    message:
+      'No hand-rolled flex/grid — use <Flex> (row), <Flex direction="col"> (stack) or <ResponsiveGrid> (docs/CONSUMER-RULES.md §3).',
+  },
+  {
+    id: "no-hand-rolled-surface",
+    scope: "consumer",
+    severity: "warn",
+    // rounded + border/bg on the consumer's own element = a fake Card / Badge / Avatar / ListRow
+    // that drifts from the real ones (a 38px account pill beside 32px controls).
+    test: /className=(?:"[^"]*|'[^']*|\{`[^`]*)\brounded(?:-(?:full|sm|md|lg|xl|2xl))?\b[^"'`]*\b(?:border|bg-)/,
+    message:
+      "Hand-rolled surface (rounded + border/bg) — use Card, Badge, Avatar, ListRow, Descriptions or EmptyState so height, padding and radius come from the tokens (docs/CONSUMER-RULES.md §4).",
+  },
+  {
     id: "no-space-xy",
     severity: "error",
     test: /\bspace-[xy]-\d/,
@@ -464,6 +495,25 @@ const CARD_FLUSH =
 const BARE_FIELD =
   /<(?:label|Label)\b[^>]*>[\s\S]{0,240}?<\/(?:label|Label)>\s*<(?:Input|Select|Textarea|NumberInput|SearchInput|SearchSelect|DatePicker|DateRangePicker|TimePicker|MonthPicker|MonthRangePicker|Cascader|TreeSelect|input)\b/g;
 
+// Two <Card> siblings written back to back at the same indentation with nothing between them.
+// Direct children of PageContainer are spaced by the page; anywhere else they touch.
+const SIBLING_CARDS = /^([ \t]*)<\/Card>\s*\n\1<Card\b/gm;
+
+/**
+ * `scope: "consumer"` rules ban utilities on a CONSUMER's own markup. Inside the library repo the
+ * utilities are the design system itself (that is where `flex`/`gap-*` are supposed to live), so
+ * those rules are skipped when the CWD package is @godxjp/ui — unless `--consumer` forces them.
+ */
+const SELF = (() => {
+  try {
+    return JSON.parse(readFileSync(join(CWD, "package.json"), "utf8")).name === "@godxjp/ui";
+  } catch {
+    return false;
+  }
+})();
+const ACTIVE_RULES =
+  SELF && !args.includes("--consumer") ? RULES.filter((r) => r.scope !== "consumer") : RULES;
+
 const findings = [];
 for (const dir of SCAN_DIRS) {
   for (const file of walk(isAbsolute(dir) ? dir : join(CWD, dir))) {
@@ -473,7 +523,7 @@ for (const dir of SCAN_DIRS) {
     const scanContent = stripComments(content); // comments blanked; strings + line numbers kept
     const scanLines = scanContent.split("\n");
     scanLines.forEach((line, i) => {
-      for (const rule of RULES) {
+      for (const rule of ACTIVE_RULES) {
         if (
           rule.test.test(line) &&
           !isSuppressed(rule.id, origLines[i], origLines[i - 1]) &&
@@ -504,6 +554,25 @@ for (const dir of SCAN_DIRS) {
           "<Card> body content must be wrapped in <CardContent> (it has NO padding otherwise) — use <CardContent flush> only for a full-bleed table.",
         snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
       });
+    }
+    if (
+      !(SELF && !args.includes("--consumer")) &&
+      !/<(?:Flex|ResponsiveGrid|PageContainer)\b/.test(scanContent)
+    ) {
+      for (const match of scanContent.matchAll(SIBLING_CARDS)) {
+        const lineNo = scanContent.slice(0, match.index).split("\n").length + 1;
+        if (isSuppressed("sibling-cards-need-flex", origLines[lineNo - 1], origLines[lineNo - 2]))
+          continue;
+        findings.push({
+          file: rel,
+          line: lineNo,
+          rule: "sibling-cards-need-flex",
+          severity: "warn",
+          message:
+            'Adjacent <Card> siblings with no layout owner — wrap them in <Flex direction="col" gap="lg"> or <ResponsiveGrid> (inside PageContainer the page spaces them for you).',
+          snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
+        });
+      }
     }
     for (const match of scanContent.matchAll(BARE_FIELD)) {
       const lineNo = scanContent.slice(0, match.index).split("\n").length;

@@ -40,6 +40,34 @@ export const VISUAL_RULES = [
     fix: "Remove emoji from rendered product text; use quiet i18n copy + a Lucide icon + a Badge tone for status.",
   },
   {
+    id: "css-layers-missing",
+    severity: "error",
+    category: "layout",
+    standard: "@godxjp/ui styles contract (styles / styles/core are the only entries)",
+    fix: "A component rendered without its layer: import `@godxjp/ui/styles` (or `styles/core` without fonts) instead of cherry-picking *-layout.css files. Naked menus and unsized Select rows are this.",
+  },
+  {
+    id: "control-height-mismatch",
+    severity: "error",
+    category: "layout",
+    standard: "@godxjp/ui control tier (--control-height) · Nielsen consistency heuristic",
+    fix: "Every control in one row (Flex row, PageContainer extra, footer) must share --control-height. Replace the odd one with the real primitive (Avatar/Button/Badge) instead of a hand-rolled pill; never restyle a control's height.",
+  },
+  {
+    id: "sibling-card-gap",
+    severity: "error",
+    category: "layout",
+    standard: "@godxjp/ui spacing scale (docs/SPACING.md)",
+    fix: 'Adjacent Cards must be separated by at least one space step — wrap them in <Flex direction="col" gap> / <ResponsiveGrid>, or put them directly in PageContainer, which spaces them.',
+  },
+  {
+    id: "row-content-starved",
+    severity: "warn",
+    category: "layout",
+    standard: "WCAG 2.2 SC 1.4.10 reflow (content must not be clipped to hide it)",
+    fix: 'Text in a control row is truncated to a few characters because a sibling takes the whole width (a w-full SelectTrigger). Give the Select width="auto" or move it out of the row.',
+  },
+  {
     id: "alert-controls-misplaced",
     severity: "warn",
     category: "layout",
@@ -112,6 +140,26 @@ export function alertControlIssues(m) {
   if (m.hasDismiss && m.dismissCorner !== "top-right")
     issues.push("dismiss ✕ not in the top-right corner — pass onDismiss to <Alert>");
   return issues;
+}
+
+/** Layers whose probe rule did not resolve. @param {{layer:string, ok:boolean}[]} probes */
+export function missingCssLayers(probes) {
+  return probes.filter((p) => !p.ok).map((p) => p.layer);
+}
+
+/** Rows whose controls disagree on height. @param {{name:string, heights:number[]}[]} rows */
+export function controlHeightMismatches(rows) {
+  return rows.filter((r) => new Set(r.heights).size > 1);
+}
+
+/** Adjacent card pairs closer than the minimum gap. @param {{gap:number}[]} pairs */
+export function tightCardPairs(pairs, min = 8) {
+  return pairs.filter((p) => p.gap < min);
+}
+
+/** Row texts squeezed below a readable width by a sibling. @param {{text:string, visible:number, needed:number}[]} texts */
+export function starvedRowTexts(texts) {
+  return texts.filter((t) => t.needed > 40 && t.visible < Math.min(t.needed, 60));
 }
 
 export function findVisualRule(id) {

@@ -27,6 +27,34 @@ export const VISUAL_AUDIT_COMMAND =
 
 export const VISUAL_RULES: VisualRule[] = [
   {
+    id: "css-layers-missing",
+    severity: "error",
+    category: "layout",
+    standard: "@godxjp/ui styles contract (styles / styles/core are the only entries)",
+    fix: "Import `@godxjp/ui/styles` (or `styles/core` without fonts); never cherry-pick *-layout.css — a missing layer renders naked menus and unsized Select rows.",
+  },
+  {
+    id: "control-height-mismatch",
+    severity: "error",
+    category: "layout",
+    standard: "@godxjp/ui control tier (--control-height) · Nielsen consistency heuristic",
+    fix: "Every control in one row must share --control-height; replace hand-rolled pills with Avatar/Button/Badge, never restyle a control's height.",
+  },
+  {
+    id: "sibling-card-gap",
+    severity: "error",
+    category: "layout",
+    standard: "@godxjp/ui spacing scale (docs/SPACING.md)",
+    fix: 'Adjacent Cards need one space step between them — <Flex direction="col" gap>, <ResponsiveGrid>, or direct children of PageContainer.',
+  },
+  {
+    id: "row-content-starved",
+    severity: "warn",
+    category: "layout",
+    standard: "WCAG 2.2 SC 1.4.10 reflow",
+    fix: 'A sibling (a w-full SelectTrigger) takes the row\'s width and truncates its neighbours — give the Select width="auto" or move it out of the row.',
+  },
+  {
     id: "axe-violations",
     severity: "warn",
     category: "a11y",

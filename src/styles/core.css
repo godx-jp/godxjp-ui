@@ -1,0 +1,32 @@
+/*
+ * @godxjp/ui — CORE entry: every component layer, NO bundled fonts.
+ *
+ *   @import "@godxjp/ui/styles/core";   // all component CSS, bring your own fonts
+ *   @import "@godxjp/ui/styles";        // the same + the bundled M PLUS 2 / Noto Sans JP faces
+ *
+ * This is the ONLY supported subset: fonts on or off. Cherry-picking `*-layout.css` files is not
+ * supported — layers share rules (a Select's rows, a menu's surface, a form's rhythm) and a
+ * consumer who omits one gets naked menus and unsized rows with no error. A real case: Bug Shot
+ * loaded 11 of 18 layers and shipped an unstyled DropdownMenu. Load everything; a layer is a few
+ * KB and tree-shaking CSS by layer buys nothing measurable.
+ */
+@import "sonner/dist/styles.css";
+@import "react-day-picker/style.css";
+@import "./base.css";
+@import "./shell-layout.css";
+@import "./motion.css";
+@import "./layout.css";
+@import "./control.css";
+@import "./toggle.css";
+@import "./logo-layout.css";
+@import "./card-layout.css";
+@import "./text-layout.css";
+@import "./table-layout.css";
+@import "./dialog-layout.css";
+@import "./alert-layout.css";
+@import "./badge-layout.css";
+@import "./data-display-layout.css";
+@import "./data-entry-layout.css";
+@import "./form-layout.css";
+@import "./navigation-layout.css";
+@import "./chart-layout.css";

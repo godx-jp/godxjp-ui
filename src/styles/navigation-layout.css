@@ -138,9 +138,7 @@
   .ui-dropdown-menu-sub-trigger,
   .ui-dropdown-menu-checkbox-item,
   .ui-dropdown-menu-radio-item,
-  .ui-dropdown-menu-shortcut,
-  .ui-select-item,
-  .ui-select-label {
+  .ui-dropdown-menu-shortcut {
     border-radius: var(--menu-item-radius);
     padding-inline: var(--menu-item-space-inline);
     height: var(--menu-item-height);

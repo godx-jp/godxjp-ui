@@ -21,6 +21,13 @@ export const WORKFLOW_MD = `# @godxjp/ui — mandatory workflow (read every sess
 You are building UI in an app that uses @godxjp/ui. Follow this EVERY time you create
 or change a component, page, or form — no exceptions.
 
+## The rules the audit enforces (docs/CONSUMER-RULES.md in node_modules/@godxjp/ui)
+- Styles: \`@import "@godxjp/ui/styles"\` or \`@godxjp/ui/styles/core\` (no fonts). Never cherry-pick layers.
+- Layout: sections of a page are spaced by \`PageContainer\`; siblings go in \`<Flex direction="col" gap>\` /
+  \`<ResponsiveGrid>\`. No \`flex\` / \`grid\` / \`gap-*\` / \`p-*\` / \`m-*\` on your own elements.
+- Surfaces: \`Card\` / \`Badge\` / \`Avatar\` / \`ListRow\` / \`Descriptions\` / \`EmptyState\` — never a
+  \`rounded border\` div. Text is \`<Text tone size weight truncate>\`, never utility classes.
+
 ## Before writing UI
 1. **MCP-first.** Consult the godx-ui MCP: \`get_component <Name>\`, \`search_components\`,
    \`list_audit_rules\`, \`list_visual_checks\`. Never guess a prop; never hand-roll what a
@@ -47,6 +54,11 @@ export const CLAUDE_MD_BLOCK = `<!-- godxjp-ui:start (managed by @godxjp/ui — 
 
 This app uses @godxjp/ui. EVERY time you build or change UI:
 
+0. **Ten rules** — read \`node_modules/@godxjp/ui/docs/CONSUMER-RULES.md\` once. Styles via
+   \`@godxjp/ui/styles\` or \`styles/core\` (never cherry-pick layers). Page sections are spaced by
+   \`PageContainer\`; siblings go in \`<Flex direction="col" gap>\` / \`<ResponsiveGrid>\`; no
+   \`flex\`/\`grid\`/\`gap-*\`/\`p-*\`/\`m-*\` on your own elements; boxes are \`Card\`/\`Badge\`/
+   \`ListRow\`/\`Descriptions\`, never a \`rounded border\` div; text is \`<Text tone size weight>\`.
 1. **MCP-first.** Consult the \`godx-ui\` MCP — \`get_component\`, \`search_components\`,
    \`list_audit_rules\`, \`list_visual_checks\`. Never guess a prop; never hand-roll what a
    primitive already does.

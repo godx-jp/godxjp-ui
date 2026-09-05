@@ -1380,6 +1380,73 @@ export const mediaQuery = \`
 //    node --input-type=module -e 'import("@godxjp/ui/email").then(m => process.stdout.write(m.EMAIL_TOKENS_JSON))' > resources/design/email-tokens.json
 //    then read the JSON from PHP. Same numbers, same source, no copy-paste.`,
   },
+  {
+    name: "page-sections",
+    aliases: ["cards-in-page", "page-layout", "stack-cards"],
+    tagline:
+      "A page made of several Card sections: PageContainer spaces its direct children by default; group items inside a section with Flex/ResponsiveGrid, never Tailwind gap-*/p-*.",
+    tags: ["layout", "page", "card", "spacing", "flex", "grid"],
+    code: `import { PageContainer, Flex, ResponsiveGrid } from "@godxjp/ui/layout";
+import { Card, CardHeader, CardTitle, CardContent } from "@godxjp/ui/data-display";
+import { Button } from "@godxjp/ui/general";
+
+// Every direct child of PageContainer is a page section — the page owns the gap between them
+// (--page-body-gap, the section step). Do NOT add gap-* / space-y-* / mt-* yourself.
+export function ReportPage() {
+  return (
+    <PageContainer title="Bug report" subtitle="https://app.example.com/orders" extra={<Button>Send</Button>}>
+      <Card>
+        <CardHeader><CardTitle>Details</CardTitle></CardHeader>
+        <CardContent>…</CardContent>
+      </Card>
+      <Card>
+        <CardHeader><CardTitle>Screenshots</CardTitle></CardHeader>
+        <CardContent>
+          {/* items INSIDE a section: ResponsiveGrid for a grid, Flex for a stack/row */}
+          <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>…</ResponsiveGrid>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <Flex direction="col" gap="md">…</Flex>
+        </CardContent>
+      </Card>
+    </PageContainer>
+  );
+}
+`,
+  },
+  {
+    name: "topbar-account-chip",
+    aliases: ["user-chip", "account-menu", "signed-in-user"],
+    tagline:
+      "Signed-in user in a PageContainer `extra` slot: Avatar + name + sign-out as a Flex row of primitives — same control height as the buttons beside it. Never a hand-rolled rounded-full border div.",
+    tags: ["auth", "topbar", "avatar", "header", "account", "chip"],
+    code: `import { Flex } from "@godxjp/ui/layout";
+import { Avatar, AvatarImage, AvatarFallback } from "@godxjp/ui/data-display";
+import { Button, Text } from "@godxjp/ui/general";
+import { LogOut } from "lucide-react";
+
+// ❌ <div className="inline-flex items-center gap-1.5 rounded-full border py-0.5">…</div>
+//    → 38px tall next to 32px controls, and the audit flags every class on it.
+// ✅ a Flex row of real primitives: Avatar (control-sized), Text, an icon Button.
+export function AccountChip({ user, onSignOut }: { user: { name: string; email: string; avatarUrl?: string }; onSignOut: () => void }) {
+  return (
+    <Flex gap="xs" align="center" title={user.email}>
+      <Avatar>
+        {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+        <AvatarFallback>{user.name.slice(0, 1)}</AvatarFallback>
+      </Avatar>
+      <Text>{user.name}</Text>
+      <Button variant="ghost" size="icon" aria-label="Sign out" onClick={onSignOut}><LogOut /></Button>
+    </Flex>
+  );
+}
+
+// In the page header, a language Select takes width="auto" so it does not swallow the row:
+// <PageContainer title="…" extra={<><Select …><SelectTrigger width="auto">…</SelectTrigger>…</Select><AccountChip … /><Button>Send</Button></>}>
+`,
+  },
 ];
 
 /** Resolve a pattern by its canonical name OR any alias (case-insensitive). */

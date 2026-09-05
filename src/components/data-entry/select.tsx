@@ -114,6 +114,12 @@ export const SelectTrigger = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
     size?: "sm" | "md";
     /**
+     * `full` (default) fills the field column — right inside a FormField. `auto` sizes to the
+     * selected label — right in a PageContainer `extra` slot, a toolbar or a footer row, where a
+     * full-width trigger swallows the row and starves its siblings (text truncated to "UA…").
+     */
+    width?: "full" | "auto";
+    /**
      * Show the built-in chevron disclosure indicator (default true). Set `false` for specialized
      * triggers — icon-only, or one that already renders its own affordance — so it isn't
      * duplicated. Omits the icon from the DOM entirely (not a CSS hide), so no consumer
@@ -129,7 +135,7 @@ export const SelectTrigger = React.forwardRef<
      */
     "data-value"?: string;
   }
->(({ className, children, size = "md", showIndicator = true, ...props }, ref) => {
+>(({ className, children, size = "md", width = "full", showIndicator = true, ...props }, ref) => {
   // The FormField contract reaches the compound trigger through context, because Radix's root
   // drops the cloneElement props. Anything set directly on the trigger wins; the two id-list
   // attributes merge rather than replace so a local description survives.
@@ -182,9 +188,11 @@ export const SelectTrigger = React.forwardRef<
       ref={ref}
       data-slot="select-trigger"
       data-size={size}
+      data-width={width}
       className={cn(
         controlTriggerClass,
-        "aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground w-full whitespace-nowrap transition-[color,box-shadow] outline-none *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center",
+        width === "auto" ? "w-auto" : "w-full",
+        "aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground whitespace-nowrap transition-[color,box-shadow] outline-none *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center",
         className,
       )}
       {...props}

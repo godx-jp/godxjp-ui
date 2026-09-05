@@ -1398,6 +1398,36 @@
 
   /* A listbox row has no leading icon column, so it takes a slightly wider inline inset to read
    * level with a menu row that does. */
+  /* Row geometry for Select's own listbox. It used to ride the shared menu rule in
+   * navigation-layout.css, so a consumer loading `control` without `navigation-layout` got rows
+   * with no height, no padding and no font size. Select is a control: its rows are sized here,
+   * from the same menu tokens, and the control layer is self-sufficient. */
+  .ui-select-item,
+  .ui-select-label {
+    border-radius: var(--menu-item-radius);
+    padding-inline: var(--menu-item-space-inline);
+    height: var(--menu-item-height);
+    display: flex;
+    align-items: center;
+    gap: var(--menu-item-space-gap);
+    font-size: var(--menu-item-font-size);
+  }
+
+  /* Row geometry for Select's own listbox. It used to ride the shared menu rule in
+   * navigation-layout.css, so a consumer loading `control` without `navigation-layout` got rows
+   * with no height, no padding and no font size. Select is a control: its rows are sized here,
+   * from the same menu tokens, and the control layer is self-sufficient. */
+  .ui-select-item,
+  .ui-select-label {
+    border-radius: var(--menu-item-radius);
+    padding-inline: var(--menu-item-space-inline);
+    height: var(--menu-item-height);
+    display: flex;
+    align-items: center;
+    gap: var(--menu-item-space-gap);
+    font-size: var(--menu-item-font-size);
+  }
+
   .ui-select-item {
     position: relative;
     inline-size: 100%;
