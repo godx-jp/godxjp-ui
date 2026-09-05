@@ -508,19 +508,19 @@ export default function Demo() {
               </Text>
               <Badge tone="success" variant="outline">
                 出勤{" "}
-                <Text as="span" tabular className="ms-1">
+                <Text as="span" tabular>
                   {tally.present}
                 </Text>
               </Badge>
               <Badge tone="warning" variant="outline">
                 遅刻{" "}
-                <Text as="span" tabular className="ms-1">
+                <Text as="span" tabular>
                   {tally.late}
                 </Text>
               </Badge>
               <Badge tone="muted" variant="outline">
                 承認待ち{" "}
-                <Text as="span" tabular className="ms-1">
+                <Text as="span" tabular>
                   {tally.pendingApproval}
                 </Text>
               </Badge>

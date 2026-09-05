@@ -238,15 +238,17 @@ export default function Demo() {
             <CardTitle level={2}>行密度</CardTitle>
             <CardAction>
               <Flex direction="row" align="center" gap="md">
-                <Text as="span" size="xs" tone="muted" className="inline-flex items-center gap-1.5">
-                  <Clock className="size-3.5" aria-hidden="true" />
-                  行高
-                  <Text as="strong" weight="medium" tabular>
-                    {meta.px}px
+                <Flex align="center" gap="xs">
+                  <Text as="span" size="xs" tone="muted">
+                    <Clock className="size-3.5" aria-hidden="true" />
+                    行高
+                    <Text as="strong" weight="medium" tabular>
+                      {meta.px}px
+                    </Text>
+                    <span aria-hidden="true">·</span>
+                    {meta.note}
                   </Text>
-                  <span aria-hidden="true">·</span>
-                  {meta.note}
-                </Text>
+                </Flex>
                 <ToggleGroup
                   type="single"
                   value={density}

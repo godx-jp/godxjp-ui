@@ -407,12 +407,7 @@ export default function Demo() {
           )}
 
           {hasFilters && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="ms-auto h-6 px-2 text-xs"
-              onClick={clearAll}
-            >
+            <Button variant="ghost" size="sm" className="ms-auto h-6 text-xs" onClick={clearAll}>
               すべて解除
             </Button>
           )}

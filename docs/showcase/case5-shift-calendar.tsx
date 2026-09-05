@@ -354,7 +354,7 @@ export default function ShiftCalendarShowcase() {
                     2026年5月
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto" style={{ padding: 0 }} align="start">
                   <Calendar
                     mode="single"
                     selected={jumpMonth}
@@ -572,13 +572,13 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                         </Badge>
                       ) : null}
                     </Flex>
-                    <Flex direction="col" className="gap-0.5">
+                    <Flex direction="col" gap="xs">
                       {cell.holiday ? <ShiftPill kind="holiday" staff={cell.holiday} /> : null}
                       {shown.map((s, i) => (
                         <ShiftPill key={`${s.kind}-${i}`} kind={s.kind} staff={s.staff} />
                       ))}
                       {overflow > 0 ? (
-                        <Text as="span" size="2xs" tone="muted" tabular className="px-1">
+                        <Text as="span" size="2xs" tone="muted" tabular>
                           ＋{overflow} 件
                         </Text>
                       ) : null}

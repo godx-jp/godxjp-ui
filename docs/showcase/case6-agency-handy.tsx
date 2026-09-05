@@ -264,10 +264,10 @@ function ItemListCard({
               <Text as="div" size="sm" weight="bold" truncate>
                 {item.name}
               </Text>
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+              <Flex wrap align="center" gap="sm">
                 <MonoCode>{item.rc}</MonoCode>
                 <MonoCode>JAN {item.jan}</MonoCode>
-              </div>
+              </Flex>
               <Flex align="center" justify="between" gap="sm">
                 <Badge tone={st.tone} variant="outline" className="rounded-full">
                   {st.label}

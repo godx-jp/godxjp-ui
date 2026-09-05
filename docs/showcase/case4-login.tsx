@@ -216,7 +216,7 @@ export default function LoginShowcase() {
 
           {/* Auth card — the one surface allowed a resting shadow (shadow-lg). */}
           <Card className="mx-auto w-full max-w-sm self-center shadow-lg lg:mx-0">
-            <CardHeader className="flex flex-col gap-1.5 pb-2 text-center lg:text-start">
+            <CardHeader className="text-center lg:text-start">
               <Flex justify="center" className="lg:hidden">
                 <BrandLockup />
               </Flex>
@@ -272,12 +272,7 @@ export default function LoginShowcase() {
                       label="パスワード"
                       required
                       labelAddon={
-                        <Button
-                          type="button"
-                          variant="link"
-                          size="sm"
-                          className="ms-auto h-auto p-0 text-xs"
-                        >
+                        <Button type="button" variant="link" size="sm" className="ms-auto text-xs">
                           お忘れの場合
                         </Button>
                       }
@@ -299,19 +294,11 @@ export default function LoginShowcase() {
 
                 <Text as="p" size="2xs" tone="muted" align="center" className="leading-relaxed">
                   ログインすると{" "}
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="h-auto p-0 text-[var(--font-size-2xs)]"
-                  >
+                  <Button variant="link" size="sm" className="text-[var(--font-size-2xs)]">
                     利用規約
                   </Button>{" "}
                   ·{" "}
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="h-auto p-0 text-[var(--font-size-2xs)]"
-                  >
+                  <Button variant="link" size="sm" className="text-[var(--font-size-2xs)]">
                     プライバシーポリシー
                   </Button>{" "}
                   に同意したものとみなされます。

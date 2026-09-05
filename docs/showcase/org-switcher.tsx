@@ -181,7 +181,7 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
               type="button"
               variant="ghost"
               size="sm"
-              className="w-full justify-start gap-2"
+              className="w-full justify-start"
               onClick={() => {
                 onCreate();
                 setOpen(false);
@@ -194,7 +194,7 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
               type="button"
               variant="ghost"
               size="sm"
-              className="w-full justify-start gap-2"
+              className="w-full justify-start"
               onClick={() => {
                 onJoin();
                 setOpen(false);

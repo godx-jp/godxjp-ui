@@ -121,7 +121,7 @@ function Navbar() {
         <span className="tx-brand" data-logotype="">
           TIXI<span className="tx-gold">MAX</span>
         </span>
-        <Flex direction="row" gap="xs" align="center" className="ms-2">
+        <Flex direction="row" gap="xs" align="center">
           {links.map((l, i) => (
             <Button key={l} variant="ghost" size="sm" aria-current={i === 0 ? "page" : undefined}>
               {l}
@@ -382,7 +382,7 @@ function CtaBanner() {
       <div className={`${SHELL} relative text-center`}>
         <h2 className="tx-h2">Sẵn sàng cho đơn hàng đầu tiên?</h2>
         <p className="tx-lead mx-auto">Tạo tài khoản miễn phí và nhận báo giá trong 5 phút.</p>
-        <Flex direction="row" gap="md" className="mt-6 justify-center">
+        <Flex direction="row" gap="md" justify="center">
           <Button size="lg">
             <UserPlus aria-hidden="true" />
             Đăng ký ngay

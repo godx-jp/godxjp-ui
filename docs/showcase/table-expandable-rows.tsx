@@ -271,10 +271,12 @@ function DetailPanel({ employee }: { employee: Employee }) {
           <Text size="sm" weight="medium">
             {employee.name} · {employee.dept}
           </Text>
-          <Text size="xs" tone="muted" className="inline-flex items-center gap-1">
-            <MapPin className="size-3.5" aria-hidden="true" />
-            {employee.site}
-          </Text>
+          <Flex align="center" gap="xs">
+            <Text size="xs" tone="muted">
+              <MapPin className="size-3.5" aria-hidden="true" />
+              {employee.site}
+            </Text>
+          </Flex>
         </Flex>
 
         {/* KPI mini-row inside the panel — real StatCard primitives */}
@@ -301,10 +303,12 @@ function DetailPanel({ employee }: { employee: Employee }) {
               今週の打刻
             </CardTitle>
             <CardAction>
-              <Text size="xs" tone="muted" className="inline-flex items-center gap-1">
-                <Clock className="size-3.5" aria-hidden="true" />
-                直近 3 日
-              </Text>
+              <Flex align="center" gap="xs">
+                <Text size="xs" tone="muted">
+                  <Clock className="size-3.5" aria-hidden="true" />
+                  直近 3 日
+                </Text>
+              </Flex>
             </CardAction>
           </CardHeader>
           <CardContent flush>

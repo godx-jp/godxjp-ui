@@ -229,7 +229,7 @@ function PunchCard() {
 
           {/* Demo state stepper — lets a reader walk every FSM state at rest. */}
           <Flex direction="row" wrap gap="xs" className="border-t pt-3">
-            <Text size="2xs" tone="muted" className="me-1 self-center">
+            <Text size="2xs" tone="muted" className="self-center">
               状態:
             </Text>
             {(["off", "working", "break", "closed"] as PunchState[]).map((s) => (
@@ -337,7 +337,7 @@ export default function EmployeeMeShowcase() {
       <PageContainer title="ダッシュボード" subtitle="田中 美咲 · 渋谷店 · 5月度" density="default">
         <Flex direction="col" gap="lg">
           {/* Punch (left) + month KPI 2×2 (right) — stack <lg, side-by-side ≥lg */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start">
+          <ResponsiveGrid columns={{ sm: 1, lg: 3 }} gap="md">
             <div className="lg:col-span-1">
               <PunchCard />
             </div>
@@ -356,10 +356,10 @@ export default function EmployeeMeShowcase() {
                 ))}
               </ResponsiveGrid>
             </div>
-          </div>
+          </ResponsiveGrid>
 
           {/* 7-day attendance (left, wide) + today summary (right) */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start">
+          <ResponsiveGrid columns={{ sm: 1, lg: 3 }} gap="md">
             <Card className="self-start lg:col-span-2">
               <CardHeader>
                 <CardTitle level={2} className="whitespace-nowrap">
@@ -388,9 +388,7 @@ export default function EmployeeMeShowcase() {
                         <TableRow key={d.date}>
                           <TableCell className="whitespace-nowrap tabular-nums">
                             {d.date}
-                            <Text tone="muted" className="ms-1.5">
-                              ({d.weekday})
-                            </Text>
+                            <Text tone="muted">({d.weekday})</Text>
                           </TableCell>
                           <TableCell className="text-end tabular-nums">{d.work}</TableCell>
                           <TableCell className="text-end tabular-nums">{d.ot}</TableCell>
@@ -438,7 +436,7 @@ export default function EmployeeMeShowcase() {
                 </dl>
               </CardContent>
             </Card>
-          </div>
+          </ResponsiveGrid>
         </Flex>
       </PageContainer>
     </AppShell>
