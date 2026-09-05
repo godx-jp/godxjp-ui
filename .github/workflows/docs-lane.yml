@@ -68,18 +68,39 @@ jobs:
       # INTERNAL links only. Checking outbound links in CI is a third-party red — exactly what
       # L5 keeps off the road to merge. Warnings, never a failure: a dead link is worth seeing,
       # not worth stopping anyone for.
+      # WARNINGS ONLY, NEVER RED — and making that true took two runs, which is the point of
+      # writing it down. GitHub invokes this step as `bash -e`, and `grep` exits 1 when a file
+      # simply contains no links, so the first .md without one aborted the whole step with a bare
+      # "exit code 1" and no output at all (runs 33978603578, 33978676011). `set +e` plus the
+      # closing `exit 0` is what actually makes "does not gate merge" true rather than merely
+      # claimed. The org's reusable docs-lane.yml carries the same `set -euo pipefail` over the
+      # same pipeline and will abort the same way.
       - name: Internal links resolve
         run: |
-          set -euo pipefail
+          set -u
+          set +e
           while IFS= read -r md; do
             base=$(dirname "$md")
             grep -oE '\]\([^)#][^)]*\)' "$md" 2>/dev/null \
               | sed -E 's/^\]\(//; s/\)$//; s/#.*$//' \
               | grep -vE '^(https?:|mailto:|//|\$)' \
+              | grep -vE ':[0-9]+$' \
               | while IFS= read -r target; do
                   [ -z "$target" ] && continue
                   if [ ! -e "$base/$target" ] && [ ! -e "$target" ]; then
                     echo "::warning file=$md::broken internal link -> $target"
                   fi
                 done
-          done < <(find . -name '*.md' -not -path './node_modules/*' -not -path './.git/*')
+          done < <(find . -name '*.md' \
+                     -not -path './node_modules/*' \
+                     -not -path './.git/*' \
+                     -not -path './debate/*')
+          # TWO EXCLUSIONS, BOTH MEASURED. Unfiltered, this printed 100+ warnings and the two
+          # real ones were invisible inside them — an alert nobody can read is the attention
+          # budget L5 is actually about. `debate/**` is agent debate transcripts, not shipped
+          # documentation, and `…:123` is a source-line citation, not a link. With both applied
+          # the output is two genuine dead links (CHANGELOG.md → docs/MIGRATION-v19.md and
+          # docs/FRAME-A11Y-CI.md → ./roadmap/color-extensibility.md), left for their owners.
+          #
+          # A stale link is worth seeing, not worth stopping anyone for (L5).
+          exit 0
