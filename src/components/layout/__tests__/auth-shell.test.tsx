@@ -112,7 +112,7 @@ describe("AuthShell", () => {
       );
       const shell = container.querySelector('[data-slot="auth-shell"]');
       // Both hooks are present: `variant` still owns control density / heading size while the
-      // preset re-measures the page (they are orthogonal, gh#217/#220).
+      // preset re-measures the page (they are orthogonal).
       expect(shell).toHaveAttribute("data-preset", preset);
       expect(shell).toHaveAttribute("data-variant", "canonical");
       expect(shell).toHaveAttribute("data-density", "compact");
@@ -160,7 +160,7 @@ describe("AuthShell", () => {
   });
 
   it.each([
-    // JA/EN/VI long-label coverage (gh#256): each locale's longest realistic sign-up heading and
+    // JA/EN/VI long-label coverage: each locale's longest realistic sign-up heading and
     // hint copy must render inside the registration identity slot without the shell truncating or
     // rearranging the column — copy length is absorbed by the fixed identity track.
     [

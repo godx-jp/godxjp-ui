@@ -9,14 +9,14 @@ import { DataTable } from "../data-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../table";
 
 /**
- * The flush full-bleed FRAME contract — gh#305 (a doubled outer frame) and gh#306 (the repair
- * for it swallowing the one edge that had nothing behind it).
+ * The flush full-bleed FRAME contract: no doubled outer frame, and no swallowed edge where
+ * nothing sits behind it.
  *
  * Both defects are cascade defects, so both are tested the way src/test/css-selector.ts
  * prescribes: the selector is pulled OUT of the shipped stylesheet and run with `.matches()`
  * against really rendered DOM. A string match on the CSS proves a rule says the right thing and
- * nothing about what it selects — which is exactly how gh#306 shipped: the repair was correct,
- * in the file, and reached only ONE of the two full-bleed surfaces the library has.
+ * nothing about what it selects — a repair can be correct, in the file, and still reach only ONE
+ * of the two full-bleed surfaces the library has.
  */
 const here = dirname(fileURLToPath(import.meta.url));
 const css = readFileSync(join(here, "../../../styles/table-layout.css"), "utf8");
@@ -107,7 +107,7 @@ describe("bordered / full-bleed frame inside a flush CardContent (gh#305)", () =
   it("erases widths only — it never repaints chrome (cardinal rule #44)", () => {
     const block = ruleBlock(ERASE);
     expect(block).toMatch(/border-width:\s*0/);
-    // The shape that caused gh#306: `border: 0` followed by a hard-coded repaint of one edge.
+    // The shape that causes the defect: `border: 0` followed by a hard-coded repaint of one edge.
     // Style and colour must stay with the surface's own border declaration, so this block may
     // not name a width, a style or a colour of its own.
     expect(block).not.toMatch(/solid|hsl|var\(--(?!table-flush-divider)/);

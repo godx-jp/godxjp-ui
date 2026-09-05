@@ -5,12 +5,7 @@ import { renderWithUi, screen, userEvent } from "@/test/render";
 import { DatePicker } from "../date-picker";
 import { DateRangePicker } from "../date-range-picker";
 
-/**
- * Regression: typing a date CHAR-BY-CHAR must not get mangled. The bug fed every partial
- * keystroke to the lenient parser (parseISO("20") = a real date), which changed `value`,
- * and a text-mirror effect rewrote the field mid-type → "2026-06-01" became "6-06-01".
- * Fixed by only committing a complete yyyy-MM-dd.
- */
+/** Regression: typing a date CHAR-BY-CHAR must not get mangled. */
 describe("date inputs — char-by-char typing not mangled (regression)", () => {
   it("DatePicker: typing a full ISO date key-by-key sticks", async () => {
     const user = userEvent.setup();

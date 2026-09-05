@@ -30,7 +30,7 @@ describe("Progress", () => {
     expect(bar()).toHaveAttribute("data-tone", "destructive");
   });
 
-  // Over-capacity (issue #108): an over-limit meter (e.g. 252%) must read differently from a full
+  // Over-capacity: an over-limit meter (e.g. 252%) must read differently from a full
   // one. `over` opts value out of the 100 clamp — the bar width still caps at 100% (aria-valuenow),
   // but data-over marks the hatch, the tone auto-goes destructive, and aria-valuetext shows the
   // real ratio so 252% ≠ 100%.

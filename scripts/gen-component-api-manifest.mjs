@@ -143,7 +143,7 @@ const manifest = {
 // Format through prettier (repo config) before writing/comparing, so `pnpm format` and this
 // generator agree byte-for-byte in either order — JSON.stringify always expands arrays, while
 // prettier collapses short ones, and that mismatch made the two gates fight on a clean main
-// (issue #302). The manifest stays prettier-visible on purpose; the generator emits what
+//. The manifest stays prettier-visible on purpose; the generator emits what
 // prettier would.
 const prettier = (await import("prettier")).default;
 const prettierConfig = (await prettier.resolveConfig(output)) ?? {};

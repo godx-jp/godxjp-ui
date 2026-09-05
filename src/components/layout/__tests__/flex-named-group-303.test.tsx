@@ -1,5 +1,5 @@
 /**
- * Flex — a NAMED Flex is a `role="group"`, never a named bare `<div>` (gh#303).
+ * Flex — a NAMED Flex is a `role="group"`, never a named bare `<div>`.
  *
  * FormField wires its contract onto its single child with `cloneElement`. When that child is a
  * Flex wrapping a composite field (range from/to pair, 年/月 combo), the naming attributes landed

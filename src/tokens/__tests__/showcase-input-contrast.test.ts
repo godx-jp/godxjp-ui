@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { contrast, hslToRgb, NON_TEXT } from "./wcag-contrast";
 
 /**
- * gh#315, second half — the showcase tenant themes must clear SC 1.4.11 too.
+ * The showcase tenant themes must clear SC 1.4.11 too.
  *
  * Fixing the library's own `--input` role is only half the job. `docs/showcase/*.tsx` are the pages
  * a service copies from when it writes its own `theme.css`, and all three light themes re-declared

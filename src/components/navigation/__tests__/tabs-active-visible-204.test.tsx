@@ -12,7 +12,7 @@ import {
 } from "../tabs-scroll";
 
 /**
- * Regression coverage for gh#204 — after a responsive resize (1440 → 1024 → 390) the horizontal
+ * Regression coverage — after a responsive resize (1440 → 1024 → 390) the horizontal
  * `TabsList` kept its internal scroll offset, so the ACTIVE first trigger stayed in the DOM with
  * `data-state="active"` / `aria-selected="true"` but sat entirely outside the visible strip.
  *

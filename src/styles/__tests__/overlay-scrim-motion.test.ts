@@ -25,7 +25,7 @@ function declarationsFor(css: string, selector: string): string {
 }
 
 /**
- * gh#215 — `--overlay-background` was documented as "the single backdrop colour shared by EVERY
+ * `--overlay-background` was documented as "the single backdrop colour shared by EVERY
  * overlay" but NOTHING consumed it: Dialog, Sheet and the AppShell mobile drawer each carried a
  * private literal, so a service that set the shared token got no effect at all. These tests pin the
  * wiring so it cannot rot back.
@@ -85,8 +85,6 @@ describe("shared overlay scrim (gh#215)", () => {
   });
 
   it("leaves no overlay opted out of the shared scrim with a hard-coded backdrop", () => {
-    // The TwoFactorSetup dialog used to re-state `rgb(0 0 0 / 0.3)` at a higher specificity, which
-    // silently excluded that one dialog from --overlay-background theming.
     expect(
       declarationsFor(dialogStyles, '[data-slot="dialog-overlay"].ui-two-factor-setup-overlay'),
     ).toBe("");
@@ -98,9 +96,9 @@ describe("shared overlay scrim (gh#215)", () => {
 });
 
 /**
- * gh#215 / WCAG 2.3.3 (Animation from Interactions) + 2.2.2 — Dialog, AlertDialog, CommandPalette,
- * Sheet and Popover all animate on open/close via Tailwind `data-[state]:animate-*` utilities and
- * were NOT gated on reduced motion. Only the motion is removed; the overlay still appears and
+ * WCAG 2.3.3 (Animation from Interactions) + 2.2.2 — Dialog, AlertDialog, CommandPalette,
+ * Sheet and Popover all animate on open/close via Tailwind `data-[state]:animate-*` utilities, so
+ * every one of them is gated on reduced motion. Only the motion is removed; the overlay still appears and
  * disappears instantly, so the open/closed state stays unambiguous.
  */
 describe("overlay reduced-motion gating (gh#215)", () => {

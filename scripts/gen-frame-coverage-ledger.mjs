@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * gen-frame-coverage-ledger — regenerate preview/frame-coverage.ledger.json (issue #163 item 1).
+ * gen-frame-coverage-ledger — regenerate preview/frame-coverage.ledger.json.
  *
  * The ledger is GENERATED from the real public surface, never hand-listed:
  *

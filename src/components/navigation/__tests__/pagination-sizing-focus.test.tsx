@@ -45,7 +45,6 @@ describe("正常系: ページボタンの寸法 (gh consumer 2026-08-24)", () =
     expect(rule).toContain("min-width: var(--control-height)");
     expect(rule).toContain("padding-inline: var(--pagination-page-padding-x)");
     expect(rule).toContain("height: var(--control-height)");
-    // The old fixed width must be gone — `min-width:` above would otherwise be dead weight.
     expect(rule).not.toMatch(/^\s*width:/m);
   });
 
@@ -103,9 +102,8 @@ describe("正常系: キーボードフォーカスの輪郭", () => {
 });
 
 describe("正常系: ページ番号の並び (件数一定)", () => {
-  // The window used to collapse against the edges: 1,060 pages opened as `1 2 … 1060`, four
-  // controls with a dead gap. Ant Design / MUI clamp the window instead, so the strip keeps its
-  // width wherever the current page sits.
+  // Ant Design / MUI clamp the window instead, so the strip keeps its width wherever the
+  // current page sits.
   it("先頭・中央・末尾のどこでも表示件数が変わらない", () => {
     const first = buildPageRange(1, 1060);
     const middle = buildPageRange(500, 1060);

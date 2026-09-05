@@ -39,8 +39,6 @@ describe("Sidebar submenu", () => {
       <Sidebar activeId="settings" sections={sections} onSelect={() => undefined} />,
     );
     expect(screen.queryByRole("button", { name: "Journals" })).toBeNull();
-    // Navigating into a child route must OPEN the group and reveal the now-active child (gh#165 —
-    // the old `defaultOpen` only set mount-time state and left the child hidden).
     rerender(<Sidebar activeId="journals" sections={sections} onSelect={() => undefined} />);
     const child = screen.getByRole("button", { name: "Journals" });
     expect(child).toHaveAttribute("aria-current", "page");
@@ -82,7 +80,7 @@ describe("Sidebar submenu", () => {
     );
 
     // The consumer's <a> IS the row (Slot merges the row class + active state onto it) — it is a
-    // link, not wrapped in a <button>, so there is no nested interactive element (gh#165).
+    // link, not wrapped in a <button>, so there is no nested interactive element.
     const link = screen.getByRole("link", { name: "Custom Settings" });
     expect(link).toHaveClass("sb-nav-item");
     expect(link).toHaveAttribute("aria-current", "page");

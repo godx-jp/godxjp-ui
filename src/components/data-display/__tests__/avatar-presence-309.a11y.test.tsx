@@ -5,7 +5,7 @@ import { renderWithUi } from "@/test/render";
 import { Avatar, AvatarFallback, AvatarImage, Card, CardContent, ListRow } from "..";
 
 /**
- * gh#309 — the presence dot's accessibility contract, on the surfaces it actually ships to: a
+ * The presence dot's accessibility contract, on the surfaces it actually ships to: a
  * channel member list, a message-stream author mark, and the topbar account avatar. axe cannot
  * prove that a state is ANNOUNCED, only that nothing is broken — so the announcement itself is
  * asserted here too, in the composition rather than in isolation, because that is where a

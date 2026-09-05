@@ -96,10 +96,8 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Primary" })).toHaveClass("ui-button--default");
   });
 
-  // Regression, issue #133: icon-sm/icon-lg must bind the same density tokens as their labelled
-  // counterparts so a chevron trigger sits flush beside an sm action (split button). They used to
-  // hand-derive an offset off the BASE --control-height, which ignored the .ui-button--sm rebinding
-  // and rendered icon-sm 4px short — exactly the xs height.
+  // Regression: icon-sm/icon-lg must bind the same density tokens as their labelled counterparts so
+  // a chevron trigger sits flush beside an sm action (split button).
   it.each([
     ["icon-xs", "ui-button--icon-xs"],
     ["icon-sm", "ui-button--icon-sm"],

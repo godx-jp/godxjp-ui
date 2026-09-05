@@ -1,9 +1,8 @@
 /**
  * WCAG contrast maths, shared by the token-palette tests.
  *
- * Extracted from `input-boundary-contrast.test.ts` when the same check had to run a second time
- * over the showcase tenant themes (gh#315). Two copies of a luminance formula is how one of them
- * quietly drifts and starts certifying a palette that fails in the browser.
+ * Two copies of a luminance formula is how one of them quietly drifts and starts certifying a
+ * palette that fails in the browser.
  */
 
 /** Read an `--name: H S% L%;` token out of a CSS/TSX source block as [h, s, l]. */

@@ -14,7 +14,7 @@ function tokenValue(css: string, token: string): string | undefined {
 }
 
 /**
- * gh#312 — Toggle carries Button's counter-pill vocabulary, so the two pills must LOOK the same.
+ * Toggle carries Button's counter-pill vocabulary, so the two pills must LOOK the same.
  *
  * They deliberately do not share a token: rule #45 gives each component its own knob, and
  * check:typography forbids the `var(--toggle-…, var(--button-…))` call-site-fallback shape for a

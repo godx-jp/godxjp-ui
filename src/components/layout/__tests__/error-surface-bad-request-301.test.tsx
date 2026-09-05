@@ -1,5 +1,5 @@
 /**
- * ErrorSurface — 400 Bad Request joins the closed status set (gh#301).
+ * ErrorSurface — 400 Bad Request joins the closed status set.
  *
  * The union shipped as `403 | 404 | 500 | 503`, so a consumer porting a legacy
  * `BadRequestException` page (起動パラメータ不正 — a route reached with parameters the server

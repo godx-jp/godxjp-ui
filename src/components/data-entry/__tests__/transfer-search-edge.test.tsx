@@ -27,7 +27,7 @@ describe("Transfer — search without descriptions", () => {
       <Transfer dataSource={DATA} targetKeys={[]} showSearch disabled onValueChange={vi.fn()} />,
     );
     // The dimmed/inert state moved onto the search wrapper as `data-disabled`, so the alpha is
-    // the system --disabled-opacity rather than a literal utility (#319).
+    // the system --disabled-opacity rather than a literal utility.
     expect(search().closest(".ui-transfer-search")).toHaveAttribute("data-disabled");
   });
 });

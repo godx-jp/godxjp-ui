@@ -6,7 +6,7 @@ import { renderWithUi, screen, userEvent, within } from "@/test/render";
 import { createSidebarLink, Sidebar, SidebarItem, SidebarSection } from "../sidebar";
 
 /**
- * gh#213 — the sidebar ROW-COMPOSITION contract.
+ * The sidebar ROW-COMPOSITION contract.
  *
  * The reported production regression: a consumer `renderItem` callback replaced the library row
  * composition, so every sidebar icon disappeared. The root cause was the direction of the contract —
@@ -132,11 +132,11 @@ describe("Sidebar linkComponent — the library composes the row (gh#213)", () =
       <Sidebar sections={sections} activeId="journal" linkComponent={RouterLink} />,
     );
     // The trigger owns aria-expanded, so it must remain a <button> — a link wrapping a chevron
-    // button would be a nested interactive element (gh#165).
+    // button would be a nested interactive element.
     const trigger = screen.getByRole("button", { name: /Ledger/ });
     expect(trigger).toHaveAttribute("aria-expanded", "true");
     // Its ROW composition is library-owned like every other shape: icon slot + label + badge,
-    // with the chevron OUTSIDE .sb-icon so it reads the row colour (gh#228).
+    // with the chevron OUTSIDE .sb-icon so it reads the row colour.
     expect(trigger.querySelector(".sb-icon svg")).not.toBeNull();
     expect(trigger.querySelector(".sb-badge")!.textContent).toBe("2");
     expect(trigger.querySelector(".sb-chevron")!.closest(".sb-icon")).toBeNull();

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 // These guard the actual CSS fixes for the "phantom scroll-height / shell containment" family
-// (gh#103 body-stretch void, gh#104 shell leak, gh#105 hidden form-fallback). jsdom does no layout,
+// (body-stretch void, shell leak, hidden form-fallback). jsdom does no layout,
 // so a real scrollHeight measurement isn't possible here — we assert the fix rules are present so
 // they can't be silently removed. Real scroll behaviour is verified in a browser at ship time.
 const read = (rel: string) => readFileSync(fileURLToPath(new URL(rel, import.meta.url)), "utf8");

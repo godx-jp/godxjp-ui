@@ -7,7 +7,7 @@ import { Card, CardContent } from "../card";
 import { DataTable, type ColumnDef } from "../data-table";
 
 /**
- * gh#236 — `DataTable.Pagination` declared ONLY `padding-top`, so in the documented flush container
+ * `DataTable.Pagination` declared ONLY `padding-top`, so in the documented flush container
  * (`<Card><CardContent flush><DataTable/>`) the "rows per page" label and the page-size Select sat
  * flush against the container edge and its closing border.
  *

@@ -231,7 +231,7 @@ function TreeSelectRoot({
     <Popover open={open} onOpenChange={setOpen}>
       <div className="relative">
         <PopoverTrigger asChild>
-          {/* Nút gốc chứ không phải <Button>: xem gh#348 — trigger đọc token của .ui-control. */}
+          {/* Nút gốc chứ không phải <Button>: trigger đọc token của .ui-control. */}
           <button
             id={id}
             data-field={fieldA11y["data-field"] ?? identity["data-field"]}

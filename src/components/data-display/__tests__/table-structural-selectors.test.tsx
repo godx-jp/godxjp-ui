@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
  * Structural selectors in table-layout.css run against really rendered DOM
  * (src/test/css-selector.ts). The sort-label `> :last-child` rule has its own
  * dedicated coverage in data-table-header-align.test.tsx; the flush-card
- * bordered rule in card-table.test.tsx (gh#305).
+ * bordered rule in card-table.test.tsx.
  */
 const css = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), "../../../styles/table-layout.css"),

@@ -6,7 +6,7 @@ import { Button, Text } from "../../general";
 import { Flex } from "../../layout/flex";
 import { expectNoA11yViolations } from "@/test/a11y";
 
-// The SCR-105 access-approval queue (gh#253) driven through the TanStack DataTable. The preset
+// The SCR-105 access-approval queue driven through the TanStack DataTable. The preset
 // changes only the SIZING model, so this guards that the table axe sees at 390 is the SAME table
 // it sees at 1440: real header cells, a named (visually empty) actions column, an accessible name
 // on the icon-only row action, and `aria-sort` on the sortable headers.

@@ -10,7 +10,7 @@ describe("DXS hi-fi visual contract", () => {
     const tokens = read("../../tokens/components/shell.css");
     const shell = read("../shell-layout.css");
 
-    // The 48px band reads its step since gh#324 — `--band-height-2xl` IS 3rem.
+    // The 48px band reads its step — `--band-height-2xl` IS 3rem.
     expect(tokens).toMatch(/--app-shell-bar-height:\s*var\(--band-height-2xl\)/);
     expect(read("../../tokens/foundation.css")).toMatch(/--band-height-2xl:\s*3rem;/);
     expect(shell).toMatch(
@@ -25,9 +25,8 @@ describe("DXS hi-fi visual contract", () => {
     const shell = read("../shell-layout.css");
 
     expect(tokens).toMatch(/--app-shell-page-max-width:\s*80rem/);
-    // Product override (gh#296, direct instruction): the search trigger now fills its Topbar
-    // center slot by default instead of floating as a fixed ~420px box with dead space on either
-    // side. The token stays available for a consumer that wants the old capped, centered look.
+    // Product override (direct instruction): the search trigger now fills its Topbar center slot
+    // by default instead of floating as a fixed ~420px box with dead space on either side.
     expect(tokens).toMatch(/--topbar-search-max-width:\s*none/);
     expect(tokens).toMatch(/--app-shell-main-background:\s*hsl\(var\(--muted\) \/ 0\.4\)/);
     expect(shell).toMatch(
@@ -42,7 +41,7 @@ describe("DXS hi-fi visual contract", () => {
 
     expect(tokens).toMatch(/--sidebar-nav-item-height:\s*var\(--band-height-md\)/);
     expect(read("../../tokens/foundation.css")).toMatch(/--band-height-md:\s*2rem;/);
-    // The rail's label step is a STEP, not the hi-fi source's 13px (gh#329). 13 sits between
+    // The rail's label step is a STEP, not the hi-fi source's 13px. 13 sits between
     // --font-size-xs (≈12.47) and the 14px base, so the whole rail read off the system's type
     // rhythm and stayed behind whenever a service retuned --font-size-base. The row's own rhythm —
     // the 2rem height this test is really about — is unchanged, and 1.5 × 12.47 = 18.7px keeps the

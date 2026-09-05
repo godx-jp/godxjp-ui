@@ -5,10 +5,6 @@ import { renderWithUi } from "@/test/render";
 import { DataTable, type ColumnDef } from "../data-table";
 
 /**
- * gh#270 — the internal TanStack pagination default (pageSize 10) used to slice
- * EVERY plain `data`+`columns` table to 10 rows even when no
- * `<DataTable.Pagination>` was composed and no pagination props were passed:
- * rows 11+ were unreachable, with no pager UI and no warning (a silent cap).
  * Client pagination must engage ONLY when something drives it — a numbered
  * pager child, or controlled `pagination`/`onPaginationChange` state.
  */

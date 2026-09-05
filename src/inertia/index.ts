@@ -91,7 +91,7 @@ export interface InertiaLinkLike {
 }
 
 /**
- * Bind Inertia's `<Link>` as the Sidebar's row element (gh#213).
+ * Bind Inertia's `<Link>` as the Sidebar's row element.
  *
  * The LIBRARY still composes every row — the 16px icon slot, the label, the badge, `data-active` /
  * `aria-current`, the icon-only collapsed rail and its tooltip name — and hands it to the link as

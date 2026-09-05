@@ -9,13 +9,8 @@ import { EmptyState } from "../empty-state";
 /**
  * Regression — `tone` must actually colour the GLYPH, not just the medallion tint.
  *
- * `.ui-empty-state-icon` sets `color: var(--empty-state-icon-foreground, hsl(var(--muted-foreground)))`
- * and each `[data-tone="…"]` rule re-points that token. But the component used to render the icon
- * with a hard-coded `className="text-muted-foreground size-6"`; the utility out-specified the
- * inherited colour, so EVERY tone painted a muted glyph and only the medallion fill varied — the
- * token was half-dead. Measured in Chromium before the fix: medallion colour tracked the tone
- * (success rgb(105,191,142) · warning rgb(250,183,0) · destructive rgb(184,40,48) ·
- * info rgb(77,109,179)) while the svg stayed rgb(112,110,102) for all five.
+ * `.ui-empty-state-icon` sets `color: var(--empty-state-icon-foreground,
+ * hsl(var(--muted-foreground)))` and each `[data-tone="…"]` rule re-points that token.
  *
  * jsdom does not cascade the real stylesheet, so this guard pins the two halves that make the
  * cascade work: (a) the component ships NO colour utility on the glyph, and (b) the stylesheet
@@ -39,7 +34,7 @@ describe("EmptyState tone → glyph colour", () => {
     expect(svg.getAttribute("class")).not.toMatch(/\btext-[a-z-]*foreground\b/);
     expect(svg.getAttribute("class")).not.toMatch(/\btext-(muted|primary|destructive)\b/);
     // Geometry moved into `.ui-empty-state-icon svg` so the glyph and its medallion scale
-    // together from --empty-state-icon-glyph-size / --empty-state-icon-size (#319). The glyph
+    // together from --empty-state-icon-glyph-size / --empty-state-icon-size. The glyph
     // now carries NO class at all, which is the stronger statement: nothing on it can re-pin
     // either the colour this test guards or the size.
     // (lucide stamps its own `lucide-*` marker, so assert the absence of a SIZE utility rather

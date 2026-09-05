@@ -36,7 +36,7 @@ describe("Toggle a11y", () => {
     );
   });
 
-  // gh#312 — the counted, pressed chip.
+  // The counted, pressed chip.
   it("has no axe violations (counted filter chips, pressed and unpressed)", async () => {
     await expectNoA11yViolations(
       <>

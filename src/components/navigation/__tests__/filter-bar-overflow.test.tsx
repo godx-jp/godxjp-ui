@@ -1,4 +1,4 @@
-// FilterBar responsive overflow (gh#216). The strategy is expressed as a data attribute so the
+// FilterBar responsive overflow. The strategy is expressed as a data attribute so the
 // CSS owns the geometry (no page-local filter geometry — an acceptance criterion of #216) and so
 // the choice is assertable without a layout engine.
 import { describe, expect, it } from "vitest";

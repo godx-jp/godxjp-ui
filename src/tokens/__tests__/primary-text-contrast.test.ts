@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * gh#299 — `--primary` is used as TEXT, not only as a fill: every link, every
+ * `--primary` is used as TEXT, not only as a fill: every link, every
  * issue key, every "Save as Filter" in a consuming app is `text-primary`. It
  * must therefore clear WCAG 2.x AA (4.5:1) not just on `--background`, but on
  * the tints this system itself lays over a row.

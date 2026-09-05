@@ -6,7 +6,7 @@ import { Button } from "../../general/button";
 import { Banner, type BannerProp, type BannerProps } from "../banner";
 
 /**
- * Banner — the canonical DXS full-bleed attention strip (godxjp-ui#255).
+ * Banner — the canonical DXS full-bleed attention strip.
  * It IS the Alert primitive with `variant` fixed to "banner": one implementation
  * owns tone semantics, dismiss, actions, icon treatment and focus order.
  */
@@ -101,7 +101,7 @@ describe("Banner", () => {
 });
 
 /**
- * Ported from the dev-line Banner suite (godxjp-ui 18.7.x, gh#255): the full tone matrix, the
+ * Ported from the dev-line Banner suite (godxjp-ui 18.7.x): the full tone matrix, the
  * runtime variant guard and the axe pass — adapted to the canonical `../banner` export.
  */
 describe("Banner — tone matrix and runtime guards", () => {

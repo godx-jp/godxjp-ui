@@ -8,7 +8,7 @@ import { Toggle } from "../toggle";
 import { ToggleGroup, ToggleGroupItem } from "../toggle-group";
 
 /**
- * gh#312 — the counted, pressed chip.
+ * The counted, pressed chip.
  *
  * Toggle now carries Button's counter-pill vocabulary (`count` / `overflowCount` / `showZero`)
  * plus `countLabel`, which folds the count's UNIT into the accessible name. These tests pin the

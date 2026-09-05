@@ -5,7 +5,7 @@ import { renderWithUi } from "@/test/render";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../table";
 
 /**
- * gh#274 — `<Table bordered>` draws the full cell grid (outer frame + vertical
+ * `<Table bordered>` draws the full cell grid (outer frame + vertical
  * column rules) so rowSpan/colSpan merged cells read as merged. Default stays
  * byte-identical: no class emitted without the prop.
  */

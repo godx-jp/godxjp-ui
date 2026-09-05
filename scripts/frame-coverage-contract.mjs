@@ -1,19 +1,19 @@
 /**
- * frame-coverage-contract — the single source of truth for the issue #163 preview contract.
+ * frame-coverage-contract — the single source of truth for the preview contract.
  *
  * Both the generator (gen-frame-coverage-ledger.mjs) and the CI gate
  * (check-frame-coverage-ledger.mjs) import this module, so the dimension registry, the
  * applicability derivation and the promotion rules can never drift between "what we write
  * into the ledger" and "what CI enforces".
  *
- * Design mirrors the issue #171 screen-reader evidence gate: JSON-Schema + policy registry +
+ * Design mirrors the screen-reader evidence gate: JSON-Schema + policy registry +
  * promotion gate. The three verdicts are the ones the issue mandates:
  *
  *   covered         — an EXECUTED case proves the dimension. Never inferred.
  *   untested        — no executed case. This is the DEFAULT and it is NOT a pass.
  *   not-applicable  — the dimension cannot exist for this export, WITH a written reason.
  *
- * "The absence of a demonstrated state must not be interpreted as a pass." (issue #163)
+ * "The absence of a demonstrated state must not be interpreted as a pass."
  */
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
@@ -658,7 +658,7 @@ export function totalsFor(rows) {
  * Roll the 14 compact dimension cells of one ledger component up to the nine legacy
  * FRAME-COVERAGE-STANDARD axes, for scripts/frame-coverage.mjs and docs/FRAME-COVERAGE-REPORT.md.
  * An axis is `covered` only when EVERY dimension on it is covered — one untested dimension
- * keeps the whole axis UNTESTED, which is the conservative direction issue #163 demands.
+ * keeps the whole axis UNTESTED, which is the conservative direction the standard demands.
  */
 export function axesFromCells(cells = {}) {
   const axes = {};

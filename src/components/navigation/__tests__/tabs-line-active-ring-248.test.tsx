@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
- * gh#248 — the `line` variant must NOT keep a ring around the SELECTED trigger, while the
+ * The `line` variant must NOT keep a ring around the SELECTED trigger, while the
  * `:focus-visible` keyboard ring stays fully intact (WCAG 2.4.7). Both states used to be painted
  * with the same Tailwind `ring-*` utilities at equal specificity, so the 1px `ring-primary/25`
  * selected ring simply swallowed the 3px focus ring. Browser evidence (Chromium, /frame/navigation-tabs):
@@ -47,8 +47,6 @@ function ringUtilities(className: string) {
 describe("Tabs line variant — no active ring (gh#248)", () => {
   it("forwards variant=line to the list so every line rule actually reaches the triggers", () => {
     render(<Tabs items={ITEMS} variant="line" />);
-    // Before the fix the items API styled the list through className only, leaving
-    // data-variant="default" — so the `group-data-[variant=line]/tabs-list:` rules never matched.
     expect(screen.getByRole("tablist")).toHaveAttribute("data-variant", "line");
   });
 
@@ -151,8 +149,6 @@ describe("Tabs line indicator — token-owned (gh#248)", () => {
   it("positions the bar with LOGICAL insets so the vertical rail flips under dir=rtl", () => {
     expect(navigationCss).toContain("inset-block-end: calc(-1 * var(--tabs-indicator-offset));");
     expect(navigationCss).toContain("inset-inline-end: calc(-1 * var(--tabs-indicator-offset));");
-    // The old physical `after:-right-1` utility never flipped in RTL — verified in Chromium:
-    // vertical rail computes right:0 in LTR and left:0 under dir="rtl".
     expect(navigationCss).not.toMatch(/\[data-slot="tabs-trigger"\]::after[^}]*\bright:/);
   });
 

@@ -5,13 +5,10 @@ import { describe, expect, it } from "vitest";
 /**
  * The focus ring has ONE definition (styles/focus-ring.css) and four tokens.
  *
- * It did not always. Before this rule the ring was hand-written in six layout
- * files and had drifted into four incompatible shapes — the token pair, the
- * token pair with an ad-hoc `/ 0.45`, and two that hardcoded `3px` with
- * `/ 0.35` and `/ 0.3`, bypassing `--focus-ring-width` entirely. Same state,
- * four thicknesses, and no single knob a service could retune. Components that
- * forgot the rule got the browser default instead (Chrome's `rgb(0,95,204)`,
- * which is how the pagination defect surfaced).
+ * It did not always. Same state, four thicknesses, and no single knob a
+ * service could retune. Components that forgot the rule got the browser
+ * default instead (Chrome's `rgb(0,95,204)`, which is how the pagination
+ * defect surfaced).
  *
  * These tests fail the moment someone writes a ring by hand again.
  */
@@ -90,7 +87,7 @@ describe("focus ring — single source", () => {
   // shipped default is on (WCAG 2.4.7), and width:0 is the documented switch.
   it("ships the ring ON by default and documents width:0 as the off switch", () => {
     const foundation = readFileSync(join(STYLES_DIR, "../tokens/foundation.css"), "utf8");
-    // gh#324: the ring's thickness is a member of the stroke scale rather than a parallel
+    // The ring's thickness is a member of the stroke scale rather than a parallel
     // authority, so a theme retunes rings and borders together. --stroke-md IS 2px.
     expect(foundation).toMatch(/--focus-ring-width:\s*var\(--stroke-md\)/);
     expect(foundation).toMatch(/--stroke-md:\s*2px;/);
@@ -100,10 +97,9 @@ describe("focus ring — single source", () => {
 
   // A control carrying a Tailwind shadow/ring utility (shadow-xs on Checkbox,
   // Radio, Switch, Input…) resolves box-shadow from the UTILITIES layer, which
-  // outranks `components`. Measured before the fix: Checkbox focus-visible
-  // painted `rgba(0,0,0,0) 0 0 0 0` — no ring at all. Feeding --tw-ring-shadow
-  // is what makes the utility's composite paint our ring; drop it and those
-  // controls silently lose their focus affordance again.
+  // outranks `components`. Feeding --tw-ring-shadow is what makes the
+  // utility's composite paint our ring; drop it and those controls silently
+  // lose their focus affordance again.
   it("feeds --tw-ring-shadow so controls with Tailwind shadow utilities still ring", () => {
     expect(FOCUS_RING_CSS).toMatch(/--tw-ring-shadow:\s*0 0 0 var\(--focus-ring-width\)/);
   });

@@ -13,7 +13,7 @@ import {
 } from "../service-launcher-card";
 
 /**
- * gh#219 — responsive + overflow + keyboard contract for the Console services launcher.
+ * Responsive + overflow + keyboard contract for the Console services launcher.
  *
  * jsdom performs NO layout, so a real column count / scrollWidth can never be measured here (same
  * reasoning as list-row-responsive.test.tsx). The guarantee is therefore split in three:
@@ -36,7 +36,7 @@ const rule = (css: string, selector: string) => {
   return css.slice(at, css.indexOf("}", at) + 1);
 };
 
-/** Long real-world service names — JA, EN and VI (issue #219 "long JA/EN/VI overflow"). */
+/** Long real-world service names — JA, EN and VI ("long JA/EN/VI overflow"). */
 const LONG_TITLE = {
   ja: "グローバル人事情報基盤・従業員セルフサービスポータル（アジア太平洋地域）",
   en: "Acme Global Workforce Identity & Entitlement Administration Console (Asia Pacific)",
@@ -144,11 +144,10 @@ describe("ServiceLauncherCard overflow CSS contract (gh#219)", () => {
   });
 
   it("sizes the 36px semantic icon surface from the icon scale, never a literal", () => {
-    // It read `var(--control-height-lg)` until gh#324 — a CONTROL tier sizing an ICON box, which
-    // was invisible at the desk and wrong on a phone: `@media (pointer: coarse)` lifts the control
-    // ladder to the 44px tap floor, so the medallion inflated 36px → 48px while its glyph stayed
-    // 20px. `--icon-size-2xl` is the same 36px; the explicit `* var(--scaling)` keeps the density
-    // behaviour the control tier used to supply (the gh#328 rule).
+    // A CONTROL tier must not size an ICON box: `@media (pointer: coarse)` lifts the control
+    // ladder to the 44px tap floor, which would inflate the medallion while its glyph stays put.
+    // `--icon-size-2xl` is the 36px step; the explicit `* var(--scaling)` keeps the density
+    // behaviour the control tier supplies.
     expect(tokenCss).toMatch(
       /--card-service-launcher-icon-size:\s*calc\(var\(--icon-size-2xl\) \* var\(--scaling\)\)/,
     );

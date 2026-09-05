@@ -139,7 +139,7 @@ export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
 };
 
 /**
- * @see FormField — exactly one of `children` (an interactive control) or `staticText` (gh#294):
+ * @see FormField — exactly one of `children` (an interactive control) or `staticText`:
  * a read-only VALUE row inside the same Form, styled to match `Descriptions.Item`'s value
  * typography (`text-sm break-all`) byte-for-byte. This is the "mixed read-only + editable fields
  * on one form" case (an immutable name/email row above an editable role Select, for example) —

@@ -154,7 +154,7 @@ describe("Table action-collection preset (gh#253)", () => {
 describe("Table action-collection priority floors (gh#262)", () => {
   // jsdom performs no table layout, so the geometry itself is exercised by the Playwright script
   // (scripts/table-collection-cjk-visual.mjs, 10 CJK columns at 390px). Here we pin the CONTRACT:
-  // up to the six-column budget the compact tier stays the gh#253 percentage ratios (canonical
+  // up to the six-column budget the compact tier stays the percentage ratios (canonical
   // queues keep their scroll-free acceptance frames), and from SEVEN columns a `:has()` tier
   // swaps in rem LENGTH floors — the only floor `table-layout: fixed` respects: over-constrained
   // percentage columns are normalized back into the frame and shred CJK headers one character
@@ -245,7 +245,7 @@ describe("Table action-collection compact tier — the layer contract (gh#412)",
   it("puts the compact re-point in that layer — `@layer components` cannot beat a `text-*` utility", () => {
     // The reason the token was dead: Table emitted a Tailwind utility for its type, and
     // `utilities` outranks `components` by LAYER ORDER — no selector written in `components`
-    // could win. gh#319 removed that utility (the base step is now
+    // could win. That utility is gone (the base step is now
     // `[data-slot="table"] { font-size: var(--table-font-size) }`), but the compact tier stays in
     // the last layer, because a CONSUMER `text-*` utility on the table would beat `components`
     // exactly the same way.

@@ -3,13 +3,13 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * gh#228 — the Sidebar painted ONE `--muted-foreground` on `.sb-nav-item`, so the Lucide SVG and
+ * The Sidebar painted ONE `--muted-foreground` on `.sb-nav-item`, so the Lucide SVG and
  * the label inherited the same low-contrast colour: a service could not match the canonical shell's
  * darker 16px nav icons without page-local CSS or re-tinting every muted text globally.
  *
  * This guard pins the public contract: row and icon read SEPARATE component tokens, every state
  * (resting / hover / active / disabled, top-level · sub · collapsed) resolves through them, the
- * defaults are byte-identical to the pre-gh#228 rendering, the knobs are role-mirror `initial`
+ * defaults are byte-identical to the earlier rendering, the knobs are role-mirror `initial`
  * declarations (docs/TOKENS.md), and NO geometry moved (icons stay --sidebar-nav-icon-size, rows
  * stay --sidebar-nav-item-height / -gap).
  */
@@ -82,7 +82,7 @@ describe("Sidebar nav foreground tokens (gh#228)", () => {
     expect(rule(".sb-nav-item:hover")).toContain(
       "color: var(--sidebar-nav-item-hover-foreground, hsl(var(--foreground)));",
     );
-    // Hover background is untouched by gh#228.
+    // Hover background is untouched by the foreground split.
     expect(rule(".sb-nav-item:hover")).toContain("background: hsl(var(--accent));");
   });
 
@@ -140,10 +140,10 @@ describe("Sidebar nav foreground tokens (gh#228)", () => {
   });
 
   it("changes COLOUR only — 16px icons and 32px/10px row geometry are untouched", () => {
-    // gh#326 named the icon scale: --icon-size-md IS 1rem/16px, and
+    // The icon scale: --icon-size-md IS 1rem/16px, and
     // src/tokens/__tests__/icon-size-scale.test.ts pins that step and every token that reads it.
     expect(shellTokens).toMatch(/--sidebar-nav-icon-size:\s*var\(--icon-size-md\);/);
-    // gh#324 named the band scale the same way: --band-height-md IS 2rem/32px, and
+    // The band scale, the same way: --band-height-md IS 2rem/32px, and
     // src/tokens/__tests__/geometry-axis-scales.test.ts pins that step.
     expect(shellTokens).toMatch(/--sidebar-nav-item-height:\s*var\(--band-height-md\);/);
     expect(shellTokens).toMatch(/--sidebar-nav-item-gap:\s*0\.625rem;/);

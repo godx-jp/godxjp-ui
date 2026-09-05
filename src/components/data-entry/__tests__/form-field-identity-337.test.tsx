@@ -1,5 +1,5 @@
 /**
- * FormField publishes the field's MACHINE KEY onto its control (gh#337).
+ * FormField publishes the field's MACHINE KEY onto its control.
  *
  * A ported back office is driven by screen automation (RPA) as well as by people. The legacy
  * CakePHP screens gave every control a `name` and an `id`, and both disappeared in the React
@@ -292,9 +292,7 @@ describe("Select / Radio / Checkbox addressability (gh#337)", () => {
     expect(document.getElementById("tax_class-53")).not.toBeNull();
     // Its label points at it, so click-to-select keeps working off the same id.
     expect(document.querySelector('label[for="tax_class-52"]')).toHaveTextContent("東京本社");
-    // DETERMINISTIC: a second, independent mount produces the SAME id. `React.useId()` — what this
-    // used to be — produces a different token per mount and per build, so nothing outside React
-    // could ever address a single radio.
+    // DETERMINISTIC: a second, independent mount produces the SAME id.
     first.unmount();
     renderWithUi(field);
     expect(document.getElementById("tax_class-52")).not.toBeNull();

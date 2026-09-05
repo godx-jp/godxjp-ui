@@ -2,15 +2,9 @@
 /**
  * A docs page may not fetch an asset from the public internet.
  *
- * `docs/data-display/avatar.tsx` and `docs/data-display/card/index.tsx` loaded portraits from
- * `https://picsum.photos`. That is not merely a slow page: the browser gates navigate with
- * `waitUntil: "networkidle"`, so a request that never settles means the page never finishes
- * loading, and `page.goto` dies at its 30s timeout. Both frames failed at EVERY viewport in both
- * the axe and the geometry sweep — which for weeks read as "infrastructure errors" and sent me
- * looking at the runner, the preview server and the harness in turn (gh#333).
- *
- * The tell was that the failures were not scattered. Load scatters; these hit the same two frames
- * every time, at every width, in both gates. That is a property of the page, not of the machine.
+ * The browser gates navigate with `waitUntil: "networkidle"`, so a request that never settles
+ * means the page never finishes loading and `page.goto` dies at its 30s timeout — the frame then
+ * fails at EVERY viewport in both the axe and the geometry sweep.
  *
  * Inline the asset instead — a `data:` URI costs no request and renders identically offline.
  *
@@ -46,8 +40,7 @@ function walk(dir, out = []) {
   return out;
 }
 
-/** Comments are prose. A URL in an explanation is not a fetch — the same phantom-debt trap that
- * check-no-hardcoded-geometry and the raw-palette audit both had to be taught about. */
+/** Comments are prose: a URL in an explanation is not a fetch. */
 function stripComments(source) {
   return source
     .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "))

@@ -1,4 +1,4 @@
-// PageContainer `extra` WRAP contract at >=640px (gh#300).
+// PageContainer `extra` WRAP contract at >=640px.
 //
 // jsdom performs no layout, so the sibling `page-container.test.tsx` can only assert the DOM. The
 // pixel behaviour was measured in headless Chromium against THIS stylesheet, on a real

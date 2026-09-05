@@ -5,12 +5,7 @@ import { renderWithUi } from "@/test/render";
 
 import { Select } from "../select";
 
-/**
- * gh#280 — the PLAIN (non-searchable) Select branch used to drop `clearable`
- * entirely: no clear affordance ever rendered despite the documented
- * default-true contract (the searchable branch got it from SearchSelect).
- * Clearing emits `onValueChange("", undefined)` so Radix shows the placeholder.
- */
+/** Clearing emits `onValueChange("", undefined)` so Radix shows the placeholder. */
 
 const options = [
   { value: "10", label: "営業部" },

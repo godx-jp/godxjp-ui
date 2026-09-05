@@ -6,10 +6,7 @@ import { describe, expect, it } from "vitest";
  * A sidebar nav row is a control, so it owes a visible keyboard indicator (WCAG 2.4.7) — and it
  * has to be the design system's ring, not the user agent's.
  *
- * Measured in Chromium before this rule: the first Tab into the shell landed on a rail item
- * drawing Chrome's own `outline: rgb(0, 95, 204) auto 1px` — a blue belonging to no theme —
- * while every Button beside it drew the token ring (`outline-style: none` + box-shadow). On a
- * Slack-style shell that mismatch is the first thing a keyboard user sees.
+ * On a Slack-style shell that mismatch is the first thing a keyboard user sees.
  *
  * Asserted against the stylesheet because jsdom does no layout and computes no UA focus ring,
  * so nothing in the rendering tests next door can fail when this regresses.

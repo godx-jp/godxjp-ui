@@ -79,12 +79,8 @@ describe("SplitPane", () => {
   });
 
   /*
-   * `aside={null}` — the CLOSED rail. The reason this prop value exists is not the geometry
-   * (a call site can always drop the whole component) but what dropping the component COSTS:
-   * `threadOpen ? <SplitPane aside={<Thread />}>{page}</SplitPane> : page` changes the depth of
-   * `{page}` in the React tree, so React remounts it — measured in a consumer as a message list
-   * jumping from scrollTop 400 to the bottom the moment a thread opened. Closing through the
-   * prop keeps every wrapper mounted, so there is nothing for React to remount.
+   * `aside={null}` — the CLOSED rail. Closing through the prop keeps every wrapper mounted, so
+   * there is nothing for React to remount.
    */
   describe("a closed rail (aside={null})", () => {
     const layoutCss = readFileSync(

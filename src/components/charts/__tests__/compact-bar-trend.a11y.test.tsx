@@ -5,7 +5,7 @@ import { CompactBarTrend } from "../compact-bar-trend";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
- * gh#218 — a11y contract of the dependency-free compact bar trend.
+ * a11y contract of the dependency-free compact bar trend.
  *
  * APG: a chart is a single labelled graphic (`role="img"`) inside a `<figure>` whose
  * `<figcaption>` names it and whose `aria-describedby` points at a visually-hidden

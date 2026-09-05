@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
- * gh#249 — `<Avatar shape="square">` is the entity-header organization/service mark: a compact
+ * `<Avatar shape="square">` is the entity-header organization/service mark: a compact
  * ROUNDED square on the brand surface, as opposed to the round person avatar. Browser evidence
  * (Chromium, /frame/data-display-avatar at 1440/1024/390): square → border-radius 6px
  * (`--radius-lg`), 32×32 box (`--control-height`), background rgb(0,119,199) (`--primary`),

@@ -40,7 +40,7 @@ describe("AuthShell compact card spacing", () => {
     // :root binding it substitutes once at :root, so a card carrying [data-density="tight"|"cozy"]
     // — which override --card-space-inset ON THE CARD — would keep the :root value and a solo body
     // would silently stop following its own card's inset. That is the freeze this repo hit for
-    // real with --otp-slot-size (gh#233), and docs/TOKENS.md now states the call-site rule applies
+    // real with --otp-slot-size, and docs/TOKENS.md now states the call-site rule applies
     // to any re-scoped tier, not only colour roles. The default is preserved through the call-site
     // chain solo-y → shell-y → inset asserted below, so the rendered geometry is unchanged.
     expect(cardTokensCss).toMatch(/--card-space-solo-y:\s*initial;/);

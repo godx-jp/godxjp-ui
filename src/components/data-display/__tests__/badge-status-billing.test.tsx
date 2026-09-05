@@ -1,9 +1,4 @@
-// StatusBadge · subscription/billing lifecycle keys (gh#216).
-//
-// These four keys shipped in the canonical STATUS_MAP before their i18n entries existed, so every
-// billing surface rendered the RAW key ("status.trialing") instead of a label. The bug was only
-// visible once something actually rendered them, which is why this file pins the rendered TEXT in
-// all three supported locales rather than just the tone class.
+// StatusBadge · subscription/billing lifecycle keys.
 //
 // Browser-confirmed (headless Chromium, /frame/data-display-badge?locale=en|ja|vi at 1440/1024/390):
 // 33 badges, ZERO strings matching /^status\./, with the labels asserted below.
@@ -76,7 +71,7 @@ describe("StatusBadge · billing lifecycle statuses", () => {
   }
 
   it("maps each billing status onto the canonical tone (no page-local colour table)", () => {
-    // Tone comes from the shared STATUS_MAP, so a billing screen never keeps its own map (#216).
+    // Tone comes from the shared STATUS_MAP, so a billing screen never keeps its own map.
     const tones: Record<string, string> = {
       trialing: "text-info",
       past_due: "text-warning",

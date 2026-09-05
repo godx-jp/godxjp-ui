@@ -8,8 +8,7 @@ const cases = [
   ["data-entry-checkbox", '[role="checkbox"]'],
   ["data-entry-radio-group", '[role="radio"]'],
   // Radix ToggleGroup emits role="radiogroup" for type="single" (and "toolbar" for
-  // type="multiple") — never role="group". The old selector matched nothing and the
-  // whole check crashed on it.
+  // type="multiple") — never role="group".
   ["data-entry-toggle-group", '[role="radiogroup"]'],
   ["data-entry-command", "[cmdk-input]"],
   ["data-entry-input-otp", 'input[data-input-otp="true"]'],

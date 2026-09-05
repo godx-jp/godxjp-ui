@@ -16,7 +16,7 @@ const componentEvidence = JSON.parse(
 // `--allow-missing-frames` keeps discovery running when an owner has no docs frame yet (an
 // export landing mid-flight). Rows are still emitted, with `frameFile: null` + `hasFrame:false`,
 // and the owner is listed under `missingFrames`. The DEFAULT behaviour is unchanged — a missing
-// scripts/check-frame-coverage-ledger.mjs (issue #163) both consume this stdout contract.
+// scripts/check-frame-coverage-ledger.mjs both consume this stdout contract.
 const allowMissingFrames = process.argv.includes("--allow-missing-frames");
 const allowed = new Set(["pass", "untested", "not-applicable"]);
 const dimensions = [

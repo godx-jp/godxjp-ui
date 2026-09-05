@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * The two attention surfaces the canonical redesign needed and could not reach (gh#12).
+ * The two attention surfaces the canonical redesign needed and could not reach.
  *
  * 1. A FULL-PERIMETER attention border in a semantic tone. `Card`'s `accent` was a leading-edge
  *    stripe by definition, and the only perimeter in the system — `variant="featured"` — hard-coded
@@ -56,7 +56,7 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
     // the surface treatment every other card on the page has.
     expect(perimeter).toMatch(/var\(--card-shadow\)/);
     expect(perimeter).toMatch(/var\(--card-glow\)/);
-    // The two weights read the hairline step since gh#324 (`--stroke-hairline` IS 1px), so assert
+    // The two weights read the hairline step (`--stroke-hairline` IS 1px), so assert
     // the step rather than a literal the file no longer carries.
     expect(cardTokens).toContain("--card-accent-perimeter-width: var(--stroke-hairline);");
     expect(cardTokens).toContain("--card-accent-perimeter-ring-width: var(--stroke-hairline);");

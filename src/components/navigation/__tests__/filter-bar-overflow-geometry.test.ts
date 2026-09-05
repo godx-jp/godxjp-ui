@@ -1,4 +1,4 @@
-// FilterBar `overflow="scroll"` GEOMETRY contract (gh#216).
+// FilterBar `overflow="scroll"` GEOMETRY contract.
 //
 // jsdom performs no layout, so the sibling `filter-bar-overflow.test.tsx` can only assert the
 // `data-overflow` attribute and the a11y wiring. The pixel behaviour was measured in a real

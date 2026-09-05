@@ -217,7 +217,7 @@ describe("recoverable coordinated release", () => {
       "npm dist-tag add @godxjp/ui-mcp@18.4.1 latest @root",
     ]);
     // No `npm dist-tag rm` anywhere: the constant overwritable godx-staging tag needs no delete
-    // permission (issue #266) — the next release simply overwrites it.
+    // permission — the next release simply overwrites it.
     expect(commands.some((entry) => entry.args[0] === "dist-tag" && entry.args[1] === "rm")).toBe(
       false,
     );
@@ -353,7 +353,7 @@ describe("recoverable coordinated release", () => {
       "git add package.json mcp/package.json @root",
       "git commit -m chore(release): UI + MCP @18.4.1 @root",
     ]);
-    // Post-release steady state (issue #266): godx-staging is NOT removed — it stays on the
+    // Post-release steady state: godx-staging is NOT removed — it stays on the
     // released version, equal to latest, until the next release overwrites it.
     expect(registry["@godxjp/ui"].tags).toEqual({ latest: "18.4.1", "godx-staging": "18.4.1" });
     expect(registry["@godxjp/ui-mcp"].tags).toEqual({ latest: "18.4.1", "godx-staging": "18.4.1" });
@@ -535,7 +535,7 @@ describe("recoverable coordinated release", () => {
       ),
     ).toThrow("integrity or staging tag");
     // Missing tag → refuse: there is no removal step any more, so an absent godx-staging can
-    // only mean the publish under the constant tag never happened (issue #266).
+    // only mean the publish under the constant tag never happened.
     expect(() =>
       assertRegistryArtifact(
         { exists: true, integrity: "sha512-exact", tags: {} },
@@ -1000,7 +1000,7 @@ describe("recoverable coordinated release", () => {
       };
     };
     // The dry run packs the POST-bump manifests: both tarballs already carry the coordinated
-    // target version and both compatibility fields, with no publish before the gates (issue #230).
+    // target version and both compatibility fields, with no publish before the gates.
     expect(plan.packed.ui).toEqual({
       version: plan.targetVersion,
       godxUiMcp: plan.targetVersion,
@@ -1025,12 +1025,14 @@ describe("recoverable coordinated release", () => {
   }, 20_000);
 });
 
-/* ------------------------------------------------------------------------------------------- *
+/*
+ *  ------------------------------------------------------------------------------------------- *
  * The three defects the release path used to have:
  *   1. nothing required the target to be GREATER than what is published — only different;
  *   2. nothing tied the release to a git tag, so there was no immutable marker of what shipped;
  *   3. CD re-ran the whole verify:release suite on a commit CI had already proved green.
- * ------------------------------------------------------------------------------------------- */
+ * -------------------------------------------------------------------------------------------
+ */
 
 type CheckRun = { name: string; status: string; conclusion: string | null; started_at?: string };
 
@@ -1185,8 +1187,7 @@ describe("the target version must ASCEND (latest may never move backwards)", () 
 
   it("REFUSES a stale-checkout downgrade in the real executor, before any publish command", () => {
     const rootDir = fixture(); // package.json is at 18.4.0; --ui patch targets 18.4.1
-    // …while 19.0.0 is what the registry already serves as `latest`. 18.4.1 is FRESH (nobody ever
-    // published it), so the old assertFreshTargets gate would have waved it straight through.
+    // …while 19.0.0 is what the registry already serves as `latest`.
     const world = releaseWorld({ latest: { "@godxjp/ui": "19.0.0", "@godxjp/ui-mcp": "19.0.0" } });
     const runtime = createReleaseRuntime({
       repositoryRoot: rootDir,
@@ -1603,7 +1604,7 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
 
   it("has no exemptions left — the browser shards block a release like everything else", () => {
     // RELEASE_BLOCK_EXEMPT briefly held /^rendered-runtime \(/ while those shards were red on what
-    // was believed to be their own harness (gh#333). The real cause was two docs pages fetching
+    // was believed to be their own harness. The real cause was two docs pages fetching
     // images from picsum.photos, the shards went green, and the entry came out. This asserts the
     // debt was actually PAID rather than left behind as a permanent softening: the very name that
     // was once waved through must now block.

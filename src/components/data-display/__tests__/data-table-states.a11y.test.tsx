@@ -1,4 +1,4 @@
-// axe guard for the DataTable error / denied states (gh#216). The failure surfaces live INSIDE
+// Axe guard for the DataTable error / denied states. The failure surfaces live INSIDE
 // the table grid (one cell spanning every column), which is exactly where a hand-rolled version
 // breaks the table structure — so each state is asserted at 0 violations.
 import { describe, it } from "vitest";

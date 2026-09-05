@@ -1,4 +1,4 @@
-// DataTable lifecycle states (gh#216) — the six states a consumer list page must be able to
+// DataTable lifecycle states — the six states a consumer list page must be able to
 // render WITHOUT hand-rolling one: loading · empty · error · denied · pagination · row actions.
 // This file codifies the two that were missing (error / denied) plus their precedence, so a
 // regression that silently drops a failure state into "Chưa có dữ liệu" is caught by `pnpm test`.

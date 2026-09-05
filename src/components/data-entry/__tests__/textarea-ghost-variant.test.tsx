@@ -11,7 +11,7 @@ import { Textarea } from "../textarea";
  * `--control-border-width` from `@layer components`, but the default class also carries
  * Tailwind's `border` from `@layer utilities`, which wins whatever the token says. Measured in
  * Chromium — with `--control-border-width: 0px` set on a wrapper, the field still computed
- * `border-width: 1px`. Same structural inertness gh#260 found on Badge's font size, so the
+ * `border-width: 1px`. Same structural inertness as Badge's font size, so the
  * variant has to drop the utilities rather than re-point a token.
  */
 describe("Textarea ghost variant", () => {

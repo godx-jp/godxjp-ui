@@ -15,7 +15,7 @@ describe("Upload — dropzone drag & drop + file list", () => {
     const zone = screen.getByRole("button");
     fireEvent.dragOver(zone);
     // The drag-active signal is a data attribute, not a class: the dropzone's chrome moved into
-    // `.ui-upload-dropzone[data-drag-active]` so a service can retheme it (#319). Asserting the
+    // `.ui-upload-dropzone[data-drag-active]` so a service can retheme it. Asserting the
     // attribute pins the semantic contract instead of a Tailwind internal.
     expect(zone).toHaveAttribute("data-drag-active");
     fireEvent.dragLeave(zone);

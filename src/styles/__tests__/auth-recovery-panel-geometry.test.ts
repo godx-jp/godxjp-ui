@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 /**
  * AuthShell `preset="account-recovery"` — the SCR-008 password-recovery / sign-in-MFA panel
- * measure (gh#233).
+ * measure.
  *
  * The consumer blocker was that the 432px canonical panel could only be hit with a page-local
  * `--auth-shell-card-max-width` override. These tests pin the PUBLIC token contract so the
@@ -71,8 +71,6 @@ describe("AuthShell preset=account-recovery — token-owned SCR-008 panel measur
   });
 
   it("leaves every pre-existing auth measure untouched (backward compatible)", () => {
-    // gh#233 must not move the canonical 360px Login flow, the 24rem un-preset shell, or the two
-    // presets that landed before it.
     expect(shellTokens).toContain("--auth-shell-canonical-card-max-width: 22.5rem;");
     expect(shellTokens).toContain("--auth-shell-canonical-main-padding: 1rem;");
     expect(shellTokens).toContain("--auth-shell-canonical-main-padding-mobile: 0.9375rem;");
@@ -93,11 +91,9 @@ describe("AuthShell preset=account-recovery — token-owned SCR-008 panel measur
 
 describe("InputOTP slot box — --otp-slot-size (gh#233)", () => {
   it("is declared `initial` so the --control-height default resolves at the CALL SITE", () => {
-    // The tier-mirror form of docs/TOKENS.md' role-mirror rule. `--otp-slot-size:
-    // var(--control-height)` at :root FREEZES at the :root tier (32px) — measured in Chromium, the
-    // canonical auth shell's 36px OTP slots silently shrank to 32px. `initial` + a call-site
-    // fallback keeps the shell's re-scoped 36px tier reaching the slot.
-    // (The token file must therefore never bind the knob to the tier at :root.)
+    // The tier-mirror form of docs/TOKENS.md' role-mirror rule. `initial` + a call-site fallback
+    // keeps the shell's re-scoped 36px tier reaching the slot. (The token file must therefore
+    // never bind the knob to the tier at :root.)
     expect(controlTokens).toMatch(/--otp-slot-size:\s*initial;/);
     const declarations = controlTokens.match(/^\s*--otp-slot-size:.*$/gm) ?? [];
     expect(declarations).toHaveLength(1);
@@ -106,7 +102,7 @@ describe("InputOTP slot box — --otp-slot-size (gh#233)", () => {
 
   it("reads the knob with the tier as the call-site fallback, never an ad-hoc size", () => {
     const rule = controlStyles.match(/\.ui-otp-slot\s*\{[^}]*\}/)?.[0] ?? "";
-    // The per-axis knobs (gh#12) sit IN FRONT of the square shorthand, which keeps the tier as the
+    // The per-axis knobs sit IN FRONT of the square shorthand, which keeps the tier as the
     // final call-site fallback — so a field that sets no axis still resolves --control-height.
     expect(rule).toMatch(
       /width:\s*var\(--otp-slot-inline-size,\s*var\(--otp-slot-size,\s*var\(--control-height\)\)\)/,

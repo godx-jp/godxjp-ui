@@ -1,5 +1,5 @@
 /**
- * PASSWORD RECOVERY + SIGN-IN MFA CHALLENGE — axe coverage for the composition pattern (gh#233).
+ * PASSWORD RECOVERY + SIGN-IN MFA CHALLENGE — axe coverage for the composition pattern.
  *
  * The pattern is documented in docs/layout/auth-recovery/ and served by the MCP
  * `auth-recovery-panels` pattern; it is NOT a component (Gate 0 → composition, see

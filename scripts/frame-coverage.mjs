@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * frame-coverage — preview-contract coverage tracker (issue #163).
+ * frame-coverage — preview-contract coverage tracker.
  *
  * Cross-references the public component inventory (mcp/src/data/components.ts) against the
  * frames that actually exist (docs tsx files) and a declared coverage LEDGER

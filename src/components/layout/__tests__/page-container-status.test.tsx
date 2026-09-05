@@ -6,7 +6,7 @@ import type { PageContainerProp, PageContainerProps } from "../page-container";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
- * Canonical page-header contract (godxjp-ui#255): PageContainer's embedded header IS
+ * Canonical page-header contract: PageContainer's embedded header IS
  * the DXS PageHeader. The `status` slot is the status/meta band beside the title —
  * token-owned geometry (--page-header-status-gap), wrapping under the title on
  * compact viewports, never a consumer-laid badge row.
@@ -42,7 +42,7 @@ describe("PageContainer status band", () => {
     const { container } = renderWithUi(<PageContainer title="設定">body</PageContainer>);
     expect(container.querySelector(".ui-page-header-title-row")).toBeNull();
     expect(container.querySelector(".ui-page-header-status")).toBeNull();
-    // <h1> stays a DIRECT child of the heading block, as before gh#255.
+    // <h1> stays a DIRECT child of the heading block, as before.
     const heading = screen.getByRole("heading", { level: 1 });
     expect(heading.parentElement).toHaveClass("ui-page-header-heading");
   });
@@ -79,7 +79,7 @@ describe("PageContainer status band", () => {
 });
 
 /**
- * `headerLoading` (gh#255, ported from the dev-line standalone PageHeader): the title band
+ * `headerLoading`: the title band
  * skeletonises while the page record resolves, but the `<h1>` never leaves the document and
  * never becomes an empty heading — the heading outline a screen-reader user navigates by
  * survives the load. Breadcrumbs and `extra` come from the route, so they stay live.

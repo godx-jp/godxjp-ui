@@ -16,8 +16,8 @@ import {
 } from "../data-entry/command";
 
 /**
- * Behavioral tests for the OrgSwitcher COMPOSITION PATTERN (docs/showcase/org-switcher.tsx,
- * godxjp-ui#196). It is NOT a framework component — this codifies that the recipe, built
+ * Behavioral tests for the OrgSwitcher COMPOSITION PATTERN
+ * (docs/showcase/org-switcher.tsx). It is NOT a framework component — this codifies that the recipe, built
  * ONLY from real primitives (Popover + Command + Button + Avatar), behaves correctly so
  * future runs need no browser MCP: open, live search filtering, select fires + closes,
  * footer create/join actions fire, and the current org carries a non-colour-only marker.

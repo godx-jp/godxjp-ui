@@ -6,7 +6,7 @@ import { renderWithUi } from "@/test/render";
 import { Badge } from "../badge";
 
 /**
- * gh#260 — the documented `--badge-font-size` knob was structurally inert: the cva base
+ * The documented `--badge-font-size` knob was structurally inert: the cva base
  * hardcoded the `text-xs` utility, and a consumer's Tailwind build (whose `@source` scans this
  * library) emits `.text-xs` into `@layer utilities`, which beats the knob's
  * `font-size: var(--badge-font-size)` in `@layer components` regardless of specificity.
@@ -48,8 +48,6 @@ describe("Badge --badge-font-size knob (gh#260)", () => {
   it("badge-layout.css owns font-size AND line-height via the badge tokens", () => {
     const body = badgeRuleBody();
     expect(body).toContain("font-size: var(--badge-font-size)");
-    // `text-xs` used to set the companion line-height; without this declaration the badge
-    // would inherit the ambient body leading and grow taller than before.
     expect(body).toContain("line-height: var(--badge-line-height)");
   });
 

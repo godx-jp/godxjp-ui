@@ -5,10 +5,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi, screen } from "@/test/render";
 
-// FormField hands its label/helper/error wiring to a SINGLE child via cloneElement. With the
-// compound API that child is Radix's Select root, which renders no DOM and drops them — the
-// trigger used to end up with no accessible name at all. `role="combobox"` takes no name from
-// content, so the visible value is NOT a fallback: the control was simply anonymous (WCAG 4.1.2).
+// FormField hands its label/helper/error wiring to a SINGLE child via cloneElement.
+// `role="combobox"` takes no name from content, so the visible value is NOT a fallback: the
+// control was simply anonymous (WCAG 4.1.2).
 describe("Select — the FormField contract reaches the compound trigger", () => {
   it("names the compound trigger from the FormField label", () => {
     renderWithUi(

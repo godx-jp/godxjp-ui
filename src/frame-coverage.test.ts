@@ -151,7 +151,7 @@ describe("frame coverage checker", () => {
 
     expect(report.errors).toEqual([]);
     expect(report.schemaVersion).toBe(2);
-    // Every public export and compound subcomponent is linked to the ledger (issue #163 item 1).
+    // Every public export and compound subcomponent is linked to the ledger (item 1).
     expect(report.totals.exports).toBeGreaterThan(200);
     // Every dimension of every export is in exactly one of the three states (item 3).
     expect(report.totals.covered + report.totals.untested + report.totals.notApplicable).toBe(

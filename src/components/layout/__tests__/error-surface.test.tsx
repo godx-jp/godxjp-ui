@@ -1,9 +1,8 @@
 /**
- * ErrorSurface — package-owned semantic exception surface (gh#221, gh#251).
+ * ErrorSurface — package-owned semantic exception surface.
  *
- * gh#251 was a REGRESSION of shape, not of styling: the 403/404/500/503 surface had been delivered
- * as a docs-only composition pattern, and a consumer cannot `import` a docs page. These tests pin
- * the IMPORTABLE contract that replaced it:
+ * A docs-only composition pattern is not importable, so the 403/404/500/503 surface is a real
+ * export. These tests pin its IMPORTABLE contract:
  *
  *  - `mode="application"` renders as the BODY of the AppShell the route already provides — the
  *    chrome is PRESERVED and never reconstructed by the surface;

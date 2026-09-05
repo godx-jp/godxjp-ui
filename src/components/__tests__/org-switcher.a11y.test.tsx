@@ -14,7 +14,7 @@ import {
 } from "../data-entry/command";
 
 /**
- * a11y guard for the OrgSwitcher composition (docs/showcase/org-switcher.tsx, godxjp-ui#196).
+ * a11y guard for the OrgSwitcher composition (docs/showcase/org-switcher.tsx).
  * The floating panel content is rendered INLINE (not through the Popover portal) so axe
  * scans the real list + footer surfaces, not just the trigger. The current org is marked
  * with a Check icon (aria-hidden) AND an sr-only status word — never colour-only.

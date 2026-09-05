@@ -3,12 +3,12 @@ import { describe, expect, it } from "vitest";
 import { allDeclarations, environment, resolveToken } from "./css-token-resolve";
 
 /**
- * gh#324 — the two geometry axes that had a vocabulary and no name.
+ * The two geometry axes that had a vocabulary and no name.
  *
- * gh#326 named the icon axis and proved the method: an axis WITH a scale stays disciplined, an
+ * The icon axis proved the method: an axis WITH a scale stays disciplined, an
  * axis WITHOUT one is almost all raw numbers, and the cure is to write down the vocabulary that
  * already exists rather than invent one. This file does the same job for the two loudest rows of
- * the gh#324 census — and records the other half of the finding, which is that the loudest axis
+ * the census — and records the other half of the finding, which is that the loudest axis
  * was never one axis at all.
  *
  *   width   91% raw   → THREE concerns. Only the first is a vocabulary:
@@ -34,12 +34,12 @@ import { allDeclarations, environment, resolveToken } from "./css-token-resolve"
  * source BEFORE the migration and is asserted against the graph AFTER it.
  *
  * FOUR COLUMNS, AND A FIFTH TEST FOR THE COARSE POINTER. Whether a token breathes with density is
- * a per-token decision made long ago (the gh#328 trap: `--space-*` is `--scaling`-multiplied and a
+ * a per-token decision made long ago (the trap: `--space-*` is `--scaling`-multiplied and a
  * plain literal is not, so migrating one to the other silently flips it). `--control-height`
  * multiplies by `--scaling`; `--app-shell-bar-height` deliberately does not; `.ui-scale-fixed`
  * pins a subtree to the baseline. All four are checked on every token, and the coarse-pointer
  * ladder — where `--control-height-default` jumps to the 44px tap floor — gets its own describe,
- * because that is where the one intended geometry change of gh#324 lives.
+ * because that is where the one intended geometry change lives.
  */
 
 /** The stroke steps, exactly as foundation.css must declare them. */
@@ -166,7 +166,7 @@ describe("stroke scale — tier 1 (gh#324)", () => {
   });
 
   it("the one global thickness knob reads the scale", () => {
-    // `--focus-ring-width` was the system's only NAMED line thickness before gh#324; it is now a
+    // `--focus-ring-width` was the system's only NAMED line thickness before; it is now a
     // member of the axis rather than a parallel authority, so a theme retunes both at once.
     expect(root.get("--focus-ring-width")).toBe("var(--stroke-md)");
   });
@@ -188,7 +188,7 @@ describe("band-height scale — tier 1 (gh#324)", () => {
   });
 
   it("is not --scaling-multiplied — the tokens that want density opt in themselves", () => {
-    // gh#328's rule. `--control-height` multiplies by --scaling; `--app-shell-bar-height` does
+    // The density rule. `--control-height` multiplies by --scaling; `--app-shell-bar-height` does
     // not. Baking --scaling into the scale would flip every band in the system at once.
     for (const [token, value] of BAND) {
       expect(resolveToken(token, compact)).toBe(value);
@@ -221,9 +221,9 @@ describe("the migration moved nothing (gh#324)", () => {
 
   it("every component token on the two new axes reads a step or an exemption", () => {
     // The census, asserted. Anything left raw here is either in the guard's baseline (a file a
-    // different owner had open when gh#324 landed) or carries a `scale-exempt:` marker.
+    // different owner had open at the time) or carries a `scale-exempt:` marker.
     // One entry. The other four were "baselined" only because their files belonged to a different
-    // agent while gh#324 landed — an ownership boundary, never a reason a token should stay raw.
+    // agent at the time — an ownership boundary, never a reason a token should stay raw.
     // They now read the scale at their existing values (--menu-item-height -> --band-height-md 2rem,
     // --steps-marker-border-width and --branch-scope-picker-subset-border-width -> --stroke-md 2px,
     // --steps-dot-process-ring-width -> --stroke-xl 4px; --stroke-lg is 3px and would have moved it).
@@ -250,14 +250,12 @@ describe("the one deliberate geometry change (gh#324)", () => {
     // It read `var(--control-height-lg)` — a CONTROL tier sizing an ICON box. Invisible at the
     // desk, wrong on a phone: `@media (pointer: coarse)` lifts the control ladder to the 44px tap
     // floor, so the medallion silently grew 36px → 48px while the glyph inside it stayed 20px.
-    // It is now the `--icon-size-2xl` step times --scaling: same value on every density column
-    // (the FROZEN table above), and 36px on a coarse pointer where it used to be 48px.
     expect(root.get("--card-service-launcher-icon-size")).toBe(
       "calc(var(--icon-size-2xl) * var(--scaling))",
     );
     expect(resolveToken("--control-height-lg", coarse)).toBe("3rem");
     expect(resolveToken("--card-service-launcher-icon-size", coarse)).toBe("2.25rem");
-    // The glyph inside it was already right (gh#328) and is untouched.
+    // The glyph inside it was already right and is untouched.
     expect(resolveToken("--card-service-launcher-icon-glyph-size", coarse)).toBe("1.25rem");
   });
 
@@ -270,10 +268,8 @@ describe("the one deliberate geometry change (gh#324)", () => {
 
 describe("line-height is an axis of RATIOS (gh#324)", () => {
   it("--table-skeleton-line-height keeps working as a published alias", () => {
-    // It was a LENGTH on an axis whose scale is unitless ratios — a mis-named height, and the only
-    // raw value on that axis, which is what kept the axis ungated. Renamed rather than deleted: a
-    // consumer theme may already override it, and styles/table-layout.css still reads the old
-    // name, so both spellings resolve to the same 1rem.
+    // It was a LENGTH on an axis whose scale is unitless ratios — a mis-named height, and the
+    // only raw value on that axis, which is what kept the axis ungated.
     expect(resolveToken("--table-skeleton-line-block-size", root)).toBe("1rem");
     expect(resolveToken("--table-skeleton-line-height", root)).toBe("1rem");
     expect(root.get("--table-skeleton-line-height")).toBe("var(--table-skeleton-line-block-size)");

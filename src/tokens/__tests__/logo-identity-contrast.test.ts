@@ -6,12 +6,9 @@ import { describe, expect, it } from "vitest";
  * The boxed `<Logo mark="glyph">` sets real TEXT on a filled box, so WCAG 2.2 SC 1.4.3 applies at
  * **4.5:1** — 14px bold is NOT "large text" (that needs 18.66px bold or 24px regular).
  *
- * The `tone="success"` branch used to ink that text with `--brand-foreground`, which is the identity
- * artwork's KNOCKOUT colour, not an ink: it tracks `--background` in both themes because
- * `<Logo mark="godx">` punches its inner bar as an evenodd HOLE and the email mark paints that hole
- * as a solid fill to match. Negative space only owes SC 1.4.11's 3:1 (non-text) and cleared it at
- * 3.67:1 — but as an INK on the emerald that same 3.67:1 is a straight AA failure, which surfaced as
- * an axe `color-contrast` violation the moment a boxed `tone="success"` glyph was first rendered.
+ * Negative space only owes SC 1.4.11's 3:1 (non-text) and cleared it at 3.67:1 — but as an INK on
+ * the emerald that same 3.67:1 is a straight AA failure, which surfaced as an axe `color-contrast`
+ * violation the moment a boxed `tone="success"` glyph was first rendered.
  *
  * This guard resolves the REAL fallback chains out of the shipped CSS (not a hardcoded copy of the
  * expected colours) and computes the actual ratios, so the pairing cannot silently fall below AA

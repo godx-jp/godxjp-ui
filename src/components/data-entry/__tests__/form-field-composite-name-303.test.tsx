@@ -1,5 +1,5 @@
 /**
- * FormField — the label reaches every control NESTED under a composite wrapper (gh#303).
+ * FormField — the label reaches every control NESTED under a composite wrapper.
  *
  * `cloneElement` wires the field-a11y contract onto FormField's single direct child only. In the
  * real app the child of a range / 年月 field is a `Flex`, so the name stopped on the wrapper div

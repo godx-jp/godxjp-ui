@@ -8,7 +8,7 @@ import { SearchInput } from "../../data-entry/search-input";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
- * FilterBar typed model (gh#258) — public type + runtime contract.
+ * FilterBar typed model — public type + runtime contract.
  *
  * The model props (search/filters/chips/onChipRemove/actions/resultCount/loading/disabled/error)
  * switch the bar to the canonical model layout; without any of them the legacy

@@ -42,7 +42,7 @@ describe("SearchSelect — static options / uncontrolled / clear / empty", () =>
     // when a value is set + clearable, an inline ✕ clear control sits on the trigger (no need to open)
     const clear = screen.getByRole("button", { name: "クリア" });
     // The affix's box moved into `.ui-control-affix-action` so Select / SearchSelect / TagInput
-    // share one set of knobs (#319). Pinning the semantic class keeps the contract; pinning
+    // share one set of knobs. Pinning the semantic class keeps the contract; pinning
     // `size-6` pinned a Tailwind internal.
     expect(clear).toHaveClass("ui-control-affix-action");
     await user.click(clear);

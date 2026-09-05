@@ -323,7 +323,7 @@ export function Cascader({
         <PopoverTrigger asChild>
           {/* Nút gốc chứ không phải <Button>: một trigger mở popup phải đọc token của .ui-control
               (viền, bóng, cỡ chữ, vòng focus) như Select và DatePicker, chứ không đọc token của
-              nút (gh#348). */}
+              nút. */}
           <button
             id={id}
             data-field={fieldA11y["data-field"] ?? identity["data-field"]}

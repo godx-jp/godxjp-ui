@@ -53,8 +53,6 @@ describe("Form field-to-field row rhythm (gh#295)", () => {
 
 describe("--form-label-font-size", () => {
   /**
-   * The label column is already re-tunable by width; a service whose grid was drawn around a
-   * smaller label had no matching knob for the type and had to hand-write font-size per label.
    * The token has to reach Label's OWN element — Label sets `text-sm` on itself, so a
    * font-size inherited from the wrapper never applies.
    */

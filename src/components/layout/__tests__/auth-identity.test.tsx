@@ -5,7 +5,7 @@ import { expectNoA11yViolations } from "@/test/a11y";
 import { AuthIdentity } from "../auth-identity";
 
 /**
- * AuthIdentity — the canonical hosted-identity heading block (gh#214).
+ * AuthIdentity — the canonical hosted-identity heading block.
  *
  * It must ship the brand-green GoDX mark (independent of `--primary`), an `h1`, and an optional
  * requesting-client line — with no page CSS for the centring/rhythm. The mark is decorative: the

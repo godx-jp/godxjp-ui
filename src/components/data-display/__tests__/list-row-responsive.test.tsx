@@ -8,9 +8,9 @@ import { Card, CardContent } from "../card";
 import { ListRow } from "../list-row";
 
 /**
- * gh#224 — a long title plus two trailing Buttons must never make
+ * A long title plus two trailing Buttons must never make
  * `document.documentElement.scrollWidth > window.innerWidth` at a responsive acceptance viewport,
- * and gh#225 — a notification row must keep that guarantee with the unread indicator + timestamp.
+ * and a notification row must keep that guarantee with the unread indicator + timestamp.
  *
  * jsdom performs NO layout, so a real scrollWidth measurement is impossible here (same reasoning
  * as src/styles/__tests__/scroll-containment.test.ts). These tests therefore split the guarantee:
@@ -29,7 +29,7 @@ const rule = (selector: string) => {
   return layoutCss.slice(at, layoutCss.indexOf("}", at) + 1);
 };
 
-/** Long organization / notification titles — JA, EN and VI (issue #224 + #225). */
+/** Long organization / notification titles — JA, EN and VI. */
 const LONG_TITLE = {
   ja: "グローバル・トランスフォーメーション推進本部 デジタルプラットフォーム統括部",
   en: "Acme Global Transformation Office — Data Platform Division (Asia Pacific)",
@@ -91,7 +91,7 @@ describe("ListRow overflow CSS contract (gh#224)", () => {
 });
 
 /**
- * gh#246 — `density="compact"` is the compact inline-actions geometry: inside the canonical 358px
+ * `density="compact"` is the compact inline-actions geometry: inside the canonical 358px
  * card (326px content) a 36px Avatar, a shrinkable title/description and two small trailing Buttons
  * must stay on ONE line, and a history Badge + date must stay inline with the title — WITHOUT
  * giving up the #224 wrap that keeps the page root from scrolling.
@@ -108,7 +108,7 @@ describe("ListRow overflow CSS contract (gh#224)", () => {
 describe("ListRow compact inline-actions CSS contract (gh#246)", () => {
   it("lowers the body threshold for compact rows, still clamped to the container", () => {
     const body = rule('[data-slot="list-row"][data-density="compact"] [data-slot="list-row-body"]');
-    // min(…, 100%) is load-bearing here too — compact must never widen a narrower container (#224)
+    // Min(…, 100%) is load-bearing here too — compact must never widen a narrower container
     expect(body).toMatch(
       /min-inline-size:\s*min\(var\(--list-row-compact-body-min-width[^)]*\),\s*100%\)/,
     );
@@ -123,7 +123,7 @@ describe("ListRow compact inline-actions CSS contract (gh#246)", () => {
     expect(row).toMatch(/var\(--list-row-compact-padding-x/);
     // logical only — the compact inset must flip under dir="rtl"
     expect(row).not.toMatch(/(?:^|[^-])(?:margin|padding)-(?:left|right)\s*:/);
-    // no literal geometry: every compact constant is a documented knob (#45)
+    // No literal geometry: every compact constant is a documented knob
     expect(row).not.toMatch(/:\s*\d+(?:\.\d+)?(?:px|rem)/);
   });
 

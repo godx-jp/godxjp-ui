@@ -12,7 +12,7 @@ import type {
 import type { HeadingLevelProp, ToneProp } from "../../../props/vocabulary";
 
 /**
- * gh#219 — TYPE contract of the public launcher surface. These assertions are the guard that the
+ * TYPE contract of the public launcher surface. These assertions are the guard that the
  * public entrypoint keeps exporting the composite AND that its prop shapes stay in the controlled
  * vocabulary (tone, heading level, ReactNode slots) rather than drifting into bespoke unions.
  */

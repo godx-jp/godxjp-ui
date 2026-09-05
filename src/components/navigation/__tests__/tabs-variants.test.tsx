@@ -45,7 +45,7 @@ describe("Tabs — variants + orientation", () => {
   it("variant=card is recorded on the root while the list keeps the DEFAULT strip chrome", () => {
     const { container } = render(<Tabs items={ITEMS} variant="card" />);
     expect(container.querySelector('[data-slot="tabs"]')).toHaveAttribute("data-variant", "card");
-    // Deliberate (gh#248): card's chrome IS the default strip, so the list is forwarded as
+    // Deliberate: card's chrome IS the default strip, so the list is forwarded as
     // `default` and the active lift comes from the base trigger's default-list rules.
     expect(screen.getByRole("tablist")).toHaveAttribute("data-variant", "default");
   });

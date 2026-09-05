@@ -121,7 +121,7 @@ export const AXES = [
   },
   {
     id: "offset",
-    /** NOT A SCALE — verdict recorded by gh#324, answering the question this entry used to ask.
+    /** NOT A SCALE.
      *
      *  `--space-*` already covers the half that is spacing (11 of 20 tokens read it: dismiss-button
      *  insets, scroll offsets, badge offsets). The other half is not spacing at all and never lands
@@ -198,7 +198,7 @@ function isExemptLiteral(number, unit) {
  * own scale. `var(--space-4)` and `var(--card-space-inset)` carry no literal at all, so they are
  * never raw; `calc(var(--space-4) + 2px)` carries one but derives from the scale, which is the
  * sanctioned tier-2 route. `calc(1rem * var(--scaling))` derives from neither and IS raw — that
- * shape is exactly how `--control-icon-size` went around the system (gh#325).
+ * shape is exactly how `--control-icon-size` went around the system.
  */
 export function isScaleBypass(value, axisId) {
   const axis = AXIS_BY_ID.get(axisId);

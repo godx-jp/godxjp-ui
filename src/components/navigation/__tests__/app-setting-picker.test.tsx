@@ -30,7 +30,7 @@ describe("AppSettingPicker", () => {
       <AppSettingPicker kind="locale" appearance="inline" value="en" onValueChange={() => {}} />,
     );
     // The chrome-less box lives in `.ui-app-setting-picker-inline`'s own rule now, so the
-    // component no longer repeats border-0/bg-transparent/shadow-none as utilities (#319).
+    // component no longer repeats border-0/bg-transparent/shadow-none as utilities.
     expect(screen.getByRole("combobox")).toHaveClass("ui-app-setting-picker-inline");
   });
 
@@ -245,7 +245,7 @@ describe("AppSettingPicker", () => {
     const trigger = screen.getByRole("combobox");
     expect(trigger).not.toHaveClass("ui-app-setting-picker-compact");
     // Per-kind width moved from a `sm:w-*` lookup table to a token selected by `data-kind`,
-    // so a service can widen just the picker whose locale overflows (#319).
+    // so a service can widen just the picker whose locale overflows.
     expect(trigger).toHaveClass("ui-app-setting-picker-trigger");
     expect(trigger).toHaveAttribute("data-kind", "dateFormat");
   });

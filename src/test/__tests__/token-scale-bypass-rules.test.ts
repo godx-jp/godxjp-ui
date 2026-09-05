@@ -50,7 +50,7 @@ describe("axisOf — which axis is this token on", () => {
     expect(axisOf("--x-max-width")).toBe("width");
   });
 
-  // gh#324 split the two coherent axes out of `width` and `height` BY NAME, which only works
+  // The two coherent axes are split out of `width` and `height` BY NAME, which only works
   // because of the longest-on-a-tie rule above: `-border-width` and `-row-height` end exactly
   // where the bare `-width` / `-height` they contain ends.
   it("separates a painted line from a container measure", () => {
@@ -63,7 +63,7 @@ describe("axisOf — which axis is this token on", () => {
     expect(axisOf("--app-setting-picker-timezone-width")).toBe("width");
   });
 
-  // The false positive that made gh#324 drop `-rail-width` from the stroke patterns: one word
+  // The false positive that keeps `-rail-width` out of the stroke patterns: one word
   // meant both a 6px painted stripe and the 4rem icon sidebar COLUMN.
   it("does not call the AppShell rail a stroke", () => {
     expect(axisOf("--app-shell-rail-width")).toBe("width");
@@ -109,8 +109,6 @@ describe("isScaleBypass — is this value a raw number", () => {
     expect(isScaleBypass("calc(var(--icon-size-md) * var(--scaling))", "icon-size")).toBe(false);
   });
 
-  // The shape --control-icon-size used to go around the system with (gh#325): it references a var,
-  // but not the axis's scale, so the 1rem inside it is still a raw number.
   it("still flags a literal scaled by a var that is not the axis's scale", () => {
     expect(isScaleBypass("calc(1rem * var(--scaling))", "icon-size")).toBe(true);
   });
@@ -196,8 +194,7 @@ describe("scanCss — the whole verdict for one stylesheet", () => {
     ]);
   });
 
-  // An axis with no scale must NOT fail: there is nothing to write instead. `--x-width: 28rem` is
-  // the exact case gh#324 measured at 91% raw, and it is a scale's job, not a guard's.
+  // An axis with no scale must NOT fail: there is nothing to write instead.
   it("leaves an axis with no scale alone, but still counts it in the census", () => {
     const { violations, perAxis } = scanCss(css);
     expect(violations.some((v: { axis: string }) => v.axis === "width")).toBe(false);
@@ -233,7 +230,7 @@ describe("the axis table itself", () => {
   });
 
   it("records a VERDICT, not a to-do, on the four axes that are not scales", () => {
-    // gh#324's finding: the loudest axis is not one axis. Leaving these as "waiting on a scale"
+    // The finding: the loudest axis is not one axis. Leaving these as "waiting on a scale"
     // invites someone to invent one and force a dialog's 32rem onto a grid with an auth card's
     // 23.75rem. The reason has to survive in the table, so assert it is written there.
     for (const id of ["width", "height", "size", "offset"]) {

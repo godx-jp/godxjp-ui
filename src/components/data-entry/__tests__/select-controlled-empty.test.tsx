@@ -6,10 +6,8 @@ import { Select } from "../select";
 /**
  * Regression: a *controlled* data-Select fed `value=""` (the unselected
  * state every FormField produces) must stay controlled when the parent
- * later sets a real value. The old code did `value={value || undefined}`,
- * which collapsed "" → undefined → Radix saw no `value` prop → it ran
- * uncontrolled, then flipped back to controlled on first pick. React logs
- * "Select is changing from uncontrolled to controlled" for exactly that.
+ * later sets a real value. React logs "Select is changing from uncontrolled
+ * to controlled" for exactly that.
  *
  * We assert React never logs that warning across the empty→filled rerender.
  */
@@ -36,7 +34,6 @@ describe("Select (data) controlled-ness with empty value", () => {
     rerender(
       <Select value="fixed" options={OPTIONS} placeholder="選択" onValueChange={() => {}} />,
     );
-    // …and back to empty (clear), which previously flipped controlled → uncontrolled too.
     rerender(<Select value="" options={OPTIONS} placeholder="選択" onValueChange={() => {}} />);
 
     const flip = spy.mock.calls.find(

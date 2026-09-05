@@ -3,7 +3,7 @@ import * as React from "react";
 import type { SidebarLinkComponentProp, SidebarLinkProp } from "../../props/components/layout.prop";
 
 /**
- * Adapt a framework router `Link` to {@link SidebarLinkComponentProp} (gh#213) — a dependency-free
+ * Adapt a framework router `Link` to {@link SidebarLinkComponentProp} — a dependency-free
  * factory, so `@godxjp/ui` still ships ZERO router/framework dependencies.
  *
  * It lives in its own module (imports only React + the prop types) so `@godxjp/ui/inertia` can build

@@ -6,7 +6,7 @@ import { Button } from "../../general/button";
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTrigger } from "../sheet";
 
 /**
- * Responsive drawer / detail-panel contract (gh#215).
+ * Responsive drawer / detail-panel contract.
  *
  * The acceptance viewports are 1440 (desktop), 1024 (laptop) and 390 (mobile). jsdom has no layout,
  * so the viewport is expressed the same way the component reads it — through `matchMedia` — and the

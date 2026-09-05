@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * Issue #171 gate: real VoiceOver/NVDA announcement evidence.
+ * Gate: real VoiceOver/NVDA announcement evidence.
  *
  * Every record below is a deliberately synthetic FIXTURE used to prove the gate rejects (or
  * accepts) a shape. None of it is committed to `screen-reader-evidence.json`, and none of it is

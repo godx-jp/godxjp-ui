@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { clientSources, isClientSource } from "../../../scripts/add-use-client.mjs";
 
-// Guards the gh#128 "use client" detector (scripts/add-use-client.mjs) so the RSC boundary set
+// Guards the "use client" detector (scripts/add-use-client.mjs) so the RSC boundary set
 // can't silently drift. The build stamps "use client" onto exactly these modules; check:use-client
 // enforces the dist result. Here we test the detection LOGIC against real source.
 

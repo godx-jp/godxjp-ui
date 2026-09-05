@@ -3,13 +3,11 @@ import { dirname, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * Regression guard for issue #210.
+ * Regression guard for the font-bundle import order.
  *
  * `styles/fonts.css` and `tokens/foundation.css` BOTH declare `--font-sans-base`
  * on `:root`, unlayered, at identical specificity (0,1,0) — so the declaration
- * parsed LAST is the one that wins. The all-in-one `@godxjp/ui/styles` entry used
- * to import `fonts.css` BEFORE `base.css` (→ tokens → foundation), which made the
- * bundled faces permanently dead while still shipping ~800 KB of `@font-face`.
+ * parsed LAST is the one that wins.
  *
  * These tests flatten the real `@import` graph in source order and assert the
  * winning declaration, so the ordering cannot silently regress.

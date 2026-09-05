@@ -316,7 +316,7 @@ export function SearchSelect({
         }}
       >
         <PopoverTrigger asChild>
-          {/* Nút gốc chứ không phải <Button>: xem gh#348 — trigger đọc token của .ui-control. */}
+          {/* Nút gốc chứ không phải <Button>: trigger đọc token của .ui-control. */}
           <button
             id={id}
             type="button"

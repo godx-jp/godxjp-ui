@@ -4,7 +4,7 @@ import { renderWithUi, screen, userEvent } from "@/test/render";
 import { Select } from "../select";
 
 /**
- * Issue #138 — a data-driven Select must never open a blank popover when it has zero options,
+ * A data-driven Select must never open a blank popover when it has zero options,
  * for BOTH the static `options` path and the async `loadOptions` path.
  *
  *  - static `options=[]`      → nothing to pick → the trigger is disabled (can't open a blank list).

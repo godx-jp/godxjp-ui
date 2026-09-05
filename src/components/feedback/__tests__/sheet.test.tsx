@@ -107,7 +107,7 @@ describe("Sheet", () => {
     expect(screen.queryByRole("button", { name: /close/i })).not.toBeInTheDocument();
   });
 
-  // Regression for gh#101: a hand-rolled overflow-y-auto body clips the 3px focus ring.
+  // Regression: a hand-rolled overflow-y-auto body clips the 3px focus ring.
   // SheetBody is the ring-safe scroll slot — full-bleed inset + scroll-padding so rings never clip.
   it("SheetBody is a ring-safe scrollable slot (inset + overflow)", async () => {
     const user = userEvent.setup();
@@ -215,7 +215,7 @@ describe("Sheet", () => {
     );
   });
 
-  // Regression for gh#101 (#3): footer owns symmetric vertical padding (py-4) and cancels the
+  // Regression: footer owns symmetric vertical padding (py-4) and cancels the
   // content's p-6 bottom (-mb-6) instead of inheriting an asymmetric 16-top / 24-bottom rhythm.
   it("SheetFooter owns symmetric tokenized vertical padding", async () => {
     const user = userEvent.setup();

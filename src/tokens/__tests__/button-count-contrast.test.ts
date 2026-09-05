@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
 
 /**
- * gh#320 — the Button counter pill must clear WCAG 2.2 SC 1.4.3 (4.5:1 for small text).
+ * The Button counter pill must clear WCAG 2.2 SC 1.4.3 (4.5:1 for small text).
  *
  * The pill used to tint itself translucently over the button's own surface
  * (`bg-primary-foreground/15` on filled variants, `bg-foreground/8` on light ones). A translucent
@@ -18,7 +18,7 @@ import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
  * This test exists because a browser sweep structurally cannot cover that. It reads the shipped
  * palette and computes every combination the CSS can produce, hover included.
  *
- * The fix (the treatment gh#312 validated on Toggle) is opaque role fills, so each ratio below is
+ * The fix (the treatment validated on Toggle) is opaque role fills, so each ratio below is
  * independent of the surface: a filled variant wears its own label pair swapped, which makes the
  * pill exactly as legible as the label beside it and impossible to make worse without making the
  * button itself unreadable first.
@@ -74,7 +74,6 @@ describe.each(THEMES)("Button counter pill contrast ($theme)", ({ selector }) =>
     expect(opaque).toBeGreaterThanOrEqual(SMALL_TEXT);
 
     for (const surface of ["background", "accent"] as const) {
-      // What shipped before: --muted-foreground over --foreground at 8% over the button's surface.
       const tinted = over(role("foreground"), role(surface), 0.08);
       const before = contrast(role("muted-foreground"), tinted);
       // Every one of these was at or under the bar in at least one theme; the opaque fill clears
@@ -84,9 +83,8 @@ describe.each(THEMES)("Button counter pill contrast ($theme)", ({ selector }) =>
   });
 
   it("outline family: the hover surface no longer moves the ratio at all", () => {
-    // The defect in one line: the old fill's contrast depended on which surface was under it, so
-    // it silently dropped when the cursor arrived. An opaque fill cannot, and this is the assertion
-    // that fails the day someone gives it an alpha again.
+    // An opaque fill cannot, and this is the assertion that fails the day someone gives it an alpha
+    // again.
     const atRest = contrast(
       role("muted-foreground"),
       over(role("foreground"), role("background"), 0.08),

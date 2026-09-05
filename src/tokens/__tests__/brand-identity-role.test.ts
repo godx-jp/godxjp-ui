@@ -3,12 +3,12 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * gh#250 / gh#214 — the IDENTITY role `--brand` must be a real, separate semantic role.
+ * The IDENTITY role `--brand` must be a real, separate semantic role.
  *
- * #214 asked for a brand-green GoDX mark independent of `--primary`. That shipped, but the mark was
- * bound to `--success` — the 若竹 wakatake STATUS green — so the identity rendered #69bf8e where the
- * canonical GoDX mark is emerald #009766 (`oklch(0.595 0.137 162.94)`, documented as "kept distinct
- * from SmartHR primary"). ΔE76 ≈ 17.5: not a subtle drift, a wrong brand colour.
+ * The GoDX mark is brand-green and independent of `--primary`, and it is NOT `--success`: the
+ * 若竹 wakatake STATUS green renders #69bf8e where the canonical GoDX mark is emerald #009766
+ * (`oklch(0.595 0.137 162.94)`, documented as "kept distinct from SmartHR primary"). ΔE76 ≈ 17.5:
+ * not a subtle drift, a wrong brand colour.
  *
  * This guard pins the split in BOTH directions, deterministically (jsdom cannot paint, and the
  * browser check:contrast has no godx-lockup route):

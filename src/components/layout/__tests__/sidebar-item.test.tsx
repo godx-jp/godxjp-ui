@@ -37,9 +37,7 @@ describe("SidebarItem", () => {
 
   /*
    * `badgeTone` — what a nav row's COUNT MEANS: a plain unread tally, or something addressed to
-   * this user (an @mention, a DM). Before it, the only way to emphasise a row was to nest a
-   * `<Badge>` inside `badge`, which renders a pill inside the pill the row already draws: measured
-   * at a 37.11x19.14 `.sb-badge` wrapping a 25.11x19.14 `<Badge>` with its own border.
+   * this user (an @mention, a DM).
    *
    * jsdom runs no layout and applies no stylesheet, so the two halves are asserted where each one
    * is real: the DOM contract here (which is where "byte-identical by default" is decided), and the
@@ -87,7 +85,7 @@ describe("SidebarItem", () => {
     });
 
     it("rides the LIBRARY-composed row, so asChild links get the tone too", () => {
-      // gh#213: the library owns row content precisely so a consumer link cannot drop parts of it.
+      // The library owns row content precisely so a consumer link cannot drop parts of it.
       // A new row axis is only real if it reaches every row shape, not just the default button.
       const { container } = render(
         <SidebarItem item={item({ badge: "3", badgeTone: "destructive", href: "/x" })} asChild>

@@ -7,7 +7,7 @@ import { Text } from "../../general/typography";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
- * Separator a11y — gh#308.
+ * Separator a11y.
  *
  * The defect the issue reports is not visual: a labelled rule that renders "new messages" but is
  * not announced leaves a screen-reader user with a blank rule where a sighted user sees a

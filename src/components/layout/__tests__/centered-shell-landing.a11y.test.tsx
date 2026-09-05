@@ -6,7 +6,7 @@ import { Button, Heading, Text } from "../../general";
 import { Card, CardContent } from "../../data-display";
 import { expectNoA11yViolations } from "@/test/a11y";
 
-// The SCR-007 public landing composition (gh#252): a header with a wordmark, anchor navigation
+// The SCR-007 public landing composition: a header with a wordmark, anchor navigation
 // that drops below the tablet step, a chromeless hero, a flat section card and a legal footer that
 // still carries every destination the compact header hides. Guards heading order (h1 → h2), the
 // named navigation landmarks, real anchors and the contrast of the flat public surface.

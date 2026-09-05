@@ -8,9 +8,7 @@ import { describe, expect, it } from "vitest";
  * `.ui-page-container` carries `padding: var(--space-page-active-y) 0`, and a sticky box
  * CANNOT travel into its own containing block's padding area. So with that padding left in
  * place, `bottom: 0` resolves one page-padding ABOVE the true bottom edge: the footer floats
- * short of the fold and page content scrolls through the gap behind it. Measured in Chromium
- * on the chat surface at the 24px page padding — the composer pinned at 837px inside an 861px
- * scroller, which is exactly the "floating composer" the bug report showed.
+ * short of the fold and page content scrolls through the gap behind it.
  *
  * The fix drops the container's padding on the sticky side and moves it onto the body, which
  * is what wanted the breathing room anyway. These assertions exist because the jsdom tests

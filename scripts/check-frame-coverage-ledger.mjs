@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * check-frame-coverage-ledger — the issue #163 preview-contract CI gate.
+ * check-frame-coverage-ledger — the preview-contract CI gate.
  *
- * Architecture mirrors the issue #171 screen-reader evidence gate: a JSON-Schema'd document,
+ * Architecture mirrors the screen-reader evidence gate: a JSON-Schema'd document,
  * a locked policy registry, a promotion gate, and a baseline that can be EXTENDED but never
  * WEAKENED.
  *
- * It fails for (issue #163 item 4):
+ * It fails for:
  *   1. a public component/subcomponent with no frame           → new zero-frame owner
  *   2. a public prop/state with neither a covered case nor a reasoned N/A → unclassified cell
  *   3. a fabricated verdict                                    → recomputed cell ≠ ledger cell
@@ -14,8 +14,8 @@
  *   5. horizontal overflow / clipped interactive control       → geometry baseline grew
  *   6. an axe violation                                        → axe baseline grew
  *
- * RATCHET. The pre-existing `untested` backlog is enormous (that is the honest state of #163),
- * so it is RECORDED as a baseline rather than failing the build on day one. What fails is
+ * RATCHET. The pre-existing `untested` backlog is enormous, so it is RECORDED as a baseline
+ * rather than failing the build on day one. What fails is
  * REGRESSION: coverage falling, a new export landing with no frame, a known gap being quietly
  * marked covered, the required viewport matrix being trimmed, or a sweep baseline growing.
  *

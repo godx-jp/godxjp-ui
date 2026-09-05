@@ -212,7 +212,7 @@ describe("theme axes integration (render + class contracts)", () => {
       renderWithTheme(<Calendar mode="single" />);
       const dayButton = screen.getByRole("grid").querySelector("button");
       // The day cell's box moved from an arbitrary `size-[length:var(--control-height)]` utility
-      // into `.ui-calendar-day-button`, so the tier now comes from CSS (#319). The contract is
+      // into `.ui-calendar-day-button`, so the tier now comes from CSS. The contract is
       // unchanged — the cell still sizes from --control-height, never a literal step — so this
       // asserts the class that carries it plus the CSS rule that reads the tier.
       expect(dayButton).toHaveClass("ui-calendar-day-button");

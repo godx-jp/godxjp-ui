@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { allDeclarations, environment, resolveToken } from "./css-token-resolve";
 
 /**
- * gh#326 / gh#327 / gh#328 — the icon axis.
+ * The icon axis.
  *
  * Icon was the one geometric axis with a vocabulary and no name: 28 component tokens declared
  * raw numbers, and between them they used only NINE values. `--icon-size-2xs … --icon-size-4xl`
@@ -23,7 +23,7 @@ import { allDeclarations, environment, resolveToken } from "./css-token-resolve"
  * `calc(var(--icon-size-md) * var(--scaling))` and `--stat-card-icon-size` is a plain
  * `var(--icon-size-2xl)`; whether a given icon tracks density is a per-token decision that was
  * made long ago, and naming the scale must not quietly flip any of them. That is exactly the
- * trap in gh#328: `--card-service-launcher-icon-glyph-size` read `var(--space-5)`, which is the
+ * trap: `--card-service-launcher-icon-glyph-size` read `var(--space-5)`, which is the
  * wrong AXIS but is `--scaling`-multiplied, so pointing it at a bare `var(--icon-size-lg)` would
  * have frozen a glyph that used to breathe with density. It reads
  * `calc(var(--icon-size-lg) * var(--scaling))` instead — right axis, same behaviour, and the
@@ -63,7 +63,7 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--topbar-caret-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
   // Declared off-scale, on-grid: an 18px letter medallion, not a glyph.
   "--topbar-chip-icon-size": ["1.125rem", "1.125rem", "1.125rem"],
-  // gh#333 — minted for a rule that baked `1.25rem`. Same step, so this row is a no-move row.
+  // Minted for a rule that baked `1.25rem`. Same step, so this row is a no-move row.
   "--alert-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
   "--badge-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
   "--app-setting-picker-icon-size": ["1rem", "1rem", "1rem"],
@@ -85,7 +85,7 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--menu-icon-size": ["1rem", "1rem", "1rem"],
   "--month-picker-icon-size": ["1rem", "1rem", "1rem"],
   "--month-picker-separator-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
-  // gh#333 — the ONE row in this table whose value MOVED. `.ui-navigation-menu-trigger-icon`
+  // The ONE row in this table whose value MOVED. `.ui-navigation-menu-trigger-icon`
   // baked `0.9rem` = 14.4px: off the scale and off the pixel grid, so the chevron's stroke landed
   // on half pixels. Snapped to the nearest step, --icon-size-sm / 14px, a −0.4px change.
   "--navigation-menu-trigger-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
@@ -251,14 +251,14 @@ describe("icon size — tier 2, the per-instance escape hatch (gh#326)", () => {
    * only routes left are `!important` or forking the stylesheet — precisely the two things
    * tier 2 exists to make unnecessary.
    *
-   * Seven predated gh#326. gh#333 closed four of them: the Alert tone glyph and the Badge glyph
+   * Four have been closed: the Alert tone glyph and the Badge glyph
    * got tokens of their own (--alert-icon-size, --badge-icon-size), the ContextMenu/Menubar
    * sub-trigger chevrons were pointed at --menu-icon-size — the knob DropdownMenu's chevron
    * already read, so all three menu surfaces now retune together — and the NavigationMenu trigger
    * chevron SNAPPED from `0.9rem` (14.4px, off the scale and off the pixel grid) to
    * --navigation-menu-trigger-icon-size = --icon-size-sm, 14px.
    *
-   * The three left are blocked on token files gh#333 did not own:
+   * The three left are blocked on token files outside that pass:
    *   • `.ui-otp-separator-icon` needs --otp-separator-icon-size in components/control.css
    *   • `.tb-icon-btn svg` needs --topbar-icon-size in components/shell.css
    *   • `.tb-chip-icon` needs --topbar-chip-icon-size in components/shell.css, and it is NOT a
@@ -338,7 +338,7 @@ describe("icon axis hygiene (gh#327 / gh#328)", () => {
   });
 
   it("--control-icon-size is NOT shadowed — its foundation.css copy is .ui-scale-fixed", () => {
-    // gh#327 reported foundation.css:376 as dead code beaten by components/control.css. It is
+    // foundation.css:376 reads as dead code beaten by components/control.css. It is
     // not: the foundation declarations live inside `.ui-scale-fixed`, a different element
     // entirely, and deleting them would silently un-pin the topbar from the density axis.
     // Recorded as a test so the deletion is never attempted a second time.
@@ -356,8 +356,8 @@ describe("icon axis hygiene (gh#327 / gh#328)", () => {
     // Nobody had counted. The sweep found two, both Banner, neither on the icon axis:
     // feedback.css declared them and banner.css (imported later) overrode, so the feedback
     // copies never applied and `--banner-border-width` read a DIFFERENT value in each — `0`
-    // there against the `1px` that alert-layout.css actually paints. gh#333 deleted both dead
-    // copies, leaving banner.css the single owner of the strip geometry. Verified by SELECTOR,
+    // there against the `1px` that alert-layout.css actually paints. Both dead copies are gone,
+    // leaving banner.css the single owner of the strip geometry. Verified by SELECTOR,
     // not just by import order: both sat at a bare `:root`, so they really did compete. Frozen
     // at zero so the next one cannot appear unnoticed.
     const byKey = new Map<string, typeof decls>();

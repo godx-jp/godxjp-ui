@@ -8,10 +8,7 @@ import { describe, expect, it } from "vitest";
  * consumers use it to carry a project's colour. Every piece of text on it has
  * a colour knob so it can follow: item, hover, active, icon.
  *
- * The section label did not, and hardcoded `muted-foreground`. On a painted
- * sidebar that measured 1.50 against a mid-tone blue, where 11px text needs
- * 4.5 — a heading nobody could read, and nothing a consumer could do about it
- * without targeting a design-system class, which the rules forbid.
+ * The section label did not, and hardcoded `muted-foreground`.
  */
 describe("sidebar section label", () => {
   const css = readFileSync(

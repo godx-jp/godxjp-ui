@@ -7,17 +7,6 @@ import { expectNoA11yViolations } from "@/test/a11y";
 /**
  * Regression — `<ToggleGroup variant size>` must reach its ITEMS.
  *
- * The group used to stamp `data-variant`/`data-size` on the ROOT only; `ToggleGroupItem` read its
- * own props and `.ui-toggle-group` consumed neither attribute, so `<ToggleGroup size="lg">` alone
- * painted NOTHING — measured in Chromium, a group-only `data-size` of sm/md/lg all rendered the
- * same unstyled 25.8px item, against real tiers of 28/32/36px. A consumer had to repeat the prop
- * on every single item.
- *
- * Worse, the destructuring default was the literal `"default"`, which is NOT a member of the
- * declared `sm | md | lg` union, so an unset group stamped `data-size="default"` — an invalid
- * value for its own type.
- *
- * Fixed with the upstream shadcn React-context pattern. The contract pinned here:
  *  - group `variant`/`size` reach every item,
  *  - an EXPLICIT item prop still wins over the context (the only thing that worked before, and
  *    what the docs frames do — those must keep rendering identically),

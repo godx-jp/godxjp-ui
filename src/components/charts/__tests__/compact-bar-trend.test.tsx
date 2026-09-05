@@ -8,7 +8,7 @@ import { CompactBarTrend } from "../compact-bar-trend";
 import { resolveEmphasizedIndex, trendRatios, buildSeriesRows } from "../chart-summary";
 
 /**
- * gh#218 — the DEPENDENCY-FREE compact bar trend that the SCR-201 admin dashboard needs.
+ * The DEPENDENCY-FREE compact bar trend that the SCR-201 admin dashboard needs.
  *
  * Three contracts are guarded here:
  *  1. the PUBLIC API (N category/value pairs, `size` from the xs|sm|md|lg vocabulary,

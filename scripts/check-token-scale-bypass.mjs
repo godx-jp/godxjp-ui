@@ -1,48 +1,13 @@
 #!/usr/bin/env node
 /**
  * Token scale-bypass guard — "a token that declares a raw number on an axis that already HAS a
- * scale fails" (gh#332, from the gh#324 / gh#325 axis survey).
+ * scale fails".
  *
- * WHY THIS GUARD EXISTS
- *   gh#324 measured every geometry token in `src/tokens/{components,semantic}` and found a
- *   near-perfect correlation: an axis WITH a named scale stays disciplined, an axis WITHOUT one is
- *   almost all raw numbers.
- *
- *       axis        via scale   raw   % raw
- *       width               8    80     91%   ← no scale
- *       size               10    34     77%   ← no scale
- *       icon-size           9    28     76%   ← no scale AT THE TIME; gh#326 has since given it one
- *       height             18    40     69%   ← no scale AT THE TIME; gh#324 split out --band-height-*
- *       padding            82    34     29%   ← --space-*
- *       gap                86    26     23%   ← --space-*
- *       radius             34     3      8%   ← --radius-*
- *       font-size          90     4      4%   ← --font-size-*
- *
- *   Nobody is skipping `var(--font-size-lg)` out of laziness; they write `28rem` because there is
- *   nothing else to write. So the fix for the top of that table is a SCALE, not a guard.
+ *   Naming a scale is the fix for an axis; declaring that an axis is NOT one is the fix for the
+ *   rest, and it has to be written down or it gets re-asked. A scale alone is not sufficient
+ *   either, and that is what this guard is for: a declaration can still walk past the steps that
+ *   exist, and nothing else in CI notices.
  *   (`--list` prints the live census, on this guard's own axis definitions, whenever you want it.)
- *
- *   icon-size is the cleanest demonstration of both halves. It was 76% raw with no scale; gh#326
- *   named nine steps, every one of the 31 component icon tokens moved onto them, and switching
- *   this guard's `enforced` flag on for that axis cost ZERO baseline entries. Scale first, gate
- *   second — in that order the gate is free.
- *
- *   gh#324 then did the top two rows, and found the interesting half of the answer: the loudest
- *   axis is not one axis. `-width` at 91% raw is THREE concerns wearing one suffix — the thickness
- *   of a painted line, the measure of a container, and the content width of a field — and only the
- *   first is a vocabulary. So `--stroke-*` was named and gated; the other two are recorded in the
- *   rules module as NOT A SCALE, with the census behind the verdict, because putting a dialog's
- *   32rem and an auth card's 23.75rem on a shared grid would be worse than leaving them literal.
- *   `height` split the same way: `--band-height-*` (control, row, menu item, top bar — one
- *   vocabulary, seven values) versus container measures that stay literal. `size` and `offset`
- *   came out as no-scale on the same test. Naming a scale is the fix for an axis; declaring that
- *   an axis is not one is the fix for the rest, and it has to be written down or it gets re-asked.
- *
- *   But a scale alone is not sufficient either, and that is what this guard is for. font-size is
- *   the most disciplined axis in the system and FOUR tokens still went around it —
- *   `--sidebar-nav-item-font-size: 0.8125rem` (13px) sits between two steps, so every sidebar nav
- *   row is off the system's type rhythm. Those four are the entire case: the scale was there, and
- *   they walked past it. Nothing in CI noticed.
  *
  * WHAT COUNTS AS A VIOLATION
  *   A custom-property declaration in `src/tokens/components/**` or `src/tokens/semantic/**` whose
@@ -66,9 +31,9 @@
  *     have already shipped reporting on their own comments, and a phantom violation sends someone
  *     off to "fix" prose.
  *   • Axes with no scale: width, height, size, offset. Enforcing an axis with no steps would
- *     demand people write something that does not exist. Each is DECLARED in the rules module —
- *     since gh#324 with a VERDICT rather than a to-do, because the census says these four are
- *     several concerns each rather than one undernamed axis. The coherent halves that were hiding
+ *     demand people write something that does not exist. Each is DECLARED in the rules module
+ *     with a VERDICT rather than a to-do, because these four are several concerns each rather
+ *     than one undernamed axis. The coherent halves that were hiding
  *     inside `width` and `height` have been split out and ARE enforced (`stroke`, `band-height`).
  *     line-height is enforced too, and is the odd member: its scale is a set of unitless RATIOS,
  *     so a LENGTH there is never a step — it is a mis-named height, and now fails as one.
@@ -81,16 +46,15 @@
  *   HTML email cannot read custom properties: Gmail and Outlook strip <style> blocks and demand
  *   literal inline values, so a Blade/Twig/MJML template can never `var()` a token. Verified in
  *   the file's own header and in `scripts/gen-email-tokens.mjs`.
- *   One correction to the issue text, since it matters for how safe the exclusion is: email.css is
- *   the generator's INPUT, not its output — `gen-email-tokens.mjs` reads it and writes
- *   `src/email/tokens.generated.ts`. So the file IS hand-edited and CAN drift on its own; what
+ *   email.css is the generator's INPUT, not its output — `gen-email-tokens.mjs` reads it and
+ *   writes `src/email/tokens.generated.ts`. So the file IS hand-edited and CAN drift on its own; what
  *   cannot drift is the email export away from it, because `pnpm check:email-token-sync` fails
  *   when the generated file is stale. The exclusion rests on the literal-values constraint alone.
  *
  * TWO TIERS — the escape that keeps this honest
  *   A system with only named steps turns every real exception into a hack (`!important`, a global
- *   token override, a fork). gh#325's consumers were explicit about wanting a legitimate route to
- *   an arbitrary value — their 6px status dot will never be on any scale. So there are two:
+ *   token override, a fork). A 6px status dot will never be on any scale, so there is a
+ *   legitimate route to an arbitrary value. There are two tiers:
  *     tier 1  a step:            `--x-padding: var(--space-4);`
  *     tier 2a derive from a step:`--x-padding: calc(var(--space-4) + 2px);`
  *     tier 2b say why, in place: `--x-size: 0.375rem; /` + `* scale-exempt: 6px status dot, below
@@ -100,11 +64,8 @@
  *   a passing run, so they stay countable and reviewable.
  *
  * RATCHET, NOT A CLIFF
- *   55 declarations bypassed an enforced scale the day this landed, and 59 after gh#324 turned on
- *   three more axes — the four additions are `--menu-item-height`, `--steps-dot-process-ring-width`,
- *   `--steps-marker-border-width` and `--branch-scope-picker-subset-border-width`, each a one-line
- *   swap in a file that a different owner had open at the time. Failing all of them at once
- *   gets the guard switched off, so the baseline records them BY TOKEN NAME per file. A name not
+ *   Failing every pre-existing bypass at once gets the guard switched off, so the baseline
+ *   records them BY TOKEN NAME per file. A name not
  *   in the baseline fails, naming the file, line, token and value. A baselined name that is no
  *   longer a violation ALSO fails, telling you to re-baseline — that is what stops the number
  *   creeping back up after someone cleans a file. Names rather than counts, so a new violation is

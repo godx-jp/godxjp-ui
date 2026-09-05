@@ -104,7 +104,7 @@ describe("responsive shell geometry", () => {
     // or leak a document scroll. `clip` on BOTH axes (not `hidden`, not single-axis): a hidden box
     // is still a scroll container, and Chromium honours overflow-clip-margin ONLY when both axes
     // are `clip` — a single-axis clip silently drops the margin and a flush-edge control's ring
-    // vanishes on the clipped axis (gh#291, measured). The 8px margin carries the 3px ring on
+    // vanishes on the clipped axis (measured). The 8px margin carries the 3px ring on
     // every side; Safari (no clip-margin) falls back to `visible` via @supports.
     expect(slots).toMatch(/overflow:\s*clip;/);
     expect(slots).not.toMatch(/overflow:\s*hidden;/);
@@ -112,7 +112,7 @@ describe("responsive shell geometry", () => {
     // …and the clip margin keeps an edge control's focus ring paintable (WCAG 2.4.11 / 2.4.13).
     // The dedicated 4px headroom token, consumed as a BARE var(): rings paint up to 3px while
     // --focus-ring-width is 2px, and Chromium rejects any calc() inside overflow-clip-margin at
-    // parse time — a calc() here silently degrades the margin to 0 (gh#291 follow-up).
+    // parse time — a calc() here silently degrades the margin to 0.
     expect(slots).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
     expect(slots).not.toMatch(/overflow-clip-margin:\s*calc\(/);
     expect(slots).toMatch(/min-width:\s*0;/);
@@ -154,7 +154,7 @@ describe("responsive shell geometry", () => {
     expect(shellTokens).toContain("--app-shell-mobile-nav-width: 22.5rem;");
     // The scrim knob is `initial` at :root with the shared --overlay-background default resolved at
     // the CALL SITE, so a scoped [data-tenant]/.dark override reaches the portaled drawer
-    // (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). gh#215.
+    // (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`").
     expect(shellTokens).toContain("--app-shell-mobile-nav-background: initial;");
     expect(shellTokens).toContain("--app-shell-mobile-nav-alpha: 40%;");
     expect(shellStyles).toMatch(
@@ -185,7 +185,7 @@ describe("responsive shell geometry", () => {
       /grid-template-areas:\s*"topbar topbar"\s*"sidebar main"\s*"sidebar footer";/,
     );
     // Row assignment only. Restating grid-template-columns here would fork the rail width away
-    // from --app-shell-sidebar-width and silently break the collapsed rail (rule #45, gh#213).
+    // from --app-shell-sidebar-width and silently break the collapsed rail (rule #45).
     expect(declarationsFor(shellStyles, '.app-root[data-topbar-span="full"]')).not.toMatch(
       /grid-template-columns:/,
     );
@@ -235,10 +235,8 @@ describe("responsive shell geometry", () => {
   });
 
   it("restructures the shell at exactly ONE breakpoint and never deletes the footer (gh#213)", () => {
-    // There used to be a second `@media (max-width: 768px)` block that ALSO restructured `.app-root`
-    // — it dropped the "footer" grid area, hid `.app-footer`, and hard-coded `grid-template-rows:
-    // 3rem`, defeating --app-shell-bar-height below 768px only. Between 768 and 900 the two rules
-    // disagreed. One breakpoint now, and the footer/bar-height contract holds at every width.
+    // Between 768 and 900 the two rules disagreed. One breakpoint now, and the footer/bar-height
+    // contract holds at every width.
     const restructuring = mediaBlocksMentioning(shellStyles, ".app-root");
     expect(restructuring).toHaveLength(1);
     expect(restructuring[0].condition).toBe("(width <= 56.25rem)");
@@ -250,7 +248,7 @@ describe("responsive shell geometry", () => {
     expect(declarationsFor(shellStyles, ".app-footer")).not.toMatch(/display:\s*none/);
     // The compact bar inset is a knob, not a raw space token.
     expect(shellTokens).toContain("--app-shell-bar-gap: var(--space-3);");
-    // The bar's inset is NOT the shell restructure's business any more (gh#330) — see the
+    // The bar's inset is NOT the shell restructure's business any more — see the
     // horizontal-page-inset-axis test below. Nothing in this block may touch it.
     expect(restructuring[0].body).not.toMatch(/padding-inline:/);
     // The TSX hamburger variant must state the SAME number as the CSS breakpoint.
@@ -258,13 +256,8 @@ describe("responsive shell geometry", () => {
   });
 
   it("gives the horizontal page-inset axis ONE owner, stepping on ONE breakpoint (gh#330)", () => {
-    // Two independent inset tokens used to own one horizontal row: --app-shell-bar-inset
-    // (--space-4) for the bar and --space-page-x (--space-6) for the page directly under it.
-    // Measured in Chromium on /isolate/layout-app-shell BEFORE the fix, the topbar's content
-    // started at x=80 and the page header's at x=88, and because the two sides stepped at
-    // DIFFERENT breakpoints (shell 900px, page 720px) the error was not even constant: 8px at
-    // 1512, 12px between 720 and 900, 4px below 720. The page gutter owns the axis; the bar reads
-    // it. AFTER: 88/88, 24/24, 16/16, 16/16 at 1512 / 880 / 700 / 390.
+    // The page gutter owns the axis; the bar reads it. AFTER: 88/88, 24/24, 16/16, 16/16 at 1512
+    // / 880 / 700 / 390.
     expect(shellTokens).toContain("--app-shell-bar-inset: var(--space-page-x);");
     expect(shellTokens).toContain("--app-shell-bar-inset-compact: var(--space-page-compact-x);");
     // The names survive as knobs — a theme that already overrides them keeps working.
@@ -281,20 +274,14 @@ describe("responsive shell geometry", () => {
     );
     expect(compact).toHaveLength(1);
     expect(compact[0].condition).toBe("(max-width: 720px)");
-    // The shell's 900px restructure no longer says anything about the inset, in either direction:
-    // the docked-mode "undo" that used to cancel the old 900px step is gone with it.
     expect(shellStyles).not.toMatch(
       /data-responsive-navigation="docked"\]\s*>\s*\.app-topbar\s*\{[^}]*padding-inline/s,
     );
   });
 
-  it("puts CenteredShell on that same axis — the shell gh#330 missed", () => {
-    // gh#330 gave AppShell's horizontal row one owner and left CenteredShell hard-coding
-    // --space-4 (16px) for the bar while its own main and footer used --space-6 (24px). Measured
-    // in Chromium on /isolate/layout-centered-shell BEFORE: the bar's content sat at x=16 and the
-    // column at x=24 — a constant 8px error at every width from 784px (the md tier, 46rem, plus
-    // the two 24px gutters — below which the column stops being centred and pins to the gutter)
-    // down to 320px. AFTER: 24/24 at 784 · 760 · 721, and 16/16 at 720 · 700 · 390 · 320.
+  it("puts CenteredShell on that same axis", () => {
+    // CenteredShell takes its bar padding from the same page-gutter owner as AppShell:
+    // 24/24 at 784 · 760 · 721, and 16/16 at 720 · 700 · 390 · 320.
     expect(shellTokens).toContain("--centered-shell-bar-padding-x: var(--space-page-x);");
     expect(shellTokens).toContain(
       "--centered-shell-bar-padding-x-compact: var(--space-page-compact-x);",
@@ -360,8 +347,8 @@ describe("responsive shell geometry", () => {
     for (const selector of [".ui-topbar-start", ".ui-topbar-center", ".ui-topbar-end"]) {
       expect(declarationsFor(shellStyles, selector)).toMatch(/gap:\s*var\(--topbar-gap\);/);
     }
-    // …and the gh#226 shrink contract is untouched by the knobs (both-axes clip + clip-margin
-    // since gh#291 — the margin, honoured only for two-axis clip, carries the focus ring).
+    // …and the shrink contract is untouched by the knobs (both-axes clip + clip-margin
+    // — the margin, honoured only for two-axis clip, carries the focus ring).
     expect(root).toMatch(/flex:\s*1 1 0%;/);
     expect(root).toMatch(/overflow:\s*clip;/);
     expect(root).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);

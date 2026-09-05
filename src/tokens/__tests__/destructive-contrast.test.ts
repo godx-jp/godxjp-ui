@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * gh#199 — filled destructive surfaces (Button/Badge/error Step) must clear WCAG 2.x AA (4.5:1) for
+ * Filled destructive surfaces (Button/Badge/error Step) must clear WCAG 2.x AA (4.5:1) for
  * normal text against `--destructive-foreground`, in BOTH themes, for DEFAULT + HOVER + ACTIVE. The
  * dark default previously sat at 4.54:1 (on the floor) and the states drifted LIGHTER on hover,
  * cutting contrast further. This is a deterministic token guard so a future palette edit can't

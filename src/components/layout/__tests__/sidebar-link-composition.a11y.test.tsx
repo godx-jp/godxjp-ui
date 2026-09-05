@@ -6,7 +6,7 @@ import { expectNoA11yViolations } from "@/test/a11y";
 import { createSidebarLink, Sidebar } from "../sidebar";
 
 /**
- * gh#213 — the router-link row contract must not cost accessibility. The library composes the row,
+ * The router-link row contract must not cost accessibility. The library composes the row,
  * so it also owns the parts axe checks: the named `<nav>` landmark, `aria-current="page"` on exactly
  * the active row, `aria-hidden` decorative glyphs, `aria-disabled` instead of a dead link, and an
  * accessible name on every icon-only collapsed rail row.

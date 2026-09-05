@@ -252,7 +252,7 @@ export function GeneralSettingsSection({
     tagline:
       "The four canonical settings BLOCKS — identity · preference rows · billing handoff · danger zone — composed from Card + ListRow + Descriptions + StatusBadge + AlertDialog. A COMPOSITION pattern: godx-ui ships no SettingsSection/SettingsRow/DangerZone component and never will.",
     tags: ["settings", "account", "billing", "danger", "preferences", "listrow", "card", "admin"],
-    code: `// gh#216. Gate 0 (docs/COMPOSITION-VS-COMPONENT.md): a "SettingsSection"/"SettingsRow"/
+    code: `// Gate 0 (docs/COMPOSITION-VS-COMPONENT.md): a "SettingsSection"/"SettingsRow"/
 // "DangerZone" FAILS the Framework-Component Test — it owns no behavior (C2), is fully
 // expressible from existing primitives + tokens (C3), and its API would be screen-shaped (C4).
 // So compose it. Live reference screen: the "settings account sections" page in the preview
@@ -744,7 +744,7 @@ export function MaintenancePage() {
 //   --error-surface-max-width | -gap | -padding-block(-compact) | -meta-gap | -meta-row-gap |
 //   --error-surface-meta-border (default 'none', rule #44) | --error-surface-progress-max-width
 //
-// ANTI-PATTERNS: AuthShell + a generic Card (the gh#251 workaround; AuthShell is the
+// ANTI-PATTERNS: AuthShell + a generic Card (the workaround; AuthShell is the
 // UNAUTHENTICATED root with auth-card geometry) · rebuilding nav on the 403 page · two CTAs ·
 // className="min-h-dvh flex …" · a hand-built "18:00 - 20:00 JST" string · writing the request id
 // into 'description' as prose instead of using the semantic slot.`,
@@ -1155,7 +1155,7 @@ export function MfaChallengePage({ code, onCodeChange, error, pending, onVerify 
 //  390           panel 360px at x=15 (15px inline gutter, --auth-shell-recovery-main-padding-mobile),
 //                310px content column, OTP still ONE row, primary still full-width, the fallback
 //                row wraps to a stack only when the localized labels exceed the column.
-//  ⚠️ The 390 canonical reference supplied with gh#233 is a desktop 2×2 COMPOSITE that overflows
+//  ⚠️ The 390 canonical reference is a desktop 2×2 COMPOSITE that overflows
 //  and crops horizontally. It is NOT a valid mobile source and was not traced; the row above is a
 //  DECIDED contract, documented in docs/layout/auth-recovery/ and pinned by tests.
 

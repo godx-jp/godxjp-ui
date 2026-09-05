@@ -1,5 +1,5 @@
 /**
- * The no-drift contract for `@godxjp/ui/email` (issue #227).
+ * The no-drift contract for `@godxjp/ui/email`.
  *
  * Every assertion here re-derives the expected value straight from the CSS token files — the same
  * source `scripts/gen-email-tokens.mjs` reads — so this suite fails the moment an email value stops
@@ -124,7 +124,7 @@ describe("email colours derive from the web token roles", () => {
     expect(EMAIL_COLOR_SOURCE.surface.cssVar).toBe("--card");
     expect(EMAIL_COLOR_SOURCE.focus.cssVar).toBe("--ring");
     // The GoDX identity mark is the --brand IDENTITY role (what --logo-godx-color points at) —
-    // NOT --primary, and NOT the --success status green it wrongly borrowed before gh#250.
+    // NOT --primary, and NOT the --success status green it wrongly borrowed before.
     expect(EMAIL_COLOR_SOURCE.brand.cssVar).toBe("--brand");
     expect(EMAIL_COLOR_SOURCE.brandForeground.cssVar).toBe("--brand-foreground");
     expect(EMAIL_COLOR_SOURCE.urgency.cssVar).toBe("--attention");
@@ -199,12 +199,9 @@ describe("email geometry derives from src/tokens/components/email.css", () => {
   });
 
   it("holds the CTA to the 44px TOUCH-TARGET floor, not the web control height", () => {
-    // A CONTRACT, not a restatement of the current value. Asserting only
-    // `heightPx === EMAIL_CSS["--email-cta-height"]` is green for ANY number, which is exactly how
-    // a 36px CTA (the old --control-height-lg mirror) survived: it clears SC 2.5.8 (AA, 24x24) and
-    // nothing downstream could see that it failed SC 2.5.5 (AAA, 44x44), Apple HIG 44pt and
-    // Material 48dp. Email is touch-only — no hover, no precise pointer, no reliable zoom — so the
-    // AAA target size is the floor here. A consumer may still raise it; lowering it fails.
+    // A CONTRACT, not a restatement of the current value. Email is touch-only — no hover, no
+    // precise pointer, no reliable zoom — so the AAA target size is the floor here. A consumer may
+    // still raise it; lowering it fails.
     expect(EMAIL_CTA.heightPx).toBeGreaterThanOrEqual(44);
     expect(EMAIL_CTA.lineHeightPx).toBeGreaterThanOrEqual(44);
     // and it is deliberately NOT the web control tier any more
@@ -236,7 +233,7 @@ describe("email geometry derives from src/tokens/components/email.css", () => {
   });
 });
 
-// ── 2b. The SCR-302 canonical reference (gh#250) ────────────────────────────────────────────────
+// ── 2b. The SCR-302 canonical reference ────────────────────────────────────────────────
 /**
  * Values measured from the canonical design source `.design/DXS Email Templates.dc.html`
  * (payment-failure card) and confirmed pixel-for-pixel against the 1440 reference raster
@@ -259,9 +256,7 @@ describe("matches the SCR-302 canonical reference", () => {
   });
 
   it("primary CTA: 44×auto, 16px inline padding, 6px radius, 14px/500 label", () => {
-    // 44, not the 36 this pinned until 18.8.0 (dxs-platform/platform#559). The box used to mirror
-    // --control-height-lg; that mirror is now deliberately broken, because a mail client is a
-    // touch-only surface with no hover, no precise pointer and no dependable zoom.
+    // 44, not the 36 this pinned until 18.8.0 (dxs-platform/platform#559).
     expect(EMAIL_CTA.heightPx).toBe(44);
     expect(EMAIL_CTA.lineHeightPx).toBe(44);
     expect(EMAIL_CTA.paddingXPx).toBe(16);
@@ -427,7 +422,7 @@ describe("canonical GoDX brand mark", () => {
 
   it("uses the component's 32×32 viewBox, rendered in the canonical 22px header box", () => {
     expect(logo).toContain(`viewBox="${EMAIL_BRAND_MARK.viewBox}"`);
-    // the ARTWORK space is the component's; only the RENDERED box is email-specific (gh#250)
+    // The ARTWORK space is the component's; only the RENDERED box is email-specific
     expect(EMAIL_BRAND_MARK.viewBox).toBe("0 0 32 32");
     expect(EMAIL_BRAND_MARK.widthPx).toBe(22);
     expect(EMAIL_BRAND_MARK.heightPx).toBe(22);

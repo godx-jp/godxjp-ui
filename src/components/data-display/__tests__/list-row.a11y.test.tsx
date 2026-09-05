@@ -31,7 +31,7 @@ describe("ListRow a11y", () => {
     );
   });
 
-  // gh#225 — notification rows: unread/read, zero/one/two trailing actions, long JA/EN/VI content.
+  // Notification rows: unread/read, zero/one/two trailing actions, long JA/EN/VI content.
   it("has no axe violations as a notifications list (unread/read · 0–2 actions)", async () => {
     await expectNoA11yViolations(
       <Card>
@@ -80,7 +80,7 @@ describe("ListRow a11y", () => {
     );
   });
 
-  // gh#246 — the compact inline-actions geometry: an invitation row with an Avatar-sized leading
+  // The compact inline-actions geometry: an invitation row with an Avatar-sized leading
   // slot and two small Buttons, plus a history row whose Badge + ISO-8601 date stay inline.
   it("has no axe violations for compact invitation + history rows", async () => {
     await expectNoA11yViolations(
@@ -115,7 +115,7 @@ describe("ListRow a11y", () => {
     );
   });
 
-  // gh#224 — a long invitation title with TWO trailing Buttons (the SCR-115 overflow case).
+  // a long invitation title with TWO trailing Buttons (the SCR-115 overflow case).
   it("has no axe violations for a long invitation title with two trailing actions", async () => {
     await expectNoA11yViolations(
       <Card>

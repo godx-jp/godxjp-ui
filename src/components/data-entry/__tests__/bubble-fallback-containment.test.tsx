@@ -8,7 +8,7 @@ import { Switch } from "../switch";
 
 // Radix renders a hidden native form-fallback (BubbleSelect/BubbleInput) for these controls. It is
 // `position:absolute` with no top/left, so without a positioned ancestor it inflates
-// `document.scrollHeight` → phantom empty scroll space (gh#105). jsdom does no layout, so we can't
+// `document.scrollHeight` → phantom empty scroll space. jsdom does no layout, so we can't
 // measure scrollHeight here; instead we assert each fallback carries the attributes our base-layer
 // clamp targets (`[aria-hidden="true"][tabindex="-1"]`) so the CSS pins it to top-left. If Radix
 // ever changes these attributes, this fails and tells us the clamp selector needs updating.

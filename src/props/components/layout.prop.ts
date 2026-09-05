@@ -296,7 +296,7 @@ export type AuthShellProp = {
  * what they have always been: an inert Radix rule, `decorative` by default, nothing announced.
  * With a `label` the root becomes the three-cell grid `rule · label · rule` and, because
  * "new messages" is CONTENT rather than decoration, a real `role="separator"` carrying the label
- * as its accessible name (gh#308). Every constant — rule weight, label gap, label inset, label
+ * as its accessible name. Every constant — rule weight, label gap, label inset, label
  * type ramp, rule and label colour per tone — is a `--separator-*` component token (rules #44/#45),
  * so a service retunes a day divider or an unread watermark from its theme and never forks CSS.
  */
@@ -325,7 +325,7 @@ export type SeparatorProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children
   className?: ClassNameProp;
 };
 
-/** @see AuthDivider — the auth-scoped preset over `Separator label` (gh#308). */
+/** @see AuthDivider — the auth-scoped preset over `Separator label`. */
 export type AuthDividerProp = {
   /** Short localized conjunction rendered between the two separator rules (for example, "or"). */
   label: string;
@@ -632,7 +632,7 @@ export type SidebarLinkComponentProp = ComponentType<SidebarLinkProp>;
  * @deprecated Prefer `Sidebar.linkComponent` (or `SidebarItem asChild`), where the library composes
  * the row and the consumer supplies only the element. `renderItem` leaves row CONTENT to the
  * consumer, which is how a `<Link>{item.label}</Link>` silently dropped every icon and badge
- * (gh#213). Spreading `rowProps` — including its `children` — now yields the canonical row.
+ *. Spreading `rowProps` — including its `children` — now yields the canonical row.
  */
 export type SidebarRenderItemProp = {
   className: string;
@@ -722,7 +722,7 @@ export type SidebarProp = {
   collapsed?: boolean;
   children?: ChildrenProp;
   /**
-   * THE framework-router contract (gh#213). Supply only the LINK ELEMENT TYPE; the Sidebar still
+   * THE framework-router contract. Supply only the LINK ELEMENT TYPE; the Sidebar still
    * composes the row — icon slot, label, badge, `data-active`/`aria-current`, the icon-only
    * collapsed rail and its tooltip name — and passes it as {@link SidebarLinkProp} `children`.
    * Used for every row that carries an `href`: top-level leaves, submenu children, collapsed-rail
@@ -750,7 +750,7 @@ export type SidebarProp = {
    *
    * Legacy escape hatch: return a SINGLE interactive element and the Sidebar merges the row styling
    * + active state onto it via Slot. Because row CONTENT stayed consumer-authored, a
-   * `<Link>{item.label}</Link>` silently dropped every icon and badge (the gh#213 production
+   * `<Link>{item.label}</Link>` silently dropped every icon and badge (the production
    * regression). `rowProps` now also carries the composed `children`, so spreading it restores the
    * canonical row.
    */

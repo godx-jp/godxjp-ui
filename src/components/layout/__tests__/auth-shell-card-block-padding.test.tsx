@@ -12,7 +12,7 @@ import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi, screen } from "@/test/render";
 
 /**
- * gh#232 — the canonical compact AuthShell card must be tunable on the BLOCK axis through
+ * The canonical compact AuthShell card must be tunable on the BLOCK axis through
  * `--auth-shell-card-padding-block-compact` alone, with the INLINE column still owned by
  * `--auth-shell-compact-card-inset`.
  *
@@ -26,7 +26,7 @@ import { renderWithUi, screen } from "@/test/render";
  *
  * Measured in headless Chromium on the built preview (`/isolate/layout-auth-shell`), IDENTICAL at
  * 1440×900 and 390×844 (the compact axes are not breakpoint-scoped) — `[data-slot="card-content"]`
- * computed `padding`, with the pre-gh#232 stylesheet re-injected for the A/B:
+ * computed `padding`, with the earlier stylesheet re-injected for the A/B:
  *
  *   case                             before            after
  *   default                          12px 24px 24px    12px 24px 24px   ← unchanged (card 279.5px)

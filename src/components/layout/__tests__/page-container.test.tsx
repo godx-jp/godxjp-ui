@@ -288,9 +288,7 @@ describe("PageContainer", () => {
   });
 
   /*
-   * Responsive inline header arrangement (gh#231). jsdom has no layout engine and evaluates no
-   * media query, so the geometry is asserted here as a DOM + CSS contract; the live numbers were
-   * measured in Chromium against this exact stylesheet at 390px (reported on the issue):
+   * Responsive inline header arrangement.
    *
    *   headerLayout="stack" (default) → extra wraps BELOW the subtitle, at x=16
    *   headerLayout="responsive-inline" → extra stays on the title row, at x=198 / 176px wide
@@ -353,10 +351,9 @@ describe("PageContainer", () => {
   });
 
   /*
-   * Bounded page measure (gh#245 notification feed / gh#247 invitations inbox). jsdom has no
+   * Bounded page measure (notification feed, invitations inbox). jsdom has no
    * layout engine, so the geometry is asserted here as a DOM + stylesheet + token contract; the
-   * live numbers were measured in headless Chromium against this exact stylesheet (reported on
-   * both issues):
+   * live numbers were measured in headless Chromium against this exact stylesheet:
    *
    *   measure="default" 1440 → header 1440 / body content 1392 (unbounded, unchanged)
    *   measure="medium"  1440 → header 768 / body 768 → 720px VISIBLE surface, header extra and
@@ -381,7 +378,7 @@ describe("PageContainer", () => {
 
       expect(container.firstChild).toHaveAttribute("data-measure", "default");
       // The inert-default contract: an existing page emits the attribute but matches no selector,
-      // so its geometry is literally untouched (same precedent as data-layout="stack", gh#231).
+      // so its geometry is literally untouched (same precedent as data-layout="stack").
       expect(layoutCss).not.toMatch(/\[data-measure="default"\]/);
     });
 
@@ -399,7 +396,7 @@ describe("PageContainer", () => {
     });
 
     it("caps the HEADER and the BODY together — not the body alone like variant='narrow'", () => {
-      // The whole point of the axis (gh#245): variant="narrow" leaves the header action at the
+      // The whole point of the axis: variant="narrow" leaves the header action at the
       // page edge because only .ui-page-body is capped.
       expect(layoutCss).toMatch(
         /\.ui-page-container\[data-measure="medium"\] \.ui-page-header,\s*\.ui-page-container\[data-measure="medium"\] \.ui-page-toolbar,\s*\.ui-page-container\[data-measure="medium"\] \.ui-page-body \{\s*max-inline-size: var\(--page-measure-medium\);/,
@@ -427,7 +424,7 @@ describe("PageContainer", () => {
     });
 
     it("is orthogonal to variant and headerLayout — the canonical quiet feed composes", () => {
-      // gh#245: ghost owned the quiet header rhythm but could not also be measure-bounded,
+      // Ghost owned the quiet header rhythm but could not also be measure-bounded,
       // because chrome and measure were ONE variant axis. Three independent props now.
       const { container } = renderWithUi(
         <PageContainer
@@ -447,7 +444,7 @@ describe("PageContainer", () => {
     });
 
     it("keeps the header quiet by default — the divider stays a service opt-in (rule #44)", () => {
-      // No new chrome token was needed for gh#245's "quiet header": the divider already defaults
+      // No new chrome token is needed for the "quiet header": the divider already defaults
       // to the quietest state and is read through a token, and ghost drops the header pad too.
       expect(layoutTokens).toMatch(/--page-header-divider:\s*none;/);
       expect(layoutCss).toMatch(/border-bottom: var\(--page-header-divider\);/);
@@ -806,10 +803,7 @@ describe("PageContainer", () => {
     it("keeps the footer's DEFAULT a rule — the one chrome knob that is loud by default", () => {
       // The other two default to silence; this one must not, and the reason is not symmetry but
       // behaviour: `footer` is the shared slot a form's Save/Cancel bar lands in, where the line
-      // separating the actions from the content is what every existing page already draws. The old
-      // literal is the fallback VERBATIM, so an unset token is byte-identical to the hard-coded
-      // version, and `--page-footer-divider: none` is the opt-OUT (a chat composer that already
-      // carries its own Card frame).
+      // separating the actions from the content is what every existing page already draws.
       expect(layoutTokens).toMatch(/--page-header-divider: none;/);
       expect(layoutTokens).toMatch(/--page-toolbar-divider:\s*initial;/);
       const footerRule =
@@ -957,13 +951,11 @@ describe("PageContainer", () => {
     });
 
     /*
-     * The BAND-HEIGHT half of the same fact (gh#331). A document header is content-height, which
-     * is right — a title is as tall as the title is. Chrome is furniture, and furniture has a band
-     * that things centre INTO; without one, the band's vertical centre is a function of its own
-     * copy. Measured in Chromium on /isolate/layout-page-container: 42.02px with an `extra`
-     * control, 40.38px without, so nothing in the page could ever be aligned to it. jsdom runs no
-     * layout, so the mechanism is asserted from the CSS SOURCE like every other half above; the
-     * numbers came from a real engine.
+     * The BAND-HEIGHT half of the same fact. A document header is content-height, which is right —
+     * a title is as tall as the title is. Chrome is furniture, and furniture has a band that
+     * things centre INTO; without one, the band's vertical centre is a function of its own copy.
+     * jsdom runs no layout, so the mechanism is asserted from the CSS SOURCE like every other half
+     * above; the numbers came from a real engine.
      */
     it("gives the chrome band a height knob, quiet by default (gh#331)", () => {
       const bandRule =
@@ -975,8 +967,7 @@ describe("PageContainer", () => {
       // that makes it useful, and it is inert while the knob is `auto` (a column whose min IS its
       // content height has nothing to distribute).
       expect(bandRule).toMatch(/justify-content: center;/);
-      // Quiet default (rule #44): `auto` is no floor at all, so every page shipped before this
-      // token — document AND chrome — is byte-identical. The knob is a token, never a literal.
+      // The knob is a token, never a literal.
       expect(layoutTokens).toMatch(/--page-header-min-block-size-chrome:\s*auto;/);
       expect(layoutCss).not.toMatch(/--page-header-min-block-size-chrome:/);
       // A MIN, never a height: a taller `extra` must still fit rather than overflow its band.
@@ -1077,12 +1068,7 @@ describe("PageContainer", () => {
       );
     });
 
-    /*
-     * The second consequence: a chrome band's actions sit on the bar's MIDDLE. `align-items:
-     * flex-start` is right for a document (actions on the first line of a tall <h1>) and wrong for
-     * a bar with no tall heading — measured 8.65px of it on the reference chat screen, the icons
-     * centred at y=14 against a 45.3px row whose title block centres at y=22.65.
-     */
+    /* The second consequence: a chrome band's actions sit on the bar's MIDDLE. */
     it("centres the extra cluster on the bar, only where the row IS a row", () => {
       const { container } = renderWithUi(
         <PageContainer

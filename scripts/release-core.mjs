@@ -242,10 +242,8 @@ export function commitFromLsRemote(output, tag) {
 /* ------------------------------------------------------------------------------------------- *
  * Commit provenance — why CD no longer re-runs the suite CI just ran.
  *
- * `verify:release` used to run inside the publish job: verify:static (build + ~25 guards +
- * check:contrast + check:visual-audit + the WHOLE vitest suite) then check:frame-contracts,
- * check:frame-coverage and check:frame-axe. On a tag-triggered release that is ~20 minutes of
- * tests plus the Chromium gates, re-executed on a commit `main` CI already proved green.
+ * Re-running `verify:release` inside the publish job is ~20 minutes of tests plus the Chromium
+ * gates, re-executed on a commit `main` CI already proved green.
  *
  * Deleting the gate is not the answer — nothing may be published that nobody verified. The answer
  * is that a CI verdict on the exact SHA is a STRICTLY STRONGER proof than a local re-run, provided
@@ -254,9 +252,7 @@ export function commitFromLsRemote(output, tag) {
  *   • every CI gate that `verify:release` would have run concluded `success` on that SHA  (here)
  *   • the working tree being packed is byte-identical to that commit   (VerifyPublishTree)
  *
- * The third used to be false: `ApplyTargetMetadata` wrote the new version into package.json BEFORE
- * VerifyRoot, so CI's verdict covered the commit but not the mutated tree. Under the tag trigger
- * the bump is merged to main and CI'd before the tag is cut, so ApplyTargetMetadata finds the
+ * Under the tag trigger the bump is merged to main and CI'd before the tag is cut, so ApplyTargetMetadata finds the
  * metadata already correct and writes nothing — the packed tree and the verified commit are the
  * same bytes. That is what makes the substitution honest rather than merely cheaper.
  *
@@ -348,7 +344,7 @@ export function assertCiProvenance({ sha, checkRuns, totalCount }) {
    * token guard honours. An exemption is a claim someone has to defend in review; deleting a name
    * from REQUIRED_CI_CHECK_RUNS would hide the identical decision with nothing to review.
    *
-   * It briefly held `rendered-runtime (…)` while the five browser shards were red (gh#333). Being
+   * It briefly held `rendered-runtime (…)` while the five browser shards were red. Being
    * forced to write the justification down is what kept the search going: the claim was "the
    * harness, not the library", and it did not survive contact with the real cause — two docs pages
    * fetching images from picsum.photos, which hung `networkidle` until `page.goto` timed out. The

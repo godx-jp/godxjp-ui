@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-// Guards the token-driven brand SPOTLIGHT backdrop (gh#122): the `.ui-brand-glow` utility plus the
+// Guards the token-driven brand SPOTLIGHT backdrop: the `.ui-brand-glow` utility plus the
 // `--brand-glow*` tokens that drive it. jsdom does no painting, so we assert the contract (utility
 // resolves to the token; every knob is themeable) is present so it can't be silently dropped. The
 // actual halo is verified in a browser at ship time.

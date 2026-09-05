@@ -193,9 +193,10 @@ describe("card-layout.css structural selectors select the rendered DOM", () => {
   });
 
   it("a tight body makes the plain header symmetric; a tabs-hosting one restores the shell top", () => {
-    /* The historical selector nested `:has()` inside `:has()`, which the spec forbids —
-     * Chrome dropped the whole rule and the symmetric band never applied. The valid pair:
-     * symmetric for every tight body, then the tabs case takes the top back. */
+    /*
+     * The valid pair: symmetric for every tight body, then the tabs case takes the top
+     * back.
+     */
     const symmetric = ruleSelector(
       css,
       /:has\(\[data-slot="card-content"\]\[data-tight\]\)\s*\[data-slot="card-header"\]/,
@@ -393,10 +394,9 @@ describe("card-layout.css structural selectors select the rendered DOM", () => {
     expect(q(container, "tight-body").matches(selector)).toBe(false);
   });
 
-  // The flush body's block axis and the header gap that follows it both used to be gated on the
-  // body containing a `<table>`; that gate is what left gh#307 open. Their coverage now lives in
-  // the "flush content owns its block axis (gh#307)" describe at the bottom of this file, which
-  // asserts the WIDE contract plus the tight/solo counter-cases.
+  // The flush body's block axis and the header gap that follows it are covered in the
+  // "flush content owns its block axis" describe at the bottom of this file, which asserts the
+  // WIDE contract plus the tight/solo counter-cases.
 
   it("mobile separated-footer row rule refuses a flush footer", () => {
     const selector = ruleSelector(
@@ -447,12 +447,11 @@ describe("card-layout.css structural selectors select the rendered DOM", () => {
 });
 
 describe("flush content owns its block axis (gh#307)", () => {
-  // The reported symptom was a flush body floating 18.4px off its header in a described-header
-  // card, next to a sibling flush body that measured 0px. Guarding the describedBody pair with
-  // :not([data-flush]) is necessary but was NOT sufficient: the padding that actually landed came
-  // from the GENERIC content rules, because the flush block-zero was gated on `:has(table)` and
-  // the floating section was a file LIST, not a table. So the contract under test is the wide
-  // one — a flush body has no block padding, whatever it happens to contain.
+  // Guarding the describedBody pair with :not([data-flush]) is necessary but was NOT sufficient:
+  // the padding that actually landed came from the GENERIC content rules, because the flush
+  // block-zero was gated on `:has(table)` and the floating section was a file LIST, not a table.
+  // So the contract under test is the wide one — a flush body has no block padding, whatever it
+  // happens to contain.
   it("the flush block-zero rule matches a flush body that contains no table at all", () => {
     const selector = ruleSelector(
       css,

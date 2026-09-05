@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 /**
- * gh#276 — the keyboard-scroll focus ring on `.app-main` is token-gated and
+ * The keyboard-scroll focus ring on `.app-main` is token-gated and
  * DEFAULT OFF (`--region-focus-ring-width: 0`, a deliberate product tradeoff
  * against WCAG 2.4.7): a control-strength brand frame around the whole content
  * region reads as a glitch to mouse-first users. Services opt in via the token.

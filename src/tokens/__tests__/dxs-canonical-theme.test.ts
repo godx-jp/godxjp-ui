@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { APP_BRANDS, isAppBrand, type AppBrand } from "../../app/theme-axes";
 
 /**
- * THE CANONICAL DXS THEME (gh#214).
+ * THE CANONICAL DXS THEME.
  *
  * The consumer blocker was that there is no canonical theme/preset "shared by every surface": the
  * brand axis only re-tinted `--primary`, and `src/theme/` held nothing but copy-me templates. These
@@ -84,7 +84,7 @@ describe("dxs brand axis — the canonical DXS preset", () => {
       "var(--auth-shell-canonical-main-padding)",
     );
     // …and those referenced tokens really are the canonical 36px / 22.5rem / 16px measures.
-    // The control height reads the band scale since gh#324 (`--band-height-lg` IS 2.25rem/36px),
+    // The control height reads the band scale (`--band-height-lg` IS 2.25rem/36px),
     // so assert the step and the step's value rather than a literal that no longer appears.
     expect(shellTokens).toContain("--auth-shell-canonical-control-height: var(--band-height-lg);");
     expect(foundationTokens).toContain("--band-height-lg: 2.25rem;");

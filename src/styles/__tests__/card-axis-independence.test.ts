@@ -4,13 +4,11 @@ import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * Card inline ↔ block axis independence (gh#232).
+ * Card inline ↔ block axis independence.
  *
  * The consumer blocker: `AuthShell` documented `--auth-shell-card-padding-block-compact` as the
  * public knob for the canonical Login card's height, but the rendered `CardContent` took BOTH the
- * inline column and the block shell edges from the single `--card-space-inset`. The knob reached the
- * card subtree and then did nothing, so Platform had to bridge it with a consumer selector on
- * `[data-slot="card-content"]` — exactly the fork rules #44/#45 forbid.
+ * inline column and the block shell edges from the single `--card-space-inset`.
  *
  * jsdom performs no layout and does not resolve `var()`, so a `getComputedStyle` assertion here
  * would be vacuous. Instead this suite RESOLVES THE REAL CASCADE from the shipped stylesheets: it
@@ -183,7 +181,7 @@ describe("Card content padding is wired on two independent axes (gh#232)", () =>
     for (const density of ["tight", "cozy"] as const) {
       const rule = blockDeclarations(cardStyles, `[data-slot="card"][data-density="${density}"] {`);
       // Re-declared `initial` → falls back to THIS card's inset, so an explicit per-instance
-      // density still beats an ambient shell-level block override, exactly as before gh#232.
+      // density still beats an ambient shell-level block override, exactly as before.
       expect(rule["--card-space-shell-y"]).toBe("initial");
       expect(rule["--card-space-inset"]).toBe(`var(--space-${density === "tight" ? 3 : 5})`);
     }
@@ -203,7 +201,7 @@ describe("AuthShell compact card — three knobs, three axes (gh#232)", () => {
 
   it("keeps the canonical default output backward compatible", () => {
     const { inline, blockEnd, blockStartSolo, headerTop } = compactAuthCardPadding();
-    // Pre-gh#232 the compact card took --auth-shell-compact-card-inset (--space-6) on ALL four
+    // Earlier the compact card took --auth-shell-compact-card-inset (--space-6) on ALL four
     // edges because one token owned both axes. Unchanged: the block knob is `initial`, so every
     // block edge still resolves through the inline inset.
     const inset = substitute("var(--auth-shell-compact-card-inset)", ROOT);
@@ -216,8 +214,6 @@ describe("AuthShell compact card — three knobs, three axes (gh#232)", () => {
   });
 
   it("keeps the header↔body gap on its own knob at the pre-gh#232 rhythm", () => {
-    // It used to ride on --auth-shell-card-padding-block-compact; the value it produced (12px) is
-    // preserved so no existing canonical screen shifts.
     expect(stripComments(shellTokens)).toMatch(
       /--auth-shell-card-body-gap-compact:\s*var\(--space-3\);/,
     );

@@ -1,5 +1,5 @@
 /**
- * PASSWORD RECOVERY + SIGN-IN MFA CHALLENGE — composition-pattern contract test (gh#233).
+ * PASSWORD RECOVERY + SIGN-IN MFA CHALLENGE — composition-pattern contract test.
  *
  * `@godxjp/ui` deliberately ships NO `PasswordRecoveryPanel` and NO `MfaChallengePanel`: both
  * failed Gate 0 of docs/COMPOSITION-VS-COMPONENT.md (they own no behaviour, and a `state` prop that

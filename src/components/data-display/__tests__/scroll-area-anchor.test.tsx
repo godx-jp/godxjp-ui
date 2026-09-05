@@ -6,7 +6,7 @@ import { ScrollArea } from "../scroll-area";
 import { Button } from "../../general/button";
 
 /**
- * Bottom anchoring (gh#311) — the behaviour, not the rendering.
+ * Bottom anchoring — the behaviour, not the rendering.
  *
  * jsdom has NO layout engine: `scrollHeight`, `clientHeight`, `offsetTop` and `offsetHeight` are
  * all hard 0, and setting `scrollTop` never emits a `scroll` event. So this file installs a

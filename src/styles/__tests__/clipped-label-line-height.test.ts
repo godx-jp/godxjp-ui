@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * gh#254 — `.sb-label` clips with `overflow: hidden` but declared no line-height, so it inherited
+ * `.sb-label` clips with `overflow: hidden` but declared no line-height, so it inherited
  * `line-height: 1` from `.sb-nav-item`. On a clipping element the line box IS the clip box, and a
  * 1em box is shorter than the font's ascent+descent: every glyph reaching below the baseline was
  * sheared off. In Vietnamese that silently misspells the label — "Dịch vụ" lost both tone marks
@@ -71,14 +71,14 @@ describe("gh#254 — a clipping single-line box owns its line-height", () => {
   });
 
   it("changes the LABEL's line box only — row geometry is untouched", () => {
-    // The 32px row reads the band step since gh#324 — `--band-height-md` IS 2rem, pinned in
+    // The 32px row reads the band step — `--band-height-md` IS 2rem, pinned in
     // src/tokens/__tests__/geometry-axis-scales.test.ts along with every token that reads it.
     expect(shellTokens).toMatch(/--sidebar-nav-item-height:\s*var\(--band-height-md\);/);
     const row = rule(".sb-nav-item");
     expect(row).toContain("height: var(--sidebar-nav-item-height);");
     expect(row).toContain("align-items: center;");
     // 1.5 × --font-size-xs (≈12.47px) = 18.7px, comfortably inside the 32px row, so nothing
-    // reflows — the same headroom the pre-gh#329 19.5px had, one step lower.
+    // reflows — the same headroom the earlier 19.5px had, one step lower.
     expect(shellTokens).toMatch(/--sidebar-nav-item-font-size:\s*var\(--font-size-xs\);/);
   });
 });

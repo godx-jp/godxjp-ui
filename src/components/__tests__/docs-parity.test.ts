@@ -9,8 +9,6 @@ function read(path: string) {
   return readFileSync(join(root, path), "utf8");
 }
 
-// Re-authored 2026-06: the old suite read a `docs/primitives/<group>/<name>/index.md` + `examples/`
-// layout that no longer exists (the preview catalog was rebuilt to flat docs/<group>/<name>.tsx).
 // We now verify the actual guarantee — that the shadcn-compatible COMPOUND sub-components remain
 // part of the public surface — by asserting they are exported from their group barrels. This is
 // less brittle than coupling to specific doc prose and catches an accidental compound-export drop.

@@ -1,6 +1,6 @@
-// gh#257 (DXS platform#311) — the three canonical RBAC composites are PUBLIC, importable
+// The three canonical RBAC composites are PUBLIC, importable
 // exports with a shared lifecycle-state contract. This file pins:
-//   1. the declaration/export contract (the gh#251 lesson: a docs page is not importable);
+//   1. the declaration/export contract (the lesson: a docs page is not importable);
 //   2. the DataTable #216 state vocabulary on each (loading → denied → error → empty → content);
 //   3. read-only vs editable semantics, and the destructive-confirmation gate;
 //   4. basic keyboard operation (Space toggles a grant, Enter selects a role, radios switch scope).

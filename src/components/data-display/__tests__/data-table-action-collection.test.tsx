@@ -188,7 +188,7 @@ describe("DataTable action-collection preset (gh#253)", () => {
 
   it("owns the surface width floor as a documented token, not a literal", () => {
     expect(tableTokens).toContain("--table-surface-min-inline-size: 640px;");
-    // `clip`, not `hidden` (gh#291 family): both clip to the rounded border, but
+    // `clip`, not `hidden`: both clip to the rounded border, but
     // `hidden` makes the surface a SCROLL CONTAINER and silently captures the
     // sticky context of stickyHeader/pinned columns — measured: the header then
     // scrolls away 1:1 with the body. Keep this pinned so it cannot regress.
@@ -260,8 +260,8 @@ describe("DataTable action-collection preset (gh#253)", () => {
     expect(desktop(766)).toEqual({ primary: 137.9, secondary: 168.5, meta: 91.9, actions: 56 });
     expect(free(766, desktop(766))).toBe(311.7);
     // 390 → 388px table, compact PERCENT tier below the `sm` container step — the ratios that
-    // keep the canonical five-column queue scroll-free at the acceptance artboards (gh#253),
-    // restored after the gh#262 floors briefly replaced them and broke exactly that frame.
+    // keep the canonical five-column queue scroll-free at the acceptance artboards,
+    // restored after the floors briefly replaced them and broke exactly that frame.
     expect(compact(388)).toEqual({ primary: 93.1, secondary: 85.4, meta: 77.6, actions: 44 });
     expect(free(388, compact(388))).toBe(87.9);
     // 320 artboard → a 278px content box in the geometry frame: the free-text measure must stay
@@ -274,7 +274,7 @@ describe("DataTable action-collection preset (gh#253)", () => {
         percent("--table-action-collection-secondary-width-compact") +
         percent("--table-action-collection-meta-width-compact"),
     ).toBeLessThan(100);
-    // Wide-collection floor tier (gh#262, seven columns and up): absolute rem measures — the
+    // Wide-collection floor tier (seven columns and up): absolute rem measures — the
     // only floor `table-layout: fixed` respects — sized for ~5 CJK glyphs per line at the
     // compact type tier. The over-constrained table then grows and scrolls by design.
     expect(rem("--table-action-collection-primary-width-floor")).toBe(96);
@@ -285,7 +285,7 @@ describe("DataTable action-collection preset (gh#253)", () => {
     expect(rem("--table-action-collection-actions-width-compact")).toBeGreaterThanOrEqual(24);
   });
 
-  // ── gh#262 follow-up: scroll ownership under the preset ───────────────────────────────────────
+  // ── Scroll ownership under the preset ─────────────────────────────────────────────────────────
   // Past the column budget the floor tier grows the TABLE past 100%; the surface between the
   // table and `.ui-data-table-scroll` is an `overflow: hidden` block that cannot size to a
   // fixed-layout table's degenerate intrinsics, so it would CLIP the grown table before the outer

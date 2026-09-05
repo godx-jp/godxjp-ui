@@ -8,9 +8,8 @@ const card = (c: HTMLElement) => c.querySelector('[data-slot="card"]') as HTMLEl
 
 // `size` shipped from the v6 snapshot with EMPTY cva variants and no CSS ever read the
 // `data-size` it emitted, so `size="compact"` was inert for its whole life while the props
-// table and the StatCard guidance both advertised it. The old test here pinned the ATTRIBUTE
-// ("defaults to compact"), which passed happily while the prop did nothing — the attribute was
-// the only thing it ever produced. Card sizing is `density`, which is implemented and measured.
+// table and the StatCard guidance both advertised it. Card sizing is `density`, which is
+// implemented and measured.
 //
 // DO NOT REPLACE THIS WITH A GENERIC "dead prop" GUARD. Two sessions have now built one
 // ("every emitted data-* must be read by CSS") and both threw it away, because a prop in this

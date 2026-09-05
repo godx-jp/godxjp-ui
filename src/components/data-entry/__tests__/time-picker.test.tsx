@@ -135,7 +135,7 @@ describe("TimePicker — disabled + 12h + a11y", () => {
     // Empty: only the open-picker (clock) trigger, nothing to clear yet.
     expect(screen.getByRole("button", { name: /open time picker/i })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /^clear$/i })).toBeNull();
-    // With a value BOTH show (gh#308): the clock icon is the only visual sign that this field
+    // With a value BOTH show: the clock icon is the only visual sign that this field
     // opens a picker, so the clear must not take its place.
     await user.type(combobox(), "13:30");
     expect(screen.getByRole("button", { name: /^clear$/i })).toBeInTheDocument();

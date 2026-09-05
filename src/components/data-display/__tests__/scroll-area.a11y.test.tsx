@@ -9,7 +9,7 @@ import { renderWithUi } from "@/test/render";
 const messages = Array.from({ length: 12 }, (_, index) => `メッセージ ${String(index + 1)}`);
 
 /**
- * ScrollArea a11y (gh#311). Anchoring is a scroll-offset write and nothing else — it must add no
+ * ScrollArea a11y. Anchoring is a scroll-offset write and nothing else — it must add no
  * roles, no live region, and above all no second announcement of content the consumer's own live
  * region already announces. The viewport's `tabIndex={0}` is the WCAG 2.1.1 fix from f665ee1 and
  * must survive the new props.

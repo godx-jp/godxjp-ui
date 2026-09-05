@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * AuthShell named flow presets (gh#217 · gh#220).
+ * AuthShell named flow presets.
  *
  * The consumer blocker in both issues is that the canonical artboard measures could only be hit by
  * a page-local `--auth-shell-card-max-width` override. These tests pin the PUBLIC token contract so
@@ -24,7 +24,7 @@ const authBlock = (selector: string) =>
 
 describe("AuthShell flow presets — token-owned geometry", () => {
   it("keeps the canonical defaults untouched (backward compatible)", () => {
-    // gh#220: adding the wide device measure must not move the existing canonical 360px/15px flow.
+    // Adding the wide device measure must not move the existing canonical 360px/15px flow.
     expect(shellTokens).toContain("--auth-shell-canonical-card-max-width: 22.5rem;");
     expect(shellTokens).toContain("--auth-shell-canonical-main-padding: 1rem;");
     expect(shellTokens).toContain("--auth-shell-canonical-main-padding-mobile: 0.9375rem;");
@@ -290,9 +290,7 @@ describe("AuthShell flow presets — token-owned geometry", () => {
   });
 
   it("registration pins the identity track so copy length cannot move the anchor (gh#256)", () => {
-    // Without the fixed track the card rides on the identity block's own height (measured 82.69px
-    // for one wrapped requester), so the canonical y would hold for exactly one copy length. With
-    // it, headless Chromium measured card y=274 identically for absent, short and wrapped
+    // With it, headless Chromium measured card y=274 identically for absent, short and wrapped
     // two-line requester copy. Content aligns to the slot END, as `login` does.
     expect(shellStyles).toMatch(
       /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*block-size:\s*var\(--auth-shell-registration-identity-slot-block-size\)/s,
@@ -333,7 +331,7 @@ describe("AuthShell flow presets — token-owned geometry", () => {
 
   it("never hardcodes a preset measure in the stylesheet", () => {
     // Every preset length must live in the token tier — a literal here is the exact regression
-    // (a forked `.canonical-auth-shell--wide`) that gh#220 was filed against.
+    // (a forked `.canonical-auth-shell--wide`) that the presets exist to prevent.
     const presetRules = [
       ...authBlock("login"),
       ...authBlock("registration"),

@@ -64,7 +64,7 @@ describe("Logo", () => {
 });
 
 /**
- * WORDMARK / LOCKUP (gh#214). The issue asks for a semantic brand-green GoDX mark AND wordmark
+ * WORDMARK / LOCKUP. The issue asks for a semantic brand-green GoDX mark AND wordmark
  * variant independent of `--primary`. `wordmark` turns Logo into the full lockup so a shell header
  * or auth brand bar never hand-rolls `inline-flex items-center gap-2` around a Logo + Text.
  */
@@ -119,12 +119,12 @@ describe("Logo wordmark lockup", () => {
 
 /**
  * Token contract — the canonical brand colour must survive a `--primary` re-theme with ZERO
- * consumer page CSS (gh#214 acceptance). jsdom does no cascade, so the contract is pinned on the
+ * consumer page CSS. jsdom does no cascade, so the contract is pinned on the
  * stylesheet source: no logo rule may reference `--primary` for the identity mark/wordmark, and
  * every role default lives at the CALL SITE (docs/TOKENS.md · role-mirror knobs).
  *
- * gh#250 corrected WHICH role: the identity now reads `--brand` (canonical GoDX emerald #009766),
- * not `--success` (若竹 status green). `src/tokens/__tests__/brand-identity-role.test.ts` owns the
+ * The identity reads `--brand` (canonical GoDX emerald #009766), not `--success`
+ * (若竹 status green). `src/tokens/__tests__/brand-identity-role.test.ts` owns the
  * full role-split contract.
  */
 describe("Logo brand tokens", () => {
@@ -136,7 +136,7 @@ describe("Logo brand tokens", () => {
     expect(layout).toContain(
       "color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--brand))))",
     );
-    // gh#250 — the mark must not borrow the 若竹 STATUS green again.
+    // The mark must not borrow the 若竹 STATUS green again.
     expect(layout).not.toMatch(/var\(--success\b/);
     const identityRules = layout.match(/\[data-mark="godx"\][\s\S]*?\}/g) ?? [];
     expect(identityRules.length).toBeGreaterThan(0);

@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Button, Text } from "../../general";
 import { expectNoA11yViolations } from "@/test/a11y";
 
-// The SCR-105 access-approval queue (gh#253): five columns — requester · target · reason ·
+// The SCR-105 access-approval queue: five columns — requester · target · reason ·
 // requested date · row actions — under the action-collection preset. The preset changes only the
 // sizing model, so this guards that the table axe sees at 390 is the SAME table it sees at 1440:
 // real header cells with scope, an accessible name on the icon-only row action, no empty header.

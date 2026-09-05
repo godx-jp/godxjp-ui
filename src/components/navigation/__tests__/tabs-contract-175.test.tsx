@@ -24,9 +24,9 @@ const navigationCssRaw = readFileSync(
 );
 
 /**
- * The two shipped rules that actually implement gh#175, with their selectors taken OUT of the
- * stylesheet: the root's flexbox shrink floor (what `min-w-0` used to ride along as) and the
- * strip's width cap plus own-overflow scroll (what `max-w-full` used to). Running them with
+ * The two shipped rules that carry the Tabs overflow contract, with their selectors taken OUT of
+ * the stylesheet: the root's flexbox shrink floor and the strip's width cap plus own-overflow
+ * scroll. Running them with
  * `.matches()` proves the rules reach the rendered nodes — a class name only proves a string.
  */
 const shrinkFloorSelector = ruleSelector(
@@ -39,7 +39,7 @@ const widthCapSelector = ruleSelector(
 );
 
 /**
- * Regression coverage for gh#175 — two confirmed Tabs framework defects:
+ * Regression coverage — two confirmed Tabs framework defects:
  *
  *  1) Fallback selection could target a DISABLED first item — both when the component owns the
  *     initial value (no defaultValue) and when a stale/disabled `defaultValue` is passed. Must
@@ -188,11 +188,11 @@ describe("Tabs — horizontal tablist scrolls instead of clipping long labels (g
     const { container } = render(<Tabs items={FIRST_DISABLED} />);
     const root = container.querySelector('[data-slot="tabs"]');
     expect(root?.className).toContain("flex");
-    // The shrink floor used to be a `min-w-0` Tailwind literal on the component. Tokenizing the
-    // tab box (#319) moved it — and only it — into styles/navigation-layout.css, keyed off the
-    // very same data-slot, so the floor still applies to exactly this element. It is asserted on
-    // the stylesheet because a service theme must never be able to reach it: unlike the strip↔panel
-    // gap next to it, `min-inline-size: 0` is the flexbox shrink idiom, not a tunable constant.
+    // Tokenizing the tab box moved it — and only it — into styles/navigation-layout.css, keyed off
+    // the very same data-slot, so the floor still applies to exactly this element. It is asserted
+    // on the stylesheet because a service theme must never be able to reach it: unlike the
+    // strip↔panel gap next to it, `min-inline-size: 0` is the flexbox shrink idiom, not a tunable
+    // constant.
     expect(navigationCss).toContain(
       '[data-slot="tabs"] { min-inline-size: 0; gap: var(--tabs-root-gap); }',
     );

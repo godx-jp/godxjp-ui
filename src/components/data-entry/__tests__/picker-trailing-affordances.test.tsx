@@ -9,7 +9,7 @@ import { MonthRangePicker } from "../month-range-picker";
 import { TimePicker } from "../time-picker";
 
 /**
- * gh#308 — a picker must keep its trigger icon while it holds a value.
+ * a picker must keep its trigger icon while it holds a value.
  *
  * `Input`'s `allowClear` REPLACES the configured `trailingIcon` with the ✕ (one trailing icon,
  * never two). Correct for a plain text field; wrong for a picker, where the calendar/clock icon

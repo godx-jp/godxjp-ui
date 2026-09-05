@@ -8,7 +8,7 @@ import { expectNoA11yViolations } from "@/test/a11y";
 import { AuthFooter } from "../auth-footer";
 
 /**
- * AuthFooter — the canonical hosted-identity legal line (gh#214).
+ * AuthFooter — the canonical hosted-identity legal line.
  *
  * The consumer contract is: the LIBRARY owns the geometry (mono ramp, wrap, `·` separators between
  * the slots that are present) and the CONSUMER owns every piece of content. These tests pin the

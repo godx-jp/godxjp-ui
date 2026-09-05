@@ -6,14 +6,11 @@ import { describe, expect, it } from "vitest";
 import { ruleSelector, ruleSelectors } from "@/test/css-selector";
 
 /**
- * Labelled Separator — the token contract and the selectors that carry it (gh#308).
+ * Labelled Separator — the token contract and the selectors that carry it.
  *
  * jsdom performs no layout and does not resolve `var()`, so a `getComputedStyle` assertion here
  * would be vacuous. What CAN be proved at this layer, and is exactly what the issue is about:
  *
- *   • every constant the labelled rule needs is a `--separator-*` knob, not a literal — the
- *     `height: 1px` that `shell-layout.css` used to bake into `.ui-auth-divider-rule` is gone
- *     (rule #44);
  *   • the colour knobs are declared `initial` at `:root` with the role default at the CALL SITE,
  *     so a scoped `[data-tenant]` / `.dark` override of `--border` / `--muted-foreground` actually
  *     reaches them (docs/TOKENS.md — the `:root` freeze rule);

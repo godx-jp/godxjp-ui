@@ -9,12 +9,9 @@ import { renderWithUi } from "@/test/render";
 import { ruleSelectors } from "@/test/css-selector";
 
 /**
- * gh#309 — `<Avatar presence>` is the realtime reachability dot on the mark itself. Before it,
- * every consumer that shows people in a live product stacked a hand-rolled
- * `<span className="relative">` + `bg-green-500 ring-2 ring-background -end-0.5 -bottom-0.5` over
- * the avatar: a raw palette colour, four un-themeable constants, and a bare swatch with no
- * accessible text. The three defects are asserted here as three separate contracts — the API, the
- * accessible encoding (WCAG 1.4.1) and the token surface (cardinal rules #44/#45).
+ * `<Avatar presence>` is the realtime reachability dot on the mark itself. The three defects are
+ * asserted here as three separate contracts — the API, the accessible encoding (WCAG 1.4.1) and
+ * the token surface (cardinal rules #44/#45).
  */
 const styles = readFileSync(resolve(process.cwd(), "src/styles/data-display-layout.css"), "utf8");
 const flatStyles = styles.replace(/\s+/g, " ").trim();
@@ -25,8 +22,8 @@ const tokens = readFileSync(
 
 /**
  * The presence half of the stylesheet, comments stripped — a raw-colour or motion sweep must read
- * the DECLARATIONS, not the prose explaining them (the block's own `gh#309` would answer a hex
- * scan, and the word "translate" appears in the comment that explains why there is no translate).
+ * the DECLARATIONS, not the prose explaining them (a `#`-prefixed reference in the prose would
+ * answer a hex scan, and the word "translate" appears in the comment that explains why there is no translate).
  */
 const presenceCss = styles
   .slice(styles.indexOf(".ui-avatar[data-presence] {"), styles.indexOf(".ui-progress"))
@@ -226,7 +223,7 @@ describe("Avatar presence — never colour-only (WCAG 1.4.1, gh#309)", () => {
 describe("Avatar presence — every constant is a knob (rules #44/#45, gh#309)", () => {
   it("declares the geometry knobs so a service can retune the dot from its theme", () => {
     expect(tokens).toMatch(/--avatar-presence-inset:\s*0;/);
-    // The three line weights read the stroke scale since gh#324 — --stroke-md IS 2px and
+    // The three line weights read the stroke scale — --stroke-md IS 2px and
     // --stroke-sm IS 1.5px, pinned in src/tokens/__tests__/geometry-axis-scales.test.ts. A theme
     // that wants heavier presence rings now has both routes: the step, or these knobs.
     expect(tokens).toMatch(/--avatar-presence-ring-width:\s*var\(--stroke-md\);/);

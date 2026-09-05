@@ -28,7 +28,7 @@ describe("MasterDetail", () => {
 
     expect(getByRole("region", { name: "Services" })).toHaveTextContent("Service A");
     expect(getByRole("region", { name: "Selected service" })).toHaveTextContent("Service A roles");
-    // The canonical composition of gh#223: fluid list + fixed-width DETAIL rail.
+    // The canonical composition: fluid list + fixed-width DETAIL rail.
     expect(root(container)).toHaveAttribute("data-rail", "detail");
     expect(root(container)).toHaveAttribute("data-rail-width", "standard");
   });
@@ -234,7 +234,7 @@ describe("MasterDetail", () => {
   });
 
   /*
-   * Geometry contract (gh#223). jsdom has no layout engine, so the responsive behaviour is
+   * Geometry contract. jsdom has no layout engine, so the responsive behaviour is
    * asserted here as a CSS contract; the live numbers below were measured in Chromium against
    * this exact stylesheet, in a PageContainer at the required viewport matrix:
    *
@@ -269,8 +269,7 @@ describe("MasterDetail", () => {
     });
 
     /*
-     * Bounded master viewport (gh#231). Measured in Chromium against this stylesheet, in the
-     * docs frame, with a 200-row collection (see the numbers reported on the issue):
+     * Bounded master viewport.
      *
      *   masterViewport="auto"     390px → master 3,749px tall, detail pushed to y≈3,935
      *   masterViewport="compact"  390px → master  320px tall, detail at y≈4xx (scrolls in place)

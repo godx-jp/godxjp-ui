@@ -5,14 +5,13 @@ import { describe, expect, it } from "vitest";
 import { contrast, hsl, hslToRgb, NON_TEXT, over } from "./wcag-contrast";
 
 /**
- * gh#315 — `--input` is the CONTROL BOUNDARY role, and it must clear WCAG 2.2
+ * `--input` is the CONTROL BOUNDARY role, and it must clear WCAG 2.2
  * SC 1.4.11 Non-text Contrast (3:1).
  *
  * A text field in this system has no fill of its own (`background:
  * hsl(var(--background))`) and no shadow worth the name, so its 1px edge is the
  * entire visual claim that you may type there — exactly "the visual information
- * required to identify a user interface component". `--input` shipped sharing
- * `--border`'s value and measured 1.46:1 on the page, 1.43:1 on a dialog's card.
+ * required to identify a user interface component".
  *
  * `--border` is deliberately NOT held to this bar and is NOT checked here:
  * table rules, card edges and section dividers are decorative chrome that
@@ -21,7 +20,7 @@ import { contrast, hsl, hslToRgb, NON_TEXT, over } from "./wcag-contrast";
  * assertion states that as an invariant so a future palette pass cannot quietly
  * re-couple them by copying one value into the other.
  *
- * Surfaces are checked the way gh#299 taught: not only the plain ground, but
+ * Surfaces are checked the thorough way: not only the plain ground, but
  * every tint this system lays under a control — a value that passes on a card
  * and fails inside a filter bar or a striped table row is not a line anyone can
  * defend, and no browser sweep catches it unless it happens to sample the right

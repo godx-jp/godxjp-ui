@@ -1,5 +1,5 @@
 /**
- * ERROR SURFACE — axe coverage for the 403/404/500/503 composition pattern (gh#221).
+ * ERROR SURFACE — axe coverage for the 403/404/500/503 composition pattern.
  *
  * This covers the layer BELOW the shipped `ErrorSurface` component (whose own axe coverage lives in
  * error-surface.a11y.test.tsx): the raw `EmptyState` + `Flex` + `Text` composition that the surface

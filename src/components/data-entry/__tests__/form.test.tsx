@@ -64,7 +64,7 @@ describe("Form — layout context flows to FormField", () => {
     expect(document.querySelector(".ui-responsive-grid")).toBeInTheDocument();
     const fields = document.querySelectorAll('[data-slot="form-field"]');
     // The span travels as a custom property, not as `grid-column`: on a one-column grid
-    // `grid-column: span 2` fabricates an implicit track and starves the real one to 0px (gh#321),
+    // `grid-column: span 2` fabricates an implicit track and starves the real one to 0px,
     // so the STYLESHEET decides where the span applies. This asserts the value reaches CSS; the
     // gating itself is asserted against the shipped stylesheet in form-grid-rhythm.test.tsx.
     expect((fields[1] as HTMLElement).style.getPropertyValue("--form-field-col-span")).toBe("2");
@@ -88,11 +88,7 @@ describe("Form — layout context flows to FormField", () => {
 });
 
 describe("Form asChild — layout without owning the form element", () => {
-  /**
-   * Inertia and TanStack Form render their own `<form>`. Two form elements cannot nest, so
-   * before `asChild` a consumer had to pick one and hand-roll the other; every such app ended
-   * up with per-field label columns in raw CSS.
-   */
+  /** Inertia and TanStack Form render their own `<form>`. */
   it("renders the caller's element, not a second form, and still supplies the layout", () => {
     renderWithUi(
       <Form asChild layout="horizontal" labelWidth={174}>

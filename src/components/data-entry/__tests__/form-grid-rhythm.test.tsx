@@ -11,8 +11,8 @@ import { FormField } from "../form-field";
 import { Input } from "../input";
 
 /**
- * REGRESSION GUARD — gh#304. `<Form columns={n}>` lays its fields out as ResponsiveGrid ITEMS, and
- * the gh#295 field rhythm (`.ui-form-field + .ui-form-field { margin-block-start: … }`) reached
+ * REGRESSION GUARD. `<Form columns={n}>` lays its fields out as ResponsiveGrid ITEMS, and
+ * the field rhythm (`.ui-form-field + .ui-form-field { margin-block-start: … }`) reached
  * them too. Inside a grid a per-item margin is a spacing mechanism fighting a layout mechanism:
  *
  *   · the FIRST item of row 1 has no preceding sibling, so it takes no margin while its row-mates
@@ -188,8 +188,8 @@ describe("Form columns={n} — the row rhythm must not leak into the grid (gh#30
       expect(items).toHaveLength(columns * 2);
       for (const item of items) {
         expect(item).toHaveClass("ui-form-field");
-        // `undefined` (no rule matches) and `0` are both "no margin"; anything else re-opens gh#304
-        // for the item that has no preceding sibling but shares row 1 with items that do.
+        // `undefined` (no rule matches) and `0` are both "no margin"; anything else re-opens the
+        // defect for the item that has no preceding sibling but shares row 1 with items that do.
         expect(winning(item, "margin-block-start") ?? "0").toBe("0");
       }
     },
@@ -292,7 +292,7 @@ describe("Form grid spacing knobs (cardinal rule #45)", () => {
     // `Form > Card > CardContent > ResponsiveGrid > FormField*` is what a form with several titled
     // sections has to write by hand (docs' invoice-form does exactly this), and it is the same
     // layout `columns={2}` produces. Keying the rule on ancestry would give the two different row
-    // rhythms — the depth-dependence gh#295 removed from this file.
+    // rhythms — the depth-dependence this file rules out.
     const { container } = render(
       <Form>
         <Card>

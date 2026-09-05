@@ -1,8 +1,8 @@
 /**
- * ERROR SURFACE — the UNDERLYING composition (gh#221 → gh#251).
+ * ERROR SURFACE — the UNDERLYING composition.
  *
  * `@godxjp/ui` now ships a real, importable `ErrorSurface` (see error-surface.test.tsx): shipping
- * the 403/404/500/503 surface as a docs-only composition pattern was the gh#251 regression, because
+ * the 403/404/500/503 surface as a docs-only composition pattern was the regression, because
  * a consumer cannot `import` a docs page. What survives here is the layer BELOW it — the
  * `EmptyState` + `Flex` + `Text` + `Button` composition that `ErrorSurface` renders internally, and
  * that an app still hand-composes when it needs a status outside the supported four. Pinning it

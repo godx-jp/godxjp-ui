@@ -133,7 +133,7 @@ describe("AppShell", () => {
         <p>本文</p>
       </AppShell>,
     );
-    // AppShell renders its own hamburger — the mobile nav is never merely hidden (gh#165).
+    // AppShell renders its own hamburger — the mobile nav is never merely hidden.
     const trigger = screen.getByRole("button", { name: "Mở menu điều hướng" });
 
     expect(trigger).toBeInTheDocument();
@@ -346,7 +346,7 @@ describe("AppShell", () => {
       );
       const bar = container.querySelector(".app-topbar");
       // Below 900px the docked rail is hidden; dropping the bar there too would leave the shell
-      // with no route to navigation at all — worse than the double chrome this state fixes (gh#165).
+      // with no route to navigation at all — worse than the double chrome this state fixes.
       expect(bar).not.toBeNull();
       expect(screen.getByRole("button", { name: "Mở menu điều hướng" })).toBeInTheDocument();
       // …and NOTHING else: no auto-built rail, so the bar carries no chrome of its own.
@@ -379,7 +379,7 @@ describe("AppShell", () => {
       expect(declarationsFor(narrowCss, '.app-root[data-topbar="none"] > .app-topbar')).toMatch(
         /display:\s*flex;/,
       );
-      // The trap this file has already paid for once (gh#213): the deleted 768px block re-declared
+      // The trap this file has already paid for once: the deleted 768px block re-declared
       // grid-template-rows with a `3rem` literal and defeated --app-shell-bar-height below 768px
       // only. The `auto` row sizes itself from the header's min-height, so nothing may restate it.
       expect(narrowCss).not.toMatch(/grid-template-rows:/);

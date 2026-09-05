@@ -1,5 +1,5 @@
 /**
- * ErrorSurface — axe coverage for the package-owned 403 / 404 / 500 / 503 surface (gh#221, gh#251).
+ * ErrorSurface — axe coverage for the package-owned 403 / 404 / 500 / 503 surface.
  *
  * Every status is asserted at 0 violations in the shell it actually ships in — application mode
  * inside a real AppShell + PageContainer, system mode as its own CenteredShell page — plus the

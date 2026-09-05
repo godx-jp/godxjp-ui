@@ -79,7 +79,7 @@ const badgeVariants = cva(
          * `BadgeVariant` union: every fill, border and text utility has to stay
          * off the element so badge-layout.css's `[data-tinted]` rule is
          * reachable (a utility beats a components-layer rule whatever the
-         * specificity — gh#260). Selected by the `color` prop, never by hand. */
+         * specificity). Selected by the `color` prop, never by hand. */
         tinted: "",
       },
       // Corner shape — default inherits the badge radius token; pill/sharp override via the tokens.

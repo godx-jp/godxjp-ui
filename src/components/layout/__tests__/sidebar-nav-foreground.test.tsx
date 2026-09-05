@@ -5,7 +5,7 @@ import { renderWithUi, screen } from "@/test/render";
 import { Sidebar } from "../sidebar";
 
 /**
- * gh#228 — DOM half of the icon/label foreground contract. The colours themselves live in CSS
+ * DOM half of the icon/label foreground contract. The colours themselves live in CSS
  * (guarded by src/styles/__tests__/sidebar-nav-foreground.test.ts); what the component MUST
  * guarantee is that the two style hooks actually exist on every row shape and state, so the tokens
  * reach the DOM: `.sb-nav-item` for the row/label token and a `.sb-icon` wrapper around the Lucide
@@ -105,10 +105,8 @@ describe("Sidebar row/icon style hooks (gh#228)", () => {
   });
 
   /**
-   * `icon` is REQUIRED in SidebarItemProp, but API-driven / untyped nav data reaches the component
-   * anyway — and `<Icon />` with `Icon === undefined` used to throw "Element type is invalid",
-   * taking the whole shell down. The row must render instead, and it must keep canonical geometry:
-   * the empty `.sb-icon` box (16px) stays, so the 10px gap and the label column don't collapse.
+   * The row must render instead, and it must keep canonical geometry: the empty `.sb-icon` box
+   * (16px) stays, so the 10px gap and the label column don't collapse.
    */
   const iconLessSections = [
     {

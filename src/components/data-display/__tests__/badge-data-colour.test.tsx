@@ -14,7 +14,7 @@ import { Badge } from "../badge";
  * Second, NO fill/tone utility may be emitted in this mode: a Tailwind utility
  * lands in `@layer utilities` and beats a `@layer components` rule whatever the
  * specificity, so a single `bg-primary` left on the element would paint over
- * the wash and the prop would be silently inert — the exact failure gh#260
+ * the wash and the prop would be silently inert — the exact failure
  * documented for `--badge-font-size`.
  */
 const layout = readFileSync(join(process.cwd(), "src/styles/badge-layout.css"), "utf8");
