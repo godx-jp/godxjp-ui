@@ -6,8 +6,13 @@ import { cn } from "../../lib/utils";
 import type { InputOTPAlignProp, InputOTPGroupProp } from "../../props/components/data-entry.prop";
 
 /**
- * InputOTP — the code-challenge field. `align` positions the whole row (groups + separators) on
- * the main axis: `start` (default, unchanged), `center` — the canonical auth challenge — or `end`.
+ * InputOTP — the code-challenge field.
+ *
+ * `align` positions the whole row (groups + separators) on the main axis: `start` (default,
+ * unchanged), `center` — the canonical auth challenge — or `end`. The attribute lands on the
+ * hidden input because `input-otp` owns the container element; `.ui-otp-container` reads it back
+ * through `:has()`, exactly as it already does for the invalid and disabled states. A service that
+ * wants every code field centred sets `--otp-container-align` once instead.
  */
 export const InputOTP = React.forwardRef<
   React.ComponentRef<typeof OTPInput>,

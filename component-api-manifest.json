@@ -121,6 +121,75 @@
       "group": "data-display",
       "props": []
     },
+    "AccountChip": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "actionLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "avatarFallback",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "avatarSrc",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "email",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "name",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "onAction",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
     "Activity": {
       "group": "general",
       "props": [
@@ -2692,16 +2761,6 @@
           "values": [false, true],
           "declaredIn": [
             "node_modules/.pnpm/@radix-ui+react-checkbox@1.3.11_@types+react-dom@19.2.5_@types+react@19.2.18__@types+re_6bdf7f7f62afedd7dcd0ba1bf73f5073/node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -6072,7 +6131,7 @@
           "origin": "owned",
           "required": false,
           "type": "FontWeightProp | undefined",
-          "values": ["medium", "regular", "bold"],
+          "values": ["medium", "regular", "semibold", "bold"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
@@ -6375,6 +6434,14 @@
           "required": false,
           "type": "(() => void) | undefined",
           "values": [],
+          "declaredIn": ["src/components/data-entry/input.tsx"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | undefined",
+          "values": ["sm", "md"],
           "declaredIn": ["src/components/data-entry/input.tsx"]
         },
         {
@@ -8401,6 +8468,14 @@
           "declaredIn": ["src/components/data-entry/input.tsx"]
         },
         {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | undefined",
+          "values": ["sm", "md"],
+          "declaredIn": ["src/components/data-entry/input.tsx"]
+        },
+        {
           "name": "trailingIcon",
           "origin": "owned",
           "required": false,
@@ -9432,11 +9507,27 @@
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/layout/responsive-grid.tsx"]
+        },
+        {
           "name": "columns",
           "origin": "owned",
           "required": false,
           "type": "ResponsiveGridColumnsProp | undefined",
           "values": [],
+          "declaredIn": ["src/components/layout/responsive-grid.tsx"]
+        },
+        {
+          "name": "gap",
+          "origin": "owned",
+          "required": false,
+          "type": "GapProp | undefined",
+          "values": ["xs", "sm", "md", "lg", "xl"],
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {
@@ -10123,6 +10214,14 @@
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlWidthProp | undefined",
+          "values": ["auto", "full"],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         }
       ]
     },
@@ -11953,7 +12052,7 @@
           "origin": "owned",
           "required": false,
           "type": "FontWeightProp | undefined",
-          "values": ["medium", "regular", "bold"],
+          "values": ["medium", "regular", "semibold", "bold"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
