@@ -1,0 +1,98 @@
+name: Toolchain (assert Node, pin pnpm, install, optionally Chromium)
+description: >-
+  The one preparation every job on the swarm-pool shares. Asserts the runner image's Node 22,
+  pins pnpm from package.json, installs the lockfile, and — when asked — proves Playwright's
+  Chromium is present and launches. Edit here, not in thirteen jobs.
+
+# WHY ASSERT INSTEAD OF INSTALL
+# The pool's runner image (`tempo-runner-php:noble`, shared with tempo, kintai and godx-chat)
+# has shipped Node 22 + npm + corepack at /usr/local/bin since 2026-09-05. Before that the
+# workflows ran `actions/setup-node` TWICE per job (once so the pnpm installer had a modern
+# Node, once for `cache: pnpm`), and on this fleet that cost 229–374s + 151–251s per job — run
+# 33972110874 — to download something that never changes between two runs. The pnpm store
+# cache it restored was the heavier half, and `pnpm install --frozen-lockfile` from the
+# registry is a handful of seconds here, so the cache went with it. No `actions/cache`
+# either: its version hashes the `path` string, and `${{ github.workspace }}` on this fleet
+# is `/_work/github-runner-<name>/…` — a different name per runner, so it never hits.
+#
+# `pnpm/action-setup` stays. It installs the version `packageManager` names in package.json
+# using the runner's own Node (`execPath`), so it never needed setup-node or corepack, and a
+# version drift fails loudly here instead of silently later. Measured 8–11s cold on this fleet.
+inputs:
+  chromium:
+    description: "'true' to also prepare Playwright's Chromium (browser files + a launch check)."
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Assert the image's Node toolchain
+      shell: bash
+      run: |
+        node --version | grep '^v22\.' >/dev/null \
+          || { echo "::error::the runner image must ship Node 22 — see .github/actions/setup/action.yml"; exit 1; }
+        npm --version
+        corepack --version
+
+    - uses: pnpm/action-setup@v6.0.9
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+    # THE BROWSER IS BAKED INTO THE RUNNER IMAGE. `/opt/ms-playwright` on `tempo-runner-php:noble`
+    # holds exactly the three builds playwright 1.62.1 (pnpm-lock.yaml) downloads — chromium-1234,
+    # chromium_headless_shell-1234, ffmpeg-1011 — with their INSTALLATION_COMPLETE markers, so
+    # `playwright install chromium` is check-and-exit. If the repo moves to another Playwright,
+    # it downloads the missing build into the same directory (the job runs as root, so it can
+    # write) — a stale image only makes this SLOWER, never WRONG.
+    #
+    # `--with-deps` is gone. It shells out to `apt-get update` on every run; on 2026-09-05 that
+    # pulled archive.ubuntu.com at 87 kB/s for six minutes and then failed with "Hash Sum
+    # mismatch" mid-mirror-sync, and even when it works it costs 459–614s per job here (run
+    # 33972110874). On a host without apt-get it dies at exit 127 before the browser is even
+    # downloaded — how these jobs sat red for weeks on the previous fleet. So the two concerns
+    # are split, and each is done only when needed:
+    #
+    #   1. Browser files — `playwright install chromium` never touches apt.
+    #   2. Shared libraries — LAUNCH Chromium. If it launches, nothing is missing and no network
+    #      is touched. Only if it does not, run `install-deps`, with retries because a mirror
+    #      mid-sync was the cause last time. `install-deps --dry-run` is not an offline check: it
+    #      runs `apt-get install -s`, which still needs the apt index, i.e. `apt-get update`.
+    #
+    # PLAYWRIGHT_BROWSERS_PATH is exported to the JOB, not just this step: the gates that launch
+    # the browser later must resolve the same directory, or they fail with "Executable doesn't
+    # exist". Not `~/.cache`: HOME on a shared runner is not CI's to own.
+    - name: Chromium for Playwright
+      if: inputs.chromium == 'true'
+      shell: bash
+      env:
+        PLAYWRIGHT_BROWSERS_PATH: /opt/ms-playwright
+      run: |
+        echo "PLAYWRIGHT_BROWSERS_PATH=$PLAYWRIGHT_BROWSERS_PATH" >> "$GITHUB_ENV"
+        pnpm exec playwright install chromium
+
+        launches() {
+          node -e 'require("playwright").chromium.launch().then(b => b.close())' >/dev/null 2>&1
+        }
+
+        if launches; then
+          echo "Chromium launches — the image has its shared libraries; apt not called."
+          exit 0
+        fi
+
+        if ! command -v apt-get >/dev/null 2>&1; then
+          echo "::error::Chromium does not launch and the host has no apt-get — the host must supply Chromium's shared libraries."
+          exit 1
+        fi
+
+        for attempt in 1 2 3; do
+          if pnpm exec playwright install-deps chromium; then
+            launches && { echo "Shared libraries installed; Chromium launches."; exit 0; }
+            echo "::error::install-deps succeeded but Chromium still does not launch — not a network error, not retrying."
+            exit 1
+          fi
+          echo "apt attempt $attempt failed — retrying in 20s"; sleep 20
+        done
+        echo "::error::Could not install Chromium's shared libraries after 3 attempts."
+        exit 1

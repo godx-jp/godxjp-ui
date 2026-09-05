@@ -12,13 +12,11 @@ name: CI · browser
 #   • visual         — check:contrast + check:visual-audit (the browser half of verify:static).
 #   • rendered-runtime — per-shard data-entry / layout runtime contracts.
 #
-# RUNNER — `[self-hosted, swarm-pool]`.
-#
-# The Chromium install DETECTS apt-get instead of assuming it. `--with-deps` shells out to
-# apt-get, so on a host that is not Debian/Ubuntu it dies at exit 127 BEFORE the browser is even
-# downloaded — which is exactly how these jobs sat red for weeks on the previous fleet. Where the
-# host is Debian-based the step installs libnspr4 / libnss3 / libasound2 itself; elsewhere it
-# downloads the browser only and the host must supply those libraries out of band.
+# RUNNER — `[self-hosted, swarm-pool]`, prepared by `.github/actions/setup` (one place for all
+# eight jobs). The runner image ships Node 22 and Playwright's Chromium at /opt/ms-playwright,
+# so the action ASSERTS the toolchain and LAUNCHES the browser instead of downloading either.
+# Before that, each of these jobs spent ~17 of its ~20 minutes re-downloading Node twice and
+# running `playwright install --with-deps` (run 33972110874); the gates themselves take 29–118s.
 #
 # Every gate here was run locally against an installed Chromium before this workflow was pointed
 # at the pool, so a red job here means the runner, not the code: check:contrast (11/11 routes),
@@ -48,30 +46,9 @@ jobs:
       PREVIEW_BASE: http://localhost:6008
     steps:
       - uses: actions/checkout@v6
-      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
-      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
-      - uses: actions/setup-node@v6
+      - uses: ./.github/actions/setup
         with:
-          node-version: 22
-      - uses: pnpm/action-setup@v6.0.9
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Install Chromium (with OS deps only where the host can take them)
-        run: |
-          # `--with-deps` shells out to apt-get. On a host that is not Debian/Ubuntu that dies at
-          # exit 127 BEFORE the browser is even downloaded — which is exactly how these jobs sat
-          # red for weeks. Detect instead of assume: on a Debian host this installs libnspr4 /
-          # libnss3 / libasound2 itself; elsewhere we download the browser and the host must
-          # provide those libraries out of band.
-          if command -v apt-get >/dev/null 2>&1; then
-            pnpm exec playwright install --with-deps chromium
-          else
-            echo "apt-get not present — installing the browser only; host must supply Chromium's shared libraries."
-            pnpm exec playwright install chromium
-          fi
+          chromium: "true"
       - run: pnpm preview:build
       - run: pnpm verify:browser
 
@@ -82,30 +59,9 @@ jobs:
       PREVIEW_BASE: http://localhost:6028
     steps:
       - uses: actions/checkout@v6
-      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
-      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
-      - uses: actions/setup-node@v6
+      - uses: ./.github/actions/setup
         with:
-          node-version: 22
-      - uses: pnpm/action-setup@v6.0.9
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Install Chromium (with OS deps only where the host can take them)
-        run: |
-          # `--with-deps` shells out to apt-get. On a host that is not Debian/Ubuntu that dies at
-          # exit 127 BEFORE the browser is even downloaded — which is exactly how these jobs sat
-          # red for weeks. Detect instead of assume: on a Debian host this installs libnspr4 /
-          # libnss3 / libasound2 itself; elsewhere we download the browser and the host must
-          # provide those libraries out of band.
-          if command -v apt-get >/dev/null 2>&1; then
-            pnpm exec playwright install --with-deps chromium
-          else
-            echo "apt-get not present — installing the browser only; host must supply Chromium's shared libraries."
-            pnpm exec playwright install chromium
-          fi
+          chromium: "true"
       - name: axe every frame (desktop + mobile-sm)
         run: pnpm check:frame-axe
       - uses: actions/upload-artifact@v7
@@ -122,30 +78,9 @@ jobs:
       PREVIEW_BASE: http://localhost:6038
     steps:
       - uses: actions/checkout@v6
-      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
-      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
-      - uses: actions/setup-node@v6
+      - uses: ./.github/actions/setup
         with:
-          node-version: 22
-      - uses: pnpm/action-setup@v6.0.9
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Install Chromium (with OS deps only where the host can take them)
-        run: |
-          # `--with-deps` shells out to apt-get. On a host that is not Debian/Ubuntu that dies at
-          # exit 127 BEFORE the browser is even downloaded — which is exactly how these jobs sat
-          # red for weeks. Detect instead of assume: on a Debian host this installs libnspr4 /
-          # libnss3 / libasound2 itself; elsewhere we download the browser and the host must
-          # provide those libraries out of band.
-          if command -v apt-get >/dev/null 2>&1; then
-            pnpm exec playwright install --with-deps chromium
-          else
-            echo "apt-get not present — installing the browser only; host must supply Chromium's shared libraries."
-            pnpm exec playwright install chromium
-          fi
+          chromium: "true"
       - name: geometry sweep (320→1920)
         run: pnpm check:frame-geometry
       - uses: actions/upload-artifact@v7
@@ -189,30 +124,9 @@ jobs:
             command: pnpm check:layout-nav-closure && pnpm check:final-touch-rtl
     steps:
       - uses: actions/checkout@v6
-      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
-      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
-      - uses: actions/setup-node@v6
+      - uses: ./.github/actions/setup
         with:
-          node-version: 22
-      - uses: pnpm/action-setup@v6.0.9
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Install Chromium (with OS deps only where the host can take them)
-        run: |
-          # `--with-deps` shells out to apt-get. On a host that is not Debian/Ubuntu that dies at
-          # exit 127 BEFORE the browser is even downloaded — which is exactly how these jobs sat
-          # red for weeks. Detect instead of assume: on a Debian host this installs libnspr4 /
-          # libnss3 / libasound2 itself; elsewhere we download the browser and the host must
-          # provide those libraries out of band.
-          if command -v apt-get >/dev/null 2>&1; then
-            pnpm exec playwright install --with-deps chromium
-          else
-            echo "apt-get not present — installing the browser only; host must supply Chromium's shared libraries."
-            pnpm exec playwright install chromium
-          fi
+          chromium: "true"
       # No `preview:build` step: `frame-harness.ensurePreviewServer`, which these gates now use,
       # builds and serves the preview itself — the same way frame-axe / frame-geometry / contrast
       # have always done it. Building here too would just build twice.

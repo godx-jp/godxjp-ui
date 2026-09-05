@@ -11,12 +11,9 @@ name: CI · code
 # The files were always separate; only an earlier comment here pointed at a `cd.yml` that does
 # not exist, which made the split look absent when it was merely mis-named.
 #
-# RUNNER — `[self-hosted, swarm-pool]`. Two things this pool must provide, both learned the hard
-# way from the previous fleet: a modern Node (the pnpm self-installer refuses to run on 18, so
-# Node is bootstrapped BEFORE pnpm/action-setup), and, for ci-browser.yml, Chromium's shared
-# libraries (libnspr4, libnss3, libasound2) unless the host is Debian-based — that workflow now
-# detects apt-get rather than assuming it, because assuming it is what made those jobs die at
-# exit 127 before the browser was even downloaded.
+# RUNNER — `[self-hosted, swarm-pool]`. Its image ships Node 22 and Playwright's Chromium, and
+# `.github/actions/setup` asserts both rather than installing them — every job in every
+# workflow here prepares itself through that one action, so the toolchain story lives there.
 #
 # WHY THIS IS TWO JOBS AND THE SUITE IS SHARDED
 # `verify:ci` was one serial chain: build, then 28 guards, then the whole vitest suite. On a
@@ -44,17 +41,7 @@ jobs:
     runs-on: [self-hosted, swarm-pool]
     steps:
       - uses: actions/checkout@v6
-      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
-      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: pnpm/action-setup@v6.0.9
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/setup
       # verify:ci:static == verify:ci minus `pnpm test`, and verify:ci itself is verify:static
       # minus check:contrast / check:visual-audit — the only two gates that need Chromium, which
       # run in ci-browser.yml.
@@ -90,17 +77,7 @@ jobs:
         shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v6
-      # Self-hosted images often default to Node 18, and the pnpm self-installer (npm 11) refuses
-      # to run on it — so Node is bootstrapped BEFORE pnpm/action-setup, not after.
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: pnpm/action-setup@v6.0.9
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/setup
       # No build step: the suite imports from `src`, not from `dist`. The `static` job owns the
       # build and every gate that reads the shipped artifact.
       - run: pnpm test -- --shard=${{ matrix.shard }}/4
