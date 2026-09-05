@@ -48,10 +48,28 @@ console.log("copied CSS trees + i18n messages -> dist");
 
 // dist CSS ships without comments (`/*!` license blocks are kept).
 function stripCssComments(css) {
-  return css
-    .replace(/\/\*(?!!)[\s\S]*?\*\//g, "")
-    .replace(/[ \t]+$/gm, "")
-    .replace(/\n{3,}/g, "\n\n");
+  // Quoted strings (an `@source "../**/*.tsx"` glob, a url()) can contain `/*`; they are not
+  // comments. Walk the text once: copy strings verbatim, drop `/* … */` (keep `/*!`).
+  let out = "";
+  let i = 0;
+  while (i < css.length) {
+    const c = css[i];
+    if (c === '"' || c === "'") {
+      let j = i + 1;
+      while (j < css.length && css[j] !== c) j += css[j] === "\\" ? 2 : 1;
+      out += css.slice(i, j + 1);
+      i = j + 1;
+      continue;
+    }
+    if (c === "/" && css[i + 1] === "*" && css[i + 2] !== "!") {
+      const end = css.indexOf("*/", i + 2);
+      i = end < 0 ? css.length : end + 2;
+      continue;
+    }
+    out += c;
+    i += 1;
+  }
+  return out.replace(/[ \t]+$/gm, "").replace(/\n{3,}/g, "\n\n");
 }
 function walk(dir) {
   for (const name of readdirSync(dir)) {

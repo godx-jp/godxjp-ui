@@ -97,7 +97,7 @@
  * this file is copied verbatim into dist/styles — without it Tailwind finds no component classes
  * in consumers (unstyled popovers and selects, and Radix scroll-lock freezes the page because
  * pointer-events-auto is never emitted). */
-@source "..*.{tsx,ts,js}";
+@source "../**/*.{tsx,ts,js}";
 @import "../tokens/base.css";
 /* The focus ring is FOUNDATION, not a component layer: every focusable control in every layer
  * reads the same four tokens from ONE rule (styles/focus-ring.css). */
