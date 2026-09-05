@@ -182,39 +182,41 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveGrid columns={{ sm: 1, md: 3 }}>
-              {[
-                { label: "Inline <svg>", markup: EMAIL_BRAND_MARK.svg },
-                {
-                  // Prose label, not markup: it names the email delivery form. The real delivery
-                  // on the next line is a self-contained data: URI (email clients block remote
-                  // images) and it does carry alt="GoDX".
-                  // ui-audit-disable-next-line img-needs-alt
-                  label: "data: URL in <img>",
-                  markup: `<img src="${EMAIL_BRAND_MARK.dataUri}" width="${EMAIL_BRAND_MARK.widthPx}" height="${EMAIL_BRAND_MARK.heightPx}" alt="GoDX">`,
-                },
-                // Prose label, not markup: a raw <table> is the only brand-mark fallback that
-                // renders in email clients without SVG support, so the label names it literally.
-                // ui-audit-disable-next-line no-raw-table
-                { label: "<table> fallback", markup: EMAIL_BRAND_MARK.tableHtml },
-              ].map((item) => (
-                <Flex key={item.label} direction="col" gap="sm">
-                  <div
-                    // eslint-disable-next-line react/no-danger
-                    dangerouslySetInnerHTML={{ __html: item.markup }}
-                  />
-                  <Text size="sm" tone="muted">
-                    {item.label}
-                  </Text>
-                </Flex>
-              ))}
-            </ResponsiveGrid>
-            <Flex direction="col" gap="xs" className="mt-4">
-              <Text size="sm" tone="muted">
-                viewBox {EMAIL_BRAND_MARK.viewBox} · {EMAIL_BRAND_MARK.width}×
-                {EMAIL_BRAND_MARK.height} · capsule {EMAIL_COLORS.brand} · glyph{" "}
-                {EMAIL_COLORS.brandForeground}
-              </Text>
+            <Flex direction="col" gap="md">
+              <ResponsiveGrid columns={{ sm: 1, md: 3 }}>
+                {[
+                  { label: "Inline <svg>", markup: EMAIL_BRAND_MARK.svg },
+                  {
+                    // Prose label, not markup: it names the email delivery form. The real delivery
+                    // on the next line is a self-contained data: URI (email clients block remote
+                    // images) and it does carry alt="GoDX".
+                    // ui-audit-disable-next-line img-needs-alt
+                    label: "data: URL in <img>",
+                    markup: `<img src="${EMAIL_BRAND_MARK.dataUri}" width="${EMAIL_BRAND_MARK.widthPx}" height="${EMAIL_BRAND_MARK.heightPx}" alt="GoDX">`,
+                  },
+                  // Prose label, not markup: a raw <table> is the only brand-mark fallback that
+                  // renders in email clients without SVG support, so the label names it literally.
+                  // ui-audit-disable-next-line no-raw-table
+                  { label: "<table> fallback", markup: EMAIL_BRAND_MARK.tableHtml },
+                ].map((item) => (
+                  <Flex key={item.label} direction="col" gap="sm">
+                    <div
+                      // eslint-disable-next-line react/no-danger
+                      dangerouslySetInnerHTML={{ __html: item.markup }}
+                    />
+                    <Text size="sm" tone="muted">
+                      {item.label}
+                    </Text>
+                  </Flex>
+                ))}
+              </ResponsiveGrid>
+              <Flex direction="col" gap="xs">
+                <Text size="sm" tone="muted">
+                  viewBox {EMAIL_BRAND_MARK.viewBox} · {EMAIL_BRAND_MARK.width}×
+                  {EMAIL_BRAND_MARK.height} · capsule {EMAIL_COLORS.brand} · glyph{" "}
+                  {EMAIL_COLORS.brandForeground}
+                </Text>
+              </Flex>
             </Flex>
           </CardContent>
         </Card>
@@ -271,33 +273,35 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="xs" className="mb-4">
-              {fontStacks.map((stack) => (
-                <Flex key={stack.label} direction="col" gap="xs">
-                  <Badge tone="neutral" variant="outline">
-                    {stack.label}
-                  </Badge>
-                  <Text size="sm" tone="muted">
-                    {stack.value}
-                  </Text>
-                </Flex>
-              ))}
+            <Flex direction="col" gap="md">
+              <Flex direction="col" gap="xs">
+                {fontStacks.map((stack) => (
+                  <Flex key={stack.label} direction="col" gap="xs">
+                    <Badge tone="neutral" variant="outline">
+                      {stack.label}
+                    </Badge>
+                    <Text size="sm" tone="muted">
+                      {stack.value}
+                    </Text>
+                  </Flex>
+                ))}
+              </Flex>
+              <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
+                {geometryGroups.map((group) => (
+                  <Flex key={group.title} direction="col" gap="xs">
+                    <Text weight="medium">{group.title}</Text>
+                    {group.rows.map(([label, value]) => (
+                      <Flex key={label} justify="between" gap="sm">
+                        <Text size="sm" tone="muted">
+                          {label}
+                        </Text>
+                        <Text size="sm">{value}</Text>
+                      </Flex>
+                    ))}
+                  </Flex>
+                ))}
+              </ResponsiveGrid>
             </Flex>
-            <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
-              {geometryGroups.map((group) => (
-                <Flex key={group.title} direction="col" gap="xs">
-                  <Text weight="medium">{group.title}</Text>
-                  {group.rows.map(([label, value]) => (
-                    <Flex key={label} justify="between" gap="sm">
-                      <Text size="sm" tone="muted">
-                        {label}
-                      </Text>
-                      <Text size="sm">{value}</Text>
-                    </Flex>
-                  ))}
-                </Flex>
-              ))}
-            </ResponsiveGrid>
           </CardContent>
         </Card>
       </Flex>

@@ -262,18 +262,18 @@ export default function Demo() {
                 placeholder="担当者を選択"
                 options={people}
                 renderOption={(option) => (
-                  <div className="flex w-full items-center gap-2">
+                  <Flex align="center" gap="sm" className="w-full">
                     {avatarFor(option.label)}
-                    <div className="flex min-w-0 flex-col">
+                    <Flex direction="col" gap="xs" className="min-w-0">
                       <span className="truncate text-sm font-medium">{option.label}</span>
                       <span className="text-muted-foreground truncate text-xs">
                         {option.sublabel}
                       </span>
-                    </div>
+                    </Flex>
                     <Badge tone="success" className="ms-auto">
                       VIP
                     </Badge>
-                  </div>
+                  </Flex>
                 )}
               />
             </FormField>

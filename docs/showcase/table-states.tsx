@@ -29,12 +29,13 @@ import { Button, Heading, Text } from "@godxjp/ui/general";
 import {
   Badge,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
-  type ColumnDef,
   DataTable,
   EmptyState,
+  type ColumnDef,
 } from "@godxjp/ui/data-display";
 import {
   Alert,
@@ -197,11 +198,13 @@ function TableShell({
 }) {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader>
         <CardTitle level={2}>本日の打刻</CardTitle>
-        <Text size="xs" tone="muted">
-          {caption}
-        </Text>
+        <CardAction>
+          <Text size="xs" tone="muted">
+            {caption}
+          </Text>
+        </CardAction>
       </CardHeader>
       <CardContent flush>{children}</CardContent>
     </Card>

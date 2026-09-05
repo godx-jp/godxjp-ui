@@ -31,16 +31,17 @@ import {
   Avatar,
   AvatarFallback,
   Badge,
-  type BadgeProps,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
-  type ColumnDef,
   DataTable,
   Descriptions,
   EmptyState,
   Timeline,
+  type BadgeProps,
+  type ColumnDef,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
 import {
@@ -369,11 +370,13 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         {/* ── Resizable master/detail split (Gmail-style) ── */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader>
             <CardTitle level={2}>本日の出勤状況</CardTitle>
-            <Text size="xs" tone="muted" tabular>
-              2026-06-04 · {EMPLOYEES.length}名
-            </Text>
+            <CardAction>
+              <Text size="xs" tone="muted" tabular>
+                2026-06-04 · {EMPLOYEES.length}名
+              </Text>
+            </CardAction>
           </CardHeader>
           <CardContent flush>
             <ResizablePanelGroup orientation="horizontal" className="min-h-[460px]">
@@ -452,11 +455,13 @@ export default function Demo() {
 
         {/* ── Narrow fallback: stacked list + detail (no side room) ── */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader>
             <CardTitle level={2}>狭幅レイアウト（縦積み）</CardTitle>
-            <Text size="xs" tone="muted">
-              サイドペインが取れない幅では一覧の下に詳細を重ねます
-            </Text>
+            <CardAction>
+              <Text size="xs" tone="muted">
+                サイドペインが取れない幅では一覧の下に詳細を重ねます
+              </Text>
+            </CardAction>
           </CardHeader>
           <CardContent flush>
             <DataTable

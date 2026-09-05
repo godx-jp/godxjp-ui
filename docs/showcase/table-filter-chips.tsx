@@ -435,7 +435,7 @@ export default function Demo() {
               <Text size="xs" tone="muted">
                 フィルター条件を解除すると全件を表示します
               </Text>
-              <Button variant="outline" size="sm" className="mt-1" onClick={clearAll}>
+              <Button variant="outline" size="sm" onClick={clearAll}>
                 フィルターを解除
               </Button>
             </Flex>

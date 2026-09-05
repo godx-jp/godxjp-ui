@@ -352,38 +352,40 @@ export default function Demo() {
           {/* ── 4-column filter bar ───────────────────────────────────────── */}
           <Card className="self-start">
             <CardContent>
-              <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
-                <FormField id="f-type" label="区分">
-                  <Select
-                    options={TYPE_OPTIONS}
-                    value={type}
-                    onValueChange={setType}
-                    placeholder="すべて"
-                  />
-                </FormField>
-                <FormField id="f-status" label="状態">
-                  <Select
-                    options={STATUS_OPTIONS}
-                    value={status}
-                    onValueChange={setStatus}
-                    placeholder="すべて"
-                  />
-                </FormField>
-                <FormField id="f-from" label="期間 (開始)">
-                  <DatePicker value={from} onValueChange={setFrom} placeholder="YYYY-MM-DD" />
-                </FormField>
-                <FormField id="f-to" label="期間 (終了)">
-                  <DatePicker value={to} onValueChange={setTo} placeholder="YYYY-MM-DD" />
-                </FormField>
-              </ResponsiveGrid>
-              {hasActiveFilters && (
-                <Flex direction="row" justify="end" className="mt-3">
-                  <Button variant="ghost" size="sm" onClick={clearFilters}>
-                    <X aria-hidden="true" />
-                    条件をクリア
-                  </Button>
-                </Flex>
-              )}
+              <Flex direction="col" gap="md">
+                <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
+                  <FormField id="f-type" label="区分">
+                    <Select
+                      options={TYPE_OPTIONS}
+                      value={type}
+                      onValueChange={setType}
+                      placeholder="すべて"
+                    />
+                  </FormField>
+                  <FormField id="f-status" label="状態">
+                    <Select
+                      options={STATUS_OPTIONS}
+                      value={status}
+                      onValueChange={setStatus}
+                      placeholder="すべて"
+                    />
+                  </FormField>
+                  <FormField id="f-from" label="期間 (開始)">
+                    <DatePicker value={from} onValueChange={setFrom} placeholder="YYYY-MM-DD" />
+                  </FormField>
+                  <FormField id="f-to" label="期間 (終了)">
+                    <DatePicker value={to} onValueChange={setTo} placeholder="YYYY-MM-DD" />
+                  </FormField>
+                </ResponsiveGrid>
+                {hasActiveFilters && (
+                  <Flex direction="row" justify="end">
+                    <Button variant="ghost" size="sm" onClick={clearFilters}>
+                      <X aria-hidden="true" />
+                      条件をクリア
+                    </Button>
+                  </Flex>
+                )}
+              </Flex>
             </CardContent>
           </Card>
 

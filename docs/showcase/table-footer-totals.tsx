@@ -28,6 +28,7 @@ import * as React from "react";
 import {
   Badge,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -199,11 +200,13 @@ export default function Demo() {
       density="compact"
     >
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader>
           <CardTitle level={2}>従業員別 月次集計</CardTitle>
-          <Text size="xs" tone="muted" tabular>
-            対象 {ROWS.length} 名
-          </Text>
+          <CardAction>
+            <Text size="xs" tone="muted" tabular>
+              対象 {ROWS.length} 名
+            </Text>
+          </CardAction>
         </CardHeader>
         {/* flush so the table meets the card edge; vertical scroll inside the
             card with header pinned top and totals pinned bottom. */}

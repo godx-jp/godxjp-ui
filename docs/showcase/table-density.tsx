@@ -25,12 +25,13 @@ import { Clock } from "lucide-react";
 
 import {
   Badge,
-  type BadgeProps,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
   DataTable,
+  type BadgeProps,
   type ColumnDef,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
@@ -233,44 +234,46 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         {/* Control + live readout */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between gap-4">
+          <CardHeader>
             <CardTitle level={2}>行密度</CardTitle>
-            <Flex direction="row" align="center" gap="md">
-              <Text as="span" size="xs" tone="muted" className="inline-flex items-center gap-1.5">
-                <Clock className="size-3.5" aria-hidden="true" />
-                行高
-                <Text as="strong" weight="medium" tabular>
-                  {meta.px}px
+            <CardAction>
+              <Flex direction="row" align="center" gap="md">
+                <Text as="span" size="xs" tone="muted" className="inline-flex items-center gap-1.5">
+                  <Clock className="size-3.5" aria-hidden="true" />
+                  行高
+                  <Text as="strong" weight="medium" tabular>
+                    {meta.px}px
+                  </Text>
+                  <span aria-hidden="true">·</span>
+                  {meta.note}
                 </Text>
-                <span aria-hidden="true">·</span>
-                {meta.note}
-              </Text>
-              <ToggleGroup
-                type="single"
-                value={density}
-                onValueChange={(v) => {
-                  if (v) setDensity(v as DensityKey);
-                }}
-                variant="outline"
-                size="sm"
-                aria-label="行密度を切り替え"
-              >
-                {DENSITY_ORDER.map((key) => (
-                  <ToggleGroupItem
-                    key={key}
-                    value={key}
-                    aria-label={`${DENSITY_META[key].label} ${DENSITY_META[key].px}px`}
-                  >
-                    <Flex direction="row" align="center" gap="xs">
-                      <span>{DENSITY_META[key].label}</span>
-                      <Text size="2xs" tone="muted" tabular>
-                        {DENSITY_META[key].px}
-                      </Text>
-                    </Flex>
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-            </Flex>
+                <ToggleGroup
+                  type="single"
+                  value={density}
+                  onValueChange={(v) => {
+                    if (v) setDensity(v as DensityKey);
+                  }}
+                  variant="outline"
+                  size="sm"
+                  aria-label="行密度を切り替え"
+                >
+                  {DENSITY_ORDER.map((key) => (
+                    <ToggleGroupItem
+                      key={key}
+                      value={key}
+                      aria-label={`${DENSITY_META[key].label} ${DENSITY_META[key].px}px`}
+                    >
+                      <Flex direction="row" align="center" gap="xs">
+                        <span>{DENSITY_META[key].label}</span>
+                        <Text size="2xs" tone="muted" tabular>
+                          {DENSITY_META[key].px}
+                        </Text>
+                      </Flex>
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </Flex>
+            </CardAction>
           </CardHeader>
           <CardContent flush>
             {/* The SAME DataTable. Only the density class changes — same columns,
@@ -314,11 +317,13 @@ export default function Demo() {
               const m = DENSITY_META[key];
               return (
                 <Card key={key}>
-                  <CardHeader className="flex flex-row items-center justify-between">
+                  <CardHeader>
                     <CardTitle level={2}>{m.label}</CardTitle>
-                    <Text size="xs" tone="muted" tabular>
-                      行高 {m.px}px · {m.note}
-                    </Text>
+                    <CardAction>
+                      <Text size="xs" tone="muted" tabular>
+                        行高 {m.px}px · {m.note}
+                      </Text>
+                    </CardAction>
                   </CardHeader>
                   <CardContent flush>
                     <DataTable

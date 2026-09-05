@@ -34,6 +34,7 @@ import { Check, Minus } from "lucide-react";
 import {
   Badge,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -217,11 +218,13 @@ export default function Demo() {
 
         {/* ── マトリクス本体 ── */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader>
             <CardTitle level={2}>ロール × 権限</CardTitle>
-            <Text size="xs" tone="muted" tabular>
-              権限 {rows.length} / {PERMISSIONS.length} 件 · ロール {ROLES.length}
-            </Text>
+            <CardAction>
+              <Text size="xs" tone="muted" tabular>
+                権限 {rows.length} / {PERMISSIONS.length} 件 · ロール {ROLES.length}
+              </Text>
+            </CardAction>
           </CardHeader>
           <CardContent flush>
             <div className="overflow-x-auto">

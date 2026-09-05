@@ -22,8 +22,8 @@ import { Check } from "lucide-react";
 import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
-  type BadgeProps,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -33,6 +33,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  type BadgeProps,
 } from "@godxjp/ui/data-display";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -221,11 +222,13 @@ export default function Demo() {
     >
       <Flex direction="col" gap="lg">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader>
             <CardTitle level={2}>2026年6月 第1週</CardTitle>
-            <Text size="xs" tone="muted" tabular>
-              従業員 {EMPLOYEES.length} 名 · 横スクロールで全日表示
-            </Text>
+            <CardAction>
+              <Text size="xs" tone="muted" tabular>
+                従業員 {EMPLOYEES.length} 名 · 横スクロールで全日表示
+              </Text>
+            </CardAction>
           </CardHeader>
           <CardContent flush>
             {/* The scroll container. `overflow-x-auto` clips; the table holds a

@@ -102,14 +102,14 @@ function SwatchGroup({ items, text, dark }: { items: Swatch[]; text?: boolean; d
   if (!dark) return grid;
   return (
     <Flex direction="col" gap="md">
-      <div>
-        <Text as="div" size="xs" tone="muted" weight="medium" className="mb-2">
+      <Flex direction="col" gap="sm">
+        <Text as="div" size="xs" tone="muted" weight="medium">
           Light
         </Text>
         {grid}
-      </div>
-      <div className="bg-background text-foreground dark rounded-md p-3">
-        <Text as="div" size="xs" tone="muted" weight="medium" className="mb-2">
+      </Flex>
+      <Flex direction="col" gap="sm" className="bg-background text-foreground dark rounded-md p-3">
+        <Text as="div" size="xs" tone="muted" weight="medium">
           Dark (.dark)
         </Text>
         <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 4 }}>
@@ -117,7 +117,7 @@ function SwatchGroup({ items, text, dark }: { items: Swatch[]; text?: boolean; d
             <SwatchTile key={s.token} swatch={s} text={text} />
           ))}
         </ResponsiveGrid>
-      </div>
+      </Flex>
     </Flex>
   );
 }

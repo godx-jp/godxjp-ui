@@ -26,6 +26,7 @@ import * as React from "react";
 import {
   Badge,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -145,11 +146,13 @@ function NumberedPaginationCard() {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader>
         <CardTitle level={2}>番号付き + 件数選択</CardTitle>
-        <Text size="xs" tone="muted" tabular>
-          全 {NUMBERED_DATA.length} 件
-        </Text>
+        <CardAction>
+          <Text size="xs" tone="muted" tabular>
+            全 {NUMBERED_DATA.length} 件
+          </Text>
+        </CardAction>
       </CardHeader>
       <CardContent flush>
         <DataTable data={rows} columns={columns} getRowId={(row) => row.id} density="compact" />
@@ -198,11 +201,13 @@ function LoadMoreCard() {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader>
         <CardTitle level={2}>もっと読む</CardTitle>
-        <Text size="xs" tone="muted" tabular>
-          {rows.length} / {LOADMORE_DATA.length} 件表示
-        </Text>
+        <CardAction>
+          <Text size="xs" tone="muted" tabular>
+            {rows.length} / {LOADMORE_DATA.length} 件表示
+          </Text>
+        </CardAction>
       </CardHeader>
       <CardContent flush>
         <DataTable data={rows} columns={columns} getRowId={(row) => row.id} density="compact" />
@@ -263,26 +268,28 @@ function CursorPeriodCard() {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between gap-3">
+      <CardHeader>
         <CardTitle level={2}>カーソル / 期間ジャンプ</CardTitle>
-        <Select
-          value={period}
-          onValueChange={(v: string) => {
-            setPeriod(v);
-            setCursor(undefined); // jumping period resets the cursor to the first page
-          }}
-        >
-          <SelectTrigger size="sm" aria-label="期間を選択" className="w-36">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {PERIODS.map((p) => (
-              <SelectItem key={p.value} value={p.value}>
-                {p.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <CardAction>
+          <Select
+            value={period}
+            onValueChange={(v: string) => {
+              setPeriod(v);
+              setCursor(undefined); // jumping period resets the cursor to the first page
+            }}
+          >
+            <SelectTrigger size="sm" aria-label="期間を選択" className="w-36">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PERIODS.map((p) => (
+                <SelectItem key={p.value} value={p.value}>
+                  {p.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </CardAction>
       </CardHeader>
       <CardContent flush>
         <DataTable data={rows} columns={columns} getRowId={(row) => row.id} density="compact" />

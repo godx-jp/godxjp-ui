@@ -19,6 +19,7 @@ import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -359,11 +360,13 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         {/* 全展開（既定）— 各グループの小計と明細が同時に見える */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader>
             <CardTitle level={2}>2026年5月度 勤怠集計</CardTitle>
-            <Text size="xs" tone="muted" tabular>
-              締め: 2026-05-31
-            </Text>
+            <CardAction>
+              <Text size="xs" tone="muted" tabular>
+                締め: 2026-05-31
+              </Text>
+            </CardAction>
           </CardHeader>
           <CardContent flush>
             <GroupedTable groups={GROUPS} />
@@ -372,11 +375,13 @@ export default function Demo() {
 
         {/* 折りたたみ済みの状態を静的に提示 — 「カスタマーサポート部」は閉じて小計のみ表示 */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader>
             <CardTitle level={2}>折りたたみ状態</CardTitle>
-            <Text size="xs" tone="muted">
-              閉じたグループは小計のみ表示（クリックで展開）
-            </Text>
+            <CardAction>
+              <Text size="xs" tone="muted">
+                閉じたグループは小計のみ表示（クリックで展開）
+              </Text>
+            </CardAction>
           </CardHeader>
           <CardContent flush>
             <GroupedTable groups={GROUPS} defaultClosed={["support"]} />

@@ -247,13 +247,15 @@ function Bento() {
           {cells.map((c) => (
             <Card key={c.title} className={`fl-cell ${c.span ?? ""}`}>
               <CardContent>
-                <Medallion icon={c.icon} />
-                <Text as="div" weight="bold" size="lg" className="mt-5">
-                  {c.title}
-                </Text>
-                <Text as="p" size="sm" tone="muted" className="mt-2">
-                  {c.text}
-                </Text>
+                <Flex direction="col" gap="lg">
+                  <Medallion icon={c.icon} />
+                  <Text as="div" weight="bold" size="lg">
+                    {c.title}
+                  </Text>
+                  <Text as="p" size="sm" tone="muted">
+                    {c.text}
+                  </Text>
+                </Flex>
               </CardContent>
             </Card>
           ))}
@@ -275,12 +277,12 @@ function Stats() {
       <div className={SHELL}>
         <div className="fl-stats">
           {stats.map(([n, l]) => (
-            <div key={l} className="text-center">
+            <Flex key={l} direction="col" gap="sm" className="text-center">
               <div className="fl-stat-num">{n}</div>
-              <Text as="div" size="sm" tone="muted" className="mt-2">
+              <Text as="div" size="sm" tone="muted">
                 {l}
               </Text>
-            </div>
+            </Flex>
           ))}
         </div>
       </div>
@@ -294,20 +296,20 @@ function Cta() {
       <div className={SHELL}>
         <div className="fl-cta">
           <div className="fl-cta-glow" />
-          <div className="fl-cta-inner">
+          <Flex direction="col" gap="xl" className="fl-cta-inner">
             <h2 className="fl-h2">Cùng xây điều mới?</h2>
-            <p className="fl-lead mx-auto mt-3">
+            <p className="fl-lead mx-auto">
               Chúng tôi tìm đối tác, nhân tài và cơ hội M&amp;A trong công nghệ, logistics và
               F&amp;B tại Nhật Bản &amp; Việt Nam.
             </p>
-            <Flex direction="row" gap="md" className="mt-7 justify-center">
+            <Flex direction="row" gap="md" className="justify-center">
               <Button size="lg">Đặt lịch trao đổi</Button>
               <Button variant="ghost" size="lg">
                 Đọc blog
                 <ArrowRight aria-hidden="true" />
               </Button>
             </Flex>
-          </div>
+          </Flex>
         </div>
       </div>
     </section>
@@ -323,26 +325,26 @@ function Footer() {
   return (
     <footer className="fl-footer">
       <div className={`${SHELL} fl-footer-grid`}>
-        <div>
+        <Flex direction="col" gap="md">
           <span className="fl-brand">
             futur<span className="fl-gold">elastic</span>
           </span>
-          <Text as="p" size="sm" tone="muted" className="fl-footer-tagline mt-4">
+          <Text as="p" size="sm" tone="muted" className="fl-footer-tagline">
             Tech · AI · Holdings · building the elastic infrastructure of the future across Japan
             &amp; Vietnam.
           </Text>
-        </div>
+        </Flex>
         {cols.map(([h, items]) => (
-          <div key={h}>
+          <Flex direction="col" gap="md" key={h}>
             <Text
               as="div"
               size="2xs"
               weight="bold"
-              className="text-foreground mb-3 tracking-widest uppercase"
+              className="text-foreground tracking-widest uppercase"
             >
               {h}
             </Text>
-            <Flex direction="col" gap="xs" className="mt-2">
+            <Flex direction="col" gap="xs">
               {items.map((i) => (
                 <Button
                   key={i}
@@ -354,7 +356,7 @@ function Footer() {
                 </Button>
               ))}
             </Flex>
-          </div>
+          </Flex>
         ))}
       </div>
       <div className={`${SHELL} fl-footer-bottom`}>

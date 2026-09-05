@@ -188,7 +188,7 @@ export default function Demo() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Flex direction="col" gap="sm">
+                  <Flex direction="col" gap="xs">
                     <Flex direction="row" justify="between">
                       <Text tone="muted">小計</Text>
                       <Text tabular>{selected.amount}</Text>
@@ -197,7 +197,7 @@ export default function Demo() {
                       <Text tone="muted">消費税 (10%)</Text>
                       <Text tabular>{yen(base * 0.1)}</Text>
                     </Flex>
-                    <div className="border-border mt-1 border-t pt-2">
+                    <div className="border-border border-t pt-2">
                       <Flex direction="row" justify="between">
                         <Text weight="bold">合計</Text>
                         <Text weight="bold" tabular>

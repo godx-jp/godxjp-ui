@@ -139,10 +139,10 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>The record&rsquo;s own colour</CardTitle>
             <CardDescription>
-              color carries DATA: a status an administrator coloured, an issue type, a tag. The
-              chip is washed into the surface rather than filled, because a solid chip has to choose
-              a foreground and no choice is readable for every colour a picker can produce. Retune
-              the wash with --badge-tint-fill / --badge-tint-edge.
+              color carries DATA: a status an administrator coloured, an issue type, a tag. The chip
+              is washed into the surface rather than filled, because a solid chip has to choose a
+              foreground and no choice is readable for every colour a picker can produce. Retune the
+              wash with --badge-tint-fill / --badge-tint-edge.
             </CardDescription>
           </CardHeader>
           <CardContent>

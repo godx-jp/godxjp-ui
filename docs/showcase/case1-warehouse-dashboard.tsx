@@ -38,8 +38,8 @@ import {
 import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
-  type BadgeProps,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -52,6 +52,7 @@ import {
   TableHeader,
   TableRow,
   Timeline,
+  type BadgeProps,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
 
@@ -228,29 +229,38 @@ export default function WarehouseDashboardShowcase() {
           {/* Queue + Activity */}
           <ResponsiveGrid columns={{ sm: 1, md: 1, lg: 2 }}>
             <Card className="self-start">
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader>
                 <CardTitle level={2}>Cần xử lý</CardTitle>
-                <Text size="xs" tone="muted">
-                  {QUEUE.length} hàng đợi
-                </Text>
+                <CardAction>
+                  <Text size="xs" tone="muted">
+                    {QUEUE.length} hàng đợi
+                  </Text>
+                </CardAction>
               </CardHeader>
               <CardContent flush>
                 <ul className="divide-border divide-y">
                   {QUEUE.map((q) => {
                     return (
-                      <li key={q.title} className="flex items-center gap-3 px-4 py-3">
-                        <Badge tone={q.tone} variant="outline" icon={q.icon} aria-label={q.title} />
-                        <div className="min-w-0 flex-1">
-                          <Text as="div" size="sm" weight="medium" truncate>
-                            {q.title}
-                          </Text>
-                          <Text as="div" size="2xs" tone="muted" truncate>
-                            {q.meta}
-                          </Text>
-                        </div>
-                        <Button variant="outline" size="sm">
-                          {q.action}
-                        </Button>
+                      <li key={q.title} className="px-4 py-3">
+                        <Flex align="center" gap="md">
+                          <Badge
+                            tone={q.tone}
+                            variant="outline"
+                            icon={q.icon}
+                            aria-label={q.title}
+                          />
+                          <div className="min-w-0 flex-1">
+                            <Text as="div" size="sm" weight="medium" truncate>
+                              {q.title}
+                            </Text>
+                            <Text as="div" size="2xs" tone="muted" truncate>
+                              {q.meta}
+                            </Text>
+                          </div>
+                          <Button variant="outline" size="sm">
+                            {q.action}
+                          </Button>
+                        </Flex>
                       </li>
                     );
                   })}
@@ -259,11 +269,13 @@ export default function WarehouseDashboardShowcase() {
             </Card>
 
             <Card className="self-start">
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader>
                 <CardTitle level={2}>Hoạt động gần đây</CardTitle>
-                <Text size="xs" tone="muted">
-                  24h qua
-                </Text>
+                <CardAction>
+                  <Text size="xs" tone="muted">
+                    24h qua
+                  </Text>
+                </CardAction>
               </CardHeader>
               <CardContent>
                 <Timeline items={ACTIVITY} />
@@ -274,11 +286,13 @@ export default function WarehouseDashboardShowcase() {
           {/* Capacity + Recent shipments */}
           <ResponsiveGrid columns={{ sm: 1, md: 1, lg: 2 }}>
             <Card className="self-start">
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader>
                 <CardTitle level={2}>Dung lượng giá hàng</CardTitle>
-                <Button variant="ghost" size="sm">
-                  Xem tất cả
-                </Button>
+                <CardAction>
+                  <Button variant="ghost" size="sm">
+                    Xem tất cả
+                  </Button>
+                </CardAction>
               </CardHeader>
               <CardContent>
                 <Flex direction="col" gap="md">
@@ -298,11 +312,13 @@ export default function WarehouseDashboardShowcase() {
             </Card>
 
             <Card className="self-start">
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader>
                 <CardTitle level={2}>Chuyến gần nhất</CardTitle>
-                <Button variant="ghost" size="sm">
-                  Tất cả
-                </Button>
+                <CardAction>
+                  <Button variant="ghost" size="sm">
+                    Tất cả
+                  </Button>
+                </CardAction>
               </CardHeader>
               <CardContent flush>
                 <Table>

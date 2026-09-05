@@ -156,7 +156,7 @@ function Hero() {
     <section className="tx-navy relative overflow-hidden">
       <div className="tx-glow tx-glow-tr" />
       <div className={`${SHELL} tx-hero-grid relative`}>
-        <div>
+        <Flex direction="col" gap="xl">
           <div className="tx-eyebrow">Mua hộ &amp; vận chuyển quốc tế</div>
           <h1 className="tx-display">
             Mua sắm toàn cầu,
@@ -167,7 +167,7 @@ function Hero() {
             Đặt mua, thanh toán và vận chuyển hàng từ Nhật, Hàn, Indonesia và Mỹ về tận nhà. Minh
             bạch chi phí, theo dõi từng bước.
           </p>
-          <Flex direction="row" gap="md" className="mt-6">
+          <Flex direction="row" gap="md">
             <Button size="lg">
               Nhận báo giá miễn phí
               <ArrowRight aria-hidden="true" />
@@ -177,7 +177,7 @@ function Hero() {
               Tra cứu đơn
             </Button>
           </Flex>
-          <Flex direction="row" gap="lg" className="mt-10">
+          <Flex direction="row" gap="lg">
             {stats.map(([n, l]) => (
               <div key={l}>
                 <div className="tx-stat">{n}</div>
@@ -187,34 +187,36 @@ function Hero() {
               </div>
             ))}
           </Flex>
-        </div>
+        </Flex>
 
         <Card>
           <CardContent>
-            <div className="tx-eyebrow">Ước tính phí vận chuyển</div>
-            <Flex direction="col" gap="sm" className="mt-4">
-              {fields.map(([Icon, label, value]) => (
-                <div key={label} className="tx-field">
-                  <Icon aria-hidden="true" className="tx-gold tx-icon-18" />
-                  <div className="min-w-0 flex-1">
-                    <Text as="div" size="2xs" tone="muted">
-                      {label}
-                    </Text>
-                    <Text as="div" weight="bold">
-                      {value}
-                    </Text>
+            <Flex direction="col" gap="md">
+              <div className="tx-eyebrow">Ước tính phí vận chuyển</div>
+              <Flex direction="col" gap="sm">
+                {fields.map(([Icon, label, value]) => (
+                  <div key={label} className="tx-field">
+                    <Icon aria-hidden="true" className="tx-gold tx-icon-18" />
+                    <div className="min-w-0 flex-1">
+                      <Text as="div" size="2xs" tone="muted">
+                        {label}
+                      </Text>
+                      <Text as="div" weight="bold">
+                        {value}
+                      </Text>
+                    </div>
+                    <ChevronDown aria-hidden="true" className="tx-icon-18" />
                   </div>
-                  <ChevronDown aria-hidden="true" className="tx-icon-18" />
+                ))}
+                <div className="tx-quote-total">
+                  <Text as="span" weight="bold" className="text-primary-foreground">
+                    Tạm tính
+                  </Text>
+                  <Text as="span" weight="bold" size="2xl" className="text-primary-foreground">
+                    525.000đ
+                  </Text>
                 </div>
-              ))}
-              <div className="tx-quote-total">
-                <Text as="span" weight="bold" className="text-primary-foreground">
-                  Tạm tính
-                </Text>
-                <Text as="span" weight="bold" size="2xl" className="text-primary-foreground">
-                  525.000đ
-                </Text>
-              </div>
+              </Flex>
             </Flex>
           </CardContent>
         </Card>
@@ -281,13 +283,15 @@ function Services() {
           {items.map(([icon, t, d]) => (
             <Card key={t}>
               <CardContent>
-                <Medallion icon={icon} />
-                <Text as="div" weight="bold" size="lg" className="mt-4">
-                  {t}
-                </Text>
-                <Text as="p" size="sm" tone="muted" className="mt-1">
-                  {d}
-                </Text>
+                <Flex direction="col" gap="md">
+                  <Medallion icon={icon} />
+                  <Text as="div" weight="bold" size="lg">
+                    {t}
+                  </Text>
+                  <Text as="p" size="sm" tone="muted">
+                    {d}
+                  </Text>
+                </Flex>
               </CardContent>
             </Card>
           ))}
@@ -310,8 +314,8 @@ function Steps() {
         <SectionHead eyebrow="Quy trình" title="Mua hàng quốc tế trong 4 bước" />
         <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
           {steps.map(([Icon, t, d], i) => (
-            <div key={t}>
-              <Flex direction="row" gap="sm" align="center" className="mb-3">
+            <Flex direction="col" gap="md" key={t}>
+              <Flex direction="row" gap="sm" align="center">
                 <Avatar>
                   <AvatarFallback className="bg-secondary text-primary font-bold">
                     {i + 1}
@@ -322,10 +326,10 @@ function Steps() {
               <Text as="div" weight="bold" size="lg">
                 {t}
               </Text>
-              <Text as="p" size="sm" tone="muted" className="mt-1">
+              <Text as="p" size="sm" tone="muted">
                 {d}
               </Text>
-            </div>
+            </Flex>
           ))}
         </ResponsiveGrid>
       </div>
@@ -351,15 +355,17 @@ function Routes() {
                 <span className="tx-route-code">{code}</span>
               </CardCover>
               <CardContent>
-                <Text as="div" weight="bold" size="lg">
-                  {c}
-                </Text>
-                <Text as="div" size="xs" tone="muted" className="mt-1 mb-3">
-                  {mode}
-                </Text>
-                <Text as="div" weight="bold" size="2xl">
-                  {price}
-                </Text>
+                <Flex direction="col" gap="md">
+                  <Text as="div" weight="bold" size="lg">
+                    {c}
+                  </Text>
+                  <Text as="div" size="xs" tone="muted">
+                    {mode}
+                  </Text>
+                  <Text as="div" weight="bold" size="2xl">
+                    {price}
+                  </Text>
+                </Flex>
               </CardContent>
             </Card>
           ))}
@@ -399,18 +405,18 @@ function Footer() {
   return (
     <footer className="tx-navy tx-navy-deep">
       <div className={`${SHELL} tx-footer-grid`} style={{ paddingBlock: "3.5rem 2rem" }}>
-        <div>
+        <Flex direction="col" gap="md">
           <span className="tx-brand">
             TIXI<span className="tx-gold">MAX</span>
           </span>
-          <Text as="p" size="sm" tone="muted" className="mt-4">
+          <Text as="p" size="sm" tone="muted">
             Dịch vụ mua hộ &amp; vận chuyển quốc tế uy tín, minh bạch về tận nhà bạn.
           </Text>
-        </div>
+        </Flex>
         {cols.map(([h, items]) => (
-          <div key={h}>
+          <Flex direction="col" gap="md" key={h}>
             <div className="tx-eyebrow">{h}</div>
-            <Flex direction="col" gap="xs" className="mt-3">
+            <Flex direction="col" gap="xs">
               {items.map((i) => (
                 <Button
                   key={i}
@@ -422,7 +428,7 @@ function Footer() {
                 </Button>
               ))}
             </Flex>
-          </div>
+          </Flex>
         ))}
       </div>
       <div className={`${SHELL} tx-footer-bottom`}>

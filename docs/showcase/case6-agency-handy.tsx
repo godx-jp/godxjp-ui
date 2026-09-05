@@ -43,7 +43,7 @@ import {
 } from "lucide-react";
 
 import { Button, Heading, Text } from "@godxjp/ui/general";
-import { Flex } from "@godxjp/ui/layout";
+import { Flex, ResponsiveGrid } from "@godxjp/ui/layout";
 import {
   Badge,
   type BadgeProps,
@@ -249,32 +249,36 @@ function ItemListCard({
           : "hover:border-primary")
       }
     >
-      <CardContent solo className="flex items-start gap-3">
-        {selectMode ? (
-          <Checkbox
-            checked={selected}
-            onCheckedChange={onToggle}
-            aria-label={`選択 ${item.name}`}
-            className="mt-0.5 size-5"
-          />
-        ) : null}
-        <div className="min-w-0 flex-1">
-          <Text as="div" size="sm" weight="bold" truncate>
-            {item.name}
-          </Text>
-          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-            <MonoCode>{item.rc}</MonoCode>
-            <MonoCode>JAN {item.jan}</MonoCode>
-          </div>
-          <Flex align="center" justify="between" gap="sm" className="mt-1.5">
-            <Badge tone={st.tone} variant="outline" className="rounded-full">
-              {st.label}
-            </Badge>
-            <Text size="xs" tone="muted" tabular className="shrink-0">
-              ×{item.qty} · {item.receivedAt}
-            </Text>
+      <CardContent solo>
+        <Flex align="start" gap="md">
+          <Flex direction="col" gap="xs">
+            {selectMode ? (
+              <Checkbox
+                checked={selected}
+                onCheckedChange={onToggle}
+                aria-label={`選択 ${item.name}`}
+                className="size-5"
+              />
+            ) : null}
+            <Flex direction="col" gap="sm" className="min-w-0 flex-1">
+              <Text as="div" size="sm" weight="bold" truncate>
+                {item.name}
+              </Text>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                <MonoCode>{item.rc}</MonoCode>
+                <MonoCode>JAN {item.jan}</MonoCode>
+              </div>
+              <Flex align="center" justify="between" gap="sm">
+                <Badge tone={st.tone} variant="outline" className="rounded-full">
+                  {st.label}
+                </Badge>
+                <Text size="xs" tone="muted" tabular className="shrink-0">
+                  ×{item.qty} · {item.receivedAt}
+                </Text>
+              </Flex>
+            </Flex>
           </Flex>
-        </div>
+        </Flex>
       </CardContent>
     </Card>
   );
@@ -293,22 +297,24 @@ function PackingListCard({ packing, onTap }: { packing: Packing; onTap?: () => v
       }
     >
       <CardContent solo>
-        <Flex align="center" justify="between" gap="sm">
-          <Text as="code" size="sm" weight="bold" tabular>
-            {packing.code}
-          </Text>
-          <Badge tone={st.tone} variant="outline" className="rounded-full">
-            {st.label}
-          </Badge>
-        </Flex>
-        <Flex align="center" justify="between" gap="sm" className="mt-1">
-          <Text size="xs" tone="muted" truncate>
-            {packing.customer} · {packing.city}
-          </Text>
-          <Text size="xs" tone="muted" tabular className="shrink-0">
-            ×{packing.items}
-            {packing.slot ? ` · ${packing.slot}` : ""}
-          </Text>
+        <Flex direction="col" gap="xs">
+          <Flex align="center" justify="between" gap="sm">
+            <Text as="code" size="sm" weight="bold" tabular>
+              {packing.code}
+            </Text>
+            <Badge tone={st.tone} variant="outline" className="rounded-full">
+              {st.label}
+            </Badge>
+          </Flex>
+          <Flex align="center" justify="between" gap="sm">
+            <Text size="xs" tone="muted" truncate>
+              {packing.customer} · {packing.city}
+            </Text>
+            <Text size="xs" tone="muted" tabular className="shrink-0">
+              ×{packing.items}
+              {packing.slot ? ` · ${packing.slot}` : ""}
+            </Text>
+          </Flex>
         </Flex>
       </CardContent>
     </Card>
@@ -348,14 +354,14 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
 
 function StatusBar() {
   return (
-    <div className="flex h-9 shrink-0 items-center justify-between px-5">
+    <Flex align="center" justify="between" gap="xs" className="h-9 shrink-0 px-5">
       <Text size="sm" weight="medium" tabular>
         9:41
       </Text>
       <Text size="sm" weight="medium" tabular tone="muted">
         Acme Handy
       </Text>
-    </div>
+    </Flex>
   );
 }
 
@@ -401,48 +407,50 @@ function ItemLookupSheet({
         <SheetHeader>
           <SheetTitle>Quét hoặc nhập mã</SheetTitle>
         </SheetHeader>
-        <SheetBody className="flex flex-col gap-4">
-          {/* Viewfinder placeholder — a Card surface, not a hand-rolled illustration */}
-          <Flex
-            align="center"
-            justify="center"
-            className="border-border bg-secondary/40 h-40 rounded-xl border-2 border-dashed"
-          >
-            <Flex direction="col" align="center" gap="sm">
-              <ScanLine
-                className="size-7 text-[color:var(--attention,var(--warning))]"
-                aria-hidden="true"
-                strokeWidth={1.5}
-              />
-              <Text size="sm" tone="muted">
-                Đưa mã vạch vào khung
-              </Text>
+        <SheetBody>
+          <Flex direction="col" gap="md">
+            {/* Viewfinder placeholder — a Card surface, not a hand-rolled illustration */}
+            <Flex
+              align="center"
+              justify="center"
+              className="border-border bg-secondary/40 h-40 rounded-xl border-2 border-dashed"
+            >
+              <Flex direction="col" align="center" gap="sm">
+                <ScanLine
+                  className="size-7 text-[color:var(--attention,var(--warning))]"
+                  aria-hidden="true"
+                  strokeWidth={1.5}
+                />
+                <Text size="sm" tone="muted">
+                  Đưa mã vạch vào khung
+                </Text>
+              </Flex>
             </Flex>
-          </Flex>
-          <Flex direction="col" gap="sm">
-            <Text size="sm" weight="medium">
-              Hoặc nhập mã thủ công
-            </Text>
-            <Flex gap="sm">
-              <Input
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="RC- / PKG- / JAN"
-                className="font-mono"
-                inputMode="text"
-                autoComplete="off"
-              />
-              <Button
-                onClick={() => {
-                  onOpenChange(false);
-                  setCode("");
-                  toast.success("Đã tìm thấy RC-204881 · Sữa rửa mặt Hada Labo");
-                }}
-                disabled={code.trim() === ""}
-              >
-                <Search aria-hidden="true" />
-                Tìm
-              </Button>
+            <Flex direction="col" gap="sm">
+              <Text size="sm" weight="medium">
+                Hoặc nhập mã thủ công
+              </Text>
+              <Flex gap="sm">
+                <Input
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="RC- / PKG- / JAN"
+                  className="font-mono"
+                  inputMode="text"
+                  autoComplete="off"
+                />
+                <Button
+                  onClick={() => {
+                    onOpenChange(false);
+                    setCode("");
+                    toast.success("Đã tìm thấy RC-204881 · Sữa rửa mặt Hada Labo");
+                  }}
+                  disabled={code.trim() === ""}
+                >
+                  <Search aria-hidden="true" />
+                  Tìm
+                </Button>
+              </Flex>
             </Flex>
           </Flex>
         </SheetBody>
@@ -471,29 +479,31 @@ function PackagePickerSheet({
         <SheetHeader>
           <SheetTitle>Gán vào kiện</SheetTitle>
         </SheetHeader>
-        <SheetBody className="flex flex-col gap-2">
-          <SectionHeader count={PACKINGS.length}>Kiện đang mở</SectionHeader>
-          {PACKINGS.map((p) => (
-            <PackingListCard
-              key={p.id}
-              packing={p}
-              onTap={() => {
+        <SheetBody>
+          <Flex direction="col" gap="sm">
+            <SectionHeader count={PACKINGS.length}>Kiện đang mở</SectionHeader>
+            {PACKINGS.map((p) => (
+              <PackingListCard
+                key={p.id}
+                packing={p}
+                onTap={() => {
+                  onOpenChange(false);
+                  toast.success(`Đã gán ${count} item vào ${p.code}`);
+                }}
+              />
+            ))}
+            <Button
+              variant="outline"
+              onClick={() => {
                 onOpenChange(false);
-                toast.success(`Đã gán ${count} item vào ${p.code}`);
+                toast.success(`Đã tạo kiện mới với ${count} item`);
               }}
-            />
-          ))}
-          <Button
-            variant="outline"
-            onClick={() => {
-              onOpenChange(false);
-              toast.success(`Đã tạo kiện mới với ${count} item`);
-            }}
-            className="text-primary hover:border-primary h-11 w-full border-2 border-dashed"
-          >
-            <PackagePlus aria-hidden="true" strokeWidth={1.5} />
-            Tạo kiện mới với {count} item này
-          </Button>
+              className="text-primary hover:border-primary h-11 w-full border-2 border-dashed"
+            >
+              <PackagePlus aria-hidden="true" strokeWidth={1.5} />
+              Tạo kiện mới với {count} item này
+            </Button>
+          </Flex>
         </SheetBody>
         <SheetFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -527,63 +537,65 @@ function ItemFormSheet({
         <SheetHeader>
           <SheetTitle>Thêm hàng mới</SheetTitle>
         </SheetHeader>
-        <SheetBody className="flex flex-col gap-4">
-          <Flex direction="col" gap="xs">
-            <Text size="sm" weight="medium">
-              Mã vạch
-            </Text>
-            <Input defaultValue="JAN 4987241135219" readOnly className="font-mono" />
-          </Flex>
-          <Flex direction="col" gap="xs">
-            <Text size="sm" weight="medium">
-              Tên hàng (tùy chọn)
-            </Text>
-            <Input placeholder="Nhập tên hàng" autoComplete="off" />
-          </Flex>
-          <Flex direction="col" gap="xs">
-            <Text size="sm" weight="medium">
-              Số lượng
-            </Text>
-            <Input
-              type="number"
-              value={qty}
-              min={1}
-              onChange={(e) => setQty(e.target.value)}
-              className="w-24 tabular-nums"
-            />
-          </Flex>
-          <Flex direction="col" gap="sm">
-            <Text size="sm" weight="medium">
-              Đích đến
-            </Text>
-            <RadioGroupRoot value={dest} onValueChange={setDest} className="flex flex-col gap-2">
-              {DESTINATIONS.map((d) => {
-                const checked = dest === d.id;
-                const rowId = `handy-dest-${d.id}`;
-                return (
-                  <label
-                    key={d.id}
-                    htmlFor={rowId}
-                    className={
-                      "flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors " +
-                      (checked
-                        ? "border-primary bg-[color-mix(in_oklch,var(--primary)_8%,transparent)]"
-                        : "hover:border-primary")
-                    }
-                  >
-                    <RadioItem id={rowId} value={d.id} className="mt-0.5" />
-                    <span className="min-w-0">
-                      <Text as="span" size="sm" weight="medium" className="block">
-                        {d.label}
-                      </Text>
-                      <Text as="span" size="xs" tone="muted" className="block">
-                        {d.hint}
-                      </Text>
-                    </span>
-                  </label>
-                );
-              })}
-            </RadioGroupRoot>
+        <SheetBody>
+          <Flex direction="col" gap="md">
+            <Flex direction="col" gap="xs">
+              <Text size="sm" weight="medium">
+                Mã vạch
+              </Text>
+              <Input defaultValue="JAN 4987241135219" readOnly className="font-mono" />
+            </Flex>
+            <Flex direction="col" gap="xs">
+              <Text size="sm" weight="medium">
+                Tên hàng (tùy chọn)
+              </Text>
+              <Input placeholder="Nhập tên hàng" autoComplete="off" />
+            </Flex>
+            <Flex direction="col" gap="xs">
+              <Text size="sm" weight="medium">
+                Số lượng
+              </Text>
+              <Input
+                type="number"
+                value={qty}
+                min={1}
+                onChange={(e) => setQty(e.target.value)}
+                className="w-24 tabular-nums"
+              />
+            </Flex>
+            <Flex direction="col" gap="sm">
+              <Text size="sm" weight="medium">
+                Đích đến
+              </Text>
+              <RadioGroupRoot value={dest} onValueChange={setDest} className="flex flex-col gap-2">
+                {DESTINATIONS.map((d) => {
+                  const checked = dest === d.id;
+                  const rowId = `handy-dest-${d.id}`;
+                  return (
+                    <label
+                      key={d.id}
+                      htmlFor={rowId}
+                      className={
+                        "flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors " +
+                        (checked
+                          ? "border-primary bg-[color-mix(in_oklch,var(--primary)_8%,transparent)]"
+                          : "hover:border-primary")
+                      }
+                    >
+                      <RadioItem id={rowId} value={d.id} className="mt-0.5" />
+                      <span className="min-w-0">
+                        <Text as="span" size="sm" weight="medium" className="block">
+                          {d.label}
+                        </Text>
+                        <Text as="span" size="xs" tone="muted" className="block">
+                          {d.hint}
+                        </Text>
+                      </span>
+                    </label>
+                  );
+                })}
+              </RadioGroupRoot>
+            </Flex>
           </Flex>
         </SheetBody>
         <SheetFooter className="flex-row gap-2">
@@ -642,7 +654,7 @@ function InboundTab({
 
   return (
     <>
-      <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
+      <Flex direction="col" gap="md" className="flex-1 overflow-y-auto p-4">
         {/* Filter chips — horizontal scroll, count pills */}
         <ToggleGroup
           type="single"
@@ -650,20 +662,22 @@ function InboundTab({
           onValueChange={(v) => {
             if (v) setFilter(v);
           }}
-          className="flex w-full justify-start gap-2 overflow-x-auto"
+          className="w-full overflow-x-auto"
         >
-          {FILTERS.map((f) => (
-            <ToggleGroupItem
-              key={f.id}
-              value={f.id}
-              className="h-9 shrink-0 gap-1.5 rounded-full px-3 whitespace-nowrap text-[var(--font-size-xs)]"
-            >
-              {f.label}
-              <Text size="xs" mono tabular className="opacity-70">
-                {f.count}
-              </Text>
-            </ToggleGroupItem>
-          ))}
+          <Flex justify="start" gap="sm">
+            {FILTERS.map((f) => (
+              <ToggleGroupItem
+                key={f.id}
+                value={f.id}
+                className="h-9 shrink-0 gap-1.5 rounded-full px-3 whitespace-nowrap text-[var(--font-size-xs)]"
+              >
+                {f.label}
+                <Text size="xs" mono tabular className="opacity-70">
+                  {f.count}
+                </Text>
+              </ToggleGroupItem>
+            ))}
+          </Flex>
         </ToggleGroup>
 
         {state === "loading" ? (
@@ -671,9 +685,11 @@ function InboundTab({
             {Array.from({ length: 3 }).map((_, i) => (
               <Card key={i} density="tight" className="rounded-xl">
                 <CardContent solo>
-                  <Skeleton className="h-4 w-3/5" />
-                  <Skeleton className="mt-2 h-3 w-2/5" />
-                  <Skeleton className="mt-3 h-5 w-24 rounded-full" />
+                  <Flex direction="col" gap="md">
+                    <Skeleton className="h-4 w-3/5" />
+                    <Skeleton className="h-3 w-2/5" />
+                    <Skeleton className="h-5 w-24 rounded-full" />
+                  </Flex>
                 </CardContent>
               </Card>
             ))}
@@ -681,12 +697,14 @@ function InboundTab({
         ) : state === "error" ? (
           <Alert tone="warning">
             <AlertTitle>Không tải được danh sách</AlertTitle>
-            <AlertDescription className="flex flex-col items-start gap-2">
-              Kiểm tra kết nối rồi thử lại.
-              <Button variant="outline" size="sm" onClick={onRetry}>
-                <RefreshCw aria-hidden="true" />
-                Thử lại
-              </Button>
+            <AlertDescription>
+              <Flex direction="col" align="start" gap="sm">
+                Kiểm tra kết nối rồi thử lại.
+                <Button variant="outline" size="sm" onClick={onRetry}>
+                  <RefreshCw aria-hidden="true" />
+                  Thử lại
+                </Button>
+              </Flex>
             </AlertDescription>
           </Alert>
         ) : state === "empty" || visible.length === 0 ? (
@@ -721,12 +739,16 @@ function InboundTab({
             ))}
           </Flex>
         )}
-      </div>
+      </Flex>
 
       {/* Sticky action bar (scan-first) OR select-mode contextual bar */}
       {selectMode ? (
-        <div className="shrink-0 border-t bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))] p-3">
-          <Flex align="center" justify="between" className="mb-2">
+        <Flex
+          direction="col"
+          gap="sm"
+          className="shrink-0 border-t bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))] p-3"
+        >
+          <Flex align="center" justify="between">
             <Text size="sm" tabular>
               <Text as="span" weight="bold">
                 {selected.size}
@@ -753,9 +775,9 @@ function InboundTab({
               Kiện mới
             </Button>
           </Flex>
-        </div>
+        </Flex>
       ) : (
-        <div className="flex shrink-0 gap-2 border-t p-3">
+        <Flex gap="sm" className="shrink-0 border-t p-3">
           <Button className="flex-[2]" onClick={onScan}>
             <ScanLine aria-hidden="true" />
             Quét / Tìm mã
@@ -764,7 +786,7 @@ function InboundTab({
             <Plus aria-hidden="true" />
             Thêm hàng
           </Button>
-        </div>
+        </Flex>
       )}
     </>
   );
@@ -775,7 +797,7 @@ function PackingTab({ onScan }: { onScan: () => void }) {
   const others = PACKINGS.filter((p) => p.status !== "active");
   return (
     <>
-      <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
+      <Flex direction="col" gap="md" className="flex-1 overflow-y-auto p-4">
         {active ? (
           <Card
             density="tight"
@@ -783,20 +805,27 @@ function PackingTab({ onScan }: { onScan: () => void }) {
             className="border-primary rounded-xl bg-[color-mix(in_oklch,var(--primary)_6%,transparent)]"
           >
             <CardContent solo>
-              <Flex align="center" justify="between">
-                <Text size="2xs" weight="medium" tone="muted" className="tracking-wider uppercase">
-                  Kiện đang làm
+              <Flex direction="col" gap="xs">
+                <Flex align="center" justify="between">
+                  <Text
+                    size="2xs"
+                    weight="medium"
+                    tone="muted"
+                    className="tracking-wider uppercase"
+                  >
+                    Kiện đang làm
+                  </Text>
+                  <Badge tone="info" variant="outline" className="rounded-full">
+                    {PACKING_STATUS.active.label}
+                  </Badge>
+                </Flex>
+                <Text as="div" size="lg" weight="bold" mono tabular>
+                  {active.code}
                 </Text>
-                <Badge tone="info" variant="outline" className="rounded-full">
-                  {PACKING_STATUS.active.label}
-                </Badge>
+                <Text size="xs" tone="muted" tabular as="div">
+                  {active.customer} · {active.city} · ×{active.items} · {active.slot}
+                </Text>
               </Flex>
-              <Text as="div" size="lg" weight="bold" mono tabular className="mt-1">
-                {active.code}
-              </Text>
-              <Text size="xs" tone="muted" tabular as="div" className="mt-0.5">
-                {active.customer} · {active.city} · ×{active.items} · {active.slot}
-              </Text>
             </CardContent>
           </Card>
         ) : null}
@@ -807,8 +836,8 @@ function PackingTab({ onScan }: { onScan: () => void }) {
             <PackingListCard key={p.id} packing={p} onTap={() => undefined} />
           ))}
         </Flex>
-      </div>
-      <div className="flex shrink-0 flex-col gap-2 border-t p-3">
+      </Flex>
+      <Flex direction="col" gap="sm" className="shrink-0 border-t p-3">
         <Button onClick={onScan}>
           <ScanLine aria-hidden="true" />
           Quét item vào kiện
@@ -817,7 +846,7 @@ function PackingTab({ onScan }: { onScan: () => void }) {
           <Plus aria-hidden="true" />
           Tạo kiện trống
         </Button>
-      </div>
+      </Flex>
     </>
   );
 }
@@ -826,7 +855,7 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
   const [seg, setSeg] = React.useState<string>("seal");
   return (
     <>
-      <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
+      <Flex direction="col" gap="md" className="flex-1 overflow-y-auto p-4">
         {/* Segmented — outbound status */}
         <ToggleGroup
           type="single"
@@ -834,26 +863,28 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
           onValueChange={(v) => {
             if (v) setSeg(v);
           }}
-          className="bg-secondary/60 grid w-full grid-cols-3 gap-1 rounded-xl p-1"
+          className="bg-secondary/60 w-full rounded-xl p-1"
         >
-          <ToggleGroupItem
-            value="seal"
-            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
-          >
-            Chờ niêm phong
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="handoff"
-            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
-          >
-            Chờ bàn giao
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="done"
-            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
-          >
-            Đã bàn giao
-          </ToggleGroupItem>
+          <ResponsiveGrid columns={3} gap="xs">
+            <ToggleGroupItem
+              value="seal"
+              className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+            >
+              Chờ niêm phong
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="handoff"
+              className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+            >
+              Chờ bàn giao
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="done"
+              className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+            >
+              Đã bàn giao
+            </ToggleGroupItem>
+          </ResponsiveGrid>
         </ToggleGroup>
 
         <SectionHeader count={OUTBOUND.length}>
@@ -867,38 +898,40 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
           {OUTBOUND.map((p) => (
             <Card key={p.id} density="tight" className="rounded-xl">
               <CardContent solo>
-                <Flex align="center" justify="between" gap="sm">
-                  <Text as="code" size="sm" weight="bold" tabular>
-                    {p.code}
-                  </Text>
-                  <Badge tone="success" variant="outline" className="rounded-full">
-                    Sẵn sàng niêm phong
-                  </Badge>
+                <Flex direction="col" gap="md">
+                  <Flex align="center" justify="between" gap="sm">
+                    <Text as="code" size="sm" weight="bold" tabular>
+                      {p.code}
+                    </Text>
+                    <Badge tone="success" variant="outline" className="rounded-full">
+                      Sẵn sàng niêm phong
+                    </Badge>
+                  </Flex>
+                  <Flex align="center" justify="between" gap="sm">
+                    <Text size="xs" tone="muted" tabular truncate>
+                      {p.customer} · {p.city}
+                    </Text>
+                    <Text size="xs" tone="muted" tabular className="shrink-0">
+                      ×{p.items} · {p.slot}
+                    </Text>
+                  </Flex>
+                  <div>
+                    <Descriptions columns={1} className="gap-y-1">
+                      <Descriptions.Item label="Vị trí" mono>
+                        {p.slot}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Số kiện" mono>
+                        ×{p.items}
+                      </Descriptions.Item>
+                    </Descriptions>
+                  </div>
                 </Flex>
-                <Flex align="center" justify="between" gap="sm" className="mt-1">
-                  <Text size="xs" tone="muted" tabular truncate>
-                    {p.customer} · {p.city}
-                  </Text>
-                  <Text size="xs" tone="muted" tabular className="shrink-0">
-                    ×{p.items} · {p.slot}
-                  </Text>
-                </Flex>
-                <div className="mt-3">
-                  <Descriptions columns={1} className="gap-y-1">
-                    <Descriptions.Item label="Vị trí" mono>
-                      {p.slot}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Số kiện" mono>
-                      ×{p.items}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </div>
               </CardContent>
             </Card>
           ))}
         </Flex>
-      </div>
-      <div className="flex shrink-0 gap-2 border-t p-3">
+      </Flex>
+      <Flex gap="sm" className="shrink-0 border-t p-3">
         {seg === "handoff" ? (
           <Button className="flex-1" onClick={onHandoff}>
             <Truck aria-hidden="true" />
@@ -910,7 +943,7 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
             Quét mã kiện · Niêm phong
           </Button>
         )}
-      </div>
+      </Flex>
     </>
   );
 }
@@ -940,53 +973,61 @@ export default function AgencyHandyShowcase() {
         <StatusBar />
 
         {/* App header (52px) — title + iOS text-action select-mode entry (inbound only) */}
-        <header className="flex h-14 shrink-0 items-center justify-between border-b px-4">
-          <Heading level={3} as="h1" className="whitespace-nowrap">
-            {headerTitle}
-          </Heading>
-          <Flex align="center" gap="xs">
-            {tab === "inbound" && !selectMode ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSelectMode(true);
-                  setSelected(new Set());
-                }}
-              >
-                <Check aria-hidden="true" />
-                Chọn
-              </Button>
-            ) : null}
-            {/* State switcher — exposes the 4 list states at rest (showcase affordance) */}
-            {tab === "inbound" && !selectMode ? (
-              <ToggleGroup
-                type="single"
-                value={listState}
-                onValueChange={(v) => {
-                  if (v) setListState(v as ListState);
-                }}
-                aria-label="List state (showcase)"
-                className="flex gap-0.5"
-              >
-                {(["ready", "loading", "empty", "error"] as const).map((s) => (
-                  <ToggleGroupItem
-                    key={s}
-                    value={s}
-                    className="size-7 rounded-md p-0 text-[var(--font-size-2xs)] uppercase"
-                    title={s}
-                  >
-                    {s[0]}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-            ) : null}
+        <header className="h-14 shrink-0 border-b px-4">
+          <Flex align="center" justify="between" gap="xs">
+            <Heading level={3} as="h1" className="whitespace-nowrap">
+              {headerTitle}
+            </Heading>
+            <Flex align="center" gap="xs">
+              {tab === "inbound" && !selectMode ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setSelectMode(true);
+                    setSelected(new Set());
+                  }}
+                >
+                  <Check aria-hidden="true" />
+                  Chọn
+                </Button>
+              ) : null}
+              {/* State switcher — exposes the 4 list states at rest (showcase affordance) */}
+              {tab === "inbound" && !selectMode ? (
+                <ToggleGroup
+                  type="single"
+                  value={listState}
+                  onValueChange={(v) => {
+                    if (v) setListState(v as ListState);
+                  }}
+                  aria-label="List state (showcase)"
+                >
+                  <Flex gap="xs">
+                    {(["ready", "loading", "empty", "error"] as const).map((s) => (
+                      <ToggleGroupItem
+                        key={s}
+                        value={s}
+                        className="size-7 rounded-md p-0 text-[var(--font-size-2xs)] uppercase"
+                        title={s}
+                      >
+                        {s[0]}
+                      </ToggleGroupItem>
+                    ))}
+                  </Flex>
+                </ToggleGroup>
+              ) : null}
+            </Flex>
           </Flex>
         </header>
 
         {/* Select-mode header strip — replaces the standard header context (inbound) */}
         {selectMode ? (
-          <div className="flex h-10 shrink-0 items-center justify-between border-b bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))] px-3">
+          <Flex
+            align="center"
+            justify="between"
+            gap="xs"
+            className="h-10 shrink-0 border-b bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))] px-3"
+          >
             <Button
               variant="ghost"
               size="icon-sm"
@@ -1008,7 +1049,7 @@ export default function AgencyHandyShowcase() {
             >
               Chọn tất cả
             </Button>
-          </div>
+          </Flex>
         ) : null}
 
         {tab === "inbound" ? (

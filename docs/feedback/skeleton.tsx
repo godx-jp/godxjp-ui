@@ -37,7 +37,7 @@ export default function Demo() {
               <Skeleton className="h-5 w-48" />
               <Skeleton className="h-4 w-72" />
               <Skeleton className="h-4 w-60" />
-              <Flex direction="row" gap="sm" align="center" className="mt-2">
+              <Flex direction="row" gap="sm" align="center">
                 <Skeleton className="size-10 rounded-full" />
                 <Flex direction="col" gap="xs">
                   <Skeleton className="h-4 w-32" />

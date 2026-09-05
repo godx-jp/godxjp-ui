@@ -215,34 +215,36 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="max-w-3xl">
-              <Form layout="horizontal" labelWidth="12rem" controlWidth="28rem">
+            <Flex direction="col" gap="lg">
+              <div className="max-w-3xl">
+                <Form layout="horizontal" labelWidth="12rem" controlWidth="28rem">
+                  <FormField
+                    id="matrix-ja"
+                    label="請求書の送付先メールアドレス"
+                    required
+                    helper="確認メールを送信します"
+                  >
+                    <Input id="matrix-ja" defaultValue="billing@example.jp" />
+                  </FormField>
+                  <FormField
+                    id="matrix-vi"
+                    label="Địa chỉ email nhận hóa đơn và thông báo"
+                    controlWidth="20rem"
+                  >
+                    <Input id="matrix-vi" defaultValue="ketoan@example.vn" />
+                  </FormField>
+                </Form>
+              </div>
+              <div className="max-w-80 border p-3" dir="rtl" lang="ar">
                 <FormField
-                  id="matrix-ja"
-                  label="請求書の送付先メールアドレス"
-                  required
-                  helper="確認メールを送信します"
+                  id="matrix-rtl"
+                  label="البريد الإلكتروني لاستلام الفاتورة"
+                  helper="سيتم إرسال رسالة تأكيد"
                 >
-                  <Input id="matrix-ja" defaultValue="billing@example.jp" />
+                  <Input id="matrix-rtl" type="email" placeholder="name@example.com" />
                 </FormField>
-                <FormField
-                  id="matrix-vi"
-                  label="Địa chỉ email nhận hóa đơn và thông báo"
-                  controlWidth="20rem"
-                >
-                  <Input id="matrix-vi" defaultValue="ketoan@example.vn" />
-                </FormField>
-              </Form>
-            </div>
-            <div className="mt-6 max-w-80 border p-3" dir="rtl" lang="ar">
-              <FormField
-                id="matrix-rtl"
-                label="البريد الإلكتروني لاستلام الفاتورة"
-                helper="سيتم إرسال رسالة تأكيد"
-              >
-                <Input id="matrix-rtl" type="email" placeholder="name@example.com" />
-              </FormField>
-            </div>
+              </div>
+            </Flex>
           </CardContent>
         </Card>
 

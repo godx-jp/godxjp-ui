@@ -47,8 +47,10 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <ContextMenu>
-              <ContextMenuTrigger className="border-border flex h-36 w-full cursor-context-menu items-center justify-center rounded-md border border-dashed">
-                <Text tone="muted">ここを右クリックしてください</Text>
+              <ContextMenuTrigger className="border-border h-36 w-full cursor-context-menu rounded-md border border-dashed">
+                <Flex align="center" justify="center" gap="xs">
+                  <Text tone="muted">ここを右クリックしてください</Text>
+                </Flex>
               </ContextMenuTrigger>
               <ContextMenuContent>
                 <ContextMenuLabel>仕訳操作</ContextMenuLabel>
@@ -89,8 +91,10 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <ContextMenu>
-              <ContextMenuTrigger className="border-border flex h-36 w-full cursor-context-menu items-center justify-center rounded-md border border-dashed">
-                <Text tone="muted">右クリック · 表示設定</Text>
+              <ContextMenuTrigger className="border-border h-36 w-full cursor-context-menu rounded-md border border-dashed">
+                <Flex align="center" justify="center" gap="xs">
+                  <Text tone="muted">右クリック · 表示設定</Text>
+                </Flex>
               </ContextMenuTrigger>
               <ContextMenuContent>
                 <ContextMenuLabel>表示オプション</ContextMenuLabel>

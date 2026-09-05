@@ -95,11 +95,7 @@ export default function Demo() {
             </FormField>
           </CardContent>
         </Card>
-        <PasswordInput
-          size="sm"
-          placeholder="Compact tier (sm)"
-          aria-label="Password (sm)"
-        />
+        <PasswordInput size="sm" placeholder="Compact tier (sm)" aria-label="Password (sm)" />
       </Flex>
     </PageContainer>
   );

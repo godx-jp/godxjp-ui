@@ -27,9 +27,14 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <AspectRatio ratio={16 / 9}>
-              <div className="bg-muted flex h-full w-full items-center justify-center rounded-md">
+              <Flex
+                align="center"
+                justify="center"
+                gap="xs"
+                className="bg-muted h-full w-full rounded-md"
+              >
                 <Text tone="muted">16:9 動画プレビュー（サンプル）</Text>
-              </div>
+              </Flex>
             </AspectRatio>
           </CardContent>
         </Card>
@@ -45,9 +50,14 @@ export default function Demo() {
           <CardContent>
             <div className="max-w-xs">
               <AspectRatio ratio={4 / 3}>
-                <div className="bg-muted border-border flex h-full w-full items-center justify-center rounded-md border">
+                <Flex
+                  align="center"
+                  justify="center"
+                  gap="xs"
+                  className="bg-muted border-border h-full w-full rounded-md border"
+                >
                   <Text tone="muted">領収書スキャン 4:3</Text>
-                </div>
+                </Flex>
               </AspectRatio>
             </div>
           </CardContent>
@@ -66,11 +76,16 @@ export default function Demo() {
               {["株式会社 A", "合同会社 B", "有限会社 C"].map((name) => (
                 <div key={name} className="w-28">
                   <AspectRatio ratio={1}>
-                    <div className="bg-muted border-border flex h-full w-full items-center justify-center rounded-md border">
+                    <Flex
+                      align="center"
+                      justify="center"
+                      gap="xs"
+                      className="bg-muted border-border h-full w-full rounded-md border"
+                    >
                       <Text size="xs" tone="muted" className="px-1 text-center">
                         {name}
                       </Text>
-                    </div>
+                    </Flex>
                   </AspectRatio>
                 </div>
               ))}
@@ -90,9 +105,14 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <AspectRatio ratio={21 / 9}>
-              <div className="bg-muted border-border flex h-full w-full items-center justify-center rounded-md border">
+              <Flex
+                align="center"
+                justify="center"
+                gap="xs"
+                className="bg-muted border-border h-full w-full rounded-md border"
+              >
                 <Text tone="muted">月次売上推移グラフ（21:9）</Text>
-              </div>
+              </Flex>
             </AspectRatio>
           </CardContent>
         </Card>

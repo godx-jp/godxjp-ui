@@ -45,8 +45,8 @@ import {
   Avatar,
   AvatarFallback,
   Badge,
-  type BadgeProps,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -58,6 +58,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  type BadgeProps,
 } from "@godxjp/ui/data-display";
 import { SearchInput } from "@godxjp/ui/data-entry";
 import {
@@ -341,28 +342,37 @@ export default function AcmePortalShowcase() {
             {/* Queue + Journey */}
             <ResponsiveGrid columns={{ sm: 1, md: 1, lg: 2 }}>
               <Card className="self-start">
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader>
                   <CardTitle level={2}>Cần bạn xử lý</CardTitle>
-                  <Text size="xs" tone="muted">
-                    {QUEUE.length} việc
-                  </Text>
+                  <CardAction>
+                    <Text size="xs" tone="muted">
+                      {QUEUE.length} việc
+                    </Text>
+                  </CardAction>
                 </CardHeader>
                 <CardContent flush>
                   <ul className="divide-border divide-y">
                     {QUEUE.map((q) => (
-                      <li key={q.title} className="flex items-center gap-3 px-4 py-3">
-                        <Badge tone={q.tone} variant="outline" icon={q.icon} aria-label={q.title} />
-                        <div className="min-w-0 flex-1">
-                          <Text as="div" size="sm" weight="medium" truncate>
-                            {q.title}
-                          </Text>
-                          <Text as="div" size="xs" tone="muted" truncate>
-                            {q.meta}
-                          </Text>
-                        </div>
-                        <Button variant="outline" size="sm">
-                          {q.action}
-                        </Button>
+                      <li key={q.title} className="px-4 py-3">
+                        <Flex align="center" gap="md">
+                          <Badge
+                            tone={q.tone}
+                            variant="outline"
+                            icon={q.icon}
+                            aria-label={q.title}
+                          />
+                          <div className="min-w-0 flex-1">
+                            <Text as="div" size="sm" weight="medium" truncate>
+                              {q.title}
+                            </Text>
+                            <Text as="div" size="xs" tone="muted" truncate>
+                              {q.meta}
+                            </Text>
+                          </div>
+                          <Button variant="outline" size="sm">
+                            {q.action}
+                          </Button>
+                        </Flex>
                       </li>
                     ))}
                   </ul>
@@ -370,11 +380,13 @@ export default function AcmePortalShowcase() {
               </Card>
 
               <Card className="self-start">
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader>
                   <CardTitle level={2}>Hành trình đơn TXM-100241</CardTitle>
-                  <Badge tone="info" variant="outline">
-                    <Plane aria-hidden="true" /> Đang vận chuyển
-                  </Badge>
+                  <CardAction>
+                    <Badge tone="info" variant="outline">
+                      <Plane aria-hidden="true" /> Đang vận chuyển
+                    </Badge>
+                  </CardAction>
                 </CardHeader>
                 <CardContent>
                   <Flex direction="col" gap="md">
@@ -393,12 +405,14 @@ export default function AcmePortalShowcase() {
 
             {/* Orders table — the centerpiece */}
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader>
                 <CardTitle level={2}>Đơn mua hộ gần đây</CardTitle>
-                <Button variant="ghost" size="sm">
-                  <Wallet aria-hidden="true" />
-                  Xem tất cả
-                </Button>
+                <CardAction>
+                  <Button variant="ghost" size="sm">
+                    <Wallet aria-hidden="true" />
+                    Xem tất cả
+                  </Button>
+                </CardAction>
               </CardHeader>
               <CardContent flush>
                 <Table>

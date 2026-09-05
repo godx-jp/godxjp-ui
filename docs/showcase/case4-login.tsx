@@ -156,7 +156,11 @@ export default function LoginShowcase() {
       </Flex>
 
       {/* Centered auth area. Split brand panel + card sit side-by-side from lg. */}
-      <div className="mx-auto flex min-h-[calc(100vh-64px)] w-full max-w-5xl items-center px-4 py-8 sm:px-6">
+      <Flex
+        align="center"
+        gap="xs"
+        className="mx-auto min-h-[calc(100vh-64px)] w-full max-w-5xl px-4 py-8 sm:px-6"
+      >
         <ResponsiveGrid
           columns={{ sm: 1, lg: 2, md: 1 }}
           gap="xl"
@@ -165,43 +169,47 @@ export default function LoginShowcase() {
           {/* Split brand panel — hidden on mobile (mobile-first), shown from lg. */}
           <aside className="hidden lg:flex">
             <Card className="bg-primary/5 w-full">
-              <CardContent solo className="flex h-full flex-col justify-between gap-8">
-                <BrandLockup size="lg" />
-                <Flex direction="col" gap="md">
-                  <Heading level={2} className="leading-snug">
-                    打刻から承認まで、ひとつの勤怠基盤で。
-                  </Heading>
-                  <Text as="p" tone="muted" className="leading-relaxed">
-                    出勤・休憩・残業の打刻、シフト調整、欠勤・遅刻の承認を一元化します。
-                    多拠点・多テナントに対応し、現場と管理をつなぎます。
-                  </Text>
+              <CardContent solo className="h-full">
+                <Flex direction="col" justify="between" gap="xl">
+                  <BrandLockup size="lg" />
+                  <Flex direction="col" gap="md">
+                    <Heading level={2} className="leading-snug">
+                      打刻から承認まで、ひとつの勤怠基盤で。
+                    </Heading>
+                    <Text as="p" tone="muted" className="leading-relaxed">
+                      出勤・休憩・残業の打刻、シフト調整、欠勤・遅刻の承認を一元化します。
+                      多拠点・多テナントに対応し、現場と管理をつなぎます。
+                    </Text>
+                  </Flex>
+                  <dl className="border-border border-t pt-6">
+                    <ResponsiveGrid columns={3} gap="md">
+                      <div>
+                        <Text as="dt" size="2xs" tone="muted">
+                          導入企業
+                        </Text>
+                        <Text as="dd" size="lg" weight="bold" tabular>
+                          1,240
+                        </Text>
+                      </div>
+                      <div>
+                        <Text as="dt" size="2xs" tone="muted">
+                          稼働拠点
+                        </Text>
+                        <Text as="dd" size="lg" weight="bold" tabular>
+                          8,600
+                        </Text>
+                      </div>
+                      <div>
+                        <Text as="dt" size="2xs" tone="muted">
+                          月間打刻
+                        </Text>
+                        <Text as="dd" size="lg" weight="bold" tabular>
+                          21M
+                        </Text>
+                      </div>
+                    </ResponsiveGrid>
+                  </dl>
                 </Flex>
-                <dl className="border-border grid grid-cols-3 gap-4 border-t pt-6">
-                  <div>
-                    <Text as="dt" size="2xs" tone="muted">
-                      導入企業
-                    </Text>
-                    <Text as="dd" size="lg" weight="bold" tabular>
-                      1,240
-                    </Text>
-                  </div>
-                  <div>
-                    <Text as="dt" size="2xs" tone="muted">
-                      稼働拠点
-                    </Text>
-                    <Text as="dd" size="lg" weight="bold" tabular>
-                      8,600
-                    </Text>
-                  </div>
-                  <div>
-                    <Text as="dt" size="2xs" tone="muted">
-                      月間打刻
-                    </Text>
-                    <Text as="dd" size="lg" weight="bold" tabular>
-                      21M
-                    </Text>
-                  </div>
-                </dl>
               </CardContent>
             </Card>
           </aside>
@@ -218,90 +226,101 @@ export default function LoginShowcase() {
               </CardDescription>
             </CardHeader>
 
-            <CardContent solo className="flex flex-col gap-5">
-              {/* SSO buttons — outline, full-width, 44px (comfortable). */}
-              <Flex direction="col" gap="sm">
-                <Button variant="outline" className="w-full justify-center">
-                  <GoogleMark />
-                  Google で続ける
-                </Button>
-                <Button variant="outline" className="w-full justify-center">
-                  シングルサインオン (SSO)
-                </Button>
-              </Flex>
+            <CardContent solo>
+              <Flex direction="col" gap="lg">
+                {/* SSO buttons — outline, full-width, 44px (comfortable). */}
+                <Flex direction="col" gap="sm">
+                  <Button variant="outline" className="w-full justify-center">
+                    <GoogleMark />
+                    Google で続ける
+                  </Button>
+                  <Button variant="outline" className="w-full justify-center">
+                    シングルサインオン (SSO)
+                  </Button>
+                </Flex>
 
-              {/* Divider "または" — Separator pair + centered label. */}
-              <Flex align="center" gap="md">
-                <Separator className="flex-1" />
-                <Text size="xs" tone="muted">
-                  または
-                </Text>
-                <Separator className="flex-1" />
-              </Flex>
+                {/* Divider "または" — Separator pair + centered label. */}
+                <Flex align="center" gap="md">
+                  <Separator className="flex-1" />
+                  <Text size="xs" tone="muted">
+                    または
+                  </Text>
+                  <Separator className="flex-1" />
+                </Flex>
 
-              {/* Email — uncontrolled, seeded so the filled state shows at rest. */}
-              <form
-                className="flex flex-col gap-4"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                }}
-              >
-                <FormField id="login-email" label="メールアドレス" required>
-                  <Input
-                    type="email"
-                    name="email"
-                    autoComplete="email"
-                    inputMode="email"
-                    placeholder="name@example.com"
-                    defaultValue="m.tanaka@famgia.com"
-                  />
-                </FormField>
-
-                {/* Password — labelAddon hosts the right-aligned "忘れた場合" link. */}
-                <FormField
-                  id="login-password"
-                  label="パスワード"
-                  required
-                  labelAddon={
-                    <Button
-                      type="button"
-                      variant="link"
-                      size="sm"
-                      className="ms-auto h-auto p-0 text-xs"
-                    >
-                      お忘れの場合
-                    </Button>
-                  }
+                {/* Email — uncontrolled, seeded so the filled state shows at rest. */}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                  }}
                 >
-                  <PasswordInput
-                    name="password"
-                    autoComplete="current-password"
-                    placeholder="パスワードを入力"
-                    defaultValue="example-pass"
-                  />
-                </FormField>
+                  <Flex direction="col" gap="md">
+                    <FormField id="login-email" label="メールアドレス" required>
+                      <Input
+                        type="email"
+                        name="email"
+                        autoComplete="email"
+                        inputMode="email"
+                        placeholder="name@example.com"
+                        defaultValue="m.tanaka@famgia.com"
+                      />
+                    </FormField>
 
-                {/* The single --primary action of the view. */}
-                <Button type="submit" className="w-full justify-center">
-                  ログイン
-                </Button>
-              </form>
+                    {/* Password — labelAddon hosts the right-aligned "忘れた場合" link. */}
+                    <FormField
+                      id="login-password"
+                      label="パスワード"
+                      required
+                      labelAddon={
+                        <Button
+                          type="button"
+                          variant="link"
+                          size="sm"
+                          className="ms-auto h-auto p-0 text-xs"
+                        >
+                          お忘れの場合
+                        </Button>
+                      }
+                    >
+                      <PasswordInput
+                        name="password"
+                        autoComplete="current-password"
+                        placeholder="パスワードを入力"
+                        defaultValue="example-pass"
+                      />
+                    </FormField>
 
-              <Text as="p" size="2xs" tone="muted" align="center" className="leading-relaxed">
-                ログインすると{" "}
-                <Button variant="link" size="sm" className="h-auto p-0 text-[var(--font-size-2xs)]">
-                  利用規約
-                </Button>{" "}
-                ·{" "}
-                <Button variant="link" size="sm" className="h-auto p-0 text-[var(--font-size-2xs)]">
-                  プライバシーポリシー
-                </Button>{" "}
-                に同意したものとみなされます。
-              </Text>
+                    {/* The single --primary action of the view. */}
+                    <Button type="submit" className="w-full justify-center">
+                      ログイン
+                    </Button>
+                  </Flex>
+                </form>
+
+                <Text as="p" size="2xs" tone="muted" align="center" className="leading-relaxed">
+                  ログインすると{" "}
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="h-auto p-0 text-[var(--font-size-2xs)]"
+                  >
+                    利用規約
+                  </Button>{" "}
+                  ·{" "}
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="h-auto p-0 text-[var(--font-size-2xs)]"
+                  >
+                    プライバシーポリシー
+                  </Button>{" "}
+                  に同意したものとみなされます。
+                </Text>
+              </Flex>
             </CardContent>
           </Card>
         </ResponsiveGrid>
-      </div>
+      </Flex>
     </div>
   );
 }

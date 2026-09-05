@@ -39,8 +39,8 @@ import { Button, Text } from "@godxjp/ui/general";
 import { Alert, AlertDescription, AlertTitle } from "@godxjp/ui/feedback";
 import {
   Badge,
-  type BadgeProps,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -51,6 +51,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  type BadgeProps,
 } from "@godxjp/ui/data-display";
 import {
   AppShell,
@@ -149,26 +150,28 @@ function PunchCard() {
 
   return (
     <Card density="cozy" className="self-start" accent={state === "break" ? "warning" : undefined}>
-      <CardHeader className="flex flex-row items-center justify-between gap-3">
+      <CardHeader>
         <CardTitle level={2} className="whitespace-nowrap">
           打刻 · Chấm công
         </CardTitle>
-        <Badge tone={status.tone} variant="outline" className="whitespace-nowrap">
-          {status.label}
-        </Badge>
+        <CardAction>
+          <Badge tone={status.tone} variant="outline" className="whitespace-nowrap">
+            {status.label}
+          </Badge>
+        </CardAction>
       </CardHeader>
       <CardContent>
         <Flex direction="col" gap="md">
           {/* Big tabular clock — the signature employee block. */}
-          <div>
+          <Flex direction="col" gap="xs">
             {/* Hero numeral at the system's max step (2xl) — the golden scale tops here by design. */}
             <Text as="div" size="2xl" weight="bold" tabular className="leading-none">
               {clock}
             </Text>
-            <Text as="div" size="sm" tone="muted" className="mt-1">
+            <Text as="div" size="sm" tone="muted">
               {status.meta}
             </Text>
-          </div>
+          </Flex>
 
           {/* Checkout-locked notice (attention, not destructive — it's a fixable hold). */}
           {checkoutLocked ? (
@@ -358,13 +361,15 @@ export default function EmployeeMeShowcase() {
           {/* 7-day attendance (left, wide) + today summary (right) */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start">
             <Card className="self-start lg:col-span-2">
-              <CardHeader className="flex flex-row items-center justify-between gap-3">
+              <CardHeader>
                 <CardTitle level={2} className="whitespace-nowrap">
                   最近7日 · 7 ngày gần nhất
                 </CardTitle>
-                <Text size="xs" tone="muted" className="whitespace-nowrap">
-                  勤務 47.4h · 残業 1.5h
-                </Text>
+                <CardAction>
+                  <Text size="xs" tone="muted" className="whitespace-nowrap">
+                    勤務 47.4h · 残業 1.5h
+                  </Text>
+                </CardAction>
               </CardHeader>
               <CardContent flush>
                 <Table>
