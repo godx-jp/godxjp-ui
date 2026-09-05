@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [19.2.0] - 2026-09-05
 
+### Added
+
+- **`CodeBlock` (#339).** A block of preformatted text in `data-display`: mono, muted surface,
+  `wrap` (default on), `maxHeight` (`sm` / `md` / `lg` / `none`), `size` (`xs` / `sm`),
+  `language`. Tokens `--code-block-*`. A block that can scroll is a tab stop with the focus ring.
+- **`Prose` (#338).** Typography for rendered content (Markdown, CMS bodies) in `data-display`:
+  styles descendant h1..h4, p, lists, blockquote, code, pre, table, a, img and hr from the tokens.
+  `size` (`sm` / `md`), `imageSize` (`fit` / `original`). Tokens `--prose-*`; `pre` shares the
+  CodeBlock knobs.
+- **Calendar footer (#335).** `showToday` and `showClose` on Calendar, DatePicker and
+  DateRangePicker (both off by default); `onClose` and a `footer` slot on Calendar. Today is
+  disabled outside `startMonth` / `endMonth` or a `disabled` matcher. Tokens
+  `--calendar-footer-space-gap`, `--calendar-footer-space-block-start`,
+  `--calendar-footer-border-width`; strings `dataEntry.calendar.today` / `.close` (en, ja, vi).
+
 ### Fixed
 
 - **Control tokens reach every control (#334).** `--control-border-width`, `--control-shadow`

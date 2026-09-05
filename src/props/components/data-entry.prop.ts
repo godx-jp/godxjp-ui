@@ -321,8 +321,25 @@ export type FieldProp = {
 /** @see Slider — numeric range (Radix Slider). */
 export type SliderProp = React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>;
 
-/** @see Calendar — react-day-picker DayPicker. */
-export type CalendarProp = DayPickerProps;
+/** @see Calendar — react-day-picker DayPicker plus an opt-in footer. */
+export type CalendarProp = DayPickerProps &
+  CalendarFooterProp & {
+    /** Replaces the built-in footer actions. */
+    footer?: React.ReactNode;
+  };
+
+/** Footer actions shared by Calendar and the pickers that embed it. Both default to off. */
+export type CalendarFooterProp = {
+  /**
+   * Show a Today action: jumps to the current month and selects today (single), fills the open
+   * end of the range (range) or adds today (multiple). Disabled when today is outside
+   * `startMonth` / `endMonth` or matches `disabled`.
+   */
+  showToday?: boolean;
+  /** Show a Close action that calls `onClose`. */
+  showClose?: boolean;
+  onClose?: () => void;
+};
 
 /** @see DatePicker */
 export type DatePickerProp = FieldA11yProps & {
@@ -340,7 +357,7 @@ export type DatePickerProp = FieldA11yProps & {
   toDate?: Date;
   /** Show an inline ✕ to clear the value when one is set (default true). */
   allowClear?: boolean;
-};
+} & Pick<CalendarFooterProp, "showToday" | "showClose">;
 
 /** @see MonthPicker */
 export type MonthPickerProp = FieldA11yProps & {
@@ -397,7 +414,7 @@ export type DateRangePickerProp = FieldA11yProps & {
   toDate?: Date;
   /** Show an inline ✕ to clear the range when one is set (default true). */
   allowClear?: boolean;
-};
+} & Pick<CalendarFooterProp, "showToday" | "showClose">;
 
 /** @see TimePicker — popover HH:mm picker (canonical 24h storage). */
 export type TimePickerProp = FieldA11yProps & {

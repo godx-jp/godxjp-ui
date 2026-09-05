@@ -164,6 +164,27 @@ export default function Demo() {
             </FormField>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>フッター操作 (showToday / showClose)</CardTitle>
+            <CardDescription>
+              showToday は今日を選択して閉じる。showClose は選択せずに閉じる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="visit-date" label="来訪日">
+              <DatePicker
+                id="visit-date"
+                name="visit_date"
+                value={meetingDate}
+                onValueChange={setMeetingDate}
+                showToday
+                showClose
+              />
+            </FormField>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

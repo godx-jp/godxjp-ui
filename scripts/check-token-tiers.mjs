@@ -136,6 +136,8 @@ const componentPrefixes = {
     "descriptions",
     "qr-code",
     "scroll-area",
+    "code-block",
+    "prose",
   ],
   "data-entry": ["password-strength", "branch-scope-picker"],
   shell: [

@@ -151,6 +151,29 @@ export default function Demo() {
             />
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>フッター操作 (showToday / showClose)</CardTitle>
+            <CardDescription>
+              showToday で「今日」へジャンプして選択、showClose で onClose を呼ぶ。両方とも既定は
+              off。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Calendar
+              mode="single"
+              selected={issueDate}
+              onSelect={setIssueDate}
+              defaultMonth={issueDate}
+              locale={ja}
+              showToday
+              showClose
+              onClose={() => setIssueDate(undefined)}
+              aria-label="請求日カレンダー (フッター付き)"
+            />
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

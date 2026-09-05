@@ -769,3 +769,172 @@
     border-radius: var(--scroll-area-thumb-radius);
   }
 }
+
+@layer components {
+  /* CODE BLOCK — and the `pre` inside Prose, so the two never disagree. */
+  :is(.ui-code-block, .ui-prose pre) {
+    margin: 0;
+    overflow: auto;
+    border-radius: var(--code-block-radius);
+    background: hsl(var(--muted));
+    padding: var(--code-block-space-inset);
+    color: hsl(var(--foreground));
+    font-family: var(--font-mono);
+    font-size: var(--code-block-font-size);
+    line-height: var(--code-block-line-height);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    tab-size: 2;
+  }
+
+  :is(.ui-code-block, .ui-prose pre) > code {
+    font: inherit;
+    background: transparent;
+    padding: 0;
+  }
+
+  .ui-code-block[data-wrap="false"] {
+    white-space: pre;
+    overflow-wrap: normal;
+  }
+
+  .ui-code-block[data-size="xs"] {
+    font-size: var(--code-block-font-size-xs);
+  }
+
+  .ui-code-block[data-max-height="sm"] {
+    max-block-size: var(--code-block-max-height-sm);
+  }
+
+  .ui-code-block[data-max-height="md"] {
+    max-block-size: var(--code-block-max-height-md);
+  }
+
+  .ui-code-block[data-max-height="lg"] {
+    max-block-size: var(--code-block-max-height-lg);
+  }
+
+  /* PROSE — rendered content. Every measure is a token; nothing here is a copied value. */
+  .ui-prose {
+    font-size: var(--prose-font-size);
+    line-height: var(--prose-line-height);
+    overflow-wrap: anywhere;
+  }
+
+  .ui-prose[data-size="sm"] {
+    font-size: var(--prose-font-size-sm);
+  }
+
+  .ui-prose[data-image-size="original"] {
+    overflow-x: auto;
+  }
+
+  .ui-prose > * {
+    margin-block: 0;
+  }
+
+  .ui-prose > * + * {
+    margin-block-start: var(--prose-space-block);
+  }
+
+  .ui-prose :is(h1, h2, h3, h4) {
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    text-wrap: balance;
+  }
+
+  .ui-prose > :is(h1, h2, h3, h4) + * {
+    margin-block-start: var(--prose-space-block);
+  }
+
+  .ui-prose > * + :is(h1, h2, h3, h4) {
+    margin-block-start: var(--prose-heading-space-block-start);
+  }
+
+  .ui-prose h1 {
+    font-size: var(--heading-h1);
+  }
+
+  .ui-prose h2 {
+    font-size: var(--heading-h2);
+  }
+
+  .ui-prose h3 {
+    font-size: var(--heading-h3);
+  }
+
+  .ui-prose h4 {
+    font-size: var(--heading-h4);
+  }
+
+  .ui-prose :is(ul, ol) {
+    padding-inline-start: var(--prose-list-space-inline);
+  }
+
+  .ui-prose ul {
+    list-style: disc;
+  }
+
+  .ui-prose ol {
+    list-style: decimal;
+  }
+
+  .ui-prose li + li {
+    margin-block-start: var(--prose-list-item-space);
+  }
+
+  .ui-prose li > :is(ul, ol) {
+    margin-block-start: var(--prose-list-item-space);
+  }
+
+  .ui-prose blockquote {
+    border-inline-start: var(--prose-quote-border-width) solid hsl(var(--border));
+    padding-inline-start: var(--prose-quote-space-inline);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-prose :not(pre) > code {
+    font-family: var(--font-mono);
+    font-size: var(--prose-code-font-size);
+    background: hsl(var(--muted));
+    padding-inline: var(--prose-code-space-inline);
+    border-radius: var(--prose-code-radius);
+  }
+
+  .ui-prose a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+  }
+
+  .ui-prose table {
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+
+  .ui-prose :is(th, td) {
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    padding: var(--table-cell-padding-y) var(--table-cell-space-x);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  .ui-prose th {
+    font-weight: var(--font-weight-medium);
+    background: hsl(var(--muted));
+  }
+
+  .ui-prose img {
+    max-inline-size: 100%;
+    block-size: auto;
+    border-radius: var(--prose-image-radius);
+  }
+
+  .ui-prose[data-image-size="original"] img {
+    max-inline-size: none;
+  }
+
+  .ui-prose hr {
+    border: 0;
+    border-block-start: var(--stroke-hairline) solid hsl(var(--border));
+  }
+}

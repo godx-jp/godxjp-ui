@@ -1,5 +1,33 @@
 /** Data Display component prop types — @see docs/COMPONENTS.md#data-display */
 import type * as React from "react";
+
+/** @see CodeBlock — a block of preformatted text (request bodies, logs, snippets). */
+export type CodeBlockProp = {
+  /** The text. Pass a string; a highlighter's spans also work. */
+  children?: ChildrenProp;
+  /** Soft-wrap long lines (default true). `false` scrolls horizontally instead. */
+  wrap?: boolean;
+  /** Scroll inside the block past this height. Default `none` (grows with the content). */
+  maxHeight?: "sm" | "md" | "lg" | "none";
+  /** Type size. Default `sm`. */
+  size?: Extract<SizeProp, "xs" | "sm">;
+  /** Cosmetic: lands on `data-language`; no highlighter is bundled. */
+  language?: string;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see Prose — typography for rendered content (Markdown, CMS bodies). Styles descendant semantic
+ * HTML from the tokens; it has no opinion about where the HTML comes from.
+ */
+export type ProseProp = {
+  /** Body size. `md` is the page body size; `sm` is the compact step. Default `md`. */
+  size?: Extract<SizeProp, "sm" | "md">;
+  /** `fit` scales images to the column (default); `original` shows them at their authored size. */
+  imageSize?: "fit" | "original";
+  className?: ClassNameProp;
+  children?: ChildrenProp;
+};
 import type {
   ActionProp,
   ClassNameProp,

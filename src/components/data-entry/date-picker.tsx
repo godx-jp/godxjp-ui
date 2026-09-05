@@ -32,6 +32,8 @@ export function DatePicker({
   id,
   name,
   locale: localeProp,
+  showToday,
+  showClose,
   fromDate,
   toDate,
   allowClear = true,
@@ -199,6 +201,9 @@ export function DatePicker({
               ]}
               startMonth={fromDate}
               endMonth={toDate}
+              showToday={showToday}
+              showClose={showClose}
+              onClose={() => setOpen(false)}
             />
           </PopoverContent>
         </div>

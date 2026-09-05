@@ -12,6 +12,32 @@
   --accordion-focus-ring-offset: 2px;
   --carousel-dot-focus-ring-offset: 2px;
   --progress-label-font-size: var(--font-size-xs);
+
+  /* CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs. */
+  --code-block-font-size: var(--font-size-sm);
+  --code-block-font-size-xs: var(--font-size-xs);
+  --code-block-line-height: var(--line-height-normal);
+  --code-block-space-inset: var(--space-3);
+  --code-block-radius: var(--radius-md);
+  --code-block-max-height-sm: 12rem;
+  --code-block-max-height-md: 20rem;
+  --code-block-max-height-lg: 32rem;
+
+  /* Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell
+   * measures from --table-cell-padding-*; these are the rhythm knobs. */
+  --prose-font-size: var(--font-size-base);
+  --prose-font-size-sm: var(--font-size-xs);
+  --prose-line-height: var(--line-height-body);
+  --prose-space-block: var(--space-3);
+  --prose-heading-space-block-start: var(--space-6);
+  --prose-list-space-inline: var(--space-6);
+  --prose-list-item-space: var(--space-1);
+  --prose-quote-border-width: var(--stroke-md);
+  --prose-quote-space-inline: var(--space-3);
+  --prose-code-font-size: calc(1em / var(--font-size-ratio));
+  --prose-code-space-inline: var(--space-1);
+  --prose-code-radius: var(--radius-sm);
+  --prose-image-radius: var(--radius-md);
   --tree-item-title-font-size: var(--font-size-xs);
   --tree-item-description-font-size: var(--font-size-xs);
   --timeline-note-font-size: var(--font-size-xs);

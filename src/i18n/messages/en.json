@@ -17,6 +17,10 @@
     "typeToConfirm": "Type {phrase} to confirm"
   },
   "dataEntry": {
+    "calendar": {
+      "today": "Today",
+      "close": "Close"
+    },
     "datePicker": {
       "placeholder": "Select date",
       "openCalendar": "Open calendar"

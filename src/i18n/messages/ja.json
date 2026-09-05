@@ -17,6 +17,10 @@
     "typeToConfirm": "確認のため {phrase} と入力"
   },
   "dataEntry": {
+    "calendar": {
+      "today": "今日",
+      "close": "閉じる"
+    },
     "datePicker": {
       "placeholder": "日付を選択",
       "openCalendar": "カレンダーを開く"

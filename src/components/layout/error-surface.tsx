@@ -12,7 +12,7 @@ import type {
   ErrorSurfaceProp,
 } from "../../props/components/layout.prop";
 import type { EmptyStateToneProp } from "../../props/components/data-display.prop";
-import type { IconProp, ErrorSurfaceStatusProp } from "../../props/vocabulary";
+import type { IconProp } from "../../props/vocabulary";
 
 export type {
   ErrorSurfaceMaintenanceProp,

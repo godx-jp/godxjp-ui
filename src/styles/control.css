@@ -1867,6 +1867,21 @@
     color: hsl(var(--muted-foreground));
     opacity: var(--disabled-opacity);
   }
+
+  /* Footer actions (Today / Close): real tab stops under the grid. */
+  .ui-calendar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--calendar-footer-space-gap);
+    margin-block-start: var(--calendar-footer-space-block-start);
+    padding-block-start: var(--calendar-footer-space-block-start);
+    border-block-start: var(--calendar-footer-border-width) solid hsl(var(--border));
+  }
+
+  .ui-calendar-footer-today {
+    margin-inline-end: auto;
+  }
 }
 
 @layer components {

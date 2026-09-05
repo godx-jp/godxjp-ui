@@ -1196,6 +1196,19 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: ["DisabledProp"],
   },
   CalendarProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: [] },
+  CalendarFooterProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      {
+        field: "onClose",
+        local: true,
+        reason:
+          "Fired by the Close footer action; the picker that embeds the Calendar closes its popover. Not a value change.",
+      },
+    ],
+    local: ["showToday", "showClose"],
+  },
   DatePickerProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
@@ -1944,6 +1957,16 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/data-display/progress.tsx",
     vocabulary: ["ValueProp", "LabelProp", "ClassNameProp"],
+  },
+  CodeBlockProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ChildrenProp", "SizeProp", "ClassNameProp"],
+  },
+  ProseProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["SizeProp", "ClassNameProp", "ChildrenProp"],
   },
   TimelineProp: {
     group: "data-display",

@@ -325,6 +325,9 @@
   --calendar-day-font-size: var(--font-size-sm);
   --calendar-day-radius: var(--radius-md);
   --calendar-chevron-size: var(--icon-size-md);
+  --calendar-footer-space-gap: var(--space-2);
+  --calendar-footer-space-block-start: var(--space-2);
+  --calendar-footer-border-width: var(--stroke-hairline);
 
   /* TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal
    * on the component (#319), so a service could not fit the panes to its own page grid or

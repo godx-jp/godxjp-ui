@@ -3169,6 +3169,125 @@ import { Flex } from "@godxjp/ui/layout";
     rules: [],
   },
   {
+    name: "CodeBlock",
+    group: "data-display",
+    tagline:
+      "A block of preformatted text (request and response bodies, console output, snippets): mono, muted surface, soft-wrapped long lines by default, and an optional height cap that scrolls inside the block instead of pushing the page.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        description: "The text. Pass a string; a highlighter's spans also work.",
+      },
+      {
+        name: "wrap",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Soft-wrap long lines (`white-space: pre-wrap; overflow-wrap: anywhere`). `false` keeps lines intact and scrolls horizontally.",
+      },
+      {
+        name: "maxHeight",
+        type: '"sm" | "md" | "lg" | "none"',
+        defaultValue: '"none"',
+        description:
+          "Scroll inside the block past this height (--code-block-max-height-sm/md/lg). `none` grows with the content.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm"',
+        defaultValue: '"sm"',
+        description: "Type size: `sm` for bodies and snippets, `xs` for dense logs.",
+      },
+      {
+        name: "language",
+        type: "string",
+        description: "Cosmetic: lands on `data-language`. No highlighter is bundled.",
+      },
+      { name: "className", type: "string", description: "Extra classes on the `pre`." },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/data-display`: `import { CodeBlock } from "@godxjp/ui/data-display";`',
+      "DO give a block that can scroll (`maxHeight` or `wrap={false}`) an `aria-label`: it becomes a keyboard tab stop so the content is reachable without a mouse.",
+      "DO cap the height of anything that can be large (a 64 KB response body, a console dump) with `maxHeight`; the page keeps its rhythm and the block scrolls.",
+      'DON\'T hand-roll `<pre className="max-h-64 overflow-auto rounded bg-muted p-2 whitespace-pre-wrap">`: every one of those values is a copy of a token this component reads.',
+      'DON\'T reach for `Text as="code"` for a block: that is inline monospace with no wrapping axis. Use `Text as="code"` for an identifier inside a sentence, CodeBlock for a block.',
+      "DON'T use CodeBlock for a single value in a Descriptions row: `Descriptions.Item mono` owns that (it breaks the value, not the row).",
+    ],
+    useCases: [
+      'Request and response bodies of an HTTP trace (HAR) in a bug-report inbox: JSON up to 64 KB, lines up to 240 characters, wrapped and capped at `maxHeight="sm"`.',
+      'Console output attached to a bug report: `size="xs"` for density, `maxHeight="md"`.',
+      'An API example in developer documentation: `language="bash"` or `"json"`, no height cap.',
+      "A stack trace in an error detail sheet: `wrap={false}` so frames stay on one line, scrolled horizontally.",
+    ],
+    related: [
+      "Prose - renders whole documents (Markdown, CMS bodies) and delegates its `pre` treatment to the same tokens; use Prose when the block sits inside rendered content, CodeBlock for a standalone block.",
+      'Text - `as="code"` is inline monospace for an identifier in a sentence, not a block.',
+      "Descriptions - `Descriptions.Item mono` is a mono VALUE in a label/value row.",
+      "CredentialReveal - a masked secret with copy; not for arbitrary text.",
+    ],
+    example: `import { CodeBlock } from "@godxjp/ui/data-display";
+
+<CodeBlock maxHeight="sm" language="json" aria-label="Response body">{body}</CodeBlock>
+<CodeBlock size="xs" maxHeight="md" aria-label="Console">{consoleText}</CodeBlock>`,
+    storyPath: "data-display/CodeBlock.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "Prose",
+    group: "data-display",
+    tagline:
+      "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from.",
+    props: [
+      {
+        name: "size",
+        type: '"sm" | "md"',
+        defaultValue: '"md"',
+        description:
+          "Body size. `md` is the page body size (a wiki page); `sm` is the compact step (an issue description, a comment).",
+      },
+      {
+        name: "imageSize",
+        type: '"fit" | "original"',
+        defaultValue: '"fit"',
+        description:
+          "`fit` scales images to the column; `original` shows them at their authored size and the container scrolls horizontally.",
+      },
+      { name: "children", type: "ReactNode", description: "The rendered content." },
+      { name: "className", type: "string", description: "Extra classes on the container." },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/data-display`: `import { Prose } from "@godxjp/ui/data-display";`',
+      "DO wrap the OUTPUT of your Markdown pipeline (react-markdown + remark-gfm + rehype-sanitize), a sanitised CMS string via `dangerouslySetInnerHTML`, or plain JSX. Prose styles descendants: h1..h4, p, ul/ol/li, blockquote, code, pre, table/th/td, a, img, hr.",
+      "DO keep soft line breaks the pipeline's job (remark-breaks or the renderer's `breaks` option). Prose does not turn single newlines into `<br>`; it is typography, not parsing.",
+      "DON'T restate the heading scale, table cell measures or list rhythm with `[&_h1]:text-lg [&_td]:border …` utilities: they copy token values and never follow a retune. Prose reads --heading-h1..h4, --table-cell-padding-* and --prose-* directly.",
+      "DON'T sanitise inside Prose: it renders whatever HTML it is given. Sanitise before (rehype-sanitize, or the server).",
+      "DON'T use Prose for UI text (labels, descriptions, empty states): those are Text / Heading. Prose is for a document.",
+    ],
+    useCases: [
+      "A wiki page rendered from Markdown, at the page body size.",
+      'An issue description or a comment in a tracker, `size="sm"`.',
+      "A bug-report intake inbox that renders the report body (description, steps, environment table) sent by a browser extension.",
+      "A CMS article body delivered as sanitised HTML.",
+      "An email preview rendered from stored HTML.",
+    ],
+    related: [
+      "CodeBlock - a standalone block of preformatted text; Prose delegates its `pre` to the same tokens.",
+      "Text / Heading - UI copy, not a document.",
+      "LegalDocumentShell - a whole legal document with its own table of contents and section anchors; use Prose for the body of arbitrary rendered content.",
+      "ScrollArea - if a very long document needs its own scroll viewport, wrap Prose in ScrollArea.",
+    ],
+    example: `import { Prose } from "@godxjp/ui/data-display";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+<Prose size="sm">
+  <Markdown remarkPlugins={[remarkGfm]}>{issue.description}</Markdown>
+</Prose>`,
+    storyPath: "data-display/Prose.stories.tsx",
+    rules: [],
+  },
+  {
     name: "Timeline",
     group: "data-display",
     tagline:
@@ -4777,6 +4896,19 @@ export function NegotiationYmField() {
       "WAI-ARIA date combobox with a real typeable ISO-8601 input — give it a `name` for form submission and fill the input in e2e tests; the calendar is the visual-only affordance.",
     props: [
       {
+        name: "showToday",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Footer action that jumps to the current month and selects today (single), fills the open end of the range (range) or adds today (multiple). Disabled when today is outside startMonth / endMonth or matches `disabled`.",
+      },
+      {
+        name: "showClose",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Footer action that calls `onClose`.",
+      },
+      {
         name: "value",
         type: "Date | undefined",
         description:
@@ -6147,6 +6279,19 @@ export function CutoffTimeForm() {
       "WAI-ARIA date-range control with two typeable ISO inputs + popover calendar — form-submits as `${name}_from` / `${name}_to`, never hand-roll two DatePickers side-by-side.",
     props: [
       {
+        name: "showToday",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Footer action that jumps to the current month and selects today (single), fills the open end of the range (range) or adds today (multiple). Disabled when today is outside startMonth / endMonth or matches `disabled`.",
+      },
+      {
+        name: "showClose",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Footer action that calls `onClose`.",
+      },
+      {
         name: "value",
         type: "DateRange | undefined",
         description:
@@ -7372,6 +7517,24 @@ function FormSlider() {
       "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker or DateRangePicker instead when you need a form-submittable input.",
     props: [
       {
+        name: "showToday",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Footer action that jumps to the current month and selects today (single), fills the open end of the range (range) or adds today (multiple). Disabled when today is outside startMonth / endMonth or matches `disabled`.",
+      },
+      {
+        name: "showClose",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Footer action that calls `onClose`.",
+      },
+      {
+        name: "onClose",
+        type: "() => void",
+        description: "Called by the Close footer action.",
+      },
+      {
         name: "mode",
         type: "'single' | 'multiple' | 'range' | undefined",
         description:
@@ -7486,7 +7649,7 @@ function FormSlider() {
         name: "footer",
         type: "React.ReactNode | string",
         description:
-          "Content rendered below the grid as a live ARIA region. Use a string to communicate selection status to screen readers.",
+          "Content rendered below the grid as a live ARIA region. Use a string to communicate selection status to screen readers. Set it to replace the built-in showToday / showClose actions.",
       },
       {
         name: "autoFocus",

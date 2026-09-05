@@ -29,8 +29,11 @@ for (const match of componentBlock.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*Prop):\s*\{
   const file = body.match(/file:\s*"([^"]+)"/)?.[1] ?? "";
   const vocabularyText = body.match(/vocabulary:\s*\[([\s\S]*?)\]/)?.[1] ?? "";
   const refs = [...vocabularyText.matchAll(/"([A-Z][A-Za-z0-9]*Prop)"/g)].map((m) => m[1]);
-  const hasLocalReason = /local:\s*true[\s\S]*?reason:\s*"[^"]+"/.test(vocabularyText);
-  components.set(name, { file, vocabulary: refs, hasLocalReason });
+  // `{ field, local: true, reason }` entries cover that one field without a vocabulary type.
+  const localFields = [
+    ...vocabularyText.matchAll(/field:\s*"([^"]+)"[\s\S]*?local:\s*true[\s\S]*?reason:\s*"[^"]+"/g),
+  ].map((m) => m[1]);
+  components.set(name, { file, vocabulary: refs, localFields });
 }
 const failures = [];
 
@@ -106,9 +109,6 @@ const fieldVocabulary = [
 
 function coversField(field, entries) {
   if (entries.length > 0) return true;
-  for (const entry of entries) {
-    if (typeof entry === "object" && entry?.local === true && entry.reason) return true;
-  }
   for (const [pattern, expected] of fieldVocabulary) {
     if (!pattern.test(field)) continue;
     if (expected instanceof RegExp) return entries.some((entry) => expected.test(String(entry)));
@@ -136,6 +136,7 @@ for (const file of walk(propsDir)) {
       }
     }
     for (const field of fieldsForType(src, name)) {
+      if (entry.localFields.includes(field)) continue;
       if (!coversField(field, refs)) {
         failures.push(`${name}.${field}: no vocabulary mapping or local reason`);
       }

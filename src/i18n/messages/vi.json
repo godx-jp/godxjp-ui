@@ -17,6 +17,10 @@
     "typeToConfirm": "Nhập {phrase} để xác nhận"
   },
   "dataEntry": {
+    "calendar": {
+      "today": "Hôm nay",
+      "close": "Đóng"
+    },
     "datePicker": {
       "placeholder": "Chọn ngày",
       "openCalendar": "Mở lịch"
