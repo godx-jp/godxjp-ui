@@ -43,4 +43,20 @@
    * the pair together — they are one decision. */
   --badge-tint-surface: hsl(var(--card));
   --badge-tint-foreground: hsl(var(--card-foreground));
+  /* The caller's colour — the only knob here that is PER-INSTANCE. badge.tsx
+   * writes it inline on the element whenever `color` is given, and an inline
+   * declaration outranks this one, so this is the value only when the prop is
+   * absent.
+   *
+   * It has to be declared somewhere all the same. An undeclared custom property
+   * makes both color-mix() calls in badge-layout.css invalid at computed-value
+   * time, which drops the background AND the border rather than falling back to
+   * anything — the failure check-dist-tokens-resolve.mjs exists to catch, and
+   * which it did catch the moment 19.3.0 shipped the wash without it.
+   *
+   * The surface is the right default because mixing a colour into itself returns
+   * that colour: an untinted chip is then exactly the card it sits on — the same
+   * quiet degradation 19.3.1 chose for browsers without color-mix, rather than a
+   * transparent hole. */
+  --badge-color: var(--badge-tint-surface);
 }

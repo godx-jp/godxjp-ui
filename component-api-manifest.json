@@ -1528,6 +1528,14 @@
           "declaredIn": ["src/components/data-display/badge.tsx"]
         },
         {
+          "name": "color",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
           "name": "icon",
           "origin": "owned",
           "required": false,
@@ -11515,6 +11523,14 @@
           "origin": "owned",
           "required": false,
           "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
+          "name": "color",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/badge.tsx"]
         },
