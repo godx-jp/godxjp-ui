@@ -598,7 +598,10 @@
 
     [data-collapse-below="sm"] .ui-table-row {
       display: block;
-      border: 1px solid hsl(var(--border));
+      /* A stacked row is a CARD, so its height is whatever its cells need. Without this reset the
+       * fixed row height from control.css still applies and the cells spill past the card edge. */
+      height: auto;
+      border: var(--stroke-hairline) solid hsl(var(--border));
       border-radius: var(--radius-md);
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x);
@@ -640,7 +643,10 @@
 
     [data-collapse-below="md"] .ui-table-row {
       display: block;
-      border: 1px solid hsl(var(--border));
+      /* A stacked row is a CARD, so its height is whatever its cells need. Without this reset the
+       * fixed row height from control.css still applies and the cells spill past the card edge. */
+      height: auto;
+      border: var(--stroke-hairline) solid hsl(var(--border));
       border-radius: var(--radius-md);
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x);
@@ -682,7 +688,10 @@
 
     [data-collapse-below="lg"] .ui-table-row {
       display: block;
-      border: 1px solid hsl(var(--border));
+      /* A stacked row is a CARD, so its height is whatever its cells need. Without this reset the
+       * fixed row height from control.css still applies and the cells spill past the card edge. */
+      height: auto;
+      border: var(--stroke-hairline) solid hsl(var(--border));
       border-radius: var(--radius-md);
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x);
@@ -724,7 +733,10 @@
 
     [data-collapse-below="xl"] .ui-table-row {
       display: block;
-      border: 1px solid hsl(var(--border));
+      /* A stacked row is a CARD, so its height is whatever its cells need. Without this reset the
+       * fixed row height from control.css still applies and the cells spill past the card edge. */
+      height: auto;
+      border: var(--stroke-hairline) solid hsl(var(--border));
       border-radius: var(--radius-md);
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x);
