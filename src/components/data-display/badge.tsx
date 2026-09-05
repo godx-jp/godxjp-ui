@@ -75,6 +75,12 @@ const badgeVariants = cva(
         secondary: "border-transparent bg-secondary text-secondary-foreground",
         outline: "text-foreground",
         dashed: "border-dashed text-foreground",
+        /* `color` mode. Deliberately empty and deliberately NOT in the public
+         * `BadgeVariant` union: every fill, border and text utility has to stay
+         * off the element so badge-layout.css's `[data-tinted]` rule is
+         * reachable (a utility beats a components-layer rule whatever the
+         * specificity — gh#260). Selected by the `color` prop, never by hand. */
+        tinted: "",
       },
       // Corner shape — default inherits the badge radius token; pill/sharp override via the tokens.
       shape: {
@@ -95,6 +101,22 @@ export interface BadgeProps
   /** Corner shape — `default` (badge radius) · `pill` (fully rounded) · `sharp` (square). */
   shape?: ShapeProp | null;
   tone?: BadgeTone | null;
+  /**
+   * The entity's OWN colour — a status colour, an issue type, a tag — as a CSS
+   * colour. A third axis beside `variant` (structure) and `tone` (meaning):
+   * this one carries DATA, a colour a person picked in a settings screen.
+   *
+   * The chip is washed rather than filled, and the reason is a contrast floor
+   * rather than taste: no foreground clears WCAG AA against every colour a
+   * picker can produce (near-black and white measure equal at luminance 0.2029,
+   * both 4.15:1). Washing the colour `--badge-tint-fill` into
+   * `--badge-tint-surface` and keeping the surface's own label makes the ratio
+   * a function of the tokens instead — 8.52:1 at the defaults, worst case
+   * across the sRGB cube on both themes.
+   *
+   * Wins over `tone` and over `variant`'s fill when both are given.
+   */
+  color?: string;
   icon?: React.ComponentType<{ className?: string }> | null;
   status?: string;
   children?: React.ReactNode;
@@ -116,8 +138,10 @@ export function Badge({
   variant,
   shape,
   tone,
+  color,
   icon,
   status,
+  style,
   children,
   ...props
 }: BadgeProps) {
@@ -129,17 +153,23 @@ export function Badge({
   const ResolvedIcon = icon === undefined ? statusDef?.icon : icon;
   const resolvedChildren =
     children ?? (status ? (status in STATUS_MAP ? t(`status.${status}`) : status) : undefined);
+  const tinted = color != null && color !== "";
 
   return (
     <div
       data-slot="badge"
-      data-tone={resolvedTone}
+      data-tone={tinted ? undefined : resolvedTone}
+      data-tinted={tinted ? "" : undefined}
       data-shape={shape ?? "default"}
       className={cn(
-        badgeVariants({ variant: variant ?? "default", shape: shape ?? "default" }),
-        badgeToneClass[resolvedTone],
+        badgeVariants({
+          variant: tinted ? "tinted" : (variant ?? "default"),
+          shape: shape ?? "default",
+        }),
+        tinted ? undefined : badgeToneClass[resolvedTone],
         className,
       )}
+      style={tinted ? { ...style, ["--badge-color" as string]: color } : style}
       {...props}
     >
       {ResolvedIcon ? <ResolvedIcon data-slot="badge-icon" aria-hidden="true" /> : null}

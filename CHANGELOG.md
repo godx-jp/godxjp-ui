@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.3.0] - 2026-09-06
+
+### Added
+
+- **`Badge color` (#349).** The record's OWN colour — a status an administrator coloured, an
+  issue type, a tag — as a third axis beside `variant` (structure) and `tone` (meaning). The
+  chip is WASHED rather than filled: `--badge-tint-fill` (18%) into `--badge-tint-surface`, the
+  edge at `--badge-tint-edge` (45%), the label from `--badge-tint-foreground`. A solid chip has
+  to choose a foreground and no choice clears WCAG AA for every colour a picker can produce
+  (near-black and white measure equal at luminance 0.2029, both 4.15:1); washed, the worst case
+  across the sRGB cube is 8.52:1 on both themes. No fill/tone utility is emitted in this mode,
+  so the components-layer wash is reachable (the gh#260 layering trap).
+
 ## [19.2.0] - 2026-09-05
 
 ### Added

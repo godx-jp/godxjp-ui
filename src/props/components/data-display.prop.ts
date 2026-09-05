@@ -180,6 +180,13 @@ export type BadgeProp = {
   variant?: "default" | "secondary" | "outline";
   /** Status tones plus a brand `primary` tone (soft brand pill); solid brand = `variant="default"`. */
   tone?: ToneProp | "primary";
+  /**
+   * The entity's OWN colour (a status, an issue type, a tag) as a CSS colour —
+   * DATA, not a semantic tone. Washed into `--badge-tint-surface` rather than
+   * filled, because no foreground clears WCAG AA against every colour a picker
+   * can produce. Wins over `tone` and over `variant`'s fill.
+   */
+  color?: string;
   status?: string;
   icon?: React.ComponentType<{ className?: string }> | null;
   className?: ClassNameProp;

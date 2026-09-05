@@ -19,4 +19,28 @@
    * label's run, so the two retune together. Deliberately NOT --scaling-multiplied — the literal
    * it replaces did not track density. */
   --badge-icon-size: var(--icon-size-xs);
+
+  /* DATA COLOUR (`color` prop) — the entity's own colour, not a semantic tone.
+   *
+   * A caller colour is DATA: a project administrator picks it for a status, an
+   * issue type, a tag, a label. Solid, no foreground clears WCAG AA for every
+   * colour they can pick — near-black and white measure equal at luminance
+   * 0.2029, where both land on 4.15:1, under the 4.5 that badge-sized text
+   * needs, and a real picker can produce that. So the GROUND moves instead:
+   * the colour is washed into the surface and the label stays the surface's
+   * own foreground, which makes the ratio a function of these two knobs rather
+   * than of the colour somebody chose.
+   *
+   * The fill is where the label sits, so it is quiet; the edge carries no text,
+   * so it is free to be four times as saturated — it is what keeps a pale tint
+   * from dissolving into the surface, and where the colour still says WHICH
+   * status at a glance. At these defaults the worst case across the sRGB cube
+   * measures 8.52:1 (both themes), against 4.15 for a solid chip. */
+  --badge-tint-fill: 18%;
+  --badge-tint-edge: 45%;
+  /* The surface the chip is washed into, and the label it then carries. A
+   * service whose chips sit on the page ground rather than on a card retunes
+   * the pair together — they are one decision. */
+  --badge-tint-surface: hsl(var(--card));
+  --badge-tint-foreground: hsl(var(--card-foreground));
 }

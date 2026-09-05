@@ -1403,7 +1403,19 @@ export const COMPONENT_PROP_REGISTRY = {
   BadgeProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["BadgeVariantProp", "ShapeProp", "ToneProp", "ChildrenProp", "ClassNameProp"],
+    vocabulary: [
+      "BadgeVariantProp",
+      "ShapeProp",
+      "ToneProp",
+      "ChildrenProp",
+      "ClassNameProp",
+      {
+        field: "color",
+        local: true,
+        reason:
+          "The entity's OWN colour as a CSS colour string — DATA a person picked in a settings screen (a status, an issue type, a tag), a third axis beside `variant` (structure) and `tone` (meaning). No vocabulary type fits: ToneProp is the closed semantic set, and this value is open by definition. Washed into --badge-tint-surface rather than filled, because no foreground clears WCAG AA against every colour a picker can produce.",
+      },
+    ],
   },
   DataTableProp: {
     group: "data-display",

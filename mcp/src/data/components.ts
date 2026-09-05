@@ -2641,6 +2641,12 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
           "Corner radius from the tokens — `default` (badge radius), `pill` (fully rounded), `sharp` (square). Use the prop instead of a `rounded-*` className.",
       },
       {
+        name: "color",
+        type: "string",
+        description:
+          "The entity's OWN colour as a CSS colour — DATA, not a semantic tone: a status colour, an issue type, a tag, whatever a person picked in a settings screen. A third axis beside `variant` (structure) and `tone` (meaning), and it wins over both. The chip is WASHED rather than filled (`--badge-tint-fill` into `--badge-tint-surface`, label from `--badge-tint-foreground`) because no foreground clears WCAG AA against every colour a picker can produce — near-black and white measure equal at luminance 0.2029, both 4.15:1. Washed, the ratio is a function of the tokens instead: 8.52:1 worst case across the sRGB cube, both themes.",
+      },
+      {
         name: "status",
         type: "string",
         description:
@@ -2665,6 +2671,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "Badge renders as a `<div>` (HTMLAttributes<HTMLDivElement>). It carries no interactive semantics. If you need a clickable chip, wrap it in a `<button>` or use a Button with a matching variant — never add an `onClick` directly to Badge without an accessible role.",
       "Badge is a leaf — pass plain text or a short ReactNode as children. Do NOT nest another Badge, a Button, or interactive controls inside it; that breaks focus order and creates invalid HTML (div-in-inline-context).",
       "Use semantic tokens for any className overrides (`text-muted-foreground`, `bg-destructive`) — never raw Tailwind palette classes like `bg-green-500`.",
+      "DO pass `color` — never an inline `backgroundColor` — when the colour belongs to the RECORD rather than to its meaning (a status an administrator coloured, an issue type, a tag). A hand-filled chip has to choose a foreground, and no choice is readable for every colour a picker can produce; `color` moves the ground instead and keeps the label on the surface's own foreground.",
     ],
     useCases: [
       'Category or tier labels on table rows — e.g. plan tier (`<Badge variant="secondary">Pro</Badge>`), document type (`<Badge variant="outline">Invoice</Badge>`), or locale tag (`<Badge variant="secondary">EN</Badge>`).',
@@ -2672,6 +2679,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "Inline count or highlight next to a heading or nav item — e.g. `<Badge variant=\"destructive\">3</Badge>` beside 'Overdue invoices' to draw attention to a non-zero count.",
       'Feature flags or experiment variant labels on admin records — e.g. `<Badge variant="outline">A/B</Badge>` alongside a campaign row to indicate it is in a split test.',
       "Read-only metadata chips inside a Descriptions.Item or Card header where a lifecycle icon would be visually heavy — e.g. currency code, payment method, or region tag.",
+      'A status or category an administrator coloured themselves, in an issue tracker or a CRM — `<Badge shape="pill" color={status.color}>{status.name}</Badge>`. The colour comes out of a picker and is stored on the row, so it cannot be mapped to a tone.',
     ],
     related: [
       "Button — use instead of Badge when the chip must be interactive (clickable, toggleable). Badge carries no button role or keyboard handler; a naked `onClick` on Badge is inaccessible.",
@@ -2680,7 +2688,8 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
 
 <Badge variant="secondary">A/B</Badge>
 <Badge status="active">公開中</Badge>
-<Badge status="プレミアム" tone="success" icon={null}>プレミアム</Badge>`,
+<Badge status="プレミアム" tone="success" icon={null}>プレミアム</Badge>
+<Badge shape="pill" color="#4488c5">処理中</Badge>`,
     storyPath: "data-display/Badge.stories.tsx",
     rules: [35],
   },

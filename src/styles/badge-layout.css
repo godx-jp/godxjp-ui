@@ -28,6 +28,23 @@
     }
   }
 
+  /* The `color` prop: the entity's OWN colour, washed into the surface. No fill
+   * or tone utility is emitted in this mode (badge.tsx), so this components-layer
+   * rule is reachable — see the gh#260 note about utilities outranking the layer. */
+  [data-slot="badge"][data-tinted] {
+    background-color: color-mix(
+      in srgb,
+      var(--badge-color) var(--badge-tint-fill),
+      var(--badge-tint-surface)
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--badge-color) var(--badge-tint-edge),
+      var(--badge-tint-surface)
+    );
+    color: var(--badge-tint-foreground);
+  }
+
   [data-slot="badge-icon"] {
     width: var(--badge-icon-size);
     height: var(--badge-icon-size);

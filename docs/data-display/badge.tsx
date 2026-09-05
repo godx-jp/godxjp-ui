@@ -30,6 +30,21 @@ const shapes = [
   { shape: "sharp" as const, label: "角 Sharp" },
 ];
 
+/**
+ * Colours a person picked, not colours that mean something — a status and an
+ * issue type out of a project's own settings screen, plus the two ends of the
+ * range an administrator can still type. `#488a5a` is here because it is the
+ * worst case for a SOLID chip: near-black and white measure equal on it, both
+ * 4.15:1, under the 4.5 badge-sized text needs. Washed, it clears 8.52.
+ */
+const dataColours = [
+  { color: "#4488c5", label: "処理中 In progress" },
+  { color: "#ea9a10", label: "未対応 Open" },
+  { color: "#488a5a", label: "完了 Done" },
+  { color: "#000000", label: "黒 Black" },
+  { color: "#ffffff", label: "白 White" },
+];
+
 const tones = [
   { tone: "default" as const, label: "既定 Default" },
   { tone: "primary" as const, label: "ブランド Brand" },
@@ -114,6 +129,27 @@ export default function Demo() {
               {shapes.map((s) => (
                 <Badge key={s.shape} shape={s.shape} tone="info">
                   {s.label}
+                </Badge>
+              ))}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>The record&rsquo;s own colour</CardTitle>
+            <CardDescription>
+              color carries DATA: a status an administrator coloured, an issue type, a tag. The
+              chip is washed into the surface rather than filled, because a solid chip has to choose
+              a foreground and no choice is readable for every colour a picker can produce. Retune
+              the wash with --badge-tint-fill / --badge-tint-edge.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap align="center" gap="sm">
+              {dataColours.map((c) => (
+                <Badge key={c.color} shape="pill" color={c.color}>
+                  {c.label}
                 </Badge>
               ))}
             </Flex>
