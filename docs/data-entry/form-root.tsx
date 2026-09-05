@@ -92,7 +92,7 @@ export default function Demo() {
           </FormRoot>
         </CardContent>
       </Card>
-      <p className="text-muted-foreground mt-4 text-sm">
+      <p className="text-muted-foreground text-sm">
         warning state、form-level error-summary から field への focus link、touched-only timing は
         public wrapper API では未提供。React Hook Form の設定または consumer composition として
         UNTESTED。

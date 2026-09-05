@@ -1,6 +1,13 @@
 import { useState } from "react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@godxjp/ui/data-display";
 import { FormField, Select } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -63,12 +70,10 @@ async function loadCountries({ query }: SelectLoadParams): Promise<SelectLoadRes
 // real product ships an SVG flag set and renders it here. Tokens only — no hex, no inline style.
 function renderCountry(option: SelectOption) {
   return (
-    <span className="flex items-center gap-2">
-      <Text size="xs" tone="muted" mono className="bg-muted rounded px-1.5 py-0.5">
-        {option.value}
-      </Text>
+    <Flex align="center" gap="sm">
+      <Badge variant="secondary">{option.value}</Badge>
       <Text truncate>{option.label}</Text>
-    </span>
+    </Flex>
   );
 }
 

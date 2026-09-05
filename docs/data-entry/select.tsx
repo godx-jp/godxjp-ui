@@ -300,13 +300,13 @@ export default function Demo() {
                 placeholder="担当者を選択"
                 options={people}
                 labelRender={({ label }) => (
-                  <span className="flex items-center gap-2">
+                  <Flex align="center" gap="sm">
                     {avatarFor(String(label))}
                     <span className="truncate">{label}</span>
-                    <Badge tone="info" icon={null} className="ms-1">
+                    <Badge tone="info" icon={null}>
                       担当
                     </Badge>
-                  </span>
+                  </Flex>
                 )}
               />
             </FormField>

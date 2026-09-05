@@ -13,14 +13,14 @@ import {
 } from "@godxjp/ui/layout";
 import type { SidebarItemData, SidebarRenderItemProp, SidebarSectionProp } from "@godxjp/ui/layout";
 import {
+  Avatar,
+  AvatarFallback,
+  Badge,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  Badge,
-  Avatar,
-  AvatarFallback,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import {
@@ -324,17 +324,19 @@ export default function Demo() {
                       aria-label="brand プロップ例のナビゲーション"
                       brand={
                         <SidebarHeader>
-                          <span className="bg-primary text-primary-foreground grid size-7 shrink-0 place-items-center rounded-md">
-                            <Boxes className="size-4" aria-hidden="true" />
-                          </span>
-                          <span className="flex min-w-0 flex-col">
+                          <Avatar className="size-7 shrink-0 rounded-md">
+                            <AvatarFallback className="bg-primary text-primary-foreground">
+                              <Boxes className="size-4" aria-hidden="true" />
+                            </AvatarFallback>
+                          </Avatar>
+                          <Flex direction="col" gap="xs" className="min-w-0">
                             <Text weight="bold" truncate>
                               Acme Suite
                             </Text>
                             <Text size="xs" tone="muted" truncate>
                               v7.0 Enterprise
                             </Text>
-                          </span>
+                          </Flex>
                         </SidebarHeader>
                       }
                     />

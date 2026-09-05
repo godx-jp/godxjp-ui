@@ -187,16 +187,18 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="max-w-80 border p-2">
-              <Steps
-                value={1}
-                items={[
-                  { title: "会社情報の入力", description: "法人番号と所在地" },
-                  { title: "本人確認書類のアップロード", description: "代表者の確認" },
-                  { title: "申請内容の最終確認", description: "送信前の確認" },
-                ]}
-              />
-            </div>
+            <Card className="max-w-80">
+              <CardContent>
+                <Steps
+                  value={1}
+                  items={[
+                    { title: "会社情報の入力", description: "法人番号と所在地" },
+                    { title: "本人確認書類のアップロード", description: "代表者の確認" },
+                    { title: "申請内容の最終確認", description: "送信前の確認" },
+                  ]}
+                />
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
 

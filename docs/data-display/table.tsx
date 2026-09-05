@@ -38,7 +38,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent flush>
             <Table>
-              <caption className="px-4 py-2 text-start">
+              <caption className="text-start" style={{ padding: "var(--space-2) var(--space-4)" }}>
                 <Text size="xs" tone="muted">
                   2026年5月 売上計上（税込）
                 </Text>

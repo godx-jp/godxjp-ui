@@ -77,7 +77,7 @@ export default function Demo() {
                     <Card variant="muted" className="h-full w-full">
                       <CardContent flush>
                         <Flex align="center" justify="center" gap="xs">
-                          <Text size="xs" tone="muted" className="px-1 text-center">
+                          <Text size="xs" tone="muted" className="text-center">
                             {name}
                           </Text>
                         </Flex>

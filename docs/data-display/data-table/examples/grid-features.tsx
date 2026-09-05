@@ -149,7 +149,7 @@ export default function Demo() {
       </Card>
 
       {lastClicked ? (
-        <Text as="p" tone="muted" className="mt-3">
+        <Text as="p" tone="muted">
           行クリック: {lastClicked}
         </Text>
       ) : null}

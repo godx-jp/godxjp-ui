@@ -139,8 +139,12 @@ export default function Demo() {
             <iframe
               title="Transactional email specimen at 480px"
               srcDoc={specimen}
-              className="border-border bg-background w-full rounded-md border"
-              style={{ height: 560 }}
+              className="bg-background w-full"
+              style={{
+                border: "1px solid hsl(var(--border))",
+                borderRadius: "var(--radius-md)",
+                height: 560,
+              }}
             />
           </CardContent>
         </Card>
@@ -160,8 +164,13 @@ export default function Demo() {
             <iframe
               title="Transactional email specimen at 360px"
               srcDoc={specimen}
-              className="border-border bg-background rounded-md border"
-              style={{ width: 360, height: 620 }}
+              className="bg-background"
+              style={{
+                border: "1px solid hsl(var(--border))",
+                borderRadius: "var(--radius-md)",
+                width: 360,
+                height: 620,
+              }}
             />
           </CardContent>
         </Card>
@@ -237,8 +246,12 @@ export default function Demo() {
               {colorRows.map((row) => (
                 <Flex key={row.token} direction="col" gap="xs">
                   <div
-                    className="border-border h-12 rounded-md border"
-                    style={{ backgroundColor: row.hex }}
+                    className="h-12"
+                    style={{
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "var(--radius-md)",
+                      backgroundColor: row.hex,
+                    }}
                   />
                   <Text size="sm">{row.token}</Text>
                   <Flex gap="xs" align="center">

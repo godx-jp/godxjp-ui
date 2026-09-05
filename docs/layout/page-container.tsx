@@ -411,6 +411,7 @@ export default function Demo() {
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
         {/* Default: top-packed. Short content does NOT stretch · the space below is
             just neutral page background, never a jarring void. */}
+        {/* ui-audit-disable-next-line no-hand-rolled-surface — a bounded viewport so the page-level scroll behaviour is visible in a docs page — a frame around the demo, not product chrome */}
         <div className="h-80 overflow-auto rounded-md border">
           <PageContainer title="既定（top-pack）" subtitle="fill なし · 余白は中立な背景">
             <Card>
@@ -424,6 +425,7 @@ export default function Demo() {
         </div>
 
         {/* fill: body grows to fill the shell; the composer footer pins to the bottom. */}
+        {/* ui-audit-disable-next-line no-hand-rolled-surface — a bounded viewport so the page-level scroll behaviour is visible in a docs page — a frame around the demo, not product chrome */}
         <div className="h-80 overflow-auto rounded-md border">
           <PageContainer
             fill
@@ -603,6 +605,7 @@ export default function Demo() {
           帯の内側（--page-toolbar-pad-block）だけ。 */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
         {/* fill · 帯は固定、トランスクリプトだけがその下でスクロールする（帯の下に潜り込まない）。 */}
+        {/* ui-audit-disable-next-line no-hand-rolled-surface — a bounded viewport so the page-level scroll behaviour is visible in a docs page — a frame around the demo, not product chrome */}
         <div className="h-80 overflow-auto rounded-md border">
           <PageContainer
             fill
@@ -739,6 +742,7 @@ export default function Demo() {
             footer の上罫線も --page-footer-divider で消せます · 入力欄が自前で枠を持つ Card の
             場合、全幅の罫線がその真上に重なって 2 本目の線になるためです。既定は「引く」のまま
             （フォームの保存／取消バーはこの線で本文と分かれる）。 */}
+        {/* ui-audit-disable-next-line no-hand-rolled-surface — a bounded viewport so the page-level scroll behaviour is visible in a docs page — a frame around the demo, not product chrome */}
         <div className="h-80 overflow-auto rounded-md border">
           <PageContainer
             fill
@@ -803,6 +807,7 @@ export default function Demo() {
           テナントごとの再テーマも効かなくなるためです。帯を塗るなら内側の余白も一緒に
           （--page-toolbar-pad-block）· 既定の 0 は「透明な帯には内側がない」ことに由来します。 */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+        {/* ui-audit-disable-next-line no-hand-rolled-surface — a bounded viewport so the page-level scroll behaviour is visible in a docs page — a frame around the demo, not product chrome */}
         <div className="h-80 overflow-auto rounded-md border">
           <PageContainer
             fill
@@ -837,6 +842,7 @@ export default function Demo() {
           </PageContainer>
         </div>
 
+        {/* ui-audit-disable-next-line no-hand-rolled-surface — a bounded viewport so the page-level scroll behaviour is visible in a docs page — a frame around the demo, not product chrome */}
         <div className="h-80 overflow-auto rounded-md border" style={TOOLBAR_CHROME_TOKENS}>
           <PageContainer
             fill
@@ -859,7 +865,7 @@ export default function Demo() {
               {[
                 "帯がカード面に乗り、本文から分離して読めます。",
                 "塗った帯には内側の余白が要るので pad-block も同じテーマで指定します。",
-                "呼び出し側の bg-card / py-1.5 は不要 · どちらもトークンの仕事です。",
+                "呼び出し側で背景色や上下の余白を足す必要はありません · どちらもトークンの仕事です。",
               ].map((message) => (
                 <Card key={message}>
                   <CardContent>
@@ -881,6 +887,7 @@ export default function Demo() {
           --app-shell-bar-height にすると帯は 48px に固定され、タイトル列も extra も帯の中心
           （y=24）に載ります。min なので、より背の高い extra は今までどおり収まります。 */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+        {/* ui-audit-disable-next-line no-hand-rolled-surface — a bounded viewport so the page-level scroll behaviour is visible in a docs page — a frame around the demo, not product chrome */}
         <div className="h-80 overflow-auto rounded-md border">
           <PageContainer
             fill
@@ -911,6 +918,7 @@ export default function Demo() {
           </PageContainer>
         </div>
 
+        {/* ui-audit-disable-next-line no-hand-rolled-surface — a bounded viewport so the page-level scroll behaviour is visible in a docs page — a frame around the demo, not product chrome */}
         <div className="h-80 overflow-auto rounded-md border" style={CHROME_BAND_TOKENS}>
           <PageContainer
             fill

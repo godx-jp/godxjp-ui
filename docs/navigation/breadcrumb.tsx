@@ -1,6 +1,13 @@
 import { forwardRef } from "react";
 import type { AnchorHTMLAttributes } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CodeBlock,
+} from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import { Breadcrumb } from "@godxjp/ui/layout";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -110,15 +117,15 @@ export default function Demo() {
               {/* tabIndex: the snippet scrolls sideways on a narrow viewport and holds no
                   focusable content, so without its own tab stop a keyboard user cannot reach the
                   clipped end of the line (WCAG 2.1.1). */}
-              <pre tabIndex={0} className="bg-muted overflow-x-auto rounded p-3 text-xs">
+              <CodeBlock size="xs" wrap={false}>
                 {`<Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "現在ページ" }]} />`}
-              </pre>
+              </CodeBlock>
               <Text as="p" size="xs" tone="muted">
                 PageContainer / AppShell の breadcrumb プロップに (任意):
               </Text>
-              <pre tabIndex={0} className="bg-muted overflow-x-auto rounded p-3 text-xs">
+              <CodeBlock size="xs" wrap={false}>
                 {`<PageContainer title="仕訳詳細" breadcrumb={[{ label: "ホーム", to: "/" }, { label: "JE-0042" }]}>`}
-              </pre>
+              </CodeBlock>
             </Flex>
           </CardContent>
         </Card>

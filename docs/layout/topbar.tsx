@@ -98,7 +98,7 @@ export default function Demo() {
         {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
       </Button>
       {/* Decorative mark — hidden below sm so the budget goes to the two real controls. */}
-      <Avatar className="hidden rounded-md sm:flex">
+      <Avatar className="rounded-md">
         <AvatarFallback className="bg-primary text-primary-foreground font-bold">C</AvatarFallback>
       </Avatar>
       <DropdownMenu>
@@ -120,7 +120,7 @@ export default function Demo() {
           <DropdownMenuSeparator />
           {ENTITIES.map((e) => (
             <DropdownMenuItem key={e.id} onSelect={() => setActiveEntity(e)}>
-              <Building2 className="me-2 size-4" />
+              <Building2 className="size-4" />
               {e.name}
               {activeEntity.id === e.id ? (
                 <Badge variant="secondary" className="ms-auto text-xs">
@@ -157,7 +157,7 @@ export default function Demo() {
           budget before it gets a say. At 320 this environment chip alone claimed 93 of the bar's
           198px, squeezing start to 25px and clipping the entity switcher inside it. An ambient
           status label is the first thing a compact bar drops, so it appears from sm up. */}
-      <Badge tone="warning" className="hidden text-xs sm:inline-flex">
+      <Badge tone="warning" className="text-xs">
         ステージング
       </Badge>
       <Button
@@ -184,16 +184,16 @@ export default function Demo() {
           <DropdownMenuLabel>佐藤 花子</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <UserRound className="me-2 size-4" />
+            <UserRound className="size-4" />
             プロフィール
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Settings className="me-2 size-4" />
+            <Settings className="size-4" />
             アカウント設定
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <LogOut className="me-2 size-4" />
+            <LogOut className="size-4" />
             ログアウト
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -291,9 +291,9 @@ export default function Demo() {
                   { prop: "children", desc: "3 slot を使わず完全カスタムにする場合の逃げ道" },
                 ].map(({ prop, desc }) => (
                   <Flex key={prop} align="start" gap="sm">
-                    <code className="bg-muted shrink-0 rounded px-1.5 py-0.5 font-mono text-xs">
+                    <Badge variant="secondary" className="shrink-0">
                       {prop}
-                    </code>
+                    </Badge>
                     <Text tone="muted">{desc}</Text>
                   </Flex>
                 ))}
@@ -331,13 +331,15 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="max-w-80 overflow-hidden border p-2">
-                <Topbar
-                  start={<Text weight="medium">株式会社とても長い組織名称</Text>}
-                  center={<Button variant="outline">すべての取引を検索</Button>}
-                  end={<Button variant="ghost">山田 太郎 システム管理者</Button>}
-                />
-              </div>
+              <Card className="max-w-80 overflow-hidden">
+                <CardContent>
+                  <Topbar
+                    start={<Text weight="medium">株式会社とても長い組織名称</Text>}
+                    center={<Button variant="outline">すべての取引を検索</Button>}
+                    end={<Button variant="ghost">山田 太郎 システム管理者</Button>}
+                  />
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
         </Flex>

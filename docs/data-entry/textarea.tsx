@@ -58,7 +58,7 @@ function Composer() {
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
           />
-          <Flex direction="row" justify="end" gap="sm" className="px-2 pb-2">
+          <Flex direction="row" justify="end" gap="sm">
             <Button size="sm" onClick={send}>
               送信
             </Button>
@@ -109,7 +109,7 @@ export default function Demo() {
                     aria-label="サーフェス内のテキストエリア"
                     placeholder="メッセージを入力..."
                   />
-                  <Flex direction="row" justify="end" className="px-2 pb-2">
+                  <Flex direction="row" justify="end">
                     <Button size="sm">送信</Button>
                   </Flex>
                 </CardContent>

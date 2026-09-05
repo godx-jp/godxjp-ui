@@ -83,7 +83,7 @@ export default function Demo() {
                   期間を選択
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto" style={{ padding: 0 }} align="start">
                 <Calendar
                   mode="range"
                   selected={range}

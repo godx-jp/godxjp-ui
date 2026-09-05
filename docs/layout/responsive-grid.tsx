@@ -78,10 +78,18 @@ export default function Demo() {
           <CardContent>
             <Flex direction="col" gap="md">
               {["max-w-80", "max-w-3xl"].map((width) => (
-                <div key={width} className={`${width} border p-2`}>
+                <div
+                  key={width}
+                  className={width}
+                  style={{ border: "1px solid hsl(var(--border))", padding: "var(--space-2)" }}
+                >
                   <ResponsiveGrid columns={4}>
                     {Array.from({ length: 4 }, (_, index) => (
-                      <div key={index} className="bg-muted rounded p-3 text-center">
+                      <div
+                        key={index}
+                        className="bg-muted rounded text-center"
+                        style={{ padding: "var(--space-3)" }}
+                      >
                         {index + 1}
                       </div>
                     ))}

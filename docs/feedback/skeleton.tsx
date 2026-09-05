@@ -69,7 +69,7 @@ export default function Demo() {
               its own structure.
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent flush>
             <SkeletonTable rows={6} columns={6} />
           </CardContent>
         </Card>

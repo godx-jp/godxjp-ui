@@ -111,7 +111,7 @@ export default function Demo() {
                   onCheckedChange={(next) => setScopes(next === true ? ALL_SCOPES : [])}
                 />
               </Field>
-              <Flex direction="col" gap="sm" className="ps-6">
+              <Flex direction="col" gap="sm" style={{ paddingInlineStart: "var(--space-6)" }}>
                 <Field id="scope-read" label="閲覧">
                   <Checkbox
                     id="scope-read"

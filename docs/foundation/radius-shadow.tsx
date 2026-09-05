@@ -129,6 +129,7 @@ export default function Demo() {
                 <Flex direction="col" gap="xs">
                   <Card>
                     <CardContent flush>
+                      {/* ui-audit-disable-next-line no-utility-spacing — a tile showing the shadow token itself; the box IS the subject */}
                       <div className="p-4" style={{ boxShadow: "var(--shadow-lg)" }}>
                         <Text as="div" weight="medium">
                           Floating（ポップオーバー）

@@ -90,9 +90,11 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="max-w-80 border p-3" lang="ja">
-                <AppSettingPicker kind="timezone" id="setting-timezone-narrow" />
-              </div>
+              <Card className="max-w-80" lang="ja">
+                <CardContent>
+                  <AppSettingPicker kind="timezone" id="setting-timezone-narrow" />
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
 
@@ -106,7 +108,6 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <Topbar
-                className="rounded-md border"
                 start={
                   <Avatar className="rounded-md">
                     <AvatarFallback>G</AvatarFallback>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Badge,
   Card,
   CardContent,
   CardDescription,
@@ -40,7 +41,7 @@ export default function Demo() {
           <CardContent>
             <Popover defaultOpen>
               <PopoverAnchor asChild>
-                <span className="inline-flex rounded border px-3 py-2">請求額 ¥482,000</span>
+                <Badge variant="outline">請求額 ¥482,000</Badge>
               </PopoverAnchor>
               <PopoverContent side="right" aria-label="請求額の補足">
                 <PopoverDescription>税額と支払条件の補足情報です。</PopoverDescription>

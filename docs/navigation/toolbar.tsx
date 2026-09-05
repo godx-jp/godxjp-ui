@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { Filter, X } from "lucide-react";
 
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, EmptyState } from "@godxjp/ui/data-display";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  EmptyState,
+} from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import {
   SearchInput,
@@ -149,14 +157,11 @@ export default function Demo() {
                 gap="xs"
                 className="border-border bg-muted/40 min-h-9 border-b"
               >
-                <Flex
-                  direction="row"
-                  align="center"
-                  gap="xs"
-                  tone="muted"
-                >
+                <Flex direction="row" align="center" gap="xs">
                   <Filter className="size-3.5" aria-hidden="true" />
-                  <Text size="xs">適用中</Text>
+                  <Text size="xs" tone="muted">
+                    適用中
+                  </Text>
                 </Flex>
                 {!hasMemberFilters && (
                   <Text size="xs" tone="muted">
@@ -176,7 +181,7 @@ export default function Demo() {
                     >
                       <X aria-hidden="true" />
                     </Button>
-                  </span>
+                  </Flex>
                 ))}
                 {hasMemberFilters && (
                   <Button

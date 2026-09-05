@@ -129,7 +129,8 @@ export default function Demo() {
                   direction="row"
                   gap="sm"
                   align={a}
-                  className="bg-muted min-h-20 rounded-md p-2"
+                  className="bg-muted min-h-20 rounded-md"
+                  style={{ padding: "var(--space-2)" }}
                 >
                   <Text size="xs" tone="muted" className="w-16">
                     {a}
@@ -166,7 +167,8 @@ export default function Demo() {
                     gap="xs"
                     align="center"
                     justify={j}
-                    className="bg-muted flex-1 rounded-md p-2"
+                    className="bg-muted flex-1 rounded-md"
+                    style={{ padding: "var(--space-2)" }}
                   >
                     <Badge variant="outline">借方</Badge>
                     <Badge variant="outline">貸方</Badge>
@@ -192,6 +194,7 @@ export default function Demo() {
                 <Text size="xs" tone="muted">
                   wrap=&#123;false&#125;（既定）
                 </Text>
+                {/* ui-audit-disable-next-line no-utility-spacing — a tinted tile so the gap between children is visible; the box IS the subject */}
                 <Flex direction="row" gap="xs" wrap={false} className="bg-muted rounded-md p-2">
                   <Badge variant="outline">勘定科目</Badge>
                   <Badge variant="outline">補助科目</Badge>
@@ -202,6 +205,7 @@ export default function Demo() {
                 <Text size="xs" tone="muted">
                   wrap=&#123;true&#125;
                 </Text>
+                {/* ui-audit-disable-next-line no-utility-spacing — a tinted tile so the gap between children is visible; the box IS the subject */}
                 <Flex direction="row" gap="xs" wrap className="bg-muted rounded-md p-2">
                   <Badge variant="outline">勘定科目</Badge>
                   <Badge variant="outline">補助科目</Badge>

@@ -47,6 +47,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <ContextMenu>
+              {/* ui-audit-disable-next-line no-hand-rolled-surface — the dashed area is the right-click target the demo asks you to use */}
               <ContextMenuTrigger className="border-border h-36 w-full cursor-context-menu rounded-md border border-dashed">
                 <Flex align="center" justify="center" gap="xs">
                   <Text tone="muted">ここを右クリックしてください</Text>
@@ -91,6 +92,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <ContextMenu>
+              {/* ui-audit-disable-next-line no-hand-rolled-surface — the dashed area is the right-click target the demo asks you to use */}
               <ContextMenuTrigger className="border-border h-36 w-full cursor-context-menu rounded-md border border-dashed">
                 <Flex align="center" justify="center" gap="xs">
                   <Text tone="muted">右クリック · 表示設定</Text>

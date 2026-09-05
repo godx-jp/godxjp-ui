@@ -111,25 +111,31 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="max-w-80 border p-2">
-              <Tabs
-                defaultValue="methods"
-                variant="line"
-                items={[
-                  {
-                    value: "methods",
-                    label: "サインイン方法とパスワード",
-                    content: <Text>方法</Text>,
-                  },
-                  {
-                    value: "two-factor",
-                    label: "二要素認証の設定",
-                    content: <Text>二要素認証</Text>,
-                  },
-                  { value: "recovery", label: "アカウントの復旧方法", content: <Text>復旧</Text> },
-                ]}
-              />
-            </div>
+            <Card className="max-w-80">
+              <CardContent>
+                <Tabs
+                  defaultValue="methods"
+                  variant="line"
+                  items={[
+                    {
+                      value: "methods",
+                      label: "サインイン方法とパスワード",
+                      content: <Text>方法</Text>,
+                    },
+                    {
+                      value: "two-factor",
+                      label: "二要素認証の設定",
+                      content: <Text>二要素認証</Text>,
+                    },
+                    {
+                      value: "recovery",
+                      label: "アカウントの復旧方法",
+                      content: <Text>復旧</Text>,
+                    },
+                  ]}
+                />
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
 
@@ -196,7 +202,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="overview" orientation="vertical" className="gap-6">
+            <Tabs defaultValue="overview" orientation="vertical" style={{ gap: "var(--space-6)" }}>
               <TabsList variant="line" className="h-auto w-40 flex-col items-stretch">
                 <TabsTrigger value="overview">概要</TabsTrigger>
                 <TabsTrigger value="ledger">元帳</TabsTrigger>

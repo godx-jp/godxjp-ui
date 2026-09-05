@@ -138,7 +138,7 @@ export default function Demo() {
           {/* Decorative brand mark — hidden below `sm` where the hamburger already anchors the
               start of a narrow mobile topbar, so functional controls (entity switcher, search)
               keep priority and the bar never overflows. */}
-          <Avatar className="hidden rounded-md sm:inline-flex">
+          <Avatar className="rounded-md">
             <AvatarFallback className="bg-primary text-primary-foreground font-bold">
               C
             </AvatarFallback>
@@ -159,7 +159,7 @@ export default function Demo() {
               <DropdownMenuSeparator />
               {ENTITIES.map((e) => (
                 <DropdownMenuItem key={e.id} onSelect={() => setActiveEntity(e.name)}>
-                  <Building2 className="me-2 size-4" />
+                  <Building2 className="size-4" />
                   {e.name}
                 </DropdownMenuItem>
               ))}

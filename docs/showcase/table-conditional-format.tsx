@@ -205,7 +205,7 @@ export default function Demo() {
       sortable: true,
       render: (r) =>
         isEarlyCell(r) ? (
-          <Badge tone="attention" shape="sharp">
+          <Badge tone="warning" shape="sharp">
             <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
               {hours(r.earlyLeaveHours)}
             </Text>
@@ -312,7 +312,7 @@ export default function Demo() {
                       {/* 早退セル: > 2.0h は attention(朱) で背景＋前景強調 */}
                       <TableCell className="text-end">
                         {isEarlyCell(r) ? (
-                          <Badge tone="attention" shape="sharp">
+                          <Badge tone="warning" shape="sharp">
                             <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
                               {hours(r.earlyLeaveHours)}
                             </Text>

@@ -235,15 +235,17 @@ export default function Demo() {
                   </FormField>
                 </Form>
               </div>
-              <div className="max-w-80 border p-3" dir="rtl" lang="ar">
-                <FormField
-                  id="matrix-rtl"
-                  label="البريد الإلكتروني لاستلام الفاتورة"
-                  helper="سيتم إرسال رسالة تأكيد"
-                >
-                  <Input id="matrix-rtl" type="email" placeholder="name@example.com" />
-                </FormField>
-              </div>
+              <Card className="max-w-80" dir="rtl" lang="ar">
+                <CardContent>
+                  <FormField
+                    id="matrix-rtl"
+                    label="البريد الإلكتروني لاستلام الفاتورة"
+                    helper="سيتم إرسال رسالة تأكيد"
+                  >
+                    <Input id="matrix-rtl" type="email" placeholder="name@example.com" />
+                  </FormField>
+                </CardContent>
+              </Card>
             </Flex>
           </CardContent>
         </Card>
@@ -310,7 +312,7 @@ export default function Demo() {
                 <SheetHeader>
                   <SheetTitle>請求先設定</SheetTitle>
                 </SheetHeader>
-                <Form className="mt-4">
+                <Form>
                   <FormField id="sheet-name" label="宛名" required>
                     <Input id="sheet-name" />
                   </FormField>

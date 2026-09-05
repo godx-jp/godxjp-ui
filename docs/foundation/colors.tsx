@@ -66,6 +66,7 @@ type Swatch = { cls: string; token: string; role: string };
 function SwatchTile({ swatch, text }: { swatch: Swatch; text?: boolean }) {
   return (
     <Flex direction="col" gap="xs">
+      {/* ui-audit-disable-next-line no-hand-rolled-surface no-utility-layout no-utility-spacing — a swatch showing the token itself; the fill IS the subject */}
       <div className={`border-border flex h-14 items-end rounded-md border p-2 ${swatch.cls}`}>
         {text ? (
           <Text size="xs" mono className="leading-none">
@@ -108,6 +109,7 @@ function SwatchGroup({ items, text, dark }: { items: Swatch[]; text?: boolean; d
         </Text>
         {grid}
       </Flex>
+      {/* ui-audit-disable-next-line no-utility-spacing — a swatch showing the token itself; the fill IS the subject */}
       <Flex direction="col" gap="sm" className="bg-background text-foreground dark rounded-md p-3">
         <Text as="div" size="xs" tone="muted" weight="medium">
           Dark (.dark)

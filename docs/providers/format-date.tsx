@@ -51,10 +51,10 @@ export default function Demo() {
             <CardContent>
               <Text as="p" tone="muted">
                 このデモは{" "}
-                <code className="bg-muted rounded px-1 py-0.5 font-mono text-xs">
+                <Text as="code" mono size="xs">
                   defaultLocale=&quot;ja&quot; defaultTimezone=&quot;Asia/Tokyo&quot;
                   defaultDateFormat=&quot;iso&quot; defaultTimeFormat=&quot;24h&quot;
-                </code>{" "}
+                </Text>{" "}
                 の AppProvider でラップされている。
               </Text>
             </CardContent>
