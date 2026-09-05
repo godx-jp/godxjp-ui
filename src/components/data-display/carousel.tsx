@@ -146,7 +146,6 @@ export const CarouselContent = React.forwardRef<
     if (!React.isValidElement(child)) return child;
     const index = slideIndex++;
     const childProps = child.props as CarouselItemProps;
-    // Don't clobber a consumer-provided label.
     if (childProps["aria-label"] != null) return child;
     return React.cloneElement(child as React.ReactElement<CarouselItemProps>, {
       "aria-label": t("dataDisplay.carousel.slideLabel", {
@@ -234,8 +233,7 @@ CarouselNext.displayName = "CarouselNext";
 /**
  * Dot indicators — one round dot per scroll snap, the active one widened + filled. Reads the Embla
  * api from context (no `setApi` plumbing needed); each dot is a real `<button>` with an i18n
- * accessible name and `aria-current` on the active slide, calling `scrollTo(i)`. Drop it inside
- * `<Carousel>` after the track: `<CarouselContent/> … <CarouselDots/>`.
+ * accessible name and `aria-current` on the active slide, calling `scrollTo(i)`.
  */
 export const CarouselDots = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<"div">>(
   ({ className, ...props }, ref) => {

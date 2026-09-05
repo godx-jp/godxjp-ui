@@ -121,6 +121,11 @@ export const VOCABULARY_REGISTRY = {
     category: "shared",
     description: "Explicit layout length (number→px | CSS string) — NOT the SizeProp tier",
   },
+  ControlWidthProp: {
+    file: "vocabulary/shared.prop.ts",
+    category: "shared",
+    description: "Inline sizing of a control: full (fill the column) | auto (hug the label)",
+  },
 
   // content.prop.ts
   TitleProp: {
@@ -763,6 +768,12 @@ export const COMPONENT_PROP_REGISTRY = {
     ],
   },
   AuthAccountSummaryProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["DisabledProp", "ClassNameProp"],
+    local: ["email", "avatarSrc", "avatarFallback", "actionLabel", "onAction"],
+  },
+  AccountChipProp: {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: ["DisabledProp", "ClassNameProp"],

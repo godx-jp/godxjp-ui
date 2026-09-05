@@ -1,14 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Guard: preview examples + docs must compose ONLY real @godxjp/ui components,
- * never locally-invented wrapper components — otherwise a consumer who copies
- * the example gets code that imports a module that does not exist for them.
- *
- * Scope: examples preview files (.preview.tsx) and docs files (.tsx).
- * Allowed imports: react, lucide-react, @godxjp/ui, examples/fixtures, and
- * RELATIVE DATA modules only (a .ts file — e.g. ./_data). A relative import
- * that resolves to a .tsx (a local COMPONENT module — e.g. ./_kit) is FORBIDDEN.
+ * Scope: examples preview files (.preview.tsx) and docs files (.tsx). Allowed imports: react,
+ * lucide-react, @godxjp/ui, examples/fixtures, and RELATIVE DATA modules only (a .ts file — e.g.
+ * ./_data).
  */
 
 import { existsSync } from "node:fs";
@@ -28,15 +23,8 @@ function resolvesToComponent(resolved) {
 }
 
 /**
- * Does a relative specifier resolve to a committed STATIC ASSET?
- *
- * An image is not the `./_kit` anti-pattern this guard exists to stop. That rule is about local
- * COMPONENT modules, which fork a consumer's copy away from the real API; an <img src> is a value,
- * like the `./_data` modules already allowed. What matters is that the file is COMMITTED and
- * resolved by the bundler: the docs pages used to point at picsum.photos, and a third-party image
- * that never settles hung `networkidle` until `page.goto` timed out at 30s in CI (gh#333). An
- * absolute "/assets/…" would be equally wrong for a different reason — it 404s wherever the site
- * is served from a sub-path. Import it, and the URL gets rewritten against the base.
+ * Does a relative specifier resolve to a committed STATIC ASSET? An image is not the `./_kit`
+ * anti-pattern this guard exists to stop.
  */
 const ASSET_EXTENSIONS = /\.(?:svg|png|jpe?g|webp|avif|gif|woff2?)$/;
 function resolvesToAsset(resolved) {
@@ -85,7 +73,6 @@ function classifySpecifier(specifier, filePath) {
 
   // Any other bare specifier is a real, installable npm package (react,
   // lucide-react, @godxjp/ui, zod, @tanstack/react-query, react-day-picker,
-  // sonner, …) — a consumer can install it, so it is allowed.
   return { ok: true };
 }
 

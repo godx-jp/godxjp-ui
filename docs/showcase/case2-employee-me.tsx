@@ -190,7 +190,11 @@ function PunchCard() {
             </div>
           ) : (
             <Flex direction="col" gap="sm">
-              <div className="ui-density-comfortable grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <ResponsiveGrid
+                columns={{ sm: 2, md: 2, lg: 2 }}
+                gap="sm"
+                className="ui-density-comfortable"
+              >
                 {actions.map((a) => {
                   const Icon = a.icon;
                   return (
@@ -208,7 +212,7 @@ function PunchCard() {
                     </Button>
                   );
                 })}
-              </div>
+              </ResponsiveGrid>
             </Flex>
           )}
 
@@ -411,9 +415,12 @@ export default function EmployeeMeShowcase() {
               <CardContent flush>
                 <dl className="divide-border divide-y">
                   {SUMMARY.map((s) => (
-                    <div
+                    <Flex
                       key={s.label}
-                      className="flex items-center justify-between gap-3 px-4 py-2.5"
+                      align="center"
+                      justify="between"
+                      gap="md"
+                      className="px-4 py-2.5"
                     >
                       <Text as="dt" size="sm" tone="muted" className="whitespace-nowrap">
                         {s.label}
@@ -421,7 +428,7 @@ export default function EmployeeMeShowcase() {
                       <Text as="dd" size="sm" weight="medium" align="end" tabular>
                         {s.value}
                       </Text>
-                    </div>
+                    </Flex>
                   ))}
                 </dl>
               </CardContent>

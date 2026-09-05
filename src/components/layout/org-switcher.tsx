@@ -230,7 +230,6 @@ export function OrgSwitcher({
   );
   // The popover→bottom-sheet switch is the SHARED Sheet contract, not a page-local media query:
   // one themeable knob (--sheet-responsive-breakpoint-width) moves the drawer line for every
-  // overlay in the system at once (rule #45).
   const compactViewport = useSheetResponsiveMode("auto") === "bottom";
   const sheet = responsive === "sheet" || (responsive === "auto" && compactViewport);
   const current = organizations.find((organization) => organization.id === value);

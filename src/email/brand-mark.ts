@@ -1,28 +1,8 @@
 /**
- * The canonical GoDX brand mark, as email-safe markup.
- *
- * The mark is an emerald CAPSULE with an internal light GLYPH bar — the same artwork the React
- * `<Logo mark="godx" />` paints, at the same 32×32 viewBox and the same coordinates (a test asserts
- * the capsule path is byte-identical to the component's, so the two can never diverge). A capsule
- * WITHOUT the internal glyph is the incomplete mark and must not ship. The ARTWORK matches the
- * canonical SCR-302 raster exactly; only the rendered BOX is email-specific — the canonical email
- * header sets it at 22px (`--email-mark-width`) beside the "GoDX" wordmark, where the web
- * `<Logo mark="godx" />` box is 32px.
- *
- * Nothing here references an external or relative asset: an email template has no base URL it can
- * trust, remote images are blocked by default in most clients, and a `cid:` attachment needs
- * transport support. So the mark is delivered three ways, in order of fidelity:
- *
- *  1. `svg` — inline `<svg>`. Apple Mail, iOS Mail, Thunderbird, Samsung Mail. Best fidelity.
- *  2. `dataUri` — the same SVG as a `data:` URL for `<img src>`. No network fetch.
- *  3. `tableHtml` — bulletproof `<table>`/`<div>` markup with background-color + border-radius.
- *     Renders everywhere; degrades to a square emerald block with a light bar in Outlook's Word
- *     renderer (which drops `border-radius`) — still recognisably the mark, never a broken image.
- *
- * Colours come from `EMAIL_COLORS` (derived from `--brand` / `--brand-foreground`, the roles
- * `--logo-godx-color` points at), so a re-themed identity role re-tints the mark. NOT `--success`:
- * that is the wakatake STATUS green, and binding identity to it rendered the mark ~ΔE76 17 away
- * from the canonical emerald until gh#250 introduced the dedicated `--brand` role.
+ * The canonical GoDX brand mark, as email-safe markup. The mark is an emerald CAPSULE with an
+ * internal light GLYPH bar — the same artwork the React `<Logo mark="godx" />` paints, at the same
+ * 32×32 viewBox and the same coordinates (a test asserts the capsule path is byte-identical to the
+ * component's, so the two can never diverge).
  */
 import { EMAIL_COLORS, type EmailHex } from "./color";
 import { EMAIL_GEOMETRY_SOURCE } from "./tokens.generated";
@@ -62,11 +42,6 @@ const sep = (value: number): string => (value < 0 ? String(value) : ` ${value}`)
 
 const arc = (r: number, dx: number, dy: number): string => `a${r} ${r} 0 0 1${sep(dx)}${sep(dy)}`;
 
-/**
- * Path data for a rounded rectangle, in the exact serialisation the canonical mark uses — so the
- * generated capsule string equals the artwork shipped by `<Logo mark="godx" />` character for
- * character.
- */
 export function roundedRectPath({ x, y, width, height, radius }: EmailBrandMarkRect): string {
   const h = width - 2 * radius;
   const v = height - 2 * radius;
@@ -134,16 +109,13 @@ export function emailBrandMarkSvg(o: EmailBrandMarkOptions = {}): string {
 
 /**
  * The mark as a `data:image/svg+xml` URL for `<img src>`. Percent-encoded (not base64) so it stays
- * readable in a template and needs no `Buffer`/`btoa`. Still zero network requests.
+ * readable in a template and needs no `Buffer`/`btoa`.
  */
 export function emailBrandMarkDataUri(o: EmailBrandMarkOptions = {}): string {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(emailBrandMarkSvg(o))}`;
 }
 
-/**
- * Bulletproof `<table>` markup for clients with no SVG support. Uses only `background-color`,
- * `border-radius`, fixed cell sizes and `font-size:0` — the intersection every client renders.
- */
+/** Bulletproof `<table>` markup for clients with no SVG support. */
 export function emailBrandMarkTableHtml(o: EmailBrandMarkOptions = {}): string {
   const { width, height, color, glyphColor, label } = options(o);
   const scale = width / 32;

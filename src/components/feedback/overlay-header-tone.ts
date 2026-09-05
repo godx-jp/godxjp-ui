@@ -3,7 +3,7 @@ import type { ToneProp } from "../../props/vocabulary";
 /**
  * Soft semantic background band for an overlay header (Sheet / Dialog / Drawer), Ant-Design style.
  * Tints ONLY the background — text stays `--foreground` (渋み: never invert the band into a loud
- * solid fill). `default` = no band. Shared so the three overlays stay consistent.
+ * solid fill).
  */
 export const overlayHeaderToneClass: Record<ToneProp, string> = {
   default: "",

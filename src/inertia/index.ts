@@ -4,11 +4,7 @@ import { createSidebarLink } from "../components/layout/sidebar-link";
 import type { FormStateAdapter } from "../props/components/form.prop";
 import type { SidebarLinkComponentProp } from "../props/components/layout.prop";
 
-/**
- * Structural shape of Inertia's `useForm` return that the adapter needs. Duck-typed on purpose —
- * `@godxjp/ui` keeps ZERO dependency on `@inertiajs/react`; the real `useForm()` object satisfies
- * this shape, so a consumer passes it directly with no import from this package.
- */
+/** Structural shape of Inertia's `useForm` return that the adapter needs. */
 export interface InertiaFormLike<TData extends Record<string, unknown> = Record<string, unknown>> {
   /** Current form values (server-driven state). */
   data: TData;
@@ -87,11 +83,7 @@ export function useInertiaField<TData extends Record<string, unknown>>(
   };
 }
 
-/**
- * Structural shape of Inertia's `<Link>` that the Sidebar adapter needs. Duck-typed on purpose —
- * `@godxjp/ui` keeps ZERO dependency on `@inertiajs/react`; the real `Link` satisfies this shape,
- * so a consumer passes it directly with no import from this package.
- */
+/** Structural shape of Inertia's `<Link>` that the Sidebar adapter needs. */
 export interface InertiaLinkLike {
   href: string;
   className?: string;

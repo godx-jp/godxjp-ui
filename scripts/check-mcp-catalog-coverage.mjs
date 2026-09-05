@@ -1,23 +1,8 @@
 #!/usr/bin/env node
 /**
- * Drift guard, reverse direction (gh#278) — every PUBLIC callable export must be discoverable
- * through the MCP catalog.
- *
- * check-mcp-sync.mjs already guards "catalog entry → must be a real export" (ghost entries).
- * 18.11.x shipped the opposite drift: ServiceRolePanel / BranchScopePicker / PermissionMatrix
- * were real, tested exports while the published MCP said they did not exist and get_component /
- * search_components could not find them — a consumer agent was actively told to hand-roll a
- * shipped component (gh#278, reported from a consumer audit).
- *
- * Two checks against component-api-manifest.json (the generated public-API ground truth):
- *   1. COVERAGE — every manifest component name must appear SOMEWHERE in mcp/src/data/*.ts
- *      (its own entry, or a mention in a related/pattern/example). A brand-new export nobody
- *      documented fails here.
- *   2. NEGATED-EXISTENCE CLAIMS — pattern/component prose must not claim "NO <Name>" /
- *      "<Name> does not exist" for a name the manifest says IS exported (the exact 18.11.x
- *      rbac-service-roles failure).
- *
- * Usage: node scripts/check-mcp-catalog-coverage.mjs [--json]
+ * Two checks against component-api-manifest.json (the generated public-API ground truth): 1.
+ * COVERAGE — every manifest component name must appear SOMEWHERE in mcp/src/data/*.ts (its own
+ * entry, or a mention in a related/pattern/example).
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -37,7 +22,6 @@ const uncovered = names.filter((n) => !corpus.includes(n));
 
 const negated = [];
 for (const n of names) {
-  // Existence-denial prose for a shipped export — the exact 18.11.x failure read
   // "There is NO ServiceRolePanel, NO BranchScopePicker and NO PermissionMatrix component".
   // CASE-SENSITIVE capital "NO <Name>": lowercase "no badge"/"no flex" is ordinary prose
   // about a property, not an existence claim.

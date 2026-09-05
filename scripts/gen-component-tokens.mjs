@@ -1,13 +1,9 @@
 #!/usr/bin/env node
 /**
- * Generates mcp/src/data/component-tokens.generated.ts from the component token
- * tier (src/tokens/components/*.css). Every component token becomes catalog data
- * (name + default value + the nearest CSS comment as its description) so the MCP
- * `get_component` tool can tell an agent EXACTLY which theme knobs a component
- * exposes. Run by check:mcp-token-sync; never hand-edit the generated file.
- *
- *   node scripts/gen-component-tokens.mjs           # write
- *   node scripts/gen-component-tokens.mjs --check    # exit 1 if stale
+ * Generates mcp/src/data/component-tokens.generated.ts from the component token tier
+ * (src/tokens/components/*.css). Every component token becomes catalog data (name + default value
+ * + the nearest CSS comment as its description) so the MCP `get_component` tool can tell an agent
+ * EXACTLY which theme knobs a component exposes.
  */
 import { readFileSync, writeFileSync, globSync } from "node:fs";
 

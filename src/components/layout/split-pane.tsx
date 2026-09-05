@@ -5,13 +5,6 @@ export type SplitPaneProps = {
   /**
    * Aside (trailing) panel content. Pass `null` to CLOSE the rail: no `<aside>` element is
    * rendered, the grid drops to one full-width column and the gap goes with it.
-   *
-   * Closing this way — rather than dropping the whole `SplitPane` at the call site — is what
-   * keeps `children` MOUNTED. The three wrappers below are rendered unconditionally, so the
-   * main column sits at the same depth and the same slot in the React tree in both states and
-   * React reuses its DOM node instead of remounting it. A collapsible thread/detail panel that
-   * swapped `<SplitPane>{page}</SplitPane>` for a bare `{page}` changed the tree depth, which
-   * remounted the page and threw the reader to the bottom of a scrolled list.
    */
   aside: ReactNode | null;
   /**
@@ -36,7 +29,6 @@ export function SplitPane({ children, aside, asideWidth = "md", asideLabel }: Sp
   // The scope wrapper establishes the pane's OWN query container (container-type: inline-size) so
   // the split decision comes from the pane's available width, not the viewport: a narrow embedded
   // pane on a large screen correctly stays single-column, and a wide pane on a small screen can
-  // split (gh#165 — replaces the old `@media (min-width: 1080px)` viewport query).
   return (
     <div className="ui-split-pane-scope">
       <div

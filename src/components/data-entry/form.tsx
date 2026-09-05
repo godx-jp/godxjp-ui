@@ -28,15 +28,7 @@ export function useFormLayout(): FormLayoutContextValue | null {
 /**
  * Form — Ant-style layout container. Renders a `<form>` and provides layout (vertical/horizontal),
  * label/control width, label alignment, and a responsive collapse breakpoint to every FormField
- * inside it. A FormField may override any of these per-field. Optionally lays fields out in a
- * responsive multi-column grid via `columns` (reuses ResponsiveGrid — mobile-first, 1 col on small).
- *
- * `asChild` renders the caller's own element instead of a `<form>`, keeping only the layout
- * context. Routing libraries own the form element — Inertia's `<Form action method>` and
- * TanStack Form both render their own — so without this every such consumer has to choose
- * between the router's submission handling and the design system's field layout, and ends up
- * hand-rolling label columns per field. Two `<form>` elements cannot nest, so wrapping is not
- * an option: `<Form asChild layout="horizontal" labelWidth={174}><InertiaForm …/></Form>`.
+ * inside it.
  */
 export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
   {

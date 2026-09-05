@@ -12,9 +12,7 @@ export type {
 
 /**
  * Text — the typographic primitive. Use it INSTEAD of a hand-rolled `<span className="text-[13px]
- * font-medium text-muted-foreground">`. `size` only accepts steps of the golden-ratio type scale
- * (never an arbitrary px), `tone` maps to semantic foreground tokens, `weight` respects the system's
- * 2-weight scale. Fully token-driven via `[data-slot="text"]` rules in text-layout.css.
+ * font-medium text-muted-foreground">`.
  */
 export const Text = React.forwardRef<HTMLElement, TextProp>(
   (

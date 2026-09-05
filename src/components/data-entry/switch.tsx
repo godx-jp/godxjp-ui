@@ -11,7 +11,7 @@ export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive
     { className, size = "md", name, checked, defaultChecked = false, onCheckedChange, ...props },
     ref,
   ) => {
-    // gh#337 — the machine key for a Switch NESTED under a layout wrapper. `{}` otherwise; the
+    // `{}` otherwise; the
     // resolved `name` also feeds the hidden input below, so the toggle still submits natively.
     const identity = useFieldIdentity({
       id: props.id,
@@ -42,7 +42,6 @@ export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive
           checked={isChecked}
           onCheckedChange={handleCheckedChange}
           className={cn(
-            // `disabled:cursor-not-allowed disabled:opacity-50` DELETED, not moved (#319):
             // `.ui-switch:disabled, .ui-switch[data-disabled]` in styles/control.css already
             // declares both and reads --disabled-opacity. The utility was layered after
             // components, so it silently outranked that token. Byte-identical: the token

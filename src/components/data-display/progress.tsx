@@ -10,7 +10,7 @@ export type ProgressProps = {
    * Allow `value` to exceed 100 and render an OVER-CAPACITY fill: the bar caps at 100% width but
    * gets a diagonal striped overlay + destructive tone, so an over-limit meter (e.g. 252% of a
    * booked weight) is unmistakably different from a full (100%) one. `aria-valuetext` reports the
-   * real ratio. Off by default — `value` clamps to 100 as before.
+   * real ratio.
    */
   over?: boolean;
 };

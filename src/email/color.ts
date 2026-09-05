@@ -1,13 +1,7 @@
 /**
- * Email colour contract — semantic web roles resolved to LITERAL hex.
- *
- * HTML email has no cascade worth trusting: Gmail strips <style>, Outlook ignores custom
- * properties, and every colour must appear inline as `#rrggbb` on the element that paints it. The
- * web tokens, meanwhile, are HSL channel triplets (`--primary: 204 100% 39%`) so they can be
- * alpha-composed. This module bridges the two — the triplets are GENERATED from
- * src/tokens/foundation.css (scripts/gen-email-tokens.mjs) and converted here, at module load, by
- * the same `hslToHex` a consumer can call on its own brand roles. There is no hex literal in this
- * directory, so an email palette that drifts from the web palette is structurally impossible.
+ * Email colour contract — semantic web roles resolved to LITERAL hex. HTML email has no cascade
+ * worth trusting: Gmail strips <style>, Outlook ignores custom properties, and every colour must
+ * appear inline as `#rrggbb` on the element that paints it.
  */
 import { EMAIL_COLOR_SOURCE, EMAIL_COLOR_SOURCE_DARK } from "./tokens.generated";
 
@@ -29,14 +23,10 @@ const channel = (n: number): string =>
 
 /**
  * Convert a CSS HSL channel triplet (`"204 100% 39%"` — the shape every `@godxjp/ui` colour role
- * uses) into the `#rrggbb` literal an email client needs. Rounds each channel the way a browser
- * does, so the hex is exactly what `hsl(var(--role))` paints on the web.
- *
- * Consumers with a custom brand role can call this directly:
- * `hslToHex(getComputedStyle(el).getPropertyValue("--primary"))`.
- *
- * @throws if the input is not a bare `H S% L%` triplet (a hex or `hsl(...)` wrapper is rejected
- * rather than silently mis-parsed).
+ * uses) into the `#rrggbb` literal an email client needs. Consumers with a custom brand role can
+ * call this directly: `hslToHex(getComputedStyle(el).getPropertyValue("--primary"))`. @throws if
+ * the input is not a bare `H S% L%` triplet (a hex or `hsl(...)` wrapper is rejected rather than
+ * silently mis-parsed).
  */
 export function hslToHex(triplet: string): EmailHex {
   const parsed = TRIPLET.exec(triplet);

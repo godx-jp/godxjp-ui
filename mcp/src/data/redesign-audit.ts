@@ -1,12 +1,6 @@
 /**
- * Redesign audit checklist — for upgrading an existing project (or
- * critiquing a new design before shipping). Adapted from
- * Leonxlnx/taste-skill `redesign-existing-projects` SKILL. The MCP
- * exposes this so consumer agents can run a structured audit on a
- * page they're working on.
- *
- * Fix priority is ordered for MAXIMUM visual impact at MINIMUM
- * risk — agents should apply in this order.
+ * Redesign audit checklist — for upgrading an existing project (or critiquing a new design before
+ * shipping). Adapted from Leonxlnx/taste-skill `redesign-existing-projects` SKILL.
  */
 
 export interface AuditCheck {

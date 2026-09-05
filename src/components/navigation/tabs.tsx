@@ -18,11 +18,10 @@ export type TabsProps = React.ComponentProps<typeof TabsPrimitive.Root> & {
 };
 
 /**
- * Resolves the value Tabs should fall back to when it owns the initial selection
- * (uncontrolled — `value` is undefined). `requested` (usually `defaultValue`) is honored
- * only when it names an item that exists AND is not disabled; otherwise (nothing requested,
- * a stale/unknown key, or a key that points at a disabled item) it falls back to the first
- * ENABLED item. Returns undefined — selecting nothing — when every item is disabled (gh#175).
+ * Resolves the value Tabs should fall back to when it owns the initial selection (uncontrolled —
+ * `value` is undefined). `requested` (usually `defaultValue`) is honored only when it names an
+ * item that exists AND is not disabled; otherwise (nothing requested, a stale/unknown key, or a
+ * key that points at a disabled item) it falls back to the first ENABLED item.
  */
 function resolveFallbackTabValue(
   items: TabsItem[] | undefined,
@@ -54,17 +53,14 @@ export function Tabs({
       data-slot="tabs"
       data-orientation={orientation}
       // The variant AS ASKED FOR. The list deliberately collapses `card` into
-      // `data-variant="default"` (its chrome IS the default strip, gh#248), so the root is the
-      // only node that can still say which of the three variants a consumer selected — which is
       // what a service theme, and a test, need to key on.
       data-variant={variant}
       orientation={orientation}
       value={value}
       defaultValue={value === undefined ? resolvedDefault : undefined}
       className={cn(
-        // Structure only. The shrink floor (`min-inline-size: 0`, gh#175) and the strip↔panel gap
+        // Structure only.
         // live in src/styles/navigation-layout.css so the gap reads --tabs-root-gap and a service
-        // can retune the tab rhythm without forking this file (#319).
         "group/tabs flex data-[orientation=horizontal]:flex-col",
         className,
       )}
@@ -76,13 +72,12 @@ export function Tabs({
             data-slot="tabs-list"
             // The list variant MUST be forwarded, not just styled through `className` — every
             // line-variant rule on TabsTrigger keys off `group-data-[variant=line]/tabs-list`
-            // (that is how the active ring is kept off the line variant, gh#248). `card` keeps the
+            // `card` keeps the
             // default list chrome, exactly like a hand-composed <TabsList> with no variant.
             variant={variant === "line" ? "line" : "default"}
             className={cn(
               // The padding override is an arbitrary value reading the knob (never `p-0`): it must
               // stay a UTILITY so tailwind-merge still drops the strip's own padding step, and a
-              // components-layer rule could not beat that utility anyway (#319).
               variant === "line" &&
                 "h-auto w-full justify-start border-b p-[var(--tabs-list-line-space-inset)]",
               variant === "card" && "w-full justify-start",
@@ -97,7 +92,6 @@ export function Tabs({
                 className={cn(
                   // Geometry only — the active underline is the token-owned `::after` bar the
                   // line variant already owns (never a second, hand-rolled border-b indicator).
-                  // Token-reading arbitrary values, not Tailwind steps (#319): they have to stay
                   // utilities so tailwind-merge keeps dropping the pill trigger's own radius /
                   // padding steps from the base class list.
                   // `card` adds NOTHING here — its list is forwarded as data-variant="default", so
@@ -117,7 +111,6 @@ export function Tabs({
               value={item.value}
               data-slot="tabs-panel"
               // No variant geometry: the panel has never carried a top margin (the root is a flex
-              // box whose gap does the spacing), so the old `mt-0` reset was resetting nothing.
               className={contentClassName}
             >
               {item.content}
@@ -149,7 +142,6 @@ export const TabsList = React.forwardRef<
     [ref],
   );
 
-  // gh#204 — a responsive resize / route re-render must never leave the active trigger scrolled
   // out of the strip (see ./tabs-scroll for the constraints this obeys).
   useKeepActiveTabVisible(listRef);
 
@@ -162,10 +154,10 @@ export const TabsList = React.forwardRef<
         // `min-w-0 max-w-full` let the list shrink to (and never exceed) whatever width its
         // ancestors actually give it instead of forcing them wider; horizontal orientation then
         // scrolls its own overflow rather than clipping/hiding long localized labels in a narrow
-        // container (gh#175). Hidden scrollbar keeps the strip visually clean while staying
+        // Hidden scrollbar keeps the strip visually clean while staying
         // swipeable on touch and reachable via keyboard (arrow-key roving focus still scrolls the
         // newly-focused trigger into view natively); `useKeepActiveTabVisible` above re-pins the
-        // active trigger when a resize would otherwise strand it off-strip (gh#204). Vertical
+        // Vertical
         // orientation is untouched — it already stacks in a column and is sized by its own
         // `h-*`/`w-*` overrides.
         // justify-center-SAFE: the strip is a centred flex box that also scrolls. Plain `center`
@@ -191,7 +183,6 @@ export const TabsTrigger = React.forwardRef<
     data-slot="tabs-trigger"
     className={cn(
       // The SELECTED-state ring (`ring-1 ring-primary/25`) is scoped to the default/card lists —
-      // the `line` variant is underline-only (gh#248) and must NEVER paint a surrounding ring, or
       // it competes with (and at equal specificity overrides) the `:focus-visible` ring. The
       // focus-visible ring/outline below is deliberately left unscoped: every variant keeps a
       // visible keyboard focus indicator (WCAG 2.4.7). The line indicator itself lives in

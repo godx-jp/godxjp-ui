@@ -15,10 +15,7 @@ import { canUseLiveRelativeFormatting } from "./sync";
 const EMPTY = "—";
 
 export type FormatDateOptions = FormatDatetimeOptions & {
-  /**
-   * Output preset. Default `auto` detects ISO date / HH:mm / instant.
-   * Locale, timezone, and 12h|24h fall back to AppProvider when omitted.
-   */
+  /** Output preset. Default `auto` detects ISO date / HH:mm / instant. */
   kind?: FormatDateKind;
   /** Treat `Date` as calendar pick (react-day-picker) — not an instant. */
   calendar?: boolean;

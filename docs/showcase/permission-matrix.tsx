@@ -266,7 +266,7 @@ export default function Demo() {
                         aria-label={isDiffRow ? `${perm.name} · 比較ロール間で差分あり` : undefined}
                       >
                         <TableCell className={cn(PIN_START, "w-64 min-w-64 align-middle")}>
-                          <div className="flex flex-col leading-tight">
+                          <Flex direction="col" className="leading-tight">
                             <span className="inline-flex items-center gap-1.5">
                               <Text weight="medium">{perm.name}</Text>
                               {isDiffRow && (
@@ -278,7 +278,7 @@ export default function Demo() {
                             <Text size="2xs" tone="muted">
                               {perm.category} · {perm.description}
                             </Text>
-                          </div>
+                          </Flex>
                         </TableCell>
                         {ROLES.map((role) => {
                           const isCompared = !sameRole && compared.has(role.id);

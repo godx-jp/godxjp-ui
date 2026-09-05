@@ -39,14 +39,12 @@ type SidebarItemProps = {
   sub?: boolean;
   onActivate?: (id: string) => void;
   /**
-   * Framework-router link element TYPE (gh#213). The row content stays library-composed — see
-   * {@link SidebarLinkProp}. Applied only when `item.href` is set.
+   * The row content stays library-composed — see {@link SidebarLinkProp}. Applied only when
+   * `item.href` is set.
    */
   linkComponent?: SidebarLinkComponentProp;
   /**
-   * Radix-style element swap: the single child element (a router `<Link>`) BECOMES the row and the
-   * library injects its composed icon + label + badge as that element's children (gh#213). Use it
-   * when you compose `SidebarItem` by hand instead of passing `sections` + `linkComponent`.
+   * Use it when you compose `SidebarItem` by hand instead of passing `sections` + `linkComponent`.
    */
   asChild?: boolean;
   /** @deprecated Use `linkComponent` / `asChild` — see {@link SidebarProp.renderItem}. */
@@ -79,25 +77,15 @@ export function SidebarSection({
 /**
  * The 16px leading icon slot. The `.sb-icon` box is ALWAYS rendered (never conditionally dropped)
  * so a row whose data carries no `icon` keeps canonical geometry — same 32px row height, same 10px
- * icon↔label gap, labels still aligned in one column with their icon-bearing siblings. Rendering
- * `item.icon` unguarded crashed the whole shell ("Element type is invalid… got: undefined") for
- * API-driven / untyped nav data; `icon` stays REQUIRED in `SidebarItemProp`, this is the runtime
- * safety net. Colour comes from `--sidebar-nav-icon-foreground` (see `Sidebar`).
+ * icon↔label gap, labels still aligned in one column with their icon-bearing siblings.
  */
 function SidebarIcon({ icon: Icon }: { icon?: SidebarItemData["icon"] }) {
   return <span className="sb-icon">{Icon ? <Icon aria-hidden="true" /> : null}</span>;
 }
 
 /**
- * THE canonical row composition — the single place that decides what a Sidebar row contains
- * (gh#213). Every row shape renders this: the leaf button, the `href` anchor, the `linkComponent`
- * router link, the `asChild` element and the group trigger. Because the LIBRARY owns it, a consumer
- * that supplies only a `<Link>` element can no longer drop the icon or the badge — the production
- * regression that motivated the issue.
- *
- * - `sub` rows are label-only (the submenu indents under the parent's icon column).
- * - `iconOnly` is the collapsed rail: the label moves to `aria-label` + a portaled tooltip, and the
- *   badge is dropped (the rail hides `.sb-label`/`.sb-badge` in CSS anyway).
+ * Every row shape renders this: the leaf button, the `href` anchor, the `linkComponent` router
+ * link, the `asChild` element and the group trigger.
  */
 function SidebarRowContent({
   item,
@@ -115,7 +103,6 @@ function SidebarRowContent({
       {!sub ? <SidebarIcon icon={item.icon} /> : null}
       <span className="sb-label">{item.label}</span>
       {showBadge ? (
-        // `data-tone` is emitted ONLY for the emphasis tone (rule #44: present-when-on,
         // absent-when-off), so a rail that never sets `badgeTone` renders the exact same node it
         // always did and no consumer selector has to out-specify a marker meaning "unchanged".
         <span
@@ -157,7 +144,7 @@ export function SidebarItem({
     onActivate?.(item.id);
   };
 
-  // 1. `asChild` — the consumer supplies the ELEMENT ONLY. We clone it with the library-composed
+  // 1. `asChild` — the consumer supplies the ELEMENT ONLY.
   // children (so icon/label/badge always survive) and Slot merges the row class + active state onto
   // it. The consumer's element is the row AND the sole interactive node (no nested `<button>`).
   if (asChild && React.isValidElement(children)) {
@@ -168,8 +155,7 @@ export function SidebarItem({
     );
   }
 
-  // 2. DEPRECATED `renderItem` / raw `children`: row CONTENT stays consumer-authored. `rowProps` now
-  // carries the composed `children`, so spreading it restores the canonical row (gh#213).
+  // 2. DEPRECATED `renderItem` / raw `children`: row CONTENT stays consumer-authored.
   const custom =
     children ?? (renderItem ? renderItem(item, { ...stateProps, children: content }) : undefined);
   if (custom !== undefined) {
@@ -211,7 +197,6 @@ export function SidebarItem({
   // A nav row is NOT a <Button>: it owns the `.sb-nav-item` row composition (icon + label + badge,
   // active/collapsed state, 32px height) driven by the --sidebar-nav-* tokens. Wrapping it in
   // <Button> would layer Button's own variant padding and focus treatment on top of that, and a
-  // <Button> inside the link/anchor branches is the gh#165 nested-interactive defect.
   return (
     // ui-audit-disable-next-line no-raw-button — raw <button> is the correct element here.
     <button type="button" {...stateProps} aria-disabled={disabled} {...props} onClick={activate}>
@@ -280,8 +265,7 @@ function NavGroup({ item, activeId, onSelect, linkComponent, renderItem }: RowPr
 
   // Route-driven expansion is SYNCHRONIZED, not just an initial `defaultOpen`: the group opens
   // whenever one of its children becomes active (e.g. after an SPA navigation deep-links to a child
-  // route), so the newly-active row is always revealed — the old `defaultOpen={active}` only set the
-  // mount-time state and left a later-activated child hidden (gh#165). The user can still collapse/
+  // The user can still collapse/
   // expand manually; a subsequent navigation into the group re-opens it.
   const [open, setOpen] = React.useState(active);
   React.useEffect(() => {
@@ -290,14 +274,7 @@ function NavGroup({ item, activeId, onSelect, linkComponent, renderItem }: RowPr
 
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="sb-nav-group">
-      {/*
-        The group trigger is a DISCLOSURE, not a link: WAI-ARIA APG requires the element that owns
-        `aria-expanded` and controls the submenu to be a `<button>`, so `linkComponent` is deliberately
-        NOT applied here (a link wrapping a chevron button would re-introduce the nested-interactive
-        defect of gh#165). Its ROW COMPOSITION is library-owned like every other shape — icon slot,
-        label and badge come from `SidebarRowContent`, the chevron stays outside `.sb-icon` so it reads
-        the row colour (gh#228). The group's CHILDREN take the router link.
-      */}
+      {/* The group's CHILDREN take the router link. */}
       <CollapsibleTrigger
         className="sb-nav-item sb-nav-group-trigger"
         data-active={active ? "true" : undefined}
@@ -325,8 +302,7 @@ function NavGroup({ item, activeId, onSelect, linkComponent, renderItem }: RowPr
 
 /**
  * Collapsed rail row — the icon only. HOVER (or keyboard focus) shows the label as a portaled
- * tooltip; CLICK navigates a leaf, or opens the group's submenu as a portaled menu. Both overlays
- * ported to the page root so they are never clipped by the sidebar's overflow.
+ * tooltip; CLICK navigates a leaf, or opens the group's submenu as a portaled menu.
  */
 function CollapsedRow({ item, activeId, onSelect, linkComponent: LinkComponent }: RowProps) {
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -352,7 +328,6 @@ function CollapsedRow({ item, activeId, onSelect, linkComponent: LinkComponent }
     </button>
   );
 
-  // A collapsed LEAF with an `href` takes the consumer's router link too (gh#213) — the library
   // still composes the icon-only content and keeps the accessible name on `aria-label`, so the rail
   // never degrades to an unnamed icon or loses the browser's own link affordances
   // (context-menu → open-in-new-tab, middle-click).
@@ -420,7 +395,6 @@ function CollapsedRow({ item, activeId, onSelect, linkComponent: LinkComponent }
             "aria-disabled": child.disabled || undefined,
           };
           // Flyout entries are LEAVES, so the router link applies here as well — the collapsed rail
-          // is no longer a place where a consumer's `<Link>` silently reverts to a `<button>`.
           return LinkComponent && child.href ? (
             <LinkComponent
               key={child.id}
@@ -447,28 +421,8 @@ function CollapsedRow({ item, activeId, onSelect, linkComponent: LinkComponent }
 export { createSidebarLink } from "./sidebar-link";
 
 /**
- * Sidebar — data-driven vertical nav rail.
- *
- * ROUTER LINKS (gh#213): pass `linkComponent` and the LIBRARY keeps composing every row (icon slot,
- * label, badge, active state, the icon-only collapsed rail and its tooltip name) — the consumer
- * supplies only the link ELEMENT. Use {@link createSidebarLink} to adapt a router `Link`, or
- * `SidebarItem asChild` when composing rows by hand. `renderItem` is DEPRECATED: it left row content
- * to the consumer, so a `<Link>{item.label}</Link>` dropped every icon and badge.
- *
- * THEMING (gh#228): the row/label and the nav ICON read SEPARATE component tokens, so a service can
- * match a canonical shell's darker 16px icons without page-local CSS and without re-tinting every
- * muted text globally:
- *
- * - `--sidebar-nav-item-foreground` (row + label, incl. sub rows) · default `hsl(var(--muted-foreground))`
- * - `--sidebar-nav-item-hover-foreground` · default `hsl(var(--foreground))`
- * - `--sidebar-nav-item-disabled-foreground` · default = the resting row colour
- * - `--sidebar-nav-icon-foreground` (`.sb-icon`, incl. the collapsed rail + group triggers) ·
- *   default `currentColor` = the row colour
- * - `--sidebar-nav-icon-{hover,active,disabled}-foreground` · each defaults to the base icon knob
- *
- * The active row keeps `--sidebar-item-active-background` / `--sidebar-item-active-foreground`.
- * These are COLOUR knobs only — icon size stays `--sidebar-nav-icon-size` (16px) and row geometry
- * stays `--sidebar-nav-item-height` / `-gap` / `-padding-x`.
+ * Sidebar — data-driven vertical nav rail. Use {@link createSidebarLink} to adapt a router `Link`,
+ * or `SidebarItem asChild` when composing rows by hand.
  */
 export function Sidebar({
   ariaLabel: ariaLabelCamel,

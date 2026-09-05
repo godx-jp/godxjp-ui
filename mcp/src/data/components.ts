@@ -1,20 +1,7 @@
 /**
- * Component catalog — the REAL published `@godxjp/ui` v6 primitive surface.
- * The MCP bundles this so an agent can author pages with the actual API
- * (PageContainer, Flex, ResponsiveGrid, DataTable + ColumnDef, Badge,
- * FormField, Select, Dialog, Toolbar, …) instead of guessing.
- *
- * Each entry maps to a real export. Import via the subpath in every example,
- * e.g. `import { DataTable } from "@godxjp/ui/data-display"`.
- *
- * Each entry carries:
- *   - `name`        — canonical export name
- *   - `group`       — entry-point group
- *   - `tagline`     — one-line elevator pitch
- *   - `props`       — most-used real props with type + description
- *   - `example`     — copy-paste-ready JSX using the real API
- *   - `storyPath`   — relative path under `src/stories/`
- *   - `rules`       — cardinal rules relevant to this primitive
+ * The MCP bundles this so an agent can author pages with the actual API (PageContainer, Flex,
+ * ResponsiveGrid, DataTable + ColumnDef, Badge, FormField, Select, Dialog, Toolbar, …) instead of
+ * guessing. Each entry maps to a real export.
  */
 
 export type ComponentGroup =
@@ -87,7 +74,7 @@ export const COMPONENTS: ComponentEntry[] = [
         name: "toolbar",
         type: "ReactNode",
         description:
-          'FIXED chrome band between the page header and the body — a filter strip, a status bar, a "channel workflow" rail. It is a SIBLING of the body, not content inside it: with `fill` the body is the scroll viewport, so the band is `flex: none` OUTSIDE the scroller and never scrolls away or gets slid under. Shares the page gutters and the `measure` cap with the header and the body (the three bands line up on both edges), goes full-bleed under variant="flush" (wrap padded strips in PageContainer.Inset), and renders NOTHING when omitted — no wrapper, no gap. It sits FLUSH against the header above and the body below: chrome is attached, not a third page section floating between two voids, so the band cancels the container gap from itself and its ONLY breathing room is its own inset. Ground, inset and bottom rule are token-owned (--page-toolbar-background, default `transparent`; --page-toolbar-pad-block, default 0; --page-toolbar-divider, falling back to --page-header-divider) — set them in the theme, never with utilities at the call site.',
+          'FIXED chrome band between the page header and the body — a filter strip, a status bar, a "channel workflow" rail. It is a SIBLING of the body, not content inside it: with `fill` the body is the scroll viewport, so the band is `flex: none` OUTSIDE the scroller and never scrolls away or gets slid under. Shares the page gutters and the `measure` cap with the header and the body (the three bands line up on both edges), goes full-bleed under variant="flush" (wrap padded strips in PageContainer.Inset), and renders NOTHING when omitted — no wrapper, no gap. It sits FLUSH against the header above and the body below: chrome is attached, not a third page section floating between two voids, so the band cancels the container gap from itself and its ONLY breathing room is its own inset.',
       },
       {
         name: "footer",
@@ -142,14 +129,14 @@ export const COMPONENTS: ComponentEntry[] = [
         type: '"document" | "chrome"',
         defaultValue: '"document"',
         description:
-          'What the page\'s top row IS, which decides the `<h1>`\'s type step. "document" (default) = the row is the page\'s TITLE (a record, a form, a collection, a report): --page-title-font-size (h1, 20px) with the existing responsive step down at 720px; no attribute is emitted, so an existing page is byte-identical. "chrome" = the row is the surface\'s own furniture — a chat channel name, a mail subject line, an IDE tab — naming the thing the user is already INSIDE instead of announcing a document; the h1 takes --page-title-font-size-chrome (--heading-h3 = the 14px body step) at EVERY width, including below 720px where the document-scale step would otherwise pull it back UP. The heading stays an `<h1>` either way — this moves the type step only, never the element, so the screen-reader outline is untouched. A fourth ORTHOGONAL axis: `variant` owns chrome WEIGHT, `headerLayout` the arrangement, `measure` the inline cap; combine `headerScale="chrome"` with `variant="ghost"` for the full quiet chrome header. "chrome" also opens the page FLUSH with the frame: the container\'s block-start padding becomes --page-pad-block-start-chrome (0 by default) instead of --space-page-active-y, because a document title needs air above it and a channel head IS the top edge — measured on a consumer chat screen as 24px that pushed an otherwise correctly-sized head from y=0 to y=24 and came straight off the transcript viewport (design 617px of scroll, app 587px). Block-start ONLY: the bottom edge stays `stickyFooter`\'s. Two further consequences of the same fact ride the same attribute: the SUBTITLE drops to --page-subtitle-font-size-chrome (--font-size-2xs, ~11px) because the line under chrome is a caption on it, not a document standfirst — at the document step it rendered at the IDENTICAL size as the chrome title, which is not a hierarchy — and the `extra` cluster CENTRES on the bar (align-self: center) wherever the header row is a row (>=640px), because top-packing actions is a document behaviour (they belong on the first line of a tall h1) and a bar has no tall heading to align to: measured 8.65px on a consumer chat screen, 28px icon buttons pinned at y=14 in a 45.3px row whose title block centred at y=22.65.',
+          "What the page's top row IS, which decides the `<h1>`'s type step. \"document\" (default) = the row is the page's TITLE (a record, a form, a collection, a report): --page-title-font-size (h1, 20px) with the existing responsive step down at 720px; no attribute is emitted, so an existing page is byte-identical. \"chrome\" = the row is the surface's own furniture — a chat channel name, a mail subject line, an IDE tab — naming the thing the user is already INSIDE instead of announcing a document; the h1 takes --page-title-font-size-chrome (--heading-h3 = the 14px body step) at EVERY width, including below 720px where the document-scale step would otherwise pull it back UP. The heading stays an `<h1>` either way — this moves the type step only, never the element, so the screen-reader outline is untouched.",
       },
       {
         name: "measure",
         type: '"default" | "narrow" | "medium"',
         defaultValue: '"default"',
         description:
-          'Bounded page MEASURE shared by the header AND the body — a third axis, ORTHOGONAL to `variant` (chrome) and `headerLayout` (arrangement). "default" applies no cap (the historical fluid page). "narrow" (--page-measure-narrow, 42rem outer → 624px visible surface) and "medium" (--page-measure-medium, 48rem outer → 720px visible surface) cap BOTH bands, so a header `extra` action ends flush with the body surface instead of stranded at the page edge — unlike variant="narrow", which caps only the body. The package-owned page gutters sit INSIDE the cap, and it is a max, so a 390px viewport stays fluid (358px surface at the 16px compact gutter). The footer is intentionally not capped (its border/background is page chrome when `stickyFooter` pins it).',
+          'Bounded page MEASURE shared by the header AND the body — a third axis, ORTHOGONAL to `variant` (chrome) and `headerLayout` (arrangement). "narrow" (--page-measure-narrow, 42rem outer → 624px visible surface) and "medium" (--page-measure-medium, 48rem outer → 720px visible surface) cap BOTH bands, so a header `extra` action ends flush with the body surface instead of stranded at the page edge — unlike variant="narrow", which caps only the body. The package-owned page gutters sit INSIDE the cap, and it is a max, so a 390px viewport stays fluid (358px surface at the 16px compact gutter). The footer is intentionally not capped (its border/background is page chrome when `stickyFooter` pins it).',
       },
       {
         name: "stickyFooter",
@@ -556,7 +543,7 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
         type: '"default" | "login" | "registration" | "device-authorization" | "context-selection" | "account-recovery"',
         defaultValue: '"default"',
         description:
-          'Named flow GEOMETRY — the package-owned layout contract for a canonical hosted-identity flow. "login" anchors the 360px SCR-001 card at x=540/332/15 and y=363/363/353 for 1440x900, 1024x900 and 390x844; its fixed identity slot absorbs standalone, one-line requester and wrapped two-line requester states without truncating data. "device-authorization" = a 380px card at 1440/1024 with a 5px inline page gutter at 390, AND the code field itself: the preset hands --otp-slot-{inline,block}-size the canonical 27.5x52 device-grant slot, so two 4-slot grouped boxes measure 112x54 instead of the 146x38 the square --control-height tier produced. "registration" = the 360px sign-up measure with a 15px inline gutter at 390 (the same page rhythm as "login", so sign-in to sign-up never jumps on a phone). START-aligned like login: a sign-up card is the tallest surface in the set (name/email/password/confirm/strength/consent/submit/providers) and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach. It is also the only preset with its own footer-clearance knob, so the legal/consent footer never sits flush against the submit button; it carries the full password form AND the pending-email confirmation state with no consumer geometry CSS. "context-selection" = a 25rem card on desktop/tablet, edge-to-edge on mobile, plus tokenized section rhythm. "account-recovery" = the 27rem/432px SCR-008 recovery/MFA panel with a 15px mobile gutter. ORTHOGONAL to `variant`, so `variant="canonical" preset="login"` keeps canonical control chrome while the preset owns layout. Selecting a preset REPLACES consumer-side geometry overrides.',
+          'Named flow GEOMETRY — the package-owned layout contract for a canonical hosted-identity flow. "device-authorization" = a 380px card at 1440/1024 with a 5px inline page gutter at 390, AND the code field itself: the preset hands --otp-slot-{inline,block}-size the canonical 27.5x52 device-grant slot, so two 4-slot grouped boxes measure 112x54 instead of the 146x38 the square --control-height tier produced. "registration" = the 360px sign-up measure with a 15px inline gutter at 390 (the same page rhythm as "login", so sign-in to sign-up never jumps on a phone). START-aligned like login: a sign-up card is the tallest surface in the set (name/email/password/confirm/strength/consent/submit/providers) and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach.',
       },
       {
         name: "density",
@@ -678,7 +665,7 @@ export function DeviceAuthorizationPage() {
         name: "align",
         type: '"start" | "center"',
         description:
-          'Block alignment of the centred column inside the 100dvh shell. "start" (default) keeps the top-aligned flowing/scrolling page shape. "center" centres the column in the viewport — the SYSTEM-level standalone surface (a 500/503 error page, a maintenance notice); the full-page geometry stays package-owned (--centered-shell-column-offset-block: auto) instead of a consumer writing min-h-dvh + flex centring or a className. Overflowing content still scrolls from the top, so a long localized message is never clipped.',
+          'Block alignment of the centred column inside the 100dvh shell. "start" (default) keeps the top-aligned flowing/scrolling page shape. Overflowing content still scrolls from the top, so a long localized message is never clipped.',
       },
       {
         name: "preset",
@@ -808,7 +795,7 @@ export function MyPage() {
         name: "linkComponent",
         type: "SidebarLinkComponentProp",
         description:
-          "THE framework-router contract. Supply only the link ELEMENT TYPE; the library keeps composing every row — icon slot, label, badge, data-active/aria-current, the icon-only collapsed rail and its tooltip name — and passes it to the link as SidebarLinkProp children. Applied to every row that carries an href: top-level leaves, submenu children, collapsed-rail leaves and collapsed flyout entries. Build it with createSidebarLink(Link, 'to') for React Router / TanStack, createSidebarLink(Link) or inertiaSidebarLink(Link) from @godxjp/ui/inertia for Inertia / Next.js. Rows without an href keep the button + onSelect shape; a group TRIGGER stays a button because it owns aria-expanded disclosure semantics.",
+          "THE framework-router contract. Supply only the link ELEMENT TYPE; the library keeps composing every row — icon slot, label, badge, data-active/aria-current, the icon-only collapsed rail and its tooltip name — and passes it to the link as SidebarLinkProp children. Applied to every row that carries an href: top-level leaves, submenu children, collapsed-rail leaves and collapsed flyout entries. Build it with createSidebarLink(Link, 'to') for React Router / TanStack, createSidebarLink(Link) or inertiaSidebarLink(Link) from @godxjp/ui/inertia for Inertia / Next.js.",
       },
       {
         name: "renderItem",
@@ -1062,8 +1049,7 @@ import { PanelLeftClose, Search } from "lucide-react";
         name: "rail",
         type: '"master" | "detail"',
         defaultValue: '"detail"',
-        description:
-          "Which region keeps the fixed track; the other one is fluid. `detail` = the canonical fluid-list + fixed detail rail. `master` = leading category/navigator rail beside a fluid detail surface.",
+        description: "`master` = leading category/navigator rail beside a fluid detail surface.",
       },
       {
         name: "railWidth",
@@ -1592,8 +1578,7 @@ export function TermsPage() {
         name: "fullWidth",
         type: "boolean",
         defaultValue: "false",
-        description:
-          'Span the full container width (`width:100%`) instead of sizing to content. Use the prop instead of `className="w-full"` for stacked / auth-form / dialog-footer actions (rule #42).',
+        description: "Span the full container width (`width:100%`) instead of sizing to content.",
       },
       {
         name: "asChild",
@@ -1712,7 +1697,7 @@ import { Trash2 } from "lucide-react";
         name: "clamp",
         type: "number",
         description:
-          "Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis. The token-owned line-clamp: NEVER write a page-local `line-clamp-N` utility (rule #2). Visual-only — the full text stays in the DOM / accessible name. Mutually exclusive with `truncate` (`clamp` wins; dev builds warn).",
+          "Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis. Visual-only — the full text stays in the DOM / accessible name. Mutually exclusive with `truncate` (`clamp` wins; dev builds warn).",
       },
       { name: "tabular", type: "boolean", description: "Tabular figures for aligned numbers." },
       { name: "mono", type: "boolean", description: "Monospace family for codes / ids." },
@@ -1822,13 +1807,13 @@ import { Trash2 } from "lucide-react";
         type: '"primary" | "success"',
         defaultValue: '"primary"',
         description:
-          'Semantic fill role. "success" names the IDENTITY slot, not the status role: it gives the canonical GoDX emerald mark without re-tinting the application\'s primary action colour (it reads --logo-success-background / --logo-success-foreground; the FILL defaults to the --brand role — independent of BOTH --primary and the --success status green, gh#250). The boxed glyph\'s INK defaults to --logo-identity-foreground (near-black), NOT --brand-foreground: --brand-foreground is the artwork KNOCKOUT colour and clears only 3.67:1 on the emerald, while a boxed glyph renders real TEXT and owes WCAG 2.2 SC 1.4.3\'s 4.5:1 (14px bold is not "large text"). Re-theming --brand to a DARK fill? Override --logo-success-foreground to re-invert the ink.',
+          "Semantic fill role. The boxed glyph's INK defaults to --logo-identity-foreground (near-black), NOT --brand-foreground: --brand-foreground is the artwork KNOCKOUT colour and clears only 3.67:1 on the emerald, while a boxed glyph renders real TEXT and owes WCAG 2.2 SC 1.4.3's 4.5:1 (14px bold is not \"large text\"). Re-theming --brand to a DARK fill? Override --logo-success-foreground to re-invert the ink.",
       },
       {
         name: "wordmark",
         type: "React.ReactNode",
         description:
-          'Readable product name rendered BESIDE the mark as ONE lockup — pass the localized product name (or an inline <svg> logotype when a real asset exists). Set it INSTEAD of hand-rolling `inline-flex items-center gap-2` around a Logo and a Text. The lockup root takes ref/className/…props; the mark becomes decorative and the wordmark text carries the accessible name, so the pair is announced once. Colour/face/weight/tracking/size and the mark↔wordmark gap are tokens (--logo-wordmark-*); on mark="godx" / tone="success" the wordmark is canonical emerald from the --brand identity role and NEVER reads --primary or --success. The wordmark span carries `data-logotype`: WCAG 2.2 SC 1.4.3 exempts brand-name artwork from the text-contrast minimum, so a consumer contrast audit must skip it rather than darken the brand colour. Omit for the bare mark (unchanged behaviour).',
+          'Readable product name rendered BESIDE the mark as ONE lockup — pass the localized product name (or an inline <svg> logotype when a real asset exists). Set it INSTEAD of hand-rolling `inline-flex items-center gap-2` around a Logo and a Text. The lockup root takes ref/className/…props; the mark becomes decorative and the wordmark text carries the accessible name, so the pair is announced once. Colour/face/weight/tracking/size and the mark↔wordmark gap are tokens (--logo-wordmark-*); on mark="godx" / tone="success" the wordmark is canonical emerald from the --brand identity role and NEVER reads --primary or --success.',
       },
       {
         name: "label",
@@ -1939,7 +1924,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
     name: "Activity",
     group: "general",
     tagline:
-      "The official AMBIENT-motion primitive — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live). The LOOP counterpart to Reveal's one-shot entrance: it reads the DS motion tokens and ships the prefers-reduced-motion guard once, so a consumer never hand-rolls a looping @keyframes.",
+      "The official AMBIENT-motion primitive — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live).",
     props: [
       {
         name: "variant",
@@ -1959,8 +1944,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         name: "tone",
         type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
         defaultValue: '"muted"',
-        description:
-          "Semantic colour intent for the mark and the label. Default `muted` — ambient, not an alert (cardinal rule #44: chrome defaults to the quietest state).",
+        description: "Semantic colour intent for the mark and the label.",
       },
       {
         name: "label",
@@ -2025,7 +2009,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
     name: "DataTable",
     group: "data-display",
     tagline:
-      "The one TanStack-powered compound admin list — sticky header, sorting, global search, column visibility ('set view'), bulk selection, BOTH cursor and numbered pagination, density, and built-in empty/loading states. Keep the SIMPLE `data` + lean `columns` (ColumnDef) API for the common case; opt into the full grid chrome via the compound parts. Internally driven by @tanstack/react-table (a real dependency). Lives on @godxjp/ui/data-display only (it is NOT on the runtime-neutral root/admin barrel because it pulls TanStack). This is the single table component — the former DataGrid has been merged in and removed. Never hand-roll a data.length===0 guard around it.",
+      "The one TanStack-powered compound admin list — sticky header, sorting, global search, column visibility ('set view'), bulk selection, BOTH cursor and numbered pagination, density, and built-in empty/loading states. Keep the SIMPLE `data` + lean `columns` (ColumnDef) API for the common case; opt into the full grid chrome via the compound parts. Internally driven by @tanstack/react-table (a real dependency). Lives on @godxjp/ui/data-display only (it is NOT on the runtime-neutral root/admin barrel because it pulls TanStack).",
     props: [
       {
         name: "data",
@@ -2039,7 +2023,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         type: "ColumnDef<T>[]",
         required: true,
         description:
-          "Lean column definitions (adapted to TanStack internally — `meta.lean` is the declared home for every custom column option, so `priority` needs no second TanStack channel). Each column: { key: string; header: ReactNode; ariaLabel?: string; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end'; priority?: 'primary'|'secondary'|'meta'|'actions' }. priority is the column-priority contract read by preset=\"action-collection\" — DataTable stamps it as data-priority on the <th> AND every <td> of the column, so the preset can allocate the narrow-frame measure; leave the free-text column unmarked (it takes the remaining space), and prefer priority over width under the preset because an explicit width utility wins the cascade and defeats the measure. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column. ariaLabel gives a VISUALLY-EMPTY header (header='' — an action or selection column) a screen-reader name (e.g. 'Actions'/'Select'): it renders as an sr-only label inside the <th> so the column is never nameless (axe: empty-table-header). DataTable dev-warns when a column has an empty header and no ariaLabel.",
+          "Lean column definitions (adapted to TanStack internally — `meta.lean` is the declared home for every custom column option, so `priority` needs no second TanStack channel). Each column: { key: string; header: ReactNode; ariaLabel?: string; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end'; priority?: 'primary'|'secondary'|'meta'|'actions' }. priority is the column-priority contract read by preset=\"action-collection\" — DataTable stamps it as data-priority on the <th> AND every <td> of the column, so the preset can allocate the narrow-frame measure; leave the free-text column unmarked (it takes the remaining space), and prefer priority over width under the preset because an explicit width utility wins the cascade and defeats the measure. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column. ariaLabel gives a VISUALLY-EMPTY header (header='' — an action or selection column) a screen-reader name (e.g. 'Actions'/'Select'): it renders as an sr-only label inside the <th> so the column is never nameless (axe: empty-table-header).",
       },
       {
         name: "getRowId",
@@ -2173,7 +2157,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         name: "error",
         type: "ReactNode",
         description:
-          "FAILURE state. Pass error={isError} — `true` renders the built-in localized destructive EmptyState ('Couldn't load this list') announced with role='alert'; any other node REPLACES that copy (e.g. an <Alert> carrying an error code + request id). `false`/`undefined` means the read succeeded. NEVER pass a raw Error object (it is not renderable). Suppresses the empty state.",
+          "FAILURE state. Pass error={isError} — `true` renders the built-in localized destructive EmptyState ('Couldn't load this list') announced with role='alert'; any other node REPLACES that copy (e.g. an <Alert> carrying an error code + request id). `false`/`undefined` means the read succeeded. NEVER pass a raw Error object (it is not renderable).",
       },
       {
         name: "denied",
@@ -2308,7 +2292,7 @@ export default function InvoiceList({
     name: "Card",
     group: "data-display",
     tagline:
-      'Surface container with optional accent stripe, variant fill, size, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className="p-4"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For a tab/toolbar/filter strip (view tabs, list controls) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card. Never hand-roll a bordered div for this.',
+      'Surface container with optional accent stripe, variant fill, size, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className="p-4"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For a tab/toolbar/filter strip (view tabs, list controls) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card.',
     props: [
       {
         name: "accent",
@@ -2321,7 +2305,7 @@ export default function InvoiceList({
         type: '"edge" | "perimeter"',
         defaultValue: '"edge"',
         description:
-          'Where `accent` is drawn. "edge" is the classic leading rail. "perimeter" is the FULL attention border — the whole edge in the accent tone, at the same optical weight as `variant="featured"` but tone-owned, so a card can read as "action required" (accent="attention") or "failed" (accent="destructive") without borrowing the brand colour. Inert without `accent`. Switching placement never shifts the body text: the rail\'s slot-padding compensation is undone with it.',
+          'Where `accent` is drawn. "edge" is the classic leading rail. "perimeter" is the FULL attention border — the whole edge in the accent tone, at the same optical weight as `variant="featured"` but tone-owned, so a card can read as "action required" (accent="attention") or "failed" (accent="destructive") without borrowing the brand colour. Inert without `accent`.',
       },
       {
         name: "variant",
@@ -2753,7 +2737,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         type: '"default" | "compact"',
         defaultValue: '"default"',
         description:
-          "Row geometry. `compact` is the inline-actions preset: tighter block padding and column gap plus a LOWER body threshold (`--list-row-compact-*`), so a leading Avatar, the title/description and one or two small trailing Buttons stay INLINE inside a narrow card (≈326px content) at 390px, and a history Badge + ISO-8601 date stays on the title's line. It only lowers thresholds — the row and its trailing cluster still wrap, so a cluster that cannot fit drops to its own line rather than widening the page root.",
+          "Row geometry. It only lowers thresholds — the row and its trailing cluster still wrap, so a cluster that cannot fit drops to its own line rather than widening the page root.",
       },
       {
         name: "unread",
@@ -3084,7 +3068,7 @@ import { Flex } from "@godxjp/ui/layout";
         type: "1 | 2 | 3 | 4",
         defaultValue: "3",
         description:
-          "Semantic heading level of the title. Pick it to keep the page outline valid (h1 → h2 → h3, no skipped levels), NEVER for visual size — the title size is fixed regardless of level. A page/onboarding empty state directly under the page h1 uses titleLevel={2}; one nested in an already-h2 section keeps the default 3.",
+          "Semantic heading level of the title. A page/onboarding empty state directly under the page h1 uses titleLevel={2}; one nested in an already-h2 section keeps the default 3.",
       },
       {
         name: "titleAs",
@@ -3274,7 +3258,7 @@ import { Flex } from "@godxjp/ui/layout";
         type: "boolean",
         defaultValue: "false",
         description:
-          "Draw the full cell GRID: an outer frame plus vertical rules between columns (the horizontal row rules already come from TableRow). Reach for it whenever the table carries rowSpan/colSpan merged cells — without column rules the merge relationships are unreadable. Colour comes from --table-border-color (default --border). Default false emits nothing. Inside `<CardContent flush>` the three edges that COINCIDE with the card's own frame are dropped so the table does not draw a second nested frame; the block-start edge survives as the divider under a plain CardHeader and takes its width from --table-flush-divider-width — set that to 0 in a theme for a borderless full-bleed table. A banded CardHeader, a CardBar or a DataTable.Toolbar above the table already draws that line, so the divider stands down there on its own.",
+          "Draw the full cell GRID: an outer frame plus vertical rules between columns (the horizontal row rules already come from TableRow). Reach for it whenever the table carries rowSpan/colSpan merged cells — without column rules the merge relationships are unreadable. Colour comes from --table-border-color (default --border). Default false emits nothing.",
       },
       {
         name: "preset",
@@ -3502,7 +3486,7 @@ import { Flex } from "@godxjp/ui/layout";
         name: "errors",
         type: "Partial<Record<string, string | string[]>>",
         description:
-          "Server validation error bag (e.g. Inertia's form.errors). Each FormField name='…' inside resolves its own message from the bag and CLAIMS its key; <FormErrors /> renders the unclaimed remainder (errors on hidden/derived fields). Works in both <form> and asChild modes. A Form WITHOUT this prop joins a surrounding FormErrorsProvider (sibling Card+Form sections sharing one bag); a Form WITH it starts its own shadowing registry.",
+          "Server validation error bag (e.g. Inertia's form.errors). Each FormField name='…' inside resolves its own message from the bag and CLAIMS its key; <FormErrors /> renders the unclaimed remainder (errors on hidden/derived fields). Works in both <form> and asChild modes.",
       },
       {
         name: "density",
@@ -3988,7 +3972,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "loadOptions",
         type: "(params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>",
         description:
-          "Async remote fetcher. Receives { query, page } (1-based). Must return { options, hasMore? }. Implies showSearch=true automatically. Drives debounced search + infinite-scroll pagination.",
+          "Async remote fetcher. Receives { query, page } (1-based). Must return { options, hasMore? }. Implies showSearch=true automatically.",
       },
       {
         name: "showSearch",
@@ -4391,7 +4375,7 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "boolean",
         defaultValue: "false",
         description:
-          "Grow the control with its content instead of holding a fixed `rows` height. The floor is `minRows` (or `rows`, when that is the only one given) and never undercuts the `--control-height` tier, so a resting one-row composer still lines up with the Button beside it; past `maxRows` the control stops growing and scrolls internally. Sizing happens in CSS from a hidden replica of the text, so it follows a paste, an IME composition, a programmatic value change, a font swap and a container resize — not just typing — and the component never writes `style.height`, never reads `scrollHeight` and never moves `scrollTop`. Works controlled and uncontrolled. Off by default: an existing Textarea keeps the exact geometry it has today.",
+          "The floor is `minRows` (or `rows`, when that is the only one given) and never undercuts the `--control-height` tier, so a resting one-row composer still lines up with the Button beside it; past `maxRows` the control stops growing and scrolls internally. Sizing happens in CSS from a hidden replica of the text, so it follows a paste, an IME composition, a programmatic value change, a font swap and a container resize — not just typing — and the component never writes `style.height`, never reads `scrollHeight` and never moves `scrollTop`. Works controlled and uncontrolled. Off by default: an existing Textarea keeps the exact geometry it has today.",
       },
       {
         name: "minRows",
@@ -4412,7 +4396,7 @@ export function PrioritySelect({ value, onValueChange }) {
         type: '"default" | "ghost"',
         defaultValue: '"default"',
         description:
-          "`ghost` strips the field's own border, background and focus ring, for a textarea EMBEDDED in a surface that already draws the box — a chat composer inside a Card, an inline edit cell. The surface then owns focus, via `focus-within` on the wrapper. Two nested rounded borders is the tell that this was needed. Not achievable by overriding `--control-border-width`: the default class carries Tailwind's `border` in @layer utilities, which beats the token rule in @layer components (same structural inertness as gh#260 on Badge).",
+          "`ghost` strips the field's own border, background and focus ring, for a textarea EMBEDDED in a surface that already draws the box — a chat composer inside a Card, an inline edit cell. The surface then owns focus, via `focus-within` on the wrapper. Two nested rounded borders is the tell that this was needed.",
       },
     ],
     usage: [
@@ -4843,8 +4827,7 @@ export function NegotiationYmField() {
       {
         name: "fromDate",
         type: "Date",
-        description:
-          "Earliest selectable date in the calendar. Days before this date are disabled in the grid, and the calendar navigation starts at this month.",
+        description: "Earliest selectable date in the calendar.",
       },
       {
         name: "toDate",
@@ -5164,14 +5147,14 @@ function ConfirmSettlement() {
         name: "width",
         type: "number | string",
         description:
-          "On SheetContent (side left/right): desired panel width (number→px). Caps at the viewport — full-width on a small screen (min(width,100%)), NOT a hard fixed width. Default w-3/4 sm:max-w-md.",
+          "On SheetContent (side left/right): desired panel width (number→px). Default w-3/4 sm:max-w-md.",
       },
       {
         name: "responsive",
         type: '"auto" | "side" | "bottom"',
         defaultValue: '"side"',
         description:
-          'On SheetContent: the responsive drawer / detail-panel contract. "side" (default) always renders the physical `side` you named. "auto" renders the desktop side panel above --sheet-responsive-breakpoint-width (48rem/768px) and the mobile BOTTOM sheet at/below it, capped by --sheet-bottom-max-height (85dvh). "bottom" pins the bottom-sheet presentation. The resolved presentation is exposed as data-side on the panel. Never hand-roll useMediaQuery in app code — import useSheetResponsiveMode() if a composite must make the same decision.',
+          'On SheetContent: the responsive drawer / detail-panel contract. "side" (default) always renders the physical `side` you named. "auto" renders the desktop side panel above --sheet-responsive-breakpoint-width (48rem/768px) and the mobile BOTTOM sheet at/below it, capped by --sheet-bottom-max-height (85dvh). "bottom" pins the bottom-sheet presentation.',
       },
       {
         name: "title / subtitle / extra / tone",
@@ -5284,7 +5267,7 @@ import { Button } from "@godxjp/ui/general";
     name: "Banner",
     group: "feedback",
     tagline:
-      "Full-bleed page/shell attention strip (past-due subscription, support session, maintenance). The Alert primitive with variant fixed to banner. Parts: Banner.Title/Description/Content/Actions.",
+      "Full-bleed page/shell attention strip (past-due subscription, support session, maintenance). Parts: Banner.Title/Description/Content/Actions.",
     props: [
       {
         name: "tone",
@@ -5688,7 +5671,7 @@ import { Button } from "@godxjp/ui/general";
         type: '"chevron" | "arrow"',
         defaultValue: '"chevron"',
         description:
-          'The glyph between INLINE steps (`type="inline"` only; gh#12). `chevron` (›) is the breadcrumb-flavoured original; `arrow` (→) is the canonical hosted-identity progression marker — a chevron reads "drill into", an arrow reads "then", which is what a step row means. Both flip under dir="rtl". Ignored by every other `type`.',
+          '`chevron` (›) is the breadcrumb-flavoured original; `arrow` (→) is the canonical hosted-identity progression marker — a chevron reads "drill into", an arrow reads "then", which is what a step row means. Both flip under dir="rtl". Ignored by every other `type`.',
       },
       {
         name: "onValueChange",
@@ -5762,7 +5745,7 @@ import { Button } from "@godxjp/ui/general";
         type: "'wrap' | 'scroll'",
         defaultValue: "'wrap'",
         description:
-          "Responsive overflow strategy. 'wrap' stacks the groups into one column below 640px, then wraps onto extra rows. 'scroll' keeps ONE bounded row at >=640px that scrolls inline (groups never shrink; the clear-all button stays sticky at the inline end) — use it when many filters with long JA/EN/VI labels would otherwise push the table below the fold. Below 640px 'scroll' still stacks, so a 390px viewport never hides a filter behind an invisible horizontal scroll. Gutter knob: --filter-bar-scroll-padding-y.",
+          "Responsive overflow strategy. 'wrap' stacks the groups into one column below 640px, then wraps onto extra rows. 'scroll' keeps ONE bounded row at >=640px that scrolls inline (groups never shrink; the clear-all button stays sticky at the inline end) — use it when many filters with long JA/EN/VI labels would otherwise push the table below the fold. Below 640px 'scroll' still stacks, so a 390px viewport never hides a filter behind an invisible horizontal scroll.",
       },
       {
         name: "search",
@@ -5936,7 +5919,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
         type: "boolean",
         defaultValue: "false",
         description:
-          "Emit a native `name` on every control a FormField wraps, taken from the field's key (`field` \u2192 `name` \u2192 `id`) \u2014 gh#337. OFF by default and deliberately opt-in: `name` decides what a native <form> submit sends, so switching it on for every consumer of a shared package would make apps start posting new keys to their backend on a library upgrade. Turn it on for apps that need native form posts or a screen-automation (RPA) contract on their controls. The inert `data-field` companion attribute is emitted regardless; a `name` written on the control itself always wins. NOT persisted to localStorage: it is the app's configuration, not a user choice.",
+          "OFF by default and deliberately opt-in: `name` decides what a native <form> submit sends, so switching it on for every consumer of a shared package would make apps start posting new keys to their backend on a library upgrade. Turn it on for apps that need native form posts or a screen-automation (RPA) contract on their controls. The inert `data-field` companion attribute is emitted regardless; a `name` written on the control itself always wins. NOT persisted to localStorage: it is the app's configuration, not a user choice.",
       },
     ],
     usage: [
@@ -6208,8 +6191,7 @@ export function CutoffTimeForm() {
       {
         name: "fromDate",
         type: "Date",
-        description:
-          "Earliest selectable date. Disables calendar days before this date and pins the calendar's startMonth.",
+        description: "Earliest selectable date.",
       },
       {
         name: "toDate",
@@ -6306,7 +6288,7 @@ export function InvoicePeriodFilter() {
         name: "value",
         type: "string[] | string[][]",
         description:
-          "Controlled value. Single mode: string[] path (e.g. ['vn','hcm','q1']). Multiple mode: string[][] array of paths. Omit for uncontrolled.",
+          "Controlled value. Single mode: string[] path (e.g. ['vn','hcm','q1']). Multiple mode: string[][] array of paths.",
       },
       {
         name: "defaultValue",
@@ -8296,7 +8278,7 @@ export function ControlledPopover() {
         type: '"none" | "bottom"',
         defaultValue: '"none"',
         description:
-          "Edge the viewport sticks to as its content grows. 'none' leaves the scroll offset entirely alone (today's behaviour). 'bottom' is the live-stream contract: mount lands on the newest item; while the reader is within `anchorOffset` of the bottom, arriving content keeps them there; once they scroll up to read history nothing moves the viewport again until they come back; and content inserted ABOVE the read position is compensated so the row under their eyes stays put.",
+          "Edge the viewport sticks to as its content grows. 'none' leaves the scroll offset entirely alone (today's behaviour).",
       },
       {
         name: "anchorOffset",
@@ -8809,13 +8791,13 @@ import { fetchInvoice } from "@/api/invoices";
         type: '"default" | "tinted"',
         defaultValue: '"default"',
         description:
-          'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on. Retune with --avatar-tinted-{background,foreground,glyph-size}.',
+          'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on.',
       },
       {
         name: "presence",
         type: '"online" | "away" | "busy" | "offline"',
         description:
-          'Realtime reachability, drawn as an indicator at the block-end/inline-end corner of the mark. Ships the dot, its geometry tokens and a localized sr-only label TOGETHER, so presence is never colour-only (WCAG 1.4.1): each value also has its own silhouette — online = filled disc (--success), away = half-filled (--warning), busy = filled + a horizontal do-not-disturb bar (--destructive), offline = hollow ring (--muted-foreground). OMIT the prop for an entity with no presence concept (an organization mark, a capability medallion): no node and no attribute are emitted. `presence="offline"` is the DIFFERENT, positive statement "known to be unreachable" — the same distinction ListRow draws between an omitted and a `false` `unread`. Retune every constant with --avatar-presence-*.',
+          'Realtime reachability, drawn as an indicator at the block-end/inline-end corner of the mark. Ships the dot, its geometry tokens and a localized sr-only label TOGETHER, so presence is never colour-only (WCAG 1.4.1): each value also has its own silhouette — online = filled disc (--success), away = half-filled (--warning), busy = filled + a horizontal do-not-disturb bar (--destructive), offline = hollow ring (--muted-foreground). OMIT the prop for an entity with no presence concept (an organization mark, a capability medallion): no node and no attribute are emitted. `presence="offline"` is the DIFFERENT, positive statement "known to be unreachable" — the same distinction ListRow draws between an omitted and a `false` `unread`.',
       },
       {
         name: "presenceLabel",
@@ -8996,7 +8978,7 @@ import { Separator } from "@godxjp/ui/layout";
         name: "count",
         type: "number",
         description:
-          "Optional numeric count rendered as a borderless counter pill after the label — the SAME vocabulary Button defines (count/overflowCount/showZero), so a counted filter tab and a counted PRESSED chip read identically. This is what makes a faceted filter chip ('Open 42', selected or not) or a reaction chip ONE control: one button[aria-pressed], one tab stop, one focus ring, one accessible name. Formatted with Intl.NumberFormat in the active locale — never String(n), never a hand-rolled separator. NEVER nest a Badge inside a Toggle for this (a Badge is a status chip with its own surface: it double-borders the chip and puts two boxes where there is one control), and never hand-write a <span> counter inside a Toggle (that re-derives the Intl formatting, the cap and the pill's type ramp page-side). The pill takes its colour from the toggle's OWN pressed state, so pressed and unpressed chips differ without reading the number.",
+          "Optional numeric count rendered as a borderless counter pill after the label — the SAME vocabulary Button defines (count/overflowCount/showZero), so a counted filter tab and a counted PRESSED chip read identically. This is what makes a faceted filter chip ('Open 42', selected or not) or a reaction chip ONE control: one button[aria-pressed], one tab stop, one focus ring, one accessible name. Formatted with Intl.NumberFormat in the active locale — never String(n), never a hand-rolled separator. NEVER nest a Badge inside a Toggle for this (a Badge is a status chip with its own surface: it double-borders the chip and puts two boxes where there is one control), and never hand-write a <span> counter inside a Toggle (that re-derives the Intl formatting, the cap and the pill's type ramp page-side).",
       },
       {
         name: "overflowCount",
@@ -9016,7 +8998,7 @@ import { Separator } from "@godxjp/ui/layout";
         name: "countLabel",
         type: "string",
         description:
-          "Localized description of what the count MEANS, folded into the accessible name so the control never announces as a bare number. The name always comes out as '<label>, <count> <unit>' — from contents for a text chip ('Unread, 12 items'), or folded into `aria-label` for an icon/emoji chip ('thumbs up, 3 reactions'). REQUIRED in practice whenever the visible label is an icon or emoji. Pass a t()-resolved string; the library does not own this wording. The count is announced exactly ONCE and there is deliberately no aria-live: a count that ticks up as other people react is not this control's status — a product that wants it announced owns its own live region.",
+          "Localized description of what the count MEANS, folded into the accessible name so the control never announces as a bare number. The name always comes out as '<label>, <count> <unit>' — from contents for a text chip ('Unread, 12 items'), or folded into `aria-label` for an icon/emoji chip ('thumbs up, 3 reactions'). REQUIRED in practice whenever the visible label is an icon or emoji. Pass a t()-resolved string; the library does not own this wording.",
       },
     ],
     usage: [
@@ -9663,7 +9645,7 @@ export default function PasswordBlock() {
         name: "defaultSize",
         type: "string | number",
         description:
-          'ResizablePanel initial size. react-resizable-panels v4: a STRING is a unit ("35%", "20rem", "240px"); a bare NUMBER is PIXELS. For a percentage of the group pass a string like "35%" — `defaultSize={35}` means 35px (a sliver), not 35%.',
+          'For a percentage of the group pass a string like "35%" — `defaultSize={35}` means 35px (a sliver), not 35%.',
       },
       {
         name: "minSize",
@@ -9794,7 +9776,7 @@ export default function PasswordBlock() {
         name: "appearance",
         type: '"labeled" | "icon" | "inline"',
         description:
-          'Trigger presentation. "labeled" shows the leading icon + selected value: it hugs its content below `sm` (`w-auto max-w-full`) and takes a per-kind fixed width from `sm` up — it no longer stretches to `w-full` on narrow screens, so it fits a topbar (pass className="w-full" for a full-width form field). "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. "inline" renders the selected value as a chrome-less text trigger for a legal/auth footer (no border, no box). DEFAULT IS KIND-DEPENDENT: kind="locale" defaults to "icon" (its product contract is the compact language switcher); every other kind defaults to "labeled". Use these instead of overriding internal descendants / width classes with CSS.',
+          'Trigger presentation. "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. "inline" renders the selected value as a chrome-less text trigger for a legal/auth footer (no border, no box). DEFAULT IS KIND-DEPENDENT: kind="locale" defaults to "icon" (its product contract is the compact language switcher); every other kind defaults to "labeled".',
       },
       {
         name: "compact",
@@ -10717,6 +10699,53 @@ export function NotifyRow() {
     rules: [45],
   },
   {
+    name: "AccountChip",
+    group: "layout",
+    tagline:
+      "Signed-in user for a PageContainer extra slot, Topbar or footer row: avatar, name and one ghost action at the control tier height — never a hand-rolled rounded-full border div.",
+    props: [
+      {
+        name: "name",
+        type: "string",
+        required: true,
+        description: "Display name; its first character is the avatar fallback.",
+      },
+      {
+        name: "email",
+        type: "string",
+        description: "Shown as the chip's title (hover / assistive tooltip).",
+      },
+      { name: "avatarSrc", type: "string", description: "Optional avatar image URL." },
+      {
+        name: "avatarFallback",
+        type: "ReactNode",
+        description: "Overrides the first-character fallback.",
+      },
+      {
+        name: "actionLabel",
+        type: "ReactNode",
+        description: "Accessible name of the action button, e.g. a localized sign-out label.",
+      },
+      {
+        name: "onAction",
+        type: "() => void",
+        description: "Action handler; omit it to render no button.",
+      },
+      { name: "disabled", type: "boolean", description: "Disables the action button." },
+      { name: "className", type: "string", description: "Optional structural class override." },
+    ],
+    usage: [
+      'Put it in PageContainer `extra` beside Buttons and a Select width="auto": every control in that row shares --control-height.',
+      "Pass a localized actionLabel with onAction; the component owns no route, session or permission behaviour.",
+      'DO compose from the package (it is Avatar + Text + Button in a Flex row); DON\'T hand-roll <div className="inline-flex rounded-full border py-0.5"> — it drifts from the control height and the audit flags it (no-hand-rolled-surface).',
+    ],
+    example: `import { AccountChip } from "@godxjp/ui/layout";
+
+<PageContainer title="Bug report" extra={<><Button variant="outline">History</Button><AccountChip name={user.name} email={user.email} actionLabel={t("auth.signOut")} onAction={signOut} /><Button>Send</Button></>}>…</PageContainer>`,
+    storyPath: "layout/AccountChip.stories.tsx",
+    rules: [40],
+  },
+  {
     name: "AuthAccountSummary",
     group: "layout",
     tagline:
@@ -10992,8 +11021,7 @@ import { Badge } from "@godxjp/ui/data-display";
   {
     name: "PermissionMatrix",
     group: "data-display",
-    tagline:
-      "Canonical role × permission grid — sticky permission column, shape-encoded ✓/— cells (never colour-only), optional editable checkbox mode, two-role compare with a 差分のみ filter, and the DataTable #216 lifecycle states (loading → denied → error → empty). Domain data is 100% consumer-supplied.",
+    tagline: "Domain data is 100% consumer-supplied.",
     props: [
       {
         name: "roles",
@@ -11044,7 +11072,7 @@ import { Badge } from "@godxjp/ui/data-display";
         name: "loading / denied / error / empty / onRetry",
         type: "boolean | ReactNode / handler",
         description:
-          "The DataTable #216 lifecycle vocabulary with the same precedence (loading → denied → error → empty). `true` renders the built-in localized surface; a node replaces it; onRetry adds Retry to the built-in error only.",
+          "`true` renders the built-in localized surface; a node replaces it; onRetry adds Retry to the built-in error only.",
       },
       { name: "label", type: "string", description: "Accessible table name (localized default)." },
     ],
@@ -11087,8 +11115,7 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
   {
     name: "BranchScopePicker",
     group: "data-entry",
-    tagline:
-      "Canonical scope control: all branches vs an explicit subset. One controlled value ({ mode, branchIds }), real RadioGroup + CheckboxGroup + SearchInput underneath (keyboard + field-a11y from the primitives), validation via aria-errormessage, and the #216 collection lifecycle (loading → denied → listError → empty).",
+    tagline: "Canonical scope control: all branches vs an explicit subset.",
     props: [
       {
         name: "branches",
@@ -11111,8 +11138,7 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
       {
         name: "listError / denied / loading / empty",
         type: "boolean | ReactNode",
-        description:
-          "The #216 collection lifecycle (precedence loading → denied → listError → empty). `true` renders the built-in localized message.",
+        description: "`true` renders the built-in localized message.",
       },
       {
         name: "readOnly",
@@ -11171,8 +11197,7 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
   {
     name: "ServiceRolePanel",
     group: "layout",
-    tagline:
-      "Canonical role-collection ⇄ role-detail surface over MasterDetail (rail=master): controlled selection with aria-current role rows, locked system roles, a built-in destructive AlertDialog for deletion (fires onDeleteRole only AFTER confirm), and the #216 lifecycle states. Geometry (1440/1024 two-track, 390 stacked) is MasterDetail's tokens.",
+    tagline: "Geometry (1440/1024 two-track, 390 stacked) is MasterDetail's tokens.",
     props: [
       {
         name: "roles",

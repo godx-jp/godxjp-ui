@@ -1,23 +1,9 @@
 #!/usr/bin/env node
 /**
- * Release-lockstep guard — @godxjp/ui and @godxjp/ui-mcp MUST ship as one release train.
- *
- * The two packages describe the SAME thing from two sides: `@godxjp/ui` is the runtime component
- * library; `@godxjp/ui-mcp` is the catalog that tells agents how to use it (props, tokens, rules,
- * patterns). If their versions drift, the MCP documents a release the consumer never installed —
- * exactly the bug in issue #140 (ui 16.9.2 / mcp 16.7.2 / server 16.7.0 all disagreeing).
- *
- * This check makes that drift a CI failure instead of a silent runtime surprise. It asserts the
- * machine-readable compatibility metadata is MUTUALLY consistent:
- *
- *   1. root package.json `version` === mcp/package.json `version`   (one shared release line)
- *   2. root package.json `godxUiMcp`  === mcp/package.json `version` (UI points at its catalog)
- *   3. mcp `godxUiCompatibility` range is satisfied by the UI version (catalog points back)
- *
- * Runs inside `verify` / `verify:release`, and again in scripts/release.mjs right before commit,
- * so a partial or mismatched bump can never be published.
- *
- * Usage: node scripts/check-release-lockstep.mjs [--json]
+ * Release-lockstep guard — @godxjp/ui and @godxjp/ui-mcp MUST ship as one release train. The two
+ * packages describe the SAME thing from two sides: `@godxjp/ui` is the runtime component library;
+ * `@godxjp/ui-mcp` is the catalog that tells agents how to use it (props, tokens, rules,
+ * patterns).
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -31,7 +17,7 @@ const SEMVER = /^\d+\.\d+\.\d+$/;
 /**
  * Does `version` satisfy a compatibility range? We keep this dependency-free and only support the
  * two forms we actually author: an exact `x.y.z` or a minor-pinned `x.y.x` wildcard (the form the
- * MCP declares, e.g. "16.10.x"). Anything else is treated as unsatisfiable so a typo fails loud.
+ * MCP declares, e.g.
  */
 function satisfies(version, range) {
   if (!version || !range) return false;

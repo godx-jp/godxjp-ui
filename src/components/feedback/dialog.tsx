@@ -190,15 +190,10 @@ DialogDescription.displayName = "DialogDescription";
 type AlertDialogRootProps = React.ComponentProps<typeof AlertDialogPrimitive.Root> & {};
 
 /**
- * Compound alert-dialog Root — the `role="alertdialog"` mirror of {@link DialogRoot}.
- *
- * The flat {@link AlertDialog} preset owns the confirm / challenge / step-up recipe and cannot be
- * re-composed; this Root is what a consumer reaches for when the confirmation needs bespoke
- * content. It supplies the Radix AlertDialog context that `AlertDialogTitle`,
- * `AlertDialogDescription`, `AlertDialogAction` and `AlertDialogCancel` read, so the compound
- * parts are assemblable from the public API alone (no direct `@radix-ui/react-alert-dialog`
- * import). Focus trap, focus restoration and the modal `role="alertdialog"` semantics stay
- * Radix-owned.
+ * Compound alert-dialog Root — the `role="alertdialog"` mirror of {@link DialogRoot}. It supplies
+ * the Radix AlertDialog context that `AlertDialogTitle`, `AlertDialogDescription`,
+ * `AlertDialogAction` and `AlertDialogCancel` read, so the compound parts are assemblable from the
+ * public API alone (no direct `@radix-ui/react-alert-dialog` import).
  */
 function AlertDialogRoot(props: AlertDialogRootProps) {
   return <AlertDialogPrimitive.Root data-slot="dialog" {...props} />;
@@ -350,12 +345,8 @@ const AlertDialogAction = DialogAction;
 const AlertDialogCancel = DialogCancel;
 
 /**
- * Preset: confirm / destructive / typed-challenge / step-up without compound markup.
- *
- * High-stakes deletion recipe ("DangerConfirm", godxui#193): pass `challenge` (or `confirmPhrase`)
- * to gate the confirm button behind an exact typed match (org slug / resource name), and `stepUp`
- * for an async re-auth gate (passkey / 2FA) that must resolve truthy before `onConfirm` fires.
- * Both flows force the destructive tone (button + soft header band).
+ * Preset: confirm / destructive / typed-challenge / step-up without compound markup. Both flows
+ * force the destructive tone (button + soft header band).
  */
 function AlertDialog({
   open,

@@ -11,20 +11,17 @@ export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & 
   /** Called after the field is cleared via the inline ✕. */
   onClear?: () => void;
   /**
-   * `ghost` strips the field's own border, background and focus ring, for a textarea embedded
-   * in a surface that already draws the box (a chat composer inside a Card). The surface then
-   * owns focus — give it `focus-within`. Default keeps the standalone control chrome.
+   * `ghost` strips the field's own border, background and focus ring, for a textarea embedded in a
+   * surface that already draws the box (a chat composer inside a Card). The surface then owns
+   * focus — give it `focus-within`.
    */
   variant?: "default" | "ghost";
   /**
-   * Grow the control with its content instead of holding a fixed `rows` height (default false —
-   * the inert default, so every existing `<Textarea>` keeps the geometry it has today).
-   *
    * The floor is `minRows` (or `rows`, when that is the only one given) and never undercuts the
    * `--control-height` tier; past `maxRows` the control stops growing and scrolls internally.
    * Sizing is done in CSS by a hidden replica of the text, so it follows a paste, a programmatic
    * value change, a font swap and a container resize — not just typing — and it never writes
-   * `style.height` or reads `scrollHeight`. Works controlled and uncontrolled.
+   * `style.height` or reads `scrollHeight`.
    */
   autoGrow?: boolean;
   /**
@@ -35,7 +32,7 @@ export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & 
   /**
    * Ceiling in text rows while `autoGrow` (theme default `--textarea-autogrow-max-height-rows`,
    * 8); beyond it the control scrolls internally rather than pushing the page. Pass `0` for no
-   * ceiling — only correct inside an owning scroll container. Ignored when `autoGrow` is false.
+   * ceiling — only correct inside an owning scroll container.
    */
   maxRows?: number;
 };
@@ -66,7 +63,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ) => {
     const { t } = useTranslation();
     const base = variant === "ghost" ? controlMultilineGhostClass : controlMultilineClass;
-    // gh#337 — the machine key for a textarea NESTED under a layout wrapper. `{}` in every other
+    // `{}` in every other
     // case (see useFieldIdentity), so a standalone Textarea is untouched.
     const identity = useFieldIdentity({
       id: props.id,
@@ -108,10 +105,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     }, []);
 
     /**
-     * Runs after EVERY render, before paint. That is what makes a programmatic change resize:
-     * a controlled `value` set from outside, a restored draft arriving after mount, a changed
-     * `defaultValue`. Reading `el.value` is a property read, not a layout read — no reflow. The
-     * state only changes when the string actually differs, so this converges in one pass.
+     * Runs after EVERY render, before paint. That is what makes a programmatic change resize: a
+     * controlled `value` set from outside, a restored draft arriving after mount, a changed
+     * `defaultValue`.
      */
     React.useLayoutEffect(() => {
       if (autoGrow) syncMirror();

@@ -1,36 +1,7 @@
 #!/usr/bin/env node
 /**
- * godxjp-ui VISUAL audit — the runtime counterpart to the static ui-audit.mjs.
- *
- * Static audit (ui-audit.mjs) reads SOURCE with regexes — zero deps, fast, runs on
- * every save. This audit drives a REAL browser (Playwright) over the running app and
- * runs axe-core + computed-style/layout heuristics, catching what source can't see:
- * colour contrast, target size, OKLCH chroma of a rendered accent, emoji that survived
- * to the DOM, and a mis-laid-out notification banner. Warnings by default (agent
- * guidance) — pass --strict to exit non-zero. Run it BEFORE an AI/human visual review.
- *
- * Playwright + @axe-core/playwright are OPTIONAL peer deps — installed only by apps that
- * run this audit, so the static audit and the library stay browser-free.
- *
- * TESTED peer range (see TESTED_VERSIONS + README "Runtime visual audit"):
- *   playwright               >=1.55 <2   (tested 1.61.1)
- *   @axe-core/playwright     >=4.10 <5   (tested 4.12.1)
- *   axe-core                 >=4.10 <5   (tested 4.12.1)
- *
- * Usage (from the consuming app, against its running dev/preview server):
- *   node node_modules/@godxjp/ui/scripts/visual-audit.mjs http://localhost:5173 /invoices /settings
- *   node node_modules/@godxjp/ui/scripts/visual-audit.mjs http://localhost:5173 --format json
- *   node node_modules/@godxjp/ui/scripts/visual-audit.mjs --strict http://localhost:5173   # CI gate
- *   PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium node …/visual-audit.mjs http://…       # system browser
- *
- * JSON contract (--format json ALWAYS emits valid JSON, even on bootstrap failure):
- *   { status: "ok" | "partial" | "error",
- *     tool: <TESTED_VERSIONS>,
- *     summary: { errors, warnings, pages, infrastructureErrors } | null,
- *     findings: [ … product findings … ],
- *     errors:   [ … infrastructure errors (bootstrap / navigate / analyze) … ] }
- *   `status: "ok"` ONLY when every page was audited with zero infrastructure errors —
- *   so a tool/bootstrap failure can NEVER be misread as "zero violations".
+ * godxjp-ui VISUAL audit — the runtime counterpart to the static ui-audit.mjs. Static audit
+ * (ui-audit.mjs) reads SOURCE with regexes — zero deps, fast, runs on every save.
  */
 import { pathToFileURL } from "node:url";
 import {
@@ -47,11 +18,8 @@ import {
 } from "./visual-audit-rules.mjs";
 
 /**
- * Peer versions this audit is tested against. Surfaced in the JSON `tool` field, the
- * README, and the MCP `list_visual_checks` command so agents pin a compatible range.
- * Playwright 1.55+ is required for the `browser.newContext()` / `context.newPage()`
- * flow that @axe-core/playwright 4.10+ expects (older `browser.newPage()` throws
- * "Please use browser.newContext()").
+ * Peer versions this audit is tested against. Surfaced in the JSON `tool` field, the README, and
+ * the MCP `list_visual_checks` command so agents pin a compatible range.
  */
 export const TESTED_VERSIONS = {
   playwright: { range: ">=1.55 <2", tested: "1.61.1" },
@@ -72,10 +40,8 @@ export function buildFinding(ruleId, url, message) {
 }
 
 /**
- * Assemble the machine-readable result (pure). `findings` are PRODUCT results; `errors`
- * are INFRASTRUCTURE failures (a page that would not load, axe that would not inject).
- * `status` is "ok" only when no infra error occurred, "error" when nothing could be
- * audited, "partial" when some pages ran and some failed.
+ * Assemble the machine-readable result (pure). `findings` are PRODUCT results; `errors` are
+ * INFRASTRUCTURE failures (a page that would not load, axe that would not inject).
  */
 export function buildResult({ findings = [], errors = [], pages = 0 } = {}) {
   const productErrors = findings.filter((f) => f.severity === "error");
@@ -97,11 +63,7 @@ export function buildResult({ findings = [], errors = [], pages = 0 } = {}) {
   };
 }
 
-/**
- * Assemble a BOOTSTRAP failure result (pure) — missing peers, no browser, bad args.
- * `summary` is null (never `{ warnings: 0 }`) so a consumer cannot read a bootstrap
- * failure as a clean pass.
- */
+/** Assemble a BOOTSTRAP failure result (pure) — missing peers, no browser, bad args. */
 export function buildBootstrapError(message, hint) {
   return {
     status: "error",
@@ -300,7 +262,6 @@ async function loadDeps() {
 /**
  * Drive the browser over every target and gather findings + infra errors. Cleanup
  * (page/context/browser) is guaranteed via finally on BOTH success and failure.
- * A launch failure is re-tagged as a bootstrap error so it surfaces as `status:error`.
  */
 /* c8 ignore start — the browser-driving glue; exercised by scripts/visual-audit-smoke.mjs in CI. */
 async function audit(targets, { chromium, AxeBuilder }) {

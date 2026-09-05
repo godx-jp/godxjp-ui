@@ -1,14 +1,8 @@
 /**
  * Visual / runtime audit catalog — the agent-facing mirror of `scripts/visual-audit.mjs`
- * (Playwright + axe-core). SEPARATE from the static `list_audit_rules` on purpose:
- * the static audit is zero-dep and runs on source; this one needs a browser (optional
- * peers) and runs against the RUNNING app, so it is a distinct, heavier step.
- *
- * Order of operations for an agent: static `ui-audit` (cheap, every save) → THIS visual
- * audit (before any visual review) → human/AI eyes only for taste judgement.
- *
- * Kept in sync with the CLI by `scripts/check-audit-sync.mjs` (diffs against
- * `node scripts/visual-audit.mjs --rules`).
+ * (Playwright + axe-core). SEPARATE from the static `list_audit_rules` on purpose: the static
+ * audit is zero-dep and runs on source; this one needs a browser (optional peers) and runs against
+ * the RUNNING app, so it is a distinct, heavier step.
  */
 
 export type VisualRuleCategory = "a11y" | "color" | "i18n" | "layout";

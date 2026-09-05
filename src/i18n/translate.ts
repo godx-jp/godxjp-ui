@@ -18,9 +18,8 @@ export type MessageKey = string;
 export type TranslateParams = Record<string, string | number>;
 
 /**
- * A message value is either a plain string or a CLDR plural-category map
- * (`{ one?, two?, few?, many?, other }`) selected via `Intl.PluralRules`. Only locales that
- * inflect (e.g. English item/items) need the map; single-category locales (vi/ja) keep strings.
+ * A message value is either a plain string or a CLDR plural-category map (`{ one?, two?, few?,
+ * many?, other }`) selected via `Intl.PluralRules`. Only locales that inflect (e.g.
  */
 type MessageValue = string | Partial<Record<Intl.LDMLPluralRule, string>>;
 

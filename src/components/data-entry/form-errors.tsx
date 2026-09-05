@@ -20,10 +20,9 @@ const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
 
 /**
- * Registry shared by a `Form` with its FormFields and `<FormErrors />`. Each mounted
- * `FormField name="…"` CLAIMS its error-bag key (it is the visible owner of that message);
- * `<FormErrors />` renders only the unclaimed remainder. Claims are reference-counted so
- * duplicate names and unmount order stay correct.
+ * Registry shared by a `Form` with its FormFields and `<FormErrors />`. Each mounted `FormField
+ * name="…"` CLAIMS its error-bag key (it is the visible owner of that message); `<FormErrors />`
+ * renders only the unclaimed remainder.
  */
 interface FormErrorsRegistryValue {
   errors: ErrorBagProp;
@@ -46,18 +45,9 @@ export function firstBagMessage(entry: string | string[] | undefined): string | 
 }
 
 /**
- * FormErrorsProvider — one shared error registry (error bag + claim set) over a region.
- * 兄弟 Form 群で 1 つのエラーバッグを共有するための公開プロバイダ。Two ways to get one:
- *
- * 1. `Form errors={…}` renders this provider itself (both `<form>` and `asChild` modes) —
- *    the single-form case needs nothing else.
- * 2. An edit screen split into several sibling Card+Form sections (the standard exseli shape)
- *    wraps the REGION in `<FormErrorsProvider errors={…}>` instead: Forms **without** their own
- *    `errors` join the surrounding registry, every `FormField name="…"` inside claims into it,
- *    and one `<FormErrors />` anywhere in the region renders the unclaimed remainder.
- *
- * A nested Form WITH its own `errors` starts a new registry that shadows this one — its claims
- * and messages stay inside it.
+ * FormErrorsProvider — one shared error registry (error bag + claim set) over a region. 兄弟 Form 群で
+ * 1 つのエラーバッグを共有するための公開プロバイダ。Two ways to get one: 1. `Form errors={…}` renders this provider itself
+ * (both `<form>` and `asChild` modes) — the single-form case needs nothing else. 2.
  */
 export function FormErrorsProvider({ errors, children }: FormErrorsProviderProp) {
   const [claimed, setClaimed] = React.useState<ReadonlyMap<string, number>>(new Map());
@@ -102,8 +92,7 @@ export function useClaimErrorKey(name: string | undefined) {
  * FormErrors — renders the error-bag entries no mounted `FormField name="…"` displays: server
  * validation errors attached to hidden/derived fields (an `action_mode`, a `page`, a source-record
  * id) that would otherwise fail silently. Place it inside a `Form errors={…}` — typically above
- * the fields; it renders nothing while every entry is claimed or the bag is empty. Composed on
- * `Alert tone="destructive"` (role="alert"), so appearing messages are announced assertively.
+ * the fields; it renders nothing while every entry is claimed or the bag is empty.
  */
 export function FormErrors({ errors: errorsProp, title, className }: FormErrorsProp) {
   const { t } = useTranslation();

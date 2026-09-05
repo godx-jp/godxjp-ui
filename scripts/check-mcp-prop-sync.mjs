@@ -1,15 +1,7 @@
 #!/usr/bin/env node
 /**
- * Prop-level MCP catalog sync guard.
- *
- * `check:mcp-sync` only verifies that every catalogued COMPONENT exists in the library — it does
- * NOT check props. So a new prop on the library (e.g. Button.overflowCount, Select.labelRender)
- * can silently miss `mcp/src/data/components.ts`, leaving consumer agents with a stale API surface.
- *
- * This guard parses the EXPLICIT object-literal fields of each component's `*Prop` type and fails
- * if any of them is undocumented in the MCP catalog. It deliberately only reads the literal fields
- * a component declares itself (`{ … }` and `& { … }`) — it does NOT walk `extends`/HTMLAttributes
- * spreads, so native pass-through attributes are not required to be documented.
+ * Prop-level MCP catalog sync guard. `check:mcp-sync` only verifies that every catalogued
+ * COMPONENT exists in the library — it does NOT check props.
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";

@@ -38,8 +38,7 @@ function togglePath(values: string[][], path: string[]): string[][] {
 /**
  * Decorative checkbox glyph — a non-interactive <span>, NOT the real Checkbox (which is a
  * <button>). The cascade option row is itself a <button>, and a <button> may not contain a
- * <button> (invalid HTML / hydration error). Selection is driven by the option button; this only
- * mirrors its checked state visually, so a styled span is the correct element.
+ * <button> (invalid HTML / hydration error).
  */
 function CheckboxVisual({
   checked,
@@ -125,7 +124,7 @@ export function Cascader({
   const { t } = useTranslation();
   // Forward the FormField label/helper/error contract onto the combobox trigger (focus target).
   const fieldA11y = pickFieldA11y(ariaProps);
-  // gh#337 — the machine key for a Cascader NESTED under a layout wrapper. This control has
+  // This control has
   // no native-submit path at all (documented: read the value through onValueChange), so only
   // `data-field` is resolved here — there is no element a `name` could honestly go on.
   const identity = useFieldIdentity({ id, "data-field": fieldA11y["data-field"] });
@@ -205,15 +204,13 @@ export function Cascader({
       return;
     }
     if (hasChildren) {
-      // changeOnSelect: commit the intermediate node as the value BUT keep the panel open and
       // expand its children, so the user can refine deeper without reopening. Without it, a
-      // parent click only expands (no commit). Either way the panel must NOT close here —
+      // Either way the panel must NOT close here —
       // closing on a parent click strands the user one level up and breaks drilling.
       if (changeOnSelect) setSingleValue(path);
       setActivePath(path);
       return;
     }
-    // Leaf → commit and close.
     commitSingle(path);
   };
 

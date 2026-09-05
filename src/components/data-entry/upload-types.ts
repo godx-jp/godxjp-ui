@@ -15,16 +15,12 @@ export type UploadFileItem = {
   error?: string;
   /** Local file before / during upload */
   file?: File;
-  /**
-   * Draft-only: marked for soft-delete on form commit.
-   * Undo clears this before save — media-service has no restore API.
-   */
+  /** Undo clears this before save — media-service has no restore API. */
   pendingDelete?: boolean;
   /**
    * Draft-only: replacement staged locally; baseline kept for undo.
    */
   pendingReplace?: boolean;
-  /** mediaId to soft-delete on commit when `pendingReplace` */
   replacesMediaId?: string;
 };
 

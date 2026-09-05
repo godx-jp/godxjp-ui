@@ -1,18 +1,5 @@
 #!/usr/bin/env node
-/**
- * init-agent-kit — the FULL forcing-kit. Run once from a consumer app:
- *   npx @godxjp/ui init-agent
- *
- * Scaffolds (idempotent, non-destructive) the harness-enforced workflow so an agent
- * follows the whole godxjp-ui process every time it touches UI:
- *   1. .mcp.json            — registers the godx-ui MCP (component + audit guidance)
- *   2. .claude/settings.json — PostToolUse hook auto-runs the audit on every .tsx edit
- *                              and feeds findings back; SessionStart injects the mandate
- *   3. .claude/godxjp-ui-workflow.md — the per-session mandate the SessionStart hook reads
- *
- * Existing config is preserved (hooks are appended only if absent). It then prints the
- * optional pre-commit / CI snippets.
- */
+/** init-agent-kit — the FULL forcing-kit. */
 import {
   ensureClaudeHooks,
   ensureClaudeMd,

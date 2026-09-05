@@ -32,23 +32,20 @@ export type AppProviderProp = {
   defaultTimezone?: AppTimezoneDefault;
   /** Backend/system timezone when `defaultTimezone` is `system`. */
   systemTimezone?: AppTimezone;
-  /** Initial clock format. `"locale"` derives from `defaultLocale`. Default: `"locale"`. */
+  /** Initial clock format. `"locale"` derives from `defaultLocale`. */
   defaultTimeFormat?: AppTimeFormat | "locale";
-  /** Initial date display format. `"locale"` derives from `defaultLocale`. Default: `"locale"`. */
+  /** Initial date display format. `"locale"` derives from `defaultLocale`. */
   defaultDateFormat?: AppDateFormat | "locale";
   /**
-   * IANA ids offered by the timezone-picker recipe (`useAppContext().timezoneOptions`).
-   * Omit for the full IANA list; set to restrict (e.g. `APP_TIMEZONE_PRESET`).
+   * IANA ids offered by the timezone-picker recipe (`useAppContext().timezoneOptions`). Omit for
+   * the full IANA list; set to restrict (e.g.
    */
   timezoneOptions?: readonly AppTimezone[];
   /** localStorage key. Default: `godxjp.app`. */
   storageKey?: string;
   /** Persist user choices. Default: true. */
   persist?: boolean;
-  /**
-   * Initial light/dark theme — written to `<html data-theme>`. Default: `"light"`.
-   * (The legacy `.dark` class still works as an equal alias.)
-   */
+  /** Initial light/dark theme — written to `<html data-theme>`. Default: `"light"`. */
   theme?: AppTheme;
   /**
    * Initial brand palette preset — written to `<html data-brand>`. OPT-IN: omit
@@ -60,23 +57,14 @@ export type AppProviderProp = {
   /** Initial base type size — written to `<html data-font-size>`. Default: `"default"`. */
   fontSize?: AppFontSize;
   /**
-   * Continuous global size multiplier — sets inline `--scaling` on `<html>`. Every
-   * size token (spacing, control/table/checkbox/switch heights, radius) rescales in
-   * proportion (Radix-style). `null` (default) defers to the `density` preset; a
-   * number (e.g. `0.95`) overrides it. Type is a separate axis — not scaled.
+   * Continuous global size multiplier — sets inline `--scaling` on `<html>`. Every size token
+   * (spacing, control/table/checkbox/switch heights, radius) rescales in proportion (Radix-style).
    */
   scaling?: number | null;
   /**
-   * Emit a native `name` on every control a `FormField` wraps, taken from the field's key
-   * (`field` → `name` → `id`). Default `false`, and deliberately opt-in (gh#337).
-   *
-   * `data-field` is inert metadata and is always emitted; `name` is NOT — it changes what a
-   * native `<form>` submit sends. An app whose controls have never carried a `name` would start
-   * posting extra keys to its backend the moment it upgraded the library. That is a behaviour
-   * change no shared package may make by default, so the app that WANTS it (a screen-automation /
-   * RPA contract, native form posts) turns it on here, once, and every FormField in it obeys.
-   *
-   * A `name` written on the control itself always wins over the injected one.
+   * Emit a native `name` on every control a `FormField` wraps, taken from the field's key (`field`
+   * → `name` → `id`). `data-field` is inert metadata and is always emitted; `name` is NOT — it
+   * changes what a native `<form>` submit sends.
    */
   emitFieldNames?: boolean;
   onLocaleChange?: (locale: AppLocale) => void;
@@ -103,24 +91,13 @@ export type AppSettingPickerProp = {
   kind: AppSettingKind;
   /**
    * Trigger presentation. `"labeled"` shows the leading icon + the selected value in a control
-   * sized to the setting. `"icon"` renders a supported square, icon-only topbar trigger (e.g. a
-   * globe language switcher): it structurally drops the value text and the picker's owned width —
-   * no descendant-selector CSS overrides needed — while always keeping the localized `aria-label`,
-   * so an icon-only trigger can never ship without an accessible name. `"inline"` renders the
-   * selected value as a compact text trigger for legal/auth footers without a field-like box.
-   *
-   * Default is kind-dependent: `kind="locale"` defaults to `"icon"` (its product contract is the
-   * compact language switcher); every other kind defaults to `"labeled"`. Override explicitly for
-   * e.g. a labeled locale row inside a settings form (`appearance="labeled"`).
+   * sized to the setting.
    */
   appearance?: AppSettingPickerAppearanceProp;
   /**
-   * Compact presentation (gh#217) — re-tiers the trigger box to `--control-height-sm` and drops the
-   * picker's owned per-kind width so a LABELLED trigger hugs its value. Use it for an auth/legal
-   * footer locale switch (`kind="locale" appearance="labeled" compact`), where the square icon-only
-   * default reads as a stray button and the full labelled trigger is too tall. All geometry is
-   * tokenized (`--app-setting-picker-compact-*`). No effect on `appearance="inline"`, which is
-   * already chrome-less. Default `false`.
+   * Use it for an auth/legal footer locale switch (`kind="locale" appearance="labeled" compact`),
+   * where the square icon-only default reads as a stray button and the full labelled trigger is
+   * too tall. All geometry is tokenized (`--app-setting-picker-compact-*`).
    */
   compact?: boolean;
   className?: ClassNameProp;
@@ -151,7 +128,7 @@ export type AppContextValue = {
   density: AppDensity;
   fontSize: AppFontSize;
   scaling: number | null;
-  /** Whether `FormField` injects a native `name` onto its control (gh#337). Default `false`. */
+  /** Default `false`. */
   emitFieldNames: boolean;
   setLocale: (locale: AppLocale) => void;
   setTimezone: (timezone: AppTimezone) => void;

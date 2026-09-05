@@ -49,7 +49,6 @@ export function SearchInput({
   const inputId = id ?? `search-${reactId}`;
   const resolvedPlaceholder = placeholder ?? t("dataEntry.searchInput.placeholder");
   const resolvedAriaLabel = ariaLabel ?? t("common.search");
-  // When FormField (or a consumer) supplies the label/helper/error contract, forward it onto the
   // real <input> focus target — its aria-labelledby then wins over the intrinsic "Search" name.
   const fieldA11y = resolveFieldA11y(ariaProps, resolvedAriaLabel);
 

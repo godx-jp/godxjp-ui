@@ -29,7 +29,6 @@ const args = process.argv.slice(2);
 const strict = args.includes("--strict");
 const asJson = args.includes("--format") && args[args.indexOf("--format") + 1] === "json";
 
-/** The contract dimensions every component is measured against (FRAME-COVERAGE-STANDARD). */
 const DIMENSIONS = [
   "visual",
   "state",
@@ -68,7 +67,6 @@ const FRAME_ALIAS = {
   AreaChart: "charts",
   PieChart: "charts",
   UploadCropDialog: "upload",
-  // Banner IS Alert at the page measure (gh#255) — one implementation, so it is demoed in the
   // alert frame beside the inline variant it re-measures, not in a frame of its own.
   Banner: "alert",
 };
@@ -119,7 +117,6 @@ function main() {
     const slug = FRAME_ALIAS[c.name] ?? kebab(c.name);
     const hasFrame = frameSlugs.has(slug);
     if (hasFrame) usedSlugs.add(slug);
-    // Ledger v2 (issue #163) stores the 14 CONTRACT DIMENSIONS per export; this report speaks
     // the nine FRAME-COVERAGE-STANDARD axes, so roll them up through the shared contract module
     // rather than re-deriving (and drifting) here.
     const entry = ledger.components?.[c.name];

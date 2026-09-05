@@ -27,25 +27,8 @@ export type {
 const DEFAULT_VALUE: BranchScopeValueProp = { mode: "all" };
 
 /**
- * BranchScopePicker — the canonical "all branches vs an explicit subset" scope control
- * (gh#257 / DXS platform#311).
- *
- * A THIN formalized composition (the gh#251 lesson: a consumer cannot import a docs page): the
- * mode switch is the real `RadioGroup`, the subset is the real `CheckboxGroup`, search is the real
- * `SearchInput` — so keyboard behaviour (roving radios, Space on checkboxes) and the field-a11y
- * contract (`aria-labelledby`/`aria-errormessage` via `FormField`) come from the primitives, not
- * from new machinery. Domain data (the branches) is 100% consumer-supplied.
- *
- * - **Value** is a single controlled/uncontrolled object `{ mode, branchIds }`, so a form treats
- *   scope as ONE field. Switching back to `all` PRESERVES `branchIds` — an accidental mode flip
- *   must not destroy a curated subset.
- * - **Validation** (`error`) renders the message and wires `aria-invalid`/`aria-errormessage` onto
- *   the radiogroup widget; collection READ failures are `listError`/`denied`, mirroring the
- *   DataTable #216 vocabulary (precedence `loading` → `denied` → `listError` → `empty`).
- * - **`readOnly`** renders the current scope as a static summary (mode + branch badges) with no
- *   editable affordance; `disabled` keeps the controls visible but inert.
- * - **Responsive**: a single-column stack; the branch list scrolls inside its own bounded box, so
- *   the control keeps one measure at 1440/1024/390.
+ * Domain data (the branches) is 100% consumer-supplied. - **Value** is a single
+ * controlled/uncontrolled object `{ mode, branchIds }`, so a form treats scope as ONE field.
  */
 export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePickerProp>(
   function BranchScopePicker(
@@ -114,7 +97,6 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
       </div>
     );
 
-    // Collection lifecycle, DataTable #216 precedence: loading → denied → listError → empty.
     if (loading) {
       return surface(
         <div aria-busy="true" aria-label={t("dataEntry.branchScope.loading")} role="status">
@@ -241,7 +223,6 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
               // `disabled`) — WCAG 2.1.1 / axe `scrollable-region-focusable`; same contract as
               // MasterDetail's bounded master region. It is an ordinary tab stop (no trap), and
               // it carries the group's accessible name so the stop is announced meaningfully —
-              // the inner CheckboxGroup deliberately no longer duplicates that label.
               <div
                 role="group"
                 aria-label={t("dataEntry.branchScope.listLabel")}

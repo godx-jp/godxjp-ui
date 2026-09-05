@@ -242,6 +242,23 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* `gap` prop: the same steps as Flex. */
+  .ui-responsive-grid[data-gap="xs"] {
+    gap: var(--space-stack-xs);
+  }
+  .ui-responsive-grid[data-gap="sm"] {
+    gap: var(--space-stack-sm);
+  }
+  .ui-responsive-grid[data-gap="md"] {
+    gap: var(--space-stack-md);
+  }
+  .ui-responsive-grid[data-gap="lg"] {
+    gap: var(--space-stack-lg);
+  }
+  .ui-responsive-grid[data-gap="xl"] {
+    gap: var(--space-stack-xl);
+  }
+
   .ui-responsive-grid > * {
     min-width: 0;
   }

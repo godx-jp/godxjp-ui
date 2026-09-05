@@ -30,12 +30,10 @@ const parseYm = (raw: string): Date | undefined => {
 const ymIndex = (d: Date): number => d.getFullYear() * 12 + d.getMonth();
 
 /**
- * MonthRangePicker — year/month (`yyyy/MM`) RANGE rendered as ONE input-styled
- * control (Ant Design RangePicker convention): `[ from → to  ✕ 📅 ]`. The two
- * inner fields stay real, typeable `yyyy/MM` inputs (form-submittable via
- * `${name}_from` / `${name}_to`); the Ant-style month grid is the visual
- * affordance. Grid picks are two-step (from, then to — swapped when picked
- * backwards) and a pick on a COMPLETE range starts a new one (reset-on-complete).
+ * MonthRangePicker — year/month (`yyyy/MM`) RANGE rendered as ONE input-styled control (Ant Design
+ * RangePicker convention): `[ from → to ✕ 📅 ]`. The two inner fields stay real, typeable
+ * `yyyy/MM` inputs (form-submittable via `${name}_from` / `${name}_to`); the Ant-style month grid
+ * is the visual affordance.
  */
 export function MonthRangePicker({
   value: valueProp,
@@ -63,7 +61,7 @@ export function MonthRangePicker({
   const groupId = id ?? autoId;
   const fromId = `${groupId}-from`;
   const toId = `${groupId}-to`;
-  // gh#337 — the machine key. The two inner inputs take the SAME `_from`/`_to` suffixes this
+  // The two inner inputs take the SAME `_from`/`_to` suffixes this
   // control already uses for `name`, so the pair is addressable the way it already submits;
   // the group keeps the bare key. `identity` covers the NESTED case (no cloneElement reach).
   const identity = useFieldIdentity({ id: groupId, name, "data-field": groupA11y["data-field"] });
@@ -107,7 +105,6 @@ export function MonthRangePicker({
 
   const commitEdge = (edge: "from" | "to", raw: string) => {
     const trimmed = raw.trim();
-    // Only commit a COMPLETE yyyy/MM (or a clear) — committing a partial string
     // would let the text-mirror effect rewrite the field mid-type.
     const parsed = trimmed === "" ? undefined : parseYm(trimmed);
     if (trimmed !== "" && !parsed) return;

@@ -54,18 +54,12 @@ export function useTimeoutFlag(signal: unknown, ms = 2_000): boolean {
 }
 
 /**
- * Controlled-ness latch for `value`/`defaultValue`/`onValueChange` controls
- * whose empty state is `undefined` (pickers carrying `Date`/`DateRange`).
- *
- * A control counts as controlled once a DEFINED `value` has EVER been passed:
- * - mounted with a defined `value` → controlled, and a later `value={undefined}`
- *   stays controlled-EMPTY (not mistaken for uncontrolled);
- * - mounted with `value={undefined}` (an empty form that later restores a
- *   saved value) → uncontrolled until the first defined value arrives, then
- *   PROMOTES to controlled for good.
- *
- * Fixing controlled-ness at mount (the previous behaviour) silently ignored
- * every later controlled value in the second case.
+ * Controlled-ness latch for `value`/`defaultValue`/`onValueChange` controls whose empty state is
+ * `undefined` (pickers carrying `Date`/`DateRange`). A control counts as controlled once a DEFINED
+ * `value` has EVER been passed: - mounted with a defined `value` → controlled, and a later
+ * `value={undefined}` stays controlled-EMPTY (not mistaken for uncontrolled); - mounted with
+ * `value={undefined}` (an empty form that later restores a saved value) → uncontrolled until the
+ * first defined value arrives, then PROMOTES to controlled for good.
  */
 export function useControlledLatch(valueIsDefined: boolean): boolean {
   const [latched, setLatched] = useState(valueIsDefined);

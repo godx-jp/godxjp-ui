@@ -11,9 +11,9 @@ export type {
 } from "../../props/components/general.prop";
 
 /**
- * The label rides the same optical step as the mark. `--font-size-sm` IS `--font-size-base`, so the
- * four distinct steps of the type scale below `xl` are `2xs · xs · sm · lg` — the ladder skips the
- * alias rather than repeating a size. Mirrors `--activity-font-size-*` in tokens/components.
+ * The label rides the same optical step as the mark. `--font-size-sm` IS `--font-size-base`, so
+ * the four distinct steps of the type scale below `xl` are `2xs · xs · sm · lg` — the ladder skips
+ * the alias rather than repeating a size.
  */
 const LABEL_SIZE: Record<SizeProp, TextSizeProp> = {
   xs: "2xs",
@@ -42,36 +42,10 @@ function ActivityMark({ variant }: { variant: NonNullable<ActivityProp["variant"
 }
 
 /**
- * Activity — the official AMBIENT-motion primitive: a continuous, unbounded "something is happening
- * right now, elsewhere". The LOOP counterpart to `Reveal`'s one-shot entrance, so a consumer never
- * hand-rolls a looping `@keyframes` + its own `prefers-reduced-motion` guard. Every interval,
- * stagger, offset, size and colour reads a DS token (`--activity-interval`,
- * `--activity-stagger-step`, `--activity-mark-offset`, `--activity-color`, …), so a service retunes
- * the whole ambient feel from its theme.
- *
- * NOT `Skeleton` (content is LOADING — it hard-codes `aria-busy` + an unconditional live region, so
- * reusing it for a typing indicator tells every screen reader the region is busy for as long as
- * anyone is typing). NOT `Button loading` (THIS ACTION is in flight, on a control).
- * `Activity` means: someone is typing, a sync is running, a response is streaming, a recording is
- * live — indefinitely, and not here.
- *
- * ACCESSIBILITY — the half consumers get wrong, owned here:
- * - The mark is decorative and always `aria-hidden`; the `label` (or `children`) carries the
- *   meaning, so the indicator is never animation-only.
- * - `announce` defaults to `false` and then emits NO live region at all. An ambient indicator
- *   flickers on and off with every socket event; a live region there re-announces continuously.
- *   `announce="polite"` wraps ONLY the label in one `aria-live="polite" aria-atomic="true"` region.
- * - No `aria-busy`: activity elsewhere does not make THIS region busy, and `aria-busy` would
- *   suppress the surrounding content's own updates.
- * - Not focusable, not a tab stop, no pointer affordance — it is a status mark, not a control.
- * - Under `prefers-reduced-motion: reduce` the loop is dropped and every mark falls back to a
- *   DESIGNED resting state (three solid dots / a solid pulse mark / a bar segment parked at the
- *   reading-start), never to nothing, with no layout shift (WCAG 2.2 SC 2.3.3 and SC 2.2.2).
- *
- * Copy is consumer-owned and localized — pass a `t()`-translated `label`, and derive
- * "N people are typing" from `Intl.PluralRules`. The library never invents the string.
- *
- * Pure/server-safe: no hooks, no effects, no timers — the loop is CSS.
+ * Activity — the official AMBIENT-motion primitive: a continuous, unbounded "something is
+ * happening right now, elsewhere". Every interval, stagger, offset, size and colour reads a DS
+ * token (`--activity-interval`, `--activity-stagger-step`, `--activity-mark-offset`,
+ * `--activity-color`, …), so a service retunes the whole ambient feel from its theme.
  */
 export const Activity = React.forwardRef<HTMLSpanElement, ActivityProp>(function Activity(
   {

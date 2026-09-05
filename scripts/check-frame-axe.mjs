@@ -1,30 +1,8 @@
 #!/usr/bin/env node
 /**
- * check:frame-axe — per-frame accessibility CI gate (issue #157).
- *
- * Renders EVERY /frame/** contract example in real Chromium at desktop (1440×900) and
- * mobile-sm (375×667) and runs axe-core on each. Unlike `check:contrast` (6 hand-picked
- * pages) and the static `audit:examples` (0/0, source-only), this exercises the whole
- * catalog the way the audit that filed #157 did.
- *
- * Two independently-tracked axe scopes per frame/viewport:
- *   • PREVIEW CHROME  = the zoom/dimension toolbar (`.demo-block-toolbar`). WE own this.
- *     It MUST be 0 — a chrome violation FAILS the build.
- *   • COMPONENT/DEMO  = the rendered example + its Radix portals (everything except the
- *     toolbar). Owned by the per-component agents fixing #157's semantics in parallel.
- *     Allowlisted as a per-frame SET OF AXE RULE IDS (not exact node counts — those jitter
- *     with portal open/close timing). The set can ONLY SHRINK: a NEW rule on a frame fails
- *     the build; a rule that stops firing is a shrink hint. Nothing is hidden.
- *
- * Usage:
- *   node scripts/check-frame-axe.mjs [baseUrl]         # gate (default http://localhost:6008)
- *   node scripts/check-frame-axe.mjs --update-baseline  # re-snapshot (2-pass union) the allowlist
- *   node scripts/check-frame-axe.mjs --format json
- *   AXE_FRAMES_LIMIT=8 node scripts/check-frame-axe.mjs # quick local smoke (first N frames)
- *   AXE_RUNS=3 node scripts/check-frame-axe.mjs --update-baseline # more union passes
- *
- * The allowlist shrinks to zero as component PRs merge: after each merge, run
- * `--update-baseline` (or let CI auto-tighten) so the baseline can never grow back.
+ * Renders EVERY /frame/** contract example in real Chromium at desktop (1440×900) and mobile-sm
+ * (375×667) and runs axe-core on each. Two independently-tracked axe scopes per frame/viewport: •
+ * PREVIEW CHROME = the zoom/dimension toolbar (`.demo-block-toolbar`).
  */
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import path from "node:path";
@@ -189,7 +167,7 @@ async function main() {
   // frame, not exact node counts: axe counts jitter run-to-run (a Radix portal open vs
   // closed changes a count by ±1) which would make an exact-count gate flaky. A rule
   // leaving a frame's set is a real fix (shrink); a NEW rule on a frame is a real
-  // regression. Node counts are still recorded in the evidence JSON for triage.
+  // Node counts are still recorded in the evidence JSON for triage.
   const runFrameIds = new Set(frames.map((f) => f.id));
   const currentRules = {}; // fid → sorted unique rule ids
   let componentTotal = 0; // total node count (reporting only)

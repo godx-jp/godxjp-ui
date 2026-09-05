@@ -1,28 +1,9 @@
 #!/usr/bin/env node
 /**
- * VoiceOver evidence capture (issue #171).
- *
  * Records ONE screen-reader evidence record by walking the journey phases its owner's cohort
  * requires, capturing what VoiceOver actually said at each step, and appending the result to
- * `screen-reader-evidence.json` in the schema `check:screen-reader-evidence` enforces.
- *
- * THE ONE RULE: `announced` is never typed. Every transcript line is read back out of VoiceOver
- * itself (`tell application "VoiceOver" to get content of last phrase`), and a step whose capture
- * comes back empty is refused rather than filled in. That is the whole point of the gate — it
- * rejects axe/ARIA/accessibility-tree output as evidence precisely because a DOM claim about what
- * SHOULD be announced is not proof of what WAS announced. Do not add a manual-entry flag.
- *
- * You drive the screen reader; this script only listens, timestamps, and files the result.
- *
- * Usage:
- *   node scripts/capture-voiceover-evidence.mjs --owner data-entry/select --locale ja-JP
- *   node scripts/capture-voiceover-evidence.mjs --owner layout/topbar --locale vi-VN --dry-run
- *
- * Prerequisites (checked before anything is captured):
- *   - macOS with VoiceOver RUNNING (Command-F5)
- *   - System Settings → Privacy & Security → Accessibility: your terminal may control VoiceOver,
- *     and VoiceOver Utility → General → "Allow VoiceOver to be controlled with AppleScript"
- *   - the preview server serving the frame (pnpm preview, or pass --base)
+ * `screen-reader-evidence.json` in the schema `check:screen-reader-evidence` enforces. THE ONE
+ * RULE: `announced` is never typed.
  */
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";

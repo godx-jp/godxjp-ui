@@ -19,25 +19,13 @@ export type {
 } from "../../props/components/layout.prop";
 
 /**
- * ServiceRolePanel — the canonical role-collection ⇄ role-detail surface (gh#257 / DXS
- * platform#311).
- *
- * A THIN formalized composition over `MasterDetail` (which owns ALL geometry: rail tracks, gap,
- * stacking below the threshold — 1440/1024 two-track, 390 stacked list-then-detail) plus real
- * primitives, exported because a consumer cannot import a docs page (the gh#251 lesson). What the
- * panel adds is exactly the contract every service-role screen kept re-deriving:
- *
- * - **Selection** as the controlled triad (`value`/`defaultValue`/`onValueChange`, defaulting to
- *   the first role). Each role row is a real `Button` carrying `aria-current`, and selecting moves
- *   focus-target wiring through `MasterDetail`'s `detailId`/`tabIndex={-1}` detail region.
- * - **Destructive confirmation built in**: `onDeleteRole`'s presence arms a per-role delete
- *   affordance behind the package `AlertDialog` (variant `destructive`); the handler fires only
- *   after the user confirms. Roles marked `locked` (system roles) never offer deletion and show a
- *   localized lock badge; `readOnly` hides every mutating affordance.
- * - **Lifecycle states** mirror the DataTable #216 vocabulary and precedence:
- *   `loading` → `denied` → `error` → `empty` → content.
- * - **Domain-neutral**: the roles and the detail surface (`children`, node or render-function) are
- *   consumer-supplied; no platform role or permission is encoded.
+ * What the panel adds is exactly the contract every service-role screen kept re-deriving: -
+ * **Selection** as the controlled triad (`value`/`defaultValue`/`onValueChange`, defaulting to the
+ * first role). Each role row is a real `Button` carrying `aria-current`, and selecting moves
+ * focus-target wiring through `MasterDetail`'s `detailId`/`tabIndex={-1}` detail region. -
+ * **Destructive confirmation built in**: `onDeleteRole`'s presence arms a per-role delete
+ * affordance behind the package `AlertDialog` (variant `destructive`); the handler fires only
+ * after the user confirms.
  */
 export const ServiceRolePanel = React.forwardRef<HTMLDivElement, ServiceRolePanelProp>(
   function ServiceRolePanel(
@@ -97,7 +85,6 @@ export const ServiceRolePanel = React.forwardRef<HTMLDivElement, ServiceRolePane
       </div>
     );
 
-    // Lifecycle precedence mirrors DataTable #216: loading → denied → error → empty → content.
     if (loading) {
       return surface(
         <div aria-busy="true" aria-label={t("layout.serviceRolePanel.loading")} role="status">

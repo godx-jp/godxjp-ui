@@ -1,15 +1,8 @@
 #!/usr/bin/env node
 /**
- * check:typography — the framework must express EVERY font-size through a token,
- * never a hard-coded literal. A UI framework's job is to give consumers knobs:
- * a `font-size: 12px` in component CSS is invisible to a service theme, so it
- * can never be re-tuned. Allowed values:
- *   - var(--font-size-*)            the global modular scale (xs/sm/base/lg…)
- *   - var(--<component>-…-font-size) a per-component knob (rule #45)
- *   - inherit / initial / unset / 0
- *
- * Scope: src/styles/**.css (the shipped chrome). Escape hatch: `typography-ok`
- * in a comment on the same line for a genuinely fixed, never-themed glyph metric.
+ * check:typography — the framework must express EVERY font-size through a token, never a
+ * hard-coded literal. A UI framework's job is to give consumers knobs: a `font-size: 12px` in
+ * component CSS is invisible to a service theme, so it can never be re-tuned.
  */
 import { globSync, readFileSync } from "node:fs";
 

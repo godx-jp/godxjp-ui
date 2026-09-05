@@ -1,24 +1,8 @@
 #!/usr/bin/env node
 /**
- * check-control-sizing — primitives must size interactive controls from the
- * official `--control-height` tier, never bake in an ad-hoc size of their own.
- *
- * WHY: a control's box height is a SYSTEM decision (one knob, density-aware via
- * `--control-height` → xs/sm/lg). When a primitive re-derives a height by hand
- * — `calc(var(--control-height) - 0.25rem)` or a literal `2rem` — it (a) drifts
- * out of sync with siblings on the same row, and (b) stops responding to density.
- * That is exactly how the Pagination size-changer ended up 4–8px taller than the
- * page buttons. Size customization is the APP's job (a `size` prop / className),
- * not the primitive's.
- *
- * RULES
- *   error  ad-hoc offset: `calc(var(--control-height…) ± <len>)` outside the tier
- *          definition files — use the named tier `var(--control-height-{xs,sm,lg})`.
- *   warn   literal `height/min-height/width: <rem|px>` on an interactive-control
- *          selector — should resolve from a `--control-height*` token, or the
- *          sizing belongs in the app layer.
- *
- * Token-definition files are allowed to use offsets (that is where tiers are born).
+ * check-control-sizing — primitives must size interactive controls from the official
+ * `--control-height` tier, never bake in an ad-hoc size of their own. WHY: a control's box height
+ * is a SYSTEM decision (one knob, density-aware via `--control-height` → xs/sm/lg).
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";

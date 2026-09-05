@@ -1,12 +1,8 @@
 /**
  * Visual-audit decision logic — PURE functions, zero browser/DOM dependency.
- *
- * `scripts/visual-audit.mjs` collects measurements from a REAL rendered page
- * (Playwright) and feeds them here; the browser glue stays thin and these rules
- * are fully unit-testable without a browser. The same functions are injected into
- * the page for in-browser heuristics.
- *
- * Each rule cites the international standard it enforces — see VISUAL_RULES.
+ * `scripts/visual-audit.mjs` collects measurements from a REAL rendered page (Playwright) and
+ * feeds them here; the browser glue stays thin and these rules are fully unit-testable without a
+ * browser.
  */
 
 /** Catalog (agent-facing mirror lives in mcp/src/data/visual-rules.ts; kept in sync by a guard). */

@@ -1,36 +1,8 @@
 #!/usr/bin/env node
 /**
- * Rewrite extensionless RELATIVE import specifiers in dist/ to fully-specified
- * paths (`./x` -> `./x.js`, `./dir` -> `./dir/index.js`), so the package loads
- * under Node's native ESM resolver — not just under bundlers (gh#132).
- *
- * Why: the tsup build is `bundle: false`, mirroring src 1:1 with bundler-oriented
- * ESM (extensionless relative imports). Vite/esbuild resolve those fine, but
- * Node's native ESM resolver (used by Inertia v3 dev SSR via the Vite SSR module
- * runner, and by any `import()` in a plain Node ESM context) requires a full file
- * specifier and throws ERR_MODULE_NOT_FOUND on `./dialog`. Adding the extension
- * keeps bundlers happy (an explicit `.js` still resolves) AND unbreaks Node.
- *
- * How: post-build pass over every emitted `.js` (runtime) and `.d.ts`
- * (declaration — consumers on `moduleResolution: node16/nodenext` need the same
- * explicit specifiers in types). For each static `from "..."`, side-effect
- * `import "..."`, and dynamic `import("...")` whose specifier is relative and
- * carries no known extension, resolve it against the filesystem:
- *   1. `<spec>.js` exists         -> append `.js`
- *   2. `<spec>/index.js` exists   -> append `/index.js`
- * (`.d.ts` resolves against `<spec>.d.ts` / `<spec>/index.d.ts` but still emits
- * the `.js` specifier, per the nodenext types convention). `.css` specifiers are
- * left untouched.
- *
- * A SECOND pass covers JSON: the i18n message bundles are imported as
- * `import en from "./messages/en.json"`, but Node's native ESM rejects a JSON
- * module without an import attribute (`ERR_IMPORT_ATTRIBUTE_MISSING`). Append
- * `with { type: "json" }` to any relative `.json` import that lacks one — the
- * standard ESM spelling that Vite/esbuild also accept.
- *
- * A relative specifier that resolves to none of the above is left as-is and
- * reported, so a packaging regression fails loudly instead of shipping a broken
- * path.
+ * Why: the tsup build is `bundle: false`, mirroring src 1:1 with bundler-oriented ESM
+ * (extensionless relative imports). Adding the extension keeps bundlers happy (an explicit `.js`
+ * still resolves) AND unbreaks Node.
  */
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";

@@ -1,40 +1,8 @@
 #!/usr/bin/env node
 /**
- * Emit a shadcn-compatible registry for @godxjp/ui.
- *
- * WHAT THIS PUBLISHES, AND WHAT IT DELIBERATELY DOES NOT
- *
- * A shadcn registry is a COPY-PASTE channel: `shadcn add @godxjp/x` writes files into the
- * consumer's tree and they own them from then on. `@godxjp/ui` is an npm package — consumers
- * import from `dist/`. Publishing the 165 components as copy-paste source would fork every
- * consumer's copy from the package: they would stop receiving token fixes, a11y fixes and the
- * guard discipline this library is built on, while carrying 73k lines they did not write. So the
- * components stay a package, and are NOT in this registry.
- *
- * What a registry IS right for here is the part the package cannot hand you: the design language.
- * `docs/showcase/acme-portal.tsx` is the proof — an entire brand (gold/navy, Source Sans 3, 14px
- * radius, tinted shadows) reproduced by configuring TOKENS ALONE, with no component edits and no
- * new components. Tokens are values, not logic: a copied theme cannot drift into a broken
- * component, and re-running `shadcn add` re-applies it cleanly.
- *
- * The repo's own cardinal rule #46 draws the same line from the other side: anything that fails
- * the Framework-Component Test is a COMPOSITION, to be copied rather than imported. Those are
- * exactly what belongs in a registry, and exactly what `src/components/` refuses to hold.
- *
- * ITEMS
- *   theme    registry:theme  the full token system (foundation, semantic, per-component)
- *   styles   registry:style  the stylesheets those tokens drive
- *
- * SERVING
- * Output lands in `preview/dist/registry/`, which the existing Pages workflow already publishes,
- * so items resolve at `<pages-origin>/registry/{name}.json` with no new infrastructure. A consumer
- * adds one line to their own components.json:
- *
- *   "registries": { "@godxjp": "https://godx-jp.github.io/godxjp-ui/registry/{name}.json" }
- *
- * then `npx shadcn add @godxjp/theme`.
- *
- * Usage: node scripts/gen-registry.mjs [--out <dir>] [--check]
+ * Emit a shadcn-compatible registry for @godxjp/ui. WHAT THIS PUBLISHES, AND WHAT IT DELIBERATELY
+ * DOES NOT A shadcn registry is a COPY-PASTE channel: `shadcn add @godxjp/x` writes files into the
+ * consumer's tree and they own them from then on.
  */
 import { readFileSync, readdirSync, statSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { isAbsolute, join, relative } from "node:path";
@@ -68,13 +36,9 @@ function cssTree(dir) {
 }
 
 /**
- * A CSS-tree registry item.
- *
- * The files ship verbatim rather than being flattened into `cssVars`: the token system is layered
- * on purpose (foundation → semantic → per-component) and the density axis resolves through
- * `calc(… * var(--scaling))`. Flattening it to a value map would compute those away and hand the
- * consumer a frozen snapshot that no longer responds to `--scaling` or a scoped `[data-tenant]`
- * override — which is the entire point of the system.
+ * A CSS-tree registry item. The files ship verbatim rather than being flattened into `cssVars`:
+ * the token system is layered on purpose (foundation → semantic → per-component) and the density
+ * axis resolves through `calc(… * var(--scaling))`.
  */
 function cssItem(name, type, dirs, title, description) {
   return {

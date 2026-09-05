@@ -67,7 +67,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@godxjp/ui/feedback";
-import { AppShell, Flex, PageContainer, Sidebar, type SidebarSectionProp } from "@godxjp/ui/layout";
+import {
+  AppShell,
+  Flex,
+  PageContainer,
+  ResponsiveGrid,
+  Sidebar,
+  type SidebarSectionProp,
+} from "@godxjp/ui/layout";
 
 // ── Shift-type palette ────────────────────────────────────────────────────────
 // The 7-color shift palette uses wa-iro DECORATIVE tokens (charts/tags/tenant) —
@@ -447,15 +454,18 @@ export default function ShiftCalendarShowcase() {
             {detailDate && detailDate.shifts.length > 0 ? (
               <Flex direction="col" gap="sm">
                 {detailDate.shifts.map((s, i) => (
-                  <div
+                  <Flex
                     key={`${s.kind}-${i}`}
-                    className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2"
+                    align="center"
+                    justify="between"
+                    gap="sm"
+                    className="rounded-lg border px-3 py-2"
                   >
                     <ShiftPill kind={s.kind} staff={s.staff} />
                     <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
                       {SHIFT_META[s.kind].time}
                     </Text>
-                  </div>
+                  </Flex>
                 ))}
               </Flex>
             ) : (
@@ -488,7 +498,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
         <div className="overflow-x-auto">
           <div className="min-w-[720px]">
             {/* Weekday head — Sun→danger, Sat→info */}
-            <div className="bg-secondary grid grid-cols-7 border-b">
+            <ResponsiveGrid columns={{ sm: 7, md: 7, lg: 7 }} className="bg-secondary border-b">
               {WEEKDAY_HEAD.map((w, i) => (
                 <Text
                   as="div"
@@ -509,9 +519,9 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                   {w}
                 </Text>
               ))}
-            </div>
+            </ResponsiveGrid>
             {/* 42 cells */}
-            <div className="grid grid-cols-7">
+            <ResponsiveGrid columns={{ sm: 7, md: 7, lg: 7 }}>
               {MONTH_CELLS.map((cell, idx) => {
                 const isSun = cell.weekday === 0;
                 const isSat = cell.weekday === 6;
@@ -534,7 +544,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                       opacity: cell.dim ? 0.5 : 1,
                     }}
                   >
-                    <div className="flex items-center justify-between">
+                    <Flex align="center" justify="between">
                       <Text
                         as="span"
                         size="sm"
@@ -561,8 +571,8 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                           祝
                         </Badge>
                       ) : null}
-                    </div>
-                    <div className="flex flex-col gap-0.5">
+                    </Flex>
+                    <Flex direction="col" className="gap-0.5">
                       {cell.holiday ? <ShiftPill kind="holiday" staff={cell.holiday} /> : null}
                       {shown.map((s, i) => (
                         <ShiftPill key={`${s.kind}-${i}`} kind={s.kind} staff={s.staff} />
@@ -572,11 +582,11 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                           ＋{overflow} 件
                         </Text>
                       ) : null}
-                    </div>
+                    </Flex>
                   </button>
                 );
               })}
-            </div>
+            </ResponsiveGrid>
           </div>
         </div>
       </CardContent>
@@ -600,7 +610,10 @@ function WeekTimeline() {
         <div className="overflow-x-auto">
           <div className="min-w-[760px]">
             {/* Day header row */}
-            <div className="bg-secondary grid grid-cols-[48px_repeat(7,1fr)] border-b">
+            <ResponsiveGrid
+              columns={{ sm: 1, md: 1, lg: 1 }}
+              className="bg-secondary grid-cols-[48px_repeat(7,1fr)] border-b"
+            >
               <div aria-hidden="true" />
               {WEEK_DATES.map((d) => (
                 <Text
@@ -627,9 +640,12 @@ function WeekTimeline() {
                   {WEEKDAY_HEAD[d.weekday]} {d.date}
                 </Text>
               ))}
-            </div>
+            </ResponsiveGrid>
             {/* Time grid body */}
-            <div className="relative grid grid-cols-[48px_repeat(7,1fr)]">
+            <ResponsiveGrid
+              columns={{ sm: 1, md: 1, lg: 1 }}
+              className="relative grid-cols-[48px_repeat(7,1fr)]"
+            >
               {/* Hour axis labels */}
               <div className="relative" style={{ height: `${(AXIS_END - AXIS_START) * 22}px` }}>
                 {HOURS.map((h) => (
@@ -717,7 +733,7 @@ function WeekTimeline() {
                   ) : null}
                 </div>
               ))}
-            </div>
+            </ResponsiveGrid>
           </div>
         </div>
       </CardContent>
@@ -729,7 +745,7 @@ function WeekTimeline() {
 function DayLanes() {
   return (
     <Flex direction="col" gap="md">
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <ResponsiveGrid columns={{ sm: 1, lg: 3, md: 1 }} gap="md">
         {DAY_LANES.map((lane) => (
           <Card key={lane.staff} className="self-start">
             <CardHeader>
@@ -773,7 +789,7 @@ function DayLanes() {
             />
           </CardContent>
         </Card>
-      </div>
+      </ResponsiveGrid>
     </Flex>
   );
 }

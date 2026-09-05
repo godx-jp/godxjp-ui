@@ -4,18 +4,8 @@ function range(start: number, end: number): number[] {
 }
 
 /**
- * Build visible page numbers with ellipsis — Ant Design / MUI pagination style.
- *
- * The item count is CONSTANT wherever the current page sits. The earlier version
- * derived the window straight from `current ± siblingCount` and let it collapse
- * against the edges, so a 1,060-page list opened as `1 2 … 1060` — four controls
- * with a wide empty gap, and both a bad target size and a bad sense of scale
- * (reported 2026-08-24). Ant Design and MUI both solve this by CLAMPING the
- * window instead of shrinking it: near an edge the window slides inward so the
- * strip keeps its full width. Same list now opens as `1 2 3 4 5 … 1060`.
- *
- * Slots = `boundaryCount * 2` edges + `siblingCount * 2 + 1` around current + 2
- * ellipsis positions. With the defaults that is 7 controls.
+ * Build visible page numbers with ellipsis — Ant Design / MUI pagination style. The item count is
+ * CONSTANT wherever the current page sits.
  */
 export function buildPageRange(
   current: number,

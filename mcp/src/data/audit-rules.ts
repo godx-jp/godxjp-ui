@@ -1,18 +1,9 @@
 /**
- * Local UI-audit catalog — the agent-facing mirror of `scripts/ui-audit.mjs`.
- *
- * The CLI (`scripts/ui-audit.mjs`) is the single source of truth for the EXECUTABLE
- * rules; this catalog documents each rule's category, the international standard it
- * enforces, and the concrete fix, so an agent can (a) self-audit from the MCP and
- * (b) know to RUN the audit locally BEFORE any visual review.
- *
- * Drift is prevented by `scripts/check-audit-sync.mjs`, which diffs the rule ids here
- * against `node scripts/ui-audit.mjs --rules`. Add a rule to the CLI → add it here.
- *
- * HOW TO RUN (from the consuming app, warnings are agent guidance — non-blocking):
- *   node node_modules/@godxjp/ui/scripts/ui-audit.mjs            # human report
- *   node node_modules/@godxjp/ui/scripts/ui-audit.mjs --format json
- *   node node_modules/@godxjp/ui/scripts/ui-audit.mjs --rules    # this catalog, from source
+ * Local UI-audit catalog — the agent-facing mirror of `scripts/ui-audit.mjs`. The CLI
+ * (`scripts/ui-audit.mjs`) is the single source of truth for the EXECUTABLE rules; this catalog
+ * documents each rule's category, the international standard it enforces, and the concrete fix, so
+ * an agent can (a) self-audit from the MCP and (b) know to RUN the audit locally BEFORE any visual
+ * review.
  */
 
 export type AuditRuleCategory = "tokens" | "composition" | "api" | "a11y" | "i18n" | "rtl" | "copy";

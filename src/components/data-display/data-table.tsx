@@ -2,13 +2,11 @@
 //
 // Encapsulates: sticky header, density toggle, per-row click navigation, bulk
 // selection, the full lifecycle state set (loading · empty · error · denied —
-// gh#216, precedence loading > denied > error > empty > rows), sorting, global
 // search, column visibility,
 // and BOTH cursor and numbered pagination. Internally driven by
 // `@tanstack/react-table` (useTable) so sorting / filtering / column
 // visibility / pagination / selection are all real table state — but the SIMPLE
 // `data` + `columns` (lean ColumnDef) entry path is preserved as the default
-// usage, so a consumer who only passes `data` + `columns` still gets a rendered
 // table with zero TanStack boilerplate.
 //
 // Compound API (drop these as children of <DataTable>):
@@ -114,23 +112,14 @@ import type {
 export type Density = DensityProp;
 
 /**
- * Lean column definition — the simple, common-case column API. `render` shapes
- * a cell; `sortable` opts the column into the sort cycle; `align` / `width` /
- * `pin` / `hiddenOnMobile` / `priority` tune layout; `enableHiding` (default true)
- * lists the column in DataTable.ViewOptions. Adapted to a TanStack column internally.
+ * Lean column definition — the simple, common-case column API. `render` shapes a cell; `sortable`
+ * opts the column into the sort cycle; `align` / `width` / `pin` / `hiddenOnMobile` / `priority`
+ * tune layout; `enableHiding` (default true) lists the column in DataTable.ViewOptions.
  */
 export type ColumnDef<T> = ColumnDefProp<T>;
 
 // ── lean ColumnDef → TanStack column adapter ───────────────────────────────
 // We keep the lean ColumnDef as the public column shape and translate it into a
-/**
- * Per-column metadata this table hangs off every TanStack column.
- *
- * v8 declared this by module-augmenting `ColumnMeta`, which was global: EVERY table in the
- * consumer's app inherited our `lean` key. v9 replaced that with a per-table `columnMeta` slot on
- * the features object, so the type is scoped to this component and stays parameterised by the row
- * type instead of leaking into anyone else's tables.
- */
 interface DataTableColumnMeta<T> {
   /**
    * The original lean column. It is THE declared home for every custom column option here
@@ -141,19 +130,6 @@ interface DataTableColumnMeta<T> {
 }
 
 /**
- * The TanStack v9 feature set this table opts into.
- *
- * v9 made features explicit: a table carries only the state, options and row-model plumbing it
- * declares, and every generic (`ColumnDef`, `Table`, `TableState`) is parameterised by that set.
- * Declaring it in one place keeps the rest of this file reading like the v8 wiring did, while
- * being the honest inventory of what DataTable supports — v8 only ever implied that list through
- * which `get*RowModel` helpers happened to be passed in.
- *
- * The row-model factories are registered unconditionally. v8 omitted them to disable a stage;
- * v9 keys that off the `manual*` options instead — `table_getSortedRowModel` returns the
- * pre-sorted model whenever `manualSorting` is set — so the behaviour is unchanged and the
- * feature set stays a single static shape.
- *
  * It is a function only so `columnMeta` can carry the row type; the runtime object is identical
  * for every `T`, so callers memoise one per table.
  */
@@ -176,23 +152,15 @@ function dataTableFeatures<T>() {
 type DataTableFeatures<T> = ReturnType<typeof dataTableFeatures<T>>;
 
 /**
- * v9 constrains its row type to `RowData` (`Record<string, any> | Array<any>`). A consumer's row
- * is normally an `interface`, and an interface has no index signature, so `DataTable<Order>` would
- * stop compiling for every consumer that did not redeclare `Order` as a type alias — a breaking
- * change for a purely internal upgrade. Intersecting with an indexed type satisfies the constraint
- * without touching the public generic: `T & Record<string, unknown>` is still a subtype of `T`, so
- * `row.original` keeps flowing back out as the consumer's own row type. The bridge is types only —
- * nothing about the data changes at runtime.
+ * A consumer's row is normally an `interface`, and an interface has no index signature, so
+ * `DataTable<Order>` would stop compiling for every consumer that did not redeclare `Order` as a
+ * type alias — a breaking change for a purely internal upgrade. Intersecting with an indexed type
+ * satisfies the constraint without touching the public generic: `T & Record<string, unknown>` is
+ * still a subtype of `T`, so `row.original` keeps flowing back out as the consumer's own row type.
  */
 type TanstackRow<T> = T & Record<string, unknown>;
 
-/**
- * The TanStack table instance this component drives, with our feature set applied.
- *
- * The React adapter's type, not table-core's: v9 moved render-time state reads off
- * `table.state` onto `table.state`, which only the React instance carries (it is the
- * store-subscribed projection that actually re-renders).
- */
+/** The TanStack table instance this component drives, with our feature set applied. */
 type DataTableInstance<T> = ReactTable<DataTableFeatures<T>, TanstackRow<T>>;
 
 // Lean columns are translated once into TanStack columns. The original lean column is stashed in
@@ -271,13 +239,8 @@ interface DataTableProps<T> {
   columnVisibility?: ColumnVisibilityState;
   onColumnVisibilityChange?: OnChangeFn<ColumnVisibilityState>;
   /**
-   * Manual (server) flags. Default `false` so the simple `data`+`columns` case
-   * sorts / filters in-browser with no extra wiring. Client pagination slices
-   * rows ONLY when engaged — a numbered `<DataTable.Pagination>` child is
-   * composed, or `pagination`/`onPaginationChange` is supplied; a plain table
-   * with neither renders every row (no silent 10-row cap, gh#270). Set the
-   * relevant flag `true` and drive the matching state from your query for
-   * server-side sort / filter / pagination.
+   * Manual (server) flags. Default `false` so the simple `data`+`columns` case sorts / filters
+   * in-browser with no extra wiring.
    */
   manualSorting?: boolean;
   manualFiltering?: boolean;
@@ -287,16 +250,14 @@ interface DataTableProps<T> {
   /** Custom empty content when `data` is empty; defaults to a built-in EmptyState. */
   empty?: React.ReactNode;
   /**
-   * Failure state (#216). `true` renders the built-in localized error message; any other node
-   * REPLACES it (e.g. an `Alert` carrying an error code + request id). Pass `undefined`/`false`
-   * when the read succeeded. Never pass a raw `Error` object — it is not renderable.
-   * Announced via `role="alert"`; precedence is loading → denied → error → empty → rows.
+   * `true` renders the built-in localized error message; any other node REPLACES it (e.g. an
+   * `Alert` carrying an error code + request id). Pass `undefined`/`false` when the read
+   * succeeded.
    */
   error?: React.ReactNode;
   /**
-   * Permission-denied state (#216) — the read was refused, not failed. `true` renders the
-   * built-in localized "no access" message; any other node replaces it. Distinct from `error`
-   * so a 403 never offers a pointless retry.
+   * `true` renders the built-in localized "no access" message; any other node replaces it.
+   * Distinct from `error` so a 403 never offers a pointless retry.
    */
   denied?: React.ReactNode;
   /** Retry handler for the built-in `error` state; omit to hide the retry action. */
@@ -308,30 +269,16 @@ interface DataTableProps<T> {
   /** Pin the header to the top while the body scrolls. Default true. */
   stickyHeader?: boolean;
   /**
-   * Named collection contract (gh#253) — the SAME preset the `Table` primitive owns, forwarded to
-   * the table DataTable renders, so a TanStack-driven queue gets the identical responsive contract.
    * `"default"` (the default) emits no attribute and matches no selector: an existing DataTable is
-   * byte-identical. `"action-collection"` is the canonical dense approval / action queue: below
-   * `collapseBelow` the desktop intrinsic column widths give way to the token-owned column-PRIORITY
-   * measures (`--table-action-collection-*`) under `table-layout: fixed`, cells wrap, and the
-   * bordered surface drops its `--table-surface-min-inline-size` floor — so requester · target ·
-   * reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll.
-   * Mark each column with `priority` on its `ColumnDef`; DataTable stamps it on the `<th>` AND the
-   * `<td>` for you. The table stays a REAL table: no `display` change, no role rewriting, no card
-   * swap, so header association, `aria-sort` and screen-reader navigation are identical at 1440.
+   * byte-identical. Mark each column with `priority` on its `ColumnDef`; DataTable stamps it on
+   * the `<th>` AND the `<td>` for you.
    */
   preset?: TablePresetProp;
-  /**
-   * Step at which `preset="action-collection"` switches to the compact priority measures, measured
-   * against the TABLE's own container (a container query), not the viewport — a table inside a
-   * master rail collapses before the page does. Default `"sm"`. Ignored while `preset` is
-   * `"default"`.
-   */
+  /** Default `"sm"`. Ignored while `preset` is `"default"`. */
   collapseBelow?: BreakpointProp;
   /**
-   * Per-row className for state-based row tinting (e.g. flag an invalid or
-   * empty record). Returned classes are appended last, so they win over the
-   * built-in hover/selected fills. Return `undefined` to leave a row unstyled.
+   * Per-row className for state-based row tinting (e.g. flag an invalid or empty record). Returned
+   * classes are appended last, so they win over the built-in hover/selected fills.
    */
   rowClassName?: (row: T) => string | undefined;
   className?: string;
@@ -454,9 +401,9 @@ export function DataTable<T>({
   // Client pagination is engaged ONLY when something actually drives it: a
   // composed numbered <DataTable.Pagination> child (cursor mode is server
   // paging — never client-slice it), or externally controlled pagination
-  // state. Otherwise the internal default (pageSize 10) used to slice every
+  // state.
   // plain `data`+`columns` table to 10 rows with no pager and no warning —
-  // a silent cap (gh#270). No pager, no controlled state → render all rows.
+  // No pager, no controlled state → render all rows.
   const hasNumberedPager = React.Children.toArray(children).some(
     (c) =>
       React.isValidElement(c) &&
@@ -480,7 +427,6 @@ export function DataTable<T>({
     getRowId,
     manualSorting,
     manualFiltering,
-    // v8 disengaged pagination by withholding the row model; v9 has one static feature set, so
     // "no pager on this table" is expressed the same way as "the server paginates" — leave the
     // rows unsliced. Page count still derives from `rowCount`/the pre-paginated model either way.
     manualPagination: manualPagination || !paginationEngaged,
@@ -634,17 +580,9 @@ DataTable.ViewOptions = function DataTableViewOptions({
 (DataTable.ViewOptions as React.FC).displayName = "DataTable.ViewOptions";
 
 /**
- * `ColumnDef.width` accepts either a utility class or a CSS length.
- *
- * It has always been forwarded straight into `cn()`, so a perfectly reasonable
- * `width: "300px"` became the class name `300px` — which matches nothing. The
- * column silently fell back to auto layout, and under `table-layout: fixed` a
- * wrapping cell then collapsed to its minimum. Nothing errors, nothing warns,
- * and the type said `string`, which is exactly what invites a length.
- *
- * A value that begins like a length, or is a `calc()` / `var()` / `clamp()`,
- * is applied as an inline width. Anything else is treated as a class, as
- * before, so existing `w-[300px]` call sites are untouched.
+ * `ColumnDef.width` accepts either a utility class or a CSS length. It has always been forwarded
+ * straight into `cn()`, so a perfectly reasonable `width: "300px"` became the class name `300px` —
+ * which matches nothing.
  */
 function columnWidth(width: string | undefined): {
   className?: string;
@@ -794,11 +732,9 @@ DataTable.Content = function DataTableContent() {
   } = useDataTableContext();
   const { t } = useTranslation();
   // `"default"` must be provably inert: no attribute is emitted, so no preset selector can match
-  // and the rendered surface is identical to the pre-gh#253 markup (the gh#231 contract).
   const presetAttr = preset === "default" ? undefined : preset;
 
   // A slot is "raised" when it carries content OR the sentinel `true` (built-in copy). `false` /
-  // `undefined` / `null` mean the state is not active — mirroring how a consumer writes
   // `error={isError}` / `denied={status === 403}` straight from a query result.
   const isDenied = denied != null && denied !== false;
   const isError = !isDenied && error != null && error !== false;
@@ -834,7 +770,6 @@ DataTable.Content = function DataTableContent() {
     }
   }, [missingHeaderNames]);
 
-  // gh#267 — the inline-end fade is a SCROLL affordance: it must render only
   // while the region actually overflows AND is not scrolled to the inline-end.
   // CSS alone cannot know (there is no :overflowing selector), so measure the
   // scroll box and mirror the state into a class the stylesheet gates on.
@@ -905,24 +840,14 @@ DataTable.Content = function DataTableContent() {
       tabIndex={presetAttr ? undefined : 0}
     >
       <div
-        // The narrow-viewport width floor is `--table-surface-min-inline-size` (gh#253) — it used
         // to be a hard-coded 640px min-width utility pair, i.e. exactly the literal that forced
-        // the horizontal scroll at 390 and the kind of service-tunable constant rule #45 says
         // must be a token. The collection preset opts out of the floor via `data-preset`.
         className="ui-data-table-surface"
         data-preset={presetAttr}
         data-striped={striped ? "" : undefined}
         data-hoverable={hoverable ? "" : undefined}
       >
-        {/* With `preset="default"` the `.ui-data-table-scroll` region above owns the overflow, so
-            the primitive's wrapper is a bare box (`scrollable={false}` — no nested scroller, no
-            duplicate tab stop). The collection preset flips that (gh#262): past its column
-            budget the floor tier grows the TABLE past 100%, and the surface between here and
-            the scroll region is an `overflow: hidden` block that cannot size to a fixed-layout
-            table's degenerate intrinsics — it would CLIP the grown table before the outer
-            region ever saw an overflow. Only the table's DIRECT wrapper sees the growth, so for
-            the preset that wrapper is the keyboard-reachable scroll region (exactly the bare
-            `Table` behaviour), scrolling inside the surface border. */}
+        {/* With `preset="default"` the `.ui-data-table-scroll` region above owns the overflow, so the primitive's wrapper is a bare box (`scrollable={false}` — no nested scroller, no duplicate tab stop). Only the table's DIRECT wrapper sees the growth, so for the preset that wrapper is the keyboard-reachable scroll region (exactly the bare `Table` behaviour), scrolling inside the surface border. */}
         <Table scrollable={preset !== "default"} preset={preset} collapseBelow={collapseBelow}>
           <TableHeader
             className={cn("bg-secondary", stickyHeader && "ui-data-table-sticky-header")}
@@ -1061,7 +986,6 @@ DataTable.Content = function DataTableContent() {
                 </TableRow>
               ))
             ) : isDenied ? (
-              // DENIED (#216): the read was REFUSED, not failed — no retry is offered, because
               // repeating a 403 cannot succeed. `warning` (not destructive) keeps it a policy
               // statement rather than a system fault. Announced politely: a permission boundary
               // is expected information, not an interruption.
@@ -1085,7 +1009,7 @@ DataTable.Content = function DataTableContent() {
                 </TableCell>
               </TableRow>
             ) : isError ? (
-              // ERROR (#216): a failed read. Announced assertively (`role="alert"`) because the
+              // Announced assertively (`role="alert"`) because the
               // user's request did not complete — unlike empty/denied, which are states of the data
               // itself. The role sits on an inner wrapper, never on the <td>: overriding a cell's
               // role would strip it out of the table's grid semantics for AT.
@@ -1206,7 +1130,7 @@ DataTable.Content = function DataTableContent() {
                                   ? "—"
                                   : String(v);
                               // The default renderer emits its text inside a real element, never
-                              // as a bare text node in the `<td>` (gh#412). A bare node leaves the
+                              // A bare node leaves the
                               // cell BOX as the only thing a reflow/overflow check can measure,
                               // and the cell's block padding inflates that box — so a single
                               // unwrapped line reads as wrapped, which is how a CJK

@@ -9,51 +9,23 @@ import type {
 
 export type TableProps = React.HTMLAttributes<HTMLTableElement> & {
   /**
-   * Whether the Table owns its own horizontal-scroll region (default `true`). When `true` a
-   * table wider than its container scrolls inside a keyboard-reachable wrapper (WCAG 2.1.1 / axe
-   * `scrollable-region-focusable`). Set `false` when an ancestor already provides the scroll
-   * region (e.g. `DataTable`, whose `.ui-data-table-scroll` owns the overflow + tab stop) — this
-   * avoids a redundant NESTED scroll container and a duplicate keyboard focus stop for one table.
+   * Whether the Table owns its own horizontal-scroll region (default `true`). When `true` a table
+   * wider than its container scrolls inside a keyboard-reachable wrapper (WCAG 2.1.1 / axe
+   * `scrollable-region-focusable`).
    */
   scrollable?: boolean;
   /**
-   * Draw the full cell grid (gh#274): a 1px outer frame plus vertical rules between columns
-   * (horizontal row rules already come from TableRow). Reach for this whenever the table
-   * carries rowSpan/colSpan merged cells — without column rules the merge relationships are
-   * unreadable. Colour comes from the `--table-border-color` token (default `--border`).
-   * Default `false` emits nothing, keeping the plain table byte-identical.
+   * Reach for this whenever the table carries rowSpan/colSpan merged cells — without column rules
+   * the merge relationships are unreadable. Colour comes from the `--table-border-color` token
+   * (default `--border`).
    */
   bordered?: boolean;
   /**
    * Named collection contract. `"default"` (the default) emits no attribute and keeps the plain
-   * table exactly as it is. `"action-collection"` is the canonical dense approval / action queue
-   * (gh#253): below `collapseBelow`, the desktop intrinsic column widths — the thing that pushes
-   * the last columns outside a 390px viewport — are replaced by the token-owned column PRIORITY
-   * measures (`--table-action-collection-*`) under `table-layout: fixed`, and cells wrap instead
-   * of forcing a horizontal scroll. Mark each column with `priority` on its `TableHead`/`TableCell`.
-   * The table keeps its real semantics: no `display` change, no role rewriting, no card swap, so
-   * header association, `aria-sort` and screen-reader table navigation are identical at every width.
-   *
-   * Column-count ceiling (gh#262): the wrap-instead-of-scroll contract holds up to SIX columns.
-   * From seven, the priority shares cannot fit a phone frame, so below the step each column takes
-   * its rem floor (`--table-action-collection-*-width-floor`, ~5 CJK glyphs per line) and the
-   * table intentionally scrolls inside this wrapper — SC 1.4.10 permits one-dimensional scrolling
-   * of a data table; compressing further would shred CJK headers one character per line.
-   *
-   * `"stacked-record-collection"` (gh#293 restore — SCR-215) is for a wide, heterogeneous record
-   * table that CANNOT be squeezed into any fixed narrow-frame measure — an admin detail row with
-   * many disparate fields, not a dense queue. Below `collapseBelow` the `<thead>` hides and every
-   * `<tr>` becomes a bordered key-value card: each `TableCell`'s own `label` prop (its column's
-   * header text, repeated per cell since `<thead>` is gone) renders inline above the value. Above
-   * the step it renders as a byte-for-byte ordinary table — mark `label` on every `TableCell`.
+   * table exactly as it is.
    */
   preset?: TablePresetProp;
-  /**
-   * Step at which `preset="action-collection"`/`"stacked-record-collection"` switch away from the
-   * ordinary table, measured against the TABLE's own container (not the viewport), so a table
-   * inside a rail collapses before the page does. Defaults to `"sm"` (40rem). Ignored while
-   * `preset` is `"default"`.
-   */
+  /** Defaults to `"sm"` (40rem). Ignored while `preset` is `"default"`. */
   collapseBelow?: BreakpointProp;
 };
 
@@ -74,7 +46,6 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
     // scrollable-region-focusable). No landmark role — avoids landmark-unique collisions.
     // When `scrollable` is false an ancestor owns the scroll region, so this is a bare
     // positioning box (no `overflow`, no tab stop) to avoid a redundant nested scroller.
-    // The preset adds ONE class (the container the collapse step is measured against) and the
     // step attribute; with `preset="default"` neither is emitted, so the box is byte-identical.
     <div
       className={cn(
@@ -90,7 +61,6 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
         ref={ref}
         data-slot="table"
         // Type metrics live on `[data-slot="table"]` in table-layout.css
-        // (--table-font-size / --table-line-height), not on a `text-sm` utility (gh#319).
         className={cn("w-full caption-bottom", bordered && "ui-table-bordered", className)}
         {...props}
       />
@@ -114,7 +84,6 @@ export const TableBody = React.forwardRef<
   // "The last row draws no rule" is an idiom, not a service-tunable constant, so it is a CSS
   // rule (`[data-slot="table-body"] .ui-table-row:last-child`) rather than a utility. That only
   // works because TableRow's own bottom rule moved to `.ui-table-row` in the same layer: while
-  // the row carried a `border-b` UTILITY, no `components` rule could ever zero it (gh#412).
   <tbody ref={ref} data-slot="table-body" className={cn(className)} {...props} />
 ));
 TableBody.displayName = "TableBody";
@@ -128,7 +97,6 @@ export const TableRow = React.forwardRef<
     className={cn(
       // The row rule itself is `.ui-table-row` in table-layout.css (--table-row-border-width),
       // NOT a `border-b` utility — a utility sits in `@layer utilities` and would outrank the
-      // `components` rule that has to zero it on the last row (gh#319).
       "ui-table-row hover:bg-accent/70 data-[state=selected]:bg-primary/[0.06] transition-colors",
       className,
     )}
@@ -140,18 +108,14 @@ TableRow.displayName = "TableRow";
 /**
  * Column priority carried by BOTH the header cell and the body cells of a column. Read only by
  * `Table preset="action-collection"` below its collapse step, where it selects the column's
- * token-owned measure; unset columns take the remaining space. Emitted as `data-priority` only
- * when supplied, so an ordinary table gains no attribute.
+ * token-owned measure; unset columns take the remaining space.
  */
 type TableCellPriority = { priority?: TableColumnPriorityProp };
 
 /**
- * A `TableCell`'s own column label, read only by `Table preset="stacked-record-collection"`
- * below its collapse step — where the real `<thead>` hides and this renders inline above the
- * cell's value inside the stacked card, standing in for the header association that is no longer
- * visually present. Rendered into the DOM unconditionally (so it exists for the preset's CSS to
- * reveal) but visually hidden above the collapse step, where the real `<th>` already carries the
- * label — an ordinary table with no `label` prop supplied gains no extra markup.
+ * Rendered into the DOM unconditionally (so it exists for the preset's CSS to reveal) but visually
+ * hidden above the collapse step, where the real `<th>` already carries the label — an ordinary
+ * table with no `label` prop supplied gains no extra markup.
  */
 type TableCellLabel = { label?: React.ReactNode };
 

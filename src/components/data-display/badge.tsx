@@ -66,13 +66,6 @@ const STATUS_MAP: Record<string, StatusDef> = {
   ASSIGNMENT_STATUS_TERMINATED: { tone: "destructive", icon: XCircle },
 };
 
-/**
- * NO `text-xs` here (gh#260): a font-size utility lands in `@layer utilities`, which always beats
- * the `@layer components` rule in badge-layout.css — making the documented `--badge-font-size`
- * knob structurally inert. Font-size (and the line-height `text-xs` used to carry) are owned by
- * badge-layout.css via `--badge-font-size` / `--badge-line-height`, whose defaults reproduce the
- * old `text-xs` rendering exactly.
- */
 const badgeVariants = cva(
   "inline-flex items-center border font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring",
   {
@@ -160,10 +153,7 @@ export function Badge({
 }
 
 /**
- * Status-aware badge with the shared domain-status-to-tone mapping.
- *
- * `Badge` remains the general-purpose primitive. Prefer `StatusBadge` when the
- * `status` prop drives presentation so status colours remain consistent across
- * products.
+ * Status-aware badge with the shared domain-status-to-tone mapping. `Badge` remains the
+ * general-purpose primitive.
  */
 export const StatusBadge = Badge;

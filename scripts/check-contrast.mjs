@@ -1,29 +1,19 @@
 #!/usr/bin/env node
 /**
- * check:contrast — WCAG 2.2 SC 1.4.3 text-contrast guard (browser-rendered).
- *
- * jsdom/axe-in-vitest cannot see colour (no layout/paint), so a "dark text on a dark scoped region"
- * bug (e.g. an outline Button inheriting the body's dark colour onto an on-navy hero → label
- * near-invisible) slips every static check. This guard renders real pages in Chromium, computes the
- * effective background behind every text node, and fails on any pair below the WCAG AA threshold
- * (4.5:1 normal text · 3:1 large text ≥24px or ≥18.66px bold).
- *
- * Exemptions (WCAG): logotypes (`[data-logotype]`), disabled/inactive text (opacity < 0.4), and
- * pure-decorative/placeholder nodes. Add `data-logotype` to a brand wordmark to exempt it.
- *
- * Usage:  node scripts/check-contrast.mjs [baseUrl] [route ...]
- *   default baseUrl = http://localhost:6008 (a running `pnpm preview`); default routes = the
- *   showcases + a few representative default-theme pages. Exits 1 on any failure.
+ * check:contrast — WCAG 2.2 SC 1.4.3 text-contrast guard (browser-rendered). jsdom/axe-in-vitest
+ * cannot see colour (no layout/paint), so a "dark text on a dark scoped region" bug (e.g. an
+ * outline Button inheriting the body's dark colour onto an on-navy hero → label near-invisible)
+ * slips every static check. This guard renders real pages in Chromium, computes the effective
+ * background behind every text node, and fails on any pair below the WCAG AA threshold (4.5:1
+ * normal text · 3:1 large text ≥24px or ≥18.66px bold).
  */
 const base = process.argv[2]?.startsWith("http") ? process.argv[2] : "http://localhost:6008";
 const routeArgs = process.argv.slice(2).filter((a) => !a.startsWith("http"));
-// Default audit set — the two brand re-theme showcases (a consumer's design reproduced from tokens
 // must be AA clean) PLUS representative default-theme surfaces where coloured status text lives
 // (KPI deltas, status badges, alerts). Pass routes as args to audit any other page.
 const ROUTES = routeArgs.length
   ? routeArgs
   : [
-      // The brand re-theme showcases — a consumer's design reproduced from tokens alone must be AA
       // clean. These read `acme-*`, not the `tiximax-*` this list carried for a long time after the
       // rename: those two routes rendered "Showcase not found" and the sweep reported the empty
       // page AA clean, so the coverage this comment claims did not exist. The not-found guard below
@@ -35,12 +25,11 @@ const ROUTES = routeArgs.length
       "/isolate/feedback-alert",
       "/isolate/data-display-badge",
       "/isolate/data-display-stat-card",
-      // gh#199 — destructive Button labels (incl. AlertDialog actions) must stay AA on their fill,
-      // audited in BOTH themes (the dark default previously sat at 4.54:1 and slipped this guard,
+      // AlertDialog actions) must stay AA on their fill,
       // which only covered default-theme text). Deterministic token coverage: destructive-contrast.test.
       "/isolate/feedback-alert-dialog",
       "/isolate/feedback-alert-dialog?theme=dark",
-      // gh#320 — the Button counter pill. The id is `general-button-index` (docs/general/button/
+      // The id is `general-button-index` (docs/general/button/
       // index.tsx); `general-button` resolves to nothing.
       "/isolate/general-button-index",
       "/isolate/general-button-index?theme=dark",
@@ -108,9 +97,8 @@ function collect() {
 
 async function ensureServer() {
   // Delegates to the ONE preview-server implementation CI has proven, instead of a fourth
-  // hand-rolled copy. This gate used to spawn `pnpm preview` — the DEV server — with
+  // hand-rolled copy.
   // `stdio: "ignore"`, a 60s budget, and a probe that asked only the NAME `localhost`. Every
-  // failure mode fixed elsewhere in gh#333 lived here at once, which is exactly why this gate was
   // still red after the other five went green. The helper builds, serves the static output, binds
   // 127.0.0.1 explicitly, echoes what the server prints, and waits a budget suited to CI.
   const { ensurePreviewServer } = await import("./frame-harness.mjs");
@@ -140,7 +128,7 @@ async function main() {
   }
   const cleanup = () => stopServer?.();
   // Use the pinned executable only when it actually exists (dev machines /
-  // self-hosted runners with a fixed /opt browser). Otherwise fall back to
+  // Otherwise fall back to
   // Playwright's own resolution so `playwright install chromium` on a stock CI
   // runner works too.
   const { existsSync } = await import("node:fs");

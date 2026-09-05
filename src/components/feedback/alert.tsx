@@ -87,7 +87,6 @@ const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
               }}
               data-slot="alert-dismiss"
               // Rest alpha, its hover companion and the transition all live in alert-layout.css
-              // now — the `hover:opacity-100` that used to sit here was the ONLY thing lifting the
               // ✕ off its 0.7 rest state, with the two halves split across two files.
               className="ui-focus-ring"
               aria-label={t("feedback.alert.dismiss")}
@@ -159,10 +158,7 @@ function RetryButton({ onRetry }: { onRetry: NonNullable<AlertQueryErrorProp["on
           void onRetry();
         }}
       >
-        {/* No `size-*` on the glyph: `.ui-button--sm svg` already sizes it from
-            --control-icon-size-sm. The `size-4` that used to sit here was a utility-layer
-            override of that rule, so this one icon rendered 1rem while every other sm-button
-            icon in the system rendered 0.875rem. */}
+        {/* No `size-*` on the glyph: `.ui-button--sm svg` already sizes it from --control-icon-size-sm. */}
         <Flex direction="row" wrap align="center" gap="xs">
           <RefreshCw aria-hidden="true" />
           {t("common.retry")}

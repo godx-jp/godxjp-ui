@@ -76,9 +76,8 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
     { kind, appearance, compact = false, className, disabled, id, name, value, onValueChange },
     ref,
   ) {
-    // Product contract (gh#175): the locale picker's canonical form is the compact icon-only
     // language switcher (a globe/languages glyph in the topbar), so `kind="locale"` DEFAULTS to
-    // `appearance="icon"`. Every other kind defaults to the labeled trigger. Either can be
+    // `appearance="icon"`. Every other kind defaults to the labeled trigger.
     // overridden explicitly (e.g. a locale row inside a settings form passes `appearance="labeled"`).
     const resolvedAppearance = appearance ?? (kind === "locale" ? "icon" : "labeled");
     const ctx = useOptionalAppContext();
@@ -146,9 +145,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
     const Icon = ICON[kind];
     const iconOnly = resolvedAppearance === "icon";
     const inline = resolvedAppearance === "inline";
-    // `compact` (gh#217) re-tiers the trigger box to --control-height-sm and drops the picker's
     // owned per-kind width, so a LABELLED footer locale switch hugs its value instead of stretching
-    // to the width its kind would otherwise claim (#319 moved those into
     // `.ui-app-setting-picker-trigger[data-kind]`). `inline` is already chrome-less, so compact is
     // a no-op there.
     const isCompact = compact && !inline;
@@ -181,9 +178,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                   // still hold.
                   "ui-app-setting-picker-icon hover:bg-accent hover:text-accent-foreground"
                 : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
-                  // caps at the container (`w-auto max-w-full`) instead of the old UNCONDITIONAL
-                  // `w-full` — so a labeled picker dropped into a narrow topbar no longer stretches to
-                  // fill the bar (gh#165). A form field that wants a full-width control passes
+                  // A form field that wants a full-width control passes
                   // `className="w-full"`, which wins over `w-auto`.
                   // `compact` drops the per-kind width entirely so the trigger hugs its value.
                   cn("w-auto max-w-full", !isCompact && "ui-app-setting-picker-trigger"),

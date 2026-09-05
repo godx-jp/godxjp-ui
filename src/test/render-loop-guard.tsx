@@ -1,11 +1,9 @@
 import * as React from "react";
 
 /**
- * Test-only guard that surfaces runaway re-render loops as a clear error instead
- * of a hung test. Counts its own renders; once they exceed `maxRenders` it throws,
- * so an effect/state loop in the tree under test fails fast and legibly.
- *
- * Self-contained (no external tooling dependency) — see docs/DEVELOPMENT.md §5.
+ * Test-only guard that surfaces runaway re-render loops as a clear error instead of a hung test.
+ * Counts its own renders; once they exceed `maxRenders` it throws, so an effect/state loop in the
+ * tree under test fails fast and legibly.
  */
 const DEFAULT_MAX_RENDERS = 50;
 

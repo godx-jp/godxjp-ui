@@ -17,36 +17,23 @@ export type ColumnDefProp<T> = {
   key: string;
   header: React.ReactNode;
   /**
-   * Accessible header text for a column whose `header` is visually empty — the
-   * standard case for a row-actions or selection column. Rendered as an
-   * `sr-only` label inside the `<th>` so the column keeps a screen-reader name
-   * (e.g. "Actions" / "Select") while showing nothing on screen. Required
-   * (dev-warned) when `header` is empty; ignored when `header` has visible text.
-   * Route the string through `t()` for i18n.
+   * Accessible header text for a column whose `header` is visually empty — the standard case for a
+   * row-actions or selection column. Rendered as an `sr-only` label inside the `<th>` so the
+   * column keeps a screen-reader name (e.g.
    */
   ariaLabel?: string;
   render?: (row: T) => React.ReactNode;
   sortable?: boolean;
   /**
-   * Column width: either a utility class (`"w-[300px]"`) or a CSS length
-   * (`"300px"`, `"20%"`, `"calc(50% - 1rem)"`). Both work — a length is
-   * applied inline, anything else is treated as a class.
-   *
-   * It used to be class-only, and a length silently became a dead class name,
-   * so the column fell back to auto layout with nothing to indicate why.
+   * Column width: either a utility class (`"w-[300px]"`) or a CSS length (`"300px"`, `"20%"`,
+   * `"calc(50% - 1rem)"`). Both work — a length is applied inline, anything else is treated as a
+   * class.
    */
   width?: string;
   align?: ColumnAlignProp;
   /**
-   * Alignment of the header cell, when it differs from the body.
-   *
-   * Defaults to `align`, which is the usual case. It exists because a table
-   * can want centred headings over start-aligned text — a long subject reads
-   * from the left while its column heading sits over the column — and `align`
-   * alone cannot say that: setting it to `center` centres the rows too.
-   *
-   * Consumers were reaching for `[&_th_button]:justify-center` to get there,
-   * which is a hand-tuned override of a layout the table owns.
+   * Alignment of the header cell, when it differs from the body. Defaults to `align`, which is the
+   * usual case.
    */
   headerAlign?: ColumnAlignProp;
   hiddenOnMobile?: boolean;
@@ -57,21 +44,17 @@ export type ColumnDefProp<T> = {
    */
   enableHiding?: boolean;
   /**
-   * Pin the column to the inline-end edge so it stays visible while the rest of
-   * the table scrolls horizontally — the standard home for a row-actions column.
-   * The pinned cell keeps an opaque, hover/selection-aware background and casts a
-   * separating shadow. Pin at most one column per table.
+   * Pin the column to the inline-end edge so it stays visible while the rest of the table scrolls
+   * horizontally — the standard home for a row-actions column. The pinned cell keeps an opaque,
+   * hover/selection-aware background and casts a separating shadow.
    */
   pin?: "end";
   /**
-   * Relative importance of the column, read ONLY by `DataTable preset="action-collection"`
-   * (gh#253). It is the SAME contract the `Table` primitive exposes on `TableHead`/`TableCell`:
-   * DataTable stamps it onto both cells of the column for you, so the preset can swap the desktop
-   * intrinsic widths for the token-owned priority measures (`--table-action-collection-*`) instead
-   * of scrolling a five-column approval queue sideways at 390px. Leave the free-text column
-   * unmarked — it takes the remaining space. Emitted as `data-priority` only when set, so an
-   * ordinary column gains no attribute. Prefer this over `width` under the preset: an explicit
-   * `width` utility wins the cascade and defeats the priority measure.
+   * It is the SAME contract the `Table` primitive exposes on `TableHead`/`TableCell`: DataTable
+   * stamps it onto both cells of the column for you, so the preset can swap the desktop intrinsic
+   * widths for the token-owned priority measures (`--table-action-collection-*`) instead of
+   * scrolling a five-column approval queue sideways at 390px. Leave the free-text column unmarked
+   * — it takes the remaining space.
    */
   priority?: TableColumnPriorityProp;
 };
@@ -106,27 +89,13 @@ export type HasActiveFiltersProp = boolean;
  */
 export type StickyProp = boolean;
 
-/**
- * Table named collection preset. `"default"` keeps the plain table (and emits no attribute).
- * `"action-collection"` is the canonical dense approval / action queue: below `collapseBelow`
- * the desktop intrinsic column widths are replaced by token-owned column-PRIORITY measures under
- * `table-layout: fixed` and cells wrap, so every column — including the row actions — stays inside
- * the initial narrow frame. The real `<table>` semantics are never rewritten.
- *
- * `"stacked-record-collection"` (gh#293 restore — SCR-215) is the canonical wide-record collection:
- * a table whose column count/content cannot be squeezed into any fixed-measure narrow frame at all
- * (an admin detail row with many heterogeneous fields). Below `collapseBelow` the header row hides
- * and every `<tr>` becomes a bordered key-value CARD stack — each `TableCell`'s own `label` prop
- * renders inline above its value, taking over the accessible-name role the (now hidden) `<th>`
- * association would otherwise carry. Above the step it is a byte-for-byte ordinary table.
- */
+/** Table named collection preset. `"default"` keeps the plain table (and emits no attribute). */
 export type TablePresetProp = "default" | "action-collection" | "stacked-record-collection";
 
 /**
  * Relative importance of a table column, used by `preset="action-collection"` to allocate the
  * narrow-frame measure. `"primary"` is the row's subject, `"secondary"` its object/target,
  * `"meta"` a low-priority stamp (dates, ids), `"actions"` the row-action affordance whose measure
- * is reserved first so it can never be pushed outside the viewport. A column with no priority
- * takes the remaining space (the free-text column).
+ * is reserved first so it can never be pushed outside the viewport.
  */
 export type TableColumnPriorityProp = "primary" | "secondary" | "meta" | "actions";

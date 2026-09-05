@@ -1,24 +1,9 @@
 #!/usr/bin/env node
 /**
- * frame-geometry — systematic responsive viewport-matrix sweep (issue #163 §5).
- *
  * Renders every component /frame route across the required width matrix
- * (320·375·390·768·1024·1280·1440·1920) and flags, per frame, horizontal overflow and
- * clipped interactive controls inside the rendered example (`.demo-block-frame`). This is
- * the geometry counterpart to check:frame-axe (which owns a11y at 2 viewports).
- *
- * "Clipped" means UNREACHABLE, not merely out of the frame box — see the semantics on `measure`
- * in ./frame-geometry-measure.mjs before changing what this gate counts.
- *
- * Like the axe gate, it compares to a machine-readable baseline that may only SHRINK:
- * a NEW overflow above baseline fails; pre-existing ones (component agents' territory)
- * are allowlisted and printed in full. Chromium-driven; runs in a dedicated CI lane.
- *
- * Usage:
- *   node scripts/frame-geometry.mjs [baseUrl]
- *   node scripts/frame-geometry.mjs --update-baseline
- *   node scripts/frame-geometry.mjs --format json
- *   FRAME_GEOMETRY_LIMIT=8 node scripts/frame-geometry.mjs   # quick local smoke
+ * (320·375·390·768·1024·1280·1440·1920) and flags, per frame, horizontal overflow and clipped
+ * interactive controls inside the rendered example (`.demo-block-frame`). This is the geometry
+ * counterpart to check:frame-axe (which owns a11y at 2 viewports).
  */
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import path from "node:path";

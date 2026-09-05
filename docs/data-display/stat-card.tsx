@@ -79,12 +79,7 @@ export default function Demo() {
               align="end"
               hint="既定の密度 · 右寄せ"
             />
-            <StatCard
-              label="年間売上"
-              value="¥98,400,000"
-              delta="+11%"
-              hint="ゆとりある密度"
-            />
+            <StatCard label="年間売上" value="¥98,400,000" delta="+11%" hint="ゆとりある密度" />
             <StatCard
               label={
                 <>

@@ -1,20 +1,10 @@
 #!/usr/bin/env node
 /**
- * Release-transition guard (issue #230) — NO network, NO publish, NO repo mutation.
- *
  * `release-integrity.yml` packs the manifests as they sit in the repository, i.e. the PRE-bump
  * state. That never exercises the moment the bug lived in: the coordinated 18.4.0 → 18.4.1
  * transition, where `npm version` + immediate `npm publish` could ship a UI tarball still
- * declaring the previous `godxUiMcp`, with MCP build/test failures only discovered once the
- * bytes were immutable.
- *
- * This check runs that transition offline for every bump kind:
- *   1. plan it — assert the ordered command sequence never bumps with `npm version` and never
- *      publishes before verify:release / MCP install+build+test / lockstep / npm auth;
- *   2. pack it — apply the coordinated target metadata in a throwaway manifest workspace and
- *      assert BOTH packed tarballs carry the target version, `godxUiMcp` and `godxUiCompatibility`.
- *
- * Usage: node scripts/check-release-command-plan.mjs [--json]
+ * declaring the previous `godxUiMcp`, with MCP build/test failures only discovered once the bytes
+ * were immutable.
  */
 import { rmSync } from "node:fs";
 import {

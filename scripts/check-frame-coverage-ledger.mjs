@@ -107,7 +107,7 @@ for (const dimension of DIMENSIONS) {
 }
 
 // ---------------------------------------------------------------------------
-// 1b. Schema lockstep. There is no JSON-Schema validator dependency in this repo (and this
+// 1b. Schema lockstep.
 //     gate must add none), so instead of validating loosely we assert that the published
 //     schema, the code registry and the data can never drift apart, and we enforce the
 //     schema's own cell grammar on every cell.
@@ -132,7 +132,7 @@ if (!fs.existsSync(SCHEMA_PATH)) {
 }
 
 // ---------------------------------------------------------------------------
-// 2. Runtime-error gates must stay wired (issue #163 item 4, "frame runtime error").
+// 2.
 // ---------------------------------------------------------------------------
 const packageJson = readJson(path.join(REPO_ROOT, "package.json"));
 const scriptBlob = Object.values(packageJson.scripts ?? {}).join(" \n ");
@@ -245,7 +245,7 @@ for (const name of Object.keys(ledger.components ?? {})) {
 }
 
 // ---------------------------------------------------------------------------
-// 6. Frames. A public component with no frame is a hard failure unless it is in the
+// 6. Frames.
 //    recorded baseline; the baseline set may only SHRINK.
 // ---------------------------------------------------------------------------
 const knownMissing = new Set(ledger.baseline?.knownMissingFrames ?? []);
@@ -273,7 +273,7 @@ for (const row of rows) {
 }
 
 // ---------------------------------------------------------------------------
-// 7. The ratchet. Coverage may only improve.
+// 7. The ratchet.
 // ---------------------------------------------------------------------------
 for (const row of rows) {
   const entry = ledger.components?.[row.export];
@@ -313,7 +313,7 @@ if (axe.available && axe.failingFrames > (ledger.baseline?.axeFailingFrames ?? 0
 }
 
 // ---------------------------------------------------------------------------
-// 8. Issue #163 "Initial known gaps" — tracked, never forgotten, never silently closed.
+// 8.
 // ---------------------------------------------------------------------------
 const ledgerGaps = new Map((ledger.policy?.knownGaps ?? []).map((gap) => [gap.id, gap]));
 for (const id of KNOWN_GAP_IDS) {

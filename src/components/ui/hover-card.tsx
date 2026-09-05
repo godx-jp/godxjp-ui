@@ -5,8 +5,7 @@ import { cn } from "../../lib/utils";
 
 /**
  * HoverCard root. Defaults to a SNAPPY 200ms open / 100ms close (Radix's raw 700/300 default felt
- * laggy); consumers can still pass `openDelay`/`closeDelay`. A small open delay (not 0) is
- * intentional — it prevents accidental triggering as the pointer passes over the trigger.
+ * laggy); consumers can still pass `openDelay`/`closeDelay`.
  */
 export function HoverCard({
   openDelay = 200,

@@ -52,7 +52,7 @@ export function DateRangePicker({
   const groupId = id ?? autoId;
   const fromId = `${groupId}-from`;
   const toId = `${groupId}-to`;
-  // gh#337 — the machine key. The two inner inputs take the SAME `_from`/`_to` suffixes this
+  // The two inner inputs take the SAME `_from`/`_to` suffixes this
   // control already uses for `name`, so the pair is addressable the way it already submits;
   // the group keeps the bare key. `identity` covers the NESTED case (no cloneElement reach).
   const identity = useFieldIdentity({ id: groupId, name, "data-field": groupA11y["data-field"] });
@@ -88,7 +88,7 @@ export function DateRangePicker({
 
   const commitEdge = (edge: "from" | "to", raw: string) => {
     const trimmed = raw.trim();
-    // Only commit a COMPLETE date (or a clear). Feeding a partial string to the lenient
+    // Feeding a partial string to the lenient
     // parser (parseISO("20") is a valid year-2000 date) would change `value`, and the
     // text-mirror effect would then rewrite the field mid-type — mangling input. Partial
     // input keeps the text and emits nothing; onBlur normalizes any loose-but-complete entry.

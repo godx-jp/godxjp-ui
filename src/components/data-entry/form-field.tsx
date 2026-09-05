@@ -64,7 +64,6 @@ export function FormField({
   const helperId = helper ? `${resolvedId}-helper` : undefined;
   const errorId = error ? `${resolvedId}-error` : undefined;
 
-  // gh#337 — the field's stable MACHINE key, injected onto the control below.
   //
   // `id` is the last fallback and not the first because an id is a DOM-uniqueness token: two
   // fields for the same column on one screen (a search panel and a dialog) must differ, and a
@@ -78,7 +77,6 @@ export function FormField({
   // Optional context: FormField must keep working with no AppProvider above it.
   const emitFieldNames = useOptionalAppContext()?.emitFieldNames ?? false;
 
-  // `staticText` (gh#294) is a read-only VALUE, not a control — none of the id/aria-* wiring
   // below applies (there is nothing to label), so it takes an entirely separate render path.
   const isStatic = staticText !== undefined;
 
@@ -96,7 +94,6 @@ export function FormField({
     );
   }
 
-  // gh#303 — the label, republished for NESTED controls. cloneElement (below) only reaches the
   // single direct child; when that child is a layout wrapper (range from/to pair, 年/月 combo)
   // every control inside it would be nameless. Controls read this context as a last-resort
   // accessible name via useFieldNameFallback — a control that already has a name keeps it.
@@ -105,7 +102,7 @@ export function FormField({
     [labelId, label],
   );
 
-  // gh#337 — the same republishing, for the machine key. `cloneElement` below reaches the direct
+  // `cloneElement` below reaches the direct
   // child; a control NESTED under a layout wrapper reads this instead and names itself from its own
   // id (see FieldIdentityContext). `null` when this field has no key of its own: a field that
   // cannot name itself must not make its children guess.
@@ -119,12 +116,8 @@ export function FormField({
     : undefined;
   const mergeIds = mergeAriaIds;
   const childWithA11y = isStatic ? (
-    // Byte-for-byte the same value typography as `Descriptions.Item`'s `dd` (gh#294), so a
     // read-only FormField row and a Descriptions value are indistinguishable when mixed. That
-    // used to be two copies of the literal `text-sm` kept in sync by this comment; both call sites
-    // now read the SAME token pair (#319), so a service retunes both from one place and they
     // cannot drift. --descriptions-value-line-height is the mandatory companion: `text-sm` also
-    // set Tailwind's `--text-sm--line-height`, which the theme never remaps (the gh#260 bug).
     <span className="text-[length:var(--descriptions-value-font-size)] leading-[var(--descriptions-value-line-height)] break-all">
       {staticText}
     </span>
@@ -134,7 +127,7 @@ export function FormField({
       // controls (Radio.Group, checkbox lists, range pairs) have no labelable root,
       // and a dangling `for` triggers Chrome's "Incorrect use of <label>" issue.
       id: (childProps?.id as string | undefined) ?? resolvedId,
-      // gh#337 — the machine key. Read the child's own value first in BOTH cases: cloneElement
+      // Read the child's own value first in BOTH cases: cloneElement
       // overwrites every key present in the config bag, `undefined` included, so a bare
       // `"data-field": fieldKey` would erase a value the control set for itself.
       "data-field": (childProps?.["data-field"] as string | undefined) ?? fieldKey,
@@ -195,15 +188,7 @@ export function FormField({
         {/* asChild renders a <span>: the control is named via aria-labelledby, and a
             real <label> whose `for` can dangle (composite children) is a Chrome a11y
             issue. Click-to-focus is preserved by hand. */}
-        {/* The size goes through Label's own className, not the wrapper: `.ui-label` sets
-            font-size on the element itself (--control-label-font-size), so an inherited
-            font-size never reaches the text. This arbitrary utility still wins — Tailwind v4
-            layers utilities after components (#319).
-            `ui-inline-xs` is passed for its flex-wrap, NOT its gap: `.ui-label` is imported after
-            `.ui-inline-xs` at equal specificity in the same layer, so the label gap stays
-            --control-label-space-gap (8px). That is unchanged from before — the old `gap-2`
-            utility won the same way — so this field's 4px intent has never been honoured; a
-            service that wants it tightens --control-label-space-gap rather than relying on it. */}
+        {/* The size goes through Label's own className, not the wrapper: `.ui-label` sets font-size on the element itself (--control-label-font-size), so an inherited font-size never reaches the text. `ui-inline-xs` is passed for its flex-wrap, NOT its gap: `.ui-label` is imported after `.ui-inline-xs` at equal specificity in the same layer, so the label gap stays --control-label-space-gap (8px). */}
         <Label
           asChild
           id={labelId}

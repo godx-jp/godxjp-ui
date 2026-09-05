@@ -1,23 +1,5 @@
 #!/usr/bin/env node
 /**
- * Table action-collection CJK floor contract (gh#262).
- *
- * The gh#253 priority measures are percentages, so a ~10-column JA queue at 390px used to crush
- * every column below one CJK glyph — headers and values shredded vertically, one character per
- * line (the SC 1.4.10 Reflow failure mode). This gate renders the EXACT queue from the issue
- * (10 columns, JA headers, 390×844) against the real component CSS and asserts:
- *
- *   1. past the seven-column budget every column respects its rem floor
- *      (`--table-action-collection-*-width-floor`);
- *   2. the table therefore outgrows the container and the table's DIRECT wrapper — the
- *      keyboard-reachable overflow region — scrolls (SC 1.4.10-permitted one-dimensional
- *      fallback), including under the DataTable markup, whose `overflow: hidden` surface
- *      once CLIPPED the grown table instead (the approval-queue frame-geometry regression);
- *   3. no header or cell renders as a vertical character column (line boxes << glyph count);
- *   4. within the budget the compact PERCENT tier still applies: the canonical five-column
- *      gh#253 queue fits both the 390px frame and the 322px geometry content box WITHOUT
- *      scrolling (no regression).
- *
  * Self-contained: it inlines src/tokens/components/table.css + src/styles/table-layout.css into a
  * static page (no preview server), so it runs in seconds.
  */
@@ -78,7 +60,6 @@ const th = (priority, label) =>
 const td = (priority, value) =>
   `<td data-slot="table-cell"${priority ? ` data-priority="${priority}"` : ""}>${value}</td>`;
 
-/** The ten-column operator queue from gh#262, every column carrying a priority. */
 const queue10 = [
   ["actions", "選択", "☐"],
   ["primary", "組織", "株式会社アクメ商事"],
@@ -92,13 +73,10 @@ const queue10 = [
   ["actions", "操作", "…"],
 ];
 
-/** The same queue with the error-code column UNMARKED — pins that a free-text column is floored
- * below the step instead of collapsing to the 0px the fixed algorithm hands an auto column. */
 const queue10Flex = queue10.map(([priority, label, value]) =>
   label === "エラーコード" ? [null, label, value] : [priority, label, value],
 );
 
-/** The canonical five-column gh#253 approval queue — must stay scroll-free at 390px. */
 const queue5 = [
   ["primary", "申請者", "田中 太郎"],
   ["secondary", "対象", "会計 / 請求書エクスポート"],
@@ -182,7 +160,6 @@ try {
     measured[id] = await measure(id);
 
     // 1. Past the budget, every column holds its token floor (0.5px layout tolerance) —
-    //    including the UNMARKED free-text column, which the fixed algorithm would otherwise
     //    collapse to 0px. Within the budget the percent tier rules and no floor applies.
     if (WIDE_IDS.includes(id)) {
       for (const cell of measured[id].cells) {
@@ -194,7 +171,7 @@ try {
       }
     }
 
-    // 2. Nothing shreds vertically: the gh#262 symptom is one line box PER GLYPH. Every cell —
+    // 2. Every cell —
     //    percent tier included — must average at least ~3 glyphs per rendered line (a long value
     //    wrapping to a few full lines is fine; a vertical character column is not).
     for (const cell of measured[id].cells) {
@@ -208,7 +185,6 @@ try {
   }
 
   // 3. The floors over-constrain the frame at ten columns, so the table's DIRECT wrapper
-  //    scrolls — under the DataTable markup too, where the overflow-hidden surface used to clip
   //    the grown table before the outer region ever saw an overflow (SC 1.4.10 permits
   //    one-dimensional scrolling of a data table; shredding and clipping are not readable).
   for (const id of WIDE_IDS) {
@@ -218,9 +194,8 @@ try {
     );
   }
 
-  // 4. No regression WITHIN the budget: the canonical five-column gh#253 queue keeps its
+  // 4.
   //    scroll-free acceptance frames — bare Table at 390px AND DataTable at the 322px geometry
-  //    content box (the exact frame the gh#262 floors briefly broke).
   for (const id of ["queue5", "dt5"]) {
     assert.ok(
       measured[id].scrollWidth <= measured[id].clientWidth + 1,

@@ -29,7 +29,6 @@ function Toaster({ style, ...props }: ToasterProps) {
     <Sonner
       theme={theme}
       className="toaster group"
-      // Sonner takes all five status glyphs through ONE all-or-nothing config prop — a consumer
       // cannot restyle a single icon without re-declaring the set — so the size is a token
       // (`--toast-icon-size`) read by `.ui-toast-icon` in alert-layout.css, not a `size-4` here.
       icons={{
@@ -49,10 +48,9 @@ function Toaster({ style, ...props }: ToasterProps) {
           "--normal-text": "hsl(var(--popover-foreground))",
           "--normal-border": "hsl(var(--border))",
           "--border-radius": "var(--radius)",
-          // MERGED, never spread over. `style` used to arrive with the rest of `{...props}` AFTER
-          // this object, so a consumer passing ANY style (a z-index, a width) replaced the whole
+          // MERGED, never spread over.
           // object and wiped all four vars — and an unset `--normal-bg` renders the toast
-          // transparent. Merging keeps the surface intact and still lets a consumer override one
+          // transparent.
           // var by name.
           ...style,
         } as React.CSSProperties

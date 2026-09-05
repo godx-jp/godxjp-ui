@@ -23,7 +23,6 @@ const buttonVariants = cva("ui-button", {
     size: {
       default: "ui-button--default-size",
       md: "ui-button--default-size",
-      // The glyph rules stay UTILITIES, not a components-layer rule: Tailwind v4 orders
       // utilities after components, so only a utility can out-rank a child's own `size-*`.
       // They read the token, so the value is still themeable.
       xs: "ui-button--xs [&_svg:not([class*='size-'])]:size-[var(--button-xs-icon-size)]",
@@ -35,7 +34,6 @@ const buttonVariants = cva("ui-button", {
       "icon-lg": "ui-button--icon-lg",
     },
     // Single source of corner radius (deterministic — no competing rounded-* utility): default uses
-    // the dedicated --button-radius token (themeable independently of --control-radius, issue #124),
     // pill is fully rounded, sharp is square.
     shape: {
       default: "rounded-[var(--button-radius)]",

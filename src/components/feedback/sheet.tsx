@@ -50,9 +50,6 @@ function readSheetBreakpointQuery(): string {
  * The canonical responsive-overlay decision, shared by `SheetContent` and by any composite that
  * swaps a desktop surface for a mobile sheet (see `OrgSwitcher`). Returns `"bottom"` when the
  * viewport is at or below `--sheet-responsive-breakpoint-width`.
- *
- * Public so a consumer NEVER hand-rolls `useMediaQuery("(max-width: 390px)")` in app code — the
- * breakpoint stays one themeable knob for the whole system.
  */
 export function useSheetResponsiveMode(
   responsive: SheetResponsiveProp = "side",
@@ -132,17 +129,13 @@ export interface SheetContentProps
   /** Optional semantic class for the owned backdrop (for a shell-specific overlay token). */
   overlayClassName?: string;
   /**
-   * Desired panel size for side left/right (Ant Drawer `width`). Caps at the viewport — a small
-   * screen still gets a full-width panel (`min(width, 100%)`), it is NOT a hard fixed width. Omit
-   * to keep the canonical drawer default from `--sheet-width-default`.
+   * Desired panel size for side left/right (Ant Drawer `width`). Omit to keep the canonical drawer
+   * default from `--sheet-width-default`.
    */
   width?: WidthProp;
   /**
    * Responsive drawer / detail-panel contract. `"side"` (default) keeps today's behaviour: the
-   * physical `side` the consumer named, at every viewport. `"auto"` renders the desktop side panel
-   * above `--sheet-responsive-breakpoint-width` and the mobile bottom sheet at/below it (capped by
-   * `--sheet-bottom-max-height`), so ONE `<Sheet>` covers both without a page-local media query.
-   * `"bottom"` pins the bottom-sheet presentation.
+   * physical `side` the consumer named, at every viewport.
    */
   responsive?: SheetResponsiveProp;
 }
@@ -263,7 +256,7 @@ export const SheetHeader = ({
 };
 
 export const SheetBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  // Scrollable region between a fixed header and a pinned footer (rule #41). Full-bleed horizontally
+  // Full-bleed horizontally
   // (`-mx-6 px-6`) so content aligns to the sheet edge while the 3px focus ring of a full-width
   // control keeps 24px of room and never clips against the scroll container's computed
   // `overflow-x`. `py-1`/`scroll-py-1` keep a focused control's ring visible at the scroll edges.

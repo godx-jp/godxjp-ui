@@ -32,7 +32,6 @@ export function Calendar({
         ...labels,
         labelNav: labels?.labelNav ?? (() => `${ariaLabel ?? "Calendar"} navigation`),
       }}
-      // The calendar has an intrinsic width (7 fixed-size day columns); never stretch it to
       // fill a wide container — w-fit shrink-wraps the grid so the nav sits beside it, not at
       // the container edges. Consumers can still widen via `className` if they truly need to.
       // `relative` is load-bearing: the absolute nav must anchor to THIS root. Without it the

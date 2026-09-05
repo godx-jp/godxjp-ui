@@ -1,20 +1,9 @@
 #!/usr/bin/env node
 /**
- * godxjp-ui audit — the design system's own linter for consumer UI code.
- *
- * Enforces the UI-standardization rules that ship with @godxjp/ui
- * (see the app's .claude/skills/frontend-design/rules/ui-standardization.md):
- * use the design system, never hand-roll. Inspired by `@google/design.md lint`
- * — structured, agent-readable findings.
- *
- * Runs from the CONSUMER's repo root and scans its hand-written UI
- * (components / pages / layouts) — never the framework or generated code.
- *
- * Usage (from the consuming app):
- *   node packages/godx-ui/scripts/ui-audit.mjs                 # human report; exit 1 on error
- *   node packages/godx-ui/scripts/ui-audit.mjs --format json
- *   node packages/godx-ui/scripts/ui-audit.mjs --quiet         # errors only
- *   node packages/godx-ui/scripts/ui-audit.mjs src/ui lib/     # custom scan dirs
+ * godxjp-ui audit — the design system's own linter for consumer UI code. Enforces the
+ * UI-standardization rules that ship with @godxjp/ui (see the app's
+ * .claude/skills/frontend-design/rules/ui-standardization.md): use the design system, never
+ * hand-roll.
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { isAbsolute, join, relative } from "node:path";
@@ -169,7 +158,6 @@ const RULES = [
   // Tailwind class; this catches one in a design-system KNOB the app sets itself
   // (`style={{ "--card-space-inset": "13px" }}`), which is the sanctioned per-instance override
   // route and therefore the one place an app can silently leave the scale. Framework-side the same
-  // check runs over `src/tokens/**` as `pnpm check:token-scale-bypass` (gh#332).
   //
   // Only axes that HAVE named steps are flagged — space, font-size, radius, icon-size. width /
   // height / size / offset have no scale yet, so a number there is the only thing to write and is
@@ -382,8 +370,7 @@ if (args.includes("--rules")) {
 /**
  * Blank out `//` line comments and block comments (incl. JSDoc) — replacing them with spaces and
  * preserving newlines so line numbers stay accurate — while KEEPING string/template literals (the
- * className values we actually want to scan). Prevents false positives like a doc-comment that
- * literally says "Never a raw <input>".
+ * className values we actually want to scan).
  */
 function stripComments(src) {
   let out = "";

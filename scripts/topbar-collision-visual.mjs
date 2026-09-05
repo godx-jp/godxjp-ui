@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 /**
- * Topbar collision contract (gh#244).
- *
  * Exercises long JA/EN/VI start + center labels at the DXS acceptance artboards. The center slot
  * remains available at 1440 and follows the package compact-display token at 1024/390; the start
  * title and end utilities must never overlap or escape the Topbar allocation.

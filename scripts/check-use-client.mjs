@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 /**
- * Guard for gh#128: every client module in dist/ ships a leading `"use client"` directive, and the
- * pure server-usable modules do NOT (so they stay importable from a Server Component). Re-derives
- * the client set from the same source-of-truth detector the build uses (`add-use-client.mjs`), so a
- * newly-added component that uses a hook is caught automatically. Wired into `verify:release`
- * (after `build`, so dist exists).
+ * Re-derives the client set from the same source-of-truth detector the build uses
+ * (`add-use-client.mjs`), so a newly-added component that uses a hook is caught automatically.
+ * Wired into `verify:release` (after `build`, so dist exists).
  */
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";

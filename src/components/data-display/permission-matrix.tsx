@@ -44,26 +44,13 @@ function toGrantSet(grants: PermissionMatrixGrantsProp): ReadonlySet<string> {
 const PIN_START = "ui-permission-matrix-pin";
 
 /**
- * PermissionMatrix — the canonical role × permission grid (gh#257 / DXS platform#311).
- *
- * Formalizes the `docs/showcase/permission-matrix` composition as a PACKAGE-OWNED export, for the
- * same reason `ErrorSurface` became one (gh#251): a consumer cannot import a docs page, and every
- * RBAC admin was about to re-derive the same sticky-column grid, ✓/— cell semantics and lifecycle
- * states. The matrix stays THIN: all data logic lives in the already-tested
- * `@godxjp/ui/lib/permission-grid` helpers, the table is the real Table family, and the states are
- * the DataTable #216 vocabulary (`loading` → `denied` → `error` → `empty`, same precedence).
- *
- * - **Read-only by default.** Without `onGrantChange` (or with `readOnly`) cells are shape-encoded
- *   ✓/— (icon + `sr-only` text, never colour alone). With `onGrantChange` the cells become real
- *   `Checkbox` controls — except for roles marked `locked`, which keep the read-only cell and a
- *   lock badge.
- * - **Compare mode** (`compare` + `diffOnly`) reuses `lib/permission-grid` verbatim: compared
- *   columns are tinted, differing rows carry a localized 差分 badge.
- * - **Domain-neutral**: roles, permissions and grants all arrive via props; nothing about the
- *   consuming platform is encoded.
- * - **Responsive**: the grid scrolls horizontally inside its own container below its natural
- *   measure (390px shows the sticky permission column + scrollable role columns); 1024/1440 render
- *   the full grid.
+ * With `onGrantChange` the cells become real `Checkbox` controls — except for roles marked
+ * `locked`, which keep the read-only cell and a lock badge. - **Compare mode** (`compare` +
+ * `diffOnly`) reuses `lib/permission-grid` verbatim: compared columns are tinted, differing rows
+ * carry a localized 差分 badge. - **Domain-neutral**: roles, permissions and grants all arrive via
+ * props; nothing about the consuming platform is encoded. - **Responsive**: the grid scrolls
+ * horizontally inside its own container below its natural measure (390px shows the sticky
+ * permission column + scrollable role columns); 1024/1440 render the full grid.
  */
 export const PermissionMatrix = React.forwardRef<HTMLDivElement, PermissionMatrixProp>(
   function PermissionMatrix(
@@ -124,7 +111,6 @@ export const PermissionMatrix = React.forwardRef<HTMLDivElement, PermissionMatri
       </div>
     );
 
-    // Lifecycle precedence mirrors DataTable #216: loading → denied → error → empty → grid.
     if (loading) {
       return stateSurface(
         <div aria-busy="true" aria-label={t("dataDisplay.permissionMatrix.loading")} role="status">

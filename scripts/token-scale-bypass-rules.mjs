@@ -1,25 +1,13 @@
 /**
- * Decision logic for the token scale-bypass guard (`check-token-scale-bypass.mjs`, gh#332).
- *
  * It lives in its own module for the same reason `frame-geometry-measure.mjs` does: the rules
  * below are pure text-in / verdict-out, so they are unit-tested against synthetic CSS in
  * `src/test/__tests__/token-scale-bypass-rules.test.ts`. Importing the guard itself would run the
- * whole sweep and read the baseline. Everything here is side-effect free — no fs, no process.
- *
- * The narrative, the scope and the exemption contract live in the guard's header. This file only
- * answers three questions: which AXIS is a token on, is its VALUE a raw number, and did the author
- * write an explicit exemption.
+ * whole sweep and read the baseline.
  */
 
 /**
- * The geometry axes, and whether a NAMED SCALE exists for each one today.
- *
- * `enforced: true` is the whole switch. An axis is enforced once — and only once — the system has
- * steps to write instead of a number; turning one on before that would demand people reach for
- * something that does not exist. To enforce a new axis, land its scale and flip the flag.
- *
- * `scaleRef` matches "this value derives from that axis's own scale", which keeps the tier-2 route
- * (`calc(var(--space-4) + 2px)`) legal — see the guard header, "TWO TIERS".
+ * The geometry axes, and whether a NAMED SCALE exists for each one today. `enforced: true` is the
+ * whole switch.
  */
 export const AXES = [
   {
@@ -57,94 +45,76 @@ export const AXES = [
   },
   {
     id: "icon-size",
-    /** `--icon-size-2xs … --icon-size-4xl` (foundation.css), landed by gh#326. This axis is the
-     *  proof that the switch works: it was 87% raw with no scale, and the moment the nine steps
-     *  landed all 31 component icon tokens read one — so turning it on cost ZERO baseline
-     *  entries. If gh#326 is ever reverted, flip this back to false rather than baselining 27
-     *  bypasses. */
+    /**
+     * This axis is the proof that the switch works: it was 87% raw with no scale, and the moment
+     * the nine steps landed all 31 component icon tokens read one — so turning it on cost ZERO
+     * baseline entries.
+     */
     enforced: true,
     scale: "--icon-size-*",
     scaleRef: /var\(\s*--icon-size(?:[-)])/,
   },
   {
     id: "stroke",
-    /** `--stroke-{hairline,sm,md,lg,xl,2xl}` (foundation.css), landed by gh#324 as the FIRST of
-     *  the two coherent axes hiding inside `width`. A stroke is the thickness of a painted line:
-     *  borders, focus rings, accent rails, selected-state markers, presence strokes. Six values
-     *  across ~20 tokens, all in `px` on purpose (a device line must not grow with the root
-     *  font-size). See the census verdict on `width`, below. */
+    /**
+     * A stroke is the thickness of a painted line: borders, focus rings, accent rails,
+     * selected-state markers, presence strokes. Six values across ~20 tokens, all in `px` on
+     * purpose (a device line must not grow with the root font-size).
+     */
     enforced: true,
     scale: "--stroke-*",
     scaleRef: /var\(\s*--stroke(?:[-)])/,
   },
   {
     id: "band-height",
-    /** `--band-height-{xs…3xl}` (foundation.css), landed by gh#324 as the SECOND. A band is the
-     *  vertical extent of a horizontal strip that content is centred in — a control, a table row,
-     *  a menu item, a nav row, the app-shell top bar. Seven values, each declared by two to five
-     *  tokens.
-     *
-     *  `--control-height-*` is accepted as scale-derived because it IS on this scale: the control
-     *  ladder is anchored on `--band-height-md` and steps off it (`calc(var(--control-height) -
-     *  var(--space-1))`), which is the sanctioned tier-2 route. That does NOT make it a substitute
-     *  for a step — a token pointed at `--control-height-*` inherits density AND the coarse-pointer
-     *  44px growth, which is a geometry change. See foundation.css. */
+    /**
+     * A band is the vertical extent of a horizontal strip that content is centred in — a control,
+     * a table row, a menu item, a nav row, the app-shell top bar. Seven values, each declared by
+     * two to five tokens.
+     */
     enforced: true,
     scale: "--band-height-*",
     scaleRef: /var\(\s*--(?:band-height|control-height)(?:[-)])/,
   },
   {
     id: "line-height",
-    /** ENFORCED since gh#324, and it is the odd one out: `--line-height-{tight,normal,body}` are
-     *  UNITLESS ratios, so a LENGTH here is never a step of anything — it is a mis-named height.
-     *  There was exactly one (`--table-skeleton-line-height: 1rem`, a skeleton bar), and while it
-     *  stood the axis could not be gated. It is now `--table-skeleton-line-block-size` with the
-     *  old name kept as a published alias, so this axis gates at zero baseline cost and the next
-     *  mis-named height fails on arrival. */
+    /**
+     * There was exactly one (`--table-skeleton-line-height: 1rem`, a skeleton bar), and while it
+     * stood the axis could not be gated.
+     */
     enforced: true,
     scale: "--line-height-* (unitless ratios — a LENGTH here is a mis-named height)",
     scaleRef: /var\(\s*--line-height(?:[-)])/,
   },
   {
     id: "size",
-    /** NOT A SCALE — verdict recorded by gh#324 after the census, not a to-do.
-     *
-     *  64% raw, and the raw values are four unrelated things: small square boxes that are really
-     *  icons under another name (`--calendar-chevron-size`, `--search-select-spinner-size`), media
-     *  boxes chosen per surface (QR codes at 6/8/10/12.5rem, an upload tile at 6rem), font-relative
-     *  `em` marks that must track their label, and a handful of `px` strokes wearing `-size`
-     *  (those moved onto `--stroke-*`). Naming a scale across that set would mean inventing one —
-     *  the values barely repeat, and the ones that do already have a home on `--icon-size-*`. */
+    /**
+     * Naming a scale across that set would mean inventing one — the values barely repeat, and the
+     * ones that do already have a home on `--icon-size-*`.
+     */
     enforced: false,
     scale: null,
     scaleRef: /(?!)/,
   },
   {
     id: "width",
-    /** NOT A SCALE — verdict recorded by gh#324. This is the axis the issue called the worst in
-     *  the system at 91% raw, and the census says the number is real but the diagnosis was not:
-     *  `-width` is THREE concerns.
-     *    1. stroke — the thickness of a painted line. One vocabulary, six values, heavy repeats.
-     *       Split out and gated above as `--stroke-*`.
-     *    2. container measure — a dialog, a sheet, a reading column, a page max-width, an auth
-     *       card. ~26 tokens over 15 distinct values, most appearing exactly ONCE, several pinned
-     *       to an artboard coordinate (the auth cards at 22.5/23.75/25/27rem).
-     *    3. field width — how wide a picker must be to hold its longest label
-     *       (`--app-setting-picker-timezone-width: 14rem`). Content-driven, per control.
-     *  2 and 3 are tier-2 by nature: the value appears in one place, so it earns a token, not a
-     *  step. Putting them on a scale would force `23.75rem` onto a grid it was measured off. */
+    /**
+     * This is the axis the issue called the worst in the system at 91% raw, and the census says
+     * the number is real but the diagnosis was not: `-width` is THREE concerns. 1. stroke — the
+     * thickness of a painted line. One vocabulary, six values, heavy repeats.
+     */
     enforced: false,
     scale: null,
     scaleRef: /(?!)/,
   },
   {
     id: "height",
-    /** NOT A SCALE as a whole — verdict recorded by gh#324. Same split as `width`: the BAND half
-     *  (a control, a row, a menu item, a bar) is one vocabulary and is gated above as
-     *  `--band-height-*`. What is left here is the container half — a chart plot's height, a
-     *  transfer pane's min-height, a popover's max-height, an upload preview — chosen per surface
-     *  with almost no repeated value. Those stay literal, and the two are told apart by NAME
-     *  (`-bar|row|item|trigger|control|button-height` is a band) rather than by guesswork. */
+    /**
+     * Same split as `width`: the BAND half (a control, a row, a menu item, a bar) is one
+     * vocabulary and is gated above as `--band-height-*`. What is left here is the container half
+     * — a chart plot's height, a transfer pane's min-height, a popover's max-height, an upload
+     * preview — chosen per surface with almost no repeated value.
+     */
     enforced: false,
     scale: null,
     scaleRef: /(?!)/,
@@ -167,27 +137,8 @@ export const AXES = [
 ];
 
 /**
- * How a token NAME resolves to an axis.
- *
- * The winner is the match that ENDS furthest right, ties broken by length. Both halves matter:
- *   • furthest right — `--app-setting-picker-font-size-width` is a WIDTH (the width of a font-size
- *     picker), not a font-size. Reading left to right would enforce the wrong axis on it.
- *   • longest on a tie — `-font-size`, `-icon-size` and `-line-height` all end where the bare
- *     `-size` / `-height` they contain ends. Shortest-wins would collapse the most disciplined
- *     axis in the system into the least.
- *
- * `-space-` is this repo's logical-property spelling of padding (`--card-space-inset`,
- * `--badge-space-x`, `--button-space-block`), so it maps to padding — unless a more specific
- * `-gap` / `-offset` sits to its right (`--alert-space-gap` is a gap).
- *
- * `stroke` and `band-height` (gh#324) are the two coherent axes that were hiding inside `width`
- * and `height`. They are told apart from their container-measure siblings BY NAME, and the
- * longest-on-a-tie rule is what makes that work: `-border-width` and `-row-height` both end where
- * the bare `-width` / `-height` they contain ends, so the specific one wins. A name that does not
- * say it is a line or a band stays on the unenforced axis, which is the conservative direction —
- * `--legal-document-toc-marker-width` is a 2px rule but reads as a measure, so it is not gated.
- * `-rail-width` was tried and dropped: `--card-accent-rail-width` is a 6px painted stripe but
- * `--app-shell-rail-width` is the 4rem icon sidebar COLUMN, and one word cannot mean both.
+ * How a token NAME resolves to an axis. The winner is the match that ENDS furthest right, ties
+ * broken by length.
  */
 const AXIS_PATTERNS = [
   ["gap", /-gap(?=-|$)/g],
@@ -231,14 +182,9 @@ export const ENFORCED_AXES = AXES.filter((a) => a.enforced).map((a) => a.id);
 const LENGTH = /(?<![\w.])(\d+(?:\.\d+)?)(rem|px|em|ch|ex|pt|pc|cm|mm|in|q)\b/gi;
 
 /**
- * Literals that are not a step of anything, so writing them is not a bypass.
- *
- *   • `0` in any unit — the zero of every scale (`--space-0` is literally `0`). There is nothing
- *     to name and nothing a service would retune.
- *   • exactly `1px` — the device hairline. `check-no-hardcoded-css-values.mjs` already carries
- *     this exemption for the same reason: a service retunes whether a rule EXISTS (cardinal rule
- *     #44), not whether it is 1px or 1.03px. It is also what makes `calc(var(--radius) - 1px)`
- *     — the correct way to inset a nested radius — read as scale-derived rather than raw.
+ * Literals that are not a step of anything, so writing them is not a bypass. • `0` in any unit —
+ * the zero of every scale (`--space-0` is literally `0`). There is nothing to name and nothing a
+ * service would retune. • exactly `1px` — the device hairline.
  */
 function isExemptLiteral(number, unit) {
   if (Number.parseFloat(number) === 0) return true;

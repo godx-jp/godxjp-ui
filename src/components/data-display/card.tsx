@@ -8,15 +8,11 @@ import type { HeadingLevelProp } from "../../props/vocabulary";
  *  stripe (default) or the full perimeter. */
 type CardAccent = "primary" | "success" | "warning" | "info" | "attention" | "destructive";
 /**
- * Where the semantic `accent` tone is drawn.
- *
- * - `"edge"` (default) — the leading-edge stripe on `border-inline-start` only, at the
- *   `--card-accent-rail-width` measure (6px). The classic "this row needs a look" rail.
- * - `"perimeter"` — a full attention border around the WHOLE card in the same semantic
- *   tone, measured by `--card-accent-perimeter-width` + `--card-accent-perimeter-ring-width`.
- *   This is what `variant="featured"` does, except the tone is yours instead of `--primary`,
- *   so a card can shout "action required" (`accent="attention"`) or "this failed"
- *   (`accent="destructive"`) without borrowing the brand colour.
+ * Where the semantic `accent` tone is drawn. - `"edge"` (default) — the leading-edge stripe on
+ * `border-inline-start` only, at the `--card-accent-rail-width` measure (6px). This is what
+ * `variant="featured"` does, except the tone is yours instead of `--primary`, so a card can shout
+ * "action required" (`accent="attention"`) or "this failed" (`accent="destructive"`) without
+ * borrowing the brand colour.
  */
 type CardAccentPlacement = "edge" | "perimeter";
 /** Surface fill — plain card, muted band, borderless outline, or emphasized featured ring. */
@@ -28,10 +24,9 @@ type CardDensity = "tight" | "cozy";
 // the utility would beat the components-layer accent rail rule, pinning the accent stripe to 1px.
 // A consumer `className="border-2"` still wins (utilities > components), as before.
 //
-// NOTE — there is deliberately no `size` prop. One shipped from the v6 snapshot with EMPTY
+// NOTE — there is deliberately no `size` prop.
 // variants (`md: ""`, `compact: ""`) and no CSS ever read the `data-size` it emitted, so
-// `size="compact"` was inert in every density for its whole life. Card sizing is `density`
-// (tight 12px · base 16px · cozy 20px), which is implemented and measured; a second sizing
+// Card sizing is `density`
 // axis would only duplicate it. Removed 2026-08-24.
 
 export type CardProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -92,20 +87,12 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
 CardHeader.displayName = "CardHeader";
 
 export type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
-  /**
-   * Semantic heading level (`h1`–`h4`). Default `3`. Choose it to keep the
-   * document outline valid (`h1 → h2 → h3`, no skipped levels) for the page the
-   * card sits on — NOT for visual size: the title's size is fixed by the
-   * `--card-title-*` tokens and does not change with `level`. A section card
-   * directly under a page `h1` uses `level={2}`; a card nested inside an
-   * already-`h2` section uses `level={3}` (the default).
-   */
+  /** Semantic heading level (`h1`–`h4`). Default `3`. */
   level?: HeadingLevelProp;
   /**
-   * Render a different element than the `level` heading. Use `"p"` / `"div"`
-   * when the card title is a styled label rather than a section heading in the
-   * outline (so it is not announced as a heading and cannot skip a level).
-   * Overrides `level`.
+   * Render a different element than the `level` heading. Use `"p"` / `"div"` when the card title
+   * is a styled label rather than a section heading in the outline (so it is not announced as a
+   * heading and cannot skip a level).
    */
   as?: "h1" | "h2" | "h3" | "h4" | "p" | "div";
 };
@@ -179,12 +166,10 @@ export type CardBarProps = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 /**
- * CardBar — a horizontal bar (view tabs, toolbar, filter chips) that can sit at
- * ANY position inside a Card. It draws its own separators FROM its position: a
- * top bar gets a bottom border, a bottom bar gets a top border, a middle bar
- * gets both, and a sole child gets none (the card border is enough). The main
- * area scrolls horizontally; the `extra` slot is pinned to the inline-end edge
- * for actions (column settings, save view, …).
+ * CardBar — a horizontal bar (view tabs, toolbar, filter chips) that can sit at ANY position
+ * inside a Card. It draws its own separators FROM its position: a top bar gets a bottom border, a
+ * bottom bar gets a top border, a middle bar gets both, and a sole child gets none (the card
+ * border is enough).
  */
 export const CardBar = React.forwardRef<HTMLDivElement, CardBarProps>(
   ({ className, children, extra, ...props }, ref) => (
@@ -206,8 +191,10 @@ export type StatCardProps = React.HTMLAttributes<HTMLDivElement> & {
   label: React.ReactNode;
   value: React.ReactNode;
   hint?: React.ReactNode;
-  /** Optional leading icon, rendered as a tinted medallion above the metric. Decorative
-   *  (aria-hidden) — the label carries the meaning. Tint via --stat-card-icon-* tokens. */
+  /**
+   * Optional leading icon, rendered as a tinted medallion above the metric. Decorative
+   * (aria-hidden) — the label carries the meaning.
+   */
   icon?: LucideIcon;
   /** Optional compact trend text beside the value. Avoid badge-like deltas. */
   delta?: React.ReactNode;

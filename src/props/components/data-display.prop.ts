@@ -47,26 +47,14 @@ export type EmptyStateProp = {
   action?: ActionProp;
   /** Visual weight appropriate to the empty condition. Default `page`. */
   variant?: "page" | "section" | "compact";
-  /**
-   * Medallion colour intent. Default `muted` (the neutral placeholder look). Set `success` for a
-   * confirmation zero-state (e.g. device approved), or `warning`/`destructive`/`info` to match the
-   * condition — tints the icon foreground + medallion fill from the matching role token, so a
-   * consumer never hand-rolls a `.ui-success-state` class to recolour it.
-   */
+  /** Medallion colour intent. Default `muted` (the neutral placeholder look). */
   tone?: EmptyStateToneProp;
-  /**
-   * Semantic heading level (`h1`–`h4`) for the title. Default `3`. Choose it to
-   * keep the page outline valid (`h1 → h2 → h3`, no skipped levels), NOT for
-   * visual size — the title size is fixed by `--empty-state` styles regardless
-   * of level. A page/onboarding empty state directly under a page `h1` uses
-   * `titleLevel={2}`; an empty state nested in an already-`h2` section uses `3`.
-   */
+  /** Semantic heading level (`h1`–`h4`) for the title. Default `3`. */
   titleLevel?: HeadingLevelProp;
   /**
-   * Render the title as a non-heading element (`p` / `div`) instead of a
-   * heading. Use for a `compact`/`section` empty state placed inside a section
-   * that already owns its heading, so the zero-state message is not announced as
-   * a heading and cannot skip an outline level. Overrides `titleLevel`.
+   * Render the title as a non-heading element (`p` / `div`) instead of a heading. Use for a
+   * `compact`/`section` empty state placed inside a section that already owns its heading, so the
+   * zero-state message is not announced as a heading and cannot skip an outline level.
    */
   titleAs?: "h1" | "h2" | "h3" | "h4" | "p" | "div";
   className?: ClassNameProp;
@@ -110,13 +98,8 @@ export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
   /**
    * Presence — WHO is reachable right now, drawn as an indicator at the block-end/inline-end
    * corner of the mark with a localized `sr-only` label folded into the avatar's accessible text.
-   * Never colour alone (WCAG 1.4.1): each value also has its own silhouette (filled · half-filled ·
-   * barred · hollow).
-   *
-   * OMIT the prop entirely for an entity that has no presence concept (an organization mark, a
-   * capability medallion) — an absent prop emits no node and no attribute, so the DOM stays
-   * byte-identical to today's. Pass `"offline"` for a person KNOWN to be unreachable; that is a
-   * different statement, exactly as `ListRow`'s omitted vs `false` `unread` is.
+   * Never colour alone (WCAG 1.4.1): each value also has its own silhouette (filled · half-filled
+   * · barred · hollow).
    */
   presence?: AvatarPresenceProp;
   /**
@@ -187,15 +170,9 @@ export type CredentialRevealTone = Extract<ToneProp, "warning" | "destructive" |
 export type CredentialRevealProp = {
   /** The one-time secret value shown masked by default and copied verbatim. */
   secret: string;
-  /**
-   * Accessible name / caption for the secret (e.g. "API key", "デバイス資格情報"). When set it labels
-   * the secret region; when omitted a generic localized label is used.
-   */
+  /** Accessible name / caption for the secret (e.g. "API key", "デバイス資格情報"). */
   label?: LabelProp;
-  /**
-   * Caution banner copy. Defaults to the localized "shown only once" warning. Pass `null` to
-   * suppress the banner entirely (e.g. when the surrounding Dialog already carries the caution).
-   */
+  /** Caution banner copy. Defaults to the localized "shown only once" warning. */
   warning?: React.ReactNode | null;
   /** Controlled reveal state (masked ↔ shown). */
   revealed?: boolean;
@@ -253,33 +230,22 @@ export type DataTableProp<T> = {
   loading?: boolean;
   empty?: React.ReactNode;
   /**
-   * Failure state (#216). `true` = built-in localized message (with a retry when `onRetry` is
-   * given); any other node replaces it. `false`/`undefined` = the read succeeded.
+   * `true` = built-in localized message (with a retry when `onRetry` is given); any other node
+   * replaces it. `false`/`undefined` = the read succeeded.
    */
   error?: React.ReactNode;
-  /**
-   * Permission-denied state (#216) — refused, not failed. `true` = built-in localized message
-   * with NO retry. Takes precedence over `error`.
-   */
+  /** `true` = built-in localized message with NO retry. Takes precedence over `error`. */
   denied?: React.ReactNode;
   /** Retry handler surfaced by the built-in `error` state. */
   onRetry?: HandlerProp;
   /**
-   * Named collection contract (gh#253) — the SAME preset the `Table` primitive owns, forwarded to
-   * the table DataTable renders. `"default"` (the default) emits no attribute and matches no
-   * selector. `"action-collection"` is the canonical dense approval / action queue: below
-   * `collapseBelow` the desktop intrinsic column widths give way to the token-owned column-PRIORITY
-   * measures (`--table-action-collection-*`) under `table-layout: fixed`, cells wrap, and the
-   * surface drops its `--table-surface-min-inline-size` floor — so every column, row actions
-   * included, stays inside a 390px frame with no horizontal scroll. Mark each column with
+   * `"default"` (the default) emits no attribute and matches no selector. Mark each column with
    * `priority` on its `ColumnDef`.
    */
   preset?: TablePresetProp;
   /**
-   * Container step at which `preset="action-collection"` switches to the compact priority measures.
-   * Measured against the TABLE's own container (a container query), not the viewport, so a table in
-   * a master rail collapses before the page does. Default `"sm"`. Ignored while `preset` is
-   * `"default"`.
+   * Container step at which `preset="action-collection"` switches to the compact priority
+   * measures. Default `"sm"`.
    */
   collapseBelow?: BreakpointProp;
   className?: ClassNameProp;
@@ -287,10 +253,9 @@ export type DataTableProp<T> = {
 };
 
 /**
- * ListRow geometry — `default` (the roomy entity row) or `compact` (#246: the inline-actions row —
- * Avatar + title/description + one or two small trailing Buttons on ONE line inside a narrow card).
- * A ListRow-LOCAL subset of the shared density vocabulary: the row has no `comfortable` step, so it
- * is deliberately narrower than `DensityProp` (and unrelated to `PageDensityProp`/`TableDensityProp`).
+ * A ListRow-LOCAL subset of the shared density vocabulary: the row has no `comfortable` step, so
+ * it is deliberately narrower than `DensityProp` (and unrelated to
+ * `PageDensityProp`/`TableDensityProp`).
  */
 export type ListRowDensityProp = Exclude<DensityProp, "comfortable">;
 
@@ -308,16 +273,11 @@ export type ListRowProp = {
   trailing?: React.ReactNode;
   /** Cross-axis alignment of the columns — `center` (default) or `start` for multi-line content. */
   align?: "center" | "start";
-  /** How over-long title/description resolve — `truncate` (default) or `wrap` (#224). */
   overflow?: "truncate" | "wrap";
-  /** Row geometry — `default` or the compact inline-actions preset (#246). */
   density?: ListRowDensityProp;
-  /** Read/unread state — indicator dot + localized `sr-only` text, never colour alone (#225). */
   unread?: boolean;
   className?: ClassNameProp;
 };
-
-// ─── PermissionMatrix (gh#257 / DXS platform#311) ────────────────────────────────────────────────
 
 /** @see PermissionMatrix — one role COLUMN. Domain data is consumer-supplied; nothing is encoded. */
 export type PermissionMatrixRoleProp = {
@@ -361,8 +321,7 @@ export type PermissionMatrixProp = {
   grants: PermissionMatrixGrantsProp;
   /**
    * Grant toggle handler. Its PRESENCE makes the matrix editable (checkbox cells); omitted, the
-   * matrix is the canonical read-only ✓/— grid. Locked roles and `readOnly` stay read-only
-   * regardless.
+   * matrix is the canonical read-only ✓/— grid.
    */
   onGrantChange?: (roleId: string, permissionId: string, granted: boolean) => void;
   /** Force the read-only grid even when `onGrantChange` is present (e.g. viewer permission). */
@@ -377,7 +336,6 @@ export type PermissionMatrixProp = {
   loading?: boolean;
   /** Custom empty content when `permissions` is empty; defaults to a localized EmptyState. */
   empty?: React.ReactNode;
-  /** Failure state (mirrors DataTable #216): `true` = built-in localized message, node = replace. */
   error?: React.ReactNode;
   /** Permission-denied state — refused, not failed. Takes precedence over `error`. */
   denied?: React.ReactNode;
@@ -388,14 +346,8 @@ export type PermissionMatrixProp = {
 };
 
 /**
- * Edge the ScrollArea viewport sticks to as its content grows (gh#311).
- *
- * - `none` — the scroll offset is left entirely alone. This is the default and is exactly the
- *   behaviour a ScrollArea has always had.
- * - `bottom` — a live stream (chat, log tail, streaming response, activity feed). While the reader
- *   is within `anchorOffset` of the bottom, arriving content keeps the newest item in view; once
- *   they scroll away to read history, growth NEVER moves them, and content inserted ABOVE the
- *   read position is compensated so the item under their eyes stays put.
+ * This is the default and is exactly the behaviour a ScrollArea has always had. - `bottom` — a
+ * live stream (chat, log tail, streaming response, activity feed).
  */
 export type ScrollAreaAnchorProp = "none" | "bottom";
 
@@ -403,11 +355,7 @@ export type ScrollAreaAnchorProp = "none" | "bottom";
 export type ScrollAreaProp = {
   /**
    * Ref to the element that actually SCROLLS — the Radix viewport — not the root. The root is
-   * `overflow: hidden` and never scrolls, so the component's own `ref` cannot serve. Use this to
-   * read `scrollTop`/`scrollHeight`, call `scrollTo()`, restore a saved position, or drive a
-   * "jump to newest" button. It is the typed, supported alternative to querying the Radix-internal
-   * `[data-radix-scroll-area-viewport]` attribute, which is not a public contract and is ambiguous
-   * the moment two ScrollAreas nest.
+   * `overflow: hidden` and never scrolls, so the component's own `ref` cannot serve.
    */
   viewportRef?: React.Ref<HTMLDivElement>;
   /** Edge the viewport sticks to as content grows. Default `none` (inert). */

@@ -4,21 +4,22 @@ import { useTranslation } from "../../i18n/use-translation";
 import { useFieldIdentity, useFieldNameFallback } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> & {
+  /** Control height tier: `md` (default) or `sm`, the same tiers as SelectTrigger and NumberInput. */
+  size?: "sm" | "md";
   /** Show an inline ✕ that clears the field while it holds text (default false). */
   allowClear?: boolean;
   /** Called after the field is cleared via the inline ✕. */
   onClear?: () => void;
   /**
-   * A leading affordance pinned inside the start of the field — e.g. a mail or
-   * search icon (the common auth/search pattern). Decorative by default; the
-   * input keeps the keyboard focus. Pairs with `trailingIcon`/`allowClear`.
+   * A leading affordance pinned inside the start of the field — e.g. a mail or search icon (the
+   * common auth/search pattern). Decorative by default; the input keeps the keyboard focus.
    */
   leadingIcon?: React.ReactNode;
   /**
-   * A trailing affordance pinned inside the field — e.g. a calendar / clock popover
-   * trigger button. ONE trailing icon shows at a time: when `allowClear` and the field
-   * holds a value the clear ✕ REPLACES this icon; otherwise this icon shows. Never both.
+   * A trailing affordance pinned inside the field — e.g. a calendar / clock popover trigger
+   * button. ONE trailing icon shows at a time: when `allowClear` and the field holds a value the
+   * clear ✕ REPLACES this icon; otherwise this icon shows.
    */
   trailingIcon?: React.ReactNode;
 };
@@ -33,6 +34,7 @@ const inputBaseClass = [
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
+      size,
       className,
       type,
       allowClear = false,
@@ -47,7 +49,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     const { t } = useTranslation();
-    // gh#303 — last-resort accessible label from an enclosing FormField, for inputs NESTED under
     // a layout wrapper (range from/to, 年/月) that the cloneElement contract cannot reach. `{}`
     // whenever the input is already labelled, so it never overrides props. (Wording note: the
     // API-manifest generator greps the source for bare inherited-prop words — keep this comment
@@ -56,7 +57,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       "aria-label": props["aria-label"],
       "aria-labelledby": props["aria-labelledby"],
     });
-    // gh#337 — the machine key, for an input NESTED under a layout wrapper that FormField's
     // cloneElement cannot reach (a from/to pair, a value + 「不明」 checkbox). `{}` unless this
     // input is inside a FormField, has an id of its own, and nothing upstream resolved the key.
     const identity = useFieldIdentity({
@@ -112,6 +112,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           data-slot="input"
+          data-size={size}
           ref={setRefs}
           value={value}
           defaultValue={defaultValue}
@@ -151,6 +152,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           data-slot="input"
+          data-size={size}
           ref={setRefs}
           value={value}
           defaultValue={defaultValue}

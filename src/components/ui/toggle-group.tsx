@@ -8,12 +8,8 @@ type ToggleGroupVariant = ToggleProp["variant"];
 type ToggleGroupSize = ToggleProp["size"];
 
 /**
- * Group-level `variant`/`size`, provided to every item (upstream shadcn pattern).
- *
- * Without this the group could only stamp `data-variant`/`data-size` on the ROOT — attributes no
- * rule consumed — so `<ToggleGroup size="lg">` painted nothing and a consumer had to repeat the
- * prop on every single item. An item's OWN prop still wins: the item reads context only where its
- * own value is `undefined`.
+ * Group-level `variant`/`size`, provided to every item (upstream shadcn pattern). An item's OWN
+ * prop still wins: the item reads context only where its own value is `undefined`.
  */
 const ToggleGroupContext = React.createContext<{
   variant?: ToggleGroupVariant;
@@ -27,7 +23,7 @@ export const ToggleGroup = React.forwardRef<
     size?: ToggleGroupSize;
   }
   // No destructuring defaults: an unset prop must stay `undefined` so the emitted attribute is
-  // either absent or a declared union member. (It used to default to the literal "default", which
+  // either absent or a declared union member.
   // is NOT in the `sm | md | lg` size union — the group advertised an invalid value for its own
   // type.) The real default lives in `toggleVariants`, applied per item.
 >(({ className, variant, size, children, ...props }, ref) => {
@@ -48,11 +44,7 @@ export const ToggleGroup = React.forwardRef<
 });
 ToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName;
 
-/**
- * `variant`/`size` come from the group through context; the COUNT stays per item, because the
- * number is per-item data (gh#312). Same vocabulary as `Toggle` and `Button` — one counter pill
- * for the whole library.
- */
+/** Same vocabulary as `Toggle` and `Button` — one counter pill for the whole library. */
 export type ToggleGroupItemProp = React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item> &
   ToggleCountFields & {
     variant?: ToggleGroupVariant;

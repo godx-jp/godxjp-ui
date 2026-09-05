@@ -24,7 +24,7 @@ import type {
 
 /** @see Text — typographic primitive; replaces hand-rolled `<span className="text-[13px] …">`. */
 export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
-  /** Render element. Default `span`. Covers inline/block text + description-list + code/caption. */
+  /** Render element. Default `span`. */
   as?:
     | "span"
     | "p"
@@ -49,10 +49,8 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
   /** Single-line ellipsis. Mutually exclusive with `clamp` — when both are set, `clamp` wins. */
   truncate?: boolean;
   /**
-   * Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis.
-   * Token-owned line-clamp styling (never write the `line-clamp-N` utility page-side).
-   * Visual-only: the full text stays in the DOM / accessible name. Mutually exclusive with
-   * `truncate` — when both are set, `clamp` wins (dev builds warn).
+   * Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis. Token-owned
+   * line-clamp styling (never write the `line-clamp-N` utility page-side).
    */
   clamp?: number;
   /** Tabular figures for aligned numbers. */
@@ -80,10 +78,6 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: ButtonSizeProp;
   /** Corner shape — `default` (control radius) · `pill` (fully rounded) · `sharp` (square). */
   shape?: ShapeProp;
-  /**
-   * Span the full width of the container (`width:100%`) instead of sizing to content —
-   * the prop form of `className="w-full"` for stacked/auth/dialog-footer actions (rule #42).
-   */
   fullWidth?: boolean;
   asChild?: AsChildProp;
   onClick?: OnClickProp;
@@ -96,16 +90,13 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Optional label to swap in while `loading` (pass the `t()`-translated string). */
   loadingText?: string;
   /**
-   * Optional numeric count rendered as a borderless counter pill after the label
-   * (filter tabs / segmented toggles, e.g. "Chờ bay 18"). Formatted with
-   * `Intl.NumberFormat` in the active locale and styled to read on the button's
-   * own variant — never nest a `Badge` inside a Button for this.
-   * Ignored when `asChild` (Radix Slot requires a single child).
+   * Optional numeric count rendered as a borderless counter pill after the label (filter tabs /
+   * segmented toggles, e.g. "Chờ bay 18").
    */
   count?: number;
   /**
-   * Cap for `count` (Ant Badge parity). When `count` exceeds it the pill shows
-   * `{overflowCount}+` (e.g. `99+`). Defaults to 99.
+   * Cap for `count` (Ant Badge parity). When `count` exceeds it the pill shows `{overflowCount}+`
+   * (e.g.
    */
   overflowCount?: number;
   /**
@@ -127,7 +118,7 @@ export type RevealProp = React.HTMLAttributes<HTMLDivElement> & {
   children?: ChildrenProp;
   /**
    * Stagger ordinal — an INDEX into the motion ladder (`0..6`), never a raw ms. Each step adds one
-   * `--reveal-stagger-step` of delay so sibling reveals cascade. Default `0` (enter immediately).
+   * `--reveal-stagger-step` of delay so sibling reveals cascade.
    */
   delay?: RevealDelayProp;
   /**
@@ -155,14 +146,11 @@ export type RevealProp = React.HTMLAttributes<HTMLDivElement> & {
  * own mark structure, so there is no single child to merge onto.
  */
 export type ActivityProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> & {
-  /**
-   * The mark. Default `dots` — three dots rising in sequence, the ellipsis convention.
-   * `pulse` is a single breathing mark (live / recording); `bar` an indeterminate sweep (syncing).
-   */
+  /** The mark. Default `dots` — three dots rising in sequence, the ellipsis convention. */
   variant?: ActivityVariantProp;
   /**
    * Size step, the standard ladder. Default `sm` — an ambient mark is never the loudest thing on
-   * screen. Scales the mark AND the label together (the mark is `em`-based).
+   * screen.
    */
   size?: SizeProp;
   /** Semantic colour intent. Default `muted` — ambient, not an alert. */
@@ -170,9 +158,7 @@ export type ActivityProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> 
   /**
    * Localized description of WHAT is happening ("Hưng đang nhập…", "同期中…"). Rendered as visible
    * `Text` beside the mark when `children` are absent; when `children` ARE present it becomes an
-   * `sr-only` description instead, so the indicator is never animation-only. Consumer-owned copy —
-   * the library never invents it, and the plural form of "N people are typing" must come from the
-   * consumer's `Intl.PluralRules`.
+   * `sr-only` description instead, so the indicator is never animation-only.
    */
   label?: LabelProp;
   /**
@@ -183,8 +169,6 @@ export type ActivityProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> 
   /**
    * Announce the label to assistive technology. Default `false` — the DELIBERATE default, because
    * an ambient indicator that fires a live region on every socket event is a screen-reader flood.
-   * With `false` NO live region is emitted at all. `"polite"` wraps ONLY the label in a single
-   * `aria-live="polite" aria-atomic="true"` region; the mark stays outside it and `aria-hidden`.
    */
   announce?: ActivityAnnounceProp;
   className?: ClassNameProp;

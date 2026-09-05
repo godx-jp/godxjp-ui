@@ -1,26 +1,7 @@
 #!/usr/bin/env node
 /**
- * Guard: every token in the SHIPPED artifact actually RESOLVES.
- *
- * `check-token-tiers` proves the tokens in `src/` are spelled right. It does not — cannot — prove
- * that what lands in `dist/` still exists at runtime. Two real #319 bugs slipped past every
- * textual gate:
- *
- *   1. STRUCTURALLY DEAD DECLARATIONS. 122 control tokens were appended after the closing brace of
- *      `:root` but inside the trailing `@media (pointer: coarse)` block. A bare declaration inside
- *      a conditional group rule is invalid CSS, so browsers drop it: the token is perfectly spelled
- *      and completely nonexistent. Three guards stayed green — the tier check read the file line by
- *      line, the geometry ratchet only reads `.tsx`, and jsdom never resolves the cascade.
- *
- *   2. DANGLING REFERENCES. Two rules read `var(--space-9)` from a `foundation.css` whose ramp
- *      jumps `--space-8` → `--space-10`. `var()` with no fallback and no declaration computes to
- *      the guaranteed-invalid value: the property is dropped, silently.
- *
- * Both shapes are structural, so this reads the braces rather than the lines, and it reads `dist/`
- * rather than `src/` — the artifact consumers actually import.
- *
- * There is deliberately NO baseline and NO ratchet. The tree is at zero today; anything this finds
- * is a token that does not exist in the browser, which is never something to carry forward.
+ * Guard: every token in the SHIPPED artifact actually RESOLVES. `check-token-tiers` proves the
+ * tokens in `src/` are spelled right.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -29,19 +10,16 @@ const root = process.cwd();
 const dist = join(root, "dist");
 
 /**
- * Custom-property families supplied at runtime by a third party, never declared in our CSS.
- * Radix positions its own portalled surfaces (`--radix-popover-trigger-width`, the
+ * Custom-property families supplied at runtime by a third party, never declared in our CSS. Radix
+ * positions its own portalled surfaces (`--radix-popover-trigger-width`, the
  * `*-content-available-height` measurements) by writing them onto the content element; Tailwind's
- * utilities own the `--tw-*` shadow/ring plumbing. A `var()` on either resolves in the browser and
- * must not be reported.
+ * utilities own the `--tw-*` shadow/ring plumbing.
  */
 const RUNTIME_SUPPLIED = [/^--radix-/, /^--tw-/];
 
 /**
  * At-rules whose body is a declaration list rather than a list of rules. A custom property sitting
- * directly inside one of these is legal. Everything else that starts with `@` — `@media`,
- * `@supports`, `@container`, `@layer`, `@scope` — is a grouping rule whose body may hold only
- * rules, so a bare declaration there is the bug this guard exists for.
+ * directly inside one of these is legal.
  */
 const DECLARATION_AT_RULES = ["@theme", "@property", "@font-face", "@page", "@counter-style"];
 
@@ -207,7 +185,7 @@ if (failures.length) {
 const tokenFiles = walk(join(dist, "tokens"));
 const styleFiles = walk(join(dist, "styles"));
 
-// ── 1. Every custom property in the shipped CSS must live in a real rule body. ───────────────────
+// ── 1.
 // The declarations that survive this check are the ones that actually exist at runtime, so they —
 // and only they — are what a `var()` may resolve to below.
 const declared = new Set();
@@ -228,7 +206,7 @@ for (const file of [...tokenFiles, ...styleFiles]) {
   }
 }
 
-// ── 2. Every var() in the shipped CSS must resolve, or carry a fallback. ─────────────────────────
+// ── 2.
 // Token files are scanned alongside the stylesheets on purpose: in the `--space-9` incident the
 // dangling references were themselves TOKENS (`--space-stack-*` reaching for a rung the foundation
 // ramp skips, `--space-8` → `--space-10`), so a styles-only scan would have missed the original.

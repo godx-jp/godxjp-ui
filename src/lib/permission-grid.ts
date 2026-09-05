@@ -1,22 +1,7 @@
 /**
- * permission-grid — pure, render-neutral helpers for RBAC role × permission
- * matrices.
- *
- * A permission matrix maps a set of PERMISSION rows against a set of ROLE
- * columns; each (role, permission) pair is either granted or not. A "permission
- * matrix" is NOT a framework component — it is a COMPOSITION of `Table`/
- * `DataTable` + `Badge` + tokens (see `docs/COMPOSITION-VS-COMPONENT.md`, Gate 0:
- * fails C2/C3/C7). What it DOES need is a single, tested source of truth for the
- * non-trivial data logic every consumer would otherwise re-derive: grant lookup,
- * the per-permission diff between two roles (compare mode), and the row set that
- * survives a "differences only" (差分のみ) filter.
- *
- * These functions are framework-neutral (no React) and locale-neutral (no
- * strings) so the showcase — and any RBAC admin — composes UI on top of them.
- *
- * Grants are modelled as a flat `Set` of composite keys for O(1) membership,
- * which mirrors how an authz decision cache (`role:permission` tuples) is
- * typically held in memory.
+ * permission-grid — pure, render-neutral helpers for RBAC role × permission matrices. A permission
+ * matrix maps a set of PERMISSION rows against a set of ROLE columns; each (role, permission) pair
+ * is either granted or not.
  */
 
 /** Any object addressable by a stable string `id` (a role or a permission). */

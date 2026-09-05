@@ -231,11 +231,9 @@ function TimePickerPanel({ value, minuteStep, use12h, onChange, onDone }: TimePi
 }
 
 /**
- * TimePicker — WAI-ARIA time combobox. The value lives on a real, typeable `HH:mm` `<input>`
- * (24h canonical): form-submittable (give it a `name`), screen-reader friendly, and e2e-testable
- * by filling the input. The HH/mm column popover is the visual affordance and stays in sync.
- * The column display honours the active `timeFormat` (12h shows 1-12 + AM/PM) while the canonical
- * value remains 24h `HH:mm`.
+ * TimePicker — WAI-ARIA time combobox. The value lives on a real, typeable `HH:mm` `<input>` (24h
+ * canonical): form-submittable (give it a `name`), screen-reader friendly, and e2e-testable by
+ * filling the input.
  */
 export function TimePicker({
   value: controlledValue,
@@ -279,7 +277,6 @@ export function TimePicker({
     setText("");
   };
 
-  // Both affordances, never one-or-the-other (gh#308) — same reasoning as DatePicker: the
   // clock icon is the only visual sign this field opens a time panel, so the clear (×) sits
   // beside it instead of replacing it. Input's own `allowClear` is left alone.
   const showClear = allowClear && text !== "" && !disabled;

@@ -1,53 +1,9 @@
 /**
- * `@godxjp/ui/email` — the email-safe design-token contract for transactional templates (issue #227).
- *
- * ## Why this exists
- *
- * A transactional email is rendered by Blade/Twig/MJML, not React, and by clients that strip
- * `<style>`, ignore CSS custom properties, refuse relative units and block remote images. So the
- * two things a template usually reaches for — the component library and the CSS token file — are
- * both unavailable, and templates end up hand-copying hex and hand-drawing the logo. That is
+ * So the two things a template usually reaches for — the component library and the CSS token file
+ * — are both unavailable, and templates end up hand-copying hex and hand-drawing the logo. That is
  * exactly the drift this module removes: it is a FRAMEWORK-NEUTRAL, zero-dependency, React-free
- * data export of literal `#rrggbb` / `px` values plus the canonical brand-mark markup.
- *
- * ## The no-drift guarantee
- *
- * Nothing here is hand-typed. `src/tokens/foundation.css` (colour roles) and
- * `src/tokens/components/email.css` (geometry/typography) are read by
- * `scripts/gen-email-tokens.mjs` into `tokens.generated.ts`, and the HSL→hex conversion runs at
- * module load. There is no hex literal anywhere in `src/email/`, so an email palette that diverges
- * from the web palette is not something a maintainer can accidentally write.
- * `src/email/__tests__/email-tokens.test.ts` re-derives every value straight from the CSS and
- * asserts equality, and `pnpm check:email-token-sync` fails CI if the generated file goes stale.
- *
- * ## Usage
- *
- * ```ts
- * import { EMAIL_COLORS, EMAIL_URGENCY, EMAIL_SHELL, EMAIL_CTA, EMAIL_BRAND_MARK, emailInlineStyle } from "@godxjp/ui/email";
- *
- * const card = emailInlineStyle({
- *   width: EMAIL_SHELL.width,
- *   padding: EMAIL_SHELL.padding,
- *   backgroundColor: EMAIL_COLORS.surface,
- *   border: `${EMAIL_SHELL.borderWidth} solid ${EMAIL_COLORS.border}`,
- *   borderTopColor: EMAIL_URGENCY.accent,
- *   borderRadius: EMAIL_SHELL.radius,
- * });
- * ```
- *
- * A non-JS template engine (Blade, Twig, Liquid) consumes the same values through
- * `EMAIL_TOKENS_JSON` — dump it once in the build step and read the JSON from PHP:
- *
- * ```sh
- * node --input-type=module -e \
- *   'import("@godxjp/ui/email").then(m => process.stdout.write(m.EMAIL_TOKENS_JSON))' \
- *   > resources/design/email-tokens.json
- * ```
- *
- * ## Scope
- *
- * Tokens, geometry and brand markup only. Copy, recipients, links, locale, triggers and queue
- * behaviour belong to the sending application — this module knows nothing about them.
+ * data export of literal `#rrggbb` / `px` values plus the canonical brand-mark markup. ## The
+ * no-drift guarantee Nothing here is hand-typed.
  */
 export {
   hslToHex,

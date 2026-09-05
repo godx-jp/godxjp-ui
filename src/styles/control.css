@@ -1019,6 +1019,10 @@
 .ui-number-input[data-size="xs"] {
   --control-height: var(--control-height-xs);
 }
+.ui-input[data-size="sm"] {
+  --control-height: var(--control-height-sm);
+}
+
 .ui-number-input[data-size="sm"] {
   --control-height: var(--control-height-sm);
 }

@@ -22,8 +22,8 @@ function defaultIsEmpty(data: unknown): boolean {
 }
 
 /**
- * Query lifecycle widget — orchestrates skeleton / error / empty / success for one `useQuery` block.
- * Not a visual component; prefer `@godxjp/ui/query`. Apps may also import via `@godxjp/ui/admin`.
+ * Query lifecycle widget — orchestrates skeleton / error / empty / success for one `useQuery`
+ * block. Not a visual component; prefer `@godxjp/ui/query`.
  */
 export function DataState<T>({
   query,

@@ -13,7 +13,6 @@ export type {
   NumberInputProp as NumberInputProps,
 } from "../../props/components/data-entry.prop";
 
-/** Count decimal places of a finite number (used to derive precision from `step`). */
 function decimalsOf(n: number): number {
   if (!Number.isFinite(n)) return 0;
   const s = String(n);
@@ -38,11 +37,7 @@ function roundTo(n: number, precision: number): number {
 
 /**
  * NumberInput — WAI-ARIA spinbutton: a localized numeric `<Input>` with increment/decrement steps.
- *
- * Composes the real `Input` primitive (no raw `<input>`) plus two icon `Button`s. The text input is
- * the `role="spinbutton"` element carrying `aria-valuenow/min/max/text`; type freely, ArrowUp/Down
- * (Shift = ×10) step, and the value commits clamped + rounded to `precision` on blur/Enter/step.
- * Display formats via `Intl.NumberFormat` at rest, but stays raw and typeable while focused.
+ * Composes the real `Input` primitive (no raw `<input>`) plus two icon `Button`s.
  */
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
   (
@@ -70,7 +65,6 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
   ) => {
     const { t, locale } = useTranslation();
     // Forward the full FormField label/helper/error/required/invalid contract onto the
-    // role="spinbutton" input (the focus target) — not just name/description (#164).
     const fieldA11y = pickFieldA11y(ariaProps);
 
     const isControlled = controlledValue !== undefined;

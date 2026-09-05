@@ -1,35 +1,8 @@
 #!/usr/bin/env node
 /**
- * Emit the React `"use client"` directive into the compiled client modules in dist/ so the package
- * works directly inside Next.js App Router **Server Components** (gh#128).
- *
- * Why: a client module evaluated in the RSC server graph throws
- * `TypeError: createContext is not a function` (e.g. `i18n/use-translation` runs `createContext`
- * at module top-level; `Button` calls the `useTranslation` hook). Other UI libraries
- * (shadcn/MUI/Radix) ship `"use client"` in their dist so Next treats those modules as client
- * boundaries automatically; we do the same.
- *
- * How: the tsup build is `bundle: false`, so dist mirrors src 1:1 (one file per module, no shared
- * chunks). We detect client modules from the SOURCE (reliable: clean hook names / imports, no
- * esbuild renaming) and prepend the directive to the matching dist file. A module is client if:
- *   1. DIRECT client usage:
- *      - `createContext(` (a context module),
- *      - a React hook CALL: `useX(` incl. custom hooks like `useTranslation()` and generic
- *        `useRef<T>(` (calling any hook makes a component a client component), or
- *      - a top-level import of a client-only runtime dependency (Radix, sonner, cmdk, ...); OR
- *   2. TRANSITIVELY: a `.tsx` (component) module that value-imports / re-exports another client
- *      module. A wrapper that renders a client child (e.g. `AreaChart` -> `CartesianChart`, or a
- *      `ui/*` shim re-exporting a Radix primitive) must itself be a client boundary, else a
- *      server->client function prop (a chart `valueFormatter`, a render callback) throws.
- *
- * Only `.tsx` propagates. Pure `.ts` re-export barrels (`components/general/index`, the `/ui/*`
- * granular entries, the root `.` admin surface) stay SERVER on purpose: re-exporting a
- * `"use client"` leaf is a valid server module in Next, and that keeps any pure exports they carry
- * (types, `cn`, tokens) usable from a Server Component. Genuinely pure modules (`lib/utils`,
- * `lib/datetime`, `props/**`, tokens, and pure presentational `.tsx` like `Text`/`Heading`/layout
- * primitives that import no client module) carry no client API and stay server-renderable.
- *
- * Runs after `tsup` in the build script; `check:use-client` guards the result.
+ * Why: a client module evaluated in the RSC server graph throws `TypeError: createContext is not a
+ * function` (e.g. `i18n/use-translation` runs `createContext` at module top-level; `Button` calls
+ * the `useTranslation` hook).
  */
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";

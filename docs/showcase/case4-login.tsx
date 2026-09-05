@@ -48,7 +48,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@godxjp/ui/data-display";
-import { Separator } from "@godxjp/ui/layout";
+import { Flex, ResponsiveGrid, Separator } from "@godxjp/ui/layout";
 
 // ── The single allowed multi-color brand mark (Google "G") ─────────────────────
 // Icons normally inherit currentColor; a third-party brand mark is the documented
@@ -80,7 +80,7 @@ function GoogleMark() {
 // ── Brand lockup ("勤" mark + Acme · 勤怠 wordmark) ───────────────────────────
 function BrandLockup({ size = "md" }: { size?: "md" | "lg" }) {
   return (
-    <div className="flex items-center gap-2.5">
+    <Flex align="center" gap="sm">
       <Avatar aria-hidden="true" className={`rounded-md ${size === "lg" ? "size-11 text-lg" : ""}`}>
         <AvatarFallback className="bg-primary text-primary-foreground font-bold">勤</AvatarFallback>
       </Avatar>
@@ -96,7 +96,7 @@ function BrandLockup({ size = "md" }: { size?: "md" | "lg" }) {
           勤怠管理プラットフォーム
         </Text>
       </div>
-    </div>
+    </Flex>
   );
 }
 
@@ -116,11 +116,11 @@ export default function LoginShowcase() {
   return (
     <div className="ui-density-comfortable bg-muted/40 text-foreground min-h-screen">
       {/* Locale + theme toggle, pinned top-right. Stacks under brand on narrow. */}
-      <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <Flex align="center" justify="between" gap="md" className="px-4 py-3 sm:px-6">
         <div className="lg:hidden">
           <BrandLockup />
         </div>
-        <div className="ms-auto flex items-center gap-2">
+        <Flex align="center" gap="sm" className="ms-auto">
           <Select value={locale} onValueChange={setLocale}>
             <SelectTrigger size="sm" className="w-32" aria-label="言語を選択">
               <Languages aria-hidden="true" className="text-muted-foreground" />
@@ -152,18 +152,22 @@ export default function LoginShowcase() {
               <Monitor aria-hidden="true" />
             </ToggleGroupItem>
           </ToggleGroup>
-        </div>
-      </div>
+        </Flex>
+      </Flex>
 
       {/* Centered auth area. Split brand panel + card sit side-by-side from lg. */}
       <div className="mx-auto flex min-h-[calc(100vh-64px)] w-full max-w-5xl items-center px-4 py-8 sm:px-6">
-        <div className="mx-auto grid w-full grid-cols-1 items-stretch gap-8 lg:grid-cols-2">
+        <ResponsiveGrid
+          columns={{ sm: 1, lg: 2, md: 1 }}
+          gap="xl"
+          className="mx-auto w-full items-stretch"
+        >
           {/* Split brand panel — hidden on mobile (mobile-first), shown from lg. */}
           <aside className="hidden lg:flex">
             <Card className="bg-primary/5 w-full">
               <CardContent solo className="flex h-full flex-col justify-between gap-8">
                 <BrandLockup size="lg" />
-                <div className="flex flex-col gap-3">
+                <Flex direction="col" gap="md">
                   <Heading level={2} className="leading-snug">
                     打刻から承認まで、ひとつの勤怠基盤で。
                   </Heading>
@@ -171,7 +175,7 @@ export default function LoginShowcase() {
                     出勤・休憩・残業の打刻、シフト調整、欠勤・遅刻の承認を一元化します。
                     多拠点・多テナントに対応し、現場と管理をつなぎます。
                   </Text>
-                </div>
+                </Flex>
                 <dl className="border-border grid grid-cols-3 gap-4 border-t pt-6">
                   <div>
                     <Text as="dt" size="2xs" tone="muted">
@@ -205,9 +209,9 @@ export default function LoginShowcase() {
           {/* Auth card — the one surface allowed a resting shadow (shadow-lg). */}
           <Card className="mx-auto w-full max-w-sm self-center shadow-lg lg:mx-0">
             <CardHeader className="flex flex-col gap-1.5 pb-2 text-center lg:text-start">
-              <div className="flex justify-center lg:hidden">
+              <Flex justify="center" className="lg:hidden">
                 <BrandLockup />
-              </div>
+              </Flex>
               <CardTitle className="text-lg font-semibold">ログイン</CardTitle>
               <CardDescription className="text-muted-foreground text-xs">
                 勤怠管理プラットフォームへようこそ
@@ -216,7 +220,7 @@ export default function LoginShowcase() {
 
             <CardContent solo className="flex flex-col gap-5">
               {/* SSO buttons — outline, full-width, 44px (comfortable). */}
-              <div className="flex flex-col gap-2.5">
+              <Flex direction="col" gap="sm">
                 <Button variant="outline" className="w-full justify-center">
                   <GoogleMark />
                   Google で続ける
@@ -224,16 +228,16 @@ export default function LoginShowcase() {
                 <Button variant="outline" className="w-full justify-center">
                   シングルサインオン (SSO)
                 </Button>
-              </div>
+              </Flex>
 
               {/* Divider "または" — Separator pair + centered label. */}
-              <div className="flex items-center gap-3">
+              <Flex align="center" gap="md">
                 <Separator className="flex-1" />
                 <Text size="xs" tone="muted">
                   または
                 </Text>
                 <Separator className="flex-1" />
-              </div>
+              </Flex>
 
               {/* Email — uncontrolled, seeded so the filled state shows at rest. */}
               <form
@@ -296,7 +300,7 @@ export default function LoginShowcase() {
               </Text>
             </CardContent>
           </Card>
-        </div>
+        </ResponsiveGrid>
       </div>
     </div>
   );

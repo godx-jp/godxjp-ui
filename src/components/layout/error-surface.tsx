@@ -23,14 +23,7 @@ export type { ErrorSurfaceModeProp, ErrorSurfaceStatusProp } from "../../props/v
 
 /**
  * Status → default icon + tone. Closed set (RFC 9110 §15.5.1 / §15.5.4 / §15.5.5 / §15.6.1 /
- * §15.6.4): the five exception pages every application ships. `tone` is semantic, never decorative
- * — a 404 is a neutral miss (`muted`), a 400, a 403 and a planned 503 are recoverable conditions
- * (`warning`), a 500 is a genuine failure (`destructive`). Both are overridable per instance.
- *
- * 400 takes `TriangleAlert` (gh#301) because it is THIS system's warning glyph — the same mark
- * `Alert tone="warning"` and the warning toast already carry — and a malformed request has no
- * truer metaphor than "what you sent is not valid": nothing is missing (404), forbidden (403) or
- * broken (500).
+ * §15.6.4): the five exception pages every application ships.
  */
 const STATUS_META: Record<ErrorSurfaceStatusProp, { icon: IconProp; tone: EmptyStateToneProp }> = {
   400: { icon: TriangleAlert, tone: "warning" },
@@ -41,12 +34,9 @@ const STATUS_META: Record<ErrorSurfaceStatusProp, { icon: IconProp; tone: EmptyS
 };
 
 /**
- * EXACTLY ONE recovery action, enforced structurally.
- *
- * The slot is single by construction; this flattens the one case the type system cannot catch (a
- * fragment carrying two buttons) and drops the extras with a development error. It deliberately
- * does NOT throw: this component renders the page a user lands on when something already failed,
- * and an exception on the exception page is how a 500 becomes a blank screen.
+ * EXACTLY ONE recovery action, enforced structurally. The slot is single by construction; this
+ * flattens the one case the type system cannot catch (a fragment carrying two buttons) and drops
+ * the extras with a development error.
  */
 function singleAction(action: React.ReactNode): React.ReactNode {
   const flattened = React.Children.toArray(action).flatMap((child) =>
@@ -66,11 +56,9 @@ function singleAction(action: React.ReactNode): React.ReactNode {
 }
 
 /**
- * ISO-8601 instants + an IANA zone → one CLDR-formatted, locale-correct window.
- *
- * `formatRange` is what makes "2026年8月3日 3:00～5:00" collapse correctly in ja and expand in vi;
- * a hand-built `${start} - ${end}` cannot. An unparseable instant falls back to the raw input
- * rather than printing "Invalid Date" onto an error page.
+ * ISO-8601 instants + an IANA zone → one CLDR-formatted, locale-correct window. `formatRange` is
+ * what makes "2026年8月3日 3:00～5:00" collapse correctly in ja and expand in vi; a hand-built
+ * `${start} - ${end}` cannot.
  */
 function formatMaintenanceWindow(maintenance: ErrorSurfaceMaintenanceProp, locale: string): string {
   const options: Intl.DateTimeFormatOptions = {
@@ -90,34 +78,17 @@ function formatMaintenanceWindow(maintenance: ErrorSurfaceMaintenanceProp, local
 }
 
 /**
- * ErrorSurface — the package-owned semantic exception surface for **400 · 403 · 404 · 500 · 503**
- * (gh#221, gh#251, gh#301).
- *
- * It exists because the alternative — every app composing `EmptyState` + `Flex` + `Text` inside a
- * hand-picked shell — is unimportable: a consumer cannot `import` a docs page, so the four
- * exception screens drifted per application (a generic `Card` in an `AuthShell`, a local
- * `.canonical-auth-card`, a bespoke `min-h-dvh` class). What the surface owns is the CONTRACT the
- * composition kept losing:
- *
- * - **`mode` is the shell contract.** `application` (400/403/404) renders the surface as the BODY you
- *   place inside the `AppShell` the route already provides, so the sidebar, topbar and breadcrumb
- *   are PRESERVED — it never reconstructs navigation chrome, because nav data and the user menu are
- *   consumer-owned and a component cannot manufacture them. `system` (500/503) owns the page and
- *   renders `CenteredShell align="center"`, so the viewport-centred geometry at 1440 / 1024 / 390
- *   is package-owned and the consumer writes no `min-h-dvh`, no flex-centring class, no media query.
- * - **Exactly one recovery action**, structurally (see `singleAction`).
- * - **Semantic metadata slots** instead of free-form paragraphs: `requestId` (mono/tabular so a
- *   support id is read out accurately), `permission` and `organization` (which of the two a 403 is
- *   actually about), and `maintenance` (ISO-8601 + IANA formatted through `Intl.DateTimeFormat`,
- *   with an optional labelled `Progress` meter). Each is a `<dt>`/`<dd>` pair, so the label↔value
- *   relationship survives for a screen reader instead of being a colon in a sentence.
- * - **Valid heading order by default** — `h2` under a `PageContainer` `h1` in `application` mode,
- *   `h1` on a `system` page — and the status code announced as "HTTP status 403", not "403".
- *
- * PRODUCT COPY stays consumer-owned: `title` / `description` / `action` come from the app's own
- * `t()`. The surface localizes only its OWN metadata labels. It holds no state, runs no effect and
- * opens no portal, so it renders fully server-side — an exception page must be readable before
- * hydration.
+ * What the surface owns is the CONTRACT the composition kept losing: - **`mode` is the shell
+ * contract.** `application` (400/403/404) renders the surface as the BODY you place inside the
+ * `AppShell` the route already provides, so the sidebar, topbar and breadcrumb are PRESERVED — it
+ * never reconstructs navigation chrome, because nav data and the user menu are consumer-owned and
+ * a component cannot manufacture them. `system` (500/503) owns the page and renders `CenteredShell
+ * align="center"`, so the viewport-centred geometry at 1440 / 1024 / 390 is package-owned and the
+ * consumer writes no `min-h-dvh`, no flex-centring class, no media query. - **Exactly one recovery
+ * action**, structurally (see `singleAction`). - **Semantic metadata slots** instead of free-form
+ * paragraphs: `requestId` (mono/tabular so a support id is read out accurately), `permission` and
+ * `organization` (which of the two a 403 is actually about), and `maintenance` (ISO-8601 + IANA
+ * formatted through `Intl.DateTimeFormat`, with an optional labelled `Progress` meter).
  */
 export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
   function ErrorSurface(

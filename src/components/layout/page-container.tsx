@@ -89,10 +89,9 @@ function PageContainerRoot({
   const { t } = useTranslation();
 
   // `data-measure` caps the HEADER and the BODY to one shared token-owned measure so a header
-  // action ends flush with the body surface (gh#245/gh#247). `default` matches no rule in the
+  // `default` matches no rule in the
   // stylesheet, so a page that never sets `measure` is geometrically untouched.
   //
-  // `data-header-scale` is emitted ONLY for `chrome` (rule #44: present-when-on, absent-when-off),
   // so a document page's DOM is byte-identical to before and no consumer selector has to out-
   // specify a marker that means "nothing changed".
   return (
@@ -113,9 +112,7 @@ function PageContainerRoot({
         className,
       )}
     >
-      {/* `data-layout` is the only hook the header arrangement needs: `stack` (the default)
-          matches no rule, so the historical geometry is untouched, while `responsive-inline`
-          selects the compact-range rules that keep `extra` beside the title band (gh#231). */}
+      {}
       <header
         ref={headerRef}
         className="ui-page-header"
@@ -134,7 +131,6 @@ function PageContainerRoot({
               {breadcrumb.map((item, i) => {
                 const isLast = i === breadcrumb.length - 1;
                 return (
-                  // The package's own breadcrumb item hook (gh#319): same
                   // `--space-inline-xs` gap the previous `.ui-inline-xs` gave, and it brings
                   // `.ui-breadcrumb-item svg { 0.75rem }` with it, so the separator glyph no
                   // longer carries a `size-3` literal. It also drops `.ui-inline-xs`'s
@@ -166,17 +162,8 @@ function PageContainerRoot({
         )}
         <div className="ui-page-header-row">
           <div className="ui-page-header-heading">
-            {/* `status` (godxjp-ui#255): the status/meta band shares the title line at the
-                token-owned --page-header-status-gap and wraps UNDER the title on compact
-                viewports. The wrapper row exists only when `status` is passed, so a page
-                without one keeps the exact historical DOM and geometry. */}
-            {/* `headerLoading` (gh#255): the `<h1>` stays in the tree while pending — a page that
-                drops its only level-1 heading mid-load breaks the heading outline a screen-reader
-                user navigates by. It BECOMES the placeholder by wearing the library's own
-                `ui-skeleton-block` skin rather than wrapping a `<Skeleton>` element: `<h1>` takes
-                phrasing content, so nesting Skeleton's `<div>` inside it is invalid HTML. The
-                visible name is sr-only text, because a heading rendered as a bare decorative box
-                is an EMPTY heading (axe `empty-heading`, WCAG 1.3.1). */}
+            {}
+            {/* It BECOMES the placeholder by wearing the library's own `ui-skeleton-block` skin rather than wrapping a `<Skeleton>` element: `<h1>` takes phrasing content, so nesting Skeleton's `<div>` inside it is invalid HTML. The visible name is sr-only text, because a heading rendered as a bare decorative box is an EMPTY heading (axe `empty-heading`, WCAG 1.3.1). */}
             {headerLoading ? (
               <h1 className="ui-page-title ui-skeleton-block ui-page-title-placeholder">
                 <span className="sr-only">{t("layout.pageHeader.loading")}</span>
@@ -204,12 +191,7 @@ function PageContainerRoot({
         </div>
       </header>
 
-      {/* `toolbar` — the fixed chrome band between the header and the body: a filter strip, a
-          status bar, a channel workflow rail. It is a SIBLING of `.ui-page-body`, never a child,
-          because under `fill` the body is the scroll viewport: as a `flex: none` sibling the band
-          stays put and the transcript scrolls beneath NOTHING, whereas a `position: sticky` strip
-          inside the scroller keeps content flowing under it (the half-sliced row a hand-laid page
-          chrome always produces). Absent → no element and no gap at all. */}
+      {/* It is a SIBLING of `.ui-page-body`, never a child, because under `fill` the body is the scroll viewport: as a `flex: none` sibling the band stays put and the transcript scrolls beneath NOTHING, whereas a `position: sticky` strip inside the scroller keeps content flowing under it (the half-sliced row a hand-laid page chrome always produces). Absent → no element and no gap at all. */}
       {toolbar != null && <div className="ui-page-toolbar">{toolbar}</div>}
 
       {children != null && <div className="ui-page-body">{children}</div>}

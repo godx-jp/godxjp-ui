@@ -1,18 +1,8 @@
 #!/usr/bin/env node
 /**
- * Claude Code PostToolUse hook — the FORCING FUNCTION.
- *
- * Wired by `init-agent-kit.mjs` into a consumer's `.claude/settings.json` so that
- * after EVERY Write/Edit/MultiEdit of a .tsx/.ts file, the godxjp-ui static audit
- * runs on that file and its findings are fed straight back to the agent. The agent
- * cannot skip it — the harness runs the hook, not the agent's goodwill — so a
- * hand-rolled <label>+<Input>, a raw <button>, a loud palette colour, or an emoji
- * is surfaced the instant it is written, and the agent self-corrects.
- *
- * Contract: reads the hook JSON on stdin ({ tool_input: { file_path } }). Prints
- * findings to stderr and exits 2 when any are found (Claude Code feeds stderr back
- * to the model); exits 0 (silent) when the file is clean or irrelevant. Non-fatal —
- * it never blocks the edit, it just makes the agent SEE the issue.
+ * Claude Code PostToolUse hook — the FORCING FUNCTION. The agent cannot skip it — the harness runs
+ * the hook, not the agent's goodwill — so a hand-rolled <label>+<Input>, a raw <button>, a loud
+ * palette colour, or an emoji is surfaced the instant it is written, and the agent self-corrects.
  */
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";

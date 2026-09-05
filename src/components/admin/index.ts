@@ -16,7 +16,6 @@ export { Field } from "../data-entry/field";
 export { Descriptions } from "../data-display/descriptions";
 export { SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonStat } from "../feedback/skeleton";
 // Query/router adapters intentionally NOT re-exported here — import from "@godxjp/ui/query"
-// so the root @godxjp/ui surface stays runtime-neutral (issue #83 / check-core-isolation).
 export {
   Alert,
   AlertTitle,

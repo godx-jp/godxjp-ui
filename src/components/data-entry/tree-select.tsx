@@ -80,7 +80,7 @@ function TreeSelectRoot({
   const { t } = useTranslation();
   // Forward the FormField label/helper/error contract onto the combobox trigger (focus target).
   const fieldA11y = pickFieldA11y(ariaProps);
-  // gh#337 — the machine key for a TreeSelect NESTED under a layout wrapper. This control has
+  // This control has
   // no native-submit path at all (documented: read the value through onValueChange), so only
   // `data-field` is resolved here — there is no element a `name` could honestly go on.
   const identity = useFieldIdentity({ id, "data-field": fieldA11y["data-field"] });

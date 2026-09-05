@@ -26,24 +26,14 @@ const SCAN = join(ROOT, "docs");
 
 /**
  * Only what the RENDERER fetches and blocks on: `src`, `poster`, CSS `url()`, and a `<link href>`.
- *
- * `href` on an `<a>` is deliberately NOT matched. A link target is somewhere the user may go, not
- * something the browser loads — flagging `https://billing.example.com/portal` would be a guard
- * reporting on prose, which is the failure mode two other guards in this repo already had to be
- * taught out of.
+ * `href` on an `<a>` is deliberately NOT matched.
  */
 const FETCHING =
   /(?:\bsrc|\bposter)\s*=\s*["'{`]?\s*(https?:\/\/[^"'`)\s}]+)|url\(\s*["']?(https?:\/\/[^"')\s]+)|<link[^>]*?href\s*=\s*["'{`]?\s*(https?:\/\/[^"'`)\s}]+)/g;
 
 /**
- * Hosts a docs page may fetch from, each with the reason.
- *
- * Google Fonts is the one real exception and it is a considered one: the brand showcases exist to
- * prove a consumer's design can be reproduced from tokens, and that design IS its typeface. The
- * request also fails FAST when the network is absent, which is what separates it from the case
- * that started gh#333 — picsum.photos never answered at all, so `networkidle` never fired and the
- * frame hung for the full 30s at every viewport. A dependency that degrades is survivable; one
- * that hangs is not.
+ * Hosts a docs page may fetch from, each with the reason. A dependency that degrades is
+ * survivable; one that hangs is not.
  */
 const ALLOWED_HOSTS = [/^https:\/\/fonts\.(googleapis|gstatic)\.com\//];
 

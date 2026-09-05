@@ -65,7 +65,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
         // threshold. Marking the container `aria-disabled` makes it an INACTIVE control, which
         // WCAG 1.4.3 exempts from contrast and which axe honours (it skips color-contrast on any
         // node under `aria-disabled="true"`) — the same exemption native disabled form controls
-        // get for free. Without it the dimmed chips are a rendered a11y contrast failure (gh#175).
+        // get for free.
         aria-disabled={disabled || undefined}
         className={cn("ui-tag-input", disabled && "ui-tag-input-disabled", className)}
       >

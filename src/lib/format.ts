@@ -4,10 +4,8 @@
 import { getSyncedLocale, translateCurrent } from "../i18n/translate";
 
 /**
- * Bytes → size with conventional binary units (B/KB/MB/GB) and a locale-correct number,
- * e.g. "2.0 KB" (en) / "2,0 KB" (vi). The numeric part is formatted via `Intl.NumberFormat`
- * (locale decimal/grouping separators — no hardcoded "."); an optional `locale` overrides the
- * module-synced active locale.
+ * Bytes → size with conventional binary units (B/KB/MB/GB) and a locale-correct number, e.g. "2.0
+ * KB" (en) / "2,0 KB" (vi).
  */
 export function formatBytes(
   n: number | null | undefined,
@@ -26,10 +24,8 @@ export function formatBytes(
 }
 
 /**
- * ISO 4217 minor units → locale-formatted currency, e.g. (1995, "USD") → "$19.95" (en) /
- * "19,95 $" (vi). The active locale (or an explicit `locale`) drives grouping/symbol placement;
- * the currency's minor-unit scale comes from CLDR via `resolvedOptions().maximumFractionDigits`
- * — no hand-maintained zero-decimal list.
+ * ISO 4217 minor units → locale-formatted currency, e.g. (1995, "USD") → "$19.95" (en) / "19,95 $"
+ * (vi).
  */
 export function formatCurrency(
   amountMinor: number | null | undefined,

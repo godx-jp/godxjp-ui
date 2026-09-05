@@ -24,6 +24,7 @@ export type {
   OnClickProp,
   AsChildProp,
   WidthProp,
+  ControlWidthProp,
 } from "./shared.prop";
 
 export type {

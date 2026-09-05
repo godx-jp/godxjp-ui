@@ -35,9 +35,8 @@ import type { EmptyStateToneProp } from "./data-display.prop";
 
 /**
  * Arrangement of the page header's title band and its `extra` slot below the 640px step.
- * `stack` (default) is the historical arrangement — `extra` drops onto its own full-width line
- * under the subtitle. `responsive-inline` keeps `extra` beside the title band at the
- * `--page-header-extra-measure` measure, letting the title/subtitle wrap into what is left.
+ * `responsive-inline` keeps `extra` beside the title band at the `--page-header-extra-measure`
+ * measure, letting the title/subtitle wrap into what is left.
  */
 export type PageContainerHeaderLayoutProp = "stack" | "responsive-inline";
 
@@ -46,31 +45,14 @@ export type PageContainerPresetProp = "default" | "admin-collection";
 
 /**
  * Bounded page MEASURE — the shared inline cap applied to the page header AND body together, so
- * the header `extra` action ends on the same edge as the body surface. Orthogonal to
- * `PageContainerVariantProp` (chrome) and to `PageContainerHeaderLayoutProp`, so a quiet
- * `variant="ghost"` feed can finally have a bounded measure too (gh#245 / gh#247).
- *
- * `default` applies NO cap — the page is fluid exactly as before. `narrow` / `medium` read the
- * `--page-measure-{narrow,medium}` tokens (42rem / 48rem OUTER, i.e. 624px / 720px VISIBLE surface
- * once the package-owned page gutters are subtracted). Both are maxes, so a compact viewport stays
- * fluid at the compact gutter.
+ * the header `extra` action ends on the same edge as the body surface. `default` applies NO cap —
+ * the page is fluid exactly as before.
  */
 export type PageContainerMeasureProp = "default" | "narrow" | "medium";
 
 /**
  * What the page's top row IS — the question that decides its type step, not how big you want it.
- *
  * `document` (default) — the row is the page's TITLE: a record, a form, a collection, a report.
- * The `<h1>` takes `--page-title-font-size` and the existing responsive step down at 720px.
- *
- * `chrome` — the row is the surface's own furniture: a chat channel name, a mail subject line, an
- * IDE tab, a conversation header. It names the thing you are already inside rather than announcing
- * a document, so it takes the body type step (`--page-title-font-size-chrome`) and the header band
- * stops competing with the content underneath. Orthogonal to `PageContainerVariantProp`: `ghost`
- * owns the page's chrome WEIGHT (no divider, no header bottom pad), this owns what the title MEANS
- * — a chat page usually wants both, a quiet document feed wants only `ghost`.
- *
- * The `<h1>` stays an `<h1>` either way; only the type step moves, and only via a token.
  */
 export type PageContainerHeaderScaleProp = "document" | "chrome";
 
@@ -79,21 +61,15 @@ export type PageContainerProp = {
   title: TitleProp;
   subtitle?: SubtitleProp;
   /**
-   * Status/meta band rendered beside the title inside the heading — StatusBadge, environment
-   * tag, "updated …" meta text. Geometry is token-owned (`--page-header-status-gap`): the band
-   * sits on the title line and WRAPS under it on compact viewports, so a consumer never
-   * hand-lays a badge next to an `<h1>`. Part of the canonical page-header contract
-   * (godxjp-ui#255): PageContainer's embedded header IS the DXS `PageHeader` — breadcrumbs
-   * (`breadcrumb`), title, subtitle, status/meta (this), actions (`extra`) and responsive
-   * overflow (`headerLayout` / `measure`) all live on this one renderer.
+   * Status/meta band rendered beside the title inside the heading — StatusBadge, environment tag,
+   * "updated …" meta text.
    */
   status?: StatusProp;
   /**
    * Pending state for the title band while the page's own record resolves. Renders the
    * title/subtitle as `ui-skeleton-block` placeholders and marks the header `aria-busy`, keeping
    * the `<h1>` in the document with an sr-only accessible name (an empty heading is an axe
-   * violation) so the page's heading outline never disappears mid-load. Breadcrumbs and `extra`
-   * are NOT skeletonised — they come from the route, not the record.
+   * violation) so the page's heading outline never disappears mid-load.
    */
   headerLoading?: boolean;
   extra?: ExtraProp;
@@ -101,21 +77,14 @@ export type PageContainerProp = {
    * FIXED chrome band between the page header and the scrolling body — a filter strip, a status
    * bar, a "channel workflow" rail. It is a first-class page-chrome slot precisely because the
    * only alternative was hand-laying `position: sticky` at the call site (which the design system
-   * forbids) or putting the strip inside the body, where it scrolls away. Under `fill` the body
-   * IS the scroll viewport, so this band is a plain `flex: none` sibling OUTSIDE it — content can
-   * never travel underneath it the way it does under a sticky box. Shares the page gutters and
-   * the `measure` cap with the header and the body, so the three bands line up on both edges; its
-   * inset and bottom rule are token-owned (`--page-toolbar-pad-block` / `--page-toolbar-divider`).
-   * Omit it and NOTHING is rendered — no wrapper element, no gap.
+   * forbids) or putting the strip inside the body, where it scrolls away.
    */
   toolbar?: ReactNode;
   footer?: FooterProp;
   breadcrumb?: BreadcrumbProp;
   /**
    * Override the breadcrumb `<nav>` landmark's accessible name. Defaults to a localized
-   * "Breadcrumb". Needed when more than one `PageContainer` (each with its own `breadcrumb`)
-   * renders on the same page/view — two `<nav>` landmarks sharing one name/role fail axe's
-   * `landmark-unique` (WCAG 2.4.1 / 1.3.1).
+   * "Breadcrumb".
    */
   breadcrumbLabel?: string;
   /** Kebab/DOM-style alias of `breadcrumbLabel` (same landmark-unique override). */
@@ -126,74 +95,37 @@ export type PageContainerProp = {
   /**
    * Whole-page composition contract. `admin-collection` sets the header-to-toolbar rhythm,
    * collection search measure, control height and table density once for the entire subtree.
-   * Geometry remains token-owned and service-themeable; no child needs a sizing override.
    */
   preset?: PageContainerPresetProp;
   /**
-   * How the title band and `extra` share the header row below the 640px step. Defaults to
-   * `stack` — the historical arrangement, where `extra` wraps onto its own full-width line under
-   * the subtitle. Use `responsive-inline` to keep ONE compact control (a search field, a single
-   * primary action) beside the title at 390px, at the token-owned
-   * `--page-header-extra-measure`. At >=640px both arrangements are identical.
+   * How the title band and `extra` share the header row below the 640px step. Use
+   * `responsive-inline` to keep ONE compact control (a search field, a single primary action)
+   * beside the title at 390px, at the token-owned `--page-header-extra-measure`.
    */
   headerLayout?: PageContainerHeaderLayoutProp;
   /**
-   * Whether the page's top row is a DOCUMENT TITLE or the surface's own CHROME. Defaults to
-   * `document` — the historical page, byte-identical (no attribute is emitted at all). Pass
-   * `chrome` when the row names the thing the user is already inside rather than announcing a
-   * document: a chat channel, a mail thread, an IDE tab. The `<h1>` then takes the body type step
-   * (`--page-title-font-size-chrome`) at EVERY width — including below 720px, where the
-   * document-scale responsive step would otherwise pull it back UP — so the header band stops
-   * eating the height the conversation needs (measured in a consumer chat page: a 61px band with a
-   * 24px name, against a design that wanted ~40px at the `sm` step).
-   *
-   * The same answer also puts the band ON the frame's edge: the container's block-start padding
-   * becomes `--page-pad-block-start-chrome` (0) instead of `--space-page-active-y`, because a
-   * document title needs air above it and a channel head IS the top edge (measured on a consumer
-   * chat screen as 24px that pushed the head off y=0 and came off the transcript viewport). The
-   * page's bottom edge is untouched, that being `stickyFooter`'s.
-   *
-   * It carries two more consequences of the same fact. The SUBTITLE drops to
-   * `--page-subtitle-font-size-chrome` (`--font-size-2xs`, ≈11px): a caption on chrome, not a
-   * document's standfirst, and at the document step it was rendering at the very same size as the
-   * chrome title, which is not a hierarchy. And the `extra` cluster CENTRES on the bar
-   * (`align-self: center`) wherever the header row is a row (>=640px), because top-packing actions
-   * is a document behaviour — they belong on the first line of a tall `<h1>` — and a bar has no
-   * tall heading to align to. Measured on a consumer chat screen, that was 8.65px: 28px icon
-   * buttons pinned at y=14 inside a 45.3px row whose title block centred at y=22.65.
-   *
-   * The heading stays an `<h1>` throughout, so the screen-reader outline is unchanged. Compose it
-   * with `variant="ghost"` for the full quiet chrome header (ghost drops the divider and the
-   * header's bottom pad); the two are separate props because chrome WEIGHT and what the title
-   * MEANS are separate questions.
+   * Whether the page's top row is a DOCUMENT TITLE or the surface's own CHROME. Pass `chrome` when
+   * the row names the thing the user is already inside rather than announcing a document: a chat
+   * channel, a mail thread, an IDE tab.
    */
   headerScale?: PageContainerHeaderScaleProp;
   /**
-   * Bounded page measure shared by the header and the body. Defaults to `default` — no cap, the
-   * historical fluid page. `narrow` (624px surface) / `medium` (720px surface) cap BOTH bands to
-   * one token-owned measure (`--page-measure-{narrow,medium}`), so a header action ends flush with
-   * the body surface instead of at the page edge. Orthogonal to `variant`, so `variant="ghost"`
-   * quiet chrome composes with a bounded measure (gh#245 / gh#247). Unlike `variant="narrow"`,
-   * which caps only the body.
+   * Bounded page measure shared by the header and the body. `narrow` (624px surface) / `medium`
+   * (720px surface) cap BOTH bands to one token-owned measure (`--page-measure-{narrow,medium}`),
+   * so a header action ends flush with the body surface instead of at the page edge.
    */
   measure?: PageContainerMeasureProp;
   /** Pin footer to viewport bottom on scroll — pairs well with `variant="narrow"`. */
   stickyFooter?: boolean;
   /**
-   * When the footer is sticky, control WHEN it shows. `"always"` (default)
-   * keeps it pinned the whole time. `"onScroll"` hides it until the header
-   * (title + `extra` actions) scrolls out of view, then slides it up — the
-   * standard edit/create "save bar" so the primary actions stay reachable as
-   * the form scrolls, without cluttering the top. The footer stays mounted
-   * (no layout reflow → no jitter); observed against the nearest scroll
-   * container.
+   * When the footer is sticky, control WHEN it shows. `"always"` (default) keeps it pinned the
+   * whole time.
    */
   footerReveal?: "always" | "onScroll";
   /**
-   * Grow the body to fill the remaining shell height. Default `false` (top-packed,
-   * content-height — short pages leave no stretched void, gh#103). Enable for a
-   * full-height DataTable, SplitPane, or a chat surface whose composer is pinned
-   * to the bottom via `footer` + `stickyFooter`.
+   * Grow the body to fill the remaining shell height. Enable for a full-height DataTable,
+   * SplitPane, or a chat surface whose composer is pinned to the bottom via `footer` +
+   * `stickyFooter`.
    */
   fill?: boolean;
   children?: ChildrenProp;
@@ -213,11 +145,8 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
   wrap?: boolean;
   /**
    * Drop this region below a breakpoint step (`sm` 40rem · `md` 48rem · `lg` 64rem · `xl` 80rem).
-   * The ONE public way to make a layout region responsive without a page-local media query — a
-   * public header hides its anchor navigation below the tablet step with `hideBelow="md"` instead
-   * of a consumer `@media` rule (gh#252). Omit (the default) and no attribute is emitted, so no
-   * rule can match and the Flex is unchanged. The region is removed from the accessibility tree
-   * too, so keep its destinations reachable elsewhere at that width (a footer nav).
+   * Omit (the default) and no attribute is emitted, so no rule can match and the Flex is
+   * unchanged.
    */
   hideBelow?: BreakpointProp;
   /**
@@ -230,26 +159,17 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
 export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?: number };
 
 /**
- * Named, package-owned column geometry for ResponsiveGrid — the semantic alternative to a
- * consumer hand-rolling a `columns={{ sm, md, lg }}` breakpoint map for a recognised collection
- * shape. Takes priority over `columns` when both are set (`columns` is then ignored, not merged).
- *
+ * Takes priority over `columns` when both are set (`columns` is then ignored, not merged).
  * `pricing-plans` — the canonical billing/pricing-plan collection: 1 column until the `lg` step
- * (container ≥ 64rem), then 3 columns from `lg` upward. Because ResponsiveGrid has no step above
- * `lg`, this reads as exactly 3 columns at BOTH the 1024px and 1440px reference widths and 1
- * column at 390px — the 3/3/1 contract requested for the billing plan catalog
- * (dxs-platform/platform#333, tracked upstream at dxs-platform/pkg-ui#14). General-purpose beyond
- * pricing: any 3-up desktop / 1-up mobile collection (no intermediate `md` step) can reuse it.
+ * (container ≥ 64rem), then 3 columns from `lg` upward.
  */
 export type ResponsiveGridPresetProp = "pricing-plans";
 
 export type MasterDetailRailWidthProp = "compact" | "standard";
 export type MasterDetailRailProp = "master" | "detail";
 /**
- * Bounded viewport preset for the master collection. `auto` (default) never bounds it — the
- * region grows with its content, exactly as before. `compact` / `standard` cap its block size
- * with the `--master-detail-master-viewport-*` tokens and scroll the collection inside the
- * region, so a long list cannot push the detail below the fold once the layout stacks.
+ * Bounded viewport preset for the master collection. `auto` (default) never bounds it — the region
+ * grows with its content, exactly as before.
  */
 export type MasterDetailMasterViewportProp = "auto" | "compact" | "standard";
 
@@ -259,20 +179,13 @@ export type MasterDetailProp = {
   master: ReactNode;
   /** Detail surface for the current selection. */
   children: ChildrenProp;
-  /**
-   * Which region is the fixed-width rail; the other one is fluid. Defaults to `detail` — the
-   * canonical fluid-list + fixed-detail-rail composition. Use `master` for a leading
-   * category/navigator rail beside a fluid detail surface.
-   */
+  /** Use `master` for a leading category/navigator rail beside a fluid detail surface. */
   rail?: MasterDetailRailProp;
   /** Rail track width: `compact` = 300px; `standard` = 320px. */
   railWidth?: MasterDetailRailWidthProp;
   /**
    * Bound the master collection to a scrollable viewport instead of letting it grow with its
-   * content. `auto` (default) keeps the unbounded behaviour. `compact` (20rem) / `standard`
-   * (28rem) read the `--master-detail-master-viewport-*` tokens, scroll the collection INSIDE the
-   * region, and make it a keyboard-reachable scroll container. Pair with `masterLabel` so the
-   * scroll region is announced.
+   * content. `auto` (default) keeps the unbounded behaviour.
    */
   masterViewport?: MasterDetailMasterViewportProp;
   /**
@@ -309,37 +222,26 @@ export type AppShellProp = {
   footer?: ReactNode;
   sidebarCollapsed?: boolean;
   /**
-   * Responsive navigation strategy below the canonical 900px shell breakpoint.
-   *
-   * - `"drawer"` (default) hides the docked sidebar and exposes the accessible mobile Sheet.
-   * - `"docked"` keeps the sidebar grid track, footer/account region and active navigation in the
-   *   shell at narrow widths. The sidebar width remains owned by `--app-shell-sidebar-width`.
-   *
-   * Use `"docked"` only when the product's approved responsive contract explicitly retains the
-   * rail; it intentionally suppresses the redundant mobile drawer trigger.
+   * Responsive navigation strategy below the canonical 900px shell breakpoint. - `"drawer"`
+   * (default) hides the docked sidebar and exposes the accessible mobile Sheet. - `"docked"` keeps
+   * the sidebar grid track, footer/account region and active navigation in the shell at narrow
+   * widths. The sidebar width remains owned by `--app-shell-sidebar-width`.
    */
   responsiveNavigation?: "drawer" | "docked";
   /**
-   * Which columns the topbar spans.
-   *
-   * - `"content"` (default) starts the topbar beside the sidebar, so the rail runs the full height
-   *   of the window and the bar sits over the content only. The admin-console arrangement.
-   * - `"full"` runs the topbar edge to edge across the top with the sidebar starting beneath it —
-   *   the arrangement products use when the bar carries space-level chrome (global search, account,
-   *   notifications) that outranks the current section rather than belonging to it.
-   *
-   * Not cosmetic: it changes what the bar reads as owning. `"full"` also renders the `<header>`
-   * before the `<aside>` so keyboard order follows the visual order — a grid area alone would put
-   * focus in the rail while the eye starts at the bar (WCAG 2.4.3).
+   * Which columns the topbar spans. - `"content"` (default) starts the topbar beside the sidebar,
+   * so the rail runs the full height of the window and the bar sits over the content only. The
+   * admin-console arrangement. - `"full"` runs the topbar edge to edge across the top with the
+   * sidebar starting beneath it — the arrangement products use when the bar carries space-level
+   * chrome (global search, account, notifications) that outranks the current section rather than
+   * belonging to it.
    */
   topbarSpan?: "content" | "full";
   /**
    * Navigation shown in the mobile drawer at the DXS 900px breakpoint, where the docked sidebar is
-   * hidden. AppShell OWNS the drawer: it renders a hamburger trigger in the topbar and a focus-
-   * trapped Sheet (Esc + overlay close, focus returns to the trigger) — hiding the sidebar without
-   * a reachable alternative is invalid (gh#165). Defaults to `sidebar`, so the same nav is
-   * available on mobile with no extra wiring; pass a distinct node for a mobile-tailored menu, or
-   * `null` to opt out (only when navigation lives elsewhere, e.g. a bottom bar).
+   * hidden. Defaults to `sidebar`, so the same nav is available on mobile with no extra wiring;
+   * pass a distinct node for a mobile-tailored menu, or `null` to opt out (only when navigation
+   * lives elsewhere, e.g. a bottom bar).
    */
   mobileNav?: ReactNode;
   /** Accessible title for the mobile navigation drawer. Defaults to the localized "Menu". */
@@ -368,41 +270,15 @@ export type AuthShellProp = {
   /**
    * Visual contract for the auth surface. `"canonical"` applies the shared DXS compact geometry
    * (36px controls, 22.5rem card measure, and responsive page insets) through component tokens.
-   * Default `"default"` preserves the existing comfortable shell.
    */
   variant?: "default" | "canonical";
   /**
    * Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the
    * auth card's max-width plus the desktop and mobile page gutters, all owned by component tokens
    * (`--auth-shell-{login,registration,device,context,recovery}-*`). Selecting a preset replaces
-   * every consumer-side geometry override.
-   *
-   * - `"default"` (default) — the shell's own measure; nothing changes.
-   * - `"login"` — SCR-001's 360px card at x=540/332/15 and y=363/363/353 for the canonical
-   *   1440x900, 1024x900 and 390x844 viewports. The identity occupies a package-owned anchor slot,
-   *   so standalone, one-line requester and wrapped two-line requester states keep the same card
-   *   position without truncating or inventing requester data. Pass AuthIdentity, Card and
-   *   AuthFooter as direct children (an anchor may wrap AuthIdentity).
-   * - `"registration"` — the 360px sign-up measure with a 15px inline gutter at 390px (the same
-   *   page rhythm as `"login"`, so sign-in → sign-up never jumps on a phone). START-aligned like
-   *   login, because a registration card is the tallest surface in the hosted-identity set
-   *   (name · email · password · confirm · strength · consent · submit · providers) and a
-   *   vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting
-   *   its first field out of reach — start-aligned, a long form simply scrolls. It is also the
-   *   only preset with a footer-clearance knob of its own, so the legal/consent footer never sits
-   *   flush against the submit button. Carries the full password form and the pending-email
-   *   confirmation state with no consumer geometry CSS.
-   * - `"device-authorization"` — 380px card measure with a 5px inline page gutter at a 390px
-   *   viewport (canonical device-grant artboard).
-   * - `"context-selection"` — 25rem card measure on desktop/tablet, edge-to-edge on mobile, and a
-   *   tokenized rhythm between the intro, the card and the trailing "remember" row.
-   * - `"account-recovery"` — 27rem/432px panel measure with a 15px inline page gutter at 390px
-   *   (panel x=15, width=360). One measure for BOTH canonical SCR-008 panels: password recovery
-   *   (request · sent · new-password · expired) and the sign-in MFA challenge (OTP · recovery-code
-   *   · passkey-failure), whose title and description sit INSIDE the bordered surface.
-   *
-   * Orthogonal to `variant`: presets are applied AFTER it, so `variant="canonical"` keeps owning
-   * control density and heading size while the preset re-measures/anchors the page.
+   * every consumer-side geometry override. - `"default"` (default) — the shell's own measure;
+   * nothing changes. - `"login"` — SCR-001's 360px card at x=540/332/15 and y=363/363/353 for the
+   * canonical 1440x900, 1024x900 and 390x844 viewports.
    */
   preset?: AuthShellPresetProp;
   /**
@@ -430,30 +306,20 @@ export type SeparatorProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children
   /**
    * Localized text that INTERRUPTS the rule — a day divider, a "new messages" watermark, an auth
    * conjunction. The rule splits into two halves around it and the grid keeps the label optically
-   * placed regardless of translation length. `horizontal` only: with `orientation="vertical"` the
-   * label is ignored and dev builds warn. Omit for a plain rule.
-   *
-   * A `string`, not the `LabelProp` ReactNode, because this text IS the separator's accessible
-   * name — a node cannot be announced. The library never invents the copy: the consumer passes a
-   * `t()` string, and a date is formatted with `Intl.DateTimeFormat` on the active locale.
+   * placed regardless of translation length.
    */
   label?: string;
-  /**
-   * Where the label sits on the rule. Default `"center"` (the classic conjunction). `"start"` is
-   * the Slack/Mattermost stream convention — the label hugs the inline-start edge with the long
-   * half of the rule running to the inline-end. Logical, so it flips under `dir="rtl"`.
-   */
+  /** Where the label sits on the rule. Default `"center"` (the classic conjunction). */
   labelAlign?: TextAlignProp;
   /**
-   * Semantic emphasis of the label AND the rule together — `"default"` is the quiet chrome (#44);
-   * a semantic role marks an attention rule such as an unread watermark. Never colour-only: the
-   * tone re-points both halves, so the distinction survives forced-colors. Default `"default"`.
+   * Never colour-only: the tone re-points both halves, so the distinction survives forced-colors.
+   * Default `"default"`.
    */
   tone?: TextToneProp;
   /**
-   * `true` (the default for an UNLABELLED rule) keeps Radix's decorative behaviour — `role="none"`,
-   * nothing announced. A `label` flips the default to `false`, so the rule becomes a real
-   * `role="separator"` named by the label. Pass it explicitly to override either default.
+   * `true` (the default for an UNLABELLED rule) keeps Radix's decorative behaviour —
+   * `role="none"`, nothing announced. A `label` flips the default to `false`, so the rule becomes
+   * a real `role="separator"` named by the label.
    */
   decorative?: boolean;
   className?: ClassNameProp;
@@ -508,6 +374,22 @@ export type AuthIdentityProp = {
  * It owns avatar fallback, bidi-safe email truncation and the keyboard action geometry; the
  * consumer owns the authoritative email, localized action label and navigation handler.
  */
+/**
+ * @see AccountChip — signed-in user for a PageContainer `extra` slot, a Topbar or a footer row:
+ * avatar, name and one ghost action at the control tier height.
+ */
+export type AccountChipProp = {
+  name: string;
+  email?: string;
+  avatarSrc?: string;
+  avatarFallback?: ReactNode;
+  /** Accessible name of the action button (a sign-out label). */
+  actionLabel?: ReactNode;
+  onAction?: () => void;
+  disabled?: DisabledProp;
+  className?: ClassNameProp;
+};
+
 export type AuthAccountSummaryProp = {
   email: string;
   avatarSrc?: string;
@@ -534,7 +416,7 @@ export type CenteredShellProp = {
   /**
    * Top bar slot (banner) — a `<Topbar>` with brand + real actions (an `AppSettingPicker`, a user
    * menu, sign-out). CenteredShell wraps it in the SAME padded chrome as AppShell's topbar
-   * (padding-inline · border · backdrop), so you never hand-roll a bar. Omit → no banner.
+   * (padding-inline · border · backdrop), so you never hand-roll a bar.
    */
   topbar?: ReactNode;
   /** Footer slot (contentinfo) pinned to the bottom (legal links, locale switch, support). Omit → none. */
@@ -546,20 +428,12 @@ export type CenteredShellProp = {
   width?: CenteredShellWidthProp;
   /**
    * Block alignment of the centred column inside the `100dvh` shell. `"start"` (default) keeps the
-   * top-aligned flowing/scrolling page shape. `"center"` centres the column in the viewport — the
-   * SYSTEM-level standalone surface (a 500/503 error page, a maintenance notice) whose full-page
-   * geometry must stay package-owned instead of a consumer re-implementing `min-h-dvh` + flex
-   * centring. Overflowing content still scrolls from the top (auto block offsets collapse to 0), so
-   * a long localized message is never clipped.
+   * top-aligned flowing/scrolling page shape.
    */
   align?: CenteredShellAlignProp;
   /**
    * Whole-page shell contract. `"default"` (the default) emits no attribute and keeps the shell's
-   * exact box. `"public-landing"` owns the PUBLIC landing geometry — one content measure shared by
-   * the header bar, the centred column and the footer, the section rhythm, the flat public-surface
-   * card chrome and the hero `h1` tier — from `--centered-shell-landing-*` tokens, so a landing
-   * composition (header · hero · sections · legal footer) needs no page-local CSS and no descendant
-   * selector against shell internals (gh#252).
+   * exact box.
    */
   preset?: CenteredShellPresetProp;
   className?: ClassNameProp;
@@ -638,8 +512,7 @@ export type ErrorSurfaceProp = {
   tone?: EmptyStateToneProp;
   /**
    * Semantic heading level of `title`. Defaults to `2` in `application` mode (a `PageContainer`
-   * `h1` sits above it) and `1` in `system` mode (the surface IS the page). Choose it to keep the
-   * outline valid, never for size.
+   * `h1` sits above it) and `1` in `system` mode (the surface IS the page).
    */
   titleLevel?: HeadingLevelProp;
   /**
@@ -683,18 +556,7 @@ export type SidebarProductProp = {
 
 /**
  * What a nav row's count MEANS — a subset of the shared `ToneProp` vocabulary, not a palette.
- *
- * `neutral` (default) — a plain count: unread items, pending rows, queued jobs. The pill keeps the
- * quiet `--sidebar-badge-background` / `-foreground` pair it always had.
- *
- * `destructive` — the count is ADDRESSED TO THE USER and the rail should pull the eye: an
- * @mention, a direct message, a failing job awaiting them. Reads the
- * `--sidebar-badge-destructive-*` pair.
- *
- * Deliberately TWO values, not the whole `ToneProp` union: a navigation rail answers one question
- * about a count — "does this need me personally?" — and a five-colour rail is decoration, not
- * information. Colour ONLY: the pill's geometry is shared, so a mention row and an unread row stay
- * aligned in the same column.
+ * `neutral` (default) — a plain count: unread items, pending rows, queued jobs.
  */
 export type SidebarBadgeToneProp = Extract<ToneProp, "neutral" | "destructive">;
 
@@ -704,37 +566,24 @@ export type SidebarItemProp = {
   label: string;
   /**
    * Leading 16px glyph — REQUIRED: the collapsed rail is icon-only and the expanded rail aligns
-   * every label to the icon column. Untyped/API-driven data that omits it no longer crashes the
-   * shell (the row renders an empty `.sb-icon` slot, keeping the 32px row / 10px gap), but the rail
-   * reads as a hole. Its colour is themeable separately from the label via
+   * every label to the icon column. Its colour is themeable separately from the label via
    * `--sidebar-nav-icon-foreground` (see {@link SidebarProp}).
    */
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   /**
    * Count/status affix rendered in the row's `.sb-badge` pill. Pass the CONTENT ONLY — a number, a
-   * string, `"9+"`. Never a `<Badge>`: the row already IS a badge, so nesting one produces two
-   * stacked pills (measured: a 37.11×19.14 `.sb-badge` wrapping a 25.11×19.14 `<Badge>` with its
-   * own border). To change what the count MEANS, use {@link SidebarItemProp.badgeTone}.
+   * string, `"9+"`.
    */
   badge?: ReactNode;
   /**
-   * Emphasis of `badge`. Defaults to `neutral` — the historical pill, byte-identical (no attribute
-   * is emitted at all). Pass `destructive` when the count is addressed to the user rather than
-   * merely unread: an @mention, a direct message, a failure waiting on them. It moves two colour
-   * tokens and nothing else, so mention rows and unread rows still line up.
-   *
-   * Ignored when `badge` is absent, and on the collapsed rail (which hides `.sb-badge` entirely).
+   * Emphasis of `badge`. Pass `destructive` when the count is addressed to the user rather than
+   * merely unread: an @mention, a direct message, a failure waiting on them.
    */
   badgeTone?: SidebarBadgeToneProp;
   disabled?: boolean;
   /**
    * Destination of the row. It is the SOLE interactive element (no nested `<button>`), so
-   * right-click / open-in-new-tab / middle-click all work. Omit for SPA rows that only report
-   * selection via `onSelect(id)`.
-   *
-   * With `Sidebar.linkComponent` this same `href` is what the framework router `<Link>` receives —
-   * the LIBRARY still composes the row (icon · label · badge · active · collapsed), so a router
-   * link never has to reconstruct row markup (gh#213).
+   * right-click / open-in-new-tab / middle-click all work.
    */
   href?: string;
   /** Nested rows — renders a collapsible submenu group (the parent reads active when any child is). */
@@ -745,12 +594,8 @@ export type SidebarItemProp = {
 export type SidebarItemData = SidebarItemProp;
 
 /**
- * Props the Sidebar hands to `Sidebar.linkComponent` for one nav row (gh#213).
- *
- * Every field is ANCHOR-SAFE — a router `<Link>` may spread the whole object onto its `<a>` without
- * emitting an unknown-DOM-attribute warning. `children` is the LIBRARY-COMPOSED row content (the
- * `.sb-icon` slot, the `.sb-label`, the `.sb-badge`); render it as-is and never rebuild it, which is
- * what makes icons/badges survive a consumer link (the reported production regression).
+ * Every field is ANCHOR-SAFE — a router `<Link>` may spread the whole object onto its `<a>`
+ * without emitting an unknown-DOM-attribute warning.
  */
 export type SidebarLinkProp = {
   /** `SidebarItemProp.href`. Absent for a disabled row — render an inert `<a>` with no navigation. */
@@ -816,16 +661,14 @@ export type OrgSwitcherOrganization = {
   /** Optional owned mark/avatar. When omitted, OrgSwitcher renders the first name character. */
   avatar?: ReactNode;
   /**
-   * Status/plan affordance rendered end-aligned in the expanded trigger and in the menu row
-   * (e.g. `<Badge tone="warning">Trial</Badge>`). Hidden in the collapsed rail, which only has room
-   * for the mark. Pair a non-textual badge with {@link OrgSwitcherOrganization.badgeLabel}.
+   * Status/plan affordance rendered end-aligned in the expanded trigger and in the menu row (e.g.
+   * `<Badge tone="warning">Trial</Badge>`).
    */
   badge?: ReactNode;
   /**
    * Localized screen-reader text for `badge`. Required whenever the badge carries meaning the
    * accessible name would otherwise lose (WCAG 1.1.1 / 1.4.1): the trigger's `aria-label` owns its
-   * accessible name, so the badge is announced through `aria-describedby` instead. When omitted, a
-   * textual badge is still announced inside the menu row but NOT on the trigger.
+   * accessible name, so the badge is announced through `aria-describedby` instead.
    */
   badgeLabel?: string;
   disabled?: boolean;
@@ -913,12 +756,7 @@ export type SidebarProp = {
    */
   renderItem?: (item: SidebarItemData, rowProps: SidebarRenderItemProp) => ReactNode;
   footer?: ReactNode;
-  /**
-   * Override the nav landmark's accessible name. Defaults to a localized "Main navigation".
-   * Needed when more than one Sidebar renders on the same page/view (e.g. a docked sidebar +
-   * its mobile-drawer twin, both mounted at once) — two `<nav>` landmarks sharing one name/role
-   * fail axe's `landmark-unique` (WCAG 2.4.1 / 1.3.1).
-   */
+  /** Override the nav landmark's accessible name. Defaults to a localized "Main navigation". */
   "aria-label"?: string;
 };
 
@@ -971,25 +809,17 @@ export type LegalDocumentSectionProp = {
 export type LegalDocumentShellProp = {
   /** Document title — the `<h1>` that names the `<article>` (e.g. "Terms of Service"). */
   title: TitleProp;
-  /**
-   * Document version identifier (e.g. `"2.4"`). Rendered as a localized "Version {version}" line —
-   * pass the bare identifier, never a pre-localized sentence.
-   */
+  /** Document version identifier (e.g. `"2.4"`). */
   version?: string;
   /**
-   * Effective date as an **ISO 8601** calendar date (`yyyy-MM-dd`) or a full ISO instant. Formatted
-   * for display with `Intl.DateTimeFormat` in the active locale and emitted inside a
+   * Effective date as an **ISO 8601** calendar date (`yyyy-MM-dd`) or a full ISO instant.
+   * Formatted for display with `Intl.DateTimeFormat` in the active locale and emitted inside a
    * `<time dateTime={effectiveDate}>`, so the machine-readable value is always the ISO input.
-   * NEVER pass a pre-formatted string.
    */
   effectiveDate?: string;
   /** Short plain-language summary rendered under the metadata, above the contents. */
   summary?: ReactNode;
-  /**
-   * Accessible name + visible caption of the contents `<nav>` (e.g. "Contents"). Defaults to a
-   * localized "Contents"; override it when two documents render in the same view, so the two `nav`
-   * landmarks stay distinguishable (axe `landmark-unique`, WCAG 2.4.1).
-   */
+  /** Accessible name + visible caption of the contents `<nav>` (e.g. "Contents"). */
   contentsLabel?: string;
   /** The document's sections, in reading order. Drives BOTH the contents list and the body. */
   sections: LegalDocumentSectionProp[];
@@ -1015,8 +845,6 @@ export type LegalDocumentShellProp = {
   id?: IdProp;
   className?: ClassNameProp;
 };
-
-// ─── ServiceRolePanel (gh#257 / DXS platform#311) ────────────────────────────────────────────────
 
 /** @see ServiceRolePanel — one role in the master rail. Domain data is consumer-supplied. */
 export type ServiceRoleItemProp = {

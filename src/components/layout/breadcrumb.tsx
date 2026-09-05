@@ -7,11 +7,7 @@ import type { BreadcrumbProp } from "../../props/vocabulary/navigation.prop";
 export type BreadcrumbProps = {
   items: BreadcrumbProp;
   linkComponent?: ElementType;
-  /**
-   * Override the `<nav>` landmark's accessible name. Defaults to a localized "Breadcrumb".
-   * Multiple Breadcrumb instances on one page/view need a DISTINCT name each — two `<nav>`
-   * landmarks sharing one name/role fail axe's `landmark-unique` (WCAG 2.4.1 / 1.3.1).
-   */
+  /** Override the `<nav>` landmark's accessible name. Defaults to a localized "Breadcrumb". */
   ariaLabel?: string;
 };
 

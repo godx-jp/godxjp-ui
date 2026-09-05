@@ -6,27 +6,17 @@ export const controlMultilineClass =
   "ui-control-multiline w-full rounded-[var(--control-radius)] border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
 
 /**
- * Multiline control with its own chrome removed, for a textarea EMBEDDED in a surface that
- * already draws the box — a chat composer inside a Card, an inline edit cell, a comment box in
- * a panel. Two nested rounded borders is the tell that this was missing.
- *
- * These are utilities, not tokens, ON PURPOSE. `.ui-control-multiline` reads
- * `--control-border-width` / `--control-shadow` from `@layer components`, but the default class
- * ALSO carries Tailwind's `border` in `@layer utilities`, which wins whatever the token says —
- * the same structural inertness gh#260 found on Badge's font size. So the variant cannot be a
- * token override by a consumer; it has to drop the utilities here.
- *
- * The focus ring goes with them: the surface owns focus, via `focus-within` on the wrapper.
+ * Multiline control with its own chrome removed, for a textarea EMBEDDED in a surface that already
+ * draws the box — a chat composer inside a Card, an inline edit cell, a comment box in a panel.
+ * Two nested rounded borders is the tell that this was missing.
  */
 export const controlMultilineGhostClass =
   "ui-control-multiline w-full min-h-0 border-0 bg-transparent shadow-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50";
 
 /**
- * Open-state ring for popup-style triggers (Select / Cascader / TreeSelect / SearchSelect).
- * Radix moves focus INTO the popup on open, so the trigger loses `:focus-visible` and — without
- * this — an open popover shows only a border change (no ring), inconsistent with a focused Input.
- * Opacity `/50` matches the real focus ring used by Button / Input / Select. Apply alongside
- * `focus-visible:ring-*` on any trigger that toggles `data-state="open"`.
+ * Open-state ring for popup-style triggers (Select / Cascader / TreeSelect / SearchSelect). Radix
+ * moves focus INTO the popup on open, so the trigger loses `:focus-visible` and — without this —
+ * an open popover shows only a border change (no ring), inconsistent with a focused Input.
  */
 export const controlOpenRingClass = "ui-control-trigger";
 

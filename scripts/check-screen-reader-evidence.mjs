@@ -54,7 +54,6 @@ const baselineCombinations = new Map([
   ["nvda-firefox-windows", "all-interactive"],
   ["nvda-chrome-windows-complex", "complex-composites-and-live-regions"],
 ]);
-// Journey phases mirror issue #171 "Evidence required per owner": focus entry, internal
 // navigation, activation, escape/close, focus return, the form error/help/required/invalid
 // announcements and the live/async loading/success/error/recovery announcements.
 const journeyPhases = new Set([
@@ -73,7 +72,7 @@ const journeyPhases = new Set([
   "success-announcement",
   "recovery-announcement",
 ]);
-// The seven owner cohorts named in issue #171. A cohort's baseline phases may be extended by
+// A cohort's baseline phases may be extended by
 // policy but never weakened — that is how "error/help/required/invalid for form owners" and
 // "loading/success/error/recovery for live/async owners" stay mandatory.
 const baselineCohorts = new Map([
@@ -155,7 +154,7 @@ for (const [id, appliesTo] of baselineCombinations) {
 }
 
 // ---------------------------------------------------------------------------
-// Owner cohort registry (#171 "Owner cohorts"). Evidence is recorded per owner
+// Evidence is recorded per owner
 // JOURNEY, so every promotable owner must belong to exactly one cohort.
 // ---------------------------------------------------------------------------
 const cohorts = new Map();

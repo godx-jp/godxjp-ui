@@ -33,7 +33,6 @@ export function AppShell({
   // The docked sidebar is hidden at the DXS 900px breakpoint, so AppShell OWNS an accessible mobile drawer: a
   // hamburger trigger in the topbar opens a focus-trapped Sheet (Radix Dialog → Esc + overlay
   // close, focus returns to the trigger). The drawer nav defaults to the SAME `sidebar` node, so
-  // navigation is never merely hidden (gh#165); pass `mobileNav` for a tailored menu, or `null`
   // to opt out.
   const drawerNav = mobileNav !== undefined ? mobileNav : sidebar;
   const hasDrawer = responsiveNavigation === "drawer" && drawerNav != null;
@@ -54,7 +53,6 @@ export function AppShell({
   // A shell whose PAGE owns the top row — chat, mail, an IDE — has nothing to put in the bar, and
   // an empty bar is not free: the grid reserves --app-shell-bar-height and the <header> paints a
   // border plus a card background under it, so the page's own header lands on a SECOND row of
-  // chrome (measured at ~48px bar + ~60px page header in a consumer chat shell, over exactly the
   // region that needs the height most). With all four bar slots undefined there is no <header> at
   // all and the row is published as data-topbar="none", which collapses it to zero.
   const hasTopbarContent =
@@ -84,7 +82,7 @@ export function AppShell({
   // The ONE thing that survives in a bar-less shell: AppShell's own hamburger. Below the 900px
   // breakpoint the docked sidebar is hidden, so dropping the bar there as well would leave the
   // shell with no reachable navigation at all — a worse bug than the double chrome this state
-  // exists to fix (gh#165). When a drawer exists the <header> is therefore still rendered, holding
+  // When a drawer exists the <header> is therefore still rendered, holding
   // the trigger and nothing else; CSS (`[data-topbar="none"] > .app-topbar`) keeps it out of the
   // layout entirely above the breakpoint and brings it back below it.
   const bar =
@@ -119,14 +117,7 @@ export function AppShell({
               overlayClassName="app-mobile-nav-overlay"
             >
               <SheetHeader title={mobileNavLabel ?? t("layout.appShell.navLabel")} />
-              {/* The drawer body is edge-to-edge: the nav it hosts (the <Sidebar> node by default)
-               * owns its own inset via --sidebar-nav-scroll-padding, so stacking SheetBody's
-               * generic chrome inset (--sheet-pad-x = 24px) on top of it double-padded every row
-               * — 32px of dead space per side on a ~293px drawer (gh#211). The inset is a
-               * documented knob (--app-shell-mobile-nav-inset); a custom `mobileNav` that wants
-               * the full chrome inset sets it to var(--space-6) once in the service theme.
-               * Passed as a utility (not CSS) because *-layout.css is `@layer components`, where
-               * SheetBody's own px-* utility would win. */}
+              {/* The inset is a documented knob (--app-shell-mobile-nav-inset); a custom `mobileNav` that wants the full chrome inset sets it to var(--space-6) once in the service theme. Passed as a utility (not CSS) because *-layout.css is `@layer components`, where SheetBody's own px-* utility would win. */}
               <SheetBody
                 className="app-mobile-nav-body px-[var(--app-shell-mobile-nav-inset)]"
                 onClick={handleDrawerClick}

@@ -262,7 +262,7 @@ export default function Demo() {
                       >
                         {/* Pinned-left: 識別子 (従業員 + 部署 + ID) */}
                         <TableCell className={`${PIN_LEFT} w-56 min-w-56 align-middle`}>
-                          <div className="flex flex-col leading-tight">
+                          <Flex direction="col" className="leading-tight">
                             <Text weight="medium">{emp.name}</Text>
                             <Text size="2xs" tone="muted">
                               {emp.dept} ·{" "}
@@ -270,7 +270,7 @@ export default function Demo() {
                                 {emp.id}
                               </Text>
                             </Text>
-                          </div>
+                          </Flex>
                         </TableCell>
 
                         {/* Scrolling day grid */}

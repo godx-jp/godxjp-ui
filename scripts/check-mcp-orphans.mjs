@@ -1,19 +1,10 @@
 #!/usr/bin/env node
 /**
- * Reverse drift guard — the COMPLEMENT of check-mcp-sync.mjs.
- *
- * check-mcp-sync: every MCP entry must be a real library export (no stale entries).
- * check-mcp-orphans (this): every PUBLIC PRIMARY component must HAVE an MCP entry
- * (no uncatalogued components). Without this, the catalog silently rots — a new
- * component ships, no entry is added, and agents (told to "check the MCP first, never
- * hand-roll") search the MCP, find nothing, and re-implement what already exists.
- *
- * "Primary component" = the export whose name is the PascalCase of its file name
- * (repo rule 27: one primitive per `src/components/<group>/<Name>.tsx`). Sub-parts
- * (CardHeader, SelectTrigger…) and the internal `ui/` styling layer are NOT catalog
- * entries and are excluded. Genuine non-catalog exports go in ALLOWLIST below.
- *
- * Usage: node scripts/check-mcp-orphans.mjs [--json]
+ * Reverse drift guard — the COMPLEMENT of check-mcp-sync.mjs. check-mcp-sync: every MCP entry must
+ * be a real library export (no stale entries). check-mcp-orphans (this): every PUBLIC PRIMARY
+ * component must HAVE an MCP entry (no uncatalogued components). Without this, the catalog
+ * silently rots — a new component ships, no entry is added, and agents (told to "check the MCP
+ * first, never hand-roll") search the MCP, find nothing, and re-implement what already exists.
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, basename } from "node:path";

@@ -202,10 +202,13 @@ function BulkActionBar({
 }) {
   const effective = spanAll ? total : count;
   return (
-    <div
+    <Flex
       role="region"
       aria-label="一括操作"
-      className="bg-primary/5 border-primary/30 flex flex-wrap items-center gap-3 rounded-md border px-3 py-2"
+      wrap
+      align="center"
+      gap="md"
+      className="bg-primary/5 border-primary/30 rounded-md border px-3 py-2"
     >
       {/* left: count + cross-page select-all escalation + safe batch actions */}
       <Flex direction="row" align="center" gap="sm" className="min-w-0 flex-1">
@@ -253,7 +256,7 @@ function BulkActionBar({
           解除
         </Button>
       </Flex>
-    </div>
+    </Flex>
   );
 }
 

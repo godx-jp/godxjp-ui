@@ -1,55 +1,7 @@
 #!/usr/bin/env node
 /**
  * Hard-coded CSS value guard — cardinal rules #44 and #45, the stylesheet half.
- *
- * `check-no-hardcoded-geometry.mjs` only reads `src/components/**\/*.tsx`. It reached 0 there, and
- * that zero is a lie the moment someone "cleans" a component by pushing the literal one file over:
- * delete `className="h-8 min-w-40"`, add `.ui-menu-row { height: 2rem; min-width: 10rem }` to
- * `src/styles/navigation-layout.css`, and the count still reads 0 while the constant is exactly as
- * unreachable as it was. That is not a hypothetical — it is what `navigation-layout.css` and
- * `.ui-empty-state-icon` (`width: 3rem; height: 3rem`) actually looked like during #319 Phase 1.
- *
- * A literal in `src/styles/**` fails rule #45 for the same reason a Tailwind scale step does: a
- * service theme cannot reach it at any price. The only fix is forking the stylesheet.
- *
- * WHAT COUNTS AS A VIOLATION
- *   An absolute length literal on a geometry/chrome property — width/height/inline-size/block-size
- *   and their min-/max- forms, padding, margin, gap, inset / top / bottom / left / right, radius,
- *   font-size, line-height, box-shadow — that is not read through `var(--…)`.
- *
- * WHAT DOES NOT — the allow-list, and why each entry is on it
- *   • Anything whose value contains `var(--…)`. That IS the knob; it is the destination, not debt.
- *   • `0` / `0px` / `100%` / `auto` / `none` / `inherit` / `currentColor` / `transparent`. None of
- *     these is a design constant; they are "off", "fill" and "don't touch".
- *   • `1px`. A hairline rule is not a tunable constant — a service retunes whether a divider EXISTS
- *     (rule #44: chrome is a token, default quiet), not whether it is 1px or 1.03px.
- *   • Everything in an `@media` / `@container` / `@supports` PRELUDE. Breakpoints are not component
- *     knobs; `(min-width: 48rem)` is a query, not chrome. Declarations INSIDE those blocks are
- *     still scanned — a responsive override is exactly where debt likes to hide.
- *   • Percentages and `100vh`/`100vw`/`100vmin`/`100vmax`. A percentage is proportional to its
- *     parent, so it is layout, not an absolute constant, and the `top: 50%; translate(-50%)`
- *     centring idiom would otherwise be reported five times over as work that does not exist.
- *     `90vw` and `60vh` are NOT exempt — those are real ceilings someone chose.
- *   • `src/tokens/**`. That is where literals BELONG. Only `src/styles/**` is in scope.
- *
- * DELIBERATELY NOT FLAGGED (false negatives we are choosing to accept)
- *   • Custom-property DECLARATIONS (`--tabs-root-gap: 0.5rem`). Whether a token may be declared in
- *     `src/styles` rather than `src/tokens` is `check-token-tiers`'s question, not this guard's.
- *   • Any value containing `var(--…)` anywhere, so `calc(var(--x) * 2 + 4px)` escapes with its
- *     baked `4px`. Unpicking a calc reliably is not worth the false positives it would cost.
- *   • Properties outside the list — `z-index`, `border-width`, `letter-spacing`, `transform`
- *     offsets, durations. Err toward false NEGATIVES: a missed literal costs one line of work, a
- *     phantom one sends a person to "fix" prose.
- *
- * RATCHET, NOT A CLIFF
- *   Same contract as the geometry guard: every file carries a baseline count that may only SHRINK.
- *   Exceed it and CI fails; drop below it and CI ALSO fails, telling you to re-baseline — that is
- *   what stops the number creeping back up after a cleanup. Re-baseline with `--update`.
- *
- * Usage:
- *   node scripts/check-no-hardcoded-css-values.mjs            # check against the baseline
- *   node scripts/check-no-hardcoded-css-values.mjs --update   # rewrite the baseline after a cleanup
- *   node scripts/check-no-hardcoded-css-values.mjs --json     # machine-readable report
+ * `check-no-hardcoded-geometry.mjs` only reads `src/components/**\/*.tsx`.
  */
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -88,14 +40,9 @@ function blank(text) {
 }
 
 /**
- * Strip comments before scanning.
- *
- * The geometry guard learned this the hard way — Card's explainer comment quoting
- * `className="border-2"` and Topbar's JSDoc `<Avatar className="rounded-md">` were both counted as
- * debt in files that had none. CSS here is far more heavily commented than the TSX is: nearly every
- * rule in `src/styles` carries a paragraph explaining which gh# issue it settles, and those
- * paragraphs quote the very literals they replaced (`"used to ride along as min-w-0"`,
- * `"re-tiers the box to --control-height-sm"`). Scanning them would report the fix as the bug.
+ * Strip comments before scanning. The geometry guard learned this the hard way — Card's explainer
+ * comment quoting `className="border-2"` and Topbar's JSDoc `<Avatar className="rounded-md">` were
+ * both counted as debt in files that had none.
  */
 function stripComments(source) {
   return source.replace(/\/\*[\s\S]*?\*\//g, blank);

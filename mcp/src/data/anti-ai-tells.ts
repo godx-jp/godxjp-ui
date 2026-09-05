@@ -1,8 +1,6 @@
 /**
- * Anti-AI-tells catalog — specific patterns that signal "this UI was
- * synthesised by an LLM without taste". Adapted from the taste-skill
- * SKILL.md (mobile + web) and the @godxjp/ui review log. The MCP
- * exposes this so consumer agents can self-audit BEFORE shipping.
+ * Anti-AI-tells catalog — specific patterns that signal "this UI was synthesised by an LLM without
+ * taste". Adapted from the taste-skill SKILL.md (mobile + web) and the @godxjp/ui review log.
  */
 
 export interface AiTell {

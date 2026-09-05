@@ -132,8 +132,10 @@ export function writeWorkflowMd(root) {
   return true;
 }
 
-/** Append the godxjp-ui mandate to the consumer's CLAUDE.md (created if absent). Idempotent
- * via the markers. Returns 'created' | 'appended' | 'present'. */
+/**
+ * Append the godxjp-ui mandate to the consumer's CLAUDE.md (created if absent). Idempotent via the
+ * markers.
+ */
 export function ensureClaudeMd(root) {
   const path = join(root, "CLAUDE.md");
   const existing = existsSync(path) ? readFileSync(path, "utf8") : null;

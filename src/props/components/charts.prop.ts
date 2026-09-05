@@ -87,9 +87,8 @@ export type CompactBarTrendProp = {
   /** Plot-height tier — `xs|sm|md|lg`. Defaults to `xs` (dashboard summary-card density). */
   size?: SizeProp;
   /**
-   * Index of the emphasized ("current") bar. Negative counts from the end
-   * (`-1` = the latest datum); out of range = no emphasis. Never colour-only —
-   * the emphasized row is annotated in the screen-reader text alternative.
+   * Index of the emphasized ("current") bar. Negative counts from the end (`-1` = the latest
+   * datum); out of range = no emphasis.
    */
   emphasizedIndex?: number;
   /** Render the category tick labels under the plot. */

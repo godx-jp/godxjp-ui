@@ -1,57 +1,7 @@
 #!/usr/bin/env node
 /**
  * Inline-style magic-number guard — cardinal rules #44 and #45, the `style={{…}}` blind spot.
- *
- * `check-no-hardcoded-geometry.mjs` reads class lists. It cannot see an inline style, because an
- * inline style is not a class — so the single most unreachable constant in the whole library was
- * invisible to it. TreeSelect computed its indent as
- *
- *     style={{ paddingInlineStart: `${depth * 1.25 + 0.5}rem` }}
- *
- * and the guard reported the file as clean. That `1.25` is the indent-per-level and that `0.5` is
- * the base inset: two design decisions, baked into a JS expression, at a specificity no stylesheet
- * can outrank and behind no token a service theme can set. It is the WORST kind of rule-#45
- * violation — not merely hard to change, literally unreachable at any price. (Phase 1 replaced it
- * with `style={{ "--tree-select-depth": depth }}` and moved the arithmetic into CSS, where the step
- * is a token.)
- *
- * WHAT COUNTS AS A VIOLATION — a numeric literal inside `style={{…}}` that ends up a CSS length
- *   • A static length in a string or template: `padding: "0.5rem 1rem"`, `top: `4px``.
- *   • A literal baked into an interpolation that is then given an absolute unit:
- *     `` `${depth * 1.25 + 0.5}rem` ``, `` `${index * 4}px` ``.
- *   • A bare number on a length-ish property, which React silently turns into px: `width: 24`,
- *     `maxHeight: rows * 36`.
- *
- * WHAT DOES NOT — the line between "baked" and "dynamic"
- *   • Anything reading a token: `style={{ background: "hsl(var(--attention))" }}`.
- *   • A value computed from props/state with NO numeric literal in it. This is the whole point:
- *     `transform: `scale(${scale})`` is fine — `scale` is data. `width: `${boundedValue}%`` (the
- *     Progress bar) is fine — the number IS the datum. `style={{ height }}` is fine.
- *   • Feeding a custom property from state: `style={{ "--tree-select-depth": depth }}` — that is
- *     the FIX, not the debt, and a bare number on a custom property is not a length anyway.
- *   • `1px` and `0`. A hairline is not a tunable constant; `0` is "off".
- *   • Percentages and viewport units inside an interpolation. `` `${(i / n) * 100}%` `` is a
- *     computed proportion — the 100 is unit conversion, not a design choice. Only absolute units
- *     (px/rem/em/ch/pt) make an interpolated literal a violation.
- *
- * DELIBERATELY NOT FLAGGED (false negatives we are choosing to accept)
- *   • `style={someObject}` / a `React.CSSProperties` const declared outside the JSX. Following the
- *     reference would need real scope analysis; the payoff does not justify the machinery.
- *   • Non-length magic numbers — `zIndex: 50`, `opacity: 0.6`, `duration: 200`. Real debt, but a
- *     different guard's debt; this one is scoped to lengths so its output stays trustworthy.
- *   • Numbers that are call arguments or array indices (`.toFixed(2)`, `ratios[0]`). Those are
- *     precision and addressing, not geometry, so they are stripped before the literal hunt.
- *   Err toward false NEGATIVES: a missed literal costs one line of work, a phantom one sends a
- *   person to "fix" prose.
- *
- * RATCHET, NOT A CLIFF
- *   Same contract as the geometry guard: a per-file baseline that may only SHRINK. Exceed it and CI
- *   fails; drop below it and CI ALSO fails, telling you to re-baseline. Re-baseline with `--update`.
- *
- * Usage:
- *   node scripts/check-no-inline-magic-numbers.mjs            # check against the baseline
- *   node scripts/check-no-inline-magic-numbers.mjs --update   # rewrite the baseline after a cleanup
- *   node scripts/check-no-inline-magic-numbers.mjs --json     # machine-readable report
+ * `check-no-hardcoded-geometry.mjs` reads class lists.
  */
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -75,7 +25,6 @@ const STATIC_ABSOLUTE_LENGTH = /(?<![\w.$}])(\d*\.?\d+)(px|rem|em|ch|pt)\b/g;
 const STATIC_RELATIVE_LENGTH = /(?<![\w.$}])(\d*\.?\d+)(%|vh|vw|vmin|vmax)(?![\w-])/g;
 /** `${…}` immediately followed by an ABSOLUTE unit — the TreeSelect shape. */
 const INTERPOLATED_LENGTH = /\$\{((?:[^{}]|\{[^{}]*\})*)\}\s*(px|rem|em|ch|pt)\b/g;
-/** A number that is not part of an identifier and not a property access. */
 const NUMERIC_LITERAL = /(?<![\w$.])(\d*\.?\d+)/g;
 
 function walk(dir, out = []) {
@@ -92,16 +41,10 @@ function blank(text) {
 }
 
 /**
- * Strip comments before scanning, preserving offsets so reported line numbers stay true.
- *
- * The geometry guard learned this the hard way — Card's explainer comment quoting
+ * Strip comments before scanning, preserving offsets so reported line numbers stay true. The
+ * geometry guard learned this the hard way — Card's explainer comment quoting
  * `className="border-2"` and Topbar's JSDoc `<Avatar className="rounded-md">` were counted as debt
- * in files that had none. The same trap is live here: the honest way to document this rule is to
- * quote the bug, and every JSDoc that shows a `style={{…}}` example would otherwise be read as one.
- *
- * Deliberately naive — it does not track a string that itself contains `//`. The `[^:]` guard keeps
- * `https://` intact, and any remaining false NEGATIVE costs one uncounted literal, whereas the
- * false POSITIVE it replaces costs someone real time.
+ * in files that had none.
  */
 function stripComments(source) {
   return source

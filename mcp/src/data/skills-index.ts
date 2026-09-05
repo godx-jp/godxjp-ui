@@ -1,13 +1,7 @@
 /**
- * Skills index — TOKEN-EFFICIENT registry of every taste / design
- * skill the MCP exposes. The agent uses `list_skills` to discover
- * (returns just id + name + tagline + section list) then
+ * Skills index — TOKEN-EFFICIENT registry of every taste / design skill the MCP exposes. The agent
+ * uses `list_skills` to discover (returns just id + name + tagline + section list) then
  * `get_skill_section` to drill into one section.
- *
- * Sources synthesised from Leonxlnx/taste-skill + framework-native
- * design knowledge. Body strings are stored separately in their
- * existing data files (design-thinking.ts, anti-ai-tells.ts, etc.)
- * to avoid duplication.
  */
 
 export interface SkillSection {
@@ -22,14 +16,9 @@ export interface SkillSection {
 }
 
 /**
- * Who a skill is for:
- *   - "core"     — building/maintaining @godxjp/ui ITSELF (the library, its docs,
- *                  its MCP catalog). Hidden from the consumer-facing tools.
- *   - "consumer" — building an APP that imports @godxjp/ui. Surfaced by
- *                  list_consumer_skills / route_consumer_task / get_consumer_skill.
- *   - "both"     — applies to either audience (e.g. universal taste/output rules).
- * Consumer tools surface audience ∈ {consumer, both}; core-only skills stay hidden
- * from them so an app-dev is never confronted with library-maintenance material.
+ * Who a skill is for: - "core" — building/maintaining @godxjp/ui ITSELF (the library, its docs,
+ * its MCP catalog). Hidden from the consumer-facing tools. - "consumer" — building an APP that
+ * imports @godxjp/ui.
  */
 export type SkillAudience = "core" | "consumer" | "both";
 
@@ -1265,10 +1254,7 @@ export function findSection(skillId: string, sectionId: string): SkillSection | 
   return findSkill(skillId)?.sections.find((s) => s.id === sectionId);
 }
 
-/**
- * Naïve task router — keyword match. Replace with embedding-based
- * matcher in v2 if it proves useful.
- */
+/** Naïve task router — keyword match. */
 export interface RouteResult {
   skill: string;
   section: string | "<see whenToUse>";

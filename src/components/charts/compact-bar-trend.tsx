@@ -13,30 +13,15 @@ export type {
 } from "../../props/components/charts.prop";
 
 /**
- * CompactBarTrend — a **dependency-free** compact vertical bar trend for dashboard
- * summary cards (a seven-day "new organizations" strip, a weekly activity pulse…).
- *
- * Unlike `BarChart` it does NOT need the `recharts` optional peer: the marks are
- * token-sized CSS blocks, so a consumer that may not add dependencies still gets a
- * real framework chart instead of a page-local grid with inline heights.
- *
- * - **Geometry is entirely token-owned** — `--chart-trend-plot-height-{xs,sm,md,lg}`,
- *   `--chart-trend-bar-{gap,radius,max-width,min-height}`. The only inline value is
- *   the datum itself (`--chart-trend-bar-value`, a 0..1 ratio of the largest bar).
- * - **Colour is token-owned** — muted marks read `--chart-trend-bar-background`
- *   (default `hsl(var(--muted-foreground) / .75)`), the emphasized mark reads
- *   `--chart-trend-bar-emphasis-background` (default `hsl(var(--primary))`).
- * - **a11y** — reuses `ChartFrame`: a `<figure>` with a visible `<figcaption>`, a
- *   `role="img"` plot named by a localized one-line summary, and a visually-hidden
- *   per-category value list referenced through `aria-describedby` (WCAG 1.1.1). The
- *   emphasized bar is ALSO named in that list, so the highlight is never
- *   colour-only (WCAG 1.4.1). The graphic holds no focusable elements — anything
- *   interactive belongs in `footer`, which renders outside the graphic.
- * - **i18n** — values are formatted with the active locale's `Intl.NumberFormat`;
- *   every generated string comes from `t()`.
- *
- * Import from `@godxjp/ui/charts/compact-bar-trend`. The isolated public entry keeps
- * consumers without the optional `recharts` peer away from the peer-backed charts barrel.
+ * CompactBarTrend — a **dependency-free** compact vertical bar trend for dashboard summary cards
+ * (a seven-day "new organizations" strip, a weekly activity pulse…). The only inline value is the
+ * datum itself (`--chart-trend-bar-value`, a 0..1 ratio of the largest bar). - **Colour is
+ * token-owned** — muted marks read `--chart-trend-bar-background` (default
+ * `hsl(var(--muted-foreground) / .75)`), the emphasized mark reads
+ * `--chart-trend-bar-emphasis-background` (default `hsl(var(--primary))`). - **a11y** — reuses
+ * `ChartFrame`: a `<figure>` with a visible `<figcaption>`, a `role="img"` plot named by a
+ * localized one-line summary, and a visually-hidden per-category value list referenced through
+ * `aria-describedby` (WCAG 1.1.1).
  */
 export function CompactBarTrend({
   data,

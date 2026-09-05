@@ -21,10 +21,6 @@ export type UseUploadDraftOptions = {
   onChange?: (item: UploadFileItem | null) => void;
 };
 
-/**
- * Single-value draft for avatar / picture — coordinates with media-service:
- * soft-delete only on form commit; undo before save (no restore API).
- */
 export function useUploadDraft({ value, onChange }: UseUploadDraftOptions) {
   const [baseline, setBaseline] = React.useState<UploadFileItem | null>(value ?? null);
 

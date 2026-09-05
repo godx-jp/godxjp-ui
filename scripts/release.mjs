@@ -1,22 +1,8 @@
 #!/usr/bin/env node
 /**
- * Coordinated, staged and recoverable release for @godxjp/ui + @godxjp/ui-mcp.
- *
- * This file is deliberately THIN: it parses flags, resolves paths, and wires two effect primitives
- * (`run` / `capture`) into the pure planner + executor in scripts/release-core.mjs. Every command
- * that actually runs — and the order it runs in — is decided by `buildReleasePlan` /
- * `planReleaseCommands`, so `src/test/__tests__/release-workflow.test.ts` can prove offline that
- * the coordinated target metadata and every preflight gate precede the first `npm publish`
- * (issue #230).
- *
- * PIPELINE: merge to `main` → CI. Push a `vX.Y.Z` tag → this script.
- *
- *   node scripts/release.mjs --tag v19.1.0        the normal path (npm-publish.yml, tag push)
- *   node scripts/release.mjs --ui minor --mcp sync  manual escape hatch: bump, publish, commit
- *   node scripts/release.mjs --adopt-staged 19.1.0 --mcp sync   promote an already-published pair
- *   node scripts/release.mjs --recovery           resume a recorded, interrupted release
- *   … --full-verify                               re-verify the tree locally instead of trusting
- *                                                 CI's verdict on the commit
+ * Coordinated, staged and recoverable release for @godxjp/ui + @godxjp/ui-mcp. This file is
+ * deliberately THIN: it parses flags, resolves paths, and wires two effect primitives (`run` /
+ * `capture`) into the pure planner + executor in scripts/release-core.mjs.
  */
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync } from "node:fs";
@@ -49,7 +35,6 @@ const adoptStagedVersion = flag("--adopt-staged", null);
 const tagRef =
   flag("--tag", null) ??
   (process.env.GITHUB_REF_TYPE === "tag" ? process.env.GITHUB_REF_NAME : null);
-/** Opt OUT of trusting CI's verdict on the commit: re-verify the whole tree locally instead. */
 const fullVerify = args.includes("--full-verify");
 const uiBump = recovery || adoptStagedVersion || tagRef ? "skip" : flag("--ui", "skip");
 const mcpBump = recovery || tagRef ? "sync" : flag("--mcp", "skip");

@@ -47,12 +47,11 @@ export function CheckboxGroup({
   // supports the two id-reference relationships per ARIA 1.2 — pickGroupFieldA11y folds the error
   // id into aria-describedby so the message is still announced without an invalid-ARIA violation.
   const groupA11y = pickGroupFieldA11y(ariaProps);
-  // gh#337 — the machine key for a group NESTED under a layout wrapper. `name` is handed to each
+  // `name` is handed to each
   // Checkbox, whose Radix hidden input is what a native submit reads.
   const identity = useFieldIdentity({ id, name, "data-field": groupA11y["data-field"] });
   const resolvedName = name ?? identity.name;
   const resolvedField = groupA11y["data-field"] ?? identity["data-field"];
-  // Per-option DOM id (gh#337) — same reasoning as Radio.Group: the group carries the field's id,
   // so each box needs its own, and a `React.useId()` value is regenerated on every mount and so
   // cannot be addressed from outside React. Derive it from the group's own id when there is one.
   const optionDomId = (optionValue: string, index: number) =>

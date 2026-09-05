@@ -7,9 +7,8 @@ export type {
 } from "../../props/components/charts.prop";
 
 /**
- * Area chart — magnitude over an ordered category axis. `stacked` accumulates
- * series; `curved` smooths the line. Import from the tree-shaken
- * `@godxjp/ui/charts` entry; requires the `recharts` optional peer.
+ * Area chart — magnitude over an ordered category axis. `stacked` accumulates series; `curved`
+ * smooths the line.
  */
 export function AreaChart(props: AreaChartProp) {
   return <CartesianChart kind="area" {...props} />;

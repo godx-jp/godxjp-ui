@@ -1,4 +1,5 @@
 import * as React from "react";
+import type { ControlWidthProp } from "../../props/vocabulary/shared.prop";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -30,16 +31,9 @@ function isDataSelect(props: SelectProp): props is SelectDataProp {
 }
 
 /**
- * Carries the FormField field-a11y contract from `<Select>` down to `<SelectTrigger>`.
- *
- * FormField injects `id` / `aria-labelledby` / `aria-describedby` / … onto its single child with
- * `cloneElement`. In the compound API that child is `SelectPrimitive.Root` — a context-only
- * component that renders NO DOM — so those props were silently dropped and the trigger button was
- * left with no accessible name at all. `role="combobox"` does not take its name from content, so
- * the visible value ("東京") is the VALUE, not the name: axe reports `button-name`, and a screen
- * reader announces an unlabelled combobox (WCAG 4.1.2). Routing the contract through context lands
- * it on the trigger — the real focus target — for both FormField and a hand-written
- * `<Select aria-label="…">`. Props set directly on the trigger always win.
+ * Carries the FormField field-a11y contract from `<Select>` down to `<SelectTrigger>`. FormField
+ * injects `id` / `aria-labelledby` / `aria-describedby` / … onto its single child with
+ * `cloneElement`.
  */
 const SelectFieldA11yContext = React.createContext<
   (FieldA11yProps & { id?: string; value?: string }) | null
@@ -64,14 +58,13 @@ function CompoundSelect({ id, ...props }: SelectCompoundProp) {
   // trigger. Everything else stays on the root untouched.
   const fieldA11y = pickFieldA11y(props);
   const rootProps = omitFieldA11y(props);
-  // gh#337 R-3 — the selected CODE, mirrored so the trigger can publish it as `data-value`.
   // The trigger displays the LABEL ("東京本社"); automation and tests need the value ("52"), and
   // Radix keeps it in a context this package cannot read. Controlled selects read straight off the
   // prop; an uncontrolled one is tracked here because Radix would otherwise change it without
   // re-rendering this component at all.
   const [uncontrolled, setUncontrolled] = React.useState(props.defaultValue);
   const value = props.value ?? uncontrolled;
-  // gh#337 — the machine key for a Select NESTED under a layout wrapper (a 年/月 combo). Resolved
+  // Resolved
   // HERE, not on the trigger: `name` belongs on the Radix root, which is what renders the native
   // <select> a form submit reads; only `data-field` continues on to the trigger.
   const identity = useFieldIdentity({
@@ -118,20 +111,18 @@ export const SelectTrigger = React.forwardRef<
      * selected label — right in a PageContainer `extra` slot, a toolbar or a footer row, where a
      * full-width trigger swallows the row and starves its siblings (text truncated to "UA…").
      */
-    width?: "full" | "auto";
+    width?: ControlWidthProp;
     /**
      * Show the built-in chevron disclosure indicator (default true). Set `false` for specialized
      * triggers — icon-only, or one that already renders its own affordance — so it isn't
-     * duplicated. Omits the icon from the DOM entirely (not a CSS hide), so no consumer
-     * descendant CSS is needed to remove it.
+     * duplicated.
      */
     showIndicator?: boolean;
-    /** Stable machine key (gh#337) — normally inherited from `FormField` through the Select. */
     "data-field"?: string;
     /**
-     * The selected CODE (gh#337). Normally supplied by `Select` itself — the trigger shows the
-     * option's LABEL, and this is the only place the underlying value is readable from the DOM
-     * without reaching into Radix's aria-hidden native `<select>`.
+     * Normally supplied by `Select` itself — the trigger shows the option's LABEL, and this is the
+     * only place the underlying value is readable from the DOM without reaching into Radix's
+     * aria-hidden native `<select>`.
      */
     "data-value"?: string;
   }
@@ -147,7 +138,6 @@ export const SelectTrigger = React.forwardRef<
   const ownsName = props["aria-label"] !== undefined || props["aria-labelledby"] !== undefined;
   const fieldOwnsName =
     field?.["aria-label"] !== undefined || field?.["aria-labelledby"] !== undefined;
-  // gh#303 — last resort, when neither the trigger nor the Select-level contract names it: a
   // Select NESTED under a layout wrapper inside FormField (年/月 combo, range pair) still takes
   // its name from the enclosing field's label. `{}` whenever a name already exists.
   const nameFallback = useFieldNameFallback({
@@ -176,7 +166,6 @@ export const SelectTrigger = React.forwardRef<
           "data-field": props["data-field"] ?? field?.["data-field"],
         }
       : undefined;
-  // gh#337 R-3 — the CODE behind the visible label, on the element that is actually visible.
   // A Radix select's native `<select>` is a 1x1px aria-hidden bubble input that exists only so a
   // native form submit carries the value; the trigger is what a person (or a screen automation)
   // sees, and it renders "東京本社" where the row's real value is "52". Publishing the value here
@@ -380,13 +369,13 @@ function DataSelect({
     Object.entries(rest as Record<string, unknown>).filter(([key]) => key.startsWith("aria-")),
   );
   const { t } = useTranslation();
-  // gh#337 R-3 — the selected CODE for `data-value` on the trigger. Radix owns the value of an
+  // Radix owns the value of an
   // UNCONTROLLED select and changing it does not re-render this component, so the pick is mirrored
   // here; a controlled select reads straight off the prop. Declared ABOVE the `searchable` branch
   // because that branch returns early and a hook may not be called conditionally.
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
   const currentValue = value ?? uncontrolledValue;
-  // gh#337 — the machine key for a Select NESTED under a layout wrapper. Resolved here rather than
+  // Resolved here rather than
   // on the trigger: `name` belongs on the Radix root / SearchSelect's hidden input (what a native
   // submit reads), and only `data-field` travels on to the visible trigger.
   const identity = useFieldIdentity({ id, name, "data-field": dataField });
@@ -447,12 +436,10 @@ function DataSelect({
     </SelectItem>
   );
 
-  // Controlled-ness is fixed by whether `value` was passed — NOT by its emptiness.
   // Collapsing "" → undefined flipped a controlled Select to uncontrolled on the
   // empty state and back on first pick (React's controlled↔uncontrolled warning).
   // An unmatched value (incl. "") simply shows the placeholder in Radix.
   const isControlled = value !== undefined;
-  // Clear affordance for the PLAIN branch (gh#280) — the searchable branch already gets it
   // from SearchSelect. Same contract: default ON, shown only while a controlled value is
   // selected; clearing emits `onValueChange("", undefined)` and Radix shows the placeholder.
   // Only controlled selects can clear (an uncontrolled Radix value cannot be reset from here),

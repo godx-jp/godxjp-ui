@@ -1,13 +1,7 @@
 /**
- * Inline-style serialisation for HTML email.
- *
- * Email clients do not run the cascade: Gmail strips `<style>`, Outlook resolves no custom
- * property, and only the `style=""` attribute on the painting element is universally honoured.
- * `emailInlineStyle` turns a declaration map into that attribute value AND enforces the three rules
- * that silently break templates — no `var()` (nothing resolves it), no `calc()` (Outlook's Word
- * renderer drops the whole declaration) and no `"` (it closes the `style="…"` attribute mid-value,
- * which is how a double-quoted font family corrupts a whole tag). Failing loudly at template-build
- * time beats a broken layout discovered in Mailpit.
+ * Inline-style serialisation for HTML email. Email clients do not run the cascade: Gmail strips
+ * `<style>`, Outlook resolves no custom property, and only the `style=""` attribute on the
+ * painting element is universally honoured.
  */
 
 /** A declaration map. Numbers are emitted verbatim (already-unitless values like `font-weight`). */

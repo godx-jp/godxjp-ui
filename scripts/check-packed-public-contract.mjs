@@ -3,9 +3,6 @@
  * Fail closed when the tarball that would be published is missing a public subpath export used by
  * downstream applications. Source barrels and component tests are insufficient: npm publishes
  * `dist`, so a stale or absent build can expose an older API even while `src` is correct.
- *
- * Run after `pnpm build`. The release gate and release-integrity workflow both do this before any
- * registry operation.
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
@@ -29,7 +26,6 @@ const contracts = [
       "AuthFooter",
       "AuthStack",
       "CenteredShell",
-      // gh#251 — the semantic exception surface. It regressed once by existing only as a docs
       // page, so it is pinned in the PACKED artifact, not just in the source barrel.
       "ErrorSurface",
       "Breadcrumb",
@@ -78,8 +74,7 @@ const contracts = [
   },
   {
     subpath: "./feedback",
-    // gh#255 — Banner is the canonical DXS attention strip. Pinned in the PACKED artifact
-    // (same rationale as ErrorSurface/gh#251: a contract that exists only in source or docs
+    // Pinned in the PACKED artifact
     // regresses silently at publish time).
     runtime: ["TwoFactorSetup", "Banner"],
     types: ["TwoFactorSetupProps", "BannerProp", "BannerProps"],
@@ -91,7 +86,6 @@ const contracts = [
     ],
   },
   {
-    // gh#258 — the typed FilterBar model. The navigation subpath had no packed contract at all,
     // so nothing pinned the public names a list page imports.
     subpath: "./navigation",
     runtime: ["FilterBar", "FilterBarGroup", "Toolbar", "ToolbarGroup"],
@@ -197,22 +191,10 @@ function installPackedUi(consumer, tarball, manifest) {
 }
 
 /**
- * gh#251 — the ErrorSurface consumer contract.
- *
- * Source-only checks are what let the regression through: `src/` had the surface, the docs had the
- * surface, and the PUBLISHED artifact had nothing importable. So this fixture is deliberately the
- * consumer's point of view and nothing else — it extracts the real tarball into a fresh
- * `node_modules`, then:
- *
- *  1. BUILDS a production Vite bundle that imports `ErrorSurface` from `@godxjp/ui/layout`,
- *     proving the public subpath resolves and bundles from the packed files;
- *  2. RENDERS it with `react-dom/server` in BOTH modes, proving the packed runtime actually
- *     executes and emits the contract — the status code, the "HTTP status" accessible phrase,
- *     exactly one action, the semantic metadata rows, and (in system mode) the package-owned
- *     centred page geometry.
- *
- * It renders with NO provider on purpose: an exception page must work when the app around it is
- * already broken.
+ * So this fixture is deliberately the consumer's point of view and nothing else — it extracts the
+ * real tarball into a fresh `node_modules`, then: 1. BUILDS a production Vite bundle that imports
+ * `ErrorSurface` from `@godxjp/ui/layout`, proving the public subpath resolves and bundles from
+ * the packed files; 2.
  */
 function buildErrorSurfaceConsumer(tarball, manifest) {
   const consumer = installPackedUi(
@@ -258,7 +240,6 @@ createRoot(document.getElementById("root")).render(
     throw new Error("error surface consumer Vite build did not emit dist/index.html");
   }
 
-  // ── Render the PACKED runtime, no JSX and no provider — plain createElement, exactly what a
   // server-rendered exception page does. ──────────────────────────────────────────────────────
   writeFileSync(
     join(consumer, "render.mjs"),

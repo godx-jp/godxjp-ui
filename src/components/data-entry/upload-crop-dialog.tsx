@@ -71,9 +71,7 @@ export function UploadCropDialog({ open, onOpenChange, file, onConfirm }: Upload
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* The cap stays a UTILITY reading the token, not a CSS class: `[data-slot="dialog-content"]`
-          sets `max-width: none` in the same @layer at equal specificity, so only the
-          utilities layer reliably wins (Tailwind v4 orders utilities after components). */}
+      {}
       <DialogContent className="max-w-[var(--upload-crop-dialog-max-width)]">
         <DialogHeader>
           <DialogTitle>{t("dataEntry.upload.cropTitle")}</DialogTitle>

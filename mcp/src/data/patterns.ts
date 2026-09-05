@@ -1,21 +1,11 @@
 /**
- * Canonical code patterns for common consumer scenarios. The MCP
- * server returns one of these whenever a consumer asks "how do I X
- * with @godxjp/ui?" — saves the LLM from synthesising from primitive
- * docs over and over.
- *
- * Every pattern is copy-paste-ready: imports listed at top, types
- * spelled out, inline JSX with no opaque helpers. Every `import { … }
- * from "@godxjp/ui…"` is verified against the REAL package export set
- * by scripts/check-mcp-pattern-imports.mjs (release-sync guard), so a
- * pattern can never teach a removed API (e.g. the deleted Stack/Inline
- * layout primitives — use `Flex direction="col"`).
+ * Canonical code patterns for common consumer scenarios. Every pattern is copy-paste-ready:
+ * imports listed at top, types spelled out, inline JSX with no opaque helpers.
  */
 
 export interface PatternEntry {
   /** URL-safe slug. */
   name: string;
-  /** Alternate slugs that resolve to this pattern (older/other names a consumer may ask for). */
   aliases?: string[];
   /** One-line elevator pitch. */
   tagline: string;

@@ -1,34 +1,8 @@
 #!/usr/bin/env node
 /**
- * Hard-coded geometry/chrome guard — cardinal rules #44 and #45.
- *
- * A literal like `px-2`, `max-w-xs`, `rounded-md`, `z-50` or `h-7` baked into a component is a
- * constant a service theme CANNOT reach. Rule #45 says every service-tunable constant gets a
- * knob; rule #44 says chrome reads a token whose default is the quietest state. A Tailwind scale
- * literal satisfies neither: the only way to change it is to fork the component. That is exactly
- * how Tooltip ended up un-themeable — its whole box was
- * `z-50 max-w-xs px-2 py-1 rounded-md text-xs shadow-md`, with no token anywhere.
- *
- * WHAT COUNTS AS A VIOLATION
- *   Geometry/chrome literals on a SCALE STEP — the numbers and t-shirt sizes above.
- *
- * WHAT DOES NOT
- *   • Role utilities (`bg-primary`, `text-muted-foreground`, `border-border`). These ARE
- *     token-backed through Tailwind v4 `@theme` — flagging them would be wrong, and an early
- *     draft of the audit did exactly that and overstated the debt.
- *   • Arbitrary values that read a token: `rounded-[var(--radius-pill)]`.
- *   • Structural utilities with no scale step: `flex`, `grid`, `absolute`, `truncate`.
- *
- * RATCHET, NOT A CLIFF
- *   There are hundreds of these; failing the build on all of them today would just get the guard
- *   disabled. Instead every file carries a baseline count that may only SHRINK. Exceed it and CI
- *   fails; drop below it and CI ALSO fails, telling you to re-baseline — that is what stops the
- *   number creeping back up after someone cleans a file. Re-baseline with `--update`.
- *
- * Usage:
- *   node scripts/check-no-hardcoded-geometry.mjs            # check against the baseline
- *   node scripts/check-no-hardcoded-geometry.mjs --update   # rewrite the baseline after a cleanup
- *   node scripts/check-no-hardcoded-geometry.mjs --json     # machine-readable report
+ * Hard-coded geometry/chrome guard — cardinal rules #44 and #45. A literal like `px-2`,
+ * `max-w-xs`, `rounded-md`, `z-50` or `h-7` baked into a component is a constant a service theme
+ * CANNOT reach.
  */
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -41,13 +15,10 @@ const args = new Set(process.argv.slice(2));
 const UPDATE = args.has("--update");
 const AS_JSON = args.has("--json");
 
-/** Spacing/size utilities carrying a literal SCALE STEP.
- *
- * Keyword fills — `w-full`, `min-w-0`, `h-full`, `size-full`, `w-fit`, `w-auto` — are deliberately
- * NOT matched. They carry no scale step: `w-full` means "fill the parent" and `min-w-0` is the
- * flexbox truncation idiom. Neither is a constant a service theme would ever retune, so counting
- * them inflated the debt and pushed toward inventing meaningless classes just to satisfy the
- * guard. Numeric steps (`p-4`, `h-32`) and t-shirt steps (`max-w-xs`) remain violations. */
+/**
+ * Spacing/size utilities carrying a literal SCALE STEP. Keyword fills — `w-full`, `min-w-0`,
+ * `h-full`, `size-full`, `w-fit`, `w-auto` — are deliberately NOT matched.
+ */
 const GEOMETRY =
   /(?:^|[\s:])((?:p|px|py|pt|pb|pl|pr|ps|pe|m|mx|my|mt|mb|gap|gap-x|gap-y|w|h|min-w|max-w|min-h|max-h|size|z|inset|top|bottom|start|end)-(?:\d+(?:\.\d+)?|px|xs|sm|md|lg|xl|\d?xl))(?=$|[\s"'`])/g;
 /** Chrome utilities (radius, elevation, border width, type scale) carrying a literal step. */
@@ -64,17 +35,8 @@ function walk(dir, out = []) {
 }
 
 /**
- * Strip comments before scanning.
- *
- * The scanner matches quoted strings, and a comment is free to quote a class list: Card documents
- * `a consumer className="border-2" still wins`, Topbar's JSDoc example shows
- * `<Avatar className="rounded-md">`. Both were counted as debt in files that have none — the
- * guard was reporting phantom work and would have sent someone off to "fix" prose.
- *
- * Deliberately naive: it does not track strings containing comment markers (a URL like
- * `https://…` inside a class list, say). Those are already skipped by the URL reject below, and a
- * false NEGATIVE here costs one uncounted literal, whereas the false POSITIVE it replaces costs
- * someone real time.
+ * Strip comments before scanning. Both were counted as debt in files that have none — the guard
+ * was reporting phantom work and would have sent someone off to "fix" prose.
  */
 function stripComments(source) {
   return source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/[^\n]*/g, "$1");

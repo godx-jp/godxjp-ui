@@ -3,7 +3,7 @@
 // WHY THIS EXISTS
 // `check-mcp-prop-sync.mjs` checks one direction — every declared prop is documented. Nothing
 // checked the other direction, so a code example could hand the reader a prop the component does
-// not have and every gate stayed green. It shipped: `patterns.ts` told people to write
+// not have and every gate stayed green.
 // `<Button tone="destructive">` (Button has `variant`; `tone` exists only on Text/Heading) and
 // three Topbar examples passed `product` / `productMenu` / `collapsed` when Topbar takes only
 // `start` / `center` / `end` / `children`. Copy-pasting any of them is an instant type error.
@@ -13,7 +13,6 @@
 // SOURCE OF TRUTH is `component-api-manifest.json`, not the hand-written `src/props/**/*.prop.ts`.
 // The manifest is generated from the real components, so it resolves inheritance and external
 // types (Radix, react-router) that static reading of the prop types cannot. It is also simply
-// more correct: `DescriptionsProp` had drifted to describe a long-gone `items` API while the
 // manifest already listed the real `layout`/`labelAlign`.
 import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
@@ -185,10 +184,8 @@ for (const file of files) {
     const comp = t[1];
     const own = resolve(comp);
     if (!own) continue; // not ours, or a component this guard cannot judge (see SKIPPED)
-    // A REMOVED line in a diff block is, by definition, the old API — and showing the old API is
     // the entire job of a migration guide. Without this, `- <Card size="compact">` in
-    // docs/MIGRATION-v19.md is reported as a doc using a prop that does not exist, which is both
-    // true and exactly what the document is for. Only `-` is skipped: a `+` line is the API the
+    // Only `-` is skipped: a `+` line is the API the
     // guide is telling people to WRITE, and that must still be real.
     const lineStart = src.lastIndexOf("\n", t.index) + 1;
     if (/^\s*-\s*</.test(src.slice(lineStart, t.index + 1))) continue;

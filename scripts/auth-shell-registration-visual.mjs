@@ -1,16 +1,9 @@
 #!/usr/bin/env node
 /**
- * SCR-002 AuthShell Registration preset visual contract (gh#256).
- *
  * Captures the package preview at the three canonical artboards for the standalone, one-line and
- * wrapped identity states AND the pending-email confirmation state. Bounding-box assertions make
- * the screenshots executable evidence: identity copy length and the card's own content may change,
- * while card x/y/width must remain invariant — the fixed identity track and the derived
- * block-start offset are exactly what pins them (card y = padding-block-start + 112px identity
- * slot + 20px stack gap = 284 at 1440/1024, 274 at 390).
- *
- * The registration column is START-aligned, so at 390x844 the page must actually scroll (a
- * centred tall card would clip its own top above the scroll origin) — asserted below.
+ * wrapped identity states AND the pending-email confirmation state. The registration column is
+ * START-aligned, so at 390x844 the page must actually scroll (a centred tall card would clip its
+ * own top above the scroll origin) — asserted below.
  */
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";

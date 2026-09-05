@@ -19,10 +19,8 @@ export const DEFAULT_BASE = process.env.PREVIEW_BASE || "http://localhost:6008";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.resolve(HERE, "..");
 
-/** Viewport baseline required by docs/FRAME-COVERAGE-STANDARD.md (issue #163 §5). */
 export const VIEWPORT_MATRIX = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
 
-/** The two axe viewports (issue #157): desktop + mobile-sm. */
 export const AXE_VIEWPORTS = [
   { id: "desktop", width: 1440, height: 900 },
   { id: "mobile", width: 375, height: 667 },
@@ -44,16 +42,7 @@ export async function loadDeps({ axe = true } = {}) {
   return { chromium, AxeBuilder: axeMod.default ?? axeMod.AxeBuilder };
 }
 
-/**
- * Is a preview answering at `url`?
- *
- * Probes the loopback ADDRESS as well as the name. `vite preview` binds 127.0.0.1 and says so
- * ("Network: use --host to expose"), while `localhost` may resolve to ::1 first — and on a host
- * where the IPv4 fallback is slower than the probe's own abort, every attempt times out while the
- * server sits there perfectly healthy. Asking both removes name resolution from the question
- * entirely; the abort is also 3s rather than 1500ms, since the old budget could expire during a
- * fallback rather than because nothing was listening.
- */
+/** Is a preview answering at `url`? Probes the loopback ADDRESS as well as the name. */
 async function reachable(url) {
   // Address first: that is what --host binds. The name is kept as a fallback for a base someone
   // passed explicitly (PREVIEW_BASE), which may legitimately not be loopback at all.
@@ -96,11 +85,8 @@ function run(cmd, args) {
 }
 
 /**
- * Ensure a preview server answers at `base`. If one is already up (a running `pnpm preview`
- * dev server, or a remote base) it is reused. Otherwise we build the preview and serve the
- * STATIC output with `vite preview`. The dev server recompiles per request and its cold
- * optimizeDeps reload + degradation over a long frame sweep made the gate flaky; the built
- * output is deterministic and stable under sustained headless load. Returns a cleanup fn.
+ * Ensure a preview server answers at `base`. If one is already up (a running `pnpm preview` dev
+ * server, or a remote base) it is reused.
  */
 export async function ensurePreviewServer(base = DEFAULT_BASE) {
   if (await reachable(base)) return () => {};
@@ -231,9 +217,8 @@ export function componentFrames(manifest, { includeShowcase = false } = {}) {
 }
 
 /**
- * Public component inventory parsed from the MCP catalog (`mcp/src/data/components.ts`) —
- * the canonical published surface. Returns [{ name, group, deprecated }]. Parsing the TS
- * source with a scoped regex avoids a build step and keeps the tracker dependency-free.
+ * Public component inventory parsed from the MCP catalog (`mcp/src/data/components.ts`) — the
+ * canonical published surface. Returns [{ name, group, deprecated }].
  */
 export function loadComponentInventory() {
   const src = readFileSync(path.join(REPO_ROOT, "mcp/src/data/components.ts"), "utf8");

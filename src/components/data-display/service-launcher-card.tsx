@@ -28,16 +28,9 @@ export interface ServiceLauncherCardProps extends Omit<
 }
 
 /**
- * Token-owned launcher surface for an organization-scoped downstream service.
- *
- * Consumers supply real status, metadata and actions; access is NEVER inferred — the component
- * derives no entitlement, no launch URL and no disabled state of its own. `statusLabel`/
- * `statusTone` are rendered verbatim, and the action's `disabled` state is the consumer's Button
- * prop. The only thing derived from a prop is presentational: supplying `disabledReason` marks
- * the tile `data-unavailable` so the token layer can drop the medallion's brand wash.
- *
- * Layout is NOT owned here: place tiles in `ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}` for
- * the canonical 3 → 2 → 1 launcher grid (the grid queries its own container, never the viewport).
+ * Token-owned launcher surface for an organization-scoped downstream service. Consumers supply
+ * real status, metadata and actions; access is NEVER inferred — the component derives no
+ * entitlement, no launch URL and no disabled state of its own.
  */
 export const ServiceLauncherCard = React.forwardRef<HTMLDivElement, ServiceLauncherCardProps>(
   (

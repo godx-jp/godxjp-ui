@@ -1,12 +1,8 @@
 #!/usr/bin/env node
 /**
- * Drift guard — keep the agent-facing audit catalogs (surfaced by the MCP
- * `list_audit_rules` + `list_visual_checks` tools) in sync with the EXECUTABLE rules
- * in the audit CLIs. Each CLI is the source of truth; every rule it runs must be
- * documented in its MCP catalog with a matching severity (+ a standard where the CLI
- * cites one), so an agent reading the MCP sees exactly what the local audits enforce.
- *
- * Usage: node scripts/check-audit-sync.mjs
+ * Drift guard — keep the agent-facing audit catalogs (surfaced by the MCP `list_audit_rules` +
+ * `list_visual_checks` tools) in sync with the EXECUTABLE rules in the audit CLIs. Usage: node
+ * scripts/check-audit-sync.mjs
  */
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";

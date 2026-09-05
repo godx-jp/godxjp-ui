@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 /**
- * Audit the 47 components that overlap shadcn/ui.
- * Measures hard-coded geometry/chrome literals (rule #44/#45 violations) per component.
- * Role utilities (bg-primary, text-muted-foreground) are token-backed and NOT counted.
- *
- * Usage: node scripts/audit-shadcn-overlap.mjs
+ * Audit the 47 components that overlap shadcn/ui. Role utilities (bg-primary,
+ * text-muted-foreground) are token-backed and NOT counted.
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, basename, extname } from "node:path";

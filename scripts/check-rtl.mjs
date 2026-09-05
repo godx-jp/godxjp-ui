@@ -1,15 +1,10 @@
 #!/usr/bin/env node
 /**
- * check:rtl — guards the rtl-vocab cardinal rule: component CSS and JSX use
- * LOGICAL inline-axis properties (margin/padding/border-inline-*, inset-inline-*,
- * text-align: start/end) and logical Tailwind utilities (ms/me/ps/pe, start-/end-,
- * border-s/e, rounded-s/e, text-start/end) — never physical left/right.
- *
- * Escape hatch: append `rtl-ignore` in a comment on the same line for a genuinely
- * physical use (a rotated glyph edge, a 50%-centering idiom, etc.).
- *
- * Scope: src/styles/**.css (the layout/chrome CSS) and src/components/**.tsx
- * (excluding __tests__). Stories/examples/preview are not shipped chrome.
+ * check:rtl — guards the rtl-vocab cardinal rule: component CSS and JSX use LOGICAL inline-axis
+ * properties (margin/padding/border-inline-*, inset-inline-*, text-align: start/end) and logical
+ * Tailwind utilities (ms/me/ps/pe, start-/end-, border-s/e, rounded-s/e, text-start/end) — never
+ * physical left/right. Escape hatch: append `rtl-ignore` in a comment on the same line for a
+ * genuinely physical use (a rotated glyph edge, a 50%-centering idiom, etc.).
  */
 import { readFileSync } from "node:fs";
 import { globSync } from "node:fs";

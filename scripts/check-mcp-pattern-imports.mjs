@@ -1,26 +1,8 @@
 #!/usr/bin/env node
 /**
- * Release-sync guard (issue #156) — the MCP catalog and docs must never teach an API the
- * released @godxjp/ui package does not ship.
- *
- * An AI consumer copies MCP "patterns" verbatim. If a pattern imports a symbol from a subpath
- * that no longer exports it (e.g. `Stack` from `@godxjp/ui/layout` after Stack→Flex), or names an
- * undefined library CSS class (`settings-layout`), the consumer gets code that does not compile or
- * that silently renders unstyled. This check makes that a CI failure instead of silent drift.
- *
- * Three assertions:
- *   1. IMPORTS COMPILE — every `import { … } from "@godxjp/ui…"` in a canonical pattern
- *      (mcp/src/data/patterns.ts, the copy-paste set) names a REAL export of that subpath.
- *      Truth source = the package.json `exports` map resolved to the `src/` barrels it points at
- *      (following re-exports), so no build is required.
- *   2. NO REMOVED COMPONENT — the removed layout primitives `Stack` / `Inline` (and their prop
- *      types) must not appear as an import, a JSX tag, or a prop-type reference anywhere in the
- *      MCP catalog data or docs. (Prose words like "Inline-end shadow" / "Stacked bars" are NOT
- *      matched — only the actual API forms are.)
- *   3. NO UNDEFINED CSS CLASS — the library ships no `settings-*` classes; a `className` naming
- *      one (e.g. `settings-layout`, `settings-local-nav`, `settings-content`) is undefined chrome.
- *
- * Usage: node scripts/check-mcp-pattern-imports.mjs [--json]
+ * An AI consumer copies MCP "patterns" verbatim. `Stack` from `@godxjp/ui/layout` after
+ * Stack→Flex), or names an undefined library CSS class (`settings-layout`), the consumer gets code
+ * that does not compile or that silently renders unstyled.
  */
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";

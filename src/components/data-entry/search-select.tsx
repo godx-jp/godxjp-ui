@@ -28,10 +28,8 @@ const DEBOUNCE_MS = 250;
 /**
  * SearchSelect — a searchable single-select combobox with a debounced search box, optional
  * optgroup-style grouping (`option.group`), and loading/empty states. Drive it EITHER remotely
- * with `loadOptions({ query, page })` (server search + infinite scroll) OR with a static
- * `options` array (client-side filter) — the latter supersedes the legacy `Autocomplete`.
- * Custom per-option rendering via `renderOption` (Ant-Design style). Form-submittable via
- * `name`; e2e-testable by the trigger's `data-testid` + each option's `${data-testid}-option-${value}`.
+ * with `loadOptions({ query, page })` (server search + infinite scroll) OR with a static `options`
+ * array (client-side filter) — the latter supersedes the legacy `Autocomplete`.
  */
 export function SearchSelect({
   value: valueProp,
@@ -73,13 +71,12 @@ export function SearchSelect({
   "aria-required": ariaRequired,
 }: SearchSelectProp) {
   const { t } = useTranslation();
-  // gh#303 — last-resort accessible name from an enclosing FormField, for a SearchSelect NESTED
   // under a layout wrapper that the cloneElement contract cannot reach. `{}` when already named.
   const nameFallback = useFieldNameFallback({
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledby,
   });
-  // gh#337 — the machine key for a SearchSelect NESTED under a layout wrapper. `name` stays on the
+  // `name` stays on the
   // hidden input below (a combobox trigger is a <button>, which submits nothing).
   const identity = useFieldIdentity({ id, name, "data-field": dataField });
   const resolvedName = name ?? identity.name;
@@ -338,7 +335,6 @@ export function SearchSelect({
             disabled={disabled}
             data-testid={dataTestId}
             data-field={resolvedField}
-            // gh#337 — the selected CODE on the visible trigger, which otherwise shows only the
             // label. `""` (nothing selected) is omitted rather than rendered as an empty attribute.
             data-value={value || undefined}
             className={cn(
@@ -528,10 +524,7 @@ export function SearchSelect({
           </Command>
         </PopoverContent>
       </Popover>
-      {/* Clear / chevron render OUTSIDE the trigger <button> — a <button> may not nest inside a
-          <button> (invalid HTML → hydration error). The overlay ignores pointer events so a click
-          falls through to the trigger to open it; only the clear control re-enables them.
-          ONE trailing icon: the clear (×) replaces the chevron while a value is selected. */}
+      {/* Clear / chevron render OUTSIDE the trigger <button> — a <button> may not nest inside a <button> (invalid HTML → hydration error). The overlay ignores pointer events so a click falls through to the trigger to open it; only the clear control re-enables them. */}
       <div className="ui-control-affix">
         {showClear ? (
           <button

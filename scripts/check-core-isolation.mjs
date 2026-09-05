@@ -1,13 +1,8 @@
 #!/usr/bin/env node
 /**
- * Core-isolation guard (issue #83 — KIT + adapter rule).
- *
- * The ROOT export `@godxjp/ui` (dist/index.js) must stay domain/runtime-neutral: importing it must NOT
- * force a foreign runtime on the consumer. App/integration adapters live ONLY on dedicated subpaths
- * (`@godxjp/ui/query`, `./form`, `./app`, `./i18n`), never the root. This traces the root entry's
- * transitive dist-chunk graph and fails if it reaches a forbidden runtime import.
- *
- * Run AFTER `pnpm build`. Usage: node scripts/check-core-isolation.mjs [--json]
+ * The ROOT export `@godxjp/ui` (dist/index.js) must stay domain/runtime-neutral: importing it must
+ * NOT force a foreign runtime on the consumer. App/integration adapters live ONLY on dedicated
+ * subpaths (`@godxjp/ui/query`, `./form`, `./app`, `./i18n`), never the root.
  */
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";

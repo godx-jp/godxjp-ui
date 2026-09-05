@@ -2,7 +2,6 @@ import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import {
   AppShell,
-  createSidebarLink,
   Flex,
   PageContainer,
   Sidebar,
@@ -10,6 +9,7 @@ import {
   SidebarItem,
   SidebarSection,
   Topbar,
+  createSidebarLink,
 } from "@godxjp/ui/layout";
 import type { SidebarItemData, SidebarRenderItemProp, SidebarSectionProp } from "@godxjp/ui/layout";
 import {
@@ -313,7 +313,7 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-card flex h-80 w-64 flex-col overflow-hidden rounded-lg border">
+              <Flex direction="col" className="bg-card h-80 w-64 overflow-hidden rounded-lg border">
                 <Sidebar
                   ariaLabel="ブランド例のナビゲーション"
                   activeId={brandActiveId}
@@ -336,7 +336,7 @@ export default function Demo() {
                     </SidebarHeader>
                   }
                 />
-              </div>
+              </Flex>
             </CardContent>
           </Card>
 
@@ -356,7 +356,10 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <Flex gap="md" wrap>
-                <div className="bg-card flex h-72 w-64 flex-col overflow-hidden rounded-lg border">
+                <Flex
+                  direction="col"
+                  className="bg-card h-72 w-64 overflow-hidden rounded-lg border"
+                >
                   <Sidebar
                     ariaLabel="ルーターリンク行のナビゲーション"
                     activeId={routedActiveId}
@@ -365,8 +368,11 @@ export default function Demo() {
                     linkComponent={RouterLink}
                     aria-label="linkComponent プロップ例のナビゲーション（展開）"
                   />
-                </div>
-                <div className="bg-card flex h-72 w-16 flex-col overflow-hidden rounded-lg border">
+                </Flex>
+                <Flex
+                  direction="col"
+                  className="bg-card h-72 w-16 overflow-hidden rounded-lg border"
+                >
                   <Sidebar
                     ariaLabel="折りたたみレールのルーターリンク"
                     activeId={routedActiveId}
@@ -376,7 +382,7 @@ export default function Demo() {
                     collapsed
                     aria-label="linkComponent プロップ例のナビゲーション（折りたたみ）"
                   />
-                </div>
+                </Flex>
               </Flex>
             </CardContent>
           </Card>
@@ -395,7 +401,7 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-card flex h-72 w-64 flex-col overflow-hidden rounded-lg border">
+              <Flex direction="col" className="bg-card h-72 w-64 overflow-hidden rounded-lg border">
                 <Sidebar
                   ariaLabel="カスタム行例のナビゲーション"
                   activeId={renderActiveId}
@@ -406,7 +412,7 @@ export default function Demo() {
                   }
                   aria-label="renderItem プロップ例のナビゲーション"
                 />
-              </div>
+              </Flex>
             </CardContent>
           </Card>
 
@@ -424,7 +430,10 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <Flex gap="md" wrap>
-                <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
+                <Flex
+                  direction="col"
+                  className="bg-card h-64 w-64 overflow-hidden rounded-lg border"
+                >
                   <Sidebar
                     ariaLabel="構成可能な例のナビゲーション"
                     activeId={composedActiveId}
@@ -441,8 +450,11 @@ export default function Demo() {
                       ))}
                     </SidebarSection>
                   </Sidebar>
-                </div>
-                <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
+                </Flex>
+                <Flex
+                  direction="col"
+                  className="bg-card h-64 w-64 overflow-hidden rounded-lg border"
+                >
                   <Sidebar
                     ariaLabel="asChild 例のナビゲーション"
                     activeId={composedActiveId}
@@ -463,7 +475,7 @@ export default function Demo() {
                       ))}
                     </SidebarSection>
                   </Sidebar>
-                </div>
+                </Flex>
               </Flex>
             </CardContent>
           </Card>
@@ -484,7 +496,7 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
+              <Flex direction="col" className="bg-card h-64 w-64 overflow-hidden rounded-lg border">
                 <Sidebar
                   ariaLabel="チャンネル一覧のナビゲーション"
                   activeId={mentionActiveId}
@@ -492,7 +504,7 @@ export default function Demo() {
                   sections={MENTION_SECTIONS}
                   aria-label="badgeTone 例のナビゲーション"
                 />
-              </div>
+              </Flex>
             </CardContent>
           </Card>
 
@@ -510,7 +522,10 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <Flex gap="md" wrap>
-                <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
+                <Flex
+                  direction="col"
+                  className="bg-card h-64 w-64 overflow-hidden rounded-lg border"
+                >
                   <Sidebar
                     ariaLabel="既定の配色のナビゲーション"
                     activeId={tokenActiveId}
@@ -518,9 +533,10 @@ export default function Demo() {
                     sections={FAVOURITE_SECTIONS}
                     aria-label="既定の配色（アイコンは行の色を継承）"
                   />
-                </div>
-                <div
-                  className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border"
+                </Flex>
+                <Flex
+                  direction="col"
+                  className="bg-card h-64 w-64 overflow-hidden rounded-lg border"
                   style={CANONICAL_NAV_TOKENS}
                 >
                   <Sidebar
@@ -530,7 +546,7 @@ export default function Demo() {
                     sections={FAVOURITE_SECTIONS}
                     aria-label="トークン上書き（アイコンのみ --foreground）"
                   />
-                </div>
+                </Flex>
               </Flex>
             </CardContent>
           </Card>

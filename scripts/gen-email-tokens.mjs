@@ -1,23 +1,8 @@
 #!/usr/bin/env node
 /**
- * Generates src/email/tokens.generated.ts — the machine-derived half of the
- * `@godxjp/ui/email` transactional-email contract (issue #227).
- *
  * WHY A GENERATOR. HTML email cannot read CSS custom properties: Gmail/Outlook strip <style>
  * blocks and demand LITERAL inline values, so a Blade/Twig/MJML template can never `var()` the
- * design tokens. The only way an email palette does not silently drift from the web palette is to
- * DERIVE it from the same files:
- *
- *   src/tokens/foundation.css        → colour roles (HSL channel triplets)  → EMAIL_COLOR_SOURCE
- *   src/tokens/components/email.css  → email geometry / typography (px)     → EMAIL_GEOMETRY_SOURCE
- *
- * Note the generator emits the HSL TRIPLETS, not hex: `src/email/index.ts` runs the HSL→hex
- * conversion at MODULE level. That keeps one conversion implementation (shared with consumers via
- * the exported `hslToHex`) and makes a hand-edited hex structurally impossible — there is no hex
- * literal anywhere in src/email/.
- *
- *   node scripts/gen-email-tokens.mjs           # write
- *   node scripts/gen-email-tokens.mjs --check   # exit 1 if stale
+ * design tokens.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -30,8 +15,7 @@ const OUT_REL = "src/email/tokens.generated.ts";
 
 /**
  * The email palette ↔ web role map. LEFT is the stable public email token name, RIGHT is the
- * semantic role in foundation.css it derives from. Adding a role here is the ONLY way a colour
- * enters the email export — there is no free-hand hex path.
+ * semantic role in foundation.css it derives from.
  */
 export const EMAIL_COLOR_ROLES = {
   background: "--background",
@@ -45,8 +29,7 @@ export const EMAIL_COLOR_ROLES = {
   primaryForeground: "--primary-foreground",
   focus: "--ring",
   // IDENTITY, not status: the GoDX capsule reads --brand (canonical emerald), the same role
-  // `--logo-godx-color` defaults to on the web. It used to read --success (若竹 status green),
-  // which shipped the mark ΔE76 ≈ 17.5 off canonical — gh#250.
+  // `--logo-godx-color` defaults to on the web.
   brand: "--brand",
   brandForeground: "--brand-foreground",
   urgency: "--attention",

@@ -93,11 +93,8 @@ const componentPrefixes = {
     "transfer",
     "cascader",
   ],
-  // `banner` is the page-level Alert treatment (gh#255) — same component file, own measure knobs.
   // `query` = the InfiniteQueryState/DataState lifecycle footers — query feedback surfaces with no
-  // stylesheet of their own, so their knobs live in the feedback tier (gh#319).
   // `toast` = the Sonner Toaster (src/components/feedback/sonner.tsx) — a feedback surface whose
-  // body sonner renders itself, so its knobs have nowhere else to live (gh#319).
   feedback: [
     "dialog",
     "alert",
@@ -140,8 +137,6 @@ const componentPrefixes = {
     "qr-code",
     "scroll-area",
   ],
-  // `branch-scope-picker` = the all-branches/subset scope control (gh#257); its rules live in
-  // styles/data-entry-layout.css, so its knobs belong to the data-entry tier (gh#319).
   "data-entry": ["password-strength", "branch-scope-picker"],
   shell: [
     "sidebar",
@@ -158,9 +153,8 @@ const componentPrefixes = {
     "centered-shell",
     "page",
     "page-header",
-    // `service-role-panel` = the role-collection ⇄ role-detail surface (gh#257). It is styled
+    // It is styled
     // from styles/layout.css alongside MasterDetail/PageContainer, whose knobs already live in
-    // this tier (gh#319).
     "service-role-panel",
   ],
 };
@@ -185,7 +179,6 @@ for (const file of cssFiles) {
     // A custom property only exists if it is declared inside a RULE. A bare declaration sitting
     // directly in a conditional group (@media/@supports) is invalid CSS and browsers drop it
     // silently — the token resolves to nothing at runtime while every textual check still passes.
-    // That is not hypothetical: 122 control tokens spent most of #319 dead this way, because an
     // append landed after the closing brace of `:root` but inside the trailing `@media
     // (pointer: coarse)` block. Nothing caught it — this guard scanned line by line, the geometry
     // ratchet only reads .tsx, and jsdom does not resolve the cascade. So walk the braces.

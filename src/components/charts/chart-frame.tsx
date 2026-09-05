@@ -4,16 +4,12 @@ import { cn } from "../../lib/utils";
 import { useTranslation } from "../../i18n/use-translation";
 
 /**
- * Shared chart chrome — owns the cross-cutting concerns every chart needs so the
- * individual chart wrappers stay tiny:
- *   - a11y: a `<figure>` with a visible `<figcaption>` title and a screen-reader
- *     text alternative (WCAG 1.1.1) describing the plotted data, with the SVG
- *     itself marked `role="img"` so AT announces one labelled graphic.
- *   - i18n: a locale-aware `Intl.NumberFormat` shared by axis ticks + tooltips.
- *   - tokens: the `--chart-1..6` palette + size→height tiers.
- *
- * Internal — NOT a public catalog primitive (re-exported only through the chart
- * wrappers). See check-mcp-orphans ALLOWLIST.
+ * Shared chart chrome — owns the cross-cutting concerns every chart needs so the individual chart
+ * wrappers stay tiny: - a11y: a `<figure>` with a visible `<figcaption>` title and a screen-reader
+ * text alternative (WCAG 1.1.1) describing the plotted data, with the SVG itself marked
+ * `role="img"` so AT announces one labelled graphic. - i18n: a locale-aware `Intl.NumberFormat`
+ * shared by axis ticks + tooltips. - tokens: the `--chart-1..6` palette + size→height tiers.
+ * Internal — NOT a public catalog primitive (re-exported only through the chart wrappers).
  */
 
 /** Canonical decorative chart palette (foundation tokens). */
@@ -60,12 +56,7 @@ type ChartFrameProps = {
   imgSummary: string;
   /** True when there is data to plot (otherwise children render an empty state). */
   hasData: boolean;
-  /**
-   * Canvas height in px. OPTIONAL: recharts needs a measured pixel box, but a
-   * CSS-drawn chart leaves it undefined and sizes its plot from a token tier
-   * instead (`size` → `data-size` → `--*-plot-height`), so no geometry is baked
-   * into an inline style.
-   */
+  /** Canvas height in px. */
   height?: number;
   /** Mirrored onto the figure as `data-size` so CSS can pick a token height tier. */
   size?: "xs" | "sm" | "md" | "lg";

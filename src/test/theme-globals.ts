@@ -87,7 +87,7 @@ export const PRIMARY_COLOR_VARS: Record<PrimaryColorGlobal, Record<string, strin
     "--accent": "215 25% 94%",
     "--accent-foreground": "215 25% 20%",
   },
-  // Canonical DXS preset (gh#214) — the shipped GodX Navy ramp. The surface half of the
+  // The surface half of the
   // contract (auth measure/density/insets) lives in tokens/axes.css + theme/dxs.canonical.css;
   // only the palette is mirrored here, which is all this toolbar helper binds.
   dxs: {

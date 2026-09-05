@@ -62,9 +62,9 @@ const TRANSIENT_RE =
 const VALIDATION_RE = /validation|invalid input|bad request|must be|is required/i;
 
 /**
- * Classify a query/API error into a recovery-relevant category. Status codes win; message
- * keywords are the fallback for transport layers that only surface a string (e.g. an SDK that
- * throws `new Error("Access token invalid")` with no status). Never exposes the raw message.
+ * Classify a query/API error into a recovery-relevant category. Status codes win; message keywords
+ * are the fallback for transport layers that only surface a string (e.g. an SDK that throws `new
+ * Error("Access token invalid")` with no status).
  */
 export function classifyQueryError(error: unknown): QueryErrorInfo {
   const status = readStatus(error);

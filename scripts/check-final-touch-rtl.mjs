@@ -4,7 +4,7 @@ import { ensurePreviewServer } from "./frame-harness.mjs";
 const port = 6010;
 const base = `http://localhost:${port}`;
 // The preview server comes from `frame-harness.ensurePreviewServer`, the one path with a green
-// record on this pool. These gates used to hand-roll it — first with `vite` (the DEV server,
+// record on this pool.
 // which on a cold runner never binds in time), then with `vite preview`, which still failed while
 // frame-axe / frame-geometry / contrast passed doing the apparently same thing. Rather than keep
 // guessing which of the small differences mattered (detached process group, an early reachability

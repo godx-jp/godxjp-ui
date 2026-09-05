@@ -22,10 +22,7 @@ const COPIED_RESET_MS = 2000;
 /**
  * CredentialReveal — one-time secret surface (device credential / API key / service-account
  * secret). Masked by default with a show/hide toggle, a copy button that confirms the copy, an
- * optional download, and an optional acknowledge action to pair with a Dialog. Composed only from
- * real @godxjp/ui primitives (Alert · Button · Text). Reveal is a controlled boolean triad
- * (`revealed` / `defaultRevealed` / `onRevealedChange`); everything user-facing is routed through
- * `t()`, and the copy confirmation is announced via an `aria-live` region.
+ * optional download, and an optional acknowledge action to pair with a Dialog.
  */
 export const CredentialReveal = React.forwardRef<HTMLDivElement, CredentialRevealProp>(
   (

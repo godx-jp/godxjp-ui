@@ -7,8 +7,10 @@
 export type ButtonVariantProp =
   "default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link";
 
-/** Corner shape — maps to the radius tokens (default = control/component radius). Shared by
- *  Button + Badge. `pill` = fully rounded (`--radius-pill`), `sharp` = square (`--radius-sharp`). */
+/**
+ * Corner shape — maps to the radius tokens (default = control/component radius). Shared by Button
+ * + Badge.
+ */
 export type ShapeProp = "default" | "pill" | "sharp";
 
 /**
@@ -93,9 +95,9 @@ export type ColumnAlignProp = "left" | "center" | "right";
 export type SortStateProp = { key: string; direction: SortDirectionProp };
 
 /**
- * Entrance-stagger ordinal for `Reveal` — an INDEX into the motion ladder, never a raw ms.
- * `0` = enter immediately; `1..6` each add one `--reveal-stagger-step` of delay so a column of
- * revealed rows cascades in. Reduced-motion collapses every step to 0 (content stays visible).
+ * Entrance-stagger ordinal for `Reveal` — an INDEX into the motion ladder, never a raw ms. `0` =
+ * enter immediately; `1..6` each add one `--reveal-stagger-step` of delay so a column of revealed
+ * rows cascades in.
  */
 export type RevealDelayProp = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -107,11 +109,7 @@ export type RevealDelayProp = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type ActivityVariantProp = "dots" | "pulse" | "bar";
 
 /**
- * Whether an ambient indicator announces its label to assistive technology.
- *
- * Default `false` — DELIBERATELY. An ambient affordance flickers on and off with every socket
- * event; a live region there re-announces continuously and makes the surface unusable with a
- * screen reader (`Skeleton`'s unconditional `aria-live="polite"` is the anti-pattern this default
- * exists to avoid). `"polite"` opts in for the rare case where the change genuinely must be heard.
+ * Whether an ambient indicator announces its label to assistive technology. Default `false` —
+ * DELIBERATELY.
  */
 export type ActivityAnnounceProp = false | "polite";

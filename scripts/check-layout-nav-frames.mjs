@@ -4,24 +4,16 @@ import { createServer } from "vite";
 import { execFileSync } from "node:child_process";
 
 /**
- * Roving-focus assertions must be AWAITED, never read synchronously after the key press.
- *
- * Radix `RovingFocusGroup` defers the focus move out of the `keydown` handler
- * (`setTimeout(() => focusFirst(candidateNodes))` — @radix-ui/react-roving-focus), so the next
- * trigger becomes `document.activeElement` ~10-25ms AFTER `keyboard.press()` resolves. Reading
- * `document.activeElement` in the very next CDP round-trip is therefore a race that passes or
- * fails on scheduling luck alone. These helpers poll the real assertion instead — same condition,
- * bounded wait, and a failure still fails (with the observed state attached).
+ * Roving-focus assertions must be AWAITED, never read synchronously after the key press. Radix
+ * `RovingFocusGroup` defers the focus move out of the `keydown` handler (`setTimeout(() =>
+ * focusFirst(candidateNodes))` — @radix-ui/react-roving-focus), so the next trigger becomes
+ * `document.activeElement` ~10-25ms AFTER `keyboard.press()` resolves.
  */
 
 /**
- * Waits until the tablist is genuinely interactive, not merely painted.
- *
- * Radix only makes the group container focusable (`tabindex="0"`) once its items have registered
- * with the roving-focus collection (`focusableItemsCount > 0`), which happens in an effect after
- * hydration. Until then an arrow key would land on a tablist whose key handler cannot resolve any
- * candidate. Individual triggers stay at `tabindex="-1"` until something focuses them, so the
- * container is the correct readiness signal.
+ * Waits until the tablist is genuinely interactive, not merely painted. Radix only makes the group
+ * container focusable (`tabindex="0"`) once its items have registered with the roving-focus
+ * collection (`focusableItemsCount > 0`), which happens in an effect after hydration.
  */
 async function waitForRovingTablist(page) {
   await page.waitForFunction(
@@ -58,7 +50,7 @@ async function waitForFocusedTabIndex(page, index, message) {
 }
 
 // This gate runs beside other browser gates on a shared host, so it must own a port nobody else
-// is using. It used to free and bind 6008 unconditionally — the port `pnpm preview` and three
+// is using.
 // other gates use — which killed their servers out from under them.
 const port = Number(process.env.PREVIEW_PORT) || 6041;
 execFileSync(process.execPath, ["preview/scripts/kill-port.mjs", String(port)], {

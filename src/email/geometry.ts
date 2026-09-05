@@ -49,10 +49,7 @@ export interface EmailShellTokens {
   /** Tight rhythm (heading ↔ lede). */
   readonly gapSm: string;
   readonly gapSmPx: number;
-  /**
-   * Height the canonical invitation reference card measures at this geometry (480×407). A
-   * visual-regression target, NOT a layout input — never set a fixed height on an email card.
-   */
+  /** Height the canonical invitation reference card measures at this geometry (480×407). */
   readonly referenceHeight: string;
   readonly referenceHeightPx: number;
 }
@@ -82,11 +79,10 @@ export const EMAIL_SHELL: EmailShellTokens = Object.freeze({
 export interface EmailTypographyTokens {
   /**
    * The canonical DXS stack, Noto Sans JP first (product override, direct instruction). Web-font
-   * `@font-face` is unavailable in most clients, so this NAMES the face and degrades: a client with
-   * Noto Sans JP installed (or a webmail that already loaded it) renders the canonical face;
+   * `@font-face` is unavailable in most clients, so this NAMES the face and degrades: a client
+   * with Noto Sans JP installed (or a webmail that already loaded it) renders the canonical face;
    * everything else falls to Hiragino (macOS/iOS) → Yu Gothic (Windows) → M PLUS 2 → Meiryo → the
-   * system UI face → Arial → `sans-serif`. Family names are SINGLE-quoted so the value drops
-   * straight into a double-quoted `style="…"` attribute.
+   * system UI face → Arial → `sans-serif`.
    */
   readonly fontFamily: string;
   /** Mono stack for invoice ids, masked card numbers, ISO dates and amounts. */

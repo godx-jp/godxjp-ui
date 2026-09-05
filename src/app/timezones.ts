@@ -54,10 +54,7 @@ export const APP_TIMEZONE_PRESET = [
 
 export type AppTimezonePreset = (typeof APP_TIMEZONE_PRESET)[number];
 
-/**
- * Preferred IANA ids not returned by all runtimes (e.g. Node lists `Asia/Saigon` only).
- * Keys are app-facing ids; values are Intl-canonical ids for offset lookup.
- */
+/** Preferred IANA ids not returned by all runtimes (e.g. Node lists `Asia/Saigon` only). */
 export const TIMEZONE_ALIASES: Record<string, string> = {
   "Asia/Ho_Chi_Minh": "Asia/Saigon",
 };

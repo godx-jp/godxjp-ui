@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flex, PageContainer, SplitPane } from "@godxjp/ui/layout";
+import { Flex, PageContainer, ResponsiveGrid, SplitPane } from "@godxjp/ui/layout";
 import {
   Card,
   CardContent,
@@ -311,12 +311,12 @@ export default function Demo() {
         >
           <Flex direction="col" gap="md">
             <Text weight="medium">月次サマリー</Text>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <ResponsiveGrid columns={{ sm: 2, md: 2, lg: 2 }} gap="md">
               <StatCard label="請求総額" value="¥3,800,000" delta="+8%" />
               <StatCard label="承認済件数" value="3" hint="全5件中" />
               <StatCard label="保留中" value="1" delta="-2" />
               <StatCard label="未承認" value="1" delta="+1" inverse />
-            </div>
+            </ResponsiveGrid>
           </Flex>
         </SplitPane>
 

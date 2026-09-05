@@ -1,38 +1,9 @@
 #!/usr/bin/env node
 /**
- * Tests must assert the CONTRACT, not the Tailwind utility that happens to implement it.
- *
- * Sixteen tests broke during #319 without a single behaviour changing. Each one pinned a utility
- * class — `toHaveClass("size-6")`, `[class*="bg-destructive"]`, `toContain("text-xs")` — so the
- * moment a literal became a token the assertion failed even though the component rendered
- * identically. That is a test telling you about your stylesheet, not about your component.
- *
- * The replacements are all cheap and all stronger:
- *
- *     toHaveClass("size-6")                  ->  toHaveClass("ui-control-affix-action")
- *     querySelector('[class*="bg-destructive"]')  ->  querySelector('[data-status="error"]')
- *     className.toContain("text-xs")         ->  toHaveAttribute("data-compact")
- *     toHaveClass("flex-col")                ->  toHaveAttribute("data-direction", "vertical")
- *
- * Two of them were not merely brittle but WRONG: `[class*="opacity-0"]` also matches
- * `opacity-05`, and one asserted `dragLeave` had been called without asserting anything about
- * what it did — a dropzone stuck in the active state passed.
- *
- * DataTable is the proof this is achievable: 24 test files, 112 cases, zero utility assertions,
- * and it needed no changes at all when its chrome was tokenized.
- *
- * WHAT IS ALLOWED
- *   - Semantic classes: anything starting `ui-`, plus the shell's `app-` prefixed classes.
- *   - Arbitrary values that read a token: `size-[var(--x)]`, `min-w-[var(--y)]`.
- *   - Data attributes, roles, ARIA — the actual contract.
- *   - Consumer-supplied classes in a fixture (`<Button className="my-8">`) — those assert
- *     pass-through, which IS the contract.
- *
- * Ratchet, like the geometry guard: a baseline of known offenders that may only shrink.
- *
- * Usage:
- *   node scripts/check-no-tailwind-class-assertions.mjs
- *   node scripts/check-no-tailwind-class-assertions.mjs --update
+ * Tests must assert the CONTRACT, not the Tailwind utility that happens to implement it. Each one
+ * pinned a utility class — `toHaveClass("size-6")`, `[class*="bg-destructive"]`,
+ * `toContain("text-xs")` — so the moment a literal became a token the assertion failed even though
+ * the component rendered identically.
  */
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";

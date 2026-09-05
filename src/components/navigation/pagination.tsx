@@ -166,7 +166,6 @@ export function Pagination({
 
   // Pagination is navigation between multiple result pages. `total === 0` is ALWAYS hidden — there
   // is no data to navigate (and a custom total label would produce the invalid range `[1, 0]`).
-  // A single page is hidden by default (`hideOnSinglePage`); a consumer opts in with
   // `hideOnSinglePage={false}` when it still wants the bar (e.g. to keep `showTotal` visible).
   if (total <= 0) return null;
   if (hideOnSinglePage && totalPages <= 1) return null;
@@ -183,9 +182,7 @@ export function Pagination({
           aria-label={t("navigation.pagination.prev")}
           onClick={() => go(safeCurrent - 1)}
         >
-          {/* Glyph size is owned by --pagination-icon-size in styles/navigation-layout.css — a
-           * literal here could not be re-themed, and simply dropping it would hand the chevron to
-           * the small-button icon tier (#319). */}
+          {}
           <ChevronLeft aria-hidden="true" />
         </Button>
         <span className="ui-pagination-count">
@@ -216,14 +213,11 @@ export function Pagination({
           disabled={disabled}
         >
           <SelectTrigger
-            // 幅はコンテンツに合わせる (gh#286) — 固定幅はロケールの長い
             // ラベル (ja「100 件/ページ」) を切り詰める。token は下限のみ。
             className="ui-pagination-size-trigger w-max min-w-[var(--pagination-size-width)]"
             aria-label={t("navigation.pagination.pageSize")}
           >
-            {/* トリガーはロケール別の最短形 (ja「20件」/ en「20 / page」) —
-             * gh#290: コントロール上の長い単位表記が場所を取るため。
-             * メニュー項目は素の数値 (gh#289)。 */}
+            {}
             <SelectValue>
               {t("navigation.pagination.pageSizeTrigger", { size: pageSize })}
             </SelectValue>

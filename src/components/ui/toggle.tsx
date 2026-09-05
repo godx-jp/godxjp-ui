@@ -24,23 +24,18 @@ const toggleVariants = cva("ui-toggle", {
 });
 
 /**
- * The counter-pill vocabulary, lifted VERBATIM from `Button` (`count` / `overflowCount` /
- * `showZero`) so a counted filter tab and a counted, pressed filter chip are one vocabulary rather
- * than two that drift (gh#312). Not exported on its own — it is folded into `ToggleProp` and
- * `ToggleGroupItemProp` so there is one public name per component.
+ * Not exported on its own — it is folded into `ToggleProp` and `ToggleGroupItemProp` so there is
+ * one public name per component.
  */
 type ToggleCountFields = {
   /**
    * Optional numeric count rendered as a borderless counter pill after the label — the SAME
    * vocabulary `Button` already defines, so a counted segmented toggle and a counted filter tab
    * read identically. Formatted with `Intl.NumberFormat` in the active locale (never `String(n)`,
-   * never a hand-rolled thousands separator). Never nest a `Badge` inside a Toggle for this: a
-   * Badge is a status chip with its own surface, so it double-borders the chip and puts two boxes
-   * where there is one control. The pill takes its colour from the toggle's OWN pressed state, so
-   * pressed and unpressed chips differ without reading the number.
+   * never a hand-rolled thousands separator).
    */
   count?: number;
-  /** Cap for `count` — beyond it the pill shows `{overflowCount}+` (e.g. `99+`). Default `99`. */
+  /** Cap for `count` — beyond it the pill shows `{overflowCount}+` (e.g. `99+`). */
   overflowCount?: number;
   /** Render the pill when `count` is 0. Default `true`, matching Button. */
   showZero?: boolean;
@@ -48,32 +43,12 @@ type ToggleCountFields = {
    * Localized description of what the count MEANS, folded into the accessible name so the control
    * never announces as a bare number ("👍 3" → "thumbs up, 3 reactions"). Supply it whenever the
    * visible label is an icon or an emoji; with a text label the label itself already carries the
-   * meaning. Pass a `t()`-resolved string — the library does not own this wording.
+   * meaning.
    */
   countLabel?: string;
 };
 
-/**
- * Counter pill shared by `Toggle` and `ToggleGroupItem`.
- *
- * ACCESSIBLE NAME. The digits live INSIDE the same `button[aria-pressed]` — one tab stop, one
- * focus ring, one name. The name always comes out as "<label>, <count> <unit>" ("Unread, 12",
- * "Thích, 3 lượt"), by one of two routes:
- *
- *   • Name from CONTENTS (the usual text chip). The visible digits are `aria-hidden`, and an
- *     `sr-only` sibling carries ", 12 unit". The separator is explicit on purpose: the accessible
- *     name is a CONCATENATION of descendant text, and whether a browser inserts a space between
- *     two inline boxes is a layout detail no test can rely on — without it the control can
- *     announce "Unread12".
- *   • Name from `aria-label` (an icon or emoji chip). Contents are ignored for the name, so the
- *     same ", 12 unit" tail is folded into the label instead.
- *
- * Either way the count is announced exactly ONCE — the visible digits are hidden from the a11y
- * tree precisely so they cannot be counted twice — and there is deliberately no `aria-live`: a
- * count that ticks up as other people react is not this control's status, and a live region here
- * would fire on every socket message. A product that wants the change announced owns its own
- * live region.
- */
+/** Counter pill shared by `Toggle` and `ToggleGroupItem`. ACCESSIBLE NAME. */
 function useCounterPill({
   count,
   overflowCount = 99,

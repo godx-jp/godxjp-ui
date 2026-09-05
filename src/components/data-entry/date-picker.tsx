@@ -18,10 +18,9 @@ export type {
 const ISO_HINT = "yyyy-mm-dd";
 
 /**
- * DatePicker — WAI-ARIA date combobox. A real, typeable `<input>` holds the value as an
- * ISO-8601 `yyyy-MM-dd` string (the international standard): it is form-submittable (give it a
- * `name`), screen-reader friendly, and e2e-testable by simply filling the input. The calendar
- * popover is the visual affordance; typing and the calendar stay in sync.
+ * DatePicker — WAI-ARIA date combobox. A real, typeable `<input>` holds the value as an ISO-8601
+ * `yyyy-MM-dd` string (the international standard): it is form-submittable (give it a `name`),
+ * screen-reader friendly, and e2e-testable by simply filling the input.
  */
 export function DatePicker({
   value: valueProp,
@@ -44,8 +43,7 @@ export function DatePicker({
   // The typeable <input> is the semantic focus target: forward the FormField label/helper/error
   // contract onto it (never the wrapper div) so the visible label names the control for AT.
   const fieldA11y = pickFieldA11y(ariaProps);
-  // gh#337 — the machine key for a DatePicker NESTED under a layout wrapper (the 請求日 from/to
-  // pair is the measured shape). Resolved HERE rather than left to the inner `Input`, because this
+  // Resolved HERE rather than left to the inner `Input`, because this
   // component — not the input — decides which element owns the native `name`. Passing `data-field`
   // down also tells Input's own resolver to keep its hands off (see useFieldIdentity).
   const identity = useFieldIdentity({ id, name, "data-field": fieldA11y["data-field"] });
@@ -79,7 +77,7 @@ export function DatePicker({
     setText("");
   };
 
-  // Both affordances, never one-or-the-other (gh#308). Input's `allowClear` REPLACES the
+  // Input's `allowClear` REPLACES the
   // trailingIcon while a value is set — right for a plain text field, wrong for a picker,
   // where the calendar icon is the only visual sign that this field HAS a calendar. So the
   // picker renders its own trailing cluster and leaves Input's `allowClear` untouched
@@ -92,7 +90,7 @@ export function DatePicker({
       emit(undefined);
       return;
     }
-    // Only commit a COMPLETE date. A partial string fed to the lenient parser
+    // A partial string fed to the lenient parser
     // (parseISO("20") is a valid year-2000 date) would change `value`, and the text-mirror
     // effect then rewrites the field mid-type — mangling input. onBlur normalizes loose entry.
     if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return;

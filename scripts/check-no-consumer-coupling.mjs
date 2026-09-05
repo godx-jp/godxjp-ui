@@ -1,34 +1,8 @@
 #!/usr/bin/env node
 /**
- * check:no-consumer-coupling — keeps @godxjp/ui an INTERNATIONAL, consumer-agnostic
- * library. It FAILS (non-zero exit, printing file:line for each violation) when the
- * library source references a SPECIFIC downstream consumer/product or consumer
- * infrastructure. A general-purpose design system must never be shaped around, or
- * hard-name, any one customer/app/deployment.
- *
- * Two checks:
- *   1. Consumer/product identifiers + consumer infra domains (denylist below).
- *      Word-boundary matched so the library's OWN identity — `@godxjp/ui`,
- *      `godxjp-ui`, `godx-jp/godxjp-ui`, the `@godxjp` npm scope — is NEVER flagged.
- *      Only CONSUMER/PRODUCT names are forbidden, not the design system's own name.
- *   2. (component source only) Hard-coded locale / currency / timezone LITERALS in
- *      `src/components/**` logic that bypass Intl/CLDR (e.g. a literal `'¥'`, `'JPY'`,
- *      `'ja-JP'`, `'Asia/Tokyo'`). Stories/examples/tests/i18n catalogs are excluded
- *      because such literals are legitimate DATA there — this keeps false positives ~0.
- *
- * Baseline (see scripts/no-consumer-coupling.baseline.json): the library ALREADY carries
- * pre-existing consumer references (design-lineage comments describing the origin design,
- * and intentional customer-theming showcase demos). Those are recorded as a per-file count
- * baseline so this gate can ship WITHOUT weakening detection: any NEW coupling — a new file,
- * or MORE coupling in a baselined file — fails. The baseline is a debt ratchet: it may only
- * shrink. Run `node scripts/check-no-consumer-coupling.mjs --update-baseline` after genuinely
- * removing references to lower the numbers. The locale check has NO baseline (currently 0).
- *
- * Usage:
- *   node scripts/check-no-consumer-coupling.mjs              # gate (CI)
- *   node scripts/check-no-consumer-coupling.mjs --all        # also list baselined debt
- *   node scripts/check-no-consumer-coupling.mjs --json
- *   node scripts/check-no-consumer-coupling.mjs --update-baseline
+ * check:no-consumer-coupling — keeps @godxjp/ui an INTERNATIONAL, consumer-agnostic library. It
+ * FAILS (non-zero exit, printing file:line for each violation) when the library source references
+ * a SPECIFIC downstream consumer/product or consumer infrastructure.
  */
 import { readFileSync, writeFileSync, globSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -73,11 +47,9 @@ const LOCALE_LITERALS = [
   { name: "timezone 'Asia/Tokyo' (use IANA/user tz)", re: /(['"`])Asia\/Tokyo\1/ },
 ];
 
-// Files/globs never scanned: build output, deps, and the CHANGELOG (a historical
 // record legitimately naming consumers). The gate script + its baseline + fixtures
 // are outside the scanned trees.
 const IGNORE_SEGMENTS = ["/node_modules/", "/dist/", "/build/", "/.turbo/", "/coverage/"];
-// CHANGELOG legitimately names consumers (historical record); the gate's OWN self-test
 // carries denylist tokens as fixtures — both are allowlisted by basename.
 const IGNORE_BASENAMES = new Set(["CHANGELOG.md", "no-consumer-coupling.gate.test.ts"]);
 
@@ -106,7 +78,7 @@ const DOMAIN_MATCHERS = [
   { name: "<slug>-prod.godx.jp", re: /(?<![A-Za-z0-9])[a-z0-9-]+-prod\.godx\.jp(?![A-Za-z0-9])/gi },
 ];
 
-/** Scan raw text for consumer identifiers/domains. Returns [{ token, match, line }]. Pure/exported for tests. */
+/** Scan raw text for consumer identifiers/domains. Returns [{ token, match, line }]. */
 export function scanText(text) {
   const out = [];
   const lines = text.split("\n");
@@ -180,7 +152,6 @@ function main() {
     const allowed = baseline[rel] ?? 0;
     debtCount += Math.min(hits.length, allowed);
     if (hits.length > allowed) {
-      // Surface every hit in a file that regressed — cheap and unambiguous.
       for (const h of hits) {
         newViolations.push(`  ${rel}:${h.line}  ${h.match}  [consumer: ${h.token}]`);
       }

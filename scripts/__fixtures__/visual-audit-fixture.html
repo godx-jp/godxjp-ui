@@ -57,6 +57,37 @@
         <span>Something needs your attention.</span>
         <button style="width: 100%; padding: 8px; border: 0; background: #ccc">Acknowledge</button>
       </div>
+
+      <!-- (6) css-layers-missing: library class names with no library CSS loaded. -->
+      <div class="ui-page-container"><div class="ui-dropdown-menu-content">menu</div></div>
+
+      <!-- (7) control-height-mismatch: two controls in one row at different heights. -->
+      <div class="ui-flex" data-direction="row" style="display: flex; gap: 8px">
+        <button style="height: 32px">Save</button>
+        <button style="height: 38px">Cancel</button>
+      </div>
+
+      <!-- (8) sibling-card-gap: two cards touching. -->
+      <div>
+        <div class="ui-card" style="height: 40px; border: 1px solid #ccc">card one</div>
+        <div class="ui-card" style="height: 40px; border: 1px solid #ccc">card two</div>
+      </div>
+
+      <!-- (9) row-content-starved: a row text squeezed to a few pixels by its sibling. -->
+      <div class="ui-flex" data-direction="row" style="display: flex; width: 400px">
+        <span
+          style="
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 24px;
+            display: block;
+          "
+        >
+          Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/537.36 Chrome/152 Safari/537.36
+        </span>
+        <div style="width: 376px; flex: none">sibling</div>
+      </div>
     </main>
   </body>
 </html>

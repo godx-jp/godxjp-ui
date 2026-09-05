@@ -54,8 +54,7 @@ export function MonthPicker({
   const dialogId = `${inputId}-dialog`;
   // Forward the FormField label/helper/error contract onto the typeable input (focus target).
   const fieldA11y = pickFieldA11y(ariaProps);
-  // gh#337 — the machine key for a MonthPicker NESTED under a layout wrapper (a 年/月 combo is the
-  // measured shape). Resolved here, not in the inner `Input`, because this component owns which
+  // Resolved here, not in the inner `Input`, because this component owns which
   // element carries the native `name`.
   const identity = useFieldIdentity({ id, name, "data-field": fieldA11y["data-field"] });
 
@@ -128,9 +127,7 @@ export function MonthPicker({
             }}
             onBlur={() => setText(toYmText(value))}
           />
-          {/* Clear (×) sits BESIDE the trigger, never in place of it (gh#308) — the calendar
-              icon is the only visual sign this field opens a month grid; the field itself
-              still opens it too (onClick / ArrowDown). */}
+          {}
           {showClear ? (
             <button
               type="button"

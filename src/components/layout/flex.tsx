@@ -23,7 +23,6 @@ export function Flex({
   children,
   ...props
 }: FlexProp) {
-  // gh#303 — a bare <div> (no role) must not carry naming attributes (axe: aria-allowed-attr).
   // FormField legitimately lands its contract here when a Flex wraps a composite field (range
   // from/to pair, 年/月 combo), so a NAMED Flex defaults to role="group" — the WAI-ARIA container
   // for exactly that — and keeps only the aria the group role allows: aria-errormessage folds
@@ -53,7 +52,6 @@ export function Flex({
       data-align={align}
       data-justify={justify}
       data-wrap={wrap ? "true" : undefined}
-      // Omitted when unset, so an unconfigured Flex matches no responsive rule at all (gh#231
       // inert-default contract) — the stylesheet has no `[data-hide-below]`-less selector.
       data-hide-below={hideBelow}
       data-hide-from={hideFrom}

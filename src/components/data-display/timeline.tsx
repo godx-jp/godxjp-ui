@@ -12,7 +12,7 @@ export type TimelineItem = {
   note?: ReactNode;
   /** Shorthand for `status: "current"`. `status` wins when both are set. */
   current?: boolean;
-  /** Explicit 3-state. Resolves as `status ?? (current ? "current" : <legacy>)`. */
+  /** Explicit 3-state. Resolves as `status ?? */
   status?: TimelineStatus;
   /** Per-item glyph override; wins over the variant/status auto-glyph. */
   icon?: LucideIcon;
@@ -21,10 +21,8 @@ export type TimelineItem = {
 export type TimelineProps = {
   items: TimelineItem[];
   /**
-   * Rail glyph strategy. `icon` (default) keeps the legacy look (Plane for the
-   * current step, CheckCircle2 otherwise). `ordinal` numbers every step
-   * (1,2,3…) and lets status drive colour only. `status` picks the glyph by
-   * status: done → check, current → filled dot, pending → the step number.
+   * Rail glyph strategy. `icon` (default) keeps the legacy look (Plane for the current step,
+   * CheckCircle2 otherwise).
    */
   variant?: TimelineVariant;
 };

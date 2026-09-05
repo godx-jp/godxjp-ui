@@ -1,31 +1,8 @@
 import * as React from "react";
 
 /**
- * Keep-the-active-tab-visible logic for the horizontal `TabsList` scroll strip (gh#204).
- *
- * `TabsList` scrolls its own overflow (gh#175) so long localized labels never clip. That fixed
- * clipping but not the SCROLL POSITION: after a responsive resize / route re-render the strip kept
- * (or shifted) its internal `scrollLeft`, so the ACTIVE trigger — typically the FIRST one — could
- * end up completely outside the scrollport while still carrying `data-state="active"` /
- * `aria-selected="true"`. A tab you cannot see is a tab you cannot use.
- *
- * The fix observes the strip (size changes) and its triggers (`data-state` changes) and scrolls the
- * element that must stay reachable back into view. Deliberate constraints:
- *
- *  - **Never fights the user.** The scroll only runs when the target is NOT already fully inside the
- *    scrollport, so an intentional manual/touch scroll that leaves the active tab visible is left
- *    alone, and a click (target is under the pointer) or arrow-key move (the browser already
- *    scrolled focus into view) is a no-op.
- *  - **Focus wins over selection.** With `activationMode="manual"` the roving focus can sit on a
- *    trigger that is not the selected one; yanking the strip to the selected tab would strand the
- *    keyboard user. The focused trigger inside the list is therefore the preferred target.
- *  - **Reduced motion.** `prefers-reduced-motion: reduce` downgrades every correction to an instant
- *    jump; resize corrections are instant regardless (a smooth animation mid-resize reads as jank).
- *  - **RTL / vertical safe.** All geometry is physical viewport rects and the scroll uses
- *    `scrollIntoView({ block: "nearest", inline: "nearest" })`, which resolves direction natively —
- *    so a first trigger in `dir="rtl"` (visually on the right) and a vertical rail both work
- *    without direction branches. `nearest` also means no ancestor/page scroll when the strip is
- *    already where it should be.
+ * A tab you cannot see is a tab you cannot use. The fix observes the strip (size changes) and its
+ * triggers (`data-state` changes) and scrolls the element that must stay reachable back into view.
  */
 
 /** Minimal rect shape — only the edges the visibility test needs. */
@@ -42,10 +19,6 @@ const VISIBILITY_EPSILON = 1;
 /**
  * True when `trigger` sits entirely inside the `scrollport` box. Pure geometry — physical viewport
  * coordinates, so it is direction- and orientation-agnostic (LTR, RTL, vertical rail alike).
- *
- * A zero-area scrollport (unmounted, `display:none`, or an environment without layout such as
- * jsdom) reports `true`: there is no measurable overflow to correct, and scrolling a hidden strip
- * would be meaningless.
  */
 export function isTabFullyVisible(scrollport: TabsScrollBox, trigger: TabsScrollBox): boolean {
   const width = scrollport.right - scrollport.left;
@@ -111,13 +84,6 @@ export function syncActiveTabIntoView(
 }
 
 /**
- * Wires the two signals that can strand the active tab off-screen:
- *
- *  - a `ResizeObserver` on the strip — a responsive width change (1440 → 1024 → 390) keeps/shifts
- *    the old `scrollLeft`; the observer's initial delivery also covers first mount at a new width;
- *  - a `MutationObserver` on descendant `data-state` — the selected tab changing from outside the
- *    strip (router/URL state, a controlled parent) must bring the newly-selected trigger into view.
- *
  * Resize corrections are instant; a selection change animates unless reduced motion is requested.
  * Both observers are optional: without them (SSR, ancient runtimes) the component degrades to the
  * pre-fix behaviour instead of throwing.

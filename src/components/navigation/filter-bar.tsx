@@ -47,7 +47,7 @@ export function Toolbar({
   const { t } = useTranslation();
   const reactId = useId();
 
-  // Typed model (gh#258): ANY model prop switches to the canonical model layout. Without one,
+  // Without one,
   // the legacy children-composition markup below is rendered UNCHANGED (backward compatible).
   const hasModel =
     search !== undefined ||
@@ -89,7 +89,6 @@ export function Toolbar({
   const showChips = Boolean(chips && chips.length > 0);
   const showMeta = error != null || resultCount !== undefined;
 
-  // Canonical DOM (= keyboard/tab) order, gh#258:
   //   search → typed filters → children (custom composition filters) → reset → actions
   //   → applied-filter chips row → result-count / error line.
   return (
@@ -231,12 +230,7 @@ export function ToolbarGroup({ label, controlId, className, children }: ToolbarG
   );
 }
 
-/**
- * Canonical list-page filter strip.
- *
- * `Toolbar` remains available for backwards compatibility. `FilterBar` is the
- * public domain-neutral name used by application design specifications.
- */
+/** Canonical list-page filter strip. `Toolbar` remains available for backwards compatibility. */
 export const FilterBar = Toolbar;
 
 /** Labelled control group for {@link FilterBar}. */

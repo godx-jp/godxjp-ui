@@ -72,7 +72,6 @@ export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   onClear?: () => void;
   /** `ghost` drops the field's own border/background/ring for a textarea inside a surface that already draws the box. */
   variant?: "default" | "ghost";
-  /** Grow the box with its content between `minRows` and `maxRows` instead of a fixed `rows` height (default false). */
   autoGrow?: boolean;
   /** Floor in text rows while `autoGrow`; never undercuts the `--control-height` tier. */
   minRows?: number;
@@ -103,9 +102,9 @@ export type NumberInputProp = FieldA11yProps & {
   readOnly?: boolean;
   size?: SizeProp;
   placeholder?: PlaceholderProp;
-  /** Leading affix inside the field (e.g. `¥`). Decorative — `aria-hidden`. */
+  /** Leading affix inside the field (e.g. `¥`). */
   prefix?: React.ReactNode;
-  /** Trailing affix inside the field (e.g. `%`). Decorative — `aria-hidden`. */
+  /** Trailing affix inside the field (e.g. `%`). */
   suffix?: React.ReactNode;
   /** Form field name — the visible input submits its value natively. */
   name?: NameProp;
@@ -128,19 +127,12 @@ export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
   collapseBelow?: BreakpointProp | false;
   columns?: ResponsiveGridColumnsProp;
   density?: DensityProp;
-  /**
-   * Server validation error bag (e.g. Inertia's `form.errors`). Each `FormField name="…"` inside
-   * resolves its own message from the bag automatically and CLAIMS its key; `<FormErrors />`
-   * renders the remaining, unclaimed entries — errors attached to hidden/derived fields that no
-   * visible field displays. Works in both the `<form>` and `asChild` modes. A Form WITHOUT this
-   * prop joins a surrounding `FormErrorsProvider` instead (sibling Card+Form sections sharing one
-   * bag); a Form WITH it starts its own (shadowing) registry.
-   */
+  /** Server validation error bag (e.g. Inertia's `form.errors`). */
   errors?: ErrorBagProp;
   /**
-   * Render the caller's own element instead of a `<form>`, keeping only the layout context.
-   * For routing libraries that own the form element (Inertia, TanStack Form) — two `<form>`
-   * elements cannot nest. `columns` does not apply in this mode; wrap fields in ResponsiveGrid.
+   * Render the caller's own element instead of a `<form>`, keeping only the layout context. For
+   * routing libraries that own the form element (Inertia, TanStack Form) — two `<form>` elements
+   * cannot nest.
    */
   asChild?: boolean;
   className?: ClassNameProp;
@@ -163,21 +155,15 @@ export type FormFieldProp =
       id?: IdProp;
       /**
        * Error-bag key of this field. When the surrounding `Form` carries `errors`, the field
-       * resolves its message from `errors[name]` automatically (an explicit `error` prop wins)
-       * and CLAIMS the key so `<FormErrors />` does not repeat it. Also the default source of
-       * {@link FormFieldProp.field} (below), so a field that already names its error key does not
-       * repeat itself.
+       * resolves its message from `errors[name]` automatically (an explicit `error` prop wins) and
+       * CLAIMS the key so `<FormErrors />` does not repeat it.
        */
       name?: NameProp;
       /**
-       * Stable MACHINE key of this field — the bare column/parameter name (`project_name`), not a
-       * bracketed legacy path (gh#337). Rendered on the control as `data-field`, and as a native
-       * `name` when the app opted in via `<AppProvider emitFieldNames>`.
-       *
-       * Defaults to `name`, then `id` — which is why an app whose fields already carry a
-       * column-named `id` gets the attribute on every control without editing a single screen.
-       * Set it explicitly only where `id` is a DOM-uniqueness artefact rather than the field key
-       * (`id="source_slip_field"` for `field="source_slip_id"`).
+       * Rendered on the control as `data-field`, and as a native `name` when the app opted in via
+       * `<AppProvider emitFieldNames>`. Defaults to `name`, then `id` — which is why an app whose
+       * fields already carry a column-named `id` gets the attribute on every control without
+       * editing a single screen.
        */
       field?: NameProp;
       label: LabelProp;
@@ -486,8 +472,7 @@ export type SearchSelectProp = {
   /**
    * Custom renderer for the SELECTED value shown on the trigger (Ant Design `labelRender`).
    * Receives the value, the resolved label, and the full option when it is loaded (undefined for
-   * an async preset whose page hasn't arrived). Only used while a value is selected; the
-   * placeholder still shows when empty. Overrides the default icon + label trigger content.
+   * an async preset whose page hasn't arrived).
    */
   labelRender?: (selected: {
     value: string;
@@ -515,7 +500,7 @@ export type SearchSelectProp = {
   /**
    * Read-only: the current value is shown (and the clear affordance hidden) but the popover cannot
    * be opened — no new pick, no search. Mirrors the Input/NumberInput readOnly contract (stays
-   * focusable + submits its value, unlike `disabled`). Default false.
+   * focusable + submits its value, unlike `disabled`).
    */
   readOnly?: boolean;
   /** Trigger height tier — forwarded to the underlying Button. Default matches Button's own default. */
@@ -529,7 +514,7 @@ export type SearchSelectProp = {
   /**
    * Override the default client-side filter (`options` mode only — ignored with `loadOptions`,
    * which is responsible for its own server-side filtering). Receives the option and the trimmed
-   * query; return true to keep the row. Only consulted while the query is non-empty.
+   * query; return true to keep the row.
    */
   filterOption?: (option: SearchSelectOptionProp, query: string) => boolean;
   /**
@@ -558,7 +543,7 @@ export type SearchSelectProp = {
   "aria-invalid"?: boolean | "true" | "false";
   "aria-required"?: boolean | "true" | "false";
   "data-testid"?: string;
-  /** Stable machine key, forwarded to the trigger (gh#337). Normally injected by `FormField`. */
+  /** Normally injected by `FormField`. */
   "data-field"?: string;
 };
 
@@ -566,11 +551,6 @@ export type SearchSelectProp = {
  * Data-driven (Ant-style) form of {@link Select} — one component covering static `options` or
  * async `loadOptions`, with `showSearch` toggling the searchable combobox vs a plain listbox.
  * Passing `options`/`loadOptions` to `<Select>` switches it from the compound API to this one.
- *
- * `readOnly`/`size`/`open`/`onOpenChange`/`search`/`onSearchChange`/`filterOption`/`renderError`/
- * `renderLoadMore` (inherited from {@link SearchSelectProp}) take effect ONLY in searchable mode
- * (`showSearch` or `loadOptions`) — they configure the `SearchSelect` engine that mode delegates
- * to. The plain listbox (no search) is a native Radix listbox and ignores them.
  */
 export type SelectDataProp = SearchSelectProp & {
   /** Show the search box (combobox). Defaults to true when `loadOptions` is set, otherwise false. */
@@ -720,8 +700,6 @@ export type TransferProp = FieldA11yProps & {
   selectedKeys?: [string[], string[]];
   onSelectChange?: (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void;
 };
-
-// ─── BranchScopePicker (gh#257 / DXS platform#311) ───────────────────────────────────────────────
 
 /** @see BranchScopePicker — scope mode: every branch, or an explicit subset. */
 export type BranchScopeModeProp = "all" | "selected";

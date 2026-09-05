@@ -20,8 +20,7 @@ export type UseZodFormReturnProp<TFieldValues extends FieldValues> = UseFormRetu
  * Framework-agnostic form-state adapter — decouples `FormRoot`/`FormFieldControl` from any single
  * form library. The DS ships the built-in react-hook-form path (`form`), and an adapter lets a
  * SERVER-driven form library plug into the same auto-binding: Inertia's `useForm`
- * (`@godxjp/ui/inertia`), formik, or TanStack Form. The core has ZERO dependency on any of them —
- * a consumer wraps its own form object in an adapter and passes it to `FormRoot`.
+ * (`@godxjp/ui/inertia`), formik, or TanStack Form.
  */
 export interface FormStateAdapter {
   /** Current value of the field `name` (dotted paths allowed if the underlying store supports them). */
@@ -34,7 +33,6 @@ export interface FormStateAdapter {
   isSubmitting: boolean;
   /** Optional blur handler (e.g. touch-tracking); called with the field name. */
   onBlur?(name: string): void;
-  /** Optional snapshot of all values, passed to `onSubmit`; defaults to `{}` when absent. */
   getValues?(): unknown;
 }
 
@@ -47,11 +45,9 @@ export type FormRootProp<TFieldValues extends FieldValues> = {
   form?: UseZodFormReturnProp<TFieldValues>;
   /**
    * Framework-agnostic form-state adapter (e.g. `inertiaAdapter(form)` from `@godxjp/ui/inertia`).
-   * Provide EITHER `form` OR `adapter`. With an adapter, `FormFieldControl` auto-binds each field by
-   * `name` (value/onChange/error/aria) and `useFormSubmitting()` reads `isSubmitting`.
    */
   adapter?: FormStateAdapter;
-  /** Submit handler. RHF path receives validated `values`; the adapter path calls it with a snapshot (`getValues()`), typically ignored in favour of the form library's own submit (`form.post(url)`). */
+  /** Submit handler. */
   onSubmit: (values: TFieldValues) => void | Promise<void>;
   children: React.ReactNode;
   className?: string;

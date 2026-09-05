@@ -57,9 +57,8 @@ const resetBaseline = process.argv.includes("--reset-baseline");
 const MCP_DATA_PATH = path.join(REPO_ROOT, "mcp/src/data/frame-coverage.generated.ts");
 
 /**
- * Emit the MCP-side coverage catalogue (issue #163 item 7). Consuming agents must be able to
- * ask "is this state actually proven?" and get UNTESTED — never a happy-path example presented
- * as evidence of support.
+ * Consuming agents must be able to ask "is this state actually proven?" and get UNTESTED — never a
+ * happy-path example presented as evidence of support.
  */
 function renderMcpData(ledger, rows, totals) {
   const entries = rows.map((row) => {
@@ -203,11 +202,9 @@ function main() {
       ...(row.hasFrame ? {} : { hasFrame: false }),
       ...(row.embeddable ? { embeddable: true } : {}),
       // Ratchet floor for THIS export.
-      //   covered        may only RISE  — losing an executed case is a regression.
       //   notApplicable  may only FALL  — converting a real dimension into a reasoned N/A is
       //                                   the weakening move, so the ceiling only tightens.
       //   untested       is INFORMATIONAL. It legitimately rises when the CONTRACT tightens
-      //                  (a new public prop makes a previously N/A dimension applicable), so
       //                  gating on it would punish exactly the behaviour we want.
       baseline: resetBaseline
         ? { covered, notApplicable, untested }

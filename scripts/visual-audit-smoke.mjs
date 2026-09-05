@@ -1,14 +1,10 @@
 #!/usr/bin/env node
 /**
- * check:visual-audit — CI smoke test for scripts/visual-audit.mjs.
- *
- * Serves a fixture page that deliberately trips ALL FIVE runtime rule families, runs the
- * REAL CLI against it (`--format json`), and asserts each rule executed and produced a
- * finding — proving Chromium launch, browser-context creation, axe-core injection, and
- * every rule family work end-to-end with the installed peer versions.
- *
- * Skips (exit 0) when Playwright / @axe-core/playwright are unavailable (browserless CI),
- * matching scripts/check-contrast.mjs. Wired into `verify:release` and npm-publish CI.
+ * check:visual-audit — CI smoke test for scripts/visual-audit.mjs. Serves a fixture page that
+ * deliberately trips ALL FIVE runtime rule families, runs the REAL CLI against it (`--format
+ * json`), and asserts each rule executed and produced a finding — proving Chromium launch,
+ * browser-context creation, axe-core injection, and every rule family work end-to-end with the
+ * installed peer versions.
  */
 import { createServer } from "node:http";
 import { readFileSync } from "node:fs";
@@ -26,6 +22,10 @@ const EXPECTED = [
   "oversaturated-accent",
   "emoji-rendered",
   "alert-controls-misplaced",
+  "css-layers-missing",
+  "control-height-mismatch",
+  "sibling-card-gap",
+  "row-content-starved",
 ];
 
 async function peersAvailable() {
@@ -140,7 +140,7 @@ async function main() {
   } finally {
     // `server.close()` only stops NEW connections; it stays pending while any established socket is
     // open, so a killed-but-still-connected Chromium would hang the exit right after the hang we
-    // just fixed. Drop the live sockets first.
+    // Drop the live sockets first.
     server.closeAllConnections?.();
     server.close();
   }

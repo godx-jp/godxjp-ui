@@ -19,22 +19,22 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 2,
     title: "Tokens, not utilities",
-    body: "Visual values come from CSS custom properties in `src/tokens/` + `src/styles/theme.css`. Token-named Tailwind utilities (`bg-background`) are fine; raw value utilities (`bg-blue-500`) are forbidden. (ADR-0003)",
+    body: "Visual values come from CSS custom properties in `src/tokens/` + `src/styles/theme.css`. Token-named Tailwind utilities (`bg-background`) are fine; raw value utilities (`bg-blue-500`) are forbidden.",
   },
   {
     number: 3,
     title: "Radix for interactive primitives",
-    body: "Anything with keyboard / ARIA / portal wraps the relevant Radix primitive. (ADR-0001)",
+    body: "Anything with keyboard / ARIA / portal wraps the relevant Radix primitive.",
   },
   {
     number: 4,
     title: "shadcn-style ownership",
-    body: "Primitives are thin wrappers; consumers can fork the source in place. (ADR-0002)",
+    body: "Primitives are thin wrappers; consumers can fork the source in place.",
   },
   {
     number: 5,
     title: "One i18next singleton",
-    body: "`initI18n()` in `src/i18n/index.ts` is THE instance; consumers extend via `addResourceBundle`. (ADR-0004)",
+    body: "`initI18n()` in `src/i18n/index.ts` is THE instance; consumers extend via `addResourceBundle`.",
   },
   {
     number: 6,
@@ -64,7 +64,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 11,
     title: "Submodule discipline",
-    body: "Two-PR workflow: (1) submodule PR → `main`, (2) downstream PR → bump pin. Never push a pin to a SHA not on the submodule remote.",
+    body: "Never push a pin to a SHA not on the submodule remote.",
   },
   {
     number: 12,
@@ -114,7 +114,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 21,
     title: "Every component honours every theme axis",
-    body: "`data-theme` (light / dark), `data-accent` (6 palettes), `data-density` (compact / default / comfortable), `data-font-size` (sm / base / lg / xl). Read from tokens, never hardcode values. Verify every PR via the Storybook toolbar sweep.",
+    body: "`data-theme` (light / dark), `data-accent` (6 palettes), `data-density` (compact / default / comfortable), `data-font-size` (sm / base / lg / xl). Read from tokens, never hardcode values.",
   },
   {
     number: 22,
@@ -174,12 +174,12 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 33,
     title: "Stories / source / docs name-synchronized",
-    body: "No two names for the same export across the framework surface; no legacy aliases in stories / docs (source may keep an alias for a deprecation cycle, but the marketing surfaces use the canonical name only). Rename PR runs `grep -rn '<oldName>' src docs` and clears it.",
+    body: "No two names for the same export across the framework surface; no legacy aliases in stories / docs (source may keep an alias for a deprecation cycle, but the marketing surfaces use the canonical name only).",
   },
   {
     number: 34,
     title: "Storybook source panel = real, copy-paste-ready code",
-    body: 'Storybook\'s react-docgen serializer strips every function value (`cell: ({row}) => <JSX/>`, `render: ({field}) => <Input/>`, `rowClassName`, `renderItem`, …) to `() => {}`. Any story whose `render` passes a function-valued prop, references a module-level helper (`Badge`, `EMPLOYEE_COLUMNS`, etc.), or uses a render-prop pattern MUST override `parameters.docs.source.code` with the literal copy-paste-ready snippet — type aliases, helper functions spelled out, column definitions with cell JSX visible, inline data array. The `render()` callback stays as-is (module-level constants are fine for runtime performance); `source.code` is the marketing surface. Skip ONLY for stories whose JSX is purely static primitives Storybook can serialize verbatim (`<Button variant="primary">Click</Button>`). The exemplar is `Table.Default` in `src/stories/data-display/Table.stories.tsx`.',
+    body: 'Storybook\'s react-docgen serializer strips every function value (`cell: ({row}) => <JSX/>`, `render: ({field}) => <Input/>`, `rowClassName`, `renderItem`, …) to `() => {}`. Any story whose `render` passes a function-valued prop, references a module-level helper (`Badge`, `EMPLOYEE_COLUMNS`, etc.), or uses a render-prop pattern MUST override `parameters.docs.source.code` with the literal copy-paste-ready snippet — type aliases, helper functions spelled out, column definitions with cell JSX visible, inline data array. The `render()` callback stays as-is (module-level constants are fine for runtime performance); `source.code` is the marketing surface. Skip ONLY for stories whose JSX is purely static primitives Storybook can serialize verbatim (`<Button variant="primary">Click</Button>`).',
   },
   {
     number: 35,
@@ -189,7 +189,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 36,
     title: "Badge tone/icon are the colour escape hatch",
-    body: "`Badge` auto-maps a fixed set of English lifecycle keys (active, draft, pending, scheduled, cancelled, failed, …) to tone + icon. For ANY other value — localized labels (公開中, アクティブ) or categorical tiers (会員ランク, 契約プラン) — pass `tone` explicitly (success | warning | destructive | info | neutral) and, for non-lifecycle tiers, `icon={null}` to drop the misleading glyph. Don't let domain labels fall back to neutral grey + ○. Map domain→tone in the CONSUMER layer; the framework only provides the props.",
+    body: "For ANY other value — localized labels (公開中, アクティブ) or categorical tiers (会員ランク, 契約プラン) — pass `tone` explicitly (success | warning | destructive | info | neutral) and, for non-lifecycle tiers, `icon={null}` to drop the misleading glyph. Don't let domain labels fall back to neutral grey + ○. Map domain→tone in the CONSUMER layer; the framework only provides the props.",
   },
   {
     number: 37,
@@ -209,7 +209,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 40,
     title: "Pages are mobile-first",
-    body: 'Author and verify every page at 320–390px FIRST. Page sections are spaced by `PageContainer` itself (`--page-body-gap` between its direct children). Inside a section spacing comes only from `Flex` `gap` (vertical rhythm = `Flex direction="col"`, control rows = the default `direction="row"`) + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout (the static audit rejects them). Styles are loaded whole: `@godxjp/ui/styles` or `styles/core`, never a hand-picked set of layers. Wide tables scroll horizontally on small screens (don\'t force-fit them); dialogs and sheets are full-height on mobile. Touch targets ≥ 44×44px.',
+    body: 'Author and verify every page at 320–390px FIRST. Page sections are spaced by `PageContainer` itself (`--page-body-gap` between its direct children). Inside a section spacing comes only from `Flex` `gap` (vertical rhythm = `Flex direction="col"`, control rows = the default `direction="row"`) + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout (the static audit rejects them). Styles are loaded whole: `@godxjp/ui/styles` or `styles/core`, never a hand-picked set of layers.',
   },
   {
     number: 41,
@@ -219,7 +219,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 42,
     title: "Props & Tokens Before Customization",
-    body: "Before reaching for a Tailwind class, inline `style`, or extra CSS, you MUST first check whether the component already supports the need via a PROP, a design TOKEN, or a layout/typography PRIMITIVE. godx-ui is meant to be enough on its own (Ant-Design-style): `className` is for genuine one-offs only — never to redo what an API already does. Specifically: (1) NEVER hand-roll typography — no `text-[13px]`/`text-[11px]` arbitrary px (bypasses the golden type scale), no `font-medium`/`font-semibold`/`text-muted-foreground` on a raw `<span>`; use `<Text size tone weight tabular mono>` / `<Heading level>`. (2) NEVER hand-roll a trivial flex/grid wrapper; use `<Flex>` / `<ResponsiveGrid>` / `<PageContainer>`. (3) NEVER set a control's radius/height/colour with a utility when a `shape`/`size`/`tone`/token exists. If a real need has NO prop/token/primitive, that is a library GAP — file it (draft_bug_report), don't paper over it with ad-hoc Tailwind.",
+    body: "Before reaching for a Tailwind class, inline `style`, or extra CSS, you MUST first check whether the component already supports the need via a PROP, a design TOKEN, or a layout/typography PRIMITIVE. godx-ui is meant to be enough on its own (Ant-Design-style): `className` is for genuine one-offs only — never to redo what an API already does. Specifically: (1) NEVER hand-roll typography — no `text-[13px]`/`text-[11px]` arbitrary px (bypasses the golden type scale), no `font-medium`/`font-semibold`/`text-muted-foreground` on a raw `<span>`; use `<Text size tone weight tabular mono>` / `<Heading level>`. (2) NEVER hand-roll a trivial flex/grid wrapper; use `<Flex>` / `<ResponsiveGrid>` / `<PageContainer>`. (3) NEVER set a control's radius/height/colour with a utility when a `shape`/`size`/`tone`/token exists.",
   },
   {
     number: 43,
@@ -229,22 +229,22 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 44,
     title: "Chrome is a token, default quiet",
-    body: "Any decorative chrome a component draws — dividers, separator borders, and the padding that exists only to space that chrome — MUST read a token; never hard-code it in `src/styles/*.css` (a hard-coded `border-bottom: 1px solid hsl(var(--border))` leaves consumers no off-switch short of a variant fork). The DEFAULT is the quietest state (`none` / balanced rhythm); a service theme opts IN, e.g. `--page-header-divider: 1px solid hsl(var(--border))`. Born from real consumption: PageContainer's header divider was undisableable until tokenised.",
+    body: "Any decorative chrome a component draws — dividers, separator borders, and the padding that exists only to space that chrome — MUST read a token; never hard-code it in `src/styles/*.css` (a hard-coded `border-bottom: 1px solid hsl(var(--border))` leaves consumers no off-switch short of a variant fork). The DEFAULT is the quietest state (`none` / balanced rhythm); a service theme opts IN, e.g. `--page-header-divider: 1px solid hsl(var(--border))`.",
   },
   {
     number: 45,
     title: "Every service-tunable constant gets a knob",
-    body: 'When component CSS encodes a geometry choice that a service plausibly re-tunes to match its design handoff — form label column width, label↔control gap, header insets — it MUST be a documented component token (current value as the default). The theme sets it ONCE globally; props (`labelWidth`) override per instance; Form→FormField priority stays intact. The test: "would a service theme.css want to change this to match its design grid?" If yes and the only route is forking CSS, that is a library gap — fix the library, don\'t patch the app. Born from real consumption: `--form-label-width` / `--form-label-gap` (design spec said 110px/8px; the values were prop-only and hard-coded `--space-4`).',
+    body: 'When component CSS encodes a geometry choice that a service plausibly re-tunes to match its design handoff — form label column width, label↔control gap, header insets — it MUST be a documented component token (current value as the default). The theme sets it ONCE globally; props (`labelWidth`) override per instance; Form→FormField priority stays intact. The test: "would a service theme.css want to change this to match its design grid?" If yes and the only route is forking CSS, that is a library gap — fix the library, don\'t patch the app.',
   },
   {
     number: 46,
     title: "Typography is tokens, default is base",
-    body: "A UI framework gives consumers knobs: every font-size in `src/styles/*.css` MUST reference a token — the global modular scale `var(--font-size-{2xs|xs|sm|base|lg|xl|2xl})` or a per-component `var(--{component}-…-font-size)` knob (rule #45) — never a hard-coded literal (`font-size: 12px` can't be re-themed). The DEFAULT body size is `--font-size-base`; components render body/UI text at `base`, not at the `sm` alias. Smaller-by-design text (badge, section label, caption) is a component token defaulting to a small step (`--badge-font-size: var(--font-size-xs)`), so a service re-tunes that part without moving the global scale. The `sm`/`xs` tokens stay for the explicit `<Text size>` API. Every component token is surfaced in the MCP `get_component` output (check:mcp-token-sync). Enforced by `check:typography`.",
+    body: "The DEFAULT body size is `--font-size-base`; components render body/UI text at `base`, not at the `sm` alias. Smaller-by-design text (badge, section label, caption) is a component token defaulting to a small step (`--badge-font-size: var(--font-size-xs)`), so a service re-tunes that part without moving the global scale. The `sm`/`xs` tokens stay for the explicit `<Text size>` API. Every component token is surfaced in the MCP `get_component` output (check:mcp-token-sync).",
   },
   {
     number: 47,
     title: "The layer contract — cascade layers, not specificity",
-    body: "Every rule this package ships is inside a cascade layer, and layer order beats specificity outright. Two consequences. (1) INSIDE the package: `@layer components` is EARLIER than Tailwind's `utilities`, so a utility a component emits on its own element (`<table class=\"text-sm\">`) silently outranks the component rule meant to own that property — no selector can win. A responsive re-point that must beat such a utility goes in `@layer godxjp-ui-responsive`, declared after Tailwind in `styles/base.css` and therefore LAST; it is reserved for `@container`/`@media` re-points, never static rules. This is the bug that left `--table-action-collection-font-size-compact` dead at every width, holding the narrow frame at 14px where a 5–6 character Japanese label cannot fit its column measure (WCAG 2.2 SC 1.4.10, visible only in Japanese). (2) IN A CONSUMER APP: UNLAYERED CSS outranks every layer, including this one. Theme the package through TOKENS on a wrapper element; do not write app selectors against `[data-slot]` / `[data-priority]` internals. If you must, wrap them in `@layer components { … }` — an unlayered app rule kills the package's responsive re-points at every width, and what that looks like is a column measured to 0px wrapping one character per line.",
+    body: 'Every rule this package ships is inside a cascade layer, and layer order beats specificity outright. Two consequences. (1) INSIDE the package: `@layer components` is EARLIER than Tailwind\'s `utilities`, so a utility a component emits on its own element (`<table class="text-sm">`) silently outranks the component rule meant to own that property — no selector can win. A responsive re-point that must beat such a utility goes in `@layer godxjp-ui-responsive`, declared after Tailwind in `styles/base.css` and therefore LAST; it is reserved for `@container`/`@media` re-points, never static rules.',
   },
 ];
 

@@ -1,28 +1,10 @@
 import { expect } from "vitest";
 
 /**
- * Pull a rule's SELECTOR list out of a shipped stylesheet, anchored by a
- * distinctive fragment of that selector.
- *
- * Reading the CSS as a string proves a rule says the right thing; it cannot
- * prove the rule SELECTS anything. That is the headerAlign lesson (505f0e6):
- * `> :not(:first-child)` was correct-looking, in the file, and matched
- * nothing — a string header renders as a text node, `:first-child` counts
+ * Reading the CSS as a string proves a rule says the right thing; it cannot prove the rule SELECTS
+ * anything. That is the headerAlign lesson (505f0e6): `> :not(:first-child)` was correct-looking,
+ * in the file, and matched nothing — a string header renders as a text node, `:first-child` counts
  * only elements, so the negation excluded the one node it was written for.
- *
- * So structural-selector tests extract the selector FROM the CSS (never
- * retype it — a retyped copy stays green when the file changes) and run it
- * with `.matches()` against really rendered DOM.
- *
- * INVARIANT — never wrap the `.matches()` call in try/catch: jsdom (like
- * Chrome) THROWS SyntaxError on an invalid selector, and that throw is the
- * signal that separates the two failure modes this sweep exists to tell
- * apart — "selector is broken" (throws → test fails loudly; the nested
- * `:has()` card bugs were caught exactly this way) versus "selector is
- * valid but matches nothing here" (returns false → may be perfectly fine).
- * Swallowing the exception collapses both into "no match" and re-opens the
- * 18.15.0 headerAlign trap. jsdom has no usable CSS.supports, so the throw
- * is the only validity signal at this layer (measured 2026-08-23).
  */
 export function ruleSelectors(css: string, anchor: string | RegExp): string[] {
   const idx = typeof anchor === "string" ? css.indexOf(anchor) : (anchor.exec(css)?.index ?? -1);

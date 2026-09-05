@@ -17,9 +17,7 @@ export function useFormAdapter(): FormStateAdapter | null {
 
 /**
  * Whether the surrounding `FormRoot` is currently submitting — works for BOTH paths: the adapter's
- * `isSubmitting` (e.g. Inertia's `processing`) or react-hook-form's `formState.isSubmitting`. Spread
- * onto a submit button so `processing` drives its loading state automatically:
- * `<Button type="submit" loading={useFormSubmitting()}>`.
+ * `isSubmitting` (e.g. Inertia's `processing`) or react-hook-form's `formState.isSubmitting`.
  */
 export function useFormSubmitting(): boolean {
   const adapter = useContext(FormAdapterContext);
@@ -32,8 +30,7 @@ export function useFormSubmitting(): boolean {
 /**
  * Normalise a control's change payload to a bare value. The `FormFieldControl` render-prop spreads
  * `onChange` onto a control that may call it with a DOM `ChangeEvent` (native `<Input>`) OR a raw
- * value (a `Select`'s `onValueChange`). Mirror react-hook-form's own event unwrapping so the adapter
- * path binds identically for every control kind.
+ * value (a `Select`'s `onValueChange`).
  */
 export function extractControlValue(arg: unknown): unknown {
   if (arg && typeof arg === "object" && "target" in arg) {

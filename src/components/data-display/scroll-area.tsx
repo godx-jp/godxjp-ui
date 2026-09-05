@@ -41,14 +41,10 @@ function readAnchorOffset(element: HTMLElement): number {
 }
 
 /**
- * Find the element whose children are the ROWS.
- *
- * Radix wraps the children in one content div, and consumers are told to wrap their own content in
- * a single element (that is how the viewport measures overflow), so the rows typically sit two
- * levels down: `viewport > content > Flex > row…`. Anchoring to the wrapper instead of to a row
- * would compensate by exactly zero — the wrapper's `offsetTop` never changes — so descend past
- * every single-child wrapper. Re-resolved on each use: a stream that starts empty grows its
- * wrapper's children later.
+ * Find the element whose children are the ROWS. Radix wraps the children in one content div, and
+ * consumers are told to wrap their own content in a single element (that is how the viewport
+ * measures overflow), so the rows typically sit two levels down: `viewport > content > Flex >
+ * row…`.
  */
 function resolveRowContainer(root: Element): Element {
   let container = root;
@@ -60,12 +56,7 @@ function resolveRowContainer(root: Element): Element {
 
 /**
  * The child under the viewport's top edge, and how far above that edge it starts. This pair is the
- * reader's real position: "the message I am looking at, and where on screen it sits". Restoring it
- * after the content changes is what keeps a prepended page of history from throwing the reader
- * somewhere else.
- *
- * Children are laid out in document order, so `offsetTop` is non-decreasing — binary search, so a
- * 5,000-message stream costs ~12 reads per scroll event rather than 5,000.
+ * reader's real position: "the message I am looking at, and where on screen it sits".
  */
 function findAnchorChild(root: Element, scrollTop: number): HTMLElement | null {
   // Indexed straight into the live HTMLCollection: materialising an array first would put the
@@ -91,8 +82,7 @@ function findAnchorChild(root: Element, scrollTop: number): HTMLElement | null {
 /**
  * Scroll WITHOUT animating. `behavior: "instant"` beats a theme's `scroll-behavior: smooth`, so
  * anchoring can never animate the reader down the page (WCAG 2.3.3 / prefers-reduced-motion) and a
- * prepend correction can never be visible as a slide. `scrollTo` is absent in jsdom; the property
- * write is the same offset by another route.
+ * prepend correction can never be visible as a slide.
  */
 function setScrollOffset(element: HTMLElement, top: number): void {
   if (typeof element.scrollTo === "function") element.scrollTo({ top, behavior: "instant" });
@@ -101,24 +91,8 @@ function setScrollOffset(element: HTMLElement, top: number): void {
 
 /**
  * Bottom anchoring — the behaviour a live stream needs and the reason it belongs to whoever owns
- * the scrolling box rather than to every consumer's 60 re-derived lines.
- *
- * The rule is NOT "scroll to the bottom when content arrives" — that is the bug. It is:
- *
- *  - pinned (the reader is within `offset` of the bottom) → new content keeps them at the bottom;
- *  - unpinned (they scrolled up to read history) → nothing may move the viewport, ever, until they
- *    come back inside the band themselves;
- *  - either way, content inserted ABOVE the read position is compensated so the item under their
- *    eyes does not jump.
- *
- * That last part is what CSS `overflow-anchor` does natively, and this compensation is written to
- * be IDEMPOTENT with it: it restores the recorded (anchor child, offset-from-top-edge) pair, so
- * where the browser already adjusted the offset the correction computes to zero and writes
- * nothing. It exists for the cases native anchoring does not cover — Safari, which does not
- * implement scroll anchoring at all, and any scroller sitting at `scrollTop === 0`, where there is
- * no anchor node to select and a prepend therefore shoves the whole conversation down.
- *
- * Nothing here touches focus: the viewport's own `scrollTop` is the only thing written.
+ * the scrolling box rather than to every consumer's 60 re-derived lines. The rule is NOT "scroll
+ * to the bottom when content arrives" — that is the bug.
  */
 function useBottomAnchor(
   viewport: HTMLDivElement | null,
@@ -189,7 +163,6 @@ function useBottomAnchor(
 
     const observers: Array<{ disconnect: () => void }> = [];
     if (typeof MutationObserver !== "undefined") {
-      // Rows arriving over a socket, a page of history prepended, a streaming response appending
       // text into an existing node.
       const mutationObserver = new MutationObserver(handleContentChange);
       mutationObserver.observe(content, { childList: true, subtree: true, characterData: true });

@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 /**
- * SCR-001 AuthShell Login preset visual contract (gh#237).
- *
  * Captures the package preview at the three canonical artboards for standalone, one-line requester
  * and wrapped requester states. Bounding-box assertions make the screenshots executable evidence:
  * requester height may change, while card x/y/width must remain invariant.
@@ -31,15 +29,8 @@ const viewports = [
 ];
 
 /*
- * Canonical SCR-001 in-card rhythm (gh#263) — offsets are relative to the card's own y so ONE
- * contract holds at every viewport (the card anchors at y=363 desktop / y=353 mobile). Absolute
- * values at 1440x900: passkey CTA y=388, divider row y=436 h=19, email input y=489, secondary
- * action y=537, links row y=585, card 267px tall. Delivered by three package tokens:
- * `--auth-shell-login-card-padding-block-compact` (flat 24px — the former `+ 2x border-width`
- * double-counted the card's own border), `--auth-shell-divider-label-line-height` (19px row at the
- * 11px label; was a hardcoded `line-height: 1` = 11px row) and
- * `--auth-shell-field-label-line-height` (1.5 → an 18px label box that actually cascades past the
- * Label primitive's `text-sm leading-none` utilities).
+ * Absolute values at 1440x900: passkey CTA y=388, divider row y=436 h=19, email input y=489,
+ * secondary action y=537, links row y=585, card 267px tall.
  */
 const rhythm = {
   passkeyTop: 25, // card y + 1px border + 24px block inset → y=388 at 1440
@@ -91,7 +82,6 @@ try {
       closeTo(card.y, viewport.card.y, `${viewport.width}/${state} card y`);
       closeTo(card.width, viewport.card.width, `${viewport.width}/${state} card width`);
 
-      // gh#263 — the canonical in-card rhythm, measured relative to the card's own y.
       const label = `${viewport.width}/${state}`;
       // ±2 for the card height only: the links row is consumer CONTENT on the golden-ratio type
       // scale (Text xs ≈ 12.47px vs the artboard's literal 12px links), so the demo's card runs

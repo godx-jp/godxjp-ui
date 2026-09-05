@@ -1,13 +1,9 @@
 #!/usr/bin/env node
 /**
  * Drift guard — keep the @godxjp/ui-mcp component registry in sync with the library it documents.
- *
  * The MCP catalogs the PRIMARY components (not every sub-part), so we check the tractable, real
  * drift direction: EVERY component named in mcp/src/data/components.ts must still be a real export
- * of the library. A rename/removal that forgets to update the MCP (→ stale agent guidance) fails
- * CI instead of drifting silently. Run it in `verify`.
- *
- * Usage: node scripts/check-mcp-sync.mjs [--json]
+ * of the library.
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";

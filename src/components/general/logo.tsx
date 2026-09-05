@@ -21,34 +21,23 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
    * Box size tier (tokenised), applied to EVERY mark. The boxed glyph reads `--logo-size-*`
    * (default `md` = 1.75rem); `mark="godx"` reads its own `--logo-godx-size-*` scale (default `md`
    * = 2rem — the identity artwork is a capsule in a square viewBox and needs slightly more box to
-   * read at the same optical weight). On a `wordmark` lockup the tier scales the mark and the
-   * wordmark together. A theme pins the identity box at every tier with `--logo-godx-size`.
+   * read at the same optical weight).
    */
   size?: LogoSize;
   /**
    * Semantic fill role. `"success"` provides the canonical green identity mark without changing
-   * the application's primary action colour. Default `"primary"` preserves existing behaviour.
+   * the application's primary action colour.
    */
   tone?: LogoTone;
   /**
    * Readable product name rendered BESIDE the mark as one lockup. Pass the localized product name
-   * (a string, or a node when the name needs its own markup). When set, `Logo` renders
-   * `mark + wordmark` in a single inline-flex lockup: the mark becomes decorative and the wordmark
-   * carries the accessible name, so the pair is announced once. The wordmark reads
-   * `--logo-wordmark-*` tokens — its colour defaults to the identity role for the GoDX/`success`
-   * lockup and NEVER to `--primary`, so a re-themed action colour cannot recolour the brand.
-   * Omit for the bare mark (today's behaviour, unchanged).
-   *
-   * NOTE: the library ships no wordmark ARTWORK — the wordmark is set in the design-system
-   * typeface (`--logo-wordmark-font-family`, default `--font-family-display`). Pass an inline
-   * `<svg>` here when a real logotype asset exists.
+   * (a string, or a node when the name needs its own markup).
    */
   wordmark?: React.ReactNode;
   /**
    * Accessible name for the mark. When set, the logo is exposed to assistive tech as an image with
    * this name; when omitted the mark is decorative (`aria-hidden`) — the correct default when a
-   * readable wordmark sits beside it. With `wordmark` set, `label` overrides the lockup's
-   * accessible name (the wordmark text is otherwise the name).
+   * readable wordmark sits beside it.
    */
   label?: string;
 }
@@ -75,19 +64,8 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
 
 /**
  * Logo — the product brand-mark box: a glyph on the primary fill, or (with `wordmark`) the full
- * mark + wordmark LOCKUP. Use it INSTEAD of hand-rolling a bare span with a fixed square size, a
- * literal radius, and `bg-primary` + type utilities in shell headers, auth screens, and topbars —
- * that repeats literal size/radius and puts type utilities on a bare span (rules #45/#46). Size,
- * radius, per-tier font-size, the wordmark's face/weight/tracking/colour and the mark↔wordmark gap
- * are all tokens.
- *
- * COLOUR: the boxed glyph fill reads the primary role, so a re-themed `--primary` re-tints it.
- * `mark="godx"` / `tone="success"` instead read the IDENTITY tokens (`--logo-godx-color`,
- * `--logo-success-*`, `--logo-wordmark-color`), which never reference `--primary` — the canonical
- * brand-green GoDX lockup therefore survives any action-colour re-theme with zero consumer CSS.
- *
- * A11Y: with a `wordmark`, the mark is decorative and the wordmark text carries the accessible
- * name (announced once). Without one, set `label` when the mark stands alone.
+ * mark + wordmark LOCKUP. Size, radius, per-tier font-size, the wordmark's
+ * face/weight/tracking/colour and the mark↔wordmark gap are all tokens.
  */
 export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
   (

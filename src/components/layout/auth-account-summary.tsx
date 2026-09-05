@@ -5,8 +5,7 @@ import { cn } from "../../lib/utils";
 import type { AuthAccountSummaryProp } from "../../props/components/layout.prop";
 // Import the MODULES, not the group barrels. `../data-display` re-exports DataTable, which pulls
 // @tanstack/react-table; because `layout` is reachable from the root barrel, a barrel import here
-// leaks that runtime into `@godxjp/ui` itself and fails `check:core-isolation` (issue #83). Every
-// other file in this folder already imports the specific module — this one had drifted.
+// Every
 import { Avatar, AvatarFallback, AvatarImage } from "../data-display/avatar";
 import { Button } from "../general/button";
 

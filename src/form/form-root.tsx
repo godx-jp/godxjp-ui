@@ -9,8 +9,7 @@ export type { FormRootProp } from "../props/components/form.prop";
 /**
  * FormRoot — the form shell. Provide EITHER `form` (built-in react-hook-form + Zod, client-side
  * validation) OR `adapter` (a framework-agnostic {@link FormStateAdapter} for a server-driven form
- * library — Inertia's `useForm` via `@godxjp/ui/inertia`, formik, TanStack Form). Both drive the same
- * `FormFieldControl` auto-binding; the core keeps ZERO dependency on any non-RHF form library.
+ * library — Inertia's `useForm` via `@godxjp/ui/inertia`, formik, TanStack Form).
  */
 export function FormRoot<TFieldValues extends FieldValues>({
   form,
@@ -22,7 +21,6 @@ export function FormRoot<TFieldValues extends FieldValues>({
 }: FormRootProp<TFieldValues>) {
   // Adapter path (server-driven): no react-hook-form. The form library owns submission
   // (e.g. `form.post(url)` inside `onSubmit`); we prevent the native navigation and pass a values
-  // snapshot for parity with the RHF signature.
   if (adapter) {
     return (
       <FormAdapterContext.Provider value={adapter}>

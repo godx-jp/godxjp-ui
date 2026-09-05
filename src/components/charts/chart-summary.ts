@@ -92,8 +92,8 @@ export function trendRatios(data: ChartDatum[], valueKey: string): number[] {
 }
 
 /**
- * Resolve `emphasizedIndex` against a row count. Negative counts from the end
- * (`-1` = the latest datum). Out-of-range → no emphasis.
+ * Resolve `emphasizedIndex` against a row count. Negative counts from the end (`-1` = the latest
+ * datum).
  */
 export function resolveEmphasizedIndex(index: number | undefined, length: number): number {
   if (index === undefined || !Number.isInteger(index) || length === 0) return -1;

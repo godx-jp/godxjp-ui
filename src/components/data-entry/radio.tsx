@@ -34,7 +34,6 @@ const RadioItem = React.forwardRef<
     ref={ref}
     data-slot="radio-group-item"
     className={cn(
-      // `disabled:cursor-not-allowed disabled:opacity-50` DELETED, not moved (#319):
       // `.ui-radio:disabled, .ui-radio[data-disabled]` in styles/control.css already declares both
       // and reads --disabled-opacity. The utility was layered after components, so it silently
       // outranked that token — a service theme's --disabled-opacity never reached a radio.
@@ -70,14 +69,13 @@ function RadioGroupOptions({
   const reactId = React.useId();
   // role="radiogroup" IS a widget → it supports the full validation contract (aria-invalid /
   // -errormessage / -required), so forward every field-a11y relationship FormField injects.
-  // `data-field` rides along on the same route (gh#337).
   const groupA11y = pickFieldA11y(ariaProps);
-  // gh#337 — the machine key for a group NESTED under a layout wrapper. `name` goes on the Radix
+  // `name` goes on the Radix
   // root, which is what feeds each option's hidden native radio input.
   const identity = useFieldIdentity({ id, name, "data-field": groupA11y["data-field"] });
   const resolvedName = name ?? identity.name;
   const resolvedField = groupA11y["data-field"] ?? identity["data-field"];
-  // Per-option DOM id (gh#337). A radio is the one control whose focusable element is NOT the one
+  // A radio is the one control whose focusable element is NOT the one
   // that carries the field's id — the group holds that — so each button needs an id of its own,
   // and `React.useId()` produces `«r3»-52-0`: unique, but regenerated on every mount and different
   // in every build, so nothing outside React can address it. Derive it from the group's OWN id

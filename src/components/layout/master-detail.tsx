@@ -4,24 +4,8 @@ export type MasterDetailProps = MasterDetailProp;
 
 /**
  * Token-owned master-detail composition: a selectable collection beside the detail surface it
- * drives. Geometry is the component's only responsibility — the tracks (`--master-detail-rail-*`),
- * the gap (`--master-detail-gap`) and the stacking threshold (`--master-detail-collapse-below`)
- * are all tokens, so a consumer never authors grid tracks or per-screen spacing (gh#223).
- *
- * `rail` chooses which region keeps the fixed track: `detail` (default) is the canonical fluid
- * list + fixed detail rail; `master` is the leading navigator rail. Either way `master` comes
- * first in DOM order, so below the threshold the regions stack list-then-detail.
- *
- * `masterViewport` bounds the collection (gh#231): `auto` (default) lets it grow with its content
- * exactly as before, while `compact`/`standard` cap its block size with a token and scroll it
- * INSIDE the region — the only thing that stops a long real collection from pushing the detail
- * thousands of pixels below the fold once the layout stacks.
- *
- * SELECTION AND KEYBOARD STAY WITH THE CALLER — deliberately. The controls inside `master` may be
- * a listbox, a tablist, a link list or toggle buttons, and only the caller knows which APG pattern
- * applies; a layout that imposed one would fight it. What the layout DOES own is the wiring those
- * patterns need: two named landmark regions, a stable `detailId` for `aria-controls`, and a
- * `tabIndex={-1}` detail region so the app can move focus to the new detail after a selection.
+ * drives. Either way `master` comes first in DOM order, so below the threshold the regions stack
+ * list-then-detail.
  */
 export function MasterDetail({
   master,

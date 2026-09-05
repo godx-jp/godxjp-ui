@@ -27,7 +27,7 @@ export const AXE_BASELINE_PATH = path.join(REPO_ROOT, "scripts/frame-axe.baselin
 
 export const LEDGER_SCHEMA_VERSION = 2;
 
-/** Issue #163 §5. Locked — the gate refuses a ledger that drops any of these. */
+/** Locked — the gate refuses a ledger that drops any of these. */
 export const REQUIRED_VIEWPORTS = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
 
 /** Container-width cases required in addition to the viewport matrix for embeddable exports. */
@@ -82,23 +82,10 @@ const STATE_PROPS = [
 ];
 
 /**
- * The 14 contract dimensions of issue #163 item 2, each mapped onto one of the nine
- * FRAME-COVERAGE-STANDARD axes.
- *
- * `applicability`
- *   prop      — applicable only when the generated public API exposes that prop. When it does
- *               not, the dimension is `not-applicable` with a MACHINE-VERIFIED written reason
- *               (re-derived by the gate on every run, so it cannot rot into a false N/A).
- *   anyProp   — applicable when any of the listed props exists.
- *   universal — always applicable. Leaving it is only possible through a reviewed
- *               `policy.notApplicable` entry (human reason + reviewer + review link).
- *
- * `promotion`
- *   prop-evidence  — may be promoted to `covered` automatically from component-case-evidence.json,
- *                    which is itself fail-closed: every literal branch of the union must be
- *                    enumerated and every evidence path must resolve to a repository file.
- *   declared-case  — may ONLY be promoted by a hand-authored, reviewed case in the ledger that
- *                    names a resolvable frame + case heading + resolvable evidence files.
+ * `applicability` prop — applicable only when the generated public API exposes that prop. When it
+ * does not, the dimension is `not-applicable` with a MACHINE-VERIFIED written reason (re-derived
+ * by the gate on every run, so it cannot rot into a false N/A). anyProp — applicable when any of
+ * the listed props exists. universal — always applicable.
  */
 export const DIMENSIONS = [
   {
@@ -248,9 +235,8 @@ export const DIMENSION_IDS = DIMENSIONS.map((dimension) => dimension.id);
 export const DIMENSION_BY_ID = new Map(DIMENSIONS.map((dimension) => [dimension.id, dimension]));
 
 /**
- * Exports that are DESIGNED to be embedded inside a caller-sized container. These must
- * additionally demonstrate the container-width cases (issue #163 §5) before `responsive`
- * may be promoted. Locked — the gate refuses a ledger that shrinks this list.
+ * Exports that are DESIGNED to be embedded inside a caller-sized container. Locked — the gate
+ * refuses a ledger that shrinks this list.
  */
 export const EMBEDDABLE_EXPORTS = [
   "Alert",
@@ -272,9 +258,9 @@ export const EMBEDDABLE_EXPORTS = [
 ];
 
 /**
- * Issue #163 "Initial known gaps to encode". Locked in code so the list cannot be quietly
- * deleted from the ledger. Each entry must resolve to a registered export and a registered
- * dimension, and must still read `untested` unless a declared case resolves it.
+ * Locked in code so the list cannot be quietly deleted from the ledger. Each entry must resolve to
+ * a registered export and a registered dimension, and must still read `untested` unless a declared
+ * case resolves it.
  */
 export const KNOWN_GAPS = [
   {
@@ -383,7 +369,7 @@ export const KNOWN_GAPS = [
 
 export const KNOWN_GAP_IDS = KNOWN_GAPS.map((gap) => gap.id);
 
-/** Runtime-error gates that issue #163 item 4 relies on. Locked — they may not be unwired. */
+/** Locked — they may not be unwired. */
 export const RUNTIME_GATE_SCRIPTS = [
   "scripts/check-data-entry-frame-runtime.mjs",
   "scripts/check-layout-nav-frames.mjs",
@@ -439,13 +425,9 @@ export function isApplicable(dimension, contract) {
 }
 
 /**
- * Prop-evidence promotion. Returns the evidence paths when component-case-evidence.json
- * enumerates EVERY literal branch of the dimension's prop with at least one resolvable
- * rendered/test evidence reference; otherwise null.
- *
- * This is deliberately narrow: it only applies to the five strictly prop-shaped dimensions,
- * where "every branch has a rendered case" IS the contract. It never promotes a behavioural
- * dimension (ownership, states, async, responsive, rtl, keyboard, accessibleName, motion).
+ * Prop-evidence promotion. Returns the evidence paths when component-case-evidence.json enumerates
+ * EVERY literal branch of the dimension's prop with at least one resolvable rendered/test evidence
+ * reference; otherwise null.
  */
 export function propEvidenceFor(dimension, exportName, contract, caseEvidence) {
   if (dimension.promotion !== "prop-evidence") return null;
@@ -571,9 +553,8 @@ export function deriveComponents({ discovery, manifest, caseEvidence, ledger }) 
 }
 
 /**
- * A declared case may promote a dimension ONLY when every field resolves. Returns the list
- * of problems (empty = valid). Used by both the generator (to refuse promotion) and the gate
- * (to fail the build) so a malformed case can never silently become a `covered`.
+ * A declared case may promote a dimension ONLY when every field resolves. Returns the list of
+ * problems (empty = valid).
  */
 export function validateCase(record) {
   const problems = [];

@@ -1,9 +1,4 @@
-/**
- * Charts entry — `@godxjp/ui/charts`. Isolated from the main barrel so the
- * `recharts` dependency is only pulled in when a consumer imports a chart
- * (tree-shaking: `sideEffects: false` + a dedicated tsup entry + recharts as an
- * optional peer dependency).
- */
+/** Charts entry — `@godxjp/ui/charts`. */
 export { LineChart } from "./line-chart";
 export type { LineChartProp, LineChartProps } from "./line-chart";
 export { BarChart } from "./bar-chart";

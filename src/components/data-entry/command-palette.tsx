@@ -49,7 +49,7 @@ export type CommandPaletteProps = {
   onOpenChange?: (open: boolean) => void;
   /**
    * Controlled search-box query. Pairs with `onSearchChange`; leave it out for the uncontrolled
-   * palette (seeded by `defaultSearch`). Same idiom as `SearchSelect`'s `search`.
+   * palette (seeded by `defaultSearch`).
    */
   search?: string;
   /** Initial uncontrolled query, and the value the palette resets to when it closes. Default `""`. */
@@ -63,8 +63,6 @@ export type CommandPaletteProps = {
    * Whether the palette filters `groups` itself (cmdk's client-side fuzzy match). Set `false` when
    * the QUERY is answered by a server and `groups` already holds the matches — otherwise every row
    * is scored a second time against the same string and late-arriving matches are dropped.
-   *
-   * It also decides who owns the empty node; see the component doc block. Default `true`.
    */
   shouldFilter?: boolean;
   loading?: boolean;
@@ -74,25 +72,13 @@ export type CommandPaletteProps = {
 };
 
 /**
- * CommandPalette — the ⌘K search dialog.
- *
- * ## The empty-state contract (gh#412)
- *
- * `labels.empty` renders under exactly one rule, and which mechanism decides follows `shouldFilter`:
- *
- * - **`shouldFilter` (default, client-side)** — cmdk owns it: the palette holds items, the query
- *   matches none of them. Unchanged.
- * - **`shouldFilter={false}` (server-side)** — the PALETTE owns it, derived synchronously from
- *   props: the empty node renders when `groups` carries no items, and never while `loading` or
- *   `error` is set. cmdk's own empty node cannot be trusted here, because it is driven by a
- *   scheduled count of the items that have REGISTERED in the DOM, not by what the consumer knows —
- *   so an async group that populates a frame late flips it on and off and any assertion over it
- *   races. Reading `groups` instead makes "did we render the empty state?" a pure function of the
- *   props at that render, which is what a contract test can assert.
- *
- * The practical consequence for search-as-you-type: hold `loading` true for the whole in-flight
- * window. While it is true the palette shows `labels.loading` and never claims "no results" —
- * a request that has not answered yet is not an empty result.
+ * Unchanged. - **`shouldFilter={false}` (server-side)** — the PALETTE owns it, derived
+ * synchronously from props: the empty node renders when `groups` carries no items, and never while
+ * `loading` or `error` is set. cmdk's own empty node cannot be trusted here, because it is driven
+ * by a scheduled count of the items that have REGISTERED in the DOM, not by what the consumer
+ * knows — so an async group that populates a frame late flips it on and off and any assertion over
+ * it races. Reading `groups` instead makes "did we render the empty state?" a pure function of the
+ * props at that render, which is what a contract test can assert.
  */
 export function CommandPalette({
   groups,
@@ -134,7 +120,7 @@ export function CommandPalette({
     [controlledSearch, onSearchChange],
   );
 
-  // The query never survives a close — reopening always starts from `defaultSearch`. That used to
+  // The query never survives a close — reopening always starts from `defaultSearch`.
   // fall out of the dialog unmounting cmdk's internal state; now that the query is a prop the
   // palette has to say it, and say it OUT so a controlled consumer can drop the stale result set
   // it fetched for the abandoned query.
