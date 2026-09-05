@@ -1,10 +1,4 @@
-/*
- * MOTION — entrance/reveal animation for the `Reveal` primitive.
- * Reads the DS motion tokens (--duration-slow / --ease-emphasized / --reveal-distance) instead of
- * a hand-rolled @keyframes, and staggers via the --reveal-stagger-step ladder. Under
- * prefers-reduced-motion the animation is dropped: content renders in its final, fully-visible
- * position with no transform and no layout shift.
- */
+/* MOTION — entrance/reveal animation for the `Reveal` primitive. */
 
 @layer components {
   .ui-reveal {
@@ -51,22 +45,8 @@
   }
 }
 
-/*
- * AMBIENT MOTION — the `Activity` primitive (gh#313): a continuous, unbounded "something is
- * happening right now, elsewhere" mark. The LOOP counterpart to `.ui-reveal`'s one-shot entrance,
- * living in the same file so the library keeps exactly one place where motion is written.
- *
- * NOT `.ui-skeleton-block` (content is loading — `aria-busy`), NOT the Button spinner (this action
- * is in flight). Every interval, offset, size and colour reads a token, so a service retunes the
- * whole ambient feel from its theme instead of forking a `@keyframes` (cardinal rule #45).
- *
- * REDUCED MOTION IS A DESIGNED FRAME, NOT AN ABSENCE. Under `prefers-reduced-motion: reduce` the
- * loops are dropped and every mark falls back to its BASE rule, which is authored to be a legible
- * resting state: three solid dots (a static ellipsis — the same "…" convention the animation
- * spells out), a solid pulse mark, and a bar segment parked at the reading-start of its track so
- * the bar can never read as "complete". Nothing is hidden, nothing collapses, no box changes size
- * — so there is no layout shift either way (WCAG 2.2 SC 2.3.3 / 2.2.2).
- */
+/* The LOOP counterpart to `.ui-reveal`'s one-shot entrance, living in the same file so the library
+ * keeps exactly one place where motion is written. */
 @layer components {
   .ui-activity {
     display: inline-flex;
@@ -84,8 +64,7 @@
     font-size: var(--activity-font-size-lg);
   }
 
-  /* The mark row. `block-size` reserves the loop's full travel so a dot at the top of its arc is
-   * never clipped and the row never grows mid-cycle. */
+  /* The mark row. */
   .ui-activity-mark {
     display: inline-flex;
     align-items: flex-end;
@@ -94,8 +73,7 @@
     color: hsl(var(--activity-color, var(--muted-foreground)));
   }
 
-  /* Tone → mark ink. Two-attribute selectors (0,2,0) outrank the muted base (0,1,0). `muted` has
-   * no rule of its own: it IS the base, and therefore the one tone `--activity-color` retints. */
+  /* Tone → mark ink. */
   .ui-activity[data-tone="default"] .ui-activity-mark {
     color: hsl(var(--foreground));
   }
@@ -115,7 +93,7 @@
     color: hsl(var(--info));
   }
 
-  /* dots — the ellipsis convention. Resting state (= the reduced-motion frame): three solid dots. */
+  /* dots — the ellipsis convention. */
   .ui-activity-dot {
     inline-size: var(--activity-mark-size);
     block-size: var(--activity-mark-size);
@@ -133,8 +111,7 @@
     animation-delay: calc(var(--activity-stagger-step) * 2);
   }
 
-  /* pulse — a single breathing mark (live / recording). Opacity only: the reference design keeps
-   * motion LOW, and an opacity loop degrades to a solid mark instead of a resized box. */
+  /* pulse — a single breathing mark (live / recording). */
   .ui-activity-pulse {
     inline-size: var(--activity-pulse-mark-size);
     block-size: var(--activity-pulse-mark-size);
@@ -204,10 +181,7 @@
     }
   }
 
-  /* Accessibility: no motion → no loop. Every mark falls back to the legible resting state
-   * authored above; the label is visible text either way, so the affordance still says what it
-   * means (WCAG 2.2 SC 2.3.3 Animation from Interactions, SC 2.2.2 Pause/Stop/Hide — an
-   * indefinite loop runs longer than five seconds and the user cannot pause it). */
+  /* Accessibility: no motion → no loop. */
   @media (prefers-reduced-motion: reduce) {
     .ui-activity-dot,
     .ui-activity-pulse,

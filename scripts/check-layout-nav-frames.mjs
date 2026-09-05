@@ -61,7 +61,9 @@ async function waitForFocusedTabIndex(page, index, message) {
 // is using. It used to free and bind 6008 unconditionally — the port `pnpm preview` and three
 // other gates use — which killed their servers out from under them.
 const port = Number(process.env.PREVIEW_PORT) || 6041;
-execFileSync(process.execPath, ["preview/scripts/kill-port.mjs", String(port)], { stdio: "ignore" });
+execFileSync(process.execPath, ["preview/scripts/kill-port.mjs", String(port)], {
+  stdio: "ignore",
+});
 const server = await createServer({
   configFile: "preview/vite.config.ts",
   server: { port, strictPort: true },
@@ -121,7 +123,9 @@ try {
       document.documentElement.lang = "ar";
     }
   });
-  await page.goto(`http://localhost:${port}/frame/navigation-tabs-rtl`, { waitUntil: "networkidle" });
+  await page.goto(`http://localhost:${port}/frame/navigation-tabs-rtl`, {
+    waitUntil: "networkidle",
+  });
   tabs = page.getByRole("tab");
   if ((await page.locator('[dir="rtl"]').count()) === 0) throw new Error("RTL was not initialized");
   await waitForRovingTablist(page);

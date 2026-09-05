@@ -1,7 +1,4 @@
-/*
- * APP SHELL — canonical chrome layout for admin surfaces.
- * Slot-based composition: <AppShell sidebar={<Sidebar />} topbar={<Topbar />}>.
- */
+/* APP SHELL — canonical chrome layout for admin surfaces. */
 
 @layer components {
   .app-root {
@@ -13,8 +10,6 @@
       "sidebar topbar"
       "sidebar main"
       "sidebar footer";
-    /* Rail width is a knob, never a literal (rule #45) — a service on a different design grid sets
-     * --app-shell-sidebar-width once (e.g. 255px) instead of forking this rule. */
     grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
     grid-template-rows: var(--app-shell-bar-height) minmax(0, 1fr) auto;
     height: 100vh;
@@ -27,11 +22,7 @@
 
   /* topbarSpan="full" — the bar runs edge to edge and the rail starts beneath it, for products
    * whose bar carries space-level chrome (global search, account, notifications) that outranks the
-   * current section instead of belonging to it. Only the row assignment changes: both track sizes
-   * stay token-owned, so --app-shell-sidebar-width and the collapsed rail still apply untouched.
-   * Below the 900px breakpoint the grid already collapses to a single column, which IS this
-   * arrangement, so no narrow override is needed here — only the docked mode, which rebuilds the
-   * two-track grid, needs restating (see the breakpoint block). */
+   * current section instead of belonging to it. */
   .app-root[data-topbar-span="full"] {
     grid-template-areas:
       "topbar topbar"
@@ -39,35 +30,12 @@
       "sidebar footer";
   }
 
-  /* NO TOP BAR AT ALL — `topbar`, `topbarLeft`, `topbarRight` and `logo` all undefined. AppShell
-   * renders no `<header class="app-topbar">` in that state (the mobile drawer trigger is the one
-   * exception, below) and publishes it as ONE attribute here, so the geometry is decided by the
-   * grid element itself rather than by `:has()` on whatever the consumer nested inside.
-   *
-   * The row has to go with the header. An empty --app-shell-bar-height track still costs a fixed
-   * 48px, and the header still painted a bottom border over hsl(var(--card)) — so a chat / mail /
-   * IDE shell, whose PAGE header is the top row, showed two rows of chrome (~48 + ~60px) over
-   * exactly the region that needs the height most.
-   *
-   * `auto`, not a `0` literal, is what makes one attribute enough for every branch: an absent row
-   * measures 0, a `display:none` header measures 0, and at narrow widths — where the header comes
-   * back to carry the hamburger — the row sizes itself from that header's own min-height. So the
-   * breakpoint block needs no restatement of these rows, which is the trap this file has already
-   * paid for once: the deleted 768px block re-declared grid-template-rows with a `3rem` literal
-   * and defeated --app-shell-bar-height below 768px only (see the note on the one @media block).
-   * `[data-topbar-span="full"]` re-declares grid-template-AREAS only, so it inherits this row
-   * template untouched and its named-but-empty "topbar topbar" row is 0 as well. */
+  /* NO TOP BAR AT ALL — `topbar`, `topbarLeft`, `topbarRight` and `logo` all undefined. */
   .app-root[data-topbar="none"] {
     grid-template-rows: auto minmax(0, 1fr) auto;
   }
 
-  /* The one thing that may still live in a bar-less shell: AppShell's OWN hamburger. Below 900px
-   * the docked sidebar is hidden, and dropping the bar there too would leave the shell with no
-   * reachable navigation at all — a worse failure than the double chrome above (gh#165). So when a
-   * drawer exists the header is still rendered, carrying the trigger and nothing else, and it is
-   * THIS rule, not the empty row, that keeps it off the wide layout: `display:none` removes its
-   * border, its background and its height together. The min-height is inert here and load-bearing
-   * at narrow widths, where it is the only thing giving the `auto` row a height. */
+  /* The one thing that may still live in a bar-less shell: AppShell's OWN hamburger. */
   .app-root[data-topbar="none"] > .app-topbar {
     display: none;
     min-height: var(--app-shell-bar-height);
@@ -80,12 +48,8 @@
     min-width: 0;
     min-height: 0;
     flex-direction: column;
-    /* Same ring-headroom contract as the topbar family (gh#291): nav rows are
-     * flush with the rail's inline edges, so a plain `hidden` clipped their
-     * focus ring on three sides. `clip` + margin (the margin is honoured only
-     * when BOTH axes clip) lets the ring paint over the rail border, while the
-     * rail still contains its content. Inner scroll regions are unaffected —
-     * `clip` creates no scroll container, exactly like `hidden`. */
+    /* `clip` + margin (the margin is honoured only when BOTH axes clip) lets the ring paint over
+     * the rail border, while the rail still contains its content. */
     overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
     border-inline-end: 1px solid hsl(var(--border));
@@ -97,18 +61,10 @@
 
   .app-topbar {
     grid-area: topbar;
-    /* Persistent navigation chrome stays a FIXED size regardless of density — the
-     * AppShell adds `.ui-scale-fixed` to this <header> (resets the whole size-token
-     * set to baseline; --scaling:1 alone is not enough — see foundation.css). */
     display: flex;
     min-width: 0;
-    /* Same both-axes-clip + margin contract as .ui-topbar (gh#291): Chromium
-     * honours overflow-clip-margin ONLY when BOTH axes are `clip` — a
-     * single-axis clip silently drops the margin, which would cut a flush
-     * control's ring whenever a theme sets --app-shell-bar-inset to 0. The 8px
-     * margin also covers the vertical ring of coarse-pointer 44px controls,
-     * which the 3.5rem coarse bar height already keeps inside the bar. Safari
-     * falls back to `visible` with the .ui-topbar family below. */
+    /* The 8px margin also covers the vertical ring of coarse-pointer 44px controls, which the
+     * 3.5rem coarse bar height already keeps inside the bar. */
     overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
     align-items: center;
@@ -124,38 +80,20 @@
     grid-area: main;
     min-width: 0;
     overflow: auto;
-    /* Column flow, so a page that asks to FILL can actually be bounded by the
-     * region instead of merely starting at its top. With the default `block`
-     * flow a `--fill` container could only be `min-height: 100%`, i.e. it grew
-     * past the region and pushed the scroll back out here — which is why a chat
-     * transcript slid UNDER its own sticky composer. Ordinary pages are
-     * unaffected: their container still has `min-height: 100%`, still grows,
-     * and this element still scrolls it. */
+    /* Column flow, so a page that asks to FILL can actually be bounded by the region instead of
+     * merely starting at its top. */
     display: flex;
     flex-direction: column;
     /* Ambient brand glow hook — invisible by default (--gradient-glow: none); a service paints a
      * radial/linear brand wash behind the whole content area by configuring the token alone. */
     background-image: var(--gradient-glow);
-    /* Sole scroll/clip boundary for the page area. `overflow:auto` alone does NOT reliably
-     * establish a paint-containment boundary in Chrome: tall nested scrollers (a two-pane
-     * `grid` of long lists, a nested `overflow-y:auto` region) — or any absolutely-positioned
-     * descendant (Radix form-fallback bubbles, `.sr-only` nodes) — can leak their clipped
-     * extent into the DOCUMENT scroll, so the window scrolls past the content into a
-     * full-viewport void below the fold even though `.app-root` is exactly 100vh.
-     * `contain:paint` makes `.app-main` the real clip boundary + containing block, so its
-     * content can never extend the document scroll height (gh#104 — same shell-containment
-     * family as the gh#103 body-stretch void). */
+    /* Sole scroll/clip boundary for the page area. */
     contain: paint;
     background-color: var(--app-shell-main-background);
   }
 
-  /* `.app-main` carries tabindex="0" (axe scrollable-region-focusable, dbad118), so keyboard
-   * focus can land on the region. The UA default outline is suppressed and the indicator is
-   * token-gated (gh#276): `--region-focus-ring-width` defaults to 0 — OFF — because a
-   * control-strength frame around the whole content area reads as a glitch (`:focus-visible`
-   * promotes on any keypress after a click-focus, so mouse users see it constantly). A service
-   * that needs the visible keyboard-scroll affordance (WCAG 2.4.7) opts in via the token;
-   * INSET because `.app-main` is the shell's clip boundary (`contain: paint`). */
+  /* `.app-main` carries tabindex="0" (axe scrollable-region-focusable, dbad118), so keyboard focus
+   * can land on the region. */
   .app-main:focus-visible {
     outline: none;
     box-shadow: inset 0 0 0 var(--region-focus-ring-width)
@@ -173,11 +111,7 @@
     max-width: var(--app-shell-page-max-width);
   }
 
-  /*
-   * AUTH SHELL — centred auth/login page shell (brand bar + centred card + footer).
-   * Comfortable control density + a larger auth heading are scoped to the shell so login/mfa/reset
-   * forms read at the right size without a consumer scope class. Everything reads a token knob.
-   */
+  /* AUTH SHELL — centred auth/login page shell (brand bar + centred card + footer). */
   .ui-auth-shell {
     --control-height: var(--auth-shell-control-height);
     --heading-h1: var(--auth-shell-heading-size);
@@ -220,22 +154,15 @@
     --auth-shell-main-padding: var(--auth-shell-canonical-main-padding);
   }
 
-  /*
-   * NAMED FLOW PRESETS (gh#217 / gh#220) — orthogonal to `variant` and declared AFTER it (equal
-   * specificity, so source order wins) so a preset re-measures the page while `variant="canonical"`
-   * keeps owning control density and heading size. A preset owns the card measure + page gutters,
-   * so the consumer never overrides `--auth-shell-card-max-width` by hand.
-   */
+  /* A preset owns the card measure + page gutters, so the consumer never overrides
+   * `--auth-shell-card-max-width` by hand. */
   .ui-auth-shell[data-preset] .ui-auth-shell-card {
     display: flex;
     flex-direction: column;
     gap: var(--auth-shell-card-stack-gap);
   }
 
-  /* Login is an anchored three-part composition: AuthIdentity · Card · AuthFooter. The fixed
-   * identity track absorbs absent, one-line and wrapped two-line requester states while its
-   * content remains visually adjacent to the Card. This keeps real requester data intact without
-   * allowing its line count to move the canonical SCR-001 card anchor (gh#237). */
+  /* Login is an anchored three-part composition: AuthIdentity · Card · AuthFooter. */
   .ui-auth-shell[data-preset="login"] {
     --auth-shell-card-max-width: var(--auth-shell-login-card-max-width);
     --auth-shell-main-align: flex-start;
@@ -277,9 +204,8 @@
     text-align: center;
   }
 
-  /* Device-authorization also owns its CODE FIELD (gh#12): the preset's subject is the code, so
-   * the slot box comes from the preset instead of the generic square control tier. Scoped on the
-   * shell so every OTP inside the device flow inherits it; a per-instance override still wins. */
+  /* Scoped on the shell so every OTP inside the device flow inherits it; a per-instance override
+   * still wins. */
   .ui-auth-shell[data-preset="device-authorization"] {
     --auth-shell-card-max-width: var(--auth-shell-device-card-max-width);
     --auth-shell-main-padding: var(--auth-shell-device-main-padding);
@@ -293,20 +219,17 @@
     --auth-shell-card-stack-gap: var(--auth-shell-context-card-stack-gap);
   }
 
-  /* Account-recovery preset (gh#233) — one 432px measure for BOTH SCR-008 panels (password
-   * recovery and the sign-in MFA challenge). Title + description live INSIDE the bordered surface
-   * here, so the panel is `Card > CardHeader(CardTitle + CardDescription)` with no `AuthIdentity`
-   * mark above it — the preset only re-measures the page, it never dictates content. */
+  /* Title + description live INSIDE the bordered surface here, so the panel is `Card >
+   * CardHeader(CardTitle + CardDescription)` with no `AuthIdentity` mark above it — the preset
+   * only re-measures the page, it never dictates content. */
   .ui-auth-shell[data-preset="account-recovery"] {
     --auth-shell-card-max-width: var(--auth-shell-recovery-card-max-width);
     --auth-shell-main-padding: var(--auth-shell-recovery-main-padding);
   }
 
-  /* Registration preset (gh#256) — the sign-up measure. `flex-start` is the load-bearing line: a
-   * registration card is the tallest surface in the hosted-identity set, and a vertically CENTRED
-   * tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of
-   * reach. Start-aligned, the block-start inset is ordinary page padding the user scrolls past, and
-   * the block-end inset is the footer clearance the form keeps at the end of a long scroll. */
+  /* `flex-start` is the load-bearing line: a registration card is the tallest surface in the
+   * hosted-identity set, and a vertically CENTRED tall card overflows ABOVE the scroll origin on a
+   * short viewport, putting its first field out of reach. */
   .ui-auth-shell[data-preset="registration"] {
     --auth-shell-card-max-width: var(--auth-shell-registration-card-max-width);
     --auth-shell-main-align: flex-start;
@@ -316,11 +239,8 @@
     --auth-shell-card-stack-gap: var(--auth-shell-registration-card-stack-gap);
   }
 
-  /* Fixed identity track — the mechanism `login` proved (gh#237), applied to the identity block
-   * wherever it sits in the column rather than through a grid row, so the preset does not constrain
-   * how many sections the page stacks. Content aligns to the slot END, so absent / one-line /
-   * wrapped two-line identity copy changes only the empty space ABOVE it and never moves the card
-   * off its canonical anchor. */
+  /* Content aligns to the slot END, so absent / one-line / wrapped two-line identity copy changes
+   * only the empty space ABOVE it and never moves the card off its canonical anchor. */
   .ui-auth-shell[data-preset="registration"] .ui-auth-shell-card > .ui-auth-identity {
     block-size: var(--auth-shell-registration-identity-slot-block-size);
     justify-content: flex-end;
@@ -391,7 +311,6 @@
     overflow: hidden;
     color: hsl(var(--foreground));
     font-size: var(--auth-account-summary-email-font-size);
-    /* Declares its own line box because it CLIPS — see gh#254. */
     line-height: var(--auth-account-summary-email-line-height);
     font-weight: var(--font-weight-medium);
     text-overflow: ellipsis;
@@ -432,30 +351,13 @@
 
 /* INTENTIONALLY UNLAYERED (like density.css) — the Label primitive carries `text-sm leading-none`
  * Tailwind utility classes, and the utilities layer is declared after `components`, so a
- * components-layer declaration of the same properties can NEVER win regardless of specificity.
- * That left `--auth-shell-field-label-font-size` / `--auth-shell-field-label-line-height` dead and
- * the canonical field label rendering as a 14px/1.0 line box instead of the canonical 12px/1.5 =
- * 18px, sitting the email input 4px high (gh#263). Unlayered author CSS out-cascades every layer;
- * the two tokens remain the public tuning knobs. */
+ * components-layer declaration of the same properties can NEVER win regardless of specificity. */
 .ui-auth-shell[data-variant="canonical"] [data-slot="form-field-label"] [data-slot="label"] {
   font-size: var(--auth-shell-field-label-font-size);
   line-height: var(--auth-shell-field-label-line-height);
 }
 
 @layer components {
-  /*
-   * Compact auth card density — the two card axes are wired to SEPARATE knobs (gh#232), so a
-   * service can shorten the canonical Login card without narrowing its column (or vice versa):
-   *   inline column  ← --auth-shell-compact-card-inset      → --card-space-inset
-   *   block padding  ← --auth-shell-card-padding-block-compact → --card-space-shell-y
-   *   header↔body    ← --auth-shell-card-body-gap-compact    → --card-space-body-y
-   *   solo body      ← --auth-shell-card-padding-block-compact → --card-space-solo-y
-   * The block knob is `initial` at :root, so its default resolves HERE against the live inset —
-   * canonical output is byte-identical to pre-gh#232 while the knob is now actually consumed.
-   * --card-space-solo-y is mapped EXPLICITLY as well as via the shell-y fallback: a solo body
-   * takes both block edges symmetrically, and naming it here keeps that contract legible at the
-   * one place a reader looks for the compact card's spacing.
-   */
   .ui-auth-shell[data-density="compact"] .ui-auth-shell-card {
     --card-space-inset: var(--auth-shell-compact-card-inset);
     --card-space-shell-y: var(
@@ -470,12 +372,7 @@
     --card-space-gap: var(--auth-shell-card-gap-compact);
   }
 
-  /* AuthDivider is the auth-scoped PRESET over the labelled `Separator` (gh#308). It no longer
-   * re-implements the grid, the rule or the accessible-name contract — it only re-points
-   * Separator's knobs at the `--auth-shell-divider-*` layer, so the auth micro-scale (11px, not
-   * the stream's xs) and the auth rule/label colours stay exactly where a service already tunes
-   * them, while a day divider in a message stream is no longer coupled to a login form.
-   * `--separator-label-font-weight` is pinned to normal because the auth conjunction has always
+  /* `--separator-label-font-weight` is pinned to normal because the auth conjunction has always
    * inherited the body weight, whereas the generic labelled rule defaults to medium. */
   .ui-auth-divider {
     --separator-label-gap: var(--auth-shell-divider-gap);
@@ -508,17 +405,13 @@
       --auth-shell-main-padding: var(--auth-shell-context-main-padding-mobile);
     }
 
-    /* account-recovery = 15px inline at 390 (panel x=15, width=360). This is a DECIDED mobile
-     * contract — the supplied 390 canonical reference is a desktop 2x2 composite that overflows
-     * horizontally and is not a valid source (gh#233). */
+    /* account-recovery = 15px inline at 390 (panel x=15, width=360). */
     .ui-auth-shell[data-preset="account-recovery"] {
       --auth-shell-main-padding: var(--auth-shell-recovery-main-padding-mobile);
     }
 
     /* registration = 15px inline at 390 (card x=15, width=360 — the same page rhythm as Login, so
-     * sign-in → sign-up never jumps on a phone). The block insets tighten but the footer clearance
-     * stays deliberately larger than a bare gutter: at 390 the form is at its tallest and the
-     * consent/legal footer must not sit flush against the submit button. */
+     * sign-in → sign-up never jumps on a phone). */
     .ui-auth-shell[data-preset="registration"] {
       --auth-shell-main-padding: var(--auth-shell-registration-main-padding-block-start-mobile)
         var(--auth-shell-registration-main-padding-inline-mobile)
@@ -526,14 +419,8 @@
     }
   }
 
-  /*
-   * CENTERED SHELL — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
-   * account / self-service, standalone settings). A flex column over the same brand-wash surface as
-   * the app/auth shells: a padded top bar that MIRRORS `.app-topbar` chrome (fixed height + the
-   * page-inset axis of gh#330 + border + backdrop) but WITHOUT a sidebar grid, a scrollable `main` whose content is a
-   * width-tiered centred column that is TOP-aligned (sections flow + scroll, never vertically
-   * centred like the auth card), and an optional footer. Every knob reads a token.
-   */
+  /* CENTERED SHELL — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
+   * account / self-service, standalone settings). */
   .ui-centered-shell {
     display: flex;
     min-height: 100dvh;
@@ -572,8 +459,7 @@
     width: 100%;
     margin-inline: auto;
     /* Block offset knob — `0` (top-aligned page, the default) or `auto` (viewport-centred system
-     * surface via `align="center"`). Auto margins absorb the free space of the flex `main`, and
-     * collapse to 0 when the content overflows, so tall content still scrolls from the top. */
+     * surface via `align="center"`). */
     margin-block: var(--centered-shell-column-offset-block);
     max-width: var(--centered-shell-width-md);
   }
@@ -597,12 +483,10 @@
     color: hsl(var(--muted-foreground));
   }
 
-  /* The compact step of the HORIZONTAL PAGE-INSET AXIS for CenteredShell (gh#330 applied to the
-   * shell it missed). Same condition, word for word, as the `.app-topbar` block above and as
-   * `.ui-page-container` in styles/layout.css: the inset is a fact about where the page's content
-   * edge is, so all three sides must step on the same line or the row drifts apart again — which is
-   * precisely how the bar came to sit 8px outboard of its own column. Only the INLINE axis steps;
-   * the block padding is a separate concern and keeps its shorthand. */
+  /* Same condition, word for word, as the `.app-topbar` block above and as `.ui-page-container` in
+   * styles/layout.css: the inset is a fact about where the page's content edge is, so all three
+   * sides must step on the same line or the row drifts apart again — which is precisely how the
+   * bar came to sit 8px outboard of its own column. */
   @media (max-width: 720px) {
     .ui-centered-shell-bar {
       padding-inline: var(--centered-shell-bar-padding-x-compact);
@@ -637,22 +521,16 @@
     display: none;
   }
 
-  /* AppShell-owned mobile drawer trigger — hidden on desktop, shown once the docked sidebar
-   * collapses out at 900px, THE ONE AppShell breakpoint (gh#165, gh#259). NOT Tailwind's `lg`
-   * (1024px): this comment said "below lg" for six minors while the shipped rule below and the
-   * hamburger's own `max-[900px]:inline-flex` both fired at 900 — see the block comment on the
-   * `@media (width <= 56.25rem)` rule for why 900 is the canonical value. The drawer nav itself is
-   * a focus-trapped Sheet. */
+  /* The drawer nav itself is a focus-trapped Sheet. */
   .app-mobile-nav-trigger {
     display: none;
     flex: 0 0 auto;
     margin-inline-end: var(--space-1);
   }
 
-  /* Drawer scrim = a SHARE of the ONE shared semantic scrim (--overlay-background), resolved at the
-   * call site so a scoped [data-tenant]/.dark override of --overlay-background reaches the portaled
-   * drawer (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). Default resolves to the same
-   * rgb(0 0 0 / 0.2) it has always been; setting --app-shell-mobile-nav-background still wins. */
+  /* Drawer scrim = a SHARE of the ONE shared semantic scrim (--overlay-background), resolved at
+   * the call site so a scoped [data-tenant]/.dark override of --overlay-background reaches the
+   * portaled drawer (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). */
   [data-slot="sheet-overlay"].app-mobile-nav-overlay {
     background-color: var(
       --app-shell-mobile-nav-background,
@@ -692,21 +570,7 @@
     font-size: var(--font-size-base);
   }
 
-  /*
-   * THE ONE AppShell breakpoint — 900px (56.25rem), the DXS canonical value. It is stated in exactly
-   * two places and they must agree: this rule and `max-[900px]:inline-flex` on the hamburger in
-   * `app-shell.tsx` (a CSS @media cannot read a custom property, so the trigger's visibility has to
-   * repeat the number; making it a public knob needs a `data-shell-mode` attribute — tracked in the
-   * #213 audit, out of scope here).
-   *
-   * There used to be a SECOND, conflicting `@media (max-width: 768px)` block further down that also
-   * restructured `.app-root`. It (a) dropped the `"footer"` grid area and set `.app-footer{display:
-   * none}`, silently deleting whatever a consumer passed to AppShell's `footer` slot on a phone, and
-   * (b) re-declared the grid ROW template with a 3rem literal, overriding --app-shell-bar-height so
-   * a themed bar height was ignored below 768px only. Between 768 and 900 the sidebar was hidden by
-   * THIS rule while the grid still reserved a sidebar track — incoherent. Both are gone; the
-   * footer row and the bar-height token now hold at every width.
-   */
+  /* THE ONE AppShell breakpoint — 900px (56.25rem), the DXS canonical value. */
   @media (width <= 56.25rem) {
     .app-root,
     .app-root[data-collapsed="true"] {
@@ -722,11 +586,7 @@
     }
 
     /* Bar-less shell (data-topbar="none") at narrow widths: the bar comes back for the hamburger
-     * ALONE — the only route to navigation once the docked rail is hidden. The `auto` row picks up
-     * its height from the header's min-height, so no grid-template-rows is restated here, and none
-     * may be: the one-breakpoint guard forbids a rows declaration inside this block precisely
-     * because the last one hard-coded 3rem. Docked mode never reaches this rule — it renders no
-     * drawer, so a bar-less docked shell has no header to show. */
+     * ALONE — the only route to navigation once the docked rail is hidden. */
     .app-root[data-topbar="none"] > .app-topbar {
       display: flex;
     }
@@ -739,9 +599,7 @@
       display: inline-flex;
     }
 
-    /* Some approved application contracts retain their navigation rail at narrow widths. This is
-     * an explicit AppShell mode, never a consumer media-query fork: the same sidebar node, footer,
-     * active items and token-owned rail width remain in the canonical two-track grid. */
+    /* Some approved application contracts retain their navigation rail at narrow widths. */
     .app-root[data-responsive-navigation="docked"] {
       grid-template-areas:
         "sidebar topbar"
@@ -767,24 +625,16 @@
       display: flex;
     }
 
-    /* (There is deliberately no `padding-inline` undo for docked mode any more. It existed to
-     * cancel a bar inset that stepped on the SHELL's 900px restructure; since gh#330 the inset
-     * steps on the PAGE's 720px step instead, and a docked page tightens its own gutters at that
-     * same step — so undoing the bar here would re-open the misalignment the step exists to
-     * keep closed.) */
+    /* (There is deliberately no `padding-inline` undo for docked mode any more. */
     .app-root[data-responsive-navigation="docked"] .app-mobile-nav-trigger {
       display: none;
     }
   }
 
-  /* The compact step of the HORIZONTAL PAGE-INSET AXIS (gh#330). It is deliberately NOT the shell's
-   * 900px restructure breakpoint: the bar's inset is not a fact about whether a rail is docked, it
-   * is a fact about where the page's content edge is — and the page steps its gutters to
-   * --space-page-compact-x at exactly `(max-width: 720px)` (see styles/layout.css ·
-   * `.ui-page-container`). Stated with the identical condition so the two sides can never drift
-   * apart again; the shell's own restructure block above still owns everything that IS about the
-   * rail. This block mentions `.app-topbar` only, so the one-breakpoint `.app-root` contract
-   * (gh#213) is untouched. */
+  /* It is deliberately NOT the shell's 900px restructure breakpoint: the bar's inset is not a fact
+   * about whether a rail is docked, it is a fact about where the page's content edge is — and the
+   * page steps its gutters to --space-page-compact-x at exactly `(max-width: 720px)` (see
+   * styles/layout.css · `.ui-page-container`). */
   @media (max-width: 720px) {
     .app-topbar {
       padding-inline: var(--app-shell-bar-inset-compact);
@@ -795,10 +645,7 @@
     display: contents;
   }
 
-  /*
-   * ORG SWITCHER — shared Console/Admin tenant control. Widths, insets and state geometry stay
-   * inside the library so a consumer never needs `w-64` or descendant-selector overrides.
-   */
+  /* ORG SWITCHER — shared Console/Admin tenant control. */
   .ui-org-switcher {
     width: 100%;
     min-width: 0;
@@ -1012,16 +859,7 @@
     margin-top: var(--sidebar-section-gap);
   }
 
-  /* The section label is the ONE piece of sidebar text with no colour knob.
-   * Every other one has a variable with this same fallback — item, hover,
-   * active, icon — and the sidebar is paintable by design (`--sidebar-gradient`
-   * is a published knob). So a consumer that paints it can recolour every label
-   * except this heading, which stays muted-foreground and lands on whatever
-   * they painted: measured at 1.50 against a mid-tone blue, where 11px text
-   * needs 4.5.
-   *
-   * The fallback is the old value, so nothing changes for a sidebar that does
-   * not paint itself. */
+  /* The section label is the ONE piece of sidebar text with no colour knob. */
   .sb-section-label {
     padding: 0 var(--sidebar-section-label-padding-x) var(--sidebar-section-label-padding-bottom);
     color: var(--sidebar-section-label-foreground, hsl(var(--muted-foreground)));
@@ -1050,8 +888,7 @@
     border: 0;
     border-radius: var(--sidebar-nav-item-radius);
     background: transparent;
-    /* gh#228 — the row/label foreground is its own knob (default = the muted role, unchanged). The
-     * icon reads a SEPARATE knob on `.sb-icon` below, so a service can darken 16px nav icons
+    /* The icon reads a SEPARATE knob on `.sb-icon` below, so a service can darken 16px nav icons
      * without re-tinting every muted text. */
     color: var(--sidebar-nav-item-foreground, hsl(var(--muted-foreground)));
     cursor: pointer;
@@ -1061,18 +898,8 @@
     text-align: start;
   }
 
-  /* Every nav row is a CONTROL, so it owes a visible keyboard indicator (WCAG 2.4.7) — and it
-   * has to be the design system's, not the UA's. Measured in Chromium before this rule: the
-   * first Tab into the shell landed on a rail item drawing Chrome's own
-   * `outline: rgb(0,95,204) auto 1px`, a blue that belongs to no theme and matches nothing else
-   * on the page, while every Button beside it drew the token ring. On a Slack-style shell that
-   * is the FIRST thing a keyboard user sees.
-   *
-   * Same shape as `.app-main:focus-visible` above — suppress the UA outline, draw a token ring —
-   * but NOT gated behind an opt-in width the way the region ring is. A whole-content-area frame
-   * reads as a glitch and defaults off; a 2px ring hugging one 32px row is exactly the
-   * affordance, so it reads the global `--focus-ring-width` and is on by default. `box-shadow`
-   * rather than `outline` so the ring follows `--sidebar-nav-item-radius`. */
+  /* Every nav row is a CONTROL, so it owes a visible keyboard indicator (WCAG 2.4.7) — and it has
+   * to be the design system's, not the UA's. */
   .sb-nav-item:focus-visible {
     outline: none;
     box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
@@ -1085,7 +912,7 @@
 
   /* Active item reads its own bg/fg tokens (defaults = the hover look) so a service can give the
    * selected nav row a brand treatment — e.g. a gold tint + gold text on a navy sidebar — without
-   * forking CSS. Defaults are byte-identical to the hover state. */
+   * forking CSS. */
   .sb-nav-item[data-active="true"] {
     background: var(--sidebar-item-active-background, hsl(var(--accent)));
     color: var(--sidebar-item-active-foreground, hsl(var(--foreground)));
@@ -1099,11 +926,8 @@
     flex: 0 0 auto;
     line-height: 0;
     place-items: center;
-    /* gh#228 — the nav ICON owns its own foreground knob; the default `currentColor` resolves to the
-     * row colour, so the resting look is byte-identical to before. A service sets
-     * `--sidebar-nav-icon-foreground` alone to get canonical darker icons beside muted labels — no
-     * page-local selector, no global `--muted-foreground` re-tint. Colour only: size/geometry stay
-     * on --sidebar-nav-icon-size. */
+    /* A service sets `--sidebar-nav-icon-foreground` alone to get canonical darker icons beside
+     * muted labels — no page-local selector, no global `--muted-foreground` re-tint. */
     color: var(--sidebar-nav-icon-foreground, currentColor);
   }
 
@@ -1118,19 +942,15 @@
     min-width: 0;
     flex: 1;
     overflow: hidden;
-    /* gh#254 — MUST NOT inherit the row's `line-height: 1`. This element clips, so its line box is
-     * its clip box, and a 1em box is shorter than the font's ascent+descent: every descender and
-     * Vietnamese tone mark below the baseline gets sheared off. Knob, not constant (rule #45). */
+    /* This element clips, so its line box is its clip box, and a 1em box is shorter than the
+     * font's ascent+descent: every descender and Vietnamese tone mark below the baseline gets
+     * sheared off. */
     line-height: var(--sidebar-nav-item-line-height);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  /* The nav row's count pill. Its COLOUR is a knob pair, and the resting values are exactly the
-   * literals it carried before (rule #44/#45) — `initial` at the token tier so the role defaults
-   * re-resolve under a scoped theme, resolved here at the call site. Before the knobs the only
-   * way to emphasise a row was to nest a `<Badge>` INSIDE `badge`, which produced two stacked
-   * pills: a 37.11×19.14 `.sb-badge` wrapping a 25.11×19.14 `<Badge>` with its own border. */
+  /* The nav row's count pill. */
   .sb-badge {
     display: inline-flex;
     min-width: 1.125rem;
@@ -1145,12 +965,8 @@
     padding-inline: 0.375rem;
   }
 
-  /* `badgeTone="destructive"` — the count is ADDRESSED TO YOU (an @mention, a direct message),
-   * not merely unread. Present-when-on (rule #44): a neutral row emits no `data-tone` at all, so
-   * this rule cannot reach it and the default pill is byte-identical. GEOMETRY IS UNTOUCHED — the
-   * tone moves two colours and nothing else, which is the whole point of the axis: the row's
-   * height, the pill's radius and its 0.375rem inline pad stay on the base rule, so a mention row
-   * and an unread row still line up in the same column. */
+  /* `badgeTone="destructive"` — the count is ADDRESSED TO YOU (an @mention, a direct message), not
+   * merely unread. */
   .sb-badge[data-tone="destructive"] {
     background: var(--sidebar-badge-destructive-background, hsl(var(--destructive)));
     color: var(--sidebar-badge-destructive-foreground, hsl(var(--destructive-foreground)));
@@ -1174,8 +990,7 @@
     transform: rotate(180deg);
   }
 
-  /* Nested rows (submenu) — left guide line + dot markers, design `.sb-nest`.
-   * Active child reads as primary-colored text, never a filled block. */
+  /* Nested rows (submenu) — left guide line + dot markers, design `.sb-nest`. */
   .sb-nav-sub {
     display: flex;
     flex-direction: column;
@@ -1188,8 +1003,7 @@
   .sb-nav-item--sub {
     height: 1.75rem;
     font-size: var(--sidebar-nav-sub-font-size);
-    /* Same row knob as a top-level row (gh#228) — one override themes the whole nav, sub rows
-     * included. Default unchanged. */
+    /* Default unchanged. */
     color: var(--sidebar-nav-item-foreground, hsl(var(--muted-foreground)));
   }
 
@@ -1219,11 +1033,8 @@
     opacity: 1;
   }
 
-  /* gh#228 — nav ICON state knobs. Declared AFTER the row-state rules so they win at equal
-   * specificity, in the same order the row states resolve (hover → active → disabled). Each falls
-   * back to the base icon knob and finally to `currentColor` (= the row colour for that state), so
-   * the defaults are byte-identical to the pre-gh#228 rendering and setting only
-   * `--sidebar-nav-icon-foreground` themes every state at once. Colour only — no geometry. */
+  /* Declared AFTER the row-state rules so they win at equal specificity, in the same order the row
+   * states resolve (hover → active → disabled). */
   .sb-nav-item:hover .sb-icon {
     color: var(
       --sidebar-nav-icon-hover-foreground,
@@ -1238,9 +1049,7 @@
     );
   }
 
-  /* Disabled rows (`aria-disabled="true"`, set by SidebarItem for item.disabled). Defaults resolve
-   * to the RESTING row/icon colour, so a disabled row reads as inert in every state; a service dims
-   * it further with the two disabled knobs. */
+  /* Disabled rows (`aria-disabled="true"`, set by SidebarItem for item.disabled). */
   .sb-nav-item[aria-disabled="true"] {
     color: var(
       --sidebar-nav-item-disabled-foreground,
@@ -1398,29 +1207,7 @@
   }
 
   /* Topbar — a pure slot bar. start (inline-start) · center (grows, centered) · end (inline-end).
-   * The library owns ONLY this positioning; every control inside is the consumer's to compose.
-   *
-   * SHRINK CONTRACT (gh#226) — a hosted console packs an intrinsically wide brand/tenant string
-   * into `start` and a fixed-width search trigger into `center`; at a compact desktop width
-   * (1024px minus a 16rem sidebar) that content used to push `end` (locale picker, user menu) past
-   * the bar and out of the viewport, and leak a horizontal document scroll. The contract is:
-   *   root      — never wider than its AppShell grid/flex allocation (`max-width:100%` +
-   *               `min-width:0`, so it shrinks whether the parent is a grid track or a flex line);
-   *   start     — shrinks first, its content clipped INSIDE the slot (never spills over center/end);
-   *   center    — `flex-basis:0`, so it yields all of its box before `start` gives up a pixel;
-   *   end       — `flex:0 0 auto`, so it keeps its natural width and stays anchored inline-end.
-   * Slots clip with `clip`, NOT `hidden`: a `hidden` box is still a scroll container, so focusing a
-   * clipped control would scroll the slot and shove its leading content out of view. The clip
-   * margin keeps the focus ring of an edge control paintable (WCAG 2.4.11 / 2.4.13).
-   *
-   * BOX KNOBS (rule #45) — --topbar-height / --topbar-inset / --topbar-gap. Their defaults are the
-   * QUIET ones (`auto` / `0` / the previous 8px), i.e. byte-identical rendering to before they
-   * existed: inside AppShell the `.app-topbar` grid row still owns the height and inset. A service
-   * that mounts <Topbar> DIRECTLY on a page (no AppShell) now sizes it from the theme —
-   * `--topbar-height: 3.5rem; --topbar-inset: var(--space-4)` — instead of an app-local class.
-   * `--topbar-gap` re-rhythms the whole bar at once: it is both the gap BETWEEN the three clusters
-   * and the gap INSIDE each of them, so a denser bar stays internally consistent.
-   * The shrink contract above is unaffected — none of these touch flex/overflow. */
+ */
   .ui-topbar {
     display: flex;
     height: var(--topbar-height);
@@ -1431,17 +1218,7 @@
     align-items: center;
     gap: var(--topbar-gap);
     padding-inline: var(--topbar-inset);
-    /* Ring headroom contract (gh#291), measured empirically:
-     *   - Chromium honours overflow-clip-margin ONLY when BOTH axes are `clip`;
-     *     a single-axis clip silently ignores the margin, and a flush-edge
-     *     control's ring vanishes on the clipped axis.
-     *   - `hidden` can never work here (no clip-margin, and pairing it with
-     *     `visible` computes to `auto`, which still clips).
-     *   - The margin must be a bare var() — Chromium drops calc() at parse time.
-     * So: clip BOTH axes and let the margin carry the ring on every side. The
-     * gh#226 shrink/truncation contract is intact (content clips 8px outside
-     * the box). Safari (clip yes, clip-margin no) falls back to `visible`
-     * below. */
+    /* So: clip BOTH axes and let the margin carry the ring on every side. */
     overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
   }
@@ -1452,17 +1229,11 @@
     min-width: 0;
     align-items: center;
     gap: var(--topbar-gap);
-    /* Same both-axes-clip + margin contract as .ui-topbar above (gh#291): the
-     * 8px margin covers the 3px ring on every side of a flush-edge control;
-     * single-axis clip would silently drop the margin in Chromium. */
     overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
   }
-  /* Safari implements `overflow: clip` but NOT overflow-clip-margin, so the
-   * both-axes clip above would eat every flush-edge focus ring there with no
-   * margin to save it. Trade slot containment for ring visibility on that
-   * engine only — the .app-topbar horizontal clip still prevents bar blowout
-   * and document scroll. */
+  /* Safari implements `overflow: clip` but NOT overflow-clip-margin, so the both-axes clip above
+   * would eat every flush-edge focus ring there with no margin to save it. */
   @supports not (overflow-clip-margin: 1px) {
     .app-sidebar,
     .app-topbar,
@@ -1481,7 +1252,6 @@
     min-width: 0;
     flex: 0 1 auto;
     overflow: hidden;
-    /* Declares its own line box because it CLIPS — see gh#254. */
     line-height: var(--topbar-start-truncate-line-height);
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1496,11 +1266,8 @@
     margin-inline-start: auto;
   }
 
-  /* COLLISION CONTRACT (gh#244) — with a docked 16rem sidebar, 901–1100px viewports do not have
-   * enough room for a breadcrumb/title, full search trigger and end utilities. The center slot is
-   * optional by definition, so remove it before it can cover either owned edge. This also gives
-   * phones the same deterministic allocation. A consumer with a real compact center presentation
-   * can opt it back in through the public token instead of a page-local media query. */
+  /* The center slot is optional by definition, so remove it before it can cover either owned edge.
+ */
   @media (width <= 68.75rem) {
     .ui-topbar-center {
       display: var(--topbar-center-compact-display);
@@ -1560,9 +1327,8 @@
     min-width: 0;
     overflow: hidden;
     font-weight: 500;
-    /* gh#254 — same trap as `.sb-label`: this clips, so it must own a line box tall enough for the
-     * font's descenders. `.tb-chip` uses `font: inherit`, so without this the chip would shear its
-     * glyphs the moment a service set a tight line-height on the bar. */
+    /* `.tb-chip` uses `font: inherit`, so without this the chip would shear its glyphs the moment
+     * a service set a tight line-height on the bar. */
     line-height: 1.5;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1580,11 +1346,8 @@
 
   .tb-search {
     display: flex;
-    /* Fills the whole `Topbar` center slot by default (gh#296) — `--topbar-search-max-width`
-     * defaults to `none`, so nothing caps it short of `end`. A consumer opting into the older
-     * fixed-width, centered look sets the token to an explicit length instead of overriding this
-     * rule. `width: 100%` + `max-width: none` is the pair that makes both cases work from ONE
-     * token: a set length caps it, an unset one (`none`) doesn't. */
+    /* `width: 100%` + `max-width: none` is the pair that makes both cases work from ONE token: a
+     * set length caps it, an unset one (`none`) doesn't. */
     width: 100%;
     max-width: var(--topbar-search-max-width);
     height: var(--control-height-sm);
@@ -1657,12 +1420,7 @@
     background: hsl(var(--attention));
   }
 
-  /* TOPBAR CHIP/SEARCH DENSITY ONLY — this is NOT a second shell breakpoint. The `.app-root`
-   * restructure that used to live here (a 768px duplicate of the 900px rule that also deleted the
-   * footer row and re-declared the grid rows with a 3rem literal) is gone; see the note on the one
-   * `@media (width <= 56.25rem)` block above. What remains is purely the optional `.tb-*` console
-   * chrome collapsing to icon-only on a phone, which is independent of where the shell switches to
-   * its drawer. */
+  /* TOPBAR CHIP/SEARCH DENSITY ONLY — this is NOT a second shell breakpoint. */
   @media (max-width: 768px) {
     .tb-chip-sep,
     .tb-search .kbd {
@@ -1697,18 +1455,9 @@
   }
 }
 
-/*
- * ERROR SURFACE — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251).
- *
- * Geometry is PACKAGE-OWNED at 1440 / 1024 / 390: a consumer never writes `min-h-dvh`, a
- * flex-centring class or a media query for an error page. In `system` mode the viewport centring
- * comes from `CenteredShell align="center"` (which the component renders itself); this block owns
- * the surface block that is identical in BOTH modes — measure, rhythm, metadata list.
- *
- * The narrow step is a CONTAINER query, not a viewport one (the SplitPane precedent, gh#165): the
- * surface reads its OWN width, so it compacts correctly whether the shrinking came from a 390px
- * phone or from an application shell whose sidebar is expanded on a laptop.
- */
+/* In `system` mode the viewport centring comes from `CenteredShell align="center"` (which the
+ * component renders itself); this block owns the surface block that is identical in BOTH modes —
+ * measure, rhythm, metadata list. */
 @layer components {
   .ui-error-surface {
     container: error-surface / inline-size;
@@ -1747,7 +1496,6 @@
     width: 100%;
     flex-direction: column;
     gap: var(--error-surface-meta-gap);
-    /* Chrome is a token, default quiet (rule #44) — `none` unless a service opts in. */
     border-block-start: var(--error-surface-meta-border);
     padding-block-start: var(--error-surface-meta-padding-block);
     margin: 0;
@@ -1769,10 +1517,7 @@
     max-width: var(--error-surface-progress-max-width);
   }
 
-  /*
-   * NARROW STEP (the 390 case). Reclaim vertical space and stop a long ja / vi metadata row from
-   * wrapping into a ragged two-column shape: each label stacks over its value, centred.
-   */
+  /* NARROW STEP (the 390 case). */
   @container error-surface (width < 30rem) {
     .ui-error-surface {
       padding-block: var(--error-surface-padding-block-compact);
@@ -1786,24 +1531,12 @@
 }
 
 @layer components {
-  /* ── CenteredShell · `preset="public-landing"` (gh#252) ──────────────────────────────────────
-   * A PUBLIC landing page (marketing header · hero · sections · legal footer) is a COMPOSITION,
-   * not a framework component (docs/COMPOSITION-VS-COMPONENT.md: Hero / Navbar / Footer / Pricing
-   * all FAIL the Framework-Component Test). What the consumer must NOT own is the SHELL geometry —
-   * the content measure, the header/footer measure alignment, the section rhythm and the flat
-   * public-surface chrome. This preset owns all of it through `--centered-shell-landing-*` knobs,
-   * so a landing composes real primitives with ZERO page-local CSS and zero descendant selectors.
-   *
-   * `preset="default"` emits NO `data-preset` attribute at all, so none of this can match and every
-   * existing CenteredShell keeps its exact box (the gh#231 inert-default contract). */
+  /* What the consumer must NOT own is the SHELL geometry — the content measure, the header/footer
+   * measure alignment, the section rhythm and the flat public-surface chrome. */
   .ui-centered-shell[data-preset="public-landing"] {
     --centered-shell-main-padding: var(--centered-shell-landing-main-padding-block)
       var(--centered-shell-landing-inset-inline);
-    /* The hero title is a real `Heading level={1}`; the preset re-points the h1 tier the same way
-     * `.ui-auth-shell` re-points it — never a consumer font-size. */
     --heading-h1: var(--centered-shell-landing-heading-size);
-    /* Flat public surface: every Card in the subtree loses its elevation from ONE knob instead of
-     * a consumer `.landing .card { box-shadow: none }` descendant selector. */
     --card-shadow: var(--centered-shell-landing-card-shadow);
     background: hsl(var(--centered-shell-landing-background, var(--background)));
   }
@@ -1816,9 +1549,6 @@
     gap: var(--centered-shell-landing-section-gap);
   }
 
-  /* Header and footer share the column's measure WITHOUT a consumer max-width wrapper: the inline
-   * padding is the page gutter until the viewport is wider than the measure, then it grows so the
-   * bar content starts on exactly the same inline edge as the centred column. */
   .ui-centered-shell[data-preset="public-landing"] .ui-centered-shell-bar,
   .ui-centered-shell[data-preset="public-landing"] .ui-centered-shell-footer {
     padding-inline: max(
@@ -1833,7 +1563,7 @@
   }
 
   /* Compact step (the 390px acceptance width sits here): the gutter, the section rhythm and the
-   * hero tier switch to their compact knobs. One media query, owned by the package. */
+   * hero tier switch to their compact knobs. */
   @media (width < 40rem) {
     .ui-centered-shell[data-preset="public-landing"] {
       --centered-shell-landing-inset-inline: var(--centered-shell-landing-inset-inline-compact);

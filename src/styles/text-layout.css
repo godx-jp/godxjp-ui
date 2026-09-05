@@ -1,9 +1,4 @@
-/*
- * TEXT / HEADING — typographic primitives (@godxjp/ui).
- * Token-driven ONLY: size = golden-ratio type scale, weight = the 2-weight system (400/500),
- * tone = semantic foreground tokens. No arbitrary px, no font-semibold=600. Components emit
- * data-slot + data-* flags; all styling lives here.
- */
+/* TEXT / HEADING — typographic primitives (@godxjp/ui). */
 
 @layer components {
   .ui-text {
@@ -33,9 +28,7 @@
     font-size: var(--font-size-2xl);
   }
 
-  /* Weight — the reference-design canon (400 body · 500 heading/label · 700 emphasis). No 600.
-   * Shared by text + heading; the two-attribute heading selectors outrank the base heading
-   * rule below, so `<Heading weight="bold">` renders a semantic, emphasised title. */
+  /* Weight — the reference-design canon (400 body · 500 heading/label · 700 emphasis). */
   [data-slot="text"][data-weight="regular"],
   [data-slot="heading"][data-weight="regular"] {
     font-weight: var(--font-weight-normal);
@@ -108,21 +101,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    /* min-width:0 lets a truncating Text shrink inside a flex row WITHOUT the consumer
-     * having to add `min-w-0` — the documented flex-truncate idiom (issue #114). */
     min-width: 0;
   }
-  /* Multi-line clamp (`clamp` prop, issue #261) — the token-owned line-clamp so consumers never
-   * write a page-local `line-clamp-N` utility. Visual-only: the full text stays in the DOM and
-   * the accessible name. `--text-clamp` is set inline by the component from the prop value. */
+  /* Visual-only: the full text stays in the DOM and the accessible name. */
   [data-slot="text"][data-clamp] {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: var(--text-clamp, 2);
     line-clamp: var(--text-clamp, 2);
     overflow: hidden;
-    /* Same flex-shrink contract as truncate (issue #114): clamps inside a flex row without
-     * the consumer adding `min-w-0`. */
     min-width: 0;
   }
   [data-slot="text"][data-tabular] {

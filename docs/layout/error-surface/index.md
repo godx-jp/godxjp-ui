@@ -1,12 +1,8 @@
----
-title: Overview
----
+--- title: Overview ---
 
 # Error surface — 403 / 404 / 500 / 503
 
-`ErrorSurface` is a **package-owned, importable component** (`@godxjp/ui/layout`). It owns the four
-HTTP exception pages every application ships, including their responsive geometry, so no app
-re-implements them from a generic `Card` in the wrong shell.
+`ErrorSurface` is a **package-owned, importable component** (`@godxjp/ui/layout`). It owns the four HTTP exception pages every application ships, including their responsive geometry, so no app re-implements them from a generic `Card` in the wrong shell.
 
 ```tsx
 import { ErrorSurface } from "@godxjp/ui/layout";
@@ -24,10 +20,7 @@ the question: the surface ships as a real export.
 
 Two things that analysis got right are preserved verbatim in the component's design:
 
-- **A component cannot manufacture the application shell.** Nav sections, product identity and the
-  user menu are consumer-owned data. So `mode="application"` does not build chrome — it defines
-  _where the surface goes_ (see below), and the surface renders only its own block.
-- **Exactly one recovery action** stays structural — one slot, extras dropped.
+- **A component cannot manufacture the application shell.** Nav sections, product identity and the user menu are consumer-owned data. So `mode="application"` does not build chrome — it defines _where the surface goes_ (see below), and the surface renders only its own block. - **Exactly one recovery action** stays structural — one slot, extras dropped.
 
 ## `mode` is the shell contract, not a skin
 
@@ -136,71 +129,25 @@ delivers every exception through one `Error` page component that receives the HT
 (Laravel `Handler::render()` → `Inertia::render('Error', ['status' => …])`), which maps onto
 `ErrorSurface` with a single expression:
 
-```tsx
+````tsx
 // resources/js/Pages/Error.tsx
 import { Button, Logo } from "@godxjp/ui/general";
 import { ErrorSurface } from "@godxjp/ui/layout";
 import { Link, router } from "@inertiajs/react";
 
-export default function Error({
-  status,
-  requestId,
-}: {
-  status: 403 | 404 | 500 | 503;
-  requestId?: string;
-}) {
-  const { t } = useTranslation(); // the APP's i18n — @godxjp/ui never owns product copy
-  const isSystem = status >= 500;
+export default function Error({ status, requestId, }: { status: 403 | 404 | 500 | 503; requestId?: string; }) { const { t } = useTranslation(); // the APP's i18n — @godxjp/ui never owns product copy const isSystem = status >= 500;
 
-  return (
-    <ErrorSurface
-      mode={isSystem ? "system" : "application"}
-      status={status}
-      title={t(`errors.${status}.title`)}
-      description={t(`errors.${status}.description`)}
-      requestId={requestId}
-      {...(isSystem ? { brand: <Logo glyph="G" /> } : {})}
-      action={
-        isSystem ? (
-          <Button onClick={() => router.reload()}>{t("errors.reload")}</Button>
-        ) : (
-          <Button asChild>
-            <Link href="/">{t("errors.backHome")}</Link>
-          </Button>
-        )
-      }
-    />
-  );
-}
+return ( <ErrorSurface mode={isSystem ? "system" : "application"} status={status} title={t(`errors.${status}.title`)} description={t(`errors.${status}.description`)} requestId={requestId} {...(isSystem ? { brand: <Logo glyph="G" /> } : {})} action={ isSystem ? ( <Button onClick={() => router.reload()}>{t("errors.reload")}</Button> ) : ( <Button asChild> <Link href="/">{t("errors.backHome")}</Link> </Button> ) } /> ); }
 
-// Persistent layout ⇒ 403/404 keep the authenticated shell (the sidebar is not re-mounted, scroll
-// and drawer state survive); 500/503 render standalone, because the surface owns the page.
-Error.layout = (page: React.ReactNode) =>
-  page.props.status < 500 ? <AuthenticatedLayout>{page}</AuthenticatedLayout> : page;
-```
+// Persistent layout ⇒ 403/404 keep the authenticated shell (the sidebar is not re-mounted, scroll // and drawer state survive); 500/503 render standalone, because the surface owns the page. Error.layout = (page: React.ReactNode) => page.props.status < 500 ? <AuthenticatedLayout>{page}</AuthenticatedLayout> : page; ```
 
 SSR notes:
 
-- Send the maintenance window as **ISO-8601 from the server** with an explicit `timeZone`. Relying
-  on the server's local zone makes SSR and client output diverge and React logs a hydration mismatch.
-- A 500 page must not import the app's data providers/query client — the failure may be inside them.
-  `ErrorSurface` needs no provider beyond the `AppProvider` that supplies the locale.
+- Send the maintenance window as **ISO-8601 from the server** with an explicit `timeZone`. Relying on the server's local zone makes SSR and client output diverge and React logs a hydration mismatch. - A 500 page must not import the app's data providers/query client — the failure may be inside them. `ErrorSurface` needs no provider beyond the `AppProvider` that supplies the locale.
 
 ## Anti-patterns
 
-- ❌ `AuthShell` + a generic `Card` for an error page (the gh#251 workaround) — that is the
-  unauthenticated root with auth-card geometry.
-- ❌ Rebuilding nav/topbar on the 403/404 page — use `mode="application"` inside the shell you have.
-- ❌ Two CTAs ("Retry" + "Contact support") — one recovery action; put support contact in
-  `description`.
-- ❌ `className="min-h-dvh flex items-center"` — that geometry is `mode="system"`.
-- ❌ A hand-built maintenance string (`"18:00 - 20:00 JST"`) — pass `maintenance` and let `Intl`
-  format it.
-- ❌ Writing the request id into `description` as prose — it is a semantic slot.
-
 ## The composition underneath
 
-`ErrorSurface` composes real primitives (`EmptyState` · `Text` · `Progress` · `CenteredShell`) and
-adds no bespoke markup you could not inspect. For a status outside the supported four, compose the
-same body by hand — that composition is pinned by
-`src/components/layout/__tests__/error-surface-pattern.test.tsx`, so it cannot break from underneath.
+`ErrorSurface` composes real primitives (`EmptyState` · `Text` · `Progress` · `CenteredShell`) and adds no bespoke markup you could not inspect. For a status outside the supported four, compose the same body by hand — that composition is pinned by `src/components/layout/__tests__/error-surface-pattern.test.tsx`, so it cannot break from underneath.
+````

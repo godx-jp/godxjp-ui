@@ -95,8 +95,7 @@ describe("Tabs line variant — no active ring (gh#248)", () => {
         `focus utility "${utility}" must not be variant-scoped — WCAG 2.4.7 applies to every variant`,
       ).toBe(true);
     }
-    expect(className).toContain("focus-visible:ring-[3px]");
-    expect(className).toContain("focus-visible:ring-ring/50");
+    expect(className).toContain("ui-focus-ring");
   });
 
   it("keeps the selected ring on the default variant (card/default chrome unchanged)", () => {

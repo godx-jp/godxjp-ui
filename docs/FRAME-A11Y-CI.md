@@ -1,9 +1,6 @@
 # Per-frame accessibility & coverage CI
 
-Executable gates for the `/frame/**` contract suite (issues **#157** + **#163**). They render
-every catalog frame in real Chromium and hold the line on accessibility, responsive geometry
-and contract coverage. Static checks (`audit:examples`, source regexes) cannot see rendered
-colour/layout/ARIA — these gates do.
+They render every catalog frame in real Chromium and hold the line on accessibility, responsive geometry and contract coverage. Static checks (`audit:examples`, source regexes) cannot see rendered colour/layout/ARIA — these gates do.
 
 ## The three gates
 
@@ -13,79 +10,30 @@ colour/layout/ARIA — these gates do.
 | `scripts/frame-geometry.mjs`  | `check:frame-geometry` | overflow + clipped-control sweep across **320·375·390·768·1024·1280·1440·1920** | Allowlisted (regression = fail)                                          |
 | `scripts/frame-coverage.mjs`  | `check:frame-coverage` | component-inventory ↔ frame ↔ contract-axis cross-check (browser-free)          | Report-only (`--strict` fails on any zero-frame component)               |
 
-CI: `.github/workflows/frame-a11y.yml` — coverage + axe on every PR; geometry on `main` + nightly.
-
-This doc covers `check:frame-axe` end to end (why it exists, the two scopes, how to run and
-regenerate it locally, and — as a reference for the next contributor — how every category of
-violation in the original #157 audit was root-caused and fixed). `check:frame-geometry` works
-identically for responsive overflow (see its own header comment); `check:frame-coverage` is
-covered briefly at the end and fully in [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md).
+`check:frame-geometry` works identically for responsive overflow (see its own header comment); `check:frame-coverage` is covered briefly at the end and fully in [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md).
 
 ### What geometry counts as a "clipped control"
 
-A control the **user cannot bring into the frame** — not merely one whose box currently sticks
-out. Everything inside a deliberately scrollable surface sticks out by design (a `DataTable`'s
-`.ui-data-table-scroll` at 320px, a `FilterBar overflow="scroll"` strip, a tabs list), and those
-controls are reachable: a control entirely out of the scrollport is scrolled fully in the moment
-it takes keyboard focus, and a partially visible one keeps its focus ring on screen (Chromium's
-`CenterIfNeeded` focus alignment does not move a partially visible target — browser behaviour, and
-still inside 2.4.7 / 2.4.11 AA). So an out-of-frame focusable is
-re-probed: the sweep scrolls **only** its user-scrollable ancestors (computed
-`overflow: auto|scroll|overlay` that actually has scroll room — never `hidden`/`clip`, which no
-user can scroll) and re-measures. It is reachable when it then sits fully inside the frame, or
-when it is content wider than its own scroll viewport (a full table row) whose leading edge is
-inside; scroll offsets are restored afterwards. Anything else — no scroll container, a `hidden`
-clipper, or a control the scroll cannot reach — is a real WCAG 2.1.1 / 2.4.7 defect and still
-fails. Fix the frame or the component; do not widen this definition.
+A control the **user cannot bring into the frame** — not merely one whose box currently sticks out. Everything inside a deliberately scrollable surface sticks out by design (a `DataTable`'s `.ui-data-table-scroll` at 320px, a `FilterBar overflow="scroll"` strip, a tabs list), and those controls are reachable: a control entirely out of the scrollport is scrolled fully in the moment it takes keyboard focus, and a partially visible one keeps its focus ring on screen (Chromium's `CenterIfNeeded` focus alignment does not move a partially visible target — browser behaviour, and still inside 2.4.7 / 2.4.11 AA). So an out-of-frame focusable is re-probed: the sweep scrolls **only** its user-scrollable ancestors (computed `overflow: auto|scroll|overlay` that actually has scroll room — never `hidden`/`clip`, which no user can scroll) and re-measures.
 
 ## Why a per-frame gate, not the old hand-picked checks
 
-Before #157, accessibility was checked two ways, both blind to most of the catalog:
-
-- `check:contrast` (`scripts/check-contrast.mjs`) — a hand-picked set of ~6 pages checked for
-  WCAG-AA text contrast. It never saw the other ~100 component frames.
-- `audit:examples` (`pnpm audit docs`) — a static source-regex linter. It can catch a hard-coded
-  hex value but cannot see what actually renders: computed contrast, DOM landmark structure,
-  focus order, or anything a Radix portal produces at runtime.
-
-`check:frame-axe` instead renders **every** `/frame/:id` contract example (the same catalog the
-docs preview serves) in a real headless browser and runs [axe-core](https://github.com/dequelabs/axe-core)
-against the actual DOM — the same class of audit that originally filed #157 (199/200 serious runs
-against the whole catalog), now wired in as a standing CI gate instead of a one-off sweep.
+- `check:contrast` (`scripts/check-contrast.mjs`) — a hand-picked set of ~6 pages checked for WCAG-AA text contrast. It never saw the other ~100 component frames. - `audit:examples` (`pnpm audit docs`) — a static source-regex linter. It can catch a hard-coded hex value but cannot see what actually renders: computed contrast, DOM landmark structure, focus order, or anything a Radix portal produces at runtime.
 
 ## Chrome vs component: two independently-tracked scopes
 
 `check:frame-axe` runs axe **twice** per frame/viewport:
 
-- **Preview chrome** = the zoom / dimension **toolbar** (`.demo-block-toolbar`,
-  `preview/src/demo-block.tsx`). We own this. It **must be 0** — a chrome violation fails the
-  build. The dominant violation in the original audit (199/200 _serious_ runs) was the `100%`
-  zoom preset at **3.93:1** contrast; it is fixed (`#0b57d0` on `#e8f0fe` ≈ 5.5:1) so chrome is
-  AA-clean.
-- **Component / demo** = _everything except the toolbar_ — the rendered example **and its Radix
-  portals** (Dialog / Popover / Sheet / Toast mount on `document.body`, outside the frame box, so
-  scoping by "exclude the toolbar" — not "include the frame box" — keeps portaled demo violations
-  attributed to the component, never to chrome). Owned by the per-component agents. Tracked
-  against a machine-readable baseline.
-
-This separation means component fixes are tracked independently and never mask a chrome
-regression, and a component fix can never accidentally get credited to "chrome is clean."
+- **Preview chrome** = the zoom / dimension **toolbar** (`.demo-block-toolbar`, `preview/src/demo-block.tsx`). We own this. It **must be 0** — a chrome violation fails the build.
 
 ## The component allowlist — and how it shrinks to zero
 
-`scripts/frame-axe.baseline.json` is the allowlist of **pre-existing** component violations, keyed
-`frame → [axe-rule-id]` — the **set of violation types** still firing on each frame (union across
-desktop + mobile). We key on rule _presence_, not exact node counts, because axe counts jitter
-run-to-run as a Radix portal (Dialog/Popover/Sheet) opens or closes — an exact-count gate would be
-flaky. `--update-baseline` unions **two passes** by default (`AXE_RUNS`) so an
-intermittently-mounted overlay is captured. The gate itself:
+`scripts/frame-axe.baseline.json` is the allowlist of **pre-existing** component violations, keyed `frame → [axe-rule-id]` — the **set of violation types** still firing on each frame (union across desktop + mobile). We key on rule _presence_, not exact node counts, because axe counts jitter run-to-run as a Radix portal (Dialog/Popover/Sheet) opens or closes — an exact-count gate would be flaky. `--update-baseline` unions **two passes** by default (`AXE_RUNS`) so an intermittently-mounted overlay is captured.
 
 - **fails** if a frame gains a rule **not** in its baseline set (a genuinely new violation type);
 - **passes** rule sets equal to or a subset of baseline, printing exactly what remains (nothing hidden);
-- prints a **↓ shrink hint** whenever a baseline rule stops firing (a component agent fixed it).
 
-The baseline can **only shrink**. As each component-semantics PR merges (issue #157's per-component
-work), re-snapshot so the ceiling drops and can never grow back:
+The baseline can **only shrink**.
 
 ```sh
 git pull                                   # get the merged component fixes
@@ -93,23 +41,15 @@ pnpm check:frame-axe --update-baseline     # re-snapshot: rule sets only shrink
 git add scripts/frame-axe.baseline.json && git commit -m "chore(a11y): tighten frame-axe baseline"
 ```
 
-When every component frame is clean, `frame-axe.baseline.json` becomes `{ "component": {} }` and
-the gate is fully green with **zero** allowlisted violations — the exit criterion for #157. There
-is **no blanket suppression**: a documented axe false positive would be an explicit per-rule entry
-with a comment, never a mute.
+There is **no blanket suppression**: a documented axe false positive would be an explicit per-rule entry with a comment, never a mute.
 
-**Current state (baseline `generatedAt: 2026-07-13`):** the allowlist holds **12 frames / 7
-distinct axe rules** (down from **101 frames** in the original #157 audit sweep). `0` chrome
-violations, `0` regressions. See [Remaining baseline debt](#remaining-baseline-debt--the-12-frames)
-below for exactly what's left and the path to zero.
+`0` chrome violations, `0` regressions. See [Remaining baseline debt](#remaining-baseline-debt--the-12-frames) below for exactly what's left and the path to zero.
 
 ## Running it locally
 
 ### Prerequisites
 
-`playwright` and `@axe-core/playwright` are **optional peers** — `check:frame-axe` detects a
-missing/unbuilt peer and skips with a warning instead of failing the build (so a browser-less
-environment, e.g. a docs-only contributor, never gets blocked). To actually run it:
+`playwright` and `@axe-core/playwright` are **optional peers** — `check:frame-axe` detects a missing/unbuilt peer and skips with a warning instead of failing the build (so a browser-less environment, e.g. a docs-only contributor, never gets blocked). To actually run it:
 
 ```sh
 pnpm install
@@ -117,10 +57,7 @@ pnpm exec playwright install chromium        # local dev — downloads Playwrigh
 # CI uses: pnpm exec playwright install --with-deps chromium (adds OS-level deps)
 ```
 
-`frame-harness.mjs` looks for a Chromium binary at `PLAYWRIGHT_CHROMIUM_EXECUTABLE`, defaulting to
-a **CI-only** path (`/opt/pw-browsers/chromium-1228/chrome-linux64/chrome`). That path won't exist
-on a laptop — when it's absent the harness falls back to Playwright's own managed browser (from
-`playwright install` above), so a plain local checkout works without setting anything.
+`frame-harness.mjs` looks for a Chromium binary at `PLAYWRIGHT_CHROMIUM_EXECUTABLE`, defaulting to a **CI-only** path (`/opt/pw-browsers/chromium-1228/chrome-linux64/chrome`). That path won't exist on a laptop — when it's absent the harness falls back to Playwright's own managed browser (from `playwright install` above), so a plain local checkout works without setting anything.
 
 ### Commands
 
@@ -133,11 +70,7 @@ on a laptop — when it's absent the harness falls back to Playwright's own mana
 | `AXE_RUNS=3 pnpm check:frame-axe --update-baseline` | More union passes, for a component with flaky portal timing                                       |
 | `pnpm check:frame-axe http://localhost:6008`        | Point at an already-running preview instead of building+serving one                               |
 
-If no preview server answers at the base URL (`http://localhost:6008` by default), the script
-builds one itself: `pnpm preview:build` then serves the static output with `vite preview`
-(`ensurePreviewServer` in `scripts/frame-harness.mjs`) — deterministic and stable under a long
-headless sweep, unlike the dev server's per-request recompilation. If a `pnpm preview` dev server
-(or a remote base) is already reachable, it's reused as-is and never rebuilt.
+If no preview server answers at the base URL (`http://localhost:6008` by default), the script builds one itself: `pnpm preview:build` then serves the static output with `vite preview` (`ensurePreviewServer` in `scripts/frame-harness.mjs`) — deterministic and stable under a long headless sweep, unlike the dev server's per-request recompilation. If a `pnpm preview` dev server (or a remote base) is already reachable, it's reused as-is and never rebuilt.
 
 ### Reading the output
 

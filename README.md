@@ -1,7 +1,6 @@
 # @godxjp/ui
 
-The shared React UI framework for every godx surface (admin, agency portal,
-handheld). Built on shadcn + Radix UI + Tailwind CSS v4. **~98 components**, fully catalogued.
+The shared React UI framework for every godx surface (admin, agency portal, handheld).
 
 - 📦 **npm:** `@godxjp/ui` (published) · MCP server `@godxjp/ui-mcp`
 - 🌐 **Live preview / catalog:** **https://godx-jp.github.io/godxjp-ui/** (components · tokens · props)
@@ -15,23 +14,9 @@ npm i @godxjp/ui
 
 ## Role & boundary — read this first
 
-This package is **the single source of UI truth**. It is shared, versioned
-infrastructure, which means two things are non-negotiable:
+This package is **the single source of UI truth**. It is shared, versioned infrastructure, which means two things are non-negotiable:
 
-- **Editing it requires explicit session permission** (the hard gate — see
-  [DEVELOPMENT.md](./docs/DEVELOPMENT.md#0-what-this-package-is--and-the-boundary-it-must-keep)).
-  By default the package is off-limits; consumers _compose_ its primitives, they
-  don't fork them.
-- **It is generic and presentational only.** No app i18n (`useTranslation`), no
-  Inertia (`router`/`<Form>`), no Wayfinder routes, no business entities or domain
-  logic, no product copy, no raw colors. Those are **consumer-layer** concerns — they
-  must never leak into this package. The framework ships **its own theme**, so a
-  consumer imports the styles and needs **zero** extra theme configuration.
-- **The root export is runtime-neutral.** Importing `@godxjp/ui` (or its primitive
-  subpaths) forces **no** foreign runtime — React Router, TanStack Query, react-hook-form
-  and the i18n singleton live ONLY on their adapter subpaths (`./form`, `./query`, `./app`).
-  A CI guard (`pnpm check:core-isolation`) traces the root dist graph and fails the build if
-  an adapter ever leaks into the root barrel.
+- **Editing it requires explicit session permission** (the hard gate — see [DEVELOPMENT.md](./docs/DEVELOPMENT.md#0-what-this-package-is--and-the-boundary-it-must-keep)). By default the package is off-limits; consumers _compose_ its primitives, they don't fork them. - **It is generic and presentational only.** No app i18n (`useTranslation`), no Inertia (`router`/`<Form>`), no Wayfinder routes, no business entities or domain logic, no product copy, no raw colors. Those are **consumer-layer** concerns — they must never leak into this package.
 
 > Deciding whether a component belongs here vs. app-level? Use the
 > **`godx-ui-component-placement`** skill.
@@ -56,10 +41,7 @@ examples/        *.preview.tsx — Storybook-style stories (rendered by the prev
 preview/         The preview app (vite, :6008) → also deployed to GitHub Pages
 ```
 
-A value is defined **once** as a CSS var (`--primary`), mapped to a utility in the
-`@theme` block (`--color-primary: hsl(var(--primary))`), and consumed as `bg-primary`.
-Components emit `data-slot` / `data-*`; the look lives in `styles/*-layout.css`. See
-[DEVELOPMENT.md §1](./docs/DEVELOPMENT.md#1-architecture--the-layers-bottom-up).
+A value is defined **once** as a CSS var (`--primary`), mapped to a utility in the `@theme` block (`--color-primary: hsl(var(--primary))`), and consumed as `bg-primary`. Components emit `data-slot` / `data-*`; the look lives in `styles/*-layout.css`. See [DEVELOPMENT.md §1](./docs/DEVELOPMENT.md#1-architecture--the-layers-bottom-up).
 
 ---
 
@@ -81,21 +63,16 @@ Components emit `data-slot` / `data-*`; the look lives in `styles/*-layout.css`.
 | **shadcn paths**   | `@godxjp/ui/ui`           | Thin re-exports for shadcn-style imports (tree-shakeable)                                                                                                                                                                               |
 | **Admin (legacy)** | `@godxjp/ui/admin`        | Compound admin exports                                                                                                                                                                                                                  |
 
-> **Renamed / removed** — use the new names; the old aliases were **removed in v11** (they are no
-> longer exported at runtime). See the [migration table](#migrating-6--11) below.
-
 ---
 
 ## Migrating 6 → 11
 
-The v11 line dropped the deprecated compatibility aliases entirely — they are no longer exported
-at runtime, and their leftover `*Prop` types and README references have now been removed too (issue
-#99). Replace these at the call site:
+Replace these at the call site:
 
 | Removed / renamed (≤ v8)                  | Replacement (v11)                                   |
 | ----------------------------------------- | --------------------------------------------------- |
-| `Stack`                                   | `Flex direction="col"` (the default direction)      |
-| `Inline`                                  | `Flex direction="row"`                              |
+| `Stack`                                   | `Flex direction="col"`                              |
+| `Inline`                                  | `Flex` (default `direction="row"`)                  |
 | `Autocomplete`                            | `Select` with `showSearch` + `options`              |
 | `CountrySelect`                           | `AppSettingPicker kind="country"`                   |
 | `LocalePicker`                            | `AppSettingPicker kind="language"`                  |
@@ -110,20 +87,13 @@ at runtime, and their leftover `*Prop` types and README references have now been
 | `StatusBadge`                             | `Badge` (`status` / `tone`)                         |
 | `DialogConfirm` / `Dialog mode="confirm"` | `AlertDialog`                                       |
 
-The full data-grid feature set (sort / search / column visibility / paging) is now
-built into the one `DataTable` (`@godxjp/ui/data-display`) — TanStack-powered, with
-the lean `data` + `columns` API for the common case and the compound parts
-(`DataTable.Search` / `.ViewOptions` / `.Pagination` …) for the rich chrome. The
-separate `@godxjp/ui/data-grid` (`DataGrid`) subpath has been merged in and removed.
+The full data-grid feature set (sort / search / column visibility / paging) is now built into the one `DataTable` (`@godxjp/ui/data-display`) — TanStack-powered, with the lean `data` + `columns` API for the common case and the compound parts (`DataTable.Search` / `.ViewOptions` / `.Pagination` …) for the rich chrome. The separate `@godxjp/ui/data-grid` (`DataGrid`) subpath has been merged in and removed.
 
 ---
 
 ## Consumer setup — theme is self-contained
 
-The framework ships colors, the type scale, the wa-iro palette, and (opt-in)
-bundled fonts (M PLUS 2 + Noto Sans JP fallback via `@fontsource`). A consumer's entire
-styling surface is **one import + content sources** — no `:root` overrides, no
-font `<link>`:
+The framework ships colors, the type scale, the wa-iro palette, and (opt-in) bundled fonts (M PLUS 2 + Noto Sans JP fallback via `@fontsource`). A consumer's entire styling surface is **one import + content sources** — no `:root` overrides, no font `<link>`:
 
 ```css
 /* resources/css/app.css */
@@ -134,9 +104,7 @@ font `<link>`:
 
 ### Slim build — ship only the CSS you use
 
-`@godxjp/ui/styles` is the zero-config all-in-one (every component's CSS +
-bundled fonts). Managing fonts yourself (next/font, a system stack, an extension
-that must not ship font files)? Load the same layers without the faces:
+`@godxjp/ui/styles` is the zero-config all-in-one (every component's CSS + bundled fonts). Managing fonts yourself (next/font, a system stack, an extension that must not ship font files)? Load the same layers without the faces:
 
 ```css
 @import "@godxjp/ui/styles/core"; /* every component layer, no @font-face */
@@ -150,9 +118,7 @@ that must not ship font files)? Load the same layers without the faces:
 
 ## Golden ratio (φ ≈ 1.618)
 
-One token `--phi-unit` drives page/section/card spacing; micro control gaps use the
-4px grid. Density (`compact` | `default` | `comfortable`) retunes `--phi-unit` with
-control + table heights together.
+One token `--phi-unit` drives page/section/card spacing; micro control gaps use the 4px grid. Density (`compact` | `default` | `comfortable`) retunes `--phi-unit` with control + table heights together.
 
 | App API                           | φ level             |
 | --------------------------------- | ------------------- |
@@ -184,10 +150,7 @@ pnpm release --ui <patch|minor|major> --mcp <…|skip>   # publish lib + MCP in 
 
 ### Runtime visual audit (Playwright + axe-core)
 
-`scripts/visual-audit.mjs` drives a **real browser** over a running app and runs axe-core plus
-computed-style heuristics (target size, OKLCH accent chroma, rendered emoji, mis-laid-out alerts) —
-catching what the static `pnpm audit` (source regexes) can't see. Playwright + `@axe-core/playwright`
-are **optional peers**, installed only by apps that run the audit.
+`scripts/visual-audit.mjs` drives a **real browser** over a running app and runs axe-core plus computed-style heuristics (target size, OKLCH accent chroma, rendered emoji, mis-laid-out alerts) — catching what the static `pnpm audit` (source regexes) can't see. Playwright + `@axe-core/playwright` are **optional peers**, installed only by apps that run the audit.
 
 ```bash
 # from a consumer, against its running dev/preview server:
@@ -196,30 +159,18 @@ node node_modules/@godxjp/ui/scripts/visual-audit.mjs http://localhost:5173 --fo
 node node_modules/@godxjp/ui/scripts/visual-audit.mjs --strict http://localhost:5173       # CI gate
 ```
 
-**Tested peer range** (pin one of these): `playwright >=1.55 <2` (tested 1.61.1) ·
-`@axe-core/playwright >=4.10 <5` (tested 4.12.1) · `axe-core >=4.10 <5` (tested 4.12.1). Playwright
-1.55+ is required for the `browser.newContext()` → `context.newPage()` flow axe expects; older
-`browser.newPage()` throws _"Please use browser.newContext()"_.
+**Tested peer range** (pin one of these): `playwright >=1.55 <2` (tested 1.61.1) · `@axe-core/playwright >=4.10 <5` (tested 4.12.1) · `axe-core >=4.10 <5` (tested 4.12.1). Playwright 1.55+ is required for the `browser.newContext()` → `context.newPage()` flow axe expects; older `browser.newPage()` throws _"Please use browser.newContext()"_.
 
-`--format json` **always** emits valid JSON — even on bootstrap failure — with a `status`
-(`ok` · `partial` · `error`) that separates **infrastructure errors** (missing peers, page won't
-load, axe won't inject → `errors[]`, `summary: null`/flagged) from **product findings** (`findings[]`).
-A tool failure can therefore never be misread as "zero violations". `pnpm check:visual-audit` is the
-CI smoke test: it serves a fixture page tripping all five rule families and asserts each one fires.
+`--format json` **always** emits valid JSON — even on bootstrap failure — with a `status` (`ok` · `partial` · `error`) that separates **infrastructure errors** (missing peers, page won't load, axe won't inject → `errors[]`, `summary: null`/flagged) from **product findings** (`findings[]`). A tool failure can therefore never be misread as "zero violations". `pnpm check:visual-audit` is the CI smoke test: it serves a fixture page tripping all five rule families and asserts each one fires.
 
-This repo ships two packages — `@godxjp/ui` (this dir) and `@godxjp/ui-mcp` (`mcp/`). They keep
-separate version lines but release together via `pnpm release`; see DEVELOPMENT.md §6.
-The **preview app auto-deploys to [GitHub Pages](https://godx-jp.github.io/godxjp-ui/)** on every push to `main`
-(`.github/workflows/preview-pages.yml`) — which doubles as the CI gate for `preview:build`.
+This repo ships two packages — `@godxjp/ui` (this dir) and `@godxjp/ui-mcp` (`mcp/`). They keep separate version lines but release together via `pnpm release`; see DEVELOPMENT.md §6. The **preview app auto-deploys to [GitHub Pages](https://godx-jp.github.io/godxjp-ui/)** on every push to `main` (`.github/workflows/preview-pages.yml`) — which doubles as the CI gate for `preview:build`.
 
-→ **[docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)** is the contributor guideline (the
-boundary, the layers, how to add/extend a component, verification).
+→ **[docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)** is the contributor guideline (the boundary, the layers, how to add/extend a component, verification).
 
 ## Docs index
 
 - [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) — contributor guideline (start here to edit the package)
 - [docs/STANDARDS-vocabulary-tokens.md](./docs/STANDARDS-vocabulary-tokens.md) — the 22 vocabulary + token rules (CI-enforced)
-- [docs/roadmap/post-7.0.0.md](./docs/roadmap/post-7.0.0.md) — shipped log (7.0→9.2) + key decisions
 - [docs/COMPONENTS.md](./docs/COMPONENTS.md) · [docs/TOKENS.md](./docs/TOKENS.md) · [docs/SPACING.md](./docs/SPACING.md)
 - [docs/PROPS-VOCABULARY.md](./docs/PROPS-VOCABULARY.md) · [docs/PROPS-REGISTRY.md](./docs/PROPS-REGISTRY.md)
 - [docs/DATETIME.md](./docs/DATETIME.md) · [docs/FORMS.md](./docs/FORMS.md) · [docs/TESTING.md](./docs/TESTING.md)

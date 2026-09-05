@@ -87,57 +87,58 @@ export function AppShell({
   // exists to fix (gh#165). When a drawer exists the <header> is therefore still rendered, holding
   // the trigger and nothing else; CSS (`[data-topbar="none"] > .app-topbar`) keeps it out of the
   // layout entirely above the breakpoint and brings it back below it.
-  const bar = !hasTopbarContent && !hasDrawer ? null : (
-    <header className="app-topbar ui-scale-fixed" aria-label={t("layout.appShell.headerLabel")}>
-      {hasDrawer && (
-        <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
-          <SheetTrigger asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="app-mobile-nav-trigger hidden max-[900px]:inline-flex"
-              aria-label={t("layout.appShell.openNav")}
-              aria-haspopup="dialog"
+  const bar =
+    !hasTopbarContent && !hasDrawer ? null : (
+      <header className="app-topbar ui-scale-fixed" aria-label={t("layout.appShell.headerLabel")}>
+        {hasDrawer && (
+          <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
+            <SheetTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="app-mobile-nav-trigger hidden max-[900px]:inline-flex"
+                aria-label={t("layout.appShell.openNav")}
+                aria-haspopup="dialog"
+              >
+                {/* The hamburger glyph is DELIBERATELY larger than this `size="sm"` Button's own
+                 * icon size (--control-icon-size-sm, 0.875rem): on a phone it is the only
+                 * navigation affordance there is. Passed as a utility reading the knob, not as a
+                 * `.app-mobile-nav-trigger svg` rule, for the same reason as
+                 * --app-shell-mobile-nav-inset below: shell-layout.css is imported BEFORE
+                 * control.css and both live in `@layer components`, so a rule at the identical
+                 * (0,1,1) specificity of `.ui-button--sm svg` would silently LOSE and the glyph
+                 * would shrink back to 0.875rem. */}
+                <Menu className="size-[var(--app-shell-mobile-nav-icon-size)]" aria-hidden="true" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="left"
+              width="var(--app-shell-mobile-nav-width)"
+              className="app-mobile-nav-drawer"
+              overlayClassName="app-mobile-nav-overlay"
             >
-              {/* The hamburger glyph is DELIBERATELY larger than this `size="sm"` Button's own
-               * icon size (--control-icon-size-sm, 0.875rem): on a phone it is the only
-               * navigation affordance there is. Passed as a utility reading the knob, not as a
-               * `.app-mobile-nav-trigger svg` rule, for the same reason as
-               * --app-shell-mobile-nav-inset below: shell-layout.css is imported BEFORE
-               * control.css and both live in `@layer components`, so a rule at the identical
-               * (0,1,1) specificity of `.ui-button--sm svg` would silently LOSE and the glyph
-               * would shrink back to 0.875rem. */}
-              <Menu className="size-[var(--app-shell-mobile-nav-icon-size)]" aria-hidden="true" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent
-            side="left"
-            width="var(--app-shell-mobile-nav-width)"
-            className="app-mobile-nav-drawer"
-            overlayClassName="app-mobile-nav-overlay"
-          >
-            <SheetHeader title={mobileNavLabel ?? t("layout.appShell.navLabel")} />
-            {/* The drawer body is edge-to-edge: the nav it hosts (the <Sidebar> node by default)
-             * owns its own inset via --sidebar-nav-scroll-padding, so stacking SheetBody's
-             * generic chrome inset (--sheet-pad-x = 24px) on top of it double-padded every row
-             * — 32px of dead space per side on a ~293px drawer (gh#211). The inset is a
-             * documented knob (--app-shell-mobile-nav-inset); a custom `mobileNav` that wants
-             * the full chrome inset sets it to var(--space-6) once in the service theme.
-             * Passed as a utility (not CSS) because *-layout.css is `@layer components`, where
-             * SheetBody's own px-* utility would win. */}
-            <SheetBody
-              className="app-mobile-nav-body px-[var(--app-shell-mobile-nav-inset)]"
-              onClick={handleDrawerClick}
-            >
-              {drawerNav}
-            </SheetBody>
-          </SheetContent>
-        </Sheet>
-      )}
-      {hasTopbarContent && resolvedTopbar}
-    </header>
-  );
+              <SheetHeader title={mobileNavLabel ?? t("layout.appShell.navLabel")} />
+              {/* The drawer body is edge-to-edge: the nav it hosts (the <Sidebar> node by default)
+               * owns its own inset via --sidebar-nav-scroll-padding, so stacking SheetBody's
+               * generic chrome inset (--sheet-pad-x = 24px) on top of it double-padded every row
+               * — 32px of dead space per side on a ~293px drawer (gh#211). The inset is a
+               * documented knob (--app-shell-mobile-nav-inset); a custom `mobileNav` that wants
+               * the full chrome inset sets it to var(--space-6) once in the service theme.
+               * Passed as a utility (not CSS) because *-layout.css is `@layer components`, where
+               * SheetBody's own px-* utility would win. */}
+              <SheetBody
+                className="app-mobile-nav-body px-[var(--app-shell-mobile-nav-inset)]"
+                onClick={handleDrawerClick}
+              >
+                {drawerNav}
+              </SheetBody>
+            </SheetContent>
+          </Sheet>
+        )}
+        {hasTopbarContent && resolvedTopbar}
+      </header>
+    );
 
   return (
     <div

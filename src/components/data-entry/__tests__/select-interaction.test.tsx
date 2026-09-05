@@ -236,8 +236,7 @@ describe("Select — open-state ring (gh#101 regression)", () => {
       </Select>,
     );
     const trigger = screen.getByRole("combobox");
-    expect(trigger.className).toContain("data-[state=open]:ring-[3px]");
-    expect(trigger.className).toContain("data-[state=open]:border-ring");
+    expect(trigger.className).toContain("ui-control-trigger");
 
     expect(trigger).toHaveAttribute("data-state", "closed");
     await user.click(trigger);

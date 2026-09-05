@@ -1,11 +1,6 @@
----
-title: Overview
-viewport: 1440x900
----
+--- title: Overview viewport: 1440x900 ---
 
-The long-form **legal / policy document** surface — terms of service, privacy policy, DPA, cookie
-policy, SLA, EULA. It renders semantic `article` / `nav` / `section` landmarks and **real anchors**,
-while every word of legal text stays owned by the consumer (`sections`).
+The long-form **legal / policy document** surface — terms of service, privacy policy, DPA, cookie policy, SLA, EULA. It renders semantic `article` / `nav` / `section` landmarks and **real anchors**, while every word of legal text stays owned by the consumer (`sections`).
 
 ## What the shell owns (so no app re-implements it)
 
@@ -23,10 +18,7 @@ while every word of legal text stays owned by the consumer (`sections`).
 
 ## Breakpoint is a CONTAINER query, not a viewport query
 
-The shell declares its own query container (`container: legal-document / inline-size`, the
-`SplitPane` precedent — gh#165), so the one-column ⇄ two-column decision comes from the **shell's own
-width**. Dropped into a narrow pane on a 1440px screen it correctly stays single-column; given a wide
-pane on a small screen it can split. See the three viewport fixtures under **Examples**.
+Dropped into a narrow pane on a 1440px screen it correctly stays single-column; given a wide pane on a small screen it can split. See the three viewport fixtures under **Examples**.
 
 ## API
 
@@ -49,9 +41,7 @@ pane on a small screen it can split. See the three viewport fixtures under **Exa
 
 ## Theming
 
-Every value is a `--legal-document-*` component token — the measure, the rail width/offset, the
-section rhythm, the body leading, the active-entry colours (role-mirror knobs, so a scoped
-`[data-tenant]` / `.dark` override reaches them). Dividers default to `none` (rule #44); opt in with
+Every value is a `--legal-document-*` component token — the measure, the rail width/offset, the section rhythm, the body leading, the active-entry colours (role-mirror knobs, so a scoped `[data-tenant]` / `.dark` override reaches them).
 
 ```css
 --legal-document-toc-border: 1px solid hsl(var(--border));

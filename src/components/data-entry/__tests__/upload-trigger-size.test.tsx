@@ -12,15 +12,21 @@ import { Upload } from "../upload";
  */
 describe("Upload button trigger", () => {
   it("keeps its label at a text size", () => {
-    render(<Upload variant="button" triggerSize="sm">Attach file</Upload>);
-
-    expect(screen.getByRole("button", { name: "Attach file" })).toHaveTextContent(
-      "Attach file",
+    render(
+      <Upload variant="button" triggerSize="sm">
+        Attach file
+      </Upload>,
     );
+
+    expect(screen.getByRole("button", { name: "Attach file" })).toHaveTextContent("Attach file");
   });
 
   it("drops the label at an icon size and keeps the accessible name", () => {
-    render(<Upload variant="button" triggerSize="icon-sm">Attach file</Upload>);
+    render(
+      <Upload variant="button" triggerSize="icon-sm">
+        Attach file
+      </Upload>,
+    );
 
     const trigger = screen.getByRole("button", { name: "Attach file" });
 
@@ -33,8 +39,6 @@ describe("Upload button trigger", () => {
     // The default has to stay what every existing caller already renders.
     render(<Upload variant="button">Attach file</Upload>);
 
-    expect(screen.getByRole("button", { name: "Attach file" })).toHaveTextContent(
-      "Attach file",
-    );
+    expect(screen.getByRole("button", { name: "Attach file" })).toHaveTextContent("Attach file");
   });
 });

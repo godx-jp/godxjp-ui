@@ -1,28 +1,18 @@
 # Development Guideline — `@godxjp/ui`
 
-How to work **on** the design system (not just with it). If you only consume the
-framework from the app, read [the app-developer rules](../../../.claude/skills/frontend-design/rules/ui-standardization.md)
-instead — this file is for people **editing `packages/godx-ui/`**.
+How to work **on** the design system (not just with it). If you only consume the framework from the app, read [the ten consumer rules](./CONSUMER-RULES.md) instead — this file is for people **editing `packages/godx-ui/`**.
 
 ---
 
 ## 0. What this package IS — and the boundary it must keep
 
-`@godxjp/ui` is **the** UI framework for every godx surface (admin, agency
-portal, handheld). It is shared, versioned infrastructure: one change here ripples
-to every screen and every consumer. Two consequences:
+`@godxjp/ui` is **the** UI framework for every godx surface (admin, agency portal, handheld). It is shared, versioned infrastructure: one change here ripples to every screen and every consumer. Two consequences:
 
-1. **Editing it needs explicit session permission** — the hard gate in
-   [ui-standardization §0](../../../.claude/skills/frontend-design/rules/ui-standardization.md#0-changing-packagesgodx-ui-requires-explicit-permission-hard-gate).
-   Treat the package as off-limits by default.
-2. **It is generic and presentational only.** The framework knows about _tokens,
-   layout, accessibility, and interaction_ — never about the app's data, routes,
-   language files, or business rules.
+1. **Editing it needs explicit session permission** — the hard gate in [CLAUDE.md](../CLAUDE.md) (MANDATORY: read the component skill before touching UI). Treat the package as off-limits by default. 2. **It is generic and presentational only.** The framework knows about _tokens, layout, accessibility, and interaction_ — never about the app's data, routes, language files, or business rules.
 
 ### The hard boundary — consumer-layer concerns MUST NOT leak in
 
-A component in this package may **not** import or assume any of the following. These
-belong to the **consumer** (the app), which composes framework primitives around them:
+A component in this package may **not** import or assume any of the following. These belong to the **consumer** (the app), which composes framework primitives around them:
 
 | ❌ Never inside `packages/godx-ui/`                              | ✅ Where it belongs                                                 |
 | ---------------------------------------------------------------- | ------------------------------------------------------------------- |
@@ -39,9 +29,7 @@ belong to the **consumer** (the app), which composes framework primitives around
 > app-level (`resources/js/components/admin/…`) and have it _compose_ framework
 > primitives. See the **`godx-ui-component-placement`** skill for the full decision.
 
-The framework ships its **own theme** (colors, fonts, type scale, wa-iro palette) in
-`src/tokens/foundation.css`, so consumers import `@godxjp/ui/styles` and need
-**zero** extra theme config. Do not push theme decisions back onto the consumer.
+The framework ships its **own theme** (colors, fonts, type scale, wa-iro palette) in `src/tokens/foundation.css`, so consumers import `@godxjp/ui/styles` and need **zero** extra theme config. Do not push theme decisions back onto the consumer.
 
 ---
 
@@ -62,16 +50,11 @@ docs/primitives/   <component>/index.tsx demo + examples/ + generated .md
 preview/           The preview app (vite) on :6008 that renders examples + docs
 ```
 
-**Token → utility flow:** a value is defined once as a CSS var in
-`tokens/foundation.css` (e.g. `--primary`), mapped to a Tailwind utility in the
-`@theme` block of `styles/index.css` (`--color-primary: hsl(var(--primary))`), and
-consumed as `bg-primary` / `hsl(var(--primary))`. Never skip a layer with a literal.
+**Token → utility flow:** a value is defined once as a CSS var in `tokens/foundation.css` (e.g. `--primary`), mapped to a Tailwind utility in the `@theme` block of `styles/index.css` (`--color-primary: hsl(var(--primary))`), and consumed as `bg-primary` / `hsl(var(--primary))`. Never skip a layer with a literal.
 
 ### The component pattern — markup emits slots, CSS owns styling
 
-Components render semantic structure and `data-slot` / `data-*` flags; **the spacing,
-padding, and chrome live in `src/styles/*-layout.css`**, keyed on those slots. This
-keeps density and theming centralized.
+Components render semantic structure and `data-slot` / `data-*` flags; **the spacing, padding, and chrome live in `src/styles/*-layout.css`**, keyed on those slots. This keeps density and theming centralized.
 
 ```tsx
 // component: emits slots + flags only
@@ -89,20 +72,15 @@ keeps density and theming centralized.
 }
 ```
 
-Prefer this over hardcoding Tailwind padding inside the component. Use Tailwind
-utility classes for **one-off layout** (flex/grid/gap), not for re-theming.
+Prefer this over hardcoding Tailwind padding inside the component. Use Tailwind utility classes for **one-off layout** (flex/grid/gap), not for re-theming.
 
 ### Density
 
-One knob — `.ui-density-{compact,default,comfortable}` in `styles/density.css` —
-retunes `--phi-unit`, control heights, and table row heights together. Components
-read the resulting tokens; never branch on density in component JS.
+One knob — `.ui-density-{compact,default,comfortable}` in `styles/density.css` — retunes `--phi-unit`, control heights, and table row heights together. Components read the resulting tokens; never branch on density in component JS.
 
 ### The `ui/` layer
 
-`src/components/ui/*` are thin **re-exports** of the canonical implementation
-(`export * from "../data-display/card"`). They exist for shadcn-style import paths.
-Edit the canonical file under its group; the `ui/` path follows automatically.
+`src/components/ui/*` are thin **re-exports** of the canonical implementation (`export * from "../data-display/card"`). They exist for shadcn-style import paths. Edit the canonical file under its group; the `ui/` path follows automatically.
 
 ---
 
@@ -110,34 +88,15 @@ Edit the canonical file under its group; the `ui/` path follows automatically.
 
 Work in this order; only advance when the previous step genuinely can't express the need:
 
-1. **Use** an existing primitive.
-2. **Compose** primitives (Card + Field + Stack…).
-3. **Extend** an existing component — add a prop/slot (e.g. `labelAddon`, `accent`).
-   Prefer this: one more prop beats one more component.
-4. **Create** a new component — last resort. State _why_ 1–3 fail before writing it,
-   then run the **`godx-ui-component-placement`** decision to confirm it belongs here
-   at all (vs. app-level).
+1. **Use** an existing primitive. 2. **Compose** primitives (Card + FormField + Flex…). 3. **Extend** an existing component — add a prop/slot (e.g. `labelAddon`, `accent`). Prefer this: one more prop beats one more component. 4. **Create** a new component — last resort.
 
-Document the decision (which promotion criteria it met) so review can check it —
-see [ui-standardization §2a](../../../.claude/skills/frontend-design/rules/ui-standardization.md#2a-creating-a-new-component--last-resort-then-decide-its-home).
+Document the decision (which promotion criteria it met) so review can check it — see [COMPOSITION-VS-COMPONENT.md](./COMPOSITION-VS-COMPONENT.md).
 
 ---
 
 ## 3. Rules for framework code
 
-- **Semantic tokens only.** No raw hex / `rgb()` / `hsl()` literals, no palette
-  utilities (`bg-blue-500`), no `dark:` overrides — tokens adapt automatically.
-  Structural literals (a `3px` accent stripe, `1px` borders) are fine; _color/size
-  scale_ values come from tokens.
-- **No app coupling** (the §0 boundary table above).
-- **Props live in `src/props/`** — atomic concepts in `vocabulary/`, per-component
-  interfaces in `components/`. Check `registry.ts` + `PROP_ALIASES_FORBIDDEN` before
-  inventing a prop name. Never inline a prop interface in a `.tsx`.
-- **Accessibility built-in** — label/control wiring, `aria-*`, focus rings, roles.
-  The component sizes its own icons; consumers don't pass icon sizing.
-- **Mobile-first** — base styles are the phone; `sm:`/`md:`/`lg:` only scale up.
-- **i18n is the consumer's job** — strings arrive as props. The framework's own
-  `src/i18n` is for built-in control affordances only, with en/ja/vi parity.
+- **Semantic tokens only.** No raw hex / `rgb()` / `hsl()` literals, no palette utilities (`bg-blue-500`), no `dark:` overrides — tokens adapt automatically. Structural literals (a `3px` accent stripe, `1px` borders) are fine; _color/size scale_ values come from tokens. - **No app coupling** (the §0 boundary table above). - **Props live in `src/props/`** — atomic concepts in `vocabulary/`, per-component interfaces in `components/`. Check `registry.ts` + `PROP_ALIASES_FORBIDDEN` before inventing a prop name.
 
 ---
 
@@ -145,13 +104,7 @@ see [ui-standardization §2a](../../../.claude/skills/frontend-design/rules/ui-s
 
 A change isn't done until its documentation reflects it:
 
-1. **Preview story** — `examples/<group>/<Component>.preview.tsx` (Storybook-style).
-   New props get a story (see `examples/data-display/Card.preview.tsx`:
-   Surfaces / Density / AccentEdges).
-2. **Docs demo** — `docs/primitives/<group>/<component>/index.tsx` shows the new
-   capability; `examples/` holds focused per-feature demos.
-3. **Regenerate props docs** — `pnpm docs:sync-primitives` regenerates the `.md`
-   from source. Run it after prop changes so the tables stay accurate.
+1. **Preview story** — `examples/<group>/<Component>.preview.tsx` (Storybook-style). New props get a story (see `examples/data-display/Card.preview.tsx`: Surfaces / Density / AccentEdges). 2. **Docs demo** — `docs/primitives/<group>/<component>/index.tsx` shows the new capability; `examples/` holds focused per-feature demos. 3. **Regenerate props docs** — `pnpm docs:sync-primitives` regenerates the `.md` from source. Run it after prop changes so the tables stay accurate.
 
 > Docs are mid-migration to the `<component>/index.tsx (+ examples/)` shape. Do **not**
 > resurrect flat `docs/primitives/<component>.tsx` demos — they were dead orphans and
@@ -170,50 +123,27 @@ pnpm audit                # godxjp-ui-audit — 0 errors for touched files
 pnpm check:mcp-sync       # MCP registry ↔ library export drift guard
 ```
 
-`pnpm verify` and `pnpm verify:release` run these together (verify:release also builds).
-`verify:release` (and CI on every PR) additionally runs `pnpm check:frame-axe` — a real-Chromium
-axe sweep over every `/frame/**` contract example. It needs `pnpm exec playwright install
-chromium` once locally; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run/scope it, read
-the evidence, and regenerate its baseline after an accessibility fix.
+`pnpm verify` and `pnpm verify:release` run these together (verify:release also builds). It needs `pnpm exec playwright install chromium` once locally; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run/scope it, read the evidence, and regenerate its baseline after an accessibility fix.
 
-All gates are **self-contained** — no internal/external tooling package required.
-The eslint, prettier, and vitest setup live in the package (`eslint.config.js`,
-`prettier.config.mjs`, `vitest.config.ts`, `src/test/`), so a fresh checkout can
-lint/type-check/test without anything beyond the declared devDependencies.
+All gates are **self-contained** — no internal/external tooling package required. The eslint, prettier, and vitest setup live in the package (`eslint.config.js`, `prettier.config.mjs`, `vitest.config.ts`, `src/test/`), so a fresh checkout can lint/type-check/test without anything beyond the declared devDependencies.
 
-The app side additionally runs **`npm run ui:audit`** (the design-system linter) and
-must report 0 errors for touched files.
+The app side additionally runs **`npm run ui:audit`** (the design-system linter) and must report 0 errors for touched files.
 
 ---
 
 ## 6. Releasing — the lib and its MCP, in lockstep
 
-This repo publishes **two packages** that must agree: `@godxjp/ui` (the browser component
-library, root `package.json`) and `@godxjp/ui-mcp` (the Node MCP server that tells agents how to
-use it, `mcp/`). They stay **separate** on purpose — the MCP pulls the MCP SDK, which has no
-business in a consumer's browser bundle — but they ship on **one shared version line** so a
-catalog version always tells you exactly which library build it describes.
+This repo publishes **two packages** that must agree: `@godxjp/ui` (the browser component library, root `package.json`) and `@godxjp/ui-mcp` (the Node MCP server that tells agents how to use it, `mcp/`).
 
 ### The lockstep contract (issue #140)
 
-A consumer that installs `@godxjp/ui@16.10.x` but points its agent at `@godxjp/ui-mcp@16.7.x`
-gets prop/token/pattern guidance for a build it never installed. To make that impossible, the two
-packages carry **mutual, machine-readable compatibility metadata**:
+A consumer that installs `@godxjp/ui@16.10.x` but points its agent at `@godxjp/ui-mcp@16.7.x` gets prop/token/pattern guidance for a build it never installed. To make that impossible, the two packages carry **mutual, machine-readable compatibility metadata**:
 
 - root `package.json` → `"godxUiMcp": "<mcp version>"` — the catalog version this library ships with.
 - `mcp/package.json` → `"version"` (identical to the library) **and** `"godxUiCompatibility": "<maj>.<min>.x"` — the UI minor this catalog describes.
 - the MCP exposes it at runtime: `serverInfo.version` == package version, the `godx-ui://compatibility` resource, and the `check_compatibility` tool (an agent calls it with the app's installed `@godxjp/ui` version to get a match/mismatch verdict).
 
-Three guards keep them honest, all wired into `verify` / `verify:release` **and** the
-`release-integrity` CI workflow (runs on every PR, so drift fails long before publish):
-
-- **Lockstep guard** (`pnpm check:mcp-lockstep` → `scripts/check-release-lockstep.mjs`) — asserts
-  ui.version == mcp.version, ui.godxUiMcp == mcp.version, and mcp.godxUiCompatibility covers the UI
-  version. Any split fails CI.
-- **Catalog drift guard** (`pnpm check:mcp-sync` / `check:mcp-orphans`) — every component the MCP
-  catalogs must still be a real library export, and vice-versa.
-- **Packed-artifact guard** (`release-integrity` CI, step 4) — packs both tarballs and re-asserts
-  lockstep on the **packed** manifests, i.e. the bytes that would actually ship.
+- **Lockstep guard** (`pnpm check:mcp-lockstep` → `scripts/check-release-lockstep.mjs`) — asserts ui.version == mcp.version, ui.godxUiMcp == mcp.version, and mcp.godxUiCompatibility covers the UI version. Any split fails CI. - **Catalog drift guard** (`pnpm check:mcp-sync` / `check:mcp-orphans`) — every component the MCP catalogs must still be a real library export, and vice-versa. - **Packed-artifact guard** (`release-integrity` CI, step 4) — packs both tarballs and re-asserts lockstep on the **packed** manifests, i.e. the bytes that would actually ship.
 
 ### Coordinated release (`pnpm release`)
 
@@ -222,34 +152,22 @@ pnpm release --ui minor --mcp sync   # bump ui, republish mcp at the SAME new ve
 pnpm release --mcp sync              # mcp-only fix at the current ui version
 ```
 
-`--ui <bump>` **requires** `--mcp sync` (the tool refuses a ui-only release) so the two packages
-can never split. On a bump the tool refreshes both compatibility fields, runs `verify:release`
-(incl. all three guards) before publishing the lib, `npm publish`es each package, re-runs the
-lockstep check as a final fail-closed gate, then commits the version bumps. Push the commit when
-ready.
+`--ui <bump>` **requires** `--mcp sync` (the tool refuses a ui-only release) so the two packages can never split. On a bump the tool refreshes both compatibility fields, runs `verify:release` (incl. all three guards) before publishing the lib, `npm publish`es each package, re-runs the lockstep check as a final fail-closed gate, then commits the version bumps.
 
 ### Recovery from a partial publish
 
-If a run publishes `@godxjp/ui` but the `@godxjp/ui-mcp` publish fails (npm hiccup, expired token),
-the two are momentarily split on npm. Recover:
+If a run publishes `@godxjp/ui` but the `@godxjp/ui-mcp` publish fails (npm hiccup, expired token), the two are momentarily split on npm. Recover:
 
-1. Fix the cause (e.g. re-auth `npm whoami`), keep the working tree at the just-published version.
-2. Re-run **only** the MCP half at that same version:
-   `pnpm --dir mcp build && npm --prefix mcp version <ui-version> --allow-same-version && npm --prefix mcp publish --access public`.
-3. Verify parity: `pnpm check:mcp-lockstep` locally, then decode a real MCP `initialize` — its
-   `serverInfo.version` must equal the published `@godxjp/ui` version.
+1. Fix the cause (e.g. re-auth `npm whoami`), keep the working tree at the just-published version. 2. Re-run **only** the MCP half at that same version: `pnpm --dir mcp build && npm --prefix mcp version <ui-version> --allow-same-version && npm --prefix mcp publish --access public`. 3.
 
-npm versions are immutable, so you can never "fix" a bad published version in place — you can only
-publish the matching partner at the same number, or move both forward with a fresh
-`pnpm release --ui patch --mcp sync`. Never hand-publish one package and forget the other.
+npm versions are immutable, so you can never "fix" a bad published version in place — you can only publish the matching partner at the same number, or move both forward with a fresh `pnpm release --ui patch --mcp sync`. Never hand-publish one package and forget the other.
 
 ---
 
 ## See also
 
 - [README](../README.md) — overview, component groups, consumer setup.
-- [ui-standardization.md](../../../.claude/skills/frontend-design/rules/ui-standardization.md) — the app-developer rules (§0 gate, §2a placement, token rules).
-- [ui-code-review.md](../../../docs/contributing/ui-code-review.md) — the review checklist.
+- [CONSUMER-RULES.md](./CONSUMER-RULES.md) — the ten rules every consumer follows (the audit enforces them).
 - `docs/TOKENS.md`, `docs/SPACING.md`, `docs/PROPS-VOCABULARY.md`, `docs/PROPS-REGISTRY.md`.
 - [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) — per-frame axe a11y + geometry + coverage CI gates.
 - **`godx-ui-component-placement`** skill — decide whether a component belongs here.

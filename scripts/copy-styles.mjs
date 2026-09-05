@@ -4,7 +4,15 @@
  * `@import "./..."` chains inside base.css / index.css keep resolving.
  * Mirrors src/<dir> -> dist/<dir>.
  */
-import { cpSync, existsSync, mkdirSync, statSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -37,3 +45,22 @@ if (existsSync(messagesFrom)) {
 }
 
 console.log("copied CSS trees + i18n messages -> dist");
+
+// dist CSS ships without comments (`/*!` license blocks are kept).
+function stripCssComments(css) {
+  return css
+    .replace(/\/\*(?!!)[\s\S]*?\*\//g, "")
+    .replace(/[ \t]+$/gm, "")
+    .replace(/\n{3,}/g, "\n\n");
+}
+function walk(dir) {
+  for (const name of readdirSync(dir)) {
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) walk(p);
+    else if (name.endsWith(".css")) writeFileSync(p, stripCssComments(readFileSync(p, "utf8")));
+  }
+}
+for (const dir of CSS_DIRS) {
+  const to = join(root, "dist", dir);
+  if (existsSync(to)) walk(to);
+}

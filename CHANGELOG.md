@@ -6,7 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **`PageContainer` spaces its sections.** Every direct child of the page body gets
+  `--page-body-gap` (the section step) above it. `--page-body-gap: 0`
+  opts out.
+- **One focus ring for every control.** `.ui-input`, `.ui-control-multiline` (Textarea) and
+  `.ui-control-trigger` (Select / Cascader / TreeSelect triggers) join the single
+  `focus-ring.css` list. All read `--focus-ring-width` /
+  `--focus-ring-opacity` (2px, solid by default). Retune the two tokens, never per-control utilities.
+- **Select rows are sized by the control layer.** `.ui-select-item` / `.ui-select-label` geometry
+  moved from `navigation-layout.css` into `control.css`.
+- **`styles/core`** — every component layer without the bundled fonts — is now the ONLY
+  supported way to load less than `@godxjp/ui/styles`. Cherry-picking `*-layout.css` files is not supported.
+- **`ui-audit` enforces the layout rules:** `no-utility-spacing`,
+  `no-utility-layout` (error), `no-hand-rolled-surface`, `sibling-cards-need-flex` (warn), all
+  `scope: "consumer"` (skipped when the library audits its own source; `--consumer` forces).
+- **`visual-audit` measures geometry:** `css-layers-missing`, `control-height-mismatch`,
+  `sibling-card-gap` (error), `row-content-starved` (warn).
+- **`postinstall` installs the agent mandate** (CLAUDE.md block + `.claude/godxjp-ui-workflow.md`)
+  by default; the PostToolUse / SessionStart hooks stay behind `npx @godxjp/ui init-agent`.
+
 ### Added
+
+- **`SelectTrigger width="full" | "auto"`** — `auto` sizes the trigger to its label for a
+  PageContainer `extra` slot, a toolbar or a footer row.
+- **`Text` / `Heading` `weight="semibold"`** — an alias rendering at the canon's 500 step.
+- **`docs/` ships in the package**, with **`docs/CONSUMER-RULES.md`** (ten rules) linked from the
+  README and the mandate.
+- **MCP patterns `page-sections` and `topbar-account-chip`**; the `PageContainer` catalog entry
+  documents `children` spacing; `Select` documents `SelectTrigger width`.
 
 - **`--centered-shell-bar-padding-x-compact`, `--centered-shell-main-padding-inline-compact`,
   `--centered-shell-footer-padding-inline-compact`** — the compact step of the horizontal

@@ -8,8 +8,7 @@ All components consume prop types from `src/props/components/`. Preview: `pnpm p
 
 ### AppShell / Sidebar / Topbar
 
-**Prop types:** `AppShellProp`, `SidebarProp`, `TopbarProp`  
-**Import:** `@godxjp/ui/layout`
+**Prop types:** `AppShellProp`, `SidebarProp`, `TopbarProp` **Import:** `@godxjp/ui/layout`
 
 Slot-based app chrome for admin products:
 
@@ -26,8 +25,7 @@ Do not rebuild sidebar or topbar chrome inside product previews or apps. Compose
 
 ### PageContainer
 
-**Prop type:** `PageContainerProp`  
-**Import:** `@godxjp/ui/layout`
+**Prop type:** `PageContainerProp` **Import:** `@godxjp/ui/layout`
 
 | Prop            | Vocabulary        | Required          |
 | --------------- | ----------------- | ----------------- |
@@ -48,7 +46,7 @@ All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640
 
 ### Flex
 
-`Flex` is the one layout primitive (the former `Stack`/`Inline` are removed). Default `direction="row"`; use `direction="col"` for vertical rhythm.
+Default `direction="row"`; use `direction="col"` for vertical rhythm.
 
 | Component | Prop       | Key props                                                               |
 | --------- | ---------- | ----------------------------------------------------------------------- |
@@ -60,8 +58,7 @@ All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640
 
 ### Button
 
-**Prop type:** `ButtonProp`  
-**Import:** `@godxjp/ui/general`
+**Prop type:** `ButtonProp` **Import:** `@godxjp/ui/general`
 
 | Prop       | Vocabulary          |
 | ---------- | ------------------- |
@@ -157,16 +154,4 @@ Auto retry: `useQuery({ retry, retryDelay })`. Manual retry: default `refetch()`
 
 ## Adding a new component
 
-1. Check `PROPS-REGISTRY.md` — concept may already exist
-2. Add vocabulary types if needed → `src/props/vocabulary/`
-3. Add `{Name}Prop` → `src/props/components/{group}.prop.ts`
-4. Register in `src/props/registry.ts`
-5. Implement component importing prop type (no inline interfaces)
-6. Add isolated, composition and journey frames following
-   [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md)
-7. Register every applicable prop/state/responsive/a11y dimension in the frame coverage ledger;
-   missing coverage is `UNTESTED`, never pass
-8. Run `pnpm check:frame-axe` (real-Chromium axe over every `/frame/**`) — a new frame must ship
-   with **zero** violations; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run it and the
-   categories of violations already root-caused for other components
-9. Update this doc
+1. Check `PROPS-REGISTRY.md` — concept may already exist 2. Add vocabulary types if needed → `src/props/vocabulary/` 3.

@@ -30,9 +30,7 @@
     border-color: hsl(var(--card-border, var(--border)));
     border-radius: var(--card-radius);
     /* Fill = base card colour with an opt-in role tint washed over it (--card-tint default
-     * transparent → byte-identical at rest). Tint layer sits ABOVE the base colour.
-     * --card-background defaults to the LIVE --card role at the call site (re-resolves under a
-     * scoped theme); a service overrides --card-background to win. */
+     * transparent → byte-identical at rest). */
     background:
       linear-gradient(var(--card-tint), var(--card-tint)), hsl(var(--card-background, var(--card)));
     color: hsl(var(--card-foreground));
@@ -51,12 +49,7 @@
     background: transparent;
   }
 
-  /* `featured` = the brand-toned perimeter. Its colour is a role-mirror knob (rule #45): declared
-   * `initial` in the token layer so the --primary default resolves HERE, at the call site, and a
-   * scoped [data-tenant]/.dark override of --primary still reaches it. A service that wants the
-   * featured ring in a non-brand tone overrides --card-featured-border-color; a card that wants a
-   * SEMANTIC perimeter (attention / destructive / success …) uses
-   * `accent="…" accentPlacement="perimeter"` instead — same geometry, tone-owned. */
+  /* `featured` = the brand-toned perimeter. */
   [data-slot="card"][data-variant="featured"] {
     border-color: var(--card-featured-border-color, hsl(var(--primary)));
     box-shadow: 0 0 0 var(--card-featured-ring-width)
@@ -66,7 +59,7 @@
   /* ── Density — override the shell inset/body tokens ──────────────────────
    * `--card-space-shell-y: initial` re-arms the block axis to follow THIS card's inset again: the
    * `density` prop is an explicit per-instance decision and must beat an ambient shell-level block
-   * override (e.g. AuthShell compact), exactly as it did when one inset owned both axes. */
+   * override (e.g. */
   [data-slot="card"][data-density="tight"] {
     --card-space-inset: var(--space-3);
     --card-space-shell-y: initial;
@@ -79,11 +72,9 @@
     --card-space-body-y: var(--space-5);
   }
 
-  /* ── Accent tone — ONE resolved colour per semantic accent ─────────────
-   * `--card-accent-color` is RESOLVED from the card's own `data-accent`, so both placements read
-   * the same value and a new tone is one line. It is deliberately NOT a service knob: it is set on
-   * the element, so a :root / [data-tenant] override could never reach it. Retint the ROLE
-   * (--attention, --success, …) — that is what a role is for. */
+  /* ── Accent tone — ONE resolved colour per semantic accent ───────────── `--card-accent-color`
+   * is RESOLVED from the card's own `data-accent`, so both placements read the same value and a
+   * new tone is one line. */
   [data-slot="card"][data-accent="primary"] {
     --card-accent-color: hsl(var(--primary));
   }
@@ -120,12 +111,7 @@
     padding-inline-start: calc(var(--card-space-inset) - var(--card-accent-rail-width));
   }
 
-  /* ── Accent placement `perimeter` — the full attention border (gh#12) ───
-   * The whole edge carries the semantic tone instead of one rail, so a card can read as
-   * "action required" / "failed" at a glance without borrowing `--primary` the way
-   * `variant="featured"` does. Same optical weight as `featured` (border + 1px ring), tone-owned.
-   * Because the rail is gone, the slot padding compensation above is undone — content returns to
-   * the normal shell column, so switching placement never shifts the text. */
+  /* Same optical weight as `featured` (border + 1px ring), tone-owned. */
   [data-slot="card"][data-accent][data-accent-placement="perimeter"] {
     border-width: var(--card-accent-perimeter-width);
     border-color: var(--card-accent-color);
@@ -156,11 +142,9 @@
     padding-bottom: 0;
   }
 
-  /* ── CardBar — positionable tab/toolbar strip (CardBar in card.tsx) ───────
-   * Separators come from POSITION: a top bar gets a bottom border, a bottom
-   * bar a top border, a middle bar both, a sole child none. `border-block` is
-   * the block (top/bottom) axis — RTL-neutral. The card's own overflow:hidden
-   * clips the bar to the rounded corners, so it needs no radius of its own. */
+  /* ── CardBar — positionable tab/toolbar strip (CardBar in card.tsx) ─────── Separators come from
+   * POSITION: a top bar gets a bottom border, a bottom bar a top border, a middle bar both, a sole
+   * child none. */
   [data-slot="card-bar"] {
     display: flex;
     align-items: center;
@@ -250,21 +234,15 @@
     overflow: hidden;
   }
 
-  /* A banded header gives a normal body a top gap — but NOT a flush body: a full-bleed table (or any
-   * edge-to-edge content) must butt FLUSH against the card header's bottom border, with no empty
-   * bordered gap between the two bands (the dialog/sheet no-gap principle). */
+  /* A banded header gives a normal body a top gap — but NOT a flush body: a full-bleed table (or
+   * any edge-to-edge content) must butt FLUSH against the card header's bottom border, with no
+   * empty bordered gap between the two bands (the dialog/sheet no-gap principle). */
   [data-slot="card"]:has([data-slot="card-header"][data-banded])
     [data-slot="card-content"]:not([data-tight]):not([data-flush]) {
     padding-top: var(--card-space-body-y);
   }
 
-  /* Flush / tight body — symmetric plain header band.
-   *
-   * NOT written as `:has(…[data-tight]:not(:has(tabs-list)))`: the Selectors 4 spec forbids
-   * `:has()` anywhere inside `:has()`, and Chrome drops the WHOLE rule as invalid
-   * (CSS.supports=false, measured on Chrome 151) — the symmetric band never applied. Same
-   * failure class as the headerAlign selector (505f0e6): in the file, correct-looking, selects
-   * nothing. So: apply to every tight body, then the tabs case below restores the shell top. */
+  /* Flush / tight body — symmetric plain header band. */
   [data-slot="card"]:has([data-slot="card-content"][data-tight])
     [data-slot="card-header"]:not([data-banded]) {
     padding-top: var(--card-space-body-y);
@@ -295,16 +273,10 @@
     padding-bottom: var(--card-space-body-y);
   }
 
-  /* NOT `:has(header:has(action):not(:has(description)))` — nested `:has()` is spec-invalid
-   * and Chrome drops the whole rule (measured, Chrome 151), so the toolbar body never lost its
-   * top padding. Valid equivalent: zero it for any header-hosted action, then the described
-   * (non-toolbar) header restores the gap in the equal-specificity rule after this one. */
-  /* Both halves of the pair exclude [data-flush]: a flush body owns its block axis outright in
-   * the flush rule below, so neither half has anything to say about it. Excluding it from the
-   * DESCRIPTION half is what stops that half re-adding the gap a flush body just zeroed (gh#307);
-   * excluding it from the ACTION half is only consistency — that half zeroes the same value the
-   * flush rule already sets, and leaving it in place would let a service that retunes the flush
-   * block axis be silently overridden in an action-headed card. */
+  /* Valid equivalent: zero it for any header-hosted action, then the described (non-toolbar)
+   * header restores the gap in the equal-specificity rule after this one. */
+  /* Both halves of the pair exclude [data-flush]: a flush body owns its block axis outright in the
+   * flush rule below, so neither half has anything to say about it. */
   [data-slot="card"]:has([data-slot="card-header"] [data-slot="card-action"])
     [data-slot="card-content"]:not([data-tight]):not([data-flush]) {
     padding-top: 0;
@@ -329,17 +301,14 @@
   }
 
   /* A header BELOW a cover gets a top gap to clear the media — but a BANDED header is a
-   * self-contained divider band that must stay symmetric (border-aware), so it keeps its
-   * own `--card-space-divided-y` block padding instead of this one-sided top gap. */
+   * self-contained divider band that must stay symmetric (border-aware), so it keeps its own
+   * `--card-space-divided-y` block padding instead of this one-sided top gap. */
   [data-slot="card"]:has([data-slot="card-cover"]) [data-slot="card-header"]:not([data-banded]) {
     padding-top: var(--card-space-body-y);
   }
 
-  /* ── Content ─────────────────────────────────────────────────────────────
-   * The two axes are INDEPENDENT (gh#232): the inline column reads --card-space-inset, the block
-   * shell edge reads --card-space-shell-y (default = the same inset, so the resting render is
-   * unchanged). A shell that needs a shorter card without a narrower column — AuthShell compact —
-   * now moves the block axis alone instead of hitting a wall at a uniform inset. */
+  /* A shell that needs a shorter card without a narrower column — AuthShell compact — now moves
+   * the block axis alone instead of hitting a wall at a uniform inset. */
   [data-slot="card-content"] {
     padding-inline: var(--card-space-inset);
     padding-bottom: var(--card-space-shell-y, var(--card-space-inset));
@@ -350,10 +319,7 @@
   }
 
   /* A solo body owns BOTH block edges (there is no header/footer to carry them), so this is
-   * `padding-block`, not just `padding-top` — it overrides the generic bottom edge above.
-   * The fallback chain solo-y → shell-y → inset means: a shell that tunes only the general block
-   * knob still reaches a solo body, an explicit --card-space-solo-y wins over it, and with neither
-   * set the render is the historical inset. */
+   * `padding-block`, not just `padding-top` — it overrides the generic bottom edge above. */
   [data-slot="card-content"][data-solo] {
     padding-block: var(--card-space-solo-y, var(--card-space-shell-y, var(--card-space-inset)));
   }
@@ -362,27 +328,13 @@
     padding-inline: 0;
   }
 
-  /* The flush body owns its BLOCK axis outright, and it does so for EVERY flush body — not only
-   * one that happens to contain a `<table>` (gh#307). The `:has(table)` gate made the "flush has
-   * no padding" contract accidental: a full-bleed body of anything else (a file list, a
-   * DataTable rendering its empty state, a media strip) still took the generic body padding, so
-   * it floated off the header — measured at 18.4px on a consumer's 関連ファイル section while the
-   * 備考 section next to it, a flush TABLE, measured 0px. The narrow repair for that report
-   * (`:not([data-flush])` on the describedBody pair) could not fix it: the padding was coming
-   * from the generic `[data-slot="card-content"]` rules, not from the described one, and adding
-   * the guard to the header-ACTION half of that pair even took the `padding-top: 0` those bodies
-   * used to get. Owning the axis here at (0,4,0) settles all of it: this out-ranks every generic
-   * content rule, and the two guarded pair-halves below no longer reach a flush body at all, so
-   * neither can override the zero again. `tight` and `solo` own the block axis themselves. */
+  /* `tight` and `solo` own the block axis themselves. */
   [data-slot="card-content"][data-flush]:not([data-tight]):not([data-solo]) {
     padding-block: 0;
   }
 
   /* A plain header above ANY flush body therefore supplies its OWN bottom gap — the body's block
-   * padding is zeroed above, so without this the title/subtitle butt against the first row. Match
-   * the header's top inset so the header block reads balanced top↕bottom. The `:has()` argument
-   * mirrors the flush rule's own guards exactly: a tight/solo body keeps its padding, so widening
-   * this to it would double the gap. */
+   * padding is zeroed above, so without this the title/subtitle butt against the first row. */
   [data-slot="card"]:has([data-slot="card-content"][data-flush]:not([data-tight]):not([data-solo]))
     [data-slot="card-header"]:not([data-banded]) {
     padding-bottom: var(--card-space-body-y);
@@ -482,8 +434,7 @@
     min-width: 0;
   }
 
-  /* Optional leading icon medallion — tinted box above the metric. Tone via tokens (default a
-   * soft brand-primary tint), so a service rethemes it with --primary or the icon tokens. */
+  /* Optional leading icon medallion — tinted box above the metric. */
   [data-slot="stat-card-icon"] {
     display: inline-flex;
     align-items: center;
@@ -591,8 +542,7 @@
   }
 
   /* Unavailable tile (the consumer supplied a `disabledReason`): the medallion drops its brand
-   * wash so an un-launchable service never reads as live. Role-mirror knobs default at the CALL
-   * SITE, so a scoped [data-tenant]/.dark override of --muted still reaches it (docs/TOKENS.md). */
+   * wash so an un-launchable service never reads as live. */
   [data-slot="card"][data-service-launcher][data-unavailable] [data-slot="service-launcher-icon"] {
     background: hsl(var(--card-service-launcher-unavailable-icon-background, var(--muted)));
     color: hsl(var(--card-service-launcher-unavailable-icon-foreground, var(--muted-foreground)));

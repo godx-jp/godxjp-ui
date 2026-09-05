@@ -46,30 +46,18 @@ Default brand tokens use the GodX Agent Portal palette: navy primary, 朱 orange
 
 #### `--border` vs `--input` — decorative chrome vs control boundary (gh#315)
 
-These two look like synonyms and are not. They shipped sharing one value, which is how a text
-field's edge ended up at **1.46:1** against the page — the one live WCAG failure a full DXS
-Platform sweep found. Keep them apart:
+These two look like synonyms and are not. Keep them apart:
 
 | Role       | What it draws                                                                                                                                                   | Contrast bar                                                                                                                                           |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `--border` | Decorative chrome — table rules, card edges, section dividers, `<Separator>`                                                                                    | **None.** WCAG 2.2 SC 1.4.11 does not reach a divider; this system's dense JP grid depends on it staying quiet                                         |
 | `--input`  | The boundary that **is** the control — Input, Textarea, Select, outline Button, TagInput, composite date field, topbar search, and the Switch's unchecked track | **≥ 3:1** (SC 1.4.11 Non-text Contrast) against every surface a control sits on — page, card, popover, muted/secondary panel, striped and hovered rows |
 
-A field here has no fill of its own (`background: hsl(var(--background))`) and no shadow to speak
-of, so that 1px edge is the whole visual claim that you may type there. Current values:
-`30 7% 53%` light (3.47:1 on `--background`/`--card`, 3.18:1 on `--muted`) and `45 6% 47%` dark
-(4.22:1 on `--background`, 3.88:1 on `--card`/`--popover`, 3.17:1 on `--muted`).
+A field here has no fill of its own (`background: hsl(var(--background))`) and no shadow to speak of, so that 1px edge is the whole visual claim that you may type there. Current values: `30 7% 53%` light (3.47:1 on `--background`/`--card`, 3.18:1 on `--muted`) and `45 6% 47%` dark (4.22:1 on `--background`, 3.88:1 on `--card`/`--popover`, 3.17:1 on `--muted`).
 
-**Re-theming rule:** a service theme that retints neutrals must move these two **independently** —
-setting `--input: var(--border)` re-opens the bug. `src/tokens/__tests__/input-boundary-contrast.test.ts`
-recomputes the ratios from `foundation.css` and fails below 3:1, and fails outright if the two
-roles are given the same value again.
+**Re-theming rule:** a service theme that retints neutrals must move these two **independently** — setting `--input: var(--border)` re-opens the bug. `src/tokens/__tests__/input-boundary-contrast.test.ts` recomputes the ratios from `foundation.css` and fails below 3:1, and fails outright if the two roles are given the same value again.
 
-The Switch's off-track borrows `--input` by default. If a service wants it quieter than the
-boundary role, override `--switch-unchecked-background` (component token, `initial`, call-site
-default `hsl(var(--input))`) rather than dragging `--input` back down — but whatever you set still
-owes 3:1 against the page and against the thumb (`--background`), or "off" stops being a visible
-state.
+The Switch's off-track borrows `--input` by default. If a service wants it quieter than the boundary role, override `--switch-unchecked-background` (component token, `initial`, call-site default `hsl(var(--input))`) rather than dragging `--input` back down — but whatever you set still owes 3:1 against the page and against the thumb (`--background`), or "off" stops being a visible state.
 
 ### Typography
 
@@ -97,9 +85,7 @@ Runtime scale: app `theme.css` overrides → `--font-size-sm` on root.
 
 ### Icon size (gh#326)
 
-Icon was the last geometric axis without a scale. Twenty-eight component tokens declared raw
-numbers, and between them they used exactly **nine values** — the vocabulary was already there,
-nobody had written it down. `foundation.css` now does:
+Icon was the last geometric axis without a scale. Twenty-eight component tokens declared raw numbers, and between them they used exactly **nine values** — the vocabulary was already there, nobody had written it down. `foundation.css` now does:
 
 | Token             | rem        | px     |                             |
 | ----------------- | ---------- | ------ | --------------------------- |
@@ -113,17 +99,9 @@ nobody had written it down. `foundation.css` now does:
 | `--icon-size-3xl` | `2.5rem`   | **40** | dropzone                    |
 | `--icon-size-4xl` | `3rem`     | **48** | empty-state box             |
 
-**A fixed list, not a ratio.** Unlike `--font-size-*` there is no `base * ratio^n` here, and that
-is deliberate: 14/16 = 0.875 but 20/16 = 1.25, so no single ratio generates these steps. Type can
-sit between pixels because hinting and antialiasing carry it; a 1px-stroke glyph cannot — half a
-pixel of icon is a blurred icon. Every step is a whole pixel at the 16px root, and a service
-retunes a **step**, never a ratio.
+Type can sit between pixels because hinting and antialiasing carry it; a 1px-stroke glyph cannot — half a pixel of icon is a blurred icon. Every step is a whole pixel at the 16px root, and a service retunes a **step**, never a ratio.
 
-**Not `--scaling`-multiplied.** The scale is the crisp pixel list; density is opted into by the
-tokens that want it — `--control-icon-size: calc(var(--icon-size-md) * var(--scaling))`. Whether a
-given icon tracks density stays a per-token decision. Do **not** point an icon token at
-`--space-*` to get density: that is the gh#328 category error — `--space-*` is a _spacing_ scale
-that happens to be scaled, so a density retune moves the glyph along an axis nobody chose.
+**Not `--scaling`-multiplied.** The scale is the crisp pixel list; density is opted into by the tokens that want it — `--control-icon-size: calc(var(--icon-size-md) * var(--scaling))`. Whether a given icon tracks density stays a per-token decision.
 
 #### Two tiers, and where the boundary sits
 
@@ -132,9 +110,7 @@ that happens to be scaled, so a density retune moves the glyph along an axis nob
 | **Tier 1** | the value appears in **more than one place** | it earns a step on the scale; a service retunes the step once         |
 | **Tier 2** | the value appears in **exactly one place**   | set that component's own token **at the call site** — never the scale |
 
-A system with only tier 1 turns every exception into a hack (`!important`, a global override, a
-forked stylesheet); a system with only tier 2 loses consistency. The 6px status dot is the proof
-case: it will never be on an icon scale, and it is a real need.
+A system with only tier 1 turns every exception into a hack (`!important`, a global override, a forked stylesheet); a system with only tier 2 loses consistency. The 6px status dot is the proof case: it will never be on an icon scale, and it is a real need.
 
 ```tsx
 // Tier 2 — one instance, one arbitrary value. No !important, no :root override, no fork.
@@ -148,33 +124,15 @@ case: it will never be on an icon scale, and it is a real need.
 }
 ```
 
-An inline custom property wins by **inheritance proximity**, not specificity, so it beats the
-`:root` default without any weight games. What keeps the route open is that every icon rule in
-`src/styles` reads its token through `var()` with no baked literal —
-`src/tokens/__tests__/icon-size-scale.test.ts` asserts exactly that, and carries a shrink-only
-list of the rules that still bake a literal and are therefore unreachable from an app. It started
-at seven; gh#333 took it to three by minting `--alert-icon-size` and `--badge-icon-size`, pointing
-the ContextMenu/Menubar sub-trigger chevrons at the `--menu-icon-size` that DropdownMenu's chevron
-already read, and snapping `.ui-navigation-menu-trigger-icon` from `0.9rem` (14.4px — off the
-scale _and_ off the pixel grid, so the stroke rendered on half pixels) to `--icon-size-sm`, 14px.
+An inline custom property wins by **inheritance proximity**, not specificity, so it beats the `:root` default without any weight games. What keeps the route open is that every icon rule in `src/styles` reads its token through `var()` with no baked literal — `src/tokens/__tests__/icon-size-scale.test.ts` asserts exactly that, and carries a shrink-only list of the rules that still bake a literal and are therefore unreachable from an app.
 
-The three left need tokens in `components/control.css` (`.ui-otp-separator-icon`) and
-`components/shell.css` (`.tb-icon-btn svg`, `.tb-chip-icon`). Note that `.tb-chip-icon`'s
-`1.125rem` is **not** a snap case even though 18px is off the scale: it is a whole pixel, and the
-box is a letter medallion (`display: grid`, `place-items: center`, a radius, `color: white`), not
-a stroked glyph — so it wants a `scale-exempt:` marker, not the nearest step. Off-scale and
-off-grid are different findings; decide each on what the icon actually is.
+The three left need tokens in `components/control.css` (`.ui-otp-separator-icon`) and `components/shell.css` (`.tb-icon-btn svg`, `.tb-chip-icon`). Note that `.tb-chip-icon`'s `1.125rem` is **not** a snap case even though 18px is off the scale: it is a whole pixel, and the box is a letter medallion (`display: grid`, `place-items: center`, a radius, `color: white`), not a stroked glyph — so it wants a `scale-exempt:` marker, not the nearest step. Off-scale and off-grid are different findings; decide each on what the icon actually is.
 
-**Before you add a step:** if a value is wanted in two places it belongs on the scale, and if it
-is wanted in one it does not. Adding a tenth step to serve a single call site is how a scale stops
-meaning anything.
+**Before you add a step:** if a value is wanted in two places it belongs on the scale, and if it is wanted in one it does not. Adding a tenth step to serve a single call site is how a scale stops meaning anything.
 
 ### Stroke and band height (gh#324)
 
-gh#324 measured every geometry token and found the same correlation gh#326 had acted on — an axis
-_with_ a scale stays disciplined, an axis _without_ one is almost all raw numbers — with `width`
-at **91% raw**, the loudest row in the table. The census confirmed the number and rejected the
-diagnosis: **`width` is not one axis.** Three unrelated concerns wear the suffix.
+The census confirmed the number and rejected the diagnosis: **`width` is not one axis.** Three unrelated concerns wear the suffix.
 
 | concern                  | example                                      | verdict                      |
 | ------------------------ | -------------------------------------------- | ---------------------------- |
@@ -182,12 +140,7 @@ diagnosis: **`width` is not one axis.** Three unrelated concerns wear the suffix
 | measure of a container   | `--dialog-width-default: 32rem`              | not a scale — tier 2         |
 | content width of a field | `--app-setting-picker-timezone-width: 14rem` | not a scale — tier 2         |
 
-`height` split the same way: a control, a table row, a menu item, a nav row and the app-shell top
-bar are one decision sharing one vocabulary; a chart plot's height and a popover's max-height are
-container measures chosen per surface. `size` and `offset` came out no-scale on the same test.
-**Naming a scale is the fix for an axis; declaring that an axis is _not_ one is the fix for the
-rest** — both verdicts, and the census behind them, live in
-`scripts/token-scale-bypass-rules.mjs` so the question is not re-asked every quarter.
+`height` split the same way: a control, a table row, a menu item, a nav row and the app-shell top bar are one decision sharing one vocabulary; a chart plot's height and a popover's max-height are container measures chosen per surface. `size` and `offset` came out no-scale on the same test. **Naming a scale is the fix for an axis; declaring that an axis is _not_ one is the fix for the rest** — both verdicts, and the census behind them, live in `scripts/token-scale-bypass-rules.mjs` so the question is not re-asked every quarter.
 
 #### `--stroke-*` — the thickness of a painted line
 
@@ -200,17 +153,9 @@ rest** — both verdicts, and the census behind them, live in
 | `--stroke-xl`       | **4**   | Steps process ring                                      |
 | `--stroke-2xl`      | **6**   | the Card accent rail                                    |
 
-**Px, never rem.** A stroke is a _device_ line: its job is to read as one crisp rule at any type
-size, so it must not grow when the root font-size does. Every token that moved onto this scale was
-already `px` for that reason; a `rem` thickness (`--slider-track-height: 0.375rem`) is a different
-decision and stayed where it was. **Not `--scaling`-multiplied** either — `--scaling` is a density
-knob, and a 1px divider at 0.92px would blur rather than tighten.
+**Px, never rem.** A stroke is a _device_ line: its job is to read as one crisp rule at any type size, so it must not grow when the root font-size does. Every token that moved onto this scale was already `px` for that reason; a `rem` thickness (`--slider-track-height: 0.375rem`) is a different decision and stayed where it was. **Not `--scaling`-multiplied** either — `--scaling` is a density knob, and a 1px divider at 0.92px would blur rather than tighten.
 
-`--focus-ring-width` is now a member (`var(--stroke-md)`) rather than a parallel authority, so a
-high-contrast theme that wants every emphasis stroke at 3px sets one token.
-`--stroke-hairline` sits _below_ `--stroke-sm` rather than being called `xs` because 1px is not
-really a step: it is the device hairline, the one thickness a service retunes the _existence_ of
-rather than the value (cardinal rule #44).
+`--focus-ring-width` is now a member (`var(--stroke-md)`) rather than a parallel authority, so a high-contrast theme that wants every emphasis stroke at 3px sets one token.
 
 #### `--band-height-*` — the vertical extent of a horizontal band
 
@@ -224,38 +169,18 @@ rather than the value (cardinal rule #44).
 | `--band-height-2xl` | `3rem`    | **48** | the AppShell top bar                     |
 | `--band-height-3xl` | `3.5rem`  | **56** | the AppShell top bar on a coarse pointer |
 
-**This is not a replacement for `--control-height-*`, and the difference matters.** The control
-tier is a **runtime ladder**: it multiplies by `--scaling`, steps ±`--space-1` for `sm`/`lg`/`xs`,
-and `@media (pointer: coarse)` lifts the whole thing to the 44px tap floor. `--band-height-*` is
-the **static vocabulary the ladder is anchored on** — `--control-height-default:
-var(--band-height-md)` — exactly as `--font-size-base` anchors the type scale.
+**This is not a replacement for `--control-height-*`, and the difference matters.** The control tier is a **runtime ladder**: it multiplies by `--scaling`, steps ±`--space-1` for `sm`/`lg`/`xs`, and `@media (pointer: coarse)` lifts the whole thing to the 44px tap floor. `--band-height-*` is the **static vocabulary the ladder is anchored on** — `--control-height-default: var(--band-height-md)` — exactly as `--font-size-base` anchors the type scale.
 
 > Point a band token at `--control-height-*` to "reuse a step" and you silently enrol it in
 > density **and** in the coarse-pointer growth. That is a geometry change, not a rename.
 > `--table-row-height-default` reads `var(--band-height-md)`, not `var(--control-height-default)`,
 > for precisely that reason.
 
-That trap had already been sprung once: `--card-service-launcher-icon-size` read
-`var(--control-height-lg)` — a control tier sizing an _icon_ box. Invisible at the desk and wrong
-on a phone, where the medallion inflated 36px → 48px while the glyph inside it stayed 20px. It is
-`calc(var(--icon-size-2xl) * var(--scaling))` now: right axis, same value on every density, and it
-stops growing on touch.
-
-**Not `--scaling`-multiplied here** for the gh#328 reason: whether a band breathes with density is
-a per-token decision made long ago (`--control-height` opts in, `--app-shell-bar-height`
-deliberately does not), and baking `--scaling` into the scale would flip all of them at once.
-
-`src/tokens/__tests__/geometry-axis-scales.test.ts` resolves every touched token from the CSS
-source across default / compact (.92) / comfortable (1.08) / `.ui-scale-fixed` and asserts the
-migration moved nothing — plus a coarse-pointer column for the one value that was _meant_ to move.
+That trap had already been sprung once: `--card-service-launcher-icon-size` read `var(--control-height-lg)` — a control tier sizing an _icon_ box. Invisible at the desk and wrong on a phone, where the medallion inflated 36px → 48px while the glyph inside it stayed 20px. It is `calc(var(--icon-size-2xl) * var(--scaling))` now: right axis, same value on every density, and it stops growing on touch.
 
 #### Mis-named axes are worth renaming, with an alias
 
-`--table-skeleton-line-height` was a **length** on the line-height axis, whose scale is a set of
-unitless _ratios_ — so it was never a bypass, it was a mis-named height, and while it stood the
-axis could not be gated at all. It is now `--table-skeleton-line-block-size`, with the old name
-kept as a published alias (`var(--table-skeleton-line-block-size)`) because a consumer theme may
-already override it. One rename unlocked a whole axis at zero baseline cost.
+`--table-skeleton-line-height` was a **length** on the line-height axis, whose scale is a set of unitless _ratios_ — so it was never a bypass, it was a mis-named height, and while it stood the axis could not be gated at all. One rename unlocked a whole axis at zero baseline cost.
 
 ### Component Tokens
 
@@ -263,9 +188,7 @@ Each component owns a token file under `src/tokens/components/`. The file may on
 
 #### Role-mirror knobs MUST be `initial` + a call-site fallback (the `:root` freeze rule)
 
-When a component-token default is just a **role token** (`--card-background` defaults to `--card`,
-`--table-header-background` to `--muted`, `--checkbox-checked-background` to `--primary`,
-`--focus-ring-color` to `--ring` …), you may **not** write the binding at `:root`:
+When a component-token default is just a **role token** (`--card-background` defaults to `--card`, `--table-header-background` to `--muted`, `--checkbox-checked-background` to `--primary`, `--focus-ring-color` to `--ring` …), you may **not** write the binding at `:root`:
 
 ```css
 /* ✗ WRONG — freezes at the :root role value */
@@ -277,15 +200,9 @@ When a component-token default is just a **role token** (`--card-background` def
 }
 ```
 
-CSS substitutes a `var()` at the element that **declares** it, so `--card-background` computes to
-`:root`'s `--card` and inherits that frozen value down. A consumer who scopes the _role_
-(`[data-tenant] { --card: <dark> }` or `.dark`) overrides `--card` but **never reaches**
-`--card-background` — the component keeps the light `:root` value. Under a dark theme this is glaring
-(a frozen light card under white text → invisible text); under a light theme it hides silently.
+CSS substitutes a `var()` at the element that **declares** it, so `--card-background` computes to `:root`'s `--card` and inherits that frozen value down. A consumer who scopes the _role_ (`[data-tenant] { --card: <dark> }` or `.dark`) overrides `--card` but **never reaches** `--card-background` — the component keeps the light `:root` value. Under a dark theme this is glaring (a frozen light card under white text → invisible text); under a light theme it hides silently.
 
-Instead, declare the knob `initial` (a real, catalogued, guaranteed-invalid declaration — no role to
-freeze) and move the role default to the **call site** as a fallback, so it re-resolves live at the
-painting element under any scope, while an explicit theme override of the knob still wins:
+Instead, declare the knob `initial` (a real, catalogued, guaranteed-invalid declaration — no role to freeze) and move the role default to the **call site** as a fallback, so it re-resolves live at the painting element under any scope, while an explicit theme override of the knob still wins:
 
 ```css
 /* ✓ RIGHT — default re-resolves under scope; knob still overridable */
@@ -297,16 +214,9 @@ painting element under any scope, while an explicit theme override of the knob s
 }
 ```
 
-The same rule applies to `@theme inline` (utilities re-resolve scoped roles) and to any
-`:root`-declared **composite** that wraps a role (e.g. a focus-ring box-shadow): read the role
-**directly** at the call site, never through a frozen `:root` intermediate. Pure non-colour knobs
-(spacing, radius, font-size) don't need this — they aren't scope-retinted — but any colour/fill/
-border/shadow knob whose default is a role token does.
+The same rule applies to `@theme inline` (utilities re-resolve scoped roles) and to any `:root`-declared **composite** that wraps a role (e.g. a focus-ring box-shadow): read the role **directly** at the call site, never through a frozen `:root` intermediate. Pure non-colour knobs (spacing, radius, font-size) don't need this — they aren't scope-retinted — but any colour/fill/ border/shadow knob whose default is a role token does.
 
-**The same freeze bites any knob whose default is a RE-SCOPED tier, colour or not.**
-`--control-height` is re-scoped by `.ui-auth-shell` (44px comfortable) and by
-`.ui-auth-shell[data-variant="canonical"]` (36px), so a knob that mirrors it must follow the same
-`initial` + call-site-fallback shape:
+**The same freeze bites any knob whose default is a RE-SCOPED tier, colour or not.** `--control-height` is re-scoped by `.ui-auth-shell` (44px comfortable) and by `.ui-auth-shell[data-variant="canonical"]` (36px), so a knob that mirrors it must follow the same `initial` + call-site-fallback shape:
 
 ```css
 :root {
@@ -317,10 +227,7 @@ border/shadow knob whose default is a role token does.
 }
 ```
 
-Written as `--otp-slot-size: var(--control-height)` at `:root` it freezes at the `:root` tier —
-headless Chromium caught exactly this: the canonical auth shell's 36px OTP slots silently collapsed
-to 32px (gh#233). Ask "is the default a token that some scope re-declares?", not "is the default a
-colour?".
+Ask "is the default a token that some scope re-declares?", not "is the default a colour?".
 
 Card primitive tokens:
 
@@ -340,30 +247,15 @@ Card primitive tokens:
 
 #### Border-aware vertical padding (dividers)
 
-A card slot's vertical padding depends on **whether it carries a divider border** — set it once via
-a token, never hard-code padding on the slot:
+A card slot's vertical padding depends on **whether it carries a divider border** — set it once via a token, never hard-code padding on the slot:
 
-- **Divided band** — a `<CardHeader banded>` (bottom border + muted band) or a
-  `<CardFooter separated>` (top border). It reads as its own region, so it pads **symmetrically**
-  top+bottom from `--card-space-divided-y` (which defaults to `--card-space-header-y`). One knob
-  keeps the header- and footer-band rhythm in sync.
-- **Plain header** — no border; it _flows_ into the body. Top padding is `--card-space-shell-y`
-  (which defaults to `--card-space-inset`), bottom is `0`, and the body supplies the gap via
-  `--card-space-body-y`.
-- **Header above a flush table** — `<CardContent flush>` with a `<Table>`/`<DataTable>` zeroes the
-  body's top padding, so the plain header instead supplies its own `--card-space-body-y` bottom gap;
-  the title never butts against the table header row.
+- **Divided band** — a `<CardHeader banded>` (bottom border + muted band) or a `<CardFooter separated>` (top border). It reads as its own region, so it pads **symmetrically** top+bottom from `--card-space-divided-y` (which defaults to `--card-space-header-y`). One knob keeps the header- and footer-band rhythm in sync. - **Plain header** — no border; it _flows_ into the body.
 
-So: WITH a divider → symmetric band padding; WITHOUT → asymmetric flow padding. Tune the band
-density once at `--card-space-divided-y`; tune the accent stripe at `--card-accent-rail-width`.
+So: WITH a divider → symmetric band padding; WITHOUT → asymmetric flow padding. Tune the band density once at `--card-space-divided-y`; tune the accent stripe at `--card-accent-rail-width`.
 
 #### The two card axes are independent (gh#232)
 
-`--card-space-inset` owns the **inline** column; `--card-space-shell-y` owns the **block** shell
-edges (a plain header's top, a `solo` body's top, the terminal slot's bottom). `--card-space-shell-y`
-is declared `initial`, so its default resolves at the call site to `--card-space-inset` — a card that
-sets neither, or that only re-tunes the inset (including `density="tight|cozy"`), renders exactly as
-before. Override `--card-space-shell-y` alone to make a card **shorter without narrowing it**:
+`--card-space-inset` owns the **inline** column; `--card-space-shell-y` owns the **block** shell edges (a plain header's top, a `solo` body's top, the terminal slot's bottom). `--card-space-shell-y` is declared `initial`, so its default resolves at the call site to `--card-space-inset` — a card that sets neither, or that only re-tunes the inset (including `density="tight|cozy"`), renders exactly as before. Override `--card-space-shell-y` alone to make a card **shorter without narrowing it**:
 
 ```css
 /* a short login card that keeps its 24px column */
@@ -372,10 +264,7 @@ before. Override `--card-space-shell-y` alone to make a card **shorter without n
 }
 ```
 
-That AuthShell knob is wired straight to `--card-space-shell-y` on the compact auth card; the inline
-column stays on `--auth-shell-compact-card-inset` and the header↔body gap on
-`--auth-shell-card-body-gap-compact`. Three knobs, three axes, no consumer bridge selector on
-`[data-slot="card-content"]`.
+That AuthShell knob is wired straight to `--card-space-shell-y` on the compact auth card; the inline column stays on `--auth-shell-compact-card-inset` and the header↔body gap on `--auth-shell-card-body-gap-compact`. Three knobs, three axes, no consumer bridge selector on `[data-slot="card-content"]`.
 
 Example app override:
 
@@ -417,24 +306,15 @@ See `docs/SPACING.md` for Card slot matrix. Same pattern everywhere:
 
 ## The layer contract
 
-Every rule this package ships sits inside a cascade layer, and **layer order beats specificity
-outright**. Two halves, and both have already cost a release.
+Every rule this package ships sits inside a cascade layer, and **layer order beats specificity outright**. Two halves, and both have already cost a release.
 
 ### Inside the package
 
-`@import "tailwindcss"` establishes `theme, base, components, utilities`. Component CSS lives in
-`@layer components`, which is **earlier** than `utilities` — so a Tailwind utility a component emits
-on its own element outranks the layered rule that is supposed to own the same property, and no
-selector can win that fight.
+`@import "tailwindcss"` establishes `theme, base, components, utilities`. Component CSS lives in `@layer components`, which is **earlier** than `utilities` — so a Tailwind utility a component emits on its own element outranks the layered rule that is supposed to own the same property, and no selector can win that fight.
 
-That is a real defect, not a hypothetical: `Table` renders `<table class="… text-sm">`, so the
-`action-collection` preset's `font-size: var(--table-action-collection-font-size-compact)` never
-applied at any width. The documented token was dead, the narrow frame stayed at 14px, and a 5–6
-character Japanese label could not fit its column measure — a WCAG 2.2 SC 1.4.10 failure that only
-manifests in Japanese. Two independent consumers reported it.
+The documented token was dead, the narrow frame stayed at 14px, and a 5–6 character Japanese label could not fit its column measure — a WCAG 2.2 SC 1.4.10 failure that only manifests in Japanese. Two independent consumers reported it.
 
-A **responsive re-point** that must beat such a utility goes in **`@layer godxjp-ui-responsive`**,
-declared straight after Tailwind in `src/styles/base.css` and therefore the last layer:
+A **responsive re-point** that must beat such a utility goes in **`@layer godxjp-ui-responsive`**, declared straight after Tailwind in `src/styles/base.css` and therefore the last layer:
 
 ```css
 @layer godxjp-ui-responsive {
@@ -446,21 +326,13 @@ declared straight after Tailwind in `src/styles/base.css` and therefore the last
 }
 ```
 
-It is reserved for `@container` / `@media` re-points. A static rule has no business in it — that
-would silently outrank a consumer's deliberate utility override. Everything static stays in
-`@layer components`.
+It is reserved for `@container` / `@media` re-points. Everything static stays in `@layer components`.
 
 ### In a consumer app
 
 **Unlayered CSS outranks every layer, including `godxjp-ui-responsive`.** So:
 
-- Theme this package by setting **tokens** on a wrapper element (`.my-page { --table-…: 7rem; }`).
-- Do **not** write app selectors against package internals (`[data-slot]`, `[data-priority]`,
-  `.ui-*`). An unlayered rule that does wins at _every_ width and kills the package's responsive
-  re-points. What that looks like in production: a column measured to **0px**, wrapping one
-  character per line.
-- If an app genuinely must write such a rule, put it in a layer — `@layer components { … }` — so
-  the package's own re-points still resolve above it.
+- Theme this package by setting **tokens** on a wrapper element (`.my-page { --table-…: 7rem; }`). - Do **not** write app selectors against package internals (`[data-slot]`, `[data-priority]`, `.ui-*`). An unlayered rule that does wins at _every_ width and kills the package's responsive re-points.
 
 ## Adding a new component
 

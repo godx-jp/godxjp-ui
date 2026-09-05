@@ -1,10 +1,8 @@
-/* Service theme — the ONLY file apps may use to customize design tokens.
- * Copy to: apps/<your-app>/src/theme.css
- * Import this file once in main.tsx (instead of @godxjp/ui/styles directly). */
+/* Service theme — the ONLY file apps may use to customize design tokens. */
 
 @import "@godxjp/ui/styles";
 
-/* Override tokens below. Do NOT add component styles or Tailwind utilities here. */
+/* Override tokens below. */
 :root {
   /* Brand — pair primary with a focus ring and tinted accent: */
   /* --primary: 211 73% 15%; */

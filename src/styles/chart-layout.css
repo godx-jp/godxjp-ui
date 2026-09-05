@@ -1,6 +1,4 @@
-/* Chart layout — the accessible figure chrome for `@godxjp/ui/charts`.
- * Colours come from the foundation `--chart-1..6` + semantic tokens; recharts
- * draws the SVG itself. Logical properties only (RTL-safe). */
+/* Chart layout — the accessible figure chrome for `@godxjp/ui/charts`. */
 
 .ui-chart {
   display: flex;
@@ -38,22 +36,17 @@
   font-size: var(--font-size-xs);
 }
 
-/* Content that sits BELOW the plot (the activity footer slot) — outside the
- * `role="img"` canvas so links/buttons in it stay reachable and announced. */
+/* Content that sits BELOW the plot (the activity footer slot) — outside the `role="img"` canvas so
+ * links/buttons in it stay reachable and announced. */
 .ui-chart-footer {
   margin-block-start: var(--chart-trend-footer-gap);
   font-size: var(--font-size-xs);
   color: hsl(var(--muted-foreground));
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
- * CompactBarTrend — a dependency-free (no recharts) vertical bar trend.
- * ALL geometry resolves from `--chart-trend-*` tokens; the only inline value is
- * the DATUM itself (`--chart-trend-bar-value`, a 0..1 ratio), so a consumer never
- * writes a height calculation or a colour of its own.
- * ─────────────────────────────────────────────────────────────────────────── */
+/* CompactBarTrend — a dependency-free (no recharts) vertical bar trend. */
 
-/* `size` → the active plot-height tier. Set on the <figure> as `data-size`. */
+/* `size` → the active plot-height tier. */
 .ui-chart-trend[data-size="xs"] {
   --chart-trend-plot-height: var(--chart-trend-plot-height-xs);
 }
@@ -85,8 +78,6 @@
   block-size: var(--chart-trend-plot-height);
   inline-size: 100%;
   min-inline-size: 0;
-  /* Quiet by default (rule #44) — a service opts into a baseline rule with
-   * `--chart-trend-baseline-border: 1px solid hsl(var(--border));`. */
   border-block-end: var(--chart-trend-baseline-border, none);
 }
 

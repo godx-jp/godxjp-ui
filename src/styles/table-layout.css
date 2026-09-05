@@ -1,21 +1,13 @@
-/*
- * TABLE — cell padding + typography owned here (density-aware via --table-cell-* tokens).
- */
+/* TABLE — cell padding + typography owned here (density-aware via --table-cell-* tokens). */
 
 @layer components {
-  /* The table's base type. It used to ride on a `text-sm` utility emitted by the component; the
-   * font-size AND its line-height companion now live here (gh#319 — see
-   * tokens/components/table.css for why both are required). */
+  /* The table's base type. */
   [data-slot="table"] {
     font-size: var(--table-font-size);
     line-height: var(--table-line-height);
   }
 
-  /* Horizontal rules between rows, and the "last row draws no rule" idiom. Both must be in the
-   * SAME layer: while the row's rule was a `border-b` utility, no `components` selector could
-   * zero it on the last row however specific (the gh#412 layer contract), so the tbody had to
-   * carry an arbitrary-variant utility of its own. `[data-slot="table-body"] .ui-table-row`
-   * (0,2,0) beats `.ui-table-row` (0,1,0), so the last-row reset lands cleanly. */
+  /* Horizontal rules between rows, and the "last row draws no rule" idiom. */
   .ui-table-row {
     border-block-end-width: var(--table-row-border-width);
   }
@@ -40,9 +32,9 @@
     padding-inline-end: 0;
   }
 
-  /* A column with an empty header (icon / action column) shouldn't paint the
-   * header band — keep its cell transparent so the empty header visually
-   * disappears instead of showing a blank grey block. */
+  /* A column with an empty header (icon / action column) shouldn't paint the header band — keep
+   * its cell transparent so the empty header visually disappears instead of showing a blank grey
+   * block. */
   [data-slot="table-head"][data-empty] {
     background: transparent;
   }
@@ -50,10 +42,8 @@
   [data-slot="table-cell"] {
     padding: var(--table-cell-padding-y) var(--table-cell-space-x);
     vertical-align: middle;
-    /* Don't let a narrow column crush cell text — in CJK this collapses to one
-     * character per line. Keep each cell on one line; the scroll container
-     * (.ui-data-table-scroll, overflow-x:auto) scrolls instead. A column that
-     * genuinely needs wrapping opts in with `whitespace-normal` via col.width. */
+    /* Don't let a narrow column crush cell text — in CJK this collapses to one character per line.
+ */
     white-space: nowrap;
   }
 
@@ -95,10 +85,6 @@
     gap: var(--space-inline-sm);
   }
 
-  /* The footer owns its own inset on BOTH axes (gh#236) — it is a self-contained slot that is
-   * usually dropped straight into a flush container, so relying on an ancestor for inline/block-end
-   * padding left the label and the page-size Select flush against the container edge and its
-   * closing border. Logical properties only (RTL-safe); both axes are tunable tokens (#45). */
   .ui-data-table-pagination {
     display: flex;
     align-items: center;
@@ -108,8 +94,7 @@
     padding-inline: var(--table-pagination-padding-x, var(--table-cell-space-x));
   }
 
-  /* Numbered footer may wrap only between its two semantic groups. The supported JA/EN/VI locale
-   * label and select stay fully visible together (gh#184). */
+  /* Numbered footer may wrap only between its two semantic groups. */
   .ui-data-table-pagination--numbered {
     flex-wrap: wrap;
     min-width: 0;
@@ -140,32 +125,20 @@
   }
 
   .ui-data-table-surface {
-    /* `clip`, NOT `hidden` (gh#291 family): both clip the table to the rounded
-     * border, but `hidden` makes this box a SCROLL CONTAINER, which silently
-     * captured the sticky context of `stickyHeader` (default true) and of the
-     * pinned columns — they anchored to a box that never scrolls, so the header
-     * scrolled away with the body inside `.ui-data-table-scroll`. `clip` is not
-     * a scroll container, so sticky binds to the real scroll region and works.
-     * Measured: hidden → thead moved 300px per 300px scrolled; clip → 1px. */
+    /* `clip` is not a scroll container, so sticky binds to the real scroll region and works. */
     overflow: clip;
-    /* Narrow-viewport legibility floor — a TOKEN, not the old `min-w-[640px]` literal (gh#253,
-     * rule #45). Cleared at the `sm` step below, and opted out of entirely by the collection
-     * preset, which owns its width through the column-priority measures. */
+    /* Cleared at the `sm` step below, and opted out of entirely by the collection preset, which
+     * owns its width through the column-priority measures. */
     min-inline-size: var(--table-surface-min-inline-size);
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius-md);
   }
 
-  /* `preset="action-collection"` (gh#253) — the priority measures fit the table to its container at
-   * every width, so the desktop floor would re-introduce exactly the horizontal scroll the preset
-   * removes. Attribute-scoped: `preset="default"` emits NO attribute, so an untouched DataTable
-   * never matches this rule (the inert-default contract, gh#231). */
   .ui-data-table-surface[data-preset="action-collection"] {
     min-inline-size: 0;
   }
 
-  /* Zebra striping (opt-in via the `striped` prop). Selected rows keep their
-   * own emphasis, so they are excluded from the stripe. */
+  /* Zebra striping (opt-in via the `striped` prop). */
   .ui-data-table-surface[data-striped] tbody tr:nth-child(even):not([data-state="selected"]) {
     background-color: var(--table-row-striped-background, hsl(var(--muted) / 0.4));
   }
@@ -190,44 +163,15 @@
     gap: var(--space-inline-xs);
   }
 
-  /* A centred header centres its LABEL, not its button.
-   *
-   * The sort chevron lives inside the label, so centring the button alone
-   * leaves the words half an icon to the left of the column they name —
-   * measured at 8px on a 12px icon, which is enough to read as a mistake in a
-   * row of headings.
-   *
-   * The fix is symmetry, not a counterweight. Reserving the chevron's width on
-   * BOTH sides and taking the chevron itself out of flow means the words are
-   * centred by construction — the label's own box is centred in the cell, and
-   * nothing inside it can shift them. A counterweight sitting in flow as a
-   * flex sibling was the first attempt and it holds only while there is room
-   * to spare: flex items shrink, so on a column narrow enough to squeeze them
-   * the balance collapses and the label slides back off centre. Measured at
-   * 8px on a 56px column, 0px on the wide ones — a bug that only appears in
-   * the narrow case is worse than one that appears everywhere.
-   *
-   * Only when the column asked to be centred: a start-aligned header wants the
-   * icon to follow the text with nothing before it. */
+  /* A centred header centres its LABEL, not its button. */
   :is(th, td).text-center > .ui-data-table-sort-button > .ui-data-table-sort-label {
     position: relative;
-    /* The icon's width plus the gap it would have sat behind — the space the
-     * chevron occupied when it was in flow, now reserved on each side. */
+    /* The icon's width plus the gap it would have sat behind — the space the chevron occupied when
+     * it was in flow, now reserved on each side. */
     padding-inline: calc(0.75rem + var(--space-inline-xs));
   }
 
-  /* Out of flow, in the inline-end reservation its own padding just made.
-   * Logical inset, so RTL puts it on the other side with the padding.
-   *
-   * `:last-child` and NOT `:not(:first-child)`. A string header renders as a
-   * text node, and `:first-child` counts only ELEMENTS — so with
-   * `[text, svg]` the chevron IS the first element child and the negation
-   * matched nothing at all. The label kept its symmetric padding, which
-   * centres the BOX, while the words inside it stayed 8px off exactly as
-   * before. Measured against the built stylesheet, not read: the rule was
-   * present in the CSS and inert in the DOM, which is why reading it proved
-   * nothing. `:last-child` holds for both shapes the label takes,
-   * `[text, svg]` and `[element, svg]`. */
+  /* Out of flow, in the inline-end reservation its own padding just made. */
   :is(th, td).text-center > .ui-data-table-sort-button > .ui-data-table-sort-label > :last-child {
     position: absolute;
     inset-inline-end: 0;
@@ -242,11 +186,8 @@
     padding-inline: var(--space-page-active-x);
   }
 
-  /* Scroll-hint fade — a SCROLL affordance, so it only shows while the region
-   * actually overflows and is not scrolled to the inline-end. The component
-   * measures the scroll box and stamps `.ui-data-table-has-overflow-end`
-   * (gh#267 — the fade used to render unconditionally, washing out the last
-   * column of tables that never scroll). */
+  /* Scroll-hint fade — a SCROLL affordance, so it only shows while the region actually overflows
+   * and is not scrolled to the inline-end. */
   .ui-data-table-scroll::after {
     content: "";
     position: absolute;
@@ -270,12 +211,7 @@
     padding-inline: 0;
   }
 
-  /* Same reset, same reason, for a table sitting straight on a FLUSH page. The bleed above exists
-   * to cancel the page gutter so the scroll region reaches the page edges — but
-   * `.ui-page-container--flush .ui-page-body` zeroes that gutter, leaving nothing to bleed into.
-   * The -16px then escapes the page: nothing clips it, so the whole page gained 16px of
-   * horizontal scroll at 320/375/390 (WCAG 2.2 SC 1.4.10 Reflow). Scoped by child combinator so a
-   * table inside a Card keeps its own bleed — the card supplies the padding that one compensates. */
+  /* Same reset, same reason, for a table sitting straight on a FLUSH page. */
   .ui-page-container--flush > .ui-page-body > .ui-data-table-root > .ui-data-table-scroll {
     margin-inline: 0;
     padding-inline: 0;
@@ -289,10 +225,6 @@
     inset-inline-end: 0;
   }
 
-  /* The flush frame contract lives in ONE place, next to `.ui-table-bordered` below — it has to
-   * cover BOTH full-bleed surfaces (`.ui-data-table-surface` and `<Table bordered>`) or the fix
-   * for one silently regresses the other (gh#305 → gh#306). */
-
   @media (min-width: 640px) {
     .ui-data-table-scroll {
       margin-inline: 0;
@@ -303,19 +235,13 @@
       inset-inline-end: 0;
     }
 
-    /* From `sm` up the viewport is already wider than the floor, so it is released and the surface
-     * simply fills its container (this is the `sm:min-w-0` half of the old utility pair). */
     .ui-data-table-surface {
       min-inline-size: 0;
     }
   }
 
-  /* ── Pinned (sticky) inline-end column ────────────────────────────────
-   * The standard home for a row-actions column: it stays put while the rest
-   * of the table scrolls horizontally. The cell carries an opaque, state-aware
-   * background so scrolling cells don't bleed through, plus a token shadow that
-   * separates it from the body. When present, the scroll fade is hidden (the
-   * pin's own shadow is the affordance). RTL-correct via logical properties. */
+  /* ── Pinned (sticky) inline-end column ──────────────────────────────── The standard home for a
+   * row-actions column: it stays put while the rest of the table scrolls horizontally. */
   .ui-data-table-has-pin-end::after {
     display: none;
   }
@@ -332,14 +258,14 @@
     background-color: hsl(var(--secondary));
   }
 
-  /* box-shadow has no logical offset — flip its inline direction by hand in RTL,
-   * where the pinned column sits on the visual left and the shadow points right. */
+  /* box-shadow has no logical offset — flip its inline direction by hand in RTL, where the pinned
+   * column sits on the visual left and the shadow points right. */
   [dir="rtl"] .ui-data-table-pin-end {
     box-shadow: 6px 0 6px -5px hsl(var(--foreground) / 0.12);
   }
 
-  /* Mirror the row's hover / selected tint — a translucent muted wash layered
-   * over the opaque base, so the pinned cell matches the rest of its row. */
+  /* Mirror the row's hover / selected tint — a translucent muted wash layered over the opaque
+   * base, so the pinned cell matches the rest of its row. */
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-end {
     background-image: linear-gradient(
       var(--table-row-hover-background, hsl(var(--muted) / 0.5)),
@@ -354,11 +280,9 @@
     );
   }
 
-  /* `<Table bordered>` — the full cell grid (gh#274). Horizontal row rules already come from
-   * TableRow's own border; here we add the outer frame and the vertical rules between columns,
-   * so rowSpan/colSpan merged cells read as merged (a merged group cell floating in whitespace
-   * is unreadable). Colour resolves the --table-border-color token at the CALL SITE so a scoped
-   * theme override of --border reaches it. */
+  /* Horizontal row rules already come from TableRow's own border; here we add the outer frame and
+   * the vertical rules between columns, so rowSpan/colSpan merged cells read as merged (a merged
+   * group cell floating in whitespace is unreadable). */
   .ui-table-bordered {
     border: 1px solid var(--table-border-color, hsl(var(--border)));
   }
@@ -367,79 +291,33 @@
     border-inline-end: 1px solid var(--table-border-color, hsl(var(--border)));
   }
 
-  /* ── The flush full-bleed frame contract (gh#305 · gh#306) ────────────────────────────────
-   * A full-bleed surface inside `<CardContent flush>` already has the CARD's 1px frame around
-   * it, so its own outer frame doubles up as two nested rounded borders (measured on
-   * customer-inquiries detail: TABLE 1px inside the card's 1px, gh#305). Both full-bleed
-   * surfaces are covered by ONE rule: `.ui-data-table-surface` (the DataTable's own frame) and
-   * `.ui-table-bordered` (`<Table bordered>`). They used to be two rules a hundred lines apart
-   * and the gh#306 repair reached only the second — the canonical
-   * `<Card><CardContent flush><DataTable/></CardContent></Card>` kept a frameless surface, so
-   * the header still floated with no line under it (measured at HEAD: surface
-   * border-top-width 0px).
-   *
-   * ERASE, never repaint (rule #44). The earlier repair spelled this `border: 0` followed by a
-   * hard-coded `border-block-start: 1px solid …` — chrome painted unconditionally, which is the
-   * bug pattern the rule exists to forbid: it re-drew the line even where the card already had
-   * one (a banded header's own bottom border → a doubled 2px rule) and even where the card frame
-   * itself sits (a headerless card → a doubled top edge). Here only the WIDTH is zeroed, so the
-   * style and colour stay whatever the surface's own border declared, and the block-start edge is
-   * restored only where something actually needs separating.
-   *
-   * `.ui-skeleton-table` rides along in BOTH lists on purpose. It is the placeholder the real
-   * DataTable swaps for, and alert-layout.css says so in as many words ("mirrors
-   * `.ui-data-table-surface` … so the skeleton placeholder and the real DataTable it swaps for
-   * sit identically"). Give the surface a divider without giving the skeleton one and that
-   * promise breaks: a 1px line appears the instant the data lands. (alert-layout.css keeps its
-   * own copy of the erase half so Skeleton is still framed correctly for a consumer who imports
-   * it WITHOUT this layer.) */
+  /* Both full-bleed surfaces are covered by ONE rule: `.ui-data-table-surface` (the DataTable's
+   * own frame) and `.ui-table-bordered` (`<Table bordered>`). */
   [data-slot="card-content"][data-flush]
     :is(.ui-data-table-surface, .ui-table-bordered, .ui-skeleton-table) {
     border-width: 0;
     border-radius: 0;
   }
 
-  /* …restored ONLY when a plain CardHeader sits DIRECTLY above the flush body. That edge is the
-   * one place a flush surface's border does NOT coincide with something the card already draws:
-   * above it is the header's whitespace, not the card frame (gh#306, measured on a rental
-   * detail's 出荷伝票一覧 section). Adjacent-sibling, not `:has()` on the card, so the three
-   * counter-cases fall out by construction and need no extra rule: no header above → the card
-   * frame is the top edge; a BANDED header → its own `border-bottom` is the divider; a CardBar
-   * above → its own `border-block` is. Width comes from a token (rules #44/#45) whose default is
-   * the same hairline the surface itself draws, so a service quiets the divider once instead of
-   * forking this file. */
+  /* …restored ONLY when a plain CardHeader sits DIRECTLY above the flush body. */
   [data-slot="card-header"]:not([data-banded])
     + [data-slot="card-content"][data-flush]
     :is(.ui-data-table-surface, .ui-table-bordered, .ui-skeleton-table) {
     border-block-start-width: var(--table-flush-divider-width);
   }
 
-  /* …and quieted again when a DataTable TOOLBAR sits between the header and the surface: the
-   * flush toolbar already draws that dividing line (see `.ui-data-table-toolbar` above), so the
-   * surface below it would stack a second hairline on top of it. Done by setting the token on the
-   * root rather than by another `border-*` rule, so it INHERITS down to whichever surface ends up
-   * under the toolbar and cannot get into a specificity race with the restore rule. */
+  /* …and quieted again when a DataTable TOOLBAR sits between the header and the surface: the flush
+   * toolbar already draws that dividing line (see `.ui-data-table-toolbar` above), so the surface
+   * below it would stack a second hairline on top of it. */
   [data-slot="card-content"][data-flush] .ui-data-table-root:has(.ui-data-table-toolbar) {
     --table-flush-divider-width: 0px;
   }
 }
 
 @layer components {
-  /* ── Table · `preset="action-collection"` (gh#253) ───────────────────────────────────────────
-   * The canonical dense approval / action queue: requester · target · reason · requested date ·
-   * row actions, all five discoverable in the initial 390px frame, WITHOUT a consumer width, a
-   * hidden column or a page-local breakpoint.
-   *
-   * It keeps the REAL table: no `display` change, no role rewriting, no card transformation — so
+  /* It keeps the REAL table: no `display` change, no role rewriting, no card transformation — so
    * `<table>/<thead>/<tr>/<th>/<td>` semantics, header association, `aria-sort` and screen-reader
-   * table navigation survive exactly as they are at 1440. What the preset replaces is the SIZING
-   * model: the desktop INTRINSIC column widths (a `white-space: nowrap` reason column is what
-   * makes a five-column queue 1511px wide and forces the horizontal scroll gh#253 reports) give
-   * way to `table-layout: fixed` plus token-owned column-PRIORITY measures, and cells wrap.
-   *
-   * The collapse step is measured against the TABLE'S OWN container, not the viewport (a table in
-   * a master rail must collapse before the page does), so it is a container query. Below the step
-   * only the MEASURES and the type/padding tier change — the structure is identical. */
+   * table navigation survive exactly as they are at 1440. */
   .ui-table-collection {
     container: ui-table-collection / inline-size;
   }
@@ -450,12 +328,7 @@
   }
 
   .ui-table-collection :is([data-slot="table-head"], [data-slot="table-cell"]) {
-    /* The column measure comes from `priority`; an unmarked column takes what is left (`auto`),
-     * which is the free-text column — EXCEPT past the seven-column budget below the collapse
-     * step, where the `:has()` tier re-points the middle fallback at the flex floor (gh#262):
-     * the fixed algorithm hands an auto column 0px once the marked columns over-constrain the
-     * table, which is the one-character-per-line shredding this preset must never produce.
-     * There every column carries a rem floor-measure; once the floors outgrow the container the
+    /* There every column carries a rem floor-measure; once the floors outgrow the container the
      * table's used width grows past its specified 100% (CSS 2.1 §17.5.2.1) and the DIRECT
      * wrapper's keyboard-reachable overflow-x region scrolls — the SC 1.4.10-permitted
      * one-dimensional scroll, instead of unreadable shredding (see tokens/components/table.css). */
@@ -463,11 +336,8 @@
       --table-action-collection-column-width,
       var(--table-action-collection-flex-width, auto)
     );
-    /* Wrapping guard, considered for gh#262: this stays `overflow-wrap: anywhere`, NOT
-     * `word-break: keep-all`. Under `table-layout: fixed` a column cannot grow to fit an
-     * unbreakable CJK run, so keep-all would overflow/clip a long JA header instead of widening
-     * its column. With the floors guaranteeing a ~5-glyph measure, a wrapped JA header is two
-     * readable lines — never a vertical character column — and losing no text beats clipping. */
+    /* With the floors guaranteeing a ~5-glyph measure, a wrapped JA header is two readable lines —
+     * never a vertical character column — and losing no text beats clipping. */
     overflow-wrap: anywhere;
     white-space: normal;
     vertical-align: top;
@@ -492,16 +362,10 @@
 }
 
 @layer components {
-  /* ── Table · `preset="stacked-record-collection"` (gh#293 restore — SCR-215) ─────────────────
-   * The canonical WIDE, heterogeneous record collection: a table whose column count/content
-   * cannot be squeezed into any fixed narrow-frame measure at all — an admin detail row with many
-   * disparate, free-text fields of unpredictable length, not a dense queue (contrast
-   * `action-collection` above, which keeps the real table and only re-sizes columns). Below
-   * `collapseBelow` the `<thead>` hides and every `<tr>` becomes a bordered key-value CARD: each
-   * `TableCell`'s own `label` (its column header text, carried per-cell since the `<th>`
+  /* Below `collapseBelow` the `<thead>` hides and every `<tr>` becomes a bordered key-value CARD:
+   * each `TableCell`'s own `label` (its column header text, carried per-cell since the `<th>`
    * association is now hidden) renders inline above the value, taking over the accessible-name
-   * role. Above the step it is a byte-for-byte ordinary table. Measured against the TABLE'S OWN
-   * container, not the viewport, same as `action-collection`. */
+   * role. */
   .ui-table-stacked-collection {
     container: ui-table-stacked-collection / inline-size;
   }
@@ -525,29 +389,17 @@
  * half-collapse it, and this keeps the whole tier — type AND column measures — decided in ONE
  * place. See styles/base.css · THE LAYER CONTRACT. */
 @layer components {
-  /* DATA TABLE — the pieces around the already-tokenized cell rhythm (#319).
-   *
-   * These belong in `components`, not in the responsive layer above: an append placed them there
+  /* These belong in `components`, not in the responsive layer above: an append placed them there
    * by mistake (it targeted the file's last `}`, which closes the layer, not the layer's own end)
-   * and `table-action-collection.test.tsx` catches exactly that — the responsive layer is
-   * reserved for media-queried rules.
-   *
-   * Four of them are scoped through `.ui-data-table-root` rather than left bare, because the last
-   * layer was doing work for them: the icon rules sit on svgs inside real <Button>s where
-   * `.ui-button svg` (0,1,1) outranks a bare class, and the skeleton chip's radius competes with
-   * `.ui-skeleton-block` from the later-imported alert-layout.css. Demoting them without raising
-   * specificity would have shrunk the toolbar/pagination glyphs and re-rounded the chips. */
+   * and `table-action-collection.test.tsx` catches exactly that — the responsive layer is reserved
+   * for media-queried rules. */
 
-  /* DATA TABLE — the pieces around the already-tokenized cell rhythm (#319). */
-
-  /* The select column holds only a checkbox, so it takes a fixed narrow width rather than a
- * share of the flexible content columns. */
   .ui-data-table-select-column {
     inline-size: var(--table-select-column-width);
   }
 
-  /* A sticky header floats over the scrolled rows, so it joins the one system overlay layer
- * rather than carrying a private z-index that a portaled surface could out-rank. */
+  /* A sticky header floats over the scrolled rows, so it joins the one system overlay layer rather
+   * than carrying a private z-index that a portaled surface could out-rank. */
   .ui-data-table-sticky-header {
     position: sticky;
     inset-block-start: 0;
@@ -593,9 +445,7 @@
 
 @layer godxjp-ui-responsive {
   /* Below the step the SOURCE measures are re-pointed to their compact tier (and the type / row
-   * density with them); nothing else moves. One block per canonical step — a media/container
-   * query cannot read a `var()`, so the tokenized scale is written out (sm 40rem · md 48rem ·
-   * lg 64rem · xl 80rem, the same steps as `--master-detail-collapse-below`). */
+   * density with them); nothing else moves. */
   @container ui-table-collection (width < 40rem) {
     [data-collapse-below="sm"] [data-slot="table"] {
       --table-action-collection-primary-width: var(--table-action-collection-primary-width-compact);
@@ -608,9 +458,7 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
-       * before; a consumer whose column count exceeds the priority budget raises it and the
-       * surrounding scroll region takes the overflow instead of the cells. */
+      /* The legibility floor. */
       min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
@@ -620,12 +468,8 @@
       white-space: normal;
     }
 
-    /* SEVEN columns and up — the wide-collection floor tier (gh#262). Percent shares are
-     * guaranteed to sum past 100% here and fixed layout would normalize them into sub-glyph
-     * columns, so every column (the unmarked free-text one included) takes its rem floor
-     * instead; the over-constrained table grows past 100% and its wrapper scrolls. Up to six
-     * columns this rule never matches and the percent tier above keeps the canonical queues
-     * scroll-free — the preset's documented column-count ceiling. */
+    /* Up to six columns this rule never matches and the percent tier above keeps the canonical
+     * queues scroll-free — the preset's documented column-count ceiling. */
     [data-collapse-below="sm"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
       --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
       --table-action-collection-secondary-width: var(
@@ -648,9 +492,7 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
-       * before; a consumer whose column count exceeds the priority budget raises it and the
-       * surrounding scroll region takes the overflow instead of the cells. */
+      /* The legibility floor. */
       min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
@@ -660,12 +502,8 @@
       white-space: normal;
     }
 
-    /* SEVEN columns and up — the wide-collection floor tier (gh#262). Percent shares are
-     * guaranteed to sum past 100% here and fixed layout would normalize them into sub-glyph
-     * columns, so every column (the unmarked free-text one included) takes its rem floor
-     * instead; the over-constrained table grows past 100% and its wrapper scrolls. Up to six
-     * columns this rule never matches and the percent tier above keeps the canonical queues
-     * scroll-free — the preset's documented column-count ceiling. */
+    /* Up to six columns this rule never matches and the percent tier above keeps the canonical
+     * queues scroll-free — the preset's documented column-count ceiling. */
     [data-collapse-below="md"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
       --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
       --table-action-collection-secondary-width: var(
@@ -688,9 +526,7 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
-       * before; a consumer whose column count exceeds the priority budget raises it and the
-       * surrounding scroll region takes the overflow instead of the cells. */
+      /* The legibility floor. */
       min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
@@ -700,12 +536,8 @@
       white-space: normal;
     }
 
-    /* SEVEN columns and up — the wide-collection floor tier (gh#262). Percent shares are
-     * guaranteed to sum past 100% here and fixed layout would normalize them into sub-glyph
-     * columns, so every column (the unmarked free-text one included) takes its rem floor
-     * instead; the over-constrained table grows past 100% and its wrapper scrolls. Up to six
-     * columns this rule never matches and the percent tier above keeps the canonical queues
-     * scroll-free — the preset's documented column-count ceiling. */
+    /* Up to six columns this rule never matches and the percent tier above keeps the canonical
+     * queues scroll-free — the preset's documented column-count ceiling. */
     [data-collapse-below="lg"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
       --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
       --table-action-collection-secondary-width: var(
@@ -728,9 +560,7 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
-      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
-       * before; a consumer whose column count exceeds the priority budget raises it and the
-       * surrounding scroll region takes the overflow instead of the cells. */
+      /* The legibility floor. */
       min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
@@ -740,12 +570,8 @@
       white-space: normal;
     }
 
-    /* SEVEN columns and up — the wide-collection floor tier (gh#262). Percent shares are
-     * guaranteed to sum past 100% here and fixed layout would normalize them into sub-glyph
-     * columns, so every column (the unmarked free-text one included) takes its rem floor
-     * instead; the over-constrained table grows past 100% and its wrapper scrolls. Up to six
-     * columns this rule never matches and the percent tier above keeps the canonical queues
-     * scroll-free — the preset's documented column-count ceiling. */
+    /* Up to six columns this rule never matches and the percent tier above keeps the canonical
+     * queues scroll-free — the preset's documented column-count ceiling. */
     [data-collapse-below="xl"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
       --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
       --table-action-collection-secondary-width: var(
@@ -756,13 +582,7 @@
     }
   }
 
-  /* ── `preset="stacked-record-collection"` (gh#293 restore — SCR-215) ────────────────────────
-   * Below the step the `<thead>` hides and each `<tr>` becomes a bordered key-value card. This is
-   * a genuine layout-mode swap (`display: block`) rather than a measure re-point, because the
-   * whole point of this preset is fields too heterogeneous for ANY fixed column measure to hold —
-   * unlike `action-collection`'s fixed-layout column budget above. Above the step, none of this
-   * matches and the table renders exactly as an ordinary `<table>`. One block per canonical step,
-   * same sm/md/lg/xl scale as `action-collection`. */
+  /* Above the step, none of this matches and the table renders exactly as an ordinary `<table>`. */
   @container ui-table-stacked-collection (width < 40rem) {
     [data-collapse-below="sm"] [data-slot="table"] {
       display: block;

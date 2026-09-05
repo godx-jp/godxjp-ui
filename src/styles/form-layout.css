@@ -1,12 +1,4 @@
-/*
- * FORM — Ant-style layout. Vertical by default (label above control, LEFT-aligned). Horizontal lays
- * the label beside the control from the `collapseBelow` breakpoint UP (mobile-first): below it the
- * field collapses back to vertical. `--form-label-width` / `--form-control-width` come from the Form
- * (or a per-field override). RTL-safe: logical inline axis throughout.
- *
- * IMPORTANT: label alignment (justify/text-align: end) applies ONLY in horizontal/inline mode — never
- * to a vertical field (a right-aligned label above a full-width control is wrong, gh feedback).
- */
+/* FORM — Ant-style layout. */
 
 @layer components {
   .ui-form {
@@ -14,70 +6,31 @@
     flex-direction: column;
   }
 
-  /* Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's
-   * CardContent and its CardFooter action row. MARGIN, not flex `gap`: `gap` only reaches DIRECT
-   * children, which is dead the moment a consumer needs a CardFooter Save button to actually
-   * submit (it must stay a `<form>` descendant, so Form has to wrap CardContent — the FormFields
-   * become grandchildren, past flex `gap`'s reach). Margin-based sibling spacing works at any
-   * depth as long as the elements are literal siblings. */
+  /* Margin-based sibling spacing works at any depth as long as the elements are literal siblings.
+ */
   .ui-form > * + * {
     margin-block-start: var(--form-block-gap);
   }
 
-  /* Field-to-field row rhythm (gh#295) — MORE SPECIFIC than the rule above (two class selectors
-   * beat one), so it wins rather than stacking with it whenever two FormFields are adjacent
-   * siblings: Form's own direct children (a plain field list, no Card framing) or nested one
-   * level through CardContent (the common Card-framed, Save-button-capable case). This is what
-   * makes the rhythm hold regardless of DOM depth — the actual fix for gh#295. */
   .ui-form-field + .ui-form-field {
     margin-block-start: var(--form-field-row-gap);
   }
 
-  /* …except when the fields are ResponsiveGrid ITEMS (Form columns={n}): there the grid's own
-   * `row-gap` owns the rhythm (see the rule below), and a per-item margin double-spaces every row
-   * AND breaks column alignment — the FIRST field has no preceding sibling so no margin, while its
-   * row-mate does, shifting row 1's columns apart by exactly --form-field-row-gap and inflating
-   * every grid track by the same amount (gh#304: measured 0 / +12px tops on row 1, 89px pitch
-   * against a 77px track). Fields merely NESTED somewhere inside a grid cell (a stacked pair in one
-   * cell) are not direct children, keep the margin, and are unaffected. */
+  /* Fields merely NESTED somewhere inside a grid cell (a stacked pair in one cell) are not direct
+   * children, keep the margin, and are unaffected. */
   .ui-responsive-grid > .ui-form-field + .ui-form-field {
     margin-block-start: 0;
   }
 
-  /* …and the rhythm the grid takes over is the FORM'S, not ResponsiveGrid's generic 16px stack gap
-   * (gh#304). Handing the rows to the grid fixed the alignment but silently re-tuned the spacing:
-   * a `columns={1}` form — and every `columns={n}` form once a narrow container collapses it to one
-   * column, i.e. every phone — laid its rows out 16px apart where the SAME fields without `columns`
-   * sat 12px apart. One canonical field rhythm on both paths: --form-grid-row-gap defaults to
-   * --form-field-row-gap, and the gutter becomes a knob at the same time (rule #45, 16px default).
-   *
-   * `:has(> .ui-form-field)` — a grid whose ITEMS are FormFields is a field grid, and that is the
+  /* `:has(> .ui-form-field)` — a grid whose ITEMS are FormFields is a field grid, and that is the
    * exact condition the margin reset above tests, so the two rules can never disagree about which
-   * mechanism owns a row. Deliberately NOT `.ui-form > …`: `columns={n}` is only one way to write
-   * this layout, and the Card-framed hand-written one (`Form > Card > CardContent > ResponsiveGrid
-   * > FormField*` — what a form with several titled sections must do, and what docs' invoice-form
-   * does) is the other. Keying on ancestry would give the two identical-looking layouts different
-   * row rhythms, which is the depth-dependence gh#295 removed from this file in the first place.
-   * A card/tile grid inside a form has no FormField items and keeps ResponsiveGrid's stack gap. */
+   * mechanism owns a row. */
   .ui-responsive-grid:has(> .ui-form-field) {
     row-gap: var(--form-grid-row-gap);
     column-gap: var(--form-grid-column-gap);
   }
 
-  /* colSpan is honoured only where the grid ACTUALLY HAS more than one column.
-   *
-   * `grid-column: span 2` on a one-column grid does not quietly degrade to one column: per spec it
-   * FABRICATES an implicit second track, that track auto-sizes to its content, and the real
-   * `minmax(0, 1fr)` track is left with the remainder — which at 320px is 0px. The field in it
-   * collapsed to zero width, and its Input's absolutely-positioned trailing affix (the clear
-   * button, `inset-inline-end: 8px` off a zero-width box) landed outside the frame with no
-   * scrollable ancestor between them: a control the keyboard could focus and the user could never
-   * see. That is a WCAG 2.1.1 failure, and a resting screenshot cannot show it because the field
-   * does not overflow — it disappears.
-   *
-   * The breakpoint mirrors ResponsiveGrid's own 2-column container query in layout.css, so the
-   * span turns on exactly when the second column does. Below it, `auto` puts the field in the
-   * single real track like every other field. */
+  /* colSpan is honoured only where the grid ACTUALLY HAS more than one column. */
   .ui-responsive-grid > .ui-form-field {
     grid-column: auto;
   }
@@ -88,31 +41,20 @@
     }
   }
 
-  /* Vertical (default + collapsed state): label stacked above the control column, LEFT-aligned.
-   * Gap = the shared --field-label-gap so FormField matches Descriptions and every label-above stack. */
+  /* Vertical (default + collapsed state): label stacked above the control column, LEFT-aligned. */
   .ui-form-field {
     display: grid;
     gap: var(--field-label-gap);
-    /* Fill the container's inline (horizontal) axis in ANY parent — a Form's
-     * flex column (.ui-form), a ResponsiveGrid cell, or a bare flex column /
-     * block — instead of collapsing to the content's max-content width. This
-     * mirrors Ant Design's Form.Item, which sets the item/control to width:100%
-     * in vertical layout rather than relying on the parent to stretch it. Without
-     * this, a flex-column parent maps `align-self:start` onto the inline axis and
-     * the field shrinks to its widest content (a helper-less input collapses to
-     * its default ~20ch). Inline layout opts out below (Ant: compact, content-width). */
+    /* Fill the container's inline (horizontal) axis in ANY parent — a Form's flex column
+     * (.ui-form), a ResponsiveGrid cell, or a bare flex column / block — instead of collapsing to
+     * the content's max-content width. */
     inline-size: 100%;
-    /* Never stretch to a taller grid-row sibling (e.g. a field carrying a
-     * helper/error). Stretching would let .ui-form-field-control's
-     * align-content:center vertically centre the control, so a field WITHOUT a
-     * helper sits lower than one WITH a helper in the same ResponsiveGrid row.
-     * Hugging content keeps every control top-aligned across the row. This is the
-     * BLOCK (vertical) axis only — width is pinned by inline-size:100% above. */
+    /* Never stretch to a taller grid-row sibling (e.g. a field carrying a helper/error). */
     align-self: start;
   }
 
-  /* Inline layout is intentionally compact (Ant: layout="inline"): the field
-   * hugs its content so a row of inline fields can sit side by side. */
+  /* Inline layout is intentionally compact (Ant: layout="inline"): the field hugs its content so a
+   * row of inline fields can sit side by side. */
   .ui-form-field[data-layout="inline"] {
     inline-size: auto;
   }
@@ -126,32 +68,26 @@
 
   .ui-form-field-control {
     display: grid;
-    /* Single column capped to the field width. Without an explicit track the
-     * implicit column sizes to content (max-content), so a wide control (e.g. a
-     * Select with a long value) overflows its grid cell and overlaps siblings. */
+    /* Single column capped to the field width. */
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-stack-xs); /* 4px between control and helper/error */
     min-width: 0;
     /* Cap the control width when a controlWidth is set; otherwise fill the column. */
     max-inline-size: var(--form-control-width, none);
-    /* Reserve the control-row height and centre the content so a SHORT control
-     * (switch, slider, rating, a bare checkbox/radio — anything thinner than an
-     * input) lines up with the label in a horizontal field instead of sitting
-     * high. `align-content: center` centres the content row without stretching
-     * the control; full-width inputs still fill via the 1fr column, and taller
-     * controls (textarea) simply grow past the floor. */
+    /* Reserve the control-row height and centre the content so a SHORT control (switch, slider,
+     * rating, a bare checkbox/radio — anything thinner than an input) lines up with the label in a
+     * horizontal field instead of sitting high. */
     min-height: var(--control-height);
     align-content: center;
   }
 
-  /* Let controls (and helper/error) shrink within the cell instead of forcing
-   * the column to their intrinsic width. */
+  /* Let controls (and helper/error) shrink within the cell instead of forcing the column to their
+   * intrinsic width. */
   .ui-form-field-control > * {
     min-width: 0;
   }
 
-  /* ── Horizontal — label beside control. Each block is scoped to [data-layout=horizontal|inline]
-   * so it NEVER affects a vertical field. Applies from the collapse breakpoint up (mobile-first). */
+  /* ── Horizontal — label beside control. */
 
   /* collapseBelow=false → always horizontal (all widths). */
   .ui-form-field[data-collapse-below="false"]:is(

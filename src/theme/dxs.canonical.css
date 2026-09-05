@@ -1,56 +1,21 @@
-/* ───────────────────────────────────────────────────────────────────────────
- * THE CANONICAL DXS THEME — gh#214
- *
- * The one stylesheet a DXS surface imports INSTEAD of `@godxjp/ui/styles`. It
- * makes the canonical contract the DEFAULT for every surface in the app, so no
- * page ever needs local CSS for auth geometry, density, page insets, the brand
- * logo colour, the auth divider, or the legal footer.
- *
- *   import "@godxjp/ui/theme/dxs.canonical.css";   // instead of @godxjp/ui/styles
- *
- * Prefer the RUNTIME route when the app already mounts the provider — it is the
- * same contract, switchable at runtime and persisted with the other axes:
- *
- *   <AppProvider brand="dxs"> … </AppProvider>     // writes <html data-brand="dxs">
- *
- * NOT A NEW BRAND. Every value below is canonical evidence already encoded in
- * this package — the shipped GodX Navy primary ramp, and the
- * `--auth-shell-canonical-*` measures declared in
- * `src/tokens/components/shell.css`. This file only re-points the generic knob
- * at the canonical one; it invents no colour and no geometry.
- *
- * SOURCE OF TRUTH: `src/tokens/axes.css` · `:root[data-brand="dxs"]`. This file
- * mirrors that block at `:root` for stylesheet-only apps (no provider). They are
- * asserted identical by `src/tokens/__tests__/dxs-canonical-theme.test.ts` — add
- * a knob to BOTH or to neither.
- *
- * OVERRIDING: declare your own root block AFTER this import; at equal
- * specificity the later declaration wins. Token overrides only — never component
- * CSS or Tailwind utilities in a theme file.
- * ─────────────────────────────────────────────────────────────────────────── */
+/* It makes the canonical contract the DEFAULT for every surface in the app, so no page ever needs
+ * local CSS for auth geometry, density, page insets, the brand logo colour, the auth divider, or
+ * the legal footer. import "@godxjp/ui/theme/dxs.canonical.css"; // instead of @godxjp/ui/styles
+ * Prefer the RUNTIME route when the app already mounts the provider — it is the same contract,
+ * switchable at runtime and persisted with the other axes: <AppProvider brand="dxs"> …
+ * </AppProvider> // writes <html data-brand="dxs"> NOT A NEW BRAND. */
 
 @import "@godxjp/ui/styles";
 
 :root {
-  /* ── Brand palette — the shipped GodX Navy ramp (identical to the `brand`
-   *    axis preset). The emerald IDENTITY mark is deliberately NOT here:
-   *    `--logo-godx-color` / `--logo-wordmark-color` default to the `--brand`
-   *    IDENTITY role at their call sites and never read `--primary` (nor the
-   *    `--success` status green — gh#250), so a re-themed action colour can
-   *    never recolour the GoDX mark or wordmark. */
   --primary: 211 73% 15%;
   --primary-foreground: 0 0% 100%;
   --ring: 24 99% 46%;
   --accent: 24 99% 95%;
   --accent-foreground: 24 99% 28%;
 
-  /* ── Canonical auth surface — 36px controls, 22.5rem card measure, 16px page
-   *    inset (15px below 30rem, see the media query below). This is what
-   *    `AuthShell variant="canonical"` applies per-instance, made the default
-   *    for every auth surface in the app. `variant="canonical"` still owns the
-   *    COMPACT CARD density (`[data-density="compact"]` is element-scoped and
-   *    cannot be reached from a token), so keep passing it for the full
-   *    canonical card rhythm. */
+  /* ── Canonical auth surface — 36px controls, 22.5rem card measure, 16px page inset (15px below
+   * 30rem, see the media query below). */
   --auth-shell-control-height: var(--auth-shell-canonical-control-height);
   --auth-shell-heading-size: var(--auth-shell-canonical-heading-size);
   --auth-shell-card-max-width: var(--auth-shell-canonical-card-max-width);

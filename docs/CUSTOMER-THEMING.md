@@ -2,9 +2,7 @@
 
 The design system ships a complete, **zero-config default theme**. Two audiences:
 
-- **Internal apps** — just import the styles. No configuration needed.
-- **Customer apps** — override a handful of **anchor tokens** in your own `theme.css`; the whole
-  system rescales/retints in proportion (golden-ratio type & radius, derived shadow ramp, etc.).
+- **Internal apps** — just import the styles. No configuration needed. - **Customer apps** — override a handful of **anchor tokens** in your own `theme.css`; the whole system rescales/retints in proportion (golden-ratio type & radius, derived shadow ramp, etc.).
 
 ---
 
@@ -14,55 +12,25 @@ The design system ships a complete, **zero-config default theme**. Two audiences
 import "@godxjp/ui/styles";
 ```
 
-That single import ships everything: colors, the bundled fonts (**Noto Sans JP** as the default face —
-including the Vietnamese coverage — with **M PLUS 2** as the fallback, self-bundled &
-subsetted), the golden-ratio type scale, spacing grid, radius scale, shadow ramp, and all component
-CSS. Nothing else to configure. Pick density per surface with
-`<PageContainer density="compact | default | comfortable">`.
+That single import ships everything: colors, the bundled fonts (**Noto Sans JP** as the default face — including the Vietnamese coverage — with **M PLUS 2** as the fallback, self-bundled & subsetted), the golden-ratio type scale, spacing grid, radius scale, shadow ramp, and all component CSS. Nothing else to configure. Pick density per surface with `<PageContainer density="compact | default | comfortable">`.
 
 ---
 
-## Slim CSS — ship only the layers you use
+## CSS entries — `styles` or `styles/core`, nothing smaller
 
-`@godxjp/ui/styles` bundles every component's CSS plus the fonts. To ship only
-what you render, import the foundation plus the per-layer files you use (these
-mirror the JS subpaths, so the CSS tree-shakes the same way):
+`@godxjp/ui/styles` bundles every component's CSS plus the fonts. When you manage fonts yourself (next/font, a system stack, a browser extension that must not ship font files), load the same layers without the faces:
 
 ```css
-@import "@godxjp/ui/styles/base"; /* REQUIRED: tailwind + tokens + @layer base */
-@import "@godxjp/ui/styles/control"; /* Button, Input, Select, Textarea, toggles */
-@import "@godxjp/ui/styles/form-layout"; /* FormField */
-@import "@godxjp/ui/styles/dialog-layout"; /* Dialog */
-@import "@godxjp/ui/styles/card-layout"; /* Card */
-@import "@godxjp/ui/styles/layout"; /* Flex/Grid spacing helpers */
-/* …only what you use. Available: shell-layout, layout, control, card-layout,
-   text-layout, table-layout, dialog-layout, alert-layout, badge-layout,
-   data-display-layout, data-entry-layout, form-layout, navigation-layout,
-   chart-layout, density. */
-@import "@godxjp/ui/styles/fonts"; /* OPTIONAL bundled faces — MUST come AFTER base */
+@import "@godxjp/ui/styles/core"; /* every component layer, no @font-face */
 ```
 
-Rules: import `base` FIRST (the layer files declare `@layer components` and use
-`@apply`, which need Tailwind + tokens already loaded). Skip
-`@godxjp/ui/styles/fonts` when you manage fonts yourself and set the font tokens
-(next section). A ~10-component site typically drops component CSS ~142K → ~26K
-gzip.
-
-> **Import order rule — `fonts` AFTER `base`.** `styles/base` pulls in the token
-> layers, whose font-agnostic `:root { --font-sans-base: <system stack> }` sits at
-> exactly the same specificity (0,1,0) as the bundle's fill in `styles/fonts`, so
-> the **later** import wins. Put `styles/fonts` first and the bundled faces
-> silently never apply — you still ship ~800 KB of `@font-face` that can never
-> render (issue #210). The all-in-one `@godxjp/ui/styles` entry already imports
-> `fonts.css` after the token layers, so it needs no thought.
+The per-layer files (`control`, `card-layout`, `navigation-layout`, …) are the package's internal structure, **not a public menu**. Layers share rules — a Select's rows and a menu's surface, a form's rhythm, a card's header type — so a page that loads a subset renders naked menus and unsized rows with no error. The runtime `visual-audit` reports it as `css-layers-missing`.
 
 ---
 
 ## Fonts — token-driven, per-language
 
-The base ships **no hardcoded brand face** (`--font-sans-base` is a pure system
-stack). Supply your own faces (next/font, `@fontsource`, self-host) and set
-tokens — never edit the library. Two modes, both token-only:
+The base ships **no hardcoded brand face** (`--font-sans-base` is a pure system stack). Supply your own faces (next/font, `@fontsource`, self-host) and set tokens — never edit the library. Two modes, both token-only:
 
 ```css
 /* 1. One face everywhere */
@@ -104,48 +72,18 @@ tokens yourself rather than relying on the bundle.) Headings read
 Import the styles, then set anchor tokens in your app's `theme.css` (loaded after the import).
 **Never edit the package token files** — override from your app.
 
-```css
+````css
 @import "@godxjp/ui/styles";
 
-:root {
-  /* ── Brand color (HSL components — no hsl() wrapper) ─────────────── */
-  --primary: 211 73% 15%; /* your brand hue → buttons, links, focus ring, brand chrome */
-  --primary-foreground: 0 0% 100%; /* text on --primary */
-  --ring: 24 99% 46%; /* focus ring (often a brand accent) */
-  --accent: 24 99% 95%; /* hover/active surface tint */
-  --accent-foreground: 24 99% 28%;
+:root { /* ── Brand color (HSL components — no hsl() wrapper) ─────────────── */ --primary: 211 73% 15%; /* your brand hue → buttons, links, focus ring, brand chrome */ --primary-foreground: 0 0% 100%; /* text on --primary */ --ring: 24 99% 46%; /* focus ring (often a brand accent) */ --accent: 24 99% 95%; /* hover/active surface tint */ --accent-foreground: 24 99% 28%;
 
-  /* ── Type scale — ONE knob, golden-ratio derived ────────────────── */
-  --font-size-base: 1rem; /* 16px (default 14px). Every step (xs…2xl) + headings rescale by ratio. */
-  --font-size-ratio: 1.1227; /* φ^¼ default — raise toward φ=1.618 for a more dramatic scale. */
+/* ── Type scale — ONE knob, golden-ratio derived ────────────────── */ --font-size-base: 1rem; /* 16px (default 14px). Every step (xs…2xl) + headings rescale by ratio. */ --font-size-ratio: 1.1227; /* φ^¼ default — raise toward φ=1.618 for a more dramatic scale. */
 
-  /* ── Radius — ONE knob, golden-ratio derived ───────────────────── */
-  --radius: 0.5rem; /* 8px (default 6px). xs…2xl rescale by --radius-ratio (φ). */
+/* ── Radius — ONE knob, golden-ratio derived ───────────────────── */ --radius: 0.5rem; /* 8px (default 6px). xs…2xl rescale by --radius-ratio (φ). */
 
-  /* ── Shadow tint — ONE knob ─────────────────────────────────────── */
-  --shadow-color: 12 26 49; /* RGB channels (default 0 0 0). Tints the WHOLE shadow ramp. */
+/* ── Shadow tint — ONE knob ─────────────────────────────────────── */ --shadow-color: 12 26 49; /* RGB channels (default 0 0 0). Tints the WHOLE shadow ramp. */
 
-  /* ── Brand depth — all opt-in, all quiet by default ─────────────── */
-  --shadow-glow: 0 8px 20px hsl(var(--primary) / 0.32); /* glow halo on the primary CTA */
-  --card-shadow:
-    0 1px 2px rgb(12 26 49 / 0.06), 0 10px 28px -14px rgb(12 26 49 / 0.2); /* lift every Card */
-  --focus-ring-color: var(--ring); /* hue of every focus ring */
-  --focus-ring-width: 2px; /* thickness of every focus ring — 0 turns it OFF */
-  --focus-ring-opacity: 1; /* alpha of every focus ring */
-  --focus-ring-offset: 0px; /* gap, outline-form rings only (star, dot, anchor) */
-  --gradient-hero: linear-gradient(
-    180deg,
-    hsl(var(--accent)),
-    transparent
-  ); /* PageContainer header banner */
-  --gradient-glow: radial-gradient(
-    60% 70% at 90% -8%,
-    hsl(var(--primary) / 0.1),
-    transparent 70%
-  ); /* AppShell ambient wash */
-  --overlay-background: rgb(12 26 49 / 0.55); /* modal scrim (Dialog / Sheet / Drawer) */
-}
-```
+/* ── Brand depth — all opt-in, all quiet by default ─────────────── */ --shadow-glow: 0 8px 20px hsl(var(--primary) / 0.32); /* glow halo on the primary CTA */ --card-shadow: 0 1px 2px rgb(12 26 49 / 0.06), 0 10px 28px -14px rgb(12 26 49 / 0.2); /* lift every Card */ --focus-ring-color: var(--ring); /* hue of every focus ring */ --focus-ring-width: 2px; /* thickness of every focus ring — 0 turns it OFF */ --focus-ring-opacity: 1; /* alpha of every focus ring */ --focus-ring-offset: 0px; /* gap, outline-form rings only (star, dot, anchor) */ --gradient-hero: linear-gradient( 180deg, hsl(var(--accent)), transparent ); /* PageContainer header banner */ --gradient-glow: radial-gradient( 60% 70% at 90% -8%, hsl(var(--primary) / 0.1), transparent 70% ); /* AppShell ambient wash */ --overlay-background: rgb(12 26 49 / 0.55); /* modal scrim (Dialog / Sheet / Drawer) */ } ```
 
 ### The anchor tokens (single knobs that propagate)
 
@@ -164,9 +102,7 @@ Import the styles, then set anchor tokens in your app's `theme.css` (loaded afte
 
 ### Focus ring — one definition, three levels of override
 
-Every keyboard-focus ring in the system is drawn by a single rule
-(`src/styles/focus-ring.css`) reading the four tokens above. Nothing else paints
-one; a test fails the build if a stylesheet tries.
+Every keyboard-focus ring in the system is drawn by a single rule (`src/styles/focus-ring.css`) reading the four tokens above. Nothing else paints one; a test fails the build if a stylesheet tries.
 
 That means retuning is a one-liner and it reaches everything:
 
@@ -175,12 +111,9 @@ That means retuning is a one-liner and it reaches everything:
   --focus-ring-color: 24 99% 46%; /* every ring, brand orange */
   --focus-ring-width: 3px; /* every ring, thicker */
 }
-```
+````
 
-**Per component.** A component that genuinely needs a different ring publishes
-its own knob and the rule picks it up locally — Toggle and TimeInput ship a
-heavier, softer ring because they are filled surfaces where a hard 2px reads as
-a second border:
+**Per component.** A component that genuinely needs a different ring publishes its own knob and the rule picks it up locally — Toggle and TimeInput ship a heavier, softer ring because they are filled surfaces where a hard 2px reads as a second border:
 
 ```css
 :root {
@@ -197,35 +130,19 @@ a second border:
 <div style={{ "--focus-ring-color": "0 84% 60%" } as React.CSSProperties}>…</div>
 ```
 
-**Turning it off** — `--focus-ring-width: 0`, at any of the three levels. It
-ships **on** (WCAG 2.4.7 / 2.4.11); switching it off is a deliberate act on your
-side, never a default of this package. Removing the visible focus indicator
-fails WCAG 2.4.7 — do it only where another indicator takes over.
+**Turning it off** — `--focus-ring-width: 0`, at any of the three levels. It ships **on** (WCAG 2.4.7 / 2.4.11); switching it off is a deliberate act on your side, never a default of this package. Removing the visible focus indicator fails WCAG 2.4.7 — do it only where another indicator takes over.
 
-**Adding your own component to the system**: put `ui-focus-ring` (or
-`ui-focus-ring-outline` when the mark needs a gap) on the focusable element. Do
-not hand-write a `:focus-visible` box-shadow — that is what drifted into four
-incompatible rings before this rule existed.
-
-Semantic status colors (`--success/-warning/-info/-attention/-destructive`) are **fixed** so a
-"rejected" badge means the same in every brand — override them only if your brand genuinely
-redefines status meaning.
+**Adding your own component to the system**: put `ui-focus-ring` (or `ui-focus-ring-outline` when the mark needs a gap) on the focusable element.
 
 ### What does NOT need an anchor
 
-- **Spacing** is a fixed 4px grid (`--space-*`, Tailwind/Material standard) — predictable, not
-  rescaled by brand. Density (`<PageContainer density>`) scales component sizes, not the grid.
-- **Pills / squared corners** use `--radius-pill` (9999px) / `--radius-sharp` (0) — full-round
-  shapes stay round regardless of `--radius`.
+Density (`<PageContainer density>`) scales component sizes, not the grid. - **Pills / squared corners** use `--radius-pill` (9999px) / `--radius-sharp` (0) — full-round shapes stay round regardless of `--radius`.
 
 ---
 
 ## Multi-tenant (one app, many brands)
 
-Scope the overrides under a tenant attribute instead of `:root`. The colour utilities are declared
-with `@theme inline`, so a scoped `--primary` (and the other anchors) **re-resolve at the element**
-— `bg-primary`, `text-success`, every component surface, the focus ring, the brand glow, gradients
-and the modal scrim all retint inside the scope:
+Scope the overrides under a tenant attribute instead of `:root`. The colour utilities are declared with `@theme inline`, so a scoped `--primary` (and the other anchors) **re-resolve at the element** — `bg-primary`, `text-success`, every component surface, the focus ring, the brand glow, gradients and the modal scrim all retint inside the scope:
 
 ```css
 [data-tenant="betoya"] {
@@ -240,14 +157,6 @@ and the modal scrim all retint inside the scope:
 }
 ```
 
-Set `data-tenant` on the app root. Two CSS-inheritance caveats for the **scoped** case (a single
-`:root` brand theme is unaffected — there, overriding just `--radius` / `--shadow-color` cascades):
+Set `data-tenant` on the app root. Two CSS-inheritance caveats for the **scoped** case (a single `:root` brand theme is unaffected — there, overriding just `--radius` / `--shadow-color` cascades):
 
-- **Radius & shadow-tint don't cascade from a scoped anchor.** `--radius-{xs…2xl}`, `--card-radius`,
-  `--control-radius` and the `--shadow-{xs…2xl}` ramp are computed at their declaring element, so a
-  scoped `--radius` / `--shadow-color` override won't reach them. For a scoped re-theme, re-declare
-  the derived tokens you need (e.g. `--card-radius: var(--radius)`, or set `--card-shadow` to a
-  literal value). See `docs/showcase/acme-portal.tsx` for a full scoped example.
-- **Portaled overlays escape the subtree.** Dropdowns, Selects, Dialogs and Tooltips render in a
-  portal at `<body>`, outside the `[data-tenant]` element — put the same `data-tenant` attribute on
-  your portal container so they inherit the tenant's tokens (including `--overlay-background`).
+- **Radius & shadow-tint don't cascade from a scoped anchor.** `--radius-{xs…2xl}`, `--card-radius`, `--control-radius` and the `--shadow-{xs…2xl}` ramp are computed at their declaring element, so a scoped `--radius` / `--shadow-color` override won't reach them. For a scoped re-theme, re-declare the derived tokens you need (e.g. `--card-radius: var(--radius)`, or set `--card-shadow` to a literal value).

@@ -1,21 +1,7 @@
-/*
- * LAYOUT — Flex / Page shell / EmptyState.
- * Apps: <Flex gap> · <PageContainer> — never ui-flex-* or Tailwind gap-*.
- */
+/* LAYOUT — Flex / Page shell / EmptyState. */
 
 @layer components {
-  /* SEPARATOR — a tokenized rule, optionally INTERRUPTED by a label (gh#308).
-   *
-   * Two shapes share one class. WITHOUT a label the element IS the rule, exactly as before: the
-   * `:not([data-labelled])` guard keeps the plain form byte-identical (the `1px` and the `--border`
-   * are now `--separator-rule-{size,color}`, whose defaults are those same values). WITH a label
-   * the root becomes the three-cell grid `rule · label · rule` — `minmax(0, 1fr)` on both halves so
-   * a long ja/vi label clamps the rules instead of overflowing the container, and `auto` on the
-   * label so it is never squeezed to zero. `labelAlign` only re-measures the SHORT half, and it is
-   * a grid TRACK on the inline axis, so start/end swap under `dir="rtl"` with no extra rule.
-   *
-   * `tone` re-points the two colour knobs on the root rather than restating `background`/`color`
-   * per tone, so one declaration paints both shapes and a service override still wins. */
+  /* Two shapes share one class. */
   .ui-separator {
     flex-shrink: 0;
   }
@@ -99,10 +85,7 @@
   }
 
   /* Decorative brand SPOTLIGHT backdrop — the token-driven radial halo behind a hero / auth card,
-   * replacing a hand-authored `radial-gradient(... hsl(var(--primary)/.18) ...)`. Apply to an
-   * `aria-hidden` layer (e.g. an absolutely-positioned full-bleed div behind the card). All geometry
-   * and tint come from the `--brand-glow*` tokens, so a theme retints/repositions it with no markup
-   * change. `pointer-events:none` keeps the backdrop from stealing clicks from the card above it. */
+   * replacing a hand-authored `radial-gradient(... hsl(var(--primary)/.18) ...)`. */
   .ui-brand-glow {
     background-image: var(--brand-glow);
     pointer-events: none;
@@ -181,9 +164,7 @@
   .ui-flex-gap-xs {
     gap: var(--space-stack-xs);
   }
-  /* Match the other `.ui-stack-*` sizes: a stack is a vertical column, not a row.
-   * Without this, `gap="xs"` stacks (e.g. ToolbarGroup label + control) laid out
-   * as a row and squeezed CJK labels into a vertical wrap. */
+  /* Match the other `.ui-stack-*` sizes: a stack is a vertical column, not a row. */
   .ui-stack-xs {
     flex-direction: column;
     gap: var(--space-stack-xs);
@@ -250,12 +231,7 @@
     gap: var(--space-inline-lg);
   }
 
-  /* ResponsiveGrid OWNS its query container. The component wraps the grid in
-   * `.ui-responsive-grid-scope` (container-type: inline-size, named `responsive-grid`) so the
-   * column breakpoints resolve against the WIDTH AVAILABLE TO THE GRID — not the viewport and not
-   * an undeclared ancestor `container-type`. This makes it correct inside a narrow card, a
-   * SplitPane aside, or a bare `<div>`; it can never silently stay one column for want of an
-   * external container context (gh#165). Named so it queries its own scope, never a closer one. */
+  /* ResponsiveGrid OWNS its query container. */
   .ui-responsive-grid-scope {
     container: responsive-grid / inline-size;
   }
@@ -270,28 +246,9 @@
     min-width: 0;
   }
 
-  /* MasterDetail owns its tracks AND its collapse threshold — both token-driven (gh#223).
-   *
-   * WHY FLEX AND NOT `@container (min-width: …)`: a media/container-query CONDITION cannot read a
-   * `var()` — it is resolved before custom properties, so a tokenised breakpoint is impossible
-   * there (the reason the first cut hard-coded `40rem`, violating rule #45). The flex threshold
-   * below ("Holy Albatross") puts the breakpoint in a `calc()`, where a `var()` DOES resolve, so
-   * `--master-detail-collapse-below` is a genuine knob a service theme can retune once globally.
-   *
-   * How it reads: the fluid region's flex-basis is `(threshold - 100%) * 999`, where 100% is the
-   * composition's own inline size (so, like the old container query, the decision comes from the
-   * space available to the layout — never the viewport).
-   *   · width < threshold → a huge positive basis → each region takes a whole flex line and
-   *     shrinks to it: master stacked above detail, both full width.
-   *   · width ≥ threshold → the calc goes negative and is clamped to 0 → one line: the fluid
-   *     region absorbs the free space while the rail keeps its token width (`max()` keeps the
-   *     rail's basis at the preset because a negative operand can never win a max).
-   *
-   * `data-rail` picks WHICH region is the fixed rail. Default `detail` = the canonical
-   * "fluid list + fixed detail rail" (1fr / 320px) composition; `master` puts the fixed rail on
-   * the leading edge for a category/navigator list. DOM order is always master → detail, so the
-   * stacked order is list-then-detail either way, and the flex row follows the writing direction
-   * (RTL-safe without a single physical property). */
+  /* The flex threshold below ("Holy Albatross") puts the breakpoint in a `calc()`, where a `var()`
+   * DOES resolve, so `--master-detail-collapse-below` is a genuine knob a service theme can retune
+   * once globally. */
   .ui-master-detail {
     display: flex;
     flex-wrap: wrap;
@@ -331,25 +288,16 @@
     flex: 1 1 calc((var(--master-detail-collapse-below) - 100%) * 999);
   }
 
-  /* The fixed rail. */
   .ui-master-detail[data-rail="detail"] > .ui-master-detail-detail,
   .ui-master-detail[data-rail="master"] > .ui-master-detail-master {
     flex: 0 1
       max(var(--master-detail-rail-size), calc((var(--master-detail-collapse-below) - 100%) * 999));
   }
 
-  /* Bounded master viewport (gh#231) — OPT-IN via `masterViewport`. `auto` (the default) emits no
-   * bound at all, so an existing composition renders byte-identically; the two presets cap the
-   * collection's BLOCK size with a token and scroll it INSIDE the region, which is what keeps a
-   * long real collection from pushing the detail thousands of pixels below the fold once the
-   * layout stacks. Block axis only — the inline axis stays owned by the flex threshold above, so
-   * the bound is writing-direction agnostic (RTL-safe).
-   *
-   * A11y: the region carries tabIndex={0} in this mode (see master-detail.tsx) so the scroll
-   * container is reachable and scrollable by keyboard alone, and the inset below reserves room
-   * for a focused row's focus ring — an overflow container clips BOTH axes, so a ring drawn at
-   * the region's edge would otherwise be cut. Focus is never trapped: the region is a plain tab
-   * stop that Tab/Shift+Tab leave normally. */
+  /* `auto` (the default) emits no bound at all, so an existing composition renders
+   * byte-identically; the two presets cap the collection's BLOCK size with a token and scroll it
+   * INSIDE the region, which is what keeps a long real collection from pushing the detail
+   * thousands of pixels below the fold once the layout stacks. */
   .ui-master-detail[data-master-viewport="compact"] > .ui-master-detail-master,
   .ui-master-detail[data-master-viewport="standard"] > .ui-master-detail-master {
     overflow-y: auto;
@@ -366,10 +314,6 @@
     max-block-size: var(--master-detail-master-viewport-standard);
   }
 
-  /* ── ServiceRolePanel (gh#319) ─────────────────────────────────────────────────
-   * MasterDetail above owns every bit of the two-track geometry; what follows is only the role
-   * LIST that sits in the master rail. `.ui-service-role-panel` was a bare hook (class emitted,
-   * no rule anywhere), so all of this used to be Tailwind literals on the component. */
   .ui-service-role-panel-list {
     display: flex;
     flex-direction: column;
@@ -378,8 +322,7 @@
   }
 
   /* One role: the select button plus the optional delete button, as SIBLINGS (never nested
-   * interactive controls). Deliberately NOT `.ui-inline-xs` — that helper wraps, and the icon
-   * button must stay on the row beside the flex-1 select button at every width. */
+   * interactive controls). */
   .ui-service-role-panel-row {
     display: flex;
     align-items: center;
@@ -396,8 +339,7 @@
     padding-block: var(--service-role-panel-item-padding-block);
   }
 
-  /* The button's label column. `min-inline-size: 0` is what lets the name and the meta line
-   * truncate instead of forcing the rail wider (the flexbox min-content default). */
+  /* The button's label column. */
   .ui-service-role-panel-item-body {
     display: flex;
     flex-direction: column;
@@ -431,11 +373,8 @@
     }
   }
 
-  /* SplitPane OWNS its query container too — `.ui-split-pane-scope`
-   * (container-type: inline-size, named `split-pane`). The two-column layout is chosen from the
-   * pane's OWN available width, so a narrow embedded pane on a large viewport correctly stays a
-   * single column, and a wide pane on a small viewport can split (gh#165 — replaces the old
-   * `@media (min-width: 1080px)` viewport query that ignored the container). */
+  /* SplitPane OWNS its query container too — `.ui-split-pane-scope` (container-type: inline-size,
+   * named `split-pane`). */
   .ui-split-pane-scope {
     container: split-pane / inline-size;
   }
@@ -446,12 +385,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* CLOSED rail — `aside={null}`. The `<aside>` element is gone, so the pane is one full-width
-   * column and there is nothing left for the gap to separate. The wrappers stay mounted (that is
-   * what keeps `children` from remounting), so this attribute is the ONLY thing that changes.
-   * The second attribute is deliberate: it lifts the rule above the `[data-aside-width]` presets
-   * in the container queries below, which sit at equal specificity, so a closed pane stays one
-   * column no matter where those blocks end up in source order. */
+  /* CLOSED rail — `aside={null}`. */
   .ui-split-pane[data-aside="closed"][data-aside-width] {
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
@@ -480,15 +414,11 @@
     color: hsl(var(--muted-foreground));
   }
 
-  /* Vertical orientation: the separator is a horizontal strip, so swap the
-     geometry — give it height instead of width. v4 sets aria-orientation. */
   .ui-resizable-handle[aria-orientation="vertical"] {
     width: auto;
     height: var(--control-border-width);
   }
 
-  /* v4 react-resizable-panels marks the active (dragging) and disabled state
-     via the data-separator attribute value, not data-state. */
   .ui-resizable-handle:hover,
   .ui-resizable-handle[data-separator="active"] {
     background: hsl(var(--accent));
@@ -517,11 +447,7 @@
     }
   }
 
-  /* `lg` splits later than the other two ON PURPOSE. A rail is only useful when
-   * the column it sits beside still reads as the main one, and at the 48rem
-   * threshold a 30rem rail would leave 16.5rem of main — narrower than the rail
-   * itself, which inverts the whole point. 64rem leaves the main column 33.5rem,
-   * about twice the rail, so the page still reads main-plus-rail. */
+  /* `lg` splits later than the other two ON PURPOSE. */
   @container split-pane (min-width: 64rem) {
     .ui-split-pane[data-aside-width="lg"] {
       grid-template-columns: minmax(0, 1fr) 30rem;
@@ -534,15 +460,8 @@
   }
 
   /* `--page-band-gap` is INTERNAL plumbing, not a theming knob (the same shape as
-   * --master-detail-rail-size above): the ONE resolved number that separates the page's bands,
-   * so the container's `gap` and the toolbar band's negation of it can never disagree. It has to
-   * be a named variable because the number is not always --space-section-active — `ghost` swaps
-   * it for --space-stack-md, while the 720px step and the admin-collection preset swap the
-   * section token underneath it. A toolbar rule that hard-coded
-   * `calc(-1 * var(--space-section-active))` would look correct only because those two tokens
-   * both resolve to 16px today: retune --space-section in a service theme and a ghost page's
-   * band would overlap or float by the difference, silently. Services still retune the SPACING
-   * through --space-section / --space-section-compact, exactly as before. */
+   * --master-detail-rail-size above): the ONE resolved number that separates the page's bands, so
+   * the container's `gap` and the toolbar band's negation of it can never disagree. */
   .ui-page-container {
     --page-band-gap: var(--space-section-active);
     --page-body-gap: var(--space-section-active);
@@ -556,59 +475,20 @@
   }
 
   /* `headerScale="chrome"` — the top band is CHROME, so it sits ON the frame's edge, not in a
-   * document's top margin. The shorthand above opens every page with --space-page-active-y (24px,
-   * 16px below the 720px step), which is right for a document: a title needs air above it. Chrome
-   * does not. A chat channel head, a mail thread's subject bar, an IDE tab strip are the FRAME —
-   * measured against the design of a consumer chat screen at 1512x805, the design's channel head
-   * occupies y 0..47 while the app's identical-height head started at y 24, pushing the whole top
-   * chrome down and taking those 24px straight off the scroll viewport (design 617px of transcript,
-   * app 587px). The band heights already matched; the page was simply floating.
-   *
-   * This is the SAME question `headerScale` already answers, not a second one: "is the first row a
-   * document title or the surface's own furniture". The type step (see .ui-page-title below) and
-   * the flush edge are two consequences of that one fact, which is why they ride the same
-   * attribute rather than a second prop that every real call site would have to set in lockstep.
-   *
-   * BLOCK-START ONLY, deliberately. `headerScale` names the HEADER, so it may only speak for the
-   * top edge; the bottom belongs to `stickyFooter`, which already zeroes `padding-block-end` for
-   * its own (documented) reason. A longhand, so that contract is untouched and the shorthand above
-   * still owns the default page.
-   *
-   * Chrome is a token, default quiet (rule #44): the inset is `--page-pad-block-start-chrome`,
-   * 0 by default (flush IS the quiet state for chrome), so a service whose design grid wants its
-   * chrome to breathe retunes it once instead of forking the page shell. The specificity (0,2,0)
-   * out-ranks both the base rule and the 720px block — which re-declares the TOKEN, never this
-   * padding — so the mechanism holds identically on both sides of that step. A page that never
-   * passes `headerScale` emits no attribute and is geometrically byte-identical. */
+   * document's top margin. */
   .ui-page-container[data-header-scale="chrome"] {
     padding-block-start: var(--page-pad-block-start-chrome);
   }
 
-  /* `headerScale="chrome"`, the BAND-HEIGHT consequence of that same fact (gh#331). A document
-   * header is content-height — correctly, a title is as tall as the title is. Chrome is furniture,
-   * and furniture has a band that things centre INTO; without one, the band's vertical centre is a
-   * function of the copy inside it (measured here: 42.02px with an `extra` control, 40.38px
-   * without), so nothing in the page can ever be aligned to it and no service can aim at a number.
-   *
-   * A MIN, not a height: an `lg` control or a wrapped JA/VI channel name must still fit, and
-   * `min-block-size` floors the band without ever clipping it. `justify-content: center` is the
-   * half that makes the floor useful — a taller band with top-packed content is a band with dead
-   * air under it, not a centred one — and it is inert while the knob is `auto`, because a column
-   * whose min IS its content height has nothing to distribute. Both declarations are therefore
-   * byte-identical for every page shipped before this token existed, chrome pages included.
-   *
-   * Scoped to the container attribute (0,2,0), like every other half of the chrome contract, so a
-   * document page never matches and the 720px block (which re-declares tokens, never these
-   * properties) cannot out-rank it. The band-height axis has ONE owner and it is
-   * `--app-shell-bar-height`: see tokens/semantic/layout.css for why the DEFAULT still is not it. */
+  /* A document header is content-height — correctly, a title is as tall as the title is. */
   .ui-page-container[data-header-scale="chrome"] .ui-page-header {
     min-block-size: var(--page-header-min-block-size-chrome);
     justify-content: center;
   }
 
-  /* Horizontal page insets live on the header/body/footer — NOT the container —
-   * so the header divider and footer border span the full page width
-   * (full-bleed) while their content stays aligned with the body. */
+  /* Horizontal page insets live on the header/body/footer — NOT the container — so the header
+   * divider and footer border span the full page width (full-bleed) while their content stays
+   * aligned with the body. */
   .ui-page-header,
   .ui-page-toolbar,
   .ui-page-body,
@@ -621,19 +501,9 @@
     max-width: 42rem;
   }
 
-  /* `measure` (gh#245 / gh#247) — a bounded page measure axis ORTHOGONAL to `variant`, so the
-   * quiet `ghost` chrome and a narrow/medium measure finally compose (they used to be the same
-   * variant axis, which is exactly why a notification feed could not have both). Unlike
-   * `variant="narrow"` — which caps only the body and leaves the header `extra` action stranded
-   * at the page edge — this caps the HEADER and the BODY to ONE shared measure, so the action
-   * ends on the same edge as the body surface. Both elements carry the identical page gutters,
-   * so their content edges line up exactly at both ends.
-   *
-   * `measure="default"` is the inert default: it emits `data-measure="default"`, which matches NO
-   * rule here, so every existing page renders byte-identically (the gh#231 `data-layout="stack"`
-   * precedent). The cap is a max, never a width — below it the page stays fluid, so 390px keeps
-   * the full compact-gutter surface. The footer is deliberately NOT capped: its border/background
-   * is page-level chrome that must span the page when `stickyFooter` pins it. */
+  /* Unlike `variant="narrow"` — which caps only the body and leaves the header `extra` action
+   * stranded at the page edge — this caps the HEADER and the BODY to ONE shared measure, so the
+   * action ends on the same edge as the body surface. */
   .ui-page-container[data-measure="narrow"] .ui-page-header,
   .ui-page-container[data-measure="narrow"] .ui-page-toolbar,
   .ui-page-container[data-measure="narrow"] .ui-page-body {
@@ -646,9 +516,8 @@
     max-inline-size: var(--page-measure-medium);
   }
 
-  /* flush = full-bleed body AND toolbar band (DataTable, a full-width filter strip);
-   * header/footer keep their inset. `PageContainer.Inset` re-applies the page gutter to any
-   * padded strip inside either one, so a toolbar's own content can still align with the title. */
+  /* flush = full-bleed body AND toolbar band (DataTable, a full-width filter strip); header/footer
+   * keep their inset. */
   .ui-page-container--flush .ui-page-toolbar,
   .ui-page-container--flush .ui-page-body {
     padding-inline-start: 0;
@@ -661,21 +530,7 @@
     padding-inline-end: var(--space-page-active-x);
   }
 
-  /* `ghost` is the quiet chrome WEIGHT: no header rule, no header bottom pad. The two halves are
-   * NOT the same kind of decision, and the border half used to get it wrong.
-   *
-   * Hard-setting `none` here threw away an EXPLICIT `--page-header-divider` as well as the
-   * nothing it was meant to block — so a service could opt the page chrome into a rule and a
-   * ghost page would still refuse to draw it. Measured against the design of a consumer chat
-   * screen: the design carries TWO horizontal rules in the top chrome (channel head at y=47, work
-   * band at y=88) and the app rendered ONE (y=133) — the missing y=47 is this line eating the
-   * divider the service had already turned on. It is the identical bug that was fixed on
-   * `.ui-page-toolbar` below, and it takes the identical cure: re-declare the property from the
-   * SAME knob with a `none` fallback. Nothing inherits in, the opt-in passes through, and the
-   * default (`--page-header-divider: none`) is byte-identical to the hard-set version.
-   *
-   * `padding-bottom: 0` is untouched — THAT is the real quiet half of ghost, it answers "how loud
-   * is the chrome", not "did the service ask for a rule", and no token mediates it. */
+  /* `ghost` is the quiet chrome WEIGHT: no header rule, no header bottom pad. */
   .ui-page-container--ghost .ui-page-header {
     border-bottom: var(--page-header-divider, none);
     padding-bottom: 0;
@@ -684,15 +539,7 @@
   /* The band's half of the same contract, and it must stay in step with the header rule above:
    * neither one lets a divider INHERIT in, and both let an explicit opt-in through — otherwise a
    * ghost page would draw a rule under the band that the header itself refuses to draw, or vice
-   * versa.
-   *
-   * Inherited, and only inherited. An earlier version hard-set `none` here, which also threw away
-   * an EXPLICIT `--page-toolbar-divider` — so a service could paint the band (ghost deliberately
-   * leaves the ground alone) but could never rule it, and the two knobs disagreed about who ghost
-   * outranks. A chat shell is the case that exposed it: a quiet header, and a workflow band that
-   * has to read as a separate surface from the transcript below it. Re-declaring the property with
-   * a `none` fallback keeps the original guarantee (nothing inherits in) while letting the opt-in
-   * through, which is what the paragraph above always meant. */
+   * versa. */
   .ui-page-container--ghost .ui-page-toolbar {
     border-block-end: var(--page-toolbar-divider, none);
   }
@@ -704,15 +551,7 @@
   .ui-page-container--sticky-footer {
     min-height: 100%;
 
-    /* The container's own block-end padding must NOT stay under a sticky
-     * footer. A sticky box cannot travel into its containing block's padding
-     * area, so `bottom: 0` resolves that much ABOVE the true bottom edge —
-     * the footer floats short of the fold and page content scrolls through
-     * the gap behind it. Measured in Chromium at the 24px page padding: the
-     * footer pinned at 837px inside an 861px scroller.
-     *
-     * The space itself is still wanted, so it moves onto the body, which is
-     * what needs breathing room above the footer anyway. */
+    /* The container's own block-end padding must NOT stay under a sticky footer. */
     padding-block-end: 0;
   }
 
@@ -729,10 +568,10 @@
     background-color: hsl(var(--background));
   }
 
-  /* footerReveal="onScroll": the sticky footer stays mounted (reserving its
-   * flow space, so toggling never reflows the body → no scroll jitter) but is
-   * slid below the fold until the header leaves the viewport, then slides up.
-   * data-revealed is toggled by an IntersectionObserver on the header. */
+  /* footerReveal="onScroll": the sticky footer stays mounted (reserving its flow space, so
+   * toggling never reflows the body → no scroll jitter) but is slid below the fold until the
+   * header leaves the viewport, then slides up. data-revealed is toggled by an
+   * IntersectionObserver on the header. */
   .ui-page-container--reveal-footer .ui-page-footer {
     transform: translateY(100%);
     opacity: 0;
@@ -766,37 +605,7 @@
   }
 
   /* `toolbar` — the FIXED chrome band between the page header and the body: a filter strip, a
-   * status bar, a channel workflow rail. There was no slot for it before, so a page either put
-   * the strip inside the body (where `fill` scrolls it away) or hand-laid `position: sticky` at
-   * the call site — the exact "never hand-lay page chrome" the system forbids.
-   *
-   * `flex: none` is the whole contract: under `fill` the BODY is the scroll viewport (see
-   * .ui-page-container--fill below), so the band is a plain flex item OUTSIDE the scroller and
-   * cannot be squeezed by it. Sticky could not give that — sticky keeps content flowing
-   * BENEATH the pinned box, which is the half-sliced row a hand-rolled strip always shows.
-   *
-   * Chrome is a token, default quiet (rule #44): the band draws NO rule of its own, and its
-   * bottom rule falls back — at the CALL SITE, never bound at :root — to whatever the page
-   * header's divider is, so a service opting into `--page-header-divider` gets a consistent
-   * page chrome in ONE declaration and can still silence just this band with
-   * `--page-toolbar-divider: none`.
-   *
-   * The GROUND is a knob too, defaulting to `transparent` so the band looks exactly as it did
-   * before the token existed. Without it the only way to lift the band off the page ground was a
-   * `bg-card` utility at the call site — hand-laid page chrome, which is what this whole slot
-   * exists to abolish, and which cannot be re-themed per tenant. It is the `background`
-   * shorthand, not `background-color`, so a service may equally hand it a gradient.
-   *
-   * The NEGATIVE block margins are what make it read as chrome rather than as a third section.
-   * The container is a flex column with a `--page-band-gap` between every band, which is right
-   * for a document page (header / body / footer are three separate blocks) and wrong here: a
-   * band that carries a ground and a bottom rule and then FLOATS between two 16px voids divides
-   * nothing — measured on a 1512×805 chat page, 24/69 header · 85/134 band · 150/685 body, i.e.
-   * 32px of dead air wrapped around the one element whose job is to be attached. Chrome sits
-   * between the header and the scrolling body; chrome is flush. Cancelling the gap from the band
-   * itself keeps that in ONE declaration, leaves the container's rhythm intact for every page
-   * that passes no `toolbar`, and keeps `--page-toolbar-pad-block` as what it always was: the
-   * band's own INSIDE, the only place it is allowed to breathe. */
+   * status bar, a channel workflow rail. */
   .ui-page-toolbar {
     flex: none;
     margin-block: calc(-1 * var(--page-band-gap));
@@ -805,9 +614,8 @@
     border-block-end: var(--page-toolbar-divider, var(--page-header-divider));
   }
 
-  /* The band is never the FIRST child — the header always renders — but it CAN be the last one
-   * (a page given a `toolbar` and no `children`). There is no gap under a last flex item to
-   * cancel, so the negation would eat the container's own bottom padding instead. */
+  /* The band is never the FIRST child — the header always renders — but it CAN be the last one (a
+   * page given a `toolbar` and no `children`). */
   .ui-page-toolbar:last-child {
     margin-block-end: 0;
   }
@@ -819,12 +627,7 @@
     gap: var(--space-stack-sm);
   }
 
-  /* The title/subtitle column is the SHRINKABLE side of the header row (gh#300): a flex item's
-   * automatic minimum size is its content, so without this the heading refuses to shrink and the
-   * whole overflow is charged to `extra`. The component used to carry it as a bare `min-w-0`
-   * utility, which meant the >=640px arrangement depended on a Tailwind class while the compact
-   * arrangement below declared it in CSS — the same property owned in two places (gh#319).
-   * Unconditional, so both arrangements read one rule. */
+  /* Unconditional, so both arrangements read one rule. */
   .ui-page-header-heading {
     min-inline-size: 0;
   }
@@ -836,9 +639,8 @@
     width: 100%;
   }
 
-  /* Title line + status/meta band (PageContainer `status`, godxjp-ui#255). The band sits on
-   * the title's baseline row at the token-owned gap and WRAPS under the title when the
-   * viewport (390px) or a long JA/VI title leaves no room — never clips, never overlaps. */
+  /* The band sits on the title's baseline row at the token-owned gap and WRAPS under the title
+   * when the viewport (390px) or a long JA/VI title leaves no room — never clips, never overlaps. */
   .ui-page-header-title-row {
     display: flex;
     flex-wrap: wrap;
@@ -868,23 +670,13 @@
   }
 
   /* `headerScale="chrome"` — the page's top row is CHROME (a chat channel, a mail thread, an IDE
-   * tab), not a document title, so the `<h1>` takes the body type step. The ELEMENT is untouched:
-   * still an `<h1>`, still the page's one level-1 heading, because the screen-reader outline is
-   * what a page is navigated by — only the type step moves, and only through a token.
-   *
-   * The compound selector's specificity (0,2,0) is load-bearing, not decoration: the 720px block
-   * below re-declares `.ui-page-title` (0,1,0) at the COMPACT DOCUMENT step, which is h2 (18px) —
-   * BIGGER than this. Without out-ranking it, a chrome header would swell on a phone, i.e. exactly
-   * where the height matters most. The responsive step itself is untouched and still governs every
-   * document-scaled page. */
+   * tab), not a document title, so the `<h1>` takes the body type step. */
   .ui-page-container[data-header-scale="chrome"] .ui-page-title {
     font-size: var(--page-title-font-size-chrome);
   }
 
-  /* Compact viewports use a responsive type step, not compact density: body/control text and
-   * touch targets remain readable while page chrome stops competing with primary actions. A
-   * single Flex action group must wrap even when the consumer omitted `wrap`, because clipping
-   * header actions makes functionality unreachable. */
+  /* Compact viewports use a responsive type step, not compact density: body/control text and touch
+   * targets remain readable while page chrome stops competing with primary actions. */
   @media (max-width: 720px) {
     .ui-page-container {
       --space-page-active-x: var(--space-page-compact-x);
@@ -906,13 +698,8 @@
     }
   }
 
-  /* `headerLayout="responsive-inline"` (gh#231): below the 640px step the DEFAULT arrangement
-   * drops `extra` onto its own full-width line under the subtitle, which pushes a compact header
-   * control (a member search, one primary action) off the title row on a 390px screen. This
-   * arrangement keeps it beside the title band at a token-owned measure instead, and lets the
-   * title/subtitle wrap into the space that is left. Scoped to the compact range only, so at
-   * >=640px both arrangements resolve to the identical row below — and a page that never sets
-   * `headerLayout` never matches these rules at all. */
+  /* This arrangement keeps it beside the title band at a token-owned measure instead, and lets the
+   * title/subtitle wrap into the space that is left. */
   @media (max-width: 639.98px) {
     .ui-page-header[data-layout="responsive-inline"] .ui-page-header-row {
       flex-direction: row;
@@ -942,20 +729,10 @@
       gap: var(--space-inline-lg);
     }
 
-    /* `extra` sizes to its content but STAYS SHRINKABLE (gh#300). `width: auto` releases the
-     * base rule's full-width stretch so a one-button header hugs the end edge; the historical
-     * `flex-shrink: 0` next to it then froze the box at the action group's max-content width,
-     * which is unbounded — an admin header with 10–13 buttons asks for ~1594px inside a 1408px
-     * content column. Because the box could not shrink, its own `flex-wrap: wrap` never had a
-     * narrower width to wrap into, the whole deficit was charged to `.ui-page-header-heading`
-     * (`min-w-0`, so it collapses to 0), and the `<h1>` wrapped one CJK character per line while
-     * the action group still overflowed the page. The <=720px escape hatch above
-     * (`.ui-page-header-extra > .ui-flex { max-width: 100% }`) could not help either: a
-     * percentage resolved against a fit-content parent is circular.
-     *
-     * `flex-shrink: 1` + `min-inline-size: 0` keep the max-content base size (nothing moves on a
-     * header that already fits) but let the row charge the overflow to `extra` too, so the wrap
-     * it already declares finally engages and the title keeps a readable measure. */
+    /* Because the box could not shrink, its own `flex-wrap: wrap` never had a narrower width to
+     * wrap into, the whole deficit was charged to `.ui-page-header-heading` (`min-w-0`, so it
+     * collapses to 0), and the `<h1>` wrapped one CJK character per line while the action group
+     * still overflowed the page. */
     .ui-page-header-extra {
       width: auto;
       flex-shrink: 1;
@@ -963,21 +740,7 @@
       justify-content: flex-end;
     }
 
-    /* `headerScale="chrome"`, second consequence of the SAME fact. The row's `align-items:
-     * flex-start` above is right for a DOCUMENT: a `Save`/`Publish` group belongs on the first
-     * line of a tall `<h1>`, not floating beside its second line. A chrome band has no tall
-     * heading to align to — it is one bar, and its actions sit on the bar's middle. Measured
-     * against the reference chat screen the difference was 8.65px: the header row is 45.3px, the
-     * icon buttons 28px, so top-packing put their centres at y=14 while the title block's centre
-     * sat at y=22.65. That gap is what reads, correctly, as "the icons are not centred".
-     *
-     * `align-self` on the EXTRA box, not `align-items` on the row: the heading keeps the stretch
-     * it has today (nothing about the title's own alignment is in question), and the two axes stay
-     * independent. Scoped INSIDE the 640px block on purpose — below it the row is a COLUMN, where
-     * the cross axis is horizontal and this same declaration would centre `extra` sideways and
-     * release its full-width stretch. `headerLayout="responsive-inline"` runs its own row
-     * arrangement under 640px and keeps its own flex-start; that arrangement exists to hold ONE
-     * compact control beside a wrapping title band, which is the document case again. */
+    /* `headerScale="chrome"`, second consequence of the SAME fact. */
     .ui-page-container[data-header-scale="chrome"] .ui-page-header-extra {
       align-self: center;
     }
@@ -991,26 +754,13 @@
 
   /* `headerScale="chrome"`, third consequence of the SAME fact: if the top row is chrome, the line
    * under it is a caption ON that chrome (a channel purpose, a mail preview), not a document's
-   * standfirst. The document step is --font-size-base — the identical step the chrome TITLE takes —
-   * so a chrome header was shipping a title and its subtitle at one size, which is not a hierarchy.
-   * Same size is also not the expensive half: the step drives the LINE BOX (14px × 1.7 = 23.8px vs
-   * 11px × 1.7 = 18.9px), and a band that exists to give the transcript room was spending 5px of it
-   * on a caption. Type only — no line-height, no colour, no weight: `--line-height-body` still owns
-   * the rhythm so a wrapped JA/VI purpose line stays readable at the smaller step.
-   *
-   * The specificity is load-bearing exactly as it is on the title above: the 720px block declares
-   * `.ui-page-header .ui-page-subtitle` (0,2,0) — already compounded, unlike the bare `.ui-page-title`
-   * — so this rule out-ranks it only because the container attribute makes it (0,3,0). Without that
-   * the compact step would win below 720px and a chrome subtitle would step UP to 14px on a phone,
-   * i.e. exactly where the band's height is worth the most. */
+   * standfirst. */
   .ui-page-container[data-header-scale="chrome"] .ui-page-subtitle {
     font-size: var(--page-subtitle-font-size-chrome);
   }
 
   /* `headerLoading` placeholders — the real `<h1>`/`<p>` wearing the shared `.ui-skeleton-block`
-   * skin, so the pending band occupies the same rhythm the settled band will. `max-inline-size:
-   * 100%` keeps them inside a 390px column; the block size replaces the line box the (sr-only)
-   * text no longer fills. */
+   * skin, so the pending band occupies the same rhythm the settled band will. */
   .ui-page-title-placeholder {
     inline-size: var(--page-title-placeholder-measure);
     max-inline-size: 100%;
@@ -1023,47 +773,27 @@
     min-block-size: var(--page-subtitle-placeholder-block-size);
   }
 
-  /* Default: content-height + top-packed. The container's min-height:100% keeps
-   * the page background spanning the viewport-tall shell, but the body itself is
-   * NOT stretched — so short pages no longer leave a jarring void below their
-   * content (gh#103). Opt into a viewport-filling body with `fill`. */
+  /* Default: content-height + top-packed. */
   .ui-page-body {
     min-width: 0;
     container-type: inline-size;
   }
 
-  /* Sections in the body are spaced by DEFAULT. Before this rule the body was plain block flow:
-   * two Cards dropped straight into PageContainer touched each other, and the only cure was a
-   * consumer-side `<Flex direction="col">` the docs mentioned and nobody was forced to read
-   * (Bug Shot shipped 7 cards with 0px between them). The gap now comes from the page, at the
-   * section step; a consumer that already wraps its sections in one Flex sees no change (one
-   * child, no sibling margin). Token-owned so a service can retune it; `0` opts out. */
+  /* Sections in the body are spaced by DEFAULT. */
   .ui-page-body > * + * {
     margin-block-start: var(--page-body-gap);
   }
 
-  /* Sections in the body are spaced by DEFAULT. Before this rule the body was plain block flow:
-   * two Cards dropped straight into PageContainer touched each other, and the only cure was a
-   * consumer-side `<Flex direction="col">` the docs mentioned and nobody was forced to read
-   * (Bug Shot shipped 7 cards with 0px between them). The gap now comes from the page, at the
-   * section step; a consumer that already wraps its sections in one Flex sees no change (one
-   * child, no sibling margin). Token-owned so a service can retune it; `0` opts out. */
+  /* Sections in the body are spaced by DEFAULT. */
   .ui-page-body > * + * {
     margin-block-start: var(--page-body-gap);
   }
 
-  /* fill = body grows to fill the remaining shell height (full-height DataTable,
-   * split-pane, or a chat surface whose message list scrolls and whose composer
-   * is pinned to the bottom via `footer` + `stickyFooter`). */
-  /* `fill` means the body OCCUPIES the remaining height — so when its content is
-   * taller, the content scrolls INSIDE it. The container therefore flexes to the
-   * region rather than growing past it, and the body owns the scroll.
-   *
-   * This is what makes a chat surface behave: header and footer are plain flex
-   * items at the two ends, outside the scroller, so transcript content can never
-   * travel underneath them. Sticky bands cannot give that — sticky keeps the
-   * content flowing beneath the pinned box, which is exactly the half-sliced
-   * message line the chat page was showing. */
+  /* fill = body grows to fill the remaining shell height (full-height DataTable, split-pane, or a
+   * chat surface whose message list scrolls and whose composer is pinned to the bottom via
+   * `footer` + `stickyFooter`). */
+  /* `fill` means the body OCCUPIES the remaining height — so when its content is taller, the
+   * content scrolls INSIDE it. */
   .ui-page-container--fill {
     flex: 1;
     min-height: 0;
@@ -1075,19 +805,7 @@
     overflow-y: auto;
   }
 
-  /* The THIRD chrome band, and until now the only one whose rule was not a knob. The header reads
-   * --page-header-divider and the toolbar reads --page-toolbar-divider, but this line was a
-   * hard-copied literal, so a page could not turn it off at all. Measured on a consumer chat
-   * screen: the composer lives in this slot and is itself a bordered Card, so the full-width rule
-   * landed straight above it as a SECOND line — a pixel diff against the design caught a 100%-wide
-   * rule at y=701 that the design does not have.
-   *
-   * Unlike the other two, the default here is a rule rather than silence, and that is deliberate:
-   * `footer` is the shared slot a form's Save/Cancel bar lands in, where the line separating the
-   * actions from the content is the behaviour every existing page already depends on. The literal
-   * simply moves into the fallback, so `--page-footer-divider` unset is byte-identical to what
-   * this rule drew before, and `--page-footer-divider: none` is the opt-OUT the chat composer
-   * needed. */
+  /* The THIRD chrome band, and until now the only one whose rule was not a knob. */
   .ui-page-footer {
     display: flex;
     flex-direction: column-reverse;
@@ -1165,7 +883,6 @@
   .ui-empty-state-description {
     font-size: var(--font-size-base);
     color: hsl(var(--muted-foreground));
-    /* Measure knob (rule #45) — default 28rem, retunable per service/locale. */
     max-width: var(--empty-state-description-max-width);
   }
 
@@ -1187,8 +904,7 @@
     block-size: var(--empty-state-icon-glyph-size);
   }
 
-  /* tone — set the medallion foreground + tint from the matching role token, so a consumer never
-   * hand-rolls a `.ui-success-state` class. `muted` (default) keeps the neutral role fallback. */
+  /* `muted` (default) keeps the neutral role fallback. */
   .ui-empty-state[data-tone="success"] {
     --empty-state-icon-foreground: hsl(var(--success));
     --empty-state-icon-tint: hsl(var(--success) / 0.12);
@@ -1222,11 +938,9 @@
 }
 
 @layer components {
-  /* Pagination is ONE horizontal row and never wraps to a second desktop line (gh#153 — the old
-   * `flex-wrap: wrap` split the range / size-changer / page strip across rows). The number strip
-   * (`.ui-pagination-list`) absorbs any overflow by scrolling horizontally rather than wrapping; a
-   * genuinely narrow viewport uses the INTENTIONAL compact form via the `simple` prop (Prev · n/N ·
-   * Next, no page buttons) — not browser-driven wrapping. */
+  /* The number strip (`.ui-pagination-list`) absorbs any overflow by scrolling horizontally rather
+   * than wrapping; a genuinely narrow viewport uses the INTENTIONAL compact form via the `simple`
+   * prop (Prev · n/N · Next, no page buttons) — not browser-driven wrapping. */
   .ui-pagination {
     display: flex;
     flex-wrap: nowrap;
@@ -1236,8 +950,6 @@
     gap: var(--pagination-gap);
   }
 
-  /* Total / range label sits at the start and truncates rather than pushing the controls onto a
-   * second line — the nav row stays one line at every width (gh#153). */
   .ui-pagination-total {
     min-width: 0;
     margin-inline-end: auto;
@@ -1256,8 +968,8 @@
 
   .ui-pagination-size-trigger {
     width: var(--pagination-size-width);
-    /* Default control height — primitive never picks a sub-default tier; the app
-     * overrides via className if it wants smaller. Shared with the page buttons. */
+    /* Default control height — primitive never picks a sub-default tier; the app overrides via
+     * className if it wants smaller. */
     height: var(--control-height);
   }
 
@@ -1266,8 +978,7 @@
     min-width: 0;
     align-items: center;
     gap: var(--pagination-item-gap);
-    /* Overflow scrolls horizontally instead of wrapping onto a second row. Hidden scrollbar keeps
-     * the desktop bar clean; the strip stays swipeable on touch. */
+    /* Overflow scrolls horizontally instead of wrapping onto a second row. */
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -1292,13 +1003,7 @@
     color: hsl(var(--muted-foreground));
   }
 
-  /* The button GROWS with its label instead of being a rigid square. `width: var(--control-height)`
-   * capped every control at one control-height, so a five-figure page number spilled out of its
-   * own box (measured: `12345678` wanted 59.3px of text inside a 30px content box; `1043` cleared
-   * a 32px box by 0.3px and clipped outright at the consumer's 29px density). Ant Design, MUI and
-   * shadcn all size the same way — a min-width for the rhythm, padding for the overflow — so the
-   * one- and two-digit buttons keep the square look while longer ones widen. Height stays pinned so
-   * the row never changes rhythm. */
+  /* The button GROWS with its label instead of being a rigid square. */
   .ui-pagination-link {
     display: inline-flex;
     min-width: var(--control-height);
@@ -1313,9 +1018,7 @@
   }
 
   /* Keyboard focus: drawn by the single-source rule in styles/focus-ring.css
-   * (`.ui-pagination-link` is in its shadow-form list). Before that, focus here was
-   * left to the browser, which paints its OWN ring — measured
-   * `outline: rgb(0, 95, 204) auto 1px`, a blue belonging to no theme. */
+   * (`.ui-pagination-link` is in its shadow-form list). */
 
   .ui-pagination-link[data-active="true"] {
     border-color: hsl(var(--ring) / 0.5);
@@ -1365,9 +1068,8 @@
     }
   }
 
-  /* Toolbar `sticky` (#197): pin the filter strip while the list scrolls beneath it.
-   * `inset-block-start` (not `top`) keeps it RTL/vertical-writing-mode safe; the fill only
-   * paints in this pinned variant so a non-sticky toolbar stays transparent chrome. */
+  /* `inset-block-start` (not `top`) keeps it RTL/vertical-writing-mode safe; the fill only paints
+   * in this pinned variant so a non-sticky toolbar stays transparent chrome. */
   .ui-toolbar-sticky {
     position: sticky;
     inset-block-start: var(--filter-bar-sticky-offset);
@@ -1404,13 +1106,8 @@
     font-size: var(--filter-label-font-size);
   }
 
-  /* Toolbar/FilterBar `overflow="scroll"` (#216) — one bounded row that scrolls INLINE instead of
-   * wrapping onto extra rows. Below 640px the strip still stacks (the `wrap` base rules above own
-   * that): a 390px viewport must never hide a filter behind a horizontal scroll it cannot see.
-   * `overflow-x` matches the rest of the package's scroll regions (.ui-data-table-scroll, tabs
-   * list) and the browser already mirrors its scroll origin under `dir="rtl"`; the INSET/margin
-   * properties below stay logical. No `tabindex` is needed — every group holds a focusable
-   * control, so the region is keyboard-reachable (axe scrollable-region-focusable / WCAG 2.1.1). */
+  /* Below 640px the strip still stacks (the `wrap` base rules above own that): a 390px viewport
+   * must never hide a filter behind a horizontal scroll it cannot see. */
   @media (min-width: 640px) {
     .ui-toolbar[data-overflow="scroll"] {
       flex-wrap: nowrap;
@@ -1437,7 +1134,6 @@
       background: hsl(var(--filter-bar-sticky-background, var(--background)));
     }
 
-    /* Typed-model reset+actions cluster gets the same viewport-pinned treatment (gh#258). */
     .ui-toolbar[data-overflow="scroll"] > .ui-filter-bar-end {
       position: sticky;
       inset-inline-end: 0;
@@ -1448,11 +1144,8 @@
     }
   }
 
-  /* ── FilterBar typed model (gh#258) ─────────────────────────────────────────────
-   * Canonical model layout: strip (search → filters → children → reset → actions) →
-   * applied-chips row → result-count/error line. Geometry is entirely token-owned
-   * (`--filter-bar-*`); stacking below 640px reuses the `.ui-toolbar` base rules, so
-   * 1440/1024/390 behave identically to the composition form. */
+  /* Geometry is entirely token-owned (`--filter-bar-*`); stacking below 640px reuses the
+   * `.ui-toolbar` base rules, so 1440/1024/390 behave identically to the composition form. */
   .ui-filter-bar {
     display: flex;
     flex-direction: column;
@@ -1522,20 +1215,8 @@
     color: hsl(var(--destructive));
   }
 
-  /* ── LegalDocumentShell (#222) ─────────────────────────────────────────────────
-   * The long-form legal/policy document surface: a readable, measure-capped document
-   * column with a STICKY table-of-contents rail beside it. Every value reads a
-   * `--legal-document-*` component token, so a service re-tunes the measure, the rail
-   * and the section rhythm from theme.css with zero consumer `.legal-*` CSS.
-   *
-   * It OWNS its query container (`container: legal-document / inline-size`, the SplitPane
-   * precedent — gh#165), so the one-column ⇄ two-column decision comes from the SHELL's
-   * own available width, not the viewport: dropped into a narrow pane on a 1440px screen
-   * it correctly stays single-column.
-   *
-   * DOM order is header → rail (contents) → sections → footer, which is exactly the
-   * mobile reading order; the desktop branch only re-places those boxes into a grid.
-   */
+  /* Every value reads a `--legal-document-*` component token, so a service re-tunes the measure,
+   * the rail and the section rhythm from theme.css with zero consumer `.legal-*` CSS. */
   .ui-legal-document-scope {
     container: legal-document / inline-size;
   }
@@ -1566,9 +1247,9 @@
     color: hsl(var(--legal-document-meta-foreground, var(--muted-foreground)));
   }
 
-  /* Long-form prose wrapping that holds in JA (kinsoku via `line-break: strict`), in EN
-   * (long compounds / URLs via `overflow-wrap: break-word`) and in VI (diacritic-heavy
-   * words must NOT be broken mid-word — `word-break: normal` keeps that true). */
+  /* Long-form prose wrapping that holds in JA (kinsoku via `line-break: strict`), in EN (long
+   * compounds / URLs via `overflow-wrap: break-word`) and in VI (diacritic-heavy words must NOT be
+   * broken mid-word — `word-break: normal` keeps that true). */
   .ui-legal-document-summary,
   .ui-legal-document-section-body {
     min-width: 0;
@@ -1635,9 +1316,8 @@
     background: hsl(var(--legal-document-toc-active-background, var(--accent)) / 0.6);
   }
 
-  /* Active entry: colour + a leading marker + a heavier weight, so the state survives a
-   * monochrome / high-contrast rendering (never colour-only, WCAG 1.4.1). The anchor also
-   * carries `aria-current="location"`. */
+  /* Active entry: colour + a leading marker + a heavier weight, so the state survives a monochrome
+   * / high-contrast rendering (never colour-only, WCAG 1.4.1). */
   .ui-legal-document-toc-link[data-active] {
     color: hsl(var(--legal-document-toc-active-foreground, var(--foreground)));
     background: hsl(var(--legal-document-toc-active-background, var(--accent)));
@@ -1653,9 +1333,9 @@
     max-width: var(--legal-document-measure-max-width);
   }
 
-  /* `scroll-margin-block-start` (logical, so it survives vertical writing modes) is what
-   * makes a hash jump AND a programmatic `scrollIntoView` land BELOW sticky chrome — no
-   * JS offset arithmetic, no consumer CSS. */
+  /* `scroll-margin-block-start` (logical, so it survives vertical writing modes) is what makes a
+   * hash jump AND a programmatic `scrollIntoView` land BELOW sticky chrome — no JS offset
+   * arithmetic, no consumer CSS. */
   .ui-legal-document-section {
     display: flex;
     flex-direction: column;
@@ -1664,8 +1344,8 @@
     scroll-margin-block-start: var(--legal-document-scroll-offset);
   }
 
-  /* The section is `tabIndex={-1}` and receives focus when its contents anchor is
-   * activated, so the focus ring must be VISIBLE (WCAG 2.4.7 / 2.4.11). */
+  /* The section is `tabIndex={-1}` and receives focus when its contents anchor is activated, so
+   * the focus ring must be VISIBLE (WCAG 2.4.7 / 2.4.11). */
   .ui-legal-document-footer {
     display: flex;
     flex-wrap: wrap;
@@ -1676,15 +1356,9 @@
     border-block-start: var(--legal-document-footer-border);
   }
 
-  /* Two-column mode (shell ≥56rem — a 1024px and a 1440px viewport both qualify): the
-   * rail is PINNED beside a measure-capped document column and spans the header/body/
-   * footer rows, so it stays in view for the whole scroll. Logical grid placement means
-   * column 1 is the START side, i.e. it mirrors correctly under `dir="rtl"`.
-   *
-   * Below 56rem (the 390×844 case) NOTHING here applies: the shell stays a single column
-   * and the rail is a STATIC compact contents block between the document header and the
-   * first section — deliberately not sticky and not height-capped, so a phone never loses
-   * vertical space to pinned chrome. */
+  /* Two-column mode (shell ≥56rem — a 1024px and a 1440px viewport both qualify): the rail is
+   * PINNED beside a measure-capped document column and spans the header/body/ footer rows, so it
+   * stays in view for the whole scroll. */
   @container legal-document (min-width: 56rem) {
     .ui-legal-document {
       grid-template-columns:
@@ -1721,18 +1395,9 @@
 }
 
 @layer components {
-  /* ── Flex responsive region visibility (gh#252) ──────────────────────────────────────────────
-   * `hideBelow` / `hideFrom` are the ONE public way to drop a layout region at a breakpoint step.
-   * Without them a public header cannot hide its anchor navigation below the tablet step, or show
-   * a compact-only affordance, without a page-local media query — which is exactly the API-first
-   * violation gh#252 reports. The steps are the package's canonical breakpoint scale, the same
-   * values `--master-detail-collapse-below` uses (sm 40rem · md 48rem · lg 64rem · xl 80rem); a
-   * media query cannot read a `var()`, so the step values are the tokenized scale written out.
-   *
-   * Both props default to `undefined`, so NO `data-hide-*` attribute is emitted and none of these
-   * selectors can match — every existing Flex is untouched (the gh#231 inert-default contract).
-   * `display: none` removes the region from the a11y tree too, which is the point: the destination
-   * must stay reachable from another region (the footer nav) at that width. */
+  /* The steps are the package's canonical breakpoint scale, the same values
+   * `--master-detail-collapse-below` uses (sm 40rem · md 48rem · lg 64rem · xl 80rem); a media
+   * query cannot read a `var()`, so the step values are the tokenized scale written out. */
   @media (width < 40rem) {
     .ui-flex[data-hide-below="sm"] {
       display: none;

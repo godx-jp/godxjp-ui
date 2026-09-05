@@ -33,15 +33,11 @@ describe("sticky page bands clear the container padding", () => {
     // The guard below is only meaningful while this padding exists — if the page
     // container ever stops padding itself, these rules become dead weight and
     // should go, not be kept passing.
-    expect(ruleBody(".ui-page-container")).toMatch(
-      /padding:\s*var\(--space-page-active-y\)\s+0/,
-    );
+    expect(ruleBody(".ui-page-container")).toMatch(/padding:\s*var\(--space-page-active-y\)\s+0/);
   });
 
   it("drops the container's block-end padding when the footer is sticky", () => {
-    expect(ruleBody(".ui-page-container--sticky-footer")).toMatch(
-      /padding-block-end:\s*0/,
-    );
+    expect(ruleBody(".ui-page-container--sticky-footer")).toMatch(/padding-block-end:\s*0/);
   });
 
   it("gives that block-end space to the body instead", () => {
@@ -49,9 +45,6 @@ describe("sticky page bands clear the container padding", () => {
       /padding-block-end:\s*var\(--space-page-active-y\)/,
     );
   });
-
-
-
 });
 
 /**

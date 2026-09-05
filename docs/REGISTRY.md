@@ -8,22 +8,16 @@
 import { DataTable, Cascader } from "@godxjp/ui/data-display";
 ```
 
-The registry does **not** publish those components, and that is deliberate. A shadcn registry is a
-copy-paste channel — `shadcn add` writes files into your tree and you own them from then on. Copying
-165 components would fork your copy from the package: you would stop receiving token fixes, a11y
-fixes and the guard discipline the library is built on, while carrying ~73k lines you did not write.
+The registry does **not** publish those components, and that is deliberate. A shadcn registry is a copy-paste channel — `shadcn add` writes files into your tree and you own them from then on. Copying 165 components would fork your copy from the package: you would stop receiving token fixes, a11y fixes and the guard discipline the library is built on, while carrying ~73k lines you did not write.
 
-What the registry publishes is the part the package cannot hand you on its own: **the design
-language**.
+What the registry publishes is the part the package cannot hand you on its own: **the design language**.
 
 | Item             | Type             | What you get                                                                   |
 | ---------------- | ---------------- | ------------------------------------------------------------------------------ |
 | `@godxjp/theme`  | `registry:theme` | The full token system — foundation scales, semantic roles, per-component knobs |
 | `@godxjp/styles` | `registry:style` | The stylesheets those tokens drive (only if you adopt godxjp markup too)       |
 
-`docs/showcase/acme-portal.tsx` is the proof this is the valuable half: an entire brand — gold and
-navy, Source Sans 3, a 14px radius, navy-tinted shadows — reproduced by **configuring tokens alone**,
-with no component edits and no new components.
+`docs/showcase/acme-portal.tsx` is the proof this is the valuable half: an entire brand — gold and navy, Source Sans 3, a 14px radius, navy-tinted shadows — reproduced by **configuring tokens alone**, with no component edits and no new components.
 
 ## Setup
 
@@ -63,20 +57,14 @@ Override roles at `:root`, or scope them per tenant:
 
 Two rules the token system holds to, worth knowing before you override:
 
-- **Chrome is a token, default quiet (rule #44).** Dividers and separator borders default to their
-  quietest state; you opt _in_ to them rather than out.
-- **Role-mirror knobs are declared `initial`.** A knob whose default is a role (`--card`, `--muted`,
-  `--primary`) resolves that role at the _call site_, not at `:root`. This is what lets a scoped
-  `[data-tenant]` or `.dark` override actually reach a portaled overlay. See `docs/TOKENS.md`.
+This is what lets a scoped `[data-tenant]` or `.dark` override actually reach a portaled overlay. See `docs/TOKENS.md`.
 
 ## Why not the components?
 
-If you want the components, install the package — that is the supported path and the one every
-guard, test and token in this repo is built around:
+If you want the components, install the package — that is the supported path and the one every guard, test and token in this repo is built around:
 
 ```bash
 pnpm add @godxjp/ui
 ```
 
-The registry exists for teams who already have their own shadcn components and want the godxjp
-design language on top of them.
+The registry exists for teams who already have their own shadcn components and want the godxjp design language on top of them.

@@ -35,15 +35,15 @@ type CardDensity = "tight" | "cozy";
 // axis would only duplicate it. Removed 2026-08-24.
 
 export type CardProps = React.HTMLAttributes<HTMLDivElement> & {
-    accent?: CardAccent;
-    /**
-     * Where `accent` is drawn — `"edge"` (default, the leading-edge stripe) or `"perimeter"`
-     * (a full attention border in the accent tone). Inert without `accent`.
-     */
-    accentPlacement?: CardAccentPlacement;
-    variant?: CardVariant;
-    density?: CardDensity;
-  };
+  accent?: CardAccent;
+  /**
+   * Where `accent` is drawn — `"edge"` (default, the leading-edge stripe) or `"perimeter"`
+   * (a full attention border in the accent tone). Inert without `accent`.
+   */
+  accentPlacement?: CardAccentPlacement;
+  variant?: CardVariant;
+  density?: CardDensity;
+};
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, accent, accentPlacement, variant, density, ...props }, ref) => (
@@ -203,25 +203,25 @@ export const CardBar = React.forwardRef<HTMLDivElement, CardBarProps>(
 CardBar.displayName = "CardBar";
 
 export type StatCardProps = React.HTMLAttributes<HTMLDivElement> & {
-    label: React.ReactNode;
-    value: React.ReactNode;
-    hint?: React.ReactNode;
-    /** Optional leading icon, rendered as a tinted medallion above the metric. Decorative
-     *  (aria-hidden) — the label carries the meaning. Tint via --stat-card-icon-* tokens. */
-    icon?: LucideIcon;
-    /** Optional compact trend text beside the value. Avoid badge-like deltas. */
-    delta?: React.ReactNode;
-    /** KPI layout: stacked = design default, inline = label left / value right. */
-    layout?: "stacked" | "inline";
-    /** Align the metric group. */
-    align?: "start" | "end";
-    /** Flip delta semantics for metrics where lower is better. */
-    inverse?: boolean;
-    /** Semantic leading-edge rail (Card accent) — flags a KPI needing attention. */
-    accent?: CardAccent;
-    /** Where `accent` is drawn — `"edge"` (default rail) or `"perimeter"` (full attention border). */
-    accentPlacement?: CardAccentPlacement;
-  };
+  label: React.ReactNode;
+  value: React.ReactNode;
+  hint?: React.ReactNode;
+  /** Optional leading icon, rendered as a tinted medallion above the metric. Decorative
+   *  (aria-hidden) — the label carries the meaning. Tint via --stat-card-icon-* tokens. */
+  icon?: LucideIcon;
+  /** Optional compact trend text beside the value. Avoid badge-like deltas. */
+  delta?: React.ReactNode;
+  /** KPI layout: stacked = design default, inline = label left / value right. */
+  layout?: "stacked" | "inline";
+  /** Align the metric group. */
+  align?: "start" | "end";
+  /** Flip delta semantics for metrics where lower is better. */
+  inverse?: boolean;
+  /** Semantic leading-edge rail (Card accent) — flags a KPI needing attention. */
+  accent?: CardAccent;
+  /** Where `accent` is drawn — `"edge"` (default rail) or `"perimeter"` (full attention border). */
+  accentPlacement?: CardAccentPlacement;
+};
 
 function getDeltaTone(
   delta: React.ReactNode,

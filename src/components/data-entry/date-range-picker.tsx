@@ -124,12 +124,11 @@ export function DateRangePicker({
           {...groupA11y}
           data-field={rangeField}
           aria-disabled={disabled ? true : undefined}
+          data-state={open ? "open" : "closed"}
           className={cn(
             // One input-styled shell for the whole range — the shared composite-field box, so
             // this and the month range picker cannot drift into two slightly different fields.
             "ui-control ui-control-composite-field",
-            "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
-            open && "border-ring ring-ring/50 ring-[3px]",
             className,
           )}
           onClick={() => {

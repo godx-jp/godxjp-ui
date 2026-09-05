@@ -1,17 +1,10 @@
----
-title: Overview
-viewport: 1440x900
----
+--- title: Overview viewport: 1440x900 ---
 
 # Password recovery & sign-in MFA challenge (SCR-008)
 
-A **composition pattern**, not a component. `@godxjp/ui` ships **no `PasswordRecoveryPanel`** and
-**no `MfaChallengePanel`**: both fail the Framework-Component Test. What the package owns is the
-**measure** (`AuthShell preset="account-recovery"`), the tokens, and this canonical body.
+A **composition pattern**, not a component. `@godxjp/ui` ships **no `PasswordRecoveryPanel`** and **no `MfaChallengePanel`**: both fail the Framework-Component Test. What the package owns is the **measure** (`AuthShell preset="account-recovery"`), the tokens, and this canonical body.
 
-This surface is **presentation only**. It defines no route, no reset semantics, no OTP
-verification, no recovery-code consumption, no passkey authentication and no permissions. Every
-string, every value and every action handler belongs to the consumer.
+This surface is **presentation only**. It defines no route, no reset semantics, no OTP verification, no recovery-code consumption, no passkey authentication and no permissions. Every string, every value and every action handler belongs to the consumer.
 
 ## Gate 0 — why there is no `<RecoveryPanel state=… />` (gh#233)
 
@@ -25,10 +18,7 @@ string, every value and every action handler belongs to the consumer.
 | C6 earns the international contract             | ➖      | The copy is the consumer's `t()` catalog either way; the a11y contract is already owned by `FormField` / `InputOTP` / `Button`.                                                                                                                                                                                                                        |
 | C7 earns its bundle cost                        | ❌ FAIL | Two page-shaped blocks shipped to every consumer for screens each app renders once.                                                                                                                                                                                                                                                                    |
 
-**ANY fail ⇒ composition pattern.** Precedent in this repo: `ErrorSurface` (gh#221) failed on the
-same three criteria and became a docs composition + tokens; `LegalDocumentShell` passed 7/7 because
-it owns scroll-spy, hash navigation and focus handoff that no token can express. A recovery panel is
-a measure, some slots and some copy.
+A recovery panel is a measure, some slots and some copy.
 
 > **The state is not a prop — the state IS the body you render.** The server answers "we sent a
 > link" / "that link expired" / "wrong code, 4 attempts left", and the route renders the matching
@@ -51,10 +41,7 @@ a measure, some slots and some copy.
 | `--auth-shell-recovery-main-padding-mobile` | `0.9375rem`             | **15px** inline gutter at ≤30rem ⇒ panel `x=15, width=360` at 390                                       |
 | `--otp-slot-size`                           | `var(--control-height)` | the OTP slot box — widen the challenge row **without** re-scoping `--control-height` for the whole card |
 
-Backward compatibility is total: the canonical Login measure
-(`--auth-shell-canonical-card-max-width: 22.5rem` / 360px) and the un-preset shell (`24rem`) are
-untouched, `--otp-slot-size` defaults to the live `--control-height` tier so every existing OTP row
-renders identically, and `preset` remains optional with a `"default"` default.
+Backward compatibility is total: the canonical Login measure (`--auth-shell-canonical-card-max-width: 22.5rem` / 360px) and the un-preset shell (`24rem`) are untouched, `--otp-slot-size` defaults to the live `--control-height` tier so every existing OTP row renders identically, and `preset` remains optional with a `"default"` default.
 
 ## The canonical panel anatomy (identical for all seven states)
 
@@ -115,19 +102,7 @@ renders identically, and `preset` remains optional with a `"default"` default.
 
 ## Accessibility
 
-- **Focus order = DOM order**: code field → primary → fallback A → fallback B. No `tabindex`
-  anywhere, no positive tabindex, no focus trap (this is a page, not a dialog).
-- **One field, not six.** `InputOTP` is a single focus stop that owns paste, arrows, backspace and
-  the caret. Six `Input`s would break paste — the most common real MFA interaction.
-- **Errors** are `FormField error` ⇒ `aria-invalid` + `aria-errormessage` on the control and a
-  `role="alert"` message. Never colour alone (WCAG 1.4.1).
-- **Pending** is `Button loading` ⇒ `aria-busy`, the box does not resize, and the label is a real
-  translated string via `loadingText`.
-- **Heading order**: one panel per route ⇒ `CardTitle level={1}`. The stacked examples use
-  `level={2}` only because several panels share one page.
-- **RTL**: nothing in the pattern uses a physical direction — the panel, the OTP row (logical
-  `border-inline-start` / `border-start-start-radius`) and the fallback row all mirror under
-  `dir="rtl"`.
+- **Focus order = DOM order**: code field → primary → fallback A → fallback B. No `tabindex` anywhere, no positive tabindex, no focus trap (this is a page, not a dialog). - **One field, not six.** `InputOTP` is a single focus stop that owns paste, arrows, backspace and the caret. Six `Input`s would break paste — the most common real MFA interaction. - **Errors** are `FormField error` ⇒ `aria-invalid` + `aria-errormessage` on the control and a `role="alert"` message.
 
 ## Responsive contract
 
@@ -137,10 +112,7 @@ renders identically, and `preset` remains optional with a `"default"` default.
 | 1024  | `432px`, centred, 16px page gutter        | one row, identical            | one row                                                     |
 | 390   | `360px` (`x=15`), 15px inline page gutter | one row, identical, no scroll | one row; stacks when labels exceed the 310px content column |
 
-**The supplied 390 reference image is not a valid source.** It is a desktop 2×2 composite that
-overflows and crops horizontally; it shows no mobile route and no reflow. The 390 row above is a
-**decided contract**, documented in the mobile example and pinned by tests — not a trace of that
-image. See **Examples → Viewport 390×844**.
+**The supplied 390 reference image is not a valid source.** It is a desktop 2×2 composite that overflows and crops horizontally; it shows no mobile route and no reflow. The 390 row above is a **decided contract**, documented in the mobile example and pinned by tests — not a trace of that image. See **Examples → Viewport 390×844**.
 
 ## Measured in Chromium (headless, `deviceScaleFactor: 1`)
 
@@ -152,20 +124,11 @@ Real `getBoundingClientRect()` numbers from these pages, not estimates:
 | 1024×900 | `296` / **432**    | 16px        | 382px          | 216px (6×36)      | 382×36         | one row                                | 1024 (no overflow) |
 | 390×844  | **`15`** / **360** | 15px        | 310px          | 216px (6×36)      | 310×36         | one row (ja) → stacks on longer labels | 390 (no overflow)  |
 
-Long-label reflow, measured on the ja/en/vi page: at 1440 the ja (164+164px) and en (159.5+143.7px)
-fallback rows stay on one line and the vi row (222.4+206.4px > the 382px column) **wraps to a
-stack**, growing that panel from 275.5px to 332.5px tall. At 390 all three wrap. The reflow is
-purely content-driven — there is no locale branch and no media query.
+At 390 all three wrap. The reflow is purely content-driven — there is no locale branch and no media query.
 
-RTL (`dir="rtl"`, 1440): the panel stays `x=504, w=432`; the OTP slots mirror (slot 1 is the
-right-most at `x=875`, running to `x=695`) with `border-inline-start` and `border-start-start-radius`
-still on the logical first slot; the fallback row's reading order flips; `scrollWidth` stays 1440.
+RTL (`dir="rtl"`, 1440): the panel stays `x=504, w=432`; the OTP slots mirror (slot 1 is the right-most at `x=875`, running to `x=695`) with `border-inline-start` and `border-start-start-radius` still on the logical first slot; the fallback row's reading order flips; `scrollWidth` stays 1440.
 
-Focus order, driven with real `Tab` presses from the OTP field: `input.ui-otp-input` (accessible
-name "確認コード") → 確認する → リカバリコードを使う → パスキーで再試行 → the footer locale control.
-Typing `482915` into that **single** focus stop fills all six slots. Zero positive `tabindex` on the
-page. axe-core (wcag2a/2aa/21a/21aa/22aa) reports **0 violations** on all five pages at 1440 and 390,
-with a clean console.
+Focus order, driven with real `Tab` presses from the OTP field: `input.ui-otp-input` (accessible name "確認コード") → 確認する → リカバリコードを使う → パスキーで再試行 → the footer locale control. Typing `482915` into that **single** focus stop fills all six slots. Zero positive `tabindex` on the page. axe-core (wcag2a/2aa/21a/21aa/22aa) reports **0 violations** on all five pages at 1440 and 390, with a clean console.
 
 > **Width is a contract; height is content.** The issue's artboard heights (request `h=248`, MFA
 > `h=324`) are measurements of that artboard's copy. The panels here measure `h=275.5` with the
@@ -174,13 +137,4 @@ with a clean console.
 
 ## Anti-patterns
 
-- ❌ `TwoFactorSetup` for a sign-in challenge — that is the **enrollment** dialog (QR / manual key /
-  recovery output). A challenge has no secret to reveal and no dialog to dismiss.
-- ❌ `AuthIdentity` above the panel on SCR-008 — it always renders the hosted mark, and the canonical
-  hierarchy puts the heading **inside** the bordered surface.
-- ❌ Six `Input`s for the OTP row — one `InputOTP`.
-- ❌ A page-local `--auth-shell-card-max-width` override, a `.recovery-panel { width: 432px }` class
-  or any consumer media query — that is exactly the geometry this preset took over.
-- ❌ Re-scoping `--control-height` on the card to widen the OTP slots — that resizes the button and
-  every input too. Use `--otp-slot-size`.
-- ❌ Two primary actions. One `Button fullWidth`; everything else is a ghost fallback.
+- ❌ `TwoFactorSetup` for a sign-in challenge — that is the **enrollment** dialog (QR / manual key / recovery output). A challenge has no secret to reveal and no dialog to dismiss. - ❌ `AuthIdentity` above the panel on SCR-008 — it always renders the hosted mark, and the canonical hierarchy puts the heading **inside** the bordered surface. - ❌ Six `Input`s for the OTP row — one `InputOTP`. - ❌ A page-local `--auth-shell-card-max-width` override, a `.recovery-panel { width: 432px }` class or any consumer media query — that is exactly the geometry this preset took over. - ❌ Re-scoping `--control-height` on the card to widen the OTP slots — that resizes the button and every input too. Use `--otp-slot-size`. - ❌ Two primary actions.

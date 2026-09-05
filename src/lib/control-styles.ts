@@ -1,6 +1,6 @@
 /** Shared control sizing — reads `--control-height`, `--font-size-*` from density / theme. */
 export const controlFieldClass =
-  "ui-control w-full rounded-[var(--control-radius)] border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/25 disabled:cursor-not-allowed disabled:opacity-50";
+  "ui-control w-full rounded-[var(--control-radius)] border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
 
 export const controlMultilineClass =
   "ui-control-multiline w-full rounded-[var(--control-radius)] border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
@@ -28,11 +28,10 @@ export const controlMultilineGhostClass =
  * Opacity `/50` matches the real focus ring used by Button / Input / Select. Apply alongside
  * `focus-visible:ring-*` on any trigger that toggles `data-state="open"`.
  */
-export const controlOpenRingClass =
-  "data-[state=open]:border-ring data-[state=open]:ring-ring/50 data-[state=open]:ring-[3px]";
+export const controlOpenRingClass = "ui-control-trigger";
 
 export const controlTriggerClass =
-  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] border border-input bg-background shadow-sm transition-[color,box-shadow] focus-visible:outline-none data-[state=open]:border-ring data-[state=open]:ring-ring/50 data-[state=open]:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1";
+  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] border border-input bg-background shadow-sm transition-[color,box-shadow] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1";
 
 export const controlIconClass = "size-[length:var(--control-height)] shrink-0";
 

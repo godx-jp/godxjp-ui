@@ -1,33 +1,10 @@
 # @godxjp/ui-mcp
 
-Model Context Protocol server for [`@godxjp/ui`](https://github.com/godx-jp/godxjp-ui).
-The `godx-ui://compatibility` resource reports the MCP/server version and compatible UI release.
-UI and MCP ship from the same source commit and minor release train; consumers must surface a
-version mismatch instead of silently applying stale guidance.
-Gives **Claude Code**, **Codex CLI**, **Cursor**, **Cline**, **Continue**, or any
-MCP-aware agent live access to:
+Model Context Protocol server for [`@godxjp/ui`](https://github.com/godx-jp/godxjp-ui). The `godx-ui://compatibility` resource reports the MCP/server version and compatible UI release. Gives **Claude Code**, **Codex CLI**, **Cursor**, **Cline**, **Continue**, or any MCP-aware agent live access to:
 
-- 80+ component catalog (props, types, defaults, examples)
-- 14 shared prop-vocabulary types (`SizeProp`, `ColorProp`, `LoadingProp`, …)
-- 48 design tokens across the primitive / semantic / component tiers
-- 47 cardinal rules from `CLAUDE.md`
-- 9 canonical copy-paste-ready patterns (sign-up, settings, data-table, …)
-- 15 design skills, each tagged by **audience** — 12 taste-family (taste / soft / minimalist /
-  brutalist / gpt-tasteskill / redesign / output / brandkit / stitch / imagegen-mobile /
-  imagegen-web / image-to-code) + the consumer build guides (`design-to-page`,
-  `compose-a-screen`) + the core `component-discipline` contract
-- 23 anti-AI-tell patterns to AVOID + their fixes
-- 50+ redesign-audit checks across 9 categories
-- heuristic JSX linter (raw HTML / wrong vocab / banned default fonts / …)
-- a consumer namespace (`list_consumer_skills` / `route_consumer_task` / `get_consumer_skill`)
-  that hides core library-maintenance skills, plus `draft_bug_report` for filing library bugs
+**Token-efficient design:** discovery tools return small metadata; agents drill into ONE section at a time via `get_skill_section`. Average interaction: ~2.5 KB vs. 50+ KB for naive dump-everything servers.
 
-**Token-efficient design:** discovery tools return small metadata; agents
-drill into ONE section at a time via `get_skill_section`. Average
-interaction: ~2.5 KB vs. 50+ KB for naive dump-everything servers.
-
-Read-only, zero filesystem access into consumer projects, zero network,
-zero shell. Safe to mount.
+Read-only, zero filesystem access into consumer projects, zero network, zero shell. Safe to mount.
 
 ---
 
@@ -74,8 +51,7 @@ command = "npx"
 args = ["@godxjp/ui-mcp"]
 ```
 
-Codex picks it up on next session start. Tools accessible via the
-standard Codex tool-call protocol.
+Codex picks it up on next session start. Tools accessible via the standard Codex tool-call protocol.
 
 ### Cursor
 

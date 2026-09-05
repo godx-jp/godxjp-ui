@@ -209,7 +209,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 40,
     title: "Pages are mobile-first",
-    body: 'Author and verify every page at 320–390px FIRST. Spacing comes only from `Flex` `gap` (vertical rhythm = `Flex direction="col"`, control rows = the default `direction="row"`) + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout. Wide tables scroll horizontally on small screens (don\'t force-fit them); dialogs and sheets are full-height on mobile. Touch targets ≥ 44×44px.',
+    body: 'Author and verify every page at 320–390px FIRST. Page sections are spaced by `PageContainer` itself (`--page-body-gap` between its direct children). Inside a section spacing comes only from `Flex` `gap` (vertical rhythm = `Flex direction="col"`, control rows = the default `direction="row"`) + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout (the static audit rejects them). Styles are loaded whole: `@godxjp/ui/styles` or `styles/core`, never a hand-picked set of layers. Wide tables scroll horizontally on small screens (don\'t force-fit them); dialogs and sheets are full-height on mobile. Touch targets ≥ 44×44px.',
   },
   {
     number: 41,

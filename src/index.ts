@@ -1,4 +1,3 @@
-// Root @godxjp/ui = domain/runtime-neutral surface only (issue #83 + core-isolation guard).
 // Foreign-runtime adapters are subpath-only: forms → @godxjp/ui/form, query → @godxjp/ui/query.
 export * from "./components/admin";
 export { cn } from "./lib/utils";

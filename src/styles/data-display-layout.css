@@ -9,7 +9,6 @@
     justify-content: center;
     overflow: hidden;
     border-radius: var(--radius-pill);
-    /* Tint washes over the role background (default transparent = no-op, rule #44). */
     background:
       linear-gradient(var(--avatar-tint), var(--avatar-tint)),
       var(--avatar-background, hsl(var(--muted)));
@@ -18,10 +17,7 @@
     font-weight: var(--font-weight-medium);
   }
 
-  /* Entity-header mark — `<Avatar shape="square">` (gh#249). Opt-in ONLY: without the attribute the
-   * avatar above is untouched. Geometry and colour are token-owned (rule #45); the brand fill is
-   * handed down through --avatar-background so the fallback slot picks it up with no extra rule,
-   * and a service that only wants a neutral square overrides --avatar-square-background. */
+  /* Opt-in ONLY: without the attribute the avatar above is untouched. */
   .ui-avatar[data-shape="square"] {
     inline-size: var(--avatar-square-size);
     block-size: var(--avatar-square-size);
@@ -30,11 +26,8 @@
     color: var(--avatar-square-foreground, hsl(var(--primary-foreground)));
   }
 
-  /* CAPABILITY MEDALLION — `<Avatar appearance="tinted">` (gh#12). The tinted companion of the
-   * solid entity mark: same box, same radius, a soft role wash instead of a solid fill and the
-   * glyph in the role itself. Declared AFTER the square rule (equal specificity) so it retints
-   * either shape. The glyph rule is scoped to this appearance ON PURPOSE — a global
-   * `.ui-avatar svg` would outrank the per-call-site icon classes existing avatars already use. */
+  /* The tinted companion of the solid entity mark: same box, same radius, a soft role wash instead
+   * of a solid fill and the glyph in the role itself. */
   .ui-avatar[data-appearance="tinted"] {
     --avatar-background: var(--avatar-tinted-background, hsl(var(--primary) / 0.1));
     color: var(--avatar-tinted-foreground, hsl(var(--primary)));
@@ -61,14 +54,8 @@
     background: var(--avatar-background, hsl(var(--muted)));
   }
 
-  /* PRESENCE (gh#309) — the realtime reachability dot on the mark itself.
-   *
-   * Opt-in ONLY: with no `presence` prop the avatar emits neither the attribute nor the node, so
-   * every existing call site keeps today's DOM and today's clip. WITH it the ROOT stops clipping —
-   * the dot straddles the mark's edge, which is exactly why a consumer could never place it from
-   * outside — and the clip moves down onto the image/fallback, which is where it was doing the real
-   * work. `border-radius: inherit` keeps that clip correct for both shapes: --radius-pill for a
-   * person, --avatar-square-radius for an entity mark. */
+  /* Opt-in ONLY: with no `presence` prop the avatar emits neither the attribute nor the node, so
+   * every existing call site keeps today's DOM and today's clip. */
   .ui-avatar[data-presence] {
     overflow: visible;
   }
@@ -79,16 +66,7 @@
     border-radius: inherit;
   }
 
-  /* NEVER COLOUR-ALONE (WCAG 1.4.1). Three independent encodings ride together: the localized
-   * sr-only string inside this span, a semantic ROLE colour, and a SHAPE — filled · half-filled ·
-   * barred · hollow — so the four states stay apart in greyscale, for a deuteranope, and under
-   * forced colors. `box-sizing: border-box` makes --avatar-presence-size the OUTER diameter, so the
-   * state stroke never changes the dot's footprint between states.
-   *
-   * The dot is a state, not an event: nothing here animates, so there is nothing for
-   * prefers-reduced-motion to switch off. Presence is deliberately NOT a live region either — a
-   * roster of 40 avatars resyncing over a socket would flood a screen reader; announcing a CHANGE is
-   * the consumer's call, in the consumer's own live region. */
+  /* NEVER COLOUR-ALONE (WCAG 1.4.1). */
   [data-slot="avatar-presence"] {
     position: absolute;
     inset-block-end: var(--avatar-presence-inset);
@@ -102,8 +80,8 @@
     border: var(--avatar-presence-stroke-width) solid transparent;
     border-radius: var(--radius-pill);
     background-origin: border-box;
-    /* Separator ring — chrome, therefore a knob (#44). It is what keeps the dot legible over a busy
-     * photo; a service that puts the avatar on a coloured surface retunes the colour once. */
+    /* It is what keeps the dot legible over a busy photo; a service that puts the avatar on a
+     * coloured surface retunes the colour once. */
     box-shadow: 0 0 0 var(--avatar-presence-ring-width)
       hsl(var(--avatar-presence-ring-color, var(--background)));
   }
@@ -146,19 +124,14 @@
     background: hsl(var(--avatar-presence-ring-color, var(--background)));
   }
 
-  /* OFFLINE — a HOLLOW ring. Distinct from an ABSENT `presence`, which draws nothing at all: absent
-   * means "this entity has no presence concept" (an organization mark), offline means "known to be
-   * unreachable" — the same distinction ListRow draws between an omitted and a `false` `unread`. */
+  /* OFFLINE — a HOLLOW ring. */
   [data-slot="avatar-presence"][data-presence="offline"] {
     border-color: hsl(var(--avatar-presence-offline-color, var(--muted-foreground)));
     background-color: hsl(var(--avatar-presence-ring-color, var(--background)));
   }
 
   /* FORCED COLORS — the UA replaces author colours, and box-shadow is dropped outright, so the
-   * separator ring would vanish into the mark and all four states would collapse to one swatch.
-   * System-colour keywords ARE honoured inside this block, so re-draw the ring as an outline and
-   * re-state each silhouette in Canvas / CanvasText: the shape encoding survives, which is the half
-   * of WCAG 1.4.1 that a colour-only dot loses here first. */
+   * separator ring would vanish into the mark and all four states would collapse to one swatch. */
   @media (forced-colors: active) {
     [data-slot="avatar-presence"] {
       border-color: CanvasText;
@@ -208,8 +181,7 @@
   }
 
   /* Over-capacity: keep the destructive fill but lay a diagonal hatch over it so an over-limit bar
-   * (value > 100, width still capped at 100%) is visually distinct from a full one. Placed after the
-   * tone rules so background-color wins; background-image carries the stripes. */
+   * (value > 100, width still capped at 100%) is visually distinct from a full one. */
   .ui-progress[data-over] .ui-progress-bar {
     background-color: hsl(var(--destructive));
     background-image: repeating-linear-gradient(
@@ -296,8 +268,8 @@
     column-gap: var(--space-stack-md);
   }
 
-  /* Spacing lives INSIDE the item (not a flex gap between items) so the rail line
-     spans the full item height and the connector stays continuous dot-to-dot. */
+  /* Spacing lives INSIDE the item (not a flex gap between items) so the rail line spans the full
+   * item height and the connector stays continuous dot-to-dot. */
   .ui-timeline-body {
     padding-bottom: var(--space-stack-md);
   }
@@ -590,13 +562,7 @@
 
 @layer components {
   /* ListRow — single-line entity row (indicator · leading · title/description · trailing) for
-   * short lists inside a flush CardContent. Rows separate with a quiet divider; the last row
-   * leaves the Card border to close the list. Logical properties throughout (RTL-safe).
-   *
-   * Overflow contract (#224): the row itself may shrink (min-inline-size: 0) and WRAPS, the
-   * content column keeps only `min(--list-row-body-min-width, 100%)` — so it can always shrink
-   * below its intrinsic width and truncate/wrap — and the trailing actions wrap onto their own
-   * line instead of pushing the row (and the page root) wider than the viewport. */
+   * short lists inside a flush CardContent. */
   [data-slot="list-row"] {
     display: flex;
     min-inline-size: 0;
@@ -606,8 +572,8 @@
     padding: var(--list-row-padding-y) var(--list-row-padding-x);
     background: var(--list-row-read-background, transparent);
   }
-  /* Unread emphasis surface — paired with the indicator dot + its sr-only text, never colour
-   * alone (WCAG 1.4.1). */
+  /* Unread emphasis surface — paired with the indicator dot + its sr-only text, never colour alone
+   * (WCAG 1.4.1). */
   [data-slot="list-row"][data-unread] {
     background: var(--list-row-unread-background, hsl(var(--muted)));
   }
@@ -648,11 +614,6 @@
   [data-slot="list-row"][data-overflow="wrap"] [data-slot="list-row-body"] {
     overflow-wrap: anywhere;
   }
-  /* `density="compact"` (#246) — the compact inline-actions geometry: tighter block padding and
-   * column gap plus a LOWER body threshold, so a 36px avatar, the title/description and one or two
-   * small trailing Buttons stay inline inside the canonical 326px content column at 390px. It only
-   * LOWERS thresholds; the #224 overflow contract above is untouched (the row still wraps, the body
-   * is still clamped with min(…, 100%)), so a compact row can never widen the page root. */
   [data-slot="list-row"][data-density="compact"] {
     gap: var(--list-row-compact-gap, var(--space-2));
     padding: var(--list-row-compact-padding-y, var(--space-2))
@@ -686,8 +647,7 @@
   }
 
   /* CredentialReveal — one-time secret surface: caution banner, masked/revealed value row with
-   * copy/reveal/download actions, and an optional acknowledge footer. Density-aware via the
-   * --control-height tier; colours/spacing read semantic role tokens only. */
+   * copy/reveal/download actions, and an optional acknowledge footer. */
   .ui-credential-reveal {
     display: flex;
     flex-direction: column;
@@ -736,7 +696,7 @@
   }
 
   /* QrCode — a quiet, scanner-safe SVG surface with an ISO/IEC-style four-module quiet zone
-   * supplied by the encoder. Sizing is natural rather than stretched across its container. */
+   * supplied by the encoder. */
   .ui-qr-code {
     display: block;
     inline-size: var(--qr-code-size-md);
@@ -756,16 +716,11 @@
 }
 
 @layer components {
-  /* PERMISSION MATRIX — `.ui-permission-matrix` was a bare hook with no rule anywhere, so every
-   * constant sat on the component (#319). */
   .ui-permission-matrix-table {
     min-inline-size: var(--permission-matrix-min-width);
   }
 
-  /* Sticky first column: the scrolling grid passes UNDER it, so it needs an opaque ground.
-   * Scoped through the matrix root because `[data-slot="table-head"]` sets its own background at
-   * the same specificity — an unscoped rule would win only by import order, which is not a
-   * property worth depending on. */
+  /* Sticky first column: the scrolling grid passes UNDER it, so it needs an opaque ground. */
   .ui-permission-matrix .ui-permission-matrix-pin {
     position: sticky;
     inset-inline-start: 0;
@@ -796,10 +751,8 @@
 }
 
 @layer components {
-  /* SCROLL AREA — the custom scrollbar rail (#319). There was no `.ui-scroll*` rule anywhere: the
-   * rail's whole geometry lived on the component as Tailwind literals, so a service could not
-   * retune it. Logical sizing (inline-/block-size) keeps the rail correct in RTL and in vertical
-   * writing modes; the thumb radius is a knob so a sharp-cornered theme squares it once. */
+  /* There was no `.ui-scroll*` rule anywhere: the rail's whole geometry lived on the component as
+   * Tailwind literals, so a service could not retune it. */
   .ui-scroll-area-bar {
     padding: var(--scroll-area-bar-padding);
   }

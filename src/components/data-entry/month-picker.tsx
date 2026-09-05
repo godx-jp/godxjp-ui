@@ -91,12 +91,8 @@ export function MonthPicker({
       <PopoverAnchor asChild>
         <div
           data-disabled={disabled ? "" : undefined}
-          className={cn(
-            "ui-control ui-control-composite-field",
-            "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
-            open && "border-ring ring-ring/50 ring-[3px]",
-            className,
-          )}
+          data-state={open ? "open" : "closed"}
+          className={cn("ui-control ui-control-composite-field", className)}
           onClick={() => {
             if (!disabled) setOpen(true);
           }}

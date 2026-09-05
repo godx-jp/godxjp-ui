@@ -94,10 +94,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
           ? new Intl.NumberFormat(locale).format(count)
           : "";
     const countNode = showCount ? (
-      <span
-        data-slot="button-count"
-        className="ui-button-count"
-      >
+      <span data-slot="button-count" className="ui-button-count">
         {countLabel}
       </span>
     ) : null;

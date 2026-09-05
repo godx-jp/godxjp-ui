@@ -30,20 +30,8 @@
   --scaling: 1.08;
 }
 
-/*
- * A DESCENDANT density scope (`.ui-density-*` from `<PageContainer density>`) must
- * RE-DERIVE every --scaling-tied token, not just flip --scaling. CSS substitutes
- * `var(--scaling)` at the element that DECLARES a token, so the size tokens declared
- * at `:root` (foundation/control/table) are baked with the ROOT --scaling and inherit
- * as fixed values — a subtree that only sets a new --scaling can't retune them. (Same
- * reason `.ui-scale-fixed` re-declares the whole list.) Mirror that list here, scaled
- * by the LOCAL --scaling, so controls/spacing in the subtree actually resize. The
- * `:root[data-density]` selectors above need ONLY --scaling: they re-declare on the
- * same element as the :root token formulas, so those re-resolve there.
- *
- * density.css is a registered tier-definition file (check-control-sizing), so the
- * `calc(var(--control-height) ± …)` tier offsets are permitted here.
- */
+/* A DESCENDANT density scope (`.ui-density-*` from `<PageContainer density>`) must RE-DERIVE every
+ * --scaling-tied token, not just flip --scaling. */
 .ui-density-compact,
 .ui-density-default,
 .ui-density-comfortable {

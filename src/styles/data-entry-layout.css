@@ -163,12 +163,8 @@
 }
 
 @layer components {
-  /* UPLOAD — five variants (dropzone · button · picture · picture-card · avatar) that used to
-   * carry their entire box as Tailwind literals on the component: 66 of them, the worst file in
-   * the library (#319). A service could not resize the avatar, dial back the dropzone's generous
-   * inset, or align the file row to its own grid without forking. Every constant is now a knob
-   * (rule #45); colour scrims are role-mirror knobs resolved at the CALL SITE so a scoped
-   * [data-tenant]/.dark override reaches them (docs/TOKENS.md). */
+  /* A service could not resize the avatar, dial back the dropzone's generous inset, or align the
+   * file row to its own grid without forking. */
 
   .ui-upload-dropzone {
     cursor: pointer;
@@ -380,8 +376,6 @@
     color: hsl(var(--muted-foreground));
   }
 
-  /* Sits ON the photo, so the wash is a fixed dark scrim rather than a surface role — it must
-   * stay legible over an arbitrary user image in either theme. */
   .ui-upload-avatar-change {
     position: absolute;
     inset-inline: 0;
@@ -474,12 +468,8 @@
     opacity: var(--disabled-opacity);
   }
 
-  /* ── BranchScopePicker (gh#319) ────────────────────────────────────────────────
-   * `.ui-branch-scope-picker` shipped as a bare hook: the class existed but no rule did, so all
-   * of the control's geometry sat on the component as Tailwind literals. It composes RadioGroup +
-   * CheckboxGroup + SearchInput and has no field box of its own, so none of the control-affix
-   * machinery applies — these four rules are the whole surface. Every measure is a documented
-   * token (#45); see tokens/components/data-entry.css for why each default is a flat rem. */
+  /* It composes RadioGroup + CheckboxGroup + SearchInput and has no field box of its own, so none
+   * of the control-affix machinery applies — these four rules are the whole surface. */
   .ui-branch-scope-picker {
     display: flex;
     flex-direction: column;
@@ -492,11 +482,7 @@
     gap: var(--branch-scope-picker-badges-gap);
   }
 
-  /* The `mode="selected"` subset, indented under its radio by a rule on the inline-start edge.
-   * Logical properties throughout, so the indent flips with the writing direction (the utilities
-   * this replaces, `border-s-2 ps-4`, already did). The colour is left to the global
-   * `* { border-color: hsl(var(--border)) }` so a scoped [data-tenant]/.dark override of
-   * `--border` still reaches it. */
+  /* The `mode="selected"` subset, indented under its radio by a rule on the inline-start edge. */
   .ui-branch-scope-picker-subset {
     display: flex;
     flex-direction: column;
@@ -506,8 +492,8 @@
   }
 
   /* A bounded scroll region — the component gives it `tabIndex={0}` + a group name so it stays
-   * keyboard-reachable (WCAG 2.1.1 / axe scrollable-region-focusable) even when every checkbox
-   * in it is disabled. The cap is the token; the overflow is not negotiable. */
+   * keyboard-reachable (WCAG 2.1.1 / axe scrollable-region-focusable) even when every checkbox in
+   * it is disabled. */
   .ui-branch-scope-picker-list {
     max-block-size: var(--branch-scope-picker-list-max-height);
     overflow-y: auto;

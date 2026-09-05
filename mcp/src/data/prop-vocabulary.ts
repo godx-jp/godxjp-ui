@@ -74,7 +74,7 @@ export const PROP_VOCABULARY: PropVocabEntry[] = [
     values: ["default", "public-landing"],
     usedBy: ["CenteredShell"],
     notes:
-      'public-landing is the PUBLIC marketing/product landing geometry (gh#252): one 67.5rem measure shared by the header bar, the centred column and the footer, the section rhythm, flat elevation-free cards and the hero h1 tier. "default" emits NO data-preset at all, so the existing shell box is untouched. Pair with `Flex hideBelow`/`hideFrom` for header region visibility — a landing must never own a page-local media query or a max-width wrapper.',
+      'public-landing is the PUBLIC marketing/product landing geometry: one 67.5rem measure shared by the header bar, the centred column and the footer, the section rhythm, flat elevation-free cards and the hero h1 tier. "default" emits NO data-preset at all, so the existing shell box is untouched. Pair with `Flex hideBelow`/`hideFrom` for header region visibility — a landing must never own a page-local media query or a max-width wrapper.',
   },
   {
     name: "TablePresetProp",
@@ -83,7 +83,7 @@ export const PROP_VOCABULARY: PropVocabEntry[] = [
     values: ["default", "action-collection"],
     usedBy: ["Table", "DataTable"],
     notes:
-      "action-collection (gh#253) swaps the desktop intrinsic column widths for table-layout: fixed + the token-owned column PRIORITY measures below `collapseBelow`, so a five-column approval queue keeps every column — including row actions — inside a 390px frame with no page-local CSS, no hidden column and no horizontal scroll. It changes the SIZING model only: no display change, no role rewriting, no card transformation, so table semantics and screen-reader navigation are identical at every width. ONE contract, two entry points: the `Table` primitive (mark `priority` on each TableHead/TableCell yourself) and the TanStack `DataTable` (mark `priority` on the ColumnDef; it stamps both cells for you, and additionally releases the surface's `--table-surface-min-inline-size` floor). Both read the same `--table-action-collection-*` tokens — there is no parallel DataTable family.",
+      "action-collection swaps the desktop intrinsic column widths for table-layout: fixed + the token-owned column PRIORITY measures below `collapseBelow`, so a five-column approval queue keeps every column — including row actions — inside a 390px frame with no page-local CSS, no hidden column and no horizontal scroll. It changes the SIZING model only: no display change, no role rewriting, no card transformation, so table semantics and screen-reader navigation are identical at every width. ONE contract, two entry points: the `Table` primitive (mark `priority` on each TableHead/TableCell yourself) and the TanStack `DataTable` (mark `priority` on the ColumnDef; it stamps both cells for you, and additionally releases the surface's `--table-surface-min-inline-size` floor). Both read the same `--table-action-collection-*` tokens — there is no parallel DataTable family.",
   },
   {
     name: "TableColumnPriorityProp",
@@ -101,7 +101,7 @@ export const PROP_VOCABULARY: PropVocabEntry[] = [
     values: ["default", "device-authorization", "context-selection"],
     usedBy: ["AuthShell"],
     notes:
-      'Orthogonal to AuthShell\'s `variant` (which owns control density + heading size) and applied after it, so `variant="canonical" preset="device-authorization"` composes. device-authorization = 380px card / 5px inline gutter at 390 (gh#220); context-selection = 25rem card, edge-to-edge on mobile (gh#217). Selecting a preset REPLACES any consumer-side --auth-shell-card-max-width override — a page-local width is the anti-pattern these presets exist to remove.',
+      'Orthogonal to AuthShell\'s `variant` (which owns control density + heading size) and applied after it, so `variant="canonical" preset="device-authorization"` composes. device-authorization = 380px card / 5px inline gutter at 390; context-selection = 25rem card, edge-to-edge on mobile. Selecting a preset REPLACES any consumer-side --auth-shell-card-max-width override — a page-local width is the anti-pattern these presets exist to remove.',
   },
   {
     name: "AvatarShapeProp",
@@ -110,7 +110,7 @@ export const PROP_VOCABULARY: PropVocabEntry[] = [
     values: ["circle", "square"],
     usedBy: ["Avatar"],
     notes:
-      'circle (default, inert) = the round --radius-pill person avatar on the muted surface; square = the entity-header organization/service mark — a compact rounded square on the brand surface driven by --avatar-square-{radius,size,background,foreground} (gh#249). Choose by meaning, never by look: a className="rounded-md bg-primary" override on the call site is the anti-pattern this prop removes.',
+      'circle (default, inert) = the round --radius-pill person avatar on the muted surface; square = the entity-header organization/service mark — a compact rounded square on the brand surface driven by --avatar-square-{radius,size,background,foreground}. Choose by meaning, never by look: a className="rounded-md bg-primary" override on the call site is the anti-pattern this prop removes.',
   },
 ];
 

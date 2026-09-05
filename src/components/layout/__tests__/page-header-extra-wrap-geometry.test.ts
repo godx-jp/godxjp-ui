@@ -43,7 +43,7 @@ const layoutCss = read("../../../styles/layout.css");
  */
 const ruleOffsets = (selector: string): number[] => {
   const offsets: number[] = [];
-  for (let at = layoutCss.indexOf(selector + " {"); at > -1; ) {
+  for (let at = layoutCss.indexOf(selector + " {"); at > -1;) {
     // Only whitespace may sit between the preceding newline and the selector: a rule the file
     // opens a line with, not the tail of a longer, more specific one.
     if (/^[^\S\n]*$/.test(layoutCss.slice(layoutCss.lastIndexOf("\n", at) + 1, at))) {

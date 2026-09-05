@@ -42,11 +42,7 @@ describe("Card — surface data attributes", () => {
   });
 
   it("omits data-variant/data-size for the defaults", () => {
-    const { container } = render(
-      <Card variant="default">
-        body
-      </Card>,
-    );
+    const { container } = render(<Card variant="default">body</Card>);
     const card = q(container, "card");
     expect(card).not.toHaveAttribute("data-variant");
     expect(card).not.toHaveAttribute("data-size");

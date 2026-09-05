@@ -1,19 +1,18 @@
 # @godxjp/ui Documentation
 
-| Doc                                          | Purpose                                                                                                                                         |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| [MIGRATION-v19.md](./MIGRATION-v19.md)       | **Upgrade guide — v19 (current major)** — one removed prop, four renamed tokens, and seven deliberate pixel changes a pinned design will notice |
-| [MIGRATION-v17.md](./MIGRATION-v17.md)       | Upgrade guide — v17 breaking `Flex` default + new primitives + safe query errors                                                                |
-| [DEVELOPMENT.md](./DEVELOPMENT.md)           | **Contributor guideline** — role/boundary, architecture, how to add/extend, verify                                                              |
-| [COMPONENTS.md](./COMPONENTS.md)             | Component catalog by Ant Design group                                                                                                           |
-| [PROPS-VOCABULARY.md](./PROPS-VOCABULARY.md) | Atomic prop types (`*Prop` suffix)                                                                                                              |
-| [PROPS-REGISTRY.md](./PROPS-REGISTRY.md)     | Machine-readable registry + forbidden aliases                                                                                                   |
-| [DATETIME.md](./DATETIME.md)                 | **Mandatory** `formatDate` — all date/time display                                                                                              |
-| [SPACING.md](./SPACING.md)                   | Golden ratio (φ) macro spacing — Stack, Card, PageContainer                                                                                     |
-| [FORMS.md](./FORMS.md)                       | **Mandatory** react-hook-form + Zod 4                                                                                                           |
-| [TESTING.md](./TESTING.md)                   | **Mandatory** Vitest per component                                                                                                              |
-| [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md)       | Per-frame axe a11y + geometry + coverage CI gates — how to run/regenerate locally                                                               |
-| [../README.md](../README.md)                 | Setup, workspace wiring, theme                                                                                                                  |
+| Doc                                          | Purpose                                                                                                                                      |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| [CONSUMER-RULES.md](./CONSUMER-RULES.md)     | **Start here if you build an app with @godxjp/ui** — the ten rules the audit enforces (styles entry, layout owners, real primitives, tokens) |
+| [DEVELOPMENT.md](./DEVELOPMENT.md)           | **Contributor guideline** — role/boundary, architecture, how to add/extend, verify                                                           |
+| [COMPONENTS.md](./COMPONENTS.md)             | Component catalog by Ant Design group                                                                                                        |
+| [PROPS-VOCABULARY.md](./PROPS-VOCABULARY.md) | Atomic prop types (`*Prop` suffix)                                                                                                           |
+| [PROPS-REGISTRY.md](./PROPS-REGISTRY.md)     | Machine-readable registry + forbidden aliases                                                                                                |
+| [DATETIME.md](./DATETIME.md)                 | **Mandatory** `formatDate` — all date/time display                                                                                           |
+| [SPACING.md](./SPACING.md)                   | Golden ratio (φ) macro spacing — PageContainer sections, Flex gap, Card rhythm                                                               |
+| [FORMS.md](./FORMS.md)                       | **Mandatory** react-hook-form + Zod 4                                                                                                        |
+| [TESTING.md](./TESTING.md)                   | **Mandatory** Vitest per component                                                                                                           |
+| [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md)       | Per-frame axe a11y + geometry + coverage CI gates — how to run/regenerate locally                                                            |
+| [../README.md](../README.md)                 | Setup, workspace wiring, theme                                                                                                               |
 
 ## Preview
 

@@ -658,7 +658,7 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
       "emptystate",
       "centeredshell",
     ],
-    code: `// @godxjp/ui SHIPS <ErrorSurface> (gh#221 → gh#251). Do NOT hand-compose an error page from
+    code: `// @godxjp/ui SHIPS <ErrorSurface>. Do NOT hand-compose an error page from
 // AuthShell + a generic Card + a local ".canonical-auth-card" — that workaround IS the regression.
 //
 //    403 / 404  → mode="application": the surface is the BODY of the AppShell you ALREADY render
@@ -1073,9 +1073,7 @@ export function OrganizationMemberships({
       "presentation",
     ],
     code: `// ⚠️ There is NO <PasswordRecoveryPanel state=…/> and NO <MfaChallengePanel state=…/> in
-// @godxjp/ui (gh#233 — both fail the Framework-Component Test: they own no behaviour, and a
-// \`state\` prop that swaps five incompatible bodies is the screen-shaped grab-bag anti-pattern,
-// the same call as ErrorSurface's \`mode\`). What the package owns is the MEASURE:
+// @godxjp/ui. What the package owns is the MEASURE:
 //    <AuthShell variant="canonical" preset="account-recovery">   ← 432px panel, 15px gutter at 390
 // Docs page: docs/layout/auth-recovery/
 //

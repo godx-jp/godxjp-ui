@@ -20,7 +20,7 @@ describe("control-styles (token wiring)", () => {
     it("controlFieldClass uses ui-control + ring token", () => {
       expect(controlFieldClass).toContain("ui-control");
       expect(controlFieldClass).toContain("border-input");
-      expect(controlFieldClass).toContain("focus-visible:ring-ring");
+      expect(controlFieldClass).not.toMatch(/ring-\[|ring-ring\//);
     });
 
     it("controlMultilineClass uses ui-control-multiline", () => {

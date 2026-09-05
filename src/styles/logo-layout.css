@@ -1,10 +1,4 @@
-/*
- * LOGO — the product brand-mark box (a glyph on the primary fill). Replaces the hand-rolled
- * `<span aria-hidden className="grid size-7 place-items-center rounded-md bg-primary …">g</span>`
- * repeated across app shells and topbars (issue #116): size/radius/font-size are tokens (rule #45),
- * colours read the primary role directly, and the type comes from a semantic class (not utilities
- * on a bare span, rule #46).
- */
+/* LOGO — the product brand-mark box (a glyph on the primary fill). */
 @layer components {
   .ui-logo {
     display: inline-grid;
@@ -39,31 +33,14 @@
     font-size: var(--logo-font-size-lg);
   }
 
-  /* Identity fills — the IDENTITY role --brand (canonical GoDX emerald), NOT the --success STATUS
-   * green: `tone="success"` names the semantic slot, not the status role, and a badge/progress
-   * green must never drag the product mark with it (gh#250). Role defaults live HERE (call site),
-   * not on :root, so a scoped `.dark` / `[data-tenant]` override of --brand re-resolves
-   * (docs/TOKENS.md · role-mirror knobs).
-   *
-   * The INK is --logo-identity-foreground, NOT --brand-foreground: this branch sets caller-supplied
-   * TEXT on the fill, so WCAG 2.2 SC 1.4.3 applies at 4.5:1 (14px bold is not "large text"), while
-   * --brand-foreground is the artwork KNOCKOUT colour that tracks --background and only owes 3:1 as
-   * non-text (SC 1.4.11). Knockout white on the emerald measured 3.67:1 — an AA failure on every
-   * boxed `tone="success"` glyph. See src/tokens/components/logo.css. */
+  /* Role defaults live HERE (call site), not on :root, so a scoped `.dark` / `[data-tenant]`
+   * override of --brand re-resolves (docs/TOKENS.md · role-mirror knobs). */
   .ui-logo[data-tone="success"] {
     background: hsl(var(--logo-success-background, var(--brand)));
     color: hsl(var(--logo-success-foreground, var(--logo-identity-foreground)));
   }
 
-  /* The identity mark honours `size` like every other Logo branch. The godx box has its OWN tier
-   * scale (--logo-godx-size-*) because the artwork is a horizontal capsule in a square viewBox and
-   * needs ~+0.25rem over the filled glyph box to read at the same weight — but a public `size` prop
-   * that renders identically at xs and lg is a silent no-op, and the lockup already scaled its
-   * wordmark per tier, so a frozen mark broke the mark↔wordmark proportion at `size="lg"`.
-   * These are `[data-mark][data-size]` (0,3,0) so they beat BOTH `.ui-logo[data-size]` and the
-   * `[data-mark="godx"]` base regardless of source order — the ordering bug that hid `size` here.
-   * --logo-godx-size stays the documented PIN: unset by default, and set once by a service theme it
-   * wins at every tier (call-site default, docs/TOKENS.md). */
+  /* The identity mark honours `size` like every other Logo branch. */
   .ui-logo[data-mark="godx"] {
     width: var(--logo-godx-size, var(--logo-godx-size-md));
     height: var(--logo-godx-size, var(--logo-godx-size-md));
@@ -93,13 +70,6 @@
     height: 100%;
   }
 
-  /*
-   * LOCKUP — `<Logo wordmark="…" />`: the mark plus the readable product name as ONE element, so a
-   * shell header / auth brand bar never hand-rolls `inline-flex items-center gap-2` around a Logo
-   * and a `<Text>` (rule #46). Every knob is a token (rule #45); the wordmark colour defaults to
-   * the IDENTITY role and never reads --primary, so re-theming the action colour cannot recolour
-   * the brand — no consumer page CSS is required for the logo colour (gh#214).
-   */
   .ui-logo-lockup {
     display: inline-flex;
     align-items: center;

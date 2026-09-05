@@ -1,9 +1,5 @@
-/* ───────────────────────────────────────────────────────────────
- * Famgia service theme — ファムジア株式会社
- * Re-themes @godxjp/ui via SEMANTIC TOKENS only (no component CSS).
- * Brand: electric blue #2563EB (primary) + violet #7C3AED (accent gradient).
- * Import this instead of "@godxjp/ui/styles".
- * ─────────────────────────────────────────────────────────────── */
+/* Famgia service theme — ファムジア株式会社 Re-themes @godxjp/ui via SEMANTIC TOKENS only (no component
+ * CSS). */
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap");
 @import "@godxjp/ui/styles";

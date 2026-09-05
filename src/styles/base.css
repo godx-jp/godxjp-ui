@@ -2,15 +2,14 @@
  * FOUNDATION — Tailwind entry, design tokens, density, theme mapping, base
  * element styles. This is the minimum every consumer needs.
  *
- * Tree-shakeable CSS setup: import this ONCE, then add ONLY the component
- * layout layers you actually render:
+ * Two supported entries, and only two:
  *
- *     @import "@godxjp/ui/styles/base";            // this file (required)
- *     @import "@godxjp/ui/styles/control";         // buttons, inputs, toggles
- *     @import "@godxjp/ui/styles/form-layout";
- *     @import "@godxjp/ui/styles/dialog-layout";
- *     @import "@godxjp/ui/styles/card-layout";
- *     // ...only the ones you use
+ *     @import "@godxjp/ui/styles";        // every component layer + the bundled fonts
+ *     @import "@godxjp/ui/styles/core";   // every component layer, no fonts
+ *
+ * The per-layer files are the package's internal structure, not a menu: layers share
+ * rules, and a page that loads a subset renders naked menus and unsized rows. `core` is
+ * the subset.
  *
  * The layout files declare `@layer components` and use `@apply`, so base.css
  * (which pulls in Tailwind) MUST be imported before them, in the same
@@ -23,7 +22,7 @@
  * same specificity as the bundle's fill, so the later import wins. Imported
  * first, the bundle is dead weight (issue #210).
  *
- * Prefer the all-in-one `@godxjp/ui/styles` entry if you'd rather ship every
+ * `@godxjp/ui/styles` is the zero-config entry; `styles/core` the same without
  * component's CSS + the bundled fonts and not think about it.
  * ───────────────────────────────────────────────────────────────────────── */
 @import "tailwindcss";
@@ -56,13 +55,7 @@
  * See docs/TOKENS.md · "The layer contract". */
 @layer godxjp-ui-responsive;
 
-/* Per-language font wiring — token-only, NO hardcoded faces. Each locale reads
- * an OPTIONAL per-lang slot token (empty by default) and falls back to the
- * base sans. Consumers switch a locale's face by setting its slot, e.g.
- *   :root { --font-sans-ja: "Noto Sans JP", var(--font-sans-base); }
- * without writing any [lang] selectors. The opt-in bundle styles/fonts fills
- * these slots for its Noto Sans JP + M PLUS 2 fallback. `--font-sans-base` is a
- * separate token (not --font-family-sans) so the fallback can't self-reference. */
+/* Per-language font wiring — token-only, NO hardcoded faces. */
 [lang="ja"] {
   --font-family-sans: var(--font-sans-ja, var(--font-sans-base));
 }
@@ -82,10 +75,9 @@
   --font-family-sans: var(--font-sans-zh-hant, var(--font-sans-base));
 }
 
-/* Guarantee the full set of semantic color utilities ships in the compiled CSS
- * even when the library itself only references a few — consumers (and the token
- * docs) must be able to use bg/text/border for EVERY semantic role. Without this
- * Tailwind's JIT drops unused roles (success/info/attention) → transparent. */
+/* Guarantee the full set of semantic color utilities ships in the compiled CSS even when the
+ * library itself only references a few — consumers (and the token docs) must be able to use
+ * bg/text/border for EVERY semantic role. */
 @source inline(
   "{bg,text,border,ring}-{primary,secondary,muted,accent,destructive,success,warning,info,attention}"
 );
@@ -101,18 +93,14 @@
 @source inline("text-2xs");
 @source inline("text-{3xl,4xl,5xl}");
 @source inline("text-{primary,success,warning,info,error}-strong");
-/* `.js` matters: the published package ships only compiled JS under dist (no
- * .tsx sources), and this file is copied verbatim into dist/styles — without
- * it Tailwind finds no component classes in consumers (unstyled popovers and
- * selects, and Radix scroll-lock freezes the page because pointer-events-auto
- * is never emitted). In-repo the glob scans src; published, it scans dist. */
-@source "../**/*.{tsx,ts,js}";
+/* `.js` matters: the published package ships only compiled JS under dist (no .tsx sources), and
+ * this file is copied verbatim into dist/styles — without it Tailwind finds no component classes
+ * in consumers (unstyled popovers and selects, and Radix scroll-lock freezes the page because
+ * pointer-events-auto is never emitted). */
+@source "..*.{tsx,ts,js}";
 @import "../tokens/base.css";
-/* The focus ring is FOUNDATION, not a component layer: every focusable control in
- * every layer reads the same four tokens from ONE rule (styles/focus-ring.css).
- * Imported here — not left to index.css — so a consumer that tree-shakes down to
- * `styles/base` + two layout files still gets keyboard-focus affordance (WCAG
- * 2.4.7); shipping it as an optional layer would make a11y opt-in by accident. */
+/* The focus ring is FOUNDATION, not a component layer: every focusable control in every layer
+ * reads the same four tokens from ONE rule (styles/focus-ring.css). */
 @import "./focus-ring.css";
 @import "./density.css";
 
@@ -165,7 +153,8 @@
   --color-chart-5: var(--chart-5);
   --color-chart-6: var(--chart-6);
   /* Golden-ratio radius scale — every step derives from --radius × (--radius-ratio = φ)ⁿ, so
-   * overriding --radius alone rescales the whole scale proportionally (≈ 1.4/2.3/3.7/6/9.7/15.7px). */
+   * overriding --radius alone rescales the whole scale proportionally (≈
+   * 1.4/2.3/3.7/6/9.7/15.7px). */
   --radius-xs: calc(
     var(--radius) / var(--radius-ratio) / var(--radius-ratio) / var(--radius-ratio)
   );
@@ -222,17 +211,7 @@
     border-color: hsl(var(--border));
   }
 
-  /* Visually-hidden, absolutely-positioned helpers must never affect layout or scroll height.
-   *
-   * Radix renders a hidden native form-fallback (BubbleSelect/BubbleInput) for Select, Checkbox,
-   * Switch and RadioGroup; it is `position:absolute` with NO top/left, so when the control has no
-   * positioned ancestor its static box resolves far down the page and inflates
-   * `document.scrollHeight` → phantom empty scroll space (gh#105). The same is true of the
-   * `.sr-only` clamp (Tailwind / our own status + file-input nodes). These fallbacks are always
-   * `aria-hidden` + `tabindex=-1`. Pinning every such node to the top-left of its containing block
-   * makes it impossible for it to extend the scroll height, regardless of consumer markup — no DOM
-   * wrapper or per-component positioning required. Inside the AppShell the `.app-main { contain:
-   * paint }` boundary (gh#104) already contains these; this rule protects every other call site too. */
+  /* Visually-hidden, absolutely-positioned helpers must never affect layout or scroll height. */
   :where(select, input)[aria-hidden="true"][tabindex="-1"],
   .sr-only {
     top: 0;
@@ -256,11 +235,8 @@
       "calt" 1;
   }
 
-  /* Semantic heading scale — SEO + accessibility: real <h1>–<h6> elements carry
-   * the document outline (one <h1> per page, levels never skipped). Visual size
-   * follows the reference-design scale; component titles override via their own class.
-   * Headings read --font-family-display (defaults to --font-family-sans → unchanged) for dual-font
-   * brands (display face on headings, body face on prose). */
+  /* Semantic heading scale — SEO + accessibility: real <h1>–<h6> elements carry the document
+   * outline (one <h1> per page, levels never skipped). */
   :where(h1, h2, h3, h4, h5, h6) {
     font-family: var(--font-family-display);
   }

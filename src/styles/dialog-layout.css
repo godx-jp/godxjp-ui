@@ -1,18 +1,15 @@
-/*
- * DIALOG — overlay content shell (form + confirm modes share tokens).
- */
+/* DIALOG — overlay content shell (form + confirm modes share tokens). */
 
 @layer components {
   /* Sheet (side-panel, Radix Dialog) chrome padding — defaults to the shared global chrome tokens.
-   * A service overrides --space-chrome-* once (whole system) or --sheet-pad-* for the Sheet only.
-   * (Lives here because Sheet is Dialog-based and dialog-layout.css is in the main bundle.) */
+ */
   [data-slot="sheet-content"] {
     --sheet-pad-x: var(--space-chrome-x);
     --sheet-pad-y: var(--space-chrome-y);
   }
 
-  /* Sheet header/footer dividers appear ONLY when a SheetBody is present (mirrors the dialog rule) —
-   * a body-less sheet never shows a doubled header-bottom + footer-top line. */
+  /* Sheet header/footer dividers appear ONLY when a SheetBody is present (mirrors the dialog rule)
+   * — a body-less sheet never shows a doubled header-bottom + footer-top line. */
   [data-slot="sheet-content"]:has([data-slot="sheet-body"]) [data-slot="sheet-header"] {
     border-bottom: 1px solid hsl(var(--border));
   }
@@ -22,9 +19,8 @@
   }
 
   /* Scrim = a SHARE of the ONE shared semantic scrim (--overlay-background), resolved here at the
-   * call site so a scoped [data-tenant]/.dark override of --overlay-background actually reaches the
-   * portaled overlay (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). Setting
-   * --dialog-overlay-background / --sheet-overlay-background still wins outright. */
+   * call site so a scoped [data-tenant]/.dark override of --overlay-background actually reaches
+   * the portaled overlay (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). */
   .ui-dialog-overlay {
     background-color: var(
       --dialog-overlay-background,
@@ -39,10 +35,7 @@
     );
   }
 
-  /* Stacking joins the ONE system layer (--overlay-z-index) instead of a private z-50 — Sheet,
-   * Tooltip and Popover already do, so a service that lifts its overlays above an app-owned
-   * fixed element no longer has to fork the dialog to bring it along. Default is 50, the literal
-   * this replaces. */
+  /* Default is 50, the literal this replaces. */
   .ui-dialog-overlay {
     position: fixed;
     inset: 0;
@@ -73,9 +66,7 @@
     }
   }
 
-  /* Ring-safe scrollable body for a tall dialog. Full-bleed inset (matches the dialog padding) so a
-   * full-width control's 3px focus ring never clips against the scroll container's computed
-   * overflow-x; padding-block keeps the ring visible at the scroll edges. Mirrors SheetBody. */
+  /* Ring-safe scrollable body for a tall dialog. */
   [data-slot="dialog-body"] {
     min-height: 0;
     max-height: min(60vh, 32rem);
@@ -86,9 +77,8 @@
     scroll-padding-block: var(--space-1);
   }
 
-  /* Header & footer are PLAIN stacked sections by default — the dialog padding gives the inset and the
-   * content `gap` gives the header↔footer spacing. No border band here, so a simple confirm dialog
-   * (header + footer, NO body) never shows an internal divider or a doubled line + padding. */
+  /* Header & footer are PLAIN stacked sections by default — the dialog padding gives the inset and
+   * the content `gap` gives the header↔footer spacing. */
   [data-slot="dialog-header"] {
     display: flex;
     flex-direction: column;
@@ -96,17 +86,14 @@
     text-align: start;
   }
 
-  /* DIALOG chrome rhythm — the exact mirror of the `.ui-sheet-*` set at the foot of this file.
-   * Dialog's default header markup is byte-identical to Sheet's, but its gaps were literal on the
-   * component (`gap-[var(--space-3)] pe-[var(--space-8)]`, `min-w-0 flex-col gap-[var(--space-1)]`,
-   * `shrink-0 gap-[var(--space-2)]`), so the two siblings could not be retuned together (#319). */
+  /* DIALOG chrome rhythm — the exact mirror of the `.ui-sheet-*` set at the foot of this file. */
   .ui-dialog-title-row {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: var(--dialog-title-row-space-gap);
     /* Reserves inline room for the absolutely-positioned close button so a long title or the extra
-     * slot never runs under it. Moves with --dialog-close-space-offset. */
+     * slot never runs under it. */
     padding-inline-end: var(--dialog-header-close-space-inline-end);
   }
 
@@ -151,9 +138,8 @@
     }
   }
 
-  /* Scrollable-body layout (Ant Modal): ONLY when a body is present do header & footer become
-   * full-bleed pinned bands with a divider, so the body scrolls between two fixed bars. Without a
-   * body the dividers (and their band padding) collapse — fixes the double-border + oversized gap. */
+  /* Without a body the dividers (and their band padding) collapse — fixes the double-border +
+   * oversized gap. */
   [data-slot="dialog-content"]:has([data-slot="dialog-body"]) [data-slot="dialog-header"] {
     margin-inline: calc(-1 * var(--dialog-space-x));
     margin-block-start: calc(-1 * var(--dialog-space-y));
@@ -198,8 +184,7 @@
   }
 
   /* No scrim override here: the two-factor dialog's backdrop is the SHARED overlay scrim
-   * (.ui-dialog-overlay above). The old literal `rgb(0 0 0 / 0.3)` re-stated the dialog default at a
-   * higher specificity and silently opted this one dialog out of --overlay-background theming. */
+   * (.ui-dialog-overlay above). */
 
   .ui-two-factor-setup-enrollment,
   .ui-two-factor-setup-recovery {
@@ -286,16 +271,7 @@
 }
 
 @layer components {
-  /* TOOLTIP / POPOVER — the two portaled overlay surfaces.
-   *
-   * Both shipped their entire box as Tailwind literals on the component
-   * (`z-50 max-w-xs px-2 py-1 rounded-md text-xs shadow-md`, `w-72 p-4`), so a service
-   * theme could not retune tooltip density, popover width, or overlay stacking without
-   * forking the component — exactly the gap cardinal rule #45 exists to close.
-   *
-   * Colours read the popover ROLE at the call site (not bound at :root) so a scoped
-   * [data-tenant]/.dark override still reaches the portaled node — docs/TOKENS.md ·
-   * "Role-mirror knobs MUST be `initial`". */
+  /* TOOLTIP / POPOVER — the two portaled overlay surfaces. */
   .ui-tooltip-content {
     z-index: var(--overlay-z-index);
     width: fit-content;
@@ -332,16 +308,14 @@
 }
 
 @layer components {
-  /* SHEET chrome rhythm — --sheet-pad-x/-y already governed the panel inset; these are the gaps
-   * INSIDE that chrome, which were literal on the component (#319). */
   .ui-sheet-header {
     display: flex;
     flex-direction: column;
     gap: var(--sheet-header-space-gap);
   }
 
-  /* Reserves inline room for the absolutely-positioned close button so a long title or the
-   * extra slot never runs under it. Moves with --sheet-close-offset. */
+  /* Reserves inline room for the absolutely-positioned close button so a long title or the extra
+   * slot never runs under it. */
   .ui-sheet-title-row {
     display: flex;
     align-items: flex-start;
@@ -431,8 +405,8 @@
     border-block-start: 1px solid hsl(var(--border));
   }
 
-  /* The scroll region must be allowed to shrink inside the flex column, or it grows past the
-   * panel and the footer is pushed out of view. */
+  /* The scroll region must be allowed to shrink inside the flex column, or it grows past the panel
+   * and the footer is pushed out of view. */
   .ui-sheet-body-space {
     min-block-size: 0;
   }

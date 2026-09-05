@@ -6,9 +6,9 @@ Implementation: `src/tokens/base.css` (values) · layout owners: `src/styles/*-l
 
 ## Rules for apps
 
-1. **Never** Tailwind `gap-*`, `space-*`, `p-*` for layout — use `<Flex gap>` (row) / `<Flex direction="col" gap>` (vertical) / `<PageContainer>`.
-2. Default section gap: `<Flex direction="col" gap="md">` (= φ⁰).
-3. Major blocks: `gap="lg"` (φ¹) or `gap="xl"` (φ²).
+1. **Never** Tailwind `gap-*`, `space-*`, `p-*`, `m-*` for layout — the audit rejects them (`no-utility-spacing`, `no-utility-layout`). Rows are `<Flex>` (default `direction="row"`), stacks are `<Flex direction="col" gap>`, grids are `<ResponsiveGrid>`.
+2. **Page sections are spaced by `<PageContainer>` itself**: every direct child of the page body gets `--page-body-gap` (the section step, φ⁰) above it. Do not wrap the sections in a Flex just to space them; do not add margins.
+3. Inside a section: `<Flex direction="col" gap="md">` (φ⁰) for the default rhythm, `gap="lg"` (φ¹) / `gap="xl"` (φ²) for major blocks, `xs` / `sm` (4px grid) for control rows.
 4. Card rhythm is token-driven — do not override card padding in app CSS.
 
 ## φ scale (one knob)
@@ -53,4 +53,4 @@ See preview **Data Display → Card** for live examples.
 
 ## MCP
 
-`godxjp_ui_guide` topic=`golden-ratio` — full playbook for agents.
+`get_pattern page-sections` (a page of Cards, spaced by the page) · `get_rule 40` (mobile-first spacing) · `list_audit_rules` (the spacing rules the CLI enforces).

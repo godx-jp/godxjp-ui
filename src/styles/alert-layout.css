@@ -1,6 +1,4 @@
-/*
- * ALERT — inset, gaps, dismiss offset; colors via data-tone + semantic tokens.
- */
+/* ALERT — inset, gaps, dismiss offset; colors via data-tone + semantic tokens. */
 
 @layer components {
   [data-slot="alert"] {
@@ -47,11 +45,7 @@
     color: hsl(var(--foreground));
   }
 
-  /* variant="banner" (the <Banner> export) — the full-bleed page/shell attention strip.
-   * ONLY geometry changes here: every tone colour rule above applies unchanged, and the
-   * strip keeps its tone-coloured hairline on the block-end edge alone. All values are
-   * --banner-* component tokens (src/tokens/components/banner.css), so a consumer never
-   * writes CSS to place a banner and a service retunes the strip once via theme. */
+  /* variant="banner" (the <Banner> export) — the full-bleed page/shell attention strip. */
   [data-slot="alert"][data-variant="banner"] {
     border-radius: var(--banner-radius);
     border-block-start-width: 0;
@@ -99,11 +93,7 @@
     color: hsl(var(--info));
   }
 
-  /* Body stacks text vertically (title over description). The ≥sm two-column
-   * layout exists ONLY to push an actions slot to the end — gate it on
-   * :has(alert-actions), otherwise bare AlertTitle + AlertDescription (the
-   * catalog example, AlertQueryError, the docs page) split into meaningless
-   * side-by-side columns (godxjp-ui#106). */
+  /* Body stacks text vertically (title over description). */
   [data-slot="alert-body"] {
     display: flex;
     flex: 1;
@@ -178,10 +168,7 @@
     }
   }
 
-  /* Dismiss ✕ — BOTH halves of the affordance now live here. The rest opacity was a hard 0.7 in
-   * this file while its `:hover` companion sat on the component as `hover:opacity-100`, so the
-   * quiet-at-rest chrome (rule #44) was split across two files and a theme could reach neither.
-   * The hover rule is load-bearing: without it the ✕ stays at the rest alpha forever. */
+  /* Dismiss ✕ — BOTH halves of the affordance now live here. */
   [data-slot="alert-dismiss"] {
     position: absolute;
     top: var(--alert-dismiss-space-offset);
@@ -201,16 +188,14 @@
   }
 
   /* AlertContent fills the body column but stays shrinkable, so a long unbroken token truncates
-   * instead of widening the alert. Was `min-w-0 flex-1` on the component. */
+   * instead of widening the alert. */
   [data-slot="alert-content"] {
     min-inline-size: 0;
     flex: 1 1 0%;
   }
 
   /* TOAST (Sonner) — the status glyph handed to sonner through its all-or-nothing `icons` config
-   * prop. Sonner sizes the `[data-icon]` WRAPPER to a fixed 16px box and only sets `flex-shrink`
-   * + margins on the svg inside it, so the glyph's own size is ours to own; the token is what
-   * lets a consumer retune it without re-declaring all five icons. */
+   * prop. */
   .ui-toast-icon {
     inline-size: var(--toast-icon-size);
     block-size: var(--toast-icon-size);
@@ -243,9 +228,9 @@
     border-radius: var(--skeleton-radius);
   }
 
-  /* Drop the self-frame inside a flush CardContent so the Card supplies the single
-   * border — mirrors `.ui-data-table-surface` so the skeleton placeholder and the
-   * real DataTable it swaps for sit identically (no nested double border). */
+  /* Drop the self-frame inside a flush CardContent so the Card supplies the single border —
+   * mirrors `.ui-data-table-surface` so the skeleton placeholder and the real DataTable it swaps
+   * for sit identically (no nested double border). */
   [data-slot="card-content"][data-flush] .ui-skeleton-table {
     border-width: 0;
     border-radius: 0;
@@ -278,7 +263,6 @@
     border-radius: var(--skeleton-radius);
     padding: var(--skeleton-card-inset);
 
-    /* Skeleton bars, named for what they stand in for rather than their size (#319). */
     .ui-skeleton-line {
       block-size: var(--skeleton-block-height);
     }
@@ -297,7 +281,7 @@
     }
 
     /* Fills its grid track but stops at a readable measure — both are load-bearing: without the
-   * fill it would size to content, without the cap it would run the full track. */
+     * fill it would size to content, without the cap it would run the full track. */
     .ui-skeleton-detail-value {
       block-size: var(--skeleton-block-height);
       inline-size: 100%;

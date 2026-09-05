@@ -31,11 +31,9 @@
 @import "@fontsource/noto-sans-jp/500.css";
 @import "@fontsource/noto-sans-jp/700.css";
 
-/* Fill the font-token slots (see tokens/foundation.css + styles/base.css) with
- * the bundled faces, so the all-in-one `@godxjp/ui/styles` entry stays
- * zero-config: Noto Sans JP is the DXS default face for every supported locale
- * and M PLUS 2 remains its fallback. Consumers on the per-layer setup who
- * supply their own faces simply DON'T import this file and set the slots. */
+/* Fill the font-token slots (see tokens/foundation.css + styles/base.css) with the bundled faces,
+ * so the all-in-one `@godxjp/ui/styles` entry stays zero-config: Noto Sans JP is the DXS default
+ * face for every supported locale and M PLUS 2 remains its fallback. */
 :root {
   --font-sans-base:
     "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", YuGothic,

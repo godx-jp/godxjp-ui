@@ -7,8 +7,7 @@
 > screen-specific UI lives where it belongs — in the consumer app (or a `docs/` showcase), as a
 > composition of real primitives configured by tokens.
 
-This document defines the two concepts precisely, gives the mandatory test, and lists worked
-examples so the call is never a matter of taste.
+This document defines the two concepts precisely, gives the mandatory test, and lists worked examples so the call is never a matter of taste.
 
 ---
 
@@ -16,22 +15,11 @@ examples so the call is never a matter of taste.
 
 ### Framework component (`src/components/**`)
 
-A **reusable, behavior-bearing primitive** that ships in the `@godxjp/ui` bundle and is imported by
-many consumer apps. It encapsulates interaction, state, accessibility and a controlled API that must
-NOT be re-implemented per app. Examples: `Button`, `Select`, `DataTable`, `Dialog`, `Calendar`,
-`Switch`, `Combobox` (= `Select showSearch`), `StatCard`. Every one of these owns non-trivial
-behavior or a11y, generalizes across domains, and is fully token-themeable. They pay their bundle
-cost because _everyone_ uses them.
+A **reusable, behavior-bearing primitive** that ships in the `@godxjp/ui` bundle and is imported by many consumer apps. It encapsulates interaction, state, accessibility and a controlled API that must NOT be re-implemented per app. Examples: `Button`, `Select`, `DataTable`, `Dialog`, `Calendar`, `Switch`, `Combobox` (= `Select showSearch`), `StatCard`.
 
 ### Composition pattern (consumer app, or a `docs/` showcase)
 
-A **specific arrangement of existing primitives** for a specific screen, domain or brand — a
-dashboard layout, a marketing **Hero**, a **Navbar**, a **Footer**, a pricing section, a settings
-page. It has **no reusable behavior of its own**: it is layout + content + token configuration over
-real components. It is brand/design-specific and is **expressible today** by composing `Card`,
-`Button`, `Text`, `ResponsiveGrid`, `Flex`, `Badge`, `Avatar`, … + token overrides (incl. scoped
-`[data-tenant]` / per-region role scoping). It must **never** be baked into `src/components/` — that
-would bloat every consumer's bundle with one design's one-off block.
+A **specific arrangement of existing primitives** for a specific screen, domain or brand — a dashboard layout, a marketing **Hero**, a **Navbar**, a **Footer**, a pricing section, a settings page. It has **no reusable behavior of its own**: it is layout + content + token configuration over real components. It is brand/design-specific and is **expressible today** by composing `Card`, `Button`, `Text`, `ResponsiveGrid`, `Flex`, `Badge`, `Avatar`, … + token overrides (incl. scoped `[data-tenant]` / per-region role scoping).
 
 > A Claude Design's marketing landing page (Hero / Services / CTA / Footer) is the canonical
 > composition case: it is reproduced 100% from **token configuration + real primitives**, with zero
@@ -41,9 +29,7 @@ would bloat every consumer's bundle with one design's one-off block.
 
 ## 2. The Framework-Component Test (MANDATORY — all 7 must pass)
 
-Before creating OR proposing a framework component, evaluate **every** criterion and record the
-verdict. **Allowed only if ALL are `PASS`.** Any `FAIL` ⇒ it is a composition pattern; use existing
-components instead.
+Before creating OR proposing a framework component, evaluate **every** criterion and record the verdict. **Allowed only if ALL are `PASS`.** Any `FAIL` ⇒ it is a composition pattern; use existing components instead.
 
 | #                                                                 | Criterion                                                                                                                      | PASS means                                                            | FAIL means (→ compose)                                                   |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------------------ |
@@ -97,23 +83,13 @@ new UI need
 | Dashboard **page layout**                               | ❌  | ❌  | ❌  | ❌  | ➖  | ❌  | ❌  | **Composition** — `AppShell` + `PageContainer` + `ResponsiveGrid`        |
 | "Icon medallion"                                        | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `Avatar` (square) + a Lucide glyph                     |
 
-`✅ pass · ❌ fail · ➖ borderline`. **StatCard** is the instructive borderline: C2 is weak (it owns
-little behavior), but it is a universal KPI tile with a controlled API, fully tokenized, broadly
-reused — so it earns its place. A **Hero** fails six of seven; it is unambiguously a composition.
+`✅ pass · ❌ fail · ➖ borderline`. **StatCard** is the instructive borderline: C2 is weak (it owns little behavior), but it is a universal KPI tile with a controlled API, fully tokenized, broadly reused — so it earns its place. A **Hero** fails six of seven; it is unambiguously a composition.
 
 ---
 
 ## 4. How to build a composition pattern correctly
 
-1. **Real primitives only.** Compose `Card`/`Button`/`Text`/`ResponsiveGrid`/`Flex`/`Avatar`/… —
-   never hand-roll a control or fake a primitive with a styled `<div>`.
-2. **Sections are layout, not components.** A `<section>`/`<header>`/`<footer>` wrapper that arranges
-   primitives is allowed — it is plain layout, not a faked primitive.
-3. **Resolve every visual gap with a TOKEN.** A navy hero, a glass card, a brand glow, display type
-   → a token override (global `:root`, scoped `[data-tenant]`, or **per-region role scoping**
-   `[data-tenant] .region { --card: navy; --foreground: white; … }`). If the token doesn't exist,
-   **add the token to the framework** (extensibility), never bake a value into the composition.
-4. **Live in the app, or a `docs/` showcase** — never `src/components/`.
+1. **Real primitives only.** Compose `Card`/`Button`/`Text`/`ResponsiveGrid`/`Flex`/`Avatar`/… — never hand-roll a control or fake a primitive with a styled `<div>`. 2. **Sections are layout, not components.** A `<section>`/`<header>`/`<footer>` wrapper that arranges primitives is allowed — it is plain layout, not a faked primitive. 3. **Resolve every visual gap with a TOKEN.** A navy hero, a glass card, a brand glow, display type → a token override (global `:root`, scoped `[data-tenant]`, or **per-region role scoping** `[data-tenant] .region { --card: navy; --foreground: white; … }`). If the token doesn't exist, **add the token to the framework** (extensibility), never bake a value into the composition. 4. **Live in the app, or a `docs/` showcase** — never `src/components/`.
 
 > The whole point of the token-extensibility work (scoped theming, glow / tint / gradient / focus,
 > display type, dual-font, role-scoping) is so that **a composition pattern can reach 100% design
@@ -126,8 +102,4 @@ reused — so it earns its place. A **Hero** fails six of seven; it is unambiguo
 
 This contract is wired into the build/skill gates:
 
-- **`godxjp-ui-component` skill, Gate 0** — the FIRST gate before writing any component is the
-  Framework-Component Test. You must record the C1–C7 verdict; any FAIL stops the work and redirects
-  to composition.
-- **CLAUDE.md cardinal rule #46** — references this document as the hard gate.
-- A reviewer will reject a `src/components/**` addition that did not publish a passing C1–C7 ledger.
+- **`godxjp-ui-component` skill, Gate 0** — the FIRST gate before writing any component is the Framework-Component Test.

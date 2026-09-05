@@ -1,17 +1,5 @@
-/* TOGGLE · counter pill + pressed-state chrome (gh#312).
- *
- * The Toggle BOX itself (heights, padding, variants, the pressed fill) lives in
- * `styles/control.css` alongside every other control — import `@godxjp/ui/styles/control` for it.
- * This layer is only the counter pill Toggle shares with Button, plus the non-colour encodings of
- * the pressed state; `@godxjp/ui/styles` imports it right after control.css so its pressed-state
- * rules land later in the cascade at equal specificity.
- *
- * Every constant here is a token declared in `tokens/components/toggle.css`, where the share-vs-
- * split reasoning and the measured contrast numbers live. The geometry knobs carry Button's exact
- * counter values off the same primitive scale (asserted by the token-parity test), so the two
- * pills are the same size; only the COLOUR knobs are deliberately Toggle's own, because Toggle's
- * pill sits on a surface that inverts.
- */
+/* The Toggle BOX itself (heights, padding, variants, the pressed fill) lives in
+ * `styles/control.css` alongside every other control — import `@godxjp/ui/styles/control` for it. */
 
 @layer components {
   .ui-toggle-count {
@@ -29,10 +17,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* PRESSED — the state is never carried by hue alone (WCAG 1.4.1). Three independent encodings:
-   * the chip's own fill/label invert (control.css), the pill inverts from a quiet near-invisible
-   * chip to a solid one, and the forced-colors rule below. `aria-pressed` carries it
-   * programmatically; nothing appends "(selected)" to the accessible name. */
+  /* PRESSED — the state is never carried by hue alone (WCAG 1.4.1). */
   .ui-toggle[data-state="on"] {
     border-color: var(--toggle-pressed-border-color, hsl(var(--primary)));
   }
@@ -43,10 +28,7 @@
   }
 
   /* Forced colors flattens every background, so neither inversion distinguishes the states any
-   * more. An outline on the pressed pill restores a structural difference at zero layout cost,
-   * and the chip's border follows the system Highlight — the `default` variant's border is
-   * `transparent` when unpressed, and forced-colors preserves transparency, so the two states
-   * stay structurally different there too. */
+   * more. */
   @media (forced-colors: active) {
     .ui-toggle[data-state="on"] {
       border-color: Highlight;

@@ -1,6 +1,4 @@
-/*
- * CONTROLS — height, padding, font size follow active density tokens.
- */
+/* CONTROLS — height, padding, font size follow active density tokens. */
 
 @layer components {
   .ui-toggle {
@@ -117,10 +115,7 @@
     box-shadow: var(--shadow-sm);
   }
 
-  /* SOLID hover/active tokens, never `--destructive / 0.9`: an alpha fill composites with whatever
-   * surface sits behind the button (a lighter Card/AlertDialog vs the page), so the effective colour
-   * — and its contrast with the label — drifts per context and can dip below AA (gh#199). The solid
-   * --destructive-hover/active are tuned to clear 4.5:1 on every surface. */
+  /* The solid --destructive-hover/active are tuned to clear 4.5:1 on every surface. */
   .ui-button--destructive:hover {
     background: hsl(var(--destructive-hover));
   }
@@ -130,8 +125,7 @@
   }
 
   /* Outline + ghost set their text colour EXPLICITLY (read --foreground) — never rely on inherited
-   * body colour. Inheriting breaks in a scoped dark region (e.g. an on-navy hero): the body's
-   * computed dark colour would carry in and the label goes near-invisible on the dark fill. */
+   * body colour. */
   .ui-button--outline {
     border: 1px solid hsl(var(--input));
     background: hsl(var(--background));
@@ -183,11 +177,8 @@
     height: var(--control-icon-size-sm);
   }
 
-  /* A Badge nested in a Button is a compact count/indicator chip, not a free-standing status
-   * chip. A full-height badge grows to the button's inner edges, so its border and (tighter)
-   * corner radius collide with the button's rounded border — it looks like the badge "cuts"
-   * the button outline. Drop its own vertical padding and pin the line box + radius so it
-   * always sits cleanly inside the button at every control height. */
+  /* A Badge nested in a Button is a compact count/indicator chip, not a free-standing status chip.
+ */
   .ui-button [data-slot="badge"] {
     padding-block: 0;
     line-height: var(--line-height-tight);
@@ -206,18 +197,15 @@
     padding: 0;
   }
 
-  /* Icon-only sizes must be square at the SAME height as their text-size counterpart, so an
-   * icon button can sit flush beside a labelled one (split buttons, toolbars). Derive them from
-   * the density tokens — never from a hand-written offset off the base --control-height, which
-   * is how icon-sm drifted a step down to the xs height (issue #133). */
+  /* Icon-only sizes must be square at the SAME height as their text-size counterpart, so an icon
+   * button can sit flush beside a labelled one (split buttons, toolbars). */
   .ui-button--icon-xs {
     width: var(--control-height-xs);
     height: var(--control-height-xs);
     padding: 0;
   }
 
-  /* Rule #24: compact visual tiers never shrink the actual coarse-pointer hit target below 44px.
-   * The glyph remains 12px; only the interactive square expands. */
+  /* Rule #24: compact visual tiers never shrink the actual coarse-pointer hit target below 44px. */
   @media (pointer: coarse) {
     .ui-button--icon-xs {
       width: var(--control-height-default);
@@ -274,8 +262,8 @@
     position: relative;
     display: grid;
     /* `minmax(0, 1fr)`, never the default `auto`: an auto column is sized by the replica's
-     * MAX-CONTENT, so a single unbroken 2,000-character token would widen the column — and with
-     * it the control — to 18,000px instead of wrapping. Measured, not assumed. */
+     * MAX-CONTENT, so a single unbroken 2,000-character token would widen the column — and with it
+     * the control — to 18,000px instead of wrapping. */
     grid-template-columns: minmax(0, 1fr);
     inline-size: 100%;
   }
@@ -293,8 +281,7 @@
     box-sizing: border-box;
     margin: 0;
     /* `pre-wrap` + `break-word` is the UA treatment of a textarea's own text: newlines are kept,
-     * an unbroken 2,000-character token wraps instead of widening the box. The trailing " " is
-     * what keeps a value ending in a newline one row taller, exactly as the control renders it. */
+     * an unbroken 2,000-character token wraps instead of widening the box. */
     white-space: pre-wrap;
     overflow-wrap: break-word;
     font-size: var(--control-font-size);
@@ -354,9 +341,9 @@
   .ui-choice-group[data-orientation="horizontal"] {
     display: flex;
     flex-wrap: wrap;
-    /* Occupy the control height and centre the row so a horizontal radio/checkbox
-     * group lines up with sibling inputs in a horizontal FormField (its options
-     * are only ~icon-height tall, which otherwise sat above the field label). */
+    /* Occupy the control height and centre the row so a horizontal radio/checkbox group lines up
+     * with sibling inputs in a horizontal FormField (its options are only ~icon-height tall, which
+     * otherwise sat above the field label). */
     align-items: center;
     min-height: var(--control-height);
     column-gap: var(--choice-group-gap-x);
@@ -391,28 +378,9 @@
     font-size: var(--choice-description-font-size);
   }
 
-  /* Label primitive (#319). Its box and type were Tailwind literals on label.tsx
-   * (`flex items-center gap-2 text-sm leading-none select-none`), so a service theme could not
-   * retune the label type ramp or the label→addon gap without forking the component.
-   *
-   * SOURCE ORDER IS LOAD-BEARING — this rule MUST stay AFTER `.ui-choice-label` above.
-   * `Field` renders `<Label className="ui-choice-label">`, so that element carries both classes at
-   * equal specificity (0,1,0) in the same layer and the LATER rule wins. Today the `text-sm`
-   * utility out-ranks `.ui-choice-label`'s `font-size: var(--font-size-base)` outright (utilities
-   * are layered after components); putting `.ui-label` EARLIER would hand every checkbox/radio
-   * label back to `.ui-choice-label` and silently change its type. `font-weight` is deliberately
-   * NOT declared here for the same reason: `.ui-choice-label` sets `--font-weight-normal` and
-   * Label's `font-medium` utility beats it today, so `font-medium` stays a utility.
-   *
-   * The disabled states stay utilities too (`peer-disabled:` / `group-data-[disabled=true]:`):
-   * a state must out-rank the resting rule, which in Tailwind v4 means the utilities layer. So
-   * does `line-height` — the `leading-none` it replaces existed precisely to beat the companion
-   * line-height that every `text-*` utility carries, and only a utility can still do that when a
-   * consumer passes their own `text-lg`. Its value is --control-label-line-height all the same.
-   *
-   * Not a regression for the auth shell: the canonical field-label override in shell-layout.css is
-   * INTENTIONALLY UNLAYERED (gh#263) and unlayered author CSS still beats every layer, so it keeps
-   * winning over these declarations exactly as it won over the utilities. */
+  /* Its box and type were Tailwind literals on label.tsx (`flex items-center gap-2 text-sm
+   * leading-none select-none`), so a service theme could not retune the label type ramp or the
+   * label→addon gap without forking the component. */
   .ui-label {
     display: flex;
     align-items: center;
@@ -439,10 +407,7 @@
     border-radius: var(--radius-pill);
   }
 
-  /* `:disabled` only matches form elements, so a purely visual checkbox rendered as a <span>
-   * (Cascader's CheckboxVisual, Transfer's row marks) never picked this up and had to repeat
-   * `cursor-not-allowed opacity-50` on the component instead (#319). Matching [data-disabled]
-   * too lets those share the one rule. The alpha is the system token, not a literal 0.5. */
+  /* Matching [data-disabled] too lets those share the one rule. */
   .ui-checkbox:disabled,
   .ui-radio:disabled,
   .ui-slider-thumb:disabled,
@@ -828,7 +793,7 @@
 }
 /* `align` on InputOTP lands on the hidden <input> (input-otp owns the container element), so the
  * container reads it through :has() — the same mechanism this file already uses for the invalid
- * and disabled states. Specificity puts the per-instance prop above the theme token. */
+ * and disabled states. */
 .ui-otp-container:has(.ui-otp-input[data-align="center"]) {
   justify-content: center;
 }
@@ -936,10 +901,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  /* A 10-star scale needs ~276px of hit area; a 320px viewport offers ~212 inside a card. Without
-   * wrapping, the last stars are painted outside the surface with nothing to scroll them into
-   * view, so they can be neither seen nor clicked (WCAG 2.1.1 / 2.4.7). Wrapping keeps every star
-   * reachable and is a no-op wherever the row already fits. */
+  /* A 10-star scale needs ~276px of hit area; a 320px viewport offers ~212 inside a card. */
   flex-wrap: wrap;
 }
 .ui-rating-star {
@@ -993,9 +955,9 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
-/* The chip list is its own flex row: a real `gap` separates peer chips on the
-   8px step (distinct concepts, not a tight group) instead of relying on
-   collapsed inline whitespace, and flex drops the inter-element whitespace. */
+/* The chip list is its own flex row: a real `gap` separates peer chips on the 8px step (distinct
+ * concepts, not a tight group) instead of relying on collapsed inline whitespace, and flex drops
+ * the inter-element whitespace. */
 .ui-tag-input-list {
   display: flex;
   flex-wrap: wrap;
@@ -1047,8 +1009,7 @@
   color: inherit;
 }
 
-/* NumberInput — spinbutton: composed Input + leading/trailing affix + stepper Buttons.
-   `data-size` remaps the --control-height tier so the inner .ui-control field tracks it. */
+/* NumberInput — spinbutton: composed Input + leading/trailing affix + stepper Buttons. */
 .ui-number-input {
   position: relative;
   display: inline-flex;
@@ -1112,9 +1073,8 @@
 }
 
 @layer components {
-  /* SELECT-FAMILY TRAILING AFFIX — the clear ✕ / chevron overlay parked at a trigger's inline
-   * end. Select, SearchSelect and TagInput each repeated the same literal stack (#319); these
-   * are the one shared set of knobs. */
+  /* SELECT-FAMILY TRAILING AFFIX — the clear ✕ / chevron overlay parked at a trigger's inline end.
+ */
   .ui-control-affix {
     position: absolute;
     inset-block: 0;
@@ -1188,8 +1148,7 @@
   }
 
   /* The panel itself is the focused surface, so the inner search field suppresses its own RING
-   * (this replaces a `focus-visible:ring-0` utility). It must NOT suppress the outline as well —
-   * that would leave keyboard users with no focus affordance at all inside the panel. */
+   * (this replaces a `focus-visible:ring-0` utility). */
   .ui-search-select-search-input:focus-visible {
     box-shadow: none;
   }
@@ -1202,8 +1161,8 @@
     padding: var(--search-select-list-space-inset);
   }
 
-  /* The consumer's renderOption output — it must be able to truncate inside the row, which is
-   * what min-inline-size:0 buys in a flex child. */
+  /* The consumer's renderOption output — it must be able to truncate inside the row, which is what
+   * min-inline-size:0 buys in a flex child. */
   .ui-search-select-option-slot {
     min-inline-size: 0;
     flex: 1 1 0%;
@@ -1360,8 +1319,7 @@
     opacity: 0;
   }
 
-  /* Cascader parks a SMALLER affix closer to the edge than SearchSelect does. Same shared knobs,
-   * component-scoped values — the vocabulary is shared, the calibration is not. */
+  /* Cascader parks a SMALLER affix closer to the edge than SearchSelect does. */
   .ui-cascader-affix {
     --control-affix-inset-inline-end: var(--space-3);
     --control-affix-action-size: var(--control-affix-icon-size);
@@ -1376,9 +1334,7 @@
 }
 
 @layer components {
-  /* SELECT — the Radix listbox popup. Its row rhythm, separator and label come from the shared
-   * menu rules in navigation-layout.css (the same surface ContextMenu/Menubar/DropdownMenu use);
-   * only what is genuinely Select's own lives here (#319). */
+  /* SELECT — the Radix listbox popup. */
   .ui-select-content {
     position: relative;
     z-index: var(--overlay-z-index);
@@ -1398,10 +1354,7 @@
 
   /* A listbox row has no leading icon column, so it takes a slightly wider inline inset to read
    * level with a menu row that does. */
-  /* Row geometry for Select's own listbox. It used to ride the shared menu rule in
-   * navigation-layout.css, so a consumer loading `control` without `navigation-layout` got rows
-   * with no height, no padding and no font size. Select is a control: its rows are sized here,
-   * from the same menu tokens, and the control layer is self-sufficient. */
+  /* Row geometry for Select's own listbox. */
   .ui-select-item,
   .ui-select-label {
     border-radius: var(--menu-item-radius);
@@ -1413,10 +1366,7 @@
     font-size: var(--menu-item-font-size);
   }
 
-  /* Row geometry for Select's own listbox. It used to ride the shared menu rule in
-   * navigation-layout.css, so a consumer loading `control` without `navigation-layout` got rows
-   * with no height, no padding and no font size. Select is a control: its rows are sized here,
-   * from the same menu tokens, and the control layer is self-sufficient. */
+  /* Row geometry for Select's own listbox. */
   .ui-select-item,
   .ui-select-label {
     border-radius: var(--menu-item-radius);
@@ -1554,8 +1504,8 @@
   }
 
   /* Two affix controls (clear + clock), so a wider reserved end than the single-affix triggers. */
-  /* A popover whose content owns its own padding (a Calendar, a month grid) — the panel just
-   * hugs it. Shared by the date/time pickers. */
+  /* A popover whose content owns its own padding (a Calendar, a month grid) — the panel just hugs
+   * it. */
   .ui-control-panel-flush {
     inline-size: auto;
     padding: 0;
@@ -1571,8 +1521,8 @@
     gap: var(--time-picker-affix-space-gap);
   }
 
-  /* Sits INSIDE the field rather than overlaying it, so it rests a touch heavier than the
-   * overlay affix Select/SearchSelect use. Shared by Input and TimePicker. */
+  /* Sits INSIDE the field rather than overlaying it, so it rests a touch heavier than the overlay
+   * affix Select/SearchSelect use. */
   .ui-control-inline-affix-action {
     display: inline-flex;
     inline-size: var(--control-inline-affix-size);
@@ -1607,8 +1557,8 @@
     font-weight: var(--font-weight-medium);
   }
 
-  /* A field in a flex row must be allowed to shrink below its content, or a long value pushes
-   * the row wider instead of the text truncating. */
+  /* A field in a flex row must be allowed to shrink below its content, or a long value pushes the
+   * row wider instead of the text truncating. */
   .ui-input {
     min-inline-size: 0;
   }
@@ -1645,9 +1595,8 @@
     inset-inline-end: var(--control-inline-affix-inset-inline);
   }
 
-  /* A textarea has no single line to centre an affix on, so its clear control parks at the
-   * top-end corner. Everything else — box, radius, resting alpha, hover — is the shared
-   * inside-field affix it borrows from Input. */
+  /* A textarea has no single line to centre an affix on, so its clear control parks at the top-end
+   * corner. */
   .ui-textarea-clear {
     position: absolute;
     inset-block-start: var(--textarea-clear-inset-block-start);
@@ -1686,8 +1635,7 @@
     color: hsl(var(--muted-foreground));
   }
 
-  /* Indent is base + depth × step, driven by `--tree-select-depth` on the row. It used to be a
-   * magic expression inline in JSX, so no theme could reach it. */
+  /* Indent is base + depth × step, driven by `--tree-select-depth` on the row. */
   .ui-tree-select-row {
     display: flex;
     align-items: center;
@@ -1749,8 +1697,8 @@
     gap: var(--tree-select-label-space-gap);
   }
 
-  /* Its clear control is vertically centred against the whole field rather than laid out in a
-   * flex overlay, so it keeps its own rule — but reads the shared affix knobs. */
+  /* Its clear control is vertically centred against the whole field rather than laid out in a flex
+   * overlay, so it keeps its own rule — but reads the shared affix knobs. */
   .ui-tree-select-clear {
     position: absolute;
     inset-inline-end: var(--space-3);
@@ -1778,8 +1726,7 @@
 }
 
 @layer components {
-  /* CALENDAR — react-day-picker frame. The day/weekday cells keep sizing from --control-height
-   * (a system tier decision); everything around them is now a knob. */
+  /* CALENDAR — react-day-picker frame. */
   .ui-calendar {
     position: relative;
     inline-size: fit-content;
@@ -1966,8 +1913,8 @@
     font-size: var(--transfer-row-font-size);
   }
 
-  /* Top-aligned against a two-line row, so it takes a hair of optical offset to sit level with
-   * the first line's cap height rather than its box. */
+  /* Top-aligned against a two-line row, so it takes a hair of optical offset to sit level with the
+   * first line's cap height rather than its box. */
   .ui-transfer-row-check {
     margin-block-start: var(--transfer-row-check-space-block-start);
   }
@@ -1995,8 +1942,8 @@
 }
 
 @layer components {
-  /* MONTH PICKER — the year-nav + 3-column month grid shared by MonthPicker and
-   * MonthRangePicker. One rule set for both; they used to hold identical copies. */
+  /* MONTH PICKER — the year-nav + 3-column month grid shared by MonthPicker and MonthRangePicker.
+ */
   .ui-control-composite-field {
     display: flex;
     inline-size: 100%;
@@ -2075,8 +2022,8 @@
   .ui-month-picker-grid {
     margin-block-start: var(--month-picker-grid-space-block-start);
     display: grid;
-    /* 3 columns × 4 rows is the month grid's shape, not a service knob — 12 months only read
-     * as a calendar year in this arrangement. */
+    /* 3 columns × 4 rows is the month grid's shape, not a service knob — 12 months only read as a
+     * calendar year in this arrangement. */
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--month-picker-grid-space-gap);
   }
@@ -2086,7 +2033,6 @@
     font-weight: var(--font-weight-normal);
   }
 
-  /* BUTTON size-xs + icon-adjacent padding + the count pill (#319). */
   .ui-button--xs {
     height: var(--button-xs-height);
     gap: var(--button-xs-space-gap);
@@ -2117,11 +2063,8 @@
     padding-inline: var(--button-icon-space-inline-xs);
   }
 
-  /* COUNT PILL (gh#320). Opaque role fills, not a translucent tint over the button's surface: a
-   * tint takes its contrast from whatever is behind it, and five variant×theme×hover combinations
-   * measured below WCAG 1.4.3's 4.5:1 for small text. The measurements and the share-vs-split
-   * reasoning live in tokens/components/control.css beside the knobs. Same treatment gh#312
-   * validated on Toggle. */
+  /* The measurements and the share-vs-split reasoning live in tokens/components/control.css beside
+   * the knobs. */
   .ui-button-count {
     display: inline-flex;
     min-inline-size: var(--button-count-min-width);
@@ -2136,9 +2079,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Each filled variant wears its OWN label pair, swapped. That makes the pill exactly as legible
-   * as the label it sits beside — it cannot be less legible under any theme that keeps the button
-   * itself readable, which a fixed colour could not promise. */
+  /* Each filled variant wears its OWN label pair, swapped. */
   .ui-button--default .ui-button-count {
     background: var(--button-count-default-background, hsl(var(--primary-foreground)));
     color: var(--button-count-default-color, hsl(var(--primary)));
