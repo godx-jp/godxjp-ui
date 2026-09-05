@@ -4,8 +4,7 @@ import { ChevronDown, ChevronRight, ChevronsUpDown, X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
-import { controlOpenRingClass } from "../../lib/control-styles";
-import { Button } from "../general/button";
+import { controlTriggerClass } from "../../lib/control-styles";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { ScrollArea } from "../data-display/scroll-area";
 import { Checkbox } from "./checkbox";
@@ -232,11 +231,11 @@ function TreeSelectRoot({
     <Popover open={open} onOpenChange={setOpen}>
       <div className="relative">
         <PopoverTrigger asChild>
-          <Button
+          {/* Nút gốc chứ không phải <Button>: xem gh#348 — trigger đọc token của .ui-control. */}
+          <button
             id={id}
             data-field={fieldA11y["data-field"] ?? identity["data-field"]}
             type="button"
-            variant="outline"
             role="combobox"
             aria-expanded={open}
             aria-haspopup="tree"
@@ -244,9 +243,9 @@ function TreeSelectRoot({
             {...fieldA11y}
             disabled={disabled}
             className={cn(
-              "w-full justify-between font-normal",
+              controlTriggerClass,
+              "w-full justify-between",
               allowClear && displayKeys.length > 0 && !disabled && "ui-tree-select-trigger-affixed",
-              controlOpenRingClass,
               !displayKeys.length && "text-muted-foreground",
               className,
             )}
@@ -259,7 +258,7 @@ function TreeSelectRoot({
                 <ChevronsUpDown className="ui-tree-select-chevron" aria-hidden="true" />
               )}
             </span>
-          </Button>
+          </button>
         </PopoverTrigger>
         {allowClear && displayKeys.length > 0 && !disabled && (
           <button

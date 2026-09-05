@@ -397,12 +397,14 @@
     user-select: none;
   }
 
+  /* Dấu chọn có knob viền RIÊNG, không dùng --control-border-width: một ô 16px và một trường
+   * nhập cùng đổi viền theo một con số sẽ làm dấu chọn dày lên mất cân đối. Mặc định giữ nguyên. */
   .ui-checkbox,
   .ui-radio {
     width: var(--checkbox-size);
     height: var(--checkbox-size);
     flex-shrink: 0;
-    border: 1px solid hsl(var(--primary));
+    border: var(--checkbox-border-width) solid hsl(var(--primary));
     color: hsl(var(--primary));
     background: transparent;
   }
@@ -1041,6 +1043,25 @@
   }
   .ui-input[data-size="sm"] {
     --control-height: var(--control-height-sm);
+  }
+
+  /* Mọi trigger mở popup đều là một control bấm được: cùng bậc cỡ và cùng con trỏ, dù nó là nút
+   * gốc (Cascader/TreeSelect/SearchSelect) hay trigger của Radix (Select). */
+  .ui-control-trigger {
+    cursor: pointer;
+  }
+
+  .ui-control-trigger:disabled,
+  .ui-control-trigger[data-disabled] {
+    cursor: not-allowed;
+  }
+
+  .ui-control[data-size="sm"] {
+    --control-height: var(--control-height-sm);
+  }
+
+  .ui-control[data-size="lg"] {
+    --control-height: var(--control-height-lg);
   }
 
   .ui-number-input[data-size="sm"] {

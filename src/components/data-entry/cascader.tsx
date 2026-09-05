@@ -4,8 +4,7 @@ import { Check, ChevronRight, ChevronsUpDown, Minus, X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
-import { controlOpenRingClass } from "../../lib/control-styles";
-import { Button } from "../general/button";
+import { controlTriggerClass } from "../../lib/control-styles";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { ScrollArea, ScrollBar } from "../data-display/scroll-area";
 import { Command, CommandInput } from "./command";
@@ -322,11 +321,13 @@ export function Cascader({
     <div className={cn("relative", className)}>
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
-          <Button
+          {/* Nút gốc chứ không phải <Button>: một trigger mở popup phải đọc token của .ui-control
+              (viền, bóng, cỡ chữ, vòng focus) như Select và DatePicker, chứ không đọc token của
+              nút (gh#348). */}
+          <button
             id={id}
             data-field={fieldA11y["data-field"] ?? identity["data-field"]}
             type="button"
-            variant="outline"
             role="combobox"
             aria-expanded={open}
             aria-haspopup="listbox"
@@ -334,15 +335,15 @@ export function Cascader({
             {...fieldA11y}
             disabled={disabled}
             className={cn(
-              "w-full justify-start font-normal",
-              controlOpenRingClass,
+              controlTriggerClass,
+              "w-full justify-start",
               // Reserve trailing room for the single clear-or-chevron overlay rendered below.
               "ui-control-trigger-affixed",
               !displayLabel && "text-muted-foreground",
             )}
           >
             <span className="truncate">{displayLabel ?? resolvedPlaceholder}</span>
-          </Button>
+          </button>
         </PopoverTrigger>
         <PopoverContent id={panelId} className="ui-cascader-popover" align="start">
           {/* CommandInput already draws ONE bottom separator + its own inline padding — don't

@@ -4,8 +4,7 @@ import { ChevronsUpDown, Loader2, X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { useFieldIdentity, useFieldNameFallback } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
-import { controlOpenRingClass } from "../../lib/control-styles";
-import { Button } from "../general/button";
+import { controlTriggerClass } from "../../lib/control-styles";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Command, CommandGroup } from "./command";
 import { Input } from "./input";
@@ -317,12 +316,12 @@ export function SearchSelect({
         }}
       >
         <PopoverTrigger asChild>
-          <Button
+          {/* Nút gốc chứ không phải <Button>: xem gh#348 — trigger đọc token của .ui-control. */}
+          <button
             id={id}
             type="button"
-            variant="outline"
             role="combobox"
-            size={size}
+            data-size={size === "md" ? undefined : size}
             aria-expanded={open}
             aria-controls={open ? listId : undefined}
             aria-label={triggerAriaLabel}
@@ -338,8 +337,8 @@ export function SearchSelect({
             // label. `""` (nothing selected) is omitted rather than rendered as an empty attribute.
             data-value={value || undefined}
             className={cn(
-              "w-full justify-start font-normal",
-              controlOpenRingClass,
+              controlTriggerClass,
+              "w-full justify-start",
               // Reserve trailing room for the single clear-or-chevron overlay rendered below.
               "ui-control-trigger-affixed",
             )}
@@ -363,7 +362,7 @@ export function SearchSelect({
                 </>
               )}
             </span>
-          </Button>
+          </button>
         </PopoverTrigger>
         {/* Hidden field so the selection submits with a native form. */}
         {resolvedName ? <input type="hidden" name={resolvedName} value={value} readOnly /> : null}
