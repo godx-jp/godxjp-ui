@@ -1,0 +1,88 @@
+name: Docs lane
+
+# CONTRACT.md L5's separate lane for things that are not product code: it does NOT gate merge,
+# and it only runs when documentation or a workflow file actually changed.
+#
+# WHY THIS IS A LOCAL COPY AND NOT `uses: godx-jp/ci-platform/.github/workflows/docs-lane.yml@v1`.
+# That reusable workflow is the org's canonical version and this file is deliberately modelled on
+# it — but `godx-jp/ci-platform` is a PRIVATE repository whose Actions access level is `none`
+# (`gh api repos/godx-jp/ci-platform/actions/permissions/access` → {"access_level":"none"}), while
+# `godx-jp/godxjp-ui` is PUBLIC. A `uses:` pointing there resolves to nothing and the workflow
+# fails at startup. Granting that access is a change to ci-platform's settings, not to this repo,
+# so it is left to whoever owns it; switch this file to the one-line `uses:` the moment
+# access_level is opened up, and delete the steps below.
+#
+# WHAT IS NOT HERE, AND WHY — the eight "docs/catalog matches code" guards (check:mcp-sync,
+# check:mcp-orphans, check:mcp-prop-sync, check:mcp-catalog-coverage, check:mcp-pattern-imports,
+# check:doc-prop-existence, check:audit-sync, check:example-imports) are the obvious candidates
+# for this lane and they are STILL in `verify:ci:static`. That is a declared deviation from L5,
+# not an oversight; the reason is written at the point of violation, in ci.yml above the
+# `verify:ci:static` step. Short version: this repo's real gate is npm-publish.yml's fail-closed
+# provenance check, which trusts the check run named "Build · typecheck · lint · guards" to stand
+# for every gate `verify:release` would have run. Quietly emptying that job of eight of those
+# gates would leave the claim intact and the proof gone — Nguyên tắc 3's silent failure, bought
+# for a few seconds of a 73s job.
+on:
+  # The two path lists are spelled out twice on purpose: GitHub Actions does not support YAML
+  # anchors, and a workflow that uses them is rejected at parse time.
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'docs/**'
+      - '.github/workflows/**'
+  push:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'docs/**'
+      - '.github/workflows/**'
+
+concurrency:
+  group: docs-lane-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs:
+    name: Docs lane (does not gate merge)
+    runs-on: [self-hosted, swarm-pool]
+    steps:
+      - uses: actions/checkout@v6
+
+      # GitHub skips a syntactically invalid workflow almost SILENTLY — it does not run, and
+      # "did not run" looks exactly like "had nothing to run" on the PR page (Nguyên tắc 3).
+      # This is the cheapest possible guard against that, and it is the one check in this lane
+      # allowed to be red.
+      - name: Workflow YAML parses
+        run: |
+          set -euo pipefail
+          fail=0
+          shopt -s nullglob
+          for f in .github/workflows/*.yml .github/workflows/*.yaml; do
+            if python3 -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" "$f" >/dev/null; then
+              echo "ok   $f"
+            else
+              echo "::error file=$f::YAML does not parse — GitHub will ignore this workflow silently."
+              fail=1
+            fi
+          done
+          exit "$fail"
+
+      # INTERNAL links only. Checking outbound links in CI is a third-party red — exactly what
+      # L5 keeps off the road to merge. Warnings, never a failure: a dead link is worth seeing,
+      # not worth stopping anyone for.
+      - name: Internal links resolve
+        run: |
+          set -euo pipefail
+          while IFS= read -r md; do
+            base=$(dirname "$md")
+            grep -oE '\]\([^)#][^)]*\)' "$md" 2>/dev/null \
+              | sed -E 's/^\]\(//; s/\)$//; s/#.*$//' \
+              | grep -vE '^(https?:|mailto:|//|\$)' \
+              | while IFS= read -r target; do
+                  [ -z "$target" ] && continue
+                  if [ ! -e "$base/$target" ] && [ ! -e "$target" ]; then
+                    echo "::warning file=$md::broken internal link -> $target"
+                  fi
+                done
+          done < <(find . -name '*.md' -not -path './node_modules/*' -not -path './.git/*')

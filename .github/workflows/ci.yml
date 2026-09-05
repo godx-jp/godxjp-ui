@@ -30,6 +30,17 @@ name: CI · code
 on:
   push:
     branches: [main]
+    # L6. Deliberately SHORT, and identical to ci-browser.yml and release-integrity.yml, so a
+    # commit either triggers all three per-merge workflows or none of them — a partial set would
+    # leave npm-publish.yml's provenance check with a gap it can only report as "never ran".
+    # `**.md` is NOT ignored here: check:doc-prop-existence walks every docs/**/*.md, and
+    # audit-evidence/** and artifacts/** are read by check:screen-reader-evidence and
+    # check:display-runtime-evidence. Only genuinely inert paths are listed.
+    paths-ignore:
+      - 'debate/**'
+      - '.agent-notes/**'
+      - '.design-sync/**'
+      - 'LICENSE'
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -45,16 +56,52 @@ jobs:
       # verify:ci:static == verify:ci minus `pnpm test`, and verify:ci itself is verify:static
       # minus check:contrast / check:visual-audit — the only two gates that need Chromium, which
       # run in ci-browser.yml.
+      #
+      # DECLARED DEVIATION FROM CONTRACT.md L5, written here because this is where it happens.
+      # Eight of these guards check that documentation and the MCP catalog still match the code —
+      # check:mcp-sync, check:mcp-orphans, check:mcp-prop-sync, check:mcp-catalog-coverage,
+      # check:mcp-pattern-imports, check:doc-prop-existence, check:audit-sync,
+      # check:example-imports. L5 says such checks belong in a separate, non-blocking, paths-
+      # filtered lane. They are staying here, and the reason is mechanical, not sentimental.
+      #
+      # The gate that matters in this repo is not branch protection — `main` has none (`gh api
+      # repos/godx-jp/godxjp-ui/branches/main/protection` → 404, `/rulesets` → []). It is
+      # `VerifyCommitProvenance` in npm-publish.yml, which refuses to publish unless every name in
+      # scripts/release-core.mjs · REQUIRED_CI_CHECK_RUNS is green on the exact SHA. The entry
+      # "verify:ci:static (…, ~25 guards)" maps to THIS job's check run, and that mapping is how
+      # the release justifies not re-running `verify:release` itself. The mapping is a string: it
+      # would keep passing whether or not these eight guards still run here. So moving them to a
+      # paths-filtered docs lane does not make them optional — it makes the release's claim to
+      # have verified them false, with nothing red to say so. That is Nguyên tắc 3's silent
+      # failure, and the whole saving is a few seconds inside a 73s job (run 33976207784).
+      #
+      # The move becomes correct — and should then be made — once either the docs lane produces a
+      # check run named in REQUIRED_CI_CHECK_RUNS with no `paths:` filter on its push trigger
+      # (a filtered one would fail closed with "never ran" on any commit that misses the paths,
+      # which is exactly the L6 trap), or npm-publish.yml stops delegating and runs verify:release
+      # itself. Until one of those is true, the honest place for them is inside the check run that
+      # the release already trusts. See .github/workflows/docs-lane.yml for the lane that does
+      # exist, and what it deliberately does not carry.
       - name: verify:ci:static (every browser-free publish gate)
         run: pnpm verify:ci:static
 
       - name: Static frame contracts
         run: pnpm check:frame-contracts
 
-      # Report-only: it prints the contract inventory and never fails the build. It runs here
-      # rather than in a job of its own because a whole extra install + checkout to produce one
-      # report is not worth a runner slot on a shared pool.
+      # Report-only, and now enforced as such (CONTRACT.md L5). `scripts/frame-coverage.mjs`
+      # exits 0 without `--strict` — measured 0.03s, 124 components, exit 0 — so the WORD was
+      # already true. The mechanism was not: the same script was also wired as npm's `pretest`
+      # hook, which meant a crash in a report-only inventory (a corrupt ledger, an unreadable
+      # docs tree) turned all four `Tests (shard N/4)` jobs red — and those four names ARE in
+      # REQUIRED_CI_CHECK_RUNS, so it could refuse a release for a reason that is not a defect
+      # in the product. The `pretest` hook is gone (nothing reads its output as a test input),
+      # and `continue-on-error` here says the same thing at the one place it still runs on the
+      # merge path. It stays in this job rather than a lane of its own because a whole extra
+      # install + checkout to produce one 0.03s report is not worth a runner slot on a shared
+      # pool. `check:frame-contracts` above still runs it as a hard gate paired with
+      # check:frame-coverage-ledger, which is where a real coverage regression should be caught.
       - name: Frame coverage (report-only)
+        continue-on-error: true
         run: pnpm check:frame-coverage
       - uses: actions/upload-artifact@v7
         if: always()

@@ -1,37 +1,61 @@
 name: CI · browser
 
-# Chromium-dependent gates: axe, viewport geometry, contrast/visual audit, and the
-# rendered-runtime shards. Split out of CI because they need a real browser and a live
-# preview server, so they are slower and fail for different reasons than the code gates.
+# The MANDATORY browser lane: the two Chromium gates that the release provenance names, and
+# nothing else. CONTRACT.md L4 gives this lane a 5-minute budget and forbids parking a wide
+# matrix in it.
 #
-#   • frame-axe      — real Chromium + axe over every /frame at desktop + mobile-sm.
-#                      Preview-chrome violations are BLOCKING (0 allowed); component/demo
-#                      violations are allowlisted against scripts/frame-axe.baseline.json,
-#                      which may only shrink.
-#   • frame-geometry — viewport-matrix sweep (8 widths), baseline-guarded.
-#   • visual         — check:contrast + check:visual-audit (the browser half of verify:static).
-#   • rendered-runtime — per-shard data-entry / layout runtime contracts.
+#   • visual — check:contrast (11 routes) + check:visual-audit. 55–59s measured (runs
+#              33974029465, 33976207776). Comfortably inside the budget.
+#   • axe    — real Chromium + axe over every /frame at desktop + mobile-sm. Preview-chrome
+#              violations are BLOCKING (0 allowed); component/demo violations are allowlisted
+#              against scripts/frame-axe.baseline.json, which may only shrink.
 #
-# RUNNER — `[self-hosted, swarm-pool]`, prepared by `.github/actions/setup` (one place for all
-# eight jobs). The runner image ships Node 22 and Playwright's Chromium at /opt/ms-playwright,
-# so the action ASSERTS the toolchain and LAUNCHES the browser instead of downloading either.
-# Before that, each of these jobs spent ~17 of its ~20 minutes re-downloading Node twice and
-# running `playwright install --with-deps` (run 33972110874); the gates themselves take 29–118s.
+# WHY axe IS STILL HERE AT 653–745s, OVER L4's 5-MINUTE BUDGET — a declared deviation, not an
+# oversight. This repo's real merge gate is not branch protection (main has none: `gh api
+# repos/godx-jp/godxjp-ui/branches/main/protection` → 404, and `/rulesets` → []). It is
+# `VerifyCommitProvenance` in npm-publish.yml, which fails CLOSED unless every name in
+# scripts/release-core.mjs · REQUIRED_CI_CHECK_RUNS has a green check run on the exact SHA being
+# published. That list names "Contrast + visual audit" and "Per-frame axe (chrome blocking,
+# component allowlisted)", and src/test/__tests__/release-workflow.test.ts asserts both names are
+# produced by a job in THIS file or ci.yml. Moving axe to the nightly lane would therefore not
+# make it optional — it would make every release refuse with "never ran: Per-frame axe", because a
+# nightly runs on main's HEAD, not on the tagged commit. Shrinking the axe gate itself (sharding
+# it, or scoping it to changed frames) is the way out; relocating it is not.
 #
-# Every gate here was run locally against an installed Chromium before this workflow was pointed
-# at the pool, so a red job here means the runner, not the code: check:contrast (11/11 routes),
-# check:visual-audit, check:frame-axe, check:button-icon-xs and check:frame-geometry all pass.
+# WHAT LEFT, AND WHERE IT WENT — ci-browser-full.yml (nightly / dispatch / `run-browser` label):
+# the viewport-matrix geometry sweep and the five rendered-runtime shards. Measured 1958s of
+# runner time across five shards on run 33976207776 (589 + 598 + 328 + 129 + 314), plus geometry
+# (132s when it fast-failed, 1890s on the congested run 33972110874) — for six of this pool's
+# eight browser slots, on every merge, on a fleet where geometry sat QUEUED for 35 minutes on run
+# 33976207776 while the rest of the workflow finished. Neither gate is in REQUIRED_CI_CHECK_RUNS,
+# so neither can be moved by mistake into blocking a release; both keep running, just not on the
+# critical path of every merge.
+#
+# RUNNER — `[self-hosted, swarm-pool]`, prepared by `.github/actions/setup`. The runner image
+# ships Node 22 and Playwright's Chromium at /opt/ms-playwright, so the action ASSERTS the
+# toolchain and LAUNCHES the browser instead of downloading either. Verified still true on run
+# 33974029465: no `setup-node`, no `Downloading Chrome`, and the whole setup action is 8–255s
+# (the spread is node10's egress, not this workflow).
 #
 # Per-job preview ports stay distinct — self-hosted jobs can share a host, so two jobs binding
-# 6008 at once would collide.
-# TRIGGER — merge to `main`, and nothing else.
+# the same port at once would collide.
 #
-# It used to be `pull_request` AND `push: [main]`. A PR merge fired both, so every merge paid for
-# the same work twice on a shared self-hosted pool. `pull_request` is gone; the branch that lands
-# on main is the branch CI judges.
+# TRIGGER — merge to `main`, and nothing else. It used to be `pull_request` AND `push: [main]`;
+# a PR merge fired both, so every merge paid for the same work twice on a shared self-hosted
+# pool. The branch that lands on main is the branch CI judges.
 on:
   push:
     branches: [main]
+    # L6. Deliberately SHORT, and identical to ci.yml and release-integrity.yml, so a commit
+    # either triggers all three per-merge workflows or none of them — a partial set would leave
+    # the release provenance with a gap it can only report as "never ran". Everything omitted
+    # here is a real gate INPUT: `**.md` is walked by check:doc-prop-existence, `audit-evidence/**`
+    # by check:screen-reader-evidence, and `artifacts/**` by check:display-runtime-evidence.
+    paths-ignore:
+      - 'debate/**'
+      - '.agent-notes/**'
+      - '.design-sync/**'
+      - 'LICENSE'
 
 concurrency:
   group: ci-browser-${{ github.ref }}
@@ -41,7 +65,6 @@ jobs:
   visual:
     name: Contrast + visual audit
     runs-on: [self-hosted, swarm-pool]
-    # Each job now has its own VM, so the port only has to match what the harness reads.
     env:
       PREVIEW_BASE: http://localhost:6008
     steps:
@@ -70,68 +93,3 @@ jobs:
           name: frame-axe-evidence
           path: audit-evidence/frame-axe/
           if-no-files-found: ignore
-
-  geometry:
-    name: Viewport-matrix geometry sweep
-    runs-on: [self-hosted, swarm-pool]
-    env:
-      PREVIEW_BASE: http://localhost:6038
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup
-        with:
-          chromium: "true"
-      - name: geometry sweep (320→1920)
-        run: pnpm check:frame-geometry
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: frame-geometry-evidence
-          path: audit-evidence/frame-geometry/
-          if-no-files-found: ignore
-
-  rendered-runtime:
-    name: rendered-runtime (${{ matrix.name }})
-    runs-on: [self-hosted, swarm-pool]
-    strategy:
-      fail-fast: false
-      # Two at a time, not five. These runners share one physical host, so five shards each
-      # building a preview and standing up a `vite preview` — beside CI · code's five test shards
-      # on the same pool — is oversubscription, and it showed up as the preview server failing to
-      # bind rather than as anything that names the real cause.
-      max-parallel: 2
-      matrix:
-        include:
-          - name: data-entry-core
-            port: 6011
-            stories: data-entry-input,data-entry-form-field-index,data-entry-form,data-entry-select,data-entry-checkbox,data-entry-radio-group,data-entry-switch,data-entry-slider,data-entry-toggle
-            command: pnpm check:data-entry-frame-runtime
-          - name: data-entry-pickers
-            port: 6021
-            stories: data-entry-date-picker,data-entry-time-picker,data-entry-month-picker,data-entry-cascader,data-entry-tree-select,data-entry-transfer,data-entry-color-picker,data-entry-number-input,data-entry-upload
-            command: pnpm check:data-entry-frame-runtime
-          - name: data-entry-specialized
-            port: 6031
-            stories: data-entry-search-input,data-entry-password-input,data-entry-input-otp,data-entry-rating,data-entry-tag-input,data-entry-calendar,data-entry-date-range-picker,data-entry-month-range-picker,data-entry-command
-            command: pnpm check:data-entry-frame-runtime
-          - name: interaction-semantics
-            port: 6041
-            stories: ""
-            command: pnpm check:data-entry-touch-aria && pnpm check:layout-nav-frames && pnpm check:provider-feedback-query-runtime && pnpm check:data-table-pagination-wrap && pnpm check:button-icon-xs
-          - name: layout-touch-rtl
-            port: 6051
-            stories: ""
-            command: pnpm check:layout-nav-closure && pnpm check:final-touch-rtl
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup
-        with:
-          chromium: "true"
-      # No `preview:build` step: `frame-harness.ensurePreviewServer`, which these gates now use,
-      # builds and serves the preview itself — the same way frame-axe / frame-geometry / contrast
-      # have always done it. Building here too would just build twice.
-      - run: ${{ matrix.command }}
-        env:
-          DATA_ENTRY_STORIES: ${{ matrix.stories }}
-          # check-data-entry-frame-runtime reads PREVIEW_PORT; the other scripts keep their own.
-          PREVIEW_PORT: ${{ matrix.port }}

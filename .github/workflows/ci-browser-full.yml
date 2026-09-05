@@ -1,0 +1,119 @@
+name: CI · browser (full sweep)
+
+# The SLOW lane of CONTRACT.md L4. It does NOT gate merge and it does NOT run on every push.
+#
+# WHAT IS HERE, AND WHY IT LEFT ci-browser.yml
+#   • geometry         — viewport-matrix sweep, 8 widths (320→1920), baseline-guarded.
+#   • rendered-runtime — five shards of per-frame data-entry / layout / provider runtime contracts.
+#
+# Measured on run 33976207776 (a normal, uncongested merge): the five rendered-runtime shards cost
+# 589 + 598 + 328 + 129 + 314 = 1958s of runner time and took five of the pool's eight browser
+# slots, while `geometry` was STILL QUEUED 35 minutes after the push and only finished after the
+# rest of the workflow was done. On the congested run 33972110874 the same six jobs cost 6155s.
+# That is L4's "ma trận rộng" — a wide matrix — sitting on the critical path of every merge, on a
+# pool that is shared with tempo, kintai and godx-chat.
+#
+# WHY THIS MOVE IS SAFE FOR THE RELEASE. npm-publish.yml fails closed unless every name in
+# scripts/release-core.mjs · REQUIRED_CI_CHECK_RUNS is green on the exact SHA. Neither `geometry`
+# nor any `rendered-runtime` shard is in that list — only "Build · typecheck · lint · guards",
+# the four test shards, "Contrast + visual audit", "Per-frame axe (…)" and "lockstep" are. So
+# moving these two out of the per-merge lane cannot make a release ship something unverified;
+# it removes work that was never part of the release's proof to begin with.
+#
+# It does, however, still protect the release in the other direction: assertCiProvenance also
+# refuses on ANY OTHER red check run on the SHA being published (the `collateral` rule). A red
+# nightly sweep on main's HEAD therefore blocks a tag cut at that same commit — which is the
+# behaviour we want, and the reason this lane is worth keeping green rather than ignoring.
+#
+# THREE WAYS TO RUN IT
+#   1. schedule       — nightly at 02:00 JST (17:00 UTC), on main.
+#   2. workflow_dispatch — on demand, any ref.
+#   3. `run-browser` label on a PR — the author opts in when a change plausibly moves geometry or
+#      runtime contracts, per L4 ("theo nhãn khi người viết chủ động muốn"). `types: [labeled]`
+#      fires for EVERY label, so each job re-checks the label set in `if:`; without that guard an
+#      unrelated label would launch a 30-minute sweep.
+#
+# No `paths:` filter (L6): all three triggers are already explicit statements of intent — a
+# schedule, a human pressing the button, or a human attaching the label. There is nothing to
+# filter that the trigger has not already decided.
+on:
+  schedule:
+    - cron: '0 17 * * *'
+  workflow_dispatch:
+  pull_request:
+    types: [labeled]
+
+concurrency:
+  group: ci-browser-full-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  geometry:
+    name: Viewport-matrix geometry sweep
+    if: >-
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'run-browser')
+    runs-on: [self-hosted, swarm-pool]
+    env:
+      PREVIEW_BASE: http://localhost:6038
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          chromium: "true"
+      - name: geometry sweep (320→1920)
+        run: pnpm check:frame-geometry
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: frame-geometry-evidence
+          path: audit-evidence/frame-geometry/
+          if-no-files-found: ignore
+
+  rendered-runtime:
+    name: rendered-runtime (${{ matrix.name }})
+    if: >-
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'run-browser')
+    runs-on: [self-hosted, swarm-pool]
+    strategy:
+      fail-fast: false
+      # Two at a time, not five. These runners share one physical host, so five shards each
+      # building a preview and standing up a `vite preview` is oversubscription, and it showed up
+      # as the preview server failing to bind rather than as anything that names the real cause.
+      max-parallel: 2
+      matrix:
+        include:
+          - name: data-entry-core
+            port: 6011
+            stories: data-entry-input,data-entry-form-field-index,data-entry-form,data-entry-select,data-entry-checkbox,data-entry-radio-group,data-entry-switch,data-entry-slider,data-entry-toggle
+            command: pnpm check:data-entry-frame-runtime
+          - name: data-entry-pickers
+            port: 6021
+            stories: data-entry-date-picker,data-entry-time-picker,data-entry-month-picker,data-entry-cascader,data-entry-tree-select,data-entry-transfer,data-entry-color-picker,data-entry-number-input,data-entry-upload
+            command: pnpm check:data-entry-frame-runtime
+          - name: data-entry-specialized
+            port: 6031
+            stories: data-entry-search-input,data-entry-password-input,data-entry-input-otp,data-entry-rating,data-entry-tag-input,data-entry-calendar,data-entry-date-range-picker,data-entry-month-range-picker,data-entry-command
+            command: pnpm check:data-entry-frame-runtime
+          - name: interaction-semantics
+            port: 6041
+            stories: ""
+            command: pnpm check:data-entry-touch-aria && pnpm check:layout-nav-frames && pnpm check:provider-feedback-query-runtime && pnpm check:data-table-pagination-wrap && pnpm check:button-icon-xs
+          - name: layout-touch-rtl
+            port: 6051
+            stories: ""
+            command: pnpm check:layout-nav-closure && pnpm check:final-touch-rtl
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          chromium: "true"
+      # No `preview:build` step: `frame-harness.ensurePreviewServer`, which these gates use,
+      # builds and serves the preview itself — the same way frame-axe / frame-geometry / contrast
+      # have always done it. Building here too would just build twice.
+      - run: ${{ matrix.command }}
+        env:
+          DATA_ENTRY_STORIES: ${{ matrix.stories }}
+          # check-data-entry-frame-runtime reads PREVIEW_PORT; the other scripts keep their own.
+          PREVIEW_PORT: ${{ matrix.port }}

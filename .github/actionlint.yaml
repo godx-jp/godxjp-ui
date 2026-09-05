@@ -1,0 +1,22 @@
+# actionlint config. Without this file actionlint reports every `runs-on: [self-hosted,
+# swarm-pool]` in this repo as an unknown label, which buries the findings that matter — and a
+# linter whose output nobody reads is CONTRACT.md Nguyên tắc 3's silent failure in slow motion.
+#
+# `swarm-pool` is the org's self-hosted fleet and the ONLY runner label these workflows may use
+# (CONTRACT.md L10: not `ubuntu-latest`, and not the auto-assigned `[self-hosted, Linux, X64]`,
+# which cannot tell one machine from another).
+self-hosted-runner:
+  labels:
+    - swarm-pool
+
+paths:
+  # SC2016 ("expressions don't expand in single quotes") fires on the `node -e '…'` scripts in
+  # npm-publish.yml and release-integrity.yml. The single quotes are correct and deliberate:
+  # the `${…}` inside are JavaScript template literals, and letting the shell expand them is
+  # exactly the bug the quoting prevents.
+  .github/workflows/npm-publish.yml:
+    ignore:
+      - 'shellcheck reported issue in this script: SC2016'
+  .github/workflows/release-integrity.yml:
+    ignore:
+      - 'shellcheck reported issue in this script: SC2016'

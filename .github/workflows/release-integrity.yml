@@ -10,10 +10,30 @@ name: CI · release contract
 # What is left is what only this workflow does: build and test the MCP package, and prove the
 # release command plan is executable against the post-bump manifests.
 #
-# Trigger matches CI's: merges to `main` only. The release itself fires on a tag.
+# TRIGGER — merges to `main` only, and it must STAY that way, which is worth writing down
+# because "this only matters before a release, so tag it" is the obvious next idea and it breaks
+# the release.
+#
+# This job's check run is literally named `lockstep` (the job has no `name:`, so the id is the
+# check-run name — src/test/__tests__/release-workflow.test.ts asserts exactly that), and
+# `lockstep` is in scripts/release-core.mjs · REQUIRED_CI_CHECK_RUNS. npm-publish.yml's
+# `VerifyCommitProvenance` fails CLOSED unless that check run is already COMPLETED and green on
+# the SHA being published. Move this workflow to `push: tags` and it would start at the same
+# moment as the publish that is waiting for it: provenance would read `status=in_progress` and
+# refuse every release with "still running: lockstep". Merge-time is the only moment at which
+# this proof can exist before it is needed. 255s per merge (run 33976207793) is the price of
+# that ordering, and it is the cheapest of the three per-merge workflows.
 on:
   push:
     branches: [main]
+    # L6, with the same short list as ci.yml and ci-browser.yml — on purpose. All three must
+    # agree, or a commit triggers some of the provenance-bearing workflows and not others, and
+    # the missing ones are indistinguishable from "never ran".
+    paths-ignore:
+      - 'debate/**'
+      - '.agent-notes/**'
+      - '.design-sync/**'
+      - 'LICENSE'
 
 jobs:
   lockstep:
