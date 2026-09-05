@@ -107,6 +107,7 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+        <Input id="code" size="sm" placeholder="sm — the compact control tier" aria-label="Code" />
       </Flex>
     </PageContainer>
   );

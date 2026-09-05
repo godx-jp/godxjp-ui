@@ -525,8 +525,8 @@
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
     "exports": 284,
     "dimensionCells": 3976,
-    "covered": 64,
-    "untested": 2183,
+    "covered": 66,
+    "untested": 2181,
     "notApplicable": 1729,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
@@ -4468,14 +4468,14 @@
         "docs/data-entry/input.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -5730,14 +5730,14 @@
         "docs/data-entry/password-input.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",

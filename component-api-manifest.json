@@ -2762,6 +2762,16 @@
           "declaredIn": [
             "node_modules/.pnpm/@radix-ui+react-checkbox@1.3.11_@types+react-dom@19.2.5_@types+react@19.2.18__@types+re_6bdf7f7f62afedd7dcd0ba1bf73f5073/node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
           ]
+        },
+        {
+          "name": "value",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
         }
       ]
     },
