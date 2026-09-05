@@ -15,6 +15,11 @@ description: >-
 # either: its version hashes the `path` string, and `${{ github.workspace }}` on this fleet
 # is `/_work/github-runner-<name>/…` — a different name per runner, so it never hits.
 #
+# Measured on run 33974029465/33974029462 (the first with this action): the whole action took
+# 7–18s on the leader node and 66–292s on node10, where the same 571 tarballs arrived at
+# 9–43 KiB/s. The block it replaced cost 62–70s on the leader and 618–1208s on node10 (run
+# 33972110874) — a 4–9× cut on both — but node10's egress is the next thing to fix, not this file.
+#
 # `pnpm/action-setup` stays. It installs the version `packageManager` names in package.json
 # using the runner's own Node (`execPath`), so it never needed setup-node or corepack, and a
 # version drift fails loudly here instead of silently later. Measured 8–11s cold on this fleet.
@@ -33,6 +38,24 @@ runs:
           || { echo "::error::the runner image must ship Node 22 — see .github/actions/setup/action.yml"; exit 1; }
         npm --version
         corepack --version
+
+    # DISK IS THE SCARCE RESOURCE ON THIS FLEET, NOT CPU. Every job here leaves a 1.3–3.1 GB
+    # writable layer behind (node_modules, the pnpm store, Chromium profiles, vitest's tmp), the
+    # runners are ephemeral, and swarm keeps the last five finished tasks per slot — so node10's
+    # 70 GB root sat at 5.4 GB free while IDLE on 2026-09-05, with 56 stopped runner containers
+    # holding 56.5 GB. A burst of jobs then filled it, and none of the symptoms said "disk":
+    # vitest `ENOSPC` on one suite (run 33974029462), Chromium `Target crashed` in the geometry
+    # sweep, the vite dev server never rendering `#root` so a 30s locator wait expired
+    # (run 33974029465, three attempts), artifact and log uploads failing. Every one of those
+    # ran on node10; every job that landed on the leader (500 GB) was green. Name the cause,
+    # with the number, before any gate can misname it. The threshold is what one job writes.
+    - name: Assert free disk
+      shell: bash
+      run: |
+        df -h "$GITHUB_WORKSPACE"
+        avail_gb=$(df -BG --output=avail "$GITHUB_WORKSPACE" | tail -1 | tr -dc '0-9')
+        [ "$avail_gb" -ge 4 ] \
+          || { echo "::error::${avail_gb} GB free on this runner; a job writes 1.3–3 GB. Prune the node's stopped containers and lower the swarm task-history-limit — see .github/actions/setup/action.yml"; exit 1; }
 
     - uses: pnpm/action-setup@v6.0.9
 
