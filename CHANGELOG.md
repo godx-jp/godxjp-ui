@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`scripts/ui-audit.mjs` cut its JSON report at 64 KB.** It called `process.exit()` on the
+  line after writing the report; stdout to a pipe is asynchronous, so the process died with
+  the pipe still draining. A consumer with 884 findings received 65,536 of 367,635 bytes and
+  its JSON parse failed, which read as "the audit produced nothing" rather than as a
+  truncation. The script sets `process.exitCode` now and lets the stream drain; the exit
+  status is unchanged.
+
 ### Changed
 
 - **`PageContainer` spaces its sections.** Every direct child of the page body gets

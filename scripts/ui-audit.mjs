@@ -364,7 +364,11 @@ if (args.includes("--rules")) {
       2,
     ) + "\n",
   );
-  process.exit(0);
+  // Not process.exit(): stdout to a pipe is asynchronous, and exiting on
+  // the next line cut the report at 64 KB for a consumer with many findings
+  // (measured: 65536 of 367635 bytes reached Laravel's Process, and its
+  // JSON parse failed). Setting the code lets the stream drain.
+  process.exitCode = 0;
 }
 
 /**
@@ -616,4 +620,5 @@ if (asJson) {
   }
 }
 
-process.exit(errors.length > 0 ? 1 : 0);
+// See the note above --rules: exitCode, so a large JSON report drains fully.
+process.exitCode = errors.length > 0 ? 1 : 0;
