@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.3.1] - 2026-09-06
+
+### Fixed
+
+- **`Badge color` degrades to the quiet chip, not the solid one (#349).** Both washes now name
+  `--badge-tint-surface` first. A build that targets a browser without `color-mix` synthesises a
+  fallback from the FIRST colour in the mix, and colour-first handed those browsers the solid
+  chip the wash exists to avoid — with the surface's own label on it. Identical wherever
+  `color-mix` is supported.
+
 ## [19.3.0] - 2026-09-06
 
 ### Added

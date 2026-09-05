@@ -86,6 +86,17 @@ describe("Badge color (the record's own colour)", () => {
     expect(body).toContain("var(--badge-color) var(--badge-tint-edge)");
     expect(body).toContain("var(--badge-tint-surface)");
     expect(body).toContain("color: var(--badge-tint-foreground)");
+
+    // Surface first in BOTH mixes. A build targeting a browser without
+    // color-mix synthesises a fallback from the first colour, and colour-first
+    // would hand it the solid chip this wash exists to avoid.
+    for (const knob of ["--badge-tint-fill", "--badge-tint-edge"]) {
+      const mix = body.match(new RegExp(`color-mix\\([^;]*${knob}[^;]*\\)`, "s"));
+      expect(mix, `the ${knob} mix must be present`).not.toBeNull();
+      expect(mix![0].indexOf("--badge-tint-surface")).toBeLessThan(
+        mix![0].indexOf("--badge-color"),
+      );
+    }
   });
 
   it("declares the four wash knobs with the measured defaults", () => {

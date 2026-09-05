@@ -32,15 +32,22 @@
    * or tone utility is emitted in this mode (badge.tsx), so this components-layer
    * rule is reachable — see the gh#260 note about utilities outranking the layer. */
   [data-slot="badge"][data-tinted] {
+    /* Surface FIRST, colour second, and that order is load-bearing rather than
+     * style: a build that targets a browser without color-mix synthesises a
+     * fallback from the first colour in the mix. Colour-first hands those
+     * browsers the SOLID chip — the one case this wash exists to avoid, with
+     * the surface's own label on it. Surface-first degrades to a chip that
+     * blends into the card, which is quiet but readable. Same result wherever
+     * color-mix is supported: `A, B p%` gives B exactly p. */
     background-color: color-mix(
       in srgb,
-      var(--badge-color) var(--badge-tint-fill),
-      var(--badge-tint-surface)
+      var(--badge-tint-surface),
+      var(--badge-color) var(--badge-tint-fill)
     );
     border-color: color-mix(
       in srgb,
-      var(--badge-color) var(--badge-tint-edge),
-      var(--badge-tint-surface)
+      var(--badge-tint-surface),
+      var(--badge-color) var(--badge-tint-edge)
     );
     color: var(--badge-tint-foreground);
   }
