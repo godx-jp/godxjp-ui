@@ -205,11 +205,11 @@ export default function Demo() {
       sortable: true,
       render: (r) =>
         isEarlyCell(r) ? (
-          <span className="bg-attention/10 text-attention inline-flex rounded-sm px-1.5 py-0.5">
+          <Badge tone="attention" shape="sharp">
             <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
               {hours(r.earlyLeaveHours)}
             </Text>
-          </span>
+          </Badge>
         ) : (
           <Text tabular>{hours(r.earlyLeaveHours)}</Text>
         ),
@@ -221,11 +221,11 @@ export default function Demo() {
       sortable: true,
       render: (r) =>
         isOvertimeCell(r) ? (
-          <span className="bg-warning/10 text-warning-foreground inline-flex rounded-sm px-1.5 py-0.5">
+          <Badge tone="warning" shape="sharp">
             <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
               {hours(r.overtime)}
             </Text>
-          </span>
+          </Badge>
         ) : (
           <Text tabular>{hours(r.overtime)}</Text>
         ),
@@ -312,11 +312,11 @@ export default function Demo() {
                       {/* 早退セル: > 2.0h は attention(朱) で背景＋前景強調 */}
                       <TableCell className="text-end">
                         {isEarlyCell(r) ? (
-                          <span className="bg-attention/10 text-attention inline-flex rounded-sm px-1.5 py-0.5">
+                          <Badge tone="attention" shape="sharp">
                             <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
                               {hours(r.earlyLeaveHours)}
                             </Text>
-                          </span>
+                          </Badge>
                         ) : (
                           <Text tone="muted" tabular>
                             {hours(r.earlyLeaveHours)}
@@ -326,11 +326,11 @@ export default function Demo() {
                       {/* 残業セル: ≥ 45h は warning(山吹) で注意 */}
                       <TableCell className="text-end">
                         {isOvertimeCell(r) ? (
-                          <span className="bg-warning/10 text-warning-foreground inline-flex rounded-sm px-1.5 py-0.5">
+                          <Badge tone="warning" shape="sharp">
                             <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
                               {hours(r.overtime)}
                             </Text>
-                          </span>
+                          </Badge>
                         ) : (
                           <Text tabular>{hours(r.overtime)}</Text>
                         )}

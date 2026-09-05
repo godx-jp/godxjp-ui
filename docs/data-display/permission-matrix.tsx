@@ -145,15 +145,19 @@ export default function Demo() {
                   <Label htmlFor="pm-doc-diff-only">差分のみ</Label>
                 </Flex>
               </Flex>
-              <div className="border-border overflow-hidden rounded-md border">
-                <PermissionMatrix
-                  roles={ROLES}
-                  permissions={PERMISSIONS}
-                  grants={grants}
-                  compare={[compareA, compareB]}
-                  diffOnly={diffOnly}
-                />
-              </div>
+              <Card variant="outline" className="overflow-hidden">
+                <CardContent flush>
+                  <div>
+                    <PermissionMatrix
+                      roles={ROLES}
+                      permissions={PERMISSIONS}
+                      grants={grants}
+                      compare={[compareA, compareB]}
+                      diffOnly={diffOnly}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </Flex>
           </CardContent>
         </Card>

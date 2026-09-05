@@ -313,30 +313,34 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Flex direction="col" className="bg-card h-80 w-64 overflow-hidden rounded-lg border">
-                <Sidebar
-                  ariaLabel="ブランド例のナビゲーション"
-                  activeId={brandActiveId}
-                  onSelect={setBrandActiveId}
-                  sections={BRAND_SECTIONS}
-                  aria-label="brand プロップ例のナビゲーション"
-                  brand={
-                    <SidebarHeader>
-                      <span className="bg-primary text-primary-foreground grid size-7 shrink-0 place-items-center rounded-md">
-                        <Boxes className="size-4" aria-hidden="true" />
-                      </span>
-                      <span className="flex min-w-0 flex-col">
-                        <Text weight="bold" truncate>
-                          Acme Suite
-                        </Text>
-                        <Text size="xs" tone="muted" truncate>
-                          v7.0 Enterprise
-                        </Text>
-                      </span>
-                    </SidebarHeader>
-                  }
-                />
-              </Flex>
+              <Card className="h-80 w-64 overflow-hidden">
+                <CardContent flush>
+                  <Flex direction="col">
+                    <Sidebar
+                      ariaLabel="ブランド例のナビゲーション"
+                      activeId={brandActiveId}
+                      onSelect={setBrandActiveId}
+                      sections={BRAND_SECTIONS}
+                      aria-label="brand プロップ例のナビゲーション"
+                      brand={
+                        <SidebarHeader>
+                          <span className="bg-primary text-primary-foreground grid size-7 shrink-0 place-items-center rounded-md">
+                            <Boxes className="size-4" aria-hidden="true" />
+                          </span>
+                          <span className="flex min-w-0 flex-col">
+                            <Text weight="bold" truncate>
+                              Acme Suite
+                            </Text>
+                            <Text size="xs" tone="muted" truncate>
+                              v7.0 Enterprise
+                            </Text>
+                          </span>
+                        </SidebarHeader>
+                      }
+                    />
+                  </Flex>
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
 
@@ -356,33 +360,35 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <Flex gap="md" wrap>
-                <Flex
-                  direction="col"
-                  className="bg-card h-72 w-64 overflow-hidden rounded-lg border"
-                >
-                  <Sidebar
-                    ariaLabel="ルーターリンク行のナビゲーション"
-                    activeId={routedActiveId}
-                    onSelect={setRoutedActiveId}
-                    sections={ROUTED_SECTIONS}
-                    linkComponent={RouterLink}
-                    aria-label="linkComponent プロップ例のナビゲーション（展開）"
-                  />
-                </Flex>
-                <Flex
-                  direction="col"
-                  className="bg-card h-72 w-16 overflow-hidden rounded-lg border"
-                >
-                  <Sidebar
-                    ariaLabel="折りたたみレールのルーターリンク"
-                    activeId={routedActiveId}
-                    onSelect={setRoutedActiveId}
-                    sections={ROUTED_SECTIONS}
-                    linkComponent={RouterLink}
-                    collapsed
-                    aria-label="linkComponent プロップ例のナビゲーション（折りたたみ）"
-                  />
-                </Flex>
+                <Card className="h-72 w-64 overflow-hidden">
+                  <CardContent flush>
+                    <Flex direction="col">
+                      <Sidebar
+                        ariaLabel="ルーターリンク行のナビゲーション"
+                        activeId={routedActiveId}
+                        onSelect={setRoutedActiveId}
+                        sections={ROUTED_SECTIONS}
+                        linkComponent={RouterLink}
+                        aria-label="linkComponent プロップ例のナビゲーション（展開）"
+                      />
+                    </Flex>
+                  </CardContent>
+                </Card>
+                <Card className="h-72 w-16 overflow-hidden">
+                  <CardContent flush>
+                    <Flex direction="col">
+                      <Sidebar
+                        ariaLabel="折りたたみレールのルーターリンク"
+                        activeId={routedActiveId}
+                        onSelect={setRoutedActiveId}
+                        sections={ROUTED_SECTIONS}
+                        linkComponent={RouterLink}
+                        collapsed
+                        aria-label="linkComponent プロップ例のナビゲーション（折りたたみ）"
+                      />
+                    </Flex>
+                  </CardContent>
+                </Card>
               </Flex>
             </CardContent>
           </Card>
@@ -401,18 +407,22 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Flex direction="col" className="bg-card h-72 w-64 overflow-hidden rounded-lg border">
-                <Sidebar
-                  ariaLabel="カスタム行例のナビゲーション"
-                  activeId={renderActiveId}
-                  onSelect={setRenderActiveId}
-                  sections={FAVOURITE_SECTIONS}
-                  renderItem={(item, rowProps) =>
-                    renderFavouriteRow(item, rowProps, setRenderActiveId)
-                  }
-                  aria-label="renderItem プロップ例のナビゲーション"
-                />
-              </Flex>
+              <Card className="h-72 w-64 overflow-hidden">
+                <CardContent flush>
+                  <Flex direction="col">
+                    <Sidebar
+                      ariaLabel="カスタム行例のナビゲーション"
+                      activeId={renderActiveId}
+                      onSelect={setRenderActiveId}
+                      sections={FAVOURITE_SECTIONS}
+                      renderItem={(item, rowProps) =>
+                        renderFavouriteRow(item, rowProps, setRenderActiveId)
+                      }
+                      aria-label="renderItem プロップ例のナビゲーション"
+                    />
+                  </Flex>
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
 
@@ -430,52 +440,54 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <Flex gap="md" wrap>
-                <Flex
-                  direction="col"
-                  className="bg-card h-64 w-64 overflow-hidden rounded-lg border"
-                >
-                  <Sidebar
-                    ariaLabel="構成可能な例のナビゲーション"
-                    activeId={composedActiveId}
-                    onSelect={setComposedActiveId}
-                  >
-                    <SidebarSection label="お気に入り">
-                      {COMPOSED_ITEMS.map((item) => (
-                        <SidebarItem
-                          key={item.id}
-                          item={item}
-                          active={composedActiveId === item.id}
-                          onActivate={setComposedActiveId}
-                        />
-                      ))}
-                    </SidebarSection>
-                  </Sidebar>
-                </Flex>
-                <Flex
-                  direction="col"
-                  className="bg-card h-64 w-64 overflow-hidden rounded-lg border"
-                >
-                  <Sidebar
-                    ariaLabel="asChild 例のナビゲーション"
-                    activeId={composedActiveId}
-                    onSelect={setComposedActiveId}
-                    aria-label="SidebarItem asChild 例のナビゲーション"
-                  >
-                    <SidebarSection label="お気に入り（asChild）">
-                      {COMPOSED_ITEMS.map((item) => (
-                        <SidebarItem
-                          key={item.id}
-                          item={item}
-                          active={composedActiveId === item.id}
-                          onActivate={setComposedActiveId}
-                          asChild
-                        >
-                          <Link to={item.href ?? "/"} />
-                        </SidebarItem>
-                      ))}
-                    </SidebarSection>
-                  </Sidebar>
-                </Flex>
+                <Card className="h-64 w-64 overflow-hidden">
+                  <CardContent flush>
+                    <Flex direction="col">
+                      <Sidebar
+                        ariaLabel="構成可能な例のナビゲーション"
+                        activeId={composedActiveId}
+                        onSelect={setComposedActiveId}
+                      >
+                        <SidebarSection label="お気に入り">
+                          {COMPOSED_ITEMS.map((item) => (
+                            <SidebarItem
+                              key={item.id}
+                              item={item}
+                              active={composedActiveId === item.id}
+                              onActivate={setComposedActiveId}
+                            />
+                          ))}
+                        </SidebarSection>
+                      </Sidebar>
+                    </Flex>
+                  </CardContent>
+                </Card>
+                <Card className="h-64 w-64 overflow-hidden">
+                  <CardContent flush>
+                    <Flex direction="col">
+                      <Sidebar
+                        ariaLabel="asChild 例のナビゲーション"
+                        activeId={composedActiveId}
+                        onSelect={setComposedActiveId}
+                        aria-label="SidebarItem asChild 例のナビゲーション"
+                      >
+                        <SidebarSection label="お気に入り（asChild）">
+                          {COMPOSED_ITEMS.map((item) => (
+                            <SidebarItem
+                              key={item.id}
+                              item={item}
+                              active={composedActiveId === item.id}
+                              onActivate={setComposedActiveId}
+                              asChild
+                            >
+                              <Link to={item.href ?? "/"} />
+                            </SidebarItem>
+                          ))}
+                        </SidebarSection>
+                      </Sidebar>
+                    </Flex>
+                  </CardContent>
+                </Card>
               </Flex>
             </CardContent>
           </Card>
@@ -496,15 +508,19 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Flex direction="col" className="bg-card h-64 w-64 overflow-hidden rounded-lg border">
-                <Sidebar
-                  ariaLabel="チャンネル一覧のナビゲーション"
-                  activeId={mentionActiveId}
-                  onSelect={setMentionActiveId}
-                  sections={MENTION_SECTIONS}
-                  aria-label="badgeTone 例のナビゲーション"
-                />
-              </Flex>
+              <Card className="h-64 w-64 overflow-hidden">
+                <CardContent flush>
+                  <Flex direction="col">
+                    <Sidebar
+                      ariaLabel="チャンネル一覧のナビゲーション"
+                      activeId={mentionActiveId}
+                      onSelect={setMentionActiveId}
+                      sections={MENTION_SECTIONS}
+                      aria-label="badgeTone 例のナビゲーション"
+                    />
+                  </Flex>
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
 
@@ -522,31 +538,36 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <Flex gap="md" wrap>
-                <Flex
-                  direction="col"
-                  className="bg-card h-64 w-64 overflow-hidden rounded-lg border"
-                >
-                  <Sidebar
-                    ariaLabel="既定の配色のナビゲーション"
-                    activeId={tokenActiveId}
-                    onSelect={setTokenActiveId}
-                    sections={FAVOURITE_SECTIONS}
-                    aria-label="既定の配色（アイコンは行の色を継承）"
-                  />
-                </Flex>
-                <Flex
-                  direction="col"
-                  className="bg-card h-64 w-64 overflow-hidden rounded-lg border"
-                  style={CANONICAL_NAV_TOKENS}
-                >
-                  <Sidebar
-                    ariaLabel="アイコンを濃くしたナビゲーション"
-                    activeId={tokenActiveId}
-                    onSelect={setTokenActiveId}
-                    sections={FAVOURITE_SECTIONS}
-                    aria-label="トークン上書き（アイコンのみ --foreground）"
-                  />
-                </Flex>
+                <Card className="h-64 w-64 overflow-hidden">
+                  <CardContent flush>
+                    <Flex direction="col">
+                      <Sidebar
+                        ariaLabel="既定の配色のナビゲーション"
+                        activeId={tokenActiveId}
+                        onSelect={setTokenActiveId}
+                        sections={FAVOURITE_SECTIONS}
+                        aria-label="既定の配色（アイコンは行の色を継承）"
+                      />
+                    </Flex>
+                  </CardContent>
+                </Card>
+                <Card className="h-64 w-64 overflow-hidden">
+                  <CardContent flush>
+                    <Flex
+                      direction="col"
+
+                      style={CANONICAL_NAV_TOKENS}
+                    >
+                      <Sidebar
+                        ariaLabel="アイコンを濃くしたナビゲーション"
+                        activeId={tokenActiveId}
+                        onSelect={setTokenActiveId}
+                        sections={FAVOURITE_SECTIONS}
+                        aria-label="トークン上書き（アイコンのみ --foreground）"
+                      />
+                    </Flex>
+                  </CardContent>
+                </Card>
               </Flex>
             </CardContent>
           </Card>

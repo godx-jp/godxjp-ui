@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flex, PageContainer, ResponsiveGrid, SplitPane } from "@godxjp/ui/layout";
+import { Flex, PageContainer, ResponsiveGrid, Separator, SplitPane } from "@godxjp/ui/layout";
 import {
   Card,
   CardContent,
@@ -197,7 +197,8 @@ export default function Demo() {
                       <Text tone="muted">消費税 (10%)</Text>
                       <Text tabular>{yen(base * 0.1)}</Text>
                     </Flex>
-                    <div className="border-border border-t pt-2">
+                    <Separator />
+                    <div>
                       <Flex direction="row" justify="between">
                         <Text weight="bold">合計</Text>
                         <Text weight="bold" tabular>
@@ -417,31 +418,47 @@ export default function Demo() {
           <CardContent>
             <Flex direction="col" gap="md">
               {/* Narrow embed → stays single column (the container is < 48rem). */}
-              <div className="max-w-md border p-2">
-                <Text size="xs" tone="muted">
-                  約 28rem のコンテナ → 縦積み
-                </Text>
-                <SplitPane
-                  asideLabel="補助パネル（狭い埋め込み）"
-                  asideWidth="sm"
-                  aside={<div className="bg-muted p-4">補助パネル</div>}
-                >
-                  <div className="bg-muted p-4">メインコンテンツ</div>
-                </SplitPane>
-              </div>
+              <Card className="max-w-md">
+                <CardContent>
+                  <Text size="xs" tone="muted">
+                    約 28rem のコンテナ → 縦積み
+                  </Text>
+                  <SplitPane
+                    asideLabel="補助パネル（狭い埋め込み）"
+                    asideWidth="sm"
+                    aside={
+                      <Card variant="muted">
+                        <CardContent>補助パネル</CardContent>
+                      </Card>
+                    }
+                  >
+                    <Card variant="muted">
+                      <CardContent>メインコンテンツ</CardContent>
+                    </Card>
+                  </SplitPane>
+                </CardContent>
+              </Card>
               {/* Wide embed → splits into two columns (the container is ≥ 48rem). */}
-              <div className="max-w-4xl border p-2">
-                <Text size="xs" tone="muted">
-                  約 56rem のコンテナ → 2 カラム
-                </Text>
-                <SplitPane
-                  asideLabel="補助パネル（広い埋め込み）"
-                  asideWidth="sm"
-                  aside={<div className="bg-muted p-4">補助パネル</div>}
-                >
-                  <div className="bg-muted p-4">メインコンテンツ</div>
-                </SplitPane>
-              </div>
+              <Card className="max-w-4xl">
+                <CardContent>
+                  <Text size="xs" tone="muted">
+                    約 56rem のコンテナ → 2 カラム
+                  </Text>
+                  <SplitPane
+                    asideLabel="補助パネル（広い埋め込み）"
+                    asideWidth="sm"
+                    aside={
+                      <Card variant="muted">
+                        <CardContent>補助パネル</CardContent>
+                      </Card>
+                    }
+                  >
+                    <Card variant="muted">
+                      <CardContent>メインコンテンツ</CardContent>
+                    </Card>
+                  </SplitPane>
+                </CardContent>
+              </Card>
             </Flex>
           </CardContent>
         </Card>

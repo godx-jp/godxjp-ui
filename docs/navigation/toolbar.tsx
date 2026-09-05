@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { Filter, X } from "lucide-react";
 
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, EmptyState } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import {
   SearchInput,
@@ -111,7 +104,7 @@ export default function Demo() {
                 sticky
                 hasActiveFilters={hasMemberFilters}
                 onClear={clearMemberFilters}
-                className="border-border bg-card border-b px-4"
+                className="border-border bg-card border-b"
               >
                 <SearchInput
                   aria-label="メンバーを検索"
@@ -154,13 +147,13 @@ export default function Demo() {
                 wrap
                 align="center"
                 gap="xs"
-                className="border-border bg-muted/40 min-h-9 border-b px-4 py-2"
+                className="border-border bg-muted/40 min-h-9 border-b"
               >
                 <Flex
                   direction="row"
                   align="center"
                   gap="xs"
-                  className="text-muted-foreground pe-1"
+                  tone="muted"
                 >
                   <Filter className="size-3.5" aria-hidden="true" />
                   <Text size="xs">適用中</Text>
@@ -171,7 +164,7 @@ export default function Demo() {
                   </Text>
                 )}
                 {activeChips.map((chip) => (
-                  <span key={chip.key} className="inline-flex items-center gap-1">
+                  <Flex key={chip.key} align="center" gap="xs">
                     <Badge tone={chip.tone} variant="outline">
                       {chip.label}
                     </Badge>
@@ -205,7 +198,7 @@ export default function Demo() {
                     direction="row"
                     align="center"
                     justify="between"
-                    className="border-border/60 border-b px-4 py-2.5"
+                    className="border-border/60 border-b"
                   >
                     <Text size="sm">
                       {memberQuery.trim() || "田中"} {i + 1} 番
@@ -269,9 +262,11 @@ export default function Demo() {
               </Toolbar>
 
               {/* Simulated table body */}
-              <Text as="div" tone="muted" className="rounded-md border p-4 text-center">
-                DataTable がここに入ります · Toolbar は Card の外側 (上) に置く
-              </Text>
+              <EmptyState
+                variant="section"
+                titleAs="p"
+                title="DataTable がここに入ります · Toolbar は Card の外側 (上) に置く"
+              />
             </Flex>
           </CardContent>
         </Card>

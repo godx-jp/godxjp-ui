@@ -250,7 +250,7 @@ const EMPLOYEES: Employee[] = [
 
 // ── Shared cell padding to match compact DataTable density ─────────────────────
 
-const CELL = "px-3 py-2 align-middle";
+const CELL = "align-middle";
 const HEAD = "px-3";
 
 function StatusBadge({ status }: { status: ShiftStatus }) {

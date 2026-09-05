@@ -109,31 +109,36 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea
-              anchor="bottom"
-              viewportRef={streamViewport}
-              onAnchoredChange={setAnchored}
-              type="always"
-              className="border-border h-64 w-full rounded-md border"
-            >
-              <Flex direction="col" className="px-3">
-                {posts.map((post) => (
-                  <Flex key={post.id} direction="col" className="py-2">
-                    <Flex gap="sm" align="baseline">
-                      <Text size="sm" weight="medium">
-                        {post.author}
-                      </Text>
-                      <Text size="xs" tone="muted">
-                        {timeFormatter.format(new Date(STREAM_EPOCH + post.id * STREAM_STEP_MS))}
-                      </Text>
-                    </Flex>
-                    <Text size="sm" tone="muted">
-                      {post.body}
-                    </Text>
+            <Card variant="outline" className="h-64 w-full">
+              <CardContent flush>
+                <ScrollArea
+                  anchor="bottom"
+                  viewportRef={streamViewport}
+                  onAnchoredChange={setAnchored}
+                  type="always"
+                >
+                  <Flex direction="col" className="px-3">
+                    {posts.map((post) => (
+                      <Flex key={post.id} direction="col" className="py-2">
+                        <Flex gap="sm" align="baseline">
+                          <Text size="sm" weight="medium">
+                            {post.author}
+                          </Text>
+                          <Text size="xs" tone="muted">
+                            {timeFormatter.format(
+                              new Date(STREAM_EPOCH + post.id * STREAM_STEP_MS),
+                            )}
+                          </Text>
+                        </Flex>
+                        <Text size="sm" tone="muted">
+                          {post.body}
+                        </Text>
+                      </Flex>
+                    ))}
                   </Flex>
-                ))}
-              </Flex>
-            </ScrollArea>
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </CardContent>
           <CardFooter>
             <Flex gap="sm" wrap>
@@ -164,20 +169,19 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea
-              anchor="bottom"
-              anchorOffset={0}
-              type="always"
-              className="border-border h-40 w-full rounded-md border"
-            >
-              <Flex direction="col" gap="xs" className="p-3">
-                {entries.map((e) => (
-                  <Text key={e} size="sm" className="tabular-nums">
-                    {e}
-                  </Text>
-                ))}
-              </Flex>
-            </ScrollArea>
+            <Card variant="outline" className="h-40 w-full">
+              <CardContent flush>
+                <ScrollArea anchor="bottom" anchorOffset={0} type="always">
+                  <Flex direction="col" gap="xs" className="p-3">
+                    {entries.map((e) => (
+                      <Text key={e} size="sm" className="tabular-nums">
+                        {e}
+                      </Text>
+                    ))}
+                  </Flex>
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
 
@@ -189,15 +193,19 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="border-border h-56 w-full rounded-md border">
-              <Flex direction="col" gap="xs" className="p-3">
-                {entries.map((e) => (
-                  <div key={e} className="text-sm tabular-nums">
-                    {e}
-                  </div>
-                ))}
-              </Flex>
-            </ScrollArea>
+            <Card variant="outline" className="h-56 w-full">
+              <CardContent flush>
+                <ScrollArea>
+                  <Flex direction="col" gap="xs" className="p-3">
+                    {entries.map((e) => (
+                      <div key={e} className="text-sm tabular-nums">
+                        {e}
+                      </div>
+                    ))}
+                  </Flex>
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
 
@@ -210,15 +218,19 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea type="always" className="border-border h-56 w-full rounded-md border">
-              <Flex direction="col" gap="xs" className="p-3">
-                {entries.map((e) => (
-                  <div key={e} className="text-sm tabular-nums">
-                    {e}
-                  </div>
-                ))}
-              </Flex>
-            </ScrollArea>
+            <Card variant="outline" className="h-56 w-full">
+              <CardContent flush>
+                <ScrollArea type="always">
+                  <Flex direction="col" gap="xs" className="p-3">
+                    {entries.map((e) => (
+                      <div key={e} className="text-sm tabular-nums">
+                        {e}
+                      </div>
+                    ))}
+                  </Flex>
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
 
@@ -233,16 +245,20 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="border-border w-full rounded-md border">
-              <Flex gap="lg" className="w-max p-3">
-                {columns.map((c) => (
-                  <div key={c} className="text-sm whitespace-nowrap tabular-nums">
-                    {c}
-                  </div>
-                ))}
-              </Flex>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
+            <Card variant="outline" className="w-full">
+              <CardContent flush>
+                <ScrollArea>
+                  <Flex gap="lg" className="w-max p-3">
+                    {columns.map((c) => (
+                      <div key={c} className="text-sm whitespace-nowrap tabular-nums">
+                        {c}
+                      </div>
+                    ))}
+                  </Flex>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
 
@@ -254,15 +270,19 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea type="always" className="border-border h-56 w-full rounded-md border">
-              <Flex direction="col" gap="xs" className="p-3">
-                {shortEntries.map((e) => (
-                  <div key={e} className="text-sm tabular-nums">
-                    {e}
-                  </div>
-                ))}
-              </Flex>
-            </ScrollArea>
+            <Card variant="outline" className="h-56 w-full">
+              <CardContent flush>
+                <ScrollArea type="always">
+                  <Flex direction="col" gap="xs" className="p-3">
+                    {shortEntries.map((e) => (
+                      <div key={e} className="text-sm tabular-nums">
+                        {e}
+                      </div>
+                    ))}
+                  </Flex>
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
       </Flex>

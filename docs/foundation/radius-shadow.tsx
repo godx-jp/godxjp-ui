@@ -127,17 +127,18 @@ export default function Demo() {
                   </Text>
                 </Flex>
                 <Flex direction="col" gap="xs">
-                  <div
-                    className="bg-popover text-popover-foreground border-border rounded-md border p-4"
-                    style={{ boxShadow: "var(--shadow-lg)" }}
-                  >
-                    <Text as="div" weight="medium">
-                      Floating（ポップオーバー）
-                    </Text>
-                    <Text as="div" size="xs" tone="muted">
-                      --shadow-lg lifts it off the page
-                    </Text>
-                  </div>
+                  <Card>
+                    <CardContent flush>
+                      <div className="p-4" style={{ boxShadow: "var(--shadow-lg)" }}>
+                        <Text as="div" weight="medium">
+                          Floating（ポップオーバー）
+                        </Text>
+                        <Text as="div" size="xs" tone="muted">
+                          --shadow-lg lifts it off the page
+                        </Text>
+                      </div>
+                    </CardContent>
+                  </Card>
                   <Text as="div" size="xs" tone="muted">
                     floating surface · elevated
                   </Text>

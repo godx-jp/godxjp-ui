@@ -8,7 +8,7 @@ import {
   NavigationMenuTrigger,
   NavigationMenuViewport,
 } from "@godxjp/ui/navigation";
-import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 import { Text } from "@godxjp/ui/general";
 
 /**
@@ -38,60 +38,56 @@ export default function Demo() {
                   <NavigationMenuTrigger>会計</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     {/* ui-audit-disable-next-line no-arbitrary-size — NavigationMenu flyout panel width (demo layout) */}
-                    <ul className="grid gap-2 p-4 md:w-[400px] md:grid-cols-2">
-                      <li>
-                        <NavigationMenuLink
-                          href="#"
-                          className="hover:bg-accent block rounded-md p-3"
-                        >
-                          <Text as="div" weight="medium">
-                            仕訳入力
-                          </Text>
-                          <Text as="p" size="xs" tone="muted" className="mt-1">
-                            借方・貸方を直接入力して仕訳を作成します。
-                          </Text>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink
-                          href="#"
-                          className="hover:bg-accent block rounded-md p-3"
-                        >
-                          <Text as="div" weight="medium">
-                            仕訳帳
-                          </Text>
-                          <Text as="p" size="xs" tone="muted" className="mt-1">
-                            全仕訳の一覧・検索・フィルタリング。
-                          </Text>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink
-                          href="#"
-                          className="hover:bg-accent block rounded-md p-3"
-                        >
-                          <Text as="div" weight="medium">
-                            総勘定元帳
-                          </Text>
-                          <Text as="p" size="xs" tone="muted" className="mt-1">
-                            勘定科目ごとの残高・取引履歴。
-                          </Text>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink
-                          href="#"
-                          className="hover:bg-accent block rounded-md p-3"
-                        >
-                          <Text as="div" weight="medium">
-                            試算表
-                          </Text>
-                          <Text as="p" size="xs" tone="muted" className="mt-1">
-                            期間指定で借方・貸方の合計を確認。
-                          </Text>
-                        </NavigationMenuLink>
-                      </li>
-                    </ul>
+                    <ResponsiveGrid columns={{ sm: 1, md: 2 }} gap="sm" className="md:w-[400px]">
+                      <NavigationMenuLink href="#" className="hover:bg-accent block rounded-md">
+                        <CardContent>
+                          <Flex direction="col" gap="xs">
+                            <Text as="div" weight="medium">
+                              仕訳入力
+                            </Text>
+                            <Text as="p" size="xs" tone="muted">
+                              借方・貸方を直接入力して仕訳を作成します。
+                            </Text>
+                          </Flex>
+                        </CardContent>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink href="#" className="hover:bg-accent block rounded-md">
+                        <CardContent>
+                          <Flex direction="col" gap="xs">
+                            <Text as="div" weight="medium">
+                              仕訳帳
+                            </Text>
+                            <Text as="p" size="xs" tone="muted">
+                              全仕訳の一覧・検索・フィルタリング。
+                            </Text>
+                          </Flex>
+                        </CardContent>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink href="#" className="hover:bg-accent block rounded-md">
+                        <CardContent>
+                          <Flex direction="col" gap="xs">
+                            <Text as="div" weight="medium">
+                              総勘定元帳
+                            </Text>
+                            <Text as="p" size="xs" tone="muted">
+                              勘定科目ごとの残高・取引履歴。
+                            </Text>
+                          </Flex>
+                        </CardContent>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink href="#" className="hover:bg-accent block rounded-md">
+                        <CardContent>
+                          <Flex direction="col" gap="xs">
+                            <Text as="div" weight="medium">
+                              試算表
+                            </Text>
+                            <Text as="p" size="xs" tone="muted">
+                              期間指定で借方・貸方の合計を確認。
+                            </Text>
+                          </Flex>
+                        </CardContent>
+                      </NavigationMenuLink>
+                    </ResponsiveGrid>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
@@ -99,47 +95,44 @@ export default function Demo() {
                   <NavigationMenuTrigger>レポート</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     {/* ui-audit-disable-next-line no-arbitrary-size — NavigationMenu flyout panel width (demo layout) */}
-                    <ul className="grid gap-2 p-4 md:w-[360px]">
-                      <li>
-                        <NavigationMenuLink
-                          href="#"
-                          className="hover:bg-accent block rounded-md p-3"
-                        >
-                          <Text as="div" weight="medium">
-                            貸借対照表
-                          </Text>
-                          <Text as="p" size="xs" tone="muted" className="mt-1">
-                            特定日時点の資産・負債・純資産。
-                          </Text>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink
-                          href="#"
-                          className="hover:bg-accent block rounded-md p-3"
-                        >
-                          <Text as="div" weight="medium">
-                            損益計算書
-                          </Text>
-                          <Text as="p" size="xs" tone="muted" className="mt-1">
-                            期間中の収益・費用・利益の要約。
-                          </Text>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink
-                          href="#"
-                          className="hover:bg-accent block rounded-md p-3"
-                        >
-                          <Text as="div" weight="medium">
-                            キャッシュフロー計算書
-                          </Text>
-                          <Text as="p" size="xs" tone="muted" className="mt-1">
-                            営業・投資・財務活動別の資金移動。
-                          </Text>
-                        </NavigationMenuLink>
-                      </li>
-                    </ul>
+                    <ResponsiveGrid columns={1} gap="sm" className="md:w-[360px]">
+                      <NavigationMenuLink href="#" className="hover:bg-accent block rounded-md">
+                        <CardContent>
+                          <Flex direction="col" gap="xs">
+                            <Text as="div" weight="medium">
+                              貸借対照表
+                            </Text>
+                            <Text as="p" size="xs" tone="muted">
+                              特定日時点の資産・負債・純資産。
+                            </Text>
+                          </Flex>
+                        </CardContent>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink href="#" className="hover:bg-accent block rounded-md">
+                        <CardContent>
+                          <Flex direction="col" gap="xs">
+                            <Text as="div" weight="medium">
+                              損益計算書
+                            </Text>
+                            <Text as="p" size="xs" tone="muted">
+                              期間中の収益・費用・利益の要約。
+                            </Text>
+                          </Flex>
+                        </CardContent>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink href="#" className="hover:bg-accent block rounded-md">
+                        <CardContent>
+                          <Flex direction="col" gap="xs">
+                            <Text as="div" weight="medium">
+                              キャッシュフロー計算書
+                            </Text>
+                            <Text as="p" size="xs" tone="muted">
+                              営業・投資・財務活動別の資金移動。
+                            </Text>
+                          </Flex>
+                        </CardContent>
+                      </NavigationMenuLink>
+                    </ResponsiveGrid>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
