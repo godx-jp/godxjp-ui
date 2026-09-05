@@ -97,7 +97,7 @@ export default function Demo() {
         </Card>
         <PasswordInput
           size="sm"
-          placeholder="sm — the compact control tier"
+          placeholder="Compact tier (sm)"
           aria-label="Password (sm)"
         />
       </Flex>
