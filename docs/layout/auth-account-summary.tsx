@@ -8,7 +8,7 @@ import { AuthAccountSummary, AuthStack, PageContainer } from "@godxjp/ui/layout"
  * the account address, and exactly one ghost action. Everything else is consumer data.
  *
  * The address CLIPS with an ellipsis, so it declares its own line box rather than inheriting one
- * (gh#254): a tight inherited line-height makes the clip box shorter than the font's ascent plus
+ *: a tight inherited line-height makes the clip box shorter than the font's ascent plus
  * descent and shears Vietnamese tone marks and Latin descenders off, while the DOM text stays
  * correct. The Vietnamese row below is the regression case for that.
  */

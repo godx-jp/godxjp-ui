@@ -131,7 +131,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* ── The flush full-bleed FRAME contract (gh#305 · gh#306) ───────────────────────────
+        {/* ── The flush full-bleed FRAME contract ───────────────────────────
             Four cards, side by side, so the whole rule is visible at once: which edges a
             full-bleed table keeps inside a card, and who draws the line under the header. */}
         <Card>

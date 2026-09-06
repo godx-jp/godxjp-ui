@@ -1,5 +1,5 @@
 /**
- * Showcase · Public landing (gh#252) — the PUBLIC marketing/product landing page composed from
+ * Showcase · Public landing — the PUBLIC marketing/product landing page composed from
  * real @godxjp/ui primitives with **zero page-local CSS**.
  *
  * Gate 0 (docs/COMPOSITION-VS-COMPONENT.md): a landing header / hero / section grid / legal footer

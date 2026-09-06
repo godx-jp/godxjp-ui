@@ -97,7 +97,7 @@ export default function Demo() {
           onValueChange={handleChange}
         />
 
-        {/* Regression: total=0, exactly one page, multiple pages, + the single-page opt-in (gh#153). */}
+        {/* Regression: total=0, exactly one page, multiple pages, + the single-page opt-in. */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>境界状態 · 0 件 / 1 ページ / 複数ページ</CardTitle>
@@ -136,7 +136,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* Long localized total label — the row stays ONE line and never wraps on desktop (gh#153). */}
+        {/* Long localized total label — the row stays ONE line and never wraps on desktop. */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>長いローカライズ済みラベル · 折り返さない</CardTitle>

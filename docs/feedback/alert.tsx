@@ -139,7 +139,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* Banner — the SAME component at the page measure (gh#255). variant="banner" swaps only
+        {/* Banner — the SAME component at the page measure. variant="banner" swaps only
             the box: square, edge-to-edge, ruled on the block-end edge, measured by the --banner-*
             tokens. Every tone, the icon, the actions grid and the dismiss ✕ are inherited from the
             inline alert above, so there is nothing new to learn and nothing duplicated.

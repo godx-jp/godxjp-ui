@@ -9,7 +9,7 @@ import { AppSettingPicker } from "@godxjp/ui/navigation";
 /**
  * Viewport fixture — 390x844 (mobile). THE MOBILE CONTRACT, decided here.
  *
- * ⚠️ The 390 canonical reference supplied with gh#233 is a desktop 2x2 COMPOSITE that overflows and
+ * ⚠️ The 390 canonical reference supplied with is a desktop 2x2 COMPOSITE that overflows and
  * crops horizontally. It is not a route-level mobile artboard and it was NOT traced. The behaviour
  * below is a decided, documented contract — see the Overview page.
  *

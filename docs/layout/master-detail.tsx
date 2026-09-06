@@ -102,7 +102,7 @@ const COLLAPSE_STEPS = ["token", "sm", "md", "lg", "xl", "false"] as const;
 const MASTER_VIEWPORTS = ["auto", "compact", "standard"] as const;
 
 /**
- * 実サービスの「長い」コレクション (gh#231)。auto のままだと一覧が数千 px に伸び、
+ * 実サービスの「長い」コレクション。auto のままだと一覧が数千 px に伸び、
  * 積み重なった 390px 画面では詳細がフォールドの遥か下に押し出される。
  */
 const MEMBERS = Array.from({ length: 60 }, (_, i) => ({
@@ -339,7 +339,7 @@ export default function Demo() {
           </Card>
         </MasterDetail>
 
-        {/* ── 3. masterViewport — 長い実コレクションを境界付きビューポートに収める (gh#231)。
+        {/* ── 3. masterViewport — 長い実コレクションを境界付きビューポートに収める。
                auto: 一覧が 60 行ぶん伸び、390px では詳細がフォールドの遥か下に落ちる。
                compact / standard: --master-detail-master-viewport-* が block サイズを
                上限とし、コレクションは region の中でスクロールする。

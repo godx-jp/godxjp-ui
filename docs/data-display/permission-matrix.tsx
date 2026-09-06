@@ -1,7 +1,7 @@
 /**
- * PermissionMatrix — 権限マトリクス (canonical RBAC role × permission grid, gh#257).
+ * PermissionMatrix — 権限マトリクス (canonical RBAC role × permission grid, ).
  *
- * A REAL export from `@godxjp/ui/data-display` (the gh#251 lesson: a consumer cannot import a
+ * A REAL export from `@godxjp/ui/data-display` (the lesson: a consumer cannot import a
  * docs page). Read-only ✓/— by default; `onGrantChange` switches to editable checkbox cells with
  * locked roles kept read-only; compare + 差分のみ come from `lib/permission-grid`; lifecycle
  * states follow the DataTable #216 vocabulary. Domain data below is demo-only — the library

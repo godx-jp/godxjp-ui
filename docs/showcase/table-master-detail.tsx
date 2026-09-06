@@ -8,7 +8,7 @@
  *
  * Composition map (intent → real @godxjp/ui primitive):
  *   resizable split ........ ResizablePanelGroup + ResizablePanel + ResizableHandle
- *   fixed-track split ...... MasterDetail (tokenized rail + stacking threshold, gh#223)
+ * fixed-track split ...... MasterDetail (tokenized rail + stacking threshold, )
  *   master list ............ DataTable (compact, clickable rows, selected row)
  *   status cell ............ Badge tone (出勤/遅刻/早退/休暇 — fixed signaling)
  *   detail header .......... Avatar + heading + Badge + action Buttons

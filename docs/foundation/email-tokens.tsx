@@ -25,7 +25,7 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 import { buildEmailSpecimenHtml } from "./_email-specimen";
 
 /**
- * Email tokens · the `@godxjp/ui/email` contract (issue #227).
+ * Email tokens · the `@godxjp/ui/email` contract.
  *
  * A transactional email is rendered by Blade/Twig/MJML, by clients that strip `<style>`, ignore
  * CSS custom properties and block remote images — so neither the React components nor the CSS

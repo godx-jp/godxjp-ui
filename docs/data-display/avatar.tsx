@@ -25,12 +25,10 @@ import portraitSlate from "../assets/portrait-slate.svg";
  * URL against PREVIEW_BASE — an absolute "/assets/…" would 404 wherever the site is served from a
  * sub-path.
  *
- * They used to be `https://picsum.photos/...`. A docs page that fetches a THIRD-PARTY image cannot
- * render without the public internet, and on CI it does not merely look wrong — it hangs: the
- * request never settles, `networkidle` never fires, and `page.goto` times out at 30s. That is what
- * failed `data-display-avatar` and `data-display-card-index` at every viewport in both the axe and
- * geometry sweeps (gh#333), long after the preview server itself was fixed. Committed files cost
- * no request that can hang and no service that can disappear.
+ * A docs page must never fetch a THIRD-PARTY image: without the public internet it cannot render,
+ * and on CI it does not merely look wrong, it hangs — the request never settles, `networkidle`
+ * never fires, and `page.goto` times out. Committed files cost no request that can hang and no
+ * service that can disappear.
  */
 
 /**
@@ -93,7 +91,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* shape="square" — the entity-header organization / service mark (gh#249) */}
+        {/* shape="square" — the entity-header organization / service mark */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>エンティティヘッダー · shape=&quot;square&quot;</CardTitle>
@@ -136,7 +134,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* appearance="tinted" — the capability medallion (gh#12) */}
+        {/* appearance="tinted" — the capability medallion */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>
@@ -192,7 +190,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* presence — the realtime reachability dot (gh#309) */}
+        {/* presence — the realtime reachability dot */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>プレゼンス · presence</CardTitle>

@@ -19,7 +19,7 @@ import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
  * defaults to true · set false only when the divider carries semantic meaning for
  * a11y.
  *
- * gh#308 — `label` INTERRUPTS the rule: a message stream's day divider, a "new messages"
+ * `label` INTERRUPTS the rule: a message stream's day divider, a "new messages"
  * watermark, an auth conjunction. A labelled rule flips `decorative` to false, so it is a real
  * role="separator" NAMED by the label (the visible node is aria-hidden, so the string is announced
  * exactly once). `labelAlign` is a controlled vocabulary value — start | center | end, logical, so
@@ -172,7 +172,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* ── gh#308 — the real screen the labelled rule exists for ─────────────────────────── */}
+        {/* ── — the real screen the labelled rule exists for ─────────────────────────── */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>実画面 · チャンネルの投稿ストリーム</CardTitle>

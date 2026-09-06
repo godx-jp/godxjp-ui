@@ -1,7 +1,7 @@
 /**
  * Showcase · OrgSwitcher — sidebar organization/tenant switcher (Slack/Linear pattern)
  *
- * Requested by dxs-platform (godxjp-ui#196) as a "first-class OrgSwitcher component".
+ * Requested by dxs-platform as a "first-class OrgSwitcher component".
  * GATE 0 — Framework-Component Test verdict: **COMPOSITION PATTERN**, not a framework
  * component. It owns NO new behaviour — search/keyboard/filtering come from `Command`
  * (cmdk), open/focus-trap/dismiss from `Popover`, the trigger from `Button` + `Avatar`.

@@ -23,10 +23,12 @@ import { MoreHorizontal } from "lucide-react";
 
 import coverTerrain from "../../assets/cover-terrain.svg";
 
-/* A committed SVG under docs/assets, imported so the bundler rewrites the URL against
+/*
+ *  A committed SVG under docs/assets, imported so the bundler rewrites the URL against
  * PREVIEW_BASE. It replaces a picsum.photos fetch that hung `networkidle` and timed this page out
- * at 30s in CI (gh#333); it was briefly an inline data: URI, which fixed the hang but put 700
- * unreadable characters in the middle of the example a consumer is meant to copy. */
+ * at 30s in CI; it was briefly an inline data: URI, which fixed the hang but put 700
+ * unreadable characters in the middle of the example a consumer is meant to copy.
+ */
 
 /**
  * Card — surface container. Body content ALWAYS goes in CardContent (a bare Card
@@ -131,7 +133,7 @@ export default function Demo() {
           </ResponsiveGrid>
         </Flex>
 
-        {/* accentPlacement="perimeter" — the semantic attention border (gh#12) */}
+        {/* accentPlacement="perimeter" — the semantic attention border */}
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
             Accent · accentPlacement=&quot;perimeter&quot; (全周のアテンションボーダー)

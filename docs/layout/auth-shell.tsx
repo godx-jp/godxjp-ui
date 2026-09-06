@@ -14,7 +14,7 @@ import {
  * SCR-001 Login visual contract. `?state=standalone|one-line|wrapped` drives the package visual
  * test; all three keep the same card anchor without consumer CSS or fake requester data.
  *
- * The composition mirrors the documented consumer page exactly (gh#263): NO top brand bar (the
+ * The composition mirrors the documented consumer page exactly: NO top brand bar (the
  * canonical SCR-001 artboard has none — the in-flow AuthIdentity mark IS the brand), a header-less
  * `<CardContent solo>` body, `AuthFooter` as the third direct child (the login preset's third grid
  * row), and a plain 12px text-link row like the artboard's.

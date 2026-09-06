@@ -47,7 +47,7 @@ const TOOLBAR_CHROME_TOKENS = {
 } as CSSProperties;
 
 /**
- * `--page-header-min-block-size-chrome` · クロム帯の「高さ」（gh#331）。文書のヘッダーは中身なりの
+ * `--page-header-min-block-size-chrome` · クロム帯の「高さ」。文書のヘッダーは中身なりの
  * 高さで正しい · 見出しは見出しの高さだからです。クロムは逆で、家具には「ものが中央に収まる帯」が
  * 要ります。既定は `auto`（＝rule #44 の最も静かな状態）なので、このトークンを置くまで DOM も
  * 見え方も従来どおり · 文書ページはそもそもこの規則に一致しません。
@@ -109,7 +109,7 @@ const journalColumns: ColumnDef<JournalEntry>[] = [
  * PageContainer · mandatory page shell.
  * Covers: title/subtitle/status/extra/footer/breadcrumb/linkComponent + variant
  * default/narrow/flush/ghost + density compact/default/comfortable + PageContainer.Inset.
- * The embedded header is the CANONICAL DXS PageHeader (gh#255) — status/meta band included.
+ * The embedded header is the CANONICAL DXS PageHeader — status/meta band included.
  * Each example is standalone (no AppShell) so the variant behaviour is visible in
  * isolation. Composed only from real @godxjp/ui components.
  */
@@ -165,7 +165,7 @@ export default function Demo() {
         </ResponsiveGrid>
       </PageContainer>
 
-      {/* ── 1b. Canonical page-header contract (gh#255) · status/meta band ── */}
+      {/* ── 1b. Canonical page-header contract · status/meta band ── */}
       {/* PageContainer's embedded header IS the DXS PageHeader: breadcrumbs + title +
           subtitle + status/meta + actions + responsive overflow on ONE renderer. The
           `status` band shares the title line at --page-header-status-gap and wraps
@@ -405,7 +405,7 @@ export default function Demo() {
         </Card>
       </PageContainer>
 
-      {/* ── 6. fill · body height behaviour on a tall shell (gh#103) ──
+      {/* ── 6. fill · body height behaviour on a tall shell ──
           Each PageContainer sits in a fixed-height framed box that stands in for the
           viewport-tall app shell, so the two behaviours are visible side by side. */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
@@ -452,7 +452,7 @@ export default function Demo() {
         </div>
       </ResponsiveGrid>
 
-      {/* ── 7. headerLayout · 390px でヘッダー extra をタイトル行に残す (gh#231) ──
+      {/* ── 7. headerLayout · 390px でヘッダー extra をタイトル行に残す ──
           stack (既定) は 640px 未満で extra を subtitle の下の全幅行に落とす。
           responsive-inline は --page-header-extra-measure (11rem) の測度で
           title 帯の横に残す。640px 以上では両者は同一。
@@ -505,7 +505,7 @@ export default function Demo() {
         </PageContainer>
       </ResponsiveGrid>
 
-      {/* ── 8. measure · ヘッダーとボディを 1 つの測度で束ねる (gh#245 / gh#247) ──
+      {/* ── 8. measure · ヘッダーとボディを 1 つの測度で束ねる ──
           measure は variant（クローム）と直交する第 3 の軸。variant="narrow" は
           .ui-page-body しか絞らないため、ヘッダーのアクションはページ端に取り残される。
           measure はヘッダーとボディの両方を同じトークン測度で絞るので、extra の終端が

@@ -1,5 +1,5 @@
 /**
- * Showcase · settings-account-sections — the canonical SETTINGS SECTION / ROW composition (gh#216)
+ * Showcase · settings-account-sections — the canonical SETTINGS SECTION / ROW composition
  *
  * ── Gate 0 verdict: COMPOSITION PATTERN, not a framework component ────────────────────────────
  * A "SettingsSection" / "SettingsRow" / "DangerZone" fails the Framework-Component Test

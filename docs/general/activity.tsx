@@ -12,7 +12,7 @@ import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
 
 /**
  * Activity · the official AMBIENT-motion primitive: a continuous, unbounded "something is happening
- * right now, elsewhere". The LOOP counterpart to `Reveal`'s one-shot entrance (gh#313).
+ * right now, elsewhere". The LOOP counterpart to `Reveal`'s one-shot entrance.
  *
  * Reads the DS motion tokens (`--activity-interval`, `--activity-stagger-step`,
  * `--activity-mark-offset`, `--activity-color`, `--ease-standard`) so a consumer never hand-rolls a

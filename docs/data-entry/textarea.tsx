@@ -18,7 +18,7 @@ const SEED_MESSAGES: Message[] = [
 ];
 
 /**
- * The godx-chatter composer (gh#310). One line at rest, grows line by line, scrolls itself past
+ * The godx-chatter composer. One line at rest, grows line by line, scrolls itself past
  * eight rows, and collapses back to one line the moment the post is sent — the send button just
  * resets the controlled value, and `autoGrow` follows it without a single line of layout code.
  */

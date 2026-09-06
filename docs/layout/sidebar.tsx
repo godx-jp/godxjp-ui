@@ -127,7 +127,7 @@ const MENTION_SECTIONS: SidebarSectionProp[] = [
 ];
 
 /**
- * gh#228 · nav row and nav icon read SEPARATE colour tokens. A service normally sets these once in
+ * nav row and nav icon read SEPARATE colour tokens. A service normally sets these once in
  * its theme.css (`:root` or a scoped `[data-tenant] .app-sidebar`); here they are scoped to one
  * demo frame so the default rail can sit next to the themed one. Icons only — geometry (16px icon,
  * 32px row, 10px gap) is untouched.
@@ -138,7 +138,7 @@ const CANONICAL_NAV_TOKENS = {
 } as CSSProperties;
 
 /**
- * gh#213 · THE router-link contract. `createSidebarLink` adapts any router `Link` — React Router /
+ * THE router-link contract. `createSidebarLink` adapts any router `Link` — React Router /
  * TanStack use `to`, Inertia and Next.js use `href` (the default, and
  * `inertiaSidebarLink(Link)` from `@godxjp/ui/inertia` is the same thing pre-bound). The consumer
  * writes NO row markup: the Sidebar composes the icon slot, the label, the badge, the active state
@@ -171,7 +171,7 @@ const ROUTED_SECTIONS: SidebarSectionProp[] = [
 ];
 
 /**
- * renderItem · DEPRECATED (gh#213) — kept working for existing consumers. It leaves the row CONTENT
+ * renderItem · DEPRECATED — kept working for existing consumers. It leaves the row CONTENT
  * to the caller, which is how a `<Link>{item.label}</Link>` silently dropped every icon in
  * production. `rowProps` now carries the library-composed `children`, so spreading it (or rendering
  * `rowProps.children`) restores the canonical row; the star is a decorative, non-interactive affix.
@@ -346,7 +346,7 @@ export default function Demo() {
             </CardContent>
           </Card>
 
-          {/* linkComponent prop · THE router-link contract (gh#213) — library composes the row. */}
+          {/* linkComponent prop · THE router-link contract — library composes the row. */}
           <Card>
             <CardHeader>
               <CardTitle level={2}>linkComponent プロップ（ルーターリンク）</CardTitle>
@@ -395,7 +395,7 @@ export default function Demo() {
             </CardContent>
           </Card>
 
-          {/* renderItem prop · DEPRECATED escape hatch (gh#213) — kept for back-compat. */}
+          {/* renderItem prop · DEPRECATED escape hatch — kept for back-compat. */}
           <Card>
             <CardHeader>
               <CardTitle level={2}>renderItem プロップ（非推奨）</CardTitle>
@@ -526,7 +526,7 @@ export default function Demo() {
             </CardContent>
           </Card>
 
-          {/* Nav colour tokens · icon and label are themed SEPARATELY (gh#228). */}
+          {/* Nav colour tokens · icon and label are themed SEPARATELY. */}
           <Card>
             <CardHeader>
               <CardTitle level={2}>ナビの配色トークン（アイコンとラベルを別々に）</CardTitle>

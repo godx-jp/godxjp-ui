@@ -13,13 +13,12 @@ import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
- * CompactBarTrend — the DEPENDENCY-FREE compact bar trend (gh#218).
+ * CompactBarTrend — the DEPENDENCY-FREE compact bar trend.
  *
- * `BarChart` needs the `recharts` optional peer; a platform whose policy forbids screen
- * implementers from adding dependencies cannot use it, and used to fall back to a page-local
- * grid with inline heights. `CompactBarTrend` closes that gap: the marks are token-sized CSS
- * blocks, so the canonical SCR-201 admin dashboard gets a real framework chart with zero
- * consumer CSS, zero inline height math and zero hardcoded colour.
+ * `BarChart` needs the `recharts` optional peer, so a platform whose policy forbids screen
+ * implementers from adding dependencies cannot use it. The marks here are token-sized CSS
+ * blocks instead, so a dashboard gets a real framework chart with zero consumer CSS, zero
+ * inline height math and zero hardcoded colour.
  *
  * Everything below is composed from real @godxjp/ui primitives only.
  */

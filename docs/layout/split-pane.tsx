@@ -17,7 +17,7 @@ import { FileText, Building2, Calendar, CreditCard, ArrowRight } from "lucide-re
  * Shows: main list + detail panel, asideWidth sm/md, nested inside PageContainer.
  * It OWNS its query container (container-type: inline-size), so the two-column split
  * is chosen from the PANE's own width (≥48rem), not the viewport — a narrow embedded
- * pane on a large screen correctly stays single-column (gh#165).
+ * pane on a large screen correctly stays single-column.
  * Composed only from real @godxjp/ui components.
  *
  * NOTE: <Flex> defaults to direction="row"; vertical stacks set direction="col"

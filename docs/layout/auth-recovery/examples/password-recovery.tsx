@@ -28,8 +28,6 @@ export default function Demo() {
   const [password, setPassword] = useState("Godx-2026");
   const [confirmation, setConfirmation] = useState("Godx-202");
 
-  // The address is masked by the SERVER before it reaches the panel — the library never
-  // reconstructs an identifier, it only renders the string the consumer sends.
   const maskedEmail = "h*****@example.co.jp";
 
   return (

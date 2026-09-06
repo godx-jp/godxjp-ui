@@ -1,5 +1,5 @@
 /**
- * Showcase · アクセス承認キュー / Access approval queue (gh#253) — the canonical five-column
+ * Showcase · アクセス承認キュー / Access approval queue — the canonical five-column
  * approval collection at 1440 · 1024 · 390 using ONLY public API.
  *
  * The whole responsive contract is `Table preset="action-collection"` plus a `priority` on each

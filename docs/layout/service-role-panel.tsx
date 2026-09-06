@@ -1,5 +1,5 @@
 /**
- * ServiceRolePanel — ロール一覧 ⇄ 詳細 (canonical master-detail roles surface, gh#257).
+ * ServiceRolePanel — ロール一覧 ⇄ 詳細 (canonical master-detail roles surface).
  *
  * MasterDetail (rail=master) underneath owns all geometry: two tracks at 1440/1024, stacked
  * list-then-detail at 390. The panel adds selection (aria-current rows), locked system roles,

@@ -19,7 +19,7 @@ import {
 import { ClipboardCheck, LayoutDashboard, MoreHorizontal, ScrollText } from "lucide-react";
 
 /**
- * Access-approval queue (SCR-105 / gh#253) — the canonical five-column approval collection driven
+ * Access-approval queue (SCR-105 / ) — the canonical five-column approval collection driven
  * by the TanStack-powered DataTable, at 1440 · 1024 · 390 with ONLY public API.
  *
  * The whole responsive contract is two props: `preset="action-collection"` on the DataTable and a

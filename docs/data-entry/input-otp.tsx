@@ -140,7 +140,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* align — the centred challenge, without a consumer wrapper div (gh#12) */}
+        {/* Align — the centred challenge, without a consumer wrapper div */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>中央寄せ（align=&quot;center&quot;）</CardTitle>

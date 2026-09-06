@@ -229,7 +229,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* Inline row — the hosted-identity / device progression (gh#12) */}
+        {/* Inline row — the hosted-identity / device progression */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>

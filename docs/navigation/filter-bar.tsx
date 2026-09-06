@@ -39,7 +39,7 @@ export default function Demo() {
   const [period, setPeriod] = useState("all");
   const hasActiveFilters = query !== "" || status !== "all";
 
-  // Typed model (gh#258) — ALL state is consumer data; the bar only renders it.
+  // Typed model — ALL state is consumer data; the bar only renders it.
   const [modelQuery, setModelQuery] = useState("田中");
   const [modelStatus, setModelStatus] = useState("active");
   const [modelRole, setModelRole] = useState("");
@@ -80,7 +80,7 @@ export default function Demo() {
       subtitle="Search, labelled filters, active state, consumer-owned reset, and both responsive overflow strategies"
     >
       <Flex direction="col" gap="lg">
-        {/* Typed model (gh#258) — search/filters/chips/reset/result-count/actions as DATA.
+        {/* Typed model — search/filters/chips/reset/result-count/actions as DATA.
             The bar owns layout, token widths, chip lifecycle and keyboard order; the page owns
             every piece of state. Remove a chip, reset, or pick a filter and watch the chips row
             and the localized result count follow. */}

@@ -14,7 +14,7 @@ import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Toggle `count` — the counted, PRESSED chip (gh#312).
+ * Toggle `count` — the counted, PRESSED chip.
  *
  * `Button` owns the counter-pill vocabulary (`count` / `overflowCount` / `showZero`) and `Toggle`
  * owns the pressed state, so a faceted filter chip ("未対応 42", selected or not) and a reaction

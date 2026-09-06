@@ -33,7 +33,7 @@ import {
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
- * AuthShell preset="registration" (gh#256) — the canonical sign-up measure.
+ * AuthShell preset="registration" — the canonical sign-up measure.
  *
  * The preset owns the whole page geometry: a 360px (22.5rem) form measure at 1440/1024, a 15px
  * inline gutter at 390 (card x=15, width=360 — the same page rhythm as preset="login", so

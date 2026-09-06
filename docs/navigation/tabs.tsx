@@ -67,7 +67,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* Disabled first item — fallback selection must skip it (gh#175) */}
+        {/* Disabled first item — fallback selection must skip it */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>先頭タブが disabled · フォールバック選択</CardTitle>

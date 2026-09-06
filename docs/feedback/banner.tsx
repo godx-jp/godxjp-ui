@@ -5,7 +5,7 @@ import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Banner · full-bleed page/shell attention strip (godxjp-ui#255) — the Alert
+ * Banner · full-bleed page/shell attention strip — the Alert
  * primitive with the structural axis fixed to variant="banner". Persistent,
  * page/shell-scoped, at most one per surface. tone owns colour + icon +
  * live-region politeness; onDismiss renders the built-in dismiss (last in focus

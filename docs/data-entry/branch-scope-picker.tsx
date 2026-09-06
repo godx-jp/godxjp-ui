@@ -1,5 +1,5 @@
 /**
- * BranchScopePicker — 適用範囲 (all branches vs an explicit subset, gh#257).
+ * BranchScopePicker — 適用範囲 (all branches vs an explicit subset).
  *
  * One controlled `{ mode, branchIds }` value; real RadioGroup + CheckboxGroup + SearchInput
  * underneath. `error` is FIELD VALIDATION (aria-errormessage); a failed branch read is

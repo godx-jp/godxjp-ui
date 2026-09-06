@@ -27,7 +27,7 @@ const entries = Array.from(
 const shortEntries = entries.slice(0, 3);
 
 /**
- * The live-stream screen (gh#311). A deterministic clock: the demo never reads `Date.now()`, so the
+ * The live-stream screen. A deterministic clock: the demo never reads `Date.now()`, so the
  * frame is stable, and every timestamp still goes through `Intl.DateTimeFormat` (IANA tz, 24h).
  */
 const STREAM_EPOCH = Date.UTC(2026, 2, 3, 0, 30, 0);

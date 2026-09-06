@@ -37,10 +37,7 @@ import {
 
 /**
  * Topbar · a PURE SLOT bar. The shell only positions `start` / `center` / `end`; the CONSUMER
- * composes every control. This demo builds the chrome the OLD baked Topbar used to force ·
- * sidebar toggle, brand mark (Avatar), an entity switcher, a search trigger, a notifications button, a
- * user menu · entirely from real primitives, so you can see there is no hidden template (and no
- * dead dropdown: a control exists ONLY because it's placed here).
+ * composes every control.
  */
 const SECTIONS: SidebarSectionProp[] = [
   {
@@ -153,10 +150,7 @@ export default function Demo() {
   // end · notifications + user menu, both consumer-composed.
   const end = (
     <>
-      {/* The end slot is `flex: 0 0 auto` — whatever sits here is taken out of the start slot's
-          budget before it gets a say. At 320 this environment chip alone claimed 93 of the bar's
-          198px, squeezing start to 25px and clipping the entity switcher inside it. An ambient
-          status label is the first thing a compact bar drops, so it appears from sm up. */}
+      {}
       <Badge tone="warning" className="text-xs">
         ステージング
       </Badge>

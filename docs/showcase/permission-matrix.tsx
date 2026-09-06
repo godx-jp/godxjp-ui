@@ -4,12 +4,12 @@
  * A role × permission matrix with a STICKY first column (権限), ✓/— cells, a
  * two-role COMPARE mode, and a 差分のみ (differences-only) filter — the pattern
  * DXS role tabs (SCR-203) and the org role editor (SCR-111b) each hand-rolled
- * (godxjp-ui#194). Read-only by default.
+ *. Read-only by default.
  *
- * SINCE gh#257 the grid itself IS a package export — `PermissionMatrix` from
+ * SINCE the grid itself IS a package export — `PermissionMatrix` from
  * `@godxjp/ui/data-display` (see docs/data-display/permission-matrix.tsx). The
  * original Gate-0 "composition pattern" verdict was OUTCOME-corrected the same
- * way ErrorSurface was (gh#251): a consumer cannot import a docs page, so the
+ * way ErrorSurface was: a consumer cannot import a docs page, so the
  * canonical grid needed an importable home. Prefer the export in app code.
  *
  * This showcase remains as the COMPOSED form of the same screen — the full

@@ -59,7 +59,7 @@ const tones = [
 const statuses = ["active", "draft", "pending", "cancelled", "failed", "scheduled"];
 
 /**
- * Subscription/billing lifecycle keys (gh#216). They ship the SAME canonical status→tone→icon
+ * Subscription/billing lifecycle keys. They ship the SAME canonical status→tone→icon
  * map as every other key, so a billing screen never keeps a page-local colour table. They are
  * demoed explicitly because their i18n labels were once missing. A missing key renders the raw
  * `status.trialing` string, and only a rendered demo makes that regression visible.

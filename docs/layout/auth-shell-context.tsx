@@ -16,7 +16,7 @@ import { AuthFooter, AuthIdentity, AuthShell, Flex } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
- * AuthShell preset="context-selection" (gh#217) — the canonical organisation / context picker.
+ * AuthShell preset="context-selection" — the canonical organisation / context picker.
  *
  * The preset owns the whole page measure: a 25rem card at 1440/1024 and an edge-to-edge card at
  * 390 (0 inline gutter), plus the vertical rhythm between the three direct sections of the auth

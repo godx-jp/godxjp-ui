@@ -7,13 +7,13 @@
  *   ✗ wrong (hand-rolled)                        ✓ here (rule)
  *   ─────────────────────────────────────────────────────────────────────────────────────────
  *   factor row = a centered <div> with the       ListRow — leading icon · title/description ·
- *     title duplicated as its own description       trailing action (no redundant copy)   (#113)
+ *     title duplicated as its own description trailing action (no redundant copy)
  *   "Xoá" rendered as plain black text            destructive-toned ghost button — delete is a
  *                                                    destructive action, color carries intent
  *   every action a full-width stacked bar         right-aligned, auto-width actions; ONE primary
  *     (rule 217 explicitly forbids this)             per card, secondary = outline      (rule 217)
  *   📱 / ✉️ emoji as "icons"                       lucide icons (no emoji in product UI) (anti-tell)
- *   brand glyph = a styled <span> (size/radius    Avatar primitive — real brand mark      (#116)
+ *   brand glyph = a styled <span> (size/radius Avatar primitive — real brand mark
  *     baked as literals)
  *
  * Built ENTIRELY from real @godxjp/ui primitives. reference-design DNA: small headings, 14/1.7 body,

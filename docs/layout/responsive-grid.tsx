@@ -13,7 +13,7 @@ import { Flex, PageContainer, ResponsiveGrid, SplitPane } from "@godxjp/ui/layou
  * ResponsiveGrid · equal-width multi-column tile grid with automatic responsive
  * collapse (CSS container queries, not viewport). It OWNS its query container
  * (container-type: inline-size), so it responds to the width available to the grid
- * with no external container-type declaration (gh#165). Direct children are typically
+ * with no external container-type declaration. Direct children are typically
  * StatCard (self-contained bordered card · never wrap in Card/CardContent) or
  * Card+CardContent for richer tile bodies. columns accepts a number OR breakpoint
  * object { sm?, md?, lg? } — or use the named `preset` prop (e.g. "pricing-plans") for a
@@ -45,7 +45,7 @@ export default function Demo() {
               aside={
                 <Flex direction="col" gap="sm">
                   <Text tone="muted">狭いコンテナ（約 20rem）→ sm=1 列</Text>
-                  {/* No wrapping `@container` needed — ResponsiveGrid OWNS its query container (gh#165). */}
+                  {/* No wrapping `@container` needed — ResponsiveGrid OWNS its query container. */}
                   <ResponsiveGrid columns={4}>
                     <StatCard label="今日の入金" value="¥420,000" />
                     <StatCard label="未処理" value="6 件" />

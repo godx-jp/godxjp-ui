@@ -230,7 +230,7 @@ export default function Demo() {
           <DataTable data={[]} columns={columns} getRowId={(row) => row.id} />
         </Flex>
 
-        {/* gh#216 — the two failure states, in the same table grid as empty/loading. */}
+        {/* — the two failure states, in the same table grid as empty/loading. */}
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
             エラー（error · role=&quot;alert&quot; · onRetry で再試行を表示）
