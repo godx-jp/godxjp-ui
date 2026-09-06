@@ -180,6 +180,11 @@
    * hsl(var(--destructive)) now marker · hsl(var(--primary)) current-column wash. */
   --timeline-grid-line-color: initial;
   --timeline-grid-event-color: initial;
+  /* Chữ phụ trong khối sự kiện nằm trên nền ĐÃ TÔ theo màu của bên tiêu thụ, nên
+     --muted-foreground vốn hiệu chỉnh cho nền trang không còn đủ tương phản: đo được 4,24 trên
+     nền tô 12%, dưới ngưỡng 4,5 mà cỡ chữ này đòi. Mặc định dùng chính màu chữ chính, thứ bậc
+     do độ đậm của tiêu đề đảm nhiệm; một service biết bảng màu của mình có thể dịu lại. */
+  --timeline-grid-event-muted-color: hsl(var(--foreground));
   --timeline-grid-now-color: initial;
   --timeline-grid-current-tint: initial;
 

@@ -93,8 +93,32 @@ describe("MobileShell", () => {
       </MobileShell>,
     );
     const root = container.querySelector(".ui-mobile-shell");
-    expect(root?.firstElementChild).toHaveClass("ui-mobile-shell-status");
-    expect(root?.children[1]).toHaveClass("ui-mobile-shell-header");
+    // Hai băng chrome nằm chung trong một landmark <header>, nếu không axe `region` sẽ đỏ vì
+    // băng trạng thái đứng trần. Thứ tự bên trong vẫn là điều test này khẳng định.
+    const chrome = root?.firstElementChild;
+    expect(chrome?.tagName).toBe("HEADER");
+    expect(chrome).toHaveClass("ui-mobile-shell-chrome");
+    expect(chrome?.firstElementChild).toHaveClass("ui-mobile-shell-status");
+    expect(chrome?.children[1]).toHaveClass("ui-mobile-shell-header");
+  });
+
+  it("keeps every band inside a landmark, which is what axe `region` checks", () => {
+    const { container } = renderWithUi(
+      <MobileShell
+        statusBar={<span>9:41</span>}
+        header={<h1>Nhập kho</h1>}
+        actions={<button type="button">Lưu</button>}
+        tabBar={<button type="button">Trang chủ</button>}
+      >
+        x
+      </MobileShell>,
+    );
+    const root = container.querySelector(".ui-mobile-shell")!;
+    for (const band of [...root.children]) {
+      expect(["HEADER", "MAIN", "FOOTER", "NAV"], `${band.className} phải là landmark`).toContain(
+        band.tagName,
+      );
+    }
   });
 
   it("merges a consumer className onto the shell root without dropping its own class", () => {

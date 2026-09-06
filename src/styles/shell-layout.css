@@ -1602,6 +1602,14 @@
     --mobile-shell-block-size: 100%;
   }
 
+  /* Landmark chrome đầu màn hình: chỉ xếp cột, mọi hình học vẫn nằm ở hai băng con. */
+  .ui-mobile-shell-chrome {
+    display: flex;
+    min-inline-size: 0;
+    flex: 0 0 auto;
+    flex-direction: column;
+  }
+
   .ui-mobile-shell-status {
     display: flex;
     min-block-size: calc(

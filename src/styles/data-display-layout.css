@@ -1080,7 +1080,7 @@
   }
 
   .ui-timeline-grid-event-time {
-    color: hsl(var(--muted-foreground));
+    color: var(--timeline-grid-event-muted-color);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
@@ -1094,7 +1094,7 @@
 
   .ui-timeline-grid-event-description {
     overflow: hidden;
-    color: hsl(var(--muted-foreground));
+    color: var(--timeline-grid-event-muted-color);
     text-overflow: ellipsis;
     white-space: nowrap;
   }

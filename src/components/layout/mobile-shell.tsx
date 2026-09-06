@@ -44,15 +44,18 @@ export function MobileShell({
       data-height={height === "viewport" ? undefined : height}
       className={cn("ui-mobile-shell", className)}
     >
-      {statusBar !== undefined && <div className="ui-mobile-shell-status">{statusBar}</div>}
-      {/* No `ui-scale-fixed` on the chrome bands, unlike AppShell's topbar. That helper RE-DECLARES
-       * `--control-height: var(--control-height-default)` (32px) as part of pinning a subtree to
-       * `--scaling: 1`, and it is declared UNLAYERED, so it would beat the shell's own touch tier
-       * from `@layer components` — reverting the app bar and the tab bar to 32px targets, the two
-       * bands where rule #24's 44px floor matters most. A handheld app has one density anyway. */}
-      {header !== undefined && (
-        <header className="ui-mobile-shell-header" aria-label={t("layout.appShell.headerLabel")}>
-          {header}
+      {/* Băng trạng thái và app bar nằm chung trong MỘT landmark <header>. Để băng trạng thái
+       * đứng trần là axe `region` đỏ: nội dung không thuộc landmark nào. Gộp cũng đúng ngữ nghĩa,
+       * cả hai đều là chrome đầu màn hình. */}
+      {(statusBar !== undefined || header !== undefined) && (
+        <header className="ui-mobile-shell-chrome" aria-label={t("layout.appShell.headerLabel")}>
+          {statusBar !== undefined && <div className="ui-mobile-shell-status">{statusBar}</div>}
+          {/* No `ui-scale-fixed` on the chrome bands, unlike AppShell's topbar. That helper RE-DECLARES
+           * `--control-height: var(--control-height-default)` (32px) as part of pinning a subtree to
+           * `--scaling: 1`, and it is declared UNLAYERED, so it would beat the shell's own touch tier
+           * from `@layer components` — reverting the app bar and the tab bar to 32px targets, the two
+           * bands where rule #24's 44px floor matters most. A handheld app has one density anyway. */}
+          {header !== undefined && <div className="ui-mobile-shell-header">{header}</div>}
         </header>
       )}
       {/* tabIndex={0} for axe `scrollable-region-focusable`: this is the shell's only scroll
@@ -64,7 +67,10 @@ export function MobileShell({
       >
         {children}
       </main>
-      {actions !== undefined && <div className="ui-mobile-shell-actions">{actions}</div>}
+      {/* <footer> chứ không phải <div>: băng này nằm ngoài vùng cuộn nên cũng phải thuộc một
+       * landmark. Nó là con trực tiếp của gốc shell (một div, không phải sectioning content) nên
+       * ánh xạ thành contentinfo. */}
+      {actions !== undefined && <footer className="ui-mobile-shell-actions">{actions}</footer>}
       {tabBar !== undefined && (
         <nav className="ui-mobile-shell-tabbar" aria-label={t("layout.sidebar.ariaLabel")}>
           {tabBar}
