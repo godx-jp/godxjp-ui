@@ -15,6 +15,9 @@ import { Button, Text } from "@godxjp/ui/general";
 import { Flex, MasterDetail, PageContainer } from "@godxjp/ui/layout";
 
 /**
+ * Pass mobilePane="master" or "detail" for one-pane navigation below the token-owned collapse threshold.
+ * Supply detailBack with a native back link; own selection in URL/router history.
+ * Omit mobilePane to retain the original stacked composition.
  * MasterDetail · チーム画面 (SCR-110) の正準構成 — 流動的な一覧 + 固定幅の詳細レール。
  *
  * Shows: rail="detail" (既定 · 1fr / 320px) と rail="master" (先頭ナビゲーションレール)、

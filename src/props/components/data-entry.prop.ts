@@ -18,7 +18,6 @@ import type {
   IdProp,
   LabelProp,
   NameProp,
-  OnChangeProp,
   OnValueChangeProp,
   OnSearchChangeProp,
   OpenProp,
@@ -252,12 +251,17 @@ export type FormErrorsProviderProp = {
 export type SearchInputProp = FieldA11yProps & {
   id?: IdProp;
   label?: LabelProp;
+  ariaLabel?: string;
   placeholder?: PlaceholderProp;
-  value?: ValueProp;
-  onChange?: OnChangeProp;
-  onSearchChange?: OnSearchChangeProp;
-  debounceMs?: number;
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (query: string) => void;
+  /** Emits changed, debounced queries; does not run for the initial value. */
+  onSearch?: (query: string) => void;
+  debounce?: number;
+  disabled?: DisabledProp;
   className?: ClassNameProp;
+  inputClassName?: ClassNameProp;
 };
 
 /** @see Checkbox — extends Radix checkbox root props. */

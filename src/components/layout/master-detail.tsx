@@ -1,3 +1,4 @@
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { MasterDetailProp } from "../../props/components/layout.prop";
 
 export type MasterDetailProps = MasterDetailProp;
@@ -9,6 +10,8 @@ export type MasterDetailProps = MasterDetailProp;
  */
 export function MasterDetail({
   master,
+  mobilePane,
+  detailBack,
   children,
   rail = "detail",
   railWidth = "standard",
@@ -18,11 +21,48 @@ export function MasterDetail({
   detailLabel,
   detailId,
 }: MasterDetailProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const thresholdRef = useRef<HTMLSpanElement>(null);
+  const [compact, setCompact] = useState(false);
+  const navigable = mobilePane !== undefined;
+  useLayoutEffect(() => {
+    if (!navigable || !rootRef.current || !thresholdRef.current) return;
+    const root = rootRef.current;
+    const threshold = thresholdRef.current;
+    const measure = () =>
+      setCompact(root.getBoundingClientRect().width < threshold.getBoundingClientRect().width);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(root);
+    observer.observe(threshold);
+    return () => observer.disconnect();
+  }, [navigable, collapseBelow]);
+  const masterRef = useRef<HTMLElement>(null);
+  const detailRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!mobilePane) return;
+    if (mobilePane === "detail" && masterRef.current?.getClientRects().length === 0) {
+      const heading = detailRef.current?.querySelector<HTMLElement>("h1, h2, h3");
+      if (heading) {
+        heading.tabIndex = -1;
+        heading.focus();
+      } else {
+        detailRef.current?.focus();
+      }
+    } else if (mobilePane === "master" && detailRef.current?.getClientRects().length === 0) {
+      masterRef.current
+        ?.querySelector<HTMLElement>("a[aria-current], a[href]")
+        ?.focus({ preventScroll: true });
+    }
+  }, [mobilePane, detailLabel, compact]);
   const bounded = masterViewport !== "auto";
 
   return (
     <div
+      ref={rootRef}
       className="ui-master-detail"
+      data-mobile-compact={navigable && compact ? "" : undefined}
+      data-mobile-pane={mobilePane}
       data-rail={rail}
       data-rail-width={railWidth}
       data-master-viewport={masterViewport}
@@ -31,6 +71,7 @@ export function MasterDetail({
       data-collapse-below={collapseBelow === undefined ? undefined : String(collapseBelow)}
     >
       <section
+        ref={masterRef}
         className="ui-master-detail-master"
         aria-label={masterLabel}
         // A bounded region is a scroll container, so it MUST be reachable and scrollable with the
@@ -43,13 +84,22 @@ export function MasterDetail({
         {master}
       </section>
       <section
+        ref={detailRef}
         className="ui-master-detail-detail"
         id={detailId}
         aria-label={detailLabel}
         tabIndex={-1}
       >
+        {mobilePane && detailBack ? (
+          <div className="ui-master-detail-back">{detailBack}</div>
+        ) : null}
         {children}
       </section>
+      {navigable ? (
+        <span className="ui-master-detail-measure" aria-hidden="true">
+          <span ref={thresholdRef} />
+        </span>
+      ) : null}
     </div>
   );
 }

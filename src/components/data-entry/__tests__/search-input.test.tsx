@@ -30,3 +30,12 @@ describe("SearchInput", () => {
     expect(screen.getByRole("searchbox")).toHaveValue("");
   });
 });
+
+it("does not search on mount or when only the callback identity changes", () => {
+  const first = vi.fn();
+  const next = vi.fn();
+  const { rerender } = renderWithUi(<SearchInput defaultValue="saved filter" onSearch={first} />);
+  expect(first).not.toHaveBeenCalled();
+  rerender(<SearchInput defaultValue="saved filter" onSearch={next} />);
+  expect(next).not.toHaveBeenCalled();
+});

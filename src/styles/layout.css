@@ -1472,3 +1472,38 @@
     }
   }
 }
+
+@layer components {
+  .ui-master-detail-back {
+    display: none;
+  }
+  .ui-master-detail[data-mobile-pane] {
+    position: relative;
+  }
+  .ui-master-detail-measure {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 0;
+    block-size: 0;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .ui-master-detail-measure > span {
+    display: block;
+    inline-size: var(--master-detail-collapse-below);
+    block-size: 0;
+  }
+  .ui-master-detail[data-mobile-compact][data-mobile-pane="master"] > .ui-master-detail-detail,
+  .ui-master-detail[data-mobile-compact][data-mobile-pane="detail"] > .ui-master-detail-master {
+    display: none;
+  }
+  .ui-master-detail[data-mobile-compact] > .ui-master-detail-master {
+    max-block-size: none;
+    overflow: visible;
+  }
+  .ui-master-detail[data-mobile-compact] .ui-master-detail-back {
+    display: block;
+    margin-block-end: var(--space-3);
+  }
+}

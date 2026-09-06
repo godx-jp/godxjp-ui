@@ -1124,3 +1124,21 @@
     pointer-events: none;
   }
 }
+
+@layer components {
+  a.ui-list-row {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  a.ui-list-row:hover {
+    background: hsl(var(--muted));
+  }
+  a.ui-list-row[aria-current="page"] {
+    background: hsl(var(--accent));
+    box-shadow: inset var(--space-1) 0 0 hsl(var(--primary));
+  }
+  [dir="rtl"] a.ui-list-row[aria-current="page"] {
+    box-shadow: inset calc(-1 * var(--space-1)) 0 0 hsl(var(--primary));
+  }
+}

@@ -28,6 +28,27 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Navigation rows</CardTitle>
+            <CardDescription>
+              The whole row is one link, including its metadata. Current location uses aria-current.
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <ListRow
+              asChild
+              title="Roles and permissions"
+              description="Inspect organization access"
+              overflow="wrap"
+            >
+              <a href="?section=roles" aria-current="page" />
+            </ListRow>
+            <ListRow asChild title="Members" description="Assign roles to organization members">
+              <a href="?section=members" />
+            </ListRow>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>アクティブなセッション Active sessions</CardTitle>
             <CardDescription>
               Rows live in a flush CardContent and draw their own dividers. Trailing holds the row

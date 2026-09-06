@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 
 import { useTranslation } from "../../i18n/use-translation";
 import type { ListRowDensityProp } from "../../props/components/data-display.prop";
@@ -21,6 +22,8 @@ export type ListRowDensity = ListRowDensityProp;
 export interface ListRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Render element — `div` (default) or `li` when the parent is a `<ul>`/`<ol>`. */
   as?: "div" | "li";
+  /** Use the supplied link as the entire row. Do not nest interactive trailing controls. */
+  asChild?: boolean;
   /** Leading slot — a decorative icon or an Avatar. Mark a purely decorative icon `aria-hidden`. */
   leading?: React.ReactNode;
   /** Primary line — rendered in medium weight. */
@@ -50,6 +53,8 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
   (
     {
       as = "div",
+      asChild = false,
+      children,
       leading,
       title,
       description,
@@ -64,19 +69,10 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
     ref,
   ) => {
     const { t } = useTranslation();
-    const Comp = as as React.ElementType;
+    const Comp = (asChild ? Slot : as) as React.ElementType;
     const truncate = overflow !== "wrap";
-    return (
-      <Comp
-        ref={ref}
-        data-slot="list-row"
-        data-align={align === "start" ? "start" : undefined}
-        data-overflow={overflow === "wrap" ? "wrap" : undefined}
-        data-density={density === "compact" ? "compact" : undefined}
-        data-unread={unread === true ? "" : undefined}
-        className={cn("ui-list-row", className)}
-        {...props}
-      >
+    const content = (
+      <>
         {unread !== undefined ? (
           <span data-slot="list-row-indicator">
             <span className="sr-only">
@@ -96,6 +92,22 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
           ) : null}
         </span>
         {trailing != null ? <span data-slot="list-row-trailing">{trailing}</span> : null}
+      </>
+    );
+    return (
+      <Comp
+        ref={ref}
+        data-slot="list-row"
+        data-align={align === "start" ? "start" : undefined}
+        data-overflow={overflow === "wrap" ? "wrap" : undefined}
+        data-density={density === "compact" ? "compact" : undefined}
+        data-unread={unread === true ? "" : undefined}
+        className={cn("ui-list-row", className)}
+        {...props}
+      >
+        {asChild && React.isValidElement(children)
+          ? React.cloneElement(children as React.ReactElement, undefined, content)
+          : content}
       </Comp>
     );
   },
