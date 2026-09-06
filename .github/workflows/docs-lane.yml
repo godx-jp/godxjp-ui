@@ -46,6 +46,19 @@ jobs:
   docs:
     name: Docs lane (does not gate merge)
     runs-on: [self-hosted, swarm-pool]
+
+    # THE FORK GUARD, same as pr-lane.yml and for the same reason. This repository is PUBLIC and
+    # `swarm-pool` is a long-lived self-hosted pool shared with tempo, kintai and godx-chat — the
+    # one combination GitHub explicitly warns about. Without this line, `on: pull_request` above
+    # means anyone with a fork can run their own code on that pool, including an edit to THIS file
+    # in the same PR, because `pull_request` checks out the fork's head. The condition is harmless
+    # for the lane's purpose: it does not gate merge, so a skipped job withholds nothing.
+    # `push` runs are unaffected — `github.event.pull_request` is null there and the expression is
+    # only reached on the `pull_request` event.
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+
     steps:
       - uses: actions/checkout@v6
 

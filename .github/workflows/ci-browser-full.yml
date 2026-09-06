@@ -33,6 +33,13 @@ name: CI · browser (full sweep)
 #      fires for EVERY label, so each job re-checks the label set in `if:`; without that guard an
 #      unrelated label would launch a 30-minute sweep.
 #
+# THE FORK GUARD IN THAT SAME `if:` — `head.repo.full_name == github.repository`, the same line
+# pr-lane.yml carries. This repository is PUBLIC and `swarm-pool` is a long-lived self-hosted pool
+# shared with tempo, kintai and godx-chat. `pull_request` checks out the FORK's head, so without
+# the guard a fork's own code — including its edit to this very file — would run on that pool.
+# The label is not a substitute: it only means a maintainer pressed a button, and the code that
+# then runs is still the fork's. Lower odds than an unlabelled lane, identical exposure.
+#
 # No `paths:` filter (L6): all three triggers are already explicit statements of intent — a
 # schedule, a human pressing the button, or a human attaching the label. There is nothing to
 # filter that the trigger has not already decided.
@@ -52,7 +59,8 @@ jobs:
     name: Viewport-matrix geometry sweep
     if: >-
       github.event_name != 'pull_request' ||
-      contains(github.event.pull_request.labels.*.name, 'run-browser')
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(github.event.pull_request.labels.*.name, 'run-browser'))
     runs-on: [self-hosted, swarm-pool]
     env:
       PREVIEW_BASE: http://localhost:6038
@@ -74,7 +82,8 @@ jobs:
     name: rendered-runtime (${{ matrix.name }})
     if: >-
       github.event_name != 'pull_request' ||
-      contains(github.event.pull_request.labels.*.name, 'run-browser')
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(github.event.pull_request.labels.*.name, 'run-browser'))
     runs-on: [self-hosted, swarm-pool]
     strategy:
       fail-fast: false

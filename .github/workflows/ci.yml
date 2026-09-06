@@ -75,6 +75,14 @@ jobs:
       # have verified them false, with nothing red to say so. That is Nguyên tắc 3's silent
       # failure, and the whole saving is a few seconds inside a 73s job (run 33976207784).
       #
+      # MEASURED, so the deviation is a number and not a feeling. Each of the eight, run alone in
+      # this tree: mcp-sync 0.18s, mcp-catalog-coverage 0.40s, mcp-orphans 0.18s,
+      # mcp-pattern-imports 0.37s, mcp-prop-sync 0.18s, doc-prop-existence 0.19s, audit-sync 0.22s,
+      # example-imports 0.44s — 2.16s for all eight. Moving them costs a second job: checkout +
+      # `.github/actions/setup` + `pnpm install --frozen-lockfile`, which is the ~60-90s floor every
+      # job here pays before it runs anything. So the "saving" is 2.16s against a new fixed cost an
+      # order of magnitude larger, before the release-honesty problem above is even considered.
+      #
       # The move becomes correct — and should then be made — once either the docs lane produces a
       # check run named in REQUIRED_CI_CHECK_RUNS with no `paths:` filter on its push trigger
       # (a filtered one would fail closed with "never ran" on any commit that misses the paths,
@@ -114,7 +122,16 @@ jobs:
       - uses: ./.github/actions/setup
       # No build step: the suite imports from `src`, not from `dist`. The `static` job owns the
       # build and every gate that reads the shipped artifact.
-      - run: pnpm test -- --shard=${{ matrix.shard }}/4
+      # NO BARE `--` BEFORE THE FLAG, AND THAT IS A MEASUREMENT. It used to read
+      # `pnpm test -- --shard=…`, which pnpm forwards VERBATIM: the child command became
+      # `vitest run -- --shard=2/4`, vitest read the lone `--` as a positional filename filter and
+      # ignored the flag entirely. Measured in this tree (vitest 4.1.11, pnpm 10.29.1):
+      #   pnpm test -- --shard=2/4  ->  Test Files 484 passed (484)   107.8s
+      #   pnpm test --shard=2/4     ->  Test Files 121 passed (121)    27.2s
+      # So all FOUR shards were running the WHOLE suite — four identical full runs per merge,
+      # green, with the job names still claiming a quarter each. Nguyên tắc 3's silent failure in
+      # the cheapest possible form: two characters.
+      - run: pnpm test --shard=${{ matrix.shard }}/4
 
   # The @godxjp/ui <-> @godxjp/ui-mcp lockstep gates (`check:mcp-lockstep`, `check:mcp-sync`,
   # `check:mcp-orphans`, `check:mcp-pattern-imports`, `check:packed-public-contract`) run HERE,
