@@ -492,7 +492,7 @@
       "axe": {
         "runner": "scripts/check-frame-axe.mjs (pnpm check:frame-axe)",
         "baseline": "scripts/frame-axe.baseline.json",
-        "recordedAt": "2026-08-18",
+        "recordedAt": "2026-09-06",
         "failingFrames": 0,
         "failingRules": [],
         "note": "Recorded per-frame axe violations from the shrink-only axe baseline. NOT re-executed by this generator. An axe pass never promotes `accessibleName` or `keyboard`."
