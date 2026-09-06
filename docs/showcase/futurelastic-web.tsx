@@ -83,6 +83,7 @@ const THEME = `
 [data-tenant="futurelastic"] .fl-lead { font-size: 1.25rem; line-height: 1.65; color: hsl(var(--muted-foreground)); max-width: 620px; }
 [data-tenant="futurelastic"] .fl-note { font-size: 0.9375rem; color: hsl(var(--muted-foreground)); margin-top: 2.5rem; }
 [data-tenant="futurelastic"] .fl-head { max-width: 640px; margin-inline: auto; text-align: center; }
+[data-tenant="futurelastic"] .fl-hero-actions { margin-top: 1.75rem; }
 [data-tenant="futurelastic"] .fl-cta-inner { position: relative; max-width: 680px; margin-inline: auto; }
 [data-tenant="futurelastic"] .fl-footer-tagline { max-width: 260px; }
 [data-tenant="futurelastic"] .fl-logocloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 2.5rem; }
@@ -121,7 +122,7 @@ function Navbar() {
         <span className="fl-brand">
           futur<span className="fl-gold">elastic</span>
         </span>
-        <Flex direction="row" gap="xs" align="center" className="ms-4">
+        <Flex direction="row" gap="xs" align="center">
           {links.map((l, i) => (
             <Button key={l} variant="ghost" size="sm" aria-current={i === 0 ? "page" : undefined}>
               {l}
@@ -154,7 +155,7 @@ function Hero() {
           Futurelastic là pháp nhân holding của nhóm công ty công nghệ &amp; AI vận hành xuyên Nhật
           Bản và Việt Nam, từ logistics, fintech đến F&amp;B và thương mại.
         </p>
-        <Flex direction="row" gap="md" className="mt-7">
+        <Flex direction="row" gap="md" className="fl-hero-actions">
           <Button size="lg">Khám phá hệ sinh thái</Button>
           <Button variant="outline" size="lg">
             Liên hệ hợp tác
@@ -176,8 +177,8 @@ function LogoCloud() {
   ];
   return (
     <section className="fl-section-tint">
-      <div className={SHELL}>
-        <Text as="p" size="xs" tone="muted" className="mb-6 text-center tracking-widest uppercase">
+      <Flex direction="col" gap="lg" className={SHELL}>
+        <Text as="p" size="xs" tone="muted" className="text-center tracking-widest uppercase">
           Các pháp nhân vận hành dưới Futurelastic
         </Text>
         <div className="fl-logocloud">
@@ -187,7 +188,7 @@ function LogoCloud() {
             </span>
           ))}
         </div>
-      </div>
+      </Flex>
     </section>
   );
 }
@@ -235,8 +236,8 @@ function Bento() {
   ];
   return (
     <section className="fl-section" id="ventures">
-      <div className={SHELL}>
-        <div className="fl-head mb-12">
+      <Flex direction="col" gap="xl" className={SHELL}>
+        <div className="fl-head">
           <div className="fl-eyebrow">Hệ sinh thái</div>
           <h2 className="fl-h2">Một mái nhà, nhiều mũi nhọn</h2>
           <p className="fl-lead mx-auto">
@@ -260,7 +261,7 @@ function Bento() {
             </Card>
           ))}
         </div>
-      </div>
+      </Flex>
     </section>
   );
 }

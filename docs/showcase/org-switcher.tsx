@@ -44,6 +44,7 @@ import {
   AppShell,
   Flex,
   PageContainer,
+  Separator,
   Sidebar,
   type SidebarSectionProp,
   Topbar,
@@ -116,25 +117,25 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
           type="button"
           variant="ghost"
           aria-label={`Tổ chức hiện tại: ${current.name}. Nhấn để đổi tổ chức`}
-          className="w-full justify-between gap-2 px-2"
+          className="w-full justify-between"
         >
           <Flex align="center" gap="sm" className="min-w-0">
             <Avatar className="size-7 rounded-md">
               <AvatarFallback>{monogram(current.name)}</AvatarFallback>
             </Avatar>
-            <span className="flex min-w-0 flex-col text-start">
+            <Flex direction="col" gap="xs" className="min-w-0 text-start">
               <Text as="span" size="sm" weight="medium" truncate>
                 {current.name}
               </Text>
               <Text as="span" size="xs" tone="muted" truncate>
                 {current.role}
               </Text>
-            </span>
+            </Flex>
           </Flex>
           <ChevronsUpDown aria-hidden className="size-4 shrink-0 opacity-60" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" sideOffset={6} className="w-64 p-0">
+      <PopoverContent align="start" sideOffset={6} className="w-64">
         <Command label="Chọn tổ chức">
           <CommandInput
             placeholder="Tìm tổ chức…"
@@ -158,14 +159,14 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
                       <Avatar className="size-6 rounded">
                         <AvatarFallback>{monogram(org.name)}</AvatarFallback>
                       </Avatar>
-                      <span className="flex min-w-0 flex-col text-start">
+                      <Flex direction="col" gap="xs" className="min-w-0 text-start">
                         <Text as="span" size="sm" truncate>
                           {org.name}
                         </Text>
                         <Text as="span" size="xs" tone="muted" truncate>
                           {org.role}
                         </Text>
-                      </span>
+                      </Flex>
                       {active ? (
                         <Check aria-hidden className="text-primary ms-auto size-4 shrink-0" />
                       ) : null}
@@ -176,7 +177,8 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
               })}
             </CommandGroup>
           </CommandList>
-          <div className="border-t p-1">
+          <Separator />
+          <Flex direction="col" gap="xs">
             <Button
               type="button"
               variant="ghost"
@@ -203,7 +205,7 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
               <TicketPlus aria-hidden className="size-4" />
               Tham gia bằng mã mời
             </Button>
-          </div>
+          </Flex>
         </Command>
       </PopoverContent>
     </Popover>

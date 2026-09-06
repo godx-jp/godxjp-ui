@@ -398,7 +398,7 @@ export default function Demo() {
 
               {/* Detail pane */}
               <ResizablePanel defaultSize="58%" minSize="34%">
-                <div className="h-full overflow-auto p-5">
+                <CardContent solo className="h-full overflow-auto">
                   {selected ? (
                     <EmployeeDetail employee={selected} />
                   ) : (
@@ -410,7 +410,7 @@ export default function Demo() {
                       />
                     </Flex>
                   )}
-                </div>
+                </CardContent>
               </ResizablePanel>
             </ResizablePanelGroup>
           </CardContent>
@@ -442,13 +442,11 @@ export default function Demo() {
                 />
               }
             >
-              <div className="rounded-md border border-dashed p-8">
-                <EmptyState
-                  icon={UserRound}
-                  title="従業員を選択してください"
-                  description="一覧から行を選ぶと詳細が表示されます。"
-                />
-              </div>
+              <EmptyState
+                icon={UserRound}
+                title="従業員を選択してください"
+                description="一覧から行を選ぶと詳細が表示されます。"
+              />
             </MasterDetail>
           </CardContent>
         </Card>
@@ -472,10 +470,10 @@ export default function Demo() {
               selected={new Set(["E-1042"])}
               onRowClick={() => {}}
             />
-            <Separator />
-            <div className="p-5">
-              <EmployeeDetail employee={EMPLOYEES[0]} />
-            </div>
+          </CardContent>
+          <Separator />
+          <CardContent solo>
+            <EmployeeDetail employee={EMPLOYEES[0]} />
           </CardContent>
         </Card>
       </Flex>

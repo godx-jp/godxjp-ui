@@ -477,7 +477,7 @@ export default function SettingsAccountSectionsShowcase() {
             </Descriptions>
           </CardContent>
           <CardFooter separated>
-            <Flex direction="col" gap="xs" className="sm:flex-row sm:items-center sm:gap-4">
+            <Flex direction="col" gap="md" className="sm:flex-row sm:items-center">
               <Button variant="outline" asChild>
                 <a href="https://billing.example.com/portal" target="_blank" rel="noreferrer">
                   <ExternalLink aria-hidden="true" />

@@ -43,6 +43,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  ListRow,
   Progress,
   StatCard,
   Table,
@@ -241,27 +242,25 @@ export default function WarehouseDashboardShowcase() {
                 <ul className="divide-border divide-y">
                   {QUEUE.map((q) => {
                     return (
-                      <li key={q.title} className="px-4 py-3">
-                        <Flex align="center" gap="md">
+                      <ListRow
+                        as="li"
+                        key={q.title}
+                        leading={
                           <Badge
                             tone={q.tone}
                             variant="outline"
                             icon={q.icon}
                             aria-label={q.title}
                           />
-                          <div className="min-w-0 flex-1">
-                            <Text as="div" size="sm" weight="medium" truncate>
-                              {q.title}
-                            </Text>
-                            <Text as="div" size="2xs" tone="muted" truncate>
-                              {q.meta}
-                            </Text>
-                          </div>
+                        }
+                        title={q.title}
+                        description={q.meta}
+                        trailing={
                           <Button variant="outline" size="sm">
                             {q.action}
                           </Button>
-                        </Flex>
-                      </li>
+                        }
+                      />
                     );
                   })}
                 </ul>

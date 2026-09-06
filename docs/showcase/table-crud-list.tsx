@@ -497,7 +497,7 @@ export default function Demo() {
           </CardContent>
 
           {/* Footer totals — composed from CardFooter + Badge, not a hand-rolled bar. */}
-          <CardFooter className="flex-wrap justify-between gap-3">
+          <CardFooter className="flex-wrap justify-between">
             <Flex direction="row" gap="md" align="center" wrap>
               <Text size="xs" tone="muted">
                 選択中{" "}

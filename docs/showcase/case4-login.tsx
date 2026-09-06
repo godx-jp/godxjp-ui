@@ -47,8 +47,9 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  Descriptions,
 } from "@godxjp/ui/data-display";
-import { Flex, ResponsiveGrid, Separator } from "@godxjp/ui/layout";
+import { CenteredShell, Flex, ResponsiveGrid, Separator, Topbar } from "@godxjp/ui/layout";
 
 // ── The single allowed multi-color brand mark (Google "G") ─────────────────────
 // Icons normally inherit currentColor; a third-party brand mark is the documented
@@ -114,200 +115,189 @@ export default function LoginShowcase() {
   const [theme, setTheme] = React.useState("light");
 
   return (
-    <div className="ui-density-comfortable bg-muted/40 text-foreground min-h-screen">
-      {/* Locale + theme toggle, pinned top-right. Stacks under brand on narrow. */}
-      <Flex align="center" justify="between" gap="md" className="px-4 py-3 sm:px-6">
-        <div className="lg:hidden">
-          <BrandLockup />
-        </div>
-        <Flex align="center" gap="sm" className="ms-auto">
-          <Select value={locale} onValueChange={setLocale}>
-            <SelectTrigger size="sm" className="w-32" aria-label="言語を選択">
-              <Languages aria-hidden="true" className="text-muted-foreground" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent align="end">
-              {LOCALES.map((l) => (
-                <SelectItem key={l.code} value={l.code}>
-                  {l.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <ToggleGroup
-            type="single"
-            value={theme}
-            onValueChange={(v) => v && setTheme(v)}
-            variant="outline"
-            size="sm"
-            aria-label="テーマを切り替え"
-          >
-            <ToggleGroupItem value="light" aria-label="ライト">
-              <Sun aria-hidden="true" />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="dark" aria-label="ダーク">
-              <Moon aria-hidden="true" />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="system" aria-label="システム">
-              <Monitor aria-hidden="true" />
-            </ToggleGroupItem>
-          </ToggleGroup>
-        </Flex>
-      </Flex>
-
+    <CenteredShell
+      width="lg"
+      align="center"
+      className="ui-density-comfortable text-foreground"
+      /* Locale + theme toggle, pinned top-right. Stacks under brand on narrow. */
+      topbar={
+        <Topbar
+          start={
+            <div className="lg:hidden">
+              <BrandLockup />
+            </div>
+          }
+          end={
+            <Flex align="center" gap="sm">
+              <Select value={locale} onValueChange={setLocale}>
+                <SelectTrigger size="sm" className="w-32" aria-label="言語を選択">
+                  <Languages aria-hidden="true" className="text-muted-foreground" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent align="end">
+                  {LOCALES.map((l) => (
+                    <SelectItem key={l.code} value={l.code}>
+                      {l.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <ToggleGroup
+                type="single"
+                value={theme}
+                onValueChange={(v) => v && setTheme(v)}
+                variant="outline"
+                size="sm"
+                aria-label="テーマを切り替え"
+              >
+                <ToggleGroupItem value="light" aria-label="ライト">
+                  <Sun aria-hidden="true" />
+                </ToggleGroupItem>
+                <ToggleGroupItem value="dark" aria-label="ダーク">
+                  <Moon aria-hidden="true" />
+                </ToggleGroupItem>
+                <ToggleGroupItem value="system" aria-label="システム">
+                  <Monitor aria-hidden="true" />
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </Flex>
+          }
+        />
+      }
+    >
       {/* Centered auth area. Split brand panel + card sit side-by-side from lg. */}
-      <Flex
-        align="center"
-        gap="xs"
-        className="mx-auto min-h-[calc(100vh-64px)] w-full max-w-5xl px-4 py-8 sm:px-6"
-      >
-        <ResponsiveGrid
-          columns={{ sm: 1, lg: 2, md: 1 }}
-          gap="xl"
-          className="mx-auto w-full items-stretch"
-        >
-          {/* Split brand panel — hidden on mobile (mobile-first), shown from lg. */}
-          <aside className="hidden lg:flex">
-            <Card className="bg-primary/5 w-full">
-              <CardContent solo className="h-full">
-                <Flex direction="col" justify="between" gap="xl">
-                  <BrandLockup size="lg" />
-                  <Flex direction="col" gap="md">
-                    <Heading level={2} className="leading-snug">
-                      打刻から承認まで、ひとつの勤怠基盤で。
-                    </Heading>
-                    <Text as="p" tone="muted" className="leading-relaxed">
-                      出勤・休憩・残業の打刻、シフト調整、欠勤・遅刻の承認を一元化します。
-                      多拠点・多テナントに対応し、現場と管理をつなぎます。
-                    </Text>
-                  </Flex>
-                  <dl className="border-border border-t pt-6">
-                    <ResponsiveGrid columns={3} gap="md">
-                      <div>
-                        <Text as="dt" size="2xs" tone="muted">
-                          導入企業
-                        </Text>
-                        <Text as="dd" size="lg" weight="bold" tabular>
-                          1,240
-                        </Text>
-                      </div>
-                      <div>
-                        <Text as="dt" size="2xs" tone="muted">
-                          稼働拠点
-                        </Text>
-                        <Text as="dd" size="lg" weight="bold" tabular>
-                          8,600
-                        </Text>
-                      </div>
-                      <div>
-                        <Text as="dt" size="2xs" tone="muted">
-                          月間打刻
-                        </Text>
-                        <Text as="dd" size="lg" weight="bold" tabular>
-                          21M
-                        </Text>
-                      </div>
-                    </ResponsiveGrid>
-                  </dl>
-                </Flex>
-              </CardContent>
-            </Card>
-          </aside>
-
-          {/* Auth card — the one surface allowed a resting shadow (shadow-lg). */}
-          <Card className="mx-auto w-full max-w-sm self-center shadow-lg lg:mx-0">
-            <CardHeader className="text-center lg:text-start">
-              <Flex justify="center" className="lg:hidden">
-                <BrandLockup />
-              </Flex>
-              <CardTitle className="text-lg font-semibold">ログイン</CardTitle>
-              <CardDescription className="text-muted-foreground text-xs">
-                勤怠管理プラットフォームへようこそ
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent solo>
-              <Flex direction="col" gap="lg">
-                {/* SSO buttons — outline, full-width, 44px (comfortable). */}
-                <Flex direction="col" gap="sm">
-                  <Button variant="outline" className="w-full justify-center">
-                    <GoogleMark />
-                    Google で続ける
-                  </Button>
-                  <Button variant="outline" className="w-full justify-center">
-                    シングルサインオン (SSO)
-                  </Button>
-                </Flex>
-
-                {/* Divider "または" — Separator pair + centered label. */}
-                <Flex align="center" gap="md">
-                  <Separator className="flex-1" />
-                  <Text size="xs" tone="muted">
-                    または
+      <ResponsiveGrid columns={{ sm: 1, lg: 2, md: 1 }} gap="xl" className="w-full items-stretch">
+        {/* Split brand panel — hidden on mobile (mobile-first), shown from lg. */}
+        <aside className="hidden lg:block">
+          <Card className="bg-primary/5 h-full w-full">
+            <CardContent solo className="h-full">
+              <Flex direction="col" justify="between" gap="xl">
+                <BrandLockup size="lg" />
+                <Flex direction="col" gap="md">
+                  <Heading level={2} className="leading-snug">
+                    打刻から承認まで、ひとつの勤怠基盤で。
+                  </Heading>
+                  <Text as="p" tone="muted" className="leading-relaxed">
+                    出勤・休憩・残業の打刻、シフト調整、欠勤・遅刻の承認を一元化します。
+                    多拠点・多テナントに対応し、現場と管理をつなぎます。
                   </Text>
-                  <Separator className="flex-1" />
                 </Flex>
-
-                {/* Email — uncontrolled, seeded so the filled state shows at rest. */}
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                  }}
-                >
-                  <Flex direction="col" gap="md">
-                    <FormField id="login-email" label="メールアドレス" required>
-                      <Input
-                        type="email"
-                        name="email"
-                        autoComplete="email"
-                        inputMode="email"
-                        placeholder="name@example.com"
-                        defaultValue="m.tanaka@famgia.com"
-                      />
-                    </FormField>
-
-                    {/* Password — labelAddon hosts the right-aligned "忘れた場合" link. */}
-                    <FormField
-                      id="login-password"
-                      label="パスワード"
-                      required
-                      labelAddon={
-                        <Button type="button" variant="link" size="sm" className="ms-auto text-xs">
-                          お忘れの場合
-                        </Button>
-                      }
-                    >
-                      <PasswordInput
-                        name="password"
-                        autoComplete="current-password"
-                        placeholder="パスワードを入力"
-                        defaultValue="example-pass"
-                      />
-                    </FormField>
-
-                    {/* The single --primary action of the view. */}
-                    <Button type="submit" className="w-full justify-center">
-                      ログイン
-                    </Button>
-                  </Flex>
-                </form>
-
-                <Text as="p" size="2xs" tone="muted" align="center" className="leading-relaxed">
-                  ログインすると{" "}
-                  <Button variant="link" size="sm" className="text-[var(--font-size-2xs)]">
-                    利用規約
-                  </Button>{" "}
-                  ·{" "}
-                  <Button variant="link" size="sm" className="text-[var(--font-size-2xs)]">
-                    プライバシーポリシー
-                  </Button>{" "}
-                  に同意したものとみなされます。
-                </Text>
+                <Separator />
+                <Descriptions columns={3}>
+                  <Descriptions.Item label="導入企業">
+                    <Text size="lg" weight="bold" tabular>
+                      1,240
+                    </Text>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="稼働拠点">
+                    <Text size="lg" weight="bold" tabular>
+                      8,600
+                    </Text>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="月間打刻">
+                    <Text size="lg" weight="bold" tabular>
+                      21M
+                    </Text>
+                  </Descriptions.Item>
+                </Descriptions>
               </Flex>
             </CardContent>
           </Card>
-        </ResponsiveGrid>
-      </Flex>
-    </div>
+        </aside>
+
+        {/* Auth card — the one surface allowed a resting shadow (shadow-lg). */}
+        <Card className="mx-auto w-full max-w-sm self-center shadow-lg">
+          <CardHeader className="text-center lg:text-start">
+            <Flex justify="center" className="lg:hidden">
+              <BrandLockup />
+            </Flex>
+            <CardTitle className="text-lg font-semibold">ログイン</CardTitle>
+            <CardDescription className="text-muted-foreground text-xs">
+              勤怠管理プラットフォームへようこそ
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent solo>
+            <Flex direction="col" gap="lg">
+              {/* SSO buttons — outline, full-width, 44px (comfortable). */}
+              <Flex direction="col" gap="sm">
+                <Button variant="outline" className="w-full justify-center">
+                  <GoogleMark />
+                  Google で続ける
+                </Button>
+                <Button variant="outline" className="w-full justify-center">
+                  シングルサインオン (SSO)
+                </Button>
+              </Flex>
+
+              {/* Divider "または" — Separator pair + centered label. */}
+              <Flex align="center" gap="md">
+                <Separator className="flex-1" />
+                <Text size="xs" tone="muted">
+                  または
+                </Text>
+                <Separator className="flex-1" />
+              </Flex>
+
+              {/* Email — uncontrolled, seeded so the filled state shows at rest. */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <Flex direction="col" gap="md">
+                  <FormField id="login-email" label="メールアドレス" required>
+                    <Input
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      inputMode="email"
+                      placeholder="name@example.com"
+                      defaultValue="m.tanaka@famgia.com"
+                    />
+                  </FormField>
+
+                  {/* Password — labelAddon hosts the right-aligned "忘れた場合" link. */}
+                  <FormField
+                    id="login-password"
+                    label="パスワード"
+                    required
+                    labelAddon={
+                      <Button type="button" variant="link" size="sm" className="ms-auto text-xs">
+                        お忘れの場合
+                      </Button>
+                    }
+                  >
+                    <PasswordInput
+                      name="password"
+                      autoComplete="current-password"
+                      placeholder="パスワードを入力"
+                      defaultValue="example-pass"
+                    />
+                  </FormField>
+
+                  {/* The single --primary action of the view. */}
+                  <Button type="submit" className="w-full justify-center">
+                    ログイン
+                  </Button>
+                </Flex>
+              </form>
+
+              <Text as="p" size="2xs" tone="muted" align="center" className="leading-relaxed">
+                ログインすると{" "}
+                <Button variant="link" size="sm" className="text-[var(--font-size-2xs)]">
+                  利用規約
+                </Button>{" "}
+                ·{" "}
+                <Button variant="link" size="sm" className="text-[var(--font-size-2xs)]">
+                  プライバシーポリシー
+                </Button>{" "}
+                に同意したものとみなされます。
+              </Text>
+            </Flex>
+          </CardContent>
+        </Card>
+      </ResponsiveGrid>
+    </CenteredShell>
   );
 }

@@ -289,25 +289,29 @@ export default function Demo() {
         </CardContent>
       </Card>
 
-      <Flex direction="row" align="center" gap="xs" className="mt-3">
-        <Text size="xs" tone="muted">
-          残業 凡例:
-        </Text>
-        <Badge tone="success" variant="outline">
-          ~15h
-        </Badge>
-        <Badge tone="info" variant="outline">
-          15h~
-        </Badge>
-        <Badge tone="warning" variant="outline">
-          25h~
-        </Badge>
-        <Text size="xs" tone="muted" className="ms-2">
-          遅刻:
-        </Text>
-        <Badge tone="destructive" variant="outline">
-          回数
-        </Badge>
+      <Flex direction="row" align="center" wrap gap="md">
+        <Flex direction="row" align="center" gap="xs">
+          <Text size="xs" tone="muted">
+            残業 凡例:
+          </Text>
+          <Badge tone="success" variant="outline">
+            ~15h
+          </Badge>
+          <Badge tone="info" variant="outline">
+            15h~
+          </Badge>
+          <Badge tone="warning" variant="outline">
+            25h~
+          </Badge>
+        </Flex>
+        <Flex direction="row" align="center" gap="xs">
+          <Text size="xs" tone="muted">
+            遅刻:
+          </Text>
+          <Badge tone="destructive" variant="outline">
+            回数
+          </Badge>
+        </Flex>
       </Flex>
     </PageContainer>
   );

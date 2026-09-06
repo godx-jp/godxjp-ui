@@ -202,61 +202,58 @@ function BulkActionBar({
 }) {
   const effective = spanAll ? total : count;
   return (
-    <Flex
-      role="region"
-      aria-label="一括操作"
-      wrap
-      align="center"
-      gap="md"
-      className="bg-primary/5 border-primary/30 rounded-md border px-3 py-2"
-    >
-      {/* left: count + cross-page select-all escalation + safe batch actions */}
-      <Flex direction="row" align="center" gap="sm" className="min-w-0 flex-1">
-        <Text tone="primary" weight="medium" tabular className="whitespace-nowrap">
-          {effective}件を選択中
-        </Text>
-
-        {/* cross-page select-all: only offered once the whole page is selected */}
-        {pageAllSelected &&
-          (spanAll ? (
-            <Text size="xs" tone="muted">
-              フィルタ条件の全{" "}
-              <Text as="span" tabular>
-                {total}
-              </Text>{" "}
-              件を選択しました
+    <Card className="bg-primary/5 border-primary/30">
+      <CardContent solo>
+        <Flex role="region" aria-label="一括操作" wrap align="center" gap="md">
+          {/* left: count + cross-page select-all escalation + safe batch actions */}
+          <Flex direction="row" align="center" gap="sm" className="min-w-0 flex-1">
+            <Text tone="primary" weight="medium" tabular className="whitespace-nowrap">
+              {effective}件を選択中
             </Text>
-          ) : (
-            <Button variant="link" size="sm" onClick={onSelectSpanAll}>
-              全 <span className="tabular-nums">{total}</span> 件を選択
+
+            {/* cross-page select-all: only offered once the whole page is selected */}
+            {pageAllSelected &&
+              (spanAll ? (
+                <Text size="xs" tone="muted">
+                  フィルタ条件の全{" "}
+                  <Text as="span" tabular>
+                    {total}
+                  </Text>{" "}
+                  件を選択しました
+                </Text>
+              ) : (
+                <Button variant="link" size="sm" onClick={onSelectSpanAll}>
+                  全 <span className="tabular-nums">{total}</span> 件を選択
+                </Button>
+              ))}
+
+            <span className="bg-border h-4 w-px" aria-hidden="true" />
+
+            <Button variant="outline" size="sm" onClick={onApprove}>
+              <CheckCheck aria-hidden="true" />
+              一括承認
             </Button>
-          ))}
+            <Button variant="outline" size="sm" onClick={onExport}>
+              <Download aria-hidden="true" />
+              CSV出力
+            </Button>
+          </Flex>
 
-        <span className="bg-border h-4 w-px" aria-hidden="true" />
-
-        <Button variant="outline" size="sm" onClick={onApprove}>
-          <CheckCheck aria-hidden="true" />
-          一括承認
-        </Button>
-        <Button variant="outline" size="sm" onClick={onExport}>
-          <Download aria-hidden="true" />
-          CSV出力
-        </Button>
-      </Flex>
-
-      {/* right: ISOLATED destructive action, kept apart from the safe ones */}
-      <Flex direction="row" align="center" gap="sm">
-        <Button variant="destructive" size="sm" onClick={onDelete}>
-          <Trash2 aria-hidden="true" />
-          一括削除
-        </Button>
-        <span className="bg-border h-4 w-px" aria-hidden="true" />
-        <Button variant="ghost" size="sm" onClick={onClear} aria-label="選択を解除">
-          <X aria-hidden="true" />
-          解除
-        </Button>
-      </Flex>
-    </Flex>
+          {/* right: ISOLATED destructive action, kept apart from the safe ones */}
+          <Flex direction="row" align="center" gap="sm">
+            <Button variant="destructive" size="sm" onClick={onDelete}>
+              <Trash2 aria-hidden="true" />
+              一括削除
+            </Button>
+            <span className="bg-border h-4 w-px" aria-hidden="true" />
+            <Button variant="ghost" size="sm" onClick={onClear} aria-label="選択を解除">
+              <X aria-hidden="true" />
+              解除
+            </Button>
+          </Flex>
+        </Flex>
+      </CardContent>
+    </Card>
   );
 }
 

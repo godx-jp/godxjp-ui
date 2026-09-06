@@ -130,7 +130,7 @@ export default function SecurityMfaShowcase() {
               </Text>
             </Flex>
           </CardContent>
-          <CardFooter separated className="justify-end gap-2">
+          <CardFooter separated className="justify-end">
             <Button variant="ghost" size="sm">
               Tải xuống
             </Button>

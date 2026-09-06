@@ -52,9 +52,16 @@ import {
   CardHeader,
   CardTitle,
   EmptyState,
+  ListRow,
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
   Timeline,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
@@ -107,17 +114,14 @@ function ShiftPill({
 }) {
   const meta = SHIFT_META[kind];
   return (
-    <span
+    <Badge
       data-shift={kind}
-      className={`flex items-center gap-1 truncate rounded-sm border-s-2 px-1.5 py-0.5 leading-tight ${className ?? ""}`}
-      style={{
-        borderLeftColor: `var(${meta.cssVar})`,
-        background: `color-mix(in oklch, var(${meta.cssVar}) 12%, transparent)`,
-        color: meta.muted ? "var(--muted-foreground)" : "var(--foreground)",
-      }}
+      color={`var(${meta.cssVar})`}
+      shape="sharp"
+      className={`truncate leading-tight ${className ?? ""}`}
       title={`${meta.label} ${meta.time}${staff ? ` · ${staff}` : ""}`}
     >
-      <Text as="span" size="2xs" weight="medium" style={{ color: "inherit" }}>
+      <Text as="span" size="2xs" weight="medium">
         {meta.label}
       </Text>
       {staff ? (
@@ -125,7 +129,7 @@ function ShiftPill({
           {staff}
         </Text>
       ) : null}
-    </span>
+    </Badge>
   );
 }
 
@@ -218,6 +222,10 @@ function buildMonth(): DayCell[] {
 
 const MONTH_CELLS = buildMonth();
 const WEEKDAY_HEAD = ["日", "月", "火", "水", "木", "金", "土"];
+/** 42 day cells as six calendar rows — the month grid is a real <table>, one <tr> per week. */
+const MONTH_WEEKS = Array.from({ length: MONTH_CELLS.length / 7 }, (_, w) =>
+  MONTH_CELLS.slice(w * 7, w * 7 + 7),
+);
 
 // ── Week view (2026-05-11 〜 05-17), time axis 06:00–22:00 ─────────────────────
 const WEEK_DATES = [
@@ -406,22 +414,14 @@ export default function ShiftCalendarShowcase() {
             <CardContent>
               <Flex direction="row" gap="sm" wrap>
                 {(Object.keys(SHIFT_META) as ShiftKind[]).map((k) => (
-                  <span
-                    key={k}
-                    className="inline-flex items-center gap-2 rounded-sm border px-2 py-1 text-xs"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="size-3 shrink-0 rounded-sm"
-                      style={{ background: `var(${SHIFT_META[k].cssVar})` }}
-                    />
+                  <Badge key={k} color={`var(${SHIFT_META[k].cssVar})`} shape="sharp">
                     <Text size="xs" weight="medium" className="whitespace-nowrap">
                       {SHIFT_META[k].label}
                     </Text>
                     <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
                       {SHIFT_META[k].time}
                     </Text>
-                  </span>
+                  </Badge>
                 ))}
               </Flex>
             </CardContent>
@@ -454,18 +454,16 @@ export default function ShiftCalendarShowcase() {
             {detailDate && detailDate.shifts.length > 0 ? (
               <Flex direction="col" gap="sm">
                 {detailDate.shifts.map((s, i) => (
-                  <Flex
+                  <ListRow
                     key={`${s.kind}-${i}`}
-                    align="center"
-                    justify="between"
-                    gap="sm"
-                    className="rounded-lg border px-3 py-2"
-                  >
-                    <ShiftPill kind={s.kind} staff={s.staff} />
-                    <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
-                      {SHIFT_META[s.kind].time}
-                    </Text>
-                  </Flex>
+                    density="compact"
+                    title={<ShiftPill kind={s.kind} staff={s.staff} />}
+                    trailing={
+                      <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
+                        {SHIFT_META[s.kind].time}
+                      </Text>
+                    }
+                  />
                 ))}
               </Flex>
             ) : (
@@ -495,18 +493,14 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
         </CardAction>
       </CardHeader>
       <CardContent flush>
-        <div className="overflow-x-auto">
-          <div className="min-w-[720px]">
-            {/* Weekday head — Sun→danger, Sat→info */}
-            <ResponsiveGrid columns={{ sm: 7, md: 7, lg: 7 }} className="bg-secondary border-b">
+        {/* Weekday head — Sun→danger, Sat→info; 42 day cells as six <tr> weeks */}
+        <Table bordered className="min-w-[720px]">
+          <TableHeader className="bg-secondary">
+            <TableRow>
               {WEEKDAY_HEAD.map((w, i) => (
-                <Text
-                  as="div"
+                <TableHead
                   key={w}
-                  size="2xs"
-                  weight="medium"
-                  align="center"
-                  className="px-2 py-1.5"
+                  className="text-center"
                   style={{
                     color:
                       i === 0
@@ -517,78 +511,90 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                   }}
                 >
                   {w}
-                </Text>
+                </TableHead>
               ))}
-            </ResponsiveGrid>
-            {/* 42 cells */}
-            <ResponsiveGrid columns={{ sm: 7, md: 7, lg: 7 }}>
-              {MONTH_CELLS.map((cell, idx) => {
-                const isSun = cell.weekday === 0;
-                const isSat = cell.weekday === 6;
-                const shown = cell.shifts.slice(0, 3);
-                const overflow = cell.shifts.length - shown.length;
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => onPick(cell)}
-                    className="hover:bg-accent focus-visible:ring-ring flex min-h-[96px] flex-col gap-1 border-e border-b p-1.5 text-start transition-colors focus:outline-none focus-visible:ring-2 [&:nth-child(7n)]:border-e-0"
-                    style={{
-                      background: cell.today
-                        ? "color-mix(in oklch, var(--primary) 5%, transparent)"
-                        : cell.dim
-                          ? "color-mix(in oklch, var(--secondary) 40%, transparent)"
-                          : undefined,
-                      outline: cell.today ? "2px solid var(--primary)" : undefined,
-                      outlineOffset: cell.today ? "-2px" : undefined,
-                      opacity: cell.dim ? 0.5 : 1,
-                    }}
-                  >
-                    <Flex align="center" justify="between">
-                      <Text
-                        as="span"
-                        size="sm"
-                        weight="medium"
-                        tabular
-                        style={{
-                          color: cell.holiday
-                            ? "var(--destructive)"
-                            : isSun
-                              ? "var(--destructive)"
-                              : isSat
-                                ? "var(--info)"
-                                : "var(--foreground)",
-                        }}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {MONTH_WEEKS.map((week, r) => (
+              <TableRow key={r}>
+                {week.map((cell, c) => {
+                  const isSun = cell.weekday === 0;
+                  const isSat = cell.weekday === 6;
+                  const shown = cell.shifts.slice(0, 3);
+                  const overflow = cell.shifts.length - shown.length;
+                  return (
+                    <TableCell
+                      key={c}
+                      className="align-top"
+                      style={{
+                        background: cell.today
+                          ? "color-mix(in oklch, var(--primary) 5%, transparent)"
+                          : cell.dim
+                            ? "color-mix(in oklch, var(--secondary) 40%, transparent)"
+                            : undefined,
+                        outline: cell.today ? "2px solid var(--primary)" : undefined,
+                        outlineOffset: cell.today ? "-2px" : undefined,
+                        opacity: cell.dim ? 0.5 : 1,
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => onPick(cell)}
+                        className="hover:bg-accent focus-visible:ring-ring min-h-[96px] w-full text-start transition-colors focus:outline-none focus-visible:ring-2"
                       >
-                        {cell.date}
-                      </Text>
-                      {cell.holiday ? (
-                        <Badge
-                          tone="destructive"
-                          variant="outline"
-                          className="px-1 py-0 text-[var(--font-size-2xs)]"
-                        >
-                          祝
-                        </Badge>
-                      ) : null}
-                    </Flex>
-                    <Flex direction="col" gap="xs">
-                      {cell.holiday ? <ShiftPill kind="holiday" staff={cell.holiday} /> : null}
-                      {shown.map((s, i) => (
-                        <ShiftPill key={`${s.kind}-${i}`} kind={s.kind} staff={s.staff} />
-                      ))}
-                      {overflow > 0 ? (
-                        <Text as="span" size="2xs" tone="muted" tabular>
-                          ＋{overflow} 件
-                        </Text>
-                      ) : null}
-                    </Flex>
-                  </button>
-                );
-              })}
-            </ResponsiveGrid>
-          </div>
-        </div>
+                        <Flex direction="col" gap="xs">
+                          <Flex align="center" justify="between">
+                            <Text
+                              as="span"
+                              size="sm"
+                              weight="medium"
+                              tabular
+                              style={{
+                                color: cell.holiday
+                                  ? "var(--destructive)"
+                                  : isSun
+                                    ? "var(--destructive)"
+                                    : isSat
+                                      ? "var(--info)"
+                                      : "var(--foreground)",
+                              }}
+                            >
+                              {cell.date}
+                            </Text>
+                            {cell.holiday ? (
+                              <Badge
+                                tone="destructive"
+                                variant="outline"
+                                shape="sharp"
+                                className="text-[var(--font-size-2xs)]"
+                              >
+                                祝
+                              </Badge>
+                            ) : null}
+                          </Flex>
+                          <Flex direction="col" gap="xs">
+                            {cell.holiday ? (
+                              <ShiftPill kind="holiday" staff={cell.holiday} />
+                            ) : null}
+                            {shown.map((sh, i) => (
+                              <ShiftPill key={`${sh.kind}-${i}`} kind={sh.kind} staff={sh.staff} />
+                            ))}
+                            {overflow > 0 ? (
+                              <Text as="span" size="2xs" tone="muted" tabular>
+                                ＋{overflow} 件
+                              </Text>
+                            ) : null}
+                          </Flex>
+                        </Flex>
+                      </button>
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );
@@ -623,7 +629,7 @@ function WeekTimeline() {
                   weight="medium"
                   tabular
                   align="center"
-                  className="px-2 py-1.5"
+                  className="ui-card-inset-y"
                   style={{
                     color:
                       d.weekday === 0
@@ -685,36 +691,31 @@ function WeekTimeline() {
                     const meta = SHIFT_META[b.kind];
                     const spills = b.endHour > AXIS_END;
                     return (
-                      <div
+                      <Badge
                         key={`${b.kind}-${i}`}
-                        className="absolute inset-x-0.5 overflow-hidden rounded-sm border-s-2 px-1 py-0.5 leading-tight"
+                        color={`var(${meta.cssVar})`}
+                        shape="sharp"
+                        className="absolute inset-x-0.5 items-start overflow-hidden leading-tight"
                         style={{
                           top: `${top}%`,
                           height: `${Math.max(bottom - top, 4)}%`,
-                          borderLeftColor: `var(${meta.cssVar})`,
-                          background: `color-mix(in oklch, var(${meta.cssVar}) 14%, transparent)`,
-                          color: meta.muted ? "var(--muted-foreground)" : "var(--foreground)",
                         }}
                         title={`${meta.label} ${meta.time} · ${b.staff}`}
                       >
-                        <Text
-                          as="div"
-                          size="2xs"
-                          weight="medium"
-                          truncate
-                          style={{ color: "inherit" }}
-                        >
-                          {meta.label}
-                        </Text>
-                        <Text as="div" size="2xs" tone="muted" truncate>
-                          {b.staff}
-                        </Text>
-                        {spills ? (
-                          <Text as="div" size="2xs" tone="muted" tabular>
-                            翌日へ ↓
+                        <Flex direction="col" gap="xs" className="min-w-0">
+                          <Text as="div" size="2xs" weight="medium" truncate>
+                            {meta.label}
                           </Text>
-                        ) : null}
-                      </div>
+                          <Text as="div" size="2xs" tone="muted" truncate>
+                            {b.staff}
+                          </Text>
+                          {spills ? (
+                            <Text as="div" size="2xs" tone="muted" tabular>
+                              翌日へ ↓
+                            </Text>
+                          ) : null}
+                        </Flex>
+                      </Badge>
                     );
                   })}
                   {/* now-line — only on "today" (col 3), 14:35 */}

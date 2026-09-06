@@ -247,7 +247,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         {/* ── 行レベル + セルレベルの条件付き書式（実 Table primitive で合成） ── */}
         <Card>
-          <CardHeader className="gap-2">
+          <CardHeader>
             <Flex direction="row" wrap align="center" justify="between" gap="sm">
               <CardTitle level={2}>勤怠サマリ · 製造部（当月締め）</CardTitle>
               <Text size="xs" tone="muted" tabular>

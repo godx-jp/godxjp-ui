@@ -44,6 +44,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  Descriptions,
   StatCard,
   Table,
   TableBody,
@@ -58,6 +59,7 @@ import {
   Flex,
   PageContainer,
   ResponsiveGrid,
+  Separator,
   Sidebar,
   type SidebarSectionProp,
 } from "@godxjp/ui/layout";
@@ -228,7 +230,8 @@ function PunchCard() {
           </Flex>
 
           {/* Demo state stepper — lets a reader walk every FSM state at rest. */}
-          <Flex direction="row" wrap gap="xs" className="border-t pt-3">
+          <Separator />
+          <Flex direction="row" wrap gap="xs">
             <Text size="2xs" tone="muted" className="self-center">
               状態:
             </Text>
@@ -415,25 +418,16 @@ export default function EmployeeMeShowcase() {
                   本日のサマリー · Hôm nay
                 </CardTitle>
               </CardHeader>
-              <CardContent flush>
-                <dl className="divide-border divide-y">
+              <CardContent>
+                <Descriptions columns={1} layout="horizontal" labelAlign="start">
                   {SUMMARY.map((s) => (
-                    <Flex
-                      key={s.label}
-                      align="center"
-                      justify="between"
-                      gap="md"
-                      className="px-4 py-2.5"
-                    >
-                      <Text as="dt" size="sm" tone="muted" className="whitespace-nowrap">
-                        {s.label}
-                      </Text>
-                      <Text as="dd" size="sm" weight="medium" align="end" tabular>
+                    <Descriptions.Item key={s.label} label={s.label}>
+                      <Text size="sm" weight="medium" tabular>
                         {s.value}
                       </Text>
-                    </Flex>
+                    </Descriptions.Item>
                   ))}
-                </dl>
+                </Descriptions>
               </CardContent>
             </Card>
           </ResponsiveGrid>

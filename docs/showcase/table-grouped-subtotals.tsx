@@ -226,18 +226,18 @@ function GroupHeaderRow({
   const Chevron = open ? ChevronDown : ChevronRight;
   return (
     <TableRow className="bg-secondary hover:bg-secondary border-b">
-      <TableCell className="ps-2 pe-0" colSpan={2}>
+      <TableCell colSpan={2}>
         <Button
           variant="ghost"
           size="sm"
           onClick={onToggle}
           aria-expanded={open}
           aria-controls={`grp-${group.id}`}
-          className="h-7 gap-2 font-medium"
+          className="h-7 font-medium"
         >
           <Chevron className="text-muted-foreground size-4" aria-hidden="true" />
           {group.label}
-          <Badge variant="outline" tone="neutral" className="ms-1">
+          <Badge variant="outline" tone="neutral">
             {group.members.length}名
           </Badge>
         </Button>
@@ -266,7 +266,12 @@ function GroupHeaderRow({
 function MemberRow({ m }: { m: Employee }) {
   return (
     <TableRow>
-      <TableCell className="text-muted-foreground ps-10 font-mono text-xs">{m.id}</TableCell>
+      <TableCell
+        className="text-muted-foreground font-mono text-xs"
+        style={{ paddingInlineStart: "calc(var(--table-cell-space-x) * 3)" }}
+      >
+        {m.id}
+      </TableCell>
       <TableCell>{m.name}</TableCell>
       <TableCell className="text-end tabular-nums">{m.days}日</TableCell>
       <TableCell className="text-end tabular-nums">{fmtH(m.work)}</TableCell>

@@ -237,7 +237,7 @@ function SectionHead({
   center?: boolean;
 }) {
   return (
-    <div className={center ? "mx-auto mb-10 text-center" : "mb-8"}>
+    <div className={center ? "mx-auto text-center" : undefined}>
       <div className="tx-eyebrow">{eyebrow}</div>
       <h2 className="tx-h2">{title}</h2>
       {sub ? <p className="tx-lead mx-auto">{sub}</p> : null}
@@ -272,7 +272,7 @@ function Services() {
   ];
   return (
     <section className="bg-card tx-section">
-      <div className={SHELL}>
+      <Flex direction="col" gap="xl" className={SHELL}>
         <SectionHead
           center
           eyebrow="Dịch vụ"
@@ -296,7 +296,7 @@ function Services() {
             </Card>
           ))}
         </ResponsiveGrid>
-      </div>
+      </Flex>
     </section>
   );
 }
@@ -310,7 +310,7 @@ function Steps() {
   ];
   return (
     <section className="bg-background tx-section">
-      <div className={SHELL}>
+      <Flex direction="col" gap="xl" className={SHELL}>
         <SectionHead eyebrow="Quy trình" title="Mua hàng quốc tế trong 4 bước" />
         <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
           {steps.map(([Icon, t, d], i) => (
@@ -332,7 +332,7 @@ function Steps() {
             </Flex>
           ))}
         </ResponsiveGrid>
-      </div>
+      </Flex>
     </section>
   );
 }
@@ -346,7 +346,7 @@ function Routes() {
   ];
   return (
     <section className="bg-card tx-section">
-      <div className={SHELL}>
+      <Flex direction="col" gap="xl" className={SHELL}>
         <SectionHead eyebrow="Tuyến vận chuyển" title="Giá cước rõ ràng theo từng tuyến" />
         <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
           {routes.map(([c, code, mode, price]) => (
@@ -370,7 +370,7 @@ function Routes() {
             </Card>
           ))}
         </ResponsiveGrid>
-      </div>
+      </Flex>
     </section>
   );
 }

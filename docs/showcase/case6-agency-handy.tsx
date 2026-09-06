@@ -52,14 +52,7 @@ import {
   Descriptions,
   EmptyState,
 } from "@godxjp/ui/data-display";
-import {
-  Checkbox,
-  Input,
-  RadioGroupRoot,
-  RadioItem,
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@godxjp/ui/data-entry";
+import { Checkbox, Input, RadioGroup, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
 import {
   AlertDialog,
   Alert,
@@ -324,7 +317,7 @@ function PackingListCard({ packing, onTap }: { packing: Packing; onTap?: () => v
 /** Three uppercase muted section header + right-aligned mono count. */
 function SectionHeader({ children, count }: { children: React.ReactNode; count?: number }) {
   return (
-    <Flex align="center" justify="between" className="px-0.5">
+    <Flex align="center" justify="between">
       <Text size="2xs" weight="medium" tone="muted" className="tracking-wider uppercase">
         {children}
       </Text>
@@ -342,19 +335,20 @@ function SectionHeader({ children, count }: { children: React.ReactNode; count?:
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
     <div className="mx-auto w-96 max-w-full shrink-0">
-      <Flex
-        direction="col"
-        className="bg-background max-h-[calc(100vh-2rem)] min-h-[844px] overflow-hidden rounded-2xl border"
-      >
-        {children}
-      </Flex>
+      <Card className="overflow-hidden">
+        <CardContent flush>
+          <Flex direction="col" className="max-h-[calc(100vh-2rem)] min-h-[844px]">
+            {children}
+          </Flex>
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
 function StatusBar() {
   return (
-    <Flex align="center" justify="between" gap="xs" className="h-9 shrink-0 px-5">
+    <Flex align="center" justify="between" gap="xs" className="ui-card-inset-x h-9 shrink-0">
       <Text size="sm" weight="medium" tabular>
         9:41
       </Text>
@@ -367,26 +361,28 @@ function StatusBar() {
 
 function TabBar({ active, onChange }: { active: string; onChange: (id: string) => void }) {
   return (
-    <nav className="grid shrink-0 grid-cols-3 border-t" aria-label="ワークフロー">
-      {TABS.map((t) => {
-        const isActive = t.id === active;
-        const Icon = t.icon;
-        return (
-          <Button
-            key={t.id}
-            variant="ghost"
-            onClick={() => onChange(t.id)}
-            aria-current={isActive ? "page" : undefined}
-            className={
-              "h-16 flex-col gap-1 rounded-none font-medium text-[var(--font-size-2xs)] " +
-              (isActive ? "text-primary" : "text-muted-foreground")
-            }
-          >
-            <Icon className="size-5" aria-hidden="true" strokeWidth={1.5} />
-            <span className="whitespace-nowrap">{t.label}</span>
-          </Button>
-        );
-      })}
+    <nav className="shrink-0 border-t" aria-label="ワークフロー">
+      <ResponsiveGrid columns={{ sm: 3, md: 3, lg: 3 }} gap="xs">
+        {TABS.map((t) => {
+          const isActive = t.id === active;
+          const Icon = t.icon;
+          return (
+            <Button
+              key={t.id}
+              variant="ghost"
+              onClick={() => onChange(t.id)}
+              aria-current={isActive ? "page" : undefined}
+              className={
+                "h-16 flex-col rounded-none font-medium text-[var(--font-size-2xs)] " +
+                (isActive ? "text-primary" : "text-muted-foreground")
+              }
+            >
+              <Icon className="size-5" aria-hidden="true" strokeWidth={1.5} />
+              <span className="whitespace-nowrap">{t.label}</span>
+            </Button>
+          );
+        })}
+      </ResponsiveGrid>
     </nav>
   );
 }
@@ -410,22 +406,20 @@ function ItemLookupSheet({
         <SheetBody>
           <Flex direction="col" gap="md">
             {/* Viewfinder placeholder — a Card surface, not a hand-rolled illustration */}
-            <Flex
-              align="center"
-              justify="center"
-              className="border-border bg-secondary/40 h-40 rounded-xl border-2 border-dashed"
-            >
-              <Flex direction="col" align="center" gap="sm">
-                <ScanLine
-                  className="size-7 text-[color:var(--attention,var(--warning))]"
-                  aria-hidden="true"
-                  strokeWidth={1.5}
-                />
-                <Text size="sm" tone="muted">
-                  Đưa mã vạch vào khung
-                </Text>
-              </Flex>
-            </Flex>
+            <Card variant="muted" className="border-2 border-dashed">
+              <CardContent solo>
+                <Flex direction="col" align="center" gap="sm" className="h-40 justify-center">
+                  <ScanLine
+                    className="size-7 text-[color:var(--attention,var(--warning))]"
+                    aria-hidden="true"
+                    strokeWidth={1.5}
+                  />
+                  <Text size="sm" tone="muted">
+                    Đưa mã vạch vào khung
+                  </Text>
+                </Flex>
+              </CardContent>
+            </Card>
             <Flex direction="col" gap="sm">
               <Text size="sm" weight="medium">
                 Hoặc nhập mã thủ công
@@ -567,38 +561,21 @@ function ItemFormSheet({
               <Text size="sm" weight="medium">
                 Đích đến
               </Text>
-              <RadioGroupRoot value={dest} onValueChange={setDest} className="flex flex-col gap-2">
-                {DESTINATIONS.map((d) => {
-                  const checked = dest === d.id;
-                  const rowId = `handy-dest-${d.id}`;
-                  return (
-                    <label
-                      key={d.id}
-                      htmlFor={rowId}
-                      className={
-                        "flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors " +
-                        (checked
-                          ? "border-primary bg-[color-mix(in_oklch,var(--primary)_8%,transparent)]"
-                          : "hover:border-primary")
-                      }
-                    >
-                      <RadioItem id={rowId} value={d.id} className="mt-0.5" />
-                      <span className="min-w-0">
-                        <Text as="span" size="sm" weight="medium" className="block">
-                          {d.label}
-                        </Text>
-                        <Text as="span" size="xs" tone="muted" className="block">
-                          {d.hint}
-                        </Text>
-                      </span>
-                    </label>
-                  );
-                })}
-              </RadioGroupRoot>
+              <RadioGroup
+                id="handy-dest"
+                value={dest}
+                onValueChange={setDest}
+                orientation="vertical"
+                options={DESTINATIONS.map((d) => ({
+                  value: d.id,
+                  label: d.label,
+                  description: d.hint,
+                }))}
+              />
             </Flex>
           </Flex>
         </SheetBody>
-        <SheetFooter className="flex-row gap-2">
+        <SheetFooter className="flex-row">
           <Button variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
             Huỷ
           </Button>
@@ -654,7 +631,7 @@ function InboundTab({
 
   return (
     <>
-      <Flex direction="col" gap="md" className="flex-1 overflow-y-auto p-4">
+      <Flex direction="col" gap="md" className="ui-card-inset flex-1 overflow-y-auto">
         {/* Filter chips — horizontal scroll, count pills */}
         <ToggleGroup
           type="single"
@@ -669,7 +646,7 @@ function InboundTab({
               <ToggleGroupItem
                 key={f.id}
                 value={f.id}
-                className="h-9 shrink-0 gap-1.5 rounded-full px-3 whitespace-nowrap text-[var(--font-size-xs)]"
+                className="h-9 shrink-0 rounded-full whitespace-nowrap text-[var(--font-size-xs)]"
               >
                 {f.label}
                 <Text size="xs" mono tabular className="opacity-70">
@@ -746,7 +723,7 @@ function InboundTab({
         <Flex
           direction="col"
           gap="sm"
-          className="shrink-0 border-t bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))] p-3"
+          className="ui-card-inset shrink-0 border-t bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))]"
         >
           <Flex align="center" justify="between">
             <Text size="sm" tabular>
@@ -777,7 +754,7 @@ function InboundTab({
           </Flex>
         </Flex>
       ) : (
-        <Flex gap="sm" className="shrink-0 border-t p-3">
+        <Flex gap="sm" className="ui-card-inset shrink-0 border-t">
           <Button className="flex-[2]" onClick={onScan}>
             <ScanLine aria-hidden="true" />
             Quét / Tìm mã
@@ -797,12 +774,12 @@ function PackingTab({ onScan }: { onScan: () => void }) {
   const others = PACKINGS.filter((p) => p.status !== "active");
   return (
     <>
-      <Flex direction="col" gap="md" className="flex-1 overflow-y-auto p-4">
+      <Flex direction="col" gap="md" className="ui-card-inset flex-1 overflow-y-auto">
         {active ? (
           <Card
             density="tight"
             accent="primary"
-            className="border-primary rounded-xl bg-[color-mix(in_oklch,var(--primary)_6%,transparent)]"
+            className="border-primary bg-[color-mix(in_oklch,var(--primary)_6%,transparent)]"
           >
             <CardContent solo>
               <Flex direction="col" gap="xs">
@@ -837,7 +814,7 @@ function PackingTab({ onScan }: { onScan: () => void }) {
           ))}
         </Flex>
       </Flex>
-      <Flex direction="col" gap="sm" className="shrink-0 border-t p-3">
+      <Flex direction="col" gap="sm" className="ui-card-inset shrink-0 border-t">
         <Button onClick={onScan}>
           <ScanLine aria-hidden="true" />
           Quét item vào kiện
@@ -855,7 +832,7 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
   const [seg, setSeg] = React.useState<string>("seal");
   return (
     <>
-      <Flex direction="col" gap="md" className="flex-1 overflow-y-auto p-4">
+      <Flex direction="col" gap="md" className="ui-card-inset flex-1 overflow-y-auto">
         {/* Segmented — outbound status */}
         <ToggleGroup
           type="single"
@@ -863,7 +840,7 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
           onValueChange={(v) => {
             if (v) setSeg(v);
           }}
-          className="bg-secondary/60 w-full rounded-xl p-1"
+          className="bg-secondary/60 w-full rounded-xl"
         >
           <ResponsiveGrid columns={3} gap="xs">
             <ToggleGroupItem
@@ -916,7 +893,7 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
                     </Text>
                   </Flex>
                   <div>
-                    <Descriptions columns={1} className="gap-y-1">
+                    <Descriptions columns={1}>
                       <Descriptions.Item label="Vị trí" mono>
                         {p.slot}
                       </Descriptions.Item>
@@ -931,7 +908,7 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
           ))}
         </Flex>
       </Flex>
-      <Flex gap="sm" className="shrink-0 border-t p-3">
+      <Flex gap="sm" className="ui-card-inset shrink-0 border-t">
         {seg === "handoff" ? (
           <Button className="flex-1" onClick={onHandoff}>
             <Truck aria-hidden="true" />
@@ -967,13 +944,13 @@ export default function AgencyHandyShowcase() {
   const headerTitle = tab === "inbound" ? "Nhập kho" : tab === "packing" ? "Đóng gói" : "Xuất kho";
 
   return (
-    <div className="bg-secondary/30 min-h-screen py-4">
+    <div className="bg-secondary/30 min-h-screen">
       <Toaster />
       <PhoneFrame>
         <StatusBar />
 
         {/* App header (52px) — title + iOS text-action select-mode entry (inbound only) */}
-        <header className="h-14 shrink-0 border-b px-4">
+        <header className="ui-card-inset-x h-14 shrink-0 border-b">
           <Flex align="center" justify="between" gap="xs">
             <Heading level={3} as="h1" className="whitespace-nowrap">
               {headerTitle}
@@ -1007,7 +984,7 @@ export default function AgencyHandyShowcase() {
                       <ToggleGroupItem
                         key={s}
                         value={s}
-                        className="size-7 rounded-md p-0 text-[var(--font-size-2xs)] uppercase"
+                        className="size-7 rounded-md text-[var(--font-size-2xs)] uppercase"
                         title={s}
                       >
                         {s[0]}
@@ -1026,7 +1003,7 @@ export default function AgencyHandyShowcase() {
             align="center"
             justify="between"
             gap="xs"
-            className="h-10 shrink-0 border-b bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))] px-3"
+            className="ui-card-inset-x h-10 shrink-0 border-b bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))]"
           >
             <Button
               variant="ghost"

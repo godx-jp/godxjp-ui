@@ -191,10 +191,13 @@ function StateSection({
  *  the loading skeleton visibly preserves the table's column layout. */
 function TableShell({
   caption,
+  banner,
   children,
 }: {
   caption: React.ReactNode;
-  children: React.ReactNode;
+  /** Padded band between the header and the flush table body (an Alert). */
+  banner?: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
     <Card>
@@ -206,7 +209,8 @@ function TableShell({
           </Text>
         </CardAction>
       </CardHeader>
-      <CardContent flush>{children}</CardContent>
+      {banner ? <CardContent>{banner}</CardContent> : null}
+      {children ? <CardContent flush>{children}</CardContent> : null}
     </Card>
   );
 }
@@ -288,8 +292,9 @@ export default function Demo() {
           title="エラー"
           note="エラーコード・リクエストID・再試行を明示する。"
         >
-          <TableShell caption="取得に失敗しました">
-            <div className="p-4">
+          <TableShell
+            caption="取得に失敗しました"
+            banner={
               <Alert tone="destructive">
                 <AlertTitle>勤怠データを取得できませんでした</AlertTitle>
                 <AlertDescription>
@@ -307,8 +312,8 @@ export default function Demo() {
                   </Button>
                 </AlertActions>
               </Alert>
-            </div>
-          </TableShell>
+            }
+          />
         </StateSection>
 
         {/* 4 ─ partial: some rows loaded, one segment failed / stale */}
@@ -317,29 +322,29 @@ export default function Demo() {
           title="部分的"
           note="一部のみ取得できた状態。失敗した区分だけを再取得できる。"
         >
-          <TableShell caption="4 / 5 部署を表示中">
-            <div>
-              <div className="p-4 pb-0">
-                <Alert tone="warning">
-                  <AlertTitle>一部のデータを取得できませんでした</AlertTitle>
-                  <AlertDescription>
-                    「倉庫」部署の打刻が取得できなかったため、最新ではない可能性があります。
-                    <br />
-                    <Text tone="muted">
-                      コード <code className="tabular-nums">ATTEND_PARTIAL_倉庫</code> ・
-                      リクエストID <code className="tabular-nums">req_7f3a91c0e8</code>
-                    </Text>
-                  </AlertDescription>
-                  <AlertActions>
-                    <Button variant="outline" size="sm">
-                      <RefreshCw aria-hidden="true" />
-                      倉庫を再取得
-                    </Button>
-                  </AlertActions>
-                </Alert>
-              </div>
-              <DataTable data={PARTIAL_ROWS} columns={COLUMNS} getRowId={(r) => r.id} />
-            </div>
+          <TableShell
+            caption="4 / 5 部署を表示中"
+            banner={
+              <Alert tone="warning">
+                <AlertTitle>一部のデータを取得できませんでした</AlertTitle>
+                <AlertDescription>
+                  「倉庫」部署の打刻が取得できなかったため、最新ではない可能性があります。
+                  <br />
+                  <Text tone="muted">
+                    コード <code className="tabular-nums">ATTEND_PARTIAL_倉庫</code> ・ リクエストID{" "}
+                    <code className="tabular-nums">req_7f3a91c0e8</code>
+                  </Text>
+                </AlertDescription>
+                <AlertActions>
+                  <Button variant="outline" size="sm">
+                    <RefreshCw aria-hidden="true" />
+                    倉庫を再取得
+                  </Button>
+                </AlertActions>
+              </Alert>
+            }
+          >
+            <DataTable data={PARTIAL_ROWS} columns={COLUMNS} getRowId={(r) => r.id} />
           </TableShell>
         </StateSection>
 

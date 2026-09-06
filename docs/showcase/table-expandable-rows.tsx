@@ -251,7 +251,6 @@ const EMPLOYEES: Employee[] = [
 // ── Shared cell padding to match compact DataTable density ─────────────────────
 
 const CELL = "align-middle";
-const HEAD = "px-3";
 
 function StatusBadge({ status }: { status: ShiftStatus }) {
   return (
@@ -265,103 +264,105 @@ function StatusBadge({ status }: { status: ShiftStatus }) {
 
 function DetailPanel({ employee }: { employee: Employee }) {
   return (
-    <div className="border-s-primary bg-muted/30 border-s-[3px] px-4 py-3">
-      <Flex direction="col" gap="md">
-        <Flex direction="row" wrap align="center" gap="md">
-          <Text size="sm" weight="medium">
-            {employee.name} · {employee.dept}
-          </Text>
-          <Flex align="center" gap="xs">
-            <Text size="xs" tone="muted">
-              <MapPin className="size-3.5" aria-hidden="true" />
-              {employee.site}
+    <Card className="border-s-primary bg-muted/30 border-s-[3px]">
+      <CardContent solo>
+        <Flex direction="col" gap="md">
+          <Flex direction="row" wrap align="center" gap="md">
+            <Text size="sm" weight="medium">
+              {employee.name} · {employee.dept}
             </Text>
+            <Flex align="center" gap="xs">
+              <Text size="xs" tone="muted">
+                <MapPin className="size-3.5" aria-hidden="true" />
+                {employee.site}
+              </Text>
+            </Flex>
+          </Flex>
+
+          {/* KPI mini-row inside the panel — real StatCard primitives */}
+          <Flex direction="row" wrap gap="sm">
+            <StatCard label="出勤日数" value={employee.workDays} layout="inline" />
+            <StatCard
+              label="遅刻回数"
+              value={employee.lateCount}
+              layout="inline"
+              inverse
+              delta={employee.lateCount === 0 ? "問題なし" : "要確認"}
+            />
+            <StatCard
+              label="残業 累計"
+              value={<Text tabular>{employee.overtime}</Text>}
+              layout="inline"
+            />
+          </Flex>
+
+          {/* Per-day breakdown — quiet nested list, real Card chrome */}
+          <Card>
+            <CardHeader>
+              <CardTitle level={2} className="text-[var(--font-size-xs)]">
+                今週の打刻
+              </CardTitle>
+              <CardAction>
+                <Flex align="center" gap="xs">
+                  <Text size="xs" tone="muted">
+                    <Clock className="size-3.5" aria-hidden="true" />
+                    直近 3 日
+                  </Text>
+                </Flex>
+              </CardAction>
+            </CardHeader>
+            <CardContent flush>
+              <Table>
+                <TableHeader className="bg-secondary">
+                  <TableRow>
+                    <TableHead>日付</TableHead>
+                    <TableHead>状態</TableHead>
+                    <TableHead>出勤</TableHead>
+                    <TableHead>退勤</TableHead>
+                    <TableHead>休憩</TableHead>
+                    <TableHead className="text-end">実働</TableHead>
+                    <TableHead>備考</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {employee.days.map((d) => (
+                    <TableRow key={d.date}>
+                      <TableCell className={`${CELL} text-xs whitespace-nowrap tabular-nums`}>
+                        {d.date}（{d.weekday}）
+                      </TableCell>
+                      <TableCell className={CELL}>
+                        <StatusBadge status={d.status} />
+                      </TableCell>
+                      <TableCell className={`${CELL} tabular-nums`}>{d.clockIn}</TableCell>
+                      <TableCell className={`${CELL} tabular-nums`}>{d.clockOut}</TableCell>
+                      <TableCell className={`${CELL} text-muted-foreground tabular-nums`}>
+                        <Flex align="center" gap="xs">
+                          <Coffee className="size-3.5" aria-hidden="true" />
+                          {d.break}
+                        </Flex>
+                      </TableCell>
+                      <TableCell className={`${CELL} text-end font-medium tabular-nums`}>
+                        {d.work}
+                      </TableCell>
+                      <TableCell className={`${CELL} text-muted-foreground text-xs`}>
+                        {d.note ?? "—"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          <Flex direction="row" gap="sm">
+            <Button size="sm" variant="outline">
+              勤怠詳細を開く
+            </Button>
+            <Button size="sm">承認する</Button>
           </Flex>
         </Flex>
-
-        {/* KPI mini-row inside the panel — real StatCard primitives */}
-        <Flex direction="row" wrap gap="sm">
-          <StatCard label="出勤日数" value={employee.workDays} layout="inline" />
-          <StatCard
-            label="遅刻回数"
-            value={employee.lateCount}
-            layout="inline"
-            inverse
-            delta={employee.lateCount === 0 ? "問題なし" : "要確認"}
-          />
-          <StatCard
-            label="残業 累計"
-            value={<Text tabular>{employee.overtime}</Text>}
-            layout="inline"
-          />
-        </Flex>
-
-        {/* Per-day breakdown — quiet nested list, real Card chrome */}
-        <Card>
-          <CardHeader>
-            <CardTitle level={2} className="text-[var(--font-size-xs)]">
-              今週の打刻
-            </CardTitle>
-            <CardAction>
-              <Flex align="center" gap="xs">
-                <Text size="xs" tone="muted">
-                  <Clock className="size-3.5" aria-hidden="true" />
-                  直近 3 日
-                </Text>
-              </Flex>
-            </CardAction>
-          </CardHeader>
-          <CardContent flush>
-            <Table>
-              <TableHeader className="bg-secondary">
-                <TableRow>
-                  <TableHead className={HEAD}>日付</TableHead>
-                  <TableHead className={HEAD}>状態</TableHead>
-                  <TableHead className={HEAD}>出勤</TableHead>
-                  <TableHead className={HEAD}>退勤</TableHead>
-                  <TableHead className={HEAD}>休憩</TableHead>
-                  <TableHead className={`${HEAD} text-end`}>実働</TableHead>
-                  <TableHead className={HEAD}>備考</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {employee.days.map((d) => (
-                  <TableRow key={d.date}>
-                    <TableCell className={`${CELL} text-xs whitespace-nowrap tabular-nums`}>
-                      {d.date}（{d.weekday}）
-                    </TableCell>
-                    <TableCell className={CELL}>
-                      <StatusBadge status={d.status} />
-                    </TableCell>
-                    <TableCell className={`${CELL} tabular-nums`}>{d.clockIn}</TableCell>
-                    <TableCell className={`${CELL} tabular-nums`}>{d.clockOut}</TableCell>
-                    <TableCell
-                      className={`${CELL} text-muted-foreground inline-flex items-center gap-1 tabular-nums`}
-                    >
-                      <Coffee className="size-3.5" aria-hidden="true" />
-                      {d.break}
-                    </TableCell>
-                    <TableCell className={`${CELL} text-end font-medium tabular-nums`}>
-                      {d.work}
-                    </TableCell>
-                    <TableCell className={`${CELL} text-muted-foreground text-xs`}>
-                      {d.note ?? "—"}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-
-        <Flex direction="row" gap="sm">
-          <Button size="sm" variant="outline">
-            勤怠詳細を開く
-          </Button>
-          <Button size="sm">承認する</Button>
-        </Flex>
-      </Flex>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -381,12 +382,12 @@ function ExpandableList() {
     <Table>
       <TableHeader className="bg-secondary sticky top-0 z-10">
         <TableRow>
-          <TableHead className={`${HEAD} w-10`} aria-label="展開" />
-          <TableHead className={HEAD}>従業員</TableHead>
-          <TableHead className={HEAD}>部署</TableHead>
-          <TableHead className={`${HEAD} text-center`}>直近の状態</TableHead>
-          <TableHead className={`${HEAD} text-end`}>出勤日数</TableHead>
-          <TableHead className={`${HEAD} text-end`}>残業 累計</TableHead>
+          <TableHead className="w-10" aria-label="展開" />
+          <TableHead>従業員</TableHead>
+          <TableHead>部署</TableHead>
+          <TableHead className="text-center">直近の状態</TableHead>
+          <TableHead className="text-end">出勤日数</TableHead>
+          <TableHead className="text-end">残業 累計</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -434,7 +435,7 @@ function ExpandableList() {
               </TableRow>
               {isOpen && (
                 <TableRow className="hover:bg-transparent">
-                  <TableCell colSpan={COLSPAN} className="p-0" id={panelId}>
+                  <TableCell colSpan={COLSPAN} id={panelId}>
                     <DetailPanel employee={emp} />
                   </TableCell>
                 </TableRow>

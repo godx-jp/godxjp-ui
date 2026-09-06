@@ -129,10 +129,10 @@ function GrantCell({ granted }: { granted: boolean }) {
       <span className="sr-only">許可</span>
     </Badge>
   ) : (
-    <span className="text-muted-foreground inline-flex items-center justify-center">
+    <Flex align="center" justify="center" gap="xs" className="text-muted-foreground">
       <Minus aria-hidden="true" className="size-4" />
       <span className="sr-only">不許可</span>
-    </span>
+    </Flex>
   );
 }
 
@@ -240,19 +240,19 @@ export default function Demo() {
                           className={cn("text-center", isCompared && "bg-primary/[0.06]")}
                           aria-label={isCompared ? `${role.name}（比較対象）` : role.name}
                         >
-                          <span className="inline-flex flex-col items-center leading-tight">
-                            <span className="inline-flex items-center gap-1">
+                          <Flex direction="col" align="center" gap="xs" className="leading-tight">
+                            <Flex align="center" gap="xs">
                               <Text weight="medium">{role.name}</Text>
                               {isCompared && (
                                 <Badge tone="primary" variant="outline">
                                   {role.id === compareA ? "A" : "B"}
                                 </Badge>
                               )}
-                            </span>
+                            </Flex>
                             <Text size="2xs" tone="muted">
                               {role.hint} · {countGrants(PERMISSIONS, GRANTS, role.id)}件
                             </Text>
-                          </span>
+                          </Flex>
                         </TableHead>
                       );
                     })}
@@ -270,14 +270,14 @@ export default function Demo() {
                       >
                         <TableCell className={cn(PIN_START, "w-64 min-w-64 align-middle")}>
                           <Flex direction="col" className="leading-tight">
-                            <span className="inline-flex items-center gap-1.5">
+                            <Flex align="center" gap="xs">
                               <Text weight="medium">{perm.name}</Text>
                               {isDiffRow && (
                                 <Badge tone="warning" variant="outline">
                                   差分
                                 </Badge>
                               )}
-                            </span>
+                            </Flex>
                             <Text size="2xs" tone="muted">
                               {perm.category} · {perm.description}
                             </Text>
@@ -322,9 +322,9 @@ export default function Demo() {
                 </Text>
               </Flex>
               <Flex direction="row" align="center" gap="xs">
-                <span className="text-muted-foreground inline-flex">
+                <Flex align="center" gap="xs" className="text-muted-foreground">
                   <Minus aria-hidden="true" className="size-4" />
-                </span>
+                </Flex>
                 <Text size="xs" tone="muted">
                   不許可
                 </Text>

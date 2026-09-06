@@ -369,20 +369,15 @@ const DOT_CLASS: Record<SavedView["dot"], string> = {
 
 function ViewTrigger({ view, count }: { view: SavedView; count: number }) {
   return (
-    <span className="flex items-center gap-2">
+    <Flex align="center" gap="sm">
       <span aria-hidden="true" className={`size-2 rounded-full ${DOT_CLASS[view.dot]}`} />
       <span>{view.label}</span>
-      <Text
-        as="span"
-        size="2xs"
-        weight="medium"
-        tone="muted"
-        tabular
-        className="bg-muted inline-flex min-w-5 items-center justify-center rounded-full px-1.5"
-      >
-        {count}
-      </Text>
-    </span>
+      <Badge tone="neutral" shape="pill">
+        <Text as="span" size="2xs" weight="medium" tabular>
+          {count}
+        </Text>
+      </Badge>
+    </Flex>
   );
 }
 
@@ -436,12 +431,12 @@ export default function Demo() {
       <Flex direction="col" gap="md">
         {/* Saved-view ribbon — controlled Tabs; switching swaps the preset below. */}
         <Tabs value={view} onValueChange={(v) => setView(v as ViewId)}>
-          <TabsList variant="line" className="h-auto flex-wrap gap-1 border-b">
+          <TabsList variant="line" className="h-auto w-full flex-wrap justify-start border-b">
             {VIEWS.map((v) => (
               <TabsTrigger
                 key={v.id}
                 value={v.id}
-                className="data-[state=active]:border-primary rounded-none border-b-2 border-transparent bg-transparent px-3 py-2 shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                className="rounded-[var(--tabs-trigger-line-radius)] px-[var(--tabs-trigger-line-padding-x)] py-[var(--tabs-trigger-line-padding-y)]"
               >
                 <ViewTrigger view={v} count={counts[v.id]} />
               </TabsTrigger>

@@ -241,12 +241,12 @@ export default function Demo() {
                     <TableHead className={`${PIN_LEFT} w-56 min-w-56`}>従業員</TableHead>
                     {DAYS.map((d) => (
                       <TableHead key={d.key} className="text-center">
-                        <span className="flex flex-col leading-tight">
+                        <Flex direction="col" gap="xs" className="leading-tight">
                           <Text weight="medium">{d.label}</Text>
                           <Text size="2xs" tone="muted" tabular>
                             {d.date}
                           </Text>
-                        </span>
+                        </Flex>
                       </TableHead>
                     ))}
                     <TableHead className="text-end tabular-nums">実働</TableHead>

@@ -27,7 +27,14 @@ import * as React from "react";
 import { X, Filter } from "lucide-react";
 
 import { Button, Text } from "@godxjp/ui/general";
-import { Badge, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
+import {
+  Badge,
+  Card,
+  CardContent,
+  DataTable,
+  EmptyState,
+  type ColumnDef,
+} from "@godxjp/ui/data-display";
 import { SearchInput, Select } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import type { SortStateProp } from "@godxjp/ui/props";
@@ -256,7 +263,7 @@ function FilterChip({
   onRemove: () => void;
 }) {
   return (
-    <Badge tone={tone ?? "neutral"} variant="outline" className="gap-1 pe-1">
+    <Badge tone={tone ?? "neutral"} variant="outline">
       {label}
       <Button
         variant="ghost"
@@ -354,64 +361,67 @@ export default function Demo() {
         </Flex>
 
         {/* Active-filter chip bar — visible at rest because filters are seeded */}
-        <Flex
-          direction="row"
-          wrap
-          align="center"
-          gap="xs"
-          className="border-border bg-secondary/30 min-h-9 rounded-md border px-2.5 py-1.5"
-        >
-          <Flex direction="row" align="center" gap="xs" className="text-muted-foreground pe-1">
-            <Filter className="size-3.5" aria-hidden="true" />
-            <Text size="xs">適用中</Text>
-          </Flex>
+        <Card>
+          <CardContent solo>
+            <Flex direction="row" wrap align="center" gap="xs">
+              <Flex direction="row" align="center" gap="xs" className="text-muted-foreground">
+                <Filter className="size-3.5" aria-hidden="true" />
+                <Text size="xs">適用中</Text>
+              </Flex>
 
-          {!hasFilters && (
-            <Text size="xs" tone="muted">
-              条件なし · 全 {ROWS.length} 件
-            </Text>
-          )}
+              {!hasFilters && (
+                <Text size="xs" tone="muted">
+                  条件なし · 全 {ROWS.length} 件
+                </Text>
+              )}
 
-          {query.trim() && (
-            <FilterChip
-              label={`検索: ${query.trim()}`}
-              onRemove={() => {
-                setQuery("");
-              }}
-            />
-          )}
-          {status && (
-            <FilterChip
-              tone={STATUS_META[status].tone}
-              label={`状態: ${STATUS_META[status].label}`}
-              onRemove={() => {
-                setStatus(undefined);
-              }}
-            />
-          )}
-          {dept && (
-            <FilterChip
-              label={`部署: ${dept}`}
-              onRemove={() => {
-                setDept(undefined);
-              }}
-            />
-          )}
-          {ot !== "any" && (
-            <FilterChip
-              label={ot === "ot" ? "残業あり" : "残業 60分以上"}
-              onRemove={() => {
-                setOt("any");
-              }}
-            />
-          )}
+              {query.trim() && (
+                <FilterChip
+                  label={`検索: ${query.trim()}`}
+                  onRemove={() => {
+                    setQuery("");
+                  }}
+                />
+              )}
+              {status && (
+                <FilterChip
+                  tone={STATUS_META[status].tone}
+                  label={`状態: ${STATUS_META[status].label}`}
+                  onRemove={() => {
+                    setStatus(undefined);
+                  }}
+                />
+              )}
+              {dept && (
+                <FilterChip
+                  label={`部署: ${dept}`}
+                  onRemove={() => {
+                    setDept(undefined);
+                  }}
+                />
+              )}
+              {ot !== "any" && (
+                <FilterChip
+                  label={ot === "ot" ? "残業あり" : "残業 60分以上"}
+                  onRemove={() => {
+                    setOt("any");
+                  }}
+                />
+              )}
 
-          {hasFilters && (
-            <Button variant="ghost" size="sm" className="ms-auto h-6 text-xs" onClick={clearAll}>
-              すべて解除
-            </Button>
-          )}
-        </Flex>
+              {hasFilters && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="ms-auto h-6 text-xs"
+                  onClick={clearAll}
+                >
+                  すべて解除
+                </Button>
+              )}
+            </Flex>
+          </CardContent>
+        </Card>
 
         {/* The filtered table */}
         <DataTable
@@ -425,15 +435,17 @@ export default function Demo() {
           onSortChange={setSort}
           density="compact"
           empty={
-            <Flex direction="col" align="center" gap="xs" className="py-8">
-              <Text weight="medium">該当する勤怠記録がありません</Text>
-              <Text size="xs" tone="muted">
-                フィルター条件を解除すると全件を表示します
-              </Text>
-              <Button variant="outline" size="sm" onClick={clearAll}>
-                フィルターを解除
-              </Button>
-            </Flex>
+            <EmptyState
+              variant="section"
+              titleAs="p"
+              title="該当する勤怠記録がありません"
+              description="フィルター条件を解除すると全件を表示します"
+              action={
+                <Button variant="outline" size="sm" onClick={clearAll}>
+                  フィルターを解除
+                </Button>
+              }
+            />
           }
         >
           <DataTable.Toolbar>

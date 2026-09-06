@@ -256,10 +256,7 @@ function TreeCell({
   onToggle: (id: string) => void;
 }) {
   return (
-    <span
-      className="flex items-center gap-1"
-      style={{ paddingInlineStart: `calc(${row.depth} * 14px)` }}
-    >
+    <Flex align="center" gap="xs" style={{ paddingInlineStart: `calc(${row.depth} * 14px)` }}>
       {row.hasChildren ? (
         <Button
           variant="ghost"
@@ -284,15 +281,15 @@ function TreeCell({
           className="inline-block size-[calc(var(--control-height)-0.5rem)] shrink-0"
         />
       )}
-      <span className="flex min-w-0 items-center gap-2">
+      <Flex align="center" gap="sm" className="min-w-0">
         <Text weight={row.kind === "従業員" ? "regular" : "medium"} truncate>
           {row.name}
         </Text>
         <Badge variant="outline" tone="neutral" className="shrink-0">
           {row.kind}
         </Badge>
-      </span>
-    </span>
+      </Flex>
+    </Flex>
   );
 }
 
