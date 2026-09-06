@@ -1087,6 +1087,7 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "general",
     file: "components/general.prop.ts",
     vocabulary: [
+      "TextAlignProp",
       "ButtonVariantProp",
       "SizeProp",
       "ShapeProp",

@@ -54,6 +54,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
       size,
       shape,
       fullWidth = false,
+      wrap = false,
+      align = "center",
       asChild = false,
       loading = false,
       loadingText,
@@ -103,6 +105,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
         data-size={size ?? "default"}
         data-shape={shape ?? "default"}
         data-full-width={fullWidth ? "" : undefined}
+        data-wrap={wrap ? "" : undefined}
+        data-align={align === "center" ? undefined : align}
         data-loading={isLoading ? "" : undefined}
         aria-busy={isLoading || undefined}
         disabled={isLoading || disabled}

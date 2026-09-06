@@ -1724,6 +1724,20 @@ export function TermsPage() {
         description: "Span the full container width (`width:100%`) instead of sizing to content.",
       },
       {
+        name: "wrap",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Allow multi-line text labels to grow the button height. Uses the active size tier as its minimum height; use with fullWidth in narrow collections.",
+      },
+      {
+        name: "align",
+        type: '"start" | "center" | "end"',
+        defaultValue: '"center"',
+        description:
+          "Logical content alignment. Use start for full-width collection actions; respects RTL.",
+      },
+      {
         name: "asChild",
         type: "boolean",
         defaultValue: "false",

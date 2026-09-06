@@ -79,6 +79,10 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Corner shape — `default` (control radius) · `pill` (fully rounded) · `sharp` (square). */
   shape?: ShapeProp;
   fullWidth?: boolean;
+  /** Allow a text button to grow vertically for multi-line labels. */
+  wrap?: boolean;
+  /** Logical content alignment, especially for full-width collection actions. */
+  align?: TextAlignProp;
   asChild?: AsChildProp;
   onClick?: OnClickProp;
   disabled?: DisabledProp;

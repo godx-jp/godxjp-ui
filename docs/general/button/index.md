@@ -10,3 +10,7 @@ For filter tabs / segmented toggles that show a per-option total, pass the `coun
 (`<Button variant="outline" count={18}>Chờ bay</Button>`) instead of nesting a `Badge` —
 it renders a borderless counter pill, formatted in the active locale and toned to the
 button variant, so an outline button never ends up with a doubled border.
+
+For long collection labels, use `wrap` with `align="start"` and `fullWidth`. The button
+grows vertically while retaining the size preset's minimum target height. Keep badges
+and other row metadata outside the button. `align="end"` follows the document direction.
