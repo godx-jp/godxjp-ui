@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.4.1] - 2026-09-06
+
+### Changed
+
+- **Cổng axe mở lớp phủ trước khi quét.** Trước đây nó chỉ nạp mỗi khung ở trạng thái mặc định
+  rồi quét một lần, nên mọi luật chỉ tồn tại khi lớp phủ đang mở đều nằm ngoài tầm nhìn của cổng
+  chứ không phải lọt lưới. Khung khai báo bước mở bằng `data-axe-open`; kết quả thành một scope
+  thứ ba có allowlist riêng chỉ được phép co lại. Khai báo mà lớp phủ không hiện ra thì cổng báo
+  lỗi chứ không im lặng bỏ qua.
+- **Gate axe chia thành ba shard.** `AXE_SHARD=i/n` chia danh sách khung theo thứ tự ổn định. Đo
+  tại chỗ: trọn bộ 164 khung mất 626 giây, một shard 55 khung mất 197 giây, nên đường găng còn
+  khoảng 210 giây. Phép kiểm allowlist thừa chỉ chạy khi quét trọn bộ, và `--update-baseline` từ
+  chối chạy dưới chế độ shard.
+- **Dựng lại baseline axe không còn xoá phần ghi chú.** Mọi khoá cổng không sở hữu được chép
+  nguyên văn và nêu tên trong log.
+- Comment và chữ hiển thị trong tài liệu không còn mang số hiệu issue.
+
 ## [19.4.0] - 2026-09-06
 
 ### Added
