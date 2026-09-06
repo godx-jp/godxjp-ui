@@ -4,7 +4,7 @@ import { COMPONENTS } from "./data/components.js";
 import { TOKENS } from "./data/tokens.js";
 
 /**
- * gh#313 — the ambient-motion catalog entry.
+ * The ambient-motion catalog entry.
  *
  * The generic integrity suite proves the entry is WELL-FORMED. What it cannot prove is that the
  * entry still carries the two facts an agent must not get wrong about a looping indicator: that

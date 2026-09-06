@@ -35,8 +35,8 @@ export default function Demo() {
               列、右の狭いサイドバー（約 20rem）は 1 列に折り返す。ビューポート幅は同一なので、
               折り返しの基準がコンテナ幅であることが分かる。ResponsiveGrid は自身のクエリコンテナ
               （container-type: inline-size）を持つため、外側に @container を用意しなくても正しく
-              折り返す（gh#165）。閾値はコンテナ幅 40 / 48 / 64rem。 列間の gap は
-              var(--space-stack-md) に固定で、prop では変更できない。
+              折り返す。閾値はコンテナ幅 40 / 48 / 64rem。 列間の gap は var(--space-stack-md)
+              に固定で、prop では変更できない。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -72,7 +72,7 @@ export default function Demo() {
             <CardDescription>
               固定幅の親の中でも、同じ columns=&#123;4&#125; が親幅で列数を変える。親には
               container-type を付けていない。ResponsiveGrid が自身のスコープでクエリするため、
-              外側にコンテナ宣言がなくても 1 列に潰れない（gh#165）。
+              外側にコンテナ宣言がなくても 1 列に潰れない。
             </CardDescription>
           </CardHeader>
           <CardContent>

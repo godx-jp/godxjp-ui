@@ -239,7 +239,7 @@ export const SelectContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, position = "popper", ...props }, ref) => {
   // Radix hides the app behind an open Select from assistive tech but leaves it tabbable —
-  // axe `aria-hidden-focus`. See components/general/inert-background.ts (#352).
+  // axe `aria-hidden-focus`. See components/general/inert-background.ts.
   useInertHiddenBackground();
   return (
     <SelectPrimitive.Portal>

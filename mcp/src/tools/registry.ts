@@ -557,7 +557,7 @@ function draftBugReport(args: Record<string, unknown>): string {
 
 /**
  * Compatibility verdict between the consumer's installed @godxjp/ui and THIS catalog.
- * The catalog is version-pinned to the library (issue #140): `pkg.version` is the release train and
+ * The catalog is version-pinned to the library: `pkg.version` is the release train and
  * `pkg.godxUiCompatibility` the minor-pinned range (e.g. "16.10.x") it faithfully describes.
  */
 function checkCompatibility(installed?: string): string {
@@ -790,7 +790,7 @@ const TOKEN_PREFIXES: Record<string, string[]> = {
   RadioGroup: ["choice"],
   Field: ["choice"],
   // `app-shell` was missing, so get_component AppShell never surfaced its OWN knobs —
-  // --app-shell-{sidebar,rail}-width, -bar-height/-inset/-gap, -mobile-nav-* (gh#213).
+  // --app-shell-{sidebar,rail}-width, -bar-height/-inset/-gap, -mobile-nav-*.
   AppShell: ["app-shell", "sidebar", "topbar"],
   Sidebar: ["sidebar"],
   Topbar: ["topbar"],
@@ -877,7 +877,7 @@ const DIMENSION_TITLE = new Map(
 );
 
 /**
- * Coverage block appended to `get_component` (issue #163 item 7). The whole point is that an
+ * Coverage block appended to `get_component`. The whole point is that an
  * agent reading a happy-path example must ALSO see which contract dimensions nothing proves —
  * otherwise the example gets mistaken for a support claim.
  */

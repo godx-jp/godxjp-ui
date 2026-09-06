@@ -180,7 +180,7 @@ export type BadgeProp = {
   /**
    * Render element — `div` (default) or `span` when the chip sits in a phrasing context where a
    * `<div>` is invalid HTML (inside a `<button>` rendered by TabsTrigger/PopoverTrigger/Button,
-   * a `<label>`, a `<p>`). Swaps the tag only (gh#354).
+   * a `<label>`, a `<p>`). Swaps the tag only.
    */
   as?: "div" | "span";
   variant?: "default" | "secondary" | "outline";

@@ -138,7 +138,7 @@ TableHead.displayName = "TableHead";
 /**
  * The cell's CONTENT owns its inset — an expanded detail panel, a nested table, a full-bleed media
  * strip. The cell drops its own padding so the child reaches the cell edges; without it the only
- * route was a zero-padding utility at the call site, which no service theme can reach (gh#354).
+ * route was a zero-padding utility at the call site, which no service theme can reach.
  */
 type TableCellFlush = { flush?: FlushProp };
 

@@ -130,7 +130,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Field identity · data-field (gh#337)</CardTitle>
+            <CardTitle level={2}>Field identity · data-field</CardTitle>
             <CardDescription>
               項目キーを control の data-field に出す。既定は id から導出。id が DOM
               一意化のためのもので項目キーと違う場合だけ field を明示する。AppProvider
@@ -176,7 +176,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Static value · mixed with editable fields (gh#294)</CardTitle>
+            <CardTitle level={2}>Static value · mixed with editable fields</CardTitle>
             <CardDescription>
               staticText renders a read-only VALUE as a FormField itself: Descriptions.Item's exact
               value typography, no control, no id/aria-* wiring. An immutable name/email row and an

@@ -73,7 +73,7 @@ export default function Demo() {
             <CardTitle level={2}>先頭タブが disabled · フォールバック選択</CardTitle>
             <CardDescription>
               defaultValue/value を渡さない場合、Tabs は先頭の ENABLED タブを自動選択する(disabled
-              の先頭タブは選ばない)。全タブが disabled の場合は何も選択しない (gh#175)。
+              の先頭タブは選ばない)。全タブが disabled の場合は何も選択しない。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -106,7 +106,7 @@ export default function Demo() {
             <CardTitle level={2}>320px stress · 長いローカライズラベル</CardTitle>
             <CardDescription>
               狭いコンテナでも長いラベルはクリップされず、水平タブリストが自身でスクロールする
-              (gh#175)。compact navigation への変換は Tabs API に存在しないため擬似実装しない —
+              。compact navigation への変換は Tabs API に存在しないため擬似実装しない —
               スクロールが意図した縮退動作。
             </CardDescription>
           </CardHeader>

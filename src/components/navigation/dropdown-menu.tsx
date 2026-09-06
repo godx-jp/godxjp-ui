@@ -39,7 +39,7 @@ export const DropdownMenuContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => {
   // Radix hides the app behind an open menu from assistive tech but leaves it tabbable —
-  // axe `aria-hidden-focus`. See components/general/inert-background.ts (#352).
+  // axe `aria-hidden-focus`. See components/general/inert-background.ts.
   useInertHiddenBackground();
   return (
     <DropdownMenuPortal>

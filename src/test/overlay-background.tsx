@@ -4,7 +4,7 @@ import { expect } from "vitest";
 import { AppShell } from "../components/layout/app-shell";
 
 /**
- * Test scaffolding for the `aria-hidden-focus` class of overlay bug (godxjp-ui#352).
+ * Test scaffolding for the `aria-hidden-focus` class of overlay bug.
  *
  * The violation NEEDS an app around the overlay. Radix hides the background from assistive tech
  * by stamping `aria-hidden="true"` on every sibling between the portalled content and `<body>`;

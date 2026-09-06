@@ -402,7 +402,7 @@ export default function Demo() {
               <CardDescription>
                 行の中身まで利用側が書く旧エスケープハッチ。これが原因で
                 <code>&lt;Link&gt;{"{item.label}"}&lt;/Link&gt;</code>
-                がアイコンを全て落とす回帰が発生しました（gh#213）。 現在は rowProps.children
+                がアイコンを全て落とす回帰が発生しました。 現在は rowProps.children
                 にライブラリ製の行内容が入るので、それを描画すれば 正規の行が復元されます（ここでは
                 その右にお気に入りスターを添えています）。 新規コードでは linkComponent か
                 SidebarItem asChild を使ってください。
@@ -436,7 +436,7 @@ export default function Demo() {
                 sections を使わず SidebarSection / SidebarItem を直接組み立てて、
                 ナビゲーション全体を 自前で構成します。右は同じ構成に SidebarItem の asChild
                 を足したものです。子として ルーターの Link
-                を「要素だけ」渡すと、アイコン・ラベル・バッジは ライブラリが差し込みます（gh#213。
+                を「要素だけ」渡すと、アイコン・ラベル・バッジは ライブラリが差し込みます（。
                 children は書きません）。
               </CardDescription>
             </CardHeader>
@@ -590,7 +590,7 @@ export default function Demo() {
                   "badgeTone で未読（neutral）と自分宛て（destructive）を色だけで区別",
                   "disabled=true で項目を非活性化（クリック不可）",
                   "footer prop でスクロール外にユーザー情報を固定",
-                  "linkComponent · ルーター Link は「要素だけ」渡す。行の中身はライブラリが組み立てる（gh#213）",
+                  "linkComponent · ルーター Link は「要素だけ」渡す。行の中身はライブラリが組み立てる",
                   "linkComponent は葉・サブメニュー・折りたたみレール・フライアウトの全てに適用される",
                   "グループのトリガーは aria-expanded を持つ開閉ボタンのままなので linkComponent は適用されない",
                 ].map((note) => (

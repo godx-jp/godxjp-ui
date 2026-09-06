@@ -3,7 +3,7 @@ import * as React from "react";
 /**
  * `inert` the background that Radix marks `aria-hidden` while an overlay is open.
  *
- * WHY THIS EXISTS (godxjp-ui#352). Every modal Radix overlay hides the rest of the page from
+ * WHY THIS EXISTS. Every modal Radix overlay hides the rest of the page from
  * assistive tech through the `aria-hidden` package (`hideOthers`), which stamps
  * `aria-hidden="true"` + `data-aria-hidden="true"` on every sibling on the path from the
  * portalled content up to `<body>` — in a consumer app that is the whole `.app-root`. It does

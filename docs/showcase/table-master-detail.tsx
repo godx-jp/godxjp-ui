@@ -417,7 +417,7 @@ export default function Demo() {
         </Card>
 
         {/* ── Empty detail state (nothing selected) ──
-            Fixed-track split, so the geometry belongs to MasterDetail, not this page (gh#223):
+            Fixed-track split, so the geometry belongs to MasterDetail, not this page:
             rail="master" keeps the leading 一覧 on the fixed track while the detail surface stays
             fluid, and collapseBelow="md" stacks 一覧→詳細 once the card body itself is too narrow
             for two tracks. No grid tracks, no per-breakpoint widths, no page-local spacing. */}

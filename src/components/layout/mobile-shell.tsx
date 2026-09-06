@@ -8,7 +8,7 @@ export type {
 } from "../../props/components/layout.prop";
 
 /**
- * MobileShell — the HANDHELD app shell (gh#354 §6): a status band, an app bar, ONE scroll region,
+ * MobileShell — the HANDHELD app shell: a status band, an app bar, ONE scroll region,
  * a sticky action bar and a bottom tab bar, in that fixed order.
  *
  * The fourth root shell. The other three cannot express a phone app: `AppShell` REQUIRES a sidebar

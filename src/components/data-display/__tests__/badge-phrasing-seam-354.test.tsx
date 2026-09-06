@@ -7,7 +7,7 @@ import { Tabs, TabsList, TabsTrigger } from "../../navigation/tabs";
 const badgeEl = (label: string) =>
   screen.getByText(label).closest('[data-slot="badge"]') as HTMLElement;
 
-// gh#354 — Badge always rendered a <div>, so a count chip inside a TabsTrigger (a <button>, whose
+// Badge always rendered a <div>, so a count chip inside a TabsTrigger (a <button>, whose
 // content model is phrasing content only) was invalid HTML with no legal alternative.
 describe("Badge — `as` tag seam", () => {
   it("renders a <div> by default", () => {

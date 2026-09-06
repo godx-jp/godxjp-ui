@@ -20,7 +20,7 @@ export function PopoverAnchor(props: React.ComponentProps<typeof PopoverPrimitiv
  * edge and draw its own separators across the full width. The popover drops its own padding by
  * zeroing `--popover-space-inset` ON THE PANEL, so the inset stays one token (a service that
  * retunes `--popover-space-inset` still owns every padded popover) and no consumer has to reach
- * for a zero-padding utility, which no service theme can reach (gh#354).
+ * for a zero-padding utility, which no service theme can reach.
  */
 type PopoverContentFlush = { flush?: FlushProp };
 

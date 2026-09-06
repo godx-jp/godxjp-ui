@@ -6,7 +6,7 @@ import { renderWithUi } from "@/test/render";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 
 /**
- * gh#354 item 3 — a Command list (or a menu, or a table) inside a popover has to reach the panel
+ * A Command list (or a menu, or a table) inside a popover has to reach the panel
  * edges, and the only route was a zero-padding utility on `className`, which no service theme can
  * retune. `flush` keeps the inset on `--popover-space-inset`: the panel zeroes ITS OWN copy of the
  * token, so a service that retunes the token still owns every padded popover.

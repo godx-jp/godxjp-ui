@@ -120,7 +120,7 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
           className="w-full justify-between"
         >
           {/* Inside a Button, i.e. inside a <button>, whose content model is phrasing content
-              only — so every Flex on this branch renders as a <span> (gh#354). */}
+              only — so every Flex on this branch renders as a <span>. */}
           <Flex as="span" align="center" gap="sm" className="min-w-0">
             <Avatar className="size-7 rounded-md">
               <AvatarFallback>{monogram(current.name)}</AvatarFallback>

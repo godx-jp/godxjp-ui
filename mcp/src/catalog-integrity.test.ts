@@ -227,12 +227,12 @@ describe("newly-added components are catalogued with the expected API", () => {
     expect(row?.props.find((p) => p.name === "title")?.required).toBe(true);
     // `as` is the div|li render-element union.
     expect(row?.props.find((p) => p.name === "as")?.type).toMatch(/div.*li/);
-    // gh#224 — overflow is the documented truncate|wrap union, truncate by default.
+    // overflow is the documented truncate|wrap union, truncate by default.
     expect(row?.props.find((p) => p.name === "overflow")?.type).toMatch(/truncate.*wrap/);
     expect(row?.props.find((p) => p.name === "overflow")?.defaultValue).toMatch(/truncate/);
-    // gh#225 — unread is a semantic boolean state (dot + tokenized surface), not a Badge.
+    // unread is a semantic boolean state (dot + tokenized surface), not a Badge.
     expect(row?.props.find((p) => p.name === "unread")?.type).toBe("boolean");
-    // gh#246 — density is the default|compact inline-actions union, default by default.
+    // density is the default|compact inline-actions union, default by default.
     expect(row?.props.find((p) => p.name === "density")?.type).toMatch(/default.*compact/);
     expect(row?.props.find((p) => p.name === "density")?.defaultValue).toMatch(/default/);
     expect(row?.usage?.join(" ")).toMatch(/--list-row-body-min-width/);
@@ -283,14 +283,14 @@ describe("newly-added components are catalogued with the expected API", () => {
     expect(tone?.type).toMatch(/"primary"/);
   });
 
-  // gh#218 — the DEPENDENCY-FREE compact trend. Agents must be able to find it (and learn
+  // the DEPENDENCY-FREE compact trend. Agents must be able to find it (and learn
   // that it does NOT need the recharts peer) from the catalog alone, otherwise a
   // dependency-constrained screen hand-rolls a page-local grid chart again.
   it("CompactBarTrend is catalogued as the recharts-free compact trend primitive", () => {
     const trend = findComponent("CompactBarTrend");
     expect(trend, "CompactBarTrend entry").toBeDefined();
     expect(trend?.group).toBe("data-display");
-    // The ISOLATED entry, not the `@godxjp/ui/charts` barrel (gh#243). Importing the barrel makes
+    // The ISOLATED entry, not the `@godxjp/ui/charts` barrel. Importing the barrel makes
     // Vite eagerly link the peer-backed exports, so a consumer without the optional `recharts` peer
     // fails its production build — which is the whole point of this dependency-free primitive.
     expect(trend?.importPath).toBe("@godxjp/ui/charts/compact-bar-trend");
@@ -319,14 +319,14 @@ describe("newly-added components are catalogued with the expected API", () => {
     const usage = (trend?.usage ?? []).join(" ");
     // Assert the CONTRACT, not one phrasing: the usage text must name `recharts` under a negation,
     // so a consuming agent learns the peer is not required. Pinning an exact sentence made this
-    // fail when gh#243 reworded it to describe the isolated entry point.
+    // fail when the entry was reworded to describe the isolated entry point.
     expect(usage).toMatch(/(?:\bno\b|never|without|free of)[^.]*`?recharts`?/i);
     expect(usage).toMatch(/--chart-trend-/);
     // and point at BarChart for the full cartesian case
     expect((trend?.related ?? []).join(" ")).toMatch(/BarChart/);
   });
 
-  // gh#221 → gh#251 — the exception surface REGRESSED once by being shipped as a docs-only
+  // the exception surface REGRESSED once by being shipped as a docs-only
   // composition pattern (a consumer cannot `import` a docs page), and the MCP catalog was the
   // surface that taught "there is NO ErrorSurface". These assertions make that specific untruth
   // impossible to reintroduce: the entry must exist, must be importable from @godxjp/ui/layout,
@@ -372,14 +372,14 @@ describe("newly-added components are catalogued with the expected API", () => {
     expect(props.get("maintenance")?.type).toMatch(/start.*timeZone.*progress/s);
 
     const usage = (surface?.usage ?? []).join(" ");
-    // the catalog must actively steer away from the gh#251 workaround …
+    // the catalog must actively steer away from the workaround …
     expect(usage).toMatch(/AuthShell/);
     expect(usage).toMatch(/EXACTLY ONE|ONE action/i);
     // … and teach that system geometry is package-owned
     expect(usage).toMatch(/min-h-dvh/);
     expect((surface?.related ?? []).join(" ")).toMatch(/CenteredShell/);
 
-    // The catalog must no longer claim the component does not exist (the gh#251 untruth).
+    // The catalog must no longer claim the component does not exist.
     const catalogText = COMPONENTS.map((c) =>
       [c.tagline, (c.usage ?? []).join(" "), (c.related ?? []).join(" ")].join(" "),
     ).join(" ");
@@ -437,7 +437,7 @@ describe("catalog teaches the gh#253 responsive action-collection contract on BO
     expect(props.get("preset")?.type).toMatch(/action-collection/);
     expect(props.get("preset")?.defaultValue).toBe("'default'");
     expect(props.get("collapseBelow")?.defaultValue).toBe("'sm'");
-    // The default must be taught as INERT (gh#231): no attribute, nothing to match.
+    // The default must be taught as INERT: no attribute, nothing to match.
     expect(props.get("preset")?.description).toMatch(/no attribute|NO attribute/i);
     // …and as a container query on the table's own width, not a viewport breakpoint.
     expect(props.get("collapseBelow")?.description).toMatch(/container/i);

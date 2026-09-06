@@ -4,7 +4,7 @@ import { render } from "@testing-library/react";
 import { Flex } from "../flex";
 import { Tabs, TabsList, TabsTrigger } from "../../navigation/tabs";
 
-// gh#354 — FlexProp extended React.HTMLAttributes<HTMLDivElement> with no seam to change the tag,
+// FlexProp extended React.HTMLAttributes<HTMLDivElement> with no seam to change the tag,
 // so a Flex inside a TabsTrigger/PopoverTrigger/Button (each renders a <button>, whose content
 // model is phrasing content only) produced a <div> inside a <button>: invalid HTML. The consumer
 // rules forbid the old escape hatch (`<span className="flex …">`), so before `as` there was no
@@ -48,7 +48,7 @@ describe("Flex — `as` tag seam", () => {
   });
 });
 
-// gh#354 — GapProp had no zero step, so stacks that are deliberately flush (a name over its role,
+// GapProp had no zero step, so stacks that are deliberately flush (a name over its role,
 // a weekday over its date) had to carry `gap="xs"`: a visual change forced by a missing token.
 describe("Flex — gap='none'", () => {
   it.each([

@@ -42,7 +42,7 @@ import {
 import { Button } from "../general/button";
 
 /**
- * godxjp-ui#352 — `aria-hidden-focus` on `.app-root` when an overlay is open.
+ * `aria-hidden-focus` on `.app-root` when an overlay is open.
  *
  * This suite exists because the per-component a11y tests CANNOT reach this class of bug. They
  * mount one overlay on its own; the violation only forms when there is an application around it

@@ -333,7 +333,7 @@ function SectionHeader({ children, count }: { children: React.ReactNode; count?:
 // ── Phone shell ──────────────────────────────────────────────────────────────
 
 /**
- * gh#354 §6 — this file used to BUILD the shell: a `Card` + `CardContent flush` phone frame, a
+ * This file used to BUILD the shell: a `Card` + `CardContent flush` phone frame, a
  * `ui-card-inset-x h-9` status row, an `h-14 border-b` header, a `flex-1 overflow-y-auto` body, a
  * `shrink-0 border-t` action strip and a `ResponsiveGrid` tab bar. It reproduced the look and
  * neither behaviour that matters on a device — the document still scrolled, and nothing padded out
@@ -962,7 +962,7 @@ export default function AgencyHandyShowcase() {
 
   // SELECT MODE REPLACES THE APP BAR — it does not stack a second strip under it. That is the
   // platform pattern on both iOS and Android, and it is what the `header` slot is for: one bar to
-  // read at a time. Before gh#354 this file rendered the title bar AND a contextual strip, because
+  // read at a time. This file once rendered the title bar AND a contextual strip, because
   // there was no bar to swap.
   const header = selectMode ? (
     <Flex align="center" justify="between" gap="xs" className="w-full">

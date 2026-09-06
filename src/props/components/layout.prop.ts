@@ -144,7 +144,7 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
    * `<div>` would be invalid HTML: inside a `TabsTrigger`/`PopoverTrigger`/`Button` (all of which
    * render a `<button>`, whose content model is phrasing content only), inside a `<label>`, or
    * inside a `<p>`. Same closed shape as `ListRow`'s `as` — it swaps the TAG, nothing else: the
-   * `.ui-flex` rules carry `display: flex`, so the box is identical either way (gh#354).
+   * `.ui-flex` rules carry `display: flex`, so the box is identical either way.
    */
   as?: "div" | "span";
   direction?: FlexDirectionProp;
@@ -323,7 +323,7 @@ export type AuthShellProp = {
  * `AppShell` REQUIRES a sidebar (its bar is a grid area beside the nav rail), `AuthShell` is the
  * UNAUTHENTICATED root and centres a ~24rem card, and `CenteredShell` is a scrolling DOCUMENT —
  * its `main` scrolls the page, which is exactly what a handheld app must not do. Composing one out
- * of `Card` + `ui-card-inset*` (what docs/showcase/case6 did before gh#354) reproduces the look
+ * of `Card` + `ui-card-inset*` (what docs/showcase/case6 once did) reproduces the look
  * and none of the two behaviours that matter on a real device:
  *
  *  1. The shell is the only scroll container. The root is exactly one screen tall, so the DOCUMENT

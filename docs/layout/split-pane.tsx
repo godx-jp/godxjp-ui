@@ -302,8 +302,8 @@ export default function Demo() {
                   </Text>
                   <Text as="p" tone="muted">
                     パネル自身の幅が 48rem 未満になると縦積みにフォールバックします
-                    （ビューポートではなくコンテナ基準 · gh#165）。
-                    常にサイドバイサイドが必要な場合は CSS Grid を使用してください。
+                    （ビューポートではなくコンテナ基準）。 常にサイドバイサイドが必要な場合は CSS
+                    Grid を使用してください。
                   </Text>
                 </Flex>
               </CardContent>
@@ -410,9 +410,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Container stress · narrow vs wide embed</CardTitle>
             <CardDescription>
-              大きな viewport 内でも、パネル自身の幅で分割が決まる（gh#165）。狭い埋め込み（約
-              28rem）は 1 カラムに潰れ、広い埋め込み（約 56rem）は 2 カラムに分割する。ビューポート
-              幅は同一。
+              大きな viewport 内でも、パネル自身の幅で分割が決まる。狭い埋め込み（約 28rem）は 1
+              カラムに潰れ、広い埋め込み（約 56rem）は 2 カラムに分割する。ビューポート 幅は同一。
             </CardDescription>
           </CardHeader>
           <CardContent>

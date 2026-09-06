@@ -59,7 +59,7 @@ describe("ResponsiveGrid — column resolution", () => {
     });
   });
 
-  // gh#354 — the grid had no zero step either, so a seamless tile strip (a phone tab bar) had to
+  // the grid had no zero step either, so a seamless tile strip (a phone tab bar) had to
   // carry `gap="xs"`. `none` is a deliberate zero, distinct from omitting the prop (the md default).
   it.each(["none", "xs", "sm", "md", "lg", "xl"] as const)(
     'gap="%s" reaches the stylesheet as data-gap',

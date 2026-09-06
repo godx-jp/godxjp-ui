@@ -103,7 +103,7 @@ export interface BadgeProps
    * `<div>` would be invalid HTML: inside a `TabsTrigger`/`PopoverTrigger`/`Button` (all render a
    * `<button>`, whose content model is phrasing content only), inside a `<label>` or a `<p>`.
    * It swaps the TAG only — the chip's own `inline-flex` box, icon and label are unchanged, and
-   * both the icon `<svg>` and the label `<span>` are already phrasing content (gh#354).
+   * both the icon `<svg>` and the label `<span>` are already phrasing content.
    */
   as?: "div" | "span";
   /** Corner shape — `default` (badge radius) · `pill` (fully rounded) · `sharp` (square). */

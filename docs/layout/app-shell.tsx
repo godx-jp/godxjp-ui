@@ -282,8 +282,8 @@ export default function Demo() {
                 を切り替え、sidebar・topbar・page actions・grid・split pane
                 の変換を同じ実用構成で確認する。900px 以下ではドックされたサイドバーが隠れ、
                 AppShell 所有のモバイルドロワー（トップバー左のハンバーガー → フォーカストラップ付き
-                Sheet · Esc で閉じてトリガーへフォーカス復帰）が navigation を提供する（gh#165）。
-                このデモは mobileNav を渡していないため、同じ Sidebar がドロワーに再利用される。
+                Sheet · Esc で閉じてトリガーへフォーカス復帰）が navigation を提供する。 このデモは
+                mobileNav を渡していないため、同じ Sidebar がドロワーに再利用される。
               </CardDescription>
               <CardDescription>
                 「トップバーなし（チャット型）」を押すと topbar / topbarLeft / topbarRight / logo の
@@ -297,8 +297,8 @@ export default function Demo() {
                 で代用しないこと ― それは 4 スロットが埋まった状態と同じで、バーの行は残る。
               </CardDescription>
               <CardDescription>
-                横方向のページ余白軸の持ち主は <code>--space-page-x</code> ひとつ（gh#330）。
-                トップバーは <code>.app-main</code> と同じグリッド列に載っている ―
+                横方向のページ余白軸の持ち主は <code>--space-page-x</code> ひとつ。 トップバーは{" "}
+                <code>.app-main</code> と同じグリッド列に載っている ―
                 つまりバー先頭のコントロールとページタイトルは同じ縦線に並ぶべきもので、
                 <code>--app-shell-bar-inset</code> はその持ち主を読む （
                 <code>--app-shell-bar-inset-compact</code> も同様に

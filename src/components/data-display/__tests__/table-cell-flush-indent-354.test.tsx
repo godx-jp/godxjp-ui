@@ -6,7 +6,7 @@ import { renderWithUi } from "@/test/render";
 import { Table, TableBody, TableCell, TableRow } from "../table";
 
 /**
- * gh#354 items 4 and 5 — the two escapes a table cell had no prop for.
+ * The two escapes a table cell had no prop for.
  *
  *   `flush`  the cell's CONTENT owns the inset (an expanded detail panel had to
  *            reach for a `p-0` utility to span the cell).

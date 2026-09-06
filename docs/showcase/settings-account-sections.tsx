@@ -61,7 +61,7 @@ import { AlertDialog } from "@godxjp/ui/feedback";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 // ── Label bundles: the SAME screen at its longest JA / EN / VI wording ────────────────────────
-// Long-label stress is a first-class acceptance criterion (#216), so the bundle intentionally
+// Long-label stress is a first-class acceptance criterion, so the bundle intentionally
 // carries the verbose form of each label instead of the tidy demo form.
 
 type LabelBundle = {
@@ -348,7 +348,7 @@ export default function SettingsAccountSectionsShowcase() {
       title={b.pageTitle}
       subtitle={b.pageSubtitle}
       breadcrumb={[{ label: b.pageTitle }]}
-      // PageHeader action composition (#216): the header owns the page-level actions through
+      // PageHeader action composition: the header owns the page-level actions through
       // `extra`. It wraps at 390 instead of overflowing, so no page-local header geometry.
       extra={
         <Flex direction="row" align="end" gap="sm" wrap>
