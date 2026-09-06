@@ -52,6 +52,13 @@ export { TreeList } from "./tree-list";
 export type { TreeListItem, TreeListProps } from "./tree-list";
 export { Timeline } from "./timeline";
 export type { TimelineItem, TimelineProps } from "./timeline";
+export { TimelineGrid } from "./timeline-grid";
+export type {
+  TimelineGridColumnProp,
+  TimelineGridEventProp,
+  TimelineGridProp,
+  TimelineGridProps,
+} from "./timeline-grid";
 export {
   Popover,
   PopoverAnchor,

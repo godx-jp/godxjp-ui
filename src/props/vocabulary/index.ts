@@ -52,6 +52,7 @@ export type {
   ErrorSurfaceModeProp,
   ErrorSurfaceStatusProp,
   AuthShellPresetProp,
+  MobileShellHeightProp,
   OrientationProp,
   TableDensityProp,
   DensityProp,

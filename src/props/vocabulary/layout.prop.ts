@@ -24,6 +24,16 @@ export type CenteredShellWidthProp = "sm" | "md" | "lg";
 export type CenteredShellAlignProp = "start" | "center";
 
 /**
+ * MobileShell block-size contract — WHERE the handheld shell gets its one-screen height, the one
+ * question a bounded shell cannot answer for itself.
+ * `"viewport"` (default) is the real app: the shell is exactly `100dvh`, the document never
+ * scrolls, and the chrome bands stay on screen while the URL bar collapses. `"fill"` fills a
+ * BOUNDED parent instead — a device-frame preview, or a phone view embedded in a wider page —
+ * where a viewport-tall root would overflow its frame. Nothing else differs between the two.
+ */
+export type MobileShellHeightProp = "viewport" | "fill";
+
+/**
  * ErrorSurface shell contract — WHERE the exception surface lives, not how it looks.
  * `"application"` (403 / 404): the failure happened INSIDE the authenticated app, so the surface
  * is the page BODY of the `AppShell` the route already renders.

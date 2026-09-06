@@ -153,6 +153,7 @@ const componentPrefixes = {
     "auth-stack",
     "auth-shell",
     "centered-shell",
+    "mobile-shell",
     "page",
     "page-header",
     // It is styled

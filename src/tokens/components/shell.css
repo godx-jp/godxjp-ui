@@ -508,3 +508,46 @@
     --app-shell-bar-height: var(--band-height-3xl);
   }
 }
+
+/* MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region,
+ * a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which
+ * is why they belong to the shell and not to the page:
+ *
+ *  1. The shell is the only scroll container. The root is exactly one viewport tall
+ *     (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands
+ *     never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a
+ *     real phone, where the URL bar collapses under the page.
+ *  2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the
+ *     home indicator never covers the primary verb.
+ *
+ * The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets
+ * (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes
+ * `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding
+ * it to the inline START would be wrong under `dir="rtl"`. A symmetric inset is correct in both
+ * writing directions and costs at most a few px on the non-notch side in landscape.
+ *
+ * A service retunes the page gutter, the three band heights and the block padding from its theme;
+ * nothing here is reachable only through a consumer selector. */
+:root {
+  --mobile-shell-block-size: 100dvh;
+  --mobile-shell-safe-inset-block-start: env(safe-area-inset-top);
+  --mobile-shell-safe-inset-block-end: env(safe-area-inset-bottom);
+  --mobile-shell-safe-inset-inline: max(env(safe-area-inset-left), env(safe-area-inset-right));
+  /* Page gutter shared by every band AND by the scroll region, so the app-bar title, the list rows
+   * and the sticky action bar sit on ONE content edge — the axis gh#330 had to repair for
+   * CenteredShell after the bar and the column drifted 8px apart. */
+  --mobile-shell-inset-inline: var(--space-4);
+  /* Touch tier for the WHOLE shell subtree, the same technique `.ui-auth-shell` uses. Rule #24's
+   * 44px floor is already reached on a coarse pointer through --control-height, but a handheld app
+   * is touch-first BY DEFINITION — it must not render 32px targets merely because it is being
+   * previewed with a mouse, or because a service ships it in an Electron/desktop wrapper. */
+  --mobile-shell-control-height: var(--control-height-comfortable);
+  --mobile-shell-region-gap: var(--space-2);
+  --mobile-shell-status-bar-height: var(--band-height-lg);
+  --mobile-shell-header-bar-height: var(--band-height-3xl);
+  /* 4rem. A tab bar is an icon stacked over a label, so it is one step TALLER than the app bar;
+   * there is no 64px band step, so it derives from the 3.5rem one (tier 2a). */
+  --mobile-shell-tab-bar-height: calc(var(--band-height-3xl) + var(--space-2));
+  --mobile-shell-main-padding-block: var(--space-4);
+  --mobile-shell-actions-padding-block: var(--space-3);
+}

@@ -766,6 +766,118 @@ export function MyPage() {
     rules: [23],
   },
   {
+    name: "MobileShell",
+    group: "layout",
+    tagline:
+      "Handheld app shell (gh#354) — status band · app bar · the ONE scroll region · sticky action bar · bottom tab bar, with device safe-area insets and a document that never scrolls.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description:
+          "The scrolling screen body — the ONLY scroll container in the shell and its only elastic band. Everything else is fixed chrome, so a long list scrolls under a stationary app bar and tab bar instead of taking them off screen with it.",
+      },
+      {
+        name: "header",
+        type: "ReactNode",
+        description:
+          "App bar (banner) pinned to the top: the screen title plus its inline actions. Absorbs the top safe-area inset when there is no statusBar. Omit → no banner. For a screen MODE (multi-select, search, edit) swap the whole node rather than stacking a second strip under it — replacing the bar's contents is the platform pattern on iOS and Android alike.",
+      },
+      {
+        name: "statusBar",
+        type: "ReactNode",
+        description:
+          "The band that sits IN the OS status-bar strip above the app bar — the carrier/clock row of a display-mode:standalone PWA, or the simulated one in a device-frame preview. It owns the top safe-area inset when present. Omit it in an ordinary browser tab, where the OS already paints that strip and the header takes the inset instead.",
+      },
+      {
+        name: "actions",
+        type: "ReactNode",
+        description:
+          "The sticky action bar pinned above the tab bar — the screen's primary verb (Scan, Save, Hand over) and at most one secondary. It sits OUTSIDE the scroll region, so it is always reachable with no `position: sticky` and no scroll-padding hack, and it takes the home-indicator inset whenever no tabBar follows it.",
+      },
+      {
+        name: "tabBar",
+        type: "ReactNode",
+        description:
+          "Bottom tab bar (navigation) — the app's top-level destinations. Children TILE: equal width, no seam, no page gutter, so you never hand-roll a grid with a column count. Always the last band, so it owns the home-indicator inset.",
+      },
+      {
+        name: "height",
+        type: '"viewport" | "fill"',
+        defaultValue: '"viewport"',
+        description:
+          'Where the shell\'s one-screen height comes from. "viewport" (default) is the real app: exactly 100dvh, so the DOCUMENT never scrolls and the tab bar cannot slide away under a collapsing URL bar. "fill" fills a BOUNDED parent instead — a device-frame preview, or a phone view embedded in a wider page — where a viewport-tall root would overflow its frame. Nothing else differs between the two.',
+      },
+    ],
+    usage: [
+      "DO use MobileShell for a HANDHELD app screen — a warehouse/handy terminal, a driver app, a field-work PWA. It is the fourth root shell: AppShell (needs a sidebar) · AuthShell (unauthenticated card) · CenteredShell (authenticated scrolling document) · MobileShell (a phone app that does NOT scroll its document).",
+      "DO let `children` be the only thing that scrolls. Put the primary verb in `actions` and navigation in `tabBar` — both sit outside the scroll region, so neither needs `position: sticky`, a z-index, or bottom padding to clear the other.",
+      "DO NOT compose one out of <Card> + `ui-card-inset*` + `overflow-y-auto` (what docs/showcase/case6 did before gh#354). That reproduces the look and neither behaviour that matters on a device: the document still scrolls, and nothing pads out of env(safe-area-inset-*), so the notch covers the app bar and the home indicator covers the primary button.",
+      "DO swap the `header` node for a screen MODE (select mode, search mode) instead of stacking a second contextual strip below it — one bar to read, and the platform pattern on both iOS and Android.",
+      'DO use `height="fill"` ONLY when the shell is inside a bounded parent (a device-frame preview). In a real app leave it at "viewport": that is what keeps the document from scrolling.',
+      "DO NOT nest MobileShell inside AppShell / AuthShell / CenteredShell (or the reverse) — it is a ROOT shell. Retune the page gutter and the three band heights from the theme (--mobile-shell-inset-inline, --mobile-shell-header-bar-height, --mobile-shell-tab-bar-height, --mobile-shell-status-bar-height); never fork .ui-mobile-shell-* CSS.",
+    ],
+    useCases: [
+      "Warehouse handheld (代理店ハンディ): a status band, an app bar with a select-mode text action, a scrolling item list, a dominant Scan button in `actions`, and a three-destination `tabBar` (inbound · packing · outbound). See the case6-agency-handy showcase.",
+      "Driver / delivery app: route list in the scroll region, 'Arrived' as the single `actions` verb, tabs for today · history · profile.",
+      "Field-inspection PWA installed to the home screen: `statusBar` paints the standalone strip, `header` carries the site name, and the form scrolls under both.",
+      'A phone view embedded in a desktop device-frame preview: the same composition with `height="fill"` inside a fixed-size frame.',
+    ],
+    related: [
+      "AppShell — the authenticated shell WITH a sidebar rail and a mobile drawer at the 900px step. Use it for an admin console that happens to be viewed on a phone; use MobileShell when the phone IS the product.",
+      "CenteredShell — the authenticated no-sidebar shell whose main scrolls the PAGE. MobileShell is its handheld counterpart: same 'no rail' shape, opposite scroll contract.",
+      "AuthShell — the unauthenticated root. A login screen inside a handheld app still belongs to AuthShell, not MobileShell.",
+      'Sheet — `side="bottom"` is the handheld modal: scanners, pickers and forms open from the bottom over MobileShell rather than navigating away.',
+    ],
+    example: `import { Flex, MobileShell } from "@godxjp/ui/layout";
+import { Button, Heading, Text } from "@godxjp/ui/general";
+import { Inbox, Package, ScanLine, Truck } from "lucide-react";
+
+export function HandyInbound() {
+  return (
+    <MobileShell
+      statusBar={<Text size="sm" tabular>9:41</Text>}
+      header={
+        <Flex align="center" justify="between" gap="xs" className="w-full">
+          <Heading level={3} as="h1">入庫</Heading>
+          <Button variant="ghost" size="sm">選択</Button>
+        </Flex>
+      }
+      actions={
+        <Button className="flex-[2]">
+          <ScanLine aria-hidden="true" />
+          スキャン
+        </Button>
+      }
+      tabBar={
+        <>
+          <Button variant="ghost" aria-current="page" className="h-full flex-col rounded-none">
+            <Inbox aria-hidden="true" />
+            <Text size="2xs">入庫</Text>
+          </Button>
+          <Button variant="ghost" className="h-full flex-col rounded-none">
+            <Package aria-hidden="true" />
+            <Text size="2xs">梱包</Text>
+          </Button>
+          <Button variant="ghost" className="h-full flex-col rounded-none">
+            <Truck aria-hidden="true" />
+            <Text size="2xs">出庫</Text>
+          </Button>
+        </>
+      }
+    >
+      <Flex direction="col" gap="sm">
+        <Text>洗顔フォーム</Text>
+        <Text>日焼け止め</Text>
+      </Flex>
+    </MobileShell>
+  );
+}`,
+    storyPath: "layout/MobileShell.stories.tsx",
+    rules: [23, 24, 45],
+  },
+  {
     name: "Sidebar",
     group: "layout",
     tagline:
@@ -3399,6 +3511,113 @@ import remarkGfm from "remark-gfm";
 ]} />`,
     storyPath: "data-display/Timeline.stories.tsx",
     rules: [],
+  },
+  {
+    name: "TimelineGrid",
+    group: "data-display",
+    tagline:
+      "The time-axis half of the Timeline family: a vertical hour axis, one column per day (or room, or machine) and event blocks placed by start time and duration. Overlapping events are laid out side by side automatically. NOT a calendar \u2014 no month view, no navigation, no drag-to-create, no recurrence, no timezone conversion.",
+    props: [
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description:
+          "Accessible name of the grid. Required, and a plain string: the grid is a focusable scrolling region, so its name has to survive as an `aria-label`.",
+      },
+      {
+        name: "columns",
+        type: "TimelineGridColumnProp[]",
+        required: true,
+        description:
+          "`{ id, label, description?, current? }` in render order. `label` is the column head AND the accessible name of that column's event list, so keep it text. `current: true` marks today's column: it takes the tint and hosts the `now` marker.",
+      },
+      {
+        name: "events",
+        type: "TimelineGridEventProp[]",
+        required: true,
+        description:
+          '`{ id, columnId, start, end, title, description?, color? }` in any order. `start`/`end` are clock times in the column\'s own day, `"HH:MM"` 24-hour (`"24:00"` = end of day). An `end` at or before `start` continues into the next day (22:00\u201306:00 \u591c\u52e4). `color` is the record\'s own colour, washed like `Badge color`.',
+      },
+      {
+        name: "start",
+        type: "string",
+        defaultValue: "the earliest event, on the hour",
+        description:
+          'First clock time on the axis, `"HH:MM"`. Left off, the axis is derived from the events, so a block can only fall outside an axis you PINNED.',
+      },
+      {
+        name: "end",
+        type: "string",
+        defaultValue: "the latest event, on the hour",
+        description:
+          'Last clock time on the axis, `"HH:MM"`. A block the pinned axis cuts is drawn to the edge and carries `data-clipped`, and still prints its real range as text.',
+      },
+      {
+        name: "interval",
+        type: "number",
+        defaultValue: "1",
+        description:
+          "Hours between hour rules and axis labels. Use 2 or 3 when a long axis has to fit one screen.",
+      },
+      {
+        name: "now",
+        type: "string",
+        description:
+          'Current clock time, `"HH:MM"`. Draws the now marker in every column marked `current`. The marker is decorative (`aria-hidden`): the hours it points at are already text on every block.',
+      },
+      {
+        name: "onEventSelect",
+        type: "(event: TimelineGridEventProp) => void",
+        description:
+          "Block click handler. Its PRESENCE turns every block into a real `button`, which is what makes the blocks keyboard-reachable; without it the grid is a read-only board.",
+      },
+      { name: "className", type: "string", description: "Extra classes on the scroll region." },
+      { name: "id", type: "string", description: "DOM id on the scroll region." },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/data-display`: `import { TimelineGrid } from "@godxjp/ui/data-display";`',
+      "DO give a shift/booking board one column per day and let the grid place the blocks. DON'T hand-roll a `relative` container with absolutely-positioned divs and percentage offsets \u2014 that is the exact shape this primitive replaces (#354 item 7), and it hides one of two overlapping shifts.",
+      "DO re-tune the rhythm with the tokens instead of a className: `--timeline-grid-hour-height` is the height of one hour (the knob that fits a 24-hour axis on one screen), `--timeline-grid-column-min-width` is the floor below which the grid scrolls instead of collapsing, `--timeline-grid-axis-width` is the hour rail, and `--timeline-grid-event-color` / `--timeline-grid-now-color` / `--timeline-grid-current-tint` are role-mirror colour knobs.",
+      'DO express a shift that crosses midnight as `start: "22:00", end: "06:00"` \u2014 an `end` at or before `start` means the next day. The block is drawn to the end of the window and marked `data-clipped`, and the text still reads 22:00\u201306:00.',
+      "DON'T reach for TimelineGrid for a MONTH calendar: a month grid is a real `Table`, one `TableRow` per week and one `TableCell` per day. TimelineGrid owns the continuous time axis, not the day matrix.",
+      "DON'T expect navigation, drag-to-create, recurrence or timezone conversion \u2014 none of it ships. `start`/`end` are clock times in the column's own day; which day a column stands for is yours to decide.",
+      "DON'T pass an event whose `columnId` matches no column, or one that falls entirely outside a pinned `start`/`end`: it is not drawn. Leave the axis unpinned and it is derived from the events instead.",
+    ],
+    useCases: [
+      "A weekly shift board (\u30b7\u30d5\u30c8\u30ab\u30ec\u30f3\u30c0\u30fc): seven day columns on a 06:00\u201324:00 axis, \u65e9\u756a / \u9045\u756a / \u591c\u52e4 blocks in the decorative wa-iro palette, `now` drawing the current-time line on today's column.",
+      "A day view of one team: one column per staff member, `interval={1}`, `onEventSelect` opening the shift detail in a Sheet.",
+      "Meeting-room booking for a single day: one column per room, the axis derived from the bookings themselves, overlapping holds side by side so a double-booking is visible instead of hidden.",
+      "Machine / bay utilisation on a shop floor: one column per machine, blocks coloured by job, the clipped marker showing a run that continues past the shift window.",
+    ],
+    related: [
+      "Timeline \u2014 one lane of ordered events with no scale (an audit trail, a shipment history). TimelineGrid is the same family with a measured time axis and one lane per column.",
+      "Table \u2014 the MONTH calendar is a real table (`bordered`, one row per week, one cell per day), not a TimelineGrid.",
+      "Calendar \u2014 the single-date PICKER in data-entry. Use it to jump to a month; it does not show events.",
+      "Sheet \u2014 the usual destination of `onEventSelect`: the block is the affordance, the drawer is the detail.",
+      "Badge \u2014 the same `color` wash for a record's own colour, on a chip instead of a block.",
+    ],
+    example: `import { TimelineGrid } from "@godxjp/ui/data-display";
+
+<TimelineGrid
+  label="\u9031\u30b7\u30d5\u30c8 5\u670811\u65e5\u301c17\u65e5"
+  start="06:00"
+  end="24:00"
+  interval={2}
+  now="14:35"
+  columns={[
+    { id: "05-13", label: "\u6c34 13" },
+    { id: "05-14", label: "\u6728 14", current: true },
+  ]}
+  events={[
+    { id: "a", columnId: "05-14", start: "09:00", end: "17:30", title: "\u65e9\u756a", description: "\u7530\u4e2d" },
+    { id: "b", columnId: "05-14", start: "13:00", end: "22:00", title: "\u9045\u756a", description: "\u9ad8\u6a4b" },
+    { id: "c", columnId: "05-14", start: "22:00", end: "06:00", title: "\u591c\u52e4", description: "\u4f0a\u85e4" },
+  ]}
+  onEventSelect={(event) => openShift(event.id)}
+/>`,
+    storyPath: "data-display/TimelineGrid.stories.tsx",
+    rules: [42, 45],
   },
   {
     name: "Table",

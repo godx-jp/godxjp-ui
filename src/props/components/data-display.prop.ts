@@ -414,3 +414,65 @@ export type ScrollAreaProp = {
    */
   onAnchoredChange?: (anchored: boolean) => void;
 };
+
+/**
+ * @see TimelineGrid — one COLUMN of the grid (a day, a room, a machine). The label names the
+ * column visually AND names the column's event list for assistive technology.
+ */
+export type TimelineGridColumnProp = {
+  /** Stable column id — the `columnId` an event points at. */
+  id: string;
+  /** Column head. Also the accessible name of that column's event list, so keep it text. */
+  label: LabelProp;
+  /** Secondary line under the head (a date, a capacity, a room number). */
+  description?: DescriptionProp;
+  /** Marks the column as "now" (today's column): it carries the tint and hosts the `now` marker. */
+  current?: boolean;
+};
+
+/**
+ * @see TimelineGrid — one event BLOCK. `start`/`end` are clock times in the column's own day,
+ * `"HH:MM"` 24-hour (`"24:00"` = end of day). An `end` at or before `start` continues into the
+ * next day (22:00–06:00), and the block is drawn to the end of the window and marked clipped.
+ */
+export type TimelineGridEventProp = {
+  /** Stable event id — the React key, and the `data-event-id` on the block. */
+  id: string;
+  /** Id of the column this event belongs to. An event pointing at no column is not drawn. */
+  columnId: string;
+  /** Start clock time, `"HH:MM"`. */
+  start: string;
+  /** End clock time, `"HH:MM"`. At or before `start` = continues into the next day. */
+  end: string;
+  /** Block title. The block also renders the time range as text, so the range is never colour or position alone. */
+  title: TitleProp;
+  /** Secondary line inside the block (who is on the shift, a room, a customer). */
+  description?: DescriptionProp;
+  /** The record's own colour, washed exactly like `Badge color` — decorative, never the only signal. */
+  color?: string;
+};
+
+/** @see TimelineGrid */
+export type TimelineGridProp = {
+  /**
+   * Accessible name of the grid. Required, and a plain `string`: the grid is a focusable scroll
+   * region, so its name has to survive as an `aria-label`.
+   */
+  label: Extract<LabelProp, string>;
+  /** Columns in render order. */
+  columns: readonly TimelineGridColumnProp[];
+  /** Events in any order; the grid sorts each column by start time and lays overlaps out side by side. */
+  events: readonly TimelineGridEventProp[];
+  /** First clock time on the axis, `"HH:MM"`. Defaults to the earliest event, on the hour. */
+  start?: string;
+  /** Last clock time on the axis, `"HH:MM"`. Defaults to the latest event, on the hour. */
+  end?: string;
+  /** Hours between hour rules and axis labels. Default `1`. */
+  interval?: number;
+  /** Current clock time, `"HH:MM"`. Draws the now marker in the columns marked `current`. */
+  now?: string;
+  /** Block click handler. Its PRESENCE turns every block into a real `button`. */
+  onEventSelect?: (event: TimelineGridEventProp) => void;
+  className?: ClassNameProp;
+  id?: IdProp;
+};

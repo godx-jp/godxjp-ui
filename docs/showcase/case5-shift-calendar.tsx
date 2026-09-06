@@ -10,18 +10,17 @@
  *   page chrome ............. AppShell + Sidebar + Topbar
  *   page header + nav ....... PageContainer (extra slot) + Button + ToggleGroup (月/週/日)
  *   month jump-to ........... Calendar (date-picker) inside a Popover
- *   month event grid ........ Card + a 7-col CSS grid of day cells + shift "pills"  ── GAP, see below
- *   week time-axis + now-line  Card + a 06–21 row grid + an absolutely-placed now bar ── GAP, see below
+ *   month event grid ........ Card + Table bordered (one <tr> per week, one <td> per day)
+ *   week time-axis + now-line  Card + TimelineGrid (hour axis, day columns, `now` marker)
  *   day staff×time .......... Card + Timeline (per-staff lane) + EmptyState (understaffed)
  *   shift legend ............ Card + the wa-iro decorative palette swatches
  *   date detail (mobile) .... Sheet (master-detail collapses to a drawer < lg)
  *
- * GAP (documented in .design/research/screens.md §6 + ui-kit-surfaces.md §9):
- *   @godxjp/ui's `Calendar` is a single-date PICKER, not a month/week event grid.
- *   There is no `ShiftCalendar` / scheduling-grid primitive. The month grid and the
- *   week time-axis are therefore COMPOSED from real primitives (Card + token-driven
- *   CSS grid + Badge), never a hand-rolled faux component. The real Calendar is still
- *   used for its genuine job (jumping to a month). See `gapNotes`.
+ * The two grids each take the primitive that fits their shape. A MONTH is a day matrix, so it is
+ * a real `Table`. A WEEK is a continuous time axis, so it is `TimelineGrid` — which also places
+ * the 木曜 早番/遅番 pair side by side instead of stacking one on top of the other, and clips the
+ * 夜勤 22:00–06:00 at the 24:00 edge while the block still prints its real range. `Calendar` keeps
+ * its genuine job: a single-date PICKER for jumping to a month.
  *
  * DNA applied: compact density, small headings (20/18/14/13), fixed color signaling
  * (success 若竹 / warning 山吹 / info 群青 / attention 朱 / danger 茜), tabular-nums,
@@ -63,6 +62,9 @@ import {
   TableHeader,
   TableRow,
   Timeline,
+  TimelineGrid,
+  type TimelineGridColumnProp,
+  type TimelineGridEventProp,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
 import { Calendar, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
@@ -227,43 +229,56 @@ const MONTH_WEEKS = Array.from({ length: MONTH_CELLS.length / 7 }, (_, w) =>
   MONTH_CELLS.slice(w * 7, w * 7 + 7),
 );
 
-// ── Week view (2026-05-11 〜 05-17), time axis 06:00–22:00 ─────────────────────
-const WEEK_DATES = [
+// ── Week view (2026-05-11 〜 05-17), time axis 06:00–24:00 ─────────────────────
+// The week axis is a real `TimelineGrid`: columns are days, blocks are placed by start time and
+// duration, and two shifts that overlap are laid out side by side by the primitive.
+const WEEK_COLUMNS: TimelineGridColumnProp[] = [
   { date: 11, weekday: 1 },
   { date: 12, weekday: 2 },
   { date: 13, weekday: 3 },
-  { date: 14, weekday: 4, today: true },
+  { date: 14, weekday: 4, current: true },
   { date: 15, weekday: 5 },
   { date: 16, weekday: 6 },
   { date: 17, weekday: 0 },
-];
-const HOURS = [6, 8, 10, 12, 14, 16, 18, 20, 22];
+].map(({ date, weekday, current }) => ({
+  id: `05-${date}`,
+  label: (
+    <Text
+      as="span"
+      size="2xs"
+      weight="medium"
+      tabular
+      style={{
+        color:
+          weekday === 0
+            ? "var(--destructive)"
+            : weekday === 6
+              ? "var(--info)"
+              : "var(--muted-foreground)",
+      }}
+    >
+      {WEEKDAY_HEAD[weekday]} {date}
+    </Text>
+  ),
+  current,
+}));
 
-type WeekBlock = {
-  col: number; // 0..6 day index
-  kind: ShiftKind;
-  staff: string;
-  startHour: number;
-  endHour: number; // for night/通し may exceed 24 → clamp display
-};
-const WEEK_BLOCKS: WeekBlock[] = [
-  { col: 3, kind: "early", staff: "田中", startHour: 9, endHour: 17.5 },
-  { col: 3, kind: "late", staff: "高橋", startHour: 13, endHour: 22 },
-  { col: 3, kind: "night", staff: "伊藤", startHour: 22, endHour: 30 },
-  { col: 0, kind: "tsushi", staff: "佐藤", startHour: 9, endHour: 22 },
-  { col: 4, kind: "early", staff: "佐藤", startHour: 9, endHour: 17.5 },
-  { col: 4, kind: "ot", staff: "鈴木", startHour: 18, endHour: 21 },
-  { col: 1, kind: "leave", staff: "鈴木", startHour: 6, endHour: 22 },
-];
-
-const AXIS_START = 6;
-const AXIS_END = 22; // display window; night spills are clamped + noted
-const NOW_HOUR = 14 + 35 / 60; // 14:35 now-line
-
-function hourToPct(h: number): number {
-  const clamped = Math.max(AXIS_START, Math.min(AXIS_END, h));
-  return ((clamped - AXIS_START) / (AXIS_END - AXIS_START)) * 100;
-}
+// 夜勤 22:00→06:00: an end at or before the start means the shift runs into the next day, so the
+// grid clips it at the 24:00 edge and still prints the real range on the block.
+const WEEK_SHIFTS: TimelineGridEventProp[] = [
+  { id: "w1", columnId: "05-14", start: "09:00", end: "17:30", kind: "early", staff: "田中" },
+  { id: "w2", columnId: "05-14", start: "13:00", end: "22:00", kind: "late", staff: "高橋" },
+  { id: "w3", columnId: "05-14", start: "22:00", end: "06:00", kind: "night", staff: "伊藤" },
+  { id: "w4", columnId: "05-11", start: "09:00", end: "22:00", kind: "tsushi", staff: "佐藤" },
+  { id: "w5", columnId: "05-15", start: "09:00", end: "17:30", kind: "early", staff: "佐藤" },
+  { id: "w6", columnId: "05-15", start: "18:00", end: "21:00", kind: "ot", staff: "鈴木" },
+  { id: "w7", columnId: "05-12", start: "06:00", end: "22:00", kind: "leave", staff: "鈴木" },
+].map(({ kind, staff, ...event }) => ({
+  ...event,
+  title: SHIFT_META[kind as ShiftKind].label,
+  description: staff,
+  color: `var(${SHIFT_META[kind as ShiftKind].cssVar})`,
+}));
 
 // ── Day view (2026-05-14) — per-staff lanes via Timeline + understaffed gap ───
 const DAY_LANES: Array<{ staff: string; role: string; items: TimelineItem[] }> = [
@@ -480,7 +495,7 @@ export default function ShiftCalendarShowcase() {
   );
 }
 
-// ── Month grid — composed from primitives (GAP: no event-calendar primitive) ──
+// ── Month grid — a real Table: one <tr> per week, one <td> per day ────────────
 function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
   return (
     <Card>
@@ -600,7 +615,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
   );
 }
 
-// ── Week time-axis with a now-line (GAP: no time-grid primitive) ──────────────
+// ── Week time-axis — the TimelineGrid primitive (#354 item 7 closed) ──────────
 function WeekTimeline() {
   return (
     <Card>
@@ -608,135 +623,20 @@ function WeekTimeline() {
         <CardTitle level={2}>週</CardTitle>
         <CardAction>
           <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
-            5月11日〜17日 · 06:00–22:00
+            5月11日〜17日 · 06:00–24:00
           </Text>
         </CardAction>
       </CardHeader>
       <CardContent flush>
-        <div className="overflow-x-auto">
-          <div className="min-w-[760px]">
-            {/* Day header row */}
-            <ResponsiveGrid
-              columns={{ sm: 1, md: 1, lg: 1 }}
-              className="bg-secondary grid-cols-[48px_repeat(7,1fr)] border-b"
-            >
-              <div aria-hidden="true" />
-              {WEEK_DATES.map((d) => (
-                <Text
-                  as="div"
-                  key={d.date}
-                  size="2xs"
-                  weight="medium"
-                  tabular
-                  align="center"
-                  className="ui-card-inset-y"
-                  style={{
-                    color:
-                      d.weekday === 0
-                        ? "var(--destructive)"
-                        : d.weekday === 6
-                          ? "var(--info)"
-                          : "var(--muted-foreground)",
-                    background:
-                      "today" in d && d.today
-                        ? "color-mix(in oklch, var(--primary) 6%, transparent)"
-                        : undefined,
-                  }}
-                >
-                  {WEEKDAY_HEAD[d.weekday]} {d.date}
-                </Text>
-              ))}
-            </ResponsiveGrid>
-            {/* Time grid body */}
-            <ResponsiveGrid
-              columns={{ sm: 1, md: 1, lg: 1 }}
-              className="relative grid-cols-[48px_repeat(7,1fr)]"
-            >
-              {/* Hour axis labels */}
-              <div className="relative" style={{ height: `${(AXIS_END - AXIS_START) * 22}px` }}>
-                {HOURS.map((h) => (
-                  <Text
-                    as="div"
-                    key={h}
-                    size="2xs"
-                    tone="muted"
-                    tabular
-                    className="absolute end-1.5 -translate-y-1/2"
-                    style={{ top: `${hourToPct(h)}%` }}
-                  >
-                    {String(h).padStart(2, "0")}:00
-                  </Text>
-                ))}
-              </div>
-              {/* 7 day columns */}
-              {WEEK_DATES.map((d, col) => (
-                <div
-                  key={d.date}
-                  className="relative border-s"
-                  style={{ height: `${(AXIS_END - AXIS_START) * 22}px` }}
-                >
-                  {/* hour gridlines */}
-                  {HOURS.map((h) => (
-                    <div
-                      key={h}
-                      aria-hidden="true"
-                      className="border-border/60 absolute inset-x-0 border-t"
-                      style={{ top: `${hourToPct(h)}%` }}
-                    />
-                  ))}
-                  {/* shift blocks for this column */}
-                  {WEEK_BLOCKS.filter((b) => b.col === col).map((b, i) => {
-                    const top = hourToPct(b.startHour);
-                    const bottom = hourToPct(b.endHour);
-                    const meta = SHIFT_META[b.kind];
-                    const spills = b.endHour > AXIS_END;
-                    return (
-                      <Badge
-                        key={`${b.kind}-${i}`}
-                        color={`var(${meta.cssVar})`}
-                        shape="sharp"
-                        className="absolute inset-x-0.5 items-start overflow-hidden leading-tight"
-                        style={{
-                          top: `${top}%`,
-                          height: `${Math.max(bottom - top, 4)}%`,
-                        }}
-                        title={`${meta.label} ${meta.time} · ${b.staff}`}
-                      >
-                        <Flex direction="col" gap="none" className="min-w-0">
-                          <Text as="div" size="2xs" weight="medium" truncate>
-                            {meta.label}
-                          </Text>
-                          <Text as="div" size="2xs" tone="muted" truncate>
-                            {b.staff}
-                          </Text>
-                          {spills ? (
-                            <Text as="div" size="2xs" tone="muted" tabular>
-                              翌日へ ↓
-                            </Text>
-                          ) : null}
-                        </Flex>
-                      </Badge>
-                    );
-                  })}
-                  {/* now-line — only on "today" (col 3), 14:35 */}
-                  {"today" in d && d.today ? (
-                    <div
-                      aria-label="現在時刻 14:35"
-                      className="pointer-events-none absolute inset-x-0 z-10"
-                      style={{ top: `${hourToPct(NOW_HOUR)}%` }}
-                    >
-                      <div className="h-px" style={{ background: "var(--destructive)" }} />
-                      <div
-                        className="absolute -start-1 -top-1 size-2 rounded-full"
-                        style={{ background: "var(--destructive)" }}
-                      />
-                    </div>
-                  ) : null}
-                </div>
-              ))}
-            </ResponsiveGrid>
-          </div>
-        </div>
+        <TimelineGrid
+          label="週シフト 2026年5月11日〜17日"
+          columns={WEEK_COLUMNS}
+          events={WEEK_SHIFTS}
+          start="06:00"
+          end="24:00"
+          interval={2}
+          now="14:35"
+        />
       </CardContent>
     </Card>
   );

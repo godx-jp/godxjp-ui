@@ -16,6 +16,7 @@ import type {
   ErrorSurfaceModeProp,
   ErrorSurfaceStatusProp,
   AuthShellPresetProp,
+  MobileShellHeightProp,
   OrientationProp,
   TextAlignProp,
   TextToneProp,
@@ -311,6 +312,69 @@ export type AuthShellProp = {
    * `"compact"`; the default variant defaults to `"comfortable"`.
    */
   density?: "comfortable" | "compact";
+  className?: ClassNameProp;
+};
+
+/**
+ * @see MobileShell — the HANDHELD app shell: a status band, an app bar, ONE scroll region, a
+ * sticky action bar and a bottom tab bar, in that fixed order.
+ *
+ * It is the fourth root shell, and it exists because the other three cannot express a phone app:
+ * `AppShell` REQUIRES a sidebar (its bar is a grid area beside the nav rail), `AuthShell` is the
+ * UNAUTHENTICATED root and centres a ~24rem card, and `CenteredShell` is a scrolling DOCUMENT —
+ * its `main` scrolls the page, which is exactly what a handheld app must not do. Composing one out
+ * of `Card` + `ui-card-inset*` (what docs/showcase/case6 did before gh#354) reproduces the look
+ * and none of the two behaviours that matter on a real device:
+ *
+ *  1. The shell is the only scroll container. The root is exactly one screen tall, so the DOCUMENT
+ *     never scrolls and the tab bar never slides away under a collapsing URL bar.
+ *  2. Every band pads itself out of `env(safe-area-inset-*)`, so the notch never covers the app
+ *     bar and the home indicator never covers the primary verb.
+ *
+ * Layout-only, like the other shells: it paints chrome and owns geometry, and delegates motion to
+ * `Reveal`. Never nest it inside another shell — it is a ROOT.
+ */
+export type MobileShellProp = {
+  /**
+   * The scrolling screen body — the ONLY scroll container in the shell, and the only elastic band.
+   * Everything else is fixed chrome, so a long list scrolls under a stationary app bar and tab bar.
+   */
+  children: ReactNode;
+  /**
+   * App bar (banner) pinned to the top: the screen title plus its inline actions. When there is no
+   * `statusBar` this band absorbs the top safe-area inset itself. Omit → no banner.
+   *
+   * On a screen with a MODE (multi-select, search, edit) swap the whole node rather than stacking a
+   * second strip under it — replacing the bar's contents is the platform pattern on both iOS and
+   * Android, and it keeps one bar to read instead of two.
+   */
+  header?: ReactNode;
+  /**
+   * The band that sits IN the OS status-bar strip above the app bar — the carrier/clock row of a
+   * `display-mode: standalone` PWA, or the simulated one in a device-frame preview. It absorbs the
+   * top safe-area inset when present. Omit it in an ordinary browser tab, where the OS already owns
+   * that strip: the header then takes the inset.
+   */
+  statusBar?: ReactNode;
+  /**
+   * The sticky action bar pinned above the tab bar — the screen's primary verb (Scan, Save, Hand
+   * over) and at most one secondary. It sits OUTSIDE the scroll region, so it is always reachable
+   * without `position: sticky` and without a scroll-padding hack, and it takes the home-indicator
+   * inset whenever no tab bar follows it.
+   */
+  actions?: ActionProp;
+  /**
+   * Bottom tab bar (navigation) — the app's top-level destinations. Its children TILE: equal width,
+   * no seam, no page gutter, so the consumer never hand-rolls a grid with a column count. Always
+   * the last band, so it owns the home-indicator inset.
+   */
+  tabBar?: ReactNode;
+  /**
+   * Where the shell's one-screen height comes from. `"viewport"` (default) is the real app —
+   * exactly `100dvh`, document never scrolls. `"fill"` fills a BOUNDED parent instead (a
+   * device-frame preview, a phone view embedded in a wider page).
+   */
+  height?: MobileShellHeightProp;
   className?: ClassNameProp;
 };
 

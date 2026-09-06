@@ -43,7 +43,7 @@ import {
 } from "lucide-react";
 
 import { Button, Heading, Text } from "@godxjp/ui/general";
-import { Flex, ResponsiveGrid } from "@godxjp/ui/layout";
+import { Flex, MobileShell, ResponsiveGrid } from "@godxjp/ui/layout";
 import {
   Badge,
   type BadgeProps,
@@ -332,59 +332,52 @@ function SectionHeader({ children, count }: { children: React.ReactNode; count?:
 
 // ── Phone shell ──────────────────────────────────────────────────────────────
 
-function PhoneFrame({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mx-auto w-96 max-w-full shrink-0">
-      <Card className="overflow-hidden">
-        <CardContent flush>
-          <Flex direction="col" className="max-h-[calc(100vh-2rem)] min-h-[844px]">
-            {children}
-          </Flex>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
+/**
+ * gh#354 §6 — this file used to BUILD the shell: a `Card` + `CardContent flush` phone frame, a
+ * `ui-card-inset-x h-9` status row, an `h-14 border-b` header, a `flex-1 overflow-y-auto` body, a
+ * `shrink-0 border-t` action strip and a `ResponsiveGrid` tab bar. It reproduced the look and
+ * neither behaviour that matters on a device — the document still scrolled, and nothing padded out
+ * of `env(safe-area-inset-*)`. All five bands are now `MobileShell` slots.
+ */
 
 function StatusBar() {
   return (
-    <Flex align="center" justify="between" gap="xs" className="ui-card-inset-x h-9 shrink-0">
+    <>
       <Text size="sm" weight="medium" tabular>
         9:41
       </Text>
       <Text size="sm" weight="medium" tabular tone="muted">
         Acme Handy
       </Text>
-    </Flex>
+    </>
   );
 }
 
 function TabBar({ active, onChange }: { active: string; onChange: (id: string) => void }) {
+  // The tab bar's own tiling — equal width, no seam, no gutter — is the `tabBar` slot's contract,
+  // so there is no grid and no column count here any more.
   return (
-    <nav className="shrink-0 border-t" aria-label="ワークフロー">
-      {/* A phone tab bar has no seam between its tabs — the three targets tile edge to edge. */}
-      <ResponsiveGrid columns={{ sm: 3, md: 3, lg: 3 }} gap="none">
-        {TABS.map((t) => {
-          const isActive = t.id === active;
-          const Icon = t.icon;
-          return (
-            <Button
-              key={t.id}
-              variant="ghost"
-              onClick={() => onChange(t.id)}
-              aria-current={isActive ? "page" : undefined}
-              className={
-                "h-16 flex-col rounded-none font-medium text-[var(--font-size-2xs)] " +
-                (isActive ? "text-primary" : "text-muted-foreground")
-              }
-            >
-              <Icon className="size-5" aria-hidden="true" strokeWidth={1.5} />
-              <span className="whitespace-nowrap">{t.label}</span>
-            </Button>
-          );
-        })}
-      </ResponsiveGrid>
-    </nav>
+    <>
+      {TABS.map((t) => {
+        const isActive = t.id === active;
+        const Icon = t.icon;
+        return (
+          <Button
+            key={t.id}
+            variant="ghost"
+            onClick={() => onChange(t.id)}
+            aria-current={isActive ? "page" : undefined}
+            className={
+              "h-full flex-col rounded-none font-medium text-[var(--font-size-2xs)] " +
+              (isActive ? "text-primary" : "text-muted-foreground")
+            }
+          >
+            <Icon className="size-5" aria-hidden="true" strokeWidth={1.5} />
+            <span className="whitespace-nowrap">{t.label}</span>
+          </Button>
+        );
+      })}
+    </>
   );
 }
 
@@ -599,26 +592,24 @@ function ItemFormSheet({
 
 type ListState = "ready" | "loading" | "empty" | "error";
 
+/**
+ * The SCROLL REGION of the inbound screen — and nothing else. The sticky bar and the tab bar are
+ * `MobileShell` bands now, so this component no longer owns a scroll box, a `flex-1`, or a border.
+ */
 function InboundTab({
   state,
   onRetry,
   selectMode,
-  setSelectMode,
   selected,
   setSelected,
   onScan,
-  onAdd,
-  onAssign,
 }: {
   state: ListState;
   onRetry: () => void;
   selectMode: boolean;
-  setSelectMode: (v: boolean) => void;
   selected: Set<string>;
   setSelected: React.Dispatch<React.SetStateAction<Set<string>>>;
   onScan: () => void;
-  onAdd: () => void;
-  onAssign: () => void;
 }) {
   const [filter, setFilter] = React.useState<string>("all");
 
@@ -631,298 +622,317 @@ function InboundTab({
   );
 
   return (
-    <>
-      <Flex direction="col" gap="md" className="ui-card-inset flex-1 overflow-y-auto">
-        {/* Filter chips — horizontal scroll, count pills */}
-        <ToggleGroup
-          type="single"
-          value={filter}
-          onValueChange={(v) => {
-            if (v) setFilter(v);
-          }}
-          className="w-full overflow-x-auto"
-        >
-          <Flex justify="start" gap="sm">
-            {FILTERS.map((f) => (
-              <ToggleGroupItem
-                key={f.id}
-                value={f.id}
-                className="h-9 shrink-0 rounded-full whitespace-nowrap text-[var(--font-size-xs)]"
-              >
-                {f.label}
-                <Text size="xs" mono tabular className="opacity-70">
-                  {f.count}
-                </Text>
-              </ToggleGroupItem>
-            ))}
-          </Flex>
-        </ToggleGroup>
-
-        {state === "loading" ? (
-          <Flex direction="col" gap="md" aria-busy="true">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Card key={i} density="tight" className="rounded-xl">
-                <CardContent solo>
-                  <Flex direction="col" gap="md">
-                    <Skeleton className="h-4 w-3/5" />
-                    <Skeleton className="h-3 w-2/5" />
-                    <Skeleton className="h-5 w-24 rounded-full" />
-                  </Flex>
-                </CardContent>
-              </Card>
-            ))}
-          </Flex>
-        ) : state === "error" ? (
-          <Alert tone="warning">
-            <AlertTitle>Không tải được danh sách</AlertTitle>
-            <AlertDescription>
-              <Flex direction="col" align="start" gap="sm">
-                Kiểm tra kết nối rồi thử lại.
-                <Button variant="outline" size="sm" onClick={onRetry}>
-                  <RefreshCw aria-hidden="true" />
-                  Thử lại
-                </Button>
-              </Flex>
-            </AlertDescription>
-          </Alert>
-        ) : state === "empty" || visible.length === 0 ? (
-          <EmptyState
-            icon={Boxes}
-            title="Chưa có hàng trong mục này"
-            description="Quét mã để nhập hàng mới vào kho."
-            action={
-              <Button size="sm" onClick={onScan}>
-                <ScanLine aria-hidden="true" />
-                Quét / Tìm mã
-              </Button>
-            }
-          />
-        ) : (
-          <Flex direction="col" gap="md">
-            {visible.map((item) => (
-              <ItemListCard
-                key={item.id}
-                item={item}
-                selectMode={selectMode}
-                selected={selected.has(item.id)}
-                onToggle={() =>
-                  setSelected((prev) => {
-                    const next = new Set(prev);
-                    if (next.has(item.id)) next.delete(item.id);
-                    else next.add(item.id);
-                    return next;
-                  })
-                }
-              />
-            ))}
-          </Flex>
-        )}
-      </Flex>
-
-      {/* Sticky action bar (scan-first) OR select-mode contextual bar */}
-      {selectMode ? (
-        <Flex
-          direction="col"
-          gap="sm"
-          className="ui-card-inset shrink-0 border-t bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))]"
-        >
-          <Flex align="center" justify="between">
-            <Text size="sm" tabular>
-              <Text as="span" weight="bold">
-                {selected.size}
-              </Text>{" "}
-              item đã chọn
-            </Text>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setSelectMode(false);
-                setSelected(new Set());
-              }}
+    <Flex direction="col" gap="md">
+      {/* Filter chips — horizontal scroll, count pills */}
+      <ToggleGroup
+        type="single"
+        value={filter}
+        onValueChange={(v) => {
+          if (v) setFilter(v);
+        }}
+        className="w-full overflow-x-auto"
+      >
+        <Flex justify="start" gap="sm">
+          {FILTERS.map((f) => (
+            <ToggleGroupItem
+              key={f.id}
+              value={f.id}
+              className="h-9 shrink-0 rounded-full whitespace-nowrap text-[var(--font-size-xs)]"
             >
-              Xong
-            </Button>
-          </Flex>
-          <Flex gap="sm">
-            <Button className="flex-[2]" disabled={selected.size === 0} onClick={onAssign}>
-              <Package aria-hidden="true" />
-              Gán vào kiện…
-            </Button>
-            <Button variant="outline" className="flex-1" disabled={selected.size === 0}>
-              Kiện mới
-            </Button>
-          </Flex>
-        </Flex>
-      ) : (
-        <Flex gap="sm" className="ui-card-inset shrink-0 border-t">
-          <Button className="flex-[2]" onClick={onScan}>
-            <ScanLine aria-hidden="true" />
-            Quét / Tìm mã
-          </Button>
-          <Button variant="outline" className="flex-1" onClick={onAdd}>
-            <Plus aria-hidden="true" />
-            Thêm hàng
-          </Button>
-        </Flex>
-      )}
-    </>
-  );
-}
-
-function PackingTab({ onScan }: { onScan: () => void }) {
-  const active = PACKINGS.find((p) => p.status === "active");
-  const others = PACKINGS.filter((p) => p.status !== "active");
-  return (
-    <>
-      <Flex direction="col" gap="md" className="ui-card-inset flex-1 overflow-y-auto">
-        {active ? (
-          <Card
-            density="tight"
-            accent="primary"
-            className="border-primary bg-[color-mix(in_oklch,var(--primary)_6%,transparent)]"
-          >
-            <CardContent solo>
-              <Flex direction="col" gap="xs">
-                <Flex align="center" justify="between">
-                  <Text
-                    size="2xs"
-                    weight="medium"
-                    tone="muted"
-                    className="tracking-wider uppercase"
-                  >
-                    Kiện đang làm
-                  </Text>
-                  <Badge tone="info" variant="outline" className="rounded-full">
-                    {PACKING_STATUS.active.label}
-                  </Badge>
-                </Flex>
-                <Text as="div" size="lg" weight="bold" mono tabular>
-                  {active.code}
-                </Text>
-                <Text size="xs" tone="muted" tabular as="div">
-                  {active.customer} · {active.city} · ×{active.items} · {active.slot}
-                </Text>
-              </Flex>
-            </CardContent>
-          </Card>
-        ) : null}
-
-        <SectionHeader count={others.length}>Kiện đang mở</SectionHeader>
-        <Flex direction="col" gap="md">
-          {others.map((p) => (
-            <PackingListCard key={p.id} packing={p} onTap={() => undefined} />
+              {f.label}
+              <Text size="xs" mono tabular className="opacity-70">
+                {f.count}
+              </Text>
+            </ToggleGroupItem>
           ))}
         </Flex>
-      </Flex>
-      <Flex direction="col" gap="sm" className="ui-card-inset shrink-0 border-t">
-        <Button onClick={onScan}>
-          <ScanLine aria-hidden="true" />
-          Quét item vào kiện
-        </Button>
-        <Button variant="outline">
-          <Plus aria-hidden="true" />
-          Tạo kiện trống
-        </Button>
-      </Flex>
-    </>
-  );
-}
+      </ToggleGroup>
 
-function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () => void }) {
-  const [seg, setSeg] = React.useState<string>("seal");
-  return (
-    <>
-      <Flex direction="col" gap="md" className="ui-card-inset flex-1 overflow-y-auto">
-        {/* Segmented — outbound status */}
-        <ToggleGroup
-          type="single"
-          value={seg}
-          onValueChange={(v) => {
-            if (v) setSeg(v);
-          }}
-          className="bg-secondary/60 w-full rounded-xl"
-        >
-          <ResponsiveGrid columns={3} gap="xs">
-            <ToggleGroupItem
-              value="seal"
-              className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
-            >
-              Chờ niêm phong
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="handoff"
-              className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
-            >
-              Chờ bàn giao
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="done"
-              className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
-            >
-              Đã bàn giao
-            </ToggleGroupItem>
-          </ResponsiveGrid>
-        </ToggleGroup>
-
-        <SectionHeader count={OUTBOUND.length}>
-          {seg === "seal"
-            ? "Sẵn sàng niêm phong"
-            : seg === "handoff"
-              ? "Chờ bàn giao"
-              : "Đã bàn giao"}
-        </SectionHeader>
-        <Flex direction="col" gap="md">
-          {OUTBOUND.map((p) => (
-            <Card key={p.id} density="tight" className="rounded-xl">
+      {state === "loading" ? (
+        <Flex direction="col" gap="md" aria-busy="true">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i} density="tight" className="rounded-xl">
               <CardContent solo>
                 <Flex direction="col" gap="md">
-                  <Flex align="center" justify="between" gap="sm">
-                    <Text as="code" size="sm" weight="bold" tabular>
-                      {p.code}
-                    </Text>
-                    <Badge tone="success" variant="outline" className="rounded-full">
-                      Sẵn sàng niêm phong
-                    </Badge>
-                  </Flex>
-                  <Flex align="center" justify="between" gap="sm">
-                    <Text size="xs" tone="muted" tabular truncate>
-                      {p.customer} · {p.city}
-                    </Text>
-                    <Text size="xs" tone="muted" tabular className="shrink-0">
-                      ×{p.items} · {p.slot}
-                    </Text>
-                  </Flex>
-                  <div>
-                    <Descriptions columns={1}>
-                      <Descriptions.Item label="Vị trí" mono>
-                        {p.slot}
-                      </Descriptions.Item>
-                      <Descriptions.Item label="Số kiện" mono>
-                        ×{p.items}
-                      </Descriptions.Item>
-                    </Descriptions>
-                  </div>
+                  <Skeleton className="h-4 w-3/5" />
+                  <Skeleton className="h-3 w-2/5" />
+                  <Skeleton className="h-5 w-24 rounded-full" />
                 </Flex>
               </CardContent>
             </Card>
           ))}
         </Flex>
+      ) : state === "error" ? (
+        <Alert tone="warning">
+          <AlertTitle>Không tải được danh sách</AlertTitle>
+          <AlertDescription>
+            <Flex direction="col" align="start" gap="sm">
+              Kiểm tra kết nối rồi thử lại.
+              <Button variant="outline" size="sm" onClick={onRetry}>
+                <RefreshCw aria-hidden="true" />
+                Thử lại
+              </Button>
+            </Flex>
+          </AlertDescription>
+        </Alert>
+      ) : state === "empty" || visible.length === 0 ? (
+        <EmptyState
+          icon={Boxes}
+          title="Chưa có hàng trong mục này"
+          description="Quét mã để nhập hàng mới vào kho."
+          action={
+            <Button size="sm" onClick={onScan}>
+              <ScanLine aria-hidden="true" />
+              Quét / Tìm mã
+            </Button>
+          }
+        />
+      ) : (
+        <Flex direction="col" gap="md">
+          {visible.map((item) => (
+            <ItemListCard
+              key={item.id}
+              item={item}
+              selectMode={selectMode}
+              selected={selected.has(item.id)}
+              onToggle={() =>
+                setSelected((prev) => {
+                  const next = new Set(prev);
+                  if (next.has(item.id)) next.delete(item.id);
+                  else next.add(item.id);
+                  return next;
+                })
+              }
+            />
+          ))}
+        </Flex>
+      )}
+    </Flex>
+  );
+}
+
+/**
+ * The inbound screen's `actions` band: the scan-first pair at rest, the contextual pair in select
+ * mode. It lives OUTSIDE the scroll region, so it needs no `position: sticky` and no bottom padding
+ * on the list to clear it, and `MobileShell` gives it the home-indicator inset when no tab bar
+ * follows.
+ */
+function InboundActions({
+  selectMode,
+  selected,
+  onExitSelect,
+  onScan,
+  onAdd,
+  onAssign,
+}: {
+  selectMode: boolean;
+  selected: Set<string>;
+  onExitSelect: () => void;
+  onScan: () => void;
+  onAdd: () => void;
+  onAssign: () => void;
+}) {
+  if (!selectMode) {
+    return (
+      <>
+        <Button className="flex-[2]" onClick={onScan}>
+          <ScanLine aria-hidden="true" />
+          Quét / Tìm mã
+        </Button>
+        <Button variant="outline" className="flex-1" onClick={onAdd}>
+          <Plus aria-hidden="true" />
+          Thêm hàng
+        </Button>
+      </>
+    );
+  }
+  return (
+    <Flex direction="col" gap="sm" className="w-full">
+      <Flex align="center" justify="between">
+        <Text size="sm" tabular>
+          <Text as="span" weight="bold">
+            {selected.size}
+          </Text>{" "}
+          item đã chọn
+        </Text>
+        <Button variant="ghost" size="sm" onClick={onExitSelect}>
+          Xong
+        </Button>
       </Flex>
-      <Flex gap="sm" className="ui-card-inset shrink-0 border-t">
-        {seg === "handoff" ? (
-          <Button className="flex-1" onClick={onHandoff}>
-            <Truck aria-hidden="true" />
-            Xác nhận bàn giao
-          </Button>
-        ) : (
-          <Button className="flex-1" onClick={onSeal}>
-            <Check aria-hidden="true" />
-            Quét mã kiện · Niêm phong
-          </Button>
-        )}
+      <Flex gap="sm">
+        <Button className="flex-[2]" disabled={selected.size === 0} onClick={onAssign}>
+          <Package aria-hidden="true" />
+          Gán vào kiện…
+        </Button>
+        <Button variant="outline" className="flex-1" disabled={selected.size === 0}>
+          Kiện mới
+        </Button>
       </Flex>
-    </>
+    </Flex>
+  );
+}
+
+function PackingTab() {
+  const active = PACKINGS.find((p) => p.status === "active");
+  const others = PACKINGS.filter((p) => p.status !== "active");
+  return (
+    <Flex direction="col" gap="md">
+      {active ? (
+        <Card
+          density="tight"
+          accent="primary"
+          className="border-primary bg-[color-mix(in_oklch,var(--primary)_6%,transparent)]"
+        >
+          <CardContent solo>
+            <Flex direction="col" gap="xs">
+              <Flex align="center" justify="between">
+                <Text size="2xs" weight="medium" tone="muted" className="tracking-wider uppercase">
+                  Kiện đang làm
+                </Text>
+                <Badge tone="info" variant="outline" className="rounded-full">
+                  {PACKING_STATUS.active.label}
+                </Badge>
+              </Flex>
+              <Text as="div" size="lg" weight="bold" mono tabular>
+                {active.code}
+              </Text>
+              <Text size="xs" tone="muted" tabular as="div">
+                {active.customer} · {active.city} · ×{active.items} · {active.slot}
+              </Text>
+            </Flex>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      <SectionHeader count={others.length}>Kiện đang mở</SectionHeader>
+      <Flex direction="col" gap="md">
+        {others.map((p) => (
+          <PackingListCard key={p.id} packing={p} onTap={() => undefined} />
+        ))}
+      </Flex>
+    </Flex>
+  );
+}
+
+function PackingActions({ onScan }: { onScan: () => void }) {
+  return (
+    <Flex direction="col" gap="sm" className="w-full">
+      <Button onClick={onScan}>
+        <ScanLine aria-hidden="true" />
+        Quét item vào kiện
+      </Button>
+      <Button variant="outline">
+        <Plus aria-hidden="true" />
+        Tạo kiện trống
+      </Button>
+    </Flex>
+  );
+}
+
+/**
+ * `seg` is lifted to the page: the segmented control lives in the scroll region while the verb it
+ * selects lives in the `actions` band, and the two are different MobileShell slots.
+ */
+function OutboundTab({ seg, setSeg }: { seg: string; setSeg: (v: string) => void }) {
+  return (
+    <Flex direction="col" gap="md">
+      {/* Segmented — outbound status */}
+      <ToggleGroup
+        type="single"
+        value={seg}
+        onValueChange={(v) => {
+          if (v) setSeg(v);
+        }}
+        className="bg-secondary/60 w-full rounded-xl"
+      >
+        <ResponsiveGrid columns={3} gap="xs">
+          <ToggleGroupItem
+            value="seal"
+            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+          >
+            Chờ niêm phong
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="handoff"
+            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+          >
+            Chờ bàn giao
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="done"
+            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+          >
+            Đã bàn giao
+          </ToggleGroupItem>
+        </ResponsiveGrid>
+      </ToggleGroup>
+
+      <SectionHeader count={OUTBOUND.length}>
+        {seg === "seal"
+          ? "Sẵn sàng niêm phong"
+          : seg === "handoff"
+            ? "Chờ bàn giao"
+            : "Đã bàn giao"}
+      </SectionHeader>
+      <Flex direction="col" gap="md">
+        {OUTBOUND.map((p) => (
+          <Card key={p.id} density="tight" className="rounded-xl">
+            <CardContent solo>
+              <Flex direction="col" gap="md">
+                <Flex align="center" justify="between" gap="sm">
+                  <Text as="code" size="sm" weight="bold" tabular>
+                    {p.code}
+                  </Text>
+                  <Badge tone="success" variant="outline" className="rounded-full">
+                    Sẵn sàng niêm phong
+                  </Badge>
+                </Flex>
+                <Flex align="center" justify="between" gap="sm">
+                  <Text size="xs" tone="muted" tabular truncate>
+                    {p.customer} · {p.city}
+                  </Text>
+                  <Text size="xs" tone="muted" tabular className="shrink-0">
+                    ×{p.items} · {p.slot}
+                  </Text>
+                </Flex>
+                <div>
+                  <Descriptions columns={1}>
+                    <Descriptions.Item label="Vị trí" mono>
+                      {p.slot}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Số kiện" mono>
+                      ×{p.items}
+                    </Descriptions.Item>
+                  </Descriptions>
+                </div>
+              </Flex>
+            </CardContent>
+          </Card>
+        ))}
+      </Flex>
+    </Flex>
+  );
+}
+
+function OutboundActions({
+  seg,
+  onSeal,
+  onHandoff,
+}: {
+  seg: string;
+  onSeal: () => void;
+  onHandoff: () => void;
+}) {
+  return seg === "handoff" ? (
+    <Button className="flex-1" onClick={onHandoff}>
+      <Truck aria-hidden="true" />
+      Xác nhận bàn giao
+    </Button>
+  ) : (
+    <Button className="flex-1" onClick={onSeal}>
+      <Check aria-hidden="true" />
+      Quét mã kiện · Niêm phong
+    </Button>
   );
 }
 
@@ -934,6 +944,7 @@ export default function AgencyHandyShowcase() {
 
   const [selectMode, setSelectMode] = React.useState(false);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
+  const [seg, setSeg] = React.useState<string>("seal");
 
   const [lookupOpen, setLookupOpen] = React.useState(false);
   const [formOpen, setFormOpen] = React.useState(false);
@@ -944,119 +955,133 @@ export default function AgencyHandyShowcase() {
 
   const headerTitle = tab === "inbound" ? "Nhập kho" : tab === "packing" ? "Đóng gói" : "Xuất kho";
 
-  return (
-    <div className="bg-secondary/30 min-h-screen">
-      <Toaster />
-      <PhoneFrame>
-        <StatusBar />
+  const exitSelect = () => {
+    setSelectMode(false);
+    setSelected(new Set());
+  };
 
-        {/* App header (52px) — title + iOS text-action select-mode entry (inbound only) */}
-        <header className="ui-card-inset-x h-14 shrink-0 border-b">
-          <Flex align="center" justify="between" gap="xs">
-            <Heading level={3} as="h1" className="whitespace-nowrap">
-              {headerTitle}
-            </Heading>
-            <Flex align="center" gap="xs">
-              {tab === "inbound" && !selectMode ? (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSelectMode(true);
-                    setSelected(new Set());
-                  }}
-                >
-                  <Check aria-hidden="true" />
-                  Chọn
-                </Button>
-              ) : null}
-              {/* State switcher — exposes the 4 list states at rest (showcase affordance) */}
-              {tab === "inbound" && !selectMode ? (
-                <ToggleGroup
-                  type="single"
-                  value={listState}
-                  onValueChange={(v) => {
-                    if (v) setListState(v as ListState);
-                  }}
-                  aria-label="List state (showcase)"
-                >
-                  <Flex gap="xs">
-                    {(["ready", "loading", "empty", "error"] as const).map((s) => (
-                      <ToggleGroupItem
-                        key={s}
-                        value={s}
-                        className="size-7 rounded-md text-[var(--font-size-2xs)] uppercase"
-                        title={s}
-                      >
-                        {s[0]}
-                      </ToggleGroupItem>
-                    ))}
-                  </Flex>
-                </ToggleGroup>
-              ) : null}
-            </Flex>
-          </Flex>
-        </header>
-
-        {/* Select-mode header strip — replaces the standard header context (inbound) */}
-        {selectMode ? (
-          <Flex
-            align="center"
-            justify="between"
-            gap="xs"
-            className="ui-card-inset-x h-10 shrink-0 border-b bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))]"
+  // SELECT MODE REPLACES THE APP BAR — it does not stack a second strip under it. That is the
+  // platform pattern on both iOS and Android, and it is what the `header` slot is for: one bar to
+  // read at a time. Before gh#354 this file rendered the title bar AND a contextual strip, because
+  // there was no bar to swap.
+  const header = selectMode ? (
+    <Flex align="center" justify="between" gap="xs" className="w-full">
+      <Button variant="ghost" size="icon-sm" aria-label="Thoát chế độ chọn" onClick={exitSelect}>
+        <X className="size-4" aria-hidden="true" strokeWidth={1.5} />
+      </Button>
+      <Text size="sm" mono tabular>
+        {selected.size} đã chọn
+      </Text>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => setSelected(new Set(ITEMS.map((i) => i.id)))}
+      >
+        Chọn tất cả
+      </Button>
+    </Flex>
+  ) : (
+    <Flex align="center" justify="between" gap="xs" className="w-full">
+      <Heading level={3} as="h1" className="whitespace-nowrap">
+        {headerTitle}
+      </Heading>
+      <Flex align="center" gap="xs">
+        {tab === "inbound" ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setSelectMode(true);
+              setSelected(new Set());
+            }}
           >
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="閉じる"
-              onClick={() => {
-                setSelectMode(false);
-                setSelected(new Set());
-              }}
-            >
-              <X className="size-4" aria-hidden="true" strokeWidth={1.5} />
-            </Button>
-            <Text size="sm" mono tabular>
-              {selected.size} đã chọn
-            </Text>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelected(new Set(ITEMS.map((i) => i.id)))}
-            >
-              Chọn tất cả
-            </Button>
-          </Flex>
+            <Check aria-hidden="true" />
+            Chọn
+          </Button>
         ) : null}
+        {/* State switcher — exposes the 4 list states at rest (showcase affordance) */}
+        {tab === "inbound" ? (
+          <ToggleGroup
+            type="single"
+            value={listState}
+            onValueChange={(v) => {
+              if (v) setListState(v as ListState);
+            }}
+            aria-label="List state (showcase)"
+          >
+            <Flex gap="xs">
+              {(["ready", "loading", "empty", "error"] as const).map((s) => (
+                <ToggleGroupItem
+                  key={s}
+                  value={s}
+                  className="size-7 rounded-md text-[var(--font-size-2xs)] uppercase"
+                  title={s}
+                >
+                  {s[0]}
+                </ToggleGroupItem>
+              ))}
+            </Flex>
+          </ToggleGroup>
+        ) : null}
+      </Flex>
+    </Flex>
+  );
 
+  const actions =
+    tab === "inbound" ? (
+      <InboundActions
+        selectMode={selectMode}
+        selected={selected}
+        onExitSelect={exitSelect}
+        onScan={() => setLookupOpen(true)}
+        onAdd={() => setFormOpen(true)}
+        onAssign={() => setPickerOpen(true)}
+      />
+    ) : tab === "packing" ? (
+      <PackingActions onScan={() => setLookupOpen(true)} />
+    ) : (
+      <OutboundActions
+        seg={seg}
+        onSeal={() => setSealOpen(true)}
+        onHandoff={() => setHandoffOpen(true)}
+      />
+    );
+
+  return (
+    <>
+      <Toaster />
+      {/* The whole phone is ONE primitive now: five bands, no Card frame, no hand-rolled scroll box,
+       * no `min-h-screen` wrapper. The shell is the document's only scroll container and every band
+       * pads itself out of the device safe areas. */}
+      <MobileShell
+        statusBar={<StatusBar />}
+        header={header}
+        actions={actions}
+        tabBar={
+          <TabBar
+            active={tab}
+            onChange={(id) => {
+              setTab(id);
+              exitSelect();
+            }}
+          />
+        }
+      >
         {tab === "inbound" ? (
           <InboundTab
             state={listState}
             onRetry={() => setListState("ready")}
             selectMode={selectMode}
-            setSelectMode={setSelectMode}
             selected={selected}
             setSelected={setSelected}
             onScan={() => setLookupOpen(true)}
-            onAdd={() => setFormOpen(true)}
-            onAssign={() => setPickerOpen(true)}
           />
         ) : tab === "packing" ? (
-          <PackingTab onScan={() => setLookupOpen(true)} />
+          <PackingTab />
         ) : (
-          <OutboundTab onSeal={() => setSealOpen(true)} onHandoff={() => setHandoffOpen(true)} />
+          <OutboundTab seg={seg} setSeg={setSeg} />
         )}
-
-        <TabBar
-          active={tab}
-          onChange={(id) => {
-            setTab(id);
-            setSelectMode(false);
-            setSelected(new Set());
-          }}
-        />
-      </PhoneFrame>
+      </MobileShell>
 
       {/* Sheets */}
       <ItemLookupSheet open={lookupOpen} onOpenChange={setLookupOpen} />
@@ -1086,6 +1111,6 @@ export default function AgencyHandyShowcase() {
           toast.success("Đã bàn giao PKG-000037 · 16:24");
         }}
       />
-    </div>
+    </>
   );
 }

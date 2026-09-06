@@ -1455,6 +1455,88 @@
           ]
         }
       }
+    },
+    "TimelineGrid": {
+      "props": {
+        "label": {
+          "cases": ["週シフト 2026年5月11日〜15日", "会議室の予約 5月14日"],
+          "evidence": [
+            "docs/data-display/timeline-grid.tsx",
+            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "docs/showcase/case5-shift-calendar.tsx"
+          ]
+        },
+        "columns": {
+          "cases": ["day columns", "room columns", "a column marked current"],
+          "evidence": [
+            "docs/data-display/timeline-grid.tsx",
+            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "docs/showcase/case5-shift-calendar.tsx"
+          ]
+        },
+        "events": {
+          "cases": [
+            "non-overlapping",
+            "overlapping in one column",
+            "crossing midnight",
+            "outside a pinned axis",
+            "pointing at no column"
+          ],
+          "evidence": [
+            "docs/data-display/timeline-grid.tsx",
+            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "docs/showcase/case5-shift-calendar.tsx"
+          ]
+        },
+        "start": {
+          "cases": ["06:00", "derived from the events"],
+          "evidence": [
+            "docs/data-display/timeline-grid.tsx",
+            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "docs/showcase/case5-shift-calendar.tsx"
+          ]
+        },
+        "end": {
+          "cases": ["22:00", "24:00", "derived from the events"],
+          "evidence": [
+            "docs/data-display/timeline-grid.tsx",
+            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "docs/showcase/case5-shift-calendar.tsx"
+          ]
+        },
+        "interval": {
+          "cases": ["1", "2"],
+          "evidence": [
+            "docs/data-display/timeline-grid.tsx",
+            "src/components/data-display/__tests__/timeline-grid-354.a11y.test.tsx",
+            "docs/showcase/case5-shift-calendar.tsx"
+          ]
+        },
+        "now": {
+          "cases": ["14:35", "omitted"],
+          "evidence": [
+            "docs/data-display/timeline-grid.tsx",
+            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "docs/showcase/case5-shift-calendar.tsx"
+          ]
+        },
+        "onEventSelect": {
+          "cases": ["provided (blocks are buttons)", "omitted (read-only board)"],
+          "evidence": [
+            "docs/data-display/timeline-grid.tsx",
+            "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
+            "src/components/data-display/__tests__/timeline-grid-354.a11y.test.tsx"
+          ]
+        },
+        "className": {
+          "cases": ["omitted"],
+          "evidence": ["src/components/data-display/__tests__/timeline-grid-354.test.tsx"]
+        },
+        "id": {
+          "cases": ["omitted"],
+          "evidence": ["src/components/data-display/__tests__/timeline-grid-354.test.tsx"]
+        }
+      }
     }
   }
 }

@@ -1563,6 +1563,158 @@
   }
 }
 
+/* MOBILE SHELL — the handheld app shell (gh#354 §6): status band · app bar · the ONE scroll
+ * region · sticky action bar · bottom tab bar.
+ *
+ * The regions are bands in a column, not a grid, because their ORDER is the contract and only one
+ * of them is elastic. Everything the composed version in docs/showcase could not own lives here:
+ * the root is exactly one viewport tall so the DOCUMENT never scrolls (a phone that scrolls its
+ * document loses the tab bar under the collapsing URL bar), `.ui-mobile-shell-main` is the sole
+ * scroll container, and each band pads itself out of the device safe areas.
+ *
+ * Safe areas are folded into `min-block-size` as well as into padding: the box model here is
+ * border-box, so an inset added as padding alone would eat the band instead of growing it and the
+ * tab labels would be squeezed by the home indicator. */
+@layer components {
+  .ui-mobile-shell {
+    --control-height: var(--mobile-shell-control-height);
+    /* The page gutter is COMPOSED HERE, on the shell root, and deliberately not at `:root`. A
+     * `calc()` over two custom properties resolves where it is DECLARED, so a `:root` binding
+     * would freeze the sum: a service scoping `--mobile-shell-inset-inline` under
+     * `[data-tenant]`/`.dark` would then silently get nothing. Declared on the element the shell
+     * owns, every override — the theme's gutter and the device's safe inset alike — reaches it.
+     * Measured in Chromium at 390x844 BEFORE this move: overriding the inset on the shell root
+     * left the title and the first card at x=16 instead of moving them. */
+    --mobile-shell-padding-inline: calc(
+      var(--mobile-shell-inset-inline) + var(--mobile-shell-safe-inset-inline)
+    );
+    display: flex;
+    /* Not `min-block-size`: this shell is bounded ON PURPOSE. */
+    block-size: var(--mobile-shell-block-size);
+    flex-direction: column;
+    overflow: hidden;
+    background: hsl(var(--background));
+  }
+
+  /* `height="fill"` — the shell fills a BOUNDED parent (a device-frame preview, an embedded
+   * panel) instead of the viewport. The only geometry difference; every band is identical. */
+  .ui-mobile-shell[data-height="fill"] {
+    --mobile-shell-block-size: 100%;
+  }
+
+  .ui-mobile-shell-status {
+    display: flex;
+    min-block-size: calc(
+      var(--mobile-shell-status-bar-height) + var(--mobile-shell-safe-inset-block-start)
+    );
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mobile-shell-region-gap);
+    padding-block-start: var(--mobile-shell-safe-inset-block-start);
+    padding-inline: var(--mobile-shell-padding-inline);
+    background: hsl(var(--card));
+  }
+
+  .ui-mobile-shell-header {
+    display: flex;
+    min-block-size: var(--mobile-shell-header-bar-height);
+    min-inline-size: 0;
+    flex: 0 0 auto;
+    /* Same reason as `.app-topbar`: a 44px control's focus ring must not paint above y=0, where no
+     * overflow setting can bring it back. */
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
+    align-items: center;
+    gap: var(--mobile-shell-region-gap);
+    padding-inline: var(--mobile-shell-padding-inline);
+    border-block-end: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    background-image: var(--topbar-gradient);
+  }
+
+  /* With no status band the app bar is the topmost band, so it absorbs the notch inset itself. */
+  .ui-mobile-shell-header:first-child {
+    min-block-size: calc(
+      var(--mobile-shell-header-bar-height) + var(--mobile-shell-safe-inset-block-start)
+    );
+    padding-block-start: var(--mobile-shell-safe-inset-block-start);
+  }
+
+  .ui-mobile-shell-main {
+    display: flex;
+    min-block-size: 0;
+    min-inline-size: 0;
+    /* The ONE elastic band, and the only scroll container in the shell. */
+    flex: 1 1 auto;
+    flex-direction: column;
+    overflow-y: auto;
+    /* A pull past either end must not chain to the document (rubber-banding the whole app) nor to
+     * an open Sheet behind it. */
+    overscroll-behavior-block: contain;
+    /* Sole scroll/clip boundary for the page area (same rationale as `.app-main`). */
+    contain: paint;
+    padding-block: var(--mobile-shell-main-padding-block);
+    padding-inline: var(--mobile-shell-padding-inline);
+    background-image: var(--gradient-glow);
+  }
+
+  /* `.ui-mobile-shell-main` carries tabindex="0" (axe scrollable-region-focusable), so keyboard
+   * focus can land on the scroll region — same treatment as `.app-main`. */
+  .ui-mobile-shell-main:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 var(--region-focus-ring-width)
+      var(--region-focus-ring-color, hsl(var(--focus-ring-color, var(--ring))));
+  }
+
+  .ui-mobile-shell-actions {
+    display: flex;
+    min-inline-size: 0;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--mobile-shell-region-gap);
+    padding-block: var(--mobile-shell-actions-padding-block);
+    padding-inline: var(--mobile-shell-padding-inline);
+    border-block-start: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+  }
+
+  .ui-mobile-shell-tabbar {
+    display: flex;
+    min-block-size: calc(
+      var(--mobile-shell-tab-bar-height) + var(--mobile-shell-safe-inset-block-end)
+    );
+    min-inline-size: 0;
+    flex: 0 0 auto;
+    padding-block-end: var(--mobile-shell-safe-inset-block-end);
+    padding-inline: var(--mobile-shell-safe-inset-inline);
+    border-block-start: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+  }
+
+  /* A phone tab bar tiles: equal-width targets, no seam, no page gutter. The region owns that so a
+   * consumer never reaches for a grid with a hand-written column count. */
+  .ui-mobile-shell-tabbar > * {
+    min-inline-size: 0;
+    flex: 1 1 0;
+  }
+
+  /* The LAST band owns the home-indicator inset, so its own background runs to the physical edge
+   * instead of leaving a strip of page under it. The tab bar always has it (it is last whenever it
+   * exists); the other two only when nothing follows them. */
+  .ui-mobile-shell-actions:last-child {
+    padding-block-end: calc(
+      var(--mobile-shell-actions-padding-block) + var(--mobile-shell-safe-inset-block-end)
+    );
+  }
+
+  .ui-mobile-shell-main:last-child {
+    padding-block-end: calc(
+      var(--mobile-shell-main-padding-block) + var(--mobile-shell-safe-inset-block-end)
+    );
+  }
+}
+
 @layer components {
   /* What the consumer must NOT own is the SHELL geometry — the content measure, the header/footer
    * measure alignment, the section rhythm and the flat public-surface chrome. */

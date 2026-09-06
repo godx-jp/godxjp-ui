@@ -222,6 +222,12 @@ export const VOCABULARY_REGISTRY = {
     description:
       "CenteredShell column block alignment — start (flowing page), center (system surface)",
   },
+  MobileShellHeightProp: {
+    file: "vocabulary/layout.prop.ts",
+    category: "layout",
+    description:
+      "MobileShell block-size contract — viewport (100dvh root, the real app) | fill (fills a bounded parent, e.g. a device-frame preview)",
+  },
   CenteredShellPresetProp: {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
@@ -717,6 +723,34 @@ export const COMPONENT_PROP_REGISTRY = {
       },
       "ActionProp",
       "AuthShellPresetProp",
+    ],
+  },
+  MobileShellProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "ClassNameProp",
+      "ActionProp",
+      "MobileShellHeightProp",
+      {
+        field: "header",
+        local: true,
+        reason:
+          "MobileShell app-bar band — the screen title row; it absorbs the top safe-area inset when no statusBar precedes it.",
+      },
+      {
+        field: "statusBar",
+        local: true,
+        reason:
+          "MobileShell OS status-bar band — standalone/PWA chrome or a device-frame preview; owns the top safe-area inset.",
+      },
+      {
+        field: "tabBar",
+        local: true,
+        reason:
+          "MobileShell bottom navigation band — tiling equal-width destinations; owns the home-indicator inset.",
+      },
     ],
   },
   SeparatorProp: {
@@ -2014,6 +2048,98 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/data-display/timeline.tsx",
     vocabulary: ["ClassNameProp"],
+  },
+  TimelineGridColumnProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "IdProp",
+      "LabelProp",
+      "DescriptionProp",
+      {
+        field: "current",
+        local: true,
+        reason:
+          "Marks the column as now/today — it carries the tint and hosts the grid's now marker.",
+      },
+    ],
+  },
+  TimelineGridEventProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "IdProp",
+      "TitleProp",
+      "DescriptionProp",
+      {
+        field: "columnId",
+        local: true,
+        reason: "Id of the column the event belongs to (see TimelineGridColumnProp.id).",
+      },
+      {
+        field: "start",
+        local: true,
+        reason: 'Start clock time in the column\'s own day, "HH:MM" — no date, no timezone.',
+      },
+      {
+        field: "end",
+        local: true,
+        reason:
+          'End clock time, "HH:MM"; at or before start means the event continues into the next day.',
+      },
+      {
+        field: "color",
+        local: true,
+        reason:
+          "The record's own colour, washed into the block exactly like Badge `color` — decorative, never the only signal.",
+      },
+    ],
+  },
+  TimelineGridProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "ClassNameProp",
+      "IdProp",
+      {
+        field: "columns",
+        local: true,
+        reason: "Consumer-supplied columns in render order (see TimelineGridColumnProp).",
+      },
+      {
+        field: "events",
+        local: true,
+        reason: "Consumer-supplied events (see TimelineGridEventProp).",
+      },
+      {
+        field: "start",
+        local: true,
+        reason:
+          'First clock time on the axis, "HH:MM"; defaults to the earliest event on the hour so a block can only fall outside a PINNED axis.',
+      },
+      {
+        field: "end",
+        local: true,
+        reason: 'Last clock time on the axis, "HH:MM"; defaults to the latest event on the hour.',
+      },
+      {
+        field: "interval",
+        local: true,
+        reason: "Hours between hour rules and axis labels (default 1).",
+      },
+      {
+        field: "now",
+        local: true,
+        reason: 'Current clock time, "HH:MM" — draws the now marker in the columns marked current.',
+      },
+      {
+        field: "onEventSelect",
+        local: true,
+        reason:
+          "Block click handler carrying the event; its presence turns every block into a real button.",
+      },
+    ],
   },
   TreeListProp: {
     group: "data-display",

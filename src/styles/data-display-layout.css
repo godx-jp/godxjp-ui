@@ -938,3 +938,187 @@
     border-block-start: var(--stroke-hairline) solid hsl(var(--border));
   }
 }
+
+/* TIMELINE GRID — the time-axis half of the Timeline family (#354 item 7).
+ *
+ * Every measure below reads a knob, because the grids this replaces (docs/showcase case5) baked
+ * the hour height, the axis width and the column floor as literals on the page. The block's
+ * position is pure arithmetic on --timeline-grid-hour-height, so re-tuning ONE token reflows the
+ * axis, the rules, the blocks and the now marker together. */
+@layer components {
+  .ui-timeline-grid {
+    overflow-x: auto;
+  }
+
+  .ui-timeline-grid-frame {
+    display: grid;
+    grid-template-columns:
+      var(--timeline-grid-axis-width)
+      repeat(var(--timeline-grid-columns, 1), minmax(var(--timeline-grid-column-min-width), 1fr));
+  }
+
+  .ui-timeline-grid-corner {
+    border-block-end: 1px solid hsl(var(--border));
+  }
+
+  .ui-timeline-grid-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-1);
+    border-block-end: 1px solid hsl(var(--border));
+    border-inline-start: 1px solid hsl(var(--border));
+    background: hsl(var(--secondary));
+    font-size: var(--timeline-grid-head-font-size);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-tight);
+    text-align: center;
+  }
+
+  .ui-timeline-grid-head[data-current="true"] {
+    background: var(--timeline-grid-current-tint, hsl(var(--primary) / 0.08));
+  }
+
+  .ui-timeline-grid-head-description {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--timeline-grid-axis-font-size);
+    font-weight: var(--font-weight-normal);
+  }
+
+  /* The rail and the column body share ONE height expression — hours × the hour knob — so a
+   * label can never drift off the rule it names. */
+  .ui-timeline-grid-axis,
+  .ui-timeline-grid-column {
+    position: relative;
+    block-size: calc(var(--timeline-grid-hour-height) * var(--timeline-grid-hours, 24));
+  }
+
+  .ui-timeline-grid-tick {
+    position: absolute;
+    inset-inline-end: var(--space-1);
+    inset-block-start: calc(var(--timeline-grid-hour-height) * var(--timeline-grid-tick-offset, 0));
+    color: hsl(var(--muted-foreground));
+    font-size: var(--timeline-grid-axis-font-size);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    transform: translateY(-50%);
+    white-space: nowrap;
+  }
+
+  /* The hour rules are painted, not built from elements: one gradient tracks the hour knob and
+   * the interval, and the column keeps exactly as many children as it has events. */
+  .ui-timeline-grid-column {
+    margin: 0;
+    padding: 0;
+    border-inline-start: 1px solid hsl(var(--border));
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--timeline-grid-line-color, hsl(var(--border))) 0 1px,
+      transparent 1px calc(var(--timeline-grid-hour-height) * var(--timeline-grid-interval, 1))
+    );
+    list-style: none;
+  }
+
+  .ui-timeline-grid-column[data-current="true"] {
+    background-color: var(--timeline-grid-current-tint, hsl(var(--primary) / 0.05));
+  }
+
+  /* The li owns the geometry; the body inside owns the chrome and the hit area. Overlapping
+   * events share the column's inline axis by lane, so neither one is hidden under the other. */
+  .ui-timeline-grid-event {
+    position: absolute;
+    inset-block-start: calc(
+      var(--timeline-grid-hour-height) * var(--timeline-grid-event-offset, 0)
+    );
+    inset-inline-start: calc(
+      var(--timeline-grid-event-lane, 0) / var(--timeline-grid-event-lanes, 1) * 100%
+    );
+    box-sizing: border-box;
+    inline-size: calc(100% / var(--timeline-grid-event-lanes, 1));
+    block-size: calc(var(--timeline-grid-hour-height) * var(--timeline-grid-event-span, 0));
+    min-block-size: var(--timeline-grid-event-min-height);
+    padding-inline-end: var(--timeline-grid-event-gap);
+    padding-block-end: var(--timeline-grid-event-gap);
+  }
+
+  .ui-timeline-grid-event-body {
+    display: flex;
+    overflow: hidden;
+    box-sizing: border-box;
+    flex-direction: column;
+    inline-size: 100%;
+    block-size: 100%;
+    padding: var(--timeline-grid-event-space-inset);
+    border-inline-start: var(--timeline-grid-event-border-width) solid
+      var(--timeline-grid-event-color, hsl(var(--primary)));
+    border-radius: var(--timeline-grid-event-radius);
+    /* Surface first, colour second — the same wash order Badge's `color` mode documents, so a
+     * browser without color-mix degrades to the quiet surface rather than a solid chip. */
+    background-color: color-mix(
+      in srgb,
+      hsl(var(--background)),
+      var(--timeline-grid-event-color, hsl(var(--primary))) 12%
+    );
+    color: hsl(var(--foreground));
+    font-size: var(--timeline-grid-event-font-size);
+    line-height: var(--line-height-tight);
+    text-align: start;
+  }
+
+  /* A block the pinned axis cuts loses the radius on the cut edge — the reader can see that the
+   * shift continues past the window instead of reading the edge as its end. */
+  .ui-timeline-grid-event[data-clipped="start"] .ui-timeline-grid-event-body,
+  .ui-timeline-grid-event[data-clipped="both"] .ui-timeline-grid-event-body {
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+  }
+
+  .ui-timeline-grid-event[data-clipped="end"] .ui-timeline-grid-event-body,
+  .ui-timeline-grid-event[data-clipped="both"] .ui-timeline-grid-event-body {
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .ui-timeline-grid-event-time {
+    color: hsl(var(--muted-foreground));
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .ui-timeline-grid-event-title {
+    overflow: hidden;
+    font-weight: var(--font-weight-medium);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-timeline-grid-event-description {
+    overflow: hidden;
+    color: hsl(var(--muted-foreground));
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  button.ui-timeline-grid-event-body {
+    cursor: pointer;
+  }
+
+  button.ui-timeline-grid-event-body:hover {
+    background-color: color-mix(
+      in srgb,
+      hsl(var(--background)),
+      var(--timeline-grid-event-color, hsl(var(--primary))) 20%
+    );
+  }
+
+  /* The now marker is a ruler mark, not content: the time it points at is already text on every
+   * block, so it is aria-hidden and purely visual. */
+  .ui-timeline-grid-now {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: calc(var(--timeline-grid-hour-height) * var(--timeline-grid-now-offset, 0));
+    block-size: var(--timeline-grid-now-width);
+    background: var(--timeline-grid-now-color, hsl(var(--destructive)));
+    pointer-events: none;
+  }
+}

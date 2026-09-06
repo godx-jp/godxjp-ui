@@ -155,6 +155,34 @@
   --scroll-area-bar-padding: 1px;
   --scroll-area-thumb-radius: var(--radius-pill);
 
+  /* TIMELINE GRID — the time-axis half of the Timeline family (#354 item 7). Every measure the
+   * hand-rolled week grids in docs/showcase baked as a literal is a knob here: the height of one
+   * hour is what a service tunes when a 24-hour axis has to fit one screen, and the column floor
+   * is what decides when the grid scrolls instead of collapsing into slivers.
+   * --timeline-grid-hour-height is a RAW rem on the unenforced height axis: it is a rhythm the
+   * consumer picks per surface (a 6-hour shift board wants a taller hour than a 24-hour one),
+   * not a step of the spacing scale. */
+  --timeline-grid-hour-height: 2.5rem;
+  --timeline-grid-axis-width: 3.25rem;
+  --timeline-grid-column-min-width: 6rem;
+  --timeline-grid-event-min-height: 1.5rem;
+  --timeline-grid-axis-font-size: var(--font-size-2xs);
+  --timeline-grid-head-font-size: var(--font-size-xs);
+  --timeline-grid-event-font-size: var(--font-size-2xs);
+  --timeline-grid-event-gap: var(--space-1);
+  --timeline-grid-event-space-inset: var(--space-1);
+  --timeline-grid-event-radius: var(--radius-sm);
+  --timeline-grid-event-border-width: var(--stroke-md);
+  --timeline-grid-now-width: var(--stroke-sm);
+  /* Role-mirror knobs (docs/TOKENS.md): `initial` so the defaults re-resolve at the CALL SITE and
+   * a scoped [data-tenant]/.dark override of the role still reaches them.
+   * Defaults = hsl(var(--border)) hour rules · hsl(var(--primary)) block accent ·
+   * hsl(var(--destructive)) now marker · hsl(var(--primary)) current-column wash. */
+  --timeline-grid-line-color: initial;
+  --timeline-grid-event-color: initial;
+  --timeline-grid-now-color: initial;
+  --timeline-grid-current-tint: initial;
+
   /* PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class
    * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant
    * lived on the component (#319). A JA/VI service whose role names run longer than the English
