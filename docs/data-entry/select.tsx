@@ -82,7 +82,9 @@ export default function Demo() {
               Pass an options array; name= submits the value with the form.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          {/* data-axe-open: check-frame-axe opens this Select before scanning, so the
+              overlay-open a11y state is measured. See docs/FRAME-A11Y-CI.md. */}
+          <CardContent data-axe-open>
             <FormField id="status" label="状態">
               <Select
                 id="status"

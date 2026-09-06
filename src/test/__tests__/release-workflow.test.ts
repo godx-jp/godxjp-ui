@@ -1534,9 +1534,11 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
     expect(REQUIRED_CI_CHECK_RUNS).toContain("Build · typecheck · lint · guards");
     expect(REQUIRED_CI_CHECK_RUNS).toContain("Tests (shard 4/4)");
     expect(REQUIRED_CI_CHECK_RUNS).toContain("Contrast + visual audit");
-    expect(REQUIRED_CI_CHECK_RUNS).toContain(
-      "Per-frame axe (chrome blocking, component allowlisted)",
-    );
+    // Gate axe chạy trên matrix ba shard: cả ba tên phải có mặt, vì một shard thiếu là một phần
+    // cây chưa được soi trong khi bản phát hành vẫn khai là đã soi.
+    for (const shard of [1, 2, 3]) {
+      expect(REQUIRED_CI_CHECK_RUNS).toContain(`Per-frame axe (shard ${shard}/3)`);
+    }
   });
 
   it("names only check runs the CI workflows actually produce", () => {
@@ -1558,8 +1560,11 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
         expect(workflow("release-integrity.yml")).toMatch(/^ {2}lockstep:$/m);
         continue;
       }
-      const shard = /^Tests \(shard (\d)\/4\)$/.exec(name);
-      expect(produced).toContain(shard ? "Tests (shard ${{ matrix.shard }}/4)" : name);
+      // Hai job chạy trên matrix nên tên thật là tên đã nở; workflow chỉ chứa khuôn mẫu.
+      const templated = /^(Tests|Per-frame axe) \(shard \d+\/(\d+)\)$/.exec(name);
+      expect(produced).toContain(
+        templated ? `${templated[1]} (shard \${{ matrix.shard }}/${templated[2]})` : name,
+      );
     }
   });
 

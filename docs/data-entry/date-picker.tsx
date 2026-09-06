@@ -33,7 +33,8 @@ export default function Demo() {
               形式に整形され、 解釈できない入力は元の値へ復帰する。
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          {/* data-axe-open: check-frame-axe opens the calendar before scanning. */}
+          <CardContent data-axe-open>
             <FormField id="issue-date" label="発行日" required>
               <DatePicker
                 id="issue-date"

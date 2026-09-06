@@ -48,7 +48,12 @@ export default function Demo() {
           <CardContent>
             <ContextMenu>
               {/* ui-audit-disable-next-line no-hand-rolled-surface — the dashed area is the right-click target the demo asks you to use */}
-              <ContextMenuTrigger className="border-border h-36 w-full cursor-context-menu rounded-md border border-dashed">
+              {/* data-axe-open="contextmenu": check-frame-axe right-clicks here before its
+                  overlay scan. */}
+              <ContextMenuTrigger
+                data-axe-open="contextmenu"
+                className="border-border h-36 w-full cursor-context-menu rounded-md border border-dashed"
+              >
                 <Flex align="center" justify="center" gap="xs">
                   <Text tone="muted">ここを右クリックしてください</Text>
                 </Flex>

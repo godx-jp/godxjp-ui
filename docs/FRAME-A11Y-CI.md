@@ -20,11 +20,56 @@ A control the **user cannot bring into the frame** — not merely one whose box 
 
 - `check:contrast` (`scripts/check-contrast.mjs`) — a hand-picked set of ~6 pages checked for WCAG-AA text contrast. It never saw the other ~100 component frames. - `audit:examples` (`pnpm audit docs`) — a static source-regex linter. It can catch a hard-coded hex value but cannot see what actually renders: computed contrast, DOM landmark structure, focus order, or anything a Radix portal produces at runtime.
 
-## Chrome vs component: two independently-tracked scopes
+## Chrome vs component vs overlay: three independently-tracked scopes
 
-`check:frame-axe` runs axe **twice** per frame/viewport:
+`check:frame-axe` runs axe **twice** per frame/viewport, and a **third** time on the frames that declare an open step:
 
 - **Preview chrome** = the zoom / dimension **toolbar** (`.demo-block-toolbar`, `preview/src/demo-block.tsx`). We own this. It **must be 0** — a chrome violation fails the build.
+- **Component/demo** = everything else, in the frame's **default** state (the rendered frame _and_ its Radix portals). Allowlisted in `baseline.component`.
+- **Overlay** = the same scope re-measured **after opening an overlay** — see below. Allowlisted separately in `baseline.overlay`.
+
+### The overlay scope: opening the thing before measuring it (#355)
+
+The gate used to load each frame in its default state and scan once, so every axe rule whose _condition only exists while an overlay is open_ — `aria-hidden-focus` first among them — was **outside its field of view**, not merely un-triggered. 164 frames × 2 viewports reported clean while `aria-hidden-focus` fired on the app background the moment a `Select` or `DropdownMenu` opened in a consumer app.
+
+A frame opts in **declaratively**, from the demo itself:
+
+```tsx
+// the trigger itself, when it forwards DOM props
+<DropdownMenuTrigger asChild>
+  <Button data-axe-open …>…</Button>
+</DropdownMenuTrigger>
+
+// the region that owns the trigger, when the component renders it internally
+<CardContent data-axe-open>
+  <FormField id="status" label="状態"><Select … /></FormField>
+</CardContent>
+
+// right-click, for the one overlay that opens on no other gesture
+<ContextMenuTrigger data-axe-open="contextmenu" …>
+```
+
+What the gate does with it, per frame/viewport, **after** the two default-state scans (opening an overlay is destructive to the state those measure):
+
+1. Take the **first** `[data-axe-open]` on the page. No declaration ⇒ the frame skips this scope entirely and costs nothing.
+2. Press **Escape** up to three times while any overlay is mounted. Several demos deliberately render one open at rest, and a modal one makes the rest of the page inert — so the trigger is unreachable until it is dismissed. This also makes the measurement a real **closed → open transition** rather than whatever the demo happened to leave mounted.
+3. Resolve the click target: the declaring element itself when it matches `button, [role=button], [role=combobox], [role=menuitem], a[href], summary`, otherwise the first such control inside it. (`DatePicker`, the data-driven `Select` and `SearchSelect` own their trigger DOM and forward no `data-*` to it — hence the "declare on the region" form. `DatePicker`'s combobox `<input>` opens the calendar on click, which is what gets pressed there.)
+4. Click (or right-click), then wait until **one more** overlay is mounted (`[data-radix-popper-content-wrapper], [role=dialog], [role=alertdialog], [role=menu], [role=listbox]`) plus a 400 ms animation settle — never a bare timer.
+5. Re-run axe with the same scope as the component pass and record it under `baseline.overlay`.
+
+A declaration whose overlay never opens is an **infrastructure error** (blocking), not a silent skip: a broken declaration must not read as a clean frame.
+
+**Frames declaring an open step today** (the overlay families named in #355): `data-entry-select`, `data-entry-select-matrix` (SearchSelect), `data-entry-date-picker`, `data-display-popover`, `navigation-dropdown-menu`, `navigation-context-menu`, `feedback-dialog`, `feedback-sheet`.
+
+**Cost**: the overlay pass only runs on declaring frames, so it is ~8 frames × 2 viewports, measured at **+~55 s on a ~9.5 min local sweep (~10 %)**. Both viewports are kept for now; if the declaring set grows, narrow `OVERLAY_VIEWPORTS` in the script to `["desktop"]` — an overlay is portalled to `<body>` and its aria-hidden background is the same tree at either width.
+
+**What is still outside this scope** — deliberately, and worth knowing before trusting a green run:
+
+- Only the **first** declaration per frame is exercised. A frame with several distinct overlays (the Sheet demo has five) is measured on one of them.
+- Only **one step deep**: submenus (`DropdownMenuSub`), an overlay opened _from inside_ another overlay, and the state _after_ a selection are not reached.
+- **Keyboard-only opening** is not exercised — the gate clicks. A trigger that opens on click but not on `Enter`/`Space` would pass.
+- The overlay's own **focus trap and focus order** are still not asserted by axe here (`focus-order-semantics` needs the focus to actually move); `src/components/__tests__/overlay-hidden-background.a11y.test.tsx` remains the DOM-level guard for the aria-hidden/inert contract, and it is what fails first if the `inert` mirror in `src/components/general/inert-background.ts` regresses in jsdom.
+- Frames with **no declaration** (156 of 164) are unchanged: default state only.
 
 ## The component allowlist — and how it shrinks to zero
 
@@ -42,6 +87,10 @@ git add scripts/frame-axe.baseline.json && git commit -m "chore(a11y): tighten f
 ```
 
 There is **no blanket suppression**: a documented axe false positive would be an explicit per-rule entry with a comment, never a mute.
+
+`baseline.overlay` is the same shape and obeys the same rule, for the overlay-open scope. It is only rewritten for frames whose open step **actually ran** — a frame that stopped declaring one has not been proven clean, it has been left unmeasured.
+
+**Keys that are not violation data are preserved (#356).** The baseline also carries human notes — `scopeGap` records what the gate cannot see and which violations are deliberately unfixed. `--update-baseline` used to rebuild the file from scratch and delete them without a word. It now regenerates only the keys it owns (`generatedAt`, `note`, `component`, `overlay`), carries every other key over verbatim, and **names them in its log line** (`carried over: scopeGap`) so a disappearing key cannot go unnoticed.
 
 `0` chrome violations, `0` regressions. See [Remaining baseline debt](#remaining-baseline-debt--the-12-frames) below for exactly what's left and the path to zero.
 
@@ -68,28 +117,47 @@ pnpm exec playwright install chromium        # local dev — downloads Playwrigh
 | `pnpm check:frame-axe --format json`                | Machine-readable result on stdout (same exit-code semantics) — no colored human report            |
 | `pnpm check:frame-axe --update-baseline`            | Regenerate the allowlist (2-pass union by default) — see below                                    |
 | `AXE_RUNS=3 pnpm check:frame-axe --update-baseline` | More union passes, for a component with flaky portal timing                                       |
+| `AXE_SHARD=2/4 pnpm check:frame-axe`                | Run only shard 2 of 4 (1-based) for CI fan-out — see below                                        |
 | `pnpm check:frame-axe http://localhost:6008`        | Point at an already-running preview instead of building+serving one                               |
+
+#### Sharding the sweep (`AXE_SHARD=i/n`)
+
+`AXE_SHARD=2/4` runs only the frames of shard 2 of 4. The partition is taken over frame ids sorted **by code point**, not in manifest/directory order, so the same tree always yields the same partition, every frame lands in exactly one shard, and the union of all `n` shards is exactly the full sweep. Unset (the default) leaves the frame list untouched — sharding changes nothing until you ask for it.
+
+Two things are deliberately _not_ the same under a shard, because a shard cannot know them:
+
+- **"Baseline rule no longer fires" (shrink hints) is skipped.** The baseline is keyed per frame, so _new_ rule detection stays exact on a partial run — but a frame this shard never visited looks identical to a frame that got fixed. Only a full sweep can tell those apart.
+- **`--update-baseline` refuses to run** with `AXE_SHARD` set (exit 2). Writing the baseline from a fraction of the frames would delete every frame the shard did not visit.
+
+`AXE_FRAMES_LIMIT` truncates the list instead of partitioning it; it is a local smoke-test knob, not a fan-out mechanism.
 
 If no preview server answers at the base URL (`http://localhost:6008` by default), the script builds one itself: `pnpm preview:build` then serves the static output with `vite preview` (`ensurePreviewServer` in `scripts/frame-harness.mjs`) — deterministic and stable under a long headless sweep, unlike the dev server's per-request recompilation. If a `pnpm preview` dev server (or a remote base) is already reachable, it's reused as-is and never rebuilt.
 
 ### Reading the output
 
-Terminal report (human mode) has two blocks:
+Terminal report (human mode) has three blocks:
 
 ```
 Preview-chrome axe (blocking — must be 0):
-  ✓ 0 chrome violations across all 107 frame(s).
+  ✓ 0 chrome violations across all 164 frame(s).
 
 Component/demo axe (allowlisted — baseline may only shrink):
-  47 component violation node(s) remaining across 12 frame(s).
+  0 component violation node(s) remaining across 0 frame(s).
   ✓ no new component violation types (rule-set within baseline).
+
+Overlay axe (frames declaring data-axe-open — baseline may only shrink):
+  8 frame(s) opened an overlay before scanning; 128 violation node(s) while open.
+  ✓ no new overlay violation types (rule-set within baseline).
 ```
 
 - A **red `✗ <rule>`** under chrome is always blocking.
 - A **red `✗ N NEW violation-type(s) not in baseline`** under component means a frame gained a
   rule the baseline didn't have — that's the actual CI failure mode for a component regression.
+- A **red `✗ N NEW violation-type(s) not in the overlay baseline`** is the same failure for the
+  overlay-open state — that is what turns red when, say, the `inert` background patch regresses
+  and `aria-hidden-focus` comes back.
 - A **yellow `↓ shrink hint`** means a baseline rule no longer fires anywhere it's listed — free
-  baseline tightening available via `--update-baseline`.
+  baseline tightening available via `--update-baseline`. Not emitted under `AXE_SHARD`.
 
 ### Evidence JSON
 
@@ -103,19 +171,27 @@ Shape:
   "base": "http://localhost:6008",
   "summary": {
     "status": "ok", // "ok" | "fail"
-    "frames": 107,
+    "frames": 164,
+    "shard": null, // "i/n" when AXE_SHARD is set
     "viewports": ["desktop", "mobile"],
     "chromeViolations": 0, // total chrome violation NODE count
-    "componentViolations": 47, // total component violation NODE count (reporting only)
+    "componentViolations": 0, // total component violation NODE count (reporting only)
     "componentRegressions": 0, // rules present now but not in the baseline
+    "overlayFrames": 8, // frames whose declared open step ran
+    "overlayViolations": 128, // total NODE count measured with an overlay open
+    "overlayRegressions": 0, // overlay rules present now but not in baseline.overlay
     "infrastructureErrors": 0, // frames that failed to load / axe crashed
   },
   "chrome": {/* rule → { impact, nodes, frames: ["<frameId>@<viewport>", …] } */},
   "componentCurrent": {/* frameId → viewport → ruleId → node count, this run */},
   "regressions": [/* { frame, rule } — new rules, the actual gate failure */],
   "shrinkHints": [/* { frame, rule } — baseline rules that no longer fire */],
-  "infraErrors": [/* { frame, viewport, message } */],
-  "results": [/* per-frame { id, viewports: { desktop: { chrome, component }, mobile: {…} } } */],
+  "overlayCurrent": {/* frameId → viewport → ruleId → node count, with the overlay OPEN */},
+  "overlayFrames": [/* frame ids whose declared open step ran */],
+  "overlayRegressions": [/* { frame, rule } — new rules in the overlay-open state */],
+  "overlayShrinkHints": [/* { frame, rule } */],
+  "infraErrors": [/* { frame, viewport, message } — includes "overlay open: …" failures */],
+  "results": [/* per-frame { id, viewports: { desktop: { chrome, component, overlay? }, … } } */],
 }
 ```
 
@@ -139,6 +215,8 @@ Playwright Inspector / browser devtools with the `axe-core` extension against th
    should reappear on a frame that previously didn't have it — if one does, you introduced a new
    violation, not fixed an old one).
 4. Commit the baseline alongside the fix in the same PR.
+
+`--update-baseline` also preserves every non-violation key in the file verbatim (see #356 above) and refuses to run under `AXE_SHARD`.
 
 `AXE_FRAMES_LIMIT` + `--update-baseline` together only touch the frames actually run — the merge
 logic in `check-frame-axe.mjs` overwrites `runFrameIds` and leaves every other frame's baseline
@@ -258,10 +336,14 @@ Before opening a PR that adds or meaningfully changes a `/frame/**` example:
 8. If you do land a frame with a tracked violation, add it to `scripts/frame-axe.baseline.json` via
    `--update-baseline` (never hand-edit the JSON) and note _why_ + the follow-up issue in the PR
    description — the baseline file's own `note` field explains it may only shrink from here.
-9. Register the case you authored in `preview/frame-coverage.ledger.json` so
-   `check:frame-coverage-ledger` stops reporting that dimension `UNTESTED`. You **cannot** hand-write
-   a verdict — add an entry to the ledger's `cases` array (frame path + case heading + resolvable
-   evidence paths + reviewer + HTTPS review link + ISO timestamp) and run
-   `pnpm gen:frame-coverage-ledger`; the gate recomputes every cell from that evidence and rejects
-   any verdict it cannot reproduce. See [FRAME-COVERAGE-LEDGER.md](./FRAME-COVERAGE-LEDGER.md) and
-   [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md).
+9. **If the frame demos an overlay, declare its open step**: `data-axe-open` on the trigger (or on
+   the region that owns it when the component renders the trigger itself), `data-axe-open="contextmenu"`
+   for a context menu. Without it the frame is only ever measured closed, and the whole
+   `aria-hidden-focus` family of rules cannot fire — see [the overlay scope](#the-overlay-scope-opening-the-thing-before-measuring-it-355).
+10. Register the case you authored in `preview/frame-coverage.ledger.json` so
+    `check:frame-coverage-ledger` stops reporting that dimension `UNTESTED`. You **cannot** hand-write
+    a verdict — add an entry to the ledger's `cases` array (frame path + case heading + resolvable
+    evidence paths + reviewer + HTTPS review link + ISO timestamp) and run
+    `pnpm gen:frame-coverage-ledger`; the gate recomputes every cell from that evidence and rejects
+    any verdict it cannot reproduce. See [FRAME-COVERAGE-LEDGER.md](./FRAME-COVERAGE-LEDGER.md) and
+    [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md).

@@ -135,7 +135,10 @@ export default function Demo() {
             <Flex direction="row" wrap gap="sm">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline">side=top</Button>
+                  {/* data-axe-open: opened by check-frame-axe before its overlay scan. */}
+                  <Button data-axe-open variant="outline">
+                    side=top
+                  </Button>
                 </PopoverTrigger>
                 <PopoverContent side="top" aria-label="上側の配置例">
                   <PopoverDescription>上に開きます。</PopoverDescription>

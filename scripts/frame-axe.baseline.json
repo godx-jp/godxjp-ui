@@ -1,6 +1,23 @@
 {
-  "generatedAt": "2026-08-18",
-  "note": "Per-frame COMPONENT/demo axe allowlist (violations INSIDE the rendered frame + its portals). Each value is the set of axe rule ids still firing on that frame. It may only SHRINK — a new rule on a frame fails CI. Chrome (the preview toolbar) is NOT allowlisted: it must be 0. Regenerate after a component-fix PR merges: `node scripts/check-frame-axe.mjs --update-baseline`.",
-  "scopeGap": "WHAT THIS GATE CANNOT SEE (#352). It loads each /frame at its DEFAULT state and scans once, so any violation that only exists while an overlay is OPEN never reaches this file — which is why `aria-hidden-focus` on the app background went unnoticed until a consumer (gino-cloud) hit it. Measured in real Chromium by opening the overlays by hand: `data-entry-select` and `navigation-dropdown-menu` each reported `aria-hidden-focus` on `#root` (the `.app-root` equivalent) plus `landmark-one-main`, `page-has-heading-one` and `region` as collateral of the same aria-hidden. NOT baselined here on purpose: none of these fire in the state this gate actually scans, so an entry would be a permanent false `shrinkHints` line rather than a record. `aria-hidden-focus` is FIXED (src/components/general/inert-background.ts); the three collateral rules are deliberately NOT fixed — they are artefacts of the harness page having its only <main>/<h1> inside the hidden background, not of any component. The durable guard for this whole class is src/components/__tests__/overlay-hidden-background.a11y.test.tsx. Note: `--update-baseline` rewrites this file from scratch and will DROP this key.",
-  "component": {}
+  "generatedAt": "2026-09-06",
+  "note": "Per-frame axe allowlists. `component` = violations in the frame's DEFAULT state (inside the rendered frame + its portals); `overlay` = the same scope re-measured after the frame's declared `data-axe-open` step, i.e. with an overlay OPEN. Each value is the set of axe rule ids still firing on that frame. Both may only SHRINK — a new rule on a frame fails CI. Chrome (the preview toolbar) is NOT allowlisted: it must be 0. Keys other than these are human notes and are preserved verbatim across `--update-baseline`. Regenerate after a component-fix PR merges: `node scripts/check-frame-axe.mjs --update-baseline`.",
+  "scopeGap": "WHAT THIS GATE CANNOT SEE. #352 recorded the biggest hole and #355 CLOSED it: the gate now performs each overlay frame's DECLARED open step (`data-axe-open` in the demo — see docs/FRAME-A11Y-CI.md § The overlay scope) and records a third scope, `overlay`, so rules that only exist while an overlay is open are measured in real Chromium instead of being invisible. That is why `aria-hidden-focus` — which fired on the app background of `data-entry-select` and `navigation-dropdown-menu` the moment the overlay opened, and reached a consumer (gino-cloud) before any gate saw it — is now a REGRESSION here rather than a footnote: it is fixed in src/components/general/inert-background.ts, and disabling that patch turns this gate red on 3 frames × `aria-hidden-focus`. The `landmark-one-main` / `page-has-heading-one` / `region` entries under `overlay` are deliberately NOT fixed: they are artefacts of the harness page having its only <main>/<h1> inside the background Radix marks aria-hidden while an overlay is open, not of any component. WHAT IS STILL OUT OF VIEW: only the FIRST declaration per frame is opened; only one step deep (no submenu, no overlay-from-overlay, no post-selection state); opening is a CLICK, so a trigger that fails on Enter/Space would still pass; and the 156 frames that declare nothing are still measured in their default state only. The durable DOM-level guard for the aria-hidden/inert contract remains src/components/__tests__/overlay-hidden-background.a11y.test.tsx.",
+  "component": {},
+  "overlay": {
+    "data-entry-select": [
+      "landmark-one-main",
+      "page-has-heading-one",
+      "region"
+    ],
+    "navigation-context-menu": [
+      "landmark-one-main",
+      "page-has-heading-one",
+      "region"
+    ],
+    "navigation-dropdown-menu": [
+      "landmark-one-main",
+      "page-has-heading-one",
+      "region"
+    ]
+  }
 }

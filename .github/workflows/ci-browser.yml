@@ -52,10 +52,10 @@ on:
     # here is a real gate INPUT: `**.md` is walked by check:doc-prop-existence, `audit-evidence/**`
     # by check:screen-reader-evidence, and `artifacts/**` by check:display-runtime-evidence.
     paths-ignore:
-      - 'debate/**'
-      - '.agent-notes/**'
-      - '.design-sync/**'
-      - 'LICENSE'
+      - "debate/**"
+      - ".agent-notes/**"
+      - ".design-sync/**"
+      - "LICENSE"
 
 concurrency:
   group: ci-browser-${{ github.ref }}
@@ -75,11 +75,23 @@ jobs:
       - run: pnpm preview:build
       - run: pnpm verify:browser
 
+  # Chia shard chứ không dời chỗ. Tên job nằm trong REQUIRED_CI_CHECK_RUNS, nên dời sang nightly
+  # là mọi bản phát hành báo "never ran"; thu nhỏ chính gate mới là lối ra. Đo tại chỗ: một lượt
+  # trọn bộ 164 khung mất 626 giây, ba shard đưa đường găng xuống khoảng 210 giây, dưới ngân sách
+  # 5 phút. Đổi số shard là ĐỔI TÊN check run, nên phải sửa CI_PROOF_FOR_RELEASE_GATE trong
+  # scripts/release-core.mjs và release-workflow.test.ts trong CÙNG một commit.
   axe:
-    name: Per-frame axe (chrome blocking, component allowlisted)
+    name: Per-frame axe (shard ${{ matrix.shard }}/3)
     runs-on: [self-hosted, swarm-pool]
+    strategy:
+      # Mỗi shard chạy hết: một shard đỏ không được huỷ ba shard kia, nếu không bản phát hành
+      # thấy "never ran" cho một cái tên mà thật ra chỉ bị huỷ.
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     env:
       PREVIEW_BASE: http://localhost:6028
+      AXE_SHARD: ${{ matrix.shard }}/3
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
