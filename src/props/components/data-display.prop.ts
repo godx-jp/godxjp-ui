@@ -177,6 +177,12 @@ export type AvatarAppearanceProp = "default" | "tinted";
 
 /** @see Badge */
 export type BadgeProp = {
+  /**
+   * Render element — `div` (default) or `span` when the chip sits in a phrasing context where a
+   * `<div>` is invalid HTML (inside a `<button>` rendered by TabsTrigger/PopoverTrigger/Button,
+   * a `<label>`, a `<p>`). Swaps the tag only (gh#354).
+   */
+  as?: "div" | "span";
   variant?: "default" | "secondary" | "outline";
   /** Status tones plus a brand `primary` tone (soft brand pill); solid brand = `variant="default"`. */
   tone?: ToneProp | "primary";

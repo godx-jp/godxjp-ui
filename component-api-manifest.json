@@ -1403,6 +1403,14 @@
       "group": "layout",
       "props": [
         {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "brand",
           "origin": "owned",
           "required": false,
@@ -1440,6 +1448,14 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "measure",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"wide\" | undefined",
+          "values": ["default", "wide"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -1519,6 +1535,14 @@
     "Badge": {
       "group": "data-display",
       "props": [
+        {
+          "name": "as",
+          "origin": "owned",
+          "required": false,
+          "type": "\"div\" | \"span\" | undefined",
+          "values": ["div", "span"],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
         {
           "name": "children",
           "origin": "owned",
@@ -2934,8 +2958,8 @@
           "name": "maxHeight",
           "origin": "owned",
           "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\" | \"none\" | undefined",
-          "values": ["sm", "md", "lg", "none"],
+          "type": "\"none\" | \"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["none", "sm", "md", "lg"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
@@ -5909,6 +5933,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "as",
+          "origin": "owned",
+          "required": false,
+          "type": "\"div\" | \"span\" | undefined",
+          "values": ["div", "span"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "direction",
           "origin": "owned",
           "required": false,
@@ -5921,7 +5953,7 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl"],
+          "values": ["none", "xs", "sm", "md", "lg", "xl"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -8995,6 +9027,14 @@
           ]
         },
         {
+          "name": "flush",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/popover.tsx"]
+        },
+        {
           "name": "forceMount",
           "origin": "inherited-behavioral",
           "required": false,
@@ -9060,7 +9100,18 @@
     },
     "PopoverTrigger": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "type",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
+          "values": ["button", "submit", "reset"],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        }
+      ]
     },
     "PrefetchLink": {
       "group": "query",
@@ -9069,8 +9120,8 @@
           "name": "prefetchOn",
           "origin": "owned",
           "required": false,
-          "type": "\"hover\" | \"none\" | \"both\" | \"focus\" | undefined",
-          "values": ["hover", "none", "both", "focus"],
+          "type": "\"none\" | \"hover\" | \"both\" | \"focus\" | undefined",
+          "values": ["none", "hover", "both", "focus"],
           "declaredIn": ["src/props/components/query.prop.ts"]
         },
         {
@@ -9702,7 +9753,7 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl"],
+          "values": ["none", "xs", "sm", "md", "lg", "xl"],
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {
@@ -11519,6 +11570,14 @@
       "group": "data-display",
       "props": [
         {
+          "name": "as",
+          "origin": "owned",
+          "required": false,
+          "type": "\"div\" | \"span\" | undefined",
+          "values": ["div", "span"],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
           "name": "children",
           "origin": "owned",
           "required": false,
@@ -11815,6 +11874,22 @@
     "TableCell": {
       "group": "data-display",
       "props": [
+        {
+          "name": "flush",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
+          "name": "indent",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
         {
           "name": "label",
           "origin": "owned",

@@ -51,6 +51,25 @@
     padding-inline-end: 0;
   }
 
+  /* HIERARCHY INDENT (gh#354) — `<TableCell indent={depth}>`. The level rides on the cell as
+   * `--table-cell-indent-level`; the measure is computed here off the cell's own inline padding
+   * plus a token-owned step, so level 0 lands on the column's text axis and a service retunes the
+   * step (or flattens it to `0`) without touching JSX. Inline-start only and logical, so an RTL
+   * tree indents from the right. */
+  [data-slot="table-cell"][data-indent] {
+    padding-inline-start: calc(
+      var(--table-cell-space-x) + var(--table-cell-indent-level, 0) *
+        var(--table-cell-indent-space-step)
+    );
+  }
+
+  /* FLUSH (gh#354) — `<TableCell flush>`: the cell's CONTENT owns the inset, so an expanded detail
+   * panel or a nested table reaches the cell edges instead of being inset by the cell padding.
+   * Declared after the indent rule so the two never fight if both are set. */
+  [data-slot="table-cell"][data-flush] {
+    padding: 0;
+  }
+
   .ui-data-table-toolbar {
     display: flex;
     flex-wrap: wrap;

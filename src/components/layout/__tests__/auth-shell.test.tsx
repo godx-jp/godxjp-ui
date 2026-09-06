@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { AuthShell } from "../auth-shell";
@@ -243,5 +245,77 @@ describe("AuthShell", () => {
     expect(getByText("Acme ID")).toBeInTheDocument();
     expect(getByText("English")).toBeInTheDocument();
     expect(container.querySelector('[data-slot="auth-stack"]')).toBeInTheDocument();
+  });
+
+  it("renders page-level actions at the inline end of the brand banner", () => {
+    const { getByRole, getByText, container } = renderWithUi(
+      <AuthShell brand={<span>ブランド</span>} actions={<button type="button">日本語</button>}>
+        <div>x</div>
+      </AuthShell>,
+    );
+    const banner = getByRole("banner");
+    expect(banner).toContainElement(getByText("ブランド"));
+    expect(banner).toContainElement(getByText("日本語"));
+    // The actions live in their own row so the bar can push them to the END without a
+    // `justify-content` that would also move a lone brand mark.
+    const slot = container.querySelector(".ui-auth-shell-bar-actions");
+    expect(slot).toBeInTheDocument();
+    expect(slot).toContainElement(getByText("日本語"));
+  });
+
+  it("renders the named banner for actions alone (no brand mark)", () => {
+    const { getByRole, getByText } = renderWithUi(
+      <AuthShell actions={<button type="button">テーマ</button>}>
+        <div>x</div>
+      </AuthShell>,
+    );
+    const banner = getByRole("banner");
+    expect(banner).toHaveAccessibleName();
+    expect(banner).toContainElement(getByText("テーマ"));
+  });
+
+  it('emits data-measure only for a real measure, so measure="default" keeps the 24rem box', () => {
+    const { container, rerender } = renderWithUi(
+      <AuthShell measure="default">
+        <div>x</div>
+      </AuthShell>,
+    );
+    expect(container.querySelector('[data-slot="auth-shell"]')).not.toHaveAttribute("data-measure");
+
+    rerender(
+      <AuthShell measure="wide">
+        <div>x</div>
+      </AuthShell>,
+    );
+    expect(container.querySelector('[data-slot="auth-shell"]')).toHaveAttribute(
+      "data-measure",
+      "wide",
+    );
+  });
+
+  it("keeps the wide measure out of every preset's locked flow geometry", () => {
+    const css = readFileSync(join(__dirname, "../../../styles/shell-layout.css"), "utf8");
+    // `:not([data-preset])` is the guard: the login/registration/device presets carry SCR-measured
+    // card widths and page gutters, and a page measure must never reach them.
+    expect(css).toMatch(
+      /\.ui-auth-shell\[data-measure="wide"\]:not\(\[data-preset\]\)\s*\{[^}]*--auth-shell-card-max-width:\s*var\(--auth-shell-wide-card-max-width\);/s,
+    );
+    // Auto margins, not `justify-content: center` — a tall two-column layout must not overflow
+    // above the scroll origin (the hazard the registration preset documents).
+    expect(css).toMatch(
+      /\.ui-auth-shell\[data-measure="wide"\]:not\(\[data-preset\]\)\s+\.ui-auth-shell-card\s*\{[^}]*margin-block:\s*auto;/s,
+    );
+  });
+
+  it("has no axe violations with the banner actions slot filled", async () => {
+    await expectNoA11yViolations(
+      <AuthShell
+        measure="wide"
+        brand={<span>Acme</span>}
+        actions={<button type="button">English</button>}
+      >
+        <div>Login form</div>
+      </AuthShell>,
+    );
   });
 });

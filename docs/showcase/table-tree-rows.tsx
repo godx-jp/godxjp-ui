@@ -10,10 +10,11 @@
  *
  *   row model ........ flatten an org tree to rows carrying { depth, hasChildren,
  *                      expanded }, then derive `visibleRows` from the open set.
- *   tree column ...... ColumnDef.render draws a 14px-per-level indent (CSS var,
- *                      not a fixed layout dimension) + a twirl chevron Button
- *                      (ghost icon-sm) that rotates 90° when expanded — rendered
- *                      ONLY on parent rows; leaves get an aligning spacer.
+ *   tree column ...... ColumnDef.render indents one --table-cell-indent-space-step
+ *                      per level (the token `<TableCell indent>` reads) + a twirl
+ *                      chevron Button (ghost icon-sm) that rotates 90° when
+ *                      expanded — rendered ONLY on parent rows; leaves get an
+ *                      aligning spacer.
  *   metrics .......... 出勤率 / 遅刻 / 残業 as tabular-nums columns; 承認状態 as Badge(tone).
  *   chrome ........... DataTable.Toolbar + DensityToggle + sticky header (built in).
  *
@@ -242,9 +243,12 @@ const hours = new Intl.NumberFormat("ja-JP", {
 });
 
 // ── Tree name cell ───────────────────────────────────────────────────────────────
-// 14px indent per level via a CSS custom property (data-driven, not a fixed layout
-// dimension). Twirl chevron is rendered ONLY on parent rows; leaves get a spacer so
-// names stay aligned at the same depth.
+// One `--table-cell-indent-space-step` per level — the SAME token `<TableCell indent>`
+// reads, so the tree and a hand-authored table indent on one contract and a service
+// retunes the step in one place. DataTable owns the `<td>` here (the column `render`
+// receives no cell), so the level is applied to the cell's content instead of the cell.
+// Twirl chevron is rendered ONLY on parent rows; leaves get a spacer so names stay
+// aligned at the same depth.
 
 function TreeCell({
   row,
@@ -256,7 +260,13 @@ function TreeCell({
   onToggle: (id: string) => void;
 }) {
   return (
-    <Flex align="center" gap="xs" style={{ paddingInlineStart: `calc(${row.depth} * 14px)` }}>
+    <Flex
+      align="center"
+      gap="xs"
+      style={{
+        paddingInlineStart: `calc(var(--table-cell-indent-space-step) * ${row.depth})`,
+      }}
+    >
       {row.hasChildren ? (
         <Button
           variant="ghost"
@@ -388,7 +398,7 @@ function InteractiveTree() {
   );
 }
 
-// ── Fully-expanded static tree (proves all depth levels + the 14px indent) ───────
+// ── Fully-expanded static tree (proves all depth levels + the per-level indent) ──
 
 function ExpandedTree() {
   const open = React.useMemo(() => allParentIds(TREE), []);
@@ -414,7 +424,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="ツリー行"
-      subtitle="階層行 (部署 → チーム → 従業員) · 14px/階層インデント · 親行のみ開閉トグル · 勤怠ロールアップ"
+      subtitle="階層行 (部署 → チーム → 従業員) · 階層ごとのインデント · 親行のみ開閉トグル · 勤怠ロールアップ"
       density="compact"
     >
       <Flex direction="col" gap="lg">

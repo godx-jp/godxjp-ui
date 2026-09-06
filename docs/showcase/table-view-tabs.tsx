@@ -367,12 +367,15 @@ const DOT_CLASS: Record<SavedView["dot"], string> = {
   neutral: "bg-muted-foreground",
 };
 
+// TabsTrigger renders a <button>, whose content model is phrasing content only — so the row and
+// the count chip take `as="span"`. Before Flex/Badge had that seam the only valid shape here was a
+// raw `<span className="flex …">`, i.e. utility layout (gh#354).
 function ViewTrigger({ view, count }: { view: SavedView; count: number }) {
   return (
-    <Flex align="center" gap="sm">
+    <Flex as="span" align="center" gap="sm">
       <span aria-hidden="true" className={`size-2 rounded-full ${DOT_CLASS[view.dot]}`} />
       <span>{view.label}</span>
-      <Badge tone="neutral" shape="pill">
+      <Badge as="span" tone="neutral" shape="pill">
         <Text as="span" size="2xs" weight="medium" tabular>
           {count}
         </Text>

@@ -116,6 +116,12 @@ export const VOCABULARY_REGISTRY = {
     category: "shared",
     description: "Radix asChild polymorphism",
   },
+  FlushProp: {
+    file: "vocabulary/shared.prop.ts",
+    category: "shared",
+    description:
+      "Content owns its own inset — the container drops its padding so the child reaches the frame edge (CardContent/CardFooter flush, TableCell flush, PopoverContent flush)",
+  },
   WidthProp: {
     file: "vocabulary/shared.prop.ts",
     category: "shared",
@@ -233,6 +239,12 @@ export const VOCABULARY_REGISTRY = {
     category: "data",
     description:
       "Table column priority for the action-collection preset — primary | secondary | meta | actions (unset = takes the remaining space)",
+  },
+  TableCellIndentProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "TableCell hierarchy depth — indent = --table-cell-space-x + depth x --table-cell-indent-space-step (tree rows, grouped detail rows)",
   },
   ErrorSurfaceModeProp: {
     file: "vocabulary/layout.prop.ts",
@@ -580,6 +592,12 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
+      {
+        field: "as",
+        local: true,
+        reason:
+          "Closed tag seam (div | span) so a Flex stays valid HTML inside a phrasing-only parent such as the <button> a TabsTrigger renders — same shape as ListRow's `as` (gh#354).",
+      },
       { field: "direction", local: true, reason: "Flex-specific axis control." },
       "GapProp",
       { field: "align", local: true, reason: "Flex-specific align-items keyword subset." },
@@ -692,6 +710,12 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Auth-specific vertical-density scope for card descendants.",
       },
+      {
+        field: "measure",
+        local: true,
+        reason: "Auth-shell content-slot measure; wide is the split brand-panel login.",
+      },
+      "ActionProp",
       "AuthShellPresetProp",
     ],
   },
@@ -1404,6 +1428,12 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/data-display.prop.ts",
     vocabulary: [
+      {
+        field: "as",
+        local: true,
+        reason:
+          "Closed tag seam (div | span) so a chip stays valid HTML inside a phrasing-only parent such as the <button> a TabsTrigger renders — same shape as ListRow's `as` (gh#354).",
+      },
       "BadgeVariantProp",
       "ShapeProp",
       "ToneProp",

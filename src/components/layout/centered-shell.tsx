@@ -12,8 +12,8 @@ export type {
  * account / self-service, and standalone-settings shape. It fills the gap between the two existing
  * shells: - `AppShell` REQUIRES a sidebar — its padded topbar chrome (`.app-topbar`) is a grid
  * area beside the nav rail, so you cannot get a padded top bar without a rail. - `AuthShell` is
- * the UNAUTHENTICATED root (login/mfa/reset); it centres a narrow ~24rem card VERTICALLY and has
- * no top-right actions slot.
+ * the UNAUTHENTICATED root (login/mfa/reset); it centres its card VERTICALLY, so a page that
+ * scrolls its own content belongs here instead.
  */
 export function CenteredShell({
   topbar,

@@ -3,6 +3,8 @@ import { tableHeadHeightClass } from "../../lib/control-styles";
 import { cn } from "../../lib/utils";
 import type {
   BreakpointProp,
+  FlushProp,
+  TableCellIndentProp,
   TableColumnPriorityProp,
   TablePresetProp,
 } from "../../props/vocabulary";
@@ -133,15 +135,41 @@ export const TableHead = React.forwardRef<
 ));
 TableHead.displayName = "TableHead";
 
+/**
+ * The cell's CONTENT owns its inset — an expanded detail panel, a nested table, a full-bleed media
+ * strip. The cell drops its own padding so the child reaches the cell edges; without it the only
+ * route was a zero-padding utility at the call site, which no service theme can reach (gh#354).
+ */
+type TableCellFlush = { flush?: FlushProp };
+
+/**
+ * Hierarchy depth. The indent is `--table-cell-space-x + depth × --table-cell-indent-space-step`,
+ * computed in table-layout.css off the level this prop publishes as `--table-cell-indent-level`,
+ * so a service retunes (or flattens) the step without touching JSX — the route TreeSelect's
+ * `--tree-select-depth` already takes. Logical, so an RTL tree indents from the inline start.
+ */
+type TableCellIndent = { indent?: TableCellIndentProp };
+
 export const TableCell = React.forwardRef<
   HTMLTableCellElement,
-  React.TdHTMLAttributes<HTMLTableCellElement> & TableCellPriority & TableCellLabel
->(({ className, priority, label, children, ...props }, ref) => (
+  React.TdHTMLAttributes<HTMLTableCellElement> &
+    TableCellPriority &
+    TableCellLabel &
+    TableCellFlush &
+    TableCellIndent
+>(({ className, priority, label, flush, indent, children, style, ...props }, ref) => (
   <td
     ref={ref}
     data-slot="table-cell"
     data-priority={priority}
+    data-flush={flush ? "" : undefined}
+    data-indent={indent === undefined ? undefined : indent}
     className={cn(className)}
+    style={
+      indent === undefined
+        ? style
+        : ({ ...style, "--table-cell-indent-level": indent } as React.CSSProperties)
+    }
     {...props}
   >
     {label !== undefined ? (

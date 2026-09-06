@@ -119,11 +119,13 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
           aria-label={`Tổ chức hiện tại: ${current.name}. Nhấn để đổi tổ chức`}
           className="w-full justify-between"
         >
-          <Flex align="center" gap="sm" className="min-w-0">
+          {/* Inside a Button, i.e. inside a <button>, whose content model is phrasing content
+              only — so every Flex on this branch renders as a <span> (gh#354). */}
+          <Flex as="span" align="center" gap="sm" className="min-w-0">
             <Avatar className="size-7 rounded-md">
               <AvatarFallback>{monogram(current.name)}</AvatarFallback>
             </Avatar>
-            <Flex direction="col" gap="xs" className="min-w-0 text-start">
+            <Flex as="span" direction="col" gap="none" className="min-w-0 text-start">
               <Text as="span" size="sm" weight="medium" truncate>
                 {current.name}
               </Text>
@@ -135,7 +137,9 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
           <ChevronsUpDown aria-hidden className="size-4 shrink-0 opacity-60" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" sideOffset={6} className="w-64">
+      {/* `flush` — the Command list owns its own inset, so its rows and separators run edge to
+          edge inside the popover instead of being indented by the panel padding. */}
+      <PopoverContent flush align="start" sideOffset={6} className="w-64">
         <Command label="Chọn tổ chức">
           <CommandInput
             placeholder="Tìm tổ chức…"
@@ -155,11 +159,11 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
                     keywords={[org.id]}
                     onSelect={() => choose(org.id)}
                   >
-                    <Flex align="center" gap="sm" className="w-full min-w-0">
+                    <Flex as="span" align="center" gap="sm" className="w-full min-w-0">
                       <Avatar className="size-6 rounded">
                         <AvatarFallback>{monogram(org.name)}</AvatarFallback>
                       </Avatar>
-                      <Flex direction="col" gap="xs" className="min-w-0 text-start">
+                      <Flex as="span" direction="col" gap="none" className="min-w-0 text-start">
                         <Text as="span" size="sm" truncate>
                           {org.name}
                         </Text>
@@ -178,7 +182,8 @@ function OrgSwitcher({ organizations, currentId, onSelect, onCreate, onJoin }: O
             </CommandGroup>
           </CommandList>
           <Separator />
-          <Flex direction="col" gap="xs">
+          {/* Menu-style footer: the two actions read as one list, so no seam between them. */}
+          <Flex direction="col" gap="none">
             <Button
               type="button"
               variant="ghost"

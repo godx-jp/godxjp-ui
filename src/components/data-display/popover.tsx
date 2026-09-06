@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { cn } from "../../lib/utils";
+import type { FlushProp } from "../../props/vocabulary";
 
 export function Popover(props: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />;
@@ -14,16 +15,27 @@ export function PopoverAnchor(props: React.ComponentProps<typeof PopoverPrimitiv
   return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;
 }
 
+/**
+ * The panel's CONTENT owns its inset — a Command list, a menu or a table that must run edge to
+ * edge and draw its own separators across the full width. The popover drops its own padding by
+ * zeroing `--popover-space-inset` ON THE PANEL, so the inset stays one token (a service that
+ * retunes `--popover-space-inset` still owns every padded popover) and no consumer has to reach
+ * for a zero-padding utility, which no service theme can reach (gh#354).
+ */
+type PopoverContentFlush = { flush?: FlushProp };
+
 export const PopoverContent = React.forwardRef<
   React.ComponentRef<typeof PopoverPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
->(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> & PopoverContentFlush
+>(({ className, align = "center", sideOffset = 4, flush, style, ...props }, ref) => (
   <PopoverPrimitive.Portal>
     <PopoverPrimitive.Content
       ref={ref}
       data-slot="popover-content"
+      data-flush={flush ? "" : undefined}
       align={align}
       sideOffset={sideOffset}
+      style={flush ? ({ ...style, "--popover-space-inset": "0" } as React.CSSProperties) : style}
       className={cn(
         "ui-popover-content origin-[var(--radix-popover-content-transform-origin)]",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",

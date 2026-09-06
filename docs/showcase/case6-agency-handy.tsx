@@ -362,7 +362,8 @@ function StatusBar() {
 function TabBar({ active, onChange }: { active: string; onChange: (id: string) => void }) {
   return (
     <nav className="shrink-0 border-t" aria-label="ワークフロー">
-      <ResponsiveGrid columns={{ sm: 3, md: 3, lg: 3 }} gap="xs">
+      {/* A phone tab bar has no seam between its tabs — the three targets tile edge to edge. */}
+      <ResponsiveGrid columns={{ sm: 3, md: 3, lg: 3 }} gap="none">
         {TABS.map((t) => {
           const isActive = t.id === active;
           const Icon = t.icon;

@@ -235,6 +235,13 @@
   --auth-shell-bar-padding: var(--space-5) var(--space-6);
   --auth-shell-main-padding: var(--space-6);
   --auth-shell-footer-padding: var(--space-3) var(--space-6) var(--space-4);
+  /* Gap between the items of the brand bar: brand to a wrapped `actions` row, and between the
+   * page-level controls inside that row (locale · theme · help). */
+  --auth-shell-bar-gap: var(--space-inline-sm);
+  /* Content-slot measure for `measure="wide"` — the SPLIT login (brand panel beside the auth card).
+   * Same width as the widest CenteredShell tier, so a product's login and its signed-in pages read
+   * at one page measure. Only `measure="wide"` reads it; the default 24rem card is untouched. */
+  --auth-shell-wide-card-max-width: 64rem;
 
   /* Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on
    * AuthShell and may retune the product theme here rather than overriding individual fields. */

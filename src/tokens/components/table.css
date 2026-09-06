@@ -7,6 +7,12 @@
   --table-row-height: calc(var(--table-row-height-default) * var(--scaling));
   --table-cell-padding-y: var(--space-2);
   --table-cell-space-x: var(--control-padding-x);
+  /* Hierarchy indent step for `<TableCell indent={depth}>` (gh#354). The cell's inset is
+   * `--table-cell-space-x + depth × this step`, so level 0 sits exactly on the column's own text
+   * axis and every further level is one step in. Owned here rather than as a magic expression in
+   * JSX (the trap `--tree-select-depth-space-step` was pulled out of), so a denser service dials
+   * the step down — or to `0` for a flat table — without touching a call site. */
+  --table-cell-indent-space-step: var(--space-4);
   /* Pagination footer inset (gh#236). The footer ships as a SELF-CONTAINED slot and is commonly
    * placed in a flush container (`<Card><CardContent flush><DataTable/>`), where no ancestor
    * supplies padding — so it owns its own on BOTH axes instead of declaring block-start only.

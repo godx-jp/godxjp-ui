@@ -266,10 +266,8 @@ function GroupHeaderRow({
 function MemberRow({ m }: { m: Employee }) {
   return (
     <TableRow>
-      <TableCell
-        className="text-muted-foreground font-mono text-xs"
-        style={{ paddingInlineStart: "calc(var(--table-cell-space-x) * 3)" }}
-      >
+      {/* `indent` — the detail row sits one hierarchy level under its group header. */}
+      <TableCell indent={1} className="text-muted-foreground font-mono text-xs">
         {m.id}
       </TableCell>
       <TableCell>{m.name}</TableCell>

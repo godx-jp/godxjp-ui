@@ -161,6 +161,11 @@
     justify-content: space-evenly;
   }
 
+  /* A DELIBERATE zero, not a missing gap: two lines that read as one block (gh#354). */
+  .ui-flex-gap-none {
+    gap: 0;
+  }
+
   .ui-flex-gap-xs {
     gap: var(--space-stack-xs);
   }
@@ -243,6 +248,9 @@
   }
 
   /* `gap` prop: the same steps as Flex. */
+  .ui-responsive-grid[data-gap="none"] {
+    gap: 0;
+  }
   .ui-responsive-grid[data-gap="xs"] {
     gap: var(--space-stack-xs);
   }

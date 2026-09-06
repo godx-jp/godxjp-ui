@@ -74,6 +74,14 @@ export type OnClickProp = React.MouseEventHandler<HTMLButtonElement>;
 export type AsChildProp = boolean;
 
 /**
+ * The slot's CONTENT owns its own inset: the container drops its padding so the child reaches the
+ * frame edge — a full-bleed table inside a Card, an expanded detail panel inside a table cell, a
+ * Command list inside a Popover. It is the sanctioned replacement for the `p-0` utility a consumer
+ * would otherwise write at the call site.
+ */
+export type FlushProp = boolean;
+
+/**
  * An explicit layout dimension (NOT the `SizeProp` control-height tier). A `number` is treated as
  * px; a `string` is any CSS length (`"32rem"`, `"90vw"`, `"50%"`).
  */

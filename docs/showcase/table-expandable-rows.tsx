@@ -435,7 +435,9 @@ function ExpandableList() {
               </TableRow>
               {isOpen && (
                 <TableRow className="hover:bg-transparent">
-                  <TableCell colSpan={COLSPAN} id={panelId}>
+                  {/* `flush` — the detail panel owns its own inset, so it spans the full cell
+                      width instead of being indented by the cell padding. */}
+                  <TableCell flush colSpan={COLSPAN} id={panelId}>
                     <DetailPanel employee={emp} />
                   </TableCell>
                 </TableRow>

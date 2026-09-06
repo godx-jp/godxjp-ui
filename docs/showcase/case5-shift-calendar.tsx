@@ -702,7 +702,7 @@ function WeekTimeline() {
                         }}
                         title={`${meta.label} ${meta.time} · ${b.staff}`}
                       >
-                        <Flex direction="col" gap="xs" className="min-w-0">
+                        <Flex direction="col" gap="none" className="min-w-0">
                           <Text as="div" size="2xs" weight="medium" truncate>
                             {meta.label}
                           </Text>

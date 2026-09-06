@@ -42,14 +42,27 @@ Implementation: `src/tokens/base.css` (values) · layout owners: `src/styles/*-l
 | `--card-space-body-y`                             | `--space-section-active` | Header↔body gap                            |
 | `--card-space-header-y` / `--card-space-footer-y` | `--space-stack-sm`       | Banded header + separated footer band      |
 
-| Component                 | Use                                                |
-| ------------------------- | -------------------------------------------------- |
-| `StatCard`                | KPI / stat tile (`solo` path)                      |
-| `CardContent solo`        | Body-only card (same padding as `StatCard`)        |
-| `CardContent flush tight` | Edge-to-edge table/tabs in card                    |
-| `ui-card-inset-x`         | Align nested cells to shell (tables in flush body) |
+| Component                 | Use                                         |
+| ------------------------- | ------------------------------------------- |
+| `StatCard`                | KPI / stat tile (`solo` path)               |
+| `CardContent solo`        | Body-only card (same padding as `StatCard`) |
+| `CardContent flush tight` | Edge-to-edge table/tabs in card             |
 
 See preview **Data Display → Card** for live examples.
+
+### Inset classes (padding on something that is not a `Card*` slot)
+
+`Card*` slots get their padding from `data-slot`. Everything else that must sit on the same rhythm (a table cell, a grid header strip, a scroll body, a sticky action row, a full-bleed toolbar) uses one of three public classes. They are the only legal way to take card-token padding onto a plain element, because the audit rejects Tailwind `p-*` / `px-*` (`no-utility-spacing`).
+
+Pick by AXIS, and note that the three do **not** share one value: each reads a different card token, so `ui-card-inset` is not `ui-card-inset-x` plus `ui-card-inset-y`.
+
+| Class             | Axis               | Token                   | Use when                                                                                                                                                                                                     |
+| ----------------- | ------------------ | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ui-card-inset-x` | inline (start/end) | `--card-space-inset`    | The element must line up with the card shell edge, and the block axis is owned by something else (a fixed row height, a table cell). Rows in a `CardContent flush` table, a header strip in a bordered grid. |
+| `ui-card-inset-y` | block (top/bottom) | `--card-space-header-y` | The element runs edge to edge inline but needs the band rhythm of a banded header / separated footer. A weekday header strip, a full-bleed toolbar cell.                                                     |
+| `ui-card-inset`   | all four sides     | `--card-space-body-y`   | A self-contained panel that owns its own padding on every side: a scrollable body, a sticky action bar, an expanded row panel below a table row.                                                             |
+
+Because `ui-card-inset-x` reads `--card-space-inset`, it follows the card it sits in: a `Card density="tight"` or `"cozy"` moves those cells with the shell. The other two read fixed steps (band and body) and do not.
 
 ## MCP
 

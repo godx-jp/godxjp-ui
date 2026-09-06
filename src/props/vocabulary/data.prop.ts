@@ -99,3 +99,10 @@ export type TablePresetProp = "default" | "action-collection" | "stacked-record-
  * is reserved first so it can never be pushed outside the viewport.
  */
 export type TableColumnPriorityProp = "primary" | "secondary" | "meta" | "actions";
+
+/**
+ * Hierarchy depth a table cell renders at. `0` sits on the column's own text axis and every
+ * further level adds one `--table-cell-indent-space-step`, so a tree row or a grouped detail row
+ * expresses its level instead of hand-rolling `style={{ paddingInlineStart }}` at the call site.
+ */
+export type TableCellIndentProp = number;

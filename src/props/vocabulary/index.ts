@@ -23,6 +23,7 @@ export type {
   OnChangeProp,
   OnClickProp,
   AsChildProp,
+  FlushProp,
   WidthProp,
   ControlWidthProp,
 } from "./shared.prop";
@@ -92,6 +93,7 @@ export type {
   ColumnDefProp,
   TablePresetProp,
   TableColumnPriorityProp,
+  TableCellIndentProp,
   SelectedIdsProp,
   OnSelectChangeProp,
   OnTableDensityChangeProp,

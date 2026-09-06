@@ -12,6 +12,7 @@ export type {
 } from "../../props/components/layout.prop";
 
 export function Flex({
+  as: Element = "div",
   direction = "row",
   gap = "md",
   align,
@@ -47,7 +48,7 @@ export function Flex({
     };
   }
   return (
-    <div
+    <Element
       data-direction={direction}
       data-align={align}
       data-justify={justify}
@@ -59,6 +60,6 @@ export function Flex({
       {...domProps}
     >
       {children}
-    </div>
+    </Element>
   );
 }

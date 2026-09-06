@@ -189,6 +189,13 @@
         "shape": {
           "cases": ["default", "pill", "sharp"],
           "evidence": ["docs/data-display/badge.tsx"]
+        },
+        "as": {
+          "cases": ["div", "span"],
+          "evidence": [
+            "src/components/data-display/__tests__/badge-phrasing-seam-354.test.tsx",
+            "docs/showcase/table-view-tabs.tsx"
+          ]
         }
       }
     },
@@ -1415,6 +1422,37 @@
         "variant": {
           "cases": ["button", "picture", "dropzone", "picture-card", "avatar", "avatar-crop"],
           "evidence": ["docs/data-entry/upload.tsx"]
+        }
+      }
+    },
+    "Flex": {
+      "props": {
+        "as": {
+          "cases": ["div", "span"],
+          "evidence": [
+            "src/components/layout/__tests__/flex-phrasing-seam-354.test.tsx",
+            "docs/showcase/table-view-tabs.tsx",
+            "docs/showcase/org-switcher.tsx"
+          ]
+        },
+        "gap": {
+          "cases": ["none", "xs", "sm", "md", "lg", "xl"],
+          "evidence": [
+            "src/components/layout/__tests__/flex-phrasing-seam-354.test.tsx",
+            "docs/layout/flex.tsx",
+            "docs/showcase/table-sticky-columns.tsx"
+          ]
+        }
+      }
+    },
+    "ResponsiveGrid": {
+      "props": {
+        "gap": {
+          "cases": ["none", "xs", "sm", "md", "lg", "xl"],
+          "evidence": [
+            "src/components/layout/__tests__/responsive-grid.test.tsx",
+            "docs/showcase/case6-agency-handy.tsx"
+          ]
         }
       }
     }

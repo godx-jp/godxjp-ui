@@ -138,6 +138,14 @@ export type FlexJustifyProp = "start" | "center" | "end" | "between" | "around" 
 
 /** @see Flex */
 export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
+  /**
+   * Render element — `div` (default) or `span` when the Flex sits in a PHRASING context and a
+   * `<div>` would be invalid HTML: inside a `TabsTrigger`/`PopoverTrigger`/`Button` (all of which
+   * render a `<button>`, whose content model is phrasing content only), inside a `<label>`, or
+   * inside a `<p>`. Same closed shape as `ListRow`'s `as` — it swaps the TAG, nothing else: the
+   * `.ui-flex` rules carry `display: flex`, so the box is identical either way (gh#354).
+   */
+  as?: "div" | "span";
   direction?: FlexDirectionProp;
   gap?: GapProp;
   align?: FlexAlignProp;
@@ -265,6 +273,13 @@ export type AuthShellProp = {
   children: ReactNode;
   /** Brand bar slot pinned to the top (e.g. a `<Logo>` / product mark). */
   brand?: ReactNode;
+  /**
+   * Page-level controls pinned to the TOP-RIGHT of the same banner row as `brand` — a locale
+   * picker, a theme toggle, a "need help?" link. These belong to the PAGE, not to the auth form,
+   * which is why they sit in the bar rather than inside the card. The banner renders as soon as
+   * `brand` OR `actions` is present, so an actions-only bar is a legal shape.
+   */
+  actions?: ActionProp;
   /** Footer slot pinned to the bottom (legal links, locale switch, support). */
   footer?: ReactNode;
   /**
@@ -281,6 +296,16 @@ export type AuthShellProp = {
    * canonical 1440x900, 1024x900 and 390x844 viewports.
    */
   preset?: AuthShellPresetProp;
+  /**
+   * Inline MEASURE of the shell's content slot. `"default"` keeps the single auth card (24rem, or
+   * the canonical variant's 22.5rem). `"wide"` opens the slot to
+   * `--auth-shell-wide-card-max-width` so a SPLIT login fits — a brand/marketing panel beside the
+   * auth card, the shape that previously had no shell and reached for `CenteredShell`. The wide
+   * slot centres itself with auto margins, so a tall two-column layout starts at the top instead
+   * of overflowing above the scroll origin. Ignored under a `preset`: a preset already owns its
+   * flow geometry.
+   */
+  measure?: "default" | "wide";
   /**
    * Vertical density scoped to auth-card descendants. The canonical variant defaults to
    * `"compact"`; the default variant defaults to `"comfortable"`.

@@ -241,7 +241,8 @@ export default function Demo() {
                     <TableHead className={`${PIN_LEFT} w-56 min-w-56`}>従業員</TableHead>
                     {DAYS.map((d) => (
                       <TableHead key={d.key} className="text-center">
-                        <Flex direction="col" gap="xs" className="leading-tight">
+                        {/* Weekday over its date reads as ONE label — no seam between the lines. */}
+                        <Flex direction="col" gap="none" className="leading-tight">
                           <Text weight="medium">{d.label}</Text>
                           <Text size="2xs" tone="muted" tabular>
                             {d.date}

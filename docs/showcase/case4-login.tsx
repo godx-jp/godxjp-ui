@@ -7,9 +7,10 @@
  * not a transcription of the prototype DOM.
  *
  * Composition map (prototype block → @godxjp/ui primitive):
- *   no shell ............... a bare centered page (login has no AppShell)
- *   comfortable density .... `.ui-density-comfortable` wrapper → 44px touch floor
- *   locale + theme toggle .. Select (locale) + ToggleGroup (theme) top-right
+ *   page shell ............. AuthShell (the unauthenticated root shell)
+ *   comfortable density .... AuthShell's own control tier → 44px touch floor
+ *   locale + theme toggle .. AuthShell `actions` (banner, inline end)
+ *   two-column measure ..... AuthShell `measure="wide"` → 64rem content slot
  *   split brand panel ...... Card composition, hidden < lg (mobile-first)
  *   auth card .............. Card (shadow-lg — the one resting shadow login allows)
  *   SSO buttons ............ Button(outline) full-width + brand SVG slot
@@ -49,7 +50,7 @@ import {
   CardDescription,
   Descriptions,
 } from "@godxjp/ui/data-display";
-import { CenteredShell, Flex, ResponsiveGrid, Separator, Topbar } from "@godxjp/ui/layout";
+import { AuthShell, Flex, ResponsiveGrid, Separator } from "@godxjp/ui/layout";
 
 // ── The single allowed multi-color brand mark (Google "G") ─────────────────────
 // Icons normally inherit currentColor; a third-party brand mark is the documented
@@ -115,54 +116,51 @@ export default function LoginShowcase() {
   const [theme, setTheme] = React.useState("light");
 
   return (
-    <CenteredShell
-      width="lg"
-      align="center"
-      className="ui-density-comfortable text-foreground"
-      /* Locale + theme toggle, pinned top-right. Stacks under brand on narrow. */
-      topbar={
-        <Topbar
-          start={
-            <div className="lg:hidden">
-              <BrandLockup />
-            </div>
-          }
-          end={
-            <Flex align="center" gap="sm">
-              <Select value={locale} onValueChange={setLocale}>
-                <SelectTrigger size="sm" className="w-32" aria-label="言語を選択">
-                  <Languages aria-hidden="true" className="text-muted-foreground" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent align="end">
-                  {LOCALES.map((l) => (
-                    <SelectItem key={l.code} value={l.code}>
-                      {l.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <ToggleGroup
-                type="single"
-                value={theme}
-                onValueChange={(v) => v && setTheme(v)}
-                variant="outline"
-                size="sm"
-                aria-label="テーマを切り替え"
-              >
-                <ToggleGroupItem value="light" aria-label="ライト">
-                  <Sun aria-hidden="true" />
-                </ToggleGroupItem>
-                <ToggleGroupItem value="dark" aria-label="ダーク">
-                  <Moon aria-hidden="true" />
-                </ToggleGroupItem>
-                <ToggleGroupItem value="system" aria-label="システム">
-                  <Monitor aria-hidden="true" />
-                </ToggleGroupItem>
-              </ToggleGroup>
-            </Flex>
-          }
-        />
+    <AuthShell
+      /* The 64rem content slot the split (brand panel + card) login needs. */
+      measure="wide"
+      className="text-foreground"
+      /* Brand mark in the banner below lg; from lg the split panel carries it. */
+      brand={
+        <div className="lg:hidden">
+          <BrandLockup />
+        </div>
+      }
+      /* Page-level controls, pinned to the banner's inline end. */
+      actions={
+        <>
+          <Select value={locale} onValueChange={setLocale}>
+            <SelectTrigger size="sm" className="w-32" aria-label="言語を選択">
+              <Languages aria-hidden="true" className="text-muted-foreground" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent align="end">
+              {LOCALES.map((l) => (
+                <SelectItem key={l.code} value={l.code}>
+                  {l.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <ToggleGroup
+            type="single"
+            value={theme}
+            onValueChange={(v) => v && setTheme(v)}
+            variant="outline"
+            size="sm"
+            aria-label="テーマを切り替え"
+          >
+            <ToggleGroupItem value="light" aria-label="ライト">
+              <Sun aria-hidden="true" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="dark" aria-label="ダーク">
+              <Moon aria-hidden="true" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="system" aria-label="システム">
+              <Monitor aria-hidden="true" />
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </>
       }
     >
       {/* Centered auth area. Split brand panel + card sit side-by-side from lg. */}
@@ -298,6 +296,6 @@ export default function LoginShowcase() {
           </CardContent>
         </Card>
       </ResponsiveGrid>
-    </CenteredShell>
+    </AuthShell>
   );
 }

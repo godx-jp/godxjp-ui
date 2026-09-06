@@ -58,8 +58,14 @@ export type AuthShellPresetProp =
   | "context-selection"
   | "account-recovery";
 
-/** Shared gap between layout children; components may document subsets. */
-export type GapProp = "xs" | "sm" | "md" | "lg" | "xl";
+/**
+ * Shared gap between layout children; components may document subsets.
+ * `"none"` is a DELIBERATE zero, not the absence of a value: two lines that read as ONE block —
+ * a name over its role, a weekday over its date, a tab bar with no seam between its triggers.
+ * Without it those stacks had to carry `gap="xs"`, which is a visual change forced by a missing
+ * step rather than by design (gh#354).
+ */
+export type GapProp = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 
 /** DataTable row density subset. */
 export type TableDensityProp = Exclude<DensityProp, "default">;

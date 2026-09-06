@@ -98,6 +98,14 @@ export interface BadgeProps
     Omit<React.HTMLAttributes<HTMLDivElement>, "children">,
     Omit<VariantProps<typeof badgeVariants>, "variant" | "shape"> {
   variant?: BadgeVariant | null;
+  /**
+   * Render element — `div` (default) or `span` when the chip sits in a PHRASING context and a
+   * `<div>` would be invalid HTML: inside a `TabsTrigger`/`PopoverTrigger`/`Button` (all render a
+   * `<button>`, whose content model is phrasing content only), inside a `<label>` or a `<p>`.
+   * It swaps the TAG only — the chip's own `inline-flex` box, icon and label are unchanged, and
+   * both the icon `<svg>` and the label `<span>` are already phrasing content (gh#354).
+   */
+  as?: "div" | "span";
   /** Corner shape — `default` (badge radius) · `pill` (fully rounded) · `sharp` (square). */
   shape?: ShapeProp | null;
   tone?: BadgeTone | null;
@@ -134,6 +142,7 @@ const badgeToneClass: Record<BadgeTone, string | undefined> = {
 };
 
 export function Badge({
+  as: Element = "div",
   className,
   variant,
   shape,
@@ -156,7 +165,7 @@ export function Badge({
   const tinted = color != null && color !== "";
 
   return (
-    <div
+    <Element
       data-slot="badge"
       data-tone={tinted ? undefined : resolvedTone}
       data-tinted={tinted ? "" : undefined}
@@ -178,7 +187,7 @@ export function Badge({
           node rides the label visibly low inside the chip. Trim needs a real box: it does not
           reach an anonymous flex item. */}
       {resolvedChildren != null ? <span data-slot="badge-label">{resolvedChildren}</span> : null}
-    </div>
+    </Element>
   );
 }
 

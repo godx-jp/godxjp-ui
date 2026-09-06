@@ -129,7 +129,7 @@ function GrantCell({ granted }: { granted: boolean }) {
       <span className="sr-only">許可</span>
     </Badge>
   ) : (
-    <Flex align="center" justify="center" gap="xs" className="text-muted-foreground">
+    <Flex align="center" justify="center" gap="none" className="text-muted-foreground">
       <Minus aria-hidden="true" className="size-4" />
       <span className="sr-only">不許可</span>
     </Flex>
@@ -240,7 +240,7 @@ export default function Demo() {
                           className={cn("text-center", isCompared && "bg-primary/[0.06]")}
                           aria-label={isCompared ? `${role.name}（比較対象）` : role.name}
                         >
-                          <Flex direction="col" align="center" gap="xs" className="leading-tight">
+                          <Flex direction="col" align="center" gap="none" className="leading-tight">
                             <Flex align="center" gap="xs">
                               <Text weight="medium">{role.name}</Text>
                               {isCompared && (
@@ -322,7 +322,7 @@ export default function Demo() {
                 </Text>
               </Flex>
               <Flex direction="row" align="center" gap="xs">
-                <Flex align="center" gap="xs" className="text-muted-foreground">
+                <Flex align="center" gap="none" className="text-muted-foreground">
                   <Minus aria-hidden="true" className="size-4" />
                 </Flex>
                 <Text size="xs" tone="muted">

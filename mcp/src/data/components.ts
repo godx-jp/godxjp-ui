@@ -237,6 +237,13 @@ export default function OrdersPage() {
       "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls.",
     props: [
       {
+        name: "as",
+        type: '"div" | "span"',
+        defaultValue: '"div"',
+        description:
+          'Render element. Swaps the TAG only — `.ui-flex` carries `display: flex`, so the box is identical either way. Pass "span" whenever the Flex sits in a PHRASING context where a <div> is invalid HTML: inside a TabsTrigger, a PopoverTrigger or a Button (each renders a <button>, whose content model is phrasing content only), inside a <label>, or inside a <p>. Nest consistently — a <div> inside a "span" Flex is invalid again.',
+      },
+      {
         name: "direction",
         type: '"row" | "col"',
         defaultValue: '"row"',
@@ -245,9 +252,10 @@ export default function OrdersPage() {
       },
       {
         name: "gap",
-        type: '"xs" | "sm" | "md" | "lg" | "xl"',
+        type: '"none" | "xs" | "sm" | "md" | "lg" | "xl"',
         defaultValue: '"md"',
-        description: "Token gap between children, shared with other layout primitives.",
+        description:
+          'Token gap between children, shared with other layout primitives. "none" is a DELIBERATE zero for two lines that read as one block — a name over its role, a weekday over its date, a tab bar with no seam — not a way to opt out of the token scale.',
       },
       {
         name: "align",
@@ -284,7 +292,7 @@ export default function OrdersPage() {
       'DO use `direction="row"` with `wrap` for responsive control rows, chip clusters, and action groups that need more control than simple row composition.',
       'DO use `direction="col"` for vertical groupings that need explicit `align` or `justify` behavior. For pure vertical stacking without alignment control, `direction="col"` is sufficient.',
       "DON'T override the axis with `className` after choosing a direction prop. Keep the layout intent in props so catalog guidance and data attributes stay accurate.",
-      "Flex is a plain div with React.HTMLAttributes<HTMLDivElement>; pass `id`, `role`, `aria-*`, `data-*`, and structural className values as needed, but do not use it as a semantic form or button wrapper.",
+      'Flex is a plain div with React.HTMLAttributes<HTMLDivElement>; pass `id`, `role`, `aria-*`, `data-*`, and structural className values as needed, but do not use it as a semantic form or button wrapper. When the parent only accepts phrasing content — a TabsTrigger, PopoverTrigger or Button, all of which render a <button> — pass `as="span"` rather than reaching for a raw `<span className="flex …">`.',
       "NAMED FLEX = GROUP: a role-less div may not carry a naming attribute (axe aria-allowed-attr), so a Flex given `aria-label`/`aria-labelledby` — e.g. by FormField wrapping a composite range/年月 field — automatically renders `role='group'`, folds `aria-errormessage` into `aria-describedby`, and drops the widget-only `aria-required`/`aria-invalid`. Passing an explicit `role` opts out of all of this and the caller owns the attribute set.",
     ],
     useCases: [
@@ -325,6 +333,13 @@ import { Button } from "@godxjp/ui/general";
         type: "2 | 3 | 4",
         defaultValue: "3",
         description: "Target column count at desktop; collapses to 1 on mobile.",
+      },
+      {
+        name: "gap",
+        type: '"none" | "xs" | "sm" | "md" | "lg" | "xl"',
+        defaultValue: '"md"',
+        description:
+          'Token gap between cells, the same steps as Flex. "none" is a DELIBERATE zero for tiles that must read as one continuous surface (a segmented bar, a seamless tile strip) — not a way to opt out of the token scale.',
       },
       {
         name: "children",
@@ -527,6 +542,12 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
         description: "Brand bar slot pinned to the top (e.g. a <Logo> / product mark).",
       },
       {
+        name: "actions",
+        type: "ReactNode",
+        description:
+          'Page-level controls pinned to the TOP-RIGHT of the same banner row as `brand` — a locale <Select>/<AppSettingPicker>, a theme <ToggleGroup>, a "need help?" link. They belong to the PAGE, not the auth form, so they sit in the bar, not in the card. The banner renders as soon as `brand` OR `actions` is present.',
+      },
+      {
         name: "footer",
         type: "ReactNode",
         description: "Footer slot pinned to the bottom (legal links, locale switch, support).",
@@ -544,6 +565,13 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
         defaultValue: '"default"',
         description:
           'Named flow GEOMETRY — the package-owned layout contract for a canonical hosted-identity flow. "device-authorization" = a 380px card at 1440/1024 with a 5px inline page gutter at 390, AND the code field itself: the preset hands --otp-slot-{inline,block}-size the canonical 27.5x52 device-grant slot, so two 4-slot grouped boxes measure 112x54 instead of the 146x38 the square --control-height tier produced. "registration" = the 360px sign-up measure with a 15px inline gutter at 390 (the same page rhythm as "login", so sign-in to sign-up never jumps on a phone). START-aligned like login: a sign-up card is the tallest surface in the set (name/email/password/confirm/strength/consent/submit/providers) and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach.',
+      },
+      {
+        name: "measure",
+        type: '"default" | "wide"',
+        defaultValue: '"default"',
+        description:
+          'Inline MEASURE of the shell content slot. "default" is the single auth card (24rem, or 22.5rem under variant="canonical"). "wide" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry.',
       },
       {
         name: "density",
@@ -568,6 +596,8 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
       'DO let `preset="context-selection"` space the auth column: it turns the card slot into a flex column with a tokenized `--auth-shell-card-stack-gap`, so an intro (<AuthIdentity>), the choice <Card> and a trailing "remember" row pass as three siblings with NO page-local spacing.',
       "DO NOT add a page-local width, inset or colour to hit an artboard — if a measure is missing, it is a library gap: a new preset or token, never consumer CSS (rules #44/#45).",
       "DO put the product/brand mark in `brand` (a <Logo> or an <Avatar>) — it renders as the top banner landmark; omit it and the banner is not rendered.",
+      'DO put page-level controls in `actions` — the locale picker, the theme <ToggleGroup>, a "need help?" link. They land at the banner\'s inline end at a tokenized gap (`--auth-shell-bar-gap`), and the banner appears even with no `brand`. Do NOT hand-roll a top-right row with `ms-auto` on the `brand` content, and do NOT reach for CenteredShell just to get a topbar with actions: CenteredShell is the AUTHENTICATED shell.',
+      'DO use `measure="wide"` for the SPLIT login — a brand/marketing panel beside the auth card. The content slot opens to 64rem (`--auth-shell-wide-card-max-width`) and centres with auto margins, so the tall two-column layout starts at the top instead of overflowing above the scroll origin; lay the two halves out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> and hide the panel below `lg`. It is IGNORED under a `preset` (a preset owns its flow geometry), so pick one or the other.',
       "DO use `footer` for compliance/legal/support links or a locale switch — it renders as the contentinfo landmark below the card.",
       "DO wrap the card in <Reveal> for the entrance animation (`<AuthShell><Reveal><Card/></Reveal></AuthShell>`) — Reveal honours prefers-reduced-motion; AuthShell itself stays layout-only.",
       "DO NOT re-scope control height or heading size in the app — AuthShell already sets the comfortable control tier (44px, WCAG touch floor) and the larger auth heading via `--auth-shell-control-height` / `--auth-shell-heading-size`; a service retunes those tokens, not a bespoke class.",
@@ -580,6 +610,7 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
       "MFA / passkey / device-authorisation step: same shell, a <Card> with the one-time-code <InputOTP> or a passkey prompt.",
       'OAuth device-grant screen (SCR-004): <AuthShell variant="canonical" preset="device-authorization"> — a 380px card at 1440/1024 and a 5px inline gutter at 390, with zero page-local CSS.',
       'Organisation / context selection (/select-context): <AuthShell variant="canonical" preset="context-selection" brand={<Logo mark="godx" />}> with an <AuthIdentity> intro, a <Card><CardContent flush> list of <ListRow as="li"> organisations, and a trailing "remember this choice" <Checkbox> — the preset spaces the three sections.',
+      'Split product login: <AuthShell measure="wide" brand={<Logo/>} actions={<><Select locale/><ToggleGroup theme/></>}> around a <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> whose first cell is the brand/value panel (hidden below lg) and whose second is the auth <Card>. See docs/showcase/case4-login.',
       "Password reset / forgot-password / accept-invite: the centred single-card flow with a brand bar and a legal footer.",
       'SSO landing / success confirmation: pair with an <EmptyState tone="success"> inside the card for an approved-device confirmation.',
     ],
@@ -680,7 +711,7 @@ export function DeviceAuthorizationPage() {
       "DO put a <Topbar start={<brand/>} end={<actions/>}/> in `topbar` — CenteredShell wraps it in the padded `.app-topbar` chrome, so you get inline padding + border + backdrop with zero custom CSS. Do NOT hand-roll a bar with raw `padding-inline` — the bare Topbar primitive ships no inset (the .ui-topbar zero-padding footgun) and content sits flush to the edge.",
       "DO pick `width` by content: `sm` (~32rem) for a single settings form, `md` (default, ~46rem) for a My Page of stacked sections, `lg` (~64rem) for a service-launcher grid. All are wider than AuthShell's 24rem card.",
       "DO wrap an individual section in <Reveal> for entrance motion — CenteredShell stays layout-only and delegates prefers-reduced-motion handling to Reveal (same as AuthShell).",
-      "DO NOT use AuthShell for an authenticated page (it centres a narrow card VERTICALLY and has no actions slot), and DO NOT force AppShell with an empty sidebar — use CenteredShell. Never nest it inside AppShell/AuthShell (or vice-versa); it is a ROOT shell.",
+      'DO NOT use AuthShell for an authenticated page (it is the UNAUTHENTICATED root and imposes auth-card geometry), and DO NOT force AppShell with an empty sidebar — use CenteredShell. Conversely, do NOT reach for CenteredShell to build a login page: AuthShell has its own `actions` slot for the locale/theme controls and a `measure="wide"` for the split brand-panel login. Never nest it inside AppShell/AuthShell (or vice-versa); it is a ROOT shell.',
       'DO use `align="center"` (+ `width="sm"`) for a SYSTEM-level standalone page — a 500/503 error surface, a maintenance notice. It centres the column in the 100dvh shell at 1440/1024/390 with no consumer `min-h-dvh` / flex CSS and no className; the knob is --centered-shell-column-offset-block. For an actual 403/404/500/503 page do NOT wire this by hand — use `ErrorSurface`, which renders this shell itself in `mode="system"`.',
     ],
     useCases: [
@@ -692,7 +723,7 @@ export function DeviceAuthorizationPage() {
     ],
     related: [
       "AppShell — the shell for authenticated app pages WITH a sidebar nav rail. CenteredShell is its no-sidebar sibling (same padded topbar chrome, a centred column instead of a full-bleed main).",
-      "AuthShell — the UNAUTHENTICATED root shell (login/mfa/reset): a narrow ~24rem card centred vertically, no actions slot. CenteredShell is the AUTHENTICATED centred-page counterpart. Never nest the two.",
+      'AuthShell — the UNAUTHENTICATED root shell (login/mfa/reset): a ~24rem card centred vertically, with its own banner `actions` slot and a `measure="wide"` split-login measure. CenteredShell is the AUTHENTICATED centred-page counterpart. Never nest the two.',
       "Topbar — compose it into `topbar`; CenteredShell supplies the padded chrome the bare Topbar lacks.",
       "PageContainer — for a titled section INSIDE the column; or compose <Card>/<ResponsiveGrid> sections directly.",
     ],
@@ -2621,6 +2652,13 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "Plain or lifecycle badge. Use `variant` for static chips, or `status` to auto-map lifecycle keys to semantic tone + icon. Labels never wrap.",
     props: [
       {
+        name: "as",
+        type: '"div" | "span"',
+        defaultValue: '"div"',
+        description:
+          'Render element. Swaps the TAG only — the chip keeps its own inline-flex box, icon and label. Pass "span" when the chip sits in a PHRASING context where a <div> is invalid HTML: inside a TabsTrigger, a PopoverTrigger or a Button (each renders a <button>, whose content model is phrasing content only), inside a <label>, or inside a <p>.',
+      },
+      {
         name: "variant",
         type: '"default" | "secondary" | "outline" | "dashed"',
         defaultValue: '"default"',
@@ -2668,7 +2706,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "DO pick the correct variant semantically: `success` (approved/paid), `warning` (pending/overdue), `destructive` (rejected/error), `secondary` (neutral category), `outline` (subtle label), `default` (primary accent). Never force a colour just for aesthetics — agents and screen readers read the variant as intent.",
       "DO use `status` for entity lifecycle statuses (active, draft, pending, cancelled, failed, scheduled, etc.) so the component resolves the correct tone, icon, and i18n label.",
       "DO pass `variant` explicitly for localized labels or categorical tiers, and pass `icon={null}` when a lifecycle glyph would be misleading.",
-      "Badge renders as a `<div>` (HTMLAttributes<HTMLDivElement>). It carries no interactive semantics. If you need a clickable chip, wrap it in a `<button>` or use a Button with a matching variant — never add an `onClick` directly to Badge without an accessible role.",
+      'Badge renders as a `<div>` by default (HTMLAttributes<HTMLDivElement>) — pass `as="span"` when it sits inside a <button>, <label> or <p>, where a <div> is invalid HTML. It carries no interactive semantics either way. If you need a clickable chip, wrap it in a `<button>` or use a Button with a matching variant — never add an `onClick` directly to Badge without an accessible role.',
       "Badge is a leaf — pass plain text or a short ReactNode as children. Do NOT nest another Badge, a Button, or interactive controls inside it; that breaks focus order and creates invalid HTML (div-in-inline-context).",
       "Use semantic tokens for any className overrides (`text-muted-foreground`, `bg-destructive`) — never raw Tailwind palette classes like `bg-green-500`.",
       "DO pass `color` — never an inline `backgroundColor` — when the colour belongs to the RECORD rather than to its meaning (a status an administrator coloured, an issue type, a tag). A hand-filled chip has to choose a foreground, and no choice is readable for every colour a picker can produce; `color` moves the ground instead and keeps the label on the surface's own foreground.",
@@ -3410,6 +3448,8 @@ import remarkGfm from "remark-gfm";
       "DO NOT hand-roll empty-state handling inside a Table composition. When data can be empty, switch to `DataTable` (which has a built-in empty state) or wrap the `<Table>` with a conditional that renders `<EmptyState>` — never leave a table with only a header and zero rows.",
       "DO NOT use Table for lists that need sorting, filtering, pagination, or row selection — those features are only in `DataTable`. Table is intentionally stateless: it owns no TanStack Table instance, no column definitions, and no toolbar.",
       'DO reach for `preset="action-collection"` for a dense approval / action queue (requester · target · reason · requested date · row actions) that must stay readable at 390px, and mark every column with `priority` on BOTH its `TableHead` and its `TableCell`: `primary` (the row subject), `secondary` (its target), `meta` (a timestamp/id), `actions` (the row-action affordance, whose measure is reserved first so it can never be pushed off-screen). Leave the free-text column unmarked — it takes the remaining space. Never add a consumer width, a hidden column or a page-local breakpoint to make a table fit; retune `--table-action-collection-*` instead. The IDENTICAL preset exists on `DataTable` (`preset` + `collapseBelow` on the table, `priority` on the `ColumnDef`) sharing these same tokens — use DataTable when the queue is data-driven and needs sorting/selection/pagination, and reach for the raw `Table` only for a hand-authored queue.',
+      "DO reach for `<TableCell flush>` when the cell's CONTENT owns its inset — an expanded detail panel under a row (`<TableCell flush colSpan={n}>`), a nested table, a full-bleed media strip. It drops the cell's own padding so the child spans the whole cell; without it the panel is indented by `--table-cell-space-x` and the only route was a `p-0` utility, which no service theme can reach.",
+      "DO express hierarchy with `<TableCell indent={depth}>` — a grouped table's detail rows under their subtotal header, or a tree row under its parent. The measure is `--table-cell-space-x + depth x --table-cell-indent-space-step`, so level 0 sits on the column's own text axis and a service retunes (or flattens) the step in one token. Never hand-roll `style={{ paddingInlineStart }}` at the call site — that is a per-page constant no theme can reach, and it breaks in RTL unless you remember the logical property.",
       "DO place `<Table>` inside a `<CardContent flush>` (or `p-0` card) when embedding in a Card, so the built-in `overflow-auto` wrapper sits flush to the card edges. Wrapping with plain `<CardContent>` adds padding that clips the horizontal scroll shadow.",
     ],
     useCases: [
@@ -3429,7 +3469,11 @@ import remarkGfm from "remark-gfm";
 
 <Table>
   <TableHeader><TableRow><TableHead>項目</TableHead><TableHead className="text-right">金額</TableHead></TableRow></TableHeader>
-  <TableBody><TableRow><TableCell>送料</TableCell><TableCell className="text-right">¥500</TableCell></TableRow></TableBody>
+  <TableBody>
+    <TableRow><TableCell>送料</TableCell><TableCell className="text-right">¥500</TableCell></TableRow>
+    <TableRow><TableCell indent={1}>うち離島加算</TableCell><TableCell className="text-right">¥200</TableCell></TableRow>
+    <TableRow><TableCell flush colSpan={2}><ShippingBreakdown /></TableCell></TableRow>
+  </TableBody>
 </Table>`,
     storyPath: "data-display/Table.stories.tsx",
     rules: [],
@@ -8319,6 +8363,13 @@ function CustomRadioGroup() {
           "PopoverTrigger prop. Merges trigger props onto the immediate child element (e.g. a Button) instead of rendering an extra DOM node. Strongly recommended to avoid a wrapping <button>.",
       },
       {
+        name: "flush",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "PopoverContent prop. The panel's CONTENT owns its inset: the popover zeroes its own --popover-space-inset so a Command list, a menu or a table runs edge to edge and draws its separators across the full width. Reach for it whenever the child already paints its own rows; leave it off for prose panels, which want the panel padding.",
+      },
+      {
         name: "className",
         type: "string",
         description:
@@ -8327,6 +8378,7 @@ function CustomRadioGroup() {
     ],
     usage: [
       "DO compose: <Popover> → <PopoverTrigger asChild> → <Button/> and <PopoverContent>. All four parts are required for any popover to function; omitting PopoverTrigger or PopoverContent produces nothing.",
+      "DO set `<PopoverContent flush>` when the panel holds a Command list, a menu or a table — the child owns its own inset, so its rows and separators reach the panel edges. Never zero the padding with a utility on className: that is a per-call-site constant no service theme can retune, while `flush` keeps the inset on --popover-space-inset.",
       "DO use asChild on PopoverTrigger when the trigger is already a Button or link — this avoids a nested <button><button> violation and extra DOM nesting.",
       "DO use controlled mode (open + onOpenChange) when external code must open/close the popover programmatically (e.g., form validation reveal, keyboard shortcut). For toggle-only interactions, uncontrolled (defaultOpen) is simpler.",
       "DO structure panel content with PopoverHeader > PopoverTitle + PopoverDescription for labelled panels. This is purely presentational but establishes the correct font-weight and muted-foreground on the description.",

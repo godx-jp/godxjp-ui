@@ -124,7 +124,23 @@
   .ui-auth-shell-bar {
     display: flex;
     align-items: center;
+    /* Mobile-first: brand AND actions on one row while they fit, the actions row dropping under the
+     * brand when they do not (a locale picker beside a two-line brand lockup overflows a 390px
+     * viewport otherwise). A bar with a single child never wraps, so this is inert for a
+     * brand-only shell. */
+    flex-wrap: wrap;
+    gap: var(--auth-shell-bar-gap);
     padding: var(--auth-shell-bar-padding);
+  }
+
+  /* Page-level actions in the banner (locale picker, theme toggle, "need help?"). Pushed to the
+   * inline END with `margin-inline-start: auto` rather than `justify-content: space-between` on the
+   * bar, so an actions-only bar (no brand mark) still puts them on the right. */
+  .ui-auth-shell-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--auth-shell-bar-gap);
+    margin-inline-start: auto;
   }
 
   .ui-auth-shell-main {
@@ -152,6 +168,23 @@
     --heading-h1: var(--auth-shell-canonical-heading-size);
     --auth-shell-card-max-width: var(--auth-shell-canonical-card-max-width);
     --auth-shell-main-padding: var(--auth-shell-canonical-main-padding);
+  }
+
+  /* Wide measure — the SPLIT login (a brand panel beside the auth card) needs a page-width content
+   * slot, not the 24rem single-card measure. `:not([data-preset])` is load-bearing: a preset owns
+   * its flow geometry down to the SCR millimetre, so `measure` must never reach one. */
+  .ui-auth-shell[data-measure="wide"]:not([data-preset]) {
+    --auth-shell-card-max-width: var(--auth-shell-wide-card-max-width);
+    --auth-shell-main-align: flex-start;
+  }
+
+  /* Centred by `margin-block: auto`, the same technique `CenteredShell align="center"` uses, NOT by
+   * `justify-content: center`: a two-column panel is TALL, and a vertically centred tall box
+   * overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach
+   * (the hazard the registration preset documents). Auto margins absorb only the free space that
+   * exists, so a tall layout simply starts at the top. */
+  .ui-auth-shell[data-measure="wide"]:not([data-preset]) .ui-auth-shell-card {
+    margin-block: auto;
   }
 
   /* A preset owns the card measure + page gutters, so the consumer never overrides
