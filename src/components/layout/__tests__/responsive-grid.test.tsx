@@ -5,6 +5,7 @@ import { ResponsiveGrid } from "../responsive-grid";
 
 function vars(el: HTMLElement) {
   return {
+    base: el.style.getPropertyValue("--responsive-grid-base"),
     sm: el.style.getPropertyValue("--responsive-grid-sm"),
     md: el.style.getPropertyValue("--responsive-grid-md"),
     lg: el.style.getPropertyValue("--responsive-grid-lg"),
@@ -15,6 +16,7 @@ describe("ResponsiveGrid — column resolution", () => {
   it("a numeric columns clamps sm≤2 / md≤3 and keeps lg", () => {
     const { container } = render(<ResponsiveGrid columns={5}>x</ResponsiveGrid>);
     expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      base: "1",
       sm: "2",
       md: "3",
       lg: "5",
@@ -24,6 +26,7 @@ describe("ResponsiveGrid — column resolution", () => {
   it("the default (4) resolves to 2 / 3 / 4", () => {
     const { container } = render(<ResponsiveGrid>x</ResponsiveGrid>);
     expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      base: "1",
       sm: "2",
       md: "3",
       lg: "4",
@@ -35,6 +38,7 @@ describe("ResponsiveGrid — column resolution", () => {
       <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>x</ResponsiveGrid>,
     );
     expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      base: "1",
       sm: "1",
       md: "2",
       lg: "4",
@@ -44,6 +48,7 @@ describe("ResponsiveGrid — column resolution", () => {
   it("object breakpoints fall back upward (sm→md→lg)", () => {
     const { container } = render(<ResponsiveGrid columns={{ sm: 2 }}>x</ResponsiveGrid>);
     expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      base: "1",
       sm: "2",
       md: "2",
       lg: "2",
@@ -53,9 +58,29 @@ describe("ResponsiveGrid — column resolution", () => {
   it("a md-only object defaults sm to 1 and lg to md", () => {
     const { container } = render(<ResponsiveGrid columns={{ md: 3 }}>x</ResponsiveGrid>);
     expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      base: "1",
       sm: "1",
       md: "3",
       lg: "3",
+    });
+  });
+
+  it("allows compact mobile columns and inherits omitted larger steps", () => {
+    const { container, rerender } = render(
+      <ResponsiveGrid columns={{ base: 2, sm: 4 }}>metrics</ResponsiveGrid>,
+    );
+    expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      base: "2",
+      sm: "4",
+      md: "4",
+      lg: "4",
+    });
+    rerender(<ResponsiveGrid columns={{ base: 2 }}>metrics</ResponsiveGrid>);
+    expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      base: "2",
+      sm: "2",
+      md: "2",
+      lg: "2",
     });
   });
 
@@ -112,6 +137,7 @@ describe("ResponsiveGrid — preset='pricing-plans' (3/3/1 contract)", () => {
       </ResponsiveGrid>,
     );
     expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      base: "1",
       sm: "3", // must survive a narrower real container (e.g. a 1024px viewport inside a shell)
       md: "3",
       lg: "3", // covers the 1440px reference width
@@ -125,6 +151,7 @@ describe("ResponsiveGrid — preset='pricing-plans' (3/3/1 contract)", () => {
       </ResponsiveGrid>,
     );
     expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      base: "1",
       sm: "3",
       md: "3",
       lg: "3",

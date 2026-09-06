@@ -132,3 +132,11 @@ describe("suggest_primitive", () => {
     expect(await dispatchTool("suggest_primitive", { use_case: "" })).toMatch(/Describe/i);
   });
 });
+
+it("documents ResponsiveGrid base columns with the actual default", async () => {
+  const out = await dispatchTool("get_component", { name: "ResponsiveGrid" });
+  expect(out).toContain("base?: number");
+  expect(out).toContain("base: 2, sm: 4");
+  const grid = COMPONENTS.find((component) => component.name === "ResponsiveGrid")!;
+  expect(grid.props.find((prop) => prop.name === "columns")?.defaultValue).toBe("4");
+});

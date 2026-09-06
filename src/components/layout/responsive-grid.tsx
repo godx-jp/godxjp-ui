@@ -22,6 +22,7 @@ export type ResponsiveGridProps = {
 };
 
 type ResponsiveGridStyle = CSSProperties & {
+  "--responsive-grid-base"?: number;
   "--responsive-grid-sm"?: number;
   "--responsive-grid-md"?: number;
   "--responsive-grid-lg"?: number;
@@ -33,18 +34,20 @@ type ResponsiveGridStyle = CSSProperties & {
  */
 const RESPONSIVE_GRID_PRESET_COLUMNS: Record<
   ResponsiveGridPresetProp,
-  { sm: number; md: number; lg: number }
+  { base: number; sm: number; md: number; lg: number }
 > = {
-  "pricing-plans": { sm: 3, md: 3, lg: 3 },
+  "pricing-plans": { base: 1, sm: 3, md: 3, lg: 3 },
 };
 
 function resolveColumns(columns: ResponsiveGridColumnsProp): {
+  base: number;
   sm: number;
   md: number;
   lg: number;
 } {
   if (typeof columns === "number") {
     return {
+      base: 1,
       sm: Math.min(columns, 2),
       md: Math.min(columns, 3),
       lg: columns,
@@ -52,14 +55,21 @@ function resolveColumns(columns: ResponsiveGridColumnsProp): {
   }
 
   return {
-    sm: columns.sm ?? 1,
-    md: columns.md ?? columns.sm ?? 1,
-    lg: columns.lg ?? columns.md ?? columns.sm ?? 1,
+    base: columns.base ?? 1,
+    sm: columns.sm ?? columns.base ?? 1,
+    md: columns.md ?? columns.sm ?? columns.base ?? 1,
+    lg: columns.lg ?? columns.md ?? columns.sm ?? columns.base ?? 1,
   };
 }
 
-function toStyle(resolved: { sm: number; md: number; lg: number }): ResponsiveGridStyle {
+function toStyle(resolved: {
+  base: number;
+  sm: number;
+  md: number;
+  lg: number;
+}): ResponsiveGridStyle {
   return {
+    "--responsive-grid-base": resolved.base,
     "--responsive-grid-sm": resolved.sm,
     "--responsive-grid-md": resolved.md,
     "--responsive-grid-lg": resolved.lg,
