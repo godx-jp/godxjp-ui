@@ -56,6 +56,7 @@ describe("ServiceLauncherCard grid contract (gh#219) — 3 → 2 → 1 is owned 
     );
 
     const grid = container.querySelector(".ui-responsive-grid") as HTMLElement;
+    expect(grid.style.getPropertyValue("--responsive-grid-base")).toBe("1");
     expect(grid.style.getPropertyValue("--responsive-grid-sm")).toBe("1");
     expect(grid.style.getPropertyValue("--responsive-grid-md")).toBe("2");
     expect(grid.style.getPropertyValue("--responsive-grid-lg")).toBe("3");
@@ -72,13 +73,14 @@ describe("ServiceLauncherCard grid contract (gh#219) — 3 → 2 → 1 is owned 
     expect(grid.style.getPropertyValue("--responsive-grid-md")).toBe("3");
     expect(grid.style.getPropertyValue("--responsive-grid-lg")).toBe("3");
     // sm is clamped to 2 by ResponsiveGrid, and the base track below the first breakpoint is 1.
+    expect(grid.style.getPropertyValue("--responsive-grid-base")).toBe("1");
     expect(grid.style.getPropertyValue("--responsive-grid-sm")).toBe("2");
   });
 
   it("the grid resolves against its OWN container at the canonical breakpoints", () => {
-    // Base track = a single column; the ladder only ever adds columns as the container widens.
+    // The configurable base retains a single-column fallback for existing launchers.
     expect(rule(layoutCss, ".ui-responsive-grid")).toMatch(
-      /grid-template-columns:\s*minmax\(0,\s*1fr\)/,
+      /grid-template-columns:\s*repeat\(var\(--responsive-grid-base,\s*1\),\s*minmax\(0,\s*1fr\)\)/,
     );
     expect(layoutCss).toMatch(/\.ui-responsive-grid-scope\s*\{[^}]*container:\s*responsive-grid/);
     for (const [width, step] of [
