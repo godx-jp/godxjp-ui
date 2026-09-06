@@ -5,25 +5,11 @@ import { useTranslation } from "../../i18n/use-translation";
 import { Input } from "../data-entry/input";
 import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
-import { resolveFieldA11y, type FieldA11yProps } from "../../lib/field-a11y";
+import { resolveFieldA11y } from "../../lib/field-a11y";
 import { useDebouncedValue } from "../../lib/hooks";
 
-interface SearchInputProps extends FieldA11yProps {
-  value?: string;
-  defaultValue?: string;
-  placeholder?: string;
-  debounce?: number;
-  /** Fires on EVERY keystroke (immediate) — required to keep a controlled `value` responsive. */
-  onValueChange?: (q: string) => void;
-  /** Fires with the DEBOUNCED term. Optional — omit it when you drive filtering off `onValueChange`. */
-  onSearch?: (q: string) => void;
-  label?: React.ReactNode;
-  ariaLabel?: string;
-  className?: string;
-  inputClassName?: string;
-  id?: string;
-  disabled?: boolean;
-}
+import type { SearchInputProp } from "../../props/components/data-entry.prop";
+export type SearchInputProps = SearchInputProp;
 
 export function SearchInput({
   value: controlledValue,
@@ -56,7 +42,10 @@ export function SearchInput({
   React.useEffect(() => {
     onSearchRef.current = onSearch;
   });
+  const lastSearch = React.useRef(debounced);
   React.useEffect(() => {
+    if (lastSearch.current === debounced) return;
+    lastSearch.current = debounced;
     onSearchRef.current?.(debounced);
   }, [debounced]);
 

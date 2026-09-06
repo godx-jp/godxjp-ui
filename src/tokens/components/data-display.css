@@ -165,7 +165,11 @@
   --timeline-grid-hour-height: 2.5rem;
   --timeline-grid-axis-width: 3.25rem;
   --timeline-grid-column-min-width: 6rem;
-  --timeline-grid-event-min-height: 1.5rem;
+  /* Sàn hiển thị của một khối sự kiện, tính bằng PHÚT chứ không bằng pixel. Đây là NGUỒN DUY
+     NHẤT: CSS suy chiều cao tối thiểu từ nó, và thuật toán xếp làn cũng dùng đúng con số này để
+     biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính
+     theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng. */
+  --timeline-grid-event-min-height-minutes: 36;
   --timeline-grid-axis-font-size: var(--font-size-2xs);
   --timeline-grid-head-font-size: var(--font-size-xs);
   --timeline-grid-event-font-size: var(--font-size-2xs);

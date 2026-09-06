@@ -7,6 +7,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
  * SearchInput — debounced search box with a built-in clear button.
+ * onSearch runs after a changed query settles, never on mount.
  * Always listen to onSearch (NOT onChange). Uncontrolled for local filters,
  * controlled when search state lives in a URL param. Never a raw <input>.
  * Composed only from real @godxjp/ui components.

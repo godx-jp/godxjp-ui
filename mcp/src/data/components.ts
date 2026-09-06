@@ -1176,6 +1176,17 @@ import { PanelLeftClose, Search } from "lucide-react";
       "Responsive master-detail composition: a fluid list beside a token-owned 300px/320px fixed rail, with a themeable collapse threshold. `rail` picks which region is fixed — default `detail` (the canonical 1fr/320px list + detail rail); `master` for a leading navigator rail.",
     props: [
       {
+        name: "mobilePane",
+        type: '"master" | "detail"',
+        description:
+          "One-pane navigation below the token-owned collapse threshold; omit to retain stacking. The consumer owns URL/history selection.",
+      },
+      {
+        name: "detailBack",
+        type: "ReactNode",
+        description: "Back link shown above detail in mobile navigation mode.",
+      },
+      {
         name: "master",
         type: "ReactNode",
         required: true,
@@ -1722,6 +1733,20 @@ export function TermsPage() {
         type: "boolean",
         defaultValue: "false",
         description: "Span the full container width (`width:100%`) instead of sizing to content.",
+      },
+      {
+        name: "wrap",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Allow multi-line text labels to grow the button height. Uses the active size tier as its minimum height; use with fullWidth in narrow collections.",
+      },
+      {
+        name: "align",
+        type: '"start" | "center" | "end"',
+        defaultValue: '"center"',
+        description:
+          "Logical content alignment. Use start for full-width collection actions; respects RTL.",
       },
       {
         name: "asChild",
@@ -2849,6 +2874,13 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     tagline:
       "Single-line entity row (leading · title/description · trailing action) for SHORT lists inside a Card — sessions, API tokens, linked accounts, passkeys, MFA factors, invitations.",
     props: [
+      {
+        name: "asChild",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Supply a link child to make the entire row a native link. Use aria-current=page for the current destination; never nest interactive trailing controls.",
+      },
       {
         name: "title",
         type: "ReactNode",
@@ -4272,9 +4304,8 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "onSearch",
         type: "(q: string) => void",
-        required: true,
         description:
-          "Called with the query after the debounce. Use this to drive filtering — NOT onChange.",
+          "Called after a changed query settles. Never fires for the initial value on mount or callback-only rerenders. Optional when filtering uses onValueChange.",
       },
       { name: "value", type: "string", description: "Controlled value." },
       {
@@ -4302,27 +4333,26 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
           "Optional visible label rendered above the search box (falls back to an sr-only label).",
       },
       {
-        name: "onChange",
+        name: "onValueChange",
         type: "(value: string) => void",
         description:
           "Fires on EVERY keystroke (immediate) — required to keep a controlled `value` responsive.",
       },
       {
-        name: "onSearchChange",
-        type: "(value: string) => void",
-        description:
-          "Fires the DEBOUNCED search term after `debounceMs` — wire your query/filter here, not onChange.",
+        name: "ariaLabel",
+        type: "string",
+        description: "Accessible search name when there is no visible label.",
       },
       {
-        name: "debounceMs",
-        type: "number",
-        defaultValue: "250",
-        description: "Debounce delay (ms) before `onSearchChange` / `onSearch` fires.",
+        name: "disabled",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Disable search input and clearing.",
       },
     ],
     usage: [
       "DO: listen to `onSearch`, not `onChange`. The component debounces internally (default 250 ms) and fires `onSearch(q)` after the delay — never wire your filter logic to `onChange` on SearchInput because it does not expose one.",
-      "DO: choose controlled vs uncontrolled deliberately. Pass `value` + `onSearch` together for controlled mode (e.g. when search state lives in a URL param or shared parent). For local-only ephemeral search pass only `defaultValue` + `onSearch` — omitting `value` puts the component in uncontrolled mode.",
+      "DO: choose controlled vs uncontrolled deliberately. Pass `value` + `onValueChange` together for controlled mode; optionally add `onSearch` for debounced effects (e.g. when search state lives in a URL param or shared parent). For local-only ephemeral search pass only `defaultValue` + `onSearch` — omitting `value` puts the component in uncontrolled mode.",
       "DO: supply an `ariaLabel` (or visible `label`) when no adjacent label exists. Without either prop, SearchInput falls back to the i18n key `common.search` rendered as a visually-hidden `<Label>` — still accessible, but providing a context-specific string (e.g. `ariaLabel='請求書を検索'`) is more descriptive for screen readers.",
       "DON'T: use SearchInput inside a `<form>` expecting native form submission. The component has no `name` prop and does not emit a form field value — it is a filter-trigger widget. For a form search field, use a plain `Input` inside `FormField`.",
       "DON'T: hand-roll a debounced input when you need a search box. SearchInput ships the debounce, clear button (×), search icon, and accessible label — recreating these with a raw `<Input>` adds code and misses the UX contract.",

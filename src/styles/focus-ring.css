@@ -36,6 +36,7 @@
   /* Outline form — for marks that need a gap between glyph and ring. */
   :is(
     .ui-focus-ring-outline,
+    a.ui-list-row,
     .ui-accordion-trigger,
     .ui-carousel-dot,
     .ui-rating-star,
@@ -64,6 +65,10 @@
 
   .tb-icon-btn {
     --focus-ring-opacity: var(--topbar-icon-focus-ring-alpha);
+  }
+
+  a.ui-list-row {
+    --focus-ring-offset: calc(-1 * var(--focus-ring-width));
   }
 
   /* Outline-form offsets — the gap each mark needs. */

@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 
 import { renderWithUi, screen } from "@/test/render";
 import { ListRow } from "../list-row";
@@ -100,4 +101,22 @@ describe("ListRow", () => {
       .filter((slot) => slot!.startsWith("list-row"));
     expect(slots).toEqual(["list-row", "list-row-indicator", "list-row-leading", "list-row-body"]);
   });
+});
+
+it("makes title, metadata and trailing content one native keyboard-accessible link", async () => {
+  const navigate = vi.fn((event) => event.preventDefault());
+  renderWithUi(
+    <ListRow asChild title="Auditor" description="1 permission" trailing={<span>Open</span>}>
+      <a href="/roles?role=auditor" aria-label="Auditor" aria-current="page" onClick={navigate} />
+    </ListRow>,
+  );
+  const link = screen.getByRole("link", { name: "Auditor" });
+  expect(link).toHaveAttribute("href", "/roles?role=auditor");
+  expect(link).toHaveAttribute("aria-current", "page");
+  await userEvent.click(screen.getByText("1 permission"));
+  expect(navigate).toHaveBeenCalledTimes(1);
+  link.focus();
+  await userEvent.keyboard("{Enter}");
+  expect(navigate).toHaveBeenCalledTimes(2);
+  expect(link.querySelector("a,button")).toBeNull();
 });

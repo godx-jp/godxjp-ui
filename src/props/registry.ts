@@ -1087,6 +1087,7 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "general",
     file: "components/general.prop.ts",
     vocabulary: [
+      "TextAlignProp",
       "ButtonVariantProp",
       "SizeProp",
       "ShapeProp",
@@ -1211,7 +1212,7 @@ export const COMPONENT_PROP_REGISTRY = {
   SearchInputProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["LabelProp", "PlaceholderProp", "OnSearchChangeProp"],
+    vocabulary: ["LabelProp", "PlaceholderProp", "DisabledProp", "ClassNameProp", "IdProp"],
   },
   CheckboxProp: {
     group: "data-entry",

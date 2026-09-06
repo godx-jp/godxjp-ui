@@ -271,3 +271,27 @@ describe("Button", () => {
     });
   });
 });
+
+describe("Button multi-line collection actions", () => {
+  it("keeps keyboard activation and the full accessible name when labels wrap", async () => {
+    const onClick = vi.fn();
+    renderWithUi(
+      <Button wrap align="start" fullWidth size="sm" onClick={onClick}>
+        A long organization role with a descriptive name
+      </Button>,
+    );
+    const button = screen.getByRole("button", {
+      name: "A long organization role with a descriptive name",
+    });
+    expect(button).toHaveAttribute("data-wrap");
+    expect(button).toHaveAttribute("data-align", "start");
+    button.focus();
+    await userEvent.keyboard("{Enter}");
+    expect(onClick).toHaveBeenCalledTimes(1);
+    await expectNoA11yViolations(
+      <Button wrap align="start" fullWidth size="sm">
+        A long organization role with a descriptive name
+      </Button>,
+    );
+  });
+});

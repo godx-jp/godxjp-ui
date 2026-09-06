@@ -2156,3 +2156,32 @@
     color: var(--button-count-secondary-color, hsl(var(--secondary)));
   }
 }
+
+@layer components {
+  .ui-button[data-wrap] {
+    --button-wrap-min-height: var(--control-height);
+    height: auto;
+    min-height: var(--button-wrap-min-height);
+    max-inline-size: 100%;
+    padding-block: var(--space-1);
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .ui-button[data-wrap][data-size="xs"] {
+    --button-wrap-min-height: var(--control-height-xs);
+  }
+  .ui-button[data-wrap][data-size="sm"] {
+    --button-wrap-min-height: var(--control-height-sm);
+  }
+  .ui-button[data-wrap][data-size="lg"] {
+    --button-wrap-min-height: var(--control-height-lg);
+  }
+  .ui-button[data-align="start"] {
+    justify-content: flex-start;
+    text-align: start;
+  }
+  .ui-button[data-align="end"] {
+    justify-content: flex-end;
+    text-align: end;
+  }
+}

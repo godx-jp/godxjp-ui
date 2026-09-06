@@ -68,9 +68,20 @@ function resolveEvent(event: TimelineGridEventProp): Omit<ResolvedEvent, "lane" 
  * shipped. Lanes are assigned greedily per CLUSTER (a maximal run of events that transitively
  * overlap), so one long block does not halve the width of every unrelated block in the column.
  */
+/**
+ * Sàn hiển thị, phải khớp `--timeline-grid-event-min-height-minutes` trong tokens/components/
+ * data-display.css. Một khối ngắn hơn thế vẫn được VẼ cao bằng sàn, nên hai ca liền nhau mà
+ * ngắn hơn sàn thì đè nhau trên màn hình dù không trùng giờ. Xếp làn phải tính theo thời lượng
+ * hiển thị, không phải thời lượng thật. Có test khoá hai con số này bằng nhau.
+ */
+const EVENT_MIN_MINUTES = 36;
+
 function placeColumn(
   events: readonly Omit<ResolvedEvent, "lane" | "lanes">[],
 ): readonly ResolvedEvent[] {
+  /** Đuôi mà khối CHIẾM CHỖ trên màn hình, luôn ít nhất bằng sàn hiển thị. */
+  const drawnEnd = (e: { startMin: number; endMin: number }) =>
+    Math.max(e.endMin, e.startMin + EVENT_MIN_MINUTES);
   const sorted = [...events].sort((a, b) => a.startMin - b.startMin || a.endMin - b.endMin);
   const placed: ResolvedEvent[] = [];
   let cluster: ResolvedEvent[] = [];
@@ -89,8 +100,8 @@ function placeColumn(
     if (entry.startMin >= clusterEnd) closeCluster();
     let lane = laneEnds.findIndex((end) => end <= entry.startMin);
     if (lane === -1) lane = laneEnds.length;
-    laneEnds[lane] = entry.endMin;
-    clusterEnd = Math.max(clusterEnd, entry.endMin);
+    laneEnds[lane] = drawnEnd(entry);
+    clusterEnd = Math.max(clusterEnd, drawnEnd(entry));
     cluster.push({ ...entry, lane, lanes: 1 });
   }
   closeCluster();
@@ -170,7 +181,9 @@ export const TimelineGrid = React.forwardRef<HTMLDivElement, TimelineGridProp>(
     const axis = React.useMemo(() => resolveWindow(start, end, resolved), [start, end, resolved]);
     const span = axis.endMin - axis.startMin;
     const hours = span / 60;
-    const step = Number.isFinite(interval) && interval > 0 ? interval : 1;
+    // Sàn một phút: dữ liệu vào chỉ chính xác tới phút, và một bước nhỏ hơn thế có thể cộng vào
+    // mốc thời gian mà KHÔNG làm nó tiến lên, khiến vòng sinh vạch không bao giờ kết thúc.
+    const step = Number.isFinite(interval) && interval > 0 ? Math.max(interval, 1 / 60) : 1;
 
     const byColumn = React.useMemo(() => {
       const buckets = columns.map(() => [] as Omit<ResolvedEvent, "lane" | "lanes">[]);

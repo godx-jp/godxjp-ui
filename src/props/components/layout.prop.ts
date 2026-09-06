@@ -186,6 +186,10 @@ export type MasterDetailMasterViewportProp = "auto" | "compact" | "standard";
 
 /** @see MasterDetail */
 export type MasterDetailProp = {
+  /** Opt into one-pane navigation on mobile (below the token-owned collapse threshold); desktop retains both panes. */
+  mobilePane?: "master" | "detail";
+  /** Back link shown above detail only in mobile navigation mode. */
+  detailBack?: ReactNode;
   /** Selectable collection; always first in DOM order, so the stacked order stays list-then-detail. */
   master: ReactNode;
   /** Detail surface for the current selection. */

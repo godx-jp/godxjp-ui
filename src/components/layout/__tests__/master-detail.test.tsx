@@ -310,3 +310,23 @@ describe("MasterDetail", () => {
     });
   });
 });
+
+it("exposes a controlled mobile pane without replacing desktop region semantics", () => {
+  const { container, rerender, getByRole } = render(
+    <MasterDetail
+      mobilePane="master"
+      master={<a href="?role=a">Auditor</a>}
+      detailBack={<a href="/roles">Back to roles</a>}
+    >
+      Permissions
+    </MasterDetail>,
+  );
+  expect(root(container)).toHaveAttribute("data-mobile-pane", "master");
+  expect(getByRole("link", { name: "Back to roles" })).toHaveAttribute("href", "/roles");
+  rerender(
+    <MasterDetail mobilePane="detail" master={<a href="?role=a">Auditor</a>}>
+      Permissions
+    </MasterDetail>,
+  );
+  expect(root(container)).toHaveAttribute("data-mobile-pane", "detail");
+});
