@@ -244,7 +244,7 @@
   .ui-responsive-grid {
     display: grid;
     gap: var(--space-stack-md);
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(var(--responsive-grid-base, 1), minmax(0, 1fr));
   }
 
   /* `gap` prop: the same steps as Flex. */

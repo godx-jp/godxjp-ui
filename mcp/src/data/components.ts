@@ -325,14 +325,14 @@ import { Button } from "@godxjp/ui/general";
   {
     name: "ResponsiveGrid",
     group: "layout",
-    tagline:
-      "Auto-responsive card grid — columns collapse to 1 on mobile, scale up on wider breakpoints.",
+    tagline: "Container-responsive card grid with configurable base, sm, md and lg columns.",
     props: [
       {
         name: "columns",
-        type: "2 | 3 | 4",
-        defaultValue: "3",
-        description: "Target column count at desktop; collapses to 1 on mobile.",
+        type: "number | { base?: number; sm?: number; md?: number; lg?: number }",
+        defaultValue: "4",
+        description:
+          "Numeric desktop target, or container column counts. Base defaults to 1; omitted object steps inherit upward. Use { base: 2, sm: 4 } for compact metric tiles.",
       },
       {
         name: "gap",
@@ -350,7 +350,7 @@ import { Button } from "@godxjp/ui/general";
     ],
     usage: [
       "DO place StatCard tiles directly as immediate children — StatCard IS already a bordered card; never wrap it in an extra <Card><CardContent>. The canonical pattern is <ResponsiveGrid columns={4}><StatCard .../><StatCard .../></ResponsiveGrid>.",
-      "DO use columns={2|3|4} to declare the target desktop column count — the grid collapses automatically to 1 column on narrow containers (mobile-first via CSS container queries), via 2-column intermediate at ≥640px, then full target count at ≥1024px. There is no 'columns={1}' — omit the grid for single-column flows.",
+      "DO use columns={2|3|4} to declare the target desktop column count — the grid collapses automatically to 1 column on narrow containers (mobile-first via CSS container queries), via 2-column intermediate at ≥640px, then full target count at ≥1024px. Use columns={{ base: 2, sm: 4 }} for two mobile columns and four wider-container columns; no consumer CSS is needed.",
       "DO NOT place a DataTable inside a ResponsiveGrid column beside a card or chart. DataTable must occupy its own full-width row in a Card with CardContent flush. Nesting a multi-column table in a grid column squeezes CJK text to one character per line (see rule 37).",
       "DO use ResponsiveGrid for page-level spacing — it applies the correct gap token (--space-stack-md) automatically. Never add raw gap-* / p-* / space-* utilities to the page layout around tiles; compose spacing through this component instead (rule 40).",
       "DO render SkeletonStat children in place of StatCard tiles while KPIs are loading — same columns prop, same count as the real tiles. Switch to real StatCard once data resolves.",

@@ -16,7 +16,7 @@ import { Flex, PageContainer, ResponsiveGrid, SplitPane } from "@godxjp/ui/layou
  * with no external container-type declaration. Direct children are typically
  * StatCard (self-contained bordered card · never wrap in Card/CardContent) or
  * Card+CardContent for richer tile bodies. columns accepts a number OR breakpoint
- * object { sm?, md?, lg? } — or use the named `preset` prop (e.g. "pricing-plans") for a
+ * object { base?, sm?, md?, lg? } — or use the named `preset` prop (e.g. "pricing-plans") for a
  * recognised collection shape instead of hand-rolling the breakpoint map. Composed only from
  * real @godxjp/ui components.
  */
@@ -29,6 +29,23 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Compact mobile metrics</CardTitle>
+            <CardDescription>
+              columns=&#123;&#123; base: 2, sm: 4 &#125;&#125; keeps two columns below the first
+              container breakpoint and four above it.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveGrid columns={{ base: 2, sm: 4 }}>
+              <StatCard label="Services" value="3" />
+              <StatCard label="Members" value="14" />
+              <StatCard label="Invitations" value="0" />
+              <StatCard label="Invoices" value="2" />
+            </ResponsiveGrid>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>コンテナクエリで折り返し（自己所有のクエリコンテナ）</CardTitle>
             <CardDescription>
               同じ columns=&#123;4&#125; でも、コンテナ幅で列数が変わる。左の広い領域は 4
@@ -36,7 +53,7 @@ export default function Demo() {
               折り返しの基準がコンテナ幅であることが分かる。ResponsiveGrid は自身のクエリコンテナ
               （container-type: inline-size）を持つため、外側に @container を用意しなくても正しく
               折り返す。閾値はコンテナ幅 40 / 48 / 64rem。 列間の gap は var(--space-stack-md)
-              に固定で、prop では変更できない。
+              が既定で、gap prop で変更できます。
             </CardDescription>
           </CardHeader>
           <CardContent>

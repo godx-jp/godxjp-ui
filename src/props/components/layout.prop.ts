@@ -165,7 +165,9 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
   hideFrom?: BreakpointProp;
 };
 
-export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?: number };
+/** Container column counts; omitted steps inherit from the previous step. Base defaults to 1. */
+export type ResponsiveGridColumnsProp =
+  number | { base?: number; sm?: number; md?: number; lg?: number };
 
 /**
  * Takes priority over `columns` when both are set (`columns` is then ignored, not merged).
