@@ -11,7 +11,11 @@ const iso = (d: Date | undefined) =>
 
 describe("DateRangePicker — controlled value", () => {
   it("shows the controlled range, emits on type, and follows prop updates", async () => {
-    const user = userEvent.setup();
+    // `delay: null` chứ không phải timeout dài hơn: mặc định user-event chờ giữa từng phím, nên
+    // gõ 10 ký tự là 10 lần chờ theo đồng hồ thật cộng 10 lượt render. Dưới tải của CI chuỗi đó
+    // vượt trần 8 giây và test đỏ theo máy chứ không theo mã. Bỏ chờ thì vẫn gõ từng phím và vẫn
+    // phát ra từng sự kiện, chỉ là không còn phụ thuộc đồng hồ.
+    const user = userEvent.setup({ delay: null });
     const onValueChange = vi.fn();
     const { rerender } = renderWithUi(
       <DateRangePicker
