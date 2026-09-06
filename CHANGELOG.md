@@ -6,6 +6,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.4.0] - 2026-09-06
+
+### Added
+
+- **`MobileShell`** (layout) — shell gốc cho ứng dụng cầm tay: thanh trạng thái, app bar, MỘT
+  vùng cuộn, thanh hành động, tab bar. Gốc cao đúng một màn hình nên tài liệu không bao giờ cuộn
+  và tab bar không trôi khi thanh địa chỉ thu lại; mọi băng tự đệm vùng an toàn của thiết bị.
+  `height="viewport" | "fill"`. Tầng control trong shell là 44px vì app cầm tay là chạm trước.
+- **`TimelineGrid`** (data-display) — lưới thời gian: trục giờ dọc, cột theo ngày, khối sự kiện
+  đặt theo giờ bắt đầu và độ dài. Cửa sổ trục suy ra từ dữ liệu nên không lặng lẽ bỏ mất sự kiện;
+  ca qua đêm bị cắt hình nhưng vẫn in đúng khoảng giờ; có xếp làn cho sự kiện chồng giờ.
+- **`Flex` và `Badge` nhận `as`** với union đóng `"div" | "span"`, để chúng đặt được trong
+  `<button>` mà không sinh HTML sai.
+- **`GapProp` nhận `"none"`** cho `Flex` và `ResponsiveGrid`.
+- **`TableCell` nhận `flush` và `indent`**, `PopoverContent` nhận `flush`.
+- **`AuthShell` nhận `actions` và `measure="wide"`** cho trang đăng nhập có bố cục hai cột.
+
+### Fixed
+
+- **Nền bị ẩn khi lớp phủ mở không còn nhận tiêu điểm.** Select, DropdownMenu và ContextMenu ẩn
+  phần còn lại của trang khỏi trình đọc màn hình nhưng vẫn để nền nhận tiêu điểm, nên axe báo
+  `aria-hidden-focus`. Nay dùng `inert` gương theo dấu của Radix. Dialog, Sheet và Popover không
+  đổi vì chúng vốn không có vi phạm.
+- **Hàng bảng xếp chồng cao theo nội dung**, không còn giữ chiều cao hàng cố định nên ô không
+  tràn khỏi khung thẻ.
+- **Chữ phụ trong khối `TimelineGrid` đạt chuẩn tương phản** trên nền tô theo màu bên tiêu thụ.
+- **Ví dụ trong `docs/` không còn dùng utility layout** mà bộ kiểm dành cho bên tiêu thụ cấm.
+
+### Changed
+
+- **CI: bốn shard test thật sự chia việc.** Lệnh cũ có dấu gạch trần nên cả bốn job chạy trọn bộ
+  test, đo được 484 tệp mỗi job thay vì 121.
+- **Cổng khoá phiên bản hai gói chạy ở làn chính.** Script `check:mcp-lockstep` trước đây được
+  nhắc trong tài liệu nhưng KHÔNG tồn tại; kiểm tra chỉ chạy lúc phát hành, tức sau khi đã cắt
+  tag. Đó là lý do một bản trước đây kẹt không publish được mà không ai thấy.
+- **Guard fork cho `docs-lane.yml` và `ci-browser-full.yml`**, hai workflow nhận pull request và
+  chạy trên runner tự host dùng chung.
+- Comment trong `src`, `scripts`, `mcp` và `docs` chỉ nêu luật hiện hành; git history giữ quá khứ.
+
 ## [19.3.1] - 2026-09-06
 
 ### Fixed
