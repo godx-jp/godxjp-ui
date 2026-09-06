@@ -3,6 +3,7 @@ import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
 
 import { cn } from "../../lib/utils";
+import { useInertHiddenBackground } from "../general/inert-background";
 
 export const ContextMenu = ContextMenuPrimitive.Root;
 
@@ -17,16 +18,21 @@ export const ContextMenuPortal = ContextMenuPrimitive.Portal;
 export const ContextMenuContent = React.forwardRef<
   React.ComponentRef<typeof ContextMenuPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Content>
->(({ className, ...props }, ref) => (
-  <ContextMenuPrimitive.Portal>
-    <ContextMenuPrimitive.Content
-      ref={ref}
-      data-slot="context-menu-content"
-      className={cn("ui-context-menu-content", className)}
-      {...props}
-    />
-  </ContextMenuPrimitive.Portal>
-));
+>(({ className, ...props }, ref) => {
+  // Radix hides the app behind an open menu from assistive tech but leaves it tabbable —
+  // axe `aria-hidden-focus`. See components/general/inert-background.ts (#352).
+  useInertHiddenBackground();
+  return (
+    <ContextMenuPrimitive.Portal>
+      <ContextMenuPrimitive.Content
+        ref={ref}
+        data-slot="context-menu-content"
+        className={cn("ui-context-menu-content", className)}
+        {...props}
+      />
+    </ContextMenuPrimitive.Portal>
+  );
+});
 ContextMenuContent.displayName = ContextMenuPrimitive.Content.displayName;
 
 export const ContextMenuItem = React.forwardRef<
