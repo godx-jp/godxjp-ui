@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -1560,6 +1560,48 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
       }
       const shard = /^Tests \(shard (\d)\/4\)$/.exec(name);
       expect(produced).toContain(shard ? "Tests (shard ${{ matrix.shard }}/4)" : name);
+    }
+  });
+
+  it("lets no workflow outside the three the release trusts produce a required check-run name", () => {
+    // The test above is one-directional: it proves every required name IS produced. It cannot
+    // notice a name being produced somewhere it should not be, and that direction is the one with
+    // teeth now that a `pull_request` lane exists (.github/workflows/pr-lane.yml).
+    //
+    // `assertCiProvenance` matches by check-run NAME on a SHA and asks nothing about which
+    // workflow, or which EVENT, produced it. So a job in any other workflow that took one of these
+    // names would let a run that is not the per-merge push lane stand in as proof for a release —
+    // green, fail-closed satisfied, and verifying something other than what the name claims.
+    // That is Nguyên tắc 3's silent failure, so it fails here instead.
+    const root = join(import.meta.dirname, "../../..");
+    const dir = join(root, ".github/workflows");
+    const TRUSTED = new Set(["ci.yml", "ci-browser.yml", "release-integrity.yml"]);
+    const required = new Set(REQUIRED_CI_CHECK_RUNS as string[]);
+
+    const others = readdirSync(dir).filter((f) => /\.ya?ml$/.test(f) && !TRUSTED.has(f));
+    // Guard the guard: if the workflows are ever renamed, an empty sweep must not read as a pass.
+    expect(others).toContain("pr-lane.yml");
+
+    for (const file of others) {
+      const lines = readFileSync(join(dir, file), "utf8").split("\n");
+      const jobsAt = lines.findIndex((line) => /^jobs:/.test(line));
+      if (jobsAt === -1) continue;
+      const body = lines.slice(jobsAt + 1);
+      // A check run is named by the job's `name:`, or by its id when it has none — so both are
+      // candidate names and both must miss the required list.
+      const ids = body
+        .filter((line) => /^ {2}[A-Za-z0-9_-]+:\s*$/.test(line))
+        .map((line) => line.trim().replace(/:$/, ""));
+      const names = body
+        .filter((line) => /^ {4}name: /.test(line))
+        .map((line) => line.slice("    name: ".length).trim());
+      for (const candidate of [...ids, ...names]) {
+        expect(
+          required.has(candidate),
+          `${file} produces check run "${candidate}", which is in REQUIRED_CI_CHECK_RUNS — a run ` +
+            "of this workflow would satisfy a release gate it is not entitled to satisfy",
+        ).toBe(false);
+      }
     }
   });
 
