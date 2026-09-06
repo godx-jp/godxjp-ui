@@ -1,0 +1,97 @@
+name: PR · quick check
+
+# The lane that tells you a branch is broken BEFORE it is on `main`.
+#
+# WHAT IT DOES NOT DO — it does not block a merge, and nothing here should be read as claiming it
+# does. `main` has no branch protection (`gh api repos/godx-jp/godxjp-ui/branches/main/protection`
+# → 404, `/rulesets` → []) and none is planned. This lane gates by VISIBILITY only: whoever opens
+# the PR sees red next to the merge button and decides. That is the whole mechanism.
+#
+# WHY IT EXISTS, WITH THE MEASUREMENT
+# `pull_request` was removed from ci.yml and ci-browser.yml by f910af95 (2026-08-30) for a real,
+# measured reason: those two lanes cost 73s + 653–745s, and a PR merge fired them BOTH on the PR
+# and again on the push to main, so every merge paid twice on a shared pool. That decision stands
+# and this file does not reopen it — see "WHY THIS IS NOT `pull_request` ON ci.yml" below.
+#
+# What the removal left behind is a gap, and it is not the one it looks like. It is not that PR CI
+# never existed: 247 `pull_request` runs did happen, the last of them on PR #318 (2026-08-30).
+# It is that after the trigger came off, the repo stopped opening PRs at all — 0 PRs merged since
+# 2026-08-30, 39 commits pushed straight to `main` — so nothing was ever felt to be missing. The
+# day someone does open a PR, the honest state of this repo is that not a single check runs on it.
+# This lane is what runs on it.
+#
+# WHY THIS IS NOT `pull_request` ON ci.yml, WHICH WOULD UNDO f910af95
+# Two different things: this lane fires ONLY on `pull_request`, never on `push`. A branch that
+# lands on `main` is still judged exactly once, by ci.yml on the push. The double-billing f910af95
+# removed was the SAME expensive workflow charged twice for one merge; here the PR pays for a short
+# subset and the merge pays for the full set, and no work is done twice at full price.
+#
+# WHAT IS DELIBERATELY ABSENT — axe (653–745s), the visual/contrast gates, the geometry sweep, the
+# rendered-runtime shards and the whole vitest suite. They stay where they are: the two Chromium
+# gates on ci-browser.yml's push lane, the wide sweeps on ci-browser-full.yml's nightly. This lane
+# is meant to be short enough that nobody is tempted to skip it, not to be a second CI.
+#
+# CHECK-RUN NAMING IS LOAD-BEARING — READ scripts/release-core.mjs BEFORE RENAMING THE JOB BELOW.
+# `VerifyCommitProvenance` in npm-publish.yml fails CLOSED unless every name in
+# REQUIRED_CI_CHECK_RUNS is green on the exact SHA being published, and it matches by check-run
+# NAME alone — it does not care which workflow produced it. If a job in THIS file ever took one of
+# those names, a `pull_request` run could satisfy a release gate that only the `push` lane is
+# entitled to satisfy. The job below is named so it collides with none of them, and
+# src/test/__tests__/release-workflow.test.ts · "no workflow outside the three the release trusts
+# may produce a required check-run name" now fails if that ever stops being true.
+#
+# RUNNER — `[self-hosted, swarm-pool]`, prepared by `.github/actions/setup`, which ASSERTS the
+# image's Node 22 rather than installing it (L8). No `chromium: true`: nothing here needs a
+# browser, and asking for one would add the browser-launch check for no gate.
+on:
+  pull_request:
+    branches: [main]
+    # L6. Same four entries as ci.yml / ci-browser.yml / release-integrity.yml, but NOT part of
+    # the "identical or the provenance gets a gap" rule those three share — that rule is about a
+    # commit triggering all three per-merge workflows or none, and this lane is not one of them
+    # and feeds no provenance. It mirrors them because the same paths are just as inert on a PR.
+    paths-ignore:
+      - 'debate/**'
+      - '.agent-notes/**'
+      - '.design-sync/**'
+      - 'LICENSE'
+
+# L7. Push twice to a PR branch and the first run is cancelled; only the tip is worth judging.
+concurrency:
+  group: pr-lane-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quick:
+    # NOT any of REQUIRED_CI_CHECK_RUNS — see the note above. The eight names that list holds are
+    # "Build · typecheck · lint · guards", "Tests (shard 1/4)" through "Tests (shard 4/4)",
+    # "Contrast + visual audit", "Per-frame axe (chrome blocking, component allowlisted)" and
+    # "lockstep".
+    name: PR quick check (build · typecheck · lint)
+    runs-on: [self-hosted, swarm-pool]
+
+    # THIS REPO IS PUBLIC AND THE POOL IS SELF-HOSTED, WHICH IS THE ONE COMBINATION GITHUB WARNS
+    # ABOUT. A `pull_request` from a fork would otherwise run that fork's code — including any
+    # edit it makes to this very file — on a long-lived runner shared with tempo, kintai and
+    # godx-chat. Branches in this repository only. Forks get a skipped job, which is honest: the
+    # lane does not gate merge, so it has nothing to withhold.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+
+      # THREE STEPS, NOT ONE `pnpm verify:*`. CONTRACT.md Nguyên tắc 3: a single bundled command
+      # that goes red tells you the branch is broken but not what broke. Each of these names
+      # itself in the step list.
+      - name: typecheck
+        run: pnpm typecheck
+
+      - name: lint
+        run: pnpm lint
+
+      - name: build
+        run: pnpm build
