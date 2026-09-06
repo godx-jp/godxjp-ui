@@ -66,9 +66,10 @@ permissions:
 
 jobs:
   quick:
-    # NOT any of REQUIRED_CI_CHECK_RUNS — see the note above. The seven names that list holds are
-    # "Build · typecheck · lint · guards", "Tests (shard 1..4/4)", "Contrast + visual audit",
-    # "Per-frame axe (chrome blocking, component allowlisted)" and "lockstep".
+    # NOT any of REQUIRED_CI_CHECK_RUNS — see the note above. The eight names that list holds are
+    # "Build · typecheck · lint · guards", "Tests (shard 1/4)" through "Tests (shard 4/4)",
+    # "Contrast + visual audit", "Per-frame axe (chrome blocking, component allowlisted)" and
+    # "lockstep".
     name: PR quick check (build · typecheck · lint)
     runs-on: [self-hosted, swarm-pool]
 
