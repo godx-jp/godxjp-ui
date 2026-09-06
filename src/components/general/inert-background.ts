@@ -45,7 +45,13 @@ let mounted = 0;
 function sync() {
   for (const el of document.querySelectorAll("[data-aria-hidden]")) {
     if (owned.has(el) || el.hasAttribute("inert")) continue;
-    if (el.querySelector(TABBABLE)) {
+    // Chốt tiêu điểm 0x0 của Radix nhận được tiêu điểm nhưng là cơ chế của chính lớp phủ; inert
+    // nó là phá bẫy tiêu điểm.
+    if (el.matches("[data-radix-focus-guard]")) continue;
+    // `matches` TRƯỚC `querySelector`: gói aria-hidden chừa lại vùng aria-live, nên khi trang có
+    // live region nó đi sâu xuống và đánh dấu từng phần tử anh em, trong đó có thể là chính một
+    // <button>. Chỉ hỏi hậu duệ thì đúng phần tử nhận được tiêu điểm lại bị bỏ sót.
+    if (el.matches(TABBABLE) || el.querySelector(TABBABLE)) {
       el.setAttribute("inert", "");
       owned.add(el);
     }

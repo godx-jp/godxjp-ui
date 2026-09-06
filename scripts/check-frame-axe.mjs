@@ -164,10 +164,19 @@ async function main() {
   try {
     deps = await loadDeps();
   } catch (cause) {
+    // BỎ QUA CHỈ Ở MÁY DEV, KHÔNG BAO GIỜ TRÊN CI. Tên check run của cổng này nằm trong
+    // REQUIRED_CI_CHECK_RUNS, nên một lượt thoát 0 vì thiếu trình duyệt là bản phát hành nhận
+    // một dấu xanh KHÔNG chứng minh điều gì: axe chưa hề chạy. Trên CI đó phải là lỗi cứng.
     const msg = "check:frame-axe needs optional peers `playwright` + `@axe-core/playwright`";
-    if (asJson) process.stdout.write(JSON.stringify({ status: "error", message: msg }) + "\n");
-    else console.warn(`⚠ ${msg} — skipped. (${cause.message})`);
-    return; // skip in a browser-less env rather than fail the build
+    if (process.env.CI) {
+      const hard = `${msg} — refusing to report success without running. (${cause.message})`;
+      if (asJson) process.stdout.write(JSON.stringify({ status: "error", message: hard }) + "\n");
+      else console.error(`✗ ${hard}`);
+      process.exit(2);
+    }
+    if (asJson) process.stdout.write(JSON.stringify({ status: "skipped", message: msg }) + "\n");
+    else console.warn(`⚠ ${msg} — skipped (local only; CI fails instead).`);
+    return;
   }
   const { chromium, AxeBuilder } = deps;
 
@@ -269,8 +278,10 @@ async function main() {
         if (OVERLAY_VIEWPORTS.has(vp.id)) {
           try {
             if (await openDeclaredOverlay(page)) {
-              overlayRan.add(frame.id);
+              // Đếm SAU khi quét xong: "đã mở" không phải là "đã đo". Nếu scan ném lỗi mà khung
+              // vẫn được tính là đã đo thì lệnh dựng lại baseline sẽ xoá allowlist của nó.
               const open = await scan(AxeBuilder, page, { exclude: ".demo-block-toolbar" });
+              overlayRan.add(frame.id);
               for (const v of open) {
                 ((overlayCurrent[frame.id] ??= {})[vp.id] ??= {})[v.id] ??= 0;
                 overlayCurrent[frame.id][vp.id][v.id] += v.nodes;
@@ -324,6 +335,18 @@ async function main() {
 
   // ---- Baseline update mode -------------------------------------------------
   if (updateBaseline) {
+    // Thiếu phép đo thì KHÔNG ghi. Một khung tải hỏng hay một lượt quét ném lỗi sẽ được diễn
+    // giải thành "đã sạch" và bị xoá khỏi allowlist, rồi lượt tốt kế tiếp báo regression giả.
+    if (infraErrors.length) {
+      log(
+        `${C.red}✗ từ chối ghi baseline${C.reset} — ${infraErrors.length} phép đo không hoàn tất:`,
+      );
+      for (const e of infraErrors.slice(0, 10)) log(`    ${e.frame} @${e.viewport}: ${e.message}`);
+      process.exitCode = 1;
+      await browser.close();
+      stopServer();
+      return;
+    }
     // Merge: overwrite the frames we actually ran, keep others — so a limited
     // `AXE_FRAMES_LIMIT=… --update-baseline` never silently drops un-run frames.
     const sorted = (o) =>
@@ -344,7 +367,7 @@ async function main() {
     // what the gate still cannot see, and why some violations are deliberately unfixed). Writing
     // the file from scratch silently deleted them. Every key the gate does not own is carried
     // over verbatim and named in the log, so a key can never disappear unnoticed.
-    const OWNED = new Set(["generatedAt", "note", "component", "overlay"]);
+    const OWNED = new Set(["generatedAt", "note", "component", "overlay", "overlayRequired"]);
     const carried = Object.fromEntries(Object.entries(baseline).filter(([k]) => !OWNED.has(k)));
     const out = {
       generatedAt: new Date().toISOString().slice(0, 10),
@@ -359,6 +382,10 @@ async function main() {
         "`node scripts/check-frame-axe.mjs --update-baseline`.",
       ...carried,
       component,
+      // Danh sách khung PHẢI mở được lớp phủ, tách khỏi allowlist vi phạm. Không có nó thì một
+      // khung đánh mất khai báo data-axe-open sẽ lặng lẽ rời khỏi phạm vi đo mà cổng vẫn xanh,
+      // và một khung mở ra SẠCH thì không để lại dấu vết nào trong allowlist để mà nhớ.
+      overlayRequired: [...overlayRan].sort(),
       overlay,
     };
     writeFileSync(BASELINE_PATH, JSON.stringify(out, null, 2) + "\n");
@@ -394,6 +421,13 @@ async function main() {
   // Only frames whose open step ran are compared: an un-declared frame has nothing to say about
   // the overlay allowlist in either direction.
   compare(baseline.overlay ?? {}, overlayRules, overlayRan, overlayRegressions, overlayShrinkHints);
+  // Độ phủ, tách khỏi vi phạm: một khung từng mở được mà lần này không mở là MẤT PHÉP ĐO, không
+  // phải là đã sạch. Chỉ kiểm khi quét trọn bộ, vì một shard chỉ thấy phần khung của nó.
+  const overlayMissing = shard
+    ? []
+    : (baseline.overlayRequired ?? []).filter(
+        (fid) => runFrameIds.has(fid) && !overlayRan.has(fid),
+      );
 
   // ---- Aggregate chrome by rule --------------------------------------------
   const chromeByRule = {};
@@ -405,7 +439,9 @@ async function main() {
   const chromeFail = chromeHits.length > 0;
   const regressionFail = regressions.length > 0;
   const overlayFail = overlayRegressions.length > 0;
-  const pass = !chromeFail && !regressionFail && !overlayFail && infraErrors.length === 0;
+  const coverageFail = overlayMissing.length > 0;
+  const pass =
+    !chromeFail && !regressionFail && !overlayFail && !coverageFail && infraErrors.length === 0;
 
   const summary = {
     status: pass ? "ok" : "fail",
@@ -418,6 +454,7 @@ async function main() {
     overlayFrames: overlayRan.size,
     overlayViolations: overlayTotal,
     overlayRegressions: overlayRegressions.length,
+    overlayMissing: overlayMissing.length,
     infrastructureErrors: infraErrors.length,
   };
 
@@ -489,6 +526,15 @@ async function main() {
     `  ${overlayRan.size} frame(s) opened an overlay before scanning; ` +
       `${overlayTotal} violation node(s) while open.`,
   );
+  if (coverageFail) {
+    log(
+      `  ${C.red}✗ ${overlayMissing.length} khung từng đo được lớp phủ nhưng lần này KHÔNG mở:${C.reset}`,
+    );
+    for (const fid of overlayMissing) log(`      ${C.red}${fid}${C.reset}`);
+    log(
+      `  ${C.dim}Mất phép đo, không phải đã sạch. Khôi phục data-axe-open cho khung đó.${C.reset}`,
+    );
+  }
   if (overlayFail) {
     log(
       `  ${C.red}✗ ${overlayRegressions.length} NEW violation-type(s) not in the overlay baseline:${C.reset}`,

@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 
@@ -230,5 +233,48 @@ describe("TimelineGrid semantics", () => {
       el.getAttribute("data-event-id"),
     );
     expect(ids).toEqual(["kept"]);
+  });
+});
+
+describe("sàn hiển thị là một nguồn duy nhất (codex review)", () => {
+  const tokens = readFileSync(
+    resolve(process.cwd(), "src/tokens/components/data-display.css"),
+    "utf8",
+  );
+  const styles = readFileSync(resolve(process.cwd(), "src/styles/data-display-layout.css"), "utf8");
+
+  it("token phút và hằng số trong component khớp nhau", () => {
+    const token = /--timeline-grid-event-min-height-minutes:\s*(\d+)/.exec(tokens)?.[1];
+    expect(token, "token sàn hiển thị").toBeDefined();
+    const source = readFileSync(
+      resolve(process.cwd(), "src/components/data-display/timeline-grid.tsx"),
+      "utf8",
+    );
+    const constant = /const EVENT_MIN_MINUTES = (\d+);/.exec(source)?.[1];
+    // Hai con số nói cùng một điều: khối ngắn hơn sàn vẫn được vẽ cao bằng sàn. Lệch nhau là
+    // thuật toán xếp làn và CSS mô tả hai hình học khác nhau, và hai ca liền nhau sẽ đè lên nhau.
+    expect(constant).toBe(token);
+  });
+
+  it("CSS suy chiều cao tối thiểu từ token phút, không phải từ một giá trị pixel riêng", () => {
+    expect(styles).toContain("var(--timeline-grid-event-min-height-minutes)");
+    expect(tokens).not.toContain("--timeline-grid-event-min-height:");
+  });
+
+  it("hai ca liền nhau ngắn hơn sàn không dùng chung làn", () => {
+    const { container } = renderWithUi(
+      <TimelineGrid
+        label="ca ngắn"
+        columns={[{ id: "d1", label: "Thứ hai" }]}
+        events={[
+          { id: "a", columnId: "d1", start: "09:00", end: "09:05", title: "A" },
+          { id: "b", columnId: "d1", start: "09:05", end: "09:10", title: "B" },
+        ]}
+      />,
+    );
+    const lanes = [...container.querySelectorAll("[data-event-id]")].map((el) =>
+      (el as HTMLElement).style.getPropertyValue("--timeline-grid-event-lane"),
+    );
+    expect(new Set(lanes).size, "hai khối phải nằm hai làn khác nhau").toBe(2);
   });
 });
