@@ -55,6 +55,17 @@ import type {
   LabelProp,
   IdProp,
   DescriptionsLayoutProp,
+  DescriptionsColumnProp,
+  DescriptionsSpanProp,
+  DescriptionsItemsProp,
+  SortDirectionProp,
+  OnColumnFilterChangeProp,
+  OnRowProp,
+  TableExpandableProp,
+  TableRowSelectionProp,
+  TableScrollProp,
+  TableStickyProp,
+  TableSummaryProp,
 } from "../vocabulary";
 
 /**
@@ -114,12 +125,20 @@ export type EmptyStateProp = {
  */
 export type DescriptionsProp = {
   /** `Descriptions.Item` children — one label/value pair each. */
-  children: React.ReactNode;
-  columns?: 1 | 2 | 3;
+  children?: React.ReactNode;
+  /**
+   * Column count. `1 | 2 | 3` keeps this library's own mobile-first ladder; any other number, or
+   * antd's responsive `{ sm, md, lg, xl }` object, drives the token-published grid instead.
+   */
+  columns?: DescriptionsColumnProp;
   /** Label placement within each item. Default `vertical` (label over value). */
   layout?: DescriptionsLayoutProp;
   /** Label text alignment inside the label column. Applies only to `layout="horizontal"`. */
   labelAlign?: "start" | "end";
+  /** Draw the grid as a bordered table with shaded label cells (antd `bordered`). */
+  bordered?: boolean;
+  /** Declarative items (antd `items`) — the alternative to composing `Descriptions.Item`. */
+  items?: DescriptionsItemsProp;
   className?: ClassNameProp;
 };
 
@@ -127,6 +146,8 @@ export type DescriptionsItemProp = {
   label: React.ReactNode;
   value: React.ReactNode;
   mono?: boolean;
+  /** Columns this item occupies — number | `"filled"` | responsive object (antd `span`). */
+  span?: DescriptionsSpanProp;
 };
 
 /**
@@ -308,6 +329,27 @@ export type DataTableProp<T> = {
    * measures. Default `"sm"`.
    */
   collapseBelow?: BreakpointProp;
+  // ── antd 6.6.2 parity surface ──────────────────────────────────────────
+  /** Full row-selection configuration (antd `rowSelection`). */
+  rowSelection?: TableRowSelectionProp<T>;
+  /** Expandable detail rows (antd `expandable`). */
+  expandable?: TableExpandableProp<T>;
+  /** Footer totals row, rendered in a real `<tfoot>` (antd `summary`). */
+  summary?: TableSummaryProp<T>;
+  /** Scroll envelope — `x` a minimum inline size, `y` a maximum body block size (antd `scroll`). */
+  scroll?: TableScrollProp;
+  /** Sticky header; the object form carries `offsetHeader` (antd `sticky`). */
+  sticky?: TableStickyProp;
+  /** Per-row DOM props merged onto the `<tr>` (antd `onRow`). */
+  onRow?: OnRowProp<T>;
+  /** Outer frame + vertical rules between columns (antd `bordered`). */
+  bordered?: boolean;
+  /** Explain the next sort step in a tooltip on sortable headers (antd `showSorterTooltip`). */
+  showSorterTooltip?: boolean;
+  /** Table-wide sort cycle; a column's own `sortDirections` wins (antd `sortDirections`). */
+  sortDirections?: SortDirectionProp[];
+  /** Column filters changed — pair with a column's `filteredValue` for server filtering. */
+  onFilterChange?: OnColumnFilterChangeProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };

@@ -4434,6 +4434,14 @@
       "group": "data-display",
       "props": [
         {
+          "name": "bordered",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
           "name": "children",
           "origin": "owned",
           "required": false,
@@ -4514,6 +4522,14 @@
           "declaredIn": ["src/components/data-display/data-table.tsx"]
         },
         {
+          "name": "expandable",
+          "origin": "owned",
+          "required": false,
+          "type": "TableExpandableProp<T> | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
           "name": "getRowId",
           "origin": "owned",
           "required": false,
@@ -4586,6 +4602,14 @@
           "declaredIn": ["src/components/data-display/data-table.tsx"]
         },
         {
+          "name": "onFilterChange",
+          "origin": "owned",
+          "required": false,
+          "type": "OnColumnFilterChangeProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
           "name": "onGlobalFilterChange",
           "origin": "owned",
           "required": false,
@@ -4606,6 +4630,14 @@
           "origin": "owned",
           "required": false,
           "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
+          "name": "onRow",
+          "origin": "owned",
+          "required": false,
+          "type": "OnRowProp<T> | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/data-table.tsx"]
         },
@@ -4637,7 +4669,7 @@
           "name": "pagination",
           "origin": "owned",
           "required": false,
-          "type": "PaginationState | undefined",
+          "type": "false | PaginationState | TablePaginationProp | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/data-table.tsx"]
         },
@@ -4666,6 +4698,22 @@
           "declaredIn": ["src/components/data-display/data-table.tsx"]
         },
         {
+          "name": "rowSelection",
+          "origin": "owned",
+          "required": false,
+          "type": "TableRowSelectionProp<T> | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
+          "name": "scroll",
+          "origin": "owned",
+          "required": false,
+          "type": "TableScrollProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
           "name": "selectable",
           "origin": "owned",
           "required": false,
@@ -4682,10 +4730,34 @@
           "declaredIn": ["src/components/data-display/data-table.tsx"]
         },
         {
+          "name": "showSorterTooltip",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
           "name": "sort",
           "origin": "owned",
           "required": false,
           "type": "SortStateProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
+          "name": "sortDirections",
+          "origin": "owned",
+          "required": false,
+          "type": "SortDirectionProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
+          "name": "sticky",
+          "origin": "owned",
+          "required": false,
+          "type": "TableStickyProp | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/data-table.tsx"]
         },
@@ -4703,6 +4775,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
+          "name": "summary",
+          "origin": "owned",
+          "required": false,
+          "type": "TableSummaryProp<T> | undefined",
+          "values": [],
           "declaredIn": ["src/components/data-display/data-table.tsx"]
         }
       ]
@@ -4945,9 +5025,17 @@
       "group": "data-display",
       "props": [
         {
+          "name": "bordered",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/descriptions.tsx"]
+        },
+        {
           "name": "children",
           "origin": "owned",
-          "required": true,
+          "required": false,
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/components/data-display/descriptions.tsx"]
@@ -4964,8 +5052,16 @@
           "name": "columns",
           "origin": "owned",
           "required": false,
-          "type": "1 | 2 | 3 | undefined",
-          "values": [1, 2, 3],
+          "type": "DescriptionsColumnProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/descriptions.tsx"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": false,
+          "type": "DescriptionsItemsProp | undefined",
+          "values": [],
           "declaredIn": ["src/components/data-display/descriptions.tsx"]
         },
         {

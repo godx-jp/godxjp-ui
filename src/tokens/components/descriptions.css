@@ -33,4 +33,18 @@
    * (= calc(1.25 / 0.875)); the theme remaps --text-sm but never that companion. Without this the
    * value would silently inherit ambient leading instead of its own 20px line box. */
   --descriptions-value-line-height: calc(1.25 / 0.875);
+  /* BORDERED grid (antd `bordered`). The rule between cells and the frame around them. Width is a
+   * stroke step so a service that thickens every hairline gets this one with it; colour is
+   * deliberately left to the global `border-color` role so a scoped [data-tenant] override still
+   * reaches it. */
+  --descriptions-border-width: var(--stroke-hairline);
+  --descriptions-border-radius: var(--radius-md);
+  /* Inset inside one bordered cell. Only read while `bordered` is set — an unbordered
+   * Descriptions has no cell box to pad, and gains nothing. */
+  --descriptions-cell-padding-y: var(--space-2);
+  --descriptions-cell-padding-x: var(--space-3);
+  /* Shaded label cell, the half of antd's bordered table that makes the pairs readable at a
+   * glance. `initial` so the --muted default re-resolves under a scoped theme.
+   * Default = hsl(var(--muted)). */
+  --descriptions-label-background: initial;
 }

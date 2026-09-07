@@ -410,7 +410,19 @@
     "error": "Couldn't load this list",
     "errorDescription": "The data could not be retrieved. Try again in a moment.",
     "denied": "You don't have access to this list",
-    "deniedDescription": "Ask an administrator to grant you permission to view these records."
+    "deniedDescription": "Ask an administrator to grant you permission to view these records.",
+    "selectInvert": "Invert selection",
+    "selectNone": "Clear selection",
+    "selectionMenu": "Selection options",
+    "filterColumn": "Filter",
+    "filterReset": "Reset filter",
+    "expandColumn": "Expand",
+    "expandRow": "Expand row",
+    "collapseRow": "Collapse row",
+    "sortAscending": "Sort ascending",
+    "sortDescending": "Sort descending",
+    "sortCancel": "Cancel sort",
+    "selectColumn": "Select"
   },
   "dataGrid": {
     "search": "Search",

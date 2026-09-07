@@ -398,7 +398,19 @@
     "error": "Không tải được danh sách này",
     "errorDescription": "Không lấy được dữ liệu. Vui lòng thử lại sau giây lát.",
     "denied": "Bạn không có quyền xem danh sách này",
-    "deniedDescription": "Hãy đề nghị quản trị viên cấp quyền xem các bản ghi này."
+    "deniedDescription": "Hãy đề nghị quản trị viên cấp quyền xem các bản ghi này.",
+    "selectInvert": "Đảo lựa chọn",
+    "selectNone": "Bỏ chọn tất cả",
+    "selectionMenu": "Tuỳ chọn lựa chọn",
+    "filterColumn": "Lọc",
+    "filterReset": "Bỏ lọc",
+    "expandColumn": "Mở rộng",
+    "expandRow": "Mở rộng hàng",
+    "collapseRow": "Thu gọn hàng",
+    "sortAscending": "Sắp xếp tăng dần",
+    "sortDescending": "Sắp xếp giảm dần",
+    "sortCancel": "Bỏ sắp xếp",
+    "selectColumn": "Chọn"
   },
   "dataGrid": {
     "search": "Tìm kiếm",

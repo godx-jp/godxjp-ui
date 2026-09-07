@@ -51,11 +51,13 @@ import {
   AlertCircle,
   ArrowDown,
   ArrowUp,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronsUpDown,
   Layers,
   Layers2,
+  ListFilter,
   MoreHorizontal,
   RefreshCw,
   ShieldAlert,
@@ -79,10 +81,15 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../navigation/dropdown-menu";
+import { RadioGroupRoot, RadioItem } from "../data-entry/radio";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
 import {
   Table,
   TableBody,
@@ -100,10 +107,22 @@ import {
 } from "../../lib/control-styles";
 import type {
   BreakpointProp,
+  ColumnCompareProp,
   ColumnDefProp,
+  ColumnFilterStateProp,
+  ColumnFilterValueProp,
   DensityProp,
+  OnColumnFilterChangeProp,
+  OnRowProp,
+  SortDirectionProp,
   SortStateProp,
+  TableExpandableProp,
+  TablePaginationProp,
   TablePresetProp,
+  TableRowSelectionProp,
+  TableScrollProp,
+  TableStickyProp,
+  TableSummaryProp,
 } from "../../props/vocabulary";
 
 // DataTable supports all three density tiers (compact 28 / default 36 /
@@ -163,20 +182,153 @@ type TanstackRow<T> = T & Record<string, unknown>;
 /** The TanStack table instance this component drives, with our feature set applied. */
 type DataTableInstance<T> = ReactTable<DataTableFeatures<T>, TanstackRow<T>>;
 
+// ── antd sort / filter semantics on the lean column ───────────────────────
+// antd is the taxonomy authority (docs/DESIGN-AUTHORITY.md), so the CYCLE, the multi-column
+// priority and the filter predicate are antd's, expressed against this library's own
+// `SortDirectionProp` (`asc`/`desc`) rather than antd's `ascend`/`descend`.
+
+/** antd's own default cycle (`sortDirections` defaults to `['ascend', 'descend']`). */
+const DEFAULT_SORT_DIRECTIONS: readonly SortDirectionProp[] = ["asc", "desc"];
+
+/** `sortable` (this library) and `sorter` (antd) are the same opt-in. */
+function columnIsSortable<T>(col: ColumnDef<T>): boolean {
+  if (col.sortable) return true;
+  if (col.sorter === true || typeof col.sorter === "function") return true;
+  return typeof col.sorter === "object" && col.sorter !== null;
+}
+
+/** The comparator half of antd's `sorter`, when one was given. */
+function columnCompare<T>(col: ColumnDef<T>): ColumnCompareProp<T> | undefined {
+  if (typeof col.sorter === "function") return col.sorter;
+  if (col.sorter && typeof col.sorter === "object") return col.sorter.compare;
+  return undefined;
+}
+
+/**
+ * antd's `sorter.multiple` — the MULTI-column sort priority. A column without one is a
+ * single-column sort and replaces whatever was sorted before, exactly as in antd.
+ */
+function columnSortPriority<T>(col: ColumnDef<T>): number | undefined {
+  return col.sorter && typeof col.sorter === "object" ? col.sorter.multiple : undefined;
+}
+
+function columnSortDirections<T>(
+  col: ColumnDef<T>,
+  tableDirections: readonly SortDirectionProp[] | undefined,
+): readonly SortDirectionProp[] {
+  const declared = col.sortDirections ?? tableDirections ?? DEFAULT_SORT_DIRECTIONS;
+  return declared.length > 0 ? declared : DEFAULT_SORT_DIRECTIONS;
+}
+
+/**
+ * The next step of antd's three-state cycle: unsorted → `sortDirections[0]` → … → cleared.
+ * `undefined` means "cleared", which is why the return type is not `SortDirectionProp`.
+ */
+function nextSortDirection(
+  current: SortDirectionProp | undefined,
+  directions: readonly SortDirectionProp[],
+): SortDirectionProp | undefined {
+  if (!current) return directions[0];
+  const at = directions.indexOf(current);
+  if (at === -1) return directions[0];
+  return directions[at + 1];
+}
+
+/**
+ * Fold one column's new direction into the sorting state. A column WITH a `multiple` priority
+ * joins the multi-sort (ordered by that priority, highest first — antd's rule); a column without
+ * one replaces the whole state.
+ */
+function applySortToState(
+  state: SortingState,
+  key: string,
+  direction: SortDirectionProp | undefined,
+  priority: number | undefined,
+  priorities: Record<string, number>,
+): SortingState {
+  if (priority === undefined) {
+    return direction ? [{ id: key, desc: direction === "desc" }] : [];
+  }
+  const kept = state.filter((entry) => entry.id !== key && priorities[entry.id] !== undefined);
+  const next = direction ? [...kept, { id: key, desc: direction === "desc" }] : kept;
+  return next.sort((a, b) => (priorities[b.id] ?? 0) - (priorities[a.id] ?? 0));
+}
+
+/** Read a column's direction back out of the sorting state. */
+function directionOf(state: SortingState, key: string): SortDirectionProp | undefined {
+  const entry = state.find((s) => s.id === key);
+  return entry ? (entry.desc ? "desc" : "asc") : undefined;
+}
+
+/**
+ * antd's `onFilter` contract: a row survives when it matches ANY selected value. With no
+ * `onFilter` the column falls back to equality on `row[key]`, which is the common case and is
+ * exactly what antd's docs steer people to write by hand.
+ */
+function columnFilterPredicate<T>(
+  col: ColumnDef<T>,
+  row: T,
+  values: readonly ColumnFilterValueProp[],
+): boolean {
+  if (values.length === 0) return true;
+  const onFilter = col.onFilter;
+  if (onFilter) return values.some((value) => onFilter(value, row));
+  const raw = (row as Record<string, unknown>)[col.key];
+  return values.some((value) => value === raw || String(value) === String(raw));
+}
+
+/**
+ * Hold a derived array/object at ONE identity for as long as its VALUE is unchanged.
+ *
+ * `useTable` watches its `state` slices by identity, and `autoResetPageIndex` fires the moment
+ * `columnFilters` looks new — so a filter array rebuilt on every render silently snaps the grid
+ * back to page 1 one tick after every page change. The slices below are derived from props on each
+ * render by construction (a controlled `filteredValue` / `sortOrder` lives on the COLUMN), so they
+ * are re-anchored here instead. Values are primitives, so a serialised compare is exact.
+ */
+function useStableValue<T>(value: T): T {
+  const key = JSON.stringify(value);
+  const ref = React.useRef<{ key: string; value: T }>({ key, value });
+  if (ref.current.key !== key) ref.current = { key, value };
+  return ref.current.value;
+}
+
+/** A CSS length from the `number | string` antd accepts for `scroll` / `sticky` offsets. */
+function cssLength(value: number | string | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  return typeof value === "number" ? `${value}px` : value;
+}
+
 // Lean columns are translated once into TanStack columns. The original lean column is stashed in
 // `meta.lean` so the (lean-rendered) Content can read it back — see DataTableColumnMeta.
 function toTanstackColumns<T>(
   columns: ColumnDef<T>[],
 ): TanstackColumnDef<DataTableFeatures<T>, TanstackRow<T>, unknown>[] {
-  return columns.map((col) => ({
-    id: col.key,
-    accessorFn: (row: TanstackRow<T>) => row[col.key],
-    header: () => col.header,
-    enableSorting: !!col.sortable,
-    enableHiding: col.enableHiding ?? true,
-    enableGlobalFilter: true,
-    meta: { lean: col },
-  }));
+  return columns.map((col) => {
+    const compare = columnCompare(col);
+    return {
+      id: col.key,
+      accessorFn: (row: TanstackRow<T>) => row[col.key],
+      header: () => col.header,
+      enableSorting: columnIsSortable(col),
+      enableHiding: col.enableHiding ?? true,
+      enableGlobalFilter: true,
+      enableColumnFilter: !!col.filters,
+      ...(compare
+        ? {
+            sortFn: (rowA: { original: TanstackRow<T> }, rowB: { original: TanstackRow<T> }) =>
+              compare(rowA.original as T, rowB.original as T),
+          }
+        : {}),
+      filterFn: (row: { original: TanstackRow<T> }, _id: string, filterValue: unknown) =>
+        columnFilterPredicate(
+          col,
+          row.original as T,
+          Array.isArray(filterValue) ? (filterValue as ColumnFilterValueProp[]) : [],
+        ),
+      meta: { lean: col },
+    } as TanstackColumnDef<DataTableFeatures<T>, TanstackRow<T>, unknown>;
+  });
 }
 
 interface DataTableContextValue<T = unknown> {
@@ -199,6 +351,26 @@ interface DataTableContextValue<T = unknown> {
   preset: TablePresetProp;
   collapseBelow: BreakpointProp;
   rowClassName?: (row: T) => string | undefined;
+  // ── antd 6.6.2 parity surface ────────────────────────────────────────
+  bordered: boolean;
+  scroll?: TableScrollProp;
+  sticky?: TableStickyProp;
+  onRow?: OnRowProp<T>;
+  summary?: TableSummaryProp<T>;
+  expandable?: TableExpandableProp<T>;
+  expandedKeys: string[];
+  toggleExpanded: (key: string) => void;
+  rowSelection?: TableRowSelectionProp<T>;
+  getRowId: (row: T) => string;
+  showSorterTooltip: boolean;
+  sortDirections?: readonly SortDirectionProp[];
+  /** Sort priorities keyed by column — the `sorter.multiple` map used for multi-column sort. */
+  sortPriorities: Record<string, number>;
+  /** Controlled column filters, keyed by column (antd `filteredValue`). */
+  filterValues: Record<string, ColumnFilterStateProp>;
+  setFilterValue: (key: string, next: ColumnFilterStateProp) => void;
+  paginationConfig?: TablePaginationProp;
+  pagerHidden: boolean;
 }
 
 const DataTableContext = React.createContext<DataTableContextValue | null>(null);
@@ -230,8 +402,14 @@ interface DataTableProps<T> {
   /** Global search term, surfaced by DataTable.Search. */
   globalFilter?: string;
   onGlobalFilterChange?: (next: string) => void;
-  /** Numbered-pagination state, surfaced by DataTable.Pagination. */
-  pagination?: PaginationState;
+  /**
+   * Numbered-pagination state, surfaced by DataTable.Pagination. THREE shapes, all accepted:
+   * the TanStack `{ pageIndex, pageSize }` this prop has always taken; antd's
+   * `TablePaginationConfig` object (`{ current, pageSize, total, pageSizeOptions,
+   * showSizeChanger, onChange }`, 1-based like antd); and `false`, which hides the pager
+   * entirely (antd `pagination={false}`).
+   */
+  pagination?: PaginationState | TablePaginationProp | false;
   onPaginationChange?: OnChangeFn<PaginationState>;
   /** Total server row count (manual pagination) — drives the page count. */
   rowCount?: number;
@@ -281,6 +459,36 @@ interface DataTableProps<T> {
    * classes are appended last, so they win over the built-in hover/selected fills.
    */
   rowClassName?: (row: T) => string | undefined;
+  // ── antd 6.6.2 parity surface ────────────────────────────────────────
+  /**
+   * Full row-selection configuration (antd `rowSelection`). Supersedes — and can be mixed with —
+   * `selectable` / `selected` / `onSelectChange`, which drive the same state.
+   */
+  rowSelection?: TableRowSelectionProp<T>;
+  /** Expandable detail rows (antd `expandable`). */
+  expandable?: TableExpandableProp<T>;
+  /** Footer totals row (antd `summary`) — rendered in a real `<tfoot>` so it survives sorting. */
+  summary?: TableSummaryProp<T>;
+  /** Scroll envelope (antd `scroll`) — `x` a minimum inline size, `y` a maximum body block size. */
+  scroll?: TableScrollProp;
+  /**
+   * Sticky header (antd `sticky`). Supersedes `stickyHeader` when given; the object form carries
+   * the `offsetHeader` a page-level fixed topbar needs.
+   */
+  sticky?: TableStickyProp;
+  /** Per-row DOM props merged onto the `<tr>` (antd `onRow`). */
+  onRow?: OnRowProp<T>;
+  /** Draw the outer frame and the vertical rules between columns (antd `bordered`). */
+  bordered?: boolean;
+  /** Explain the next sort step in a tooltip on every sortable header (antd `showSorterTooltip`). */
+  showSorterTooltip?: boolean;
+  /** Table-wide sort cycle (antd `sortDirections`); a column's own value wins. */
+  sortDirections?: SortDirectionProp[];
+  /**
+   * Column filters changed (antd hands the same map to `onChange`). Pair it with a column's
+   * `filteredValue` to drive filtering from a server query.
+   */
+  onFilterChange?: OnColumnFilterChangeProp;
   className?: string;
   children?: React.ReactNode;
 }
@@ -315,7 +523,7 @@ export function DataTable<T>({
   onSortChange,
   globalFilter: controlledGlobalFilter,
   onGlobalFilterChange,
-  pagination: controlledPagination,
+  pagination: paginationProp,
   onPaginationChange,
   rowCount,
   columnVisibility: controlledVisibility,
@@ -334,6 +542,16 @@ export function DataTable<T>({
   preset = "default",
   collapseBelow = "sm",
   rowClassName,
+  rowSelection,
+  expandable,
+  summary,
+  scroll,
+  sticky,
+  onRow,
+  bordered = false,
+  showSorterTooltip = false,
+  sortDirections,
+  onFilterChange,
   className,
   children,
 }: DataTableProps<T>) {
@@ -344,29 +562,140 @@ export function DataTable<T>({
     onDensityChange?.(d);
   };
 
+  // ── pagination: three accepted shapes, one internal state ────────────────
+  // `false` hides the pager (antd), the antd config object is 1-BASED, and the TanStack
+  // `{ pageIndex, pageSize }` shape this prop already took keeps working untouched.
+  const pagerHidden = paginationProp === false;
+  const paginationConfig =
+    paginationProp && typeof paginationProp === "object" && !("pageIndex" in paginationProp)
+      ? (paginationProp as TablePaginationProp)
+      : undefined;
+  const controlledPagination =
+    paginationProp && typeof paginationProp === "object" && "pageIndex" in paginationProp
+      ? (paginationProp as PaginationState)
+      : undefined;
+
   // Every state slice is controlled with an internal fallback: pass the prop +
   // onChange to drive it from your query, or omit both and the table owns it.
-  const [internalSorting, setInternalSorting] = React.useState<SortingState>([]);
-  const [internalFilters] = React.useState<ColumnFiltersState>([]);
+  const [internalSorting, setInternalSorting] = React.useState<SortingState>(() =>
+    columns
+      .filter((col) => col.defaultSortOrder)
+      .map((col) => ({ id: col.key, desc: col.defaultSortOrder === "desc" })),
+  );
+  const [internalFilters, setInternalFilters] = React.useState<ColumnFiltersState>(() =>
+    columns
+      .filter((col) => (col.defaultFilteredValue?.length ?? 0) > 0)
+      .map((col) => ({ id: col.key, value: col.defaultFilteredValue })),
+  );
   const [internalGlobal, setInternalGlobal] = React.useState("");
   const [internalPagination, setInternalPagination] = React.useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: paginationConfig?.pageSize ?? 10,
   });
-  const [internalSelection, setInternalSelection] = React.useState<RowSelectionState>({});
+  const [internalSelection, setInternalSelection] = React.useState<RowSelectionState>(
+    () =>
+      Object.fromEntries(
+        (rowSelection?.defaultSelectedRowKeys ?? []).map((key) => [key, true]),
+      ) as RowSelectionState,
+  );
   const [internalVisibility, setInternalVisibility] = React.useState<ColumnVisibilityState>({});
+  const [internalExpanded, setInternalExpanded] = React.useState<string[]>(() =>
+    expandable?.defaultExpandAllRows ? data.map(getRowId) : [],
+  );
+
+  const pageIndex =
+    controlledPagination?.pageIndex ??
+    (paginationConfig?.current !== undefined
+      ? Math.max(0, paginationConfig.current - 1)
+      : internalPagination.pageIndex);
+  const pageSize =
+    controlledPagination?.pageSize ?? paginationConfig?.pageSize ?? internalPagination.pageSize;
+  // Memoised on the two NUMBERS: `useTable` keeps a reactive store keyed on the state object, so
+  // handing it a fresh literal every render re-seeds pagination and swallows the page change.
+  const resolvedPagination: PaginationState = React.useMemo(
+    () => ({ pageIndex, pageSize }),
+    [pageIndex, pageSize],
+  );
+
+  const handlePaginationChange: OnChangeFn<PaginationState> = (updater) => {
+    const next = typeof updater === "function" ? updater(resolvedPagination) : updater;
+    setInternalPagination(next);
+    onPaginationChange?.(next);
+    paginationConfig?.onChange?.(next.pageIndex + 1, next.pageSize);
+  };
 
   // ── selection: keep the legacy Set<string> surface, bridged to TanStack. ──
   const selectionFromSet = React.useCallback(
     (set: Set<string>): RowSelectionState => Object.fromEntries([...set].map((id) => [id, true])),
     [],
   );
-  const sortingState = sort !== undefined ? sortToSortingState(sort) : internalSorting;
-  const rowSelection =
-    controlledSelected !== undefined ? selectionFromSet(controlledSelected) : internalSelection;
+
+  // ── sorting: antd's per-column `sortOrder` is the strongest controlled surface ──
+  const sortPriorities = React.useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const col of columns) {
+      const priority = columnSortPriority(col);
+      if (priority !== undefined) map[col.key] = priority;
+    }
+    return map;
+  }, [columns]);
+  const columnSortOrders = columns.filter((col) => col.sortOrder !== undefined);
+  const sortingState = useStableValue<SortingState>(
+    columnSortOrders.length > 0
+      ? columnSortOrders
+          .filter((col) => col.sortOrder)
+          .map((col) => ({ id: col.key, desc: col.sortOrder === "desc" }))
+          .sort((a, b) => (sortPriorities[b.id] ?? 0) - (sortPriorities[a.id] ?? 0))
+      : sort !== undefined
+        ? sortToSortingState(sort)
+        : internalSorting,
+  );
+
+  // ── column filters: antd `filteredValue` (controlled) over the internal state ──
+  const controlledFilterKeys = new Set(
+    columns.filter((col) => col.filteredValue !== undefined).map((col) => col.key),
+  );
+  const columnFilters = useStableValue<ColumnFiltersState>([
+    ...internalFilters.filter((entry) => !controlledFilterKeys.has(entry.id)),
+    ...columns
+      .filter((col) => (col.filteredValue?.length ?? 0) > 0)
+      .map((col) => ({ id: col.key, value: col.filteredValue as ColumnFilterStateProp })),
+  ]);
+  const filterValues: Record<string, ColumnFilterStateProp> = Object.fromEntries(
+    columnFilters.map((entry) => [entry.id, (entry.value ?? []) as ColumnFilterStateProp]),
+  );
+  const setFilterValue = (key: string, next: ColumnFilterStateProp) => {
+    // A column with `filteredValue` is CONTROLLED (antd's rule): it only reports, never self-sets.
+    if (!controlledFilterKeys.has(key)) {
+      setInternalFilters((prev) => {
+        const rest = prev.filter((entry) => entry.id !== key);
+        return next.length > 0 ? [...rest, { id: key, value: next }] : rest;
+      });
+    }
+    const merged = { ...filterValues };
+    if (next.length > 0) {
+      merged[key] = next;
+    } else {
+      delete merged[key];
+    }
+    onFilterChange?.(merged);
+  };
+
+  const rowSelectionKeys = rowSelection?.selectedRowKeys;
+  const rowSelectionState: RowSelectionState =
+    rowSelectionKeys !== undefined
+      ? (Object.fromEntries(rowSelectionKeys.map((key) => [key, true])) as RowSelectionState)
+      : controlledSelected !== undefined
+        ? selectionFromSet(controlledSelected)
+        : internalSelection;
 
   const onSortingChange: OnChangeFn<SortingState> = (updater) => {
     const next = typeof updater === "function" ? updater(sortingState) : updater;
+    if (columnSortOrders.length > 0) {
+      // Every direction is owned by the column's own `sortOrder`; report and change nothing.
+      onSortChange?.(sortingStateToSort(next));
+      return;
+    }
     if (sort !== undefined || onSortChange) {
       onSortChange?.(sortingStateToSort(next));
     } else {
@@ -375,14 +704,43 @@ export function DataTable<T>({
   };
 
   const onRowSelectionChange: OnChangeFn<RowSelectionState> = (updater) => {
-    const next = typeof updater === "function" ? updater(rowSelection) : updater;
-    if (controlledSelected !== undefined || onSelectChange) {
-      const set = new Set(Object.keys(next).filter((id) => next[id]));
-      onSelectChange?.(set);
-      if (controlledSelected === undefined) setInternalSelection(next);
-    } else {
+    let next = typeof updater === "function" ? updater(rowSelectionState) : updater;
+    // antd `type: "radio"` — a single-choice column, so the newest key wins outright.
+    if (rowSelection?.type === "radio") {
+      const added = Object.keys(next).filter((key) => next[key] && !rowSelectionState[key]);
+      const only = added[added.length - 1];
+      next = only ? { [only]: true } : {};
+    }
+    // antd `preserveSelectedRowKeys` — a key whose row has left `data` (server paging, a filter)
+    // stays selected instead of being silently dropped by the page-level toggles.
+    if (rowSelection) {
+      const onPage = new Set(data.map(getRowId));
+      if (rowSelection.preserveSelectedRowKeys) {
+        const offPage = Object.keys(rowSelectionState).filter(
+          (key) => rowSelectionState[key] && !onPage.has(key),
+        );
+        next = {
+          ...next,
+          ...(Object.fromEntries(offPage.map((key) => [key, true])) as RowSelectionState),
+        };
+      } else {
+        // antd's DEFAULT: a key whose row is no longer in `data` is dropped. TanStack keeps it in
+        // the record forever, which is how a bulk action silently acts on a row nobody can see.
+        next = Object.fromEntries(
+          Object.entries(next).filter(([key, on]) => on && onPage.has(key)),
+        ) as RowSelectionState;
+      }
+    }
+    const keys = Object.keys(next).filter((key) => next[key]);
+    if (rowSelectionKeys === undefined && controlledSelected === undefined) {
       setInternalSelection(next);
     }
+    onSelectChange?.(new Set(keys));
+    const byId = new Map(data.map((row) => [getRowId(row), row]));
+    rowSelection?.onChange?.(
+      keys,
+      keys.map((key) => byId.get(key)).filter((row): row is T => row !== undefined),
+    );
   };
 
   const onGlobalFilterChangeFn: OnChangeFn<string> = (updater) => {
@@ -411,14 +769,18 @@ export function DataTable<T>({
       typeof (c.props as { onChange?: unknown }).onChange !== "function",
   );
   const paginationEngaged =
-    manualPagination ||
-    controlledPagination !== undefined ||
-    onPaginationChange !== undefined ||
-    hasNumberedPager;
+    !pagerHidden &&
+    (manualPagination ||
+      controlledPagination !== undefined ||
+      paginationConfig !== undefined ||
+      onPaginationChange !== undefined ||
+      hasNumberedPager);
 
   // One feature set per table instance. The object is the same for every T, but the table is
   // built from it, so it must stay referentially stable across renders.
   const features = React.useMemo(() => dataTableFeatures<T>(), []);
+
+  const selectionEnabled = selectable || rowSelection !== undefined;
 
   const table = useTable<DataTableFeatures<T>, TanstackRow<T>>({
     features,
@@ -430,28 +792,38 @@ export function DataTable<T>({
     // "no pager on this table" is expressed the same way as "the server paginates" — leave the
     // rows unsliced. Page count still derives from `rowCount`/the pre-paginated model either way.
     manualPagination: manualPagination || !paginationEngaged,
-    rowCount,
-    enableRowSelection: selectable,
+    rowCount: paginationConfig?.total ?? rowCount,
+    enableRowSelection: selectionEnabled,
     state: {
       sorting: sortingState,
-      columnFilters: internalFilters,
+      columnFilters,
       globalFilter: controlledGlobalFilter ?? internalGlobal,
-      pagination: controlledPagination ?? internalPagination,
-      rowSelection,
+      pagination: resolvedPagination,
+      rowSelection: rowSelectionState,
       columnVisibility: controlledVisibility ?? internalVisibility,
     },
     onSortingChange,
     onGlobalFilterChange: onGlobalFilterChangeFn,
-    onPaginationChange: onPaginationChange ?? setInternalPagination,
+    onPaginationChange: handlePaginationChange,
     onRowSelectionChange,
     onColumnVisibilityChange: onColumnVisibilityChange ?? setInternalVisibility,
   });
+
+  // ── expandable rows (antd `expandable`) ──────────────────────────────────
+  const expandedKeys = expandable?.expandedRowKeys ?? internalExpanded;
+  const toggleExpanded = (key: string) => {
+    const next = expandedKeys.includes(key)
+      ? expandedKeys.filter((k) => k !== key)
+      : [...expandedKeys, key];
+    if (expandable?.expandedRowKeys === undefined) setInternalExpanded(next);
+    expandable?.onExpandedRowsChange?.(next);
+  };
 
   const ctx: DataTableContextValue<T> = {
     table,
     density,
     setDensity,
-    selectable,
+    selectable: selectionEnabled,
     sort,
     onSortChange,
     onRowClick,
@@ -462,10 +834,28 @@ export function DataTable<T>({
     onRetry,
     striped,
     hoverable,
-    stickyHeader,
+    // antd `sticky` supersedes `stickyHeader` whenever it is given (either form of it).
+    stickyHeader: sticky === undefined ? stickyHeader : sticky !== false,
     preset,
     collapseBelow,
     rowClassName,
+    bordered,
+    scroll,
+    sticky,
+    onRow,
+    summary,
+    expandable,
+    expandedKeys,
+    toggleExpanded,
+    rowSelection,
+    getRowId,
+    showSorterTooltip,
+    sortDirections,
+    sortPriorities,
+    filterValues,
+    setFilterValue,
+    paginationConfig,
+    pagerHidden,
   };
 
   // Determine if children include a Content slot — if not, render default.
@@ -612,17 +1002,98 @@ function columnLabel(column: {
 // ── SelectAll header checkbox ──────────────────────────────────────────
 
 DataTable.SelectAll = function DataTableSelectAll() {
-  const { table, selectable } = useDataTableContext();
+  const { table, selectable, rowSelection, getRowId } = useDataTableContext();
   const { t } = useTranslation();
   if (!selectable) return null;
+  // antd: a `radio` column is single-choice, so it has no header checkbox at all; `hideSelectAll`
+  // suppresses it for a checkbox column too (bulk actions live in the toolbar instead).
+  if (rowSelection?.type === "radio" || rowSelection?.hideSelectAll) {
+    // No header CONTROL — but the <th> still has to have a screen-reader name, or the column is
+    // nameless for every row it labels (axe: empty-table-header), the same contract an
+    // action column meets through `ariaLabel`.
+    return (
+      <>
+        {rowSelection.columnTitle ?? <span className="sr-only">{t("dataTable.selectColumn")}</span>}
+      </>
+    );
+  }
   const allSelected = table.getIsAllPageRowsSelected();
   const someSelected = table.getIsSomePageRowsSelected();
-  return (
+  const box = (
     <Checkbox
       checked={allSelected ? true : someSelected ? "indeterminate" : false}
       onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
       aria-label={t("dataTable.selectAll")}
     />
+  );
+  if (rowSelection?.columnTitle !== undefined) return <>{rowSelection.columnTitle}</>;
+  if (!rowSelection?.selections) return box;
+
+  // antd `selections` — the extra bulk-select entries that hang off the header checkbox.
+  // `true` asks for antd's own built-in trio (all · invert · none).
+  const pageKeys = table.getRowModel().rows.map((row) => getRowId(row.original as never));
+  const selectedKeys = table
+    .getSelectedRowModel()
+    .rows.map((row) => getRowId(row.original as never));
+  const builtIn = [
+    {
+      key: "all",
+      text: t("dataTable.selectAll"),
+      onSelect: () => table.toggleAllPageRowsSelected(true),
+    },
+    {
+      key: "invert",
+      text: t("dataTable.selectInvert"),
+      onSelect: () => {
+        // ONE state change, not a per-row toggle loop: every toggle in a loop re-applies its
+        // updater to the same (stale) record, so only the last row would survive.
+        table.setRowSelection(
+          Object.fromEntries(
+            table
+              .getRowModel()
+              .rows.filter((row) => !row.getIsSelected())
+              .map((row) => [getRowId(row.original as never), true]),
+          ),
+        );
+      },
+    },
+    {
+      key: "none",
+      text: t("dataTable.selectNone"),
+      onSelect: () => table.toggleAllPageRowsSelected(false),
+    },
+  ];
+  const entries =
+    rowSelection.selections === true
+      ? builtIn
+      : rowSelection.selections.map((entry) => ({
+          key: entry.key,
+          text: entry.text,
+          onSelect: () => entry.onSelect(pageKeys.length > 0 ? pageKeys : selectedKeys),
+        }));
+  return (
+    <span className="ui-data-table-selection-menu">
+      {box}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            aria-label={t("dataTable.selectionMenu")}
+            className="ui-data-table-selection-trigger"
+          >
+            <ChevronDown className="ui-data-table-sort-icon" aria-hidden="true" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          {entries.map((entry) => (
+            <DropdownMenuItem key={entry.key} onSelect={entry.onSelect}>
+              {entry.text}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </span>
   );
 };
 (DataTable.SelectAll as React.FC).displayName = "DataTable.SelectAll";
@@ -711,12 +1182,95 @@ DataTable.DensityToggle = function DataTableDensityToggle() {
 
 // ── Content (the actual table) ─────────────────────────────────────────
 
+/** The edge a column freezes against — `fixed` (antd) with `pin: "end"` as its older spelling. */
+function fixedEdge<T>(col: ColumnDef<T>): "start" | "end" | undefined {
+  return col.fixed ?? (col.pin === "end" ? "end" : undefined);
+}
+
+function sameOffsets(a: Record<string, number>, b: Record<string, number>): boolean {
+  const keys = Object.keys(a);
+  if (keys.length !== Object.keys(b).length) return false;
+  return keys.every((key) => a[key] === b[key]);
+}
+
+/**
+ * One column's filter menu (antd `filters` / `filteredValue` / `onFilter`). `filterMultiple`
+ * false makes it single-choice, which is antd's own switch between a checkbox list and a radio
+ * list.
+ */
+function ColumnFilterMenu<T>({ column }: { column: ColumnDef<T> }) {
+  const { filterValues, setFilterValue } = useDataTableContext<T>();
+  const { t } = useTranslation();
+  const options = column.filters ?? [];
+  const active = filterValues[column.key] ?? [];
+  const multiple = column.filterMultiple ?? true;
+  const apply = (next: ColumnFilterStateProp) => {
+    setFilterValue(column.key, next);
+  };
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon-xs"
+          aria-label={t("dataTable.filterColumn")}
+          data-filtered={active.length > 0 ? "" : undefined}
+          className="ui-data-table-filter-trigger"
+        >
+          <ListFilter className="ui-data-table-sort-icon" aria-hidden="true" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
+        <DropdownMenuLabel>{t("dataTable.filterColumn")}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {multiple ? (
+          options.map((option) => (
+            <DropdownMenuCheckboxItem
+              key={String(option.value)}
+              checked={active.includes(option.value)}
+              onCheckedChange={(checked) => {
+                apply(
+                  checked
+                    ? [...active, option.value]
+                    : active.filter((value) => value !== option.value),
+                );
+              }}
+            >
+              {option.text}
+            </DropdownMenuCheckboxItem>
+          ))
+        ) : (
+          <DropdownMenuRadioGroup
+            value={active.length > 0 ? String(active[0]) : ""}
+            onValueChange={(value) => {
+              const picked = options.find((option) => String(option.value) === value);
+              apply(picked ? [picked.value] : []);
+            }}
+          >
+            {options.map((option) => (
+              <DropdownMenuRadioItem key={String(option.value)} value={String(option.value)}>
+                {option.text}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
+        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onSelect={() => {
+            apply([]);
+          }}
+        >
+          {t("dataTable.filterReset")}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 DataTable.Content = function DataTableContent() {
   const {
     table,
     selectable,
-    sort,
-    onSortChange,
     onRowClick,
     loading,
     empty,
@@ -729,6 +1283,19 @@ DataTable.Content = function DataTableContent() {
     preset,
     collapseBelow,
     rowClassName,
+    bordered,
+    scroll,
+    sticky,
+    onRow,
+    summary,
+    expandable,
+    expandedKeys,
+    toggleExpanded,
+    rowSelection,
+    getRowId,
+    showSorterTooltip,
+    sortDirections,
+    sortPriorities,
   } = useDataTableContext();
   const { t } = useTranslation();
   // `"default"` must be provably inert: no attribute is emitted, so no preset selector can match
@@ -745,10 +1312,22 @@ DataTable.Content = function DataTableContent() {
     .getVisibleLeafColumns()
     .map((c) => c.columnDef.meta?.lean as ColumnDef<unknown> | undefined)
     .filter((c): c is ColumnDef<unknown> => !!c);
-  const emptyColSpan = visibleColumns.length + (selectable ? 1 : 0);
+  // antd renders the expand affordance in its own leading column, before the selection column.
+  const expandColumnShown = !!expandable?.expandedRowRender;
+  const leadingColumnCount = (expandColumnShown ? 1 : 0) + (selectable ? 1 : 0);
+  const emptyColSpan = visibleColumns.length + leadingColumnCount;
   // A pinned inline-end column casts its own separating shadow, so the scroll
   // fade (which would otherwise dim the pinned column) is suppressed.
-  const hasPinEnd = visibleColumns.some((col) => col.pin === "end");
+  const hasPinEnd = visibleColumns.some((col) => fixedEdge(col) === "end");
+  // antd freezes the leading (expand / selection) columns as soon as ANY data column is frozen to
+  // the inline start — otherwise they would slide out from under the frozen column.
+  const hasFixedStart = visibleColumns.some((col) => fixedEdge(col) === "start");
+  const leadingFixed = hasFixedStart ? "start" : undefined;
+  // `ellipsis` truncates NOTHING under the auto table layout — the table simply grows to fit the
+  // widest cell — so the fixed layout goes on as soon as a column asks for it, or as soon as
+  // `scroll.x` pins a minimum width. This is antd's own switch, and it is the reason a hand-rolled
+  // `text-overflow: ellipsis` on a `<td>` looks inert.
+  const fixedTableLayout = scroll?.x !== undefined || visibleColumns.some((col) => col.ellipsis);
 
   // Accessible-header contract: a column whose `header` renders no visible text
   // (an action / selection column) MUST carry an `ariaLabel` so its <th> keeps a
@@ -796,31 +1375,109 @@ DataTable.Content = function DataTableContent() {
     };
   }, []);
 
-  // Active sort for header indicators — prefer the lean `sort` prop, else read
-  // it back from the internal TanStack sorting state.
-  const activeSort = sort ?? sortingStateToSort(table.state.sorting);
-  const isControlledSort = sort !== undefined || !!onSortChange;
+  // ── frozen-column offsets, MEASURED ──────────────────────────────────────
+  // A sticky column has to know how much frozen width sits between it and the edge, and that width
+  // is whatever the browser laid out — a declared `width` is a request, not a result, and the
+  // leading select/expand columns are token-sized. So the header row is measured and each frozen
+  // cell publishes its own `--table-fixed-offset` (a NUMBER; the stylesheet multiplies by 1px, the
+  // sanctioned pattern). Re-measured on every layout change through a ResizeObserver.
+  const [fixedOffsets, setFixedOffsets] = React.useState<Record<string, number>>({});
+  const fixedSignature = [
+    leadingFixed ?? "",
+    expandColumnShown ? "x" : "",
+    selectable ? "s" : "",
+    ...visibleColumns.map((col) => `${col.key}:${fixedEdge(col) ?? ""}`),
+  ].join("|");
+  React.useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const measure = () => {
+      const headerRow = el.querySelector("thead tr");
+      if (!headerRow) return;
+      const cells = Array.from(headerRow.children) as HTMLElement[];
+      const next: Record<string, number> = {};
+      let start = 0;
+      for (const cell of cells) {
+        if (cell.dataset.fixed !== "start") continue;
+        next[cell.dataset.columnKey ?? ""] = start;
+        start += cell.offsetWidth;
+      }
+      let end = 0;
+      for (const cell of [...cells].reverse()) {
+        if (cell.dataset.fixed !== "end") continue;
+        next[cell.dataset.columnKey ?? ""] = end;
+        end += cell.offsetWidth;
+      }
+      setFixedOffsets((prev) => (sameOffsets(prev, next) ? prev : next));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    const headerRow = el.querySelector("thead tr");
+    if (headerRow) observer.observe(headerRow);
+    return () => {
+      observer.disconnect();
+    };
+  }, [fixedSignature]);
+
+  /** The column IDENTITY the offset measurement reads back, plus the frozen edge it read. */
+  const fixedCellProps = (key: string, edge: "start" | "end" | undefined) =>
+    edge ? { "data-column-key": key, "data-fixed": edge } : { "data-column-key": key };
+
+  /**
+   * The measured offset, for the LEADING (expand / selection) columns — a data column publishes it
+   * through `columnCellStyle` instead, so exactly one place per cell owns it.
+   */
+  const leadingFixedStyle = (key: string): React.CSSProperties | undefined =>
+    leadingFixed
+      ? ({ "--table-fixed-offset": fixedOffsets[key] ?? 0 } as React.CSSProperties)
+      : undefined;
+
+  const columnCellClass = (col: ColumnDef<unknown>) => {
+    const edge = fixedEdge(col);
+    return cn(
+      columnWidth(col.width).className,
+      col.align === "right" && "text-end",
+      col.align === "center" && "text-center",
+      col.hiddenOnMobile && "hidden md:table-cell",
+      col.ellipsis && "ui-data-table-ellipsis",
+      edge === "end" && "ui-data-table-pin-end",
+      edge === "start" && "ui-data-table-pin-start",
+    );
+  };
+
+  const columnCellStyle = (col: ColumnDef<unknown>): React.CSSProperties | undefined => {
+    const base = columnWidth(col.width).style;
+    const edge = fixedEdge(col);
+    if (!edge) return base;
+    return { ...base, "--table-fixed-offset": fixedOffsets[col.key] ?? 0 } as React.CSSProperties;
+  };
+
+  // Active sort — read straight off the table state, which the DataTable root has already
+  // reconciled with the lean `sort` prop and with any per-column `sortOrder`.
+  const sortingState = table.state.sorting;
 
   const onHeaderClick = (col: ColumnDef<unknown>) => {
-    if (!col.sortable) return;
-    // Lean controlled-sort surface: mirror the original three-step cycle so a
-    // server-driven table calls onSortChange(undefined) on the third click.
-    if (isControlledSort) {
-      if (activeSort?.key !== col.key) {
-        onSortChange?.({ key: col.key, direction: "asc" });
-      } else if (activeSort.direction === "asc") {
-        onSortChange?.({ key: col.key, direction: "desc" });
-      } else {
-        onSortChange?.(undefined);
-      }
-      return;
-    }
-    // Client mode (no controlled sort surface): TanStack owns the sort cycle.
-    table.getColumn(col.key)?.toggleSorting();
+    if (!columnIsSortable(col)) return;
+    const directions = columnSortDirections(col, sortDirections);
+    const next = nextSortDirection(directionOf(sortingState, col.key), directions);
+    table.setSorting(
+      applySortToState(sortingState, col.key, next, sortPriorities[col.key], sortPriorities),
+    );
   };
 
   const dataRows = table.getRowModel().rows;
   const rowCount = dataRows.length;
+
+  // antd `scroll` / `sticky` — CONSUMER lengths, so they travel as custom properties and the
+  // geometry that reads them stays in table-layout.css.
+  const scrollStyle: React.CSSProperties = {};
+  const scrollVars = scrollStyle as Record<string, string | undefined>;
+  if (scroll?.x !== undefined) scrollVars["--table-scroll-inline-size"] = cssLength(scroll.x);
+  if (scroll?.y !== undefined) scrollVars["--table-scroll-block-size"] = cssLength(scroll.y);
+  if (typeof sticky === "object" && sticky.offsetHeader !== undefined) {
+    scrollVars["--table-sticky-offset"] = cssLength(sticky.offsetHeader);
+  }
 
   return (
     <div
@@ -830,6 +1487,9 @@ DataTable.Content = function DataTableContent() {
         hasPinEnd && "ui-data-table-has-pin-end",
         hasOverflowEnd && "ui-data-table-has-overflow-end",
       )}
+      style={scrollStyle}
+      data-scroll-x={scroll?.x !== undefined ? "" : undefined}
+      data-scroll-y={scroll?.y !== undefined ? "" : undefined}
       aria-busy={loading}
       // A table wider than its container scrolls horizontally here; keep the scroll region
       // keyboard-reachable so it can be scrolled without a pointer (WCAG 2.1.1 / axe
@@ -844,26 +1504,53 @@ DataTable.Content = function DataTableContent() {
         // must be a token. The collection preset opts out of the floor via `data-preset`.
         className="ui-data-table-surface"
         data-preset={presetAttr}
+        data-table-layout={fixedTableLayout ? "fixed" : undefined}
         data-striped={striped ? "" : undefined}
         data-hoverable={hoverable ? "" : undefined}
       >
         {/* With `preset="default"` the `.ui-data-table-scroll` region above owns the overflow, so the primitive's wrapper is a bare box (`scrollable={false}` — no nested scroller, no duplicate tab stop). Only the table's DIRECT wrapper sees the growth, so for the preset that wrapper is the keyboard-reachable scroll region (exactly the bare `Table` behaviour), scrolling inside the surface border. */}
-        <Table scrollable={preset !== "default"} preset={preset} collapseBelow={collapseBelow}>
+        <Table
+          scrollable={preset !== "default"}
+          preset={preset}
+          collapseBelow={collapseBelow}
+          bordered={bordered}
+        >
           <TableHeader
             className={cn("bg-secondary", stickyHeader && "ui-data-table-sticky-header")}
           >
             <TableRow>
+              {expandColumnShown && (
+                <TableHead
+                  className={cn(
+                    "ui-data-table-expand-column",
+                    leadingFixed === "start" && "ui-data-table-pin-start",
+                  )}
+                  {...fixedCellProps("__expand", leadingFixed)}
+                  style={leadingFixedStyle("__expand")}
+                >
+                  <span className="sr-only">
+                    {expandable?.columnTitle ?? t("dataTable.expandColumn")}
+                  </span>
+                </TableHead>
+              )}
               {selectable && (
-                <TableHead className="ui-data-table-select-column">
+                <TableHead
+                  className={cn(
+                    "ui-data-table-select-column",
+                    leadingFixed === "start" && "ui-data-table-pin-start",
+                  )}
+                  {...fixedCellProps("__select", leadingFixed)}
+                  style={leadingFixedStyle("__select")}
+                >
                   <DataTable.SelectAll />
                 </TableHead>
               )}
               {visibleColumns.map((col) => {
-                const isSortable = !!col.sortable;
-                const isActiveSort = isSortable && activeSort?.key === col.key;
+                const isSortable = columnIsSortable(col);
+                const activeDirection = directionOf(sortingState, col.key);
                 const sortIndicator = isSortable ? (
-                  isActiveSort ? (
-                    activeSort?.direction === "asc" ? (
+                  activeDirection ? (
+                    activeDirection === "asc" ? (
                       <ArrowUp className="ui-data-table-sort-icon" aria-hidden="true" />
                     ) : (
                       <ArrowDown className="ui-data-table-sort-icon" aria-hidden="true" />
@@ -891,6 +1578,28 @@ DataTable.Content = function DataTableContent() {
                     {sortIndicator}
                   </span>
                 );
+                const tooltipOn = col.showSorterTooltip ?? showSorterTooltip;
+                const nextDirection = nextSortDirection(
+                  activeDirection,
+                  columnSortDirections(col, sortDirections),
+                );
+                const sortHint =
+                  nextDirection === "asc"
+                    ? t("dataTable.sortAscending")
+                    : nextDirection === "desc"
+                      ? t("dataTable.sortDescending")
+                      : t("dataTable.sortCancel");
+                const sortButton = (
+                  <button
+                    type="button"
+                    className="ui-data-table-sort-button ui-focus-ring"
+                    onClick={() => {
+                      onHeaderClick(col);
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
                 return (
                   <TableHead
                     key={col.key}
@@ -906,40 +1615,39 @@ DataTable.Content = function DataTableContent() {
                     data-align={col.headerAlign ?? col.align}
                     aria-sort={
                       isSortable
-                        ? isActiveSort
-                          ? activeSort?.direction === "asc"
+                        ? activeDirection
+                          ? activeDirection === "asc"
                             ? "ascending"
                             : "descending"
                           : "none"
                         : undefined
                     }
-                    style={columnWidth(col.width).style}
+                    {...fixedCellProps(col.key, fixedEdge(col))}
+                    style={columnCellStyle(col)}
                     className={cn(
-                      columnWidth(col.width).className,
+                      columnCellClass(col),
                       // `headerAlign` when the heading differs from the rows,
                       // `align` otherwise. A table wanting centred headings
                       // over start-aligned text could not say so before, and
                       // consumers reached for `[&_th_button]:justify-center`.
                       (col.headerAlign ?? col.align) === "right" && "text-end",
                       (col.headerAlign ?? col.align) === "center" && "text-center",
-                      col.hiddenOnMobile && "hidden md:table-cell",
                       isSortable && "select-none",
-                      col.pin === "end" && "ui-data-table-pin-end",
                     )}
                   >
                     {isSortable ? (
-                      <button
-                        type="button"
-                        className="ui-data-table-sort-button ui-focus-ring"
-                        onClick={() => {
-                          onHeaderClick(col);
-                        }}
-                      >
-                        {label}
-                      </button>
+                      tooltipOn ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>{sortButton}</TooltipTrigger>
+                          <TooltipContent>{sortHint}</TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        sortButton
+                      )
                     ) : (
                       label
                     )}
+                    {col.filters ? <ColumnFilterMenu column={col} /> : null}
                   </TableHead>
                 );
               })}
@@ -953,6 +1661,7 @@ DataTable.Content = function DataTableContent() {
               // bounded to the previous page so the height barely shifts.
               Array.from({ length: Math.min(Math.max(rowCount, 6), 10) }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`} className={cn(rowPadding, "hover:bg-transparent")}>
+                  {expandColumnShown && <TableCell className={cellPadding} />}
                   {selectable && (
                     <TableCell className={cellPadding}>
                       <div className="ui-skeleton-block ui-data-table-skeleton-check" />
@@ -963,15 +1672,8 @@ DataTable.Content = function DataTableContent() {
                       key={col.key}
                       priority={col.priority}
                       data-align={col.align}
-                      style={columnWidth(col.width).style}
-                      className={cn(
-                        cellPadding,
-                        columnWidth(col.width).className,
-                        col.align === "right" && "text-end",
-                        col.align === "center" && "text-center",
-                        col.hiddenOnMobile && "hidden md:table-cell",
-                        col.pin === "end" && "ui-data-table-pin-end",
-                      )}
+                      style={columnCellStyle(col)}
+                      className={cn(cellPadding, columnCellClass(col))}
                     >
                       <div
                         className={cn(
@@ -1052,82 +1754,153 @@ DataTable.Content = function DataTableContent() {
                 </TableCell>
               </TableRow>
             ) : (
-              dataRows.map((row) => {
+              dataRows.map((row, rowIndex) => {
                 const original = row.original as unknown;
+                const rowKey = getRowId(original as never);
                 const isSelected = row.getIsSelected();
+                const checkboxProps = rowSelection?.getCheckboxProps?.(original as never) ?? {};
+                const canExpand =
+                  expandColumnShown && (expandable?.rowExpandable?.(original as never) ?? true);
+                const isExpanded = canExpand && expandedKeys.includes(rowKey);
+                const rowProps = onRow?.(original as never, rowIndex) ?? {};
                 const isInteractiveTarget = (target: HTMLElement) =>
                   !!target.closest(
-                    "button, a, input, select, textarea, [role=menuitem], [role=checkbox]",
+                    "button, a, input, select, textarea, [role=menuitem], [role=checkbox], [role=radio]",
                   );
+                const expandByClick = canExpand && expandable?.expandRowByClick;
                 return (
-                  <TableRow
-                    key={row.id}
-                    data-state={isSelected ? "selected" : undefined}
-                    tabIndex={onRowClick ? 0 : undefined}
-                    onClick={(e) => {
-                      // Don't trigger row click if user clicked on an interactive child.
-                      const target = e.target as HTMLElement;
-                      if (isInteractiveTarget(target)) return;
-                      onRowClick?.(original as never);
-                    }}
-                    onKeyDown={
-                      onRowClick
-                        ? (e) => {
-                            if (e.key !== "Enter" && e.key !== " ") return;
-                            // Let interactive descendants handle their own keys.
-                            if (e.target !== e.currentTarget) return;
-                            e.preventDefault();
-                            onRowClick?.(original as never);
-                          }
-                        : undefined
-                    }
-                    className={cn(
-                      rowPadding,
-                      // Hover highlight when rows are clickable OR explicitly hoverable…
-                      (onRowClick || hoverable) && "hover:bg-muted/50",
-                      // …but the affordance (cursor + focus mark) only when clickable.
-                      //
-                      // `ui-focus-ring` = the single focus source (styles/focus-ring.css). It
-                      // replaces `focus-visible:ring-ring focus-visible:ring-2
-                      // focus-visible:ring-inset`, which was a hand-rolled second ring: it read no
-                      // `--focus-ring-*` knob, so a service could not retune it, and — being a
-                      // utility — it painted regardless of the `--focus-outline` switch, which is
-                      // exactly the hole the switch exists to close.
-                      onRowClick && "ui-focus-ring cursor-pointer",
-                      isSelected && "bg-muted/30",
-                      rowClassName?.(original as never),
-                    )}
-                  >
-                    {selectable && (
-                      <TableCell className={cellPadding}>
-                        <Checkbox
-                          checked={isSelected}
-                          onCheckedChange={(v) => {
-                            row.toggleSelected(!!v);
-                          }}
-                          aria-label={t("dataTable.selectRow", { id: row.id })}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
-                        />
-                      </TableCell>
-                    )}
-                    {visibleColumns.map((col) => (
-                      <TableCell
-                        key={col.key}
-                        priority={col.priority}
-                        data-align={col.align}
-                        style={columnWidth(col.width).style}
-                        className={cn(
-                          cellPadding,
-                          columnWidth(col.width).className,
-                          col.align === "right" && "text-end",
-                          col.align === "center" && "text-center",
-                          col.hiddenOnMobile && "hidden md:table-cell",
-                          col.pin === "end" && "ui-data-table-pin-end",
-                        )}
-                      >
-                        {col.render
+                  <React.Fragment key={row.id}>
+                    <TableRow
+                      {...rowProps}
+                      data-state={isSelected ? "selected" : undefined}
+                      tabIndex={onRowClick ? 0 : rowProps.tabIndex}
+                      onClick={(e) => {
+                        rowProps.onClick?.(e);
+                        // Don't trigger row click if user clicked on an interactive child.
+                        const target = e.target as HTMLElement;
+                        if (isInteractiveTarget(target)) return;
+                        if (expandByClick) toggleExpanded(rowKey);
+                        onRowClick?.(original as never);
+                      }}
+                      onKeyDown={
+                        onRowClick
+                          ? (e) => {
+                              rowProps.onKeyDown?.(e);
+                              if (e.key !== "Enter" && e.key !== " ") return;
+                              // Let interactive descendants handle their own keys.
+                              if (e.target !== e.currentTarget) return;
+                              e.preventDefault();
+                              onRowClick?.(original as never);
+                            }
+                          : rowProps.onKeyDown
+                      }
+                      className={cn(
+                        rowPadding,
+                        // Hover highlight when rows are clickable OR explicitly hoverable…
+                        (onRowClick || hoverable) && "hover:bg-muted/50",
+                        // …but the affordance (cursor + focus mark) only when clickable.
+                        //
+                        // `ui-focus-ring` = the single focus source (styles/focus-ring.css). It
+                        // replaces `focus-visible:ring-ring focus-visible:ring-2
+                        // focus-visible:ring-inset`, which was a hand-rolled second ring: it read no
+                        // `--focus-ring-*` knob, so a service could not retune it, and — being a
+                        // utility — it painted regardless of the `--focus-outline` switch, which is
+                        // exactly the hole the switch exists to close.
+                        onRowClick && "ui-focus-ring cursor-pointer",
+                        isSelected && "bg-muted/30",
+                        rowProps.className,
+                        rowClassName?.(original as never),
+                      )}
+                    >
+                      {expandColumnShown && (
+                        <TableCell
+                          className={cn(
+                            cellPadding,
+                            leadingFixed === "start" && "ui-data-table-pin-start",
+                          )}
+                          {...fixedCellProps("__expand", leadingFixed)}
+                          style={leadingFixedStyle("__expand")}
+                        >
+                          {canExpand ? (
+                            <Button
+                              variant="ghost"
+                              size="icon-xs"
+                              aria-expanded={isExpanded}
+                              aria-label={
+                                isExpanded ? t("dataTable.collapseRow") : t("dataTable.expandRow")
+                              }
+                              className="ui-data-table-expand-trigger"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleExpanded(rowKey);
+                              }}
+                            >
+                              {isExpanded ? (
+                                <ChevronDown
+                                  className="ui-data-table-sort-icon"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <ChevronRight
+                                  className="ui-data-table-sort-icon"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </Button>
+                          ) : null}
+                        </TableCell>
+                      )}
+                      {selectable && (
+                        <TableCell
+                          className={cn(
+                            cellPadding,
+                            leadingFixed === "start" && "ui-data-table-pin-start",
+                          )}
+                          {...fixedCellProps("__select", leadingFixed)}
+                          style={leadingFixedStyle("__select")}
+                        >
+                          {rowSelection?.type === "radio" ? (
+                            // One choice per table, so each cell is its own single-item group:
+                            // Radix requires a Root for an Item, and a Root cannot legally span
+                            // <tr> boundaries without rewriting the table's own semantics.
+                            <RadioGroupRoot
+                              value={isSelected ? rowKey : ""}
+                              disabled={checkboxProps.disabled}
+                              onValueChange={() => {
+                                row.toggleSelected(true);
+                              }}
+                            >
+                              <RadioItem
+                                value={rowKey}
+                                aria-label={
+                                  checkboxProps["aria-label"] ??
+                                  t("dataTable.selectRow", { id: row.id })
+                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                              />
+                            </RadioGroupRoot>
+                          ) : (
+                            <Checkbox
+                              checked={isSelected}
+                              disabled={checkboxProps.disabled}
+                              onCheckedChange={(v) => {
+                                row.toggleSelected(!!v);
+                              }}
+                              aria-label={
+                                checkboxProps["aria-label"] ??
+                                t("dataTable.selectRow", { id: row.id })
+                              }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}
+                            />
+                          )}
+                        </TableCell>
+                      )}
+                      {visibleColumns.map((col) => {
+                        const rendered = col.render
                           ? col.render(original as never)
                           : (() => {
                               const v = (original as Record<string, unknown>)[col.key];
@@ -1143,14 +1916,53 @@ DataTable.Content = function DataTableContent() {
                               // one-character-per-line check false-positives on a healthy cell.
                               // The span measures the TEXT.
                               return <span data-slot="table-cell-text">{text}</span>;
-                            })()}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+                            })();
+                        // An ellipsised cell keeps the full value reachable as its `title`, so
+                        // truncation never silently loses data (antd `ellipsis.showTitle`).
+                        const rawValue = (original as Record<string, unknown>)[col.key];
+                        const title =
+                          col.ellipsis &&
+                          !col.render &&
+                          (typeof rawValue === "string" || typeof rawValue === "number")
+                            ? String(rawValue)
+                            : undefined;
+                        return (
+                          <TableCell
+                            key={col.key}
+                            priority={col.priority}
+                            data-align={col.align}
+                            title={title}
+                            {...fixedCellProps(col.key, fixedEdge(col))}
+                            style={columnCellStyle(col)}
+                            className={cn(cellPadding, columnCellClass(col))}
+                          >
+                            {rendered}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                    {isExpanded && expandable?.expandedRowRender ? (
+                      <TableRow
+                        className="ui-data-table-expanded-row hover:bg-transparent"
+                        data-expanded-row=""
+                      >
+                        <TableCell colSpan={emptyColSpan} flush>
+                          {expandable.expandedRowRender(original as never, rowIndex, true)}
+                        </TableCell>
+                      </TableRow>
+                    ) : null}
+                  </React.Fragment>
                 );
               })
             )}
           </TableBody>
+          {summary ? (
+            // A real <tfoot>: the totals row belongs to the table's own grid, so it keeps the
+            // column widths, the header association and the screen-reader row navigation.
+            <tfoot data-slot="table-footer" className="ui-data-table-summary">
+              {summary(dataRows.map((row) => row.original as never))}
+            </tfoot>
+          ) : null}
         </Table>
       </div>
     </div>
@@ -1219,14 +2031,17 @@ function CursorPagination({ cursor, hasMore, onChange, className }: CursorPagina
   );
 }
 
-function NumberedPagination({
-  pageSizeOptions = [10, 20, 50, 100],
-  className,
-}: NumberedPaginationProps) {
-  const { table } = useDataTableContext();
+function NumberedPagination({ pageSizeOptions, className }: NumberedPaginationProps) {
+  const { table, paginationConfig, pagerHidden } = useDataTableContext();
   const { t } = useTranslation();
   const { pageIndex, pageSize } = table.state.pagination;
   const pageCount = table.getPageCount();
+  // antd `pagination={false}` — the pager is gone, wherever it was composed.
+  if (pagerHidden) return null;
+  // antd's `pageSizeOptions` / `showSizeChanger` travel on the pagination config object; the
+  // slot's own prop still wins when a call site sets it directly.
+  const options = pageSizeOptions ?? paginationConfig?.pageSizeOptions ?? [10, 20, 50, 100];
+  const showSizeChanger = paginationConfig?.showSizeChanger ?? true;
 
   return (
     <Flex
@@ -1237,30 +2052,34 @@ function NumberedPagination({
       wrap
       className={cn("ui-data-table-pagination ui-data-table-pagination--numbered", className)}
     >
-      <Flex direction="row" align="center" gap="sm" className="ui-data-table-page-size">
-        <span className="ui-data-table-page-size-label ui-data-table-pagination-text">
-          {t("dataGrid.rowsPerPage")}
-        </span>
-        <Select
-          value={String(pageSize)}
-          onValueChange={(v: string) => table.setPageSize(Number(v))}
-        >
-          <SelectTrigger
-            size="sm"
-            aria-label={t("dataGrid.rowsPerPage")}
-            className="ui-data-table-page-size-trigger w-auto shrink-0 tabular-nums"
+      {showSizeChanger ? (
+        <Flex direction="row" align="center" gap="sm" className="ui-data-table-page-size">
+          <span className="ui-data-table-page-size-label ui-data-table-pagination-text">
+            {t("dataGrid.rowsPerPage")}
+          </span>
+          <Select
+            value={String(pageSize)}
+            onValueChange={(v: string) => table.setPageSize(Number(v))}
           >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {pageSizeOptions.map((n) => (
-              <SelectItem key={n} value={String(n)} className="tabular-nums">
-                {n}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Flex>
+            <SelectTrigger
+              size="sm"
+              aria-label={t("dataGrid.rowsPerPage")}
+              className="ui-data-table-page-size-trigger w-auto shrink-0 tabular-nums"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {options.map((n) => (
+                <SelectItem key={n} value={String(n)} className="tabular-nums">
+                  {n}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Flex>
+      ) : (
+        <span />
+      )}
       <Flex direction="row" align="center" gap="sm" className="ui-data-table-page-nav">
         <span className="ui-data-table-pagination-text tabular-nums">
           {t("dataGrid.pageOf", { page: pageIndex + 1, total: Math.max(1, pageCount) })}

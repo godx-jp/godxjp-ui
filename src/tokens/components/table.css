@@ -52,6 +52,25 @@
   --table-header-foreground: initial;
   /* Inline-end shadow that lifts a pinned (sticky) action column off the body it scrolls over. */
   --table-pin-shadow: -6px 0 6px -5px hsl(var(--foreground) / 0.12);
+  /* The same lift for a column frozen to the inline START (antd `fixed: "start"`), pointing the
+   * other way. `box-shadow` has no logical offset, so the writing direction needs its own value —
+   * the RTL companion is a token rather than a literal in the stylesheet so a service that retunes
+   * one edge cannot leave the other behind. */
+  --table-fixed-shadow-start: 6px 0 6px -5px hsl(var(--foreground) / 0.12);
+  --table-fixed-shadow-start-rtl: -6px 0 6px -5px hsl(var(--foreground) / 0.12);
+  /* Leading column that carries the expand affordance (antd `expandable`). Sized like the
+   * selection column beside it so the two leading columns read as one gutter. */
+  --table-expand-column-width: 2.5rem;
+  /* Footer totals row (antd `summary`). `initial` so the --muted default re-resolves under a
+   * scoped theme, exactly like the row-state washes above.
+   * Default = hsl(var(--muted)). */
+  --table-summary-background: initial;
+  --table-summary-border-width: var(--stroke-hairline);
+  /* Wash behind an expanded detail row, so the panel reads as belonging to the row above it.
+   * Default = hsl(var(--muted) / 0.3), the same weight as the selected-row tint. */
+  --table-row-expanded-background: initial;
+  /* Gap between the header checkbox and the `selections` dropdown trigger beside it. */
+  --table-selection-menu-gap: var(--space-1);
   /* Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted
    * default re-resolves under a scoped theme; a service retints by reading another role (e.g.
    * --primary). Defaults = hsl(var(--muted) / 0.4 striped · 0.5 hover · 0.3 selected). */

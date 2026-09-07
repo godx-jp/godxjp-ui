@@ -1251,3 +1251,147 @@
     box-shadow: inset calc(-1 * var(--space-1)) 0 0 hsl(var(--primary));
   }
 }
+
+/* ── Descriptions · antd 6.6.2 parity ────────────────────────────────────────
+ * Two additions, both inert unless asked for: a RESPONSIVE column/span ladder (antd's
+ * `column` / `span` object form) and the BORDERED grid. A `<Descriptions>` that sets neither
+ * matches no selector here and renders byte-identically. */
+@layer components {
+  /* The column count is published per breakpoint by the component; this is the live property the
+   * grid reads, plus its mobile-first base. The media queries below re-point it to the narrowest
+   * declared step at or above each width. */
+  [data-slot="descriptions"][data-columns-responsive] {
+    --descriptions-column-count: var(--descriptions-column-count-base, 1);
+    grid-template-columns: repeat(var(--descriptions-column-count), minmax(0, 1fr));
+  }
+
+  [data-slot="descriptions-item"][data-span-responsive] {
+    --descriptions-item-span: var(--descriptions-item-span-base, 1);
+    grid-column: span var(--descriptions-item-span) / span var(--descriptions-item-span);
+  }
+
+  /* antd `span: "filled"` — take the whole remaining row, whatever the column count resolves to. */
+  [data-slot="descriptions-item"][data-span="filled"] {
+    grid-column: 1 / -1;
+  }
+
+  /* ── antd `bordered` ────────────────────────────────────────────────────
+   * Every cell draws its own block-start and inline-start rule and the container closes the other
+   * two edges, so the grid is complete at any column count without anyone knowing which cell is
+   * first in its row — which is exactly what a responsive column count makes unknowable. */
+  [data-slot="descriptions"][data-bordered] {
+    gap: 0;
+    border-inline-end: var(--descriptions-border-width) solid hsl(var(--border));
+    border-block-end: var(--descriptions-border-width) solid hsl(var(--border));
+    border-radius: var(--descriptions-border-radius);
+    overflow: hidden;
+  }
+
+  [data-slot="descriptions"][data-bordered] [data-slot="descriptions-item"] {
+    gap: 0;
+    border-block-start: var(--descriptions-border-width) solid hsl(var(--border));
+    border-inline-start: var(--descriptions-border-width) solid hsl(var(--border));
+  }
+
+  [data-slot="descriptions"][data-bordered]
+    :is([data-slot="descriptions-label"], [data-slot="descriptions-value"]) {
+    padding: var(--descriptions-cell-padding-y) var(--descriptions-cell-padding-x);
+  }
+
+  [data-slot="descriptions"][data-bordered] [data-slot="descriptions-label"] {
+    background-color: var(--descriptions-label-background, hsl(var(--muted)));
+  }
+
+  /* Beside its value, the shaded label is its own cell, so it needs the rule on its inline end. */
+  [data-slot="descriptions"][data-bordered]
+    [data-slot="descriptions-item"][data-layout="horizontal"]
+    [data-slot="descriptions-label"] {
+    border-inline-end: var(--descriptions-border-width) solid hsl(var(--border));
+  }
+}
+
+@layer godxjp-ui-responsive {
+  /* One step per breakpoint, each falling back through the narrower ones — so `{ lg: 4 }` alone
+   * means "1 up to lg, 4 from lg", the mobile-first reading antd's object form has. */
+  @media (min-width: 640px) {
+    [data-slot="descriptions"][data-columns-responsive] {
+      --descriptions-column-count: var(
+        --descriptions-column-count-sm,
+        var(--descriptions-column-count-base, 1)
+      );
+    }
+
+    [data-slot="descriptions-item"][data-span-responsive] {
+      --descriptions-item-span: var(
+        --descriptions-item-span-sm,
+        var(--descriptions-item-span-base, 1)
+      );
+    }
+  }
+
+  @media (min-width: 768px) {
+    [data-slot="descriptions"][data-columns-responsive] {
+      --descriptions-column-count: var(
+        --descriptions-column-count-md,
+        var(--descriptions-column-count-sm, var(--descriptions-column-count-base, 1))
+      );
+    }
+
+    [data-slot="descriptions-item"][data-span-responsive] {
+      --descriptions-item-span: var(
+        --descriptions-item-span-md,
+        var(--descriptions-item-span-sm, var(--descriptions-item-span-base, 1))
+      );
+    }
+  }
+
+  @media (min-width: 1024px) {
+    [data-slot="descriptions"][data-columns-responsive] {
+      --descriptions-column-count: var(
+        --descriptions-column-count-lg,
+        var(
+          --descriptions-column-count-md,
+          var(--descriptions-column-count-sm, var(--descriptions-column-count-base, 1))
+        )
+      );
+    }
+
+    [data-slot="descriptions-item"][data-span-responsive] {
+      --descriptions-item-span: var(
+        --descriptions-item-span-lg,
+        var(
+          --descriptions-item-span-md,
+          var(--descriptions-item-span-sm, var(--descriptions-item-span-base, 1))
+        )
+      );
+    }
+  }
+
+  @media (min-width: 1280px) {
+    [data-slot="descriptions"][data-columns-responsive] {
+      --descriptions-column-count: var(
+        --descriptions-column-count-xl,
+        var(
+          --descriptions-column-count-lg,
+          var(
+            --descriptions-column-count-md,
+            var(--descriptions-column-count-sm, var(--descriptions-column-count-base, 1))
+          )
+        )
+      );
+    }
+
+    [data-slot="descriptions-item"][data-span-responsive] {
+      --descriptions-item-span: var(
+        --descriptions-item-span-xl,
+        var(
+          --descriptions-item-span-lg,
+          var(
+            --descriptions-item-span-md,
+            var(--descriptions-item-span-sm, var(--descriptions-item-span-base, 1))
+          )
+        )
+      );
+    }
+  }
+}
