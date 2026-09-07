@@ -9,14 +9,24 @@
  * to move a derived colour, move the seed. Regenerate with `pnpm gen:antd-tokens`;
  * `pnpm check:antd-tokens` fails the build if this file drifts from the algorithm.
  *
+ * 4 interactive fill state(s) run along antd's ramp in the OPPOSITE
+ * direction to antd's own step, because antd's step walks the fill towards the label
+ * sitting on it and lands under 4.5:1 (JIS X 8341-3 / WCAG AA). The value
+ * is still antd's ramp at antd's step size; only the sign moved, and only where measured:
+ *   light --primary-hover      #208bc9 3.69:1 → #005596 7.53:1
+ *   light --primary-active     #005596 7.53:1 → #003c70 10.97:1
+ *   dark  --primary-hover      #61b6e8 7.92:1 → #61b6e8 7.92:1
+ *   dark  --primary-active     #2f76a6 3.60:1 → #8bd0f3 10.50:1
+ *
  * antd is a devDependency and a BUILD-TIME tool. Nothing from it ships — see
  * scripts/check-no-antd-runtime.mjs.
  */
 
 :root {
-  /* antd steps hover LIGHTER than the seed — the opposite direction to the hand-authored ramp */
-  --primary-hover: 202 72.5% 45.7%; /* antd colorPrimaryHover = #208bc9 */
-  --primary-active: 206 100% 29.4%; /* antd colorPrimaryActive = #005596 */
+  /* antd colorPrimaryHover = #208bc9 measures 3.69:1 on its own label, under the 4.5:1 floor — same ramp, same step size, opposite sign */
+  --primary-hover: 206 100% 29.4%; /* ramp 1 step away from the label = #005596, 7.53:1 */
+  /* antd colorPrimaryActive = #005596 clears the floor at 7.53:1 on its own label; it moves only because the ramp was reflected for its sibling state, and the two must stay one step apart */
+  --primary-active: 208 100% 22%; /* ramp 2 steps away from the label = #003c70, 10.97:1 */
   /* the hue antd's genFocusOutline paints on a control that has no boundary of its own */
   --primary-border: 198 68% 66%; /* antd colorPrimaryBorder = #6dc0e3 */
   --destructive-hover: 359 50.6% 53.1%; /* antd colorErrorHover = #c44b4d */
@@ -40,9 +50,10 @@
 
 .dark,
 :root[data-theme="dark"] {
-  /* antd steps hover LIGHTER than the seed — the opposite direction to the hand-authored ramp */
-  --primary-hover: 202.2 74.6% 64.5%; /* antd colorPrimaryHover = #61b6e8 */
-  --primary-active: 204.2 55.9% 41.8%; /* antd colorPrimaryActive = #2f76a6 */
+  /* antd colorPrimaryHover = #61b6e8 clears the floor at 7.92:1 on its own label; it moves only because the ramp was reflected for its sibling state, and the two must stay one step apart */
+  --primary-hover: 202.2 74.6% 64.5%; /* ramp 1 step away from the label = #61b6e8, 7.92:1 */
+  /* antd colorPrimaryActive = #2f76a6 measures 3.60:1 on its own label, under the 4.5:1 floor — same ramp, same step size, opposite sign */
+  --primary-active: 200.2 81.3% 74.9%; /* ramp 2 steps away from the label = #8bd0f3, 10.50:1 */
   /* the hue antd's genFocusOutline paints on a control that has no boundary of its own */
   --primary-border: 204.6 46.7% 23.5%; /* antd colorPrimaryBorder = #204158 */
   --destructive-hover: 358.8 42.3% 53.1%; /* antd colorErrorHover = #ba5557 */

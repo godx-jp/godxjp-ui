@@ -91,11 +91,19 @@ describe("destructive fill contrast (gh#199)", () => {
    *
    * What gh#199 was actually protecting is the loop above: every filled destructive surface stays
    * clear of AA against its own label, with margin rather than on the floor. antd's steps do,
-   * measured: light 6.16 → hover 4.63 → active 8.72, dark 5.48 → 4.55 → 8.80.
+   * measured off the committed tokens: light 6.10 → hover 4.64 → active 8.74, dark 5.53 → 4.65 →
+   * 8.94.
    *
    * So the proxy is replaced by the two things that are really being defended: hover never falls
    * to the AA floor itself, and ACTIVE — the committed, irreversible press — is never the quietest
    * state of the three.
+   *
+   * THE HOVER MARGIN IS THIN ON PURPOSE — 4.64 against a 4.6 threshold. antd's hover is its
+   * shallowest interactive step and it moves TOWARDS the label, so this is the one state where a
+   * seed nudge can cross AA without anything else noticing. A generous threshold here would defeat
+   * the tripwire; a failure here means the seed moved, not that the rule is wrong. The neighbouring
+   * primary ramp already crossed that line and had to be reflected — see
+   * interactive-fill-contrast.test.ts and the reflection block in scripts/gen-antd-tokens.mjs.
    */
   it("no state sits on the AA floor, and the pressed state is never the quietest", () => {
     const FLOOR_MARGIN = 0.1;
