@@ -124,7 +124,7 @@ pnpm audit                # godxjp-ui-audit — 0 errors for touched files
 pnpm check:mcp-sync       # MCP registry ↔ library export drift guard
 ```
 
-`pnpm verify` and `pnpm verify:release` run these together (verify:release also builds). It needs `pnpm exec playwright install chromium` once locally; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run/scope it, read the evidence, and regenerate its baseline after an accessibility fix.
+`pnpm verify` and `pnpm verify:release` run these together (verify:release also builds) — **both include the full suite, so both belong to CI.** Locally, run them at most once immediately before opening a PR, never inside an edit loop and never while other agents are working on the same machine. It needs `pnpm exec playwright install chromium` once locally; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run/scope it, read the evidence, and regenerate its baseline after an accessibility fix.
 
 All gates are **self-contained** — no internal/external tooling package required. The eslint, prettier, and vitest setup live in the package (`eslint.config.js`, `prettier.config.mjs`, `vitest.config.ts`, `src/test/`), so a fresh checkout can lint/type-check/test without anything beyond the declared devDependencies.
 
