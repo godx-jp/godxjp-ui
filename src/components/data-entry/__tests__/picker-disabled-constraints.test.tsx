@@ -185,3 +185,57 @@ describe("Calendar cellRender (gh#390 · lát 2)", () => {
     expect(onValueChange.mock.calls[0][0]?.getDate()).toBe(21);
   });
 });
+
+describe("TimePicker footer actions (gh#390 · lát 3)", () => {
+  it("offers a now action that fills the field", async () => {
+    const onValueChange = vi.fn();
+    const user = userEvent.setup();
+    renderWithUi(<TimePicker minuteStep={15} onValueChange={onValueChange} />);
+
+    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+    await user.click(await screen.findByRole("button", { name: /now|bây giờ|現在時刻/i }));
+
+    const at = new Date();
+    const expected = `${String(at.getHours()).padStart(2, "0")}:${String(
+      Math.floor(at.getMinutes() / 15) * 15,
+    ).padStart(2, "0")}`;
+    expect(onValueChange).toHaveBeenLastCalledWith(expected);
+  });
+
+  it("refuses the now action rather than hiding it when the rule forbids the current time", async () => {
+    const user = userEvent.setup();
+    // Forbid every hour, so "now" can never be legal whenever this test runs.
+    const nothingAllowed = () => ({ disabledHours: () => Array.from({ length: 24 }, (_, h) => h) });
+    renderWithUi(<TimePicker disabledTime={nothingAllowed} />);
+
+    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+
+    expect(await screen.findByRole("button", { name: /now|bây giờ|現在時刻/i })).toBeDisabled();
+  });
+
+  it("holds the choice as a draft until confirm when needConfirm is set", async () => {
+    const onValueChange = vi.fn();
+    const user = userEvent.setup();
+    renderWithUi(<TimePicker defaultValue="09:00" needConfirm onValueChange={onValueChange} />);
+
+    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+    await user.click(await screen.findByRole("option", { name: "14" }));
+
+    // The whole point of needConfirm: selecting is not committing.
+    expect(onValueChange).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: /^(ok|chọn|確定)$/i }));
+    expect(onValueChange).toHaveBeenLastCalledWith("14:00");
+  });
+
+  it("still commits on select when needConfirm is off — the shipped default", async () => {
+    const onValueChange = vi.fn();
+    const user = userEvent.setup();
+    renderWithUi(<TimePicker defaultValue="09:00" onValueChange={onValueChange} />);
+
+    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+    await user.click(await screen.findByRole("option", { name: "14" }));
+
+    expect(onValueChange).toHaveBeenLastCalledWith("14:00");
+  });
+});

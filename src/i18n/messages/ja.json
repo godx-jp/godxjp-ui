@@ -39,7 +39,9 @@
       "openPicker": "時刻を選択",
       "meridiem": "午前/午後",
       "am": "午前",
-      "pm": "午後"
+      "pm": "午後",
+      "now": "現在時刻",
+      "confirm": "確定"
     },
     "searchInput": {
       "placeholder": "検索…"
