@@ -1960,6 +1960,14 @@
       "group": "general",
       "props": [
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "TextAlignProp | undefined",
+          "values": ["center", "start", "end"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "asChild",
           "origin": "owned",
           "required": false,
@@ -2080,12 +2088,28 @@
           "type": "ButtonVariantProp | undefined",
           "values": ["link", "default", "ghost", "destructive", "secondary", "outline", "dashed"],
           "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "wrap",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
     },
     "ButtonRefetch": {
       "group": "query",
       "props": [
+        {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "TextAlignProp | undefined",
+          "values": ["center", "start", "end"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
         {
           "name": "asChild",
           "origin": "owned",
@@ -2190,6 +2214,14 @@
           "required": false,
           "type": "ButtonVariantProp | undefined",
           "values": ["link", "default", "ghost", "destructive", "secondary", "outline", "dashed"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "wrap",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
@@ -6957,6 +6989,14 @@
           "declaredIn": ["src/components/data-display/list-row.tsx"]
         },
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/list-row.tsx"]
+        },
+        {
           "name": "density",
           "origin": "owned",
           "required": false,
@@ -7087,6 +7127,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "detailBack",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "detailId",
           "origin": "owned",
           "required": false,
@@ -7124,6 +7172,14 @@
           "required": false,
           "type": "MasterDetailMasterViewportProp | undefined",
           "values": ["compact", "auto", "standard"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "mobilePane",
+          "origin": "owned",
+          "required": false,
+          "type": "\"master\" | \"detail\" | undefined",
+          "values": ["master", "detail"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -9961,7 +10017,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "className",
@@ -9969,7 +10025,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "debounce",
@@ -9977,7 +10033,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "defaultValue",
@@ -9985,7 +10041,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "disabled",
@@ -9993,7 +10049,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "id",
@@ -10001,7 +10057,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "inputClassName",
@@ -10009,7 +10065,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "label",
@@ -10017,23 +10073,23 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "onSearch",
           "origin": "owned",
           "required": false,
-          "type": "((q: string) => void) | undefined",
+          "type": "((query: string) => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
-          "type": "((q: string) => void) | undefined",
+          "type": "((query: string) => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "placeholder",
@@ -10041,7 +10097,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "value",
@@ -10049,7 +10105,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/search-input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
