@@ -133,8 +133,15 @@ One token `--phi-unit` drives page/section/card spacing; micro control gaps use 
 
 ```bash
 pnpm preview          # preview app → http://localhost:6008 (fixed port, kills stale)
+pnpm typecheck && pnpm lint && pnpm run audit          # the cheap gates — run these freely
+pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2   # ONLY what you touched
+
+# Heavy — CI's job. Run locally AT MOST ONCE, right before opening a PR, and never
+# with other agents working on the same machine: `verify` builds the library AND the
+# preview site AND runs all 506 test files. Measured with agents in parallel: 70 vitest
+# workers, load average 90, an overheating laptop.
 pnpm preview:build    # static build — also what deploys to GitHub Pages
-pnpm verify           # typecheck · lint · format · the 5 guards · test
+pnpm verify           # typecheck · lint · format · the 5 guards · FULL suite
 pnpm release --ui <patch|minor|major> --mcp <…|skip>   # publish lib + MCP in lockstep
 ```
 

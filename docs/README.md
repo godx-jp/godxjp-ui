@@ -20,7 +20,7 @@
 ```bash
 cd packages/ui
 pnpm preview          # http://localhost:6008
-pnpm preview:build    # static site → preview/dist/
+pnpm preview:build    # static site → preview/dist/ — heavy; CI's job, run at most once pre-PR
 ```
 
 ### Preview doc format
