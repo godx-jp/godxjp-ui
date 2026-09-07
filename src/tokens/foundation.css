@@ -23,7 +23,12 @@
   --secondary: 45 15% 95%; /* #f4f3f0 */
   --secondary-foreground: 48 8% 13%;
   --muted: 45 15% 95%;
-  --muted-foreground: 44 5% 42%; /* #706d65 SmartHR TEXT_GREY */
+  /* 39% chứ không phải 42%. Ở 42% chữ mờ chỉ đạt 4,63 trên chính --muted, tức SÁT SÀN 4,5, nên
+     bất kỳ bề mặt nào đậm hơn nền trang một chút cũng đẩy nó xuống dưới chuẩn: 4,23 trên
+     --accent, 4,28 trên nền alert tô destructive 5%, 4,47 trên nền warning. Ba lỗi tương phản
+     riêng biệt đã được báo về đều quy về đúng một con số này. Ở 39% mọi bề mặt đó đạt từ 4,75
+     trở lên, tức có biên thật thay vì vừa đủ. */
+  --muted-foreground: 44 5% 39%;
   --accent: 40 13% 91%; /* #ebe9e5 */
   --accent-foreground: 48 8% 13%;
   --destructive: 357 64% 44%; /* 茜 #b7282e */

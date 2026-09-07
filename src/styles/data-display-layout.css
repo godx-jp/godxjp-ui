@@ -1142,13 +1142,6 @@
     background: hsl(var(--accent));
     box-shadow: inset var(--space-1) 0 0 hsl(var(--primary));
   }
-  /* Chữ phụ bên trong hàng đang chọn: pha về phía màu chữ chính thay vì khai một mã màu mới, nên
-   * một service đổi bảng màu vẫn kéo theo. Trình duyệt không có color-mix sẽ rơi về màu đầu tiên
-   * trong phép pha, tức đúng trạng thái hiện nay, chứ không hỏng thêm. */
-  a.ui-list-row[aria-current="page"] [data-tone="muted"] {
-    color: color-mix(in srgb, hsl(var(--muted-foreground)), hsl(var(--foreground)) 30%);
-  }
-
   [dir="rtl"] a.ui-list-row[aria-current="page"] {
     box-shadow: inset calc(-1 * var(--space-1)) 0 0 hsl(var(--primary));
   }

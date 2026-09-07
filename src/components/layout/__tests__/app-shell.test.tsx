@@ -137,7 +137,13 @@ describe("AppShell", () => {
     const trigger = screen.getByRole("button", { name: "Mở menu điều hướng" });
 
     expect(trigger).toBeInTheDocument();
-    expect(trigger).toHaveClass("hidden", "max-[900px]:inline-flex");
+    // Việc ẩn hiện do CSS sở hữu trọn vẹn, KHÔNG phải utility. Trước đây nút mang
+    // `hidden max-[900px]:inline-flex`, mà Tailwind biên dịch max-[900px] thành `width < 900px`
+    // trong khi luật CSS dùng `width <= 56.25rem`, tức bao gồm cả 900. Vì utility nằm sau
+    // components nên đúng ở 900px thanh bên đã ẩn còn nút chưa hiện: một khe chết rộng 1px.
+    expect(trigger).toHaveClass("app-mobile-nav-trigger");
+    expect(trigger.className).not.toContain("max-[");
+    expect(trigger.className.split(/\s+/)).not.toContain("hidden");
   });
 
   it("opens a focus-trapped drawer and returns focus to the trigger on close", async () => {

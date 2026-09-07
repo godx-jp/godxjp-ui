@@ -95,7 +95,7 @@ export function AppShell({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="app-mobile-nav-trigger hidden max-[900px]:inline-flex"
+                className="app-mobile-nav-trigger"
                 aria-label={t("layout.appShell.openNav")}
                 aria-haspopup="dialog"
               >

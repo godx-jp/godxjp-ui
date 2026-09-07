@@ -34,7 +34,7 @@ export const EMAIL_COLOR_SOURCE = {
   },
   "mutedForeground": {
     "cssVar": "--muted-foreground",
-    "hsl": "44 5% 42%"
+    "hsl": "44 5% 39%"
   },
   "border": {
     "cssVar": "--border",

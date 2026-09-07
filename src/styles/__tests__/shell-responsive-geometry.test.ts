@@ -251,8 +251,15 @@ describe("responsive shell geometry", () => {
     // The bar's inset is NOT the shell restructure's business any more — see the
     // horizontal-page-inset-axis test below. Nothing in this block may touch it.
     expect(restructuring[0].body).not.toMatch(/padding-inline:/);
-    // The TSX hamburger variant must state the SAME number as the CSS breakpoint.
-    expect(appShell).toContain("max-[900px]:inline-flex");
+    // TSX KHÔNG được nhắc lại con số breakpoint. Yêu cầu cũ ở đây là "TSX phải nêu CÙNG con số
+    // với CSS", và chính nó đóng khung một lỗi: Tailwind biên dịch `max-[900px]` thành
+    // `width < 900px` trong khi luật CSS dùng `width <= 56.25rem`, tức bao gồm cả 900. Utility
+    // nằm sau components nên đúng ở 900px thanh bên đã ẩn còn nút chưa hiện. Hai nguồn không thể
+    // bất đồng nếu chỉ có một nguồn, nên việc ẩn hiện thuộc về CSS và TSX chỉ mang tên class.
+    expect(appShell).not.toMatch(/max-\[\d+px\]:/);
+    expect(appShell).toContain('className="app-mobile-nav-trigger"');
+    expect(declarationsFor(shellStyles, ".app-mobile-nav-trigger")).toMatch(/display:\s*none/);
+    expect(restructuring[0].body).toContain(".app-mobile-nav-trigger");
   });
 
   it("gives the horizontal page-inset axis ONE owner, stepping on ONE breakpoint (gh#330)", () => {
