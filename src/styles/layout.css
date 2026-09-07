@@ -80,8 +80,23 @@
     --separator-label-color: var(--separator-tone-info-label-color, var(--info));
   }
 
+  /* The ratio box holds whatever the consumer puts in it, and the common fill IS interactive — a
+   * clickable media tile, a poster link, a video with controls — sized to the box, so its focus
+   * ring paints entirely outside. Measured with a flush `a.ui-focus-ring`: under `hidden` the ring
+   * pixel 1px above AND 1px below the child was the page ground, i.e. the ring was gone on both
+   * block edges. `overflow-clip-margin` is IGNORED on `hidden` — the keyword itself is the fix —
+   * and Chromium honours it only when BOTH axes are `clip`, so this must not become single-axis.
+   * Cost of the margin: a child larger than the ratio box now bleeds 8px instead of being cut
+   * flush. Media is fitted with `object-fit`, and a ring the keyboard user cannot see is a WCAG
+   * 2.4.11 failure, so the trade goes this way.
+   *
+   * NO `@supports not (overflow-clip-margin: 1px)` escape hatch, unlike the topbar family: there a
+   * bar that stops clipping loses nothing visible, here a ratio box that stops clipping stops being
+   * a crop. `clip` alone contains exactly as `hidden` did, so a browser without the margin keeps
+   * today's shaved ring and nothing worse. */
   .ui-aspect-ratio {
-    overflow: hidden;
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
   }
 
   /* Decorative brand SPOTLIGHT backdrop — the token-driven radial halo behind a hero / auth card,

@@ -114,6 +114,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Leading/trailing glyph inside the pill. It was a bare `0.75rem` in badge-layout.css with no * token at all, so a service could only resize it with `!important` or a forked stylesheet — * the two routes the icon axis's tier 2 exists to abolish (gh#326). Same step, so nothing * moves. Matches --badge-font-size's step by design: the glyph reads as a character in the * label's run, so the two retune together. Deliberately NOT --scaling-multiplied — the literal * it replaces did not track density."
   },
   {
+    "name": "--badge-tint-fill",
+    "value": "18%",
+    "description": "DATA COLOUR (`color` prop) — the entity's own colour, not a semantic tone. * * A caller colour is DATA: a project administrator picks it for a status, an * issue type, a tag, a label. Solid, no foreground clears WCAG AA for every * colour they can pick — near-black and white measure equal at luminance * 0.2029, where both land on 4.15:1, under the 4.5 that badge-sized text * needs, and a real picker can produce that. So the GROUND moves instead: * the colour is washed into the surface and the label stays the surface's * own foreground, which makes the ratio a function of these two knobs rather * than of the colour somebody chose. * * The fill is where the label sits, so it is quiet; the edge carries no text, * so it is free to be four times as saturated — it is what keeps a pale tint * from dissolving into the surface, and where the colour still says WHICH * status at a glance. At these defaults the worst case across the sRGB cube * measures 8.52:1 (both themes), against 4.15 for a solid chip."
+  },
+  {
+    "name": "--badge-tint-edge",
+    "value": "45%",
+    "description": "DATA COLOUR (`color` prop) — the entity's own colour, not a semantic tone. * * A caller colour is DATA: a project administrator picks it for a status, an * issue type, a tag, a label. Solid, no foreground clears WCAG AA for every * colour they can pick — near-black and white measure equal at luminance * 0.2029, where both land on 4.15:1, under the 4.5 that badge-sized text * needs, and a real picker can produce that. So the GROUND moves instead: * the colour is washed into the surface and the label stays the surface's * own foreground, which makes the ratio a function of these two knobs rather * than of the colour somebody chose. * * The fill is where the label sits, so it is quiet; the edge carries no text, * so it is free to be four times as saturated — it is what keeps a pale tint * from dissolving into the surface, and where the colour still says WHICH * status at a glance. At these defaults the worst case across the sRGB cube * measures 8.52:1 (both themes), against 4.15 for a solid chip."
+  },
+  {
+    "name": "--badge-tint-surface",
+    "value": "hsl(var(--card))",
+    "description": "The surface the chip is washed into, and the label it then carries. A * service whose chips sit on the page ground rather than on a card retunes * the pair together — they are one decision."
+  },
+  {
+    "name": "--badge-tint-foreground",
+    "value": "hsl(var(--card-foreground))",
+    "description": "The surface the chip is washed into, and the label it then carries. A * service whose chips sit on the page ground rather than on a card retunes * the pair together — they are one decision."
+  },
+  {
+    "name": "--badge-color",
+    "value": "var(--badge-tint-surface)",
+    "description": "The caller's colour — the only knob here that is PER-INSTANCE. badge.tsx * writes it inline on the element whenever `color` is given, and an inline * declaration outranks this one, so this is the value only when the prop is * absent. * * It has to be declared somewhere all the same. An undeclared custom property * makes both color-mix() calls in badge-layout.css invalid at computed-value * time, which drops the background AND the border rather than falling back to * anything — the failure check-dist-tokens-resolve.mjs exists to catch, and * which it did catch the moment 19.3.0 shipped the wash without it. * * The surface is the right default because mixing a colour into itself returns * that colour: an untinted chip is then exactly the card it sits on — the same * quiet degradation 19.3.1 chose for browsers without color-mix, rather than a * transparent hole."
+  },
+  {
     "name": "--banner-radius",
     "value": "0",
     "description": "Square corners — a strip spans its container edge-to-edge, so it carries no radius."
@@ -524,9 +549,14 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--control-bounded-width",
+    "value": "min(15rem, 48vw)",
+    "description": "Held width for `width=\"bounded\"` controls (gh#375). `min()` so the value is a ceiling on a * desktop bar and a share of the viewport on a phone, never a fixed rem that overflows it."
+  },
+  {
     "name": "--control-height",
     "value": "calc(var(--control-height-default) * var(--scaling))",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "description": "Held width for `width=\"bounded\"` controls (gh#375). `min()` so the value is a ceiling on a * desktop bar and a share of the viewport on a phone, never a fixed rem that overflows it."
   },
   {
     "name": "--control-height-sm",
@@ -596,16 +626,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--toggle-focus-ring-width",
     "value": "var(--stroke-lg)",
-    "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
+    "description": "Ring knobs for the two controls that historically wanted a softer mark than the global * default — both are filled surfaces where the ring was felt to read as a second border. * * THE ALPHA IS NOW 1, AND THAT IS THE AAA DECISION. WCAG 2.2 SC 2.4.13 Focus Appearance asks * for a ≥3:1 change between the focused and unfocused states across an area at least as large * as a 2px perimeter of the control. Measured against this palette, the focus hue at alpha 0.35 * composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant * indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes * from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as * quiet as it likes because it is decoration rather than the indicator. The knobs stay — a * service can still trade the criterion away deliberately — but the shipped default no longer * makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts."
   },
   {
     "name": "--toggle-focus-ring-alpha",
-    "value": "0.35",
-    "description": "Ring knobs for the two controls that need a softer, heavier mark than the * global default — both are filled surfaces where a hard 2px ring reads as a * second border. Values preserve the look these controls always had; they are * knobs now instead of hand-written box-shadows (styles/focus-ring.css)."
+    "value": "1",
+    "description": "Ring knobs for the two controls that historically wanted a softer mark than the global * default — both are filled surfaces where the ring was felt to read as a second border. * * THE ALPHA IS NOW 1, AND THAT IS THE AAA DECISION. WCAG 2.2 SC 2.4.13 Focus Appearance asks * for a ≥3:1 change between the focused and unfocused states across an area at least as large * as a 2px perimeter of the control. Measured against this palette, the focus hue at alpha 0.35 * composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant * indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes * from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as * quiet as it likes because it is decoration rather than the indicator. The knobs stay — a * service can still trade the criterion away deliberately — but the shipped default no longer * makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts."
+  },
+  {
+    "name": "--control-focus-ring-width",
+    "value": "var(--stroke-md)",
+    "description": "Opaque ring width for a BORDERED FIELD. * * This knob exists because a field is the one control that already owns a boundary, so it is * the one place where the opaque ring could plausibly be dropped and the recoloured border left * to carry the state — which is exactly what Ant Design does (a focused antd field is a primary * border plus a translucent halo, nothing in between; verified in antd 6.6.2, * `es/input/style/token.js:48`). It is NOT what this library does. * * The Japanese market is strict, so this library targets SC 2.4.13 Focus Appearance (AAA), and * a 1px border is not a 2px perimeter. The field therefore keeps the full opaque stop and the * recoloured border sits INSIDE it, same hue, contiguous — the two agree instead of competing, * which was the original defect, while the perimeter stays ≥2px. antd does not meet 2.4.13 here * and we knowingly diverge; see docs/DESIGN-AUTHORITY.md. * * `var(--stroke-md)` rather than `var(--focus-ring-width)`: the latter is re-scoped per component * (`.ui-toggle` raises it), and a knob that mirrors a re-scoped token cannot be bound at :root * (docs/TOKENS.md, the freeze rule) — while reading it at the call site would be a self-reference * cycle, since the call site IS `--focus-ring-width`. Both read the same stroke step, and a gate * asserts they stay equal so the two cannot drift apart. * * If a service does set this thinner, note the unit: the halo's spread is * `calc(var(--focus-ring-width) + var(--focus-ring-glow-width))`, and CSS calc() refuses to add a * unitless number to a length — a bare `0` makes the whole box-shadow invalid at computed-value * time and it resolves to NONE. Measured in Chromium while this knob was briefly 0: a focused * Input reported `box-shadow: none` and still looked plausible, because the recoloured border was * doing all the work. Write `0px`."
   },
   {
     "name": "--rating-focus-ring-offset",
     "value": "2px",
+    "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
+  },
+  {
+    "name": "--checkbox-border-width",
+    "value": "var(--stroke-hairline)",
     "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
@@ -1319,6 +1359,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
   },
   {
+    "name": "--calendar-footer-space-gap",
+    "value": "var(--space-2)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-footer-space-block-start",
+    "value": "var(--space-2)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
+    "name": "--calendar-footer-border-width",
+    "value": "var(--stroke-hairline)",
+    "description": "Nav chevrons read as secondary until hovered — they frame the month, they are not the point."
+  },
+  {
     "name": "--transfer-pane-min-height",
     "value": "14rem",
     "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
@@ -1629,19 +1684,124 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
   },
   {
+    "name": "--code-block-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs."
+  },
+  {
+    "name": "--code-block-font-size-xs",
+    "value": "var(--font-size-xs)",
+    "description": "CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs."
+  },
+  {
+    "name": "--code-block-line-height",
+    "value": "var(--line-height-normal)",
+    "description": "CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs."
+  },
+  {
+    "name": "--code-block-space-inset",
+    "value": "var(--space-3)",
+    "description": "CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs."
+  },
+  {
+    "name": "--code-block-radius",
+    "value": "var(--radius-md)",
+    "description": "CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs."
+  },
+  {
+    "name": "--code-block-max-height-sm",
+    "value": "12rem",
+    "description": "CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs."
+  },
+  {
+    "name": "--code-block-max-height-md",
+    "value": "20rem",
+    "description": "CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs."
+  },
+  {
+    "name": "--code-block-max-height-lg",
+    "value": "32rem",
+    "description": "CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs."
+  },
+  {
+    "name": "--prose-font-size",
+    "value": "var(--font-size-base)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-font-size-sm",
+    "value": "var(--font-size-xs)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-line-height",
+    "value": "var(--line-height-body)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-space-block",
+    "value": "var(--space-3)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-heading-space-block-start",
+    "value": "var(--space-6)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-list-space-inline",
+    "value": "var(--space-6)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-list-item-space",
+    "value": "var(--space-1)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-quote-border-width",
+    "value": "var(--stroke-md)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-quote-space-inline",
+    "value": "var(--space-3)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-code-font-size",
+    "value": "calc(1em / var(--font-size-ratio))",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-code-space-inline",
+    "value": "var(--space-1)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-code-radius",
+    "value": "var(--radius-sm)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
+    "name": "--prose-image-radius",
+    "value": "var(--radius-md)",
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+  },
+  {
     "name": "--tree-item-title-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
   },
   {
     "name": "--tree-item-description-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
   },
   {
     "name": "--timeline-note-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
   },
   {
     "name": "--avatar-background",
@@ -1827,6 +1987,91 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--scroll-area-thumb-radius",
     "value": "var(--radius-pill)",
     "description": "Hairline inset that keeps the thumb off the rail edge — a service running a thicker bar * usually wants a proportionally larger gutter here."
+  },
+  {
+    "name": "--timeline-grid-hour-height",
+    "value": "2.5rem",
+    "description": "TIMELINE GRID — the time-axis half of the Timeline family (#354 item 7). Every measure the * hand-rolled week grids in docs/showcase baked as a literal is a knob here: the height of one * hour is what a service tunes when a 24-hour axis has to fit one screen, and the column floor * is what decides when the grid scrolls instead of collapsing into slivers. * --timeline-grid-hour-height is a RAW rem on the unenforced height axis: it is a rhythm the * consumer picks per surface (a 6-hour shift board wants a taller hour than a 24-hour one), * not a step of the spacing scale."
+  },
+  {
+    "name": "--timeline-grid-axis-width",
+    "value": "3.25rem",
+    "description": "TIMELINE GRID — the time-axis half of the Timeline family (#354 item 7). Every measure the * hand-rolled week grids in docs/showcase baked as a literal is a knob here: the height of one * hour is what a service tunes when a 24-hour axis has to fit one screen, and the column floor * is what decides when the grid scrolls instead of collapsing into slivers. * --timeline-grid-hour-height is a RAW rem on the unenforced height axis: it is a rhythm the * consumer picks per surface (a 6-hour shift board wants a taller hour than a 24-hour one), * not a step of the spacing scale."
+  },
+  {
+    "name": "--timeline-grid-column-min-width",
+    "value": "6rem",
+    "description": "TIMELINE GRID — the time-axis half of the Timeline family (#354 item 7). Every measure the * hand-rolled week grids in docs/showcase baked as a literal is a knob here: the height of one * hour is what a service tunes when a 24-hour axis has to fit one screen, and the column floor * is what decides when the grid scrolls instead of collapsing into slivers. * --timeline-grid-hour-height is a RAW rem on the unenforced height axis: it is a rhythm the * consumer picks per surface (a 6-hour shift board wants a taller hour than a 24-hour one), * not a step of the spacing scale."
+  },
+  {
+    "name": "--timeline-grid-event-min-height-minutes",
+    "value": "36",
+    "description": "Sàn hiển thị của một khối sự kiện, tính bằng PHÚT chứ không bằng pixel. Đây là NGUỒN DUY NHẤT: CSS suy chiều cao tối thiểu từ nó, và thuật toán xếp làn cũng dùng đúng con số này để biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng."
+  },
+  {
+    "name": "--timeline-grid-axis-font-size",
+    "value": "var(--font-size-2xs)",
+    "description": "Sàn hiển thị của một khối sự kiện, tính bằng PHÚT chứ không bằng pixel. Đây là NGUỒN DUY NHẤT: CSS suy chiều cao tối thiểu từ nó, và thuật toán xếp làn cũng dùng đúng con số này để biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng."
+  },
+  {
+    "name": "--timeline-grid-head-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Sàn hiển thị của một khối sự kiện, tính bằng PHÚT chứ không bằng pixel. Đây là NGUỒN DUY NHẤT: CSS suy chiều cao tối thiểu từ nó, và thuật toán xếp làn cũng dùng đúng con số này để biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng."
+  },
+  {
+    "name": "--timeline-grid-event-font-size",
+    "value": "var(--font-size-2xs)",
+    "description": "Sàn hiển thị của một khối sự kiện, tính bằng PHÚT chứ không bằng pixel. Đây là NGUỒN DUY NHẤT: CSS suy chiều cao tối thiểu từ nó, và thuật toán xếp làn cũng dùng đúng con số này để biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng."
+  },
+  {
+    "name": "--timeline-grid-event-gap",
+    "value": "var(--space-1)",
+    "description": "Sàn hiển thị của một khối sự kiện, tính bằng PHÚT chứ không bằng pixel. Đây là NGUỒN DUY NHẤT: CSS suy chiều cao tối thiểu từ nó, và thuật toán xếp làn cũng dùng đúng con số này để biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng."
+  },
+  {
+    "name": "--timeline-grid-event-space-inset",
+    "value": "var(--space-1)",
+    "description": "Sàn hiển thị của một khối sự kiện, tính bằng PHÚT chứ không bằng pixel. Đây là NGUỒN DUY NHẤT: CSS suy chiều cao tối thiểu từ nó, và thuật toán xếp làn cũng dùng đúng con số này để biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng."
+  },
+  {
+    "name": "--timeline-grid-event-radius",
+    "value": "var(--radius-sm)",
+    "description": "Sàn hiển thị của một khối sự kiện, tính bằng PHÚT chứ không bằng pixel. Đây là NGUỒN DUY NHẤT: CSS suy chiều cao tối thiểu từ nó, và thuật toán xếp làn cũng dùng đúng con số này để biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng."
+  },
+  {
+    "name": "--timeline-grid-event-border-width",
+    "value": "var(--stroke-md)",
+    "description": "Sàn hiển thị của một khối sự kiện, tính bằng PHÚT chứ không bằng pixel. Đây là NGUỒN DUY NHẤT: CSS suy chiều cao tối thiểu từ nó, và thuật toán xếp làn cũng dùng đúng con số này để biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng."
+  },
+  {
+    "name": "--timeline-grid-now-width",
+    "value": "var(--stroke-sm)",
+    "description": "Sàn hiển thị của một khối sự kiện, tính bằng PHÚT chứ không bằng pixel. Đây là NGUỒN DUY NHẤT: CSS suy chiều cao tối thiểu từ nó, và thuật toán xếp làn cũng dùng đúng con số này để biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng."
+  },
+  {
+    "name": "--timeline-grid-line-color",
+    "value": "initial",
+    "description": "Role-mirror knobs (docs/TOKENS.md): `initial` so the defaults re-resolve at the CALL SITE and * a scoped [data-tenant]/.dark override of the role still reaches them. * Defaults = hsl(var(--border)) hour rules · hsl(var(--primary)) block accent · * hsl(var(--destructive)) now marker · hsl(var(--primary)) current-column wash."
+  },
+  {
+    "name": "--timeline-grid-event-color",
+    "value": "initial",
+    "description": "Role-mirror knobs (docs/TOKENS.md): `initial` so the defaults re-resolve at the CALL SITE and * a scoped [data-tenant]/.dark override of the role still reaches them. * Defaults = hsl(var(--border)) hour rules · hsl(var(--primary)) block accent · * hsl(var(--destructive)) now marker · hsl(var(--primary)) current-column wash."
+  },
+  {
+    "name": "--timeline-grid-event-muted-color",
+    "value": "hsl(var(--foreground))",
+    "description": "Chữ phụ trong khối sự kiện nằm trên nền ĐÃ TÔ theo màu của bên tiêu thụ, nên --muted-foreground vốn hiệu chỉnh cho nền trang không còn đủ tương phản: đo được 4,24 trên nền tô 12%, dưới ngưỡng 4,5 mà cỡ chữ này đòi. Mặc định dùng chính màu chữ chính, thứ bậc do độ đậm của tiêu đề đảm nhiệm; một service biết bảng màu của mình có thể dịu lại."
+  },
+  {
+    "name": "--timeline-grid-now-color",
+    "value": "initial",
+    "description": "Chữ phụ trong khối sự kiện nằm trên nền ĐÃ TÔ theo màu của bên tiêu thụ, nên --muted-foreground vốn hiệu chỉnh cho nền trang không còn đủ tương phản: đo được 4,24 trên nền tô 12%, dưới ngưỡng 4,5 mà cỡ chữ này đòi. Mặc định dùng chính màu chữ chính, thứ bậc do độ đậm của tiêu đề đảm nhiệm; một service biết bảng màu của mình có thể dịu lại."
+  },
+  {
+    "name": "--timeline-grid-current-tint",
+    "value": "initial",
+    "description": "Chữ phụ trong khối sự kiện nằm trên nền ĐÃ TÔ theo màu của bên tiêu thụ, nên --muted-foreground vốn hiệu chỉnh cho nền trang không còn đủ tương phản: đo được 4,24 trên nền tô 12%, dưới ngưỡng 4,5 mà cỡ chữ này đòi. Mặc định dùng chính màu chữ chính, thứ bậc do độ đậm của tiêu đề đảm nhiệm; một service biết bảng màu của mình có thể dịu lại."
   },
   {
     "name": "--permission-matrix-label-width",
@@ -2949,6 +3194,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Identity-fill INK — the ink `mark=\"glyph\"` sets its (caller-supplied) TEXT in when it sits on * the --brand identity fill. This is deliberately NOT --brand-foreground. * * --brand-foreground is the identity artwork's KNOCKOUT colour, not an ink: it tracks * --background in both themes (light 60 33% 99% = --background; dark 48 9% 9% = --background) * because `<Logo mark=\"godx\">` punches its inner bar as an evenodd HOLE and the email mark has to * paint that hole as a solid fill to match. Negative space only has to clear WCAG 2.2 SC 1.4.11 * (3:1, non-text) — and at 3.67:1 on the emerald it does. * * The boxed glyph is a different thing: it renders real TEXT, so SC 1.4.3 applies at 4.5:1 (14px * bold is NOT \"large text\" — that needs 18.66px bold / 24px), and the knockout white measured * 3.67:1 → a genuine AA failure. This ink is 48 9% 9% (#191815), the same near-black spine the * DARK theme already inked the glyph with, so it is theme-INVARIANT: dark renders byte-identically * (6.89:1, unchanged) and light rises 3.67 → 4.74:1. A service that re-themes --brand to a dark * fill overrides --logo-success-foreground (the public knob) to re-invert the ink. * * NOT a role-mirror knob: its default is a real value, not a role token, so there is no role to * freeze at :root and the `initial` + call-site rule (docs/TOKENS.md) does not apply to it."
   },
   {
+    "name": "--logo-glyph-cap-baseline-optical-offset",
+    "value": "-0.01em",
+    "description": "── Optical centring of the boxed GLYPH (`<Logo glyph=\"…\" />`, gh#370) ───────────────────── * A vertical nudge of the glyph's INK inside the mark box, in `em` so one value holds at every * tier. Applied with `translate` (styles/logo-layout.css): the box, the fill and the layout are * untouched, only the letterform moves. * * WHY THERE ARE FOUR. `place-items: center` centres a LINE BOX, and a line box is not a * letterform. Every CSS rule available is ONE constant shift that cannot see which character it * is moving, and the glyph classes do not share an optical centre: measured over Noto Sans JP, * M PLUS 2, Hiragino Sans and the system stack × xs/sm/md/lg, their ink centres lie 0.21em apart. * So the COMPONENT classifies the glyph string it was handed — the only layer that can — and * emits `data-ink`; these are the per-band constants it selects between. * * The band is the (top edge, bottom edge) of the UNION of the string's ink, so `\"gX\"` is * cap→descender, not `\"g\"`'s x-height→descender. Every CJK and kana form counts as a cap-height * top: the em box overshoots the cap band above the baseline and below it by about the same * amount, so it centres where a capital does (measured -0.001em against -0.008em). * * MEASURED — worst |ink offset| from the box centre over 4 faces × 4 tiers × the sample listed: * cap-baseline -0.01em 1.38px G GX TH A 8 b kt J 神 あ ン ゴ 神A Aあ * cap-descender -0.09em 1.25px gX Gy Bp hy 神g gあ 東y * x-baseline -0.11em 0.88px x o xo ae s * x-descender -0.21em 0.94px g y p q go * Worst case 1.38px, against 2.25px for the best glyph-blind rule (`text-box: trim-both ex * alphabetic`) and 3.94px untreated, on that same sample. The residual is within-band variation * — kana do not all fill the em box (ゴ sits 0.04em above 神) — plus the half-pixel the browser * snaps a line box by; no classifier can remove either."
+  },
+  {
+    "name": "--logo-glyph-cap-descender-optical-offset",
+    "value": "-0.09em",
+    "description": "── Optical centring of the boxed GLYPH (`<Logo glyph=\"…\" />`, gh#370) ───────────────────── * A vertical nudge of the glyph's INK inside the mark box, in `em` so one value holds at every * tier. Applied with `translate` (styles/logo-layout.css): the box, the fill and the layout are * untouched, only the letterform moves. * * WHY THERE ARE FOUR. `place-items: center` centres a LINE BOX, and a line box is not a * letterform. Every CSS rule available is ONE constant shift that cannot see which character it * is moving, and the glyph classes do not share an optical centre: measured over Noto Sans JP, * M PLUS 2, Hiragino Sans and the system stack × xs/sm/md/lg, their ink centres lie 0.21em apart. * So the COMPONENT classifies the glyph string it was handed — the only layer that can — and * emits `data-ink`; these are the per-band constants it selects between. * * The band is the (top edge, bottom edge) of the UNION of the string's ink, so `\"gX\"` is * cap→descender, not `\"g\"`'s x-height→descender. Every CJK and kana form counts as a cap-height * top: the em box overshoots the cap band above the baseline and below it by about the same * amount, so it centres where a capital does (measured -0.001em against -0.008em). * * MEASURED — worst |ink offset| from the box centre over 4 faces × 4 tiers × the sample listed: * cap-baseline -0.01em 1.38px G GX TH A 8 b kt J 神 あ ン ゴ 神A Aあ * cap-descender -0.09em 1.25px gX Gy Bp hy 神g gあ 東y * x-baseline -0.11em 0.88px x o xo ae s * x-descender -0.21em 0.94px g y p q go * Worst case 1.38px, against 2.25px for the best glyph-blind rule (`text-box: trim-both ex * alphabetic`) and 3.94px untreated, on that same sample. The residual is within-band variation * — kana do not all fill the em box (ゴ sits 0.04em above 神) — plus the half-pixel the browser * snaps a line box by; no classifier can remove either."
+  },
+  {
+    "name": "--logo-glyph-x-baseline-optical-offset",
+    "value": "-0.11em",
+    "description": "── Optical centring of the boxed GLYPH (`<Logo glyph=\"…\" />`, gh#370) ───────────────────── * A vertical nudge of the glyph's INK inside the mark box, in `em` so one value holds at every * tier. Applied with `translate` (styles/logo-layout.css): the box, the fill and the layout are * untouched, only the letterform moves. * * WHY THERE ARE FOUR. `place-items: center` centres a LINE BOX, and a line box is not a * letterform. Every CSS rule available is ONE constant shift that cannot see which character it * is moving, and the glyph classes do not share an optical centre: measured over Noto Sans JP, * M PLUS 2, Hiragino Sans and the system stack × xs/sm/md/lg, their ink centres lie 0.21em apart. * So the COMPONENT classifies the glyph string it was handed — the only layer that can — and * emits `data-ink`; these are the per-band constants it selects between. * * The band is the (top edge, bottom edge) of the UNION of the string's ink, so `\"gX\"` is * cap→descender, not `\"g\"`'s x-height→descender. Every CJK and kana form counts as a cap-height * top: the em box overshoots the cap band above the baseline and below it by about the same * amount, so it centres where a capital does (measured -0.001em against -0.008em). * * MEASURED — worst |ink offset| from the box centre over 4 faces × 4 tiers × the sample listed: * cap-baseline -0.01em 1.38px G GX TH A 8 b kt J 神 あ ン ゴ 神A Aあ * cap-descender -0.09em 1.25px gX Gy Bp hy 神g gあ 東y * x-baseline -0.11em 0.88px x o xo ae s * x-descender -0.21em 0.94px g y p q go * Worst case 1.38px, against 2.25px for the best glyph-blind rule (`text-box: trim-both ex * alphabetic`) and 3.94px untreated, on that same sample. The residual is within-band variation * — kana do not all fill the em box (ゴ sits 0.04em above 神) — plus the half-pixel the browser * snaps a line box by; no classifier can remove either."
+  },
+  {
+    "name": "--logo-glyph-x-descender-optical-offset",
+    "value": "-0.21em",
+    "description": "── Optical centring of the boxed GLYPH (`<Logo glyph=\"…\" />`, gh#370) ───────────────────── * A vertical nudge of the glyph's INK inside the mark box, in `em` so one value holds at every * tier. Applied with `translate` (styles/logo-layout.css): the box, the fill and the layout are * untouched, only the letterform moves. * * WHY THERE ARE FOUR. `place-items: center` centres a LINE BOX, and a line box is not a * letterform. Every CSS rule available is ONE constant shift that cannot see which character it * is moving, and the glyph classes do not share an optical centre: measured over Noto Sans JP, * M PLUS 2, Hiragino Sans and the system stack × xs/sm/md/lg, their ink centres lie 0.21em apart. * So the COMPONENT classifies the glyph string it was handed — the only layer that can — and * emits `data-ink`; these are the per-band constants it selects between. * * The band is the (top edge, bottom edge) of the UNION of the string's ink, so `\"gX\"` is * cap→descender, not `\"g\"`'s x-height→descender. Every CJK and kana form counts as a cap-height * top: the em box overshoots the cap band above the baseline and below it by about the same * amount, so it centres where a capital does (measured -0.001em against -0.008em). * * MEASURED — worst |ink offset| from the box centre over 4 faces × 4 tiers × the sample listed: * cap-baseline -0.01em 1.38px G GX TH A 8 b kt J 神 あ ン ゴ 神A Aあ * cap-descender -0.09em 1.25px gX Gy Bp hy 神g gあ 東y * x-baseline -0.11em 0.88px x o xo ae s * x-descender -0.21em 0.94px g y p q go * Worst case 1.38px, against 2.25px for the best glyph-blind rule (`text-box: trim-both ex * alphabetic`) and 3.94px untreated, on that same sample. The residual is within-band variation * — kana do not all fill the em box (ゴ sits 0.04em above 神) — plus the half-pixel the browser * snaps a line box by; no classifier can remove either."
+  },
+  {
+    "name": "--logo-glyph-optical-offset",
+    "value": "initial",
+    "description": "The escape hatch, for a mark none of the four bands fits — a face with unusual metrics, or a * glyph the classifier cannot see (an inline `<svg>`, which is left unclassified on purpose). * Set once and it PINS every band to that value. * * Declared `initial` (guaranteed-invalid) so it is inert by default and the per-band default at * the CALL SITE wins — the same pattern as --logo-godx-size (docs/TOKENS.md). * Documented default: --logo-glyph-optical-offset = the --logo-glyph-*-optical-offset for the * band the glyph was classified into, or 0 when it was not classified."
+  },
+  {
     "name": "--logo-godx-size-xs",
     "value": "1.5rem",
     "description": "── Identity-mark box (`<Logo mark=\"godx\" />`) ────────────────────────────────────────────── * The `size` prop drives the identity mark exactly like it drives the boxed glyph — a public * prop that renders identically at every tier is a silent no-op, and the godx LOCKUP already * scaled its wordmark per tier, so a fixed mark broke the mark↔wordmark proportion at * `size=\"lg\"` (gh#163 follow-up). The godx artwork is a horizontal capsule inside a square * viewBox, so it carries less optical weight than the fully-filled glyph box: each tier sits * +0.25rem above its --logo-size-* sibling. `md` is 2rem — the historical fixed value — so * every existing default-size identity surface renders byte-identically. * * --logo-godx-size is the PIN: declared `initial` (guaranteed-invalid) here with the per-tier * default at the CALL SITE (logo-layout.css), so it is inert by default and a service that * sets it once freezes the mark at that box on EVERY tier — the same call-site pattern the * role-mirror colour knobs use (docs/TOKENS.md). Retune a single tier via --logo-godx-size-*. * Documented default: --logo-godx-size = unset (tiers apply)."
@@ -3172,6 +3442,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--tabs-list-line-space-inset",
     "value": "0px",
     "description": "Inset of the `line` strip. The default/pill strip keeps its own padding box; the line strip is * a flat underlined rail, so its default is the quietest value — none (rule #44). Raise it to * give the rail breathing room above its hairline."
+  },
+  {
+    "name": "--tabs-list-focus-ring-space-inset",
+    "value": "initial",
+    "description": "BLOCK HEADROOM FOR THE FOCUS RING (gh#376). The horizontal strip is a scroll container * (`overflow-x: auto` + `overflow-y: hidden`), and a block-axis clip shaves whatever a trigger * paints outside its own box — measured in Chromium, the `line` strip gives its triggers 0px of * block headroom, so the entire focus ring was cut off top and bottom. The headroom has to come * from LAYOUT, not from relaxing the clip: `overflow-y: visible` beside `overflow-x: auto` * computes back to `auto` per spec (a second scroll container, not a ring), and Chromium honours * `overflow-clip-margin` only when BOTH axes are `clip`, so a single-axis clip silently drops it. * The strip therefore pads its block axis by the ring's outer reach and pulls the same amount * back with a negative block margin, so the ring paints INSIDE the scrollport while the strip * occupies exactly the space it did before. * * `initial` (the role-mirror rule in docs/TOKENS.md, not a :root binding) because the default is * derived from `--focus-ring-*`, which components and tenants DO re-scope; binding it at :root * would freeze the headroom while the ring it is sized from moved. Documented default = * `calc(var(--focus-ring-width) + var(--focus-ring-glow-width))` — the ring's outer reach, read * at the call site so the two can never disagree."
   },
   {
     "name": "--tabs-trigger-line-radius",
@@ -3595,8 +3870,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sidebar-user-focus-ring-alpha",
-    "value": "0.45",
-    "description": "Softened focus ring on the tinted shell grounds: at full alpha the ring * reads as a SELECTED item rather than a focused one (styles/focus-ring.css)."
+    "value": "1",
+    "description": "Focus-ring alpha on the tinted shell grounds. It was 0.45, to stop the ring reading as a * SELECTED item rather than a focused one — a real concern, but 0.45 composites to ≈1.90:1 * against the page, so it answered it by making the indicator non-compliant with WCAG 2.2 * SC 2.4.13 (AAA), which this library targets. The opaque stop is now opaque and the * quieting comes from the halo outside it (`--focus-ring-glow-*`), which carries no * criterion. \"Focused\" is kept distinct from \"selected\" by the halo's shape, not by * weakening the mark (styles/focus-ring.css)."
   },
   {
     "name": "--topbar-chip-icon-size",
@@ -3620,53 +3895,53 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--topbar-icon-focus-ring-alpha",
-    "value": "0.45",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "value": "1",
+    "description": "Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13)."
   },
   {
     "name": "--sidebar-user-role-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "description": "Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13)."
   },
   {
     "name": "--org-switcher-meta-foreground",
     "value": "var(--muted-foreground)",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "description": "Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13)."
   },
   {
     "name": "--sidebar-nav-sub-font-size",
     "value": "var(--font-size-xs)",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "description": "Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13)."
   },
   {
     "name": "--sidebar-flyout-title-font-size",
     "value": "var(--font-size-xs)",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "description": "Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13)."
   },
   {
     "name": "--topbar-chip-icon-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "description": "Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13)."
   },
   {
     "name": "--kbd-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "description": "Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13)."
   },
   {
     "name": "--sidebar-logo-mark-font-size",
     "value": "var(--font-size-xs)",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "description": "Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13)."
   },
   {
     "name": "--sidebar-avatar-font-size",
     "value": "var(--font-size-2xs)",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "description": "Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13)."
   },
   {
     "name": "--sidebar-user-name-font-size",
     "value": "var(--font-size-xs)",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "description": "Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13)."
   },
   {
     "name": "--sidebar-gradient",
@@ -3942,6 +4217,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--auth-shell-footer-padding",
     "value": "var(--space-3) var(--space-6) var(--space-4)",
     "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets * and heading size without forking."
+  },
+  {
+    "name": "--auth-shell-bar-gap",
+    "value": "var(--space-inline-sm)",
+    "description": "Gap between the items of the brand bar: brand to a wrapped `actions` row, and between the * page-level controls inside that row (locale · theme · help)."
+  },
+  {
+    "name": "--auth-shell-wide-card-max-width",
+    "value": "64rem",
+    "description": "Content-slot measure for `measure=\"wide\"` — the SPLIT login (brand panel beside the auth card). * Same width as the widest CenteredShell tier, so a product's login and its signed-in pages read * at one page measure. Only `measure=\"wide\"` reads it; the default 24rem card is untouched."
   },
   {
     "name": "--auth-shell-canonical-control-height",
@@ -4379,6 +4664,66 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Rule #24 companion (gh#291): on coarse pointers --control-height grows to 2.75rem * (44px tap floor), and the shell bar sits flush with the viewport top — a 3rem bar * leaves the control's 3px focus ring painting ABOVE y=0, off-screen, which no * overflow setting can recover. 3.5rem gives 6px of breathing per side."
   },
   {
+    "name": "--mobile-shell-block-size",
+    "value": "100dvh",
+    "description": "MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region, * a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which * is why they belong to the shell and not to the page: * * 1. The shell is the only scroll container. The root is exactly one viewport tall * (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands * never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a * real phone, where the URL bar collapses under the page. * 2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the * home indicator never covers the primary verb. * * The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets * (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes * `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding * it to the inline START would be wrong under `dir=\"rtl\"`. A symmetric inset is correct in both * writing directions and costs at most a few px on the non-notch side in landscape. * * A service retunes the page gutter, the three band heights and the block padding from its theme; * nothing here is reachable only through a consumer selector."
+  },
+  {
+    "name": "--mobile-shell-safe-inset-block-start",
+    "value": "env(safe-area-inset-top)",
+    "description": "MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region, * a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which * is why they belong to the shell and not to the page: * * 1. The shell is the only scroll container. The root is exactly one viewport tall * (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands * never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a * real phone, where the URL bar collapses under the page. * 2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the * home indicator never covers the primary verb. * * The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets * (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes * `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding * it to the inline START would be wrong under `dir=\"rtl\"`. A symmetric inset is correct in both * writing directions and costs at most a few px on the non-notch side in landscape. * * A service retunes the page gutter, the three band heights and the block padding from its theme; * nothing here is reachable only through a consumer selector."
+  },
+  {
+    "name": "--mobile-shell-safe-inset-block-end",
+    "value": "env(safe-area-inset-bottom)",
+    "description": "MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region, * a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which * is why they belong to the shell and not to the page: * * 1. The shell is the only scroll container. The root is exactly one viewport tall * (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands * never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a * real phone, where the URL bar collapses under the page. * 2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the * home indicator never covers the primary verb. * * The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets * (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes * `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding * it to the inline START would be wrong under `dir=\"rtl\"`. A symmetric inset is correct in both * writing directions and costs at most a few px on the non-notch side in landscape. * * A service retunes the page gutter, the three band heights and the block padding from its theme; * nothing here is reachable only through a consumer selector."
+  },
+  {
+    "name": "--mobile-shell-safe-inset-inline",
+    "value": "max(env(safe-area-inset-left), env(safe-area-inset-right))",
+    "description": "MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region, * a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which * is why they belong to the shell and not to the page: * * 1. The shell is the only scroll container. The root is exactly one viewport tall * (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands * never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a * real phone, where the URL bar collapses under the page. * 2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the * home indicator never covers the primary verb. * * The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets * (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes * `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding * it to the inline START would be wrong under `dir=\"rtl\"`. A symmetric inset is correct in both * writing directions and costs at most a few px on the non-notch side in landscape. * * A service retunes the page gutter, the three band heights and the block padding from its theme; * nothing here is reachable only through a consumer selector."
+  },
+  {
+    "name": "--mobile-shell-inset-inline",
+    "value": "var(--space-4)",
+    "description": "Page gutter shared by every band AND by the scroll region, so the app-bar title, the list rows * and the sticky action bar sit on ONE content edge — the axis gh#330 had to repair for * CenteredShell after the bar and the column drifted 8px apart."
+  },
+  {
+    "name": "--mobile-shell-control-height",
+    "value": "var(--control-height-comfortable)",
+    "description": "Touch tier for the WHOLE shell subtree, the same technique `.ui-auth-shell` uses. Rule #24's * 44px floor is already reached on a coarse pointer through --control-height, but a handheld app * is touch-first BY DEFINITION — it must not render 32px targets merely because it is being * previewed with a mouse, or because a service ships it in an Electron/desktop wrapper."
+  },
+  {
+    "name": "--mobile-shell-region-gap",
+    "value": "var(--space-2)",
+    "description": "Touch tier for the WHOLE shell subtree, the same technique `.ui-auth-shell` uses. Rule #24's * 44px floor is already reached on a coarse pointer through --control-height, but a handheld app * is touch-first BY DEFINITION — it must not render 32px targets merely because it is being * previewed with a mouse, or because a service ships it in an Electron/desktop wrapper."
+  },
+  {
+    "name": "--mobile-shell-status-bar-height",
+    "value": "var(--band-height-lg)",
+    "description": "Touch tier for the WHOLE shell subtree, the same technique `.ui-auth-shell` uses. Rule #24's * 44px floor is already reached on a coarse pointer through --control-height, but a handheld app * is touch-first BY DEFINITION — it must not render 32px targets merely because it is being * previewed with a mouse, or because a service ships it in an Electron/desktop wrapper."
+  },
+  {
+    "name": "--mobile-shell-header-bar-height",
+    "value": "var(--band-height-3xl)",
+    "description": "Touch tier for the WHOLE shell subtree, the same technique `.ui-auth-shell` uses. Rule #24's * 44px floor is already reached on a coarse pointer through --control-height, but a handheld app * is touch-first BY DEFINITION — it must not render 32px targets merely because it is being * previewed with a mouse, or because a service ships it in an Electron/desktop wrapper."
+  },
+  {
+    "name": "--mobile-shell-tab-bar-height",
+    "value": "calc(var(--band-height-3xl) + var(--space-2))",
+    "description": "4rem. A tab bar is an icon stacked over a label, so it is one step TALLER than the app bar; * there is no 64px band step, so it derives from the 3.5rem one (tier 2a)."
+  },
+  {
+    "name": "--mobile-shell-main-padding-block",
+    "value": "var(--space-4)",
+    "description": "4rem. A tab bar is an icon stacked over a label, so it is one step TALLER than the app bar; * there is no 64px band step, so it derives from the 3.5rem one (tier 2a)."
+  },
+  {
+    "name": "--mobile-shell-actions-padding-block",
+    "value": "var(--space-3)",
+    "description": "4rem. A tab bar is an icon stacked over a label, so it is one step TALLER than the app bar; * there is no 64px band step, so it derives from the 3.5rem one (tier 2a)."
+  },
+  {
     "name": "--sidebar-nav-item-foreground",
     "value": "initial",
     "description": "Resting nav row + label (also the resting sub-row). Default = hsl(var(--muted-foreground))."
@@ -4442,6 +4787,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-cell-space-x",
     "value": "var(--control-padding-x)",
     "description": "Table component tokens: row height, cell padding."
+  },
+  {
+    "name": "--table-cell-indent-space-step",
+    "value": "var(--space-4)",
+    "description": "Hierarchy indent step for `<TableCell indent={depth}>` (gh#354). The cell's inset is * `--table-cell-space-x + depth × this step`, so level 0 sits exactly on the column's own text * axis and every further level is one step in. Owned here rather than as a magic expression in * JSX (the trap `--tree-select-depth-space-step` was pulled out of), so a denser service dials * the step down — or to `0` for a flat table — without touching a call site."
   },
   {
     "name": "--table-border-color",

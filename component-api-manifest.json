@@ -8046,6 +8046,51 @@
         }
       ]
     },
+    "NavList": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "activeId",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "SidebarItemProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "linkComponent",
+          "origin": "owned",
+          "required": false,
+          "type": "SidebarLinkComponentProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "onSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "((id: string) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
     "NumberInput": {
       "group": "data-entry",
       "props": [
@@ -10563,7 +10608,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlWidthProp | undefined",
-          "values": ["auto", "full"],
+          "values": ["auto", "full", "bounded"],
           "declaredIn": ["src/components/data-entry/select.tsx"]
         }
       ]

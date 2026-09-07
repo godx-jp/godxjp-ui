@@ -47,6 +47,47 @@
    * freeze at :root and the `initial` + call-site rule (docs/TOKENS.md) does not apply to it. */
   --logo-identity-foreground: 48 9% 9%;
 
+  /* ── Optical centring of the boxed GLYPH (`<Logo glyph="…" />`, gh#370) ─────────────────────
+   * A vertical nudge of the glyph's INK inside the mark box, in `em` so one value holds at every
+   * tier. Applied with `translate` (styles/logo-layout.css): the box, the fill and the layout are
+   * untouched, only the letterform moves.
+   *
+   * WHY THERE ARE FOUR. `place-items: center` centres a LINE BOX, and a line box is not a
+   * letterform. Every CSS rule available is ONE constant shift that cannot see which character it
+   * is moving, and the glyph classes do not share an optical centre: measured over Noto Sans JP,
+   * M PLUS 2, Hiragino Sans and the system stack × xs/sm/md/lg, their ink centres lie 0.21em apart.
+   * So the COMPONENT classifies the glyph string it was handed — the only layer that can — and
+   * emits `data-ink`; these are the per-band constants it selects between.
+   *
+   * The band is the (top edge, bottom edge) of the UNION of the string's ink, so `"gX"` is
+   * cap→descender, not `"g"`'s x-height→descender. Every CJK and kana form counts as a cap-height
+   * top: the em box overshoots the cap band above the baseline and below it by about the same
+   * amount, so it centres where a capital does (measured -0.001em against -0.008em).
+   *
+   * MEASURED — worst |ink offset| from the box centre over 4 faces × 4 tiers × the sample listed:
+   *   cap-baseline    -0.01em  1.38px  G GX TH A 8 b kt J 神 あ ン ゴ 神A Aあ
+   *   cap-descender   -0.09em  1.25px  gX Gy Bp hy 神g gあ 東y
+   *   x-baseline      -0.11em  0.88px  x o xo ae s
+   *   x-descender     -0.21em  0.94px  g y p q go
+   * Worst case 1.38px, against 2.25px for the best glyph-blind rule (`text-box: trim-both ex
+   * alphabetic`) and 3.94px untreated, on that same sample. The residual is within-band variation
+   * — kana do not all fill the em box (ゴ sits 0.04em above 神) — plus the half-pixel the browser
+   * snaps a line box by; no classifier can remove either. */
+  --logo-glyph-cap-baseline-optical-offset: -0.01em;
+  --logo-glyph-cap-descender-optical-offset: -0.09em;
+  --logo-glyph-x-baseline-optical-offset: -0.11em;
+  --logo-glyph-x-descender-optical-offset: -0.21em;
+
+  /* The escape hatch, for a mark none of the four bands fits — a face with unusual metrics, or a
+   * glyph the classifier cannot see (an inline `<svg>`, which is left unclassified on purpose).
+   * Set once and it PINS every band to that value.
+   *
+   * Declared `initial` (guaranteed-invalid) so it is inert by default and the per-band default at
+   * the CALL SITE wins — the same pattern as --logo-godx-size (docs/TOKENS.md).
+   * Documented default: --logo-glyph-optical-offset = the --logo-glyph-*-optical-offset for the
+   * band the glyph was classified into, or 0 when it was not classified. */
+  --logo-glyph-optical-offset: initial;
+
   /* ── Identity-mark box (`<Logo mark="godx" />`) ──────────────────────────────────────────────
    * The `size` prop drives the identity mark exactly like it drives the boxed glyph — a public
    * prop that renders identically at every tier is a silent no-op, and the godx LOCKUP already

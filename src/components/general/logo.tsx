@@ -10,6 +10,11 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
   /**
    * The brand glyph — a short mark (a letter/initials, default `"g"`) or a custom node such as an
    * inline `<svg>`. Keep it to 1–2 glyphs; the box is square and centres its content.
+   *
+   * A STRING is classified by the ink band it occupies (`g` x-height→descender, `GX` cap→baseline,
+   * `神` the full em box) and optically centred for that band — a line box is not a letterform, and
+   * the classes' centres are 0.21em apart. Any other node is left alone. Retune a band, or pin one
+   * mark, with the `--logo-glyph-*-optical-offset` tokens.
    */
   glyph?: React.ReactNode;
   /**
@@ -42,8 +47,51 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
   label?: string;
 }
 
+/**
+ * The band the glyph's ink actually occupies, as the (top edge, bottom edge) of the UNION of every
+ * character in the string — `"GX"` is cap→baseline, `"gX"` is cap→descender.
+ */
+export type LogoGlyphInk = "cap-baseline" | "cap-descender" | "x-baseline" | "x-descender";
+
+/**
+ * Lowercase Latin whose ink stops at the x-height. The descenders `g p q y` belong here because the
+ * set describes the TOP edge and theirs is the x-height; `i` and `j` do not, because their dot
+ * reaches ascender height. Everything else — capitals, digits, the ascenders `b d f h k l t`, and
+ * every CJK / kana / full-width form — reaches cap height or above.
+ */
+const X_HEIGHT_TOP = /^[acegmnopqrsuvwxyz]+$/;
+/**
+ * Latin descenders. `J` and `Q` are deliberately absent: measured across all four bundled faces
+ * their ink stops at the baseline (`J` -0.017em against `G`'s -0.009em).
+ */
+const LATIN_DESCENDER = /[gjpqy]/;
+
+/**
+ * Classify a glyph for optical centring. Pure, no layout read, no measurement — the component is
+ * the only layer that can do this at all, because CSS cannot see which character is in the box.
+ * Returns `undefined` for a non-string glyph (an inline `<svg>`, any other node) and for an empty
+ * string: those are not classified and keep the neutral default rather than being guessed at.
+ */
+export function logoGlyphInk(glyph: React.ReactNode): LogoGlyphInk | undefined {
+  if (typeof glyph !== "string") return undefined;
+  const text = glyph.replace(/\s+/gu, "");
+  if (!text) return undefined;
+  const top = X_HEIGHT_TOP.test(text) ? "x" : "cap";
+  const bottom = LATIN_DESCENDER.test(text) ? "descender" : "baseline";
+  return `${top}-${bottom}`;
+}
+
 function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }) {
-  if (mark !== "godx") return <>{glyph}</>;
+  // The glyph gets its own element on purpose: `--logo-glyph-*-optical-offset` translates the INK,
+  // which on `.ui-logo` (the grid container) would drag the fill and the rounded box with it.
+  // `data-ink` is the half of the correction CSS cannot derive — see `.ui-logo-glyph` in
+  // logo-layout.css for why one glyph-blind rule cannot centre every class, and the measurements.
+  if (mark !== "godx")
+    return (
+      <span data-slot="logo-glyph" data-ink={logoGlyphInk(glyph)} className="ui-logo-glyph">
+        {glyph}
+      </span>
+    );
   return (
     <svg
       data-slot="logo-artwork"

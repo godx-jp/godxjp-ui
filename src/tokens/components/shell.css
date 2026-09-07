@@ -18,9 +18,14 @@
    * hsl(var(--destructive-foreground)) text, the canonical AA-checked pair. */
   --sidebar-badge-destructive-background: initial;
   --sidebar-badge-destructive-foreground: initial;
-  /* Softened focus ring on the tinted shell grounds: at full alpha the ring
-   * reads as a SELECTED item rather than a focused one (styles/focus-ring.css). */
-  --sidebar-user-focus-ring-alpha: 0.45;
+  /* Focus-ring alpha on the tinted shell grounds. It was 0.45, to stop the ring reading as a
+   * SELECTED item rather than a focused one — a real concern, but 0.45 composites to ≈1.90:1
+   * against the page, so it answered it by making the indicator non-compliant with WCAG 2.2
+   * SC 2.4.13 (AAA), which this library targets. The opaque stop is now opaque and the
+   * quieting comes from the halo outside it (`--focus-ring-glow-*`), which carries no
+   * criterion. "Focused" is kept distinct from "selected" by the halo's shape, not by
+   * weakening the mark (styles/focus-ring.css). */
+  --sidebar-user-focus-ring-alpha: 1;
   /* Topbar glyphs. Three separate sizes, all previously baked as literals in shell-layout.css.
    *
    * --topbar-chip-icon-size is off the SCALE but on the pixel GRID, and those are different
@@ -39,7 +44,8 @@
    * taught the wider vocabulary. */
   --topbar-caret-icon-size: var(--icon-size-xs);
 
-  --topbar-icon-focus-ring-alpha: 0.45;
+  /* Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13). */
+  --topbar-icon-focus-ring-alpha: 1;
 
   --sidebar-user-role-font-size: var(--font-size-2xs);
   --org-switcher-meta-foreground: var(--muted-foreground);

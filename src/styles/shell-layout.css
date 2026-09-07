@@ -554,8 +554,19 @@
     display: none;
   }
 
-  /* The drawer nav itself is a focus-trapped Sheet. */
-  .app-mobile-nav-trigger {
+  /* The drawer nav itself is a focus-trapped Sheet.
+   *
+   * SCOPED TO `.app-root` ON PURPOSE, and the same goes for the `display` rules
+   * inside the breakpoint below. The trigger is a `.ui-button`, and control.css
+   * — which declares `.ui-button { display: inline-flex }` — is imported AFTER
+   * this file into the SAME `@layer components`. A bare `.app-mobile-nav-trigger`
+   * ties it at (0,1,0) and therefore LOSES on source order, so `display: none`
+   * here never actually hid anything; the trigger used to be hidden by a
+   * `hidden max-[900px]:inline-flex` utility instead, which is what put the
+   * breakpoint in two places and opened the 1px gap at exactly 900px (#367).
+   * Scoping lifts these to (0,2,0) so the ONE breakpoint below truly owns
+   * visibility. Same trap the icon-size utility documents in app-shell.tsx. */
+  .app-root .app-mobile-nav-trigger {
     display: none;
     flex: 0 0 auto;
     margin-inline-end: var(--space-1);
@@ -628,7 +639,7 @@
       display: flex;
     }
 
-    .app-mobile-nav-trigger {
+    .app-root .app-mobile-nav-trigger {
       display: inline-flex;
     }
 
@@ -909,6 +920,17 @@
     gap: var(--sidebar-nav-gap);
   }
 
+  /* NavList (gh#374) — the same column rhythm as the rail's `.sb-nav`, because it holds the same
+   * `.sb-nav-item` rows. Nothing here reaches for a shell ancestor: the row rules are already
+   * self-contained, and the only shell-scoped behaviour is the COLLAPSED rail further down, which
+   * a page-level nav has no business inheriting. */
+  .ui-nav-list {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--sidebar-nav-gap);
+  }
+
   .sb-nav-item {
     display: flex;
     width: 100%;
@@ -932,11 +954,10 @@
   }
 
   /* Every nav row is a CONTROL, so it owes a visible keyboard indicator (WCAG 2.4.7) — and it has
-   * to be the design system's, not the UA's. */
-  .sb-nav-item:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
-  }
+   * to be the design system's, not the UA's. The ring itself now comes from the single source
+   * (styles/focus-ring.css, which lists `.sb-nav-item`): the copy that used to live here was a
+   * second formula that had already drifted — it dropped `--focus-ring-opacity` and never fed
+   * `--tw-ring-shadow`, so a service that softened the ring got every control but this one. */
 
   .sb-nav-item:hover {
     background: hsl(var(--accent));
@@ -1280,11 +1301,18 @@
   .ui-topbar-start {
     flex: 0 1 auto;
   }
+  /* Truncates a long brand/org label. `clip` + the ring margin, NOT `hidden`: this selector hits
+   * whatever the slot's last child happens to be, and when that is an interactive control — or a
+   * Flex wrapping one — `hidden` shaves the outset focus ring flush with the control's box, top and
+   * bottom, with no way to get the room back (`overflow-clip-margin` is ignored on `hidden`).
+   * `.ui-topbar-start` itself already made this choice two rules up; this one was the gap.
+   * `text-overflow: ellipsis` renders identically under `clip`, so truncation is unaffected. */
   .ui-topbar-start > :last-child {
     max-width: 100%;
     min-width: 0;
     flex: 0 1 auto;
-    overflow: hidden;
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
     line-height: var(--topbar-start-truncate-line-height);
     text-overflow: ellipsis;
     white-space: nowrap;

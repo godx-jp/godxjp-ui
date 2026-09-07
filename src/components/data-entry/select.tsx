@@ -111,6 +111,8 @@ export const SelectTrigger = React.forwardRef<
      * `full` (default) fills the field column — right inside a FormField. `auto` sizes to the
      * selected label — right in a PageContainer `extra` slot, a toolbar or a footer row, where a
      * full-width trigger swallows the row and starves its siblings (text truncated to "UA…").
+     * `bounded` holds one width from `--control-bounded-width`, for a trigger whose VALUE varies
+     * in length and must not move its neighbours when it changes (gh#375).
      */
     width?: ControlWidthProp;
     /**
@@ -181,7 +183,12 @@ export const SelectTrigger = React.forwardRef<
       data-width={width}
       className={cn(
         controlTriggerClass,
-        width === "auto" ? "w-auto" : "w-full",
+        // `bounded` deliberately emits NO width utility: its width is owned by the
+        // `[data-width="bounded"]` rule in control.css. A utility here would win the layer order
+        // and make that rule — and therefore the token — dead, the way `w-full` did to
+        // `.ui-app-setting-picker-icon` (gh#366, gh#371).
+        width === "auto" && "w-auto",
+        width === "full" && "w-full",
         "aria-invalid:border-destructive data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground whitespace-nowrap transition-[color,box-shadow] outline-none *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center",
         className,
       )}

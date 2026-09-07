@@ -685,6 +685,26 @@ export type SidebarItemProp = {
   children?: SidebarItemProp[];
 };
 
+/**
+ * A vertical route navigation that lives INSIDE a page, not in the shell (gh#374).
+ *
+ * Reuses `SidebarItemProp` and `SidebarLinkComponentProp` verbatim rather than minting a parallel
+ * vocabulary: the row is the same row, so a service that learnt the rail's item shape does not
+ * learn a second one, and a fix to the row reaches both.
+ */
+export type NavListProp = Omit<React.HTMLAttributes<HTMLElement>, "onSelect"> & {
+  /** Rows, in reading order. `icon` is required by `SidebarItemProp` — the label aligns to it. */
+  items: SidebarItemProp[];
+  /** `SidebarItemProp.id` of the current route; that row gets `aria-current="page"`. */
+  activeId?: string;
+  /** Accessible name for the `<nav>` landmark. Required: a page may hold more than one. */
+  label: string;
+  /** Router link component — same contract as `Sidebar.linkComponent`. */
+  linkComponent?: SidebarLinkComponentProp;
+  /** Reports the activated row's id, for consumers driving navigation themselves. */
+  onSelect?: (id: string) => void;
+};
+
 /** @see Sidebar */
 export type SidebarItemData = SidebarItemProp;
 
@@ -709,8 +729,15 @@ export type SidebarLinkProp = {
   "aria-label"?: string;
   /** `"menuitem"` inside the collapsed rail's portaled flyout menu; absent for ordinary rows. */
   role?: "menuitem";
-  /** Reports selection to `Sidebar.onSelect` after the router link runs its own handler. */
-  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+  /**
+   * Reports selection to `Sidebar.onSelect` after the router link runs its own handler.
+   *
+   * Typed on `Element`, NOT `HTMLElement`. Handler parameters are contravariant, so a link
+   * component that accepts the wider `MouseEvent<Element>` — Inertia's `<Link>`, react-router's,
+   * TanStack's — cannot receive a prop narrowed to `HTMLElement`, and the anchor-safe contract
+   * this type promises would only hold behind a cast at every call site.
+   */
+  onClick?: React.MouseEventHandler<Element>;
 };
 
 /**

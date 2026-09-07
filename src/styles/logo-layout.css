@@ -15,6 +15,67 @@
     user-select: none;
   }
 
+  /* OPTICAL CENTRING OF A TEXT GLYPH (gh#370).
+   *
+   * `place-items: center` above centres the LINE BOX, and a line box is not the letterform: with
+   * `line-height: 1` the default `g` lands 3.69px low in the 28px `md` box — 13% of it, measured
+   * by rasterising the PAINTED ink at 8x and scanning its alpha bounding box, never from font
+   * metrics (`actualBoundingBox*` and `fontBoundingBox*` disagree with the paint often enough to
+   * matter, and a canvas `fillText` silently substitutes a fallback face for a webfont).
+   *
+   * EVERY rule available here — a `text-box` trim, a `translate` — shifts the line box by ONE
+   * CONSTANT amount for a given face and size, and none of them can see which glyph is in it. That
+   * matters because the glyph classes do not share an optical centre: measured over Noto Sans JP,
+   * M PLUS 2, Hiragino Sans and the system stack × xs/sm/md/lg, their ink centres lie 0.21em apart
+   * — untrimmed, `g` sits 3.69px low at `md` while `G`, `GX`, `神` and `あ` are already within
+   * 0.94px. So no glyph-blind rule can centre them all; the floor for one is ~1.5px at `md`.
+   *
+   * That is a limit of CSS. It is NOT a limit of the component: `Logo` is handed `glyph`, so it can
+   * classify the string at render time — pure, no measurement, no layout read, SSR-safe — and emit
+   * `data-ink` with the band the ink actually occupies. CSS then applies the constant for THAT
+   * band. Every candidate below was measured on the same 31-string sample (capitals, digits,
+   * ascenders, x-height letters, descenders, kanji, kana, and the mixed lockups gX / 神g / Aあ)
+   * across 4 faces × 4 tiers = 496 cells:
+   *
+   *     per-band offsets, chosen by the component   1.38px   ← this
+   *     trim-both ex alphabetic                     2.25px   (best glyph-blind rule)
+   *     trim-both cap text                          2.94px   ← what gh#370 shipped first
+   *     nothing                                     3.94px
+   *
+   * gh#370 first shipped `cap text`, arguing that cap↔text is the UNION band so swapping the glyph
+   * does not move the mark. The band is a union; the conclusion does not follow. The trim moves the
+   * line box by a fixed amount whatever sits in it, so it bought `g` by pushing every cap and
+   * full-em mark the same distance the other way — for a library whose marks are usually a kanji or
+   * a capital, the wrong trade.
+   *
+   * `text-box` is gone rather than layered under this. It is a second mechanism correcting the same
+   * axis, which is how a later edit double-corrects; it is beaten here by 0.9px; and it is not
+   * universal — Chrome 151 and Safari have it, Firefox 153 does not (measured in all three engines,
+   * not assumed), so it made the brand mark sit differently per engine. `translate` is exact
+   * everywhere. Artwork marks (`mark="godx"`) and non-string glyphs are not classified at all and
+   * keep the neutral 0 — the library never guesses at a node it cannot read.
+   *
+   * The four constants, what they cover and what they leave, are in tokens/components/logo.css. */
+  .ui-logo-glyph {
+    translate: 0 var(--logo-glyph-optical-offset, 0em);
+  }
+
+  .ui-logo-glyph[data-ink="cap-baseline"] {
+    translate: 0 var(--logo-glyph-optical-offset, var(--logo-glyph-cap-baseline-optical-offset));
+  }
+
+  .ui-logo-glyph[data-ink="cap-descender"] {
+    translate: 0 var(--logo-glyph-optical-offset, var(--logo-glyph-cap-descender-optical-offset));
+  }
+
+  .ui-logo-glyph[data-ink="x-baseline"] {
+    translate: 0 var(--logo-glyph-optical-offset, var(--logo-glyph-x-baseline-optical-offset));
+  }
+
+  .ui-logo-glyph[data-ink="x-descender"] {
+    translate: 0 var(--logo-glyph-optical-offset, var(--logo-glyph-x-descender-optical-offset));
+  }
+
   .ui-logo[data-size="xs"] {
     width: var(--logo-size-xs);
     height: var(--logo-size-xs);

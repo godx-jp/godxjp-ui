@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 288,
-    dimensionCells: 4032,
+    exports: 289,
+    dimensionCells: 4046,
     covered: 66,
-    untested: 2211,
-    notApplicable: 1755,
+    untested: 2218,
+    notApplicable: 1762,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -269,6 +269,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"NavigationMenuList","group":"navigation","frame":"docs/navigation/navigation-menu.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"NavigationMenuTrigger","group":"navigation","frame":"docs/navigation/navigation-menu.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"NavigationMenuViewport","group":"navigation","frame":"docs/navigation/navigation-menu.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"NavList","group":"layout","frame":"docs/layout/nav-list.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"NumberInput","group":"data-entry","frame":"docs/data-entry/number-input.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","tones","variants"]},
   {"name":"OrgSwitcher","group":"layout","frame":"docs/layout/org-switcher.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"PageContainer","group":"layout","frame":"docs/layout/page-container.tsx","covered":["density","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones"]},

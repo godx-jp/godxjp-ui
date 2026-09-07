@@ -139,6 +139,31 @@
     font-size: var(--menu-item-font-size);
   }
 
+  /* The row's OWN leading glyph — the icon a consumer hands the item, not the sub-trigger chevron
+   * below. `--menu-icon-size` already existed and already meant this, but no rule ever reached the
+   * item's own child, so lucide's 24px default leaked straight through: a 24px glyph beside 14px
+   * text in a 32px row, 1.71× the type. Every other row shape in this library sizes its icon
+   * (`.sb-icon` reads --sidebar-nav-icon-size, Button reads --button-*-icon-size); the menu row was
+   * the gap.
+   *
+   * Direct children only, so a composed icon deeper in the row (an Avatar, a Badge's own glyph) is
+   * left alone. Deliberately NOT `!important` and deliberately a class rule: a consumer that passes
+   * a size utility is expressing an intent, and Tailwind's utilities layer out-ranking this is the
+   * behaviour we want here, not a bug. */
+  .ui-context-menu-item > svg,
+  .ui-context-menu-checkbox-item > svg,
+  .ui-context-menu-radio-item > svg,
+  .ui-menubar-item > svg,
+  .ui-menubar-checkbox-item > svg,
+  .ui-menubar-radio-item > svg,
+  .ui-dropdown-menu-item > svg,
+  .ui-dropdown-menu-checkbox-item > svg,
+  .ui-dropdown-menu-radio-item > svg {
+    width: var(--menu-icon-size);
+    height: var(--menu-icon-size);
+    flex: 0 0 auto;
+  }
+
   /* A row marked inset reserves the indicator column so its label lines up with checked siblings. */
   .ui-dropdown-menu-item[data-inset="true"],
   .ui-dropdown-menu-label[data-inset="true"],
@@ -219,9 +244,22 @@
     background: hsl(var(--border));
   }
 
+  /* `height: auto` RELEASES the definite `height` the shared row rule above hands every menu row —
+   * without it the `min-height` below is dead code, because a min- can never grow a box that
+   * already has a definite height. A row is one line by contract; a LABEL is not: the canonical
+   * user menu puts a name over an email in it. Measured before the release, with the two-line
+   * identity block Radix renders in DropdownMenuLabel: the label box stayed 32px while its child
+   * measured 95px, `scrollHeight` 64 against `clientHeight` 32, and `align-items: center` split the
+   * excess evenly — so the block's ink began 27.6px ABOVE `.ui-dropdown-menu-content`'s padding box.
+   * That container is `overflow-y: auto`, and a scroll container has no negative scrollTop: every
+   * pixel above its scroll origin is unreachable forever, and `scrollHeight` does not even count
+   * it (measured 154 === clientHeight 154 while content was being lost). The user sees the name
+   * line and the top of the email sheared off and the first item pushed under them.
+   * Same family as the clipped focus ring: an overflow that cannot give back what it takes. */
   .ui-context-menu-label,
   .ui-menubar-label,
   .ui-dropdown-menu-label {
+    height: auto;
     min-height: var(--menu-item-height);
     color: hsl(var(--muted-foreground));
     font-weight: var(--font-weight-medium);

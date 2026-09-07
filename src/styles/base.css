@@ -27,6 +27,15 @@
  * ───────────────────────────────────────────────────────────────────────── */
 @import "tailwindcss";
 
+/* Enter/exit and spinner utilities — `animate-in`, `fade-out-0`, `animate-spin`,
+ * `data-[state=open]:*`. These are NOT optional garnish: the shipped components emit them
+ * themselves (Button's Loader2, HoverCard/Popover/Sheet transitions, SearchSelect's spinner), so
+ * leaving them to the consumer means a forgotten import produces no error, no warning and no
+ * visible placeholder — just a spinner that never turns and overlays that pop. Imported here, in
+ * the Tailwind entry both supported entries pass through, so `@godxjp/ui/styles` and
+ * `@godxjp/ui/styles/core` are each self-contained (gh#372). */
+@import "tw-animate-css";
+
 /* ── THE LAYER CONTRACT (gh#412) ───────────────────────────────────────────
  * `@import "tailwindcss"` establishes `theme, base, components, utilities`. Everything this
  * package styles lives in `@layer components`, which is EARLIER than `utilities` — so a Tailwind

@@ -78,6 +78,23 @@
    * a flat underlined rail, so its default is the quietest value — none (rule #44). Raise it to
    * give the rail breathing room above its hairline. */
   --tabs-list-line-space-inset: 0px;
+  /* BLOCK HEADROOM FOR THE FOCUS RING (gh#376). The horizontal strip is a scroll container
+   * (`overflow-x: auto` + `overflow-y: hidden`), and a block-axis clip shaves whatever a trigger
+   * paints outside its own box — measured in Chromium, the `line` strip gives its triggers 0px of
+   * block headroom, so the entire focus ring was cut off top and bottom. The headroom has to come
+   * from LAYOUT, not from relaxing the clip: `overflow-y: visible` beside `overflow-x: auto`
+   * computes back to `auto` per spec (a second scroll container, not a ring), and Chromium honours
+   * `overflow-clip-margin` only when BOTH axes are `clip`, so a single-axis clip silently drops it.
+   * The strip therefore pads its block axis by the ring's outer reach and pulls the same amount
+   * back with a negative block margin, so the ring paints INSIDE the scrollport while the strip
+   * occupies exactly the space it did before.
+   *
+   * `initial` (the role-mirror rule in docs/TOKENS.md, not a :root binding) because the default is
+   * derived from `--focus-ring-*`, which components and tenants DO re-scope; binding it at :root
+   * would freeze the headroom while the ring it is sized from moved. Documented default =
+   * `calc(var(--focus-ring-width) + var(--focus-ring-glow-width))` — the ring's outer reach, read
+   * at the call site so the two can never disagree. */
+  --tabs-list-focus-ring-space-inset: initial;
   /* `line` trigger box. Square corners because the selected state is the token-owned ::after bar,
    * never a pill; the hit box is wider/taller than the pill trigger so the underline spans a real
    * column of the rail. */
