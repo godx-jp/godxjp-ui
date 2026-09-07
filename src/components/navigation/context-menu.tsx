@@ -21,11 +21,13 @@ export const ContextMenuContent = React.forwardRef<
 >(({ className, ...props }, ref) => {
   // Radix hides the app behind an open menu from assistive tech but leaves it tabbable —
   // axe `aria-hidden-focus`. See components/general/inert-background.ts.
-  useInertHiddenBackground();
+  // Đăng ký chính phần tử content: nó mang `data-state`, và đó là tín hiệu ý định đóng mà
+  // nền dựa vào để nhả `inert` NGAY, thay vì đợi hết animation thoát (gh#385).
+  const contentRef = useInertHiddenBackground(ref);
   return (
     <ContextMenuPrimitive.Portal>
       <ContextMenuPrimitive.Content
-        ref={ref}
+        ref={contentRef}
         data-slot="context-menu-content"
         className={cn("ui-context-menu-content", className)}
         {...props}
