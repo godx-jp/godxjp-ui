@@ -28,6 +28,7 @@ export function CompactBarTrend({
   categoryKey,
   valueKey,
   label,
+  showCaption = true,
   description,
   size = "xs",
   emphasizedIndex,
@@ -59,6 +60,7 @@ export function CompactBarTrend({
     <ChartFrame
       ref={ref}
       label={label}
+      showCaption={showCaption}
       description={description}
       summaryRows={summary.rows}
       imgSummary={summary.img}

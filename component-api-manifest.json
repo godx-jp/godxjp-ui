@@ -1398,6 +1398,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "showCaption",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "showGrid",
           "origin": "owned",
           "required": false,
@@ -2001,6 +2009,14 @@
           "required": true,
           "type": "ChartSeriesProp[]",
           "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "showCaption",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
@@ -3752,6 +3768,14 @@
           "required": false,
           "type": "React.Ref<HTMLElement> | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "showCaption",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
@@ -7506,6 +7530,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "showCaption",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "showGrid",
           "origin": "owned",
           "required": false,
@@ -9654,6 +9686,14 @@
           "required": false,
           "type": "Intl.NumberFormatOptions | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "showCaption",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {

@@ -104,6 +104,32 @@ const contracts = [
       "dist/components/charts/compact-bar-trend.d.ts",
     ],
   },
+  // Per-chart entries, so a screen that needs ONE recharts-backed chart does not link the whole
+  // family through the `./charts` barrel (gh#409 · 6: importing BarChart pulled PieChart in).
+  {
+    subpath: "./charts/bar-chart",
+    runtime: ["BarChart"],
+    types: ["BarChartProp", "BarChartProps"],
+    files: ["dist/components/charts/bar-chart.js", "dist/components/charts/bar-chart.d.ts"],
+  },
+  {
+    subpath: "./charts/line-chart",
+    runtime: ["LineChart"],
+    types: ["LineChartProp", "LineChartProps"],
+    files: ["dist/components/charts/line-chart.js", "dist/components/charts/line-chart.d.ts"],
+  },
+  {
+    subpath: "./charts/area-chart",
+    runtime: ["AreaChart"],
+    types: ["AreaChartProp", "AreaChartProps"],
+    files: ["dist/components/charts/area-chart.js", "dist/components/charts/area-chart.d.ts"],
+  },
+  {
+    subpath: "./charts/pie-chart",
+    runtime: ["PieChart"],
+    types: ["PieChartProp", "PieChartProps"],
+    files: ["dist/components/charts/pie-chart.js", "dist/components/charts/pie-chart.d.ts"],
+  },
 ];
 
 function tarballText(tarball, path) {
@@ -172,6 +198,90 @@ createRoot(document.getElementById("root")).render(
   });
   if (!existsSync(join(consumer, "dist/index.html"))) {
     throw new Error("compact trend consumer Vite build did not emit dist/index.html");
+  }
+}
+
+/**
+ * The OTHER half of the optional-peer contract (gh#409 · 6). `buildCompactTrendConsumer` proves
+ * the dependency-free entry builds without recharts; this proves that when a consumer DOES reach
+ * for a recharts-backed chart without the peer, the build fails ONCE, at build time, with a
+ * diagnostic that names both the package and what to do about it.
+ *
+ * Before this contract that same import produced 18 `[MISSING_EXPORT]` errors spread across
+ * `dist/components/charts/**`, not one of which said "install recharts".
+ */
+function buildMissingRechartsPeerConsumer(tarball, manifest) {
+  const consumer = installPackedUi(
+    join(packDirectory, "missing-recharts-consumer"),
+    tarball,
+    manifest,
+  );
+  if (existsSync(join(consumer, "node_modules", "recharts"))) {
+    throw new Error("missing-peer fixture must not contain the optional recharts peer");
+  }
+
+  mkdirSync(join(consumer, "src"), { recursive: true });
+  writeFileSync(
+    join(consumer, "package.json"),
+    JSON.stringify({ name: "missing-recharts-consumer", private: true, type: "module" }, null, 2),
+  );
+  writeFileSync(
+    join(consumer, "index.html"),
+    '<!doctype html><html><body><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>',
+  );
+  writeFileSync(
+    join(consumer, "src/main.jsx"),
+    `import React from "react";
+import { createRoot } from "react-dom/client";
+import { BarChart } from "@godxjp/ui/charts";
+
+createRoot(document.getElementById("root")).render(
+  <BarChart label="Acceptances" data={[]} series={[]} categoryKey="company" horizontal />,
+);
+`,
+  );
+
+  let output = "";
+  try {
+    execFileSync(process.execPath, [join(root, "node_modules/vite/bin/vite.js"), "build"], {
+      cwd: consumer,
+      env: { ...process.env, CI: "1", NO_COLOR: "1", FORCE_COLOR: "0" },
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  } catch (error) {
+    output = `${error.stdout ?? ""}${error.stderr ?? ""}`;
+  }
+
+  if (!output) {
+    throw new Error(
+      "a consumer that imports BarChart without the recharts peer must FAIL its build — " +
+        "a silent build that throws at page load is how this regressed before",
+    );
+  }
+  // Strip ANSI SGR colouring so the assertions below read the TEXT of the diagnostic.
+  const ansi = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g");
+  const plain = output.replace(ansi, "");
+  const problems = [];
+  const missingExports = plain.match(/\[MISSING_EXPORT\]/g)?.length ?? 0;
+  if (missingExports !== 1) {
+    problems.push(
+      `expected exactly ONE [MISSING_EXPORT] diagnostic, got ${missingExports} — the peer must be ` +
+        "read through a single namespace import so the failure does not fan out",
+    );
+  }
+  if (!plain.includes("recharts")) {
+    problems.push("the diagnostic never mentions recharts, the package that is missing");
+  }
+  if (!plain.includes("install_recharts_or_use_charts_compact_bar_trend")) {
+    problems.push(
+      "the diagnostic does not carry the remedy — the probe import's alias in " +
+        "src/components/charts/recharts-peer.ts is what puts it on the printed source line",
+    );
+  }
+  if (problems.length > 0) {
+    throw new Error(
+      `missing recharts peer contract failed:\n  ${problems.join("\n  ")}\n--- build output ---\n${plain}`,
+    );
   }
 }
 
@@ -374,10 +484,11 @@ try {
   }
 
   buildCompactTrendConsumer(tarball, manifest);
+  buildMissingRechartsPeerConsumer(tarball, manifest);
   buildErrorSurfaceConsumer(tarball, manifest);
 
   console.log(
-    `packed public contract OK — @godxjp/ui@${manifest.version} (${artifact.filename}, ${packedFiles.size} files); compact trend Vite consumer built without recharts; ErrorSurface imported, built and server-rendered from the tarball in both modes`,
+    `packed public contract OK — @godxjp/ui@${manifest.version} (${artifact.filename}, ${packedFiles.size} files); compact trend Vite consumer built without recharts; a recharts-backed chart without the peer failed its build with ONE diagnostic naming the package and the remedy; ErrorSurface imported, built and server-rendered from the tarball in both modes`,
   );
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

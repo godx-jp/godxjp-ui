@@ -45,3 +45,21 @@
   /* Gap between the plot block and the optional activity footer slot. */
   --chart-trend-footer-gap: var(--space-2);
 }
+
+/* ── Category axis (horizontal BarChart) ────────────────────────────────────────────────
+ * The category axis of a horizontal bar chart holds free text, and in Japanese that text is a
+ * company name of 8–10 full-width glyphs (100–125px at the tick size). recharts reserves a flat
+ * 60px whatever the ticks say, which painted those names OUTSIDE the plot box where the SVG clip
+ * cut them from the START — losing exactly the identifying `株式会社` (gh#409 · 1).
+ *
+ * The chart now measures its widest tick and sizes the axis from it. These two knobs own the
+ * limits of that: how much air sits between the tick and the plot, and how much of the canvas a
+ * category axis may take before labels are truncated at their END instead. A service that runs
+ * longer names raises the fraction; one that wants the bars to dominate lowers it. */
+:root {
+  --chart-category-axis-gap: var(--space-2);
+  /* Share of the canvas the category axis may occupy, 0..1. At the 1102px dashboard column this
+   * is ~440px — four times a 10-glyph 全角 name — so truncation is the exception, not the rule,
+   * while a pathological label still cannot squeeze the bars out of their own chart. */
+  --chart-category-axis-max-fraction: 0.4;
+}

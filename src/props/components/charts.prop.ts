@@ -34,6 +34,13 @@ type ChartCartesianBase = {
   categoryKey: string;
   /** Accessible name + visible caption for the chart. REQUIRED (role="img" needs a name). */
   label: LabelProp;
+  /**
+   * Paint `label` as a visible caption above the plot. Set `false` when the chart already sits
+   * under a heading that says the same thing (a `CardTitle`, a section `<h2>`): the caption stays
+   * in the DOM as `sr-only`, so `role="img"` keeps its accessible name and only the duplicated
+   * visible title goes away.
+   */
+  showCaption?: boolean;
   /** Extra context appended to the screen-reader description. */
   description?: DescriptionProp;
   /** Canvas height preset — `xs|sm|md|lg`. Ignored when `height` is set. */
@@ -82,6 +89,13 @@ export type CompactBarTrendProp = {
   valueKey: string;
   /** Accessible name + visible caption for the chart. REQUIRED (role="img" needs a name). */
   label: LabelProp;
+  /**
+   * Paint `label` as a visible caption above the plot. Set `false` when the chart already sits
+   * under a heading that says the same thing (a `CardTitle`, a section `<h2>`): the caption stays
+   * in the DOM as `sr-only`, so `role="img"` keeps its accessible name and only the duplicated
+   * visible title goes away.
+   */
+  showCaption?: boolean;
   /** Extra context appended to the screen-reader description. */
   description?: DescriptionProp;
   /** Plot-height tier — `xs|sm|md|lg`. Defaults to `xs` (dashboard summary-card density). */
@@ -124,6 +138,13 @@ export type PieChartProp = {
   colors?: string[];
   /** Accessible name + visible caption for the chart. REQUIRED. */
   label: LabelProp;
+  /**
+   * Paint `label` as a visible caption above the plot. Set `false` when the chart already sits
+   * under a heading that says the same thing (a `CardTitle`, a section `<h2>`): the caption stays
+   * in the DOM as `sr-only`, so `role="img"` keeps its accessible name and only the duplicated
+   * visible title goes away.
+   */
+  showCaption?: boolean;
   /** Extra context appended to the screen-reader description. */
   description?: DescriptionProp;
   /** Canvas height preset — `xs|sm|md|lg`. Ignored when `height` is set. */

@@ -1,4 +1,12 @@
-import { Cell, Legend, Pie, PieChart as RPieChart, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart as RPieChart,
+  ResponsiveContainer,
+  Tooltip,
+  assertRechartsPeer,
+} from "./recharts-peer";
 
 import type { PieChartProp } from "../../props/components/charts.prop";
 import { EmptyState } from "../data-display/empty-state";
@@ -22,6 +30,7 @@ export function PieChart({
   nameKey,
   colors,
   label,
+  showCaption = true,
   description,
   size = "md",
   height,
@@ -32,6 +41,7 @@ export function PieChart({
   className,
   id,
 }: PieChartProp) {
+  assertRechartsPeer();
   const { t } = useTranslation();
   const fmt = useChartNumberFormat(numberFormat);
   const hasData = data.length > 0;
@@ -43,6 +53,7 @@ export function PieChart({
   return (
     <ChartFrame
       label={label}
+      showCaption={showCaption}
       description={description}
       summaryRows={summary.rows}
       imgSummary={summary.img}

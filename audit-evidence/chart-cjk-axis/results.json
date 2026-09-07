@@ -1,0 +1,108 @@
+{
+  "generatedAt": "2026-09-07T13:00:08.648Z",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "captioned": {
+    "canvasWidth": 1358,
+    "axisWidth": 133,
+    "captionPainted": true,
+    "captionText": "実習実施者別 受入人数",
+    "captionId": "cjk-axis-chart-title",
+    "labelledBy": "cjk-axis-chart-title",
+    "ticks": [
+      {
+        "text": "株式会社山田製作所",
+        "title": null,
+        "width": 112.1,
+        "outsideBox": -17.9
+      },
+      {
+        "text": "佐藤食品株式会社",
+        "title": null,
+        "width": 99.7,
+        "outsideBox": -30.3
+      },
+      {
+        "text": "株式会社中村建設",
+        "title": null,
+        "width": 99.7,
+        "outsideBox": -30.3
+      },
+      {
+        "text": "東海精密工業株式会社",
+        "title": null,
+        "width": 124.6,
+        "outsideBox": -5.4
+      },
+      {
+        "text": "みどり農産株式会社",
+        "title": null,
+        "width": 112.1,
+        "outsideBox": -17.9
+      },
+      {
+        "text": "大和金属加工株式会社",
+        "title": null,
+        "width": 124.6,
+        "outsideBox": -5.4
+      }
+    ]
+  },
+  "uncaptioned": {
+    "canvasWidth": 1358,
+    "axisWidth": 133,
+    "captionPainted": false,
+    "captionText": "実習実施者別 受入人数",
+    "captionId": "cjk-axis-chart-no-caption-title",
+    "labelledBy": "cjk-axis-chart-no-caption-title",
+    "ticks": [
+      {
+        "text": "株式会社山田製作所",
+        "title": null,
+        "width": 112.1,
+        "outsideBox": -17.9
+      },
+      {
+        "text": "佐藤食品株式会社",
+        "title": null,
+        "width": 99.7,
+        "outsideBox": -30.3
+      },
+      {
+        "text": "株式会社中村建設",
+        "title": null,
+        "width": 99.7,
+        "outsideBox": -30.3
+      },
+      {
+        "text": "東海精密工業株式会社",
+        "title": null,
+        "width": 124.6,
+        "outsideBox": -5.4
+      },
+      {
+        "text": "みどり農産株式会社",
+        "title": null,
+        "width": 112.1,
+        "outsideBox": -17.9
+      },
+      {
+        "text": "大和金属加工株式会社",
+        "title": null,
+        "width": 124.6,
+        "outsideBox": -5.4
+      }
+    ]
+  },
+  "focusRing": {
+    "tag": "g",
+    "tabIndex": "-1",
+    "className": "recharts-zIndex-layer_300",
+    "insideChart": true,
+    "outline": "rgb(36, 35, 30) none 3px",
+    "outlineStyle": "none",
+    "focusVisible": false
+  }
+}

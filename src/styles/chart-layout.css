@@ -125,3 +125,27 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Axis measuring probe — out of flow and hidden, but INSIDE `.ui-chart`, so it inherits exactly
+ * the typography the recharts tick text is painted in (including the `[lang="ja"]` face). Its
+ * margin and custom property are how the token-owned axis knobs are read back in px: a custom
+ * property's computed value keeps whatever unit its author wrote, a used margin does not. */
+.ui-chart-axis-probe {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  visibility: hidden;
+  margin-inline-end: var(--chart-category-axis-gap);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* recharts marks its own layer groups `tabindex="-1"` and focuses them on a mouse click. They are
+ * not tab stops and not controls, so the outline the USER AGENT then paints on them reads as a
+ * stray selection ring around a graphic — measured as `rgb(0, 95, 204) auto 5px`, Chromium's
+ * accent, not this library's `--ring`. `:focus-visible` is deliberately left alone: it is what a
+ * keyboard user would get if any of these ever became reachable, and `focus-ring.css` owns it. */
+.ui-chart-canvas [tabindex="-1"]:focus:not(:focus-visible) {
+  outline: none;
+}
