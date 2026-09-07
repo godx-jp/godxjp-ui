@@ -200,6 +200,11 @@
   --popover-surface-background: initial;
   --popover-surface-foreground: initial;
   --popover-surface-border-color: initial;
+  /* Width knob, for a panel that owns its own box — a time column pair, a calendar. The three
+   * colour knobs above already existed and padding already read `--popover-space-inset`; width was
+   * the one surface property left absolute, so a modifier could only reach it by re-declaring the
+   * property — which loses to import order (styles/__tests__/popover-surface-knob-cascade). */
+  --popover-surface-inline-size: initial;
 
   /* TOAST (Sonner) — the status glyph in the toast's leading slot.
    *
