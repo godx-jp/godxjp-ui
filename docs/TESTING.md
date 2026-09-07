@@ -5,10 +5,16 @@ Every component **must** ship with a Vitest suite before merge.
 ## Run
 
 ```bash
-cd packages/ui
-pnpm test              # single run
-pnpm test:watch        # watch mode
-pnpm test:coverage     # v8 coverage report
+# While working — ONLY the tests for what you touched. Tests sit beside the
+# component in `src/components/<group>/__tests__/`, so scope to that folder.
+pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2
+pnpm vitest watch src/components/<group>/__tests__     # watch one component
+
+# CI only — 506 files / 3700+ tests. Do NOT run these from an agent loop or with
+# other agents on the machine: measured 70 vitest workers at load 90, an overheating
+# laptop and a burnt monthly API budget.
+pnpm test              # single run — CI
+pnpm test:coverage     # v8 coverage report — CI
 ```
 
 ## File location
@@ -68,7 +74,7 @@ import "@testing-library/jest-dom/vitest";
 | `react-hooks/set-state-in-effect` | sync setState in effects         |
 | `RenderLoopGuard` in tests        | runaway re-renders during Vitest |
 
-Run `pnpm lint` before `pnpm test` — official React Compiler rules align with test guard.
+Run `pnpm lint` before your scoped test run — official React Compiler rules align with test guard.
 
 ## Forms testing
 
@@ -83,7 +89,10 @@ Never test forms with raw `useState` — mirror production `FormRoot` + `FormFie
 
 ## CI gate
 
-`pnpm test` in `packages/ui` must pass with zero failures before any UI PR merges.
+The full suite must pass with zero failures before any UI PR merges — **and that run belongs
+to CI, not to you.** Locally you run only the tests for the files you changed; CI runs
+everything on the PR. `tal --help` states the same rule for the agent loop: *FULL SUITE KHÔNG
+THUỘC VỀ VÒNG LẶP.*
 
 ## When tests fail
 

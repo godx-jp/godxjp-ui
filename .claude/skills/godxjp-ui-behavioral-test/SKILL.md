@@ -1,6 +1,6 @@
 ---
 name: godxjp-ui-behavioral-test
-description: BẮT BUỘC khi kiểm chứng BẤT KỲ component UI tương tác nào của @godxjp/ui (input, select, combobox, cascader, calendar, date picker, switch, command...). Cấm suy diễn hành vi từ code. PHẢI mở browser MCP thật (chrome-devtools / playwright / browsermcp) để MÔ PHỎNG và TEST từng hành vi (focus, gõ phím dính giá trị, Enter/Escape/Arrow/Tab, nút clear, disabled, readOnly, điều hướng bàn phím), rồi CODIFY phát hiện thành test @testing-library/user-event (vitest + jsdom) trong src/components/<group>/__tests__/ để lần sau chạy `pnpm test` KHÔNG cần MCP. Bắt lỗi kinh điển: controlled input có `value` nhưng thiếu `onValueChange` đồng bộ → input ĐÓNG BĂNG. Đọc TRƯỚC khi nói "đã verify".
+description: BẮT BUỘC khi kiểm chứng BẤT KỲ component UI tương tác nào của @godxjp/ui (input, select, combobox, cascader, calendar, date picker, switch, command...). Cấm suy diễn hành vi từ code. PHẢI mở browser MCP thật (chrome-devtools / playwright / browsermcp) để MÔ PHỎNG và TEST từng hành vi (focus, gõ phím dính giá trị, Enter/Escape/Arrow/Tab, nút clear, disabled, readOnly, điều hướng bàn phím), rồi CODIFY phát hiện thành test @testing-library/user-event (vitest + jsdom) trong src/components/<group>/__tests__/ để lần sau chạy ĐÚNG file test đó (`pnpm vitest run <file>`) KHÔNG cần MCP — cấm `pnpm test`. Bắt lỗi kinh điển: controlled input có `value` nhưng thiếu `onValueChange` đồng bộ → input ĐÓNG BĂNG. Đọc TRƯỚC khi nói "đã verify".
 ---
 
 # godxjp-ui Behavioral Test
@@ -12,7 +12,7 @@ description: BẮT BUỘC khi kiểm chứng BẤT KỲ component UI tương tá
 **Follow-map:** this is the **codify** stage of the core chain. Reach it after [[godxjp-ui-component]]
 (contract) flags a stateful control and [[godxjp-ui-interaction-feel]] (which owns the _expected
 behaviours_) tells you what to drive. This skill turns each browser-confirmed behaviour into a
-permanent `@testing-library/user-event` test so `pnpm test` is the regression guard with **no MCP**.
+permanent `@testing-library/user-event` test so CI is the regression guard with **no MCP**.
 
 **DO / DON'T:**
 
@@ -40,7 +40,7 @@ Two mandatory phases, in order:
 2. **CODIFY (user-event test).** Convert every behavior you confirmed in the
    browser into a `@testing-library/user-event` test under
    `src/components/<group>/__tests__/<name>.test.tsx`. After this, the browser is
-   no longer needed — `pnpm test` is the permanent regression guard. A finding
+   no longer needed — CI's suite is the permanent regression guard. A finding
    that is not codified did not happen.
 
 > If you cannot reach a browser MCP this turn, say so explicitly and stop — do
@@ -311,6 +311,7 @@ advanceTimers: vi.advanceTimersByTime })` (see existing `search-input.test.tsx`)
 - [ ] Every confirmed behavior is **codified** as a `user-event` test in
       `src/components/<group>/__tests__/`, including a **freeze-regression test**
       for any controlled input.
-- [ ] `pnpm test` passes (the suite now guards this with **no MCP** needed).
+- [ ] Your own test file passes — `pnpm vitest run <that file> --maxWorkers=2`.
+      NEVER `pnpm test`: the full suite is CI's job on the PR, not the loop's.
 - [ ] Any controlled `value` + debounced callback wrapper exposes an immediate
       `onValueChange` (controlled-freeze fix).
