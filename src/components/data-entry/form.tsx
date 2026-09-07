@@ -1,4 +1,4 @@
-import { Slot } from "@radix-ui/react-slot";
+import { Slot } from "../../lib/slot";
 import * as React from "react";
 
 import { cn } from "../../lib/utils";
