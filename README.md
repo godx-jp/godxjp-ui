@@ -181,5 +181,4 @@ This repo ships two packages — `@godxjp/ui` (this dir) and `@godxjp/ui-mcp` (`
 - [docs/COMPONENTS.md](./docs/COMPONENTS.md) · [docs/TOKENS.md](./docs/TOKENS.md) · [docs/SPACING.md](./docs/SPACING.md)
 - [docs/PROPS-VOCABULARY.md](./docs/PROPS-VOCABULARY.md) · [docs/PROPS-REGISTRY.md](./docs/PROPS-REGISTRY.md)
 - [docs/DATETIME.md](./docs/DATETIME.md) · [docs/FORMS.md](./docs/FORMS.md) · [docs/TESTING.md](./docs/TESTING.md)
-- **Architecture decisions** under `debate/*/04-Decision.md` (ADRs from the design debates)
 - MCP: **godxjp-ui-mcp** (`.mcp.json`) — live catalog for agents
