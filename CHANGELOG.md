@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.6.0] - 2026-09-07
+
 ### Added
 
 - **`Text link` (#400).** Cái móc "đây là một liên kết" cho chữ nằm trong nội dung chạy — tiêu đề
