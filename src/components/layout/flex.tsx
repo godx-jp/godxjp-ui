@@ -1,6 +1,6 @@
 import { mergeAriaIds } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
-import { flexGapClass } from "../../lib/variants";
+import { flexGapClass, padStyle } from "../../lib/variants";
 import type { FlexProp } from "../../props/components/layout.prop";
 
 export type {
@@ -16,6 +16,8 @@ export function Flex({
   direction = "row",
   gap = "md",
   gapRaw,
+  pad,
+  padRaw,
   align,
   justify,
   wrap = false,
@@ -63,7 +65,12 @@ export function Flex({
       // cuộc tranh ấy phụ thuộc thứ tự chèn stylesheet, tức không đoán được.
       data-gap-raw={gapRaw}
       className={cn("ui-flex", gapRaw === undefined ? flexGapClass[gap] : undefined, className)}
-      style={gapRaw === undefined ? style : { ...style, gap: `${gapRaw}px` }}
+      data-pad-raw={padRaw === undefined ? undefined : ""}
+      style={{
+        ...style,
+        ...(gapRaw === undefined ? undefined : { gap: `${gapRaw}px` }),
+        ...padStyle(pad, padRaw),
+      }}
       {...domProps}
     >
       {children}

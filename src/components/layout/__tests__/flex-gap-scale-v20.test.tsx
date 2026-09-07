@@ -1,3 +1,4 @@
+import type * as React from "react";
 import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
@@ -150,5 +151,80 @@ describe("ResponsiveGrid gap — cùng thang với Flex", () => {
         String(gap),
       );
     }
+  });
+});
+
+describe("Flex pad — đệm trong, và lý do nó tồn tại", () => {
+  /*
+   * Chạy `ui-audit` trên consumer thật (godx-chat, 08/09/2026): 42 trong 51
+   * lỗi là `no-utility-spacing`, và gần như tất cả xin cùng một thứ — padding.
+   * `<Flex className="p-3">` không phải người viết cẩu thả; đó là nước đi duy
+   * nhất còn lại khi primitive không có prop đệm (gh#408).
+   *
+   * Đo trên chính 51 lỗi ấy: cần cả BỐN CẠNH (`p-3`), THEO TRỤC (`px-4`/`py-1`)
+   * và TỪNG CẠNH (16 dòng có `pt-*` khác `pb-*`). Nên `pad` nhận cả một bậc
+   * lẫn một object — một prop chỉ nhận số sẽ không phủ nổi và ép người ta quay
+   * lại class.
+   */
+  const padOf = (ui: React.ReactElement) => {
+    const { container } = render(ui);
+
+    return (container.querySelector(".ui-flex") as HTMLElement).style;
+  };
+
+  it("một bậc = cả bốn cạnh", () => {
+    expect(padOf(<Flex pad={3}>x</Flex>).padding).toBe("var(--space-3)");
+  });
+
+  it("bậc TÊN đọc thang dọc — đệm bao quanh khối, không có trục viết để chặt hơn", () => {
+    expect(padOf(<Flex pad="md">x</Flex>).padding).toBe("var(--space-stack-md)");
+  });
+
+  it("theo trục LOGIC, không phải trái/phải vật lý", () => {
+    const s = padOf(<Flex pad={{ inline: 4, block: 1 }}>x</Flex>);
+
+    expect(s.paddingInlineStart).toBe("var(--space-4)");
+    expect(s.paddingInlineEnd).toBe("var(--space-4)");
+    expect(s.paddingBlockStart).toBe("var(--space-1)");
+    expect(s.paddingBlockEnd).toBe("var(--space-1)");
+  });
+
+  it("từng cạnh riêng — ca chiếm 16 dòng trong bản kiểm consumer", () => {
+    const s = padOf(<Flex pad={{ blockStart: 3, blockEnd: 1 }}>x</Flex>);
+
+    expect(s.paddingBlockStart).toBe("var(--space-3)");
+    expect(s.paddingBlockEnd).toBe("var(--space-1)");
+  });
+
+  it("`padRaw` cho giá trị ngoài thang, và để lại dấu vết đếm được", () => {
+    const { container } = render(<Flex padRaw={{ blockStart: 10 }}>x</Flex>);
+    const el = container.querySelector(".ui-flex") as HTMLElement;
+
+    expect(el.style.paddingBlockStart).toBe("10px");
+    expect(el.dataset.padRaw).toBe("");
+  });
+
+  it("`padRaw` ghi đè `pad` ở TỪNG CẠNH, không phải cả cụm", () => {
+    /*
+     * Một thiết kế có thể cần đúng 10px ở trên trong khi ba cạnh còn lại vẫn
+     * theo thang. Ghi đè cả cụm sẽ ép người dùng khai lại ba giá trị họ không
+     * muốn đổi — và đó là lúc họ quay về `className`.
+     */
+    const s = padOf(
+      <Flex pad={{ inline: 4, blockStart: 3 }} padRaw={{ blockStart: 10 }}>
+        x
+      </Flex>,
+    );
+
+    expect(s.paddingBlockStart).toBe("10px");
+    expect(s.paddingInlineStart).toBe("var(--space-4)");
+  });
+
+  it("không dùng thì không phát style — thang vẫn là đường mặc định", () => {
+    const { container } = render(<Flex gap="md">x</Flex>);
+    const el = container.querySelector(".ui-flex") as HTMLElement;
+
+    expect(el.getAttribute("style")).toBeNull();
+    expect(el.dataset.padRaw).toBeUndefined();
   });
 });

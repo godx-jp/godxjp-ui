@@ -22,6 +22,8 @@ import type {
   TextToneProp,
   BreakpointProp,
   GapProp,
+  PadProp,
+  PadRawProp,
   ClassNameProp,
   ChildrenProp,
   IdProp,
@@ -178,6 +180,26 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
    * không tranh độ đặc hiệu.
    */
   gapRaw?: number;
+  /**
+   * Đệm TRONG, theo thang token. Nhận một bậc cho cả bốn cạnh, hoặc một object
+   * theo cạnh LOGIC (`inline`, `block`, `inlineStart`, `blockEnd`…).
+   *
+   * Vì sao có: chạy `ui-audit` trên consumer thật (godx-chat, 08/09/2026) ra
+   * **42 trong 51 lỗi** là `no-utility-spacing`, và gần như tất cả xin cùng
+   * một thứ — padding. `<Flex className="p-3">` không phải cẩu thả; đó là nước
+   * đi duy nhất còn lại khi primitive không có prop đệm. Một prop thiếu đẻ ra
+   * 42 lỗi (gh#408).
+   */
+  pad?: PadProp;
+  /**
+   * Đệm bằng pixel THÔ, cho giá trị ngoài thang — cùng lý do và cùng cái giá
+   * với `gapRaw`: nó để lại `data-pad-raw` trên DOM nên mỗi lần thoát đều đếm
+   * được. Đo trên 51 lỗi ấy: thiết kế cần 2px, 6px, 10px, 14px, 44px, không
+   * bậc nào có.
+   *
+   * Ghi đè `pad` ở TỪNG CẠNH, không phải cả cụm.
+   */
+  padRaw?: PadRawProp;
   align?: FlexAlignProp;
   justify?: FlexJustifyProp;
   wrap?: boolean;
