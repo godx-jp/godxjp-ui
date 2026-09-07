@@ -149,6 +149,35 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
   as?: "div" | "span";
   direction?: FlexDirectionProp;
   gap?: GapProp;
+  /**
+   * CỬA THOÁT: một khoảng cách tính bằng pixel, ngoài mọi bậc của thang.
+   *
+   * ## Vì sao một design system lại mở cửa thoát
+   *
+   * Vì bịt nó lại không làm thiết kế biến mất — nó chỉ làm cách làm ĐÚNG trở
+   * thành bất hợp pháp. Một bản thiết kế thật dùng 2px, 5px, 6px, 10px; thang
+   * gốc không có bậc nào như thế. Người viết mã khi ấy có ba nước, và cả ba
+   * đều tệ: làm tròn xuống bậc gần nhất (lệch bố cục, và "gần nhất" giữa hai
+   * số cách đều vốn đã là một phép đoán), viết literal (audit chặn), hoặc mở
+   * issue ngược lên rồi CHỜ. Đó là lý do mọi dự án đều lệch design — không
+   * phải người viết cẩu thả.
+   *
+   * ## Cái giá của nó
+   *
+   * Nó phát ra `data-gap-raw` lên DOM. Đó không phải trang trí: nó làm mỗi lần
+   * thoát trở nên ĐẾM ĐƯỢC — grep mã nguồn hoặc quét DOM đều ra, nên một kho
+   * đang trôi dần khỏi thang sẽ tự lộ ra bằng con số thay vì bằng cảm giác.
+   *
+   * ## Khi nào ĐỪNG dùng
+   *
+   * Khi giá trị bạn cần có trong thang. `gap={3}` là 12px và nó đọc theo
+   * `--scaling` của người dùng; `gapRaw={12}` thì không, nó đứng yên khi người
+   * ta phóng to giao diện. Thang có mười bậc — hãy tiêu hết chúng trước.
+   *
+   * Khi có mặt, nó THẮNG `gap`, và `gap` không phát lớp nào nữa để hai bên
+   * không tranh độ đặc hiệu.
+   */
+  gapRaw?: number;
   align?: FlexAlignProp;
   justify?: FlexJustifyProp;
   wrap?: boolean;

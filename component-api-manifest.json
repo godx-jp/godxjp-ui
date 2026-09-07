@@ -5985,7 +5985,15 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": ["none", "xs", "sm", "md", "lg", "xl"],
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "gapRaw",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -9915,7 +9923,7 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": ["none", "xs", "sm", "md", "lg", "xl"],
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {

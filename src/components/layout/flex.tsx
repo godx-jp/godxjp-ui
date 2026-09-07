@@ -15,12 +15,14 @@ export function Flex({
   as: Element = "div",
   direction = "row",
   gap = "md",
+  gapRaw,
   align,
   justify,
   wrap = false,
   hideBelow,
   hideFrom,
   className,
+  style,
   children,
   ...props
 }: FlexProp) {
@@ -56,7 +58,12 @@ export function Flex({
       // inert-default contract) — the stylesheet has no `[data-hide-below]`-less selector.
       data-hide-below={hideBelow}
       data-hide-from={hideFrom}
-      className={cn("ui-flex", flexGapClass[gap], className)}
+      // `gapRaw` thắng `gap`, và `gap` thôi phát lớp — hai bên cùng đặt
+      // `gap` thì lớp CSS và style nội tuyến sẽ tranh nhau, mà kết quả của
+      // cuộc tranh ấy phụ thuộc thứ tự chèn stylesheet, tức không đoán được.
+      data-gap-raw={gapRaw}
+      className={cn("ui-flex", gapRaw === undefined ? flexGapClass[gap] : undefined, className)}
+      style={gapRaw === undefined ? style : { ...style, gap: `${gapRaw}px` }}
       {...domProps}
     >
       {children}
