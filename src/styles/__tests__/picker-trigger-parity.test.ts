@@ -13,8 +13,20 @@ const TRIGGERS = [
 ] as const;
 
 describe("picker triggers all sit on the control chrome (gh#348)", () => {
-  it.each(TRIGGERS)("%s uses controlTriggerClass", (file) => {
-    expect(read(`src/${file}`)).toContain("controlTriggerClass");
+  // Two spellings satisfy the SAME contract — the chrome comes from lib/control-styles, never
+  // hand-rolled at the call site. `controlSurfaceTriggerClass` is `controlTriggerClass` with the
+  // border/background utilities withheld so the antd `variant` × `status` matrix in control.css can
+  // own the surface; a utility there would outrank every `[data-variant]` rule (gh#366).
+  it.each(TRIGGERS)("%s uses a control-styles trigger class", (file) => {
+    expect(read(`src/${file}`)).toMatch(/\b(controlTriggerClass|controlSurfaceTriggerClass)\b/);
+  });
+
+  it.each(TRIGGERS)("%s takes its surface from tokens, not from border/bg utilities", (file) => {
+    const source = read(`src/${file}`);
+    if (!source.includes("controlSurfaceTriggerClass")) return;
+    // The withheld pair must not creep back in on the trigger's own class list.
+    expect(source).not.toMatch(/["'`][^"'`]*\bborder-input\b/);
+    expect(source).not.toMatch(/["'`][^"'`]*\bbg-background\b/);
   });
 
   it.each(TRIGGERS.slice(0, 3))("%s no longer wears the button chrome", (file) => {

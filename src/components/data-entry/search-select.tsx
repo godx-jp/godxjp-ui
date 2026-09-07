@@ -4,7 +4,8 @@ import { ChevronsUpDown, Loader2, X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { useFieldIdentity, useFieldNameFallback } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
-import { controlTriggerClass } from "../../lib/control-styles";
+import { controlSurfaceTriggerClass } from "../../lib/control-styles";
+import { controlSurfaceAttrs, resolveAllowClear, resolveAriaInvalid } from "./control-surface";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Command, CommandGroup } from "./command";
 import { Input } from "./input";
@@ -50,11 +51,23 @@ export function SearchSelect({
   disabled = false,
   readOnly = false,
   size,
+  status,
+  variant,
+  loading: loadingProp = false,
   open: openProp,
+  defaultOpen = false,
   onOpenChange,
   search: searchProp,
   onSearchChange,
   filterOption,
+  filterSort,
+  autoClearSearchValue = true,
+  optionRender,
+  menuItemSelectedIcon,
+  notFoundContent,
+  popupMatchSelectWidth = true,
+  allowClear,
+  onClear,
   renderError,
   renderLoadMore,
   name,
@@ -88,7 +101,7 @@ export function SearchSelect({
 
   // Controlled/uncontrolled open (controlled-triad rule): `open` wins when provided, otherwise
   // internal state — `onOpenChange` still fires either way so a controlled consumer stays in sync.
-  const [internalOpen, setInternalOpen] = React.useState(false);
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
   const isOpenControlled = openProp !== undefined;
   const open = isOpenControlled ? openProp : internalOpen;
   const setOpen = React.useCallback(
@@ -143,12 +156,18 @@ export function SearchSelect({
             ? filterOption(option, needle)
             : option.label.toLowerCase().includes(needle.toLowerCase()) ||
               option.value.toLowerCase().includes(needle.toLowerCase());
+        const kept = needle ? list.filter(matches) : list;
+        // antd `filterSort` runs AFTER the filter and only on the client — with `loadOptions` the
+        // server owns the order, so sorting the page here would fight it. Sort a COPY: `list` is
+        // the caller's own `options` array and reordering it in place would mutate a prop.
         return {
-          options: needle ? list.filter(matches) : list,
+          options: filterSort
+            ? [...kept].sort((a, b) => filterSort(a, b, { searchValue: needle }))
+            : kept,
           hasMore: false,
         };
       }),
-    [loadOptions, staticOptions, filterOption],
+    [loadOptions, staticOptions, filterOption, filterSort],
   );
 
   // Debounce the search term — one fetch per pause, not per keystroke.
@@ -236,6 +255,9 @@ export function SearchSelect({
     setPicked(option);
     if (!isControlled) setInternalValue(option.value);
     onValueChange?.(option.value, option);
+    // antd `autoClearSearchValue` (default true): the query is spent once it produced a pick.
+    // `false` keeps it, so reopening resumes the same filtered list instead of the full one.
+    if (autoClearSearchValue) setQuery("");
     setOpen(false);
   };
 
@@ -243,6 +265,7 @@ export function SearchSelect({
     setPicked(null);
     if (!isControlled) setInternalValue("");
     onValueChange?.("", undefined);
+    onClear?.();
     setOpen(false);
   };
 
@@ -299,9 +322,18 @@ export function SearchSelect({
 
   const activeOption = flatOrdered[activeIndex];
   const activeOptionId = activeOption ? optionDomId(activeOption.value) : undefined;
-  // Read-only mirrors Input/NumberInput: value visible + selectable, but no new pick — so the
-  // clear affordance (which would mutate the value) is suppressed too.
-  const showClear = clearable && Boolean(value) && !disabled && !readOnly;
+  // antd `allowClear` (incl. its `{ clearIcon, label }` form) reconciled with this library's own
+  // `clearable`. Read-only mirrors Input/NumberInput: value visible + selectable, but no new pick —
+  // so the clear affordance (which would mutate the value) is suppressed too. `loading` also
+  // suppresses it: the affix is the spinner's seat while a field is in flight.
+  const clearControl = resolveAllowClear(
+    allowClear,
+    clearable,
+    clearLabel ?? t("dataEntry.searchSelect.clear"),
+  );
+  const showClear =
+    clearControl.enabled && Boolean(value) && !disabled && !readOnly && !loadingProp;
+  const surface = controlSurfaceAttrs({ variant, status, size });
 
   return (
     <div className={cn("relative", className)}>
@@ -312,7 +344,7 @@ export function SearchSelect({
           // an externally-forced close (e.g. Escape) is honored.
           if (readOnly && next) return;
           setOpen(next);
-          if (!next) setQuery("");
+          if (!next && autoClearSearchValue) setQuery("");
         }}
       >
         <PopoverTrigger asChild>
@@ -321,23 +353,24 @@ export function SearchSelect({
             id={id}
             type="button"
             role="combobox"
-            data-size={size === "md" ? undefined : size}
+            {...surface}
             aria-expanded={open}
             aria-controls={open ? listId : undefined}
             aria-label={triggerAriaLabel}
             aria-labelledby={triggerAriaLabelledby}
             aria-describedby={ariaDescribedby}
             aria-errormessage={ariaErrorMessage}
-            aria-invalid={ariaInvalid}
+            aria-invalid={resolveAriaInvalid(ariaInvalid, status)}
             aria-required={ariaRequired}
             aria-readonly={readOnly || undefined}
+            aria-busy={loadingProp || undefined}
             disabled={disabled}
             data-testid={dataTestId}
             data-field={resolvedField}
             // label. `""` (nothing selected) is omitted rather than rendered as an empty attribute.
             data-value={value || undefined}
             className={cn(
-              controlTriggerClass,
+              controlSurfaceTriggerClass,
               "w-full justify-start",
               // Reserve trailing room for the single clear-or-chevron overlay rendered below.
               "ui-control-trigger-affixed",
@@ -376,6 +409,25 @@ export function SearchSelect({
           // (collisionPadding keeps the breathing room) instead of a 24rem cap that
           // cut the list mid-row.
           className="ui-search-select-panel"
+          // antd `popupMatchSelectWidth`. `true` is the resting behaviour (the panel's
+          // min-inline-size is the trigger width); `false` releases that floor so the panel hugs
+          // its longest row; a NUMBER pins both edges to that many pixels. The pixel value is a
+          // consumer's measurement of their own data, so it arrives as a token override rather
+          // than a class — nothing about it is a scale step this library could own.
+          data-popup-match={
+            popupMatchSelectWidth === true
+              ? undefined
+              : popupMatchSelectWidth === false
+                ? "content"
+                : "fixed"
+          }
+          style={
+            typeof popupMatchSelectWidth === "number"
+              ? ({
+                  "--search-select-panel-inline-size": `${popupMatchSelectWidth}px`,
+                } as React.CSSProperties)
+              : undefined
+          }
         >
           <Command value={value} shouldFilter={false} className="ui-search-select-command">
             {/* The search field is FLUSH inside the panel — borderless with a single bottom
@@ -431,7 +483,13 @@ export function SearchSelect({
                     onMouseDown={(event) => event.preventDefault()}
                     onClick={() => select(option)}
                   >
-                    {renderOption ? (
+                    {/* antd's `optionRender(option, { index })` outranks the older
+                        `renderOption(option)` — same slot, the newer signature wins. */}
+                    {optionRender ? (
+                      <div className="ui-search-select-option-slot">
+                        {optionRender(option, { index })}
+                      </div>
+                    ) : renderOption ? (
                       <div className="ui-search-select-option-slot">{renderOption(option)}</div>
                     ) : (
                       <div className="ui-search-select-option-body">
@@ -450,6 +508,18 @@ export function SearchSelect({
                         </div>
                       </div>
                     )}
+                    {/* antd `menuItemSelectedIcon` — opt-in, because this library marks the picked
+                        row with fill + weight, which costs no width. Decorative: `aria-selected`
+                        on the row is what a screen reader reads. */}
+                    {menuItemSelectedIcon && value === option.value ? (
+                      <span
+                        data-slot="search-select-selected-icon"
+                        className="ui-search-select-selected-icon"
+                        aria-hidden="true"
+                      >
+                        {menuItemSelectedIcon}
+                      </span>
+                    ) : null}
                   </div>
                 ));
 
@@ -495,7 +565,9 @@ export function SearchSelect({
                   aria-selected={false}
                   className="ui-search-select-placeholder"
                 >
-                  {emptyMessage ?? t("dataEntry.searchSelect.empty")}
+                  {/* antd `notFoundContent` is a NODE and outranks the string-only
+                      `emptyMessage`; the localized default remains the floor. */}
+                  {notFoundContent ?? emptyMessage ?? t("dataEntry.searchSelect.empty")}
                 </div>
               ) : null}
             </div>
@@ -525,15 +597,24 @@ export function SearchSelect({
       </Popover>
       {/* Clear / chevron render OUTSIDE the trigger <button> — a <button> may not nest inside a <button> (invalid HTML → hydration error). The overlay ignores pointer events so a click falls through to the trigger to open it; only the clear control re-enables them. */}
       <div className="ui-control-affix">
-        {showClear ? (
+        {loadingProp ? (
+          // antd `loading` — the FIELD is in flight (the form is still resolving this value), which
+          // is a different claim from the list-level spinner inside the panel. It takes the affix
+          // seat so the two can never both animate in the same place.
+          <Loader2
+            data-slot="search-select-loading"
+            className="ui-control-affix-icon ui-control-affix-indicator animate-spin"
+            aria-hidden="true"
+          />
+        ) : showClear ? (
           <button
             type="button"
-            aria-label={clearLabel ?? t("dataEntry.searchSelect.clear")}
+            aria-label={clearControl.label}
             data-testid={optionTestId("clear")}
             className="ui-control-affix-action"
             onClick={clear}
           >
-            <X className="ui-control-affix-icon" aria-hidden="true" />
+            {clearControl.clearIcon ?? <X className="ui-control-affix-icon" aria-hidden="true" />}
           </button>
         ) : (
           <ChevronsUpDown

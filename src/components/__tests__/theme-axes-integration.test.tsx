@@ -228,7 +228,9 @@ describe("theme axes integration (render + class contracts)", () => {
 
 describe("theme axes — control-styles import contracts", () => {
   const requiredImports: { file: string; exportName: string }[] = [
-    { file: "data-entry/select.tsx", exportName: "controlTriggerClass" },
+    // `controlSurfaceTriggerClass` IS `controlTriggerClass` minus the two surface utilities, so the
+    // contract this row checks — the trigger's chrome comes from lib/control-styles — is unchanged.
+    { file: "data-entry/select.tsx", exportName: "controlSurfaceTriggerClass" },
     { file: "data-entry/textarea.tsx", exportName: "controlMultilineClass" },
     { file: "data-entry/command.tsx", exportName: "controlIconLeadingClass" },
     { file: "data-entry/calendar.tsx", exportName: "controlIconSmClass" },

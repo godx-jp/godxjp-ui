@@ -97,3 +97,56 @@ export type WidthProp = number | string;
  * site (gh#375).
  */
 export type ControlWidthProp = "full" | "auto" | "bounded";
+
+/**
+ * Validation status of a selection control — the Ant Design `status` contract (antd 6.6.2,
+ * `es/_util/statusUtils`: `'' | 'warning' | 'error'`; the empty string is expressed here as
+ * `undefined`).
+ *
+ * `error` ALSO sets `aria-invalid` on the control, because a colour-only error state fails WCAG
+ * 2.2 SC 1.4.1 for anyone who cannot see the recolour — antd's own `status="error"` is purely
+ * visual and this library does not copy that part.
+ */
+export type ControlStatusProp = "error" | "warning";
+
+/**
+ * Surface treatment of a control — the Ant Design `variant` contract (antd 6.6.2,
+ * `es/config-provider`: `outlined | borderless | filled | underlined`).
+ *
+ * The four surfaces are drawn from `--control-{surface,filled,borderless,underlined}-*` tokens, so
+ * a service theme retunes them once instead of per call site.
+ */
+export type ControlVariantProp = "outlined" | "filled" | "borderless" | "underlined";
+
+/**
+ * antd `allowClear`: `true`/`false`, or the object form carrying a replacement icon and the
+ * accessible label for the clear control (antd 6.6.2, `BaseSelectProps.allowClear`).
+ */
+export type AllowClearProp = boolean | { clearIcon?: React.ReactNode; label?: string };
+
+/**
+ * antd `maxTagCount` — how many selected values stay visible before the rest collapse into the
+ * overflow node. `"responsive"` is NOT supported here (see the PR that introduced this type): it
+ * needs a per-frame width measurement of the value row, which this library resolves through
+ * container queries instead.
+ */
+export type MaxTagCountProp = number;
+
+/**
+ * antd `maxTagPlaceholder` — the node standing in for the values `maxTagCount` hid. A function
+ * receives the omitted values so a consumer can render "+3 件" or a tooltip listing them.
+ */
+export type MaxTagPlaceholderProp =
+  React.ReactNode | ((omitted: { value: string; label: React.ReactNode }[]) => React.ReactNode);
+
+/**
+ * antd `notFoundContent` — the node shown when a popup has nothing to list. Supersedes the
+ * string-only `emptyMessage`, which stays for the common case.
+ */
+export type NotFoundContentProp = React.ReactNode;
+
+/**
+ * antd `popupMatchSelectWidth`: `true` (default) locks the popup to the trigger's width, `false`
+ * lets it size to its content, and a number pins it to that many pixels.
+ */
+export type PopupMatchWidthProp = boolean | number;

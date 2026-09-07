@@ -265,6 +265,9 @@
    * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could
    * not widen the panel or change the viewport gutter without forking. */
   --search-select-panel-max-width: 32rem;
+  /* Seat for a NUMERIC `popupMatchSelectWidth`. `auto` is the inert default — the knob only does
+   * anything once a call site sets it, and then the value is that consumer's own measurement. */
+  --search-select-panel-inline-size: auto;
   --search-select-panel-viewport-inset: var(--space-6);
   --search-select-list-space-inset: var(--space-1);
   --search-select-footer-space-inset: var(--space-1);
@@ -300,6 +303,11 @@
   /* SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*),
    * so only what is genuinely its own lives here (#319). */
   --select-content-max-height: 24rem;
+  /* Seat for a NUMERIC `popupMatchSelectWidth` on the plain listbox. `auto` is the inert default. */
+  --select-content-inline-size: auto;
+  /* Vertical room around the `notFoundContent` row — the same breathing space the SearchSelect
+   * panel gives its own empty state, so the two empties read as one affordance. */
+  --select-empty-space-block: var(--search-select-placeholder-space-block);
   --select-scroll-button-space-block: var(--space-1);
   /* Select rows sit slightly wider than a menu row: a listbox has no leading icon column to
    * absorb the optical inset, so 2.5 reads level with a menu's 2 + icon. */
@@ -508,6 +516,53 @@
    * still the field's accessible name — so it rests one step heavier than the control it names.
    * Default = the historical `peer-disabled:opacity-70`. */
   --control-label-disabled-alpha: 0.7;
+
+  /* ── CONTROL SURFACE — the antd `variant` × `status` matrix (antd 6.6.2) ────────────────────
+   *
+   * The four surfaces and the two statuses are TOKENS, not utilities, and that is the whole point
+   * of this block. The select-family trigger used to state its surface as `border-input
+   * bg-background` — two Tailwind utilities, which live in `@layer utilities` and therefore beat
+   * anything a stylesheet in `@layer components` can say. A `[data-variant="filled"]` rule would
+   * have been dead on arrival, exactly the way `w-full` killed `.ui-app-setting-picker-icon`
+   * (gh#366) and `--control-bounded-width` (gh#375). So the family now withholds those two
+   * utilities and reads the surface from here instead; the DEFAULT values reproduce the previous
+   * rendering byte for byte.
+   *
+   * `--control-surface-*` is the `outlined` default; the other three name themselves. */
+  --control-surface-border-color: hsl(var(--input));
+  --control-surface-background: hsl(var(--background));
+
+  /* `filled` — antd's grey field: no edge, a muted fill, no resting elevation. */
+  --control-filled-border-color: transparent;
+  --control-filled-background: hsl(var(--muted));
+  --control-filled-shadow: none;
+
+  /* `borderless` — chrome removed entirely, for a control embedded in a surface that already
+   * draws the box (a toolbar cell, an inline edit). */
+  --control-borderless-border-color: transparent;
+  --control-borderless-background: transparent;
+  --control-borderless-shadow: none;
+
+  /* `underlined` — one rule on the block-end edge, square corners. The radius is expressed by
+   * rebinding --control-radius on the element, so the `rounded-[var(--control-radius)]` utility the
+   * trigger already carries resolves to the sharp step instead of being fought. */
+  --control-underlined-border-color: hsl(var(--input));
+  --control-underlined-background: transparent;
+  --control-underlined-shadow: none;
+  --control-underlined-radius: var(--radius-sharp);
+
+  /* STATUS. `error` reuses the destructive role already wired to the focus halo through the
+   * `[aria-invalid="true"]` rule in focus-ring.css.
+   *
+   * `warning` deliberately does NOT use `--warning` (山吹 #f8b500). Measured against
+   * `--background` (#fdfdfb) that hue is 1.85:1 — a boundary that marks a state has to clear 3:1
+   * under WCAG 2.2 SC 1.4.11, so shipping the brand yellow as the edge would have been a
+   * colour that only looks like a warning to people who can already see it. `--text-warning`
+   * (36 100% 28%, the darkened amber this palette keeps for exactly this reason) measures 5.4:1.
+   * A service that wants antd's yellow back retunes the knob and owns that trade. */
+  --control-status-error-border-color: hsl(var(--destructive));
+  --control-status-warning-border-color: hsl(var(--text-warning));
+  --control-status-warning-outline-color: var(--warning);
 }
 
 @media (pointer: coarse) {

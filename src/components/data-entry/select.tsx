@@ -1,9 +1,15 @@
 import * as React from "react";
-import type { ControlWidthProp } from "../../props/vocabulary/shared.prop";
+import type {
+  ControlStatusProp,
+  ControlVariantProp,
+  ControlWidthProp,
+  SizeProp,
+} from "../../props/vocabulary";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { ChevronDown, ChevronUp, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader2, X } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { controlTriggerClass } from "../../lib/control-styles";
+import { controlSurfaceTriggerClass } from "../../lib/control-styles";
+import { controlSurfaceAttrs, resolveAllowClear, resolveAriaInvalid } from "./control-surface";
 import { useInertHiddenBackground } from "../general/inert-background";
 import {
   mergeAriaIds,
@@ -106,7 +112,12 @@ export function SelectValue(props: React.ComponentProps<typeof SelectPrimitive.V
 export const SelectTrigger = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
-    size?: "sm" | "md";
+    /** Control height tier — the shared `--control-height` ladder (antd `size`). */
+    size?: SizeProp;
+    /** Control surface (antd `variant`). Default `outlined`. */
+    variant?: ControlVariantProp;
+    /** Validation status (antd `status`). `error` also sets `aria-invalid`. */
+    status?: ControlStatusProp;
     /**
      * `full` (default) fills the field column — right inside a FormField. `auto` sizes to the
      * selected label — right in a PageContainer `extra` slot, a toolbar or a footer row, where a
@@ -129,86 +140,108 @@ export const SelectTrigger = React.forwardRef<
      */
     "data-value"?: string;
   }
->(({ className, children, size = "md", width = "full", showIndicator = true, ...props }, ref) => {
-  // The FormField contract reaches the compound trigger through context, because Radix's root
-  // drops the cloneElement props. Anything set directly on the trigger wins; the two id-list
-  // attributes merge rather than replace so a local description survives.
-  const field = React.useContext(SelectFieldA11yContext);
-  // The NAME is inherited as a unit, not attribute by attribute: a trigger that states its own
-  // name keeps it whole. Merging per-attribute would leave the inherited `aria-labelledby` in
-  // place next to the local `aria-label`, and labelledby outranks label — the trigger's own name
-  // would lose to the one it deliberately overrode.
-  const ownsName = props["aria-label"] !== undefined || props["aria-labelledby"] !== undefined;
-  const fieldOwnsName =
-    field?.["aria-label"] !== undefined || field?.["aria-labelledby"] !== undefined;
-  // Select NESTED under a layout wrapper inside FormField (年/月 combo, range pair) still takes
-  // its name from the enclosing field's label. `{}` whenever a name already exists.
-  const nameFallback = useFieldNameFallback({
-    "aria-label": ownsName ? props["aria-label"] : field?.["aria-label"],
-    "aria-labelledby": ownsName ? props["aria-labelledby"] : field?.["aria-labelledby"],
-  });
-  const fieldA11y =
-    field || nameFallback["aria-labelledby"] !== undefined
-      ? {
-          id: props.id ?? field?.id,
-          ...(ownsName
-            ? {}
-            : fieldOwnsName
-              ? {
-                  "aria-label": field?.["aria-label"],
-                  "aria-labelledby": field?.["aria-labelledby"],
-                }
-              : nameFallback),
-          "aria-describedby": mergeAriaIds(props["aria-describedby"], field?.["aria-describedby"]),
-          "aria-errormessage": mergeAriaIds(
-            props["aria-errormessage"],
-            field?.["aria-errormessage"],
-          ),
-          "aria-required": props["aria-required"] ?? field?.["aria-required"],
-          "aria-invalid": props["aria-invalid"] ?? field?.["aria-invalid"],
-          "data-field": props["data-field"] ?? field?.["data-field"],
-        }
-      : undefined;
-  // A Radix select's native `<select>` is a 1x1px aria-hidden bubble input that exists only so a
-  // native form submit carries the value; the trigger is what a person (or a screen automation)
-  // sees, and it renders "東京本社" where the row's real value is "52". Publishing the value here
-  // is the one thing no consumer can do for itself — hence a library-level attribute, not a
-  // per-screen prop. Nothing about the DOM structure changes.
-  const dataValue = (props["data-value"] ?? field?.value) || undefined;
-  return (
-    <SelectPrimitive.Trigger
-      ref={ref}
-      data-slot="select-trigger"
-      data-size={size}
-      data-width={width}
-      className={cn(
-        controlTriggerClass,
-        // `bounded` deliberately emits NO width utility: its width is owned by the
-        // `[data-width="bounded"]` rule in control.css. A utility here would win the layer order
-        // and make that rule — and therefore the token — dead, the way `w-full` did to
-        // `.ui-app-setting-picker-icon` (gh#366, gh#371).
-        width === "auto" && "w-auto",
-        width === "full" && "w-full",
-        "aria-invalid:border-destructive data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground whitespace-nowrap transition-[color,box-shadow] outline-none *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center",
-        className,
-      )}
-      {...props}
-      {...fieldA11y}
-      data-value={dataValue}
-    >
-      {children}
-      {showIndicator ? (
-        <SelectPrimitive.Icon asChild>
-          <ChevronDown
-            data-slot="select-chevron"
-            className="ui-select-chevron"
-            aria-hidden="true"
-          />
-        </SelectPrimitive.Icon>
-      ) : null}
-    </SelectPrimitive.Trigger>
-  );
-});
+>(
+  (
+    {
+      className,
+      children,
+      size = "md",
+      variant,
+      status,
+      width = "full",
+      showIndicator = true,
+      ...props
+    },
+    ref,
+  ) => {
+    // The FormField contract reaches the compound trigger through context, because Radix's root
+    // drops the cloneElement props. Anything set directly on the trigger wins; the two id-list
+    // attributes merge rather than replace so a local description survives.
+    const field = React.useContext(SelectFieldA11yContext);
+    // The NAME is inherited as a unit, not attribute by attribute: a trigger that states its own
+    // name keeps it whole. Merging per-attribute would leave the inherited `aria-labelledby` in
+    // place next to the local `aria-label`, and labelledby outranks label — the trigger's own name
+    // would lose to the one it deliberately overrode.
+    const ownsName = props["aria-label"] !== undefined || props["aria-labelledby"] !== undefined;
+    const fieldOwnsName =
+      field?.["aria-label"] !== undefined || field?.["aria-labelledby"] !== undefined;
+    // Select NESTED under a layout wrapper inside FormField (年/月 combo, range pair) still takes
+    // its name from the enclosing field's label. `{}` whenever a name already exists.
+    const nameFallback = useFieldNameFallback({
+      "aria-label": ownsName ? props["aria-label"] : field?.["aria-label"],
+      "aria-labelledby": ownsName ? props["aria-labelledby"] : field?.["aria-labelledby"],
+    });
+    const fieldA11y =
+      field || nameFallback["aria-labelledby"] !== undefined
+        ? {
+            id: props.id ?? field?.id,
+            ...(ownsName
+              ? {}
+              : fieldOwnsName
+                ? {
+                    "aria-label": field?.["aria-label"],
+                    "aria-labelledby": field?.["aria-labelledby"],
+                  }
+                : nameFallback),
+            "aria-describedby": mergeAriaIds(
+              props["aria-describedby"],
+              field?.["aria-describedby"],
+            ),
+            "aria-errormessage": mergeAriaIds(
+              props["aria-errormessage"],
+              field?.["aria-errormessage"],
+            ),
+            "aria-required": props["aria-required"] ?? field?.["aria-required"],
+            "aria-invalid": resolveAriaInvalid(
+              props["aria-invalid"] ?? field?.["aria-invalid"],
+              status,
+            ),
+            "data-field": props["data-field"] ?? field?.["data-field"],
+          }
+        : { "aria-invalid": resolveAriaInvalid(props["aria-invalid"], status) };
+    // A Radix select's native `<select>` is a 1x1px aria-hidden bubble input that exists only so a
+    // native form submit carries the value; the trigger is what a person (or a screen automation)
+    // sees, and it renders "東京本社" where the row's real value is "52". Publishing the value here
+    // is the one thing no consumer can do for itself — hence a library-level attribute, not a
+    // per-screen prop. Nothing about the DOM structure changes.
+    const dataValue = (props["data-value"] ?? field?.value) || undefined;
+    return (
+      <SelectPrimitive.Trigger
+        ref={ref}
+        data-slot="select-trigger"
+        data-size={size}
+        data-variant={controlSurfaceAttrs({ variant })["data-variant"]}
+        data-status={status}
+        data-width={width}
+        className={cn(
+          controlSurfaceTriggerClass,
+          // `bounded` deliberately emits NO width utility: its width is owned by the
+          // `[data-width="bounded"]` rule in control.css. A utility here would win the layer order
+          // and make that rule — and therefore the token — dead, the way `w-full` did to
+          // `.ui-app-setting-picker-icon` (gh#366, gh#371).
+          width === "auto" && "w-auto",
+          width === "full" && "w-full",
+          "aria-invalid:border-destructive data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground whitespace-nowrap transition-[color,box-shadow] outline-none *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center",
+          className,
+        )}
+        {...props}
+        {...fieldA11y}
+        data-value={dataValue}
+      >
+        {children}
+        {showIndicator ? (
+          <SelectPrimitive.Icon asChild>
+            <ChevronDown
+              data-slot="select-chevron"
+              className="ui-select-chevron"
+              aria-hidden="true"
+            />
+          </SelectPrimitive.Icon>
+        ) : null}
+      </SelectPrimitive.Trigger>
+    );
+  },
+);
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 export const SelectScrollUpButton = React.forwardRef<
@@ -243,7 +276,14 @@ SelectScrollDownButton.displayName = SelectPrimitive.ScrollDownButton.displayNam
 
 export const SelectContent = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
+    /**
+     * How the popup sizes against its trigger — the DOM half of antd `popupMatchSelectWidth`.
+     * Absent = the trigger's width is the floor (antd's `true`); `content` releases that floor;
+     * `fixed` pins both edges to `--select-content-inline-size`.
+     */
+    "data-popup-match"?: "content" | "fixed";
+  }
 >(({ className, children, position = "popper", ...props }, ref) => {
   // Radix hides the app behind an open Select from assistive tech but leaves it tabbable —
   // axe `aria-hidden-focus`. See components/general/inert-background.ts.
@@ -268,8 +308,13 @@ export const SelectContent = React.forwardRef<
           data-slot="select-viewport"
           className={cn(
             "ui-select-viewport",
+            position === "popper" && "h-[var(--radix-select-trigger-height)] w-full",
+            // The trigger-width floor is a UTILITY, so no `[data-popup-match]` rule in control.css
+            // could ever lift it (gh#366). It is therefore WITHHELD whenever the consumer stated a
+            // width of their own — which is exactly what antd's `popupMatchSelectWidth` is for.
             position === "popper" &&
-              "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]",
+              !props["data-popup-match"] &&
+              "min-w-[var(--radix-select-trigger-width)]",
           )}
         >
           {children}
@@ -296,8 +341,14 @@ SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
 export const SelectItem = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item> & {
+    /**
+     * antd `menuItemSelectedIcon` — a decorative mark on the picked row. Off by default: this
+     * library marks the picked row with fill + weight, which costs no width.
+     */
+    selectedIcon?: React.ReactNode;
+  }
+>(({ className, children, selectedIcon, ...props }, ref) => (
   <SelectPrimitive.Item
     ref={ref}
     data-slot="select-item"
@@ -305,6 +356,17 @@ export const SelectItem = React.forwardRef<
     {...props}
   >
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    {selectedIcon ? (
+      <SelectPrimitive.ItemIndicator asChild>
+        <span
+          data-slot="select-item-selected-icon"
+          className="ui-search-select-selected-icon"
+          aria-hidden="true"
+        >
+          {selectedIcon}
+        </span>
+      </SelectPrimitive.ItemIndicator>
+    ) : null}
   </SelectPrimitive.Item>
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
@@ -362,11 +424,23 @@ function DataSelect({
   disabled,
   readOnly,
   size,
+  status,
+  variant,
+  loading,
   open,
+  defaultOpen,
   onOpenChange,
   search,
   onSearchChange,
   filterOption,
+  filterSort,
+  autoClearSearchValue,
+  optionRender,
+  menuItemSelectedIcon,
+  notFoundContent,
+  popupMatchSelectWidth,
+  allowClear,
+  onClear,
   renderError,
   renderLoadMore,
   name,
@@ -421,11 +495,23 @@ function DataSelect({
         disabled={disabled || (!loadOptions && !hasOptions)}
         readOnly={readOnly}
         size={size}
+        status={status}
+        variant={variant}
+        loading={loading}
         open={open}
+        defaultOpen={defaultOpen}
         onOpenChange={onOpenChange}
         search={search}
         onSearchChange={onSearchChange}
         filterOption={filterOption}
+        filterSort={filterSort}
+        autoClearSearchValue={autoClearSearchValue}
+        optionRender={optionRender}
+        menuItemSelectedIcon={menuItemSelectedIcon}
+        notFoundContent={notFoundContent}
+        popupMatchSelectWidth={popupMatchSelectWidth}
+        allowClear={allowClear}
+        onClear={onClear}
         renderError={renderError}
         renderLoadMore={renderLoadMore}
         name={resolvedName}
@@ -440,16 +526,28 @@ function DataSelect({
 
   const optionTestId = (optionValue: string) =>
     dataTestId ? `${dataTestId}-option-${optionValue}` : undefined;
-  const renderItem = (option: SearchSelectOptionProp) => (
-    <SelectItem
-      key={option.value}
-      value={option.value}
-      disabled={option.disabled}
-      data-testid={optionTestId(option.value)}
-    >
-      {renderOption ? renderOption(option) : option.label}
-    </SelectItem>
-  );
+  // Flat index across every group, so antd's `optionRender(option, { index })` gets the same
+  // ordinal a consumer would count on screen (the grouped Select renders groups in first-seen
+  // order, exactly the order this counter walks).
+  let flatIndex = 0;
+  const renderItem = (option: SearchSelectOptionProp) => {
+    const index = flatIndex++;
+    return (
+      <SelectItem
+        key={option.value}
+        value={option.value}
+        disabled={option.disabled}
+        data-testid={optionTestId(option.value)}
+        selectedIcon={menuItemSelectedIcon}
+      >
+        {optionRender
+          ? optionRender(option, { index })
+          : renderOption
+            ? renderOption(option)
+            : option.label}
+      </SelectItem>
+    );
+  };
 
   // Collapsing "" → undefined flipped a controlled Select to uncontrolled on the
   // empty state and back on first pick (React's controlled↔uncontrolled warning).
@@ -459,8 +557,18 @@ function DataSelect({
   // selected; clearing emits `onValueChange("", undefined)` and Radix shows the placeholder.
   // Only controlled selects can clear (an uncontrolled Radix value cannot be reset from here),
   // and their DOM gains a relative wrapper so the X can overlay the trigger like SearchSelect.
-  const canClear = clearable !== false && isControlled && !disabled && !readOnly;
+  const clearControl = resolveAllowClear(
+    allowClear,
+    clearable,
+    clearLabel ?? t("dataEntry.searchSelect.clear"),
+  );
+  const canClear = clearControl.enabled && isControlled && !disabled && !readOnly && !loading;
   const showClear = canClear && Boolean(value);
+  // A plain (no-search) Select with nothing to list is normally an inert trigger — there is no
+  // popup worth opening. `notFoundContent` is the opt-in that says otherwise: the consumer WANTS
+  // the empty state seen ("no branches yet — add one"), so the trigger stays operable and the
+  // popup carries their node. Nothing changes for the call sites that pass neither.
+  const showEmptyPopup = !hasOptions && notFoundContent !== undefined;
   const select = (
     <SelectPrimitive.Root
       data-slot="select"
@@ -473,21 +581,53 @@ function DataSelect({
           options.find((option) => option.value === next),
         );
       }}
-      disabled={disabled || !hasOptions}
+      disabled={disabled || (!hasOptions && !showEmptyPopup)}
       name={resolvedName}
+      // Radix owns the popup, so antd's open contract is a straight pass-through here. It was
+      // simply never wired: a `<Select options open>` used to render a permanently shut listbox.
+      open={open}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
     >
       <SelectTrigger
         id={id}
         data-testid={dataTestId}
         data-field={resolvedField}
         data-value={currentValue || undefined}
-        className={cn(showClear && "ui-control-trigger-affixed", canClear ? undefined : className)}
-        showIndicator={!showClear}
+        size={size}
+        variant={variant}
+        status={status}
+        aria-busy={loading || undefined}
+        className={cn(
+          (showClear || loading) && "ui-control-trigger-affixed",
+          canClear || loading ? undefined : className,
+        )}
+        showIndicator={!showClear && !loading}
         {...ariaProps}
       >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent
+        data-popup-match={
+          popupMatchSelectWidth === undefined || popupMatchSelectWidth === true
+            ? undefined
+            : popupMatchSelectWidth === false
+              ? "content"
+              : "fixed"
+        }
+        style={
+          typeof popupMatchSelectWidth === "number"
+            ? ({
+                "--select-content-inline-size": `${popupMatchSelectWidth}px`,
+              } as React.CSSProperties)
+            : undefined
+        }
+      >
+        {showEmptyPopup ? (
+          <div data-slot="select-empty" className="ui-select-empty">
+            {notFoundContent}
+          </div>
+        ) : null}
         {groupDataOptions(options).map((group) =>
           group.heading ? (
             <SelectGroup key={group.heading}>
@@ -502,21 +642,32 @@ function DataSelect({
     </SelectPrimitive.Root>
   );
 
-  if (!canClear) return select;
+  if (!canClear && !loading) return select;
 
   return (
     <div className={cn("relative", className)}>
       {select}
-      {showClear ? (
+      {loading ? (
+        <div className="ui-control-affix">
+          <Loader2
+            data-slot="select-loading"
+            className="ui-control-affix-icon ui-control-affix-indicator animate-spin"
+            aria-hidden="true"
+          />
+        </div>
+      ) : showClear ? (
         <div className="ui-control-affix">
           <button
             type="button"
-            aria-label={clearLabel ?? t("dataEntry.searchSelect.clear")}
+            aria-label={clearControl.label}
             data-testid={dataTestId ? `${dataTestId}-clear` : undefined}
             className="ui-control-affix-action"
-            onClick={() => onValueChange?.("", undefined)}
+            onClick={() => {
+              onValueChange?.("", undefined);
+              onClear?.();
+            }}
           >
-            <X className="ui-control-affix-icon" aria-hidden="true" />
+            {clearControl.clearIcon ?? <X className="ui-control-affix-icon" aria-hidden="true" />}
           </button>
         </div>
       ) : null}

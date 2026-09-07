@@ -1073,9 +1073,13 @@
     gap: var(--space-2);
     min-height: var(--control-height);
     padding: var(--space-1) var(--control-padding-x);
-    border: var(--control-border-width) solid hsl(var(--input));
+    /* Same two tokens the `.ui-control-surface` matrix drives, so TagInput inherits `variant` /
+     * `status` from that one block instead of restating four surfaces of its own. The defaults
+     * resolve to the `hsl(var(--input))` / `hsl(var(--background))` pair this rule used to name
+     * literally, so nothing about the resting TagInput changes. */
+    border: var(--control-border-width) solid var(--control-surface-border-color);
     border-radius: var(--control-radius);
-    background: hsl(var(--background));
+    background: var(--control-surface-background);
     box-shadow: var(--control-shadow);
   }
   .ui-tag-input-disabled {
@@ -1174,12 +1178,84 @@
     max-inline-size: 100%;
   }
 
-  .ui-control[data-size="sm"] {
+  /* `.ui-control-surface` joins each rung so TagInput — which is a bordered field but not a
+   * `.ui-control` — sits on the same height ladder as the triggers beside it in a form row. */
+  .ui-control[data-size="sm"],
+  .ui-control-surface[data-size="sm"] {
     --control-height: var(--control-height-sm);
   }
 
-  .ui-control[data-size="lg"] {
+  .ui-control[data-size="lg"],
+  .ui-control-surface[data-size="lg"] {
     --control-height: var(--control-height-lg);
+  }
+
+  /* The bottom rung of `SizeProp`. It existed as a token (`--control-height-xs`) with nothing
+   * reading it, so `size="xs"` on a select-family trigger silently rendered at `md`. */
+  .ui-control[data-size="xs"],
+  .ui-control-surface[data-size="xs"] {
+    --control-height: var(--control-height-xs);
+  }
+
+  /* ── SURFACE: the antd `variant` × `status` matrix ──────────────────────────────────────────
+   *
+   * Carried by a class rather than by utilities on purpose — see the long note over
+   * `--control-surface-*` in tokens/components/control.css. Any element wearing
+   * `.ui-control-surface` must NOT also carry `border-input` / `bg-background`, or the utilities
+   * layer wins and every rule below is dead. `.ui-tag-input` states the same two properties from
+   * the same tokens, so it joins this matrix by wearing the class alone.
+   *
+   * `status` is placed AFTER `variant` so an error edge survives a borderless surface — a control
+   * that hides its chrome must still be able to show that it is wrong. */
+  .ui-control-surface {
+    border-color: var(--control-surface-border-color);
+    background: var(--control-surface-background);
+  }
+
+  .ui-control-surface[data-variant="filled"] {
+    --control-shadow: var(--control-filled-shadow);
+    border-color: var(--control-filled-border-color);
+    background: var(--control-filled-background);
+  }
+
+  .ui-control-surface[data-variant="borderless"] {
+    --control-shadow: var(--control-borderless-shadow);
+    border-color: var(--control-borderless-border-color);
+    background: var(--control-borderless-background);
+  }
+
+  .ui-control-surface[data-variant="underlined"] {
+    --control-shadow: var(--control-underlined-shadow);
+    --control-radius: var(--control-underlined-radius);
+    border-color: transparent;
+    border-block-end-color: var(--control-underlined-border-color);
+    background: var(--control-underlined-background);
+  }
+
+  /* A FormField error reaches the trigger as `aria-invalid`, never as `status` — so the two have to
+   * paint the same edge, or the same mistake would look different depending on which layer noticed
+   * it. Radix's Select trigger carries the `aria-invalid:border-destructive` utility for this;
+   * every other member of the family gets it here. */
+  .ui-control-surface[data-status="error"],
+  .ui-control-surface[aria-invalid="true"] {
+    border-color: var(--control-status-error-border-color);
+  }
+
+  .ui-control-surface[data-status="warning"] {
+    border-color: var(--control-status-warning-border-color);
+    --focus-ring-color: var(--warning);
+    --focus-outline-color: var(--warning);
+    --focus-ring-glow-color: var(--control-status-warning-outline-color);
+  }
+
+  .ui-control-surface[data-variant="underlined"][data-status="error"] {
+    border-color: transparent;
+    border-block-end-color: var(--control-status-error-border-color);
+  }
+
+  .ui-control-surface[data-variant="underlined"][data-status="warning"] {
+    border-color: transparent;
+    border-block-end-color: var(--control-status-warning-border-color);
   }
 
   .ui-number-input[data-size="sm"] {
@@ -1291,6 +1367,27 @@
       calc(100vw - var(--search-select-panel-viewport-inset))
     );
     min-inline-size: var(--radix-popover-trigger-width);
+  }
+
+  /* antd `popupMatchSelectWidth`. Absent = `true` = the rule above (the trigger width is the
+   * floor). `content` drops that floor so a panel of short rows stops being padded out to a wide
+   * trigger; `fixed` pins BOTH edges, which is the only way a number can mean one width rather
+   * than a minimum. */
+  .ui-search-select-panel[data-popup-match="content"] {
+    min-inline-size: auto;
+  }
+
+  .ui-search-select-panel[data-popup-match="fixed"] {
+    min-inline-size: var(--search-select-panel-inline-size);
+    inline-size: var(--search-select-panel-inline-size);
+  }
+
+  /* antd `menuItemSelectedIcon` — parked at the row's inline end so it never displaces the label. */
+  .ui-search-select-selected-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-inline-start: auto;
+    flex-shrink: 0;
   }
 
   .ui-search-select-command {
@@ -1512,8 +1609,25 @@
     box-shadow: var(--shadow-md);
   }
 
+  /* antd `popupMatchSelectWidth` for the plain (no-search) listbox. Absent = the trigger width is
+   * the floor; `content` lets the popup hug its rows; `fixed` pins it to the consumer's number. */
+  .ui-select-content[data-popup-match="fixed"] {
+    min-width: var(--select-content-inline-size);
+    width: var(--select-content-inline-size);
+  }
+
   .ui-select-viewport {
     padding: var(--menu-content-space-inset);
+  }
+
+  /* antd `notFoundContent` inside the plain listbox — a quiet, non-selectable row, so the popup is
+   * never a blank rectangle. */
+  .ui-select-empty {
+    padding-inline: var(--select-item-space-inline);
+    padding-block: var(--select-empty-space-block);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--menu-item-font-size);
+    text-align: center;
   }
 
   /* A listbox row has no leading icon column, so it takes a slightly wider inline inset to read

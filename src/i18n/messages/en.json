@@ -109,6 +109,9 @@
       "empty": "No results",
       "error": "Couldn’t load options"
     },
+    "selection": {
+      "overflow": "+{count}"
+    },
     "monthPicker": {
       "openGrid": "Open month grid",
       "previousYear": "Previous year",

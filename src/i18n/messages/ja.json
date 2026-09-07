@@ -109,6 +109,9 @@
       "empty": "該当なし",
       "error": "選択肢を読み込めませんでした"
     },
+    "selection": {
+      "overflow": "他{count}件"
+    },
     "monthPicker": {
       "openGrid": "月選択を開く",
       "previousYear": "前年へ",
