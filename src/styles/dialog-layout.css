@@ -289,7 +289,14 @@
 
   .ui-popover-content {
     z-index: var(--overlay-z-index);
-    width: var(--popover-width);
+    /* Width goes through a knob, not an absolute value, so a panel that owns its own box can
+     * retune it from ANY stylesheet. A modifier that re-declares `width` instead only wins if it
+     * is declared after this rule, and control.css is imported BEFORE this file — measured in
+     * Chromium: the TimePicker panel sat 144px wide inside a 288px popover, 111px of it empty.
+     * A custom property set on the same element has no ordering problem, because this rule is its
+     * only reader. Padding needs no second knob: it already reads a token, which is exactly how
+     * `PopoverContent flush` zeroes it (gh#354), and a modifier can set that same token. */
+    width: var(--popover-surface-inline-size, var(--popover-width));
     padding: var(--popover-space-inset);
     border-radius: var(--popover-radius);
     border: 1px solid var(--popover-surface-border-color, hsl(var(--border)));

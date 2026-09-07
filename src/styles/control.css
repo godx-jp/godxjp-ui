@@ -1281,16 +1281,16 @@
 
   /* SEARCH-SELECT — Popover + Command combobox. */
   .ui-search-select-panel {
+    --popover-surface-inline-size: max-content;
+    --popover-space-inset: 0;
     display: flex;
     flex-direction: column;
     max-block-size: var(--radix-popover-content-available-height);
-    inline-size: max-content;
     max-inline-size: min(
       var(--search-select-panel-max-width),
       calc(100vw - var(--search-select-panel-viewport-inset))
     );
     min-inline-size: var(--radix-popover-trigger-width);
-    padding: 0;
   }
 
   .ui-search-select-command {
@@ -1447,9 +1447,9 @@
   }
 
   .ui-cascader-popover {
-    inline-size: auto;
+    --popover-surface-inline-size: auto;
+    --popover-space-inset: 0;
     min-inline-size: var(--radix-popover-trigger-width);
-    padding: 0;
   }
 
   .ui-cascader-empty {
@@ -1663,16 +1663,16 @@
   }
 
   .ui-time-picker-popover {
-    inline-size: auto;
-    padding: 0;
+    --popover-surface-inline-size: auto;
+    --popover-space-inset: 0;
   }
 
   /* Two affix controls (clear + clock), so a wider reserved end than the single-affix triggers. */
   /* A popover whose content owns its own padding (a Calendar, a month grid) — the panel just hugs
    * it. */
   .ui-control-panel-flush {
-    inline-size: auto;
-    padding: 0;
+    --popover-surface-inline-size: auto;
+    --popover-space-inset: 0;
   }
 
   .ui-control-inline-affix-pair-affixed {
@@ -1780,8 +1780,8 @@
 @layer components {
   /* TREE SELECT — a Select whose panel holds a tree. */
   .ui-tree-select-popover {
-    inline-size: var(--radix-popover-trigger-width);
-    padding: 0;
+    --popover-surface-inline-size: var(--radix-popover-trigger-width);
+    --popover-space-inset: 0;
   }
 
   .ui-tree-select-list {
@@ -2174,8 +2174,8 @@
   }
 
   .ui-month-picker-panel {
-    inline-size: auto;
-    padding: var(--month-picker-panel-space-inset);
+    --popover-surface-inline-size: auto;
+    --popover-space-inset: var(--month-picker-panel-space-inset);
   }
 
   .ui-month-picker-nav {
