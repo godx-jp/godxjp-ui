@@ -44,6 +44,10 @@ import { readFileSync, writeFileSync } from "node:fs";
 const require = createRequire(import.meta.url);
 const theme = require("antd/lib/theme/index.js").default;
 const { version: ANTD_VERSION } = require("antd/package.json");
+/* Reached THROUGH antd rather than as a dependency of this repo, so the palette this script walks
+ * is byte-for-byte the one antd itself derived its tokens from. A separately pinned
+ * `@ant-design/colors` could drift a version and reflect against a ramp antd never used. */
+const { generate } = createRequire(require.resolve("antd/package.json"))("@ant-design/colors");
 
 const OUT = "src/tokens/antd.generated.css";
 const SOURCE = "src/tokens/foundation.css";
@@ -175,6 +179,184 @@ const TOKENS = {
 };
 
 /**
+ * ANTD'S OWN TEN-STEP RAMP, rebuilt so the interactive steps can be READ AS POSITIONS rather than
+ * as three unrelated colours.
+ *
+ * `getDesignToken()` hands back `colorPrimaryHover` and `colorPrimaryActive` as bare hexes. That is
+ * enough to copy them, but not enough to REASON about them: the whole question below is "which way
+ * along the ramp does this step move, and what is the step next to it". antd builds both maps from
+ * `generate()` — light with the default background, dark with `#141414` (its `darkAlgorithm`'s own
+ * argument) — so rebuilding that array recovers the positions antd used.
+ *
+ * `paletteProblems()` proves the reconstruction is antd's: if the three tokens do not land on the
+ * indices below, the ramp is not the one antd used and every conclusion drawn from it is void.
+ *
+ * It asserts only the ramps this file actually WALKS — primary and error. antd runs two different
+ * recipes: `colorPrimaryHover`/`colorErrorHover` are ramp step 4, while the status roles
+ * (`colorSuccessHover` and friends) are step 3, a shallower move for a colour that mostly shows up
+ * as a tint behind a message. Asserting one rule over both would be asserting something antd never
+ * claimed, and the status roles never reach the reflection below.
+ */
+const DARK_PALETTE_BACKGROUND = "#141414";
+const SEED_INDEX = 5;
+
+const PALETTES = {
+  light: Object.fromEntries(
+    Object.entries(SEEDS.light).map(([antdKey, seed]) => [antdKey, generate(seed)]),
+  ),
+  dark: Object.fromEntries(
+    Object.entries(SEEDS.dark).map(([antdKey, seed]) => [
+      antdKey,
+      generate(seed, { theme: "dark", backgroundColor: DARK_PALETTE_BACKGROUND }),
+    ]),
+  ),
+};
+
+function paletteProblems() {
+  const problems = [];
+  for (const mode of ["light", "dark"]) {
+    for (const antdKey of TEXT_BEARING_FILLS.map((fill) => fill.antd)) {
+      const ramp = PALETTES[mode][antdKey];
+      const base = antdKey.replace(/^color/, "");
+      for (const [suffix, expected] of [
+        ["", SEED_INDEX],
+        ["Hover", mode === "light" ? SEED_INDEX - 1 : SEED_INDEX + 1],
+        ["Active", mode === "light" ? SEED_INDEX + 1 : SEED_INDEX - 1],
+      ]) {
+        const token = `color${base}${suffix}`;
+        const value = TOKENS[mode][token];
+        if (value === undefined) continue;
+        const at = ramp.indexOf(value);
+        if (at !== expected) {
+          problems.push(
+            `${mode} ${token} = ${value} sits at ramp index ${at}, expected ${expected} — ` +
+              `the rebuilt ramp is not the one antd used`,
+          );
+        }
+      }
+    }
+  }
+  return problems;
+}
+
+/**
+ * FILLS THAT CARRY TEXT — the one place antd's answer is not this library's answer, and the reason
+ * is a floor antd does not hold.
+ *
+ * antd moves an interactive fill one ramp step LIGHTER on hover in the light theme (and one step
+ * DARKER on press in the dark theme). On a fill that is only a fill that is fine. On a fill with a
+ * label sitting on it, that step walks TOWARDS the label's own colour, and antd is content to let
+ * it: antd's stock `#1677ff` primary button measures 3.1:1 against its white label and ships that
+ * way. docs/DESIGN-AUTHORITY.md gives colour-on-text to the Japanese standard, and JIS X 8341-3
+ * tracks WCAG AA — 4.5:1 for a 14px label. Where those two disagree the label wins.
+ *
+ * THE REFLECTION IS NOT A HAND-PICKED COLOUR. When antd's step lands under the floor there is no
+ * value on that side of the ramp that clears it — the ramp only gets closer to the label from
+ * there — so the ramp is reflected about the seed and the two states run monotonically AWAY from
+ * the label: hover one step out, active two. Both are antd's own ramp entries at antd's own step
+ * size; what changes is the sign, and it changes only where it is measurably forced.
+ *
+ * `reflectionProblems()` re-measures every reflection: one that is no longer forced is an error, so
+ * this cannot rot into a preference.
+ */
+const TEXT_ON_FILL_FLOOR = 4.5;
+
+const TEXT_BEARING_FILLS = [
+  { antd: "colorPrimary", hover: "--primary-hover", active: "--primary-active", foreground: "primary-foreground" },
+  {
+    antd: "colorError",
+    hover: "--destructive-hover",
+    active: "--destructive-active",
+    foreground: "destructive-foreground",
+  },
+];
+
+/** The ramp direction that moves a fill AWAY from its own label. Measured, never assumed. */
+function awayFromText(ramp, foreground) {
+  const lighter = contrast(hexToRgb(ramp[SEED_INDEX + 1]), foreground);
+  const darker = contrast(hexToRgb(ramp[SEED_INDEX - 1]), foreground);
+  return lighter >= darker ? 1 : -1;
+}
+
+/**
+ * @returns {Map<string, {token: string, value: string, antdValue: string, antdContrast: number,
+ *   contrast: number, steps: number, failed: boolean}>} keyed `${mode}|${token}`
+ */
+function reflections() {
+  const out = new Map();
+  for (const mode of ["light", "dark"]) {
+    for (const fill of TEXT_BEARING_FILLS) {
+      const ramp = PALETTES[mode][fill.antd];
+      const foreground = hslToRgb(role(mode, fill.foreground));
+      const states = [
+        ["Hover", fill.hover],
+        ["Active", fill.active],
+      ];
+      const failing = states.filter(
+        ([suffix]) =>
+          contrast(hexToRgb(TOKENS[mode][`${fill.antd}${suffix}`]), foreground) < TEXT_ON_FILL_FLOOR,
+      );
+      if (failing.length === 0) continue;
+      const step = awayFromText(ramp, foreground);
+      states.forEach(([suffix, token], index) => {
+        const value = ramp[SEED_INDEX + step * (index + 1)];
+        const antdValue = TOKENS[mode][`${fill.antd}${suffix}`];
+        const antdContrast = contrast(hexToRgb(antdValue), foreground);
+        out.set(`${mode}|${token}`, {
+          token,
+          value,
+          antdValue,
+          antdContrast,
+          contrast: contrast(hexToRgb(value), foreground),
+          steps: index + 1,
+          /** true when THIS state is the one that failed, false when it moved with its sibling. */
+          failed: antdContrast < TEXT_ON_FILL_FLOOR,
+        });
+      });
+    }
+  }
+  return out;
+}
+
+const REFLECTIONS = reflections();
+
+function reflectionProblems() {
+  const problems = [];
+  for (const mode of ["light", "dark"]) {
+    for (const fill of TEXT_BEARING_FILLS) {
+      const foreground = hslToRgb(role(mode, fill.foreground));
+      for (const [suffix, token] of [
+        ["Hover", fill.hover],
+        ["Active", fill.active],
+      ]) {
+        const reflected = REFLECTIONS.get(`${mode}|${token}`);
+        if (!reflected) continue;
+        if (reflected.contrast < TEXT_ON_FILL_FLOOR) {
+          problems.push(
+            `${mode} ${token} reflects to ${reflected.value} and still measures ` +
+              `${reflected.contrast.toFixed(2)}:1 — under the ${TEXT_ON_FILL_FLOOR}:1 floor`,
+          );
+        }
+        const antdValue = TOKENS[mode][`${fill.antd}${suffix}`];
+        const sibling = REFLECTIONS.get(
+          `${mode}|${token === fill.hover ? fill.active : fill.hover}`,
+        );
+        const forced =
+          contrast(hexToRgb(antdValue), foreground) < TEXT_ON_FILL_FLOOR ||
+          (sibling && sibling.antdContrast < TEXT_ON_FILL_FLOOR);
+        if (!forced) {
+          problems.push(
+            `${mode} ${token} is reflected, but antd's own ${fill.antd}${suffix} = ${antdValue} ` +
+              `now clears the floor — the reflection is no longer forced, so drop it`,
+          );
+        }
+      }
+    }
+  }
+  return problems;
+}
+
+/**
  * GEOMETRY antd owns, and which this library already agrees with to the pixel.
  *
  * Asserted rather than emitted: a generated `--stroke-md: 2px` would be a SECOND declaration of a
@@ -280,6 +462,24 @@ function derive(mode) {
   const lines = [];
   for (const entry of MAP) {
     if (CONFLICTS.some((c) => c.token === entry.token && c.mode === mode)) continue;
+    const reflected = REFLECTIONS.get(`${mode}|${entry.token}`);
+    if (reflected) {
+      lines.push({
+        ...entry,
+        note: reflected.failed
+          ? `antd ${entry.antd} = ${reflected.antdValue} measures ` +
+            `${reflected.antdContrast.toFixed(2)}:1 on its own label, under the ` +
+            `${TEXT_ON_FILL_FLOOR}:1 floor — same ramp, same step size, opposite sign`
+          : `antd ${entry.antd} = ${reflected.antdValue} clears the floor at ` +
+            `${reflected.antdContrast.toFixed(2)}:1 on its own label; it moves only because the ` +
+            `ramp was reflected for its sibling state, and the two must stay one step apart`,
+        value: toTriple(hexToRgb(reflected.value)),
+        source:
+          `ramp ${reflected.steps === 1 ? "1 step" : `${reflected.steps} steps`} away from the ` +
+          `label = ${reflected.value}, ${reflected.contrast.toFixed(2)}:1`,
+      });
+      continue;
+    }
     const { rgb, alpha } = parseColor(t[entry.antd]);
     if (alpha !== 1) throw new Error(`${entry.antd} is translucent; map it through OUTLINES`);
     lines.push({ ...entry, value: toTriple(rgb), source: hex(rgb) });
@@ -320,6 +520,20 @@ function render() {
   out.push(" * Every value below is the algorithm's output. Nothing here was chosen by a person:");
   out.push(" * to move a derived colour, move the seed. Regenerate with `pnpm gen:antd-tokens`;");
   out.push(" * `pnpm check:antd-tokens` fails the build if this file drifts from the algorithm.");
+  if (REFLECTIONS.size) {
+    out.push(" *");
+    out.push(` * ${REFLECTIONS.size} interactive fill state(s) run along antd's ramp in the OPPOSITE`);
+    out.push(" * direction to antd's own step, because antd's step walks the fill towards the label");
+    out.push(` * sitting on it and lands under ${TEXT_ON_FILL_FLOOR}:1 (JIS X 8341-3 / WCAG AA). The value`);
+    out.push(" * is still antd's ramp at antd's step size; only the sign moved, and only where measured:");
+    for (const [key, r] of REFLECTIONS) {
+      const [mode] = key.split("|");
+      out.push(
+        ` *   ${mode.padEnd(5)} ${r.token.padEnd(20)} ${r.antdValue} ${r.antdContrast.toFixed(2)}:1` +
+          ` → ${r.value} ${r.contrast.toFixed(2)}:1`,
+      );
+    }
+  }
   out.push(" *");
   out.push(" * antd is a devDependency and a BUILD-TIME tool. Nothing from it ships — see");
   out.push(" * scripts/check-no-antd-runtime.mjs.");
@@ -332,7 +546,11 @@ function render() {
     out.push(`${selector} {`);
     for (const line of derive(mode)) {
       if (line.note) out.push(`  /* ${line.note} */`);
-      out.push(`  ${line.token}: ${line.value}; /* antd ${line.antd} = ${line.source} */`);
+      out.push(
+        `  ${line.token}: ${line.value}; /* ${
+          REFLECTIONS.has(`${mode}|${line.token}`) ? "" : `antd ${line.antd} = `
+        }${line.source} */`,
+      );
     }
     out.push("");
     out.push("  /* antd has no separate focus-colour token: a focused field's border simply");
@@ -393,6 +611,18 @@ function report() {
     console.log(`  antd ${antdName.padEnd(20)} = ${String(expected).padEnd(4)} ↔ ${token} = ${declared}`);
   }
   console.log(
+    REFLECTIONS.size
+      ? `\n── ${REFLECTIONS.size} reflected interactive fill state(s) (antd's ramp, opposite sign) ──`
+      : "\n── no reflections: antd's own interactive steps all clear the text-on-fill floor ──",
+  );
+  for (const [key, r] of REFLECTIONS) {
+    const [mode] = key.split("|");
+    console.log(
+      `  ${mode} ${r.token}: antd ${r.antdValue} ${r.antdContrast.toFixed(2)}:1 → ` +
+        `${r.value} ${r.contrast.toFixed(2)}:1`,
+    );
+  }
+  console.log(
     CONFLICTS.length
       ? `\n── ${CONFLICTS.length} recorded conflicts (antd's value rejected, committed value stands) ──`
       : "\n── no recorded conflicts: every mapped antd value clears the floors this repo gates ──",
@@ -404,7 +634,7 @@ function report() {
 
 const args = new Set(process.argv.slice(2));
 const body = render();
-const problems = geometryProblems();
+const problems = [...geometryProblems(), ...paletteProblems(), ...reflectionProblems()];
 
 if (args.has("--report")) {
   report();
