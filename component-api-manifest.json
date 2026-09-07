@@ -252,7 +252,7 @@
           "origin": "owned",
           "required": false,
           "type": "ActivityVariantProp | undefined",
-          "values": ["bar", "dots", "pulse"],
+          "values": ["dots", "pulse", "bar"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
@@ -12478,8 +12478,9 @@
           "name": "as",
           "origin": "owned",
           "required": false,
-          "type": "\"abbr\" | \"caption\" | \"code\" | \"dd\" | \"div\" | \"dt\" | \"em\" | \"kbd\" | \"label\" | \"p\" | \"small\" | \"span\" | \"strong\" | undefined",
+          "type": "\"a\" | \"abbr\" | \"caption\" | \"code\" | \"dd\" | \"div\" | \"dt\" | \"em\" | \"kbd\" | \"label\" | \"p\" | \"small\" | \"span\" | \"strong\" | undefined",
           "values": [
+            "a",
             "abbr",
             "caption",
             "code",
@@ -12497,10 +12498,34 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "clamp",
           "origin": "owned",
           "required": false,
           "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "download",
+          "origin": "owned",
+          "required": false,
+          "type": "any",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "href",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
@@ -12513,12 +12538,31 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "link",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "mono",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "rel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "src/props/components/general.prop.ts"
+          ]
         },
         {
           "name": "size",
@@ -12534,6 +12578,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "target",
+          "origin": "owned",
+          "required": false,
+          "type": "React.HTMLAttributeAnchorTarget | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
