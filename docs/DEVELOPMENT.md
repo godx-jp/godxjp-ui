@@ -117,8 +117,9 @@ A change isn't done until its documentation reflects it:
 ```bash
 pnpm lint                 # eslint — self-contained flat config
 pnpm typecheck            # tsc --noEmit
-pnpm test                 # vitest per component
-pnpm preview:build        # integration test: examples + docs must build
+pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2   # ONLY what you touched
+pnpm test                 # FULL suite — CI only, never from an agent loop
+pnpm preview:build        # integration test: examples + docs must build — at most once, pre-PR
 pnpm audit                # godxjp-ui-audit — 0 errors for touched files
 pnpm check:mcp-sync       # MCP registry ↔ library export drift guard
 ```

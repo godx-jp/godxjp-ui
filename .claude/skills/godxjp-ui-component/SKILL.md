@@ -195,9 +195,18 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
 ```
 pnpm typecheck && pnpm lint && pnpm run audit \
   && pnpm check:prop-vocabulary && pnpm check:mcp-sync && pnpm check:mcp-orphans \
-  && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports \
-  && pnpm preview:build && pnpm test     # incl. your *.a11y.test.tsx (0 axe violations)
+  && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports
+
+# then ONLY your own component's tests, incl. your *.a11y.test.tsx (0 axe violations):
+pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2
 ```
+
+**`pnpm test` and a bare `pnpm vitest run` are FORBIDDEN here.** That is 506 files /
+3700+ tests; run from an agent loop, and multiplied by parallel agents, it has put 70
+vitest workers on one machine at load 90 and burnt a monthly API budget. The full suite
+is CI's job on the PR — `tal --help` says it outright: *FULL SUITE KHÔNG THUỘC VỀ VÒNG
+LẶP.* `pnpm preview:build` / `pnpm verify:ci:static` run AT MOST ONCE, immediately
+before opening the PR, never inside the loop.
 
 Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
 
@@ -227,7 +236,7 @@ Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
 - [ ] **Tokens** — semantic only; control box from the `--control-height` tier (no literal height/`calc`)
 - [ ] **Stateful correctness** — drove EVERY mode to terminal state in a real browser, console clean; refined behaviours per [[godxjp-ui-interaction-feel]]; codified via [[godxjp-ui-behavioral-test]]
 - [ ] **Catalog + docs** — added `mcp/src/data/components.ts` entry + a real-screen docs page ([[godxjp-ui-example-page]]); see [[godxjp-ui-mcp-catalog-sync]]
-- [ ] **Verify suite ALL green**: `pnpm typecheck && pnpm lint && pnpm run audit && pnpm check:prop-vocabulary && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports && pnpm preview:build && pnpm test`
+- [ ] **Cheap gates green**: `pnpm typecheck && pnpm lint && pnpm run audit && pnpm check:prop-vocabulary && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports`, then **your component's tests only** — `pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2`. NEVER `pnpm test`; the full suite is CI's.
 
 ## References (read when unsure)
 

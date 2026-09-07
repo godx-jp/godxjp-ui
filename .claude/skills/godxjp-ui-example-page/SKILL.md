@@ -63,7 +63,8 @@ AUDIT LEDGER — <group>-<name>  (paste filled-in; one line of real evidence per
 [ ] Stateful checks (if the control holds state): held value visible on open ✓ ·
       re-pickable from a complete state ✓ · controlled value mirrors type↔click ✓
 [ ] Screenshots at 390 / 768 / 1280 ✓
-[ ] Verify suite green: typecheck · lint · audit · test · preview:build
+[ ] Cheap gates green: typecheck · lint · audit — then ONLY this page's tests
+      (`pnpm vitest run <path> --maxWorkers=2`). NEVER `pnpm test`; the full suite is CI's.
 ```
 
 If any box cannot be ticked with evidence, that is the next bug to investigate — **stop and fix,
