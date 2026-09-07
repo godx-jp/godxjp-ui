@@ -60,6 +60,35 @@ export type SizeProp = "xs" | "sm" | "md" | "lg";
 /** Button size preset; icon-only sizes are a documented Button subset. */
 export type ButtonSizeProp = SizeProp | "default" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
 
+/**
+ * Validation state a data-entry control PAINTS — Ant Design's `status` axis, which
+ * docs/DESIGN-AUTHORITY.md names the taxonomy authority for this library.
+ *
+ * Two members, not antd's five. `error` and `warning` are the two antd paints from the prop alone;
+ * `success` and `validating` are only ever drawn together with antd's `hasFeedback` icon slot,
+ * which this library does not have (FormField owns the message and the icon), and `""` is antd's
+ * way of spelling "no status" in a required field — `undefined` already says that here.
+ *
+ * `error` and `aria-invalid` are the same state seen from two sides: a control given
+ * `status="error"` also reports `aria-invalid`, so the paint and the announcement can never drift.
+ * `warning` deliberately does NOT set `aria-invalid` — a warning is not a validity failure, and
+ * antd does not announce one either.
+ */
+export type ControlStatusProp = "error" | "warning";
+
+/**
+ * How much chrome a data-entry control draws — Ant Design's `variant` axis.
+ * - `outlined` (default) — the historical field: boundary, surface and resting shadow.
+ * - `filled` — no boundary at rest, a tinted surface instead; the dense-form treatment.
+ * - `borderless` — neither boundary nor surface, for a field embedded in a box that already draws
+ *   one (a composer inside a Card, an inline edit cell).
+ *
+ * antd's fourth member `underlined` is deliberately absent — see docs/DESIGN-AUTHORITY.md: a
+ * single bottom rule is a Material convention, and SmartHR (the Japanese-UI authority here) draws
+ * every form field as a full box.
+ */
+export type ControlVariantProp = "outlined" | "filled" | "borderless";
+
 /** Form layout — label position relative to its control (Ant-style). */
 export type FormLayoutProp = "vertical" | "horizontal" | "inline";
 

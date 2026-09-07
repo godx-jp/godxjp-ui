@@ -52,10 +52,18 @@ export function CheckboxVisual({
   );
 }
 
+/**
+ * Spelled out here rather than imported from `props/components/data-entry.prop` (where the same
+ * shape is declared as `CheckboxProp` for the catalog) for ONE mechanical reason: the API-manifest
+ * generator treats an inherited prop as public the moment the implementation source mentions its
+ * name as a bare word, and a TS-only import line would introduce exactly such a word — publishing
+ * the underlying `<button>`'s HTML kind attribute as part of Checkbox's API. Same trap the comment
+ * inside `input.tsx` records for the native form-submission attribute; keep this file free of it.
+ */
 const CheckboxRoot = React.forwardRef<
   React.ComponentRef<typeof CheckboxPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
->(({ className, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & { indeterminate?: boolean }
+>(({ className, indeterminate, ...props }, ref) => {
   // The machine key for a Checkbox NESTED under a layout wrapper (the 「不明」 box beside
   // a value input is the shape this was measured on). `{}` in every other case, and the resolved
   // `name` reaches Radix's hidden bubble input so the box still submits natively.
@@ -70,7 +78,14 @@ const CheckboxRoot = React.forwardRef<
   const [uncontrolled, setUncontrolled] = React.useState<CheckboxPrimitive.CheckedState>(
     props.defaultChecked ?? false,
   );
-  const state = props.checked ?? uncontrolled;
+  // antd `indeterminate` is a SEPARATE boolean beside `checked`; Radix spells the same state as
+  // `checked="indeterminate"`. While the flag is true it wins, and the box falls back to whatever
+  // `checked` said the moment it goes false — which is exactly antd's "some / all / none" header
+  // box: the flag reports the partial selection and never destroys the underlying value.
+  const resolvedChecked: CheckboxPrimitive.CheckedState | undefined = indeterminate
+    ? "indeterminate"
+    : props.checked;
+  const state = resolvedChecked ?? uncontrolled;
   return (
     <CheckboxPrimitive.Root
       ref={ref}
@@ -88,6 +103,7 @@ const CheckboxRoot = React.forwardRef<
         className,
       )}
       {...props}
+      checked={resolvedChecked}
       {...identity}
       onCheckedChange={(next) => {
         setUncontrolled(next);

@@ -525,9 +525,9 @@
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
     "exports": 291,
     "dimensionCells": 4074,
-    "covered": 66,
+    "covered": 72,
     "untested": 2234,
-    "notApplicable": 1774,
+    "notApplicable": 1768,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -4496,12 +4496,12 @@
         "docs/data-entry/input.tsx"
       ],
       "baseline": {
-        "covered": 1,
-        "notApplicable": 4,
+        "covered": 2,
+        "notApplicable": 3,
         "untested": 9
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
@@ -5533,12 +5533,12 @@
         "docs/data-entry/number-input.tsx"
       ],
       "baseline": {
-        "covered": 1,
-        "notApplicable": 4,
+        "covered": 2,
+        "notApplicable": 3,
         "untested": 9
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
@@ -5814,12 +5814,12 @@
         "docs/data-entry/password-input.tsx"
       ],
       "baseline": {
-        "covered": 1,
-        "notApplicable": 6,
+        "covered": 2,
+        "notApplicable": 5,
         "untested": 7
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
@@ -6572,12 +6572,12 @@
         "docs/data-entry/search-input.tsx"
       ],
       "baseline": {
-        "covered": 0,
-        "notApplicable": 5,
+        "covered": 1,
+        "notApplicable": 4,
         "untested": 9
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -6600,14 +6600,14 @@
         "docs/data-entry/segmented.tsx"
       ],
       "baseline": {
-        "covered": 0,
-        "notApplicable": 5,
+        "covered": 1,
+        "notApplicable": 4,
         "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -8114,14 +8114,14 @@
         "docs/data-entry/textarea.tsx"
       ],
       "baseline": {
-        "covered": 1,
-        "notApplicable": 4,
+        "covered": 2,
+        "notApplicable": 3,
         "untested": 9
       },
       "dimensions": {
         "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",

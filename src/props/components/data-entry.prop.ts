@@ -32,6 +32,8 @@ import type {
   DensityProp,
   SizeProp,
   TitleProp,
+  ControlStatusProp,
+  ControlVariantProp,
 } from "../vocabulary";
 import type { ResponsiveGridColumnsProp } from "./layout.prop";
 
@@ -51,8 +53,36 @@ export type InputOTPGroupProp = React.HTMLAttributes<HTMLDivElement> & {
  */
 export type InputOTPAlignProp = "start" | "center" | "end";
 
+/**
+ * Character-counter configuration shared by `Input` and `Textarea` — Ant Design's `count`
+ * (`@rc-component/input`'s `CountConfig`).
+ *
+ * antd's `exceedFormatter` is deliberately absent: it rewrites the field's text while the user is
+ * still typing, which in Japanese truncates a live IME conversion. The counter here REPORTS an
+ * overrun (`data-exceeded` on the counter element) and never edits the value.
+ */
+export type ControlCountProp = {
+  /** Ceiling reported by the counter. Displayed, never enforced — see the note above. */
+  max?: number;
+  /** Render the counter. Default `true` whenever `count` is given at all. */
+  show?: boolean;
+  /** Replaces the whole counter text. */
+  formatter?: (info: { value: string; count: number; max?: number }) => React.ReactNode;
+  /**
+   * How a character is counted. The default counts CODE POINTS, not UTF-16 units, so one emoji
+   * and one 全角 kanji each count as one. Pass `(v) => v.length` for native `maxLength` semantics.
+   */
+  strategy?: (value: string) => number;
+};
+
 /** @see Input */
-export type InputProp = React.InputHTMLAttributes<HTMLInputElement> & {
+export type InputProp = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "prefix"> & {
+  /** Control height tier: `md` (default), `sm` or `lg` — the same tiers as SelectTrigger. */
+  size?: "sm" | "md" | "lg";
+  /** Validation state the field paints — antd `status`. `error` also reports `aria-invalid`. */
+  status?: ControlStatusProp;
+  /** Chrome level — antd `variant`. Default `outlined`. */
+  variant?: ControlVariantProp;
   /** Show an inline ✕ that clears the field while it holds text (default false). */
   allowClear?: boolean;
   /** Called after the field is cleared via the inline ✕. */
@@ -61,6 +91,16 @@ export type InputProp = React.InputHTMLAttributes<HTMLInputElement> & {
   leadingIcon?: React.ReactNode;
   /** A trailing affordance pinned inside the end of the field (replaced by the clear ✕ when `allowClear` + value). */
   trailingIcon?: React.ReactNode;
+  /** antd `prefix` — content pinned INSIDE the start of the field (¥, a unit, a small glyph). */
+  prefix?: React.ReactNode;
+  /** antd `suffix` — content pinned INSIDE the end of the field (%, 円, a hint glyph). */
+  suffix?: React.ReactNode;
+  /** antd `addonBefore` — a segment welded OUTSIDE the start of the box (`https://`, a currency). */
+  addonBefore?: React.ReactNode;
+  /** antd `addonAfter` — a segment welded OUTSIDE the end of the box (`.com`, a unit, a button). */
+  addonAfter?: React.ReactNode;
+  /** Character counter — antd `count`. */
+  count?: ControlCountProp;
 };
 
 /** @see Textarea */
@@ -69,13 +109,27 @@ export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   allowClear?: boolean;
   /** Called after the field is cleared via the inline ✕. */
   onClear?: () => void;
-  /** `ghost` drops the field's own border/background/ring for a textarea inside a surface that already draws the box. */
-  variant?: "default" | "ghost";
+  /**
+   * Chrome level. `outlined` (default) / `filled` / `borderless` are antd's `variant`; `default`
+   * and `ghost` are this library's older spellings of the first and the last, still accepted.
+   */
+  variant?: ControlVariantProp | "default" | "ghost";
+  /** Validation state the field paints — antd `status`. `error` also reports `aria-invalid`. */
+  status?: ControlStatusProp;
+  /** Control height tier: `md` (default), `sm` or `lg`. */
+  size?: "sm" | "md" | "lg";
   autoGrow?: boolean;
+  /**
+   * antd `autoSize`. `true` is `autoGrow`; an object also carries the row bounds, so
+   * `autoSize={{ minRows: 2, maxRows: 6 }}` is `autoGrow minRows={2} maxRows={6}`.
+   */
+  autoSize?: boolean | { minRows?: number; maxRows?: number };
   /** Floor in text rows while `autoGrow`; never undercuts the `--control-height` tier. */
   minRows?: number;
   /** Ceiling in text rows while `autoGrow` — past it the control scrolls internally. `0` = unbounded. */
   maxRows?: number;
+  /** Character counter — antd `count`. */
+  count?: ControlCountProp;
 };
 
 /**
@@ -96,6 +150,24 @@ export type NumberInputProp = FieldA11yProps & {
   step?: number;
   /** Committed decimal places. Inferred from `step` when omitted. */
   precision?: number;
+  /**
+   * antd `formatter` — how the committed number is DISPLAYED at rest (thousands separators, a
+   * unit). Replaces the built-in `Intl.NumberFormat`; pair it with `parser`, or the text it
+   * produces cannot be read back.
+   */
+  formatter?: (value: number | null) => string;
+  /** antd `parser` — turns the displayed text back into a number. The inverse of `formatter`. */
+  parser?: (display: string) => number | null;
+  /** antd `keyboard` — ArrowUp/ArrowDown step the value. Default `true`. */
+  keyboard?: boolean;
+  /** antd `changeOnWheel` — a mouse wheel over the FOCUSED field steps the value. Default `false`. */
+  changeOnWheel?: boolean;
+  /** antd `controls` — show the increment/decrement steppers. Default `true`. */
+  controls?: boolean;
+  /** Validation state the field paints — antd `status`. `error` also reports `aria-invalid`. */
+  status?: ControlStatusProp;
+  /** Chrome level — antd `variant`. Default `outlined`. */
+  variant?: ControlVariantProp;
   disabled?: DisabledProp;
   /** Read-only: value is shown and selectable but neither typeable nor steppable. */
   readOnly?: boolean;
@@ -262,10 +334,21 @@ export type SearchInputProp = FieldA11yProps & {
   disabled?: DisabledProp;
   className?: ClassNameProp;
   inputClassName?: ClassNameProp;
+  /** Validation state the field paints — antd `status`. `error` also reports `aria-invalid`. */
+  status?: ControlStatusProp;
+  /** Chrome level — antd `variant`. Default `outlined`. */
+  variant?: ControlVariantProp;
 };
 
 /** @see Checkbox — extends Radix checkbox root props. */
-export type CheckboxProp = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>;
+export type CheckboxProp = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {
+  /**
+   * antd `indeterminate` — paint the PARTIAL mark (a dash) without changing `checked`. Radix
+   * spells the same state as `checked="indeterminate"`; this is the antd spelling of it, and the
+   * two compose: `indeterminate` wins while it is true, and the box falls back to `checked` after.
+   */
+  indeterminate?: boolean;
+};
 
 /** Shared option row — Ant Design `CheckboxOptionType`. */
 export type ChoiceOptionProp = {
@@ -303,7 +386,21 @@ export type RadioGroupProp = FieldA11yProps & {
   id?: IdProp;
   className?: ClassNameProp;
   children?: React.ReactNode;
+  /**
+   * antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label;
+   * `button` welds the choices into one segmented bar of radio buttons. The role stays
+   * `radiogroup`/`radio` either way: this is paint, never semantics.
+   */
+  optionType?: RadioOptionTypeProp;
+  /** antd `buttonStyle` — fill of the selected choice while `optionType="button"`. */
+  buttonStyle?: RadioButtonStyleProp;
 };
+
+/** antd `RadioGroupOptionType` — a radio group drawn as dots or as a welded button bar. */
+export type RadioOptionTypeProp = "default" | "button";
+
+/** antd `RadioGroupButtonStyle` — the selected button is outlined, or filled with the brand. */
+export type RadioButtonStyleProp = "outline" | "solid";
 
 /** @see Radio.Item — Radix radio group item. */
 export type RadioProp = React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>;
@@ -311,6 +408,16 @@ export type RadioProp = React.ComponentPropsWithoutRef<typeof RadioGroupPrimitiv
 /** @see Switch — extends Radix switch root props. */
 export type SwitchProp = React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root> & {
   size?: "sm" | "md";
+  /**
+   * antd `loading` — the toggle is mid-flight: a spinner replaces the thumb glyph and the control
+   * stops accepting input (`aria-disabled`, not `disabled`, so it keeps its tab stop and its
+   * accessible name while a screen reader hears `aria-busy`).
+   */
+  loading?: boolean;
+  /** antd `checkedChildren` — content shown INSIDE the track while on (`ON`, `有効`, a glyph). */
+  checkedChildren?: React.ReactNode;
+  /** antd `unCheckedChildren` — content shown inside the track while off. */
+  unCheckedChildren?: React.ReactNode;
 };
 
 /** @see Field — inline control + label + description wrapper. */
@@ -322,8 +429,48 @@ export type FieldProp = {
   children: React.ReactNode;
 };
 
+/**
+ * Tick marks on a slider rail — antd `SliderMarks`. Keyed by the value the mark sits on; the
+ * value is the label. `null` renders the tick with no label.
+ */
+export type SliderMarksProp = Record<number, React.ReactNode>;
+
+/**
+ * antd `tooltip` — the value bubble over a dragging thumb. `false` switches it off, `true` uses
+ * the raw value, and the object form formats it (a unit, a currency, a 全角 label).
+ */
+export type SliderTooltipProp =
+  | boolean
+  | {
+      /** Force the bubble on/off instead of following hover/drag. */
+      open?: boolean;
+      /** Render the bubble's content. `null` switches the bubble off, exactly as antd's does. */
+      formatter?: ((value: number) => React.ReactNode) | null;
+    };
+
 /** @see Slider — numeric range (Radix Slider). */
-export type SliderProp = React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>;
+export type SliderProp = React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> & {
+  /**
+   * antd `range` — two thumbs bounding a span rather than one thumb over a point. It is a
+   * DECLARATION, not an inference: a single-thumb slider whose `defaultValue` happens to be a
+   * two-element array used to become a range by accident, and a range whose value arrived
+   * asynchronously used to render as a point.
+   */
+  range?: boolean;
+  /** antd `marks` — labelled ticks along the rail. */
+  marks?: SliderMarksProp;
+  /** antd `dots` — a tick at every `step`. Requires a `step`. */
+  dots?: boolean;
+  /**
+   * antd `included` — whether the painted range is the span from the start to the thumb
+   * (`true`, the default) or nothing at all (`false`, for a rail that only holds marks).
+   */
+  included?: boolean;
+  /** antd `reverse` — run the scale the other way. Radix spells the same thing `inverted`. */
+  reverse?: boolean;
+  /** antd `tooltip` — the value bubble over a dragging thumb. Off by default. */
+  tooltip?: SliderTooltipProp;
+};
 
 /** @see Calendar — react-day-picker DayPicker plus an opt-in footer. */
 export type CalendarProp = DayPickerProps &

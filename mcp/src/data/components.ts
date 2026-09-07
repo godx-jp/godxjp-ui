@@ -4236,6 +4236,54 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     tagline:
       "Styled wrapper around native <input>; accepts all HTML input attributes. Pair with FormField for labelled fields.",
     props: [
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "Validation state the field paints — Ant Design `status`. `error` also reports `aria-invalid`, so the red boundary and what a screen reader hears are one fact; `warning` paints only, because a warning is not a validity failure. antd's `success`/`validating` are not implemented: antd only draws them together with its `hasFeedback` icon slot, which FormField owns here.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless"',
+        defaultValue: '"outlined"',
+        description:
+          "Chrome level — Ant Design `variant`. `outlined` is the historical field; `filled` swaps the boundary for a tinted surface (dense forms); `borderless` drops both, for a field inside a box that already draws one. antd's fourth member `underlined` is deliberately absent — a single bottom rule is a Material convention and SmartHR, the JP authority here, draws every field as a full box.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Control height tier — reads the shared `--control-height` ladder.",
+      },
+      {
+        name: "prefix",
+        type: "React.ReactNode",
+        description:
+          "antd `prefix` — content pinned INSIDE the start of the field (¥, a unit, a glyph). Unlike `leadingIcon` it is not aria-hidden, because a unit is meaning and not decoration.",
+      },
+      {
+        name: "suffix",
+        type: "React.ReactNode",
+        description:
+          "antd `suffix` — content pinned INSIDE the end of the field (%, 円). The clear ✕ replaces it while `allowClear` has a value, exactly as it replaces `trailingIcon`.",
+      },
+      {
+        name: "addonBefore",
+        type: "React.ReactNode",
+        description:
+          "antd `addonBefore` — a segment welded OUTSIDE the field's box (`https://`, a currency). Outside is the whole distinction from `prefix`: an addon has its own surface and closes the field's corners on the joined side.",
+      },
+      {
+        name: "addonAfter",
+        type: "React.ReactNode",
+        description: "antd `addonAfter` — the same, welded to the end of the box (`.com`, a unit).",
+      },
+      {
+        name: "count",
+        type: "{ max?: number; show?: boolean; formatter?: (info: { value: string; count: number; max?: number }) => React.ReactNode; strategy?: (value: string) => number }",
+        description:
+          "Character counter — Ant Design `count`. Counts CODE POINTS by default, so one emoji and one 全角 kanji are each worth one. It REPORTS an overrun (`data-exceeded`) and never edits the value: antd's `exceedFormatter` truncates while the user types, which in Japanese cuts a live IME conversion in half.",
+      },
       { name: "id", type: "string", description: "Associates with a <label htmlFor>." },
       { name: "type", type: "string", defaultValue: '"text"', description: "Native input type." },
       { name: "placeholder", type: "string", description: "Placeholder." },
@@ -4303,6 +4351,51 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     tagline:
       "WAI-ARIA spinbutton for localized numeric entry — composes the real Input (role=spinbutton, inputMode=decimal) with stacked increment/decrement step Buttons. Type freely, Arrow/Shift-Arrow step, value commits clamped to min/max + rounded to precision.",
     props: [
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "Validation state the field paints — Ant Design `status`. `error` also reports `aria-invalid`, so the red boundary and what a screen reader hears are one fact; `warning` paints only, because a warning is not a validity failure. antd's `success`/`validating` are not implemented: antd only draws them together with its `hasFeedback` icon slot, which FormField owns here.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless"',
+        defaultValue: '"outlined"',
+        description:
+          "Chrome level — Ant Design `variant`. `outlined` is the historical field; `filled` swaps the boundary for a tinted surface (dense forms); `borderless` drops both, for a field inside a box that already draws one. antd's fourth member `underlined` is deliberately absent — a single bottom rule is a Material convention and SmartHR, the JP authority here, draws every field as a full box.",
+      },
+      {
+        name: "formatter",
+        type: "(value: number | null) => string",
+        description:
+          "antd `formatter` — how the committed number is DISPLAYED at rest (a unit, a separator, 円). Replaces the built-in `Intl.NumberFormat`; pair it with `parser` or the text cannot be read back.",
+      },
+      {
+        name: "parser",
+        type: "(display: string) => number | null",
+        description:
+          "antd `parser` — the inverse of `formatter`. Without one, the built-in reader NFKC-folds 全角 digits, periods and minus signs to ASCII first, so a value typed on a Japanese keyboard survives blur.",
+      },
+      {
+        name: "keyboard",
+        type: "boolean",
+        defaultValue: "true",
+        description: "antd `keyboard` — ArrowUp/ArrowDown step the value (Shift = ×10).",
+      },
+      {
+        name: "changeOnWheel",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd `changeOnWheel` — a mouse wheel steps the value. Off by default and gated on FOCUS even when on, so scrolling past a long form cannot silently edit it.",
+      },
+      {
+        name: "controls",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "antd `controls` — draw the increment/decrement buttons. `false` keeps the spinbutton role and the arrow keys; it only stops drawing the two buttons.",
+      },
       {
         name: "value",
         type: "number | null",
@@ -4422,6 +4515,19 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     tagline:
       "Debounced search box with a clear button. Fires onSearch (NOT onChange) after the debounce. Controlled (value) or uncontrolled (defaultValue).",
     props: [
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "Validation state the field paints — Ant Design `status`. `error` also reports `aria-invalid`, so the red boundary and what a screen reader hears are one fact; `warning` paints only, because a warning is not a validity failure. antd's `success`/`validating` are not implemented: antd only draws them together with its `hasFeedback` icon slot, which FormField owns here.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless"',
+        defaultValue: '"outlined"',
+        description:
+          "Chrome level — Ant Design `variant`. `outlined` is the historical field; `filled` swaps the boundary for a tinted surface (dense forms); `borderless` drops both, for a field inside a box that already draws one. antd's fourth member `underlined` is deliberately absent — a single bottom rule is a Material convention and SmartHR, the JP authority here, draws every field as a full box.",
+      },
       {
         name: "onSearch",
         type: "(q: string) => void",
@@ -4837,6 +4943,24 @@ export function PrioritySelect({ value, onValueChange }) {
     group: "data-entry",
     tagline: "Radix toggle switch (bare). For a labelled row with a hidden form input use Field.",
     props: [
+      {
+        name: "loading",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd `loading` — the toggle is mid-flight: a spinner replaces the thumb glyph and the control refuses the change. It reports `aria-busy`/`aria-disabled` rather than `disabled`, so a keyboard user's focus is not thrown to the next field the instant they flip a switch that saves over the network.",
+      },
+      {
+        name: "checkedChildren",
+        type: "React.ReactNode",
+        description:
+          "antd `checkedChildren` — content shown INSIDE the track while on (`有効`, `ON`, a glyph). Rendered aria-hidden: `role=switch` + `aria-checked` already say on/off.",
+      },
+      {
+        name: "unCheckedChildren",
+        type: "React.ReactNode",
+        description: "antd `unCheckedChildren` — the same, shown while off.",
+      },
       { name: "checked", type: "boolean", description: "Controlled checked state." },
       {
         name: "onCheckedChange",
@@ -4892,6 +5016,37 @@ export function PrioritySelect({ value, onValueChange }) {
     group: "data-entry",
     tagline: "Styled wrapper around native <textarea>. Pair with FormField for labelled fields.",
     props: [
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "Validation state the field paints — Ant Design `status`. `error` also reports `aria-invalid`, so the red boundary and what a screen reader hears are one fact; `warning` paints only, because a warning is not a validity failure. antd's `success`/`validating` are not implemented: antd only draws them together with its `hasFeedback` icon slot, which FormField owns here.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless" | "default" | "ghost"',
+        defaultValue: '"outlined"',
+        description:
+          "Chrome level — Ant Design `variant`. `outlined` is the historical field; `filled` swaps the boundary for a tinted surface (dense forms); `borderless` drops both, for a field inside a box that already draws one. antd's fourth member `underlined` is deliberately absent — a single bottom rule is a Material convention and SmartHR, the JP authority here, draws every field as a full box. This library's older `default`/`ghost` are still accepted and resolve to `outlined`/`borderless`.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Control height tier — reads the shared `--control-height` ladder.",
+      },
+      {
+        name: "autoSize",
+        type: "boolean | { minRows?: number; maxRows?: number }",
+        description:
+          "antd `autoSize`. `true` is `autoGrow`; the object form carries the row bounds with it, so `autoSize={{ minRows: 2, maxRows: 6 }}` is `autoGrow minRows={2} maxRows={6}`. An explicit `minRows`/`maxRows` still wins.",
+      },
+      {
+        name: "count",
+        type: "{ max?: number; show?: boolean; formatter?: (info: { value: string; count: number; max?: number }) => React.ReactNode; strategy?: (value: string) => number }",
+        description:
+          "Character counter — Ant Design `count`. Counts CODE POINTS by default, so one emoji and one 全角 kanji are each worth one. It REPORTS an overrun (`data-exceeded`) and never edits the value: antd's `exceedFormatter` truncates while the user types, which in Japanese cuts a live IME conversion in half.",
+      },
       { name: "id", type: "string", description: "Associates with a <Label htmlFor>." },
       { name: "rows", type: "number", description: "Visible text rows." },
       { name: "value", type: "string", description: "Controlled value." },
@@ -4932,13 +5087,6 @@ export function PrioritySelect({ value, onValueChange }) {
         defaultValue: "8 (--textarea-autogrow-max-height-rows)",
         description:
           "Ceiling in text rows while `autoGrow`; beyond it the box stops growing and scrolls internally rather than pushing the page. Pass `0` for no ceiling — only correct inside an owning scroll container. Theme-global default is the `--textarea-autogrow-max-height-rows` token. Ignored when `autoGrow` is false.",
-      },
-      {
-        name: "variant",
-        type: '"default" | "ghost"',
-        defaultValue: '"default"',
-        description:
-          "`ghost` strips the field's own border, background and focus ring, for a textarea EMBEDDED in a surface that already draws the box — a chat composer inside a Card, an inline edit cell. The surface then owns focus, via `focus-within` on the wrapper. Two nested rounded borders is the tell that this was needed.",
       },
     ],
     usage: [
@@ -5015,6 +5163,12 @@ export function PrioritySelect({ value, onValueChange }) {
     group: "data-entry",
     tagline: "Radix checkbox; standalone or via CheckboxGroup with an options array.",
     props: [
+      {
+        name: "indeterminate",
+        type: "boolean",
+        description:
+          "antd `indeterminate` — paint the PARTIAL mark (a dash) and announce `mixed`, without changing `checked`. Radix spells the same state `checked` set to `indeterminate`; this is antd's spelling, and the box falls back to the underlying `checked` the moment the flag goes false.",
+      },
       {
         name: "checked",
         type: "boolean | 'indeterminate'",
@@ -7767,6 +7921,45 @@ export function DisabledColor() {
       "Numeric range slider (Radix Slider) — value/defaultValue must be number[], not a plain number.",
     props: [
       {
+        name: "range",
+        type: "boolean",
+        description:
+          "antd `range` — two thumbs bounding a span rather than one thumb over a point. It is a DECLARATION where the array length is only a guess: a range whose value is still loading used to render as a point, and a single-thumb slider handed a two-element array grew one it never wanted. Omitting it keeps the historical inference.",
+      },
+      {
+        name: "marks",
+        type: "Record<number, React.ReactNode>",
+        description:
+          "antd `marks` — labelled ticks along the rail, keyed by the value each sits on. Positioned as a fraction of the rail, so they survive a resize, `reverse` and a vertical rail.",
+      },
+      {
+        name: "dots",
+        type: "boolean",
+        defaultValue: "false",
+        description: "antd `dots` — a tick at every `step`.",
+      },
+      {
+        name: "included",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "antd `included` — whether the painted span runs from the start to the thumb. `false` for a rail that only holds marks, where a filled span would assert a magnitude that is not there.",
+      },
+      {
+        name: "reverse",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd `reverse` — run the scale the other way. Radix spells the same axis `inverted`; an explicit `inverted` still wins, so the two can never disagree in the DOM.",
+      },
+      {
+        name: "tooltip",
+        type: "boolean | { open?: boolean; formatter?: ((value: number) => React.ReactNode) | null }",
+        defaultValue: "false",
+        description:
+          "antd `tooltip` — the value bubble over a dragging thumb. Rendered aria-hidden: the thumb already announces its value through `role=slider` + `aria-valuenow`.",
+      },
+      {
         name: "value",
         type: "number[]",
         description:
@@ -8563,6 +8756,20 @@ export function ControlledExample() {
     tagline:
       "Radix-backed radio group with an options-array shorthand — always use Radio.Group, never a bare radio input.",
     props: [
+      {
+        name: "optionType",
+        type: '"default" | "button"',
+        defaultValue: '"default"',
+        description:
+          "antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds them into one segmented bar. It is paint, never semantics: the roles stay radiogroup/radio, so arrow-key traversal and native submission keep working (which is why this is not a ToggleGroup — a row of aria-pressed buttons permits 'none chosen').",
+      },
+      {
+        name: "buttonStyle",
+        type: '"outline" | "solid"',
+        defaultValue: '"outline"',
+        description:
+          "antd `buttonStyle` — fill of the selected choice while `optionType` is `button`. Ignored otherwise.",
+      },
       {
         name: "value",
         type: "string",
@@ -9828,6 +10035,24 @@ import { Separator } from "@godxjp/ui/layout";
       "Input for passwords with a built-in show/hide eye toggle. Accepts all Input props except `type`.",
     props: [
       {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "Validation state the field paints — Ant Design `status`. `error` also reports `aria-invalid`, so the red boundary and what a screen reader hears are one fact; `warning` paints only, because a warning is not a validity failure. antd's `success`/`validating` are not implemented: antd only draws them together with its `hasFeedback` icon slot, which FormField owns here.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless"',
+        defaultValue: '"outlined"',
+        description:
+          "Chrome level — Ant Design `variant`. `outlined` is the historical field; `filled` swaps the boundary for a tinted surface (dense forms); `borderless` drops both, for a field inside a box that already draws one. antd's fourth member `underlined` is deliberately absent — a single bottom rule is a Material convention and SmartHR, the JP authority here, draws every field as a full box.",
+      },
+      {
+        name: "count",
+        type: "ControlCountProp",
+        description: "Character counter — inherited from Input.",
+      },
+      {
         name: "value",
         type: "string",
         description: "Controlled value (or use defaultValue/uncontrolled).",
@@ -9980,6 +10205,39 @@ export default function PasswordBlock() {
     tagline:
       "Star-rating input (radiogroup) — controlled via value/onValueChange, form-submittable via name, supports readOnly display.",
     props: [
+      {
+        name: "count",
+        type: "number",
+        defaultValue: "5",
+        description:
+          "antd `count` — number of symbols. This library's older `max` still works; `count` wins when both are given.",
+      },
+      {
+        name: "allowHalf",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd `allowHalf` — a symbol can be half-filled, so the scale steps by 0.5 (keyboard included). It adds a hit area per symbol WITHOUT doubling the radios: a half is a position inside a step, and ten radios announced for a five-star scale would misstate the scale.",
+      },
+      {
+        name: "allowClear",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd `allowClear` — choosing the chosen value clears it to 0. antd defaults this ON; it is OFF here, because a rating in a business form is usually required and a silent reset on a second click reads as a lost answer.",
+      },
+      {
+        name: "character",
+        type: "React.ReactNode | ((index: number) => React.ReactNode)",
+        description:
+          "antd `character` — what a symbol IS. A node for every symbol, or a function of the 1-based index for a scale whose symbols differ (A/B/C, 松竹梅).",
+      },
+      {
+        name: "tooltips",
+        type: "readonly string[]",
+        description:
+          "antd `tooltips` — a label per step, in order. Folded into each symbol's ACCESSIBLE NAME rather than shown only on hover: a `title` is invisible to a keyboard and to touch, and saying what '3 of 5' means is the whole point of the prop.",
+      },
       { name: "value", type: "number", description: "Controlled rating (1..max)." },
       {
         name: "defaultValue",
@@ -10021,6 +10279,26 @@ export default function PasswordBlock() {
     tagline:
       "One-of-N from a small, closed, always-visible set — antd's Segmented drawn on Radix RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
     props: [
+      {
+        name: "block",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd `block` — stretch the bar to its container and share the width EQUALLY between the choices, so the selected pill does not resize as the label under it changes length.",
+      },
+      {
+        name: "vertical",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd `vertical` — stack the choices in a column. It changes the ARROW KEYS as well as the layout: Radix reads `orientation` to decide which arrows move the roving focus.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Control height tier — reads the shared `--control-height` ladder.",
+      },
       {
         name: "options",
         type: "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean }[]",

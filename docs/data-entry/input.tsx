@@ -107,7 +107,52 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
-        <Input id="code" size="sm" placeholder="Compact tier (sm)" aria-label="Code" />
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Ant Design axes · status, variant, size</CardTitle>
+            <CardDescription>
+              status is the validation state a form paints consistently (error also reports
+              aria-invalid; warning does not, because a warning is not a validity failure). variant
+              is how much chrome the field draws. size is the shared control-height ladder.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Input aria-label="エラー状態" status="error" defaultValue="不正な値" />
+              <Input aria-label="警告状態" status="warning" defaultValue="確認してください" />
+              <Input aria-label="枠線あり" variant="outlined" defaultValue="outlined" />
+              <Input aria-label="塗りつぶし" variant="filled" defaultValue="filled" />
+              <Input aria-label="枠線なし" variant="borderless" defaultValue="borderless" />
+              <Input aria-label="小さいサイズ" size="sm" placeholder="Compact tier (sm)" />
+              <Input aria-label="標準サイズ" size="md" placeholder="Default tier (md)" />
+              <Input aria-label="大きいサイズ" size="lg" placeholder="Comfortable tier (lg)" />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Affixes · prefix / suffix inside, addons outside</CardTitle>
+            <CardDescription>
+              A prefix or suffix sits inside the field&apos;s own box, in its padding. An addon is a
+              separate surface welded to the outside of the border: a protocol, a currency, a unit.
+              The counter reports an overrun and never edits the value.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Input aria-label="金額" prefix="¥" suffix="円" defaultValue="12000" />
+              <Input
+                aria-label="サイト"
+                addonBefore="https://"
+                addonAfter=".co.jp"
+                defaultValue="example"
+              />
+              <Input aria-label="件名" count={{ max: 20 }} defaultValue="東京都の請求書" />
+              <Input aria-label="超過した件名" count={{ max: 5 }} defaultValue="長すぎる件名です" />
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );
