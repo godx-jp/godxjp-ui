@@ -40,6 +40,145 @@ export function isConsumerSkill(s: Skill): boolean {
 }
 
 export const SKILLS: Skill[] = [
+  // ── contract (ĐỌC TRƯỚC TIÊN) ──────────────────────────────────
+  {
+    id: "contract",
+    audience: "consumer",
+    name: "Hợp đồng cứng — luật + ví dụ chạy được",
+    whenToUse:
+      "ĐỌC TRƯỚC TIÊN khi viết bất kỳ giao diện nào bằng @godxjp/ui. Luật cứng, mỗi luật kèm cổng CI sẽ đỏ nếu vi phạm, mã SAI và mã ĐÚNG. Dùng cho: dựng trang, dựng form, khoảng cách, bố cục, màu, chữ, khi thang token không có giá trị cần.",
+    source: "docs/CONSUMER-RULES.md + ui-audit.mjs + component-api-manifest.json",
+    sections: [
+      {
+        id: "loop",
+        title: "Vòng làm việc",
+        tagline: "Ba bước. Bỏ bước 2 là nguồn gốc của mọi lệch design.",
+        body: `1. Hỏi API TRƯỚC khi viết — đừng đoán tên prop:
+     get_component({ name: "Flex" })      → prop + giá trị hợp lệ
+     search_components({ query: "..." })  → tìm component đúng việc
+
+2. Viết. Rồi CHẠY audit:
+     node node_modules/@godxjp/ui/scripts/ui-audit.mjs <thư mục>
+   Zero lỗi là mức đạt. Không phải "ít lỗi".
+
+3. Lỗi nào KHÔNG sửa được ở phía bạn — thang thiếu bậc, prop không tồn
+   tại — thì mở issue cho godx-jp/godxjp-ui. Đừng tự chế quanh nó.
+
+Vì sao bước 1 quan trọng: catalog là nguồn sự thật DUY NHẤT về prop.
+Đoán tên prop rồi viết là cách nhanh nhất để ra mã trông đúng mà chạy sai.`,
+      },
+      {
+        id: "spacing",
+        title: "Khoảng cách",
+        tagline: "Thang có 10 bậc. Dùng hết chúng trước khi nghĩ tới cửa thoát.",
+        body: `Cổng đỏ nếu sai: no-arbitrary-spacing, no-utility-spacing, no-space-xy
+
+Thang: 0 · 1 · 2 · 3 · 4 · 5 · 6 · 8 · 10 · 12
+       0   4   8  12  16  20  24  32  40  48 px
+
+SAI — utility Tailwind trên phần tử của bạn:
+    <div className="flex gap-3 p-4">…</div>
+
+ĐÚNG — bậc TÊN khi bạn muốn nói Ý ĐỊNH (nó tự đổi theo trục:
+md hàng ngang = 12px, cột dọc = 16px):
+    <Flex gap="md">…</Flex>
+
+ĐÚNG — bậc SỐ khi bạn cần đúng một GIÁ TRỊ (không đổi theo trục):
+    <Flex gap={5}>…</Flex>        // đúng 20px
+    <ResponsiveGrid gap={3}>…</ResponsiveGrid>
+
+Đừng làm tròn xuống bậc gần nhất cho sạch lint. 12px cách đều 8 và 16
+nên "gần nhất" đã là một phép đoán, và mỗi khe lệch 4px nhân n phần tử
+là cả khối trôi.`,
+      },
+      {
+        id: "escape",
+        title: "Khi thang KHÔNG có giá trị bạn cần",
+        tagline: "gapRaw — cửa thoát hợp lệ, có dấu vết đếm được.",
+        body: `Bản thiết kế thật dùng 2px, 5px, 6px, 10px. Thang không có bậc nào
+như thế. Trước v20 bạn không có nước đi hợp lệ nào — và đó là lý do
+mọi dự án đều lệch design, không phải vì người viết cẩu thả.
+
+ĐÚNG:
+    <Flex gapRaw={5}>…</Flex>
+
+Nó phát data-gap-raw lên DOM. Đó là CÁI GIÁ, không phải trang trí: mỗi
+lần thoát đều grep được, nên một kho đang trôi khỏi thang sẽ tự lộ ra
+bằng con số.
+
+ĐỪNG dùng khi thang đã có giá trị đó. gap={3} là 12px và nó co giãn
+theo --scaling của người dùng; gapRaw={12} thì đứng yên khi người ta
+phóng to giao diện.
+
+Cửa thoát này CHỈ có cho khoảng cách. Thiếu prop ở chỗ khác thì mở
+issue, đừng dựng tay.`,
+      },
+      {
+        id: "layout",
+        title: "Bố cục",
+        tagline: "Trang là PageContainer. Hàng/cột là Flex. Lưới là ResponsiveGrid.",
+        body: `Cổng đỏ nếu sai: no-utility-layout, no-hand-rolled-surface
+
+SAI:
+    <div className="mx-auto max-w-4xl px-6 py-8">
+      <h1 className="text-2xl font-bold">Kênh</h1>
+      <div className="grid grid-cols-2 gap-4">…</div>
+    </div>
+
+ĐÚNG:
+    <PageContainer title="Kênh" subtitle="…" extra={<NewChannel />}>
+      <ResponsiveGrid columns={2} gap="md">…</ResponsiveGrid>
+    </PageContainer>
+
+PageContainer tự giãn cách các mục của trang — đừng thêm khoảng cách
+giữa chúng. Nhóm bên TRONG một mục thì dùng Flex direction="col".`,
+      },
+      {
+        id: "surfaces-and-controls",
+        title: "Bề mặt và control",
+        tagline: "Không tự dựng hộp, không dùng thẻ HTML thô.",
+        body: `Cổng đỏ nếu sai: no-hand-rolled-surface, no-raw-button, no-raw-input,
+no-raw-select, no-raw-textarea, no-raw-table, bare-control-needs-formfield
+
+SAI:
+    <div className="rounded-lg border bg-white p-4">
+      <button onClick={save}>Lưu</button>
+      <input value={name} onChange={…} />
+    </div>
+
+ĐÚNG:
+    <Card>
+      <Button onClick={save}>Lưu</Button>
+      <FormField id="name" label="Tên">
+        <Input id="name" value={name} onChange={…} />
+      </FormField>
+    </Card>
+
+Một hộp là Card · một chip là Badge · một người là Avatar · một hàng là
+ListRow · một vùng rỗng là EmptyState. Control có nhãn thì sống trong
+FormField — nhãn, mô tả và lỗi đều là khe của nó, đừng tự ghép.`,
+      },
+      {
+        id: "text-and-colour",
+        title: "Chữ và màu",
+        tagline: "Prop, không phải class. Tone ngữ nghĩa, không phải mã màu.",
+        body: `Cổng đỏ nếu sai: no-arbitrary-typography, no-arbitrary-hex,
+no-raw-palette-color, raw-white-black, no-dark-color-override
+
+SAI:
+    <p className="text-sm text-gray-500 font-semibold">…</p>
+    <div style={{ color: "#b82830" }}>Lỗi</div>
+
+ĐÚNG:
+    <Text size="sm" tone="muted" weight="medium">…</Text>
+    <Text tone="destructive">Lỗi</Text>
+
+Màu đi qua tone ngữ nghĩa vì chúng tự đúng ở cả chế độ sáng và tối. Một
+mã hex gõ tay là một màu KHÔNG đổi theo chế độ tối — và nó chỉ lộ ra
+khi có người bật chế độ tối, tức là muộn.`,
+      },
+    ],
+  },
   // ── taste (foundational) ───────────────────────────────────────
   {
     id: "taste",
@@ -1275,6 +1414,54 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
   ) => {
     if (kw.some((k) => q.includes(k))) matches.push({ skill, section, why, alsoSee });
   };
+
+  /*
+   * Hợp đồng cứng đứng ĐẦU danh sách định tuyến, và cố ý bắt rộng.
+   *
+   * Lý do: agent hỏi router MỘT lần rồi làm theo thứ nó trả về. Nếu câu đầu
+   * tiên nó nhận được là một skill về gu thẩm mỹ thì nó sẽ viết mã đẹp mà sai
+   * hợp đồng — rồi audit đỏ, và không ai hiểu vì sao. Luật cứng phải tới
+   * TRƯỚC gu.
+   */
+  route(
+    [
+      "spacing",
+      "gap",
+      "khoảng cách",
+      "padding",
+      "margin",
+      "layout",
+      "bố cục",
+      "page",
+      "trang",
+      "grid",
+      "lưới",
+      "form",
+      "input",
+      "button",
+      "control",
+      "color",
+      "colour",
+      "màu",
+      "token",
+      "text",
+      "chữ",
+      "typography",
+      "component",
+      "prop",
+      "audit",
+      "lỗi",
+      "error",
+      "how do i",
+      "làm sao",
+      "bắt đầu",
+      "start",
+    ],
+    "contract",
+    "<see whenToUse>",
+    "Luật cứng của @godxjp/ui, mỗi luật kèm cổng CI và mã SAI/ĐÚNG. Đọc trước mọi skill về gu.",
+    ["contract/loop", "contract/spacing", "contract/escape"],
+  );
 
   // Premium / agency / Awwwards
   route(
