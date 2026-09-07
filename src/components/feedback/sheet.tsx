@@ -194,7 +194,11 @@ export const SheetContent = React.forwardRef<
           {showCloseButton ? (
             <DialogPrimitive.Close
               data-slot="sheet-close"
-              className="ui-sheet-close ring-offset-background focus:ring-ring focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+              // `ui-focus-ring` = the single focus source. It replaces a hand-rolled
+              // `focus:ring-2 focus:ring-offset-2 focus:ring-ring` — token-blind, on `:focus`
+              // rather than `:focus-visible`, and with a 2px offset nothing else in the system
+              // used. Matches DialogClose, which already carries the marker class.
+              className="ui-sheet-close ui-focus-ring disabled:pointer-events-none"
             >
               <X className="ui-sheet-close-icon" aria-hidden="true" />
               <span className="sr-only">{t("feedback.alert.dismiss")}</span>

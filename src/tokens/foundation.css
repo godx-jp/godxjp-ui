@@ -193,6 +193,29 @@
    * its own `hsl(... / 0.35)` — which is how four incompatible ring shapes
    * appeared before the single-source rule in styles/focus-ring.css. */
   --focus-ring-opacity: 1;
+  /* SOFT HALO — the ring's second, translucent stop, painted OUTSIDE the opaque one.
+   *
+   * The shape comes from Ant Design, which this repo already names as an authority
+   * (docs/DESIGN-AUTHORITY.md). Read from antd 6.6.2's own source (the current major; the same
+   * formula was already in 5.29.3, checked side by side), a focused field is
+   * `borderColor: colorPrimary` + `boxShadow: 0 0 0 ${controlOutlineWidth}px ${controlOutline}`
+   * (es/input/style/token.js:48-50; es/select/style/select-input.js:32 reaches the same
+   * declarations through a CSS custom property, which is why an antd Select and an antd Input
+   * focus identically). `controlOutlineWidth` is `lineWidth * 2` = 2px and `controlOutline` is the
+   * primary as an alpha tint over the control's own fill — measured by running antd 6's own
+   * `formatToken`: rgba(5,145,255,0.1) light / rgba(23,117,249,0.31) dark for its default blue,
+   * and 0.11 / 0.30 for this system's SmartHR #0071bd. Hence 0.12 here and 0.3 in the dark block.
+   *
+   * The halo is DECORATION and must never be asked to carry the a11y contract: measured against
+   * this palette, a primary tint over the page tops out at 2.84:1 even at alpha 0.7, so no value
+   * of this knob reaches WCAG 2.2 SC 1.4.11's 3:1. What carries the contract is the OPAQUE stop
+   * (`--focus-ring-width` at `--focus-ring-opacity`), which stays a full 2px perimeter on EVERY
+   * control because this library targets SC 2.4.13 Focus Appearance (AAA) — measured 4.62:1 light
+   * / 7.07:1 dark on every surface a control sits on. antd does not meet 2.4.13 (it thins a
+   * focused field to a 1px border); we take its shape and not that trade. Guarded by
+   * src/tokens/__tests__/focus-ring-contrast.test.ts. */
+  --focus-ring-glow-width: var(--stroke-md);
+  --focus-ring-glow-alpha: 0.12;
   /* Gap between element and ring, for the OUTLINE form only (a star, a dot, a
    * heading anchor — marks where a radius-hugging shadow would touch the
    * glyph). The shadow form ignores it by construction. */
@@ -584,6 +607,11 @@
    * read as a wireframe. See the light block above for the full reasoning. */
   --input: 45 6% 47%; /* #7f7b71 — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
   --ring: 204 90% 60%;
+  /* The focus halo needs roughly 2.5× the alpha on a near-black ground to read at all — the
+   * same reason antd's own dark `controlOutline` lands at 0.30/0.31 where its light one is 0.10.
+   * The OPAQUE half of the ring is untouched: it re-tints on its own because --focus-ring-color
+   * is `initial` and falls through to this block's --ring. */
+  --focus-ring-glow-alpha: 0.3;
   --success: 146 45% 55%;
   --success-foreground: 48 9% 9%;
   --warning: 44 95% 55%;

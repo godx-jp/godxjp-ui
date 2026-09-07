@@ -157,9 +157,17 @@ Recorded rather than silently fixed, because each is a real decision:
    fails if a NEW off-scale step appears.
 2. **The type scale diverges by construction.** Carbon uses integers — 12, 14, 16, 18, 20, 24, 28,
    32, 36 — while `--font-size-ratio: 1.1227` (φ^¼) produces 11.1, 12.5, 17.6, 19.8, 22.2. Only the
-   14px body agrees. Fractional sizes are what make a glyph land off the 4px grid, the same class of
-   problem as gh#370. Aligning the scale is a visual change to every screen, so it is a separate
-   decision, not a side effect of this one.
+   14px body agrees. Fractional sizes do cost something measurable — they snap a line box half a
+   pixel either way, which is ±0.5px of the residual in gh#370 — but they are not what that issue
+   is. gh#370 is that `place-items: center` centres a LINE BOX and a line box is not a letterform;
+   re-measured from the painted ink, the glyph classes' optical centres lie 0.21em apart (`g` 3.69px
+   low in the 28px `md` box where `神`, `G` and `GX` are within 0.94px), so no glyph-blind rule
+   centres them all — the best glyph-blind rule, `text-box: trim-both ex alphabetic`, still leaves
+   2.25px. So the correction moved up a layer: `Logo` classifies the glyph string it is handed into
+   the ink band it occupies and CSS applies that band's offset, which measures 1.38px worst case and
+   needs no `text-box` at all (`src/styles/logo-layout.css` carries the full matrix). Aligning the
+   scale is a visual change to every screen, so it is a separate decision, not a side effect of this
+   one.
 3. **The large end is missing.** Carbon has 64/80/96/160px; this scale stops at 48px. Nothing needs
    them yet — add from Carbon's steps when something does, rather than inventing a number.
 4. **2px (`spacing-01`) is missing.** Same rule: take Carbon's value if a hairline gap is ever
@@ -177,6 +185,68 @@ Recorded rather than silently fixed, because each is a real decision:
    sizes (12.5px, 17.6px, 19.8px) put full-width glyphs on half-pixel boundaries, where kanji
    strokes blur far more visibly than Latin letterforms. Another reason to prefer Carbon's integer
    steps if the scale is ever revisited.
+
+## Focus appearance — Ant Design owns the shape, SmartHR still owns the hue
+
+The two named authorities disagree here, so the disagreement is recorded rather than re-argued.
+
+**SmartHR** (`smarthr-ui@99.6.0`, `lib/themes/createShadow/createShadow.js`) draws focus as an
+opaque ring held off the control by a white spacer: `box-shadow: 0 0 0 2px white; outline: 2px
+solid OUTLINE; outline-offset: 2px`.
+
+**Ant Design** (`antd@6.6.2`, the current major) instead moves the control's own boundary to the
+brand colour and adds a translucent halo outside it: `borderColor: colorPrimary` + `boxShadow: 0 0 0
+${controlOutlineWidth}px ${controlOutline}` (`es/input/style/token.js:48-50`). `controlOutlineWidth`
+is `lineWidth * 2` = 2px, and `controlOutline` is the primary as an alpha tint over the control's
+fill — running antd's own `formatToken` yields `rgba(5,145,255,0.1)` light and
+`rgba(23,117,249,0.31)` dark for its default blue, and 0.11 / 0.30 for this system's `#0071bd`.
+`es/select/style/select-input.js:32` emits the same declarations (v6 routes them through a CSS
+custom property), which is why an antd Select focuses exactly like an antd Input. Non-field
+controls — Button, Checkbox, Radio, Switch — use a different form, `genFocusOutline`
+(`es/style/index.js:60-64`): `outline: lineWidthFocus(3px) solid colorPrimaryBorder;
+outline-offset: 1px`.
+
+**v5 → v6 changed none of this.** Both majors were unpacked and their own `formatToken` run side by
+side: every value above is identical to the digit in `antd@5.29.3`. v6's only focus-related
+additions are a `focusOutline` seed flag (`false` zeroes `lineWidthFocus`, killing the non-field
+outline form) and selector plumbing — Checkbox/Radio moved to `&:has(input:focus-visible)`, Select
+to CSS custom properties. Recorded so the next person does not re-derive it.
+
+**Ant Design wins the shape.** The library shipped an opaque brand ring drawn immediately outside
+an untouched grey border — two outlines of different colours claiming the same edge, and a Select
+that could not be told to agree with an Input. antd's rule ("focus moves the boundary; the ring is
+a halo of that same hue") resolves both, and Ant Design is already this document's authority for
+component taxonomy. SmartHR's spacer form assumes a control that can afford 4px of clearance on
+every side, which a dense JP grid cannot.
+
+**SmartHR still owns the hue**, exactly as elsewhere in this file: the focus colour is `--ring`,
+derived from SmartHR MAIN.
+
+### This library targets SC 2.4.13 (AAA) for focus. Ant Design does not.
+
+**The one place we do NOT follow antd is the accessibility floor**, and it is a deliberate,
+customer-driven divergence: the Japanese market is strict, and デジタル庁 is already this
+document's standards reference, so focus is held to **WCAG 2.2 SC 2.4.13 Focus Appearance
+(AAA)** — an indicator area at least as large as a **2px thick perimeter** of the control, with
+**≥3:1** between the focused and unfocused states of those pixels.
+
+antd fails the area clause on fields: it drops the ring and leaves a **1px** border to carry the
+state. So we take antd's _shape_ — boundary and ring agree, halo outside — and keep the full 2px
+opaque stop underneath it, with the recoloured border sitting inside the ring, same hue,
+contiguous. **Do not "align with antd" by thinning it back.** `--control-focus-ring-width` exists
+so that trade can be made explicitly, and never by accident.
+
+The same criterion is why three per-component alpha knobs went to `1` in this pass. A ring at 0.35
+(Toggle) or 0.45 (sidebar user row, topbar icon button) still covers a 2px area but composites to
+1.64:1 and ≈1.90:1 — area without contrast is not an indicator. The softness those knobs were
+buying now comes from the halo, which sits outside the opaque stop and carries no criterion: it
+measures 1.18:1 light / 1.73:1 dark and is **decoration by construction**, since no alpha that
+still reads as a halo can reach 3:1 in the first place.
+
+Both clauses are gated in `src/tokens/__tests__/focus-ring-contrast.test.ts` — contrast on every
+surface a control sits on, and the 2px perimeter across every per-component width _and_ alpha
+rebind, with `.ui-command-input` the single named exemption. Per rule 4 below: a standard that is
+not enforced is a standard that has already drifted.
 
 ## How a decision gets made from here
 

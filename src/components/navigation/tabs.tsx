@@ -76,10 +76,29 @@ export function Tabs({
             // default list chrome, exactly like a hand-composed <TabsList> with no variant.
             variant={variant === "line" ? "line" : "default"}
             className={cn(
-              // The padding override is an arbitrary value reading the knob (never `p-0`): it must
-              // stay a UTILITY so tailwind-merge still drops the strip's own padding step, and a
+              // The inset override is an arbitrary value reading the knob (never `p-0`): it must
+              // stay a UTILITY so tailwind-merge still drops the strip's own padding step.
+              //
+              // IT IS SPLIT INTO `px-`/`py-` FOR THE FOCUS RING (gh#376). The strip clips its
+              // block axis (`overflow-y: hidden` beside `overflow-x: auto`), and this variant's
+              // inset is 0px, so a focused trigger had NO block headroom at all — measured in
+              // Chromium, 0px top and bottom, i.e. the entire ring was shaved. The headroom has to
+              // come from layout: `overflow-y: visible` next to `overflow-x: auto` computes back
+              // to `auto` per spec (a second scroll container, not a ring), and Chromium honours
+              // `overflow-clip-margin` only when BOTH axes are `clip`. So the block padding carries
+              // the ring's outer reach and an equal negative block margin hands it straight back —
+              // the ring paints inside the scrollport and the strip's OUTER box is unchanged
+              // (measured: 38px before and after). Both values read the same token the ring is
+              // sized from, so the two can never drift apart.
+              //
+              // The cost, recorded rather than hidden: the rail hairline (`border-b`, drawn at the
+              // border box) now sits the ring's reach below the triggers instead of flush. That is
+              // where a hand-composed <TabsList variant="line"> already put it — its `p-1` gives
+              // the same block inset — so the two construction paths now agree. A service that
+              // wants the active bar parked back on the hairline raises `--tabs-indicator-offset`,
+              // which exists for exactly that.
               variant === "line" &&
-                "h-auto w-full justify-start border-b p-[var(--tabs-list-line-space-inset)]",
+                "my-[calc(-1_*_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))] h-auto w-full justify-start border-b px-[var(--tabs-list-line-space-inset)] py-[calc(var(--tabs-list-line-space-inset)_+_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))]",
               variant === "card" && "w-full justify-start",
               listClassName,
             )}
@@ -182,12 +201,25 @@ export const TabsTrigger = React.forwardRef<
     ref={ref}
     data-slot="tabs-trigger"
     className={cn(
-      // The SELECTED-state ring (`ring-1 ring-primary/25`) is scoped to the default/card lists —
-      // it competes with (and at equal specificity overrides) the `:focus-visible` ring. The
-      // focus-visible ring/outline below is deliberately left unscoped: every variant keeps a
-      // visible keyboard focus indicator (WCAG 2.4.7). The line indicator itself lives in
-      // src/styles/navigation-layout.css so it reads the --tabs-indicator-* tokens.
-      "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs-list:data-[state=active]:ring-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=default]/tabs-list:data-[state=active]:ring-1 group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
+      // SELECTED IS A BORDER TINT, NOT A RING — and that is a WCAG fix, not a style preference.
+      // It used to be `ring-1 ring-primary/25`, which writes `--tw-ring-shadow` in the UTILITIES
+      // layer and therefore overwrote the focus ring that focus-ring.css feeds from `components`.
+      // Measured: a focused ACTIVE tab painted `oklab(… / 0.25) 0 0 0 1px` and nothing else — a
+      // 1px indicator at 25% alpha, failing both clauses of SC 2.4.13 (2px perimeter, ≥3:1),
+      // while every other control in the library carried a full 2px ring. The trigger already
+      // owns `border border-transparent`, so tinting that border reproduces the selected hairline
+      // at the same colour and width with no layout change, and leaves `--tw-ring-shadow` free for
+      // the focus ring. `shadow-sm` stays: its composite READS `--tw-ring-shadow`, so the lift and
+      // the ring coexist.
+      //
+      // No `focus-visible:outline-1` either. It was the fallback that survived the clobber — a 1px
+      // currentColor line squeezed between the border and the ring once both paint. The ring is
+      // the indicator now; two marks for one state is what this pass exists to remove.
+      //
+      // The line indicator lives in src/styles/navigation-layout.css so it reads --tabs-indicator-*.
+      // Selected and focused stay visually distinct (WCAG 2.4.7): selected is a 1px hairline in the
+      // border, focused is the 2px ring plus its halo outside it.
+      "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
       className,
     )}
     {...props}
@@ -202,7 +234,9 @@ export const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     data-slot="tabs-content"
-    className={cn("focus-visible:ring-ring flex-1 outline-none focus-visible:ring-2", className)}
+    // `ui-focus-ring` = the single focus source, replacing a hand-rolled
+    // `focus-visible:ring-2 focus-visible:ring-ring` that no --focus-ring-* knob could reach.
+    className={cn("ui-focus-ring flex-1 outline-none", className)}
     {...props}
   />
 ));

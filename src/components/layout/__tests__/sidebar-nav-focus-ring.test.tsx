@@ -8,45 +8,73 @@ import { describe, expect, it } from "vitest";
  *
  * On a Slack-style shell that mismatch is the first thing a keyboard user sees.
  *
- * Asserted against the stylesheet because jsdom does no layout and computes no UA focus ring,
+ * WHERE THE RING LIVES CHANGED, AND THAT IS THE POINT. It used to be hand-written in
+ * shell-layout.css, and having its own copy of the formula is precisely how it drifted: that copy
+ * dropped `--focus-ring-opacity` and never fed `--tw-ring-shadow`, so a service that softened the
+ * ring got every control in the library except this one, silently. The row is now a member of the
+ * single source (styles/focus-ring.css), and this file asserts membership rather than a second
+ * formula — a passing "the row draws a ring" test that certifies a private copy is worse than no
+ * test at all.
+ *
+ * Asserted against the stylesheets because jsdom does no layout and computes no UA focus ring,
  * so nothing in the rendering tests next door can fail when this regresses.
  */
 
 const shell = readFileSync(join(process.cwd(), "src/styles/shell-layout.css"), "utf8");
+const focusRing = readFileSync(join(process.cwd(), "src/styles/focus-ring.css"), "utf8");
 
-function ruleBody(selector: string): string {
+/** The shadow-form selector list plus its declarations — the one rule that paints control rings. */
+function shadowFormRule(): string {
+  const match = focusRing.match(/:is\(\s*\.ui-focus-ring,[\s\S]*?\n {2}\}/);
+  expect(match, "focus-ring.css must keep its shadow-form rule").not.toBeNull();
+  return match![0];
+}
+
+function ruleBody(css: string, selector: string): string {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = shell.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`));
-  expect(match, `shell-layout.css must keep a ${selector} rule`).not.toBeNull();
+  const match = css.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`));
+  expect(match, `must keep a ${selector} rule`).not.toBeNull();
   return match![1].replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
 describe("sidebar nav rows draw the design system's focus ring", () => {
-  const body = () => ruleBody(".sb-nav-item:focus-visible");
-
-  it("suppresses the user-agent outline", () => {
-    expect(body()).toMatch(/outline:\s*none/);
+  it("is a member of the single source, not a private copy", () => {
+    const rule = shadowFormRule();
+    expect(rule).toContain(".sb-nav-item");
+    expect(rule).toMatch(/outline:\s*none/);
   });
 
   it("draws the ring from the global focus tokens", () => {
-    // Not a new component token: the tier guard wants --{component}-{part}-{property}, and the
-    // shell already reads the global pair for its region ring.
-    const b = body();
-    expect(b).toMatch(/box-shadow:[^;]*var\(--focus-ring-width\)/);
-    expect(b).toMatch(/--focus-ring-color/);
-    expect(b).toMatch(/var\(--ring\)/);
+    const rule = shadowFormRule();
+    expect(rule).toMatch(/box-shadow:[^;]*var\(--focus-ring-width\)/);
+    expect(rule).toMatch(/--focus-ring-color/);
+    expect(rule).toMatch(/var\(--ring\)/);
+    // The knob the private copy used to drop. A service that softens every ring must soften
+    // this one too.
+    expect(rule).toMatch(/var\(--focus-ring-opacity, 1\)/);
   });
 
   it("uses box-shadow so the ring follows the row's radius", () => {
     // `outline` would draw a rectangle around a rounded row.
-    expect(body()).toMatch(/box-shadow/);
-    expect(body()).not.toMatch(/outline:\s*\d/);
+    const rule = shadowFormRule();
+    expect(rule).toMatch(/box-shadow/);
+    expect(rule).not.toMatch(/outline:\s*\d/);
+  });
+
+  it("no longer carries a second ring formula in shell-layout.css", () => {
+    // The regression this file now guards: re-adding a local `.sb-nav-item:focus-visible` ring
+    // reintroduces exactly the drift that was removed. shell-layout.css is blanket-exempted from
+    // focus-ring-single-source.test.ts (for the REGION ring), so that guard cannot see this.
+    const local = shell.match(/\.sb-nav-item:focus-visible\s*\{([^}]*)\}/);
+    expect(local?.[1] ?? "", ".sb-nav-item must not paint its own ring").not.toMatch(
+      /box-shadow|outline:\s*\d/,
+    );
   });
 
   it("is on by default, unlike the opt-in region ring", () => {
     // `.app-main` defaults to width 0 on purpose — a frame around the whole content area reads
-    // as a glitch. A 2px ring hugging one 32px row is the affordance, so it must not be gated.
-    expect(body()).not.toMatch(/--region-focus-ring-width/);
-    expect(ruleBody(".app-main:focus-visible")).toMatch(/--region-focus-ring-width/);
+    // as a glitch. A ring hugging one 32px row is the affordance, so it must not be gated.
+    expect(shadowFormRule()).not.toMatch(/--region-focus-ring-width/);
+    expect(ruleBody(shell, ".app-main:focus-visible")).toMatch(/--region-focus-ring-width/);
   });
 });

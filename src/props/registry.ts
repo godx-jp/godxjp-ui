@@ -1083,6 +1083,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["ChildrenProp"],
   },
+  NavListProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["IdProp", "ClassNameProp"],
+  },
   ButtonProp: {
     group: "general",
     file: "components/general.prop.ts",

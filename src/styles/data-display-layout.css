@@ -439,8 +439,21 @@
   position: relative;
 }
 
+/* EVERY child of <Carousel> lands in this viewport — the embla ref owns it — so CarouselDots and
+ * the prev/next buttons are inside the clip, not beside it. Measured: the last dot's ring was cut
+ * 4px flat along the bottom edge (pixel 1px below the dot was page ground; 1px above was ring), and
+ * the dot ring is the OUTLINE form with a 2px offset, so it needs the most headroom of any control
+ * here. `overflow-clip-margin` is ignored on `hidden` and honoured only when BOTH axes are `clip`,
+ * so the keyword swap IS the fix. The 8px it hands back exposes only the neighbouring slide's own
+ * 16px `--space-4` gutter, which is empty.
+ *
+ * NO `@supports not (overflow-clip-margin: 1px)` escape hatch here, unlike the topbar family: this
+ * clip is load-bearing. Falling back to `visible` on a browser without the margin would lay every
+ * slide of the embla strip out side by side. `clip` alone contains exactly as `hidden` did, so
+ * such a browser keeps today's shaved ring and nothing worse. */
 .ui-carousel-viewport {
-  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: var(--focus-ring-clip-margin);
 }
 
 .ui-carousel-content {

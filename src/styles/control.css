@@ -582,12 +582,21 @@
     animation: spin 1s linear infinite;
   }
 
+  /* The search input is the FIRST child and is flush with this box's top edge, so `hidden` cut its
+   * focus ring flat across the whole top — measured in the command palette, Cascader, TreeSelect
+   * and SearchSelect (3px shaved; the pixel 1px above the input was the popover ground, not ring).
+   * `overflow-clip-margin` is ignored on `hidden`, and Chromium honours it only when BOTH axes are
+   * `clip`, so the keyword is the fix and it must stay two-axis. Nothing here depends on the crop:
+   * the only children are `.ui-command-input-wrapper` (a border-bottom, no background) and
+   * `.ui-command-list`, which scrolls itself — the rounded corners come from this box's own
+   * background, which `border-radius` paints whatever `overflow` says. */
   .ui-command {
     display: flex;
     width: 100%;
     height: 100%;
     flex-direction: column;
-    overflow: hidden;
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
     border-radius: var(--control-radius);
     background: hsl(var(--popover));
     color: hsl(var(--popover-foreground));
@@ -864,32 +873,35 @@
   .ui-otp-group[data-appearance="grouped"] .ui-otp-slot[data-active="true"] {
     box-shadow: none;
   }
+  /* The RING itself is not written here — `.ui-otp-slot[data-active="true"]` and this grouped
+   * container are members of the shadow-form rule in styles/focus-ring.css. They used to carry
+   * their own copy of the formula, and being keyed on `[data-active]` rather than `:focus-visible`
+   * is precisely why the single-source guard could not see it. Only the BOUNDARY is set here,
+   * because it is the OTP's own chrome; it reads the same hue the ring does, so the two agree. */
   .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
-    border-color: hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1));
-    box-shadow: 0 0 0 var(--focus-ring-width)
-      hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1));
+    border-color: hsl(var(--focus-ring-color, var(--ring)));
+  }
+  /* Error retints BOTH halves at once by moving the hue the ring reads — never by writing a
+   * second ring — exactly as the `[aria-invalid="true"]` rule at the foot of focus-ring.css does
+   * for every other control. The OTP needs its own selector only because the invalid flag lives
+   * on the hidden input, not on the box that paints. */
+  .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) {
+    --focus-ring-color: var(--destructive);
   }
   .ui-otp-container:has(.ui-otp-input[aria-invalid="true"])
     .ui-otp-group[data-appearance="grouped"] {
     border-color: hsl(var(--destructive));
   }
-  .ui-otp-container:has(.ui-otp-input[aria-invalid="true"])
-    .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
-  }
   .ui-otp-container:has(.ui-otp-input:disabled) .ui-otp-group[data-appearance="grouped"] {
     background: hsl(var(--muted));
   }
+  /* Ring from the single source (focus-ring.css lists this selector); only the stacking context
+   * it needs to sit above its neighbours is set here. */
   .ui-otp-slot[data-active="true"] {
     z-index: 1;
-    box-shadow: 0 0 0 var(--focus-ring-width)
-      hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1));
   }
   .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot {
     border-color: hsl(var(--destructive));
-  }
-  .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot[data-active="true"] {
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
   }
   .ui-otp-container:has(.ui-otp-input:disabled) .ui-otp-slot {
     cursor: not-allowed;

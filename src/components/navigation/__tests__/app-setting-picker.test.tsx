@@ -276,6 +276,26 @@ describe('appearance="icon" giữ được ô vuông (gh#366)', () => {
     expect(trigger.className).toContain("ui-app-setting-picker-icon");
   });
 
+  it("mang cả shrink-0: `w-*` chỉ khai bề ngang MONG MUỐN, flex vẫn ép nhỏ hơn", () => {
+    // Đo thật trong Chromium ở frame `navigation-app-setting-picker`: `.ui-topbar-end` rộng 82px,
+    // gap 8px, hai trigger đều `flex-shrink: 1` → ô vuông ra 21,28 × 32px. `inline-size` vẫn giải
+    // đúng --control-height (không phải gh#366 quay lại); cái hỏng là co giãn. Nhánh CÓ NHÃN cố ý
+    // KHÔNG có shrink-0 — nó rộng theo nội dung và mang `max-w-full` để được phép thu lại.
+    const { container } = renderWithUi(
+      <AppSettingPicker kind="theme" appearance="icon" value="light" onValueChange={vi.fn()} />,
+    );
+    const trigger = container.querySelector<HTMLElement>(".ui-app-setting-picker-icon")!;
+    expect(trigger.className).toContain("shrink-0");
+  });
+
+  it("nhánh có nhãn KHÔNG khoá co giãn, vì bề ngang của nó do nội dung quyết", () => {
+    const { container } = renderWithUi(
+      <AppSettingPicker kind="theme" appearance="labeled" value="light" onValueChange={vi.fn()} />,
+    );
+    const trigger = container.querySelector<HTMLElement>(".ui-control-trigger")!;
+    expect(trigger.className).not.toContain("shrink-0");
+  });
+
   it("luật CSS vẫn khai bề ngang theo token, để service retune một chỗ", () => {
     const css = readFileSync(resolve(process.cwd(), "src/styles/navigation-layout.css"), "utf8");
     const rule = css.match(/\.ui-app-setting-picker-icon\s*\{[^}]*\}/)?.[0] ?? "";

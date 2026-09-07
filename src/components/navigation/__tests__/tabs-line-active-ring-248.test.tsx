@@ -9,14 +9,26 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
- * The `line` variant must NOT keep a ring around the SELECTED trigger, while the
- * `:focus-visible` keyboard ring stays fully intact (WCAG 2.4.7). Both states used to be painted
- * with the same Tailwind `ring-*` utilities at equal specificity, so the 1px `ring-primary/25`
- * selected ring simply swallowed the 3px focus ring. Browser evidence (Chromium, /frame/navigation-tabs):
+ * The `line` variant must NOT keep a ring around the SELECTED trigger, while the keyboard focus
+ * ring stays fully intact (WCAG 2.4.7). Both states used to be painted with the same Tailwind
+ * `ring-*` utilities at equal specificity, so the 1px `ring-primary/25` selected ring simply
+ * swallowed the focus ring. Browser evidence (Chromium, /frame/navigation-tabs):
  *   before — active line trigger box-shadow `oklab(… / 0.25) 0 0 0 1px` in BOTH states.
- *   after  — selected only: box-shadow entirely transparent + a 2px rgb(0,119,199) `::after` bar;
- *            keyboard-focused: box-shadow `oklab(… / 0.5) 0 0 0 3px` + `outline: solid 1px`.
- * These assertions codify the invariants that produced that result.
+ *   after  — selected only: box-shadow entirely transparent + a 2px rgb(0,119,199) `::after` bar.
+ *
+ * SECOND PASS, WHEN THE LIBRARY TOOK SC 2.4.13 (AAA). Scoping the selected ring to the default
+ * list fixed the LINE variant and left the same collision standing on the default one: `ring-1`
+ * writes `--tw-ring-shadow` in the UTILITIES layer, which outranks the `components`-layer feed in
+ * styles/focus-ring.css, so a focused ACTIVE default tab measured `oklab(… / 0.25) 0 0 0 1px` and
+ * nothing else — a 1px indicator at 25% alpha, failing both clauses of 2.4.13 while every other
+ * control carried a full 2px ring. The selected hairline therefore moved OFF the ring and onto the
+ * trigger's own (already present, already transparent) border, which frees `--tw-ring-shadow`
+ * entirely. Measured after: `rgb(0,119,199) 0 0 0 2px, rgba(0,119,199,0.12) 0 0 0 4px` on the
+ * focused active tab, with the selected hairline in `border-color` and `shadow-sm` still lifting.
+ *
+ * The invariant these tests hold is therefore stronger than "no ring on a line trigger": the
+ * SELECTED state must never be painted with anything that writes the ring box-shadow, on any
+ * variant, because that is the channel the focus indicator uses.
  */
 /** Prettier wraps long selectors across lines — compare on a whitespace-normalized copy. */
 const navigationCss = readFileSync(
@@ -75,36 +87,78 @@ describe("Tabs line variant — no active ring (gh#248)", () => {
     expect(classOf(active)).not.toMatch(/(?<!\/tabs-list:)data-\[state=active\]:ring-/);
   });
 
-  it("never paints a second, hand-rolled underline (border-b-2 / border-primary) on a line trigger", () => {
+  it("never paints a second, hand-rolled underline on a line trigger", () => {
+    // The line variant's bar is the token-owned `::after` in navigation-layout.css. A `border-b-*`
+    // here would be a second, untokenized indicator. The selected hairline the DEFAULT list uses
+    // (`border-primary/25`) is not one: it is scoped to that list and is an all-round border, not
+    // an underline — so this checks the underline utilities and the SCOPE, not the substring.
     render(<Tabs items={ITEMS} variant="line" />);
-    const active = screen.getByRole("tab", { name: "概要" });
-    expect(classOf(active)).not.toContain("border-b-2");
-    expect(classOf(active)).not.toContain("border-primary");
+    const utilities = classOf(screen.getByRole("tab", { name: "概要" })).split(/\s+/);
+    for (const utility of utilities) {
+      // `border-b-[1-9]`, not `border-b-\d`: the line trigger legitimately carries `border-b-0`,
+      // which REMOVES a bottom border rather than drawing one.
+      expect(utility, `"${utility}" would underline a line trigger`).not.toMatch(
+        /(^|:)border-b-[1-9]/,
+      );
+      if (/(^|:)border-primary/.test(utility)) {
+        expect(
+          utility.startsWith("group-data-[variant=default]/tabs-list:"),
+          `selected-state border "${utility}" must be scoped to the default/card list`,
+        ).toBe(true);
+      }
+    }
   });
 
-  it("keeps the focus-visible ring UNSCOPED so every variant shows a keyboard focus indicator", () => {
+  it("keeps the focus indicator UNSCOPED so every variant shows one", () => {
     render(<Tabs items={ITEMS} variant="line" />);
     const className = classOf(screen.getByRole("tab", { name: "概要" }));
-    const focusUtilities = className.split(/\s+/).filter((u) => u.includes("focus-visible:"));
-    expect(focusUtilities.length).toBeGreaterThan(0);
-    for (const utility of focusUtilities) {
+    // The indicator is the marker class, unconditional and variant-blind — it is what puts this
+    // trigger in the single source (styles/focus-ring.css). It replaced a `focus-visible:outline-1`
+    // that only ever existed as the survivor of the ring collision above; with the ring painting
+    // again, a 1px currentColor line between the border and the ring is a second mark for one
+    // state.
+    expect(className.split(/\s+/)).toContain("ui-focus-ring");
+    // Anything else that touches focus must stay unscoped for the same WCAG 2.4.7 reason.
+    for (const utility of className.split(/\s+/).filter((u) => u.includes("focus-visible:"))) {
       expect(
         utility.startsWith("focus-visible:"),
         `focus utility "${utility}" must not be variant-scoped — WCAG 2.4.7 applies to every variant`,
       ).toBe(true);
     }
-    expect(className).toContain("ui-focus-ring");
   });
 
-  it("keeps the selected ring on the default variant (card/default chrome unchanged)", () => {
+  it("keeps the selected hairline on the default variant — as a BORDER, never a ring", () => {
     render(<Tabs items={ITEMS} variant="default" />);
     const className = classOf(screen.getByRole("tab", { name: "概要" }));
+    // Same colour and width as the ring it replaced, so the selected chrome is unchanged — and
+    // the trigger already carries a transparent border at that width, so nothing moves.
     expect(className).toContain(
-      "group-data-[variant=default]/tabs-list:data-[state=active]:ring-1",
+      "group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25",
     );
-    expect(className).toContain(
-      "group-data-[variant=default]/tabs-list:data-[state=active]:ring-primary/25",
-    );
+    // And the channel the focus ring needs stays free. A `ring-*` utility on the SELECTED state
+    // writes --tw-ring-shadow in the utilities layer and silently deletes the focus indicator on
+    // the active tab — measured, not theorised. This is the assertion that catches its return.
+    for (const utility of className.split(/\s+/)) {
+      expect(
+        /data-\[state=active\]:ring-/.test(utility),
+        `"${utility}" paints the SELECTED state through the ring box-shadow, which is the focus ` +
+          `indicator's channel (SC 2.4.13)`,
+      ).toBe(false);
+    }
+  });
+
+  it("the selected-state ring never returns on ANY variant", () => {
+    // The line variant was fixed first and the default one kept the bug for a release. State the
+    // invariant once, for every variant, so the next fix cannot be half a fix.
+    for (const variant of ["default", "card", "line"] as const) {
+      const { unmount } = render(<Tabs items={ITEMS} variant={variant} />);
+      const className = classOf(screen.getByRole("tab", { name: "概要" }));
+      expect(
+        className,
+        `variant="${variant}" paints the selected state with a ring utility`,
+      ).not.toMatch(/data-\[state=active\]:ring-/);
+      unmount();
+    }
   });
 
   it("keyboard selection still works in the line variant (roving focus + activation)", async () => {

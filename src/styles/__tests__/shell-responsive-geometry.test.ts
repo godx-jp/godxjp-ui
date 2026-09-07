@@ -145,7 +145,11 @@ describe("responsive shell geometry", () => {
     const startTitle = declarationsFor(shellStyles, ".ui-topbar-start > :last-child");
     expect(startTitle).toMatch(/min-width:\s*0;/);
     expect(startTitle).toMatch(/flex:\s*0 1 auto;/);
-    expect(startTitle).toMatch(/overflow:\s*hidden;/);
+    // `clip` + the ring margin, never `hidden`: this selector hits whatever the slot's last child
+    // is, and `hidden` shaves the focus ring off an interactive one (gh#376). `overflow-clip-margin`
+    // is ignored on `hidden`, so the choice of keyword IS the fix.
+    expect(startTitle).toMatch(/overflow:\s*clip;/);
+    expect(startTitle).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
     expect(startTitle).toMatch(/text-overflow:\s*ellipsis;/);
     expect(startTitle).toMatch(/white-space:\s*nowrap;/);
   });

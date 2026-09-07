@@ -67,7 +67,10 @@ const STATUS_MAP: Record<string, StatusDef> = {
 };
 
 const badgeVariants = cva(
-  "inline-flex items-center border font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring",
+  // `ui-focus-ring` = the system's single focus source (styles/focus-ring.css). It replaces a
+  // hand-rolled `focus:ring-2 focus:ring-ring`, which was token-blind (no --focus-ring-* knob
+  // reached it) and fired on `:focus`, so a mouse click on an interactive badge lit a ring.
+  "ui-focus-ring inline-flex items-center border font-medium transition-colors",
   {
     variants: {
       variant: {

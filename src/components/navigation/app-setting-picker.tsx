@@ -172,10 +172,11 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                   // sits among ghost icon buttons (the topbar's sidebar-toggle/notifications/account
                   // triggers), so it drops controlTriggerClass's form-input chrome (border/bg/shadow)
                   // at rest and adopts the same ghost hover — a resting border here read as visually
-                  // inconsistent next to its borderless topbar siblings. The open-state ring
-                  // (`data-[state=open]:border-ring`, from controlTriggerClass) and the
-                  // focus-visible ring are untouched, so keyboard and "is this open" affordance
-                  // still hold.
+                  // inconsistent next to its borderless topbar siblings. The open-state and
+                  // focus-visible rings are untouched, so keyboard and "is this open" affordance
+                  // still hold: both come from styles/focus-ring.css, which also excludes this
+                  // variant from the bordered-field rebind precisely BECAUSE it has no resting
+                  // border to recolour, so it keeps the opaque ring form.
                   // Bề ngang phải là UTILITY, không phải luật class. SelectTrigger phát `w-full`,
                   // mà utility nằm sau components trong thứ tự layer nên `inline-size` khai trong
                   // .ui-app-setting-picker-icon luôn thua. Trong một khe co theo nội dung của
@@ -187,9 +188,20 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                   // 32px). `justify-content: center` khai trong .ui-app-setting-picker-icon
                   // cũng nằm ở @layer components nên cũng thua. Cả hai trục của cái hộp này
                   // phải do lớp utility sở hữu, không được để sót nửa nào lại trong luật class.
+                  // `shrink-0` là NỬA CÒN LẠI của trục ngang, không phải trang trí. `w-*` chỉ khai
+                  // kích thước MONG MUỐN; trong một flex row chật, `flex-shrink: 1` mặc định vẫn
+                  // ép nó nhỏ hơn. Đo thật trong Chromium ở chính frame tài liệu của component:
+                  // `.ui-topbar-end` rộng 82px, gap 8px, hai trigger cùng co → ô vuông ra
+                  // 21,28 × 32px thay vì 32 × 32. Đây không phải gh#366 quay lại: `inline-size`
+                  // vẫn giải đúng --control-height; cái hỏng là co giãn. Một tap target vuông
+                  // biến thành hình chữ nhật 21px mỗi khi topbar chật là lỗi thật, và nó kéo
+                  // theo cả vùng chạm. Nhánh CÓ NHÃN cố tình KHÔNG nhận `shrink-0`: nó rộng theo
+                  // nội dung và mang sẵn `max-w-full` để được phép thu lại.
+                  // Vẫn phải là utility vì cùng lý do với `w-*`: luật trong @layer components
+                  // thua lớp utilities mà SelectTrigger phát ra.
                   cn(
                     "ui-app-setting-picker-icon hover:bg-accent hover:text-accent-foreground",
-                    "w-[length:var(--control-height)] justify-center",
+                    "w-[length:var(--control-height)] shrink-0 justify-center",
                   )
                 : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
                   // A form field that wants a full-width control passes
