@@ -57,6 +57,9 @@ export type {
   TableDensityProp,
   DensityProp,
   GapNameProp,
+  PadProp,
+  PadRawProp,
+  PadSides,
   GapProp,
   GapStepProp,
 } from "./layout.prop";

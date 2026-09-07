@@ -308,6 +308,7 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "test": "vitest run",
+    "test:manual": "vitest run --config vitest.manual.config.ts",
     "test:visual:auth-login": "node scripts/auth-shell-login-visual.mjs",
     "test:visual:auth-registration": "node scripts/auth-shell-registration-visual.mjs",
     "test:visual:topbar-collision": "node scripts/topbar-collision-visual.mjs",
