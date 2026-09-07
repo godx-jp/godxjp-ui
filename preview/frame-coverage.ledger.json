@@ -523,11 +523,11 @@
   "baseline": {
     "recordedAt": "2026-07-30",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 288,
-    "dimensionCells": 4032,
+    "exports": 289,
+    "dimensionCells": 4046,
     "covered": 66,
-    "untested": 2211,
-    "notApplicable": 1755,
+    "untested": 2218,
+    "notApplicable": 1762,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -5475,6 +5475,34 @@
       "owner": "navigation/navigation-menu",
       "frames": [
         "docs/navigation/navigation-menu.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "NavList": {
+      "group": "layout",
+      "owner": "layout/nav-list",
+      "frames": [
+        "docs/layout/nav-list.tsx"
       ],
       "baseline": {
         "covered": 0,

@@ -15,6 +15,28 @@
     user-select: none;
   }
 
+  /* OPTICAL CENTRING OF A TEXT GLYPH (gh#370).
+   *
+   * `place-items: center` above centres the LINE BOX, and a line box is not the letterform: with
+   * `line-height: 1` the default `g` lands 3.69px low in the 28px `md` box — 13% of it, measured
+   * from the rasterised ink against a baseline probe, not from font metrics.
+   *
+   * Trimming to the font's CAP top and TEXT bottom fixes it without a magic number. That pair is
+   * the UNION band — every Latin glyph's ink lies inside cap-top…text-bottom, ascender and
+   * descender included — so the trimmed box does not change when the brand swaps its glyph, and
+   * the mark keeps ONE optical axis instead of shifting per letter. Residual for `g`: 0.82px.
+   * (`ex text` measures closer at -0.39px but is only right for x-height glyphs; it moves `A` and
+   * `b` off the axis, which is the trade a design system must not make.)
+   *
+   * Guarded because `text-box` is recent: without support this is a no-op and the mark keeps
+   * today's line-box centring, never a broken box. Artwork marks are centred by their own viewBox
+   * and have no text to trim. */
+  @supports (text-box: trim-both cap text) {
+    .ui-logo-glyph {
+      text-box: trim-both cap text;
+    }
+  }
+
   .ui-logo[data-size="xs"] {
     width: var(--logo-size-xs);
     height: var(--logo-size-xs);

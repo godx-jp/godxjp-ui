@@ -182,9 +182,14 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                   // topbar, `width: 100%` co lại bằng chính nội dung, tức 18px thay vì ô vuông
                   // --control-height. Nhánh có nhãn ngay dưới đã phải tự vệ đúng như vậy bằng
                   // `w-auto`. Giá trị vẫn đọc token chứ không phải một con số.
+                  // `justify-content` đi cùng lý do đó: SelectTrigger phát `justify-between`,
+                  // với một con duy nhất thì nó dồn glyph sát viền trái (khe 1px/15px trong ô
+                  // 32px). `justify-content: center` khai trong .ui-app-setting-picker-icon
+                  // cũng nằm ở @layer components nên cũng thua. Cả hai trục của cái hộp này
+                  // phải do lớp utility sở hữu, không được để sót nửa nào lại trong luật class.
                   cn(
                     "ui-app-setting-picker-icon hover:bg-accent hover:text-accent-foreground",
-                    "w-[length:var(--control-height)]",
+                    "w-[length:var(--control-height)] justify-center",
                   )
                 : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
                   // A form field that wants a full-width control passes

@@ -1056,6 +1056,18 @@
     cursor: not-allowed;
   }
 
+  /* `width="bounded"` — one held width for a trigger whose VALUE varies in length (gh#375).
+   * Neither of the other two fits that case: `full` swallows a shell top bar, `auto` makes the bar
+   * reflow every time the selected label changes length. The component emits NO width utility for
+   * this value precisely so this rule can own it; keep it that way, or the token goes dead the way
+   * `w-full` killed `.ui-app-setting-picker-icon`'s `inline-size` (gh#366).
+   * `max-inline-size` keeps it honest on a narrow viewport, where a fixed rem width would push the
+   * bar wider than the screen. */
+  .ui-control-trigger[data-width="bounded"] {
+    inline-size: var(--control-bounded-width);
+    max-inline-size: 100%;
+  }
+
   .ui-control[data-size="sm"] {
     --control-height: var(--control-height-sm);
   }

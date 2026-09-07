@@ -8,6 +8,10 @@
   --control-padding-x-default: var(--space-3);
   --control-padding-x-comfortable: var(--space-4);
 
+  /* Held width for `width="bounded"` controls (gh#375). `min()` so the value is a ceiling on a
+   * desktop bar and a share of the viewport on a phone, never a fixed rem that overflows it. */
+  --control-bounded-width: min(15rem, 48vw);
+
   --control-height: calc(var(--control-height-default) * var(--scaling));
   /* Adjacent control sizes, derived from the active --control-height. The ±step
    * is scaled too so the whole control ladder stays proportional under --scaling. */

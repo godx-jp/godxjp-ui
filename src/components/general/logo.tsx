@@ -43,7 +43,15 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
 }
 
 function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }) {
-  if (mark !== "godx") return <>{glyph}</>;
+  // The glyph gets its own element on purpose: `text-box` trims a LINE BOX, so it has to sit on
+  // the grid ITEM, never on `.ui-logo` (the grid container) where it would do nothing. See
+  // `.ui-logo-glyph` in logo-layout.css for why the trim is what centres the letterform.
+  if (mark !== "godx")
+    return (
+      <span data-slot="logo-glyph" className="ui-logo-glyph">
+        {glyph}
+      </span>
+    );
   return (
     <svg
       data-slot="logo-artwork"

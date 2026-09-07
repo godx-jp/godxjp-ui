@@ -258,8 +258,16 @@ describe("responsive shell geometry", () => {
     // bất đồng nếu chỉ có một nguồn, nên việc ẩn hiện thuộc về CSS và TSX chỉ mang tên class.
     expect(appShell).not.toMatch(/max-\[\d+px\]:/);
     expect(appShell).toContain('className="app-mobile-nav-trigger"');
-    expect(declarationsFor(shellStyles, ".app-mobile-nav-trigger")).toMatch(/display:\s*none/);
-    expect(restructuring[0].body).toContain(".app-mobile-nav-trigger");
+    // …và luật đó PHẢI bọc trong `.app-root`. Nút là một `.ui-button`, mà control.css khai
+    // `.ui-button { display: inline-flex }` và được import SAU file này trong cùng
+    // `@layer components`. Một selector trần hoà (0,1,0) rồi thua vì thứ tự import, nên
+    // `display: none` không ẩn được gì — đó chính là lý do trước đây phải mượn utility
+    // `hidden`, và cũng là gốc của khe chết 900px (#367). Bỏ scope là quay lại lỗi cũ.
+    expect(declarationsFor(shellStyles, ".app-mobile-nav-trigger")).toBe("");
+    expect(declarationsFor(shellStyles, ".app-root .app-mobile-nav-trigger")).toMatch(
+      /display:\s*none/,
+    );
+    expect(restructuring[0].body).toContain(".app-root .app-mobile-nav-trigger");
   });
 
   it("gives the horizontal page-inset axis ONE owner, stepping on ONE breakpoint (gh#330)", () => {

@@ -1170,6 +1170,58 @@ import { PanelLeftClose, Search } from "lucide-react";
     rules: [2, 3, 5, 6],
   },
   {
+    name: "NavList",
+    group: "layout",
+    tagline:
+      'Vertical route navigation for INSIDE a page — the settings-nav shape. Renders the same `.sb-nav-item` rows as the Sidebar rail (icon column, label, badge, active tokens, `aria-current="page"`) in a `<nav>` landmark, without the AppShell grid the rail depends on.',
+    props: [
+      {
+        name: "items",
+        type: "SidebarItemProp[]",
+        required: true,
+        description:
+          "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. `icon` is required — the label aligns to the icon column.",
+      },
+      {
+        name: "activeId",
+        type: "string",
+        description:
+          '`id` of the current route. That row gets the active tokens and aria-current="page".',
+      },
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description:
+          "Accessible name for the <nav> landmark. Required because a page routinely holds more than one navigation (breadcrumb, rail, this one).",
+      },
+      {
+        name: "linkComponent",
+        type: "SidebarLinkComponentProp",
+        description:
+          "Router link component — identical contract to Sidebar.linkComponent. The library composes the row and passes it as children; the component only renders the <a>.",
+      },
+      {
+        name: "onSelect",
+        type: "(id: string) => void",
+        description: "Reports the activated row's id, for consumers driving navigation themselves.",
+      },
+    ],
+    usage: [
+      "DO use NavList for a settings / account / preferences sub-navigation beside the pane it drives — typically as MasterDetail's `master`.",
+      "DON'T reach for Sidebar here: it is the app's primary rail and lays into AppShell's grid area, so nested in a page it has no grid to lay into.",
+      "DON'T hand-roll the rows out of Buttons with the current one encoded as a variant swap. That loses aria-current, loses the icon column the labels align to, and invents a different nav in every app.",
+      "DON'T use Tabs: each entry here is a separate ROUTE the router renders, not a panel this component owns. Tabs would mean faking tab state from the URL and never rendering a TabsContent.",
+      "DO pass `label` — the <nav> landmark needs a name to be distinguishable from the breadcrumb and the rail.",
+      "There is no collapsed state by design: a page-level navigation has no rail to collapse into. Only the shell rail collapses.",
+    ],
+    useCases: [
+      "Settings screen: Profile / Appearance / Security beside the selected settings form.",
+      "Account area: a vertical route nav inside a PageContainer, driving the detail pane.",
+    ],
+    related: ["Sidebar", "MasterDetail", "PageContainer"],
+  },
+  {
     name: "MasterDetail",
     group: "layout",
     tagline:

@@ -86,5 +86,14 @@ export type FlushProp = boolean;
  * px; a `string` is any CSS length (`"32rem"`, `"90vw"`, `"50%"`).
  */
 export type WidthProp = number | string;
-/** How a control sizes on the inline axis: fill its column, or hug its label. */
-export type ControlWidthProp = "full" | "auto";
+/**
+ * How a control sizes on the inline axis: fill its column, hug its label, or sit at a bounded
+ * width the theme owns.
+ *
+ * `bounded` exists because neither of the other two is right for a control whose VALUE varies in
+ * length — an organization switcher in a shell top bar is the canonical case. `full` swallows the
+ * bar; `auto` makes the bar reflow every time the selected value changes length. `bounded` reads
+ * `--control-bounded-width`, so the width is a knob rather than geometry hand-written at the call
+ * site (gh#375).
+ */
+export type ControlWidthProp = "full" | "auto" | "bounded";

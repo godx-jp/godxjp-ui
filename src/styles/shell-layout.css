@@ -554,8 +554,19 @@
     display: none;
   }
 
-  /* The drawer nav itself is a focus-trapped Sheet. */
-  .app-mobile-nav-trigger {
+  /* The drawer nav itself is a focus-trapped Sheet.
+   *
+   * SCOPED TO `.app-root` ON PURPOSE, and the same goes for the `display` rules
+   * inside the breakpoint below. The trigger is a `.ui-button`, and control.css
+   * — which declares `.ui-button { display: inline-flex }` — is imported AFTER
+   * this file into the SAME `@layer components`. A bare `.app-mobile-nav-trigger`
+   * ties it at (0,1,0) and therefore LOSES on source order, so `display: none`
+   * here never actually hid anything; the trigger used to be hidden by a
+   * `hidden max-[900px]:inline-flex` utility instead, which is what put the
+   * breakpoint in two places and opened the 1px gap at exactly 900px (#367).
+   * Scoping lifts these to (0,2,0) so the ONE breakpoint below truly owns
+   * visibility. Same trap the icon-size utility documents in app-shell.tsx. */
+  .app-root .app-mobile-nav-trigger {
     display: none;
     flex: 0 0 auto;
     margin-inline-end: var(--space-1);
@@ -628,7 +639,7 @@
       display: flex;
     }
 
-    .app-mobile-nav-trigger {
+    .app-root .app-mobile-nav-trigger {
       display: inline-flex;
     }
 
@@ -905,6 +916,17 @@
 
   .sb-nav {
     display: flex;
+    flex-direction: column;
+    gap: var(--sidebar-nav-gap);
+  }
+
+  /* NavList (gh#374) — the same column rhythm as the rail's `.sb-nav`, because it holds the same
+   * `.sb-nav-item` rows. Nothing here reaches for a shell ancestor: the row rules are already
+   * self-contained, and the only shell-scoped behaviour is the COLLAPSED rail further down, which
+   * a page-level nav has no business inheriting. */
+  .ui-nav-list {
+    display: flex;
+    min-width: 0;
     flex-direction: column;
     gap: var(--sidebar-nav-gap);
   }
