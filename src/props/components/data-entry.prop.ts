@@ -326,10 +326,26 @@ export type FieldProp = {
 export type SliderProp = React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>;
 
 /** @see Calendar — react-day-picker DayPicker plus an opt-in footer. */
+/**
+ * Decorate one day cell — antd's `cellRender`, in the shape the Japanese market actually needs it:
+ * marking 祝日, a company holiday, a day already booked, a deadline.
+ *
+ * It WRAPS rather than replaces. `originNode` is the library's own day button, with its selection
+ * state, its `aria-selected`, its disabled handling and its place in the roving-tabindex grid
+ * already wired; returning something that does not contain it throws all of that away. The
+ * ordinary use is `<>{originNode}<span className="…" /></>` — decorate, do not rebuild.
+ */
+export type CalendarCellRenderProp = (
+  date: Date,
+  info: { originNode: React.ReactNode },
+) => React.ReactNode;
+
 export type CalendarProp = DayPickerProps &
   CalendarFooterProp & {
     /** Replaces the built-in footer actions. */
     footer?: React.ReactNode;
+    /** Decorate a day cell — 祝日, a booked day, a deadline. @see CalendarCellRenderProp */
+    cellRender?: CalendarCellRenderProp;
   };
 
 /** Footer actions shared by Calendar and the pickers that embed it. Both default to off. */
@@ -359,6 +375,8 @@ export type DatePickerProp = FieldA11yProps & {
   locale?: DayPickerProps["locale"];
   fromDate?: Date;
   toDate?: Date;
+  /** Decorate a day cell — 祝日, a booked day, a deadline. @see CalendarCellRenderProp */
+  cellRender?: CalendarCellRenderProp;
   /**
    * Forbid individual dates by predicate — the rule `fromDate`/`toDate` cannot express, because a
    * business calendar is rarely one contiguous range: 土日, a closed accounting period, a 祝日, a
@@ -426,6 +444,8 @@ export type DateRangePickerProp = FieldA11yProps & {
   locale?: DayPickerProps["locale"];
   fromDate?: Date;
   toDate?: Date;
+  /** Decorate a day cell — see `CalendarCellRenderProp`. */
+  cellRender?: CalendarCellRenderProp;
   /** Forbid individual dates by predicate — see `DatePickerProp.disabledDate`. */
   disabledDate?: (date: Date) => boolean;
   /** Show an inline ✕ to clear the range when one is set (default true). */

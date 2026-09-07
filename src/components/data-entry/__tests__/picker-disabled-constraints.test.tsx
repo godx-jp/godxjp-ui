@@ -136,3 +136,52 @@ describe("DatePicker disabledDate (gh#390)", () => {
     expect(field).toHaveValue("");
   });
 });
+
+describe("Calendar cellRender (gh#390 · lát 2)", () => {
+  // 2026-09-21 is 敬老の日 — the ordinary reason a Japanese business calendar needs this at all.
+  const isHoliday = (date: Date) => date.getMonth() === 8 && date.getDate() === 21;
+
+  it("decorates the marked day and leaves the rest alone", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <DatePicker
+        defaultValue={new Date(2026, 8, 7)}
+        cellRender={(date, { originNode }) => (
+          <>
+            {originNode}
+            {isHoliday(date) ? <span data-test="holiday" /> : null}
+          </>
+        )}
+      />,
+    );
+
+    await user.click(screen.getByLabelText(/open calendar|mở lịch/i));
+    await screen.findByRole("grid");
+
+    expect(document.querySelectorAll('[data-test="holiday"]')).toHaveLength(1);
+  });
+
+  it("keeps the day still selectable — the marker wraps the button, it does not replace it", async () => {
+    const onValueChange = vi.fn();
+    const user = userEvent.setup();
+    renderWithUi(
+      <DatePicker
+        defaultValue={new Date(2026, 8, 7)}
+        onValueChange={onValueChange}
+        cellRender={(date, { originNode }) => (
+          <>
+            {originNode}
+            {isHoliday(date) ? <span data-test="holiday" /> : null}
+          </>
+        )}
+      />,
+    );
+
+    await user.click(screen.getByLabelText(/open calendar|mở lịch/i));
+    await user.click(await screen.findByRole("button", { name: /21/ }));
+
+    // Rebuilding the cell instead of wrapping it would lose exactly this.
+    expect(onValueChange).toHaveBeenCalledTimes(1);
+    expect(onValueChange.mock.calls[0][0]?.getDate()).toBe(21);
+  });
+});

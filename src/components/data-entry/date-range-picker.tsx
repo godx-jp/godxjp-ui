@@ -39,6 +39,7 @@ export function DateRangePicker({
   fromDate,
   toDate,
   disabledDate,
+  cellRender,
   allowClear = true,
   ...ariaProps
 }: DateRangePickerProp) {
@@ -237,6 +238,7 @@ export function DateRangePicker({
                 ...(toDate ? [{ after: toDate }] : []),
                 ...(disabledDate ? [disabledDate] : []),
               ]}
+              cellRender={cellRender}
               startMonth={fromDate}
               endMonth={toDate}
               showToday={showToday}
