@@ -53,12 +53,53 @@ const RadioItem = React.forwardRef<
 ));
 RadioItem.displayName = RadioGroupPrimitive.Item.displayName;
 
+/**
+ * antd `optionType="button"` — one welded bar of radio buttons instead of a column of dots.
+ *
+ * IT IS PAINT, NOT SEMANTICS. The roles stay `radiogroup` / `radio`, so arrow keys still move the
+ * selection, a screen reader still says "1 of 3, selected", and a native submit still works. That
+ * is the whole reason this is a prop on RadioGroup rather than a ToggleGroup: a row of
+ * `aria-pressed` buttons permits "none chosen", and a radio group does not.
+ */
+function RadioButtonBar({
+  options,
+  value,
+  optionDomId,
+  resolvedField,
+}: {
+  options: readonly ChoiceOption[];
+  value?: string;
+  optionDomId: (optionValue: string, index: number) => string;
+  resolvedField?: string;
+}) {
+  return (
+    <>
+      {options.map((opt, index) => (
+        <RadioGroupPrimitive.Item
+          key={opt.value}
+          id={optionDomId(opt.value, index)}
+          value={opt.value}
+          disabled={opt.disabled}
+          data-slot="radio-button"
+          data-field={resolvedField}
+          data-state={value === opt.value ? "checked" : "unchecked"}
+          className="ui-radio-button ui-focus-ring"
+        >
+          <span className="ui-radio-button-label">{opt.label}</span>
+        </RadioGroupPrimitive.Item>
+      ))}
+    </>
+  );
+}
+
 function RadioGroupOptions({
   value,
   defaultValue,
   onValueChange,
   options,
   orientation = "vertical",
+  optionType = "default",
+  buttonStyle = "outline",
   disabled,
   name,
   id,
@@ -95,21 +136,41 @@ function RadioGroupOptions({
         {...groupA11y}
         data-field={resolvedField}
         data-orientation={orientation}
-        className={choiceGroupClassName(orientation, className)}
+        data-option-type={optionType === "default" ? undefined : optionType}
+        data-button-style={optionType === "button" ? buttonStyle : undefined}
+        className={cn(
+          optionType === "button" ? "ui-radio-button-bar" : choiceGroupClassName(orientation),
+          className,
+        )}
       >
-        {options.map((opt: ChoiceOption, index) => {
-          const optionId = optionDomId(opt.value, index);
-          return (
-            <Field key={opt.value} id={optionId} label={opt.label} description={opt.description}>
-              <RadioItem
-                id={optionId}
-                value={opt.value}
-                disabled={opt.disabled}
-                data-field={resolvedField}
-              />
-            </Field>
-          );
-        })}
+        {optionType === "button" ? (
+          <RadioButtonBar
+            options={options}
+            value={value}
+            optionDomId={optionDomId}
+            resolvedField={resolvedField}
+          />
+        ) : null}
+        {optionType === "button"
+          ? null
+          : options.map((opt: ChoiceOption, index) => {
+              const optionId = optionDomId(opt.value, index);
+              return (
+                <Field
+                  key={opt.value}
+                  id={optionId}
+                  label={opt.label}
+                  description={opt.description}
+                >
+                  <RadioItem
+                    id={optionId}
+                    value={opt.value}
+                    disabled={opt.disabled}
+                    data-field={resolvedField}
+                  />
+                </Field>
+              );
+            })}
       </RadioGroupRoot>
     );
   }

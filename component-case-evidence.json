@@ -389,6 +389,10 @@
         "value": {
           "cases": ["on", "option-code"],
           "evidence": ["src/components/data-entry/__tests__/form-field-identity-337.test.tsx"]
+        },
+        "indeterminate": {
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
         }
       }
     },
@@ -752,10 +756,67 @@
           "evidence": ["src/components/data-entry/__tests__/form-field-identity-337.test.tsx"]
         },
         "size": {
-          "cases": ["sm", "md"],
+          "cases": ["sm", "md", "lg"],
           "evidence": [
             "docs/data-entry/input.tsx",
-            "src/components/data-entry/__tests__/input-size.test.tsx"
+            "src/components/data-entry/__tests__/input-size.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"
+          ]
+        },
+        "status": {
+          "cases": ["warning", "error"],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "variant": {
+          "cases": ["outlined", "filled", "borderless"],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "prefix": {
+          "cases": ["currency"],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "suffix": {
+          "cases": ["unit"],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "addonBefore": {
+          "cases": ["protocol"],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "addonAfter": {
+          "cases": ["domain"],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "count": {
+          "cases": ["max", "exceeded", "formatter", "strategy", "show-false"],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         }
       }
@@ -803,6 +864,40 @@
           "evidence": [
             "docs/data-entry/number-input.tsx",
             "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        },
+        "status": {
+          "cases": ["warning", "error"],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "variant": {
+          "cases": ["outlined", "filled", "borderless"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"]
+        },
+        "formatter": {
+          "cases": ["currency-prefix"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"]
+        },
+        "parser": {
+          "cases": ["currency-prefix"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"]
+        },
+        "keyboard": {
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"]
+        },
+        "changeOnWheel": {
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"]
+        },
+        "controls": {
+          "cases": [false, true],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-number-input.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         }
       }
@@ -922,11 +1017,42 @@
           "evidence": ["docs/data-entry/password-input.tsx"]
         },
         "size": {
-          "cases": ["sm", "md"],
+          "cases": ["sm", "md", "lg"],
           "evidence": [
-            "docs/data-entry/password-input.tsx",
-            "src/components/data-entry/__tests__/input-size.test.tsx"
+            "src/components/data-entry/__tests__/input-size.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"
           ]
+        },
+        "status": {
+          "cases": ["warning", "error"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"]
+        },
+        "variant": {
+          "cases": ["outlined", "filled", "borderless"],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"
+          ]
+        },
+        "prefix": {
+          "cases": ["inherited-from-input"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"]
+        },
+        "suffix": {
+          "cases": ["inherited-from-input"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"]
+        },
+        "addonBefore": {
+          "cases": ["inherited-from-input"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"]
+        },
+        "addonAfter": {
+          "cases": ["inherited-from-input"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"]
+        },
+        "count": {
+          "cases": ["inherited-from-input"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"]
         }
       }
     },
@@ -1053,6 +1179,20 @@
             "docs/data-entry/radio-group.tsx",
             "src/components/data-entry/__tests__/radio.test.tsx"
           ]
+        },
+        "optionType": {
+          "cases": ["default", "button"],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "buttonStyle": {
+          "cases": ["outline", "solid"],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
         }
       }
     },
@@ -1115,6 +1255,14 @@
         "value": {
           "cases": ["controlled"],
           "evidence": ["docs/data-entry/search-input.tsx"]
+        },
+        "status": {
+          "cases": ["warning", "error"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"]
+        },
+        "variant": {
+          "cases": ["outlined", "filled", "borderless"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"]
         }
       }
     },
@@ -1219,6 +1367,30 @@
             "docs/data-entry/switch.tsx",
             "src/components/data-entry/__tests__/switch-interaction.test.tsx",
             "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        },
+        "loading": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/data-entry/switch.tsx",
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "checkedChildren": {
+          "cases": ["label"],
+          "evidence": [
+            "docs/data-entry/switch.tsx",
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "unCheckedChildren": {
+          "cases": ["label"],
+          "evidence": [
+            "docs/data-entry/switch.tsx",
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         }
       }
@@ -1368,8 +1540,43 @@
     "Textarea": {
       "props": {
         "variant": {
-          "cases": ["default", "ghost"],
-          "evidence": ["docs/data-entry/textarea.tsx"]
+          "cases": ["default", "ghost", "outlined", "filled", "borderless"],
+          "evidence": [
+            "docs/data-entry/textarea.tsx",
+            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
+            "src/components/data-entry/__tests__/textarea-ghost-variant.test.tsx"
+          ]
+        },
+        "status": {
+          "cases": ["warning", "error"],
+          "evidence": [
+            "docs/data-entry/textarea.tsx",
+            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "size": {
+          "cases": ["sm", "md", "lg"],
+          "evidence": [
+            "docs/data-entry/textarea.tsx",
+            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"
+          ]
+        },
+        "count": {
+          "cases": ["max"],
+          "evidence": [
+            "docs/data-entry/textarea.tsx",
+            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "autoSize": {
+          "cases": [true, false, "row-bounds"],
+          "evidence": [
+            "docs/data-entry/textarea.tsx",
+            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
         }
       }
     },
@@ -1528,6 +1735,104 @@
         "id": {
           "cases": ["omitted"],
           "evidence": ["src/components/data-display/__tests__/timeline-grid-354.test.tsx"]
+        }
+      }
+    },
+    "Radio": {
+      "props": {}
+    },
+    "Segmented": {
+      "props": {
+        "block": {
+          "cases": [false, true],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "vertical": {
+          "cases": [false, true],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "size": {
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
+        }
+      }
+    },
+    "Rating": {
+      "props": {
+        "count": {
+          "cases": ["3", "5"],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "allowHalf": {
+          "cases": [false, true],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "allowClear": {
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
+        },
+        "character": {
+          "cases": ["per-index"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
+        },
+        "tooltips": {
+          "cases": ["per-step"],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        }
+      }
+    },
+    "Slider": {
+      "props": {
+        "range": {
+          "cases": [false, true],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "marks": {
+          "cases": ["labelled"],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "dots": {
+          "cases": [false, true],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
+        },
+        "included": {
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
+        },
+        "reverse": {
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
+        },
+        "tooltip": {
+          "cases": [false, "formatter"],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+          ]
         }
       }
     }

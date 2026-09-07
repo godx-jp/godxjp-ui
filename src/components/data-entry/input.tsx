@@ -3,44 +3,48 @@ import { X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { useFieldIdentity, useFieldNameFallback } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
+import {
+  CONTROL_STATUS_CHROME_CLASS,
+  CONTROL_VARIANT_CHROME_CLASS,
+  controlAppearanceAttributes,
+  resolveControlCount,
+} from "./control-appearance";
+import type { InputProp } from "../../props/components/data-entry.prop";
 
-export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> & {
-  /** Control height tier: `md` (default) or `sm`, the same tiers as SelectTrigger and NumberInput. */
-  size?: "sm" | "md";
-  /** Show an inline ✕ that clears the field while it holds text (default false). */
-  allowClear?: boolean;
-  /** Called after the field is cleared via the inline ✕. */
-  onClear?: () => void;
-  /**
-   * A leading affordance pinned inside the start of the field — e.g. a mail or search icon (the
-   * common auth/search pattern). Decorative by default; the input keeps the keyboard focus.
-   */
-  leadingIcon?: React.ReactNode;
-  /**
-   * A trailing affordance pinned inside the field — e.g. a calendar / clock popover trigger
-   * button. ONE trailing icon shows at a time: when `allowClear` and the field holds a value the
-   * clear ✕ REPLACES this icon; otherwise this icon shows.
-   */
-  trailingIcon?: React.ReactNode;
-};
+export type { InputProp, InputProp as InputProps } from "../../props/components/data-entry.prop";
 
+/**
+ * The chrome-free half of the field. `border-input bg-background` is NOT in here: a Tailwind
+ * utility lives in `@layer utilities` and outranks every component-layer rule, so baking the
+ * outlined surface into the base list would silently defeat `variant="filled"` and
+ * `variant="borderless"`. The outlined variant appends exactly those two utilities and nothing
+ * else changed for it — see CONTROL_VARIANT_CHROME_CLASS.
+ */
 const inputBaseClass = [
-  "ui-control ui-input border-input bg-background w-full rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
+  "ui-control ui-input w-full rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
   "selection:bg-primary selection:text-primary-foreground",
   "placeholder:text-muted-foreground",
   "aria-invalid:border-destructive",
+  CONTROL_STATUS_CHROME_CLASS,
 ];
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+export const Input = React.forwardRef<HTMLInputElement, InputProp>(
   (
     {
       size,
+      status,
+      variant = "outlined",
       className,
       type,
       allowClear = false,
       onClear,
       leadingIcon,
       trailingIcon,
+      prefix,
+      suffix,
+      addonBefore,
+      addonAfter,
+      count,
       value,
       defaultValue,
       onChange,
@@ -64,6 +68,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       name: props.name,
       "data-field": (props as { "data-field"?: string })["data-field"],
     });
+    const appearance = controlAppearanceAttributes({
+      status,
+      variant,
+      "aria-invalid": props["aria-invalid"],
+    });
     const innerRef = React.useRef<HTMLInputElement | null>(null);
     // Callback ref forwards the real DOM node to the parent's ref (so `ref.current`
     // stays the <input>, exactly as before) while keeping our own handle for clear().
@@ -76,16 +85,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       [ref],
     );
 
-    const [hasText, setHasText] = React.useState(
-      () => String(value ?? defaultValue ?? "").length > 0,
-    );
-    // Keep the ✕ visibility in sync with a controlled value.
+    const [text, setText] = React.useState(() => String(value ?? defaultValue ?? ""));
+    const hasText = text.length > 0;
+    // Keep the ✕ and the counter in sync with a controlled value.
     React.useEffect(() => {
-      if (value !== undefined) setHasText(String(value).length > 0);
+      if (value !== undefined) setText(String(value));
     }, [value]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (value === undefined) setHasText(event.target.value.length > 0);
+      if (value === undefined) setText(event.target.value);
       onChange?.(event);
     };
 
@@ -102,13 +110,22 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         el.dispatchEvent(new Event("input", { bubbles: true }));
         el.focus();
       }
-      setHasText(false);
+      setText("");
       onClear?.();
     };
 
+    const chrome = CONTROL_VARIANT_CHROME_CLASS[variant];
+    const counter = resolveControlCount(count, text);
+    // `prefix`/`suffix` are antd's names for content pinned inside the box; `leadingIcon`/
+    // `trailingIcon` are this library's older names for the same two slots. One node per slot:
+    // whichever is given wins, and `leadingIcon` stays the decorative (aria-hidden) form.
+    const leading = prefix ?? leadingIcon;
+    const leadingIsDecorative = prefix == null;
+    const hasAddon = addonBefore != null || addonAfter != null;
+
     // Fast path: no affix at all → a bare <input>, unchanged.
-    if (!allowClear && trailingIcon == null && leadingIcon == null) {
-      return (
+    if (!allowClear && leading == null && trailingIcon == null && suffix == null && !counter) {
+      const bare = (
         <input
           type={type}
           data-slot="input"
@@ -116,13 +133,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={setRefs}
           value={value}
           defaultValue={defaultValue}
-          onChange={onChange}
-          className={cn(inputBaseClass, className)}
+          onChange={hasAddon ? handleChange : onChange}
+          className={cn(inputBaseClass, chrome, className)}
           {...props}
           {...nameFallback}
           {...identity}
+          {...appearance}
         />
       );
+      return hasAddon ? withAddons(bare, addonBefore, addonAfter, size, appearance) : bare;
     }
 
     const showClear = allowClear && hasText && !props.disabled && !props.readOnly;
@@ -139,14 +158,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <X className="ui-control-inline-affix-icon" aria-hidden="true" />
       </button>
     ) : (
-      trailingIcon
+      (suffix ?? trailingIcon)
     );
 
-    return (
+    const affixed = (
       <span data-slot="input-affix-wrapper" className="ui-input-affix-wrapper">
-        {leadingIcon != null ? (
-          <span data-slot="input-leading" aria-hidden="true" className="ui-input-leading">
-            {leadingIcon}
+        {leading != null ? (
+          <span
+            data-slot="input-leading"
+            aria-hidden={leadingIsDecorative ? "true" : undefined}
+            className="ui-input-leading"
+          >
+            {leading}
           </span>
         ) : null}
         <input
@@ -159,17 +182,70 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           onChange={handleChange}
           className={cn(
             inputBaseClass,
-            leadingIcon != null && "ui-input--leading-affix",
-            (showClear || trailingIcon != null) && "ui-input--trailing-affix",
+            chrome,
+            leading != null && "ui-input--leading-affix",
+            (trailing != null || counter !== null) && "ui-input--trailing-affix",
             className,
           )}
           {...props}
           {...nameFallback}
           {...identity}
+          {...appearance}
         />
-        {trailing != null ? <span className="ui-input-trailing">{trailing}</span> : null}
+        {trailing != null || counter !== null ? (
+          <span className="ui-input-trailing">
+            {counter ? (
+              <span
+                data-slot="input-count"
+                data-exceeded={counter.exceeded ? "true" : undefined}
+                className="ui-control-count"
+                aria-hidden="true"
+              >
+                {counter.content}
+              </span>
+            ) : null}
+            {trailing}
+          </span>
+        ) : null}
       </span>
     );
+
+    return hasAddon ? withAddons(affixed, addonBefore, addonAfter, size, appearance) : affixed;
   },
 );
 Input.displayName = "Input";
+
+/**
+ * antd `addonBefore` / `addonAfter` — segments welded OUTSIDE the field's own box, sharing its
+ * height and closing its corners on the joined side. They are NOT affixes: an addon is a separate
+ * surface (a protocol, a currency, a unit, a button), which is why it lives outside the border
+ * rather than inside the padding.
+ */
+function withAddons(
+  field: React.ReactNode,
+  addonBefore: React.ReactNode,
+  addonAfter: React.ReactNode,
+  size: "sm" | "md" | "lg" | undefined,
+  appearance: { "data-status"?: string; "data-variant"?: string },
+) {
+  return (
+    <span
+      data-slot="input-group"
+      data-size={size}
+      data-status={appearance["data-status"]}
+      className="ui-input-group"
+    >
+      {addonBefore != null ? (
+        <span data-slot="input-addon-before" className="ui-input-addon">
+          {addonBefore}
+        </span>
+      ) : null}
+      {field}
+      {addonAfter != null ? (
+        <span data-slot="input-addon-after" className="ui-input-addon">
+          {addonAfter}
+        </span>
+      ) : null}
+    </span>
+  );
+}

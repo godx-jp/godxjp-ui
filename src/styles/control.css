@@ -2597,3 +2597,378 @@
     text-align: end;
   }
 }
+
+/* ── ANT DESIGN PARITY: status · variant · affixes · count · marks ──────────────────────────
+ *
+ * One axis per block, all of it token-fed. docs/DESIGN-AUTHORITY.md names Ant Design the
+ * taxonomy authority for this library, so these are antd's names for antd's states — not new
+ * design decisions. Every colour and every length below reads a knob declared in
+ * tokens/components/control.css.
+ */
+@layer components {
+  /* ── VARIANT ──────────────────────────────────────────────────────────────────────────────
+   * `outlined` has NO rule here on purpose: it is the field this library already drew, and it
+   * keeps carrying `border-input bg-background` as utilities. The other two get their surface
+   * from these rules precisely because they carry no such utility to fight (a Tailwind utility
+   * lives in @layer utilities and outranks anything in @layer components — see
+   * data-entry/control-appearance.ts). */
+  .ui-control--filled {
+    border-color: transparent;
+    background-color: hsl(var(--control-variant-filled-background));
+  }
+
+  .ui-control--filled:hover:not(:disabled):not([readonly]):not([data-disabled]) {
+    background-color: hsl(var(--control-variant-filled-hover-background));
+  }
+
+  .ui-control--borderless {
+    border-color: transparent;
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  /* ── STATUS ───────────────────────────────────────────────────────────────────────────────
+   * THE BOUNDARY IS NOT PAINTED HERE, and that is not an oversight. `border-input` is a Tailwind
+   * utility, utilities are a later cascade layer than components, and a later layer wins over any
+   * specificity — a `border-color` written in this block measured as the RESTING border in
+   * Chromium, not amber. It is painted from `data-[status=…]` utilities instead, beside the
+   * `aria-invalid:border-destructive` this library already used; see
+   * data-entry/control-appearance.ts, which records the measurement.
+   *
+   * What DOES belong here is the focus mark, because a custom property has no utility competing
+   * for it. Without these four a warned field draws an amber boundary inside a brand-coloured
+   * halo — "this app cannot decide whether the field is wrong", the same defect the
+   * `[aria-invalid]` rule at the foot of focus-ring.css was written to fix. */
+  .ui-control[data-status="warning"],
+  .ui-control-multiline[data-status="warning"] {
+    --focus-ring-color: var(--control-status-warning-border-color);
+    --focus-outline-color: var(--control-status-warning-border-color);
+    --focus-ring-glow-color: var(--control-status-warning-glow-color);
+    --focus-ring-glow-alpha: var(--control-status-warning-glow-alpha);
+  }
+
+  /* ── SIZE TIERS the two text fields were missing ──────────────────────────────────────── */
+  .ui-input[data-size="lg"] {
+    --control-height: var(--control-height-lg);
+  }
+
+  .ui-control-multiline[data-size="sm"] {
+    --control-height: var(--control-height-sm);
+  }
+
+  .ui-control-multiline[data-size="lg"] {
+    --control-height: var(--control-height-lg);
+  }
+
+  /* ── COUNT — antd `count` ─────────────────────────────────────────────────────────────────
+   * `aria-hidden`, and deliberately so: the counter changes on EVERY keystroke, and a live
+   * region repeating "12 / 140" into a Japanese IME conversion is worse than silence. The limit
+   * reaches assistive tech through the field's own `maxLength`, once. */
+  .ui-control-count {
+    flex-shrink: 0;
+    font-size: var(--control-count-font-size);
+    color: hsl(var(--control-count-color));
+    font-variant-numeric: tabular-nums;
+    padding-inline-end: var(--control-count-space-inline);
+  }
+
+  .ui-control-count[data-exceeded="true"] {
+    color: hsl(var(--control-count-exceeded-color));
+  }
+
+  /* A textarea has no single line to sit a counter on, so it parks at the bottom-end corner —
+   * the same corner the clear ✕ deliberately does NOT use (that one is top-end). */
+  .ui-textarea-count {
+    position: absolute;
+    inset-block-end: var(--textarea-count-inset-block-end);
+    inset-inline-end: var(--textarea-count-inset-inline-end);
+    padding-inline-end: 0;
+  }
+
+  /* ── ADDONS — antd `addonBefore` / `addonAfter` ──────────────────────────────────────────
+   * An addon is OUTSIDE the field's box, unlike a prefix/suffix which sits inside its padding.
+   * That is the whole distinction, and it is why the group closes the field's corners on the
+   * joined side instead of drawing a second rounded box beside a rounded box. */
+  .ui-input-group {
+    display: inline-flex;
+    inline-size: 100%;
+    align-items: stretch;
+  }
+
+  .ui-input-addon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    block-size: var(--control-height);
+    padding-inline: var(--input-addon-padding-inline);
+    font-size: var(--control-font-size);
+    color: hsl(var(--input-addon-color));
+    background-color: hsl(var(--input-addon-background));
+    border: var(--control-border-width) solid hsl(var(--input));
+    white-space: nowrap;
+  }
+
+  .ui-input-group > [data-slot="input-addon-before"] {
+    border-start-start-radius: var(--control-radius);
+    border-end-start-radius: var(--control-radius);
+    border-inline-end: 0;
+  }
+
+  .ui-input-group > [data-slot="input-addon-after"] {
+    border-start-end-radius: var(--control-radius);
+    border-end-end-radius: var(--control-radius);
+    border-inline-start: 0;
+  }
+
+  .ui-input-group:has(> [data-slot="input-addon-before"]) .ui-input,
+  .ui-input-group:has(> [data-slot="input-addon-before"]) .ui-input-affix-wrapper {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+
+  .ui-input-group:has(> [data-slot="input-addon-after"]) .ui-input,
+  .ui-input-group:has(> [data-slot="input-addon-after"]) .ui-input-affix-wrapper {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .ui-input-group[data-size="sm"] {
+    --control-height: var(--control-height-sm);
+  }
+
+  .ui-input-group[data-size="lg"] {
+    --control-height: var(--control-height-lg);
+  }
+
+  /* ── NUMBER INPUT `controls={false}` ─────────────────────────────────────────────────────
+   * The steppers are gone, so the trailing gutter they occupied goes with them — otherwise the
+   * value sits marooned against a blank strip of field. */
+  .ui-number-input[data-controls="off"] .ui-number-input-field {
+    padding-inline-end: var(--control-padding-x);
+  }
+
+  /* ── SWITCH `loading` / `checkedChildren` ────────────────────────────────────────────────
+   * `aria-disabled`, never `disabled`: a disabled button leaves the tab order, so a keyboard
+   * user's focus would be thrown to the next field the instant they flip a switch that saves
+   * over the network. Pointer input is refused in JS (the handler returns early) and the cursor
+   * says so here. */
+  .ui-switch[data-loading="true"] {
+    cursor: progress;
+  }
+
+  .ui-switch-spinner {
+    inline-size: var(--switch-spinner-size);
+    block-size: var(--switch-spinner-size);
+    color: hsl(var(--primary));
+    animation: spin 1s linear infinite;
+  }
+
+  /* A word inside the track has to be a real flex item, not an overlay: an absolutely-positioned
+   * label contributes nothing to the track's width, so 「有効」 would simply hang out of a 36px
+   * box. As a flex item it GROWS the track — measured 36px → 52.92px in Chromium — and the thumb is
+   * then placed by the flex line rather than by the fixed `--switch-thumb-translate`, which would
+   * otherwise strand it in the middle of the wider track. Scoped to `:has()`, so a switch with no
+   * word keeps the translate and its exact previous geometry. */
+  .ui-switch-content {
+    flex: 1 1 auto;
+    min-inline-size: calc(var(--switch-width) - var(--switch-thumb-size));
+    order: 1;
+    text-align: center;
+    font-size: var(--switch-content-font-size);
+    color: hsl(var(--primary-foreground));
+    padding-inline: var(--switch-content-space-inline);
+    line-height: 1;
+  }
+
+  .ui-switch[data-state="unchecked"] .ui-switch-content {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-switch[data-state="checked"] .ui-switch-content {
+    order: 0;
+  }
+
+  .ui-switch:has(.ui-switch-content) {
+    inline-size: auto;
+    min-inline-size: var(--switch-width);
+  }
+
+  .ui-switch:has(.ui-switch-content) .ui-switch-thumb {
+    flex: 0 0 auto;
+    order: 0;
+    transform: none;
+  }
+
+  .ui-switch:has(.ui-switch-content)[data-state="checked"] .ui-switch-thumb {
+    order: 1;
+  }
+
+  /* ── SLIDER `marks` / `dots` / `tooltip` ─────────────────────────────────────────────────
+   * Both marks and dots are positioned from ONE fraction the component computes and hands over
+   * as `--slider-mark-offset-inline` / `-block`. It is a percentage of the rail, so it survives
+   * a resize, `reverse`, and a vertical rail without a second code path. */
+  .ui-slider[data-has-marks="true"] {
+    margin-block-end: calc(var(--slider-mark-space-block-start) + var(--font-size-lg));
+  }
+
+  .ui-slider-marks {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 100%;
+    margin-block-start: var(--slider-mark-space-block-start);
+    block-size: 0;
+  }
+
+  .ui-slider-mark {
+    position: absolute;
+    inset-inline-start: var(--slider-mark-offset-inline, 0%);
+    transform: translateX(-50%);
+    font-size: var(--slider-mark-font-size);
+    color: hsl(var(--slider-mark-color));
+    white-space: nowrap;
+  }
+
+  .ui-slider-dot {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: var(--slider-mark-offset-inline, 0%);
+    inline-size: var(--slider-dot-size);
+    block-size: var(--slider-dot-size);
+    transform: translate(-50%, -50%);
+    border-radius: var(--radius-pill);
+    background: hsl(var(--slider-dot-background));
+    border: var(--control-border-width) solid hsl(var(--slider-dot-border-color));
+  }
+
+  .ui-slider-dot[data-active="true"] {
+    border-color: hsl(var(--slider-dot-active-border-color));
+  }
+
+  .ui-slider-tooltip {
+    position: absolute;
+    inset-block-end: 100%;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    margin-block-end: var(--slider-tooltip-offset-block);
+    padding-inline: var(--slider-tooltip-padding-inline);
+    border-radius: var(--slider-tooltip-radius);
+    background: hsl(var(--slider-tooltip-background));
+    color: hsl(var(--slider-tooltip-color));
+    font-size: var(--slider-tooltip-font-size);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms;
+  }
+
+  .ui-slider-thumb:hover .ui-slider-tooltip,
+  .ui-slider-thumb:focus-visible .ui-slider-tooltip,
+  .ui-slider-tooltip[data-open="true"] {
+    opacity: 1;
+  }
+
+  /* ── RATING `allowHalf` ──────────────────────────────────────────────────────────────────
+   * The leading half of a symbol is a transparent hit area laid over the glyph's own start
+   * edge. It is `aria-hidden` and out of the tab order: the ARIA scale still has exactly
+   * `count` radios, because a half is a position INSIDE a step and not a step of its own. */
+  .ui-rating-symbol {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .ui-rating-star-half {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 50%;
+    z-index: 1;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .ui-rating-star-half-filled {
+    color: hsl(var(--warning));
+  }
+
+  /* ── RADIO `optionType="button"` ─────────────────────────────────────────────────────────
+   * antd's welded radio bar. The roles are untouched — this is paint over a real radiogroup,
+   * which is why arrow-key traversal and native submission keep working. */
+  .ui-radio-button-bar {
+    display: inline-flex;
+    align-items: stretch;
+  }
+
+  .ui-radio-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    block-size: var(--control-height);
+    padding-inline: var(--control-padding-x);
+    font-size: var(--control-font-size);
+    color: hsl(var(--choice-button-color));
+    background: hsl(var(--choice-button-background));
+    border: var(--control-border-width) solid hsl(var(--choice-button-border-color));
+    border-inline-start-width: 0;
+    cursor: pointer;
+  }
+
+  .ui-radio-button:first-child {
+    border-inline-start-width: var(--control-border-width);
+    border-start-start-radius: var(--control-radius);
+    border-end-start-radius: var(--control-radius);
+  }
+
+  .ui-radio-button:last-child {
+    border-start-end-radius: var(--control-radius);
+    border-end-end-radius: var(--control-radius);
+  }
+
+  .ui-radio-button[data-state="checked"] {
+    color: hsl(var(--choice-button-selected-color));
+    border-color: hsl(var(--choice-button-selected-border-color));
+  }
+
+  .ui-radio-button-bar[data-button-style="solid"] .ui-radio-button[data-state="checked"] {
+    color: hsl(var(--choice-button-solid-color));
+    background: hsl(var(--choice-button-solid-background));
+    border-color: hsl(var(--choice-button-solid-background));
+  }
+
+  .ui-radio-button:disabled {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  /* ── SEGMENTED `block` / `vertical` / `size` ─────────────────────────────────────────────
+   * `block` shares the width EQUALLY (`1fr` per item, not `flex: 1` on content), so the
+   * selected pill does not resize when the label under it changes length — which is the whole
+   * point of asking for it. */
+  .ui-segmented[data-block="true"] {
+    display: flex;
+    inline-size: 100%;
+  }
+
+  .ui-segmented[data-block="true"] > .ui-segmented-item {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    justify-content: center;
+  }
+
+  .ui-segmented[data-orientation="vertical"] {
+    flex-direction: column;
+  }
+
+  .ui-segmented[data-orientation="vertical"] > .ui-segmented-item {
+    justify-content: flex-start;
+  }
+
+  .ui-segmented[data-size="sm"] {
+    --control-height: var(--control-height-sm);
+  }
+
+  .ui-segmented[data-size="lg"] {
+    --control-height: var(--control-height-lg);
+  }
+}

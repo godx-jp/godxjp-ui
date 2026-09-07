@@ -78,6 +78,8 @@ export type {
   HeadingLevelProp,
   TextAlignProp,
   SizeProp,
+  ControlStatusProp,
+  ControlVariantProp,
   FormLayoutProp,
   DescriptionsLayoutProp,
   BreakpointProp,

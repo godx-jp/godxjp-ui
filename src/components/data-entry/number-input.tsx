@@ -28,6 +28,19 @@ function clamp(n: number, min?: number, max?: number): number {
   return out;
 }
 
+/**
+ * Normalise a typed numeric string for parsing — the JAPANESE half of this control.
+ *
+ * A Japanese keyboard in 全角 (full-width) mode produces `１２３．５`, and `Number("１２３．５")`
+ * is `NaN`: JS parses full-width DIGITS but not the full-width period, minus or comma. NFKC folds
+ * every one of those onto its ASCII twin, so a value typed in 全角 commits as the number the user
+ * meant instead of silently clearing the field on blur. The 全角 comma is a thousands separator in
+ * the same input mode, so it is dropped rather than folded (NFKC would leave a bare `,`).
+ */
+function normalizeNumeric(raw: string): string {
+  return raw.normalize("NFKC").replace(/,/g, "");
+}
+
 /** Round to `precision` decimals, avoiding binary FP drift (e.g. 0.1 + 0.2). */
 function roundTo(n: number, precision: number): number {
   if (!Number.isFinite(n)) return n;
@@ -49,6 +62,13 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
       max,
       step = 1,
       precision,
+      formatter,
+      parser,
+      keyboard = true,
+      changeOnWheel = false,
+      controls = true,
+      status,
+      variant,
       disabled,
       readOnly,
       size = "md",
@@ -75,7 +95,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
     const effectivePrecision = precision ?? decimalsOf(step);
 
     // Locale-aware formatter for the value AT REST (when not being edited).
-    const formatter = React.useMemo(
+    const intlFormatter = React.useMemo(
       () =>
         new Intl.NumberFormat(locale, {
           minimumFractionDigits: 0,
@@ -85,9 +105,26 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
       [locale, effectivePrecision],
     );
 
+    // antd `formatter` REPLACES the localized default (a unit, a thousands separator, 円).
     const formatAtRest = React.useCallback(
-      (n: number | null): string => (n == null ? "" : formatter.format(n)),
-      [formatter],
+      (n: number | null): string =>
+        formatter ? formatter(n) : n == null ? "" : intlFormatter.format(n),
+      [formatter, intlFormatter],
+    );
+
+    /**
+     * antd `parser` — the inverse of `formatter`. Without one, the built-in reader folds 全角 to
+     * ASCII first (see normalizeNumeric) so a value typed on a Japanese keyboard survives blur.
+     */
+    const parseDraft = React.useCallback(
+      (raw: string): number | null => {
+        if (parser) return parser(raw);
+        const trimmed = normalizeNumeric(raw).trim();
+        if (trimmed === "" || trimmed === "-") return null;
+        const parsed = Number(trimmed);
+        return Number.isNaN(parsed) ? null : parsed;
+      },
+      [parser],
     );
 
     // The text shown in the field. While focused we keep the user's raw keystrokes; at rest we show
@@ -129,55 +166,97 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
     const atMax = max != null && numericValue != null && numericValue >= max;
     const interactive = !disabled && !readOnly;
 
+    /**
+     * IME COMPOSITION IS NOT TYPING. Between `compositionstart` and `compositionend` the field
+     * holds a CANDIDATE, not a value: on a Japanese keyboard the intermediate text is the reading
+     * being converted, not the user's answer. Parsing or committing there is what makes a Japanese
+     * form eat a number half-way through an entry.
+     */
+    const composing = React.useRef(false);
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const raw = event.target.value;
       setDraft(raw);
       if (readOnly) return;
-      const trimmed = raw.trim();
+      // `isComposing` is the authoritative flag on the native event; the ref covers the browsers
+      // that leave it false on the very first keystroke of a composition. React types the change
+      // event's native side as a bare `Event`, which is where the cast comes from — the DOM does
+      // deliver an `InputEvent` here.
+      if (composing.current || (event.nativeEvent as InputEvent).isComposing) return;
+      const trimmed = normalizeNumeric(raw).trim();
       if (trimmed === "" || trimmed === "-") {
         // Empty / lone minus = no committed value yet; don't fight the user's typing.
         if (trimmed === "") commit(null);
         return;
       }
-      const parsed = Number(trimmed);
-      if (Number.isNaN(parsed)) return;
+      const parsed = parseDraft(raw);
+      if (parsed == null) return;
       // While typing we DON'T clamp/round (that would fight mid-entry); we sync the raw number so
       // the controlled mirror tracks keystrokes, then normalize on blur.
       if (!isControlled) setInternal(parsed);
       onValueChange?.(parsed);
     };
 
-    const handleBlur = () => {
-      setFocused(false);
-      const trimmed = draft.trim();
-      if (trimmed === "" || trimmed === "-") {
-        commit(null);
-        setDraft(formatAtRest(null));
+    const handleCompositionStart = () => {
+      composing.current = true;
+    };
+
+    /** The conversion is confirmed — only NOW is the candidate a value, so read it once. */
+    const handleCompositionEnd = (event: React.CompositionEvent<HTMLInputElement>) => {
+      composing.current = false;
+      if (readOnly) return;
+      const raw = event.currentTarget.value;
+      const parsed = parseDraft(raw);
+      if (parsed == null) {
+        if (normalizeNumeric(raw).trim() === "") commit(null);
         return;
       }
-      const parsed = Number(trimmed);
-      const committed = commit(Number.isNaN(parsed) ? null : parsed);
+      if (!isControlled) setInternal(parsed);
+      onValueChange?.(parsed);
+    };
+
+    const handleBlur = () => {
+      setFocused(false);
+      const committed = commit(parseDraft(draft));
       setDraft(formatAtRest(committed));
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (!interactive) return;
-      if (event.key === "ArrowUp") {
+      // ENTER DURING A COMPOSITION CONFIRMS THE CONVERSION — it is neither a submit nor a commit.
+      // Committing here reformats the field out from under the candidate window and the chosen
+      // reading is lost. Same reasoning for the arrows: they walk the candidate list.
+      if (composing.current || event.nativeEvent.isComposing) return;
+      if (keyboard && event.key === "ArrowUp") {
         event.preventDefault();
         stepBy(1, event.shiftKey ? 10 : 1);
-      } else if (event.key === "ArrowDown") {
+      } else if (keyboard && event.key === "ArrowDown") {
         event.preventDefault();
         stepBy(-1, event.shiftKey ? 10 : 1);
       } else if (event.key === "Enter") {
-        const trimmed = draft.trim();
-        const parsed = Number(trimmed);
-        const committed = commit(trimmed === "" || Number.isNaN(parsed) ? null : parsed);
+        const committed = commit(parseDraft(draft));
         setDraft(formatAtRest(committed));
       }
     };
 
+    /**
+     * antd `changeOnWheel`. Off by default, and gated on FOCUS even when on: a wheel handler that
+     * fires on hover turns every scroll past a long form into a silent data edit.
+     */
+    const handleWheel = (event: React.WheelEvent<HTMLInputElement>) => {
+      if (!changeOnWheel || !interactive || !focused || event.deltaY === 0) return;
+      stepBy(event.deltaY < 0 ? 1 : -1);
+    };
+
     return (
-      <div data-slot="number-input" data-size={size} className={cn("ui-number-input", className)}>
+      <div
+        data-slot="number-input"
+        data-size={size}
+        data-status={status}
+        data-variant={variant}
+        data-controls={controls ? undefined : "off"}
+        className={cn("ui-number-input", className)}
+      >
         {prefix != null ? (
           <span
             data-slot="number-input-prefix"
@@ -203,15 +282,20 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
           placeholder={placeholder}
           disabled={disabled}
           readOnly={readOnly}
+          status={status}
+          variant={variant}
           {...fieldA11y}
           aria-valuenow={numericValue ?? undefined}
           aria-valuemin={min}
           aria-valuemax={max}
           aria-valuetext={numericValue != null ? formatAtRest(numericValue) : undefined}
           onChange={handleChange}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
           onFocus={() => setFocused(true)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
+          onWheel={handleWheel}
         />
         {suffix != null ? (
           <span
@@ -222,32 +306,37 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
             {suffix}
           </span>
         ) : null}
-        <span data-slot="number-input-steppers" className="ui-number-input-steppers">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-xs"
-            className="ui-number-input-step ui-number-input-step-up"
-            tabIndex={-1}
-            disabled={!interactive || atMax}
-            aria-label={t("ui.numberInput.increment")}
-            onClick={() => stepBy(1)}
-          >
-            <ChevronUp aria-hidden="true" />
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-xs"
-            className="ui-number-input-step ui-number-input-step-down"
-            tabIndex={-1}
-            disabled={!interactive || atMin}
-            aria-label={t("ui.numberInput.decrement")}
-            onClick={() => stepBy(-1)}
-          >
-            <ChevronDown aria-hidden="true" />
-          </Button>
-        </span>
+        {/* antd `controls={false}` — the field keeps ArrowUp/ArrowDown and its spinbutton role,
+            it simply stops drawing the two buttons. A read-only-looking number entry inside a
+            dense table is the case; dropping the ROLE with them would be a different control. */}
+        {controls ? (
+          <span data-slot="number-input-steppers" className="ui-number-input-steppers">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-xs"
+              className="ui-number-input-step ui-number-input-step-up"
+              tabIndex={-1}
+              disabled={!interactive || atMax}
+              aria-label={t("ui.numberInput.increment")}
+              onClick={() => stepBy(1)}
+            >
+              <ChevronUp aria-hidden="true" />
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-xs"
+              className="ui-number-input-step ui-number-input-step-down"
+              tabIndex={-1}
+              disabled={!interactive || atMin}
+              aria-label={t("ui.numberInput.decrement")}
+              onClick={() => stepBy(-1)}
+            >
+              <ChevronDown aria-hidden="true" />
+            </Button>
+          </span>
+        ) : null}
       </div>
     );
   },

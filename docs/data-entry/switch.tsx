@@ -61,6 +61,47 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Ant Design axes · loading, checkedChildren</CardTitle>
+            <CardDescription>
+              loading は通信中の状態です。disabled ではなく aria-busy / aria-disabled
+              を使います。disabled はタブ順から外れるため、保存中にキーボードの
+              フォーカスが次の項目へ飛んでしまうからです。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Field
+                id="sw-loading"
+                label="公開設定 (保存中)"
+                description="通信が終わるまで操作を受け付けません"
+              >
+                <Switch id="sw-loading" loading defaultChecked />
+              </Field>
+              <Field
+                id="sw-words-off"
+                label="ラベル付き (オフ)"
+                description="トラックの中に状態の語を表示します"
+              >
+                <Switch id="sw-words-off" checkedChildren="有効" unCheckedChildren="無効" />
+              </Field>
+              <Field
+                id="sw-words-on"
+                label="ラベル付き (オン)"
+                description="語が入ってもつまみは端まで届きます"
+              >
+                <Switch
+                  id="sw-words-on"
+                  checkedChildren="有効"
+                  unCheckedChildren="無効"
+                  defaultChecked
+                />
+              </Field>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

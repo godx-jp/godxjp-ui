@@ -1,6 +1,6 @@
 /** Shared control sizing — reads `--control-height`, `--font-size-*` from density / theme. */
 export const controlMultilineClass =
-  "ui-control-multiline aria-invalid:border-destructive w-full rounded-[var(--control-radius)] border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none";
+  "ui-control-multiline aria-invalid:border-destructive data-[status=error]:border-destructive data-[status=warning]:border-warning w-full rounded-[var(--control-radius)] border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none";
 
 /**
  * Multiline control with its own chrome removed, for a textarea EMBEDDED in a surface that already
@@ -8,7 +8,18 @@ export const controlMultilineClass =
  * Two nested rounded borders is the tell that this was missing.
  */
 export const controlMultilineGhostClass =
-  "ui-control-multiline w-full min-h-0 border-0 bg-transparent shadow-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0";
+  "ui-control-multiline data-[status=error]:border-destructive data-[status=warning]:border-warning w-full min-h-0 border-0 bg-transparent shadow-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0";
+
+/**
+ * Multiline control drawn as antd's `filled` variant — a tinted surface instead of a boundary.
+ *
+ * It is a SEPARATE string rather than `controlMultilineClass` plus a modifier because
+ * `bg-background` lives in `@layer utilities`, which outranks every component-layer rule: a
+ * `.ui-control--filled` appended to the outlined list would be silently overpainted and no gate
+ * would catch it. The two lists differ only in which chrome utilities they carry.
+ */
+export const controlMultilineFilledClass =
+  "ui-control-multiline ui-control--filled aria-invalid:border-destructive data-[status=error]:border-destructive data-[status=warning]:border-warning w-full rounded-[var(--control-radius)] ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none";
 
 /**
  * Open-state ring for popup-style triggers (Select / Cascader / TreeSelect / SearchSelect). Radix

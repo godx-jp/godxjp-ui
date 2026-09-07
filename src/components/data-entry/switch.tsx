@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as SwitchPrimitive from "@radix-ui/react-switch";
+import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useFieldIdentity } from "../../lib/field-a11y";
 import type { SwitchProp } from "../../props/components/data-entry.prop";
@@ -8,7 +9,18 @@ export type { SwitchProp, SwitchProp as SwitchProps } from "../../props/componen
 
 export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive.Root>, SwitchProp>(
   (
-    { className, size = "md", name, checked, defaultChecked = false, onCheckedChange, ...props },
+    {
+      className,
+      size = "md",
+      name,
+      checked,
+      defaultChecked = false,
+      onCheckedChange,
+      loading = false,
+      checkedChildren,
+      unCheckedChildren,
+      ...props
+    },
     ref,
   ) => {
     // `{}` otherwise; the
@@ -24,6 +36,11 @@ export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive
     const isChecked = isControlled ? checked : internalChecked;
 
     const handleCheckedChange = (next: boolean) => {
+      // antd `loading` — the toggle is mid-flight, so it refuses the change without becoming a
+      // different control. `disabled` would have been the cheap way to say this and it is the
+      // wrong one: a disabled button leaves the tab order, so a keyboard user's focus is thrown
+      // to the next field the moment they flip a switch that saves over the network.
+      if (loading) return;
       if (!isControlled) {
         setInternalChecked(next);
       }
@@ -39,6 +56,9 @@ export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive
           ref={ref}
           data-slot="switch"
           data-size={size}
+          data-loading={loading ? "true" : undefined}
+          aria-busy={loading || undefined}
+          aria-disabled={loading || undefined}
           checked={isChecked}
           onCheckedChange={handleCheckedChange}
           className={cn(
@@ -53,7 +73,24 @@ export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive
           {...props}
           data-field={identity["data-field"] ?? (props as { "data-field"?: string })["data-field"]}
         >
-          <SwitchPrimitive.Thumb data-slot="switch-thumb" className="ui-switch-thumb" />
+          {/* antd `checkedChildren` / `unCheckedChildren` — the ON/OFF word inside the track.
+              Exactly one is in the DOM at a time and it is `aria-hidden`: the switch already
+              announces its own on/off through `role="switch"` + `aria-checked`, and a screen
+              reader reading "有効, switch, checked" says the same thing twice. */}
+          {checkedChildren != null || unCheckedChildren != null ? (
+            <span data-slot="switch-content" className="ui-switch-content" aria-hidden="true">
+              {isChecked ? checkedChildren : unCheckedChildren}
+            </span>
+          ) : null}
+          <SwitchPrimitive.Thumb data-slot="switch-thumb" className="ui-switch-thumb">
+            {loading ? (
+              <Loader2
+                data-slot="switch-spinner"
+                className="ui-switch-spinner"
+                aria-hidden="true"
+              />
+            ) : null}
+          </SwitchPrimitive.Thumb>
         </SwitchPrimitive.Root>
       </>
     );
