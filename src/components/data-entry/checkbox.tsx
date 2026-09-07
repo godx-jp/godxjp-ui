@@ -30,7 +30,7 @@ const CheckboxRoot = React.forwardRef<
         // service overriding --checkbox-checked-background got no fill change at all. Radix sets
         // `data-state`/`data-disabled` on the root, so the CSS rules match. Rendering is unchanged:
         // both knobs default to exactly the values these utilities hard-coded.
-        "peer ui-checkbox aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground shrink-0 shadow-xs transition-shadow outline-none",
+        "peer ui-checkbox aria-invalid:border-destructive data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground shrink-0 shadow-xs transition-shadow outline-none",
         className,
       )}
       {...props}

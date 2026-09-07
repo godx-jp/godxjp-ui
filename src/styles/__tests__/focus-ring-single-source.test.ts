@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
@@ -102,5 +102,36 @@ describe("focus ring — single source", () => {
   // lose their focus affordance again.
   it("feeds --tw-ring-shadow so controls with Tailwind shadow utilities still ring", () => {
     expect(FOCUS_RING_CSS).toMatch(/--tw-ring-shadow:\s*0 0 0 var\(--focus-ring-width\)/);
+  });
+});
+
+describe("trạng thái lỗi đổi màu vòng focus (gh#363)", () => {
+  const focusRing = readFileSync(resolve(process.cwd(), "src/styles/focus-ring.css"), "utf8");
+
+  it("aria-invalid gán lại chính biến mà các luật vẽ vòng đang đọc", () => {
+    const rule = focusRing.match(/\[aria-invalid="true"\]\s*\{[^}]*\}/)?.[0] ?? "";
+    expect(rule, "phải có luật cho aria-invalid").not.toBe("");
+    expect(rule).toContain("--focus-ring-color");
+    expect(rule).toContain("var(--destructive)");
+  });
+
+  it("chỉ đổi MÀU, không viết công thức vòng thứ hai", () => {
+    const rule = focusRing.match(/\[aria-invalid="true"\]\s*\{[^}]*\}/)?.[0] ?? "";
+    // Bề rộng, độ mờ và độ lệch phải tiếp tục đến từ token chung, nếu không một service chỉnh
+    // cường độ vòng focus sẽ không kéo theo trạng thái lỗi.
+    for (const forbidden of [
+      "box-shadow",
+      "outline",
+      "--focus-ring-width",
+      "--focus-ring-opacity",
+    ]) {
+      expect(rule, `luật lỗi không được khai ${forbidden}`).not.toContain(forbidden);
+    }
+  });
+
+  it("luật lỗi đặt sau mọi lần gán lại theo component, nên nó thắng", () => {
+    const invalidAt = focusRing.indexOf('[aria-invalid="true"]');
+    const lastRebind = focusRing.lastIndexOf("--focus-ring-offset:");
+    expect(invalidAt).toBeGreaterThan(lastRebind);
   });
 });

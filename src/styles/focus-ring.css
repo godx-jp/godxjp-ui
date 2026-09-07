@@ -93,4 +93,24 @@
     outline: none;
     box-shadow: none;
   }
+
+  /* TRẠNG THÁI LỖI ĐỔI ĐÚNG MỘT THỨ: MÀU.
+   *
+   * Viền của một control sai đã đỏ từ trước qua `aria-invalid:border-destructive`, nhưng vòng
+   * focus thì không: các luật trên vẽ box-shadow từ `--focus-ring-color`, mà biến đó chưa bao
+   * giờ được gán lại khi control ở trạng thái lỗi, nên nó rơi về `--ring` tức màu thương hiệu.
+   * Kết quả người dùng thấy là khung đỏ với quầng sáng màu thương hiệu, đọc ra như "ứng dụng
+   * không quyết được ô này đúng hay sai".
+   *
+   * Gán lại HUE thôi, không viết công thức vòng thứ hai: bề rộng, độ mờ và độ lệch vẫn đến từ
+   * đúng những token cũ, nên một service chỉnh cường độ vòng focus vẫn kéo theo cả trạng thái
+   * lỗi. Đặt ở CUỐI file để thắng các lần gán lại theo từng component ở trên, và vì nó là một
+   * lớp nghĩa khác: những cái trên nói "control này cần vòng dày hơn", cái này nói "control này
+   * đang sai".
+   *
+   * Dùng thuộc tính chứ không phải class nên nó với tới mọi control mang aria-invalid, kể cả
+   * trigger lúc đang mở popup và trường ghép, vốn dùng chung đúng các luật trên. */
+  [aria-invalid="true"] {
+    --focus-ring-color: var(--destructive);
+  }
 }

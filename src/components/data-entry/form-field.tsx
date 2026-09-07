@@ -206,12 +206,18 @@ export function FormField({
               (focusable ?? el).focus();
             }}
           >
-            <span>{label}</span>
-            {required && (
-              <span aria-hidden="true" className="text-destructive">
-                *
-              </span>
-            )}
+            {/* Dấu sao nằm TRONG cùng một span với nhãn, không phải bên cạnh nó. Là hai flex
+                item anh em trong một container có flex-wrap, nhãn dài vừa đủ chiếm hết cột là
+                dấu sao bị đẩy thành một dòng riêng, treo lơ lửng dưới nhãn. Nằm trong dòng chữ
+                thì nó ngắt dòng theo chữ như mọi nội dung inline khác. */}
+            <span>
+              {label}
+              {required && (
+                <span aria-hidden="true" className="ui-form-field-required">
+                  *
+                </span>
+              )}
+            </span>
           </span>
         </Label>
         {labelAddon}

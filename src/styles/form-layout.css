@@ -1,6 +1,13 @@
 /* FORM — Ant-style layout. */
 
 @layer components {
+  /* Dấu bắt buộc nằm trong dòng chữ của nhãn nên không còn nhận `gap` của flex; khoảng cách
+   * trước nó do chính nó khai, vẫn đọc token chứ không phải một con số cứng. */
+  .ui-form-field-required {
+    margin-inline-start: var(--space-inline-xs);
+    color: hsl(var(--destructive));
+  }
+
   .ui-form {
     display: flex;
     flex-direction: column;

@@ -28,7 +28,7 @@ const inputBaseClass = [
   "ui-control ui-input border-input bg-background w-full rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
   "selection:bg-primary selection:text-primary-foreground",
   "placeholder:text-muted-foreground",
-  "aria-invalid:border-destructive aria-invalid:ring-destructive/20",
+  "aria-invalid:border-destructive",
 ];
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(

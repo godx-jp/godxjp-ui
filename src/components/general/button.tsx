@@ -113,7 +113,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
         type={asChild ? undefined : (type ?? "button")}
         className={cn(
           fullWidth && "w-full",
-          "aria-invalid:border-destructive aria-invalid:ring-destructive/20",
+          "aria-invalid:border-destructive",
           "[&_svg]:pointer-events-none [&_svg]:shrink-0",
           buttonVariants({ variant, size, shape, className }),
         )}
