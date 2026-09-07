@@ -39,7 +39,9 @@
       "openPicker": "Open time picker",
       "meridiem": "AM/PM",
       "am": "AM",
-      "pm": "PM"
+      "pm": "PM",
+      "now": "Now",
+      "confirm": "OK"
     },
     "searchInput": {
       "placeholder": "Search…"

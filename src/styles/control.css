@@ -1671,8 +1671,29 @@
   }
 
   .ui-time-picker-footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--time-picker-footer-space-gap);
     padding: var(--time-picker-footer-space-inset);
     border-block-start: 1px solid hsl(var(--border));
+  }
+
+  /* `now` on the leading edge, `confirm` on the trailing one — antd's footer order, which is also
+   * the ordinary "escape left, commit right" of a dialog. With only one of them present it still
+   * lands on its own side rather than centring. */
+  .ui-time-picker-footer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--time-picker-footer-space-gap);
+  }
+
+  .ui-time-picker-footer-actions > :only-child:last-child {
+    margin-inline-start: auto;
+  }
+
+  .ui-time-picker-footer-actions > :first-child:not(:only-child) {
+    margin-inline-end: auto;
   }
 
   .ui-time-picker-popover {

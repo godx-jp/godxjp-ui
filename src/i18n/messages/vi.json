@@ -39,7 +39,9 @@
       "openPicker": "Mở chọn giờ",
       "meridiem": "Buổi",
       "am": "SA",
-      "pm": "CH"
+      "pm": "CH",
+      "now": "Bây giờ",
+      "confirm": "Chọn"
     },
     "searchInput": {
       "placeholder": "Tìm kiếm…"

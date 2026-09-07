@@ -2230,6 +2230,14 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "cellRender",
+          "origin": "owned",
+          "required": false,
+          "type": "CalendarCellRenderProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "dir",
           "origin": "inherited-behavioral",
           "required": false,
@@ -4441,6 +4449,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "cellRender",
+          "origin": "owned",
+          "required": false,
+          "type": "CalendarCellRenderProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "className",
           "origin": "owned",
           "required": false,
@@ -4462,6 +4478,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "disabledDate",
+          "origin": "owned",
+          "required": false,
+          "type": "((date: Date) => boolean) | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -4558,6 +4582,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "cellRender",
+          "origin": "owned",
+          "required": false,
+          "type": "CalendarCellRenderProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "className",
           "origin": "owned",
           "required": false,
@@ -4579,6 +4611,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "disabledDate",
+          "origin": "owned",
+          "required": false,
+          "type": "((date: Date) => boolean) | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -12797,6 +12837,22 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "disabledTime",
+          "origin": "owned",
+          "required": false,
+          "type": "TimePickerDisabledTimeProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "hideDisabledOptions",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "id",
           "origin": "owned",
           "required": false,
@@ -12821,6 +12877,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "needConfirm",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
@@ -12834,6 +12898,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "showNow",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {

@@ -6,6 +6,7 @@ import { isValidHhmm, normalizeHhmm } from "../../lib/datetime";
 import { pickFieldA11y } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
+import { Button } from "../general/button";
 import { Input } from "./input";
 import type {
   TimePickerDisabledTimeProp,
@@ -54,6 +55,8 @@ interface TimePickerPanelProps {
   use12h: boolean;
   disabledTime?: TimePickerDisabledTimeProp;
   hideDisabledOptions?: boolean;
+  showNow: boolean;
+  needConfirm: boolean;
   onChange: (value: string) => void;
   onDone?: () => void;
 }
@@ -198,16 +201,25 @@ function TimePickerPanel({
   use12h,
   disabledTime,
   hideDisabledOptions,
+  showNow,
+  needConfirm,
   onChange,
   onDone,
 }: TimePickerPanelProps) {
   const { t } = useTranslation();
   const draftId = React.useId();
   const { isHourRefused, isMinuteRefused } = useTimeRefusals(disabledTime);
-  const { hour, minute } = parseHhmm(value);
   const minutes = buildMinutes(minuteStep);
-  const snappedMinute = minutes.includes(minute) ? minute : minutes[0];
   const [draft, setDraft] = React.useState(value);
+  /**
+   * With `needConfirm`, a column click moves this pending value instead of the real one, and only
+   * the confirm action calls `onChange`. Without it the panel behaves as it always has: select
+   * commits, and the panel closes.
+   */
+  const [pending, setPending] = React.useState<string | null>(null);
+  const working = needConfirm ? (pending ?? value) : value;
+  const { hour, minute } = parseHhmm(working);
+  const snappedMinute = minutes.includes(minute) ? minute : minutes[0];
   const meridiem: "am" | "pm" = hour >= 12 ? "pm" : "am";
 
   React.useEffect(() => {
@@ -220,14 +232,39 @@ function TimePickerPanel({
     // A refused time typed into the panel's own field is rejected exactly like an unparseable one,
     // so the keyboard cannot walk around the rule the columns enforce.
     if (!normalized || isTimeRefused(normalized, disabledTime)) return;
-    onChange(normalized);
+    choose(normalized, { done: true });
+  };
+
+  /**
+   * Every choice goes through here, so `needConfirm` is decided in ONE place.
+   *
+   * `done` is a SEPARATE axis and it is not decoration: picking an hour leaves the panel open
+   * because the minute is still unchosen, while picking a minute finishes the job and closes it.
+   * Collapsing the two shut the panel on the first click and made the minute column unreachable —
+   * caught by time-picker.test.tsx, which had pinned exactly this.
+   */
+  const choose = (next: string, { done }: { done: boolean }) => {
+    if (needConfirm) {
+      setPending(next);
+      setDraft(next);
+      return;
+    }
+    onChange(next);
+    if (done) onDone?.();
+  };
+
+  const confirm = () => {
+    if (pending) onChange(pending);
     onDone?.();
   };
 
-  const commit = (next: string) => {
-    onChange(next);
-    onDone?.();
+  const now = () => {
+    const at = new Date();
+    const snapped = Math.floor(at.getMinutes() / minuteStep) * minuteStep;
+    return `${pad2(at.getHours())}:${pad2(snapped)}`;
   };
+  const nowValue = now();
+  const nowRefused = isTimeRefused(nowValue, disabledTime);
 
   const hourItems = use12h
     ? Array.from({ length: 12 }, (_, i) => i + 1)
@@ -246,7 +283,8 @@ function TimePickerPanel({
           hideDisabled={hideDisabledOptions}
           onSelect={(h) => {
             const hour24 = use12h ? from12h(h, meridiem) : h;
-            onChange(`${pad2(hour24)}:${pad2(snappedMinute)}`);
+            // The minute is still unchosen, so the panel stays open.
+            choose(`${pad2(hour24)}:${pad2(snappedMinute)}`, { done: false });
           }}
         />
         <TimeColumn
@@ -257,7 +295,7 @@ function TimePickerPanel({
           isDisabled={(m) => isMinuteRefused(hour, m)}
           hideDisabled={hideDisabledOptions}
           onSelect={(m) => {
-            commit(`${pad2(hour)}:${pad2(m)}`);
+            choose(`${pad2(hour)}:${pad2(m)}`, { done: true });
           }}
         />
         {use12h && (
@@ -271,7 +309,7 @@ function TimePickerPanel({
             onSelect={(m) => {
               const nextMeridiem: "am" | "pm" = m === 1 ? "pm" : "am";
               const hour24 = from12h(to12h(hour), nextMeridiem);
-              onChange(`${pad2(hour24)}:${pad2(snappedMinute)}`);
+              choose(`${pad2(hour24)}:${pad2(snappedMinute)}`, { done: false });
             }}
           />
         )}
@@ -299,6 +337,31 @@ function TimePickerPanel({
             if (normalized) setDraft(normalized);
           }}
         />
+        {showNow || needConfirm ? (
+          <div className="ui-time-picker-footer-actions">
+            {showNow ? (
+              <Button
+                type="button"
+                variant="link"
+                size="sm"
+                // Refused rather than hidden, for the same reason a forbidden column option is:
+                // an action that vanishes tells the reader nothing about why.
+                disabled={nowRefused}
+                onClick={() => {
+                  setDraft(nowValue);
+                  choose(nowValue, { done: true });
+                }}
+              >
+                {t("dataEntry.timePicker.now")}
+              </Button>
+            ) : null}
+            {needConfirm ? (
+              <Button type="button" size="sm" onClick={confirm}>
+                {t("dataEntry.timePicker.confirm")}
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -321,6 +384,8 @@ export function TimePicker({
   minuteStep = 5,
   disabledTime,
   hideDisabledOptions,
+  showNow = true,
+  needConfirm = false,
   allowClear = true,
   ...ariaProps
 }: TimePickerProp) {
@@ -444,6 +509,8 @@ export function TimePicker({
           use12h={use12h}
           disabledTime={disabledTime}
           hideDisabledOptions={hideDisabledOptions}
+          showNow={showNow}
+          needConfirm={needConfirm}
           onChange={(next) => {
             setValue(next);
             setText(next);

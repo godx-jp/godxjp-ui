@@ -493,6 +493,21 @@ export type TimePickerProp = FieldA11yProps & {
    * reader the rule exists — but a column that is mostly forbidden reads better short.
    */
   hideDisabledOptions?: boolean;
+  /**
+   * Offer a "now" action in the panel footer (default true, as antd's `showNow`). It is refused,
+   * not hidden, when `disabledTime` forbids the current time — the same treatment a forbidden
+   * column option gets, and for the same reason.
+   */
+  showNow?: boolean;
+  /**
+   * Hold the panel's choices as a DRAFT until a confirm action commits them (antd's `needConfirm`).
+   *
+   * DEFAULT `false`, which is where this diverges from antd deliberately. antd defaults it on; this
+   * library has always committed on select and closed, and every consumer's flow is built on that.
+   * Flipping the default would silently add a click to every existing time field. Opt in where the
+   * value is expensive to change (a saved shift, a published slot); leave it off otherwise.
+   */
+  needConfirm?: boolean;
   /** Show an inline ✕ to clear the value when one is set (default true). */
   allowClear?: boolean;
 };
