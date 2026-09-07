@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.4.2] - 2026-09-07
+
+### Fixed
+
+- **Chữ mờ có biên tương phản thật.** `--muted-foreground` từ 42% xuống 39%. Ở 42% nó chỉ đạt
+  4,63 trên chính `--muted`, tức vừa đủ ngưỡng mà không còn biên, nên mọi bề mặt đậm hơn nền
+  trang một chút đều rơi xuống dưới chuẩn: 4,23 trên `--accent`, 4,28 trên nền alert tô
+  destructive, 4,47 trên nền warning. Ba lỗi được báo riêng lẻ đều quy về một con số này.
+- **Trạng thái lỗi đổi màu ở mọi lớp chrome.** `aria-invalid` trước đây chỉ đổi viền; vòng focus
+  và vòng lúc trigger mở popup vẫn giữ màu thương hiệu. Nay chúng đọc `--destructive`, chỉ đổi
+  màu nên bề rộng và độ mờ vẫn theo token chung. Gỡ luôn utility ring không sơn được gì ở Input,
+  Select, Checkbox, Radio và Button.
+- **Dấu bắt buộc của FormField** không còn rơi xuống dòng riêng khi nhãn ngắt dòng.
+- **Chevron của pager đầy đủ** đúng cỡ icon; trước đây luật chỉ bắt dạng markup của pager gọn.
+- **`AppSettingPicker appearance="icon"`** giữ ô vuông thay vì co còn 18px.
+- **Khe chết 1 pixel ở đúng 900px**: thanh bên đã ẩn còn nút mở menu chưa hiện. Việc ẩn hiện nay
+  do CSS sở hữu trọn vẹn, TSX không nhắc lại breakpoint nữa.
+- **Cổng axe không còn báo thành công khi không nạp được trình duyệt** trên CI, và không còn bỏ
+  đo lặng lẽ khi một khung đánh mất khai báo mở lớp phủ.
+- **Khối sự kiện ngắn trong `TimelineGrid`** không còn đè lên nhau; sàn hiển thị nay tính bằng
+  phút và là nguồn duy nhất cho cả CSS lẫn thuật toán xếp làn.
+
 ## [19.4.1] - 2026-09-06
 
 ### Changed
