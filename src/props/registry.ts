@@ -1324,6 +1324,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["ValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "IdProp"],
   },
+  CalendarCellRenderProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
   TimePickerDisabledTimeProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

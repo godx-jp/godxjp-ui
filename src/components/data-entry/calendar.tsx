@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
-import { DayPicker, dateMatchModifiers } from "react-day-picker";
+import { DayButton, DayPicker, dateMatchModifiers } from "react-day-picker";
 import type { DateRange, Modifiers } from "react-day-picker";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
@@ -11,6 +11,7 @@ import type { CalendarProp } from "../../props/components/data-entry.prop";
 export type {
   CalendarProp,
   CalendarProp as CalendarProps,
+  CalendarCellRenderProp,
   CalendarFooterProp,
 } from "../../props/components/data-entry.prop";
 
@@ -31,6 +32,7 @@ export function Calendar({
   footer,
   width = "auto",
   bordered = false,
+  cellRender,
   month: monthProp,
   onMonthChange,
   ...props
@@ -222,6 +224,20 @@ export function Calendar({
             <Icon className={cn("ui-calendar-chevron", chevronClassName)} aria-hidden="true" />
           );
         },
+        /**
+         * `cellRender` WRAPS the library's own day button rather than replacing it (gh#390). The
+         * button carries the selection state, `aria-selected`, the disabled handling and its place
+         * in the grid's roving tabindex; handing a consumer a blank cell to rebuild would mean
+         * every 祝日 marker in every app re-derives all of that, and most would get it wrong.
+         * So the original node is passed in and the consumer decorates around it.
+         */
+        ...(cellRender
+          ? {
+              DayButton: (dayButtonProps: React.ComponentProps<typeof DayButton>) => (
+                <>{cellRender(dayButtonProps.day.date, { originNode: <DayButton {...dayButtonProps} /> })}</>
+              ),
+            }
+          : {}),
         /*
          * A consumer's `components` MERGE with ours; they must not replace the object.
          *
