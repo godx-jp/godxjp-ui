@@ -9,7 +9,12 @@ import type { ButtonProp } from "../../props/components/general.prop";
 const buttonVariants = cva("ui-button", {
   variants: {
     variant: {
-      default: "ui-button--default bg-primary text-primary-foreground hover:bg-primary/90",
+      // Colour is the TOKEN LAYER's (`.ui-button--default` in styles/control.css), not a utility's.
+      // The three utilities that used to sit here — `bg-primary text-primary-foreground
+      // hover:bg-primary/90` — restated the fill the components layer already declares and, being
+      // utilities, out-ranked it: the hover step this library generates from antd's algorithm
+      // (`--primary-hover`) could never take effect while `hover:bg-primary/90` was emitted here.
+      default: "ui-button--default",
       destructive: "ui-button--destructive bg-destructive text-destructive-foreground",
       outline:
         "ui-button--outline border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",

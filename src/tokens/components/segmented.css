@@ -1,0 +1,71 @@
+/* Segmented (one-of-N control) component tokens.
+ *
+ * EVERY VALUE BELOW IS ANT DESIGN'S, NOT A CHOICE. antd owns component taxonomy in this repo
+ * (docs/DESIGN-AUTHORITY.md) and it ships `Segmented` as its own component; the derivation here is
+ * `prepareComponentToken` from `antd@6.6.2/es/segmented/style/index.js`, read from the installed
+ * package and cross-checked against the values antd's own `theme.getDesignToken()` produces:
+ *
+ *   trackPadding: lineWidthBold          → 2px
+ *   trackBg:      colorBgLayout          → the page's recessed neutral
+ *   itemColor:        colorTextLabel     · itemHoverColor / itemSelectedColor: colorText
+ *   itemHoverBg:      colorFillSecondary · itemActiveBg:  colorFill
+ *   itemSelectedBg:   colorBgElevated
+ *   labelHeight = controlHeight − trackPadding × 2              → 32 − 4 = 28
+ *   label padding-inline = controlPaddingHorizontal − lineWidth → 12 − 1 = 11
+ *   icon gap = marginSM / 2                                     → 6
+ *
+ * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active
+ * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a
+ * default Tabs strip read as one control family in both themes rather than two near-misses. That
+ * matters more than reproducing antd's dark ramp literally: antd's dark track is BLACK with a
+ * lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal
+ * port would invert the pairing relative to every Tabs strip on the same page.
+ *
+ * NOT ONE OF THEM READS colorPrimary. Running antd's algorithm with the default seed and with this
+ * system's `#0071bd` produces byte-identical Segmented tokens — the control is neutral by
+ * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css
+ * owns. So the ports below are ROLE references (the same neutrals this system already names),
+ * never copied hex.
+ *
+ * The disabled state is the ONE place this does not follow antd. antd recolours to
+ * `colorTextDisabled` and changes nothing else; this system disables every control with the one
+ * `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one.
+ *
+ * The other thing NOT ported is antd's sliding thumb: it exists to animate between items and antd
+ * removes the `-item-selected` class while it runs, which means the selected state lives in two
+ * places at once. A static selected slab reads identically at rest and cannot desynchronise. */
+
+:root {
+  /* antd trackPadding = lineWidthBold = 2px. Half the base spacing step rather than a raw length,
+   * so it rides `--scaling` with everything else. */
+  --segmented-track-padding: calc(var(--space-1) / 2);
+  /* antd trackBg = colorBgLayout — the recessed ground a control group sits in. */
+  --segmented-track-background: var(--muted);
+  /* antd track radius = borderRadius; item radius = borderRadiusSM — ONE step down the radius
+   * scale, not `radius − trackPadding` (the two coincide only because antd's scale happens to step
+   * by 2). This scale is φ-spaced, so "one step down" from --radius is --radius-md (6px → 3.71px,
+   * against antd's 6 → 4); --radius-sm is two steps and reads visibly squarer. The same pair is
+   * already what TabsList (`rounded-lg`) and TabsTrigger (`rounded-md`) use — this library's other
+   * track-and-slab control. */
+  --segmented-track-radius: var(--radius);
+  --segmented-item-radius: var(--radius-md);
+  /* antd labelHeight = controlHeight − trackPadding × 2. The track therefore measures exactly
+   * --control-height, so a Segmented sits level with an Input and a Button on the same row. */
+  --segmented-item-height: calc(var(--control-height) - var(--segmented-track-padding) * 2);
+  /* antd segmentedPaddingHorizontal = controlPaddingHorizontal − lineWidth. */
+  --segmented-item-padding-inline: calc(var(--control-padding-x) - 1px);
+  /* antd icon gap = marginSM / 2. */
+  --segmented-item-gap: calc(var(--space-3) / 2);
+
+  /* antd itemColor = colorTextLabel · itemHoverColor / itemSelectedColor = colorText. */
+  --segmented-item-color: var(--muted-foreground);
+  --segmented-item-hover-color: var(--foreground);
+  --segmented-item-selected-color: var(--foreground);
+  /* antd itemHoverBg = colorFillSecondary · itemActiveBg = colorFill (the heavier of the pair). */
+  --segmented-item-hover-background: var(--accent);
+  --segmented-item-active-background: var(--secondary);
+  /* antd itemSelectedBg = colorBgElevated + boxShadowTertiary — the selected slab reads as lifted
+   * off the recessed track, which is the whole affordance. */
+  --segmented-item-selected-background: var(--background);
+  --segmented-item-selected-shadow: var(--shadow-sm);
+}

@@ -122,7 +122,9 @@ describe("email colours derive from the web token roles", () => {
       ].sort(),
     );
     expect(EMAIL_COLOR_SOURCE.surface.cssVar).toBe("--card");
-    expect(EMAIL_COLOR_SOURCE.focus.cssVar).toBe("--ring");
+    // `--primary`, not `--ring`: antd has no separate focus-colour token, so the generated tier
+    // declares `--ring: var(--primary)` and the seed is the only place the hue has a value.
+    expect(EMAIL_COLOR_SOURCE.focus.cssVar).toBe("--primary");
     // The GoDX identity mark is the --brand IDENTITY role (what --logo-godx-color points at) —
     // NOT --primary, and NOT the --success status green it wrongly borrowed before.
     expect(EMAIL_COLOR_SOURCE.brand.cssVar).toBe("--brand");

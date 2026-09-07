@@ -45,7 +45,11 @@ export type AppProviderProp = {
   storageKey?: string;
   /** Persist user choices. Default: true. */
   persist?: boolean;
-  /** Initial light/dark theme — written to `<html data-theme>`. Default: `"light"`. */
+  /**
+   * Initial theme choice. `"light"` / `"dark"` are written straight to `<html data-theme>`;
+   * `"system"` defers to `prefers-color-scheme` and is re-resolved whenever the OS changes.
+   * Default: `"light"`.
+   */
   theme?: AppTheme;
   /**
    * Initial brand palette preset — written to `<html data-brand>`. OPT-IN: omit
@@ -122,7 +126,10 @@ export type AppContextValue = {
   requestHeaders: AppRequestHeaders;
   /** Configured timezone list; `undefined` → full IANA in the timezone-picker recipe. */
   timezoneOptions?: readonly AppTimezone[];
-  /** Current theme axes (mirror `<html data-*>` / inline `--scaling`). */
+  /**
+   * Current theme axes (mirror `<html data-*>` / inline `--scaling`). `theme` is the user's
+   * CHOICE — it can be `"system"`, which `<html data-theme>` never is.
+   */
   theme: AppTheme;
   brand: AppBrand | null;
   density: AppDensity;

@@ -92,11 +92,15 @@
     background-color: var(--app-shell-main-background);
   }
 
-  /* `.app-main` carries tabindex="0" (axe scrollable-region-focusable, dbad118), so keyboard focus
-   * can land on the region. */
+  /* `.app-main` carries tabindex="0" (axe scrollable-region-focusable, dbad118) because it IS the
+   * page's scroll region and must stay reachable by keyboard; that is why it keeps its
+   * focusability where a plain content div would lose it. Its mark is OFF twice over — the
+   * region ring's own opt-in token is `0`, and the width is multiplied by the global
+   * `--focus-outline` switch so a service that opts the region ring in still cannot paint an
+   * indicator while the library-wide switch is off. */
   .app-main:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 var(--region-focus-ring-width)
+    box-shadow: inset 0 0 0 calc(var(--region-focus-ring-width) * var(--focus-outline))
       var(--region-focus-ring-color, hsl(var(--focus-ring-color, var(--ring))));
   }
 
@@ -1269,6 +1273,11 @@
     max-width: 100%;
     min-width: 0;
     flex: 1 1 0%;
+    /* Cross-axis stretch, so a bar CELL can be as tall as the bar. See `.ui-topbar-item` below for
+     * why this is a chain and not a length. Layout-only wrapper with no fill and no border, and
+     * `align-items: center` below still centres everything it holds, so nothing already in the bar
+     * moves by a pixel. */
+    align-self: stretch;
     align-items: center;
     gap: var(--topbar-gap);
     padding-inline: var(--topbar-inset);
@@ -1281,6 +1290,8 @@
   .ui-topbar-end {
     display: flex;
     min-width: 0;
+    /* Same link in the same chain as `.ui-topbar` — and the same reason it changes nothing. */
+    align-self: stretch;
     align-items: center;
     gap: var(--topbar-gap);
     overflow: clip;
@@ -1325,6 +1336,70 @@
     max-width: 100%;
     flex: 0 0 auto;
     margin-inline-start: auto;
+  }
+
+  /* ── TOPBAR BAR ITEM ──────────────────────────────────────────────────────────────────────
+   * A cell that IS the bar, not a control dropped into it. The knobs and the outside precedent are
+   * recorded in tokens/components/shell.css.
+   *
+   * "FULL BAR HEIGHT" IS A STRETCH CHAIN, NOT A LENGTH. The bar's height comes from a grid row
+   * inside AppShell (`--app-shell-bar-height`), from `--topbar-height` when Topbar is used
+   * standalone, and from the coarse-pointer override on a touch device. A cell that named any one
+   * of those would be wrong in the other two, so it names none: it stretches, and the two wrappers
+   * above it stretch, and the cross-axis therefore ends at the bar.
+   *
+   * THE FOCUS MARK IS NOT AUTHORED HERE. The cell carries `ui-focus-ring` and rebinds only WHERE
+   * the mark sits (`--focus-ring-offset`, inset by the mark's own width). Whatever
+   * styles/focus-ring.css resolves is what paints — including nothing, which is what the shipped
+   * `--focus-outline: 0` switch resolves to. */
+  .ui-topbar-item {
+    display: inline-flex;
+    min-width: var(--topbar-item-min-width);
+    flex: 0 0 auto;
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
+    gap: var(--topbar-item-gap);
+    padding-inline: var(--topbar-item-padding-inline);
+    border: 0;
+    border-radius: var(--topbar-item-radius);
+    background: transparent;
+    color: hsl(var(--topbar-item-color));
+    cursor: pointer;
+    /* The bar owns the type; a bare button would otherwise fall back to the UA's font. */
+    font: inherit;
+    white-space: nowrap;
+    --focus-ring-offset: var(--topbar-item-focus-ring-offset);
+    transition:
+      background-color var(--duration-fast),
+      color var(--duration-fast);
+  }
+
+  .ui-topbar-item:hover {
+    background: hsl(var(--topbar-item-hover-background));
+    color: hsl(var(--topbar-item-hover-color));
+  }
+
+  /* `[data-state="open"]` keeps the cell lit while the menu or popover it triggers is open — the
+   * pointer has left the cell by then, so :hover alone loses the anchor. */
+  .ui-topbar-item:active,
+  .ui-topbar-item[data-state="open"] {
+    background: hsl(var(--topbar-item-active-background));
+    color: hsl(var(--topbar-item-hover-color));
+  }
+
+  .ui-topbar-item:disabled,
+  .ui-topbar-item[data-disabled] {
+    opacity: var(--disabled-opacity);
+    cursor: not-allowed;
+  }
+
+  /* Same glyph size as the shell's own bar chrome (`.tb-icon-btn svg`), so a consumer-supplied
+   * cell and a built-in one are the same control at a glance. */
+  .ui-topbar-item > svg {
+    width: var(--topbar-icon-size);
+    height: var(--topbar-icon-size);
+    flex: 0 0 auto;
   }
 
   /* The center slot is optional by definition, so remove it before it can cover either owned edge.
@@ -1699,7 +1774,7 @@
    * focus can land on the scroll region — same treatment as `.app-main`. */
   .ui-mobile-shell-main:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 var(--region-focus-ring-width)
+    box-shadow: inset 0 0 0 calc(var(--region-focus-ring-width) * var(--focus-outline))
       var(--region-focus-ring-color, hsl(var(--focus-ring-color, var(--ring))));
   }
 

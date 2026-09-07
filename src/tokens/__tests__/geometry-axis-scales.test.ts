@@ -69,7 +69,11 @@ const BAND: ReadonlyArray<readonly [string, string, number]> = [
  * rewrite; a single moved value fails.
  */
 const FROZEN: Record<string, [string, string, string, string]> = {
-  "--focus-ring-width": ["2px", "2px", "2px", "2px"],
+  // The focus mark ships OFF (`--focus-outline: 0`), so the PAINTED width resolves to 0 at every
+  // density. The WEIGHT it would paint at is frozen instead — see --focus-ring-weight below.
+  "--focus-ring-width": ["0px", "0px", "0px", "0px"],
+  "--focus-ring-weight": ["1px", "1px", "1px", "1px"],
+  "--focus-outline-weight": ["1px", "1px", "1px", "1px"],
   "--card-accent-rail-width": ["6px", "6px", "6px", "6px"],
   "--card-accent-perimeter-width": ["1px", "1px", "1px", "1px"],
   "--card-accent-perimeter-ring-width": ["1px", "1px", "1px", "1px"],
@@ -168,7 +172,13 @@ describe("stroke scale — tier 1 (gh#324)", () => {
   it("the one global thickness knob reads the scale", () => {
     // `--focus-ring-width` was the system's only NAMED line thickness before; it is now a
     // member of the axis rather than a parallel authority, so a theme retunes both at once.
-    expect(root.get("--focus-ring-width")).toBe("var(--stroke-md)");
+    // Since the focus mark gained an on/off switch it is `weight × switch`, and the WEIGHT is
+    // what reads the scale — at antd's `lineWidth` step, which is the light mark.
+    expect(root.get("--focus-ring-width")).toBe(
+      "calc(var(--focus-ring-weight) * var(--focus-outline))",
+    );
+    expect(root.get("--focus-ring-weight")).toBe("var(--focus-outline-weight)");
+    expect(root.get("--focus-outline-weight")).toBe("var(--stroke-hairline)");
   });
 });
 

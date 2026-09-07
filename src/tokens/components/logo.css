@@ -88,6 +88,44 @@
    * band the glyph was classified into, or 0 when it was not classified. */
   --logo-glyph-optical-offset: initial;
 
+  /* ── Fitting the glyph to the mark box (`<Logo glyph="東京" size="xs" />`, gh#377) ───────────
+   * `.ui-logo` is a fixed square and the glyph was set at a fixed per-tier font-size, so nothing
+   * related the string's INLINE ADVANCE to the box it had to fit in. A full-width form occupies a
+   * whole em, and CJK offers a line-break opportunity between EVERY pair of ideographs — so two
+   * kanji in the 20px `xs` box did not overflow, they WRAPPED into a two-line mark. Latin never
+   * showed this because a Latin word has no interior break opportunity: it silently spilled
+   * instead. Measured across Noto Sans JP / M PLUS 2 / Hiragino Sans / the system stack × the four
+   * tiers, the wrap hit 東京 神戸 ゴジ 株式 at xs and sm, 東京都 at every tier, and — already
+   * inside the gh#370 sample — 神A and Aあ on Hiragino at xs.
+   *
+   * THE FIX IS THE SAME SHAPE AS gh#370. CSS cannot see the string, so it cannot know what advance
+   * to make room for; the COMPONENT can. It counts the string's characters in two classes and
+   * emits them as --logo-glyph-fullwidth-count / --logo-glyph-narrow-count (pure, no measurement,
+   * no layout read, SSR-safe). styles/logo-layout.css turns those counts into a modelled advance
+   * and caps the glyph's font-size at the size that advance fits in — `min()`, so a mark whose
+   * advance already fits keeps its tier font-size EXACTLY and nothing that renders correctly today
+   * moves. `white-space: nowrap` sits under it as the invariant: a brand mark is one line.
+   *
+   * MEASURED advance in em, worst case over the four faces (textW / font-size, 8x raster page):
+   *   full-width form   1.000  神 1.0000 · あ 1.0000 · ゴ 1.0000   (the system stack: 0.923)
+   *   Latin capital     0.801  G/X 0.8008 · T/H 0.7679             — all on Hiragino Sans
+   *   digit             0.712  8 0.7121
+   *   x-height letter   0.544  k/t 0.5435
+   * so one constant of 0.81 covers every proportional form the 1–2 glyph contract admits. The two
+   * that exceed it are the widest Latin capitals — Hiragino `W` 1.058em and `M` 0.988em, WIDER
+   * than a kanji — which are under-modelled on purpose rather than shrinking every Latin pair to
+   * cover them; `nowrap` bounds that residual to the ~1.8px spill Latin already has today (it can
+   * never wrap), instead of a two-line mark.
+   *
+   * --logo-glyph-fit-max-width is the share of the box a FITTED glyph's modelled advance may take.
+   * 0.9 leaves 1.28px (xs) / 1.44px (sm) / 1.66px (md) of fill clear of the ink on each side of a
+   * two-kanji mark, against the 0.44px the untreated mark has at `md` and the 0.5px minimum the
+   * library already ships (神A on M PLUS 2 at xs). It is a CAP, not a target: it only binds on the
+   * marks that do not fit. */
+  --logo-glyph-fullwidth-width: 1;
+  --logo-glyph-narrow-width: 0.81;
+  --logo-glyph-fit-max-width: 0.95;
+
   /* ── Identity-mark box (`<Logo mark="godx" />`) ──────────────────────────────────────────────
    * The `size` prop drives the identity mark exactly like it drives the boxed glyph — a public
    * prop that renders identically at every tier is a silent no-op, and the godx LOCKUP already

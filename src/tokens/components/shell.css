@@ -21,10 +21,11 @@
   /* Focus-ring alpha on the tinted shell grounds. It was 0.45, to stop the ring reading as a
    * SELECTED item rather than a focused one — a real concern, but 0.45 composites to ≈1.90:1
    * against the page, so it answered it by making the indicator non-compliant with WCAG 2.2
-   * SC 2.4.13 (AAA), which this library targets. The opaque stop is now opaque and the
-   * quieting comes from the halo outside it (`--focus-ring-glow-*`), which carries no
-   * criterion. "Focused" is kept distinct from "selected" by the halo's shape, not by
-   * weakening the mark (styles/focus-ring.css). */
+   * SC 1.4.11 — colour IS the criterion for a focus indicator, so a translucent mark fails it
+   * whatever its area. The mark is opaque and the quieting comes from the halo outside it
+   * (`--focus-ring-glow-*`), which carries no criterion, and from the mark's light weight
+   * (one `lineWidth`, inset into the row). "Focused" is kept distinct from "selected" by the
+   * halo's shape, not by weakening the mark (styles/focus-ring.css). */
   --sidebar-user-focus-ring-alpha: 1;
   /* Topbar glyphs. Three separate sizes, all previously baked as literals in shell-layout.css.
    *
@@ -212,6 +213,37 @@
    * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob
    * replaces. */
   --topbar-center-compact-display: none;
+
+  /* TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped
+   * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's
+   * navigation, antd ProLayout's `right-content`) draws a trigger as a full-height cell whose
+   * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its
+   * own hover fill and its own ring, floating inside a taller strip.
+   *
+   * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is —
+   * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the
+   * coarse-pointer override on a touch device. A knob here would be a second answer that goes
+   * stale the moment either of those moves. */
+  --topbar-item-padding-inline: var(--space-3);
+  --topbar-item-gap: var(--space-2);
+  --topbar-item-min-width: var(--control-height);
+  /* Square by default: a cell that meets both bar edges has no corner to round. A service that
+   * wants the softer read sets this to var(--radius). */
+  --topbar-item-radius: var(--radius-sharp);
+  --topbar-item-color: var(--muted-foreground);
+  /* The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's
+   * built-in bar chrome, so a consumer-supplied cell and the shell's own read identically. */
+  --topbar-item-hover-background: var(--accent);
+  --topbar-item-hover-color: var(--accent-foreground);
+  --topbar-item-active-background: var(--secondary);
+  /* The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar
+   * family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an
+   * outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the
+   * same reasoning `a.ui-list-row` / `.sb-nav-item` already record in styles/focus-ring.css. The
+   * offset TRACKS the mark's own width, so the two cannot drift apart, and it multiplies by the
+   * `--focus-outline` switch through that width: switch off → width 0 → offset 0. NO GEOMETRY IS
+   * AUTHORED HERE; the cell only says where the mark sits. */
+  --topbar-item-focus-ring-offset: calc(-1 * var(--focus-ring-width));
   --org-switcher-trigger-height: var(--band-height-xl);
   --org-switcher-trigger-padding-x: var(--space-2);
   --org-switcher-avatar-size: 1.75rem;

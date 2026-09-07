@@ -106,8 +106,11 @@
     box-shadow: var(--shadow-sm), var(--shadow-glow);
   }
 
+  /* antd's `colorPrimaryHover`, generated from the seed — not the primary at 90% opacity, which
+   * was an eyeballed step whose result depends on whatever surface happens to be behind the
+   * button. See src/tokens/antd.generated.css. */
   .ui-button--default:hover {
-    background: hsl(var(--primary) / 0.9);
+    background: hsl(var(--primary-hover));
   }
 
   .ui-button--destructive {
@@ -969,6 +972,97 @@
   }
   .ui-rating-star:focus-visible {
     border-radius: var(--radius-sm);
+  }
+
+  /* ── SEGMENTED ────────────────────────────────────────────────────────────────────────────
+   * antd 6.6.2 `genSegmentedStyle` (es/segmented/style/index.js), ported declaration for
+   * declaration onto this system's roles. Every length reads a knob in
+   * tokens/components/segmented.css, where the antd formula each one came from is recorded.
+   *
+   * TWO DEPARTURES, BOTH DELIBERATE:
+   *
+   *   1. NO SLIDING THUMB. antd animates the slab between items and, while it animates, strips the
+   *      `-item-selected` class — so which item is selected lives in two places for 300ms. A static
+   *      slab reads identically at rest, cannot desynchronise, and needs no reduced-motion carve-out.
+   *   2. NO `::after` HOVER OVERLAY. antd tints hover through a `z-index: -1` pseudo-element so the
+   *      overlay can cross-fade under the label. With no thumb to coordinate with there is nothing
+   *      the overlay buys, and a negative z-index inside a stacking context is a well-known way to
+   *      lose an element behind an ancestor's background. The tint goes straight on the item.
+   *
+   * The focus mark is NOT authored here. `.ui-segmented-item` carries `ui-focus-ring`, so whatever
+   * styles/focus-ring.css resolves — including nothing at all, which is what the shipped
+   * `--focus-outline: 0` switch resolves to — is what paints. */
+  .ui-segmented {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: stretch;
+    padding: var(--segmented-track-padding);
+    border-radius: var(--segmented-track-radius);
+    background: hsl(var(--segmented-track-background));
+    color: hsl(var(--segmented-item-color));
+    font-size: var(--font-size-base);
+  }
+
+  .ui-segmented-item {
+    display: inline-flex;
+    min-width: 0;
+    height: var(--segmented-item-height);
+    align-items: center;
+    justify-content: center;
+    gap: var(--segmented-item-gap);
+    padding-inline: var(--segmented-item-padding-inline);
+    border: 0;
+    border-radius: var(--segmented-item-radius);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    /* The track owns the type; the item must not fall back to the UA's button font. */
+    font: inherit;
+    white-space: nowrap;
+    /* antd transitions COLOUR only on an item (`transition: color …`); the slab appears at once. */
+    transition: color var(--duration-fast);
+  }
+
+  /* antd itemHoverColor / itemHoverBg, and the heavier itemActiveBg while the pointer is down.
+   * Excluded on the selected item exactly as antd excludes it — hovering the current choice must
+   * not repaint the slab. */
+  .ui-segmented-item:not([data-state="checked"]):not([data-disabled]):hover {
+    background: hsl(var(--segmented-item-hover-background));
+    color: hsl(var(--segmented-item-hover-color));
+  }
+  .ui-segmented-item:not([data-state="checked"]):not([data-disabled]):active {
+    background: hsl(var(--segmented-item-active-background));
+  }
+
+  .ui-segmented-item[data-state="checked"] {
+    background: hsl(var(--segmented-item-selected-background));
+    box-shadow: var(--segmented-item-selected-shadow);
+    color: hsl(var(--segmented-item-selected-color));
+  }
+
+  /* This system disables every control with one knob; see the note in the token file. */
+  .ui-segmented-item[data-disabled] {
+    opacity: var(--disabled-opacity);
+    cursor: not-allowed;
+  }
+
+  .ui-segmented-item-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* antd's `-item-icon > svg` rule, and for antd's own stated reason: a reset that forces
+   * `svg { display: block }` (Tailwind Preflight does) would drop the glyph onto its own line. */
+  .ui-segmented-item-icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+  .ui-segmented-item-icon > svg {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+    display: inline-block;
+    vertical-align: middle;
   }
 
   /* TagInput */

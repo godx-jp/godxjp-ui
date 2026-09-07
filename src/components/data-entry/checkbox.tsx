@@ -1,9 +1,56 @@
 import * as React from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
-import { Check } from "lucide-react";
+import { Check, Minus } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useFieldIdentity } from "../../lib/field-a11y";
 import { CheckboxGroup } from "./checkbox-group";
+
+/**
+ * The glyph a checkbox paints for a given `data-state`. A dash for "indeterminate" (a PARTIAL
+ * selection — DataTable / Transfer select-all, a Cascader parent with some leaves checked) and a
+ * tick for "checked". Painting the tick for both made a partial selection read as "all selected".
+ */
+function CheckboxGlyph({ state }: { state: CheckboxPrimitive.CheckedState }) {
+  return state === "indeterminate" ? (
+    <Minus className="ui-checkbox-icon" aria-hidden="true" />
+  ) : (
+    <Check className="ui-checkbox-icon" aria-hidden="true" />
+  );
+}
+
+/**
+ * Decorative checkbox glyph — a non-interactive `<span>`, NOT the real {@link Checkbox} (which is a
+ * `<button>`). Used where the row itself is the interactive element and a nested `<button>` would
+ * be invalid HTML (Cascader's option rows). Shares {@link CheckboxGlyph} so "partial" can never
+ * drift apart from the real control's rendering again.
+ */
+export function CheckboxVisual({
+  checked,
+  indeterminate,
+  disabled,
+  className,
+}: {
+  checked: boolean;
+  indeterminate?: boolean;
+  disabled?: boolean;
+  className?: string;
+}) {
+  const state: CheckboxPrimitive.CheckedState = indeterminate ? "indeterminate" : checked;
+  return (
+    <span
+      aria-hidden="true"
+      data-slot="checkbox"
+      data-state={indeterminate ? "indeterminate" : checked ? "checked" : "unchecked"}
+      data-disabled={disabled ? "" : undefined}
+      className={cn("ui-checkbox inline-flex items-center justify-center", className)}
+    >
+      {/* No state → no glyph. `.ui-checkbox[data-state="checked"]` in styles/control.css owns the
+          fill; an indeterminate box deliberately keeps the resting fill and shows only the dash,
+          the way antd draws a partial selection. */}
+      {checked || indeterminate ? <CheckboxGlyph state={state} /> : null}
+    </span>
+  );
+}
 
 const CheckboxRoot = React.forwardRef<
   React.ComponentRef<typeof CheckboxPrimitive.Root>,
@@ -17,6 +64,13 @@ const CheckboxRoot = React.forwardRef<
     name: props.name,
     "data-field": (props as { "data-field"?: string })["data-field"],
   });
+  // Radix keeps the resolved check state in a private context, so an UNCONTROLLED box's state is
+  // mirrored here — otherwise `defaultChecked="indeterminate"` would keep painting a dash after
+  // the first click. A controlled box reads straight off the prop.
+  const [uncontrolled, setUncontrolled] = React.useState<CheckboxPrimitive.CheckedState>(
+    props.defaultChecked ?? false,
+  );
+  const state = props.checked ?? uncontrolled;
   return (
     <CheckboxPrimitive.Root
       ref={ref}
@@ -35,9 +89,13 @@ const CheckboxRoot = React.forwardRef<
       )}
       {...props}
       {...identity}
+      onCheckedChange={(next) => {
+        setUncontrolled(next);
+        props.onCheckedChange?.(next);
+      }}
     >
       <CheckboxPrimitive.Indicator data-slot="checkbox-indicator" className="ui-choice-indicator">
-        <Check className="ui-checkbox-icon" aria-hidden="true" />
+        <CheckboxGlyph state={state} />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

@@ -67,14 +67,19 @@ describe("focus ring — single source", () => {
   // The four knobs ARE the API. If a value is inlined instead of read from a
   // token, a service can no longer retune every ring at once — the exact
   // failure that produced 3px/0.35 and 3px/0.3 rings.
-  it("the ring reads all four tokens and hardcodes none of them", () => {
-    expect(FOCUS_RING_CSS).toContain("var(--focus-ring-width)");
+  it("both forms read their geometry and hue from tokens and hardcode none of it", () => {
+    // The FIELD form: the whole shadow arrives as one token, and the boundary is rebound to the
+    // focus hue rather than declared as a colour.
+    expect(FOCUS_RING_CSS).toContain("var(--focus-field-shadow)");
     expect(FOCUS_RING_CSS).toContain("var(--focus-ring-color, var(--ring))");
+    // The MARK: width, hue and offset, each as a token. The width is `weight × switch`, so a
+    // rule reading it can never paint while `--focus-outline` is 0.
+    expect(FOCUS_RING_CSS).toContain("var(--focus-ring-width)");
+    expect(FOCUS_RING_CSS).toContain("var(--focus-outline-color)");
+    expect(FOCUS_RING_CSS).toContain("var(--focus-ring-offset)");
     expect(FOCUS_RING_CSS).toContain("var(--focus-ring-opacity, 1)");
-    expect(FOCUS_RING_CSS).toContain("var(--focus-ring-offset, 0px)");
 
-    // No literal px thickness inside a ring declaration (the `0px` fallback of
-    // --focus-ring-offset is the one legitimate literal).
+    // No literal px thickness inside a mark declaration.
     const ringDeclarations = [...FOCUS_RING_CSS.matchAll(/(box-shadow|outline):\s*([^;]+);/g)]
       .map((m) => m[2])
       .filter((value) => value !== "none");
@@ -85,14 +90,20 @@ describe("focus ring — single source", () => {
 
   // Turning the ring off must stay possible AND stay a deliberate act: the
   // shipped default is on (WCAG 2.4.7), and width:0 is the documented switch.
-  it("ships the ring ON by default and documents width:0 as the off switch", () => {
+  it("ships the mark OFF by default, behind antd's own focusOutline flag", () => {
     const foundation = readFileSync(join(STYLES_DIR, "../tokens/foundation.css"), "utf8");
-    // The ring's thickness is a member of the stroke scale rather than a parallel
-    // authority, so a theme retunes rings and borders together. --stroke-md IS 2px.
-    expect(foundation).toMatch(/--focus-ring-width:\s*var\(--stroke-md\)/);
-    expect(foundation).toMatch(/--stroke-md:\s*2px;/);
+    const axes = readFileSync(join(STYLES_DIR, "../tokens/axes.css"), "utf8");
+    // OFF is the shipped default and a recorded product decision — docs/DESIGN-AUTHORITY.md.
+    expect(foundation).toMatch(/--focus-outline:\s*0;/);
+    // The thickness is still a member of the stroke scale rather than a parallel authority, so a
+    // theme retunes marks and borders together. The ON weight is antd's lineWidth = 1px.
+    expect(foundation).toMatch(/--focus-outline-weight:\s*var\(--stroke-hairline\)/);
+    expect(foundation).toMatch(/--stroke-hairline:\s*1px;/);
     expect(foundation).toMatch(/--focus-ring-opacity:\s*1/);
-    expect(FOCUS_RING_CSS).toContain("--focus-ring-width: 0");
+    // And ONE attribute turns the whole thing back on, with no code change.
+    expect(axes).toContain(':root[data-focus-outline="on"]');
+    // The per-surface off switch is the composed halo token (`.ui-command-input`).
+    expect(FOCUS_RING_CSS).toContain("--focus-field-shadow: none");
   });
 
   // A control carrying a Tailwind shadow/ring utility (shadow-xs on Checkbox,
@@ -101,7 +112,7 @@ describe("focus ring — single source", () => {
   // utility's composite paint our ring; drop it and those controls silently
   // lose their focus affordance again.
   it("feeds --tw-ring-shadow so controls with Tailwind shadow utilities still ring", () => {
-    expect(FOCUS_RING_CSS).toMatch(/--tw-ring-shadow:\s*0 0 0 var\(--focus-ring-width\)/);
+    expect(FOCUS_RING_CSS).toMatch(/--tw-ring-shadow:\s*var\(--focus-field-shadow\)/);
   });
 });
 
@@ -119,10 +130,13 @@ describe("trạng thái lỗi đổi màu vòng focus (gh#363)", () => {
     const rule = focusRing.match(/\[aria-invalid="true"\]\s*\{[^}]*\}/)?.[0] ?? "";
     // Bề rộng, độ mờ và độ lệch phải tiếp tục đến từ token chung, nếu không một service chỉnh
     // cường độ vòng focus sẽ không kéo theo trạng thái lỗi.
+    // `--focus-outline-color` IS a colour, so the forbidden list names the PROPERTIES that would
+    // constitute a second formula rather than any token whose name contains "outline".
     for (const forbidden of [
-      "box-shadow",
-      "outline",
+      "box-shadow:",
+      "outline:",
       "--focus-ring-width",
+      "--focus-outline-width",
       "--focus-ring-opacity",
     ]) {
       expect(rule, `luật lỗi không được khai ${forbidden}`).not.toContain(forbidden);

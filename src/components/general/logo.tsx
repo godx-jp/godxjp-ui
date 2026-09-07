@@ -15,6 +15,10 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
    * `神` the full em box) and optically centred for that band — a line box is not a letterform, and
    * the classes' centres are 0.21em apart. Any other node is left alone. Retune a band, or pin one
    * mark, with the `--logo-glyph-*-optical-offset` tokens.
+   *
+   * A string is also FITTED to the box: two full-width forms want ~2em against a box sized for
+   * roughly one, so `東京` at `xs` is SET SMALLER rather than wrapping. The mark is always one
+   * line. Retune how much of the box a fitted glyph may take with `--logo-glyph-fit-max-width`.
    */
   glyph?: React.ReactNode;
   /**
@@ -81,17 +85,67 @@ export function logoGlyphInk(glyph: React.ReactNode): LogoGlyphInk | undefined {
   return `${top}-${bottom}`;
 }
 
+/**
+ * How much INLINE space the glyph string wants, as counts of the two advance classes — the fact
+ * `.ui-logo-glyph`'s fit cap is computed from (gh#377). `fullwidth` is the characters that occupy
+ * a whole em; `narrow` is everything else.
+ */
+export interface LogoGlyphAdvance {
+  fullwidth: number;
+  narrow: number;
+}
+
+/**
+ * Characters that occupy a FULL em of inline advance — measured at exactly 1.000em on Noto Sans JP,
+ * M PLUS 2 and Hiragino Sans. Han, kana and Hangul cover the marks this library is actually handed;
+ * the explicit ranges add CJK punctuation (U+3000–303F, e.g. 「」・) and the fullwidth forms, which
+ * belong to no script. East Asian Width itself is not an ECMAScript regex property, so this is the
+ * closest the language allows.
+ */
+const FULL_WIDTH_ADVANCE =
+  /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\u{3000}-\u{303F}\u{FF01}-\u{FF60}\u{FFE0}-\u{FFE6}]/u;
+
+/**
+ * Count a glyph string's characters by advance class. Pure, no layout read, no measurement — the
+ * component is the only layer that can do this, because CSS cannot see which characters are in the
+ * box. Returns `undefined` for a non-string glyph and for an empty string, exactly like
+ * `logoGlyphInk`: those are not classified and keep the neutral default rather than being guessed
+ * at. Iterates code points, so a surrogate pair (CJK Extension B) counts once.
+ */
+export function logoGlyphAdvance(glyph: React.ReactNode): LogoGlyphAdvance | undefined {
+  if (typeof glyph !== "string") return undefined;
+  const characters = [...glyph.replace(/\s+/gu, "")];
+  if (!characters.length) return undefined;
+  const fullwidth = characters.filter((character) => FULL_WIDTH_ADVANCE.test(character)).length;
+  return { fullwidth, narrow: characters.length - fullwidth };
+}
+
 function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }) {
   // The glyph gets its own element on purpose: `--logo-glyph-*-optical-offset` translates the INK,
   // which on `.ui-logo` (the grid container) would drag the fill and the rounded box with it.
   // `data-ink` is the half of the correction CSS cannot derive — see `.ui-logo-glyph` in
   // logo-layout.css for why one glyph-blind rule cannot centre every class, and the measurements.
-  if (mark !== "godx")
+  if (mark !== "godx") {
+    const advance = logoGlyphAdvance(glyph);
     return (
-      <span data-slot="logo-glyph" data-ink={logoGlyphInk(glyph)} className="ui-logo-glyph">
+      <span
+        data-slot="logo-glyph"
+        data-ink={logoGlyphInk(glyph)}
+        className="ui-logo-glyph"
+        // The other half CSS cannot derive: how much INLINE space the string wants. See
+        // `.ui-logo-glyph` in logo-layout.css — these counts are what the fit cap is computed from.
+        style={
+          advance &&
+          ({
+            "--logo-glyph-fullwidth-count": advance.fullwidth,
+            "--logo-glyph-narrow-count": advance.narrow,
+          } as React.CSSProperties)
+        }
+      >
         {glyph}
       </span>
     );
+  }
   return (
     <svg
       data-slot="logo-artwork"

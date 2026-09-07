@@ -56,8 +56,66 @@
    * keep the neutral 0 — the library never guesses at a node it cannot read.
    *
    * The four constants, what they cover and what they leave, are in tokens/components/logo.css. */
+  /* FITTING THE GLYPH TO THE BOX (gh#377).
+   *
+   * The box is a fixed square; the string's inline advance is whatever the consumer handed in.
+   * Nothing related the two, so `<Logo glyph="東京" size="xs" />` WRAPPED — CJK offers a break
+   * opportunity between every pair of ideographs, so two full-width forms (2em) against a box
+   * sized for roughly one (1.80em at xs) broke the mark onto two lines rather than spilling.
+   *
+   * CSS cannot read the string, so the component counts it: --logo-glyph-fullwidth-count and
+   * --logo-glyph-narrow-count arrive on this element, and the measured per-class advances
+   * (tokens/components/logo.css) turn them into the em the string will actually want. `min()`
+   * then caps the glyph at the size that advance fits — and ONLY at that size, so every mark
+   * whose advance already fits keeps its tier font-size to the byte and the gh#370 offsets below
+   * are untouched. The optical offsets are in `em`, so they ride the fitted size automatically.
+   *
+   * `max(--logo-glyph-fullwidth-width, …)` is the floor: an unclassified glyph (an inline `<svg>`,
+   * a non-string node) carries no counts, and a modelled advance of 0 would divide by zero.
+   *
+   * `white-space: nowrap` is the invariant under all of it — a brand mark is ONE line. The advance
+   * model is an estimate (a consumer face may set a capital wider than the 0.81em measured here),
+   * and this is what an under-estimate degrades to: a few px of spill, which is exactly what a
+   * Latin mark already does today, instead of a stacked mark. */
   .ui-logo-glyph {
+    --logo-glyph-advance-width: max(
+      var(--logo-glyph-fullwidth-width),
+      calc(
+        var(--logo-glyph-fullwidth-count, 0) * var(--logo-glyph-fullwidth-width) +
+          var(--logo-glyph-narrow-count, 0) * var(--logo-glyph-narrow-width)
+      )
+    );
+
+    white-space: nowrap;
+    font-size: min(
+      var(--logo-font-size-md),
+      calc(var(--logo-size-md) * var(--logo-glyph-fit-max-width) / var(--logo-glyph-advance-width))
+    );
     translate: 0 var(--logo-glyph-optical-offset, 0em);
+  }
+
+  /* One fit rule per tier, because the cap is a fact about THAT tier's box and font-size. They
+   * out-rank the base rule on specificity (0,3,0 against 0,1,0), so source order cannot re-break
+   * this the way it broke the godx size ramp. */
+  .ui-logo[data-size="xs"] .ui-logo-glyph {
+    font-size: min(
+      var(--logo-font-size-xs),
+      calc(var(--logo-size-xs) * var(--logo-glyph-fit-max-width) / var(--logo-glyph-advance-width))
+    );
+  }
+
+  .ui-logo[data-size="sm"] .ui-logo-glyph {
+    font-size: min(
+      var(--logo-font-size-sm),
+      calc(var(--logo-size-sm) * var(--logo-glyph-fit-max-width) / var(--logo-glyph-advance-width))
+    );
+  }
+
+  .ui-logo[data-size="lg"] .ui-logo-glyph {
+    font-size: min(
+      var(--logo-font-size-lg),
+      calc(var(--logo-size-lg) * var(--logo-glyph-fit-max-width) / var(--logo-glyph-advance-width))
+    );
   }
 
   .ui-logo-glyph[data-ink="cap-baseline"] {

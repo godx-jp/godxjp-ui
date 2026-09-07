@@ -5,8 +5,14 @@
  */
 import type { PageDensityProp } from "../props/vocabulary/layout.prop";
 
-/** Light / dark spine — `data-theme` (alias of the legacy `.dark` class). */
-export type AppTheme = "light" | "dark";
+/**
+ * Theme spine — `data-theme` (alias of the legacy `.dark` class). `"system"` is a CHOICE, not a
+ * rendered value: it defers to the OS `prefers-color-scheme` and is what gets persisted, so the
+ * app keeps following the OS tomorrow morning. `data-theme` only ever carries `light` or `dark`.
+ */
+export type AppTheme = "light" | "dark" | "system";
+/** What `data-theme` actually carries — the resolution of an {@link AppTheme} choice. */
+export type ResolvedAppTheme = Exclude<AppTheme, "system">;
 /** Primary-palette preset — `data-brand`. `null` = keep the app's own `--primary`. */
 export type AppBrand = "brand" | "crm" | "logistics" | "partner" | "slate" | "dxs";
 /** Control / table / spacing density — `data-density` (same vocab as PageContainer). */
@@ -14,7 +20,7 @@ export type AppDensity = PageDensityProp;
 /** Base type size — `data-font-size`; a preset rescales the whole golden scale. */
 export type AppFontSize = "sm" | "default" | "lg";
 
-export const APP_THEMES = ["light", "dark"] as const satisfies readonly AppTheme[];
+export const APP_THEMES = ["light", "dark", "system"] as const satisfies readonly AppTheme[];
 export const APP_BRANDS = [
   "brand",
   "crm",
@@ -40,6 +46,24 @@ export type AppThemeAxes = {
 };
 
 export const isAppTheme = (v: unknown): v is AppTheme => APP_THEMES.includes(v as AppTheme);
+
+/** The media query `theme: "system"` follows. */
+export const PREFERS_DARK_SCHEME_QUERY = "(prefers-color-scheme: dark)";
+
+/** `false` wherever there is no `matchMedia` (SSR, jsdom without the stub) — light is the default. */
+export function prefersDarkScheme(): boolean {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
+  return window.matchMedia(PREFERS_DARK_SCHEME_QUERY).matches;
+}
+
+/**
+ * Resolve a stored CHOICE to the value `data-theme` carries. `light`/`dark` pass through
+ * untouched, so a preference stored before `system` existed keeps working.
+ */
+export function resolveAppTheme(theme: AppTheme): ResolvedAppTheme {
+  if (theme !== "system") return theme;
+  return prefersDarkScheme() ? "dark" : "light";
+}
 export const isAppBrand = (v: unknown): v is AppBrand => APP_BRANDS.includes(v as AppBrand);
 export const isAppDensity = (v: unknown): v is AppDensity =>
   APP_DENSITIES.includes(v as AppDensity);
@@ -51,7 +75,9 @@ export const isAppFontSize = (v: unknown): v is AppFontSize =>
  * `data-brand` so the app's own `--primary` token applies.
  */
 export function applyThemeAxes(el: HTMLElement, axes: Partial<AppThemeAxes>): void {
-  if (axes.theme !== undefined) el.dataset.theme = axes.theme;
+  // The CHOICE is persisted; only its RESOLUTION reaches the DOM — `data-theme="system"` would
+  // match no rule in foundation.css and would silently render light.
+  if (axes.theme !== undefined) el.dataset.theme = resolveAppTheme(axes.theme);
   if (axes.density !== undefined) el.dataset.density = axes.density;
   if (axes.fontSize !== undefined) el.dataset.fontSize = axes.fontSize;
   if (axes.brand !== undefined) {
