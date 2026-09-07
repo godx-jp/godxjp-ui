@@ -1,5 +1,18 @@
 # @godxjp/ui — agent instructions
 
+
+## Platform ↔ godx-ui development and acceptance (confirmed 2026-09-07)
+
+- `@godxjp/ui` is the shared UI framework. Platform is its first consumer and the real application used to develop, debug, and validate the framework. Keep business workflows, data, and permissions in Platform; fix reusable presentation and interaction behavior in godx-ui.
+- Configure consumer presentation through documented public component APIs and design tokens only. Do not hide framework gaps behind page-specific CSS, private imports, or copied components. Create a linked issue in `godx-jp/godxjp-ui`, fix the authoritative package, and verify the result through Platform.
+- Use the latest compatible package baseline and a local package reference during development; publishing and reinstalling a registry release is not required for each iteration. From Platform, run `node scripts/use-local-ui.mjs ../godxjp-ui`. This links built `dist/` while preserving the consumer's React resolution. Never import library `src/` directly.
+- Rebuild godx-ui with `pnpm build` in its checkout after source changes (or use its watcher), then run `pnpm build` in Platform. Verify that Platform consumes the rebuilt local output. Keep committed dependency/patch configuration reproducible for other checkouts; do not commit machine-specific absolute links.
+- Acceptance is based on passing the required local checks, relevant framework tests, and real Platform browser/E2E verification, including responsive screenshots for UI changes. A build alone is not workflow acceptance. Record exact commands, results, commits, and evidence in the owning issues; preserve existing redesign reviewer and regression-test requirements.
+- Once local acceptance passes and the fix is integrated, close the resolved issues. Do not keep an otherwise completed issue open solely because GitHub Actions is queued or running. Do not wait for CI, a registry publication, or a release build to continue development or to close a locally verified issue.
+- The user has authorized push and merge for this Platform/godx-ui work. Do not ask again for that same authorization. Let normal GitHub Actions run asynchronously and check them occasionally at meaningful checkpoints while working; do not continuously poll or block on them. Respect branch protection; if it prevents merging, report the pending merge and continue independent work rather than bypassing it.
+- Never force-push shared branches or suppress their CI with `[skip ci]`. Local acceptance does not mean CI is green. If a later check reveals a failure caused by this work, fix it forward with priority and reopen/link an issue as needed. Package publication and deployment are separate actions, not prerequisites for this local development loop.
+- This decision supersedes older instructions requiring renewed push/merge approval or waiting for CI for this authorized work. A newer explicit user restriction takes precedence.
+
 ## Two skill families — pick the right one first
 
 Skills are split by audience (see **`.claude/skills/README.md`** for the full map):
