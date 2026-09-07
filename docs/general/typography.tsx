@@ -1,5 +1,17 @@
 import { Button, Heading, Text } from "@godxjp/ui/general";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@godxjp/ui/data-display";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -143,6 +155,77 @@ export default function Demo() {
                   詳細
                 </Button>
               </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Links in running content</CardTitle>
+            <CardDescription>
+              link は色ではなく「これはリンクである」という手がかりです。ホバーだけでなく
+              キーボードフォーカスでも下線が出るため、hover: だけのユーティリティでは
+              届かない利用者にも伝わります。色は tone のままなので、tone=&quot;destructive&quot;
+              のリンクは destructive のまま下線を引きます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" gap="md" wrap align="center">
+                <Text as="a" href="#typography" link>
+                  既定 · tone は primary
+                </Text>
+                <Text as="a" href="#typography" link tone="destructive">
+                  取り消す
+                </Text>
+                <Text as="a" href="#typography" link size="xs" tone="muted">
+                  すべての通知を見る
+                </Text>
+              </Flex>
+
+              {/* The case Button variant="link" cannot serve. `.ui-button` is a control box —
+               * white-space: nowrap, flex-shrink: 0, a --control-height tier and inline padding —
+               * so in a cell it neither wraps to a second line nor shares the row's line box.
+               * `<Text link>` is text, so it does both. */}
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>キー</TableHead>
+                    <TableHead>件名</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      <Text size="xs" mono tone="muted">
+                        PKG-128
+                      </Text>
+                    </TableCell>
+                    <TableCell>
+                      <Text as="a" href="#typography" link>
+                        ログイン画面の余白が狭く、パスワード再設定リンクが本文と重なって見える
+                      </Text>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <Text size="xs" mono tone="muted">
+                        PKG-129
+                      </Text>
+                    </TableCell>
+                    <TableCell>
+                      <Text as="a" href="#typography" link>
+                        請求書PDFの明細行
+                      </Text>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+
+              <Text size="xs" tone="muted">
+                アクション（送信・展開）にはリンク風の Button variant=&quot;link&quot;
+                を使います。本文の中のリンクは Text link です。
+              </Text>
             </Flex>
           </CardContent>
         </Card>

@@ -29,6 +29,7 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
     | "span"
     | "p"
     | "div"
+    | "a"
     | "label"
     | "strong"
     | "em"
@@ -39,6 +40,24 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
     | "dd"
     | "caption"
     | "abbr";
+  /**
+   * Render the typography onto the child element instead of emitting one — for a router link
+   * (`<Text asChild link><Link href=…>…</Link></Text>`). The child owns the element and its
+   * navigation; Text owns the type step, tone, weight and truncation.
+   */
+  asChild?: AsChildProp;
+  /**
+   * This text IS a link: underline on hover and on keyboard focus, at the token underline offset,
+   * and the focus mark every other interactive element draws.
+   *
+   * It is an AFFORDANCE, not a colour — `tone` still owns the colour and simply defaults to
+   * `primary` here, so a destructive link (`link tone="destructive"`) reads destructive and still
+   * underlines. Use this INSTEAD of `className="text-primary hover:underline"`, and instead of
+   * `Button variant="link"` whenever the link sits in running content: `.ui-button` is a control
+   * box (`white-space: nowrap`, `flex-shrink: 0`, a `--control-height` tier and inline padding),
+   * so in a table cell it cannot wrap and cannot share the cell's line height.
+   */
+  link?: boolean;
   /** Size from the type scale — never an arbitrary px. Default `sm` (base). */
   size?: TextSizeProp;
   /** Semantic colour intent. Default `default` (foreground). */
@@ -58,6 +77,18 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
   /** Monospace family (codes, ids). */
   mono?: boolean;
   htmlFor?: string;
+  /**
+   * Anchor attributes, for `as="a"` (and for the `<a>` a router link supplies under `asChild`).
+   *
+   * Declared explicitly rather than by widening the base to `AnchorHTMLAttributes`, and for the
+   * same reason `htmlFor` is declared explicitly for `as="label"`: the element union is the
+   * contract, so each polymorphic branch names the attributes it actually accepts instead of every
+   * span silently offering an `href` it will never render.
+   */
+  href?: string;
+  target?: React.HTMLAttributeAnchorTarget;
+  rel?: string;
+  download?: React.AnchorHTMLAttributes<HTMLAnchorElement>["download"];
 };
 
 /** @see Heading — h1..h4 sized from the `--heading-h*` tokens. */

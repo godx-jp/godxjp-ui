@@ -18,16 +18,21 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
   (
     {
       as = "span",
+      asChild = false,
       size = "sm",
-      tone = "default",
+      // `link` is an affordance, not a colour: it only moves the DEFAULT tone, so
+      // `link tone="destructive"` is a destructive link rather than an argument between two rules.
+      tone,
       weight = "regular",
       align,
       truncate,
       clamp,
       tabular,
       mono,
+      link,
       className,
       style,
+      children,
       ...props
     },
     ref,
@@ -50,11 +55,11 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
         );
       }
     }
-    return React.createElement(as, {
-      ref,
+    const typography = {
       "data-slot": "text",
       "data-size": size,
-      "data-tone": tone,
+      "data-tone": tone ?? (link ? "primary" : "default"),
+      "data-link": link ? "" : undefined,
       "data-weight": weight,
       "data-align": align,
       "data-truncate": truncate && clampLines === undefined ? "" : undefined,
@@ -67,7 +72,33 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
       "data-mono": mono ? "" : undefined,
       className: cn("ui-text", className),
       ...props,
-    });
+    } as Record<string, unknown>;
+
+    // `asChild` by cloneElement, NOT by Radix Slot.
+    //
+    // Slot is the house pattern and it is the right one for a Button, whose asChild has to chain
+    // event handlers onto a child that already has its own. Text has no handlers of its own — it
+    // is type, tone and truncation — so all Slot would add here is its import, and that import is
+    // what the cost is: `scripts/add-use-client.mjs` treats `@radix-ui/react-slot` as a client
+    // dependency, so pulling it in would stamp "use client" onto this module and take Text and
+    // Heading out of the set an RSC can render. `use-client-directive.test.ts` asserts they are in
+    // it, and it caught exactly that.
+    //
+    // Slot's merge order, reproduced: our props first, the child's own on top (so the child keeps
+    // its `href`), with className concatenated rather than replaced.
+    if (asChild) {
+      const child = React.Children.only(children) as React.ReactElement<{
+        className?: string;
+      }>;
+      return React.cloneElement(child, {
+        ...typography,
+        ...child.props,
+        ref,
+        className: cn(typography.className as string, child.props.className),
+      } as never);
+    }
+
+    return React.createElement(as, { ref, ...typography }, children);
   },
 );
 Text.displayName = "Text";

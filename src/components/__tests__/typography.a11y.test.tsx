@@ -13,6 +13,9 @@ describe("Text / Heading a11y", () => {
         <Text as="p" size="xs" weight="medium" tabular>
           ¥1,240,000
         </Text>
+        <Text as="a" href="/invoices/RC-204881" link>
+          RC-204881 の明細
+        </Text>
       </div>,
     );
   });

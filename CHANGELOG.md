@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`Text link` (#400).** Cái móc "đây là một liên kết" cho chữ nằm trong nội dung chạy — tiêu đề
+  issue trong ô bảng, tên trang trong danh sách, "xem tất cả" ở cuối hàng. Gạch chân khi rê chuột
+  VÀ khi tiêu điểm bàn phím rơi vào, ở `--text-link-underline-offset`, kèm dấu tiêu điểm mà mọi
+  phần tử tương tác khác đều vẽ. Nó là AFFORDANCE chứ không phải màu: `tone` vẫn giữ màu và chỉ đổi
+  mặc định sang `primary`, nên `link tone="destructive"` đọc ra destructive mà vẫn gạch chân.
+  Kèm `Text asChild` (Radix Slot) để đặt kiểu chữ LÊN chính thẻ mà router link dựng, và `as="a"`
+  cùng bộ thuộc tính neo (`href`/`target`/`rel`/`download`). Token `--text-link-underline-offset`,
+  `--text-link-underline-width`.
+
+  Trước đó không có primitive nào cho việc này. `Button variant="link"` là một CONTROL —
+  `.ui-button` mang `white-space: nowrap`, `flex-shrink: 0`, một bậc `--control-height` và đệm
+  ngang — nên trong ô bảng nó không xuống dòng được và không chia được dòng của ô; một bên tiêu thụ
+  đã phải viết `whitespace-normal` đè lên để gỡ đúng chỗ đó. Số còn lại viết
+  `className="text-primary hover:underline"`, tức luật tiêu thụ 6 và 7 gộp trong một chuỗi — và
+  `hover:` không bao giờ chạm tới người dùng bàn phím. Một ứng dụng, một lượt quét: 54 chỗ.
+
 ## [19.4.2] - 2026-09-07
 
 ### Fixed

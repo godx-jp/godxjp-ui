@@ -112,6 +112,25 @@
     overflow: hidden;
     min-width: 0;
   }
+  /* LINK — the affordance, never the colour.
+   *
+   * Colour is `data-tone`'s, which the component defaults to `primary` when `link` is set. So a
+   * destructive link stays destructive AND underlines, instead of two rules of equal specificity
+   * arguing over one element.
+   *
+   * The rule appears on hover AND on keyboard focus. `hover:underline` alone — the utility pair
+   * this prop replaces at 54 consumer call sites — leaves a keyboard user with nothing but the
+   * focus outline to say the thing under the caret is a link. */
+  [data-slot="text"][data-link] {
+    text-decoration-line: none;
+    text-underline-offset: var(--text-link-underline-offset);
+    text-decoration-thickness: var(--text-link-underline-width);
+  }
+  [data-slot="text"][data-link]:hover,
+  [data-slot="text"][data-link]:focus-visible {
+    text-decoration-line: underline;
+  }
+
   [data-slot="text"][data-tabular] {
     font-variant-numeric: tabular-nums;
   }
