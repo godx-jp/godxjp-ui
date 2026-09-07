@@ -1649,6 +1649,19 @@
     background: hsl(var(--accent));
   }
 
+  /* A refused option (gh#390) stays visible and stays in the a11y tree — that is what tells the
+   * reader the rule exists — so it is dimmed rather than removed, and it takes no hover feedback
+   * because there is nothing to press. `--disabled-opacity` is the library's one answer to "this
+   * control is here but refuses", shared with every other disabled control in this file. */
+  .ui-time-picker-option[data-disabled] {
+    opacity: var(--disabled-opacity);
+    cursor: not-allowed;
+  }
+
+  .ui-time-picker-option[data-disabled]:hover {
+    background: transparent;
+  }
+
   .ui-time-picker-option[data-selected="true"] {
     background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));

@@ -107,6 +107,8 @@ export default function Demo() {
   const [issueDate, setIssueDate] = useState<Date | undefined>(new Date(2026, 0, 15));
   const [period, setPeriod] = useState<DateRange | undefined>();
   const [closeTime, setCloseTime] = useState("17:30");
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("");
   const [score, setScore] = useState(4);
   const [tags, setTags] = useState<string[]>(["優先"]);
   const [otp, setOtp] = useState("");
@@ -414,12 +416,47 @@ export default function Demo() {
                   minuteStep={15}
                 />
               </FormField>
+              {/* 開始/終了 の対 — 終了は開始より前を選べない。`disabledTime` が列と
+                  入力欄の両方を止めるので、キーボードから規則をすり抜けられない。 */}
+              <FormField id="f-start" label="開始時刻" required>
+                <TimePicker
+                  id="f-start"
+                  name="start_time"
+                  value={startTime}
+                  onValueChange={setStartTime}
+                  minuteStep={15}
+                />
+              </FormField>
+              <FormField id="f-end" label="終了時刻" required>
+                <TimePicker
+                  id="f-end"
+                  name="end_time"
+                  value={endTime}
+                  onValueChange={setEndTime}
+                  minuteStep={15}
+                  disabledTime={() => {
+                    const [startHour, startMinute] = startTime.split(":").map(Number);
+                    return {
+                      disabledHours: () =>
+                        Array.from({ length: startHour }, (_, hour) => hour),
+                      disabledMinutes: (hour) =>
+                        hour === startHour
+                          ? Array.from({ length: 60 }, (_, minute) => minute).filter(
+                              (minute) => minute <= startMinute,
+                            )
+                          : [],
+                    };
+                  }}
+                />
+              </FormField>
               <FormField id="f-period" label="会計期間" colSpan={2}>
                 <DateRangePicker
                   id="f-period"
                   name="period"
                   value={period}
                   onValueChange={setPeriod}
+                  // 土日は選べない。fromDate/toDate では表せない規則。
+                  disabledDate={(date) => date.getDay() === 0 || date.getDay() === 6}
                 />
               </FormField>
             </Form>
