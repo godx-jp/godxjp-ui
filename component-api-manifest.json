@@ -1241,7 +1241,24 @@
     },
     "AspectRatio": {
       "group": "layout",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/aspect-ratio.tsx"]
+        },
+        {
+          "name": "ratio",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/aspect-ratio.tsx"]
+        }
+      ]
     },
     "AuthAccountSummary": {
       "group": "layout",
@@ -1499,6 +1516,14 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        },
+        {
           "name": "presence",
           "origin": "owned",
           "required": false,
@@ -1526,11 +1551,45 @@
     },
     "AvatarFallback": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        },
+        {
+          "name": "delayMs",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        }
+      ]
     },
     "AvatarImage": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        },
+        {
+          "name": "onLoadingStatusChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((status: ImageLoadingStatus) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        }
+      ]
     },
     "Badge": {
       "group": "data-display",
