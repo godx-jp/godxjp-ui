@@ -176,7 +176,16 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                   // (`data-[state=open]:border-ring`, from controlTriggerClass) and the
                   // focus-visible ring are untouched, so keyboard and "is this open" affordance
                   // still hold.
-                  "ui-app-setting-picker-icon hover:bg-accent hover:text-accent-foreground"
+                  // Bề ngang phải là UTILITY, không phải luật class. SelectTrigger phát `w-full`,
+                  // mà utility nằm sau components trong thứ tự layer nên `inline-size` khai trong
+                  // .ui-app-setting-picker-icon luôn thua. Trong một khe co theo nội dung của
+                  // topbar, `width: 100%` co lại bằng chính nội dung, tức 18px thay vì ô vuông
+                  // --control-height. Nhánh có nhãn ngay dưới đã phải tự vệ đúng như vậy bằng
+                  // `w-auto`. Giá trị vẫn đọc token chứ không phải một con số.
+                  cn(
+                    "ui-app-setting-picker-icon hover:bg-accent hover:text-accent-foreground",
+                    "w-[length:var(--control-height)]",
+                  )
                 : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
                   // A form field that wants a full-width control passes
                   // `className="w-full"`, which wins over `w-auto`.

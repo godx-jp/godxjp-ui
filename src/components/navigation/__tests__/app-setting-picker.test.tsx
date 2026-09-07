@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { describe, expect, it, vi } from "vitest";
@@ -261,5 +261,24 @@ describe("AppSettingPicker", () => {
       />,
     );
     expect(screen.getByRole("combobox")).toHaveAttribute("id", "locale-picker");
+  });
+});
+
+describe('appearance="icon" giữ được ô vuông (gh#366)', () => {
+  it("mang utility bề ngang, vì luật class không thắng nổi w-full của SelectTrigger", () => {
+    const { container } = renderWithUi(
+      <AppSettingPicker kind="theme" appearance="icon" value="light" onValueChange={vi.fn()} />,
+    );
+    const trigger = container.querySelector<HTMLElement>(".ui-app-setting-picker-icon")!;
+    // w-full nằm ở layer utilities, sau components, nên `inline-size` trong .ui-app-setting-picker-icon
+    // luôn thua. Chỉ một utility mới trung hoà được nó, và giá trị phải đọc token.
+    expect(trigger.className).toContain("w-[length:var(--control-height)]");
+    expect(trigger.className).toContain("ui-app-setting-picker-icon");
+  });
+
+  it("luật CSS vẫn khai bề ngang theo token, để service retune một chỗ", () => {
+    const css = readFileSync(resolve(process.cwd(), "src/styles/navigation-layout.css"), "utf8");
+    const rule = css.match(/\.ui-app-setting-picker-icon\s*\{[^}]*\}/)?.[0] ?? "";
+    expect(rule).toContain("var(--control-height)");
   });
 });
