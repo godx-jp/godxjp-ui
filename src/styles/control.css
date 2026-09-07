@@ -1891,10 +1891,20 @@
 
 @layer components {
   /* CALENDAR — react-day-picker frame. */
+  /* FILLS its container. `fit-content` pinned the month at its intrinsic size, so a calendar in a
+   * dashboard rail sat 248px wide inside a 286px card with 38px of dead space beside it (measured).
+   * A calendar is a grid of seven equal columns — it should take the width it is given and spread
+   * them, exactly as the day cells below now do. The min floor keeps it honest inside a picker
+   * popover, whose surface is auto-width. */
   .ui-calendar {
     position: relative;
-    inline-size: fit-content;
+    inline-size: 100%;
+    min-inline-size: var(--calendar-min-inline-size);
     padding: var(--calendar-space-inset);
+    /* Without an edge the month floats in the card with nothing separating it from the rows under
+     * it. Hairline, at the shared border colour — a boundary, not a frame. */
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--calendar-radius);
   }
 
   .ui-calendar-months {
@@ -1963,6 +1973,7 @@
   }
 
   .ui-calendar-weekday {
+    flex: 1 1 0%;
     inline-size: var(--control-height);
     border-radius: var(--calendar-weekday-radius);
     font-size: var(--calendar-weekday-font-size);
@@ -1978,9 +1989,22 @@
 
   .ui-calendar-day {
     position: relative;
+    flex: 1 1 0%;
     padding: 0;
     text-align: center;
     font-size: var(--calendar-day-font-size);
+  }
+
+  /* A day from the previous or next month reads as muted — otherwise 6/28 and 7/15 paint the same
+   * ink and the month boundary is invisible.
+   *
+   * react-day-picker already puts `text-muted-foreground` on the CELL, and that did nothing: the
+   * visible number is a `.ui-button--ghost`, which sets its own `color` and therefore never
+   * inherits the cell's. Measured: outside 6月28日 and in-month 7月15日 both rgb(36,35,30), byte
+   * for byte. So the rule has to land on the BUTTON, keyed off the `data-outside` the library
+   * already stamps on the cell. */
+  .ui-calendar [data-outside="true"] .ui-calendar-day-button {
+    color: hsl(var(--muted-foreground));
   }
 
   .ui-calendar-day:focus-within {
@@ -1991,7 +2015,8 @@
   /* Scoped to the calendar root so it out-ranks `.ui-button--default-size`, which is declared
    * later in this file and would otherwise re-apply its block padding to a day cell. */
   .ui-calendar .ui-calendar-day-button {
-    inline-size: var(--control-height);
+    inline-size: 100%;
+    min-inline-size: var(--control-height);
     block-size: var(--control-height);
     padding: 0;
     font-weight: var(--font-weight-normal);

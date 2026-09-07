@@ -344,6 +344,11 @@
    * grid rhythm — was literal on the component (#319), so a service could not tighten the
    * calendar to its own density without forking the classNames map. */
   --calendar-space-inset: var(--space-3);
+  /* The calendar FILLS its container and this is the floor it will not go below — seven day
+   * columns plus the grid gaps. Without a floor, `inline-size: 100%` inside an auto-width parent
+   * (every picker popover) would collapse the month to min-content. */
+  --calendar-min-inline-size: 16rem;
+  --calendar-radius: var(--radius-md);
   --calendar-month-space-gap: var(--space-4);
   --calendar-caption-space-inline: var(--space-8);
   --calendar-caption-font-size: var(--font-size-sm);
