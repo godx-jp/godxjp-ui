@@ -24,13 +24,26 @@ export function SearchInput({
   inputClassName,
   id,
   disabled = false,
+  status,
+  variant,
   ...ariaProps
 }: SearchInputProps) {
   const { t } = useTranslation();
   const isControlled = controlledValue !== undefined;
   const [internal, setInternal] = React.useState(defaultValue);
   const value = isControlled ? controlledValue : internal;
-  const debounced = useDebouncedValue(value, debounce);
+  /**
+   * A JAPANESE SEARCH BOX MUST NOT QUERY ITS OWN CANDIDATES. Typing 「東京」 goes through
+   * `t` → `と` → `とう` → `とうk` … before the conversion is confirmed, and each of those is a
+   * DOM value change. Left alone the debounce fires a request for every intermediate reading —
+   * results that mean nothing, a list that flickers, and on a remote source a burst of queries per
+   * word. The committed query is therefore frozen at the value in the field when the composition
+   * started, and released once `compositionend` confirms the conversion.
+   */
+  const [composing, setComposing] = React.useState(false);
+  const settledValue = React.useRef(value);
+  if (!composing) settledValue.current = value;
+  const debounced = useDebouncedValue(composing ? settledValue.current : value, debounce);
   const reactId = React.useId();
   const inputId = id ?? `search-${reactId}`;
   const resolvedPlaceholder = placeholder ?? t("dataEntry.searchInput.placeholder");
@@ -75,7 +88,18 @@ export function SearchInput({
           onChange={(e) => {
             setValue(e.target.value);
           }}
+          onCompositionStart={() => {
+            setComposing(true);
+          }}
+          onCompositionEnd={(e) => {
+            setComposing(false);
+            // The confirmed reading is the query — publish it in the same tick the composition
+            // ends, so the debounce starts from the converted text and not from the last kana.
+            setValue(e.currentTarget.value);
+          }}
           placeholder={resolvedPlaceholder}
+          status={status}
+          variant={variant}
           {...fieldA11y}
           className={cn(
             "ui-search-input-control !pr-[var(--search-input-end-padding)] !pl-[var(--search-input-start-padding)]",

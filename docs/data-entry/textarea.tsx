@@ -194,6 +194,44 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>
+              Ant Design axes · status, variant, size, count, autoSize
+            </CardTitle>
+            <CardDescription>
+              variant carries five accepted spellings for three states: outlined / filled /
+              borderless are Ant Design&apos;s, and this library&apos;s older default / ghost
+              resolve onto the first and the last. autoSize is autoGrow plus its row bounds in one
+              prop.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Textarea aria-label="エラー状態" status="error" defaultValue="不正な値" />
+              <Textarea aria-label="警告状態" status="warning" defaultValue="確認してください" />
+              <Textarea aria-label="枠線あり" variant="outlined" defaultValue="outlined" />
+              <Textarea aria-label="塗りつぶし" variant="filled" defaultValue="filled" />
+              <Textarea aria-label="枠線なし" variant="borderless" defaultValue="borderless" />
+              <Textarea aria-label="既定 (旧称)" variant="default" defaultValue="default" />
+              <Textarea aria-label="ゴースト (旧称)" variant="ghost" defaultValue="ghost" />
+              <Textarea aria-label="小さいサイズ" size="sm" placeholder="sm" />
+              <Textarea aria-label="標準サイズ" size="md" placeholder="md" />
+              <Textarea aria-label="大きいサイズ" size="lg" placeholder="lg" />
+              <Textarea
+                aria-label="文字数カウンタ"
+                count={{ max: 140 }}
+                defaultValue="東京都の請求書について"
+              />
+              <Textarea
+                aria-label="自動リサイズ"
+                autoSize={{ minRows: 2, maxRows: 6 }}
+                placeholder="2行から6行まで伸びます"
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>In FormField</CardTitle>
             <CardDescription>Labelled with a helper hint.</CardDescription>
           </CardHeader>

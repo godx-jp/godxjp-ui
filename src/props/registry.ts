@@ -356,6 +356,16 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description: "Shared size names xs | sm | md | lg",
   },
+  ControlStatusProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Validation state a field paints — antd `status`: error | warning",
+  },
+  ControlVariantProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Field chrome level — antd `variant`: outlined | filled | borderless",
+  },
   FormLayoutProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -1291,6 +1301,32 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["ControlWidthProp"],
   },
+  SliderMarksProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  SliderTooltipProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  ControlCountProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  RadioOptionTypeProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  RadioButtonStyleProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  CalendarProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: [] },
   CalendarFooterProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

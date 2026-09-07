@@ -60,7 +60,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | FormErrors | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Input | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | NumberInput | ✓ | ✓ | · | · | · | · | · | · | · | · |
-| SearchInput | ✓ | N/A | · | · | · | · | · | · | · | · |
+| SearchInput | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Select | ✓ | N/A | · | · | · | · | · | · | · | · |
 | Switch | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Textarea | ✓ | ✓ | · | · | · | · | · | · | · | · |
@@ -116,7 +116,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | PasswordStrength | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | InputOTP | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 | Rating | ✓ | N/A | · | · | · | · | · | · | · | · |
-| Segmented | ✓ | N/A | · | · | · | · | · | · | · | · |
+| Segmented | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | TagInput | ✓ | N/A | · | · | · | · | · | · | · | · |
 | ContextMenu | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | Menubar | ✓ | N/A | N/A | · | · | · | · | · | · | · |

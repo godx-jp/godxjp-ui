@@ -3,53 +3,38 @@ import { X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { useFieldIdentity } from "../../lib/field-a11y";
-import { controlMultilineClass, controlMultilineGhostClass } from "../../lib/control-styles";
+import {
+  controlMultilineClass,
+  controlMultilineFilledClass,
+  controlMultilineGhostClass,
+} from "../../lib/control-styles";
+import { controlAppearanceAttributes, resolveControlCount } from "./control-appearance";
+import type { ControlVariantProp } from "../../props/vocabulary";
 
-export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-  /** Show an inline ✕ (top-end) that clears the field while it holds text (default false). */
-  allowClear?: boolean;
-  /** Called after the field is cleared via the inline ✕. */
-  onClear?: () => void;
-  /**
-   * `ghost` strips the field's own border, background and focus ring, for a textarea embedded in a
-   * surface that already draws the box (a chat composer inside a Card). The surface then owns
-   * focus — give it `focus-within`.
-   */
-  variant?: "default" | "ghost";
-  /**
-   * The floor is `minRows` (or `rows`, when that is the only one given) and never undercuts the
-   * `--control-height` tier; past `maxRows` the control stops growing and scrolls internally.
-   * Sizing is done in CSS by a hidden replica of the text, so it follows a paste, a programmatic
-   * value change, a font swap and a container resize — not just typing — and it never writes
-   * `style.height` or reads `scrollHeight`.
-   */
-  autoGrow?: boolean;
-  /**
-   * Floor in text rows while `autoGrow` (theme default `--textarea-autogrow-min-height-rows`, 1).
-   * Ignored when `autoGrow` is false.
-   */
-  minRows?: number;
-  /**
-   * Ceiling in text rows while `autoGrow` (theme default `--textarea-autogrow-max-height-rows`,
-   * 8); beyond it the control scrolls internally rather than pushing the page. Pass `0` for no
-   * ceiling — only correct inside an owning scroll container.
-   */
-  maxRows?: number;
-};
+import type { TextareaProp } from "../../props/components/data-entry.prop";
+
+export type {
+  TextareaProp,
+  TextareaProp as TextareaProps,
+} from "../../props/components/data-entry.prop";
 
 /** `maxRows={0}` means "no ceiling" — CSS says that as an infinite length, not as zero rows. */
 const UNBOUNDED_ROWS = "infinity";
 
-export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
   (
     {
       className,
       allowClear = false,
       onClear,
-      variant = "default",
+      variant = "outlined",
+      status,
+      size,
       autoGrow = false,
+      autoSize,
       minRows,
       maxRows,
+      count,
       rows,
       style,
       value,
@@ -62,7 +47,28 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     ref,
   ) => {
     const { t } = useTranslation();
-    const base = variant === "ghost" ? controlMultilineGhostClass : controlMultilineClass;
+    // `default`/`ghost` are this library's older spellings of antd's `outlined`/`borderless`.
+    // Folding them here keeps ONE axis in the DOM and in CSS, so a consumer reading
+    // `[data-variant]` never has to know which spelling the call site used.
+    const resolvedVariant: ControlVariantProp =
+      variant === "default" ? "outlined" : variant === "ghost" ? "borderless" : variant;
+    const base =
+      resolvedVariant === "borderless"
+        ? controlMultilineGhostClass
+        : resolvedVariant === "filled"
+          ? controlMultilineFilledClass
+          : controlMultilineClass;
+    // antd `autoSize`: `true` is the boolean `autoGrow`, and the object form carries the row
+    // bounds with it. An explicit `minRows`/`maxRows` still wins, so the two spellings compose.
+    const autoSizeEnabled = autoSize === true || typeof autoSize === "object";
+    const growing = autoGrow || autoSizeEnabled;
+    const floorRowsProp = minRows ?? (typeof autoSize === "object" ? autoSize.minRows : undefined);
+    const ceilRowsProp = maxRows ?? (typeof autoSize === "object" ? autoSize.maxRows : undefined);
+    const appearance = controlAppearanceAttributes({
+      status,
+      variant: resolvedVariant,
+      "aria-invalid": props["aria-invalid"],
+    });
     // `{}` in every other
     // case (see useFieldIdentity), so a standalone Textarea is untouched.
     const identity = useFieldIdentity({
@@ -80,11 +86,10 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       [ref],
     );
 
-    const [hasText, setHasText] = React.useState(
-      () => String(value ?? defaultValue ?? "").length > 0,
-    );
+    const [text, setText] = React.useState(() => String(value ?? defaultValue ?? ""));
+    const hasText = text.length > 0;
     React.useEffect(() => {
-      if (value !== undefined) setHasText(String(value).length > 0);
+      if (value !== undefined) setText(String(value));
     }, [value]);
 
     /**
@@ -110,24 +115,24 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
      * `defaultValue`.
      */
     React.useLayoutEffect(() => {
-      if (autoGrow) syncMirror();
+      if (growing) syncMirror();
     });
 
     /** `form.reset()` restores an uncontrolled value without rendering anything. */
     React.useEffect(() => {
       const form = innerRef.current?.form;
-      if (!autoGrow || !form) return;
+      if (!growing || !form) return;
       const onReset = () => {
         // The reset applies after the event, so measure on the next frame of the task queue.
         queueMicrotask(syncMirror);
       };
       form.addEventListener("reset", onReset);
       return () => form.removeEventListener("reset", onReset);
-    }, [autoGrow, syncMirror]);
+    }, [growing, syncMirror]);
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (value === undefined) setHasText(event.target.value.length > 0);
-      if (autoGrow && !composing.current) setMirror(event.target.value);
+      if (value === undefined) setText(event.target.value);
+      if (growing && !composing.current) setMirror(event.target.value);
       onChange?.(event);
     };
 
@@ -138,7 +143,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     const handleCompositionEnd = (event: React.CompositionEvent<HTMLTextAreaElement>) => {
       composing.current = false;
-      if (autoGrow) setMirror(event.currentTarget.value);
+      if (growing) setMirror(event.currentTarget.value);
       onCompositionEnd?.(event);
     };
 
@@ -153,27 +158,29 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         el.dispatchEvent(new Event("input", { bubbles: true }));
         el.focus();
       }
-      setHasText(false);
-      if (autoGrow) setMirror("");
+      setText("");
+      if (growing) setMirror("");
       onClear?.();
     };
 
-    const floorRows = minRows ?? (typeof rows === "number" ? rows : undefined);
-    const autoGrowVars = autoGrow
+    const floorRows = floorRowsProp ?? (typeof rows === "number" ? rows : undefined);
+    const autoGrowVars = growing
       ? ({
           ...(floorRows === undefined
             ? null
             : { "--textarea-autogrow-min-height-rows": floorRows }),
-          ...(maxRows === undefined
+          ...(ceilRowsProp === undefined
             ? null
             : {
-                "--textarea-autogrow-max-height-rows": maxRows === 0 ? UNBOUNDED_ROWS : maxRows,
+                "--textarea-autogrow-max-height-rows":
+                  ceilRowsProp === 0 ? UNBOUNDED_ROWS : ceilRowsProp,
               }),
         } as React.CSSProperties)
       : undefined;
 
     const showClear = allowClear && hasText && !props.disabled && !props.readOnly;
-    const needsWrapper = allowClear || autoGrow;
+    const counter = resolveControlCount(count, text);
+    const needsWrapper = allowClear || growing || counter !== null;
 
     const field = (
       <textarea
@@ -183,7 +190,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         /* In `autoGrow` the intrinsic `rows` height would become a floor the ceiling could not
          * clamp, so the attribute drops to its minimum and the row count is carried by the
          * `--textarea-autogrow-*-rows` knobs instead. */
-        rows={autoGrow ? 1 : rows}
+        rows={growing ? 1 : rows}
+        data-size={size}
         onChange={needsWrapper ? handleChange : onChange}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
@@ -191,6 +199,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         className={cn(base, showClear && "ui-input--trailing-affix", className)}
         {...props}
         {...identity}
+        {...appearance}
       />
     );
 
@@ -199,13 +208,13 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <span
         data-slot="textarea-affix-wrapper"
-        data-autogrow-value={autoGrow ? mirror : undefined}
+        data-autogrow-value={growing ? mirror : undefined}
         style={autoGrowVars}
         className={cn(
           "relative w-full",
-          autoGrow ? "grid" : "block",
-          autoGrow && "ui-textarea-autogrow",
-          autoGrow && variant === "ghost" && "ui-textarea-autogrow--ghost",
+          growing ? "grid" : "block",
+          growing && "ui-textarea-autogrow",
+          growing && resolvedVariant === "borderless" && "ui-textarea-autogrow--ghost",
         )}
       >
         {field}
@@ -219,6 +228,16 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           >
             <X className="ui-control-inline-affix-icon" aria-hidden="true" />
           </button>
+        ) : null}
+        {counter ? (
+          <span
+            data-slot="textarea-count"
+            data-exceeded={counter.exceeded ? "true" : undefined}
+            className="ui-control-count ui-textarea-count"
+            aria-hidden="true"
+          >
+            {counter.content}
+          </span>
         ) : null}
       </span>
     );

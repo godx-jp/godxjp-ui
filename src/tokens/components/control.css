@@ -36,6 +36,68 @@
   --control-icon-size: calc(var(--icon-size-md) * var(--scaling));
   --control-icon-size-sm: calc(var(--icon-size-sm) * var(--scaling));
 
+  /* VALIDATION STATUS — antd's `status` axis (docs/DESIGN-AUTHORITY.md names Ant Design the
+   * taxonomy authority). Only the FOCUS half is a knob: the boundary itself has to be painted from
+   * a Tailwind utility, because `border-input` sits in a later cascade layer than this file's
+   * component rules and would win over any of them (measured in Chromium — see
+   * components/data-entry/control-appearance.ts). The error boundary therefore reuses the role
+   * `aria-invalid:border-destructive` already paints, and cannot drift into a second red.
+   *
+   * The warning halo borrows the ERROR halo's alpha rather than inventing a second opacity: antd
+   * derives both from one `colorXxxOutline` recipe and the generated file carries only the error
+   * one (scripts/gen-antd-tokens.mjs). */
+  --control-status-warning-border-color: var(--warning);
+  --control-status-warning-glow-color: var(--warning);
+  --control-status-warning-glow-alpha: var(--control-outline-error-alpha);
+
+  /* CHROME VARIANT — antd's `variant` axis. `outlined` needs no token: it is what a field already
+   * draws. `filled` swaps the boundary for a tinted surface; `borderless` drops both. Kept as
+   * knobs so a service theme can retune the dense-form treatment once, globally. */
+  --control-variant-filled-background: var(--muted);
+  --control-variant-filled-hover-background: var(--accent);
+
+  /* Character counter — antd `count`. Quiet by default; loud only once the ceiling is passed. */
+  --control-count-font-size: var(--font-size-sm);
+  --control-count-color: var(--muted-foreground);
+  --control-count-exceeded-color: var(--text-error);
+  --control-count-space-inline: var(--space-1);
+  --textarea-count-inset-block-end: var(--space-1);
+  --textarea-count-inset-inline-end: var(--space-2);
+
+  /* antd `addonBefore` / `addonAfter` — a segment welded outside the field's own box. */
+  --input-addon-background: var(--muted);
+  --input-addon-color: var(--muted-foreground);
+  --input-addon-padding-inline: var(--control-padding-x);
+
+  /* Switch `checkedChildren` / `unCheckedChildren` and `loading`. */
+  --switch-content-font-size: var(--font-size-xs);
+  --switch-content-space-inline: var(--space-1);
+  --switch-spinner-size: calc(var(--switch-thumb-size) - var(--space-1));
+
+  /* Slider marks / dots / value bubble — antd `marks`, `dots`, `tooltip`. */
+  --slider-mark-font-size: var(--font-size-xs);
+  --slider-mark-color: var(--muted-foreground);
+  --slider-mark-space-block-start: var(--space-2);
+  --slider-dot-size: var(--slider-track-height);
+  --slider-dot-background: var(--background);
+  --slider-dot-border-color: var(--border);
+  --slider-dot-active-border-color: var(--primary);
+  --slider-tooltip-background: var(--popover);
+  --slider-tooltip-color: var(--popover-foreground);
+  --slider-tooltip-font-size: var(--font-size-xs);
+  --slider-tooltip-radius: var(--radius-sm);
+  --slider-tooltip-padding-inline: var(--space-2);
+  --slider-tooltip-offset-block: var(--space-2);
+
+  /* Radio `optionType="button"` — antd's welded radio bar. */
+  --choice-button-background: var(--background);
+  --choice-button-color: var(--foreground);
+  --choice-button-border-color: var(--input);
+  --choice-button-selected-color: var(--primary);
+  --choice-button-selected-border-color: var(--primary);
+  --choice-button-solid-background: var(--primary);
+  --choice-button-solid-color: var(--primary-foreground);
+
   /* Ring knobs for the two controls that historically wanted a softer mark than the global
    * default — both are filled surfaces where the ring was felt to read as a second border.
    *

@@ -23,6 +23,15 @@ export type SegmentedProp = {
   /** Uncontrolled initial selection. */
   defaultValue?: string;
   onValueChange?: (value: string) => void;
+  /**
+   * antd `block` — stretch the bar to its container and share the width EQUALLY between the
+   * choices, so the selected pill does not resize as the label changes length.
+   */
+  block?: boolean;
+  /** antd `vertical` — stack the choices in a column. Arrow keys follow the axis. */
+  vertical?: boolean;
+  /** Control height tier: `md` (default), `sm` or `lg` — the same tiers as every other control. */
+  size?: "sm" | "md" | "lg";
   /** Disable the whole group. */
   disabled?: boolean;
   /** Form field name — submits the selected value with the form. */
@@ -56,7 +65,20 @@ export const Segmented = React.forwardRef<
   React.ComponentRef<typeof RadioGroupPrimitive.Root>,
   SegmentedProp
 >(function Segmented(
-  { options, value, defaultValue, onValueChange, disabled, name, id, className, ...props },
+  {
+    options,
+    value,
+    defaultValue,
+    onValueChange,
+    disabled,
+    block = false,
+    vertical = false,
+    size,
+    name,
+    id,
+    className,
+    ...props
+  },
   ref,
 ) {
   return (
@@ -64,8 +86,13 @@ export const Segmented = React.forwardRef<
       ref={ref}
       id={id}
       data-slot="segmented"
+      data-block={block ? "true" : undefined}
+      data-size={size}
       className={cn("ui-segmented", className)}
-      orientation="horizontal"
+      // Radix reads `orientation` to decide WHICH arrow keys move the roving focus, so a vertical
+      // bar that only changed its CSS direction would still be driven by ←/→. The attribute and
+      // the layout come from the same prop for exactly that reason.
+      orientation={vertical ? "vertical" : "horizontal"}
       value={value}
       defaultValue={defaultValue}
       onValueChange={onValueChange}
