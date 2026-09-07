@@ -1,6 +1,6 @@
 # Prop Vocabulary + Design Token Standards
 
-These rules are normative for @godxjp/ui 8.0.0. They mirror `debate/props-vocab-token-consistency/04-Decision.md`.
+These rules are normative for @godxjp/ui. They came out of the props-vocabulary / token-consistency debate, whose record lived in `debate/` until that directory was removed — this file is now the normative source, not a mirror of one.
 
 1. Prop vocabulary: every exported `*Prop` type in `src/props/components/` MUST have exactly one `COMPONENT_PROP_REGISTRY` entry.
 2. Prop vocabulary: every public property in an exported component prop type MUST map to one `VOCABULARY_REGISTRY` entry or to a `local: true` registry record with a non-empty `reason`.
