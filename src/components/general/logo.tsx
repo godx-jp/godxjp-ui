@@ -86,13 +86,21 @@ export function logoGlyphInk(glyph: React.ReactNode): LogoGlyphInk | undefined {
 }
 
 /**
- * How much INLINE space the glyph string wants, as counts of the two advance classes — the fact
+ * How much INLINE space the glyph string wants, as counts of the four advance classes — the fact
  * `.ui-logo-glyph`'s fit cap is computed from (gh#377). `fullwidth` is the characters that occupy
- * a whole em; `narrow` is everything else.
+ * a whole em; `wide` is the proportional forms that REACH that em (`M W m`); `space` is the runs
+ * of collapsible white space the paint keeps; `narrow` is everything else.
+ *
+ * The contract is that the FITTED font-size times the PAINTED advance stays inside the box, at
+ * every tier, on every bundled face. Over-stating an advance only sets the mark a little smaller
+ * than it had to be; under-stating it puts the mark outside its own box, which is the defect
+ * these classes exist to remove.
  */
 export interface LogoGlyphAdvance {
   fullwidth: number;
+  wide: number;
   narrow: number;
+  space: number;
 }
 
 /**
@@ -106,18 +114,62 @@ const FULL_WIDTH_ADVANCE =
   /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\u{3000}-\u{303F}\u{FF01}-\u{FF60}\u{FFE0}-\u{FFE6}]/u;
 
 /**
+ * Proportional forms that are as wide as a full-width one. Measured max over the four bundled
+ * faces: `W` 1.058em, `m` 1.010em, `M` 0.987em — all three on Hiragino Sans, all three at or
+ * above a kanji's 1.000em. They are the only characters the `narrow` constant cannot bound, and
+ * a mark containing one used to spill (`WW` at `xs`: 23.50px of ink in a 20px box).
+ *
+ * The next widest proportional forms — `w` 0.863em, `O`/`Q` 0.838em, `U` 0.829em, `H` 0.826em,
+ * `N` 0.821em, `X` 0.811em — stay NARROW on purpose. They sit above the 0.81em constant too, but
+ * by at most 0.053em, and measured none of them reaches the box edge at its tier's font-size
+ * (`ww` at `xs` paints 19.2px of a 20px box); promoting them would shrink marks that render
+ * correctly today. `M W m` are different in kind, not in degree.
+ */
+const EM_WIDE_ADVANCE = /[MWm]/;
+
+/**
+ * The white space CSS itself collapses and trims (CSS Text 3 §4.1.1): space, tab, and the segment
+ * breaks. U+3000 IDEOGRAPHIC SPACE is deliberately absent — CSS does not collapse it, it paints a
+ * full em, and `FULL_WIDTH_ADVANCE` already claims it.
+ */
+const COLLAPSIBLE_SPACE = /[\t\n\f\r ]/;
+
+/**
  * Count a glyph string's characters by advance class. Pure, no layout read, no measurement — the
  * component is the only layer that can do this, because CSS cannot see which characters are in the
  * box. Returns `undefined` for a non-string glyph and for an empty string, exactly like
  * `logoGlyphInk`: those are not classified and keep the neutral default rather than being guessed
  * at. Iterates code points, so a surrogate pair (CJK Extension B) counts once.
+ *
+ * WHITE SPACE IS COUNTED, NOT DROPPED. `.ui-logo-glyph` sets `white-space: nowrap`, which stops
+ * the mark wrapping but still PAINTS an interior space — measured 0.198em (system) to 0.333em
+ * (Hiragino Sans) — so a string whose space was dropped from the count was fitted to an advance
+ * narrower than the one that reached the screen (`東 京` spilled 2.63px at `md`). CSS's own
+ * processing is mirrored exactly: leading and trailing runs are trimmed away, and an interior run
+ * of any length collapses to ONE space (both verified in Chromium against the shipped `nowrap`).
  */
 export function logoGlyphAdvance(glyph: React.ReactNode): LogoGlyphAdvance | undefined {
   if (typeof glyph !== "string") return undefined;
-  const characters = [...glyph.replace(/\s+/gu, "")];
-  if (!characters.length) return undefined;
-  const fullwidth = characters.filter((character) => FULL_WIDTH_ADVANCE.test(character)).length;
-  return { fullwidth, narrow: characters.length - fullwidth };
+  const text = glyph.replace(/^[\t\n\f\r ]+|[\t\n\f\r ]+$/g, "");
+  if (!text) return undefined;
+  const counts = { fullwidth: 0, wide: 0, narrow: 0, space: 0 };
+  let inSpaceRun = false;
+  for (const character of text) {
+    // FULL_WIDTH_ADVANCE is tested first so U+3000 lands on its em rather than on the space class.
+    if (FULL_WIDTH_ADVANCE.test(character)) {
+      counts.fullwidth += 1;
+    } else if (COLLAPSIBLE_SPACE.test(character)) {
+      if (!inSpaceRun) counts.space += 1;
+      inSpaceRun = true;
+      continue;
+    } else if (EM_WIDE_ADVANCE.test(character)) {
+      counts.wide += 1;
+    } else {
+      counts.narrow += 1;
+    }
+    inSpaceRun = false;
+  }
+  return counts;
 }
 
 function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }) {
@@ -138,7 +190,9 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
           advance &&
           ({
             "--logo-glyph-fullwidth-count": advance.fullwidth,
+            "--logo-glyph-wide-count": advance.wide,
             "--logo-glyph-narrow-count": advance.narrow,
+            "--logo-glyph-space-count": advance.space,
           } as React.CSSProperties)
         }
       >
