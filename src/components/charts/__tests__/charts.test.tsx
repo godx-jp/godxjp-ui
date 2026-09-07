@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
+import { BarChart } from "../bar-chart";
+import { CompactBarTrend } from "../compact-bar-trend";
 import { LineChart } from "../line-chart";
 import { PieChart } from "../pie-chart";
 import { CHART_COLORS, chartColor, chartHeight } from "../chart-frame";
@@ -95,6 +97,41 @@ describe("chart rendering", () => {
     // per-slice screen-reader rows are emitted from buildPieSummary
     expect(container.textContent).toContain("Chrome");
     expect(container.textContent).toContain("Safari");
+  });
+
+  it("showCaption={false} hides the caption but keeps it as the accessible name", () => {
+    // The ordinary composition is a chart inside a Card that already has a CardTitle, so the
+    // visible caption was a duplicate heading (gh#409 · 2). The figcaption stays in the DOM —
+    // aria-labelledby points at it — and only stops being painted.
+    const { container } = render(
+      <BarChart
+        label="実習実施者別 受入人数"
+        showCaption={false}
+        data={[{ company: "株式会社山田製作所", trainees: 42 }]}
+        categoryKey="company"
+        series={[{ dataKey: "trainees" }]}
+        horizontal
+      />,
+    );
+    const figure = container.querySelector("figure");
+    const caption = container.querySelector("figcaption");
+    expect(caption).not.toBeNull();
+    expect(caption).toHaveClass("sr-only");
+    expect(caption).not.toHaveClass("ui-chart-title");
+    expect(caption?.textContent).toBe("実習実施者別 受入人数");
+    expect(figure?.getAttribute("aria-labelledby")).toBe(caption?.id);
+  });
+
+  it("keeps the visible caption by default", () => {
+    const { container } = render(
+      <CompactBarTrend
+        label="週次アクティビティ"
+        data={[{ day: "月", count: 2 }]}
+        categoryKey="day"
+        valueKey="count"
+      />,
+    );
+    expect(container.querySelector("figcaption")).toHaveClass("ui-chart-title");
   });
 
   it("PieChart omits the legend when showLegend is false", () => {

@@ -48,6 +48,11 @@ export function useChartNumberFormat(options?: Intl.NumberFormatOptions): Intl.N
 type ChartFrameProps = {
   /** Visible caption; also the accessible name via `aria-labelledby` → `<figcaption>`. */
   label: React.ReactNode;
+  /**
+   * Paint the caption. `false` keeps the `<figcaption>` in the DOM as `sr-only`, so
+   * `aria-labelledby` still names the figure — only the duplicate visible title goes away.
+   */
+  showCaption?: boolean;
   /** Extra context appended to the screen-reader description. */
   description?: React.ReactNode;
   /** Pre-formatted "category: value" rows for the screen-reader text alternative. */
@@ -69,6 +74,10 @@ type ChartFrameProps = {
   id?: string;
   children: React.ReactNode;
   ref?: React.Ref<HTMLElement>;
+  /** The plot box itself — charts that measure their own axis need to read its width. */
+  canvasRef?: React.Ref<HTMLDivElement>;
+  /** Rendered inside the canvas, after `children` (the axis measuring probe). */
+  canvasExtra?: React.ReactNode;
 };
 
 /**
@@ -78,6 +87,7 @@ type ChartFrameProps = {
  */
 export function ChartFrame({
   label,
+  showCaption = true,
   description,
   summaryRows,
   imgSummary,
@@ -89,6 +99,8 @@ export function ChartFrame({
   id,
   children,
   ref,
+  canvasRef,
+  canvasExtra,
 }: ChartFrameProps) {
   const reactId = React.useId();
   const titleId = `${id ?? reactId}-title`;
@@ -104,11 +116,18 @@ export function ChartFrame({
       aria-labelledby={titleId}
       aria-describedby={descId}
     >
-      <figcaption id={titleId} className="ui-chart-title">
+      <figcaption id={titleId} className={showCaption ? "ui-chart-title" : "sr-only"}>
         {label}
       </figcaption>
-      <div className="ui-chart-canvas" style={{ height }} role="img" aria-label={imgSummary}>
+      <div
+        ref={canvasRef}
+        className="ui-chart-canvas"
+        style={{ height }}
+        role="img"
+        aria-label={imgSummary}
+      >
         {children}
+        {canvasExtra}
       </div>
       {footer ? <div className="ui-chart-footer">{footer}</div> : null}
       {/* Screen-reader text alternative — the plotted data as a readable list. */}

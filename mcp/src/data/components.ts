@@ -10946,6 +10946,13 @@ export function NotifyRow() {
         description: "Accessible name + visible caption (role=img needs a name).",
       },
       {
+        name: "showCaption",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Paint `label` as a visible caption. Set false when a CardTitle or section heading already says it — the caption stays in the DOM as sr-only, so role=img keeps its accessible name.",
+      },
+      {
         name: "description",
         type: "string",
         description: "Extra context appended to the screen-reader description.",
@@ -10992,6 +10999,7 @@ export function NotifyRow() {
     ],
     usage: [
       'DO import from the tree-shaken charts entry: `import { LineChart } from "@godxjp/ui/charts";`. Importing any other subpath never pulls in recharts.',
+      'DO import only the chart a screen uses — `import { LineChart } from "@godxjp/ui/charts/line-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO install the `recharts` optional peer dependency in the consuming app — charts are the only part of @godxjp/ui that needs it, so apps without charts never pay for it.",
       "DO pass an i18n'd `label` — it is both the visible caption and the accessible name; the component also emits a screen-reader list of the plotted values (WCAG 1.1.1).",
       "DO pre-translate each series' `label`; pass `numberFormat` (e.g. { style: 'currency', currency: 'JPY' }) and the axis/tooltip numbers localize automatically via Intl.",
@@ -11054,6 +11062,13 @@ export function NotifyRow() {
         description: "Accessible name + visible caption.",
       },
       {
+        name: "showCaption",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Paint `label` as a visible caption. Set false when a CardTitle or section heading already says it — the caption stays in the DOM as sr-only, so role=img keeps its accessible name.",
+      },
+      {
         name: "description",
         type: "string",
         description: "Extra context appended to the screen-reader description.",
@@ -11102,6 +11117,7 @@ export function NotifyRow() {
     ],
     usage: [
       'DO import from the charts entry: `import { BarChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
+      'DO import only the chart a screen uses — `import { BarChart } from "@godxjp/ui/charts/bar-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO use `horizontal` when category labels are long (they read better on the y-axis).",
       "DO use `stacked` for part-to-whole-per-category; keep grouped (default) for direct side-by-side comparison.",
       "DON'T use BarChart for a single part-to-whole total — that is PieChart. DON'T fake bars with styled divs.",
@@ -11158,6 +11174,13 @@ export function NotifyRow() {
         type: "string",
         required: true,
         description: "Accessible name + visible caption.",
+      },
+      {
+        name: "showCaption",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Paint `label` as a visible caption. Set false when a CardTitle or section heading already says it — the caption stays in the DOM as sr-only, so role=img keeps its accessible name.",
       },
       {
         name: "description",
@@ -11266,6 +11289,13 @@ export function NotifyRow() {
         description: "Accessible name + visible caption.",
       },
       {
+        name: "showCaption",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Paint `label` as a visible caption. Set false when a CardTitle or section heading already says it — the caption stays in the DOM as sr-only, so role=img keeps its accessible name.",
+      },
+      {
         name: "description",
         type: "string",
         description: "Extra context appended to the screen-reader description.",
@@ -11314,6 +11344,7 @@ export function NotifyRow() {
     ],
     usage: [
       'DO import from the charts entry: `import { AreaChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
+      'DO import only the chart a screen uses — `import { AreaChart } from "@godxjp/ui/charts/area-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO use `stacked` to show how parts accumulate into a total over time.",
       "DON'T overlay more than 2-3 unstacked areas — fill opacity makes dense overlays unreadable; switch to LineChart.",
     ],
@@ -11372,6 +11403,13 @@ export function NotifyRow() {
         description: "Accessible name + visible caption.",
       },
       {
+        name: "showCaption",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Paint `label` as a visible caption. Set false when a CardTitle or section heading already says it — the caption stays in the DOM as sr-only, so role=img keeps its accessible name.",
+      },
+      {
         name: "colors",
         type: "string[]",
         description: "Per-slice colours by index (defaults to the --chart-1..6 palette).",
@@ -11413,6 +11451,7 @@ export function NotifyRow() {
     ],
     usage: [
       'DO import from the charts entry: `import { PieChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
+      'DO import only the chart a screen uses — `import { PieChart } from "@godxjp/ui/charts/pie-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO keep slices few (≈2–6) — pies are unreadable past a handful; use BarChart for many categories.",
       "DO pass `numberFormat` (e.g. percent or currency) so tooltip values localize.",
       "DON'T use a pie for trends over time (LineChart/AreaChart) or precise comparison (BarChart).",

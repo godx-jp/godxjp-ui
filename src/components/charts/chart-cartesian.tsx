@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import {
   Area,
   AreaChart as RAreaChart,
@@ -12,13 +13,16 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts";
+  assertRechartsPeer,
+} from "./recharts-peer";
 
 import type { ChartDatum, ChartSeriesProp } from "../../props/components/charts.prop";
+import { cn } from "../../lib/utils";
 import { EmptyState } from "../data-display/empty-state";
 import { useTranslation } from "../../i18n/use-translation";
 import { ChartFrame, chartColor, chartHeight, useChartNumberFormat } from "./chart-frame";
 import { buildCartesianSummary } from "./chart-summary";
+import { useCategoryAxisMetrics } from "./chart-category-axis";
 
 /**
  * Shared cartesian renderer for Line / Bar / Area. Internal — the filename pascal
@@ -32,6 +36,7 @@ type CartesianChartProps = {
   series: ChartSeriesProp[];
   categoryKey: string;
   label: React.ReactNode;
+  showCaption?: boolean;
   description?: React.ReactNode;
   size?: "xs" | "sm" | "md" | "lg";
   height?: number;
@@ -55,6 +60,7 @@ export function CartesianChart({
   series,
   categoryKey,
   label,
+  showCaption = true,
   description,
   size = "md",
   height,
@@ -68,6 +74,7 @@ export function CartesianChart({
   stacked = false,
   horizontal = false,
 }: CartesianChartProps) {
+  assertRechartsPeer();
   const { t, locale } = useTranslation();
   const fmt = useChartNumberFormat(numberFormat);
   const list = React.useMemo(
@@ -83,6 +90,50 @@ export function CartesianChart({
   const resolvedHeight = chartHeight(size, height);
   const tickFormatter = (value: number) => fmt.format(value);
   const curve = curved ? "monotone" : "linear";
+
+  /**
+   * The category axis of a horizontal bar chart is the only axis whose ticks are free text, so it
+   * is the only one that has to be sized from what it actually holds (gh#409 · 1).
+   */
+  const measuresCategoryAxis = kind === "bar" && horizontal;
+  const canvasRef = React.useRef<HTMLDivElement>(null);
+  const probeRef = React.useRef<HTMLSpanElement>(null);
+  const categoryLabels = React.useMemo(
+    () => (measuresCategoryAxis ? data.map((datum) => String(datum[categoryKey] ?? "")) : []),
+    [measuresCategoryAxis, data, categoryKey],
+  );
+  const categoryAxis = useCategoryAxisMetrics(
+    canvasRef,
+    probeRef,
+    categoryLabels,
+    measuresCategoryAxis && hasData,
+  );
+
+  const categoryTick = (tickProps: {
+    x?: number | string;
+    y?: number | string;
+    className?: string;
+    textAnchor?: "start" | "middle" | "end" | "inherit";
+    payload?: { value?: unknown };
+  }) => {
+    const full = String(tickProps.payload?.value ?? "");
+    const shown = categoryAxis.display(full);
+    return (
+      // `recharts-text` is what chart-layout.css styles the tick typography through; the rest of
+      // the class list is recharts' own (it hands `recharts-cartesian-axis-tick-value` in).
+      <text
+        className={cn("recharts-text", tickProps.className)}
+        x={tickProps.x}
+        y={tickProps.y}
+        textAnchor={tickProps.textAnchor}
+        dominantBaseline="central"
+      >
+        {/* Truncation never hides the name: the tooltip and the figure's sr-only list keep it. */}
+        {shown === full ? null : <title>{full}</title>}
+        {shown}
+      </text>
+    );
+  };
 
   const axes = (numberAxisVertical: boolean) => (
     <>
@@ -117,6 +168,8 @@ export function CartesianChart({
             tickLine={false}
             stroke="hsl(var(--muted-foreground))"
             fontSize={12}
+            width={categoryAxis.width}
+            tick={categoryTick}
           />
         </>
       )}
@@ -184,6 +237,7 @@ export function CartesianChart({
   return (
     <ChartFrame
       label={label}
+      showCaption={showCaption}
       description={description}
       summaryRows={summary.rows}
       imgSummary={summary.img}
@@ -191,6 +245,14 @@ export function CartesianChart({
       height={resolvedHeight}
       className={className}
       id={id}
+      canvasRef={canvasRef}
+      canvasExtra={
+        measuresCategoryAxis ? (
+          // Out-of-flow, hidden, and inside `.ui-chart` — so it inherits exactly the typography
+          // the axis ticks are painted in, including the `[lang="ja"]` face.
+          <span ref={probeRef} className="ui-chart-axis-probe" aria-hidden="true" />
+        ) : null
+      }
     >
       {hasData ? (
         <ResponsiveContainer width="100%" height="100%" minWidth={0}>

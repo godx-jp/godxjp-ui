@@ -85,6 +85,22 @@
       "types": "./dist/components/charts/compact-bar-trend.d.ts",
       "import": "./dist/components/charts/compact-bar-trend.js"
     },
+    "./charts/line-chart": {
+      "types": "./dist/components/charts/line-chart.d.ts",
+      "import": "./dist/components/charts/line-chart.js"
+    },
+    "./charts/bar-chart": {
+      "types": "./dist/components/charts/bar-chart.d.ts",
+      "import": "./dist/components/charts/bar-chart.js"
+    },
+    "./charts/area-chart": {
+      "types": "./dist/components/charts/area-chart.d.ts",
+      "import": "./dist/components/charts/area-chart.js"
+    },
+    "./charts/pie-chart": {
+      "types": "./dist/components/charts/pie-chart.d.ts",
+      "import": "./dist/components/charts/pie-chart.js"
+    },
     "./ui": {
       "types": "./dist/components/ui/index.d.ts",
       "import": "./dist/components/ui/index.js"
@@ -316,6 +332,7 @@
     "test:visual:auth-registration": "node scripts/auth-shell-registration-visual.mjs",
     "test:visual:topbar-collision": "node scripts/topbar-collision-visual.mjs",
     "test:visual:table-collection-cjk": "node scripts/table-collection-cjk-visual.mjs",
+    "test:visual:chart-cjk-axis": "node scripts/chart-cjk-axis-visual.mjs",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",

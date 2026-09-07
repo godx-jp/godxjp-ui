@@ -1645,6 +1645,11 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "series", local: true, reason: "Plotted series descriptors." },
       { field: "categoryKey", local: true, reason: "Accessor key for the x-axis category." },
       { field: "height", local: true, reason: "Explicit canvas height px (overrides size tier)." },
+      {
+        field: "showCaption",
+        local: true,
+        reason: "Paint the caption; false keeps it sr-only so the accessible name survives.",
+      },
       { field: "showLegend", local: true, reason: "Chart-specific legend toggle." },
       { field: "showGrid", local: true, reason: "Chart-specific grid toggle." },
       {
@@ -1669,6 +1674,11 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "series", local: true, reason: "Plotted series descriptors." },
       { field: "categoryKey", local: true, reason: "Accessor key for the category axis." },
       { field: "height", local: true, reason: "Explicit canvas height px (overrides size tier)." },
+      {
+        field: "showCaption",
+        local: true,
+        reason: "Paint the caption; false keeps it sr-only so the accessible name survives.",
+      },
       { field: "showLegend", local: true, reason: "Chart-specific legend toggle." },
       { field: "showGrid", local: true, reason: "Chart-specific grid toggle." },
       {
@@ -1700,6 +1710,11 @@ export const COMPONENT_PROP_REGISTRY = {
         reason: "Index of the highlighted 'current' bar (negative counts from the end).",
       },
       {
+        field: "showCaption",
+        local: true,
+        reason: "Paint the caption; false keeps it sr-only so the accessible name survives.",
+      },
+      {
         field: "showCategoryLabels",
         local: true,
         reason: "Chart-specific tick-label toggle.",
@@ -1726,6 +1741,11 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "series", local: true, reason: "Plotted series descriptors." },
       { field: "categoryKey", local: true, reason: "Accessor key for the x-axis category." },
       { field: "height", local: true, reason: "Explicit canvas height px (overrides size tier)." },
+      {
+        field: "showCaption",
+        local: true,
+        reason: "Paint the caption; false keeps it sr-only so the accessible name survives.",
+      },
       { field: "showLegend", local: true, reason: "Chart-specific legend toggle." },
       { field: "showGrid", local: true, reason: "Chart-specific grid toggle." },
       {
@@ -1756,6 +1776,11 @@ export const COMPONENT_PROP_REGISTRY = {
         reason: "Per-slice colour overrides (defaults to --chart-N).",
       },
       { field: "height", local: true, reason: "Explicit canvas height px (overrides size tier)." },
+      {
+        field: "showCaption",
+        local: true,
+        reason: "Paint the caption; false keeps it sr-only so the accessible name survives.",
+      },
       { field: "showLegend", local: true, reason: "Chart-specific legend toggle." },
       { field: "numberFormat", local: true, reason: "Intl.NumberFormat options for tooltips." },
       { field: "donut", local: true, reason: "Hollow-centre donut rendering." },
