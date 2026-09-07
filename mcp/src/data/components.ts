@@ -1231,7 +1231,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
     name: "NavList",
     group: "layout",
     tagline:
-      'Vertical route navigation for INSIDE a page — the settings-nav shape. Renders the same `.sb-nav-item` rows as the Sidebar rail (icon column, label, badge, active tokens, `aria-current="page"`) in a `<nav>` landmark, without the AppShell grid the rail depends on.',
+      'Vertical route navigation for INSIDE a page — the shape a settings nav takes. Renders the same `.sb-nav-item` rows as the Sidebar rail (icon column, label, badge, active tokens, `aria-current="page"`) in a `<nav>` landmark, without the AppShell grid the rail depends on.',
     props: [
       {
         name: "items",
@@ -1278,6 +1278,17 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
       "Account area: a vertical route nav inside a PageContainer, driving the detail pane.",
     ],
     related: ["Sidebar", "MasterDetail", "PageContainer"],
+    example: `<NavList
+  label="Settings"
+  activeId={route}
+  linkComponent={Link}
+  items={[
+    { id: "profile", label: "Profile", icon: <User />, href: "/settings/profile" },
+    { id: "appearance", label: "Appearance", icon: <Palette />, href: "/settings/appearance" },
+  ]}
+/>`,
+    storyPath: "layout/NavList.stories.tsx",
+    rules: [2, 3, 5, 6],
   },
   {
     name: "MasterDetail",
