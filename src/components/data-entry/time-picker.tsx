@@ -7,9 +7,13 @@ import { pickFieldA11y } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Input } from "./input";
-import type { TimePickerProp } from "../../props/components/data-entry.prop";
+import type {
+  TimePickerDisabledTimeProp,
+  TimePickerProp,
+} from "../../props/components/data-entry.prop";
 
 export type {
+  TimePickerDisabledTimeProp,
   TimePickerProp,
   TimePickerProp as TimePickerProps,
 } from "../../props/components/data-entry.prop";
@@ -48,8 +52,40 @@ interface TimePickerPanelProps {
   value: string;
   minuteStep: number;
   use12h: boolean;
+  disabledTime?: TimePickerDisabledTimeProp;
+  hideDisabledOptions?: boolean;
   onChange: (value: string) => void;
   onDone?: () => void;
+}
+
+/**
+ * Resolve `disabledTime` ONCE per render into the two predicates the columns ask.
+ *
+ * antd's shape is a single call returning both, so a consumer deriving them from the same source
+ * (a start time, a shift window) pays for that derivation once — calling it per option would make
+ * a 24×12 panel do it 288 times.
+ */
+function useTimeRefusals(disabledTime: TimePickerDisabledTimeProp | undefined) {
+  const rules = disabledTime?.();
+  const hours = rules?.disabledHours?.();
+  return {
+    isHourRefused: (hour: number) => hours?.includes(hour) ?? false,
+    isMinuteRefused: (hour: number, minute: number) =>
+      rules?.disabledMinutes?.(hour)?.includes(minute) ?? false,
+  };
+}
+
+/** Is this exact `HH:mm` one the rule refuses? The gate for BOTH routes into the value. */
+function isTimeRefused(value: string, disabledTime: TimePickerDisabledTimeProp | undefined) {
+  if (!disabledTime) return false;
+  const normalized = normalizeHhmm(value);
+  if (!normalized) return false;
+  const [hour, minute] = normalized.split(":").map(Number);
+  const rules = disabledTime();
+  return (
+    (rules.disabledHours?.().includes(hour) ?? false) ||
+    (rules.disabledMinutes?.(hour).includes(minute) ?? false)
+  );
 }
 
 function TimeColumn({
@@ -58,12 +94,17 @@ function TimeColumn({
   selected,
   formatItem,
   onSelect,
+  isDisabled,
+  hideDisabled = false,
 }: {
   label: string;
   items: number[];
   selected: number;
   formatItem: (value: number) => string;
   onSelect: (value: number) => void;
+  /** Refuse this option — `disabledTime` said so (gh#390). */
+  isDisabled?: (value: number) => boolean;
+  hideDisabled?: boolean;
 }) {
   const listRef = React.useRef<HTMLDivElement>(null);
 
@@ -71,33 +112,45 @@ function TimeColumn({
     listRef.current?.querySelector('[data-selected="true"]')?.scrollIntoView({ block: "center" });
   }, [selected]);
 
-  const moveFocus = (index: number) => {
+  const visible = hideDisabled && isDisabled ? items.filter((item) => !isDisabled(item)) : items;
+
+  /**
+   * Move to the next option the rule allows, in `step` direction. A disabled option is still in
+   * the DOM (that is the point of showing it) but arrowing onto it would strand the caret on
+   * something Enter refuses, so the walk skips it — the same thing a native `<select>` does.
+   */
+  const moveFocus = (index: number, step: number) => {
     const options = listRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]');
-    options?.[index]?.focus();
+    if (!options) return;
+    for (let at = index; at >= 0 && at < visible.length; at += step) {
+      if (isDisabled?.(visible[at])) continue;
+      options[at]?.focus();
+      return;
+    }
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
-        moveFocus(Math.min(items.length - 1, index + 1));
+        moveFocus(Math.min(visible.length - 1, index + 1), 1);
         break;
       case "ArrowUp":
         e.preventDefault();
-        moveFocus(Math.max(0, index - 1));
+        moveFocus(Math.max(0, index - 1), -1);
         break;
       case "Home":
         e.preventDefault();
-        moveFocus(0);
+        moveFocus(0, 1);
         break;
       case "End":
         e.preventDefault();
-        moveFocus(items.length - 1);
+        moveFocus(visible.length - 1, -1);
         break;
       case "Enter":
       case " ":
         e.preventDefault();
-        onSelect(items[index]);
+        if (!isDisabled?.(visible[index])) onSelect(visible[index]);
         break;
       default:
         break;
@@ -108,8 +161,9 @@ function TimeColumn({
     <div className="ui-time-picker-column">
       <div className="ui-time-picker-column-heading">{label}</div>
       <div ref={listRef} role="listbox" aria-label={label} className="ui-time-picker-column-scroll">
-        {items.map((item, index) => {
+        {visible.map((item, index) => {
           const isSelected = item === selected;
+          const refused = isDisabled?.(item) ?? false;
           return (
             <button
               key={item}
@@ -117,10 +171,15 @@ function TimeColumn({
               role="option"
               aria-selected={isSelected}
               data-selected={isSelected}
-              tabIndex={isSelected ? 0 : -1}
+              // `aria-disabled`, not `disabled`: a refused option stays in the a11y tree and stays
+              // reachable, so a screen-reader user is told the rule exists instead of finding the
+              // option silently absent (APG listbox pattern).
+              aria-disabled={refused || undefined}
+              data-disabled={refused || undefined}
+              tabIndex={isSelected && !refused ? 0 : -1}
               className="ui-time-picker-option"
               onClick={() => {
-                onSelect(item);
+                if (!refused) onSelect(item);
               }}
               onKeyDown={(e) => onKeyDown(e, index)}
             >
@@ -133,9 +192,18 @@ function TimeColumn({
   );
 }
 
-function TimePickerPanel({ value, minuteStep, use12h, onChange, onDone }: TimePickerPanelProps) {
+function TimePickerPanel({
+  value,
+  minuteStep,
+  use12h,
+  disabledTime,
+  hideDisabledOptions,
+  onChange,
+  onDone,
+}: TimePickerPanelProps) {
   const { t } = useTranslation();
   const draftId = React.useId();
+  const { isHourRefused, isMinuteRefused } = useTimeRefusals(disabledTime);
   const { hour, minute } = parseHhmm(value);
   const minutes = buildMinutes(minuteStep);
   const snappedMinute = minutes.includes(minute) ? minute : minutes[0];
@@ -149,7 +217,9 @@ function TimePickerPanel({ value, minuteStep, use12h, onChange, onDone }: TimePi
 
   const commitDraft = () => {
     const normalized = normalizeHhmm(draft);
-    if (!normalized) return;
+    // A refused time typed into the panel's own field is rejected exactly like an unparseable one,
+    // so the keyboard cannot walk around the rule the columns enforce.
+    if (!normalized || isTimeRefused(normalized, disabledTime)) return;
     onChange(normalized);
     onDone?.();
   };
@@ -172,6 +242,8 @@ function TimePickerPanel({ value, minuteStep, use12h, onChange, onDone }: TimePi
           items={hourItems}
           selected={selectedHourItem}
           formatItem={(h) => (use12h ? String(h) : pad2(h))}
+          isDisabled={(h) => isHourRefused(use12h ? from12h(h, meridiem) : h)}
+          hideDisabled={hideDisabledOptions}
           onSelect={(h) => {
             const hour24 = use12h ? from12h(h, meridiem) : h;
             onChange(`${pad2(hour24)}:${pad2(snappedMinute)}`);
@@ -182,6 +254,8 @@ function TimePickerPanel({ value, minuteStep, use12h, onChange, onDone }: TimePi
           items={minutes}
           selected={snappedMinute}
           formatItem={(m) => pad2(m)}
+          isDisabled={(m) => isMinuteRefused(hour, m)}
+          hideDisabled={hideDisabledOptions}
           onSelect={(m) => {
             commit(`${pad2(hour)}:${pad2(m)}`);
           }}
@@ -245,6 +319,8 @@ export function TimePicker({
   id,
   name,
   minuteStep = 5,
+  disabledTime,
+  hideDisabledOptions,
   allowClear = true,
   ...ariaProps
 }: TimePickerProp) {
@@ -342,11 +418,14 @@ export function TimePicker({
             onChange={(event) => {
               setText(event.target.value);
               const normalized = normalizeHhmm(event.target.value);
-              if (normalized) setValue(normalized);
+              // A refused time is rejected on the typed route too — see `isTimeRefused`.
+              if (normalized && !isTimeRefused(normalized, disabledTime)) setValue(normalized);
             }}
             onBlur={(event) => {
               const normalized = normalizeHhmm(event.target.value);
-              setText(normalized ?? (isValidHhmm(value) ? value : ""));
+              const accepted =
+                normalized && !isTimeRefused(normalized, disabledTime) ? normalized : undefined;
+              setText(accepted ?? (isValidHhmm(value) ? value : ""));
             }}
           />
         </div>
@@ -363,6 +442,8 @@ export function TimePicker({
           value={value || "09:00"}
           minuteStep={minuteStep}
           use12h={use12h}
+          disabledTime={disabledTime}
+          hideDisabledOptions={hideDisabledOptions}
           onChange={(next) => {
             setValue(next);
             setText(next);

@@ -38,6 +38,7 @@ export function DateRangePicker({
   showClose,
   fromDate,
   toDate,
+  disabledDate,
   allowClear = true,
   ...ariaProps
 }: DateRangePickerProp) {
@@ -96,6 +97,9 @@ export function DateRangePicker({
     // input keeps the text and emits nothing; onBlur normalizes any loose-but-complete entry.
     if (trimmed !== "" && !/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return;
     const parsed = trimmed === "" ? undefined : (parseDateInput(trimmed) ?? undefined);
+    // A forbidden date is rejected on the typed route too, so the keyboard cannot walk around the
+    // rule the calendar enforces.
+    if (parsed && disabledDate?.(parsed)) return;
     const next = { from: value?.from, to: value?.to, [edge]: parsed } as DateRange;
     emit(next.from || next.to ? next : undefined);
   };
@@ -156,7 +160,8 @@ export function DateRangePicker({
             }}
             onBlur={(event) => {
               const parsed = parseDateInput(event.target.value.trim());
-              setFromText(parsed ? toIsoDate(parsed) : toIsoDate(value?.from));
+              const accepted = parsed && !disabledDate?.(parsed) ? parsed : undefined;
+              setFromText(accepted ? toIsoDate(accepted) : toIsoDate(value?.from));
             }}
           />
           <ArrowRight className="ui-month-picker-separator-icon" aria-hidden="true" />
@@ -178,7 +183,8 @@ export function DateRangePicker({
             }}
             onBlur={(event) => {
               const parsed = parseDateInput(event.target.value.trim());
-              setToText(parsed ? toIsoDate(parsed) : toIsoDate(value?.to));
+              const accepted = parsed && !disabledDate?.(parsed) ? parsed : undefined;
+              setToText(accepted ? toIsoDate(accepted) : toIsoDate(value?.to));
             }}
           />
           {/* ONE trailing icon: the clear (×) replaces the calendar while a range is set;
@@ -229,6 +235,7 @@ export function DateRangePicker({
               disabled={[
                 ...(fromDate ? [{ before: fromDate }] : []),
                 ...(toDate ? [{ after: toDate }] : []),
+                ...(disabledDate ? [disabledDate] : []),
               ]}
               startMonth={fromDate}
               endMonth={toDate}

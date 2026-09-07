@@ -36,6 +36,7 @@ export function DatePicker({
   showClose,
   fromDate,
   toDate,
+  disabledDate,
   allowClear = true,
   ...ariaProps
 }: DatePickerProp) {
@@ -97,7 +98,10 @@ export function DatePicker({
     // effect then rewrites the field mid-type — mangling input. onBlur normalizes loose entry.
     if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return;
     const parsed = parseDateInput(trimmed);
-    if (parsed) {
+    // A forbidden date is rejected on the typed route too. Leaving it open would make the keyboard
+    // a way around the rule the calendar enforces, and the value would then fail server-side with
+    // no sign of which field caused it.
+    if (parsed && !disabledDate?.(parsed)) {
       emit(parsed);
     }
   };
@@ -174,7 +178,8 @@ export function DatePicker({
             onBlur={(event) => {
               // Normalise a valid entry back to canonical ISO; revert an unparseable one.
               const parsed = parseDateInput(event.target.value.trim());
-              setText(parsed ? toIsoDate(parsed) : toIsoDate(value));
+              const accepted = parsed && !disabledDate?.(parsed) ? parsed : undefined;
+              setText(accepted ? toIsoDate(accepted) : toIsoDate(value));
             }}
           />
           <PopoverContent
@@ -198,6 +203,7 @@ export function DatePicker({
               disabled={[
                 ...(fromDate ? [{ before: fromDate }] : []),
                 ...(toDate ? [{ after: toDate }] : []),
+                ...(disabledDate ? [disabledDate] : []),
               ]}
               startMonth={fromDate}
               endMonth={toDate}

@@ -359,6 +359,16 @@ export type DatePickerProp = FieldA11yProps & {
   locale?: DayPickerProps["locale"];
   fromDate?: Date;
   toDate?: Date;
+  /**
+   * Forbid individual dates by predicate — the rule `fromDate`/`toDate` cannot express, because a
+   * business calendar is rarely one contiguous range: 土日, a closed accounting period, a 祝日, a
+   * day already fully booked.
+   *
+   * Applies to BOTH routes into the value. The calendar greys the cell out, and a date typed into
+   * the field is rejected the same way an unparseable one is — otherwise the keyboard becomes a
+   * way around the rule the mouse obeys.
+   */
+  disabledDate?: (date: Date) => boolean;
   /** Show an inline ✕ to clear the value when one is set (default true). */
   allowClear?: boolean;
 } & Pick<CalendarFooterProp, "showToday" | "showClose">;
@@ -416,9 +426,25 @@ export type DateRangePickerProp = FieldA11yProps & {
   locale?: DayPickerProps["locale"];
   fromDate?: Date;
   toDate?: Date;
+  /** Forbid individual dates by predicate — see `DatePickerProp.disabledDate`. */
+  disabledDate?: (date: Date) => boolean;
   /** Show an inline ✕ to clear the range when one is set (default true). */
   allowClear?: boolean;
 } & Pick<CalendarFooterProp, "showToday" | "showClose">;
+
+/**
+ * Which times a TimePicker refuses, in antd's shape: one call returns the two predicates, so a
+ * consumer computing them from the same source (a start time, a shift window) does that work once
+ * per render rather than once per option.
+ *
+ * `disabledMinutes` receives the hour the minute would belong to, which is what makes the ordinary
+ * pair rule expressible: "終了 must be after 開始" forbids every minute before the start minute in
+ * the start hour, and no minute at all in any later hour.
+ */
+export type TimePickerDisabledTimeProp = () => {
+  disabledHours?: () => number[];
+  disabledMinutes?: (hour: number) => number[];
+};
 
 /** @see TimePicker — popover HH:mm picker (canonical 24h storage). */
 export type TimePickerProp = FieldA11yProps & {
@@ -433,6 +459,20 @@ export type TimePickerProp = FieldA11yProps & {
   name?: NameProp;
   /** Minute column step — default 5 (logistics cut-offs). */
   minuteStep?: number;
+  /**
+   * Forbid individual hours and minutes. Without it a 開始/終了 pair has no way to stop the end
+   * time being set before the start time — the columns will happily offer it.
+   *
+   * Applies to BOTH routes into the value: a disabled option cannot be clicked, is skipped by the
+   * arrow keys, and a forbidden time typed into the field is rejected.
+   */
+  disabledTime?: TimePickerDisabledTimeProp;
+  /**
+   * Drop disabled options from the columns instead of showing them greyed out (default false, as
+   * antd). Greyed-out is usually the better default — a visible-but-refused option tells the
+   * reader the rule exists — but a column that is mostly forbidden reads better short.
+   */
+  hideDisabledOptions?: boolean;
   /** Show an inline ✕ to clear the value when one is set (default true). */
   allowClear?: boolean;
 };

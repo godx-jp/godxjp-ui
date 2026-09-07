@@ -1302,6 +1302,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["ValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "IdProp"],
   },
+  TimePickerDisabledTimeProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
   TimePickerProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
