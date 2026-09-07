@@ -279,8 +279,13 @@
     }
   },
   "navigation": {
+    "tabs": {
+      "addTab": "Thêm tab",
+      "removeTab": "Đóng tab"
+    },
     "steps": {
       "ariaLabel": "Tiến trình",
+      "percentLabel": "Tiến độ bước hiện tại",
       "status": {
         "wait": "Đang chờ",
         "process": "Bước hiện tại",
@@ -318,6 +323,7 @@
       "page": "Trang {page}",
       "pageSize": "Số dòng mỗi trang",
       "pageSizeTrigger": "{size} / trang",
+      "jumpTo": "Tới trang",
       "pageSizeOption": "{size} / trang",
       "total": "Tổng {total} mục"
     },

@@ -46,6 +46,17 @@ const journalItems = [
 
 export default function Demo() {
   const [activeTab, setActiveTab] = useState("pending");
+  const [editableTabs, setEditableTabs] = useState([
+    { value: "je-0042", label: "JE-0042", content: <Text as="p">売上計上 ¥480,000</Text> },
+    { value: "je-0043", label: "JE-0043", content: <Text as="p">仕入計上 ¥120,000</Text> },
+    {
+      value: "je-0040",
+      label: "JE-0040 (固定)",
+      content: <Text as="p">給与支払 ¥2,800,000</Text>,
+      closable: false,
+    },
+  ]);
+  const [editableTab, setEditableTab] = useState("je-0042");
 
   return (
     <PageContainer
@@ -305,6 +316,91 @@ export default function Demo() {
                   </TabsContent>
                 </Tabs>
               </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* Ant Design parity surface — editable-card + extra + centered + placement + size */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Editable card · onEdit / extra / hideAdd</CardTitle>
+            <CardDescription>
+              variant=&quot;editable-card&quot; は Ant Design の editable-card。タブ内の ×
+              はポインタ用ショートカット(aria-hidden)で、キーボードでは Delete /
+              Backspace(aria-keyshortcuts)。追加ボタンは tablist の外にある本物の button。extra は
+              antd の tabBarExtraContent を論理軸(start / end)にしたもの。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs
+              id="antd-editable-card"
+              variant="editable-card"
+              value={editableTab}
+              onValueChange={setEditableTab}
+              onEdit={(target, action) => {
+                if (action === "add") {
+                  const next = `tab-${editableTabs.length + 1}`;
+                  setEditableTabs([
+                    ...editableTabs,
+                    {
+                      value: next,
+                      label: `新規 ${editableTabs.length + 1}`,
+                      content: <Text as="p">新規タブ {next}</Text>,
+                    },
+                  ]);
+                  setEditableTab(next);
+                  return;
+                }
+                const rest = editableTabs.filter((item) => item.value !== target);
+                setEditableTabs(rest);
+                if (target === editableTab && rest[0]) setEditableTab(rest[0].value);
+              }}
+              extra={{
+                end: (
+                  <Button size="sm" variant="outline">
+                    一括操作
+                  </Button>
+                ),
+              }}
+              items={editableTabs}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>tabPlacement · size · centered</CardTitle>
+            <CardDescription>
+              tabPlacement は antd 6.6.2 の名前で、値は論理軸(top / bottom / start / end)。start /
+              end は tablist を縦方向のロービングフォーカスに切り替える。size はライブラリの control
+              band(sm / md / lg)に対応。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <Tabs
+                id="antd-centered"
+                defaultValue="pending"
+                variant="line"
+                centered
+                items={journalItems}
+              />
+              <Tabs
+                id="antd-bottom"
+                defaultValue="pending"
+                variant="card"
+                tabPlacement="bottom"
+                size="sm"
+                items={journalItems}
+              />
+              <Tabs
+                id="antd-start"
+                defaultValue="pending"
+                variant="line"
+                tabPlacement="start"
+                size="lg"
+                items={journalItems}
+              />
             </Flex>
           </CardContent>
         </Card>

@@ -3,6 +3,31 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { Check, ChevronRight } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useInertHiddenBackground } from "../general/inert-background";
+import type { DropdownMenuPlacementProp } from "../../props/components/navigation.prop";
+
+export type { DropdownMenuPlacementProp } from "../../props/components/navigation.prop";
+
+/**
+ * Ant Design `placement` → the two Radix anchors it is made of. `align` is LOGICAL in Radix
+ * (`start`/`end` follow the writing direction), which is why the block-axis anchors can be offered
+ * on the logical axis at no cost.
+ *
+ * antd's inline-side placements (`left`, `leftTop`, `rightBottom`, …) are deliberately NOT here:
+ * Radix's `side` is physical, this library ships no `DirectionProvider`, and a `side="left"` menu
+ * would open on the wrong edge of an RTL screen. A consumer who genuinely wants a physical inline
+ * side still passes Radix's own `side` / `align`, which this component forwards untouched.
+ */
+const DROPDOWN_MENU_PLACEMENT: Record<
+  DropdownMenuPlacementProp,
+  { side: "top" | "bottom"; align: "start" | "center" | "end" }
+> = {
+  top: { side: "top", align: "center" },
+  topStart: { side: "top", align: "start" },
+  topEnd: { side: "top", align: "end" },
+  bottom: { side: "bottom", align: "center" },
+  bottomStart: { side: "bottom", align: "start" },
+  bottomEnd: { side: "bottom", align: "end" },
+};
 
 export function DropdownMenu(props: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
   return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
@@ -36,25 +61,47 @@ export function DropdownMenuSub(props: React.ComponentProps<typeof DropdownMenuP
 
 export const DropdownMenuContent = React.forwardRef<
   React.ComponentRef<typeof DropdownMenuPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content> & {
+    /**
+     * Ant Design `placement`, on the logical inline axis. It is pure sugar over Radix's
+     * `side` + `align`, and an explicitly passed `side`/`align` still wins — so a consumer can
+     * mix the two without this prop silently overruling them.
+     */
+    placement?: DropdownMenuPlacementProp;
+    /** Ant Design `arrow` — paint the little pointer at the anchored edge (default: off). */
+    arrow?: boolean;
+  }
+>(({ className, sideOffset = 4, placement, arrow, side, align, children, ...props }, ref) => {
   // Radix hides the app behind an open menu from assistive tech but leaves it tabbable —
   // axe `aria-hidden-focus`. See components/general/inert-background.ts.
   // Đăng ký chính phần tử content: nó mang `data-state`, và đó là tín hiệu ý định đóng mà
   // nền dựa vào để nhả `inert` NGAY, thay vì đợi hết animation thoát (gh#385).
   const contentRef = useInertHiddenBackground(ref);
+  const anchor = placement ? DROPDOWN_MENU_PLACEMENT[placement] : undefined;
   return (
     <DropdownMenuPortal>
       <DropdownMenuPrimitive.Content
         ref={contentRef}
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
+        side={side ?? anchor?.side}
+        align={align ?? anchor?.align}
         className={cn(
           "ui-dropdown-menu-content data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 origin-[var(--radix-dropdown-menu-content-transform-origin)]",
           className,
         )}
         {...props}
-      />
+      >
+        {children}
+        {arrow ? (
+          // Radix stamps its own 10×5 on the <svg>; the CSS box below overrides both from tokens,
+          // so the pointer follows a service theme instead of Radix's constant.
+          <DropdownMenuPrimitive.Arrow
+            data-slot="dropdown-menu-arrow"
+            className="ui-dropdown-menu-arrow"
+          />
+        ) : null}
+      </DropdownMenuPrimitive.Content>
     </DropdownMenuPortal>
   );
 });

@@ -129,6 +129,52 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        {/* Ant Design parity surface — separator / itemRender / item menu */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>separator · itemRender · menu (Ant Design パリティ)</CardTitle>
+            <CardDescription>
+              separator は既定のシェブロンを任意のノードに置き換える(空文字で消える)。常に
+              aria-hidden なので、読み上げは ol / li の構造のまま。menu は antd の
+              BreadcrumbItemType.menu で、その区切りを兄弟切り替えのメニューボタンにする
+              (パス付きエントリは role=&quot;menuitem&quot; を保ったまま本物のアンカーになる)。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm">
+              <div id="antd-breadcrumb-slash">
+                <Breadcrumb
+                  separator="/"
+                  items={[
+                    { label: "ホーム", to: "/" },
+                    { label: "会員管理", to: "/members" },
+                    { label: "田中 太郎" },
+                  ]}
+                />
+              </div>
+              <div id="antd-breadcrumb-menu">
+                <Breadcrumb
+                  items={[
+                    { label: "ホーム", to: "/" },
+                    {
+                      label: "プロジェクト A",
+                      to: "/p/a",
+                      menu: {
+                        items: [
+                          { value: "b", label: "プロジェクト B", to: "/p/b" },
+                          { value: "c", label: "プロジェクト C", to: "/p/c" },
+                          { value: "d", label: "プロジェクト D (準備中)", disabled: true },
+                        ],
+                      },
+                    },
+                    { label: "設定" },
+                  ]}
+                />
+              </div>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

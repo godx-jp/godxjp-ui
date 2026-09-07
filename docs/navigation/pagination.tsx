@@ -235,6 +235,58 @@ export default function Demo() {
             />
           </CardContent>
         </Card>
+
+        {/* Ant Design parity surface — showQuickJumper / size / align / responsive */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>showQuickJumper · size · align (Ant Design パリティ)</CardTitle>
+            <CardDescription>
+              showQuickJumper はページ番号を直接入力するフィールド(Enter または goButton
+              で確定、範囲外はクランプ)。size=&quot;sm&quot; はバーに --control-height
+              を一度だけ再束縛するので、ページボタン・サイズ変更・ジャンプ欄が同時に縮む。align
+              は論理軸(start / center / end)。responsive は既定で有効で、モバイル幅では simple
+              形態に畳む。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <div id="antd-pagination-jumper">
+                <Pagination
+                  ariaLabel="クイックジャンパー付きページネーション"
+                  value={3}
+                  total={95}
+                  pageSize={10}
+                  showTotal
+                  showSizeChanger
+                  showQuickJumper
+                  onValueChange={() => {}}
+                />
+              </div>
+              <div id="antd-pagination-sm">
+                <Pagination
+                  ariaLabel="小サイズ・中央寄せのページネーション"
+                  value={3}
+                  total={95}
+                  pageSize={10}
+                  size="sm"
+                  align="center"
+                  showQuickJumper={{ goButton: "移動" }}
+                  onValueChange={() => {}}
+                />
+              </div>
+              <div id="antd-pagination-start">
+                <Pagination
+                  ariaLabel="先頭寄せのページネーション"
+                  value={3}
+                  total={95}
+                  pageSize={10}
+                  align="start"
+                  onValueChange={() => {}}
+                />
+              </div>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

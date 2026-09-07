@@ -88,6 +88,120 @@
     }
   }
 
+  /* ── TABS: the Ant Design parity surface ────────────────────────────────────────────────────
+   * Everything here is a property NO utility already claims, so `@layer components` still wins.
+   * The three the base list/trigger DO claim (`bg-muted`, `p-1`, `rounded-lg`, `text-sm`) are
+   * replaced from the component as arbitrary-value utilities instead — see tabs.tsx. */
+
+  /* The bar row: strip + `editable-card` add button + the two `extra` slots on ONE inline run.
+   * It only exists when something needs it, so a plain <Tabs items> keeps the DOM it always had. */
+  .ui-tabs-bar {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--tabs-bar-gap);
+  }
+
+  /* A vertical tablist stacks the run instead, so `extra` sits above/below the rail, not beside a
+   * column that would then be squeezed to nothing. */
+  [data-slot="tabs"][data-orientation="vertical"] .ui-tabs-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ui-tabs-bar > [data-slot="tabs-list"] {
+    min-inline-size: 0;
+    flex: 1 1 auto;
+  }
+
+  .ui-tabs-extra {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--tabs-extra-gap);
+  }
+
+  .ui-tabs-trigger-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ui-tabs-trigger-icon svg {
+    inline-size: var(--tabs-trigger-icon-size);
+    block-size: var(--tabs-trigger-icon-size);
+  }
+
+  /* CARD RAIL. The strip is transparent now, so the line the card faces sit on has to be drawn —
+   * this is antd's `.ant-tabs-nav::before`. It is selected from the ROOT's data-variant, never the
+   * list's: the list is deliberately still forwarded as `data-variant="default"` so a
+   * hand-composed <TabsList> is untouched by the card face.
+   *
+   * AN INSET SHADOW, NOT A BORDER — measured, not stylistic. The rail was first a
+   * `border-block-end` plus a `margin-block-end: -1px` on the active face to pull it over the
+   * line. That pull makes the active tab's MARGIN box 1px shorter than its siblings', and the
+   * strip centres its items, so Chromium put the tab's border box 0.5px ABOVE the scrollport —
+   * measured `headroomBlockStart: -0.5px` — where `overflow-y: hidden` (which this strip needs for
+   * its inline scroll) shaved the top border. Exactly the gh#376 failure again, and
+   * `overflow-clip-margin` is no escape: it is ignored on `hidden` and only honoured when BOTH
+   * axes are `clip`. Drawn as an INSET shadow at the padding-box edge instead, the rail lives
+   * inside the clip, the faces align to it with `items-end` (a utility on the list — `items-center`
+   * is one too, and the utilities layer outranks this one), and the active face simply paints over
+   * its own 1px of rail. Nothing overflows, so nothing can be shaved. */
+  [data-slot="tabs"][data-variant="card"] [data-slot="tabs-list"],
+  [data-slot="tabs"][data-variant="editable-card"] [data-slot="tabs-list"] {
+    box-shadow: inset 0 calc(-1 * var(--tabs-card-rail-border-width)) 0 hsl(var(--border));
+  }
+
+  /* EDITABLE-CARD. The × is a pointer shortcut inside the tab, not a focusable control — see the
+   * note in tabs.tsx for the axe measurement that decided that. It still needs a real hit box. */
+  .ui-tabs-tab-remove {
+    display: inline-flex;
+    flex: 0 0 auto;
+    inline-size: var(--tabs-tab-remove-size);
+    block-size: var(--tabs-tab-remove-size);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--tabs-tab-remove-radius);
+    margin-inline-start: var(--tabs-tab-remove-space-inline-end);
+    margin-inline-end: calc(-1 * var(--tabs-tab-remove-space-inline-end));
+    color: hsl(var(--muted-foreground));
+    cursor: pointer;
+  }
+
+  .ui-tabs-tab-remove:hover {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-tabs-tab-remove-icon {
+    inline-size: var(--tabs-tab-remove-icon-size);
+    block-size: var(--tabs-tab-remove-icon-size);
+  }
+
+  .ui-tabs-add {
+    display: inline-flex;
+    flex: 0 0 auto;
+    inline-size: var(--tabs-add-size);
+    block-size: var(--tabs-add-size);
+    align-items: center;
+    justify-content: center;
+    border: var(--tabs-card-rail-border-width) solid hsl(var(--border));
+    border-radius: var(--tabs-add-radius);
+    background: hsl(var(--tabs-card-background, var(--muted)));
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-tabs-add:hover {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-tabs-add-icon {
+    inline-size: var(--tabs-add-icon-size);
+    block-size: var(--tabs-add-icon-size);
+  }
+
   /* The `simple` form draws Prev/Next as size="sm" Buttons whose only content is the glyph, so it
    * must NOT inherit the small-button icon tier — the chevron is the whole control. */
   /* Cả hai dạng markup: pager gọn dựng nút điều hướng bằng <Button> nên mang .ui-button, còn
@@ -98,6 +212,49 @@
   .ui-pagination .ui-pagination-link svg {
     inline-size: var(--pagination-icon-size);
     block-size: var(--pagination-icon-size);
+  }
+
+  /* ── PAGINATION: the Ant Design parity surface ──────────────────────────────────────────────
+   * `align` is logical (antd's own `start|center|end`), so an RTL footer needs no second rule.
+   * It is declared HERE rather than beside the base `.ui-pagination` in layout.css because that
+   * file is imported EARLIER: at equal specificity the later import wins, and `justify-content:
+   * flex-end` over there would otherwise silently beat this. */
+  .ui-pagination[data-align="start"] {
+    justify-content: flex-start;
+  }
+
+  .ui-pagination[data-align="center"] {
+    justify-content: center;
+  }
+
+  .ui-pagination[data-align="end"] {
+    justify-content: flex-end;
+  }
+
+  /* SIZE: one local control band for the whole bar. Every control inside already sizes from
+   * --control-height (page button, size-changer trigger, quick-jumper field), so re-binding it
+   * here is the entire `size="sm"` implementation — no per-control override, nothing to drift. */
+  .ui-pagination[data-size="sm"] {
+    --control-height: var(--pagination-control-height-sm);
+  }
+
+  .ui-pagination-jumper {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--pagination-jumper-gap);
+  }
+
+  .ui-pagination-jumper-label {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--pagination-jumper-font-size);
+    white-space: nowrap;
+  }
+
+  /* The WIDTH is a utility on the component, not a declaration here: Input's own base class list
+   * claims `w-full` in the `utilities` layer, which outranks anything this layer says. */
+  .ui-pagination-jumper-input {
+    text-align: center;
   }
 
   .ui-context-menu-content {
@@ -535,6 +692,41 @@
     overflow: hidden;
   }
 
+  /* ── BREADCRUMB: the Ant Design parity surface ──────────────────────────────────────────────
+   * `separator` now has its own box so a STRING separator ("/", "›") lines up with the segments
+   * exactly like the default glyph did. Declared here, not in layout.css, on purpose:
+   * navigation-layout.css is imported LATER, so at equal specificity these rules are the ones that
+   * survive — the reverse order would have made them dead code with no error anywhere. */
+  .ui-breadcrumb-separator {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+
+  /* A segment that opens a sibling menu is a real button, so it has to shed the button chrome and
+   * inherit the trail's own type — otherwise one segment reads as a form control in the trail. */
+  .ui-breadcrumb-menu-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--breadcrumb-menu-trigger-gap);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+  }
+
+  .ui-breadcrumb-menu-trigger:hover {
+    color: hsl(var(--foreground));
+  }
+
+  /* Ant Design `arrow`. Radix stamps width/height ATTRIBUTES on its <svg>; a CSS box beats an
+   * attribute, so the pointer follows the token instead of Radix's 10×5 constant. */
+  .ui-dropdown-menu-arrow {
+    inline-size: var(--dropdown-arrow-width);
+    block-size: var(--dropdown-arrow-height);
+    fill: hsl(var(--dropdown-arrow-background, var(--popover)));
+  }
+
   /* The checkbox indicator is absolutely placed in the reserved inset column. */
   .ui-dropdown-menu-indicator-slot {
     pointer-events: none;
@@ -771,6 +963,65 @@
     inline-size: calc(100% - var(--steps-connector-inset) * 2);
     block-size: 1px;
     background: hsl(var(--border));
+  }
+
+  /* ── STEPS `percent` (Ant Design) ───────────────────────────────────────────────────────────
+   * A determinate arc AROUND the current marker, drawn as one conic-gradient in a padding box.
+   * The marker keeps its own box untouched, so every status face (finish/process/error/wait)
+   * still paints exactly as it did — the ring is additive, not a second marker. */
+  .ui-steps-progress {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    padding: var(--steps-progress-ring-width);
+    background: conic-gradient(
+      hsl(var(--primary)) calc(var(--steps-progress-ratio, 0) * 360deg),
+      hsl(var(--steps-progress-track-color, var(--muted))) 0
+    );
+  }
+
+  /* ── STEPS `navigation` (Ant Design) ────────────────────────────────────────────────────────
+   * Same markup as the default rail — marker, title, subtitle, description — repainted as a row
+   * of slabs with a chevron between them. Each selector is one level more specific than the
+   * horizontal rail rule it overrides, so it does not depend on source order inside the layer. */
+  .ui-steps-list[data-type="navigation"] .ui-steps-item[data-direction="horizontal"] {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--steps-nav-space-gap);
+    text-align: start;
+  }
+
+  .ui-steps-list[data-type="navigation"] .ui-steps-control[data-direction="horizontal"] {
+    flex: 1 1 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--steps-nav-space-gap);
+    padding-inline: var(--steps-nav-space-inline);
+    padding-block: var(--steps-nav-space-block);
+    border-radius: var(--steps-nav-radius);
+    background: hsl(var(--muted));
+  }
+
+  .ui-steps-list[data-type="navigation"]
+    .ui-steps-item[data-status="process"]
+    .ui-steps-control[data-direction="horizontal"] {
+    background: hsl(var(--accent));
+  }
+
+  .ui-steps-list[data-type="navigation"]
+    .ui-steps-item[data-direction="horizontal"]
+    .ui-steps-text {
+    margin-block-start: 0;
+    padding-inline: 0;
+    text-align: start;
+  }
+
+  .ui-steps-nav-separator {
+    flex: 0 0 auto;
+    inline-size: var(--steps-nav-separator-size);
+    block-size: var(--steps-nav-separator-size);
+    color: hsl(var(--muted-foreground));
   }
 
   /* Structurally icon-only: square to the density-aware --control-height tap target and drop the
