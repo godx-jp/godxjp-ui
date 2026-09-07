@@ -201,6 +201,30 @@
     block-size: var(--toast-icon-size);
   }
 
+  /* A COLLAPSED STACK MUST HIDE ITS BACK TOASTS FROM THE A11Y TREE, NOT ONLY FROM THE EYE.
+   *
+   * Sonner shows one toast at a time: every toast behind the front one keeps its box (the stack
+   * is drawn from those boxes) but fades its CONTENT away with its own rule
+   *   [data-sonner-toast][data-expanded='false'][data-front='false'][data-styled='true'] > *
+   *     { opacity: 0 }
+   * Transparent text is still text. It stays in the accessibility tree, and a contrast checker
+   * measures it against the toast surface it is invisible on — measured here at 1.03:1 for the
+   * second of two live toasts, which is what a consumer's browser test reported as
+   *   [serious] color-contrast · li[data-index="1"] > [data-content] > [data-title]
+   * `#f9f9f9` was never a colour from the dark palette; it is `hsl(var(--popover-foreground))`
+   * flattened over `hsl(var(--popover))` at the ~2% opacity the 400ms fade was passing through.
+   *
+   * `visibility` takes the same subtree out of BOTH — no paint, no a11y tree, nothing to measure —
+   * and it is the honest description of the state: text a sighted user cannot read should not be
+   * announced either. Deliberately NOT transitioned, so it flips the instant the toast leaves the
+   * front instead of leaving a 400ms window in which the defect is still measurable. Sonner
+   * restores the toast by no longer matching this selector (hover expands the stack, or the front
+   * toast dismisses), so nothing has to undo it. Guarded by
+   * src/components/feedback/__tests__/toast-stacked-content-hidden.test.ts. */
+  [data-sonner-toast][data-expanded="false"][data-front="false"][data-styled="true"] > * {
+    visibility: hidden;
+  }
+
   .ui-skeleton-block {
     border-radius: var(--skeleton-radius);
     background: var(--skeleton-background, hsl(var(--muted)));

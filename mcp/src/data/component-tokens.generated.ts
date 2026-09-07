@@ -626,17 +626,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--toggle-focus-ring-width",
     "value": "var(--stroke-lg)",
-    "description": "Ring knobs for the two controls that historically wanted a softer mark than the global * default — both are filled surfaces where the ring was felt to read as a second border. * * THE ALPHA IS NOW 1, AND THAT IS THE AAA DECISION. WCAG 2.2 SC 2.4.13 Focus Appearance asks * for a ≥3:1 change between the focused and unfocused states across an area at least as large * as a 2px perimeter of the control. Measured against this palette, the focus hue at alpha 0.35 * composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant * indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes * from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as * quiet as it likes because it is decoration rather than the indicator. The knobs stay — a * service can still trade the criterion away deliberately — but the shipped default no longer * makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts."
+    "description": "Ring knobs for the two controls that historically wanted a softer mark than the global * default — both are filled surfaces where the ring was felt to read as a second border. * * THE ALPHA IS 1, AND THAT IS THE CRITERION TALKING. WCAG 2.2 SC 1.4.11 asks for ≥3:1 between * the focused and unfocused states of the pixels that mark focus, and colour is the whole of * that bar. Measured against this palette, the focus hue at alpha 0.35 * composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant * indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes * from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as * quiet as it likes because it is decoration rather than the indicator. The knobs stay — a * service can still trade the criterion away deliberately — but the shipped default no longer * makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts."
   },
   {
     "name": "--toggle-focus-ring-alpha",
     "value": "1",
-    "description": "Ring knobs for the two controls that historically wanted a softer mark than the global * default — both are filled surfaces where the ring was felt to read as a second border. * * THE ALPHA IS NOW 1, AND THAT IS THE AAA DECISION. WCAG 2.2 SC 2.4.13 Focus Appearance asks * for a ≥3:1 change between the focused and unfocused states across an area at least as large * as a 2px perimeter of the control. Measured against this palette, the focus hue at alpha 0.35 * composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant * indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes * from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as * quiet as it likes because it is decoration rather than the indicator. The knobs stay — a * service can still trade the criterion away deliberately — but the shipped default no longer * makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts."
+    "description": "Ring knobs for the two controls that historically wanted a softer mark than the global * default — both are filled surfaces where the ring was felt to read as a second border. * * THE ALPHA IS 1, AND THAT IS THE CRITERION TALKING. WCAG 2.2 SC 1.4.11 asks for ≥3:1 between * the focused and unfocused states of the pixels that mark focus, and colour is the whole of * that bar. Measured against this palette, the focus hue at alpha 0.35 * composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant * indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes * from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as * quiet as it likes because it is decoration rather than the indicator. The knobs stay — a * service can still trade the criterion away deliberately — but the shipped default no longer * makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts."
   },
   {
     "name": "--control-focus-ring-width",
-    "value": "var(--stroke-md)",
-    "description": "Opaque ring width for a BORDERED FIELD. * * This knob exists because a field is the one control that already owns a boundary, so it is * the one place where the opaque ring could plausibly be dropped and the recoloured border left * to carry the state — which is exactly what Ant Design does (a focused antd field is a primary * border plus a translucent halo, nothing in between; verified in antd 6.6.2, * `es/input/style/token.js:48`). It is NOT what this library does. * * The Japanese market is strict, so this library targets SC 2.4.13 Focus Appearance (AAA), and * a 1px border is not a 2px perimeter. The field therefore keeps the full opaque stop and the * recoloured border sits INSIDE it, same hue, contiguous — the two agree instead of competing, * which was the original defect, while the perimeter stays ≥2px. antd does not meet 2.4.13 here * and we knowingly diverge; see docs/DESIGN-AUTHORITY.md. * * `var(--stroke-md)` rather than `var(--focus-ring-width)`: the latter is re-scoped per component * (`.ui-toggle` raises it), and a knob that mirrors a re-scoped token cannot be bound at :root * (docs/TOKENS.md, the freeze rule) — while reading it at the call site would be a self-reference * cycle, since the call site IS `--focus-ring-width`. Both read the same stroke step, and a gate * asserts they stay equal so the two cannot drift apart. * * If a service does set this thinner, note the unit: the halo's spread is * `calc(var(--focus-ring-width) + var(--focus-ring-glow-width))`, and CSS calc() refuses to add a * unitless number to a length — a bare `0` makes the whole box-shadow invalid at computed-value * time and it resolves to NONE. Measured in Chromium while this knob was briefly 0: a focused * Input reported `box-shadow: none` and still looked plausible, because the recoloured border was * doing all the work. Write `0px`."
+    "value": "var(--stroke-hairline)",
+    "description": "Mark width for a BORDERED FIELD. * * This knob exists because a field is the one control that already owns a boundary, so it is * the one place the mark could plausibly be dropped and the recoloured border left to carry the * state — which is exactly what Ant Design does (a focused antd field is a primary border plus a * translucent halo, nothing in between; verified in antd 6.6.2, `es/input/style/token.js:48`). * * It ships at the same step as `--focus-outline-weight`, antd's `lineWidth`, so a field and a * button carry the same weight. A gate asserts the two stay equal, because this token cannot * literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule). * * It feeds `--focus-ring-weight`, never `--focus-ring-width`. The width is * `weight × --focus-outline`, so a field's mark is still switched off with everything else — a * knob that bypassed the switch would be a hole in it. * * If a service sets this, note the unit: the halo's spread is summed with a length in * `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole * box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`."
   },
   {
     "name": "--rating-focus-ring-offset",
@@ -2909,14 +2909,9 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Gutter between the COLUMNS of a `<Form columns={n}>` grid (gh#304). Was ResponsiveGrid's * generic 16px stack gap with no way to say otherwise; it is a form's inter-field gutter and a * service aligning forms to its design grid needs it as a knob (rule #45). The default keeps the * historical 16px, so nothing moves unless a theme opts in."
   },
   {
-    "name": "--legal-document-section-focus-ring-offset",
-    "value": "var(--space-1)",
-    "description": "Section anchor ring needs a gap so the mark does not touch the heading * (outline form — styles/focus-ring.css)."
-  },
-  {
     "name": "--legal-document-measure-max-width",
     "value": "46rem",
-    "description": "Section anchor ring needs a gap so the mark does not touch the heading * (outline form — styles/focus-ring.css)."
+    "description": "Readable document measure. Caps the header, the section column and the footer so * a 1440px viewport still reads at ~75-90 characters per line."
   },
   {
     "name": "--legal-document-column-gap",
@@ -3724,6 +3719,76 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "How close to the bottom edge the reader still counts as \"following the stream\" for * `<ScrollArea anchor=\"bottom\">`. Inside this band new content keeps the viewport pinned to the * newest item; one pixel beyond it the reader is reading history and anchoring NEVER moves them * again until they come back (WCAG 3.2.5 — no change of context on request of the machine). * * It is a rule #45 knob because the right distance is a function of the row height a service * renders: one line of a dense audit log is ~20px, a chat bubble with an avatar is ~64px, and * \"one row from the bottom\" is what the reader actually means. Expressed in rem on purpose — it * then tracks the user's font size, so the band is still one row at 200% zoom (WCAG 1.4.4) * instead of collapsing to a third of a row. The `anchorOffset` prop overrides it per instance; * px/rem/em are all accepted."
   },
   {
+    "name": "--segmented-track-padding",
+    "value": "calc(var(--space-1) / 2)",
+    "description": "antd trackPadding = lineWidthBold = 2px. Half the base spacing step rather than a raw length, * so it rides `--scaling` with everything else."
+  },
+  {
+    "name": "--segmented-track-background",
+    "value": "var(--muted)",
+    "description": "antd trackBg = colorBgLayout — the recessed ground a control group sits in."
+  },
+  {
+    "name": "--segmented-track-radius",
+    "value": "var(--radius)",
+    "description": "antd track radius = borderRadius; item radius = borderRadiusSM. antd steps the PAIR down the * radius scale rather than subtracting the track padding (the two coincide only because that * scale happens to step by 2) — ported as a pair for the same reason."
+  },
+  {
+    "name": "--segmented-item-radius",
+    "value": "var(--radius-sm)",
+    "description": "antd track radius = borderRadius; item radius = borderRadiusSM. antd steps the PAIR down the * radius scale rather than subtracting the track padding (the two coincide only because that * scale happens to step by 2) — ported as a pair for the same reason."
+  },
+  {
+    "name": "--segmented-item-height",
+    "value": "calc(var(--control-height) - var(--segmented-track-padding) * 2)",
+    "description": "antd labelHeight = controlHeight − trackPadding × 2. The track therefore measures exactly * --control-height, so a Segmented sits level with an Input and a Button on the same row."
+  },
+  {
+    "name": "--segmented-item-padding-inline",
+    "value": "calc(var(--control-padding-x) - 1px)",
+    "description": "antd segmentedPaddingHorizontal = controlPaddingHorizontal − lineWidth."
+  },
+  {
+    "name": "--segmented-item-gap",
+    "value": "calc(var(--space-3) / 2)",
+    "description": "antd icon gap = marginSM / 2."
+  },
+  {
+    "name": "--segmented-item-color",
+    "value": "var(--muted-foreground)",
+    "description": "antd itemColor = colorTextLabel · itemHoverColor / itemSelectedColor = colorText."
+  },
+  {
+    "name": "--segmented-item-hover-color",
+    "value": "var(--foreground)",
+    "description": "antd itemColor = colorTextLabel · itemHoverColor / itemSelectedColor = colorText."
+  },
+  {
+    "name": "--segmented-item-selected-color",
+    "value": "var(--foreground)",
+    "description": "antd itemColor = colorTextLabel · itemHoverColor / itemSelectedColor = colorText."
+  },
+  {
+    "name": "--segmented-item-hover-background",
+    "value": "var(--accent)",
+    "description": "antd itemHoverBg = colorFillSecondary · itemActiveBg = colorFill (the heavier of the pair)."
+  },
+  {
+    "name": "--segmented-item-active-background",
+    "value": "var(--secondary)",
+    "description": "antd itemHoverBg = colorFillSecondary · itemActiveBg = colorFill (the heavier of the pair)."
+  },
+  {
+    "name": "--segmented-item-selected-background",
+    "value": "var(--background)",
+    "description": "antd itemSelectedBg = colorBgElevated + boxShadowTertiary — the selected slab reads as lifted * off the recessed track, which is the whole affordance."
+  },
+  {
+    "name": "--segmented-item-selected-shadow",
+    "value": "var(--shadow-sm)",
+    "description": "antd itemSelectedBg = colorBgElevated + boxShadowTertiary — the selected slab reads as lifted * off the recessed track, which is the whole affordance."
+  },
+  {
     "name": "--separator-rule-size",
     "value": "var(--stroke-hairline)",
     "description": "Rule weight, both orientations and both halves of a labelled rule."
@@ -3871,7 +3936,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--sidebar-user-focus-ring-alpha",
     "value": "1",
-    "description": "Focus-ring alpha on the tinted shell grounds. It was 0.45, to stop the ring reading as a * SELECTED item rather than a focused one — a real concern, but 0.45 composites to ≈1.90:1 * against the page, so it answered it by making the indicator non-compliant with WCAG 2.2 * SC 2.4.13 (AAA), which this library targets. The opaque stop is now opaque and the * quieting comes from the halo outside it (`--focus-ring-glow-*`), which carries no * criterion. \"Focused\" is kept distinct from \"selected\" by the halo's shape, not by * weakening the mark (styles/focus-ring.css)."
+    "description": "Focus-ring alpha on the tinted shell grounds. It was 0.45, to stop the ring reading as a * SELECTED item rather than a focused one — a real concern, but 0.45 composites to ≈1.90:1 * against the page, so it answered it by making the indicator non-compliant with WCAG 2.2 * SC 1.4.11 — colour IS the criterion for a focus indicator, so a translucent mark fails it * whatever its area. The mark is opaque and the quieting comes from the halo outside it * (`--focus-ring-glow-*`), which carries no criterion, and from the mark's light weight * (one `lineWidth`, inset into the row). \"Focused\" is kept distinct from \"selected\" by the * halo's shape, not by weakening the mark (styles/focus-ring.css)."
   },
   {
     "name": "--topbar-chip-icon-size",
@@ -4139,34 +4204,79 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
   },
   {
+    "name": "--topbar-item-padding-inline",
+    "value": "var(--space-3)",
+    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, antd ProLayout's `right-content`) draws a trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
+  },
+  {
+    "name": "--topbar-item-gap",
+    "value": "var(--space-2)",
+    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, antd ProLayout's `right-content`) draws a trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
+  },
+  {
+    "name": "--topbar-item-min-width",
+    "value": "var(--control-height)",
+    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, antd ProLayout's `right-content`) draws a trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
+  },
+  {
+    "name": "--topbar-item-radius",
+    "value": "var(--radius-sharp)",
+    "description": "Square by default: a cell that meets both bar edges has no corner to round. A service that * wants the softer read sets this to var(--radius)."
+  },
+  {
+    "name": "--topbar-item-color",
+    "value": "var(--muted-foreground)",
+    "description": "Square by default: a cell that meets both bar edges has no corner to round. A service that * wants the softer read sets this to var(--radius)."
+  },
+  {
+    "name": "--topbar-item-hover-background",
+    "value": "var(--accent)",
+    "description": "The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's * built-in bar chrome, so a consumer-supplied cell and the shell's own read identically."
+  },
+  {
+    "name": "--topbar-item-hover-color",
+    "value": "var(--accent-foreground)",
+    "description": "The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's * built-in bar chrome, so a consumer-supplied cell and the shell's own read identically."
+  },
+  {
+    "name": "--topbar-item-active-background",
+    "value": "var(--secondary)",
+    "description": "The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's * built-in bar chrome, so a consumer-supplied cell and the shell's own read identically."
+  },
+  {
+    "name": "--topbar-item-focus-ring-offset",
+    "value": "calc(-1 * var(--focus-ring-width))",
+    "description": "The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar * family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an * outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the * same reasoning `a.ui-list-row` / `.sb-nav-item` already record in styles/focus-ring.css. The * offset TRACKS the mark's own width, so the two cannot drift apart, and it multiplies by the * `--focus-outline` switch through that width: switch off → width 0 → offset 0. NO GEOMETRY IS * AUTHORED HERE; the cell only says where the mark sits."
+  },
+  {
     "name": "--org-switcher-trigger-height",
     "value": "var(--band-height-xl)",
-    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
+    "description": "The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar * family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an * outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the * same reasoning `a.ui-list-row` / `.sb-nav-item` already record in styles/focus-ring.css. The * offset TRACKS the mark's own width, so the two cannot drift apart, and it multiplies by the * `--focus-outline` switch through that width: switch off → width 0 → offset 0. NO GEOMETRY IS * AUTHORED HERE; the cell only says where the mark sits."
   },
   {
     "name": "--org-switcher-trigger-padding-x",
     "value": "var(--space-2)",
-    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
+    "description": "The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar * family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an * outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the * same reasoning `a.ui-list-row` / `.sb-nav-item` already record in styles/focus-ring.css. The * offset TRACKS the mark's own width, so the two cannot drift apart, and it multiplies by the * `--focus-outline` switch through that width: switch off → width 0 → offset 0. NO GEOMETRY IS * AUTHORED HERE; the cell only says where the mark sits."
   },
   {
     "name": "--org-switcher-avatar-size",
     "value": "1.75rem",
-    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
+    "description": "The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar * family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an * outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the * same reasoning `a.ui-list-row` / `.sb-nav-item` already record in styles/focus-ring.css. The * offset TRACKS the mark's own width, so the two cannot drift apart, and it multiplies by the * `--focus-outline` switch through that width: switch off → width 0 → offset 0. NO GEOMETRY IS * AUTHORED HERE; the cell only says where the mark sits."
   },
   {
     "name": "--org-switcher-menu-width",
     "value": "16rem",
-    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
+    "description": "The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar * family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an * outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the * same reasoning `a.ui-list-row` / `.sb-nav-item` already record in styles/focus-ring.css. The * offset TRACKS the mark's own width, so the two cannot drift apart, and it multiplies by the * `--focus-outline` switch through that width: switch off → width 0 → offset 0. NO GEOMETRY IS * AUTHORED HERE; the cell only says where the mark sits."
   },
   {
     "name": "--org-switcher-sheet-max-height",
     "value": "75dvh",
-    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
+    "description": "The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar * family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an * outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the * same reasoning `a.ui-list-row` / `.sb-nav-item` already record in styles/focus-ring.css. The * offset TRACKS the mark's own width, so the two cannot drift apart, and it multiplies by the * `--focus-outline` switch through that width: switch off → width 0 → offset 0. NO GEOMETRY IS * AUTHORED HERE; the cell only says where the mark sits."
   },
   {
     "name": "--org-switcher-state-min-height",
     "value": "8rem",
-    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
+    "description": "The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar * family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an * outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the * same reasoning `a.ui-list-row` / `.sb-nav-item` already record in styles/focus-ring.css. The * offset TRACKS the mark's own width, so the two cannot drift apart, and it multiplies by the * `--focus-outline` switch through that width: switch off → width 0 → offset 0. NO GEOMETRY IS * AUTHORED HERE; the cell only says where the mark sits."
   },
   {
     "name": "--sidebar-item-active-color",

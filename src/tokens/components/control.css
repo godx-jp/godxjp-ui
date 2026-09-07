@@ -39,9 +39,9 @@
   /* Ring knobs for the two controls that historically wanted a softer mark than the global
    * default — both are filled surfaces where the ring was felt to read as a second border.
    *
-   * THE ALPHA IS NOW 1, AND THAT IS THE AAA DECISION. WCAG 2.2 SC 2.4.13 Focus Appearance asks
-   * for a ≥3:1 change between the focused and unfocused states across an area at least as large
-   * as a 2px perimeter of the control. Measured against this palette, the focus hue at alpha 0.35
+   * THE ALPHA IS 1, AND THAT IS THE CRITERION TALKING. WCAG 2.2 SC 1.4.11 asks for ≥3:1 between
+   * the focused and unfocused states of the pixels that mark focus, and colour is the whole of
+   * that bar. Measured against this palette, the focus hue at alpha 0.35
    * composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant
    * indicator, so "softer" was buying taste at the cost of the criterion. The softening now comes
    * from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as
@@ -51,33 +51,25 @@
   --toggle-focus-ring-width: var(--stroke-lg);
   --toggle-focus-ring-alpha: 1;
 
-  /* Opaque ring width for a BORDERED FIELD.
+  /* Mark width for a BORDERED FIELD.
    *
    * This knob exists because a field is the one control that already owns a boundary, so it is
-   * the one place where the opaque ring could plausibly be dropped and the recoloured border left
-   * to carry the state — which is exactly what Ant Design does (a focused antd field is a primary
-   * border plus a translucent halo, nothing in between; verified in antd 6.6.2,
-   * `es/input/style/token.js:48`). It is NOT what this library does.
+   * the one place the mark could plausibly be dropped and the recoloured border left to carry the
+   * state — which is exactly what Ant Design does (a focused antd field is a primary border plus a
+   * translucent halo, nothing in between; verified in antd 6.6.2, `es/input/style/token.js:48`).
    *
-   * The Japanese market is strict, so this library targets SC 2.4.13 Focus Appearance (AAA), and
-   * a 1px border is not a 2px perimeter. The field therefore keeps the full opaque stop and the
-   * recoloured border sits INSIDE it, same hue, contiguous — the two agree instead of competing,
-   * which was the original defect, while the perimeter stays ≥2px. antd does not meet 2.4.13 here
-   * and we knowingly diverge; see docs/DESIGN-AUTHORITY.md.
+   * It ships at the same step as `--focus-outline-weight`, antd's `lineWidth`, so a field and a
+   * button carry the same weight. A gate asserts the two stay equal, because this token cannot
+   * literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule).
    *
-   * `var(--stroke-md)` rather than `var(--focus-ring-width)`: the latter is re-scoped per component
-   * (`.ui-toggle` raises it), and a knob that mirrors a re-scoped token cannot be bound at :root
-   * (docs/TOKENS.md, the freeze rule) — while reading it at the call site would be a self-reference
-   * cycle, since the call site IS `--focus-ring-width`. Both read the same stroke step, and a gate
-   * asserts they stay equal so the two cannot drift apart.
+   * It feeds `--focus-ring-weight`, never `--focus-ring-width`. The width is
+   * `weight × --focus-outline`, so a field's mark is still switched off with everything else — a
+   * knob that bypassed the switch would be a hole in it.
    *
-   * If a service does set this thinner, note the unit: the halo's spread is
-   * `calc(var(--focus-ring-width) + var(--focus-ring-glow-width))`, and CSS calc() refuses to add a
-   * unitless number to a length — a bare `0` makes the whole box-shadow invalid at computed-value
-   * time and it resolves to NONE. Measured in Chromium while this knob was briefly 0: a focused
-   * Input reported `box-shadow: none` and still looked plausible, because the recoloured border was
-   * doing all the work. Write `0px`. */
-  --control-focus-ring-width: var(--stroke-md);
+   * If a service sets this, note the unit: the halo's spread is summed with a length in
+   * `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole
+   * box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`. */
+  --control-focus-ring-width: var(--stroke-hairline);
 
   /* Outline-form gaps — marks where a radius-hugging ring would touch the glyph. */
   --rating-focus-ring-offset: 2px;

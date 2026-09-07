@@ -1385,8 +1385,9 @@
     scroll-margin-block-start: var(--legal-document-scroll-offset);
   }
 
-  /* The section is `tabIndex={-1}` and receives focus when its contents anchor is activated, so
-   * the focus ring must be VISIBLE (WCAG 2.4.7 / 2.4.11). */
+  /* The section is `tabIndex={-1}` and receives focus when its contents anchor is activated. It is
+   * NOT in the tab order, so it carries no focus indicator: see the note in styles/focus-ring.css
+   * for why marking a slab of prose was the wrong call. */
   .ui-legal-document-footer {
     display: flex;
     flex-wrap: wrap;

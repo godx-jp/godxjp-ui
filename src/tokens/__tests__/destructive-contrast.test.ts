@@ -11,15 +11,26 @@ import { describe, expect, it } from "vitest";
  * no destructive-button route). Error TEXT on dark surfaces uses `--text-error`, not this fill token.
  */
 
-const css = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
+/**
+ * BOTH TIERS. `--destructive` is the SEED and lives in foundation.css; `--destructive-hover` and
+ * `--destructive-active` are DERIVED from it by antd's algorithm and live in the generated tier
+ * (scripts/gen-antd-tokens.mjs). Reading only foundation would silently skip the two states this
+ * file exists to guard.
+ */
+const SOURCES = ["src/tokens/foundation.css", "src/tokens/antd.generated.css"].map((file) =>
+  readFileSync(join(process.cwd(), file), "utf8"),
+);
 
-/** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
+/** Extract a flat `selector { ... }` block body from each tier, concatenated. */
 function block(selector: string): string {
-  const start = css.indexOf(selector);
-  if (start === -1) throw new Error(`selector not found: ${selector}`);
-  const open = css.indexOf("{", start);
-  const close = css.indexOf("\n}", open);
-  return css.slice(open + 1, close);
+  const bodies = SOURCES.map((css) => {
+    const start = css.indexOf(selector);
+    if (start === -1) return "";
+    const open = css.indexOf("{", start);
+    return css.slice(open + 1, css.indexOf("\n}", open));
+  }).filter(Boolean);
+  if (!bodies.length) throw new Error(`selector not found in any tier: ${selector}`);
+  return bodies.join("\n");
 }
 
 /** Read an `--name: H S% L%;` token as [h, s, l]. */
@@ -69,12 +80,31 @@ describe("destructive fill contrast (gh#199)", () => {
     }
   }
 
-  it("hover/active never reduce contrast below the default (states must not drift lighter)", () => {
+  /**
+   * THIS ASSERTION CHANGED WHEN THE RAMP BECAME GENERATED, AND THE CHANGE IS DELIBERATE.
+   *
+   * It used to read "hover/active never reduce contrast below the default", i.e. the states must
+   * never drift lighter. That was a PROXY for the criterion, chosen when the ramp was authored by
+   * hand and every step could be pushed darker at will. `--destructive-hover` / `-active` are now
+   * antd's `colorErrorHover` / `colorErrorActive` (scripts/gen-antd-tokens.mjs), and antd's model
+   * is universally hover-lighter / active-darker — a direction, not an accident.
+   *
+   * What gh#199 was actually protecting is the loop above: every filled destructive surface stays
+   * clear of AA against its own label, with margin rather than on the floor. antd's steps do,
+   * measured: light 6.16 → hover 4.63 → active 8.72, dark 5.48 → 4.55 → 8.80.
+   *
+   * So the proxy is replaced by the two things that are really being defended: hover never falls
+   * to the AA floor itself, and ACTIVE — the committed, irreversible press — is never the quietest
+   * state of the three.
+   */
+  it("no state sits on the AA floor, and the pressed state is never the quietest", () => {
+    const FLOOR_MARGIN = 0.1;
     for (const body of Object.values(THEMES)) {
       const fg = hslToRgb(hsl(body, "destructive-foreground"));
-      const def = contrast(hslToRgb(hsl(body, "destructive")), fg);
-      expect(contrast(hslToRgb(hsl(body, "destructive-hover")), fg)).toBeGreaterThanOrEqual(def);
-      expect(contrast(hslToRgb(hsl(body, "destructive-active")), fg)).toBeGreaterThanOrEqual(def);
+      const ratio = (state: string) => contrast(hslToRgb(hsl(body, state)), fg);
+      expect(ratio("destructive-hover")).toBeGreaterThan(AA + FLOOR_MARGIN);
+      expect(ratio("destructive-active")).toBeGreaterThan(ratio("destructive-hover"));
+      expect(ratio("destructive-active")).toBeGreaterThanOrEqual(ratio("destructive"));
     }
   });
 });

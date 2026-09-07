@@ -1,13 +1,55 @@
-/* FOCUS RING — the ONE place the keyboard-focus affordance is drawn. */
+/* FOCUS — the ONE place the keyboard-focus affordance is drawn, and the ONE switch that turns it
+ * on.
+ *
+ * THE SWITCH SHIPS OFF. `--focus-outline` is `0` (tokens/foundation.css), which is antd's own
+ * `focusOutline` seed flag written in CSS: antd zeroes `lineWidthFocus` when the flag is false
+ * (es/theme/util/alias.js:71), and every painted length here multiplies by that same token. With
+ * the switch off the outline resolves to `0px`, `--focus-field-shadow` is `none`, and the boundary
+ * rule below never matches. Nothing paints.
+ *
+ * THE `:focus-visible` MACHINERY STAYS. Not one selector was removed to achieve that. A consumer
+ * who needs the indicator sets `data-focus-outline="on"` on the root element and the whole thing
+ * returns — see the axis in tokens/axes.css and the cost recorded in docs/DESIGN-AUTHORITY.md.
+ *
+ * WHAT THE ON STATE PAINTS. Ant Design owns the shape (docs/DESIGN-AUTHORITY.md) and has two
+ * forms; this file ships the LIGHTER of them, applied uniformly:
+ *
+ *   · a FIELD gets antd's field indicator exactly — its boundary recoloured to `colorPrimary` at
+ *     the unchanged `lineWidth`, plus `0 0 0 controlOutlineWidth controlOutline`
+ *     (es/input/style/token.js:48-50, `activeBorderColor` + `activeShadow`);
+ *   · everything else gets the same weight and the same hue as an `outline`, rather than antd's
+ *     `genFocusOutline` (3px of `colorPrimaryBorder`). Two reasons, both measured:
+ *     `colorPrimaryBorder` is #6dc0e3 at 2.00:1 and cannot satisfy SC 1.4.11 at any thickness, and
+ *     3px of opaque brand around an already-shaded selected nav row is exactly the weight that was
+ *     reported as intrusive. One `lineWidth` in the focus hue measures 5.05:1 light / 7.07:1 dark.
+ *
+ * NO LAYOUT SHIFT IS POSSIBLE. The field form never changes a border WIDTH, only its colour, and
+ * an `outline` is painted outside the box model. Nothing here can move a control's box. */
 @layer components {
-  /* Shadow form — the default. */
+  /* ── THE MARK ─────────────────────────────────────────────────────────────
+   *
+   * One rule, every interactive control. The list is CONTROLS ONLY — buttons, fields, links, nav
+   * and menu rows, and the marks a user operates. Containers are not on it: a div, a content
+   * region, a scroll wrapper and `body` never carried an indicator they earned, and
+   * `.ui-legal-document-section` (a slab of prose that is `tabIndex={-1}` so a contents link can
+   * jump to it) was removed from this list for that reason.
+   *
+   * The genuinely SCROLLABLE regions are the exception and keep both halves: `.app-main`,
+   * `.ui-mobile-shell-main`, `.ui-timeline-grid` and a `.ui-code-block` that overflows are
+   * reachable on purpose (axe `scrollable-region-focusable`), and a reachable region with no mark
+   * is worse than either end state.
+   *
+   * TWO shadow declarations, one halo — because a control may also carry a Tailwind ring/shadow
+   * utility, and `--tw-ring-shadow` is the slot that composes with it. */
   :is(
     .ui-focus-ring,
-    .ui-button,
-    .ui-control,
+    .ui-focus-ring-outline,
     .ui-input,
+    .ui-control,
     .ui-control-multiline,
     .ui-control-trigger,
+    .ui-tag-input,
+    .ui-button,
     .ui-toggle,
     .ui-checkbox,
     .ui-radio,
@@ -17,6 +59,10 @@
     .ui-pagination-link,
     .ui-legal-document-toc-link,
     .ui-code-block,
+    .ui-accordion-trigger,
+    .ui-carousel-dot,
+    .ui-rating-star,
+    a.ui-list-row,
     .sb-nav-item,
     .sb-user,
     .tb-icon-btn
@@ -27,125 +73,112 @@
   .ui-control-composite-field[data-state="open"],
   .ui-otp-slot[data-active="true"],
   .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
-    outline: none;
-    /* TWO STOPS, ONE MARK.
-     *
-     * The INNER stop is the accessible indicator and is opaque: WCAG 2.2 SC 2.4.13 Focus
-     * Appearance (AAA) wants an area at least as large as a 2px perimeter of the control, with
-     * ≥3:1 between its focused and unfocused states. `--focus-ring-width` is 2px and the hue is
-     * `--ring`, measured 4.62:1 light / 7.07:1 dark against every surface a control sits on.
-     *
-     * The OUTER stop is the soft halo (`--focus-ring-glow-*`) — Ant Design's `controlOutline`
-     * shape (antd 6.6.2, es/input/style/token.js:48). It carries no criterion, which is exactly
-     * why it can be quiet: it exists so the mark reads as a bloom rather than a sticker, and it
-     * is what replaced the per-component alpha knobs that used to buy that softness by thinning
-     * the indicator itself.
-     *
-     * Where this library diverges from antd, deliberately: antd drops the opaque stop on a field
-     * and lets the 1px border carry the state. A 1px border is not a 2px perimeter, so we keep
-     * both — the recoloured border sits INSIDE the ring, same hue, contiguous. See
-     * docs/DESIGN-AUTHORITY.md and --control-focus-ring-width.
-     *
-     * TWO declarations, one ring — because a control may also carry a Tailwind shadow/ring utility
-     * (`shadow-xs` on Checkbox, Radio, Switch, Input …). */
-    --tw-ring-shadow:
-      0 0 0 var(--focus-ring-width)
-        hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1)),
-      0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-glow-width))
-        hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-glow-alpha));
-    box-shadow:
-      0 0 0 var(--focus-ring-width)
-        hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1)),
-      0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-glow-width))
-        hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-glow-alpha));
+    outline: var(--focus-ring-width) solid
+      hsl(var(--focus-outline-color) / var(--focus-ring-opacity, 1));
+    outline-offset: var(--focus-ring-offset);
+    /* antd zeroes both, so the mark appears the instant focus lands rather than easing in. */
+    transition:
+      outline-offset 0s,
+      outline 0s;
   }
 
-  /* THE BOUNDARY AND THE RING AGREE — the resting grey never survives a focus.
+  /* ── THE HALO ─────────────────────────────────────────────────────────────
    *
-   * The defect this ends, as measured on a live page: a focused Select trigger painted a fully
-   * opaque brand ring two pixels wide while its border stayed the resting grey `rgb(144,135,127)`
-   * — two outlines of different colours claiming the same edge, immediately adjacent. Ant
-   * Design's answer, taken here, is that focus moves the CONTROL BOUNDARY to the focus hue, so
-   * the border and the ring stop competing and read as one contiguous edge. (antd then drops the
-   * ring entirely and lets the border stand alone; this library keeps it, because SC 2.4.13 wants
-   * a 2px perimeter — see --control-focus-ring-width.)
+   * antd's `activeShadow`, and the one paint that is SCOPED to the switch rather than multiplied
+   * by it — because `box-shadow` is not a length this rule can zero.
+   *
+   * MEASURED IN CHROMIUM, AND THE REASON THIS RULE IS SEPARATE. While the declaration sat in the
+   * rule above with an OFF value of `none`, a focused primary Button on ql.test reported
+   * `box-shadow: none` — the switched-off focus was REPLACING the button's resting
+   * `var(--shadow-sm), var(--shadow-glow)` with nothing, so every filled control lost its
+   * elevation the moment it took focus. With the switch off this rule must not exist at all, which
+   * is what scoping it achieves; `getComputedStyle` on the same button now reports its resting
+   * shadow unchanged through focus.
+   *
+   * TWO declarations, one halo — a control may also carry a Tailwind ring/shadow utility, and
+   * `--tw-ring-shadow` is the slot that composes with it. */
+  :root[data-focus-outline="on"]
+    :is(
+      .ui-focus-ring,
+      .ui-focus-ring-outline,
+      .ui-input,
+      .ui-control,
+      .ui-control-multiline,
+      .ui-control-trigger,
+      .ui-tag-input,
+      .ui-button,
+      .ui-toggle,
+      .ui-checkbox,
+      .ui-radio,
+      .ui-slider-thumb,
+      .ui-switch,
+      .ui-steps-inline-control,
+      .ui-pagination-link,
+      .ui-legal-document-toc-link,
+      .ui-code-block,
+      .ui-accordion-trigger,
+      .ui-carousel-dot,
+      .ui-rating-star,
+      a.ui-list-row,
+      .sb-nav-item,
+      .sb-user,
+      .tb-icon-btn
+    ):focus-visible,
+  :root[data-focus-outline="on"] .ui-control-trigger[data-state="open"],
+  :root[data-focus-outline="on"] .ui-tag-input:focus-within,
+  :root[data-focus-outline="on"] .ui-control-composite-field:focus-within,
+  :root[data-focus-outline="on"] .ui-control-composite-field[data-state="open"],
+  :root[data-focus-outline="on"] .ui-otp-slot[data-active="true"],
+  :root[data-focus-outline="on"]
+    .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
+    --tw-ring-shadow: var(--focus-field-shadow);
+    box-shadow: var(--focus-field-shadow);
+  }
+
+  /* ── THE FIELD BOUNDARY ───────────────────────────────────────────────────
+   *
+   * antd's `activeBorderColor`: a focused field's own edge becomes the focus hue instead of
+   * growing a second line beside it. The defect this ends, as measured on a live page, was a
+   * focused Select painting an opaque brand ring two pixels wide while its border stayed the
+   * resting grey `rgb(144,135,127)` — two outlines of different colours claiming the same edge.
+   *
+   * SCOPED TO THE SWITCH. This is the one part of the mark that is a COLOUR rather than a LENGTH,
+   * so `--focus-outline: 0` cannot zero it; the rule is therefore gated on the same attribute that
+   * sets the token, and a switched-off field keeps its resting boundary.
    *
    * WHY IT REBINDS THE ROLE INSTEAD OF DECLARING `border-color`. Input, Textarea and every popup
    * trigger paint their edge with the `border-input` Tailwind UTILITY, and utilities out-rank
-   * `@layer components` — a `border-color` declaration here would simply lose, silently, exactly
-   * as the old rule did. `@theme inline` compiles `border-input` to `border-color: hsl(var(--input))`,
-   * so rebinding `--input` ON THE FOCUSED ELEMENT feeds the utility instead of fighting it. It is
-   * the same technique as the `--tw-ring-shadow` feed above, and it reaches the components-layer
-   * edges too (`.ui-tag-input`, `.ui-control-composite-field`, `.ui-button--outline`), which all
-   * read the same role. `aria-invalid:border-destructive` still wins over it, and the
-   * `[aria-invalid]` rule at the foot of this file retints BOTH halves red together.
+   * `@layer components` — a `border-color` declaration here would simply lose, silently.
+   * `@theme inline` compiles `border-input` to `border-color: hsl(var(--input))`, so rebinding
+   * `--input` ON THE FOCUSED ELEMENT feeds the utility instead of fighting it, and reaches the
+   * components-layer edges (`.ui-tag-input`, `.ui-control-composite-field`) that read the same
+   * role. `aria-invalid:border-destructive` still wins over it, and the `[aria-invalid]` rule at
+   * the foot of this file retints the halo to match.
    *
-   * `.ui-switch` is deliberately ABSENT: it FILLS its unchecked track from `--input` rather than
-   * drawing an edge with it, so a rebind here would turn a focused off-switch solid blue. The
-   * membership rule is "controls whose BOUNDARY is the --input role", not "controls that mention
-   * it". Guarded by src/styles/__tests__/focus-ring-single-source.test.ts. */
-  :is(
-    .ui-input,
-    .ui-control,
-    .ui-control-multiline,
-    .ui-control-trigger,
-    .ui-tag-input,
-    .ui-button--outline
-  ):focus-visible,
-  .ui-control-trigger[data-state="open"],
-  .ui-tag-input:focus-within,
-  .ui-control-composite-field:focus-within,
-  .ui-control-composite-field[data-state="open"] {
+   * `.ui-switch` and `.ui-button` are deliberately ABSENT. The Switch FILLS its unchecked track
+   * from `--input` rather than drawing an edge with it, so a rebind would turn a focused
+   * off-switch solid blue; and antd never recolours a Button's border on focus, whatever its
+   * variant. Both take the outline above instead. */
+  :root[data-focus-outline="on"]
+    :is(.ui-input, .ui-control, .ui-control-multiline, .ui-control-trigger, .ui-tag-input):focus-visible,
+  :root[data-focus-outline="on"] .ui-control-trigger[data-state="open"],
+  :root[data-focus-outline="on"] .ui-tag-input:focus-within,
+  :root[data-focus-outline="on"] .ui-control-composite-field:focus-within,
+  :root[data-focus-outline="on"] .ui-control-composite-field[data-state="open"] {
     --input: var(--focus-ring-color, var(--ring));
   }
 
-  /* FIELD RING WIDTH — its own knob, because a field is the one control where the opaque stop
-   * could be argued away (its recoloured border already marks the state, which is what antd
-   * relies on). It is NOT argued away here: `--control-focus-ring-width` ships at the same
-   * stroke step as the global ring so a field keeps a full 2px perimeter (SC 2.4.13, AAA). The
-   * knob stays so a service can make that trade explicitly rather than by editing components.
+  /* ── Per-component rebinds ──────────────────────────────────────────────────
    *
-   * The two picker variants excluded here hide their own boundary on purpose (a topbar icon
-   * trigger and an inline text trigger, both borderless at rest), so a field-scoped ring width
-   * must never reach them — they have nothing but the ring. */
-  :is(.ui-control, .ui-input, .ui-control-multiline, .ui-tag-input):not(
-    .ui-app-setting-picker-icon,
-    .ui-app-setting-picker-inline
-  ) {
-    --focus-ring-width: var(--control-focus-ring-width);
-  }
-
-  /* Outline form — for marks that need a gap between glyph and ring. */
-  :is(
-    .ui-focus-ring-outline,
-    a.ui-list-row,
-    .ui-accordion-trigger,
-    .ui-carousel-dot,
-    .ui-rating-star,
-    .ui-legal-document-section
-  ):focus-visible {
-    outline: var(--focus-ring-width) solid
-      hsl(var(--focus-ring-color, var(--ring)) / var(--focus-ring-opacity, 1));
-    outline-offset: var(--focus-ring-offset, 0px);
-  }
-
-  /* ── Per-component rebinds ──────────────────────────────────────────────── Each line maps a
-   * PUBLIC knob (declared in tokens/components/*.css) onto the local value the rules above read. */
-
-  /* Toggle: a HEAVIER ring (3px), because the control is a filled surface and a mark at the
-   * default weight reads as a second border on it. It used to be a heavier AND softer ring; the
-   * softness is gone, because 0.35 alpha composited to 1.64:1 and SC 2.4.13 (AAA) wants ≥3:1
-   * across the indicator. The alpha knob remains and now ships at 1 — the quieting comes from
-   * the halo outside the opaque stop, which carries no criterion. */
+   * Each line maps a PUBLIC knob (declared in tokens/components/*.css) onto the local value the
+   * rule above reads. They set `--focus-ring-weight`, never `--focus-ring-width`: the width is
+   * `weight × --focus-outline`, so routing every rebind through the weight is what makes it
+   * impossible for a component to bring the mark back while the switch is off. */
   .ui-toggle {
-    --focus-ring-width: var(--toggle-focus-ring-width);
+    --focus-ring-weight: var(--toggle-focus-ring-width);
     --focus-ring-opacity: var(--toggle-focus-ring-alpha);
   }
 
-  /* Shell chrome: these knobs existed to keep the ring from reading as a SELECTED item on the
-   * tinted sidebar/topbar grounds. They ship at 1 for the same reason as the toggle above — 0.45
-   * measured ≈1.90:1, below the SC 2.4.13 floor. Focus stays distinct from selection through the
-   * halo's shape rather than through a weakened mark. */
   .sb-user {
     --focus-ring-opacity: var(--sidebar-user-focus-ring-alpha);
   }
@@ -154,11 +187,17 @@
     --focus-ring-opacity: var(--topbar-icon-focus-ring-alpha);
   }
 
-  a.ui-list-row {
+  /* A full-bleed row has no room outside itself, so its mark is drawn INSIDE the edge — which is
+   * also the lighter read the sidebar wanted: the mark sits within the row's own shape instead of
+   * surrounding an already-shaded surface. The offset tracks the mark's own width so the two
+   * cannot drift apart, and it multiplies by the switch through that width. */
+  a.ui-list-row,
+  tr.ui-focus-ring,
+  .sb-nav-item {
     --focus-ring-offset: calc(-1 * var(--focus-ring-width));
   }
 
-  /* Outline-form offsets — the gap each mark needs. */
+  /* Outline-form gaps — marks where a mark hugging the box would touch the glyph. */
   .ui-accordion-trigger {
     --focus-ring-offset: var(--accordion-focus-ring-offset);
   }
@@ -171,19 +210,29 @@
     --focus-ring-offset: var(--rating-focus-ring-offset);
   }
 
-  .ui-legal-document-section {
-    --focus-ring-offset: var(--legal-document-section-focus-ring-offset);
+  /* FIELD MARK WIDTH — its own knob, because a field is the one control that already owns a
+   * boundary the ON state recolours, so a service may want its outline thinner than a button's.
+   * It feeds the WEIGHT, so it is still subject to the switch.
+   *
+   * The two picker variants excluded here hide their own boundary on purpose (a topbar icon
+   * trigger and an inline text trigger, both borderless at rest), so a field-scoped width must
+   * never reach them — they have nothing but the mark itself. */
+  :is(.ui-control, .ui-input, .ui-control-multiline, .ui-tag-input):not(
+    .ui-app-setting-picker-icon,
+    .ui-app-setting-picker-inline
+  ) {
+    --focus-ring-weight: var(--control-focus-ring-width);
   }
 
-  /* THE ONE CONTROL WITH NO RING, AND WHY THAT IS NOT AN SC 2.4.13 HOLE. The command palette's
-   * search input is not a control the user tabs to — the palette moves focus into it on open and
-   * the PANEL is the focused thing. Ringing the input inside an already-ringed panel drew two
-   * marks for one focus. The width is zeroed AND the shadow explicitly suppressed, so the bare
-   * `0` is safe here (nothing sums it into the halo's calc; see --control-focus-ring-width).
-   * Named as an exception in src/tokens/__tests__/focus-ring-contrast.test.ts so the perimeter
-   * gate cannot be satisfied by quietly adding more of these. */
+  /* THE ONE CONTROL WITH NO MARK EVEN WHEN THE SWITCH IS ON, AND WHY THAT IS NOT A HOLE. The
+   * command palette's search input is not a control the user tabs to — the palette moves focus
+   * into it on open and the PANEL is the focused thing. Marking the input inside an already-marked
+   * panel drew two indicators for one focus. Named as an exception in
+   * src/tokens/__tests__/focus-ring-contrast.test.ts so the gate cannot be satisfied by quietly
+   * adding more of these. */
   .ui-command-input:focus-visible {
-    --focus-ring-width: 0;
+    --focus-field-shadow: none;
+    --focus-ring-weight: 0px;
     outline: none;
     box-shadow: none;
   }
@@ -191,20 +240,23 @@
   /* TRẠNG THÁI LỖI ĐỔI ĐÚNG MỘT THỨ: MÀU.
    *
    * Viền của một control sai đã đỏ từ trước qua `aria-invalid:border-destructive`, nhưng vòng
-   * focus thì không: các luật trên vẽ box-shadow từ `--focus-ring-color`, mà biến đó chưa bao
-   * giờ được gán lại khi control ở trạng thái lỗi, nên nó rơi về `--ring` tức màu thương hiệu.
-   * Kết quả người dùng thấy là khung đỏ với quầng sáng màu thương hiệu, đọc ra như "ứng dụng
-   * không quyết được ô này đúng hay sai".
+   * focus thì không: luật trên vẽ mark từ `--focus-ring-color`, mà biến đó chưa bao giờ được gán
+   * lại khi control ở trạng thái lỗi, nên nó rơi về `--ring` tức màu thương hiệu. Kết quả người
+   * dùng thấy là khung đỏ với quầng sáng màu thương hiệu, đọc ra như "ứng dụng không quyết được ô
+   * này đúng hay sai".
    *
-   * Gán lại HUE thôi, không viết công thức vòng thứ hai: bề rộng, độ mờ và độ lệch vẫn đến từ
-   * đúng những token cũ, nên một service chỉnh cường độ vòng focus vẫn kéo theo cả trạng thái
-   * lỗi. Đặt ở CUỐI file để thắng các lần gán lại theo từng component ở trên, và vì nó là một
-   * lớp nghĩa khác: những cái trên nói "control này cần vòng dày hơn", cái này nói "control này
-   * đang sai".
+   * Cả ba biến ở đây đều là token do antd sinh ra: antd có hẳn `errorActiveShadow` riêng, dùng
+   * `colorErrorOutline` chứ không phải một sắc độ của `colorError` — nên quầng sáng lỗi lấy đúng
+   * màu VÀ đúng độ mờ của antd, không phải màu đỏ pha loãng bằng mắt. Bề rộng vẫn đến từ token
+   * chung, nên công tắc `--focus-outline` vẫn tắt được cả trạng thái lỗi.
    *
-   * Dùng thuộc tính chứ không phải class nên nó với tới mọi control mang aria-invalid, kể cả
-   * trigger lúc đang mở popup và trường ghép, vốn dùng chung đúng các luật trên. */
+   * Đặt ở CUỐI file để thắng các lần gán lại theo từng component ở trên, và vì nó là một lớp
+   * nghĩa khác: những cái trên nói "control này cần vòng khác", cái này nói "control này đang
+   * sai". Dùng thuộc tính chứ không phải class nên nó với tới mọi control mang aria-invalid. */
   [aria-invalid="true"] {
     --focus-ring-color: var(--destructive);
+    --focus-outline-color: var(--destructive);
+    --focus-ring-glow-color: var(--control-outline-error);
+    --focus-ring-glow-alpha: var(--control-outline-error-alpha);
   }
 }

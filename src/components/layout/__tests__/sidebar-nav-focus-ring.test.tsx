@@ -41,24 +41,33 @@ describe("sidebar nav rows draw the design system's focus ring", () => {
   it("is a member of the single source, not a private copy", () => {
     const rule = shadowFormRule();
     expect(rule).toContain(".sb-nav-item");
-    expect(rule).toMatch(/outline:\s*none/);
+    // The mark is an `outline` now rather than a `box-shadow`, so there is no browser outline left
+    // to suppress — the rule REPLACES it instead of turning it off and painting beside it.
+    expect(rule).toMatch(/outline:\s*var\(--focus-ring-width\)/);
   });
 
-  it("draws the ring from the global focus tokens", () => {
+  it("draws the mark from the global focus tokens", () => {
     const rule = shadowFormRule();
-    expect(rule).toMatch(/box-shadow:[^;]*var\(--focus-ring-width\)/);
-    expect(rule).toMatch(/--focus-ring-color/);
-    expect(rule).toMatch(/var\(--ring\)/);
-    // The knob the private copy used to drop. A service that softens every ring must soften
+    expect(rule).toMatch(/outline:\s*var\(--focus-ring-width\) solid/);
+    expect(rule).toMatch(/var\(--focus-outline-color\)/);
+    // The knob the private copy used to drop. A service that softens every mark must soften
     // this one too.
     expect(rule).toMatch(/var\(--focus-ring-opacity, 1\)/);
+    // And the halo, which lives in its OWN rule scoped to the switch — see the note in
+    // focus-ring.css: leaving it in this rule with an `none` off-value stripped a focused
+    // button's resting elevation, measured in Chromium.
+    expect(focusRing).toMatch(
+      /\[data-focus-outline="on"\][\s\S]*?box-shadow:\s*var\(--focus-field-shadow\)/,
+    );
   });
 
-  it("uses box-shadow so the ring follows the row's radius", () => {
-    // `outline` would draw a rectangle around a rounded row.
-    const rule = shadowFormRule();
-    expect(rule).toMatch(/box-shadow/);
-    expect(rule).not.toMatch(/outline:\s*\d/);
+  it("insets the mark into the row's own shape rather than wrapping it", () => {
+    // The row is already shaded when selected; a mark drawn AROUND it stacked two heavy
+    // treatments on one element, which is the complaint that produced the lighter design. A
+    // negative offset equal to the mark's width puts the line inside the row's rounded box, so it
+    // follows the radius exactly as the old box-shadow form did.
+    const rule = ruleBody(focusRing, "a.ui-list-row,\n  tr.ui-focus-ring,\n  .sb-nav-item");
+    expect(rule).toContain("--focus-ring-offset: calc(-1 * var(--focus-ring-width))");
   });
 
   it("no longer carries a second ring formula in shell-layout.css", () => {

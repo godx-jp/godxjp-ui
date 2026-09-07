@@ -523,11 +523,11 @@
   "baseline": {
     "recordedAt": "2026-07-30",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 289,
-    "dimensionCells": 4046,
+    "exports": 291,
+    "dimensionCells": 4074,
     "covered": 66,
-    "untested": 2218,
-    "notApplicable": 1762,
+    "untested": 2234,
+    "notApplicable": 1774,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -6593,6 +6593,34 @@
         "reducedMotion": "untested"
       }
     },
+    "Segmented": {
+      "group": "data-entry",
+      "owner": "data-entry/segmented",
+      "frames": [
+        "docs/data-entry/segmented.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 5,
+        "untested": 9
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
     "Select": {
       "group": "data-entry",
       "owner": "data-entry/select",
@@ -8478,6 +8506,34 @@
       "owner": "layout/topbar",
       "frames": [
         "docs/layout/topbar.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "TopbarItem": {
+      "group": "layout",
+      "owner": "layout/topbar-item",
+      "frames": [
+        "docs/layout/topbar-item.tsx"
       ],
       "baseline": {
         "covered": 0,

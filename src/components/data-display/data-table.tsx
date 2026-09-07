@@ -1085,9 +1085,15 @@ DataTable.Content = function DataTableContent() {
                       rowPadding,
                       // Hover highlight when rows are clickable OR explicitly hoverable…
                       (onRowClick || hoverable) && "hover:bg-muted/50",
-                      // …but the affordance (cursor + focus ring) only when clickable.
-                      onRowClick &&
-                        "focus-visible:ring-ring cursor-pointer focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
+                      // …but the affordance (cursor + focus mark) only when clickable.
+                      //
+                      // `ui-focus-ring` = the single focus source (styles/focus-ring.css). It
+                      // replaces `focus-visible:ring-ring focus-visible:ring-2
+                      // focus-visible:ring-inset`, which was a hand-rolled second ring: it read no
+                      // `--focus-ring-*` knob, so a service could not retune it, and — being a
+                      // utility — it painted regardless of the `--focus-outline` switch, which is
+                      // exactly the hole the switch exists to close.
+                      onRowClick && "ui-focus-ring cursor-pointer",
                       isSelected && "bg-muted/30",
                       rowClassName?.(original as never),
                     )}

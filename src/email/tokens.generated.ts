@@ -49,8 +49,8 @@ export const EMAIL_COLOR_SOURCE = {
     "hsl": "60 33% 99%"
   },
   "focus": {
-    "cssVar": "--ring",
-    "hsl": "204 100% 39%"
+    "cssVar": "--primary",
+    "hsl": "204 100% 37%"
   },
   "brand": {
     "cssVar": "--brand",
@@ -109,7 +109,7 @@ export const EMAIL_COLOR_SOURCE_DARK = {
     "hsl": "48 9% 9%"
   },
   "focus": {
-    "cssVar": "--ring",
+    "cssVar": "--primary",
     "hsl": "204 90% 60%"
   },
   "brand": {

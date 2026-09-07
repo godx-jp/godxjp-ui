@@ -97,3 +97,32 @@
     --auth-shell-main-padding: var(--auth-shell-canonical-main-padding-mobile);
   }
 }
+
+/* ── focus-outline axis — the ONE switch that turns the keyboard-focus indicator on.
+ *
+ * SHIPPED OFF. `--focus-outline: 0` in foundation.css means nothing paints a focus mark, and that
+ * is a deliberate product decision: the indicator was reported as intrusive, and the owner accepted
+ * the cost. The cost is real and is recorded in docs/DESIGN-AUTHORITY.md — with the switch off this
+ * library does not satisfy WCAG 2.2 SC 2.4.7 Focus Visible (AA), and therefore cannot carry a
+ * JIS X 8341-3:2016 AA conformance statement.
+ *
+ * A customer who needs that statement sets ONE attribute on the root element and changes nothing
+ * else — no component edit, no re-authored tokens, no fork:
+ *
+ *     <html data-focus-outline="on">
+ *
+ * WHY THE ATTRIBUTE AND NOT JUST THE TOKEN. `--focus-outline` alone drives every painted LENGTH,
+ * which is antd's own mechanism (`focusOutline === false ? 0 : …`). Two things are not lengths —
+ * the halo, which must be `none` rather than a zero-spread shadow so it does not flatten a
+ * control's resting shadow, and a focused FIELD's boundary, which antd recolours rather than
+ * outlines. Both are set here, in the same block, so there is exactly ONE thing a consumer sets.
+ * `src/tokens/__tests__/focus-ring-contrast.test.ts` asserts both positions of the switch.
+ *
+ * THE ON STATE IS THE LIGHT ONE. It paints antd's FIELD indicator — one `lineWidth` of
+ * `colorPrimary` plus `controlOutline`'s halo — on every control, rather than antd's 3px
+ * `genFocusOutline`. See --focus-outline-weight in foundation.css for the measurements. */
+:root[data-focus-outline="on"] {
+  --focus-outline: 1;
+  --focus-field-shadow: 0 0 0 var(--focus-ring-glow-width)
+    hsl(var(--focus-ring-glow-color) / var(--focus-ring-glow-alpha));
+}

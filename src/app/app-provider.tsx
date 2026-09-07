@@ -17,6 +17,7 @@ import {
 import { DEFAULT_STORAGE_KEY, readStoredPreferences, writeStoredPreferences } from "./storage";
 import {
   applyThemeAxes,
+  PREFERS_DARK_SCHEME_QUERY,
   type AppBrand,
   type AppDensity,
   type AppFontSize,
@@ -216,6 +217,21 @@ export function AppProvider({
     if (typeof document === "undefined") return;
     applyThemeAxes(document.documentElement, { theme, brand, density, fontSize, scaling });
   }, [theme, brand, density, fontSize, scaling]);
+
+  /**
+   * `theme: "system"` follows `prefers-color-scheme` LIVE. A one-shot read at mount would strand
+   * the page on whichever scheme the OS happened to be in when it loaded — the app would stop
+   * following the OS the moment the OS switched, which is the whole point of the choice. The
+   * persisted value stays `"system"`; only `<html data-theme>` moves.
+   */
+  React.useEffect(() => {
+    if (theme !== "system") return;
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    const query = window.matchMedia(PREFERS_DARK_SCHEME_QUERY);
+    const reapply = () => applyThemeAxes(document.documentElement, { theme: "system" });
+    query.addEventListener("change", reapply);
+    return () => query.removeEventListener("change", reapply);
+  }, [theme]);
 
   const setLocale = React.useCallback(
     (next: AppLocale) => {

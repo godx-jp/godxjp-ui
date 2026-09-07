@@ -18,6 +18,8 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
   const tokenCss = [
     base,
     readSrc("tokens/foundation.css"),
+    // The DERIVED tier — antd's algorithm output. `--ring` lives here, not in foundation.
+    readSrc("tokens/antd.generated.css"),
     readSrc("tokens/semantic/layout.css"),
     readSrc("tokens/components/control.css"),
     readSrc("tokens/components/card.css"),

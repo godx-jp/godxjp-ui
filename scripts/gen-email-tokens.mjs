@@ -27,7 +27,12 @@ export const EMAIL_COLOR_ROLES = {
   border: "--border",
   primary: "--primary",
   primaryForeground: "--primary-foreground",
-  focus: "--ring",
+  // The focus hue. It reads `--primary` and not `--ring` because `--ring` is no longer a value:
+  // antd has no separate focus-colour token — a focused control simply takes `colorPrimary` —
+  // so the generated tier declares `--ring: var(--primary)`. An email is a static document
+  // with no focus state; this slot exists so a CTA can be tinted with the same hue the app
+  // focuses with, and the seed is where that hue lives.
+  focus: "--primary",
   // IDENTITY, not status: the GoDX capsule reads --brand (canonical emerald), the same role
   // `--logo-godx-color` defaults to on the web.
   brand: "--brand",

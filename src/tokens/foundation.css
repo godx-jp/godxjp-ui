@@ -56,7 +56,8 @@
    * both the page and its own white thumb, so "off" is finally a visible state.
    * Guarded by src/tokens/__tests__/input-boundary-contrast.test.ts. */
   --input: 30 7% 53%; /* #90877f — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
-  --ring: 204 100% 39%;
+  /* --ring is GENERATED — antd has no focus-colour token, it recolours the border to
+   * `colorPrimary`. See src/tokens/antd.generated.css. */
   --success: 146 40% 58%; /* 若竹 #68be8d */
   --success-foreground: 60 33% 99%;
   --warning: 44 100% 49%; /* 山吹 #f8b500 */
@@ -100,13 +101,18 @@
   --text-info: 221 70% 38%; /* deep 群青 — AA blue text on white */
   --text-error: 357 75% 38%; /* deep 茜 — AA red text on white */
 
-  /* Interaction ramp — hover / active steps (services override to their own brand ramp). */
-  --primary-hover: 204 100% 33%;
-  --primary-active: 204 100% 28%;
+  /* Interaction ramp — hover / active steps.
+   *
+   * The BRAND steps (--primary-* and --destructive-*) are GENERATED: they are antd's
+   * `colorPrimaryHover` / `colorPrimaryActive` / `colorErrorHover` / `colorErrorActive`, computed
+   * from the seeds above by scripts/gen-antd-tokens.mjs. Nobody picks them any more; a service
+   * retints `--primary` and its whole ramp follows. See src/tokens/antd.generated.css.
+   *
+   * The NEUTRAL steps stay here. antd derives its neutral interaction states as alpha fills
+   * (`colorFillSecondary`, `rgba(0,0,0,0.06)`) rather than as opaque roles, so there is no antd
+   * token that corresponds to an opaque `--secondary-hover`. */
   --secondary-hover: 45 15% 91%;
   --secondary-active: 45 15% 88%;
-  --destructive-hover: 357 64% 38%;
-  --destructive-active: 357 64% 32%;
 
   /* 和色 (wa-iro) — traditional Japanese accent palette for charts, tags,
    * decoration. Decorative hex (NOT semantic): never remap a wa-iro to a
@@ -178,6 +184,72 @@
     transparent 70%
   );
 
+  /* ── FOCUS — antd's two forms, and nothing invented on top of them ─────────────────────────
+   *
+   * docs/DESIGN-AUTHORITY.md gives Ant Design the focus shape. antd has exactly TWO forms and the
+   * library now ships both verbatim, read from antd 6.6.2's own source:
+   *
+   *   FIELD  (a control that owns a boundary — Input, Textarea, Select trigger, TagInput):
+   *          `borderColor: colorPrimary` at the UNCHANGED `lineWidth`, plus
+   *          `boxShadow: 0 0 0 ${controlOutlineWidth}px ${controlOutline}`
+   *          (es/input/style/token.js:48-50 `activeBorderColor` / `activeShadow`).
+   *   OUTLINE (a control with no boundary of its own — Button, Checkbox, Radio, Switch, nav rows):
+   *          `outline: ${lineWidthFocus}px solid ${colorPrimaryBorder}; outline-offset: 1`
+   *          (es/style/index.js:60-64 `genFocusOutline`).
+   *
+   * Because the field form recolours the border WITHOUT changing its width, focus moves nothing:
+   * no layout shift is possible by construction, which is why there is no reserved-space trick
+   * anywhere in styles/focus-ring.css.
+   *
+   * The colours are GENERATED (`--ring`, `--primary-border`, `--control-outline*` all come out of
+   * scripts/gen-antd-tokens.mjs). The three lengths below are the geometry antd owns, each bound
+   * to the named scale step that already carries the same number — the generator asserts antd and
+   * the scale still agree, so they cannot drift apart silently.
+   *
+   * NOTHING PAINTS BY DEFAULT — see the switch immediately below. */
+  /* ── THE SWITCH ───────────────────────────────────────────────────────────────────────────
+   *
+   * `--focus-outline` is antd's own `focusOutline` seed flag, mirrored in CSS. antd 6.6.2 carries
+   * it in `es/theme/themes/seed.js:67` and consumes it in `es/theme/util/alias.js:71`:
+   *
+   *     lineWidthFocus: mergedToken.focusOutline === false ? 0 : mergedToken.lineWidth * 3
+   *
+   * — the flag ZEROES the focus line width. Multiplying every focus length by a 0/1 token is that
+   * same operation written in CSS, which is why there is no parallel mechanism here: the kill
+   * switch is antd's, not one invented for this library.
+   *
+   * IT SHIPS OFF, AND THAT IS A PRODUCT DECISION WITH A KNOWN COST. Nothing paints a focus
+   * indicator by default. That deviates from WCAG 2.2 SC 2.4.7 Focus Visible (AA) and therefore
+   * from a JIS X 8341-3:2016 AA conformance claim — see docs/DESIGN-AUTHORITY.md for the reasoning
+   * and the price. A customer who needs that statement sets ONE attribute:
+   *
+   *     <html data-focus-outline="on">        (or AppProvider's equivalent)
+   *
+   * Every painted length below multiplies by `--focus-outline`, so with the switch off the outline
+   * resolves to `0px`, the halo's spread resolves to `0px`, and `--focus-field-shadow` is `none`.
+   * The `:focus-visible` selectors themselves stay exactly where they are: only the paint goes.
+   *
+   * ── THE ON WEIGHT ────────────────────────────────────────────────────────────────────────
+   *
+   * `--focus-outline-weight` is the ON state's thickness, and it is deliberately antd's
+   * `lineWidth` (1px) rather than antd's `lineWidthFocus` (3px). The heavy mark is what the
+   * complaint was about: a 3px opaque outline stacked on an already-shaded selected nav row reads
+   * as two treatments on one element. WCAG's AA bar for an indicator is CONTRAST (SC 1.4.11, 3:1),
+   * not thickness, so the weight can come all the way down to antd's own FIELD indicator — one
+   * `lineWidth` of `colorPrimary`, which measures 5.05:1 light and 7.07:1 dark on every surface a
+   * control sits on — while the criterion is still met. antd's 3px `genFocusOutline` weight is one
+   * token away: set `--focus-outline-weight: var(--stroke-lg)`.
+   *
+   * The hue is the focus hue itself, NOT antd's `colorPrimaryBorder`. That is the one place the
+   * ON state departs from `genFocusOutline`, and it is forced: `colorPrimaryBorder` for this seed
+   * is #6dc0e3, which measures 2.00:1 light and 1.66:1 dark and cannot satisfy SC 1.4.11 at any
+   * thickness. A mark that fails the criterion is not an indicator. */
+  --focus-outline: 0; /* antd focusOutline — 0 = off (shipped default), 1 = on */
+  --focus-outline-weight: var(--stroke-hairline); /* antd lineWidth; lineWidthFocus = --stroke-lg */
+  --focus-outline-color: var(--focus-ring-color, var(--ring));
+  --control-outline-width: calc(var(--stroke-md) * var(--focus-outline)); /* antd controlOutlineWidth */
+  --focus-outline-offset: 0px;
+
   /* FOCUS RING — the two global knobs for the keyboard-focus affordance (WCAG 2.4.7 / 2.4.11).
    * `--focus-ring-color` is the themeable hue (HSL components, defaults to --ring) and
    * `--focus-ring-width` the standard thickness; override either ONCE — even scoped under a
@@ -187,39 +259,49 @@
    * rule reads it with the live-role fallback `hsl(var(--focus-ring-color, var(--ring)))`, so the
    * default re-resolves at the element that paints the ring while an explicit override still wins. */
   --focus-ring-color: initial; /* default = the live --ring role */
-  --focus-ring-width: var(--stroke-md);
+  /* The painted thickness, and the point every path passes through. `--focus-ring-weight` is the
+   * public knob a component or a service retunes; multiplying by the switch is what guarantees
+   * that a rebind cannot bring the mark back while the switch is off. */
+  --focus-ring-weight: var(--focus-outline-weight);
+  --focus-ring-width: calc(var(--focus-ring-weight) * var(--focus-outline));
   /* Alpha of the ring fill. Exists so a component that needs a SOFTER ring
    * (a filled toggle, tinted shell chrome) tunes one knob instead of writing
    * its own `hsl(... / 0.35)` — which is how four incompatible ring shapes
    * appeared before the single-source rule in styles/focus-ring.css. */
   --focus-ring-opacity: 1;
-  /* SOFT HALO — the ring's second, translucent stop, painted OUTSIDE the opaque one.
+  /* THE FIELD HALO — antd's `controlOutline`, split into the parts this repo composes with.
    *
-   * The shape comes from Ant Design, which this repo already names as an authority
-   * (docs/DESIGN-AUTHORITY.md). Read from antd 6.6.2's own source (the current major; the same
-   * formula was already in 5.29.3, checked side by side), a focused field is
-   * `borderColor: colorPrimary` + `boxShadow: 0 0 0 ${controlOutlineWidth}px ${controlOutline}`
-   * (es/input/style/token.js:48-50; es/select/style/select-input.js:32 reaches the same
-   * declarations through a CSS custom property, which is why an antd Select and an antd Input
-   * focus identically). `controlOutlineWidth` is `lineWidth * 2` = 2px and `controlOutline` is the
-   * primary as an alpha tint over the control's own fill — measured by running antd 6's own
-   * `formatToken`: rgba(5,145,255,0.1) light / rgba(23,117,249,0.31) dark for its default blue,
-   * and 0.11 / 0.30 for this system's SmartHR #0071bd. Hence 0.12 here and 0.3 in the dark block.
+   * All three now READ the generated map rather than declaring a number of their own: the width is
+   * antd's `controlOutlineWidth`, the colour and the alpha are the two halves of antd's own
+   * `controlOutline` rgba(). They stay named `--focus-ring-glow-*` because that is the public knob
+   * a service already themes through; what changed is that their DEFAULTS are no longer values
+   * anybody picked.
+   *
+   * Previously this block hard-coded 0.12 light / 0.3 dark "measured from antd" — close, but not
+   * antd's numbers: the algorithm gives 0.11 and 0.29 for the seeds this library actually ships,
+   * and the halo hue is antd's alpha-extracted rgb(0,182,228), not the primary itself.
    *
    * The halo is DECORATION and must never be asked to carry the a11y contract: measured against
    * this palette, a primary tint over the page tops out at 2.84:1 even at alpha 0.7, so no value
-   * of this knob reaches WCAG 2.2 SC 1.4.11's 3:1. What carries the contract is the OPAQUE stop
-   * (`--focus-ring-width` at `--focus-ring-opacity`), which stays a full 2px perimeter on EVERY
-   * control because this library targets SC 2.4.13 Focus Appearance (AAA) — measured 4.62:1 light
-   * / 7.07:1 dark on every surface a control sits on. antd does not meet 2.4.13 (it thins a
-   * focused field to a 1px border); we take its shape and not that trade. Guarded by
-   * src/tokens/__tests__/focus-ring-contrast.test.ts. */
-  --focus-ring-glow-width: var(--stroke-md);
-  --focus-ring-glow-alpha: 0.12;
+   * of this knob reaches WCAG 2.2 SC 1.4.11's 3:1. Under antd's own formula what carries the state
+   * on a field is the recoloured 1px border, and that only once `data-focus-outline="on"` is
+   * set — see the switch above and docs/DESIGN-AUTHORITY.md. */
+  --focus-ring-glow-width: var(--control-outline-width);
+  --focus-ring-glow-color: var(--control-outline);
+  --focus-ring-glow-alpha: var(--control-outline-alpha);
+  /* THE WHOLE FIELD HALO AS ONE TOKEN — antd's `activeShadow`, and the single seam the switch
+   * moves. Composing the shadow LIST here rather than in the rule is what keeps the two positions
+   * of the switch from becoming two focus languages: styles/focus-ring.css reads `box-shadow:
+   * var(--focus-field-shadow)` once and knows nothing about which position is active.
+   *
+   * `none` is the OFF value, and it is `none` rather than a zero-spread shadow on purpose: a
+   * literal `0 0 0 0 transparent` would still REPLACE the control's resting `--control-shadow`,
+   * so a switched-off focus would quietly flatten every input on the page. */
+  --focus-field-shadow: none;
   /* Gap between element and ring, for the OUTLINE form only (a star, a dot, a
    * heading anchor — marks where a radius-hugging shadow would touch the
    * glyph). The shadow form ignores it by construction. */
-  --focus-ring-offset: 0px;
+  --focus-ring-offset: var(--focus-outline-offset);
   /* Ring headroom for clipped chrome (`overflow-clip-margin` on the topbar family, gh#291).
    * MUST stay a plain length consumed via a bare var(): Chromium rejects any calc() in
    * overflow-clip-margin at parse time (even calc(2 * 2px)), silently dropping the
@@ -606,12 +688,10 @@
    * hover 3.71:1. --border stays at 22%: dividers are decorative and a dark grid at 47% would
    * read as a wireframe. See the light block above for the full reasoning. */
   --input: 45 6% 47%; /* #7f7b71 — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
-  --ring: 204 90% 60%;
-  /* The focus halo needs roughly 2.5× the alpha on a near-black ground to read at all — the
-   * same reason antd's own dark `controlOutline` lands at 0.30/0.31 where its light one is 0.10.
-   * The OPAQUE half of the ring is untouched: it re-tints on its own because --focus-ring-color
-   * is `initial` and falls through to this block's --ring. */
-  --focus-ring-glow-alpha: 0.3;
+  /* --ring and the dark halo alpha are GENERATED. The dark halo does need roughly 2.5× the light
+   * alpha to read at all on a near-black ground, and antd's algorithm already knows that: run over
+   * this spine it returns 0.29 dark against 0.11 light, which is where the hand-written 0.3 came
+   * from. It is no longer restated here — see src/tokens/antd.generated.css. */
   --success: 146 45% 55%;
   --success-foreground: 48 9% 9%;
   --warning: 44 95% 55%;
@@ -639,10 +719,7 @@
   --text-warning: 44 95% 62%;
   --text-info: 221 70% 72%;
   --text-error: 357 75% 68%;
-  --primary-hover: 204 90% 66%;
-  --primary-active: 204 90% 72%;
+  /* Brand interaction steps are GENERATED from this block's own seeds (see the light block). */
   --secondary-hover: 45 6% 22%;
   --secondary-active: 45 6% 26%;
-  --destructive-hover: 357 55% 43%;
-  --destructive-active: 357 55% 38%;
 }

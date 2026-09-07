@@ -1170,6 +1170,64 @@ import { PanelLeftClose, Search } from "lucide-react";
     rules: [2, 3, 5, 6],
   },
   {
+    name: "TopbarItem",
+    group: "layout",
+    tagline:
+      "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill.",
+    props: [
+      {
+        name: "asChild",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Render the bar-cell shape onto the child instead of emitting a <button> — for a router link, or a menu/popover trigger that must own the element.",
+      },
+      {
+        name: "children",
+        type: "ReactNode",
+        description: "Cell content — a glyph, a label, an Avatar, or any pair of them.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class override.",
+      },
+    ],
+    usage: [
+      "DO put bar triggers in a Topbar slot as TopbarItem, not as Button — that is the difference between chrome and a control that landed in the chrome.",
+      "DO wrap it in a DropdownMenuTrigger asChild for a user menu; the open state lights the cell via [data-state=open].",
+      "DON'T set a height: the cell stretches to whatever the bar is (AppShell's grid row, --topbar-height, or the coarse-pointer bar), which is why there is no height knob.",
+      "DON'T reach for it outside a Topbar — a full-bleed cell needs a bar to bleed to. Use Button anywhere else.",
+    ],
+    useCases: [
+      "Account / user-menu trigger in the topbar end slot",
+      "Notifications bell, settings or theme trigger",
+      "Sidebar collapse toggle in the topbar start slot",
+    ],
+    related: [
+      "Topbar (the slot bar it belongs to)",
+      "Button (the right control everywhere that is not a bar)",
+      "AppShell (owns the bar height it stretches to)",
+    ],
+    example: `import { Topbar, TopbarItem } from "@godxjp/ui/layout";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/ui/navigation";
+
+<Topbar
+  end={
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <TopbarItem aria-label="Account">
+          <Avatar><AvatarFallback>SD</AvatarFallback></Avatar>
+        </TopbarItem>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">…</DropdownMenuContent>
+    </DropdownMenu>
+  }
+/>`,
+    storyPath: "layout/TopbarItem.stories.tsx",
+    rules: [2, 3, 5, 6],
+  },
+  {
     name: "NavList",
     group: "layout",
     tagline:
@@ -6367,10 +6425,10 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
       },
       {
         name: "theme",
-        type: '"light" | "dark"',
+        type: '"light" | "dark" | "system"',
         defaultValue: '"light"',
         description:
-          'Theme axis → <html data-theme>. Equal alias of the legacy .dark class. Persisted; change via setTheme / <AppSettingPicker kind="theme">.',
+          'Theme axis → <html data-theme>. Equal alias of the legacy .dark class. "system" defers to prefers-color-scheme and is followed LIVE (matchMedia listener), so <html data-theme> flips with the OS; the persisted value stays "system" (the CHOICE), never the resolved light/dark. Persisted; change via setTheme / <AppSettingPicker kind="theme"> / <Segmented>.',
       },
       {
         name: "brand",
@@ -9944,6 +10002,66 @@ export default function PasswordBlock() {
 
 <Rating name="score" defaultValue={4} onValueChange={(v) => console.log(v)} />`,
     storyPath: "data-entry/Rating.stories.tsx",
+    rules: [3, 6, 23],
+  },
+  {
+    name: "Segmented",
+    group: "data-entry",
+    tagline:
+      "One-of-N from a small, closed, always-visible set — antd's Segmented drawn on Radix RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
+    props: [
+      {
+        name: "options",
+        type: "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean }[]",
+        description:
+          "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name.",
+      },
+      { name: "value", type: "string", description: "Controlled selection." },
+      { name: "defaultValue", type: "string", description: "Uncontrolled initial selection." },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description: "Selection callback.",
+      },
+      { name: "disabled", type: "boolean", description: "Disable the whole group." },
+      {
+        name: "name",
+        type: "string",
+        description: "Form field name — submits the selected value with a native form.",
+      },
+      { name: "id", type: "string", description: "Root id, for a label that points at it." },
+      { name: "className", type: "string", description: "Root class override." },
+    ],
+    usage: [
+      "DO use it for a closed set of 2-4 peer choices that are cheap to show — theme, view mode, a date range preset.",
+      "DO give it an aria-label (or aria-labelledby) — the group needs a name, and each item takes its own from its label.",
+      "DON'T use ToggleGroup for a one-of-N choice: its items are aria-pressed toggle buttons and even at type=single the group can end up with nothing selected, which a setting can never be.",
+      "DON'T use it past ~4 options or with long labels — the track has no overflow behaviour. That is a Select.",
+    ],
+    useCases: [
+      "Theme switch (light / dark / system)",
+      "List vs board vs calendar view mode",
+      "Chart range: day / week / month",
+    ],
+    related: [
+      "ToggleGroup (independently pressed buttons, or a multi-select toolbar)",
+      "RadioGroup (the same semantics with a vertical, described list)",
+      "Select (the same choice when the set is long or hidden by default)",
+      "Tabs (switches PANELS, not a value)",
+    ],
+    example: `import { Segmented } from "@godxjp/ui/data-entry";
+
+<Segmented
+  aria-label="Theme"
+  value={theme}
+  onValueChange={(next) => setTheme(next as AppTheme)}
+  options={[
+    { value: "light", label: "Light" },
+    { value: "dark", label: "Dark" },
+    { value: "system", label: "System" },
+  ]}
+/>`,
+    storyPath: "data-entry/Segmented.stories.tsx",
     rules: [3, 6, 23],
   },
   {

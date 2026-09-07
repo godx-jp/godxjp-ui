@@ -901,6 +901,27 @@ export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> 
 };
 
 /**
+ * @see TopbarItem — ONE interactive cell of a {@link TopbarProp} slot: the account button, a
+ * settings trigger, a notifications bell.
+ *
+ * It exists because the alternative is a `Button`, and a Button in a bar is a control that landed
+ * in the bar rather than a part of it — a pill of its own height floating in a taller strip, with
+ * its own hover surface and its own focus ring drawn around that pill. Fluent, SLDS, Atlassian and
+ * antd's ProLayout all draw a top-bar trigger the other way: the cell is as tall as the bar, its
+ * hover is the bar's own surface, and the focus mark is hosted INSIDE the cell because a
+ * full-bleed cell has nothing outside itself to ring.
+ */
+export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
+  /**
+   * Render the bar-cell shape ONTO the child instead of emitting a `<button>` — for a router link,
+   * or for a menu/popover trigger that needs to own the element itself.
+   */
+  asChild?: boolean;
+  children?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
  * @see LegalDocumentShell — one entry of the table of contents + the matching document section.
  * `id` is the REAL anchor target (`href="#{id}"`, `<section id>`), so it must be unique on the page
  * and URL-safe: it is what a deep link, a hash jump and `aria-current` all key off.

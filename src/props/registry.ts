@@ -1083,6 +1083,15 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["ChildrenProp"],
   },
+  TopbarItemProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "ClassNameProp",
+      { field: "asChild", local: true, reason: "Radix Slot passthrough — merges onto the child" },
+    ],
+  },
   NavListProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -2019,6 +2028,19 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-entry",
     file: "components/ui/rating.tsx",
     vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp"],
+  },
+  SegmentedProp: {
+    group: "data-entry",
+    file: "components/ui/segmented.tsx",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "NameProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
   },
   TagInputProp: {
     group: "data-entry",

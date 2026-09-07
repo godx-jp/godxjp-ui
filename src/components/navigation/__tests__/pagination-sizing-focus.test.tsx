@@ -80,9 +80,9 @@ describe("正常系: キーボードフォーカスの輪郭", () => {
     const rule = focusRingCss.slice(start, focusRingCss.indexOf("}", start));
 
     expect(rule).toContain(".ui-pagination-link");
-    expect(rule).toContain("outline: none");
     expect(rule).toContain("var(--focus-ring-width)");
-    expect(rule).toContain("var(--focus-ring-color, var(--ring))");
+    // The hue resolves through --focus-ring-color to the live --ring; see foundation.css.
+    expect(rule).toContain("var(--focus-outline-color)");
 
     // …and nothing paints a competing ring back in layout.css.
     expect(layoutCss).not.toMatch(/\.ui-pagination-link:focus-visible[^}]*box-shadow/);

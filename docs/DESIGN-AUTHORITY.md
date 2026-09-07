@@ -19,6 +19,7 @@ It changes no code by itself. It is the tie-breaker a reviewer points at.
 | Component composition shape                                        | **shadcn**                                    | already the structural convention — 23 references                                                                                 |
 | Component taxonomy / grouping                                      | **Ant Design** groups                         | already the catalog shape: `data-entry`, `data-display`, `layout`, `feedback`, `navigation`, `general`                            |
 | Colour foundation                                                  | **SmartHR**                                   | already the palette source — `--primary` = SmartHR MAIN `#0071bd`, `--foreground` = TEXT_BLACK, `--border` = BORDER               |
+| **Derived colour — every step computed from a seed**                | **Ant Design (the algorithm itself)**         | **NEW — this decision.** antd is no longer a shape reference here: `scripts/gen-antd-tokens.mjs` runs `theme.getDesignToken()` at build time and emits the derived map |
 | **Japanese UI convention — density, JP typography, form patterns** | **SmartHR**                                   | **NEW — this decision.** Extends SmartHR from "where the colours came from" to the authority for how a JP business screen behaves |
 | **Japanese accessibility / public-sector convention**              | **デジタル庁 Design System** (Digital Agency) | **NEW — this decision.** The reference when a JP customer asks which standard a screen meets (JIS X 8341-3)                       |
 | **Spacing, density, type scale, information architecture**         | **IBM Carbon**                                | **NEW — this decision**                                                                                                           |
@@ -186,67 +187,153 @@ Recorded rather than silently fixed, because each is a real decision:
    strokes blur far more visibly than Latin letterforms. Another reason to prefer Carbon's integer
    steps if the scale is ever revisited.
 
-## Focus appearance — Ant Design owns the shape, SmartHR still owns the hue
+## Derived colour is GENERATED, not authored
 
-The two named authorities disagree here, so the disagreement is recorded rather than re-argued.
+**The problem this fixes.** The library hand-authored roughly a thousand tokens and reasoned about
+each one. A hover step was chosen by eye, an active step was chosen by eye, a focus-halo alpha was
+chosen by eye and then justified in a paragraph. Every one of those is a decision with no outside
+authority behind it, and every one has to be re-argued the next time somebody looks at it.
 
-**SmartHR** (`smarthr-ui@99.6.0`, `lib/themes/createShadow/createShadow.js`) draws focus as an
-opaque ring held off the control by a white spacer: `box-shadow: 0 0 0 2px white; outline: 2px
-solid OUTLINE; outline-offset: 2px`.
+**Ant Design already solves this exactly once**: a SEED colour goes in, an ALGORITHM runs, and the
+whole derived map falls out. This document already named antd as the authority for component
+taxonomy and focus shape; that is now extended to make antd the **generator** of derived colour.
 
-**Ant Design** (`antd@6.6.2`, the current major) instead moves the control's own boundary to the
-brand colour and adds a translucent halo outside it: `borderColor: colorPrimary` + `boxShadow: 0 0 0
-${controlOutlineWidth}px ${controlOutline}` (`es/input/style/token.js:48-50`). `controlOutlineWidth`
-is `lineWidth * 2` = 2px, and `controlOutline` is the primary as an alpha tint over the control's
-fill — running antd's own `formatToken` yields `rgba(5,145,255,0.1)` light and
-`rgba(23,117,249,0.31)` dark for its default blue, and 0.11 / 0.30 for this system's `#0071bd`.
-`es/select/style/select-input.js:32` emits the same declarations (v6 routes them through a CSS
-custom property), which is why an antd Select focuses exactly like an antd Input. Non-field
-controls — Button, Checkbox, Radio, Switch — use a different form, `genFocusOutline`
-(`es/style/index.js:60-64`): `outline: lineWidthFocus(3px) solid colorPrimaryBorder;
-outline-offset: 1px`.
+`scripts/gen-antd-tokens.mjs` reads the seeds out of `src/tokens/foundation.css`, runs antd 6.6.2's
+own `theme.getDesignToken()` (`defaultAlgorithm` for light, `darkAlgorithm` for dark) and writes
+`src/tokens/antd.generated.css`. `pnpm check:antd-tokens` fails CI if that file drifts from the
+algorithm. **antd is a devDependency and a build-time tool only** — `pnpm check:no-antd-runtime`
+asserts it never reaches `dependencies`, `src/`, or `dist/`.
+
+**What is authored:** five brand colours per theme (SmartHR MAIN plus four 和色, and the lifted dark
+ramp). **What is computed:** `--primary-hover`, `--primary-active`, `--primary-border`,
+`--destructive-hover`, `--destructive-active`, `--control-outline*` and `--ring`.
+
+**What is deliberately NOT taken from antd, and why — each a measurement, not a preference:**
+
+- **The neutral spine.** Colour foundation stays SmartHR's (see the table above); the neutrals are
+  not derived from the brand seed. `colorBorder` is also the only role antd offers for a control
+  boundary and it measures **1.43:1** on the page, where `--input` is held to 3:1 by SC 1.4.11 and
+  by `input-boundary-contrast.test.ts`.
+- **The text ramp.** antd's is alpha-based (`rgba(0,0,0,0.88)`), which cannot enter this library's
+  opaque `H S% L%` triple without choosing a surface to composite against — lossy by construction.
+- **The dark `--primary` itself.** `darkAlgorithm` MOVES the seed (antd's own `#1677ff` becomes
+  `#1668dc`). Feeding this library's light seed in gives `#0363a4` at **2.81:1** on the dark spine,
+  which `primary-text-contrast.test.ts` rejects outright; antd's transform of the committed dark
+  seed gives `#3794d3` at 5.36:1 where the seed itself measures 7.07:1. The dark theme therefore
+  keeps its seed and everything derived from it is antd's. This is the one structural divergence,
+  recorded in `DIVERGENCES` in the generator.
+
+**Geometry antd owns was already correct.** `lineWidth` 1, `controlOutlineWidth` 2,
+`lineWidthFocus` 3, `borderRadius` 6, `controlHeight` 32 and `fontSize` 14 all match the named
+scales this library already ships (`--stroke-*`, `--radius`, `--band-height-md`,
+`--font-size-base`). The generator asserts that agreement rather than emitting a second copy, so
+the two cannot drift apart silently.
+
+## Focus appearance — Ant Design owns the shape, and the indicator SHIPS OFF
+
+### The two forms, read from antd's source
+
+**SmartHR** (`smarthr-ui@99.6.0`) draws focus as an opaque ring held off the control by a white
+spacer. **Ant Design** (`antd@6.6.2`) has two forms instead:
+
+- **Field** — `borderColor: colorPrimary` at the unchanged `lineWidth`, plus
+  `boxShadow: 0 0 0 ${controlOutlineWidth}px ${controlOutline}`
+  (`es/input/style/token.js:48-50`). `es/select/style/select-input.js:32` emits the same
+  declarations, which is why an antd Select focuses exactly like an antd Input.
+- **Non-field** — `genFocusOutline` (`es/style/index.js:60-64`):
+  `outline: ${lineWidthFocus}px solid ${colorPrimaryBorder}; outline-offset: 1`.
 
 **v5 → v6 changed none of this.** Both majors were unpacked and their own `formatToken` run side by
-side: every value above is identical to the digit in `antd@5.29.3`. v6's only focus-related
-additions are a `focusOutline` seed flag (`false` zeroes `lineWidthFocus`, killing the non-field
-outline form) and selector plumbing — Checkbox/Radio moved to `&:has(input:focus-visible)`, Select
-to CSS custom properties. Recorded so the next person does not re-derive it.
+side; every value is identical to the digit in `antd@5.29.3`.
 
-**Ant Design wins the shape.** The library shipped an opaque brand ring drawn immediately outside
-an untouched grey border — two outlines of different colours claiming the same edge, and a Select
-that could not be told to agree with an Input. antd's rule ("focus moves the boundary; the ring is
-a halo of that same hue") resolves both, and Ant Design is already this document's authority for
-component taxonomy. SmartHR's spacer form assumes a control that can afford 4px of clearance on
-every side, which a dense JP grid cannot.
+**Ant Design wins the shape.** The library shipped an opaque brand ring drawn immediately outside an
+untouched grey border — two outlines of different colours claiming the same edge — and a Select that
+could not be told to agree with an Input. antd's rule resolves both. SmartHR still owns the hue: the
+focus colour is `--ring`, which the generated tier declares as `var(--primary)` because antd has no
+separate focus-colour token at all.
 
-**SmartHR still owns the hue**, exactly as elsewhere in this file: the focus colour is `--ring`,
-derived from SmartHR MAIN.
+### The indicator ships OFF. That forfeits WCAG 2.4.7 and a JIS X 8341-3 AA claim.
 
-### This library targets SC 2.4.13 (AAA) for focus. Ant Design does not.
+`--focus-outline: 0` in `foundation.css`. Nothing paints a focus indicator by default.
 
-**The one place we do NOT follow antd is the accessibility floor**, and it is a deliberate,
-customer-driven divergence: the Japanese market is strict, and デジタル庁 is already this
-document's standards reference, so focus is held to **WCAG 2.2 SC 2.4.13 Focus Appearance
-(AAA)** — an indicator area at least as large as a **2px thick perimeter** of the control, with
-**≥3:1** between the focused and unfocused states of those pixels.
+**This is a product decision, made with the cost stated.** The indicator was reported as intrusive —
+a thick blue outline appearing on shift-tab, stacked on an already-shaded selected nav row. The
+owner chose to ship it off and let whoever needs it turn it on. What that costs, plainly:
 
-antd fails the area clause on fields: it drops the ring and leaves a **1px** border to carry the
-state. So we take antd's _shape_ — boundary and ring agree, halo outside — and keep the full 2px
-opaque stop underneath it, with the recoloured border sitting inside the ring, same hue,
-contiguous. **Do not "align with antd" by thinning it back.** `--control-focus-ring-width` exists
-so that trade can be made explicitly, and never by accident.
+- **WCAG 2.2 SC 2.4.7 Focus Visible is an AA criterion**, and with the switch off it is not met.
+- **JIS X 8341-3:2016 tracks WCAG 2.0 AA**, so a Japanese enterprise procurement asking for that
+  conformance statement cannot be answered while the switch is off. Japanese public-sector and
+  large-enterprise buyers ask for it routinely, and デジタル庁 is this document's standards
+  reference for exactly that reason.
 
-The same criterion is why three per-component alpha knobs went to `1` in this pass. A ring at 0.35
-(Toggle) or 0.45 (sidebar user row, topbar icon button) still covers a 2px area but composites to
-1.64:1 and ≈1.90:1 — area without contrast is not an indicator. The softness those knobs were
-buying now comes from the halo, which sits outside the opaque stop and carries no criterion: it
-measures 1.18:1 light / 1.73:1 dark and is **decoration by construction**, since no alpha that
-still reads as a halo can reach 3:1 in the first place.
+**Turning it back on is one attribute, on the root element, with no code change:**
 
-Both clauses are gated in `src/tokens/__tests__/focus-ring-contrast.test.ts` — contrast on every
-surface a control sits on, and the 2px perimeter across every per-component width _and_ alpha
-rebind, with `.ui-command-input` the single named exemption. Per rule 4 below: a standard that is
-not enforced is a standard that has already drifted.
+```html
+<html data-focus-outline="on">
+```
+
+**The switch is antd's own mechanism, not one invented here.** antd 6.6.2 carries a `focusOutline`
+seed flag (`es/theme/themes/seed.js:67`) and consumes it in `es/theme/util/alias.js:71`:
+
+```js
+lineWidthFocus: mergedToken.focusOutline === false ? 0 : mergedToken.lineWidth * 3
+```
+
+The flag zeroes the focus line width. `--focus-outline` is that flag in CSS: every painted length
+multiplies by it, so no component rebind can bring the mark back while it is `0`. The two paints
+that are not lengths — the halo and a field's recoloured boundary — are scoped to the same attribute
+in `styles/focus-ring.css`. **Every `:focus-visible` selector stays exactly where it is**; only the
+painted result disappears.
+
+### The ON state is the LIGHT one
+
+The complaint was weight, not existence, so the on-position is not the old mark restored. It paints
+antd's **field** indicator on every control — one `lineWidth` (1px) in the focus hue, plus antd's
+`controlOutline` halo — rather than antd's 3px `genFocusOutline`. Measured, in Chromium, on
+`ql.test` after the transition settles:
+
+| control | switch off | switch on |
+| --- | --- | --- |
+| Input / Select trigger | border `1px rgb(144,135,127)`, resting shadow intact | border `1px rgb(0,113,189)` + `rgba(0,182,228,0.11) 0 0 0 2px` |
+| Button (primary) | outline `0px`, resting shadow intact | `outline: 1px solid rgb(0,113,189)` @ `0px` + same halo |
+| Sidebar nav row / list row | outline `0px` | `outline: 1px solid rgb(0,113,189)` @ **`-1px`** (inset into the row) |
+
+The field pair is **byte-identical to antd's own `activeBorderColor` + `activeShadow`** for this
+seed. The nav row insets its mark into its own shape rather than wrapping an already-shaded surface,
+which is the specific stacking that read as heavy.
+
+**No control's box moves when it is focused**, measured with `getBoundingClientRect()` before and
+after: the field form only recolours a border and an `outline` is painted outside the box model.
+Input, Save and Delete all stay at 32.00px.
+
+**Two criteria, and only one is met by thickness alone.** SC 1.4.11 (AA, non-text contrast) is about
+COLOUR — the 1px mark measures 5.05:1 light and 7.07:1 dark on every surface a control sits on, so
+the light weight costs nothing there. antd's own `colorPrimaryBorder` (#6dc0e3) measures **2.00:1
+light / 1.66:1 dark** and could not have satisfied it at any thickness, which is why the on-state
+takes the focus hue instead — the single place it departs from `genFocusOutline`. SC 2.4.13 Focus
+Appearance (AAA) additionally wants a 2px perimeter; the on-state does not target it, and
+`--focus-outline-weight: var(--stroke-lg)` restores antd's 3px if a customer needs the area clause.
+
+Both positions of the switch are gated in `src/tokens/__tests__/focus-ring-contrast.test.ts`: with
+it off nothing paints and no rebind can route around it, with it on the geometry and the ≥3:1
+contrast hold on every surface. Per rule 4 below: a standard that is not enforced is a standard that
+has already drifted.
+
+### The indicator is for CONTROLS, not containers
+
+Buttons, fields, links, nav and menu rows carry it. A div, a content region, a scroll wrapper and
+`body` do not. `.ui-legal-document-section` was removed from the list: it is a slab of prose that
+carries `tabIndex={-1}` only so a table-of-contents link can move focus into it, so it is never in
+the tab order and a keyboard user cannot arrive there unannounced. Its `tabIndex={-1}` stays,
+because removing it would break the contents anchor.
+
+**Every other focusable non-interactive element in this library is a genuinely scrollable region**
+— `.app-main`, `.ui-mobile-shell-main`, `.ui-timeline-grid`, `.ui-code-block` when it overflows,
+MasterDetail's bounded master, the DataTable and Table scroll containers, ScrollArea, and the
+BranchScopePicker list. Each carries `tabIndex={0}` for axe `scrollable-region-focusable` and must
+stay reachable, so each keeps BOTH halves rather than becoming focusable-but-unpainted. The region
+ring (`--region-focus-ring-width`, off by default) now also multiplies by `--focus-outline`, so a
+service that opts it in still cannot paint while the library-wide switch is off.
 
 ## How a decision gets made from here
 

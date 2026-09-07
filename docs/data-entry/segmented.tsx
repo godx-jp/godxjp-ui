@@ -1,0 +1,124 @@
+import { useState } from "react";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { FormField, Segmented } from "@godxjp/ui/data-entry";
+import { Text } from "@godxjp/ui/general";
+import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { CalendarDays, Columns3, LayoutList, Monitor, Moon, Sun } from "lucide-react";
+
+/**
+ * Segmented — one-of-N from a small, closed, always-visible set. antd's Segmented drawn on Radix
+ * RadioGroup: a recessed track with the chosen item as a lifted slab, radiogroup semantics, arrow
+ * keys between members. The track measures exactly --control-height, so it sits level with an
+ * Input or a Button on the same row.
+ */
+export default function Demo() {
+  const [theme, setTheme] = useState("system");
+  const [view, setView] = useState("list");
+  const [range, setRange] = useState("week");
+
+  return (
+    <PageContainer title="Segmented" subtitle="閉じた選択肢からひとつだけ · テーマ・表示形式・期間">
+      <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>ラベルのみ</CardTitle>
+            <CardDescription>
+              選択肢が 2〜4 個で、すべて画面に出せるときは Select ではなくこちら。ひとつは必ず
+              選ばれている状態なので、ToggleGroup ではなく radiogroup として読み上げられます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Segmented
+                aria-label="期間"
+                value={range}
+                onValueChange={setRange}
+                options={[
+                  { value: "day", label: "日" },
+                  { value: "week", label: "週" },
+                  { value: "month", label: "月" },
+                ]}
+              />
+              <Text size="xs" tone="muted">
+                選択中: {range}
+              </Text>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>アイコン付き</CardTitle>
+            <CardDescription>
+              `icon` は aria-hidden で描かれ、読み上げ名は `label` のままです。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Segmented
+                aria-label="テーマ"
+                value={theme}
+                onValueChange={setTheme}
+                options={[
+                  { value: "light", label: "ライト", icon: <Sun aria-hidden="true" /> },
+                  { value: "dark", label: "ダーク", icon: <Moon aria-hidden="true" /> },
+                  { value: "system", label: "システム", icon: <Monitor aria-hidden="true" /> },
+                ]}
+              />
+              <Segmented
+                aria-label="表示形式"
+                value={view}
+                onValueChange={setView}
+                options={[
+                  { value: "list", label: "一覧", icon: <LayoutList aria-hidden="true" /> },
+                  { value: "board", label: "ボード", icon: <Columns3 aria-hidden="true" /> },
+                  {
+                    value: "calendar",
+                    label: "カレンダー",
+                    icon: <CalendarDays aria-hidden="true" />,
+                  },
+                ]}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>フォームの中で</CardTitle>
+            <CardDescription>
+              `name` を渡すとネイティブフォームで送信されます。無効化は選択肢ごとにも、グループ
+              全体にもかけられます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <FormField id="segmented-plan" label="プラン">
+                <Segmented
+                  id="segmented-plan"
+                  name="plan"
+                  defaultValue="standard"
+                  options={[
+                    { value: "light", label: "ライト" },
+                    { value: "standard", label: "スタンダード" },
+                    { value: "enterprise", label: "エンタープライズ", disabled: true },
+                  ]}
+                />
+              </FormField>
+              <Segmented
+                aria-label="無効化されたグループ"
+                defaultValue="a"
+                disabled
+                options={[
+                  { value: "a", label: "A" },
+                  { value: "b", label: "B" },
+                ]}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+      </Flex>
+    </PageContainer>
+  );
+}
