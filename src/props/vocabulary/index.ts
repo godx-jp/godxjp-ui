@@ -56,7 +56,9 @@ export type {
   OrientationProp,
   TableDensityProp,
   DensityProp,
+  GapNameProp,
   GapProp,
+  GapStepProp,
 } from "./layout.prop";
 
 export type {

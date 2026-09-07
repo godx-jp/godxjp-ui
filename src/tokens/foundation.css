@@ -618,6 +618,17 @@
   --space-inline-sm: var(--space-2);
   --space-inline-md: var(--space-3);
   --space-inline-lg: var(--space-4);
+  /*
+   * Trục NGANG thiếu bậc `xl` trong khi trục dọc có — một khoảng trống không
+   * do thiết kế mà do quên. Nó làm `gap="xl"` trên một hàng không diễn đạt
+   * được, nên `Flex` phải rơi về token của trục dọc và ra 40px ở chỗ đáng lẽ
+   * là 24px.
+   *
+   * `--space-6` (24px) chứ không phải `--space-10` (40px): thang ngang xưa nay
+   * chặt hơn thang dọc ở mọi bậc (xs 4 · sm 8 · md 12 · lg 16), vì chữ đọc
+   * theo hàng thì khe rộng cắt mạch đọc, còn khe dọc thì tách khối.
+   */
+  --space-inline-xl: var(--space-6);
   --space-chrome-x: var(--space-6);
   --space-chrome-y: var(--space-4);
   --space-chrome-gap: var(--space-2);

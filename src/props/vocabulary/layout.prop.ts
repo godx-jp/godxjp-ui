@@ -75,7 +75,24 @@ export type AuthShellPresetProp =
  * Without it those stacks had to carry `gap="xs"`, which is a visual change forced by a missing
  * step rather than by design.
  */
-export type GapProp = "none" | "xs" | "sm" | "md" | "lg" | "xl";
+export type GapNameProp = "none" | "xs" | "sm" | "md" | "lg" | "xl";
+
+/**
+ * Bậc SỐ, ánh xạ thẳng vào `--space-{n}` của thang gốc.
+ *
+ * Vì sao cần, dù đã có sáu tên ở trên: thang gốc có MƯỜI bậc
+ * (0·4·8·12·16·20·24·32·40·48px) nhưng lớp tên chỉ với tới năm trong số đó.
+ * `md` là 16px, `lg` là 24px — và `--space-5` (20px) tồn tại mà không có đường
+ * nào gọi tới. Người viết mã gặp một thiết kế 20px thì không còn nước đi hợp
+ * lệ nào: làm tròn thì lệch, viết literal thì `no-arbitrary-spacing` chặn.
+ *
+ * Bậc số KHÔNG theo trục — `gap={3}` là 12px ở cả hàng lẫn cột. Đó là chủ ý:
+ * tên mang ý ĐỊNH ("cách nhau vừa phải, tuỳ trục"), số mang GIÁ TRỊ ("đúng
+ * 12px"). Trộn hai nghĩa vào một thang là lý do thang cũ vừa thô vừa khó đoán.
+ */
+export type GapStepProp = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12;
+
+export type GapProp = GapNameProp | GapStepProp;
 
 /** DataTable row density subset. */
 export type TableDensityProp = Exclude<DensityProp, "default">;

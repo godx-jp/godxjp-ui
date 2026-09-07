@@ -181,6 +181,70 @@
     gap: 0;
   }
 
+  /*
+   * Bậc SỐ — `--space-{n}` của thang gốc, giống nhau ở cả hai trục.
+   *
+   * Lớp tên (xs…xl) chỉ với tới năm trong mười bậc của thang gốc, nên một
+   * thiết kế 20px hay 32px không có cách nào nói ra. Bậc số mở nốt phần còn
+   * lại mà không phải bịa thêm tên.
+   */
+  .ui-flex-gap-1 {
+    gap: var(--space-1);
+  }
+  .ui-flex-gap-2 {
+    gap: var(--space-2);
+  }
+  .ui-flex-gap-3 {
+    gap: var(--space-3);
+  }
+  .ui-flex-gap-4 {
+    gap: var(--space-4);
+  }
+  .ui-flex-gap-5 {
+    gap: var(--space-5);
+  }
+  .ui-flex-gap-6 {
+    gap: var(--space-6);
+  }
+  .ui-flex-gap-8 {
+    gap: var(--space-8);
+  }
+  .ui-flex-gap-10 {
+    gap: var(--space-10);
+  }
+  .ui-flex-gap-12 {
+    gap: var(--space-12);
+  }
+
+  /*
+   * Bậc TÊN biết trục (gh#401).
+   *
+   * Trước đây `.ui-flex-gap-*` luôn đọc `--space-stack-*`, kể cả khi
+   * `direction="row"` — nên `gap="md"` trên một hàng ra 16px trong khi
+   * `--space-inline-md` (12px) đã tồn tại sẵn và đúng là giá trị cần. Người
+   * tiêu dùng gặp thiết kế 12px thì không có nước đi hợp lệ: bậc gần nhất là
+   * 8 hoặc 16, mà "gần nhất" giữa hai số cách đều là một phép đoán.
+   *
+   * Đây là lý do bậc tên mang ý ĐỊNH chứ không mang giá trị: cùng một `md`,
+   * hàng ngang thì chặt hơn cột dọc, vì khe rộng cắt mạch đọc theo hàng còn
+   * khe dọc thì tách khối.
+   */
+  .ui-flex[data-direction="row"].ui-flex-gap-xs {
+    gap: var(--space-inline-xs);
+  }
+  .ui-flex[data-direction="row"].ui-flex-gap-sm {
+    gap: var(--space-inline-sm);
+  }
+  .ui-flex[data-direction="row"].ui-flex-gap-md {
+    gap: var(--space-inline-md);
+  }
+  .ui-flex[data-direction="row"].ui-flex-gap-lg {
+    gap: var(--space-inline-lg);
+  }
+  .ui-flex[data-direction="row"].ui-flex-gap-xl {
+    gap: var(--space-inline-xl);
+  }
+
   .ui-flex-gap-xs {
     gap: var(--space-stack-xs);
   }
