@@ -2015,6 +2015,28 @@ import { Trash2 } from "lucide-react";
         description:
           "When set, Text renders as a `<label>` bound to this control id (polymorphic label use).",
       },
+      {
+        name: "href",
+        type: "string",
+        description:
+          'Anchor target, for `as="a"`. Declared explicitly rather than by widening the base to AnchorHTMLAttributes, for the same reason `htmlFor` is declared explicitly for `as="label"`: the element union IS the contract, so each polymorphic branch names the attributes it actually accepts instead of every span silently offering an href it will never render.',
+      },
+      {
+        name: "target",
+        type: "React.HTMLAttributeAnchorTarget",
+        description: 'Anchor browsing context, for `as="a"`.',
+      },
+      {
+        name: "rel",
+        type: "string",
+        description:
+          'Anchor relationship, for `as="a"` — pair `rel="noopener noreferrer"` with `target="_blank"`.',
+      },
+      {
+        name: "download",
+        type: "boolean | string",
+        description: 'Anchor download hint, for `as="a"`.',
+      },
     ],
     usage: [
       "DO use `<Text>` for ALL body / inline / caption text instead of a styled `<span>`/`<p>`. Pick `size` from the scale; never write `text-[13px]`/`text-[11px]` or `font-semibold` by hand.",
