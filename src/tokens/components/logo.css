@@ -99,31 +99,54 @@
    * inside the gh#370 sample — 神A and Aあ on Hiragino at xs.
    *
    * THE FIX IS THE SAME SHAPE AS gh#370. CSS cannot see the string, so it cannot know what advance
-   * to make room for; the COMPONENT can. It counts the string's characters in two classes and
-   * emits them as --logo-glyph-fullwidth-count / --logo-glyph-narrow-count (pure, no measurement,
+   * to make room for; the COMPONENT can. It counts the string's characters in four classes and
+   * emits them as --logo-glyph-fullwidth-count / --logo-glyph-wide-count / --logo-glyph-narrow-count
+   * / --logo-glyph-space-count (pure, no measurement,
    * no layout read, SSR-safe). styles/logo-layout.css turns those counts into a modelled advance
    * and caps the glyph's font-size at the size that advance fits in — `min()`, so a mark whose
    * advance already fits keeps its tier font-size EXACTLY and nothing that renders correctly today
    * moves. `white-space: nowrap` sits under it as the invariant: a brand mark is one line.
    *
-   * MEASURED advance in em, worst case over the four faces (textW / font-size, 8x raster page):
-   *   full-width form   1.000  神 1.0000 · あ 1.0000 · ゴ 1.0000   (the system stack: 0.923)
-   *   Latin capital     0.801  G/X 0.8008 · T/H 0.7679             — all on Hiragino Sans
-   *   digit             0.712  8 0.7121
-   *   x-height letter   0.544  k/t 0.5435
-   * so one constant of 0.81 covers every proportional form the 1–2 glyph contract admits. The two
-   * that exceed it are the widest Latin capitals — Hiragino `W` 1.058em and `M` 0.988em, WIDER
-   * than a kanji — which are under-modelled on purpose rather than shrinking every Latin pair to
-   * cover them; `nowrap` bounds that residual to the ~1.8px spill Latin already has today (it can
-   * never wrap), instead of a two-line mark.
+   * EACH CONSTANT IS AN UPPER BOUND OF ITS CLASS — that is the entire contract. Over-stating an
+   * advance sets the mark a little smaller than it had to be; under-stating it puts the mark
+   * OUTSIDE the box, which is the defect this whole mechanism exists to remove. The first cut
+   * carried one constant for every proportional form and dropped white space from the count, and
+   * both under-states shipped as spill (`WW` 3.50px, `東 京` 2.63px — see below).
+   *
+   * THE INVARIANT, stated as the gate asserts it: for every mark, at every tier, on every bundled
+   * face, the FITTED font-size times the PAINTED advance stays inside the box. Not "each constant
+   * bounds its class in isolation" — see the recorded slack below.
+   *
+   * MEASURED advance in em, per character, max over the four faces (a DOM advance read at 200px,
+   * never a canvas `fillText`: that substitutes a fallback face for a webfont):
+   *   full-width form   1     ← 1.000  神 · 東 · あ · ゴ · 株 · 「 · 、 · Ｇ, every one 1.0000
+   *   em-wide Latin     1.06  ← 1.058  W 1.0580 · m 1.0100 · M 0.9870      — all Hiragino Sans
+   *   other Latin/digit 0.81  ← 0.863  w 0.8630 · O/Q 0.8380 · U 0.8291 · H 0.8260 · N 0.8210 ·
+   *                                    X 0.8110 · 8 0.7120 · k/t 0.5435 · l 0.3150
+   *   collapsible space 0.34  ← 0.333  Hiragino 0.3330 · M PLUS 2 0.2730 · Noto 0.2270 ·
+   *                                    system 0.1978
+   *
+   * `M W m` get a class of their own because they REACH the full-width em — `W` passes it, at
+   * 1.058em WIDER than a kanji — so no proportional constant holds them without shrinking every
+   * other Latin mark to fit. With them out of the way the narrow class stays at 0.81.
+   *
+   * RECORDED SLACK, not an oversight: six forms (w · O · Q · U · H · N · X) measure 0.811–0.863em,
+   * above the 0.81 constant, by at most 0.053em. Measured, none of them reaches the box edge at
+   * its tier's font-size — `ww` at xs paints 19.2px of a 20px box — so raising the constant to
+   * 0.87 would shrink 120 of 480 measured cells to buy nothing, against this file's own rule that
+   * a mark which already fits keeps its tier font-size to the byte. The gate re-derives the margin
+   * from the shipped tokens, so a change to the type scale or the box ramp re-tests it rather than
+   * inheriting this conclusion.
    *
    * --logo-glyph-fit-max-width is the share of the box a FITTED glyph's modelled advance may take.
-   * 0.9 leaves 1.28px (xs) / 1.44px (sm) / 1.66px (md) of fill clear of the ink on each side of a
-   * two-kanji mark, against the 0.44px the untreated mark has at `md` and the 0.5px minimum the
-   * library already ships (神A on M PLUS 2 at xs). It is a CAP, not a target: it only binds on the
-   * marks that do not fit. */
+   * 0.95 leaves 0.50px (xs) / 0.60px (sm) / 0.70px (md) of fill clear of the modelled ink on each
+   * side of a two-kanji mark — measured on the paint, 0.50–1.50px at xs across the four faces,
+   * against the 0.5px minimum the library already ships (神A on M PLUS 2 at xs). It is a CAP, not
+   * a target: it only binds on the marks that do not fit. */
   --logo-glyph-fullwidth-width: 1;
+  --logo-glyph-wide-width: 1.06;
   --logo-glyph-narrow-width: 0.81;
+  --logo-glyph-space-width: 0.34;
   --logo-glyph-fit-max-width: 0.95;
 
   /* ── Identity-mark box (`<Logo mark="godx" />`) ──────────────────────────────────────────────
