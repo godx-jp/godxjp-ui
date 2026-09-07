@@ -63,6 +63,7 @@
     .ui-carousel-dot,
     .ui-rating-star,
     a.ui-list-row,
+    .ui-text[data-link],
     .sb-nav-item,
     .sb-user,
     .tb-icon-btn
@@ -120,6 +121,7 @@
       .ui-carousel-dot,
       .ui-rating-star,
       a.ui-list-row,
+      .ui-text[data-link],
       .sb-nav-item,
       .sb-user,
       .tb-icon-btn
@@ -160,7 +162,13 @@
    * off-switch solid blue; and antd never recolours a Button's border on focus, whatever its
    * variant. Both take the outline above instead. */
   :root[data-focus-outline="on"]
-    :is(.ui-input, .ui-control, .ui-control-multiline, .ui-control-trigger, .ui-tag-input):focus-visible,
+    :is(
+      .ui-input,
+      .ui-control,
+      .ui-control-multiline,
+      .ui-control-trigger,
+      .ui-tag-input
+    ):focus-visible,
   :root[data-focus-outline="on"] .ui-control-trigger[data-state="open"],
   :root[data-focus-outline="on"] .ui-tag-input:focus-within,
   :root[data-focus-outline="on"] .ui-control-composite-field:focus-within,

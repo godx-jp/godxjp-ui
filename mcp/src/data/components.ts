@@ -1992,9 +1992,22 @@ import { Trash2 } from "lucide-react";
       { name: "mono", type: "boolean", description: "Monospace family for codes / ids." },
       {
         name: "as",
-        type: '"span" | "p" | "div" | "label" | "strong" | "em" | "small" | "code" | "kbd" | "dt" | "dd" | "caption" | "abbr"',
+        type: '"span" | "p" | "div" | "a" | "label" | "strong" | "em" | "small" | "code" | "kbd" | "dt" | "dd" | "caption" | "abbr"',
         defaultValue: '"span"',
         description: "Rendered element. `code`/`kbd` are monospace by default.",
+      },
+      {
+        name: "link",
+        type: "boolean",
+        description:
+          'This text IS a link: underline on hover AND on keyboard focus at --text-link-underline-offset, plus the focus mark every other interactive element draws. An AFFORDANCE, not a colour — `tone` still owns the colour and merely defaults to `primary` here, so `link tone="destructive"` reads destructive and still underlines.',
+      },
+      {
+        name: "asChild",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Render the typography ONTO the child instead of emitting an element — the shape a router link takes (`<Text asChild link><Link href=…>…</Link></Text>`). The child owns the element and its navigation; Text owns the type step, tone, weight and truncation.",
       },
       {
         name: "htmlFor",
@@ -2008,12 +2021,16 @@ import { Trash2 } from "lucide-react";
       'DO use `tone` for colour (`muted`/`primary`/semantic), `tabular` for numbers, `mono` for codes — not `className="text-muted-foreground font-mono tabular-nums"`.',
       'DO use `clamp={n}` for a description limited to n lines (card grids) and `truncate` for a one-line ellipsis — never `className="line-clamp-2"` (banned utility). They are mutually exclusive; `clamp` wins.',
       "For a heading, use `<Heading level>` instead of a large-size `<Text>`.",
+      'DO use `link` for a link inside RUNNING CONTENT — an issue subject in a table cell, a page name in a list, a "see all" at the end of a row — and compose it onto your router link with `asChild`. Never `className="text-primary hover:underline"`: that is consumer rules 6 and 7 in one string, and it leaves a keyboard user with no underline because `hover:` cannot fire for them.',
+      'DON\'T reach for `Button variant="link"` in running content. `.ui-button` is a CONTROL box — `white-space: nowrap`, `flex-shrink: 0`, a `--control-height` tier and inline padding — so in a table cell it cannot wrap to a second line and cannot share the cell\'s line box. If you find yourself writing `whitespace-normal` back on top of it, you wanted `<Text link>`. `Button variant="link"` stays right for a link-LOOKING action that submits or opens something.',
     ],
     useCases: [
       'A muted caption under a value: `<Text size="xs" tone="muted">2026年5月度</Text>`.',
       'A monospace id in a list row: `<Text size="xs" mono tone="muted">RC-204881</Text>`.',
       'An emphasized inline figure: `<Text weight="medium" tabular>¥1,240,000</Text>`.',
       'A service-card description clamped to 2 lines on a narrow (390px) index: `<Text as="p" size="sm" tone="muted" clamp={2}>{description}</Text>`.',
+      "An issue subject linking out of a table cell, wrapping to two lines: `<Text asChild link truncate={false}><Link href={`/view/${key}`}>{subject}</Link></Text>`.",
+      'A destructive link in a settings row: `<Text as="a" href="/danger" link tone="destructive">取り消す</Text>`.',
     ],
     storyPath: "general/typography.tsx",
     rules: [2, 23],
@@ -2021,7 +2038,10 @@ import { Trash2 } from "lucide-react";
 
 <Text size="xs" tone="muted">補助テキスト</Text>
 <Text weight="medium" tabular>¥1,240,000</Text>
-<Text size="xs" mono tone="muted">RC-204881</Text>`,
+<Text size="xs" mono tone="muted">RC-204881</Text>
+
+// A link in running content — the affordance, composed onto a router link.
+<Text asChild link><Link href="/view/PKG-12">ログイン画面の余白</Link></Text>`,
   },
   {
     name: "Heading",

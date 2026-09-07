@@ -1,0 +1,14 @@
+/* TEXT — knobs for the typographic primitive's link affordance.
+ *
+ * Size, weight and tone are NOT here: they are the foundation's own `--font-size-*`,
+ * `--font-weight-*` and the semantic foreground roles, read directly by `styles/text-layout.css`.
+ * A link adds two things those tiers do not describe — how far the rule sits from the baseline,
+ * and how heavy it is. */
+:root {
+  /* Distance from the text baseline to the underline. In `em` on purpose: the rule has to stay
+   * proportional across the seven type steps, and a px value that reads right at `lg` crowds the
+   * descenders at `2xs`. */
+  --text-link-underline-offset: 0.2em;
+  /* `auto` lets the face decide; a theme that wants a heavier rule names a length. */
+  --text-link-underline-width: auto;
+}
