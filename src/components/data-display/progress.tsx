@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useTranslation } from "../../i18n/use-translation";
+
 export type ProgressTone = "success" | "warning" | "destructive";
 
 export type ProgressProps = {
@@ -16,6 +18,7 @@ export type ProgressProps = {
 };
 
 export function Progress({ value, label, tone, over = false }: ProgressProps) {
+  const { t } = useTranslation();
   const isOver = over && value > 100;
   const boundedValue = Math.max(0, Math.min(100, value));
   // Over-capacity forces the destructive tone unless the caller pins one explicitly.
@@ -33,7 +36,7 @@ export function Progress({ value, label, tone, over = false }: ProgressProps) {
       aria-valuemax={100}
       aria-valuetext={`${isOver ? Math.round(value) : boundedValue}%`}
       aria-labelledby={label ? labelId : undefined}
-      aria-label={label ? undefined : "Progress"}
+      aria-label={label ? undefined : t("dataDisplay.progress.ariaLabel")}
     >
       <div className="ui-progress-track">
         <div className="ui-progress-bar" style={{ width: `${boundedValue}%` }} />

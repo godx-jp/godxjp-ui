@@ -54,10 +54,32 @@ function axeModalExemptionApplies(): boolean {
 }
 
 /**
+ * Background elements the OPEN overlay has taken out of play — hidden from assistive tech,
+ * made non-interactive, or both — and which still hold something tabbable.
+ *
+ * TWO MECHANISMS, ONE QUESTION. Radix hides through the `aria-hidden` package: `aria-hidden="true"`
+ * plus its own `data-aria-hidden` marker, and this library mirrors `inert` on top of that marker
+ * (`components/general/inert-background.ts`). react-aria-components calls
+ * `ariaHideOutside(…, { shouldUseInert: true })`, which writes NEITHER of those two attributes: it
+ * sets the `inert` PROPERTY where the platform has one, and falls back to a bare
+ * `aria-hidden="true"` (no marker) where it does not. jsdom is the fallback case —
+ * `'inert' in HTMLElement.prototype` is `false` there, which is what RAC branches on — while every
+ * browser this library supports has had `inert` since 2022/2023 and takes the first branch.
+ *
+ * So the probe asks about the RESULT rather than about which attribute produced it. The tabbable
+ * filter is axe's own condition, and it is also what separates a real background from a decorative
+ * `aria-hidden` icon.
+ */
+function neutralisedBackground(): Element[] {
+  return [...document.querySelectorAll('[inert], [aria-hidden="true"]')].filter(
+    (el) => el.querySelector(TABBABLE) != null,
+  );
+}
+
+/**
  * Assert the invariant behind axe's `aria-hidden-focus` rule for whatever overlay is currently
- * open: a background element Radix has hidden from assistive tech must not still be reachable by
- * Tab. Either it is `inert` (see `components/general/inert-background.ts`), or the overlay is one
- * axe already exempts as a modal.
+ * open: a background element the overlay has hidden from assistive tech must not still be reachable
+ * by Tab. Either it is `inert`, or the overlay is one axe already exempts as a modal.
  *
  * Deliberately structural rather than a `vitest-axe` run: axe in jsdom cannot see this class at
  * all. Every node has a zero-sized rect there, so its visibility filter empties the tabbable set
@@ -66,8 +88,7 @@ function axeModalExemptionApplies(): boolean {
  */
 export function expectHiddenBackgroundNotTabbable(): void {
   const exempt = axeModalExemptionApplies();
-  const offenders = [...document.querySelectorAll('[aria-hidden="true"][data-aria-hidden]')]
-    .filter((el) => el.querySelector(TABBABLE) != null)
+  const offenders = neutralisedBackground()
     .filter((el) => !el.hasAttribute("inert"))
     .map((el) => el.tagName.toLowerCase() + (el.className ? `.${String(el.className)}` : ""));
 
@@ -77,7 +98,7 @@ export function expectHiddenBackgroundNotTabbable(): void {
   ).toEqual([]);
 }
 
-/** How many background elements the open overlay hid from assistive tech. 0 = nothing to guard. */
+/** How many background elements the open overlay took out of play. 0 = nothing to guard. */
 export function hiddenBackgroundCount(): number {
-  return document.querySelectorAll('[aria-hidden="true"][data-aria-hidden]').length;
+  return neutralisedBackground().length;
 }

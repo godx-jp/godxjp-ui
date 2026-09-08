@@ -33,7 +33,64 @@ const ROUTES = routeArgs.length
       // index.tsx); `general-button` resolves to nothing.
       "/isolate/general-button-index",
       "/isolate/general-button-index?theme=dark",
+      // TOAST — the surfaces this sweep could NOT see, by construction, until `?toast=` existed.
+      //
+      // Every other route here is measured by loading it: whatever the page paints on mount is
+      // what gets collected. A toast paints on NOTHING — it exists only after a user action — so
+      // for as long as this list has existed, zero toast pixels have ever been measured, and the
+      // gate reported "AA clean" while saying nothing at all about the four richest coloured
+      // surfaces the library ships. That is not a threshold that was set too loosely; it is a
+      // surface that was never in the sample. `?toast=<type>` fires exactly one toast (see
+      // PREPARE) and then the ordinary sweep runs against it.
+      //
+      // Four types × two themes, because the tone triple (`--<type>-bg` / `-border` / `-text`) is
+      // composed per type AND retuned per theme: eight independent pairs, so eight measurements.
+      "/isolate/feedback-toast?toast=success",
+      "/isolate/feedback-toast?toast=error",
+      "/isolate/feedback-toast?toast=warning",
+      "/isolate/feedback-toast?toast=info",
+      "/isolate/feedback-toast?toast=success&theme=dark",
+      "/isolate/feedback-toast?toast=error&theme=dark",
+      "/isolate/feedback-toast?toast=warning&theme=dark",
+      "/isolate/feedback-toast?toast=info&theme=dark",
     ];
+
+/**
+ * Per-route setup, run after the page has loaded and before anything is measured.
+ *
+ * A route whose surface only exists after an interaction needs one of these, or the sweep audits
+ * an empty stage and calls it clean.
+ *
+ * SETTLING IS PART OF THE SETUP, NOT AN OPTIMISATION. Sonner ramps `opacity` 0→1 over 400ms on
+ * the toast and, separately, on its children. Sampling inside that ramp measures text flattened
+ * against its own surface at a fractional alpha — measured on this very page at α=.026 → 1.01:1
+ * and α=.758 → 4.43:1, for a toast whose settled ratios are 6.61:1 and 6.68:1. Those are frames
+ * of an animation, not states of the UI, and a gate that reports them is reporting noise. Wait
+ * for `[data-title]` to reach full opacity, then measure what a reader actually gets.
+ */
+const PREPARE = {
+  "/isolate/feedback-toast": async (page, params) => {
+    const type = params.get("toast");
+    if (!type) throw new Error("feedback-toast needs ?toast=<success|error|warning|info>");
+    await page.getByRole("button", { name: type, exact: true }).first().click();
+    await page.waitForSelector(`[data-sonner-toast][data-type="${type}"] [data-title]`, {
+      timeout: 10000,
+    });
+    await page.waitForFunction(
+      (t) => {
+        const el = document.querySelector(`[data-sonner-toast][data-type="${t}"]`);
+        if (!el) return false;
+        let opacity = 1;
+        for (let n = el; n && n !== document.documentElement; n = n.parentElement) {
+          opacity *= parseFloat(getComputedStyle(n).opacity);
+        }
+        return opacity > 0.999;
+      },
+      type,
+      { timeout: 10000 },
+    );
+  },
+};
 
 const EXEC =
   process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ||
@@ -55,10 +112,30 @@ const ratio = (a, c) => {
 // Runs in the page: collect {fg, bg, size, weight, text, sel} for every leaf text element.
 function collect() {
   const parse = (c) => {
-    const m = c && c.match(/rgba?\(([^)]+)\)/);
-    if (!m) return null;
-    const p = m[1].split(",").map((s) => parseFloat(s));
-    return { rgb: [p[0], p[1], p[2]], a: p[3] === undefined ? 1 : p[3] };
+    if (!c) return null;
+    const rgb = c.match(/rgba?\(([^)]+)\)/);
+    if (rgb) {
+      const p = rgb[1]
+        .split(/[,\s/]+/)
+        .filter(Boolean)
+        .map(parseFloat);
+      return { rgb: [p[0], p[1], p[2]], a: p[3] === undefined ? 1 : p[3] };
+    }
+    // `color(srgb r g b)` — what Chromium returns for a computed `color-mix()`, and the ONLY
+    // shape every tinted surface in this system resolves to (Toast's `--success-bg` and friends
+    // are `color-mix(in srgb, hsl(var(--hue)) 5%, hsl(var(--popover)))`). The rgba()-only regex
+    // returned null for those, `effBg` treated the element as having no background and kept
+    // walking, and the sweep ended up measuring coloured text against the page — or against the
+    // [255,255,255] fallback. Every ratio it reported for a tinted surface was the wrong pair.
+    const srgb = c.match(/color\(srgb\s+([^)]+)\)/);
+    if (srgb) {
+      const p = srgb[1]
+        .split(/[\s/]+/)
+        .filter(Boolean)
+        .map(parseFloat);
+      return { rgb: [p[0] * 255, p[1] * 255, p[2] * 255], a: p[3] === undefined ? 1 : p[3] };
+    }
+    return null;
   };
   const effBg = (el) => {
     let n = el;
@@ -159,6 +236,25 @@ async function main() {
         total++;
         continue;
       }
+      // A ROUTE THAT ASKS FOR DARK MUST HAVE GOT DARK. `/isolate/**` read `?theme` nowhere until
+      // now, so `…?theme=dark` rendered the light theme and this list's two "dark" entries were
+      // byte-identical re-runs of the two light ones above them — eleven routes, nine surfaces,
+      // and a dark theme nobody had measured through this entry point. Same lesson as the
+      // not-found guard: a query string that resolves to nothing must fail, not pass quietly.
+      const params = new URL(url).searchParams;
+      if (params.get("theme") === "dark") {
+        const applied = await page.evaluate(() => document.documentElement.dataset.theme);
+        if (applied !== "dark") {
+          console.error(
+            `✗ ${route}: asked for ?theme=dark and got <html data-theme="${applied ?? ""}"> — the ` +
+              `page ignored the switch, so this route is a duplicate of its light twin.`,
+          );
+          total++;
+          continue;
+        }
+      }
+      const prepare = PREPARE[new URL(url).pathname];
+      if (prepare) await prepare(page, params);
       items = await page.evaluate(collect);
     } catch (e) {
       console.error(

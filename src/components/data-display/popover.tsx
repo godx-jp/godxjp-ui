@@ -4,6 +4,7 @@ import { Popover as AriaPopover, type Placement } from "react-aria-components";
 
 import { cn } from "../../lib/utils";
 import { Slot } from "../../lib/slot";
+import { useOverlayCloseFocus } from "../feedback/overlay-close-focus";
 import type { FlushProp } from "../../props/vocabulary";
 
 /*
@@ -41,14 +42,62 @@ import type { FlushProp } from "../../props/vocabulary";
  * `data-state`. Class animation trên panel và CSS của consumer đọc bộ sau, nên bộ sau được phát lại.
  * `data-placement` của RAC vẫn nằm nguyên bên cạnh.
  *
- * ## Tự lo hai việc RAC không làm khi `isNonModal`
+ * ## Tự lo ba việc RAC không làm khi `isNonModal`
  *
  * Radix `modal={false}` vẫn: (1) đưa tiêu điểm vào panel khi mở, và cho phép chặn bằng
- * `onOpenAutoFocus`; (2) đóng khi bấm ra ngoài. RAC ở chế độ non-modal bỏ cả hai — `usePopover`
- * đặt `isDismissable: !isNonModal`, và chỉ panel dạng dialog (tức modal) mới được lấy tiêu điểm.
- * Năm consumer trong kho (date/time/month picker) đang dựa vào (1) để CHẶN việc lấy tiêu điểm, và
- * cả 9 consumer dựa vào (2). Nên hai hành vi ấy được chép tay ở đây — đúng phần Radix làm, không
- * hơn.
+ * `onOpenAutoFocus`; (2) đóng khi bấm ra ngoài; (3) TRẢ tiêu điểm về chỗ cũ lúc đóng, ĐỒNG BỘ, và
+ * cho phép chặn bằng `onCloseAutoFocus`. RAC ở chế độ non-modal bỏ (1) và (2) — `usePopover` đặt
+ * `isDismissable: !isNonModal`, và chỉ panel dạng dialog (tức modal) mới được lấy tiêu điểm — còn
+ * (3) thì làm, nhưng trong một `requestAnimationFrame` SAU khi tháo và không có móc để chặn.
+ * Năm consumer trong kho (date/time/month picker) đang dựa vào (1) để CHẶN việc lấy tiêu điểm, cả
+ * 9 consumer dựa vào (2), và (3) là API công khai mà app đang dùng để đưa tiêu điểm về ô soạn thảo
+ * sau khi chọn xong. Nên ba hành vi ấy được chép tay ở đây — đúng phần Radix làm, không hơn; riêng
+ * (3) dùng lại `useOverlayCloseFocus`, đúng hook Dialog/Sheet đang dùng, chứ không viết bản thứ
+ * hai.
+ *
+ * ## Tab RA KHỎI panel: theo RAC, `loop` của Radix KHÔNG được chép — có chủ ý
+ *
+ * Đây là khác biệt hành vi công khai DUY NHẤT còn lại giữa hai nền, nên nó được quyết ở đây một
+ * lần thay vì mỗi consumer tự đoán.
+ *
+ * Radix bọc panel trong `FocusScope loop trapped={modal}`, và `loop` áp dụng KỂ CẢ khi không trap:
+ * Tab ở phần tử tab được cuối cùng quay về phần tử đầu, nên tiêu điểm không bao giờ rời panel —
+ * chỉ Escape mới ra được. RAC làm khác: `Overlay` luôn dựng `FocusScope restoreFocus`, và
+ * `useRestoreFocus` cài keydown ở PHA CAPTURE CẤP DOCUMENT: hết phần tử tab được trong panel thì
+ * nó nhảy tới phần tử kế tiếp sau TRIGGER trong tài liệu, kèm `preventDefault` +
+ * `stopPropagation`. Đo trên jsdom, panel mở với tiêu điểm ở ô tìm kiếm:
+ *
+ *     có phần tử tab được sau trigger  →  Tab tới đúng phần tử đó, và panel ĐÓNG (blur-within)
+ *     không có gì sau trigger          →  tiêu điểm vẫn RA khỏi panel (RAC `blur()` xuống
+ *                                         `document.body`, hoặc trả thẳng về trigger nếu trigger
+ *                                         nằm trong một scope khác), panel vẫn mở
+ *
+ * Lấy hành vi của RAC, vì ba lẽ:
+ *
+ * 1. KHÔNG có đường cấu hình. `Overlay` chốt cứng `restoreFocus: true`, còn `shouldContainFocus`
+ *    được `Popover` của RAC tự tính rồi đặt SAU `{...props}` — `PopoverProps` không khai báo
+ *    `shouldContainFocus`, `restoreFocus`, `contain` hay `disableFocusManagement`. Giữ `loop` thì
+ *    chỉ còn cách tự cài một keydown capture cấp document để tranh với RAC. Hai handler capture
+ *    giành nhau cùng một phím trên cùng một tài liệu là dấu hiệu đang đi ngược thư viện nền, nên
+ *    không làm.
+ * 2. Đường hợp lệ duy nhất để có vòng lặp là bật `contain`, mà `contain` thì GIAM tiêu điểm: qua
+ *    `focusin`, `FocusScope` kéo tiêu điểm trở lại panel. Năm picker (date/date-range/month/
+ *    month-range/time) cố ý giữ tiêu điểm ở ô nhập BÊN NGOÀI panel bằng `onOpenAutoFocus`
+ *    prevented — bật `contain` là hỏng cả năm.
+ * 3. Hành vi RAC đúng APG hơn cho panel non-modal: Tab đi tiếp theo thứ tự tài liệu thay vì quay
+ *    vòng. `loop` của Radix trên panel KHÔNG trap là một cái bẫy bàn phím mềm — người dùng bàn
+ *    phím không Tab qua được popover, chỉ Escape mới thoát.
+ *
+ * Điểm dừng ở `document.body` KHÔNG được vá. Nó đến từ `focusedElement.blur()` của RAC khi không
+ * còn gì để lấy tiêu điểm, và `useOverlay` cố tình KHÔNG đóng panel khi `relatedTarget` là null —
+ * rời cửa sổ (alt-tab) cũng cho relatedTarget null. Đóng ở đó sẽ khiến mọi popover tự tắt mỗi lần
+ * người dùng chuyển ứng dụng: đắt hơn hẳn một điểm dừng ở body, thứ chỉ xảy ra khi trigger là phần
+ * tử tab được CUỐI CÙNG của trang, và từ đó thứ tự tab của chính tài liệu đưa tiêu điểm quay lại.
+ *
+ * Đổi cảm giác dùng ở 5/10 consumer — đúng những chỗ panel TỰ lấy tiêu điểm: `search-select`,
+ * `cascader`, `tree-select`, `org-switcher` và flyout của `sidebar` (Tab qua hết mục là ra ngoài
+ * và đóng, thay vì quay về mục đầu). Năm picker không đổi: tiêu điểm ở lại ô nhập ngoài scope, mà
+ * handler của RAC thoát sớm khi phần tử đang focus không nằm trong scope.
  */
 
 /** Gói prop mà `render` của RAC trao lại; nó có thêm `data-rac`, thứ kiểu JSX không khai báo. */
@@ -252,6 +301,13 @@ interface PopoverContentProps extends React.ComponentPropsWithRef<"div">, Popove
    * tay từ Radix chứ không bỏ.
    */
   onOpenAutoFocus?: (event: Event) => void;
+  /**
+   * Chặn việc trả tiêu điểm về nơi nó đứng trước khi panel mở, bằng `event.preventDefault()`.
+   *
+   * Phát ở MỌI đường đóng (chọn một mục, Escape, bấm ra ngoài, Tab ra ngoài), nên consumer đưa
+   * được tiêu điểm tới đúng chỗ người dùng cần gõ tiếp thay vì để nó quay về trigger.
+   */
+  onCloseAutoFocus?: (event: Event) => void;
 }
 
 export function PopoverContent({
@@ -270,12 +326,21 @@ export function PopoverContent({
   hideWhenDetached: _hideWhenDetached,
   forceMount: _forceMount,
   onOpenAutoFocus,
+  onCloseAutoFocus,
   ...props
 }: PopoverContentProps) {
   const root = usePopoverRoot("PopoverContent");
   const contentRef = React.useRef<HTMLDivElement | null>(null);
   const openAutoFocusRef = React.useRef(onOpenAutoFocus);
   openAutoFocusRef.current = onOpenAutoFocus;
+
+  /*
+   * Đối xứng của `onOpenAutoFocus`, và dùng lại đúng hook mà Dialog/Sheet đang dùng chứ không viết
+   * bản thứ hai: `FocusScope` của react-aria trả tiêu điểm trong một `requestAnimationFrame` SAU
+   * khi tháo, nên trong đúng một khung hình `document.activeElement` là `<body>` — và Radix thì trả
+   * đồng bộ, có `onCloseAutoFocus` để chặn. Hook lấp khung hình đó và phát sự kiện huỷ được.
+   */
+  useOverlayCloseFocus(root.open, onCloseAutoFocus, contentRef);
 
   /*
    * Radix đưa tiêu điểm vào panel khi mở và cho consumer chặn bằng `onOpenAutoFocus`; RAC ở chế độ

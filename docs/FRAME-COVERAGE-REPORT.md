@@ -106,7 +106,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Avatar | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | Separator | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | Skeleton | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| Toggle | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
+| Toggle | ✓ | ✓ | · | N/A | · | · | · | · | · | · |
 | ToggleGroup | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | AspectRatio | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Accordion | ✓ | N/A | · | · | · | · | · | · | · | · |

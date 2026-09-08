@@ -252,6 +252,9 @@
       "denied": "You do not have permission to view this matrix",
       "deniedDescription": "Ask an administrator to grant you access.",
       "loading": "Loading permissions…"
+    },
+    "progress": {
+      "ariaLabel": "Progress"
     }
   },
   "ui": {

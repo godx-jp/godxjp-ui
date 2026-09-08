@@ -112,7 +112,8 @@ tarball đường dẫn máy bạn lọt vào commit. `main` phải `npm ci` đ�
 ### Bước 5 — Cổng của DS
 
 ```bash
-cd ~/Herd/godxjp-ui && pnpm verify:ci     # 28 cổng
+# = verify:ci:static + check:frame-contracts + pnpm test, tức ĐÚNG những gì ci.yml chạy.
+cd ~/Herd/godxjp-ui && pnpm verify:ci
 ```
 
 **Không nới, không tắt, không thêm ngoại lệ để lấy màu xanh.** Một cổng đỏ là
@@ -134,7 +135,7 @@ Vòng chưa khép thì việc chưa xong. Đợt 07–08/09/2026 mở 18 issue c
 TẠI** với agent tiếp theo.
 
 Đây không phải suy đoán. Đo được trong phiên 08/09/2026: một agent mới, làm
-đúng mọi hướng dẫn (hỏi MCP, không đoán), kết luận *"Flex chỉ có gap"* trong khi
+đúng mọi hướng dẫn (hỏi MCP, không đoán), kết luận _"Flex chỉ có gap"_ trong khi
 `pad` và `padRaw` đã nằm trong gói đã cài — vì catalog đã phát hành chưa có
 chúng. Nó làm đúng và vẫn ra sai.
 
@@ -165,6 +166,80 @@ Vì sao role/nhãn: 138 trên 160 selector của bộ Playwright ở consumer b�
 duy nhất** cho biết một lần đổi nền thư viện có làm hỏng UI hay không. Gỡ chúng
 là mất cân, không phải tiết kiệm.
 
+## 5b. Một cổng canh được đúng thứ nó CHẠY QUA
+
+Một cổng viết ra mà không nối vào CI là một cổng không tồn tại — y hệt một prop
+không có trong catalog (§4). Nhưng "đã nối" chưa đủ, và đợt 08/09/2026 đo được
+cả hai nửa của bài học này.
+
+**Nửa thứ nhất — đừng đo bằng cái thước sai.** Bản trước của mục này viết rằng
+"25 cổng `check:*` nằm ngoài `verify:ci`", và kết luận từ đó rằng chúng không
+chạy. Kiểm lại bằng workflow thì 22 trong 25 cổng ấy VẪN chạy mỗi lần merge hoặc
+mỗi đêm — chỉ là ở lane khác. Lý do rất đơn giản và rất dễ vấp: **không workflow
+nào chạy `verify:ci`.** `ci.yml` chạy `verify:ci:static` + `check:frame-contracts`
+
+- `pnpm test` chia shard; `ci-browser.yml` chạy `verify:browser` (gồm
+  `check:contrast`) và `check:frame-axe`; `ci-browser-full.yml` chạy các sweep rộng
+  theo lịch đêm; `release-integrity.yml` chạy `check:release-plan`. Hỏi "cổng này
+  có trong `verify:ci` không" là hỏi một script không ai gọi.
+
+Nên đừng tự viết đoạn `node -e` so với `verify:ci`. Hỏi thẳng cổng canh-cổng, nó
+đọc workflow rồi mới trả lời:
+
+```bash
+pnpm check:gate-coverage --report   # in ra: mỗi check:* chạy ở workflow nào
+pnpm check:gate-coverage            # đỏ nếu có cổng không ai chạy và không khai miễn trừ
+```
+
+Cổng này nằm trong `verify:ci:static`, nên thêm một `check:` mới mà quên nối vào
+đâu là CI đỏ ngay. Muốn để một cổng ngoài lề thì phải khai TƯỜNG MINH kèm lý do
+trong `EXEMPT` của `scripts/check-gate-coverage.mjs` — hiện có đúng hai cái, và
+cả hai đều là "cần người", không phải "chạy lâu": `check:voiceover-capture` (cần
+VoiceOver thật do người bật) và `check:frame-runtime` (chỉ là alias gọi tám cổng
+đã chạy riêng trong lane đêm). "Chạy lâu" không phải lý do để miễn trừ — đó là
+lý do để nằm trong lane đêm, và lane đêm VẪN được tính là có chạy.
+
+**Nửa thứ hai, và là nguyên nhân thật của lỗi đã lọt.** Một toast
+`data-type="success"` với tương phản **1,02:1** — chữ gần như vô hình — phát hành
+trong `@godxjp/ui@19.5.0` và bị bắt bởi **test trình duyệt của một consumer**.
+Kho DS có sẵn hai thứ đáng lẽ phải bắt được nó, và **cả hai đều đã chạy trong
+CI**:
+
+- `scripts/check-contrast.mjs` chạy mỗi lần merge trong job "Contrast + visual
+  audit" (55–59s, và tên job nằm trong `REQUIRED_CI_CHECK_RUNS` nên bản phát
+  hành không đi qua nổi nếu nó đỏ). Nó xanh — vì danh sách `ROUTES` của nó có 11
+  route và **không route nào render một cái toast**.
+- `src/components/feedback/__tests__/toast-tone-contrast.test.tsx` chạy trong
+  `pnpm test`. Nó xanh — vì nó đọc token trong `src/tokens/**` rồi tính tỉ số
+  trên giấy; nó chạy trong jsdom, mà jsdom **không tô màu**, nên nó không nhìn
+  thấy màu đã render thật.
+
+Không cổng nào bị tắt. Không cổng nào bị bỏ quên. Cả hai đều xanh và cả hai đều
+đúng với thứ chúng đo — chỉ là **không cái nào đo cái đã hỏng**. Đây là dạng
+hỏng đắt hơn hẳn dạng "quên nối cổng", vì bảng CI toàn xanh trông y hệt như một
+kho thật sự an toàn.
+
+`check:contrast` đã dính đúng dạng này một lần rồi, và vết sẹo còn nằm trong
+chú thích của chính nó: danh sách route từng trỏ vào `tiximax-*` sau khi các
+route đó bị đổi tên, nên chúng render ra "Showcase not found" và sweep báo trang
+rỗng ấy là AA sạch. Lần đó người ta thêm một guard chặn not-found. Lần này là
+cùng một hình dạng ở một trục khác: route tồn tại, nhưng bề mặt cần soi thì
+không có route nào chạm tới.
+
+Nên khi bạn thêm hay sửa một cổng, hỏi HAI câu chứ không phải một:
+
+1. **Nó có chạy không?** → `pnpm check:gate-coverage --report`.
+2. **Nó có đi qua bề mặt tôi vừa đụng không?** → mở chính danh sách đầu vào của
+   cổng (`ROUTES` của `check-contrast.mjs`, danh sách frame của `check:frame-axe`,
+   `include` của `vitest.config.ts`) và tìm bề mặt ấy trong đó. Cổng xanh trên
+   một danh sách không chứa thứ bạn vừa sửa thì nó chưa nói gì về bản sửa của bạn.
+
+Và một hệ quả cho phía consumer: **bộ test trình duyệt của bạn là lớp lưới cuối
+cùng của DS.** Hai lỗi tương phản trên do `php artisan test` của consumer bắt
+được, không phải do CI thư viện. Đừng bỏ axe ra khỏi bộ trình duyệt chỉ vì "hệ
+thống nội bộ" — ở đây nó không đo tuân thủ, nó đo xem DS có phát ra chữ đọc được
+hay không.
+
 ## 6. Thứ KHÔNG đẩy lên DS
 
 - Bố cục của một trang cụ thể ("dashboard cần bốn thẻ ngang").
@@ -174,7 +249,7 @@ là mất cân, không phải tiết kiệm.
 DS sở hữu **hình dạng**. Màn hình sở hữu **nội dung**. Đẩy nhầm hướng làm DS
 phình ra thành thứ không ai nhớ nổi — cũng hỏng như để nó quá hẹp.
 
-## 7. Bốn cách hỏng đã đo được — đừng lặp lại
+## 7. Năm cách hỏng đã đo được — đừng lặp lại
 
 1. **Chẩn đoán bằng mắt rồi sửa.** Một lần đổ lỗi lệch header cho DS; hoá ra là
    heuristic `onChat` của chính consumer. Đo trước, sửa sau.
@@ -186,3 +261,9 @@ phình ra thành thứ không ai nhớ nổi — cũng hỏng như để nó qu�
    dòng đang chạy, không phải dòng trông giống.
 4. **Chạy audit sai chỗ.** `ui-audit` chỉ báo lỗi khi chạy TRONG cây consumer;
    chạy nó ở `/tmp` ra 0 lỗi và ru ngủ.
+5. **Phép thử đột biến không thật sự đột biến.** Một lượt
+   `perl -0pi -e 's/data-slot="x"/BROKEN/'` thiếu cờ `/g` chỉ thay lần khớp ĐẦU
+   TIÊN — mà lần đầu lại nằm trong một dòng chú thích, nên mã chạy không hề đổi
+   và phép kiểm "không đỏ". Suýt kết luận rằng assertion là rỗng. Sau khi phá,
+   hãy XÁC NHẬN mình đã phá đúng chỗ (`git diff` một dòng) trước khi tin vào kết
+   quả màu.

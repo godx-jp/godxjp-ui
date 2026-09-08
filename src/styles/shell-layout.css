@@ -613,7 +613,11 @@
 
   .app-breadcrumb {
     border-bottom: 1px solid hsl(var(--border));
-    padding: var(--space-2) var(--space-4);
+    /* The INLINE padding is the page gutter, not a value of its own. The breadcrumb sits directly
+     * above `.ui-page-header`, so a rail of its own puts the trail 8px left of the H1 it labels —
+     * measured on a real app before this read the shared token. `--space-page-active-x` also
+     * carries the ≤720px step down to the compact gutter, which a hard-coded step never did. */
+    padding: var(--space-2) var(--space-page-active-x);
     color: hsl(var(--muted-foreground));
     font-size: var(--font-size-base);
   }

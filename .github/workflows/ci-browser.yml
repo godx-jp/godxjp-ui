@@ -4,8 +4,11 @@ name: CI · browser
 # nothing else. CONTRACT.md L4 gives this lane a 5-minute budget and forbids parking a wide
 # matrix in it.
 #
-#   • visual — check:contrast (11 routes) + check:visual-audit. 55–59s measured (runs
-#              33974029465, 33976207776). Comfortably inside the budget.
+#   • visual — check:contrast (20 routes) + check:visual-audit. 55–59s measured at 11 routes (runs
+#              33974029465, 33976207776); the nine added routes are the Toast tone matrix (four
+#              types × two themes) plus a dark theme that `/isolate/**` now actually applies, and
+#              they cost +27s locally (12s → 39s for the contrast sweep alone). Still well inside
+#              the budget.
 #   • axe    — real Chromium + axe over every /frame at desktop + mobile-sm. Preview-chrome
 #              violations are BLOCKING (0 allowed); component/demo violations are allowlisted
 #              against scripts/frame-axe.baseline.json, which may only shrink.

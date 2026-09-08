@@ -151,7 +151,12 @@ describe("theme axes integration (render + class contracts)", () => {
   describe("primary brand — checkbox/switch", () => {
     it("Checkbox uses centralized semantic class", () => {
       renderWithTheme(<Checkbox defaultChecked aria-label="ok" />);
-      expect(screen.getByRole("checkbox", { name: "ok" })).toHaveClass("ui-checkbox");
+      // `role="checkbox"` is the real `<input>` react-aria renders; the PAINTED box is the
+      // `[data-slot="checkbox"]` root around it (a `<label>` now, a `<button>` in the Radix era).
+      // The class has to be asserted on whichever element the theme actually styles, and the two
+      // have never been the same node — under Radix the input did not exist at all.
+      const box = screen.getByRole("checkbox", { name: "ok" }).closest('[data-slot="checkbox"]');
+      expect(box).toHaveClass("ui-checkbox");
     });
 
     it("Switch uses centralized semantic class", () => {

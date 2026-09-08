@@ -246,6 +246,9 @@
       "denied": "このマトリクスを表示する権限がありません",
       "deniedDescription": "閲覧するには管理者に権限の付与を依頼してください。",
       "loading": "権限を読み込み中…"
+    },
+    "progress": {
+      "ariaLabel": "進捗"
     }
   },
   "ui": {

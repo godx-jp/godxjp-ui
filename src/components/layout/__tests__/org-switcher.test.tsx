@@ -105,13 +105,20 @@ describe("OrgSwitcher public contract", () => {
     const onOpenChange = vi.fn();
     const user = userEvent.setup();
     renderWithUi(
-      <OrgSwitcher
-        organizations={organizations}
-        value="dxs"
-        labels={labels}
-        responsive="popover"
-        onOpenChange={onOpenChange}
-      />,
+      <>
+        <OrgSwitcher
+          organizations={organizations}
+          value="dxs"
+          labels={labels}
+          responsive="popover"
+          onOpenChange={onOpenChange}
+        />
+        {/* The switcher is never the last tabbable thing on a real page, and the popover's Tab
+            contract is defined in terms of what FOLLOWS the trigger — see the "Tab RA KHỎI panel"
+            section of `data-display/popover.tsx`. A fixture with nothing after the trigger measures
+            the document's wrap-around, not the switcher. */}
+        <button type="button">After the switcher</button>
+      </>,
     );
 
     const trigger = screen.getByRole("button", {
@@ -119,17 +126,23 @@ describe("OrgSwitcher public contract", () => {
     });
     trigger.focus();
     await user.pointer({ keys: "[TouchA]", target: trigger });
-    const dialog = await screen.findByRole("dialog", { name: "Choose organization" });
+    await screen.findByRole("dialog", { name: "Choose organization" });
     const search = await screen.findByLabelText("Search organizations");
     expect(onOpenChange).toHaveBeenCalledWith(true);
     expect(search).toHaveFocus();
-    await user.tab();
-    expect(dialog).toBeInTheDocument();
-    expect(document.activeElement).not.toBe(document.body);
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog", { name: "Choose organization" })).not.toBeInTheDocument();
     expect(onOpenChange).toHaveBeenLastCalledWith(false);
     expect(trigger).toHaveFocus();
+
+    // Tab leaves the panel the way a non-modal popover should: on to the next element after the
+    // trigger, closing the panel behind it. Focus is never dropped and never cycles back inside.
+    await user.pointer({ keys: "[TouchA]", target: trigger });
+    await screen.findByRole("dialog", { name: "Choose organization" });
+    await user.tab();
+    expect(screen.getByRole("button", { name: "After the switcher" })).toHaveFocus();
+    expect(screen.queryByRole("dialog", { name: "Choose organization" })).not.toBeInTheDocument();
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
   });
 
   it("keeps the controlled sheet stateful across touch, focus, tab, selection and close", async () => {

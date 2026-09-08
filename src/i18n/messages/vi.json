@@ -246,6 +246,9 @@
       "denied": "Bạn không có quyền xem ma trận này",
       "deniedDescription": "Hãy đề nghị quản trị viên cấp quyền truy cập.",
       "loading": "Đang tải quyền…"
+    },
+    "progress": {
+      "ariaLabel": "Tiến độ"
     }
   },
   "ui": {

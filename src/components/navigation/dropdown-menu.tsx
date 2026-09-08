@@ -16,6 +16,7 @@ import {
 } from "react-aria-components";
 import { Check, ChevronRight } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { Slot } from "../../lib/slot";
 
 /*
  * NỀN: React Aria Components, không còn @radix-ui/react-dropdown-menu.
@@ -37,6 +38,39 @@ import { cn } from "../../lib/utils";
 
 /** Thuộc tính DOM mà `render` của một MenuItem nhận (nhánh không-phải-link của RAC). */
 type ItemDomProps = React.JSX.IntrinsicElements["div"];
+
+/** Thẻ mà `asChild` đi mượn: đúng một phần tử, và ruột của nó được lấy ra dùng riêng. */
+type BorrowedTag = React.ReactElement<{ children?: React.ReactNode }>;
+
+/**
+ * `asChild` trên một mục menu, dưới ràng buộc collection của RAC.
+ *
+ * Không thể gộp thẳng props vào `props.children` trong `render`: cái đó KHÔNG phải children của
+ * consumer — RAC bọc chúng trong một `Provider` mang các slot label/description. Nên thẻ đi mượn
+ * phải tách làm hai nửa. `borrowedTag` rút thẻ ra ở lượt render ẩn, còn RUỘT của nó được giao lại
+ * cho `MenuItem` làm children để collection vẫn rút được `textValue` như thường.
+ *
+ * Tới lượt DOM thật, `renderItemTag` ghép hai nửa: thẻ mượn nhận nội dung RAC trả về, và `Slot`
+ * gộp props của RAC vào nó — `ref` (mergeProps hợp nhất hai ref), handler nhấn, `role`, `tabIndex`.
+ * Kết quả: chính thẻ của consumer LÀ mục menu, không có phần tử bọc nào chen vào giữa.
+ */
+function borrowedTag(children: React.ReactNode, asChild?: boolean): BorrowedTag | null {
+  return asChild ? (React.Children.only(children) as BorrowedTag) : null;
+}
+
+/** Gói prop dựng nên một mục menu: DOM props của RAC cộng bộ `data-*` dịch từ Radix. */
+type ItemTagProps = ItemDomProps & Record<`data-${string}`, string | boolean | undefined>;
+
+function renderItemTag(tag: BorrowedTag | null, domProps: ItemTagProps, content: React.ReactNode) {
+  if (!tag) {
+    return <div {...domProps}>{content}</div>;
+  }
+  return (
+    <Slot {...(domProps as React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>)}>
+      {React.cloneElement(tag, undefined, content)}
+    </Slot>
+  );
+}
 
 /**
  * Dịch trạng thái item của RAC sang bộ `data-*` mà Radix phát ra và CSS của kho đang bám.
@@ -322,6 +356,8 @@ interface DropdownMenuItemPropsOwn {
   disabled?: boolean;
   onSelect?: (event: Event) => void;
   textValue?: string;
+  /** Mượn thẻ của con thay vì dựng `<div>` riêng — chỗ để nhét một `<Link>` vào một mục menu. */
+  asChild?: boolean;
 }
 
 export type DropdownMenuItemProps = React.PropsWithChildren<DropdownMenuItemPropsOwn>;
@@ -334,7 +370,9 @@ export function DropdownMenuItem({
   disabled,
   onSelect,
   textValue,
+  asChild,
 }: DropdownMenuItemProps) {
+  const tag = borrowedTag(children, asChild);
   return (
     <MenuItem
       isDisabled={disabled}
@@ -344,17 +382,22 @@ export function DropdownMenuItem({
         "ui-dropdown-menu-item [&_svg:not([class*='text-'])]:text-muted-foreground",
         className,
       )}
-      render={(props, state) => (
-        <div
-          {...(props as ItemDomProps)}
-          data-slot="dropdown-menu-item"
-          data-inset={inset}
-          data-variant={variant}
-          {...radixItemState(state)}
-        />
-      )}
+      render={(props, state) => {
+        const { children: content, ...rest } = props as ItemDomProps;
+        return renderItemTag(
+          tag,
+          {
+            ...rest,
+            "data-slot": "dropdown-menu-item",
+            "data-inset": inset,
+            "data-variant": variant,
+            ...radixItemState(state),
+          },
+          content,
+        );
+      }}
     >
-      {children}
+      {tag ? tag.props.children : children}
     </MenuItem>
   );
 }
@@ -362,17 +405,33 @@ export function DropdownMenuItem({
 interface DropdownMenuLabelPropsOwn {
   className?: string;
   inset?: boolean;
+  /** Mượn thẻ của con thay vì dựng `<header>` riêng. */
+  asChild?: boolean;
 }
 
 export type DropdownMenuLabelProps = React.PropsWithChildren<DropdownMenuLabelPropsOwn>;
 
-/** Radix dựng `<div>`; nút nhãn của một collection RAC là `Header`, tức `<header>`. */
-export function DropdownMenuLabel({ children, className, inset }: DropdownMenuLabelProps) {
+/**
+ * Radix dựng `<div>`; nút nhãn của một collection RAC là `Header`, tức `<header>`.
+ *
+ * `Header` không đi qua `useRenderProps`, nên `props.children` trong `render` CHÍNH là children của
+ * consumer — không có `Provider` chen vào như ở `MenuItem`. `Slot` vì thế nhận thẳng gói props.
+ */
+export function DropdownMenuLabel({ children, className, inset, asChild }: DropdownMenuLabelProps) {
   return (
     <Header
       data-slot="dropdown-menu-label"
       data-inset={inset}
       className={cn("ui-dropdown-menu-label", className)}
+      render={
+        asChild
+          ? (props) => (
+              <Slot
+                {...(props as React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>)}
+              />
+            )
+          : undefined
+      }
     >
       {children}
     </Header>
@@ -398,6 +457,8 @@ interface DropdownMenuCheckboxItemPropsOwn {
   onCheckedChange?: (checked: boolean) => void;
   disabled?: boolean;
   textValue?: string;
+  /** Mượn thẻ của con thay vì dựng `<div>` riêng; ô đánh dấu vẫn nằm bên trong thẻ mượn. */
+  asChild?: boolean;
 }
 
 export type DropdownMenuCheckboxItemProps =
@@ -418,7 +479,9 @@ export function DropdownMenuCheckboxItem({
   onCheckedChange,
   disabled,
   textValue,
+  asChild,
 }: DropdownMenuCheckboxItemProps) {
+  const tag = borrowedTag(children, asChild);
   return (
     <MenuSection
       selectionMode="multiple"
@@ -435,19 +498,21 @@ export function DropdownMenuCheckboxItem({
         className={cn("ui-dropdown-menu-checkbox-item", className)}
         render={(props, state) => {
           const { children: content, ...rest } = props as ItemDomProps;
-          return (
-            <div {...rest} data-slot="dropdown-menu-checkbox-item" {...radixItemState(state)}>
+          return renderItemTag(
+            tag,
+            { ...rest, "data-slot": "dropdown-menu-checkbox-item", ...radixItemState(state) },
+            <>
               <span className="ui-dropdown-menu-indicator-slot">
                 {state.isSelected ? (
                   <Check className="ui-dropdown-menu-check" aria-hidden="true" />
                 ) : null}
               </span>
               {content}
-            </div>
+            </>,
           );
         }}
       >
-        {children}
+        {tag ? tag.props.children : children}
       </MenuItem>
     </MenuSection>
   );
@@ -458,6 +523,8 @@ interface DropdownMenuRadioItemPropsOwn {
   value: string;
   disabled?: boolean;
   textValue?: string;
+  /** Mượn thẻ của con thay vì dựng `<div>` riêng. */
+  asChild?: boolean;
 }
 
 export type DropdownMenuRadioItemProps = React.PropsWithChildren<DropdownMenuRadioItemPropsOwn>;
@@ -468,22 +535,25 @@ export function DropdownMenuRadioItem({
   value,
   disabled,
   textValue,
+  asChild,
 }: DropdownMenuRadioItemProps) {
+  const tag = borrowedTag(children, asChild);
   return (
     <MenuItem
       id={value}
       isDisabled={disabled}
       textValue={textValue}
       className={cn("ui-dropdown-menu-radio-item", className)}
-      render={(props, state) => (
-        <div
-          {...(props as ItemDomProps)}
-          data-slot="dropdown-menu-radio-item"
-          {...radixItemState(state)}
-        />
-      )}
+      render={(props, state) => {
+        const { children: content, ...rest } = props as ItemDomProps;
+        return renderItemTag(
+          tag,
+          { ...rest, "data-slot": "dropdown-menu-radio-item", ...radixItemState(state) },
+          content,
+        );
+      }}
     >
-      {children}
+      {tag ? tag.props.children : children}
     </MenuItem>
   );
 }
@@ -493,6 +563,8 @@ interface DropdownMenuSubTriggerPropsOwn {
   inset?: boolean;
   disabled?: boolean;
   textValue?: string;
+  /** Mượn thẻ của con thay vì dựng `<div>` riêng; mũi tên submenu vẫn nằm bên trong thẻ mượn. */
+  asChild?: boolean;
 }
 
 export type DropdownMenuSubTriggerProps = React.PropsWithChildren<DropdownMenuSubTriggerPropsOwn>;
@@ -503,7 +575,9 @@ export function DropdownMenuSubTrigger({
   inset,
   disabled,
   textValue,
+  asChild,
 }: DropdownMenuSubTriggerProps) {
+  const tag = borrowedTag(children, asChild);
   return (
     <MenuItem
       isDisabled={disabled}
@@ -514,20 +588,22 @@ export function DropdownMenuSubTrigger({
       )}
       render={(props, state) => {
         const { children: content, ...rest } = props as ItemDomProps;
-        return (
-          <div
-            {...rest}
-            data-slot="dropdown-menu-sub-trigger"
-            data-inset={inset}
-            {...radixItemState(state)}
-          >
+        return renderItemTag(
+          tag,
+          {
+            ...rest,
+            "data-slot": "dropdown-menu-sub-trigger",
+            "data-inset": inset,
+            ...radixItemState(state),
+          },
+          <>
             {content}
             <ChevronRight className="ui-dropdown-menu-sub-trigger-icon" aria-hidden="true" />
-          </div>
+          </>,
         );
       }}
     >
-      {children}
+      {tag ? tag.props.children : children}
     </MenuItem>
   );
 }

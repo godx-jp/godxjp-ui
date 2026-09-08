@@ -50,14 +50,22 @@ function IsolateApp() {
   }
 
   if (!Render) return null;
-  const rtl = new URLSearchParams(window.location.search).get("rtl") === "1";
+  const sp = new URLSearchParams(window.location.search);
+  const rtl = sp.get("rtl") === "1";
+  // `?theme=dark` — the SAME switch /frame/** has always honoured. It was read nowhere here, so
+  // every `/isolate/<id>?theme=dark` in a gate's route list silently audited the LIGHT theme a
+  // second time: two of check:contrast's eleven routes were duplicates of the two before them and
+  // nobody had ever measured a dark surface through this entry point. Same failure shape as the
+  // "Showcase not found" routes that gate already learned about — a query string that resolves to
+  // nothing reports success on a page that was never the page under test.
+  const theme = sp.get("theme") === "dark" ? "dark" : "light";
 
   return (
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
         {/* Demos are authored in Japanese; force ja so component chrome (search/clear/empty
             placeholders via t()) matches the demo copy instead of the AppProvider vi default. */}
-        <AppProvider defaultLocale="ja" persist={false}>
+        <AppProvider defaultLocale="ja" theme={theme} persist={false}>
           {/* `<main>` vs `<div>` is decided at runtime by probing the rendered story for an
               own `<main>` — the SAME detector `/frame/**` uses. It replaced a hardcoded
               story-id allowlist that had drifted behind the catalog and was double-wrapping

@@ -17,10 +17,22 @@ import * as React from "react";
  * Nút cần trả về được ghi lại NGAY TRONG LƯỢT DỰNG mở ra, không phải trong một effect: effect của
  * con chạy trước effect của cha, nên đến lượt cha thì `FocusScope` của react-aria đã kéo tiêu điểm
  * vào trong tấm nội dung rồi.
+ *
+ * `contentRef` là tuỳ chọn, và chỉ lớp phủ NON-MODAL mới cần truyền. Một lớp phủ modal (Dialog,
+ * Sheet) đóng thì tiêu điểm chắc chắn đang ở trong nó hoặc đã rơi xuống `<body>`, nên trả về luôn
+ * là đúng. Popover non-modal thì có thêm một đường đóng nữa: tiêu điểm ĐI RA — Tab sang phần tử kế
+ * tiếp, hay bấm thẳng vào một ô nhập khác — và chính việc đi ra ấy đóng panel. Ở đường đó, kéo tiêu
+ * điểm về trigger là CƯỚP tiêu điểm chứ không phải trả. Truyền `contentRef` để phân biệt: còn ở
+ * trong tấm (hoặc đã rơi xuống `<body>`) thì trả, đã sang một phần tử khác còn sống thì để yên.
+ *
+ * Sự kiện `closeAutoFocus` vẫn phát ở MỌI đường đóng, kể cả khi không trả tiêu điểm: consumer dùng
+ * nó để tự đưa tiêu điểm tới chỗ người dùng cần gõ tiếp, và việc đó không được phụ thuộc vào tiêu
+ * điểm đang tình cờ ở đâu.
  */
 export function useOverlayCloseFocus(
   isOpen: boolean,
   onCloseAutoFocus?: (event: Event) => void,
+  contentRef?: React.RefObject<HTMLElement | null>,
 ): void {
   const nodeToRestore = React.useRef<HTMLElement | null>(null);
   const renderedOpen = React.useRef(false);
@@ -40,10 +52,17 @@ export function useOverlayCloseFocus(
       onCloseAutoFocus?.(event);
       const node = nodeToRestore.current;
       nodeToRestore.current = null;
-      if (!event.defaultPrevented && node?.isConnected === true) {
+      const active = document.activeElement;
+      const focusMovedAway =
+        contentRef != null &&
+        active != null &&
+        active !== document.body &&
+        active.isConnected &&
+        contentRef.current?.contains(active) !== true;
+      if (!event.defaultPrevented && !focusMovedAway && node?.isConnected === true) {
         node.focus();
       }
     }
     committedOpen.current = isOpen;
-  }, [isOpen, onCloseAutoFocus]);
+  }, [isOpen, onCloseAutoFocus, contentRef]);
 }

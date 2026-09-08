@@ -534,6 +534,27 @@
     gap: 0;
   }
 
+  /* FILL — `fill`. Both wrappers take the height the parent offers and pass it down as a
+   * DEFINITE row, so a column that scrolls scrolls itself instead of growing the page. The
+   * `minmax(0, 1fr)` row (not `1fr`, which floors at min-content) is what stops a long
+   * transcript from pushing the grid past its own box. */
+  .ui-split-pane-scope[data-fill="true"] {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+    block-size: 100%;
+    min-block-size: 0;
+  }
+
+  .ui-split-pane[data-fill="true"] {
+    grid-template-rows: minmax(0, 1fr);
+    min-block-size: 0;
+  }
+
+  .ui-split-pane[data-fill="true"] > .ui-split-pane-main,
+  .ui-split-pane[data-fill="true"] > .ui-split-pane-aside {
+    min-block-size: 0;
+  }
+
   .ui-resizable-panel-group {
     display: flex;
     min-height: 0;
@@ -1017,6 +1038,21 @@
     gap: var(--space-stack-md);
     text-align: center;
     padding: var(--empty-state-space-y) var(--empty-state-space-x);
+  }
+
+  /* `page` already DECLARES "I am this page's primary zero-state" — the body IS this block. So
+   * when the page hands the body a definite height (PageContainer `fill`), the block takes that
+   * height and centres in it, instead of top-packing at a third of the screen above half a
+   * viewport of white. One fact (this page's body is its empty state), not a second prop the call
+   * site has to keep in lockstep with `fill`.
+   *
+   * Quiet by default (rule #44): under the ordinary auto-height body, `min-block-size: 100%`
+   * resolves against an indefinite height and `justify-content` has nothing to distribute, so
+   * every existing page renders byte-identically. `section` and `compact` are untouched — they
+   * sit INSIDE a section that owns its own height and must never stretch it. */
+  .ui-empty-state[data-variant="page"] {
+    min-block-size: 100%;
+    justify-content: center;
   }
 
   .ui-empty-state-title {

@@ -1,9 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 
+import { AppProvider } from "@/app/app-provider";
+import type { AppLocale } from "@/app/types";
 import { Progress } from "../progress";
 
 const bar = () => screen.getByRole("progressbar");
+
+const renderIn = (locale: AppLocale, ui: React.ReactElement) =>
+  render(ui, {
+    wrapper: ({ children }) => (
+      <AppProvider persist={false} defaultLocale={locale} fallbackLocale="en">
+        {children}
+      </AppProvider>
+    ),
+  });
 
 describe("Progress", () => {
   it("reports the value via aria and sets the bar width", () => {
@@ -62,9 +73,22 @@ describe("Progress", () => {
   });
 
   it("falls back to aria-label and no label node when label is omitted", () => {
+    // No AppProvider above it → the library defaults to the vi catalogue.
     const { container } = render(<Progress value={60} />);
-    expect(bar()).toHaveAttribute("aria-label", "Progress");
+    expect(bar()).toHaveAttribute("aria-label", "Tiến độ");
     expect(bar()).not.toHaveAttribute("aria-labelledby");
     expect(container.querySelector(".ui-progress-label")).toBeNull();
+  });
+
+  // The unlabelled bar still needs a name, and that name is a UI string like every other one in
+  // this library: it comes from the catalogue. A hardcoded English "Progress" is what a Vietnamese
+  // screen-reader user actually heard on a fully translated screen.
+  it.each([
+    ["vi", "Tiến độ"],
+    ["ja", "進捗"],
+    ["en", "Progress"],
+  ] as const)("names the unlabelled bar from the %s catalogue", (locale, expected) => {
+    renderIn(locale, <Progress value={60} />);
+    expect(bar()).toHaveAttribute("aria-label", expected);
   });
 });

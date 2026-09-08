@@ -53,16 +53,30 @@ import { Button } from "../general/button";
  * `it.each` on purpose: the risk is shared by every overlay in the library, so the next one that
  * is added gets a row here rather than its own bespoke test.
  *
- * WHICH OVERLAYS HIDE THE BACKGROUND AT ALL (Radix defaults, verified in real Chromium at
- * /frame — see the issue thread for the numbers):
- *   • Select ......... always modal — `hideOthers` unconditionally. role="listbox" → NOT exempt.
- *   • DropdownMenu ... `modal` defaults TRUE. role="menu" → NOT exempt.
- *   • ContextMenu .... `modal` defaults TRUE. role="menu" → NOT exempt.
+ * WHICH OVERLAYS HIDE THE BACKGROUND AT ALL (verified in real Chromium at /frame — see the issue
+ * thread for the numbers). Two backings are live at once while the Radix→react-aria migration is
+ * in flight, and they hide by DIFFERENT means; `hiddenBackgroundCount` asks about the result
+ * rather than the attribute, and the reasoning behind that is on `neutralisedBackground` in
+ * `src/test/overlay-background.tsx`.
+ *
+ *   RADIX-BACKED (`hideOthers` → `aria-hidden` + `data-aria-hidden`, `inert` mirrored on top by
+ *   `components/general/inert-background.ts`):
+ *   • Select ......... always modal — `hideOthers` unconditionally. role="listbox" → NOT exempt,
+ *                      so the `inert` mirror is what keeps axe quiet. This is the row that goes
+ *                      red first if that mirror regresses.
+ *   • ContextMenu .... `modal` defaults TRUE. role="menu" → NOT exempt. Same.
  *   • Menubar ........ Radix hard-codes `modal: false` → nothing is hidden.
- *   • Dialog/Sheet ... `modal` defaults TRUE, but role="dialog" + a full-bleed scrim, which is
- *                      exactly what axe's `isModalOpen` probe looks for → exempt.
- *   • Popover ........ `modal` defaults FALSE → nothing is hidden at all. SearchSelect and
- *                      DatePicker are built on Popover and inherit that.
+ *
+ *   REACT-ARIA-BACKED (`ariaHideOutside(…, { shouldUseInert: true })` → `inert` in a browser, a
+ *   bare `aria-hidden="true"` in jsdom, which has no `inert` at all):
+ *   • DropdownMenu ... modal by default → the background IS hidden. Its surface is a RAC
+ *                      `Popover`, and RAC gives a modal Popover `role="dialog"` of its own
+ *                      accord — so unlike the Radix menu this one now lands inside axe's
+ *                      `isModalOpen` exemption as well as being `inert`.
+ *   • Dialog/Sheet ... modal, role="dialog" + a full-bleed scrim, which is exactly what axe's
+ *                      `isModalOpen` probe looks for → exempt.
+ *   • Popover ........ non-modal → nothing is hidden at all. SearchSelect and DatePicker are
+ *                      built on Popover and inherit that.
  */
 
 type OverlayCase = {
@@ -232,13 +246,13 @@ describe("overlay over a real app background — axe aria-hidden-focus (#352)", 
     expectHiddenBackgroundNotTabbable();
   });
 
-  it.each(CASES)("$name: Radix hiding behaviour is the one we reasoned about", async (c) => {
+  it.each(CASES)("$name: the hiding behaviour is the one we reasoned about", async (c) => {
     renderWithUi(<OverlayBackground>{c.render()}</OverlayBackground>);
     await c.open();
     await c.assertOpen();
-    // Pins the `modal` defaults the fix is scoped against: the day a Radix upgrade (or a DS
-    // change) starts hiding the background for an overlay that did not, this row goes red and
-    // the row above stops being vacuous.
+    // Pins the modality defaults the fix is scoped against: the day a Radix upgrade, a react-aria
+    // upgrade or a DS change starts hiding the background for an overlay that did not — or stops
+    // hiding it for one that did — this row goes red and the row above stops being vacuous.
     expect(hiddenBackgroundCount() > 0).toBe(c.hidesBackground);
   });
 });

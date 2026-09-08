@@ -7,7 +7,13 @@ body,
   padding: 0;
   height: auto;
   min-height: 0;
-  background: transparent;
+  /* THE THEME'S PAGE GROUND, not `transparent`. "Component only" is about chrome — no topbar, no
+   * device frame, no shell — not about refusing to paint the surface every component in this
+   * library is designed to sit on. Left transparent, the ground was the browser's own white, so
+   * `?theme=dark` rendered the dark palette's near-white ink onto white: check:contrast measured
+   * `#f7f7f3 on #ffffff` = 1.07:1 for the page title of every dark route, a failure that belongs
+   * to the harness and not to a single token. A backdrop is not chrome. */
+  background: hsl(var(--background));
 }
 
 body {

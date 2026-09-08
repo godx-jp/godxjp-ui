@@ -175,9 +175,11 @@ describe("BranchScopePicker", () => {
       />,
     );
 
-    // The subset list is visible with its checkboxes; b-1 is checked.
-    const checked = screen.getByRole("checkbox", { name: "東京本社" });
-    expect(checked).toHaveAttribute("data-state", "checked");
+    // The subset list is visible with its checkboxes; b-1 is checked. `role="checkbox"` is the
+    // real `<input>` react-aria renders, so the check state is read the native way instead of off
+    // the `data-state` CSS hook, which lives on the `[data-slot="checkbox"]` box around it and is
+    // pinned there by checkbox-interaction.test.tsx.
+    expect(screen.getByRole("checkbox", { name: "東京本社" })).toBeChecked();
 
     // Check another branch.
     await userEvent.click(screen.getByRole("checkbox", { name: "大阪支店" }));
