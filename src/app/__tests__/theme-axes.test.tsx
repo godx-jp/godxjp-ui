@@ -5,6 +5,7 @@ import { readStoredPreferences } from "../storage";
 import {
   APP_THEMES,
   applyThemeAxes,
+  applyPrimaryColor,
   isAppTheme,
   PREFERS_DARK_SCHEME_QUERY,
   resolveAppTheme,
@@ -195,5 +196,34 @@ describe("theme: system", () => {
     expect(readStoredPreferences(storageKey).theme).toBe("system");
     expect(html().dataset.theme).toBe("dark");
     localStorage.removeItem(storageKey);
+  });
+});
+
+describe("temporary primary palette", () => {
+  it("restores the original palette across project switches and preserves other theme axes", () => {
+    const root = document.createElement("div");
+    root.dataset.theme = "dark";
+    root.style.setProperty("--primary", "210 50% 50%", "important");
+    const restoreFirst = applyPrimaryColor(root, "#ff0000");
+    expect(root.style.getPropertyValue("--primary")).toBe("0 100% 50%");
+    expect(root.style.getPropertyValue("--primary-hover")).not.toBe("");
+    const restoreSecond = applyPrimaryColor(root, "#0000ff", "#ffffff");
+    expect(root.style.getPropertyValue("--primary")).toBe("240 100% 50%");
+    expect(root.style.getPropertyValue("--primary-foreground")).toBe("0 0% 100%");
+    restoreSecond();
+    expect(root.style.getPropertyValue("--primary")).toBe("0 100% 50%");
+    restoreFirst();
+    expect(root.style.getPropertyValue("--primary")).toBe("210 50% 50%");
+    expect(root.style.getPropertyPriority("--primary")).toBe("important");
+    expect(root.style.getPropertyValue("--primary-hover")).toBe("");
+    expect(root.dataset.theme).toBe("dark");
+  });
+
+  it.each(["", "red", "#nope00", "#fff; color:red"])("ignores invalid input %s", (color) => {
+    const root = document.createElement("div");
+    const restore = applyPrimaryColor(root, color);
+    expect(root.style.cssText).toBe("");
+    restore();
+    expect(root.style.cssText).toBe("");
   });
 });

@@ -55,7 +55,7 @@
     "upload": {
       "dropzoneLabel": "Upload files",
       "dropzoneHint": "Drag and drop files here, or click to browse",
-      "dropzoneMeta": "Uploads go to temp storage — promote on form save",
+      "dropzoneMeta": "Selected files appear here.",
       "buttonLabel": "Choose file",
       "addImage": "Add image",
       "uploading": "Uploading…",
@@ -478,5 +478,13 @@
     "summaryPie": "Pie chart with {slices} slices",
     "summaryTrend": "Bar trend with {points} data points",
     "trendCurrent": "current"
+  },
+  "rangeTimeline": {
+    "outsideRange": "Outside the visible range",
+    "schedule": "Schedule"
+  },
+  "textExamples": {
+    "preservedText": "Plain text",
+    "sampleText": "First line\n  Indented line\n\nLast line"
   }
 }

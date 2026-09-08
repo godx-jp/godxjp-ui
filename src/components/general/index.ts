@@ -8,3 +8,4 @@ export { Reveal } from "./reveal";
 export type { RevealProp, RevealProps } from "./reveal";
 export { Activity } from "./activity";
 export type { ActivityProp, ActivityProps } from "./activity";
+export { VisuallyHidden } from "./visually-hidden";

@@ -11,12 +11,12 @@ import {
   ScrollBar,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
-import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
  * ScrollArea — custom scrollbar container. ALWAYS set an explicit height/max-height
  * (vertical) or width (horizontal) on the wrapper or the scrollbar never appears.
- * `type` controls when the bar is visible; `ScrollBar orientation="horizontal"`
+ * `type` controls when the bar is visible; `ScrollArea orientation="horizontal"`
  * adds a horizontal bar. Composed only from real @godxjp/ui components.
  */
 const entries = Array.from(
@@ -244,31 +244,37 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>
-              横スクロール（ScrollBar orientation=&quot;horizontal&quot;）
-            </CardTitle>
-            <CardDescription>
-              横方向のバーは明示的に ScrollBar
-              を子要素として配置します。中身は幅を指定して溢れさせます。
-            </CardDescription>
+            <CardTitle level={2}>ScrollArea</CardTitle>
+            <CardDescription>orientation="horizontal"</CardDescription>
           </CardHeader>
           <CardContent>
-            <Card variant="outline" className="w-full">
-              <CardContent flush>
-                <ScrollArea>
-                  <CardContent>
-                    <Flex gap="lg" className="w-max">
-                      {columns.map((c) => (
-                        <div key={c} className="text-sm whitespace-nowrap tabular-nums">
-                          {c}
-                        </div>
-                      ))}
-                    </Flex>
-                  </CardContent>
-                  <ScrollBar orientation="horizontal" />
-                </ScrollArea>
-              </CardContent>
-            </Card>
+            <ScrollArea orientation="horizontal" type="always">
+              <ResponsiveGrid flow="columns">
+                {columns.map((column) => (
+                  <Card key={column}>
+                    <CardContent solo>
+                      <Text tabular>{column}</Text>
+                    </CardContent>
+                  </Card>
+                ))}
+              </ResponsiveGrid>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>個別の ScrollBar を追加する</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea type="always">
+              <ResponsiveGrid flow="columns">
+                {columns.map((column) => (
+                  <Text key={column}>{column}</Text>
+                ))}
+              </ResponsiveGrid>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
           </CardContent>
         </Card>
 

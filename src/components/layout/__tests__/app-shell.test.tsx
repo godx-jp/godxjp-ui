@@ -688,3 +688,39 @@ describe("AppShell", () => {
     expect(drawer.querySelector('.sb-root[data-collapsed="true"]')).toBeNull();
   });
 });
+
+describe("AppShell without a sidebar", () => {
+  it.each([undefined, null, false])("omits the empty navigation landmark for %s", (sidebar) => {
+    const { queryByRole, getByRole } = renderWithUi(
+      <AppShell sidebar={sidebar} logo="Workspace" topbar="Utilities" sidebarCollapsed>
+        <p>Dashboard</p>
+      </AppShell>,
+    );
+    expect(queryByRole("complementary")).toBeNull();
+    expect(getByRole("banner")).toHaveTextContent("Workspace");
+    expect(getByRole("banner")).toHaveTextContent("Utilities");
+    expect(getByRole("main")).toHaveTextContent("Dashboard");
+    expect(queryByRole("button", { name: /menu|navigation/i })).toBeNull();
+  });
+
+  it("keeps an independent rail and restores the sidebar when supplied", () => {
+    const { getAllByRole, rerender } = renderWithUi(
+      <AppShell navRail={<nav>Applications</nav>}>Dashboard</AppShell>,
+    );
+    expect(getAllByRole("complementary")).toHaveLength(1);
+    rerender(
+      <AppShell navRail={<nav>Applications</nav>} sidebar={<nav>Project</nav>}>
+        Issues
+      </AppShell>,
+    );
+    expect(getAllByRole("complementary")).toHaveLength(2);
+  });
+
+  it("has no accessibility violations without a sidebar", async () => {
+    await expectNoA11yViolations(
+      <AppShell topbar="Workspace">
+        <h1>Dashboard</h1>
+      </AppShell>,
+    );
+  });
+});

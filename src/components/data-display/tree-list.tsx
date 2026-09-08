@@ -1,5 +1,4 @@
-import type { ReactNode } from "react";
-import { ChevronRight, Package } from "lucide-react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { Badge } from "./badge";
 
@@ -23,22 +22,18 @@ export function TreeList({ items }: TreeListProps) {
         <li
           className="ui-tree-item"
           data-active={item.active ? "true" : undefined}
-          data-depth={item.depth ?? 0}
+          data-depth={Math.max(0, item.depth ?? 0)}
+          style={{ "--tree-item-depth": Math.max(0, item.depth ?? 0) } as CSSProperties}
           aria-current={item.active ? "true" : undefined}
           key={item.id}
         >
-          <ChevronRight aria-hidden="true" />
-          <Package aria-hidden="true" />
           <div className="ui-tree-item-body">
-            <div className="ui-tree-item-title">
-              {item.active ? <span className="sr-only">Current: </span> : null}
-              {item.title}
-            </div>
+            <div className="ui-tree-item-title">{item.title}</div>
             {item.description ? (
               <div className="ui-tree-item-description">{item.description}</div>
             ) : null}
           </div>
-          {item.badge ? <Badge variant="secondary">{item.badge}</Badge> : null}
+          {item.badge != null ? <Badge variant="secondary">{item.badge}</Badge> : null}
         </li>
       ))}
     </ul>

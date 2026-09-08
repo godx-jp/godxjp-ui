@@ -20,7 +20,7 @@ export type {
  * file resolves, including nothing at all while the `--focus-outline` switch ships off.
  */
 export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(function TopbarItem(
-  { asChild = false, className, type, ...props },
+  { asChild = false, className, type, hideBelow, ...props },
   ref,
 ) {
   const Comp = asChild ? Slot : "button";
@@ -28,6 +28,7 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
     <Comp
       ref={ref}
       data-slot="topbar-item"
+      data-hide-below={hideBelow}
       className={cn("ui-topbar-item ui-focus-ring", className)}
       // A bare `<button>` inside a form defaults to `type="submit"`; under `asChild` the child owns
       // its own element and must not be handed a `type` it may not accept (an `<a>`, a `<div>`).

@@ -412,7 +412,27 @@ export type PermissionMatrixProp = {
 export type ScrollAreaAnchorProp = "none" | "bottom";
 
 /** @see ScrollArea */
+/**
+ * @see ScrollArea — which AXES scroll. This is not decoration: Radix sets the viewport's
+ * `overflowX`/`overflowY` inline from which scrollbars are mounted, so an axis with no `ScrollBar`
+ * is `overflow: hidden` and its content is CLIPPED, not merely un-barred.
+ *
+ * `both` is a third value rather than an array or a pair of booleans because the axes are one
+ * decision — a pane scrolls down, across, or freely — and a closed union is what `check:prop-vocabulary`
+ * and the MCP catalog can carry.
+ */
+export type ScrollAreaOrientationProp = "vertical" | "horizontal" | "both";
+
 export type ScrollAreaProp = {
+  /**
+   * Axes that scroll, and therefore which scrollbars render. Default `vertical` — the previous
+   * behaviour, unchanged.
+   *
+   * Reach for `horizontal` for a strip of non-shrinking columns (a board, a lane of cards): the
+   * viewport keeps its tab stop, so the strip is scrollable from the keyboard, and the consumer
+   * writes no overflow styling of its own.
+   */
+  orientation?: ScrollAreaOrientationProp;
   /**
    * Ref to the element that actually SCROLLS — the Radix viewport — not the root. The root is
    * `overflow: hidden` and never scrolls, so the component's own `ref` cannot serve.

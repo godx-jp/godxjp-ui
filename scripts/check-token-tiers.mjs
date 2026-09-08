@@ -138,6 +138,7 @@ const componentPrefixes = {
     "permission-matrix",
     "tree",
     "timeline",
+    "range-timeline",
     "avatar",
     "accordion",
     "carousel",
@@ -150,6 +151,7 @@ const componentPrefixes = {
   ],
   "data-entry": ["password-strength", "branch-scope-picker"],
   shell: [
+    "responsive-grid",
     "sidebar",
     "topbar",
     "kbd",

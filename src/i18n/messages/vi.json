@@ -55,7 +55,7 @@
     "upload": {
       "dropzoneLabel": "Tải file lên",
       "dropzoneHint": "Kéo thả file vào đây, hoặc bấm để chọn",
-      "dropzoneMeta": "Upload vào temp — promote khi lưu form",
+      "dropzoneMeta": "Tệp đã chọn sẽ hiển thị tại đây.",
       "buttonLabel": "Chọn file",
       "addImage": "Thêm ảnh",
       "uploading": "Đang tải lên…",
@@ -466,5 +466,13 @@
     "summaryPie": "Biểu đồ tròn gồm {slices} phần",
     "summaryTrend": "Biểu đồ cột xu hướng gồm {points} điểm dữ liệu",
     "trendCurrent": "hiện tại"
+  },
+  "rangeTimeline": {
+    "outsideRange": "Ngoài khoảng đang xem",
+    "schedule": "Lịch công việc"
+  },
+  "textExamples": {
+    "preservedText": "Văn bản thuần",
+    "sampleText": "Dòng đầu\n  Dòng thụt vào\n\nDòng cuối"
   }
 }

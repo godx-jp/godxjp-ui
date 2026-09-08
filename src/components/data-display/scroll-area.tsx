@@ -189,7 +189,16 @@ export const ScrollArea = React.forwardRef<
   ScrollAreaProps
 >(
   (
-    { className, children, viewportRef, anchor = "none", anchorOffset, onAnchoredChange, ...props },
+    {
+      className,
+      children,
+      viewportRef,
+      anchor = "none",
+      anchorOffset,
+      onAnchoredChange,
+      orientation = "vertical",
+      ...props
+    },
     ref,
   ) => {
     // State, not a ref, so the anchoring effect re-runs the moment the viewport mounts.
@@ -220,11 +229,18 @@ export const ScrollArea = React.forwardRef<
           tabIndex={0}
           data-slot="scroll-area-viewport"
           data-anchor={anchor}
+          data-orientation={orientation}
           className="size-full rounded-[inherit]"
         >
           {children}
         </ScrollAreaPrimitive.Viewport>
-        <ScrollBar />
+        {/* Mounting a ScrollBar is what ENABLES its axis — Radix reads `scrollbarXEnabled` /
+            `scrollbarYEnabled` from these children and writes the viewport's `overflowX`/`overflowY`
+            inline. So the axis a caller did not ask for stays `overflow: hidden`, and asking for
+            `horizontal` is the whole fix: no consumer overflow class, and nothing here for a
+            stylesheet to override (an inline style would win over it anyway). */}
+        {orientation !== "horizontal" && <ScrollBar orientation="vertical" />}
+        {orientation !== "vertical" && <ScrollBar orientation="horizontal" />}
         <ScrollAreaPrimitive.Corner />
       </ScrollAreaPrimitive.Root>
     );

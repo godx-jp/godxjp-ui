@@ -91,3 +91,68 @@ export function applyThemeAxes(el: HTMLElement, axes: Partial<AppThemeAxes>): vo
     else el.style.setProperty("--scaling", String(axes.scaling));
   }
 }
+
+/** Apply an entity's action palette, including portals. Call the returned cleanup on scope exit. */
+export function applyPrimaryColor(
+  root: HTMLElement,
+  color: string,
+  foreground?: string | null,
+): () => void {
+  const parse = (value: string): number[] | null => {
+    if (!/^#[\da-f]{6}$/i.test(value)) return null;
+    return [1, 3, 5].map((offset) => parseInt(value.slice(offset, offset + 2), 16) / 255);
+  };
+  const rgb = parse(color);
+  if (!rgb) return () => {};
+  const luminance = (channels: number[]) =>
+    channels.reduce(
+      (sum, value, index) =>
+        sum +
+        (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4) *
+          [0.2126, 0.7152, 0.0722][index],
+      0,
+    );
+  const text =
+    (foreground && parse(foreground)) || (luminance(rgb) > 0.179 ? [0, 0, 0] : [1, 1, 1]);
+  const hsl = (channels: number[]) => {
+    const [r, g, b] = channels;
+    const max = Math.max(r, g, b),
+      min = Math.min(r, g, b);
+    const delta = max - min,
+      lightness = (max + min) / 2;
+    const saturation = delta === 0 ? 0 : delta / (1 - Math.abs(2 * lightness - 1));
+    const hue =
+      delta === 0
+        ? 0
+        : 60 *
+          (max === r
+            ? ((g - b) / delta + 6) % 6
+            : max === g
+              ? (b - r) / delta + 2
+              : (r - g) / delta + 4);
+    return `${hue} ${saturation * 100}% ${lightness * 100}%`;
+  };
+  const away = luminance(text) > 0.5 ? 0 : 1;
+  const shade = (amount: number) =>
+    hsl(rgb.map((channel) => channel * (1 - amount) + away * amount));
+  const palette: Record<string, string> = {
+    "--primary": hsl(rgb),
+    "--primary-foreground": hsl(text),
+    "--primary-hover": shade(0.12),
+    "--primary-active": shade(0.24),
+    "--primary-border": hsl(rgb),
+    "--ring": hsl(rgb),
+  };
+  const previous = Object.keys(palette).map((key) => [
+    key,
+    root.style.getPropertyValue(key),
+    root.style.getPropertyPriority(key),
+  ]);
+  for (const [key, value] of Object.entries(palette)) root.style.setProperty(key, value);
+  return () => {
+    for (const [key, value, priority] of previous) {
+      if (value) root.style.setProperty(key, value, priority);
+      else root.style.removeProperty(key);
+    }
+  };
+}

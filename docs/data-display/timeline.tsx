@@ -1,3 +1,4 @@
+import { useTranslation } from "@godxjp/ui/i18n";
 import {
   Card,
   CardContent,
@@ -5,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
   Timeline,
+  RangeTimeline,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -52,6 +54,11 @@ const approvalItems: TimelineItem[] = [
 ];
 
 export default function Demo() {
+  const { t, locale } = useTranslation();
+  const dayLabel = (day: number) =>
+    new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", timeZone: "UTC" }).format(
+      Date.UTC(2026, 8, day),
+    );
   return (
     <PageContainer title="Timeline" subtitle="現在のステップを強調する縦型のイベント一覧">
       <Flex direction="col" gap="lg">
@@ -104,6 +111,40 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Timeline variant="status" items={approvalItems} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>RangeTimeline</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RangeTimeline
+              label={t("rangeTimeline.schedule")}
+              bands={[
+                {
+                  label: new Intl.DateTimeFormat(locale, {
+                    year: "numeric",
+                    month: "long",
+                    timeZone: "UTC",
+                  }).format(Date.UTC(2026, 8, 1)),
+                  units: 7,
+                },
+              ]}
+              columns={Array.from({ length: 7 }, (_, index) => ({
+                label: dayLabel(index + 1),
+                units: 1,
+              }))}
+              rows={[
+                {
+                  id: "example",
+                  label: "期日確認",
+                  start: 1,
+                  end: 4,
+                  startLabel: dayLabel(2),
+                  endLabel: dayLabel(5),
+                },
+              ]}
+            />
           </CardContent>
         </Card>
       </Flex>

@@ -32,6 +32,7 @@ export function AppShell({
   onMobileNavOpenChange,
 }: AppShellProp) {
   const { t } = useTranslation();
+  const hasSidebar = sidebar !== undefined && sidebar !== null && sidebar !== false;
 
   // The docked sidebar is hidden at the DXS 900px breakpoint, so AppShell OWNS an accessible mobile drawer: a
   // hamburger trigger in the topbar opens a focus-trapped Sheet (Radix Dialog → Esc + overlay
@@ -57,7 +58,7 @@ export function AppShell({
     ) : (
       sidebar
     );
-  const hasDrawer = responsiveNavigation === "drawer" && drawerNav != null;
+  const hasDrawer = responsiveNavigation === "drawer" && drawerNav != null && drawerNav !== false;
   /* Only the DEFAULT drawer nav splits into columns. A consumer that supplied `mobileNav` built
    * one node for one surface and gets it back untouched — the shell does not know where its two
    * halves would be. */
@@ -154,7 +155,7 @@ export function AppShell({
    * beneath it. There the corner is the BAR's, and the brand goes in the bar with the rest of the
    * space-level chrome.
    */
-  const logoInRail = logo !== undefined && topbarSpan !== "full";
+  const logoInRail = hasSidebar && logo !== undefined && topbarSpan !== "full";
 
   const resolvedTopbar =
     topbar !== undefined ? (
@@ -171,12 +172,12 @@ export function AppShell({
       </div>
     );
 
-  const rail = (
+  const rail = hasSidebar ? (
     <aside className="app-sidebar" aria-label={t("layout.appShell.sidebarLabel")}>
       {logoInRail && <div className="app-sidebar-logo">{logo}</div>}
       {sidebar}
     </aside>
-  );
+  ) : null;
 
   /*
    * The second navigation column. It is a landmark of the same rank as the sidebar, so it gets the
@@ -271,7 +272,8 @@ export function AppShell({
   return (
     <div
       className="app-root"
-      data-collapsed={sidebarCollapsed ? "true" : undefined}
+      data-collapsed={hasSidebar && sidebarCollapsed ? "true" : undefined}
+      data-sidebar={hasSidebar ? undefined : "none"}
       data-responsive-navigation={responsiveNavigation}
       data-topbar={hasTopbarContent ? undefined : "none"}
       data-topbar-span={topbarSpan === "full" ? "full" : undefined}

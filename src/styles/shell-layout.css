@@ -656,6 +656,13 @@
     gap: var(--space-3);
   }
 
+  /* Brand links must not add an inline baseline/descender gap below the lockup. */
+  .app-topbar-logo,
+  .app-topbar-logo > a {
+    display: flex;
+    align-items: center;
+  }
+
   /* A custom `topbar` fills whatever the logo leaves. `min-width: 0` so its own content can
    * truncate instead of pushing the brand out of the row — the logo is the fixed part here. */
   .app-topbar-custom {
@@ -782,6 +789,14 @@
   }
 
   /* THE ONE AppShell breakpoint — 900px (56.25rem), the DXS canonical value. */
+  .app-root:where([data-sidebar="none"])[data-nav-rail] {
+    grid-template-columns: var(--app-shell-nav-rail-width) minmax(0, 1fr);
+    grid-template-areas: "navrail topbar" "navrail main" "navrail footer";
+  }
+  .app-root:where([data-sidebar="none"])[data-nav-rail][data-topbar-span="full"] {
+    grid-template-areas: "topbar topbar" "navrail main" "navrail footer";
+  }
+
   @media (width <= 56.25rem) {
     .app-root,
     .app-root[data-collapsed="true"],
@@ -874,6 +889,14 @@
     .app-root[data-responsive-navigation="docked"] > .app-sidebar,
     .app-root[data-responsive-navigation="docked"] > .app-nav-rail {
       display: flex;
+    }
+
+    .app-root[data-sidebar="none"][data-nav-rail][data-responsive-navigation="docked"] {
+      grid-template-columns: var(--app-shell-nav-rail-width) minmax(0, 1fr);
+      grid-template-areas: "navrail topbar" "navrail main" "navrail footer";
+    }
+    .app-root[data-sidebar="none"][data-nav-rail][data-responsive-navigation="docked"][data-topbar-span="full"] {
+      grid-template-areas: "topbar topbar" "navrail main" "navrail footer";
     }
 
     /* (There is deliberately no `padding-inline` undo for docked mode any more. */
@@ -1033,8 +1056,17 @@
     border-start-end-radius: var(--radius-lg);
   }
 
+  /* ONE CONTENT COLUMN FOR THE WHOLE PANEL.
+   *
+   * The inset lands HERE, on the block, instead of on each part — so the heading, the search field
+   * and every row share one start and one end, on all three surfaces. Put on the parts instead, it
+   * produced a panel where the search field ran 445-835 while the row fills ran 433-847: the rows
+   * broke out of the column everything else respected, and the selected row's band ran to the
+   * panel's border. `inset - offset` because the sheet and the dialog already inset their bodies
+   * by `offset`; the popover insets nothing and needs the whole thing. */
   .ui-org-switcher-command {
     width: 100%;
+    padding-inline: calc(var(--org-switcher-list-inset) - var(--org-switcher-list-offset));
   }
 
   /* A PICKER LIST IS RULED, NOT PILLED — and the two are different affordances, not two styles.
@@ -1077,13 +1109,11 @@
      * `border` alone would leave the bottom rule doubling the field's own edge. */
     border: 1px solid hsl(var(--input));
     border-radius: var(--control-radius);
-    /* Inline is `inset - offset`, COMPUTED HERE so it reads the surface's own offset: the dialog and
-     * the sheet already inset the list by `offset`, and adding the full inset again pushed the
-     * field 12px past the heading; the popover insets nothing and gets the whole inset. Same pair
-     * the rows use, applied the other way round — a row CANCELS the surface inset to reach the
-     * edge, this field ADDS whatever is missing to land on the heading's line. */
+    /* Inline margin is 0: `.ui-org-switcher-command` owns the column now, so the field simply
+     * fills it. It used to carry the inset itself, which is how the rows and the field ended up on
+     * two different columns in the first place. */
     margin-block: var(--org-switcher-search-space-block);
-    margin-inline: calc(var(--org-switcher-list-inset) - var(--org-switcher-list-offset));
+    margin-inline: 0;
     background: hsl(var(--background));
   }
 
@@ -1097,10 +1127,18 @@
    * The first attempt used one value for both. On the sheet that was right by coincidence — its
    * body inset happens to equal the label inset — and on the popover the row was pulled 12px
    * OUTSIDE a panel that had nothing to cancel, putting the text flush against the border. */
+  /* TWO LEADING GLYPHS SIT ON TOP OF EACH OTHER HERE — the search magnifier and the row's mark —
+   * and they have to share a start. They did not: the magnifier at 458 (inside the field's own
+   * padding) and the mark at 445, thirteen pixels apart, which reads as the lower one being shoved
+   * against the edge. Every number measured against the PANEL looked right; the wrong one was the
+   * relationship between the two icons, which is what a reader actually sees.
+   *
+   * So a row takes the same inner padding the field gives its glyph, and no negative margin: its
+   * fill and its rule stay inside the column with everything else. */
   .ui-org-switcher-command .ui-command-item {
     border-radius: 0;
-    margin-inline: calc(var(--org-switcher-list-offset) * -1);
-    padding-inline: var(--org-switcher-list-inset);
+    margin-inline: 0;
+    padding-inline: var(--command-input-padding-x);
   }
 
   .ui-org-switcher-command .ui-command-item + .ui-command-item {
@@ -2328,5 +2366,13 @@
       --centered-shell-landing-section-gap: var(--centered-shell-landing-section-gap-compact);
       --centered-shell-landing-heading-size: var(--centered-shell-landing-heading-size-compact);
     }
+  }
+}
+
+@layer components {
+  /* An absent sidebar removes its track; a persisted collapse preference cannot reserve it. */
+  .app-root[data-sidebar="none"]:not([data-nav-rail]) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "topbar" "main" "footer";
   }
 }

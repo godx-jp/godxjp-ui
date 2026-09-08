@@ -251,6 +251,8 @@ export type ResponsiveGridColumnsProp =
  * `pricing-plans` — the canonical billing/pricing-plan collection: 1 column until the `lg` step
  * (container ≥ 64rem), then 3 columns from `lg` upward.
  */
+export type ResponsiveGridFlowProp = "rows" | "columns";
+
 export type ResponsiveGridPresetProp = "pricing-plans";
 
 export type MasterDetailRailWidthProp = "compact" | "standard";
@@ -304,7 +306,8 @@ export type PageInsetProp = React.HTMLAttributes<HTMLDivElement> & {
 
 /** @see AppShell */
 export type AppShellProp = {
-  sidebar: ReactNode;
+  /** Omit or pass null/false for a shell without the sidebar landmark or grid track. */
+  sidebar?: ReactNode;
   children: ReactNode;
   topbar?: ReactNode;
   topbarLeft?: ReactNode;
@@ -1156,6 +1159,8 @@ export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
    * Render the bar-cell shape ONTO the child instead of emitting a `<button>` — for a router link,
    * or for a menu/popover trigger that needs to own the element itself.
    */
+  /** Hide below a shared responsive breakpoint, without changing cell height. */
+  hideBelow?: BreakpointProp;
   asChild?: boolean;
   children?: ReactNode;
   className?: ClassNameProp;

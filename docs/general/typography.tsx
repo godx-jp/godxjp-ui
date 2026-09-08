@@ -1,4 +1,5 @@
-import { Button, Heading, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
+import { Button, Heading, Text, VisuallyHidden } from "@godxjp/ui/general";
 import {
   Card,
   CardContent,
@@ -35,6 +36,7 @@ const headingTones = [
 ] as const;
 
 export default function Demo() {
+  const { t } = useTranslation();
   return (
     <PageContainer
       title="Typography"
@@ -227,6 +229,17 @@ export default function Demo() {
                 を使います。本文の中のリンクは Text link です。
               </Text>
             </Flex>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("textExamples.preservedText")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Text as="p" whitespace="pre-wrap">
+              {t("textExamples.sampleText")}
+            </Text>
+            <VisuallyHidden>{t("textExamples.preservedText")}</VisuallyHidden>
           </CardContent>
         </Card>
       </Flex>

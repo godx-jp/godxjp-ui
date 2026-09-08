@@ -202,6 +202,8 @@
   /* Below this the trigger hugs its content instead of taking the per-kind width, so a picker
    * dropped into a narrow topbar never stretches the bar (gh#165). */
   --app-setting-picker-width-breakpoint: 40rem;
+  --app-setting-picker-bar-border-width: 0;
+  --app-setting-picker-bar-shadow: none;
   --app-setting-picker-icon-size: var(--icon-size-md);
   --app-setting-picker-icon-rest-alpha: 0.7;
 }

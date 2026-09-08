@@ -1360,7 +1360,7 @@
         {
           "name": "sidebar",
           "origin": "owned",
-          "required": true,
+          "required": false,
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
@@ -10475,6 +10475,59 @@
         }
       ]
     },
+    "RangeTimeline": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "bands",
+          "origin": "owned",
+          "required": false,
+          "type": "{ label: string; units: number; }[] | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
+          "name": "columns",
+          "origin": "owned",
+          "required": true,
+          "type": "{ label: string; units: number; }[]",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
+          "name": "onRangeChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((id: string, edge: \"start\" | \"end\", delta: number) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
+          "name": "rows",
+          "origin": "owned",
+          "required": true,
+          "type": "RangeTimelineRow[]",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
+          "name": "today",
+          "origin": "owned",
+          "required": false,
+          "type": "number | null | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        }
+      ]
+    },
     "Rating": {
       "group": "data-entry",
       "props": [
@@ -10635,6 +10688,14 @@
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {
+          "name": "flow",
+          "origin": "owned",
+          "required": false,
+          "type": "ResponsiveGridFlowProp | undefined",
+          "values": ["columns", "rows"],
+          "declaredIn": ["src/components/layout/responsive-grid.tsx"]
+        },
+        {
           "name": "gap",
           "origin": "owned",
           "required": false,
@@ -10730,6 +10791,14 @@
           "required": false,
           "type": "((anchored: boolean) => void) | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "orientation",
+          "origin": "owned",
+          "required": false,
+          "type": "ScrollAreaOrientationProp | undefined",
+          "values": ["vertical", "horizontal", "both"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
@@ -13372,6 +13441,14 @@
           "type": "FontWeightProp | undefined",
           "values": ["medium", "regular", "semibold", "bold"],
           "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "whitespace",
+          "origin": "owned",
+          "required": false,
+          "type": "TextWhitespaceProp | undefined",
+          "values": ["normal", "pre-wrap"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
     },
@@ -14381,6 +14458,14 @@
           ]
         },
         {
+          "name": "hideBelow",
+          "origin": "owned",
+          "required": false,
+          "type": "BreakpointProp | undefined",
+          "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "type",
           "origin": "inherited-behavioral",
           "required": false,
@@ -14904,6 +14989,10 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
+    },
+    "VisuallyHidden": {
+      "group": "general",
+      "props": []
     }
   }
 }

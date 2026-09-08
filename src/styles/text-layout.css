@@ -116,6 +116,21 @@
     white-space: nowrap;
     min-width: 0;
   }
+  /* Whitespace a PERSON typed is content, not formatting.
+   *
+   * Only the `pre-wrap` value is written: `normal` is CSS's own behaviour, so the default emits no
+   * attribute and there is no rule here to argue with `[data-truncate]`'s `white-space: nowrap`.
+   * The component resolves that precedence instead (truncate wins, and simply does not emit
+   * `data-whitespace`), because a fight between two equal-specificity `white-space` declarations is
+   * settled by stylesheet insertion order — unreadable from either file.
+   *
+   * `overflow-wrap` is the other half of the promise: `pre-wrap` alone wraps at spaces, so one
+   * unbroken 300-character URL or id still overflows its container. `break-word` breaks such a
+   * token only when it cannot fit whole, leaving ordinary prose to wrap at its spaces. */
+  [data-slot="text"][data-whitespace="pre-wrap"] {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
   /* Visual-only: the full text stays in the DOM and the accessible name. */
   [data-slot="text"][data-clamp] {
     display: -webkit-box;

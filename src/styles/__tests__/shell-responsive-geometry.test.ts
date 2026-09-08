@@ -471,7 +471,7 @@ describe("responsive shell geometry", () => {
     expect(shellTokens).toMatch(/--org-switcher-sheet-inset:\s*var\(--space-3\);/);
   });
 
-  it("OrgSwitcher's picker list is RULED and full-bleed, not a floating pill", () => {
+  it("OrgSwitcher aligns ruled rows and the search field through one shared column", () => {
     /*
      * `.ui-command-item` rounds and fills because its home is a command PALETTE — a search-anything
      * surface where a floating highlight tracks a cursor through results (Raycast, cmdk, Spotlight).
@@ -483,18 +483,13 @@ describe("responsive shell geometry", () => {
      */
     const row = declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-item");
     expect(row).toMatch(/border-radius:\s*0;/);
-    // Negative inline margin cancels the ONE inset between the row and the panel edge; the padding
-    // adds it back so the label stays on the heading's start line. Measured: rows span 0-560 in a
-    // 560px panel, against 8-552 before the group's own padding was removed.
-    /*
-     * TWO QUANTITIES, and collapsing them is what broke the popover. `-offset` is what the SURFACE
-     * insets the list by, which the row cancels; `-inset` is where the LABEL starts. The sheet's
-     * body inset happens to equal the label inset, so one value looked right there — and on the
-     * popover, which publishes `--popover-space-inset: 0`, the row was dragged 12px outside a panel
-     * with nothing to cancel and its text landed on the border.
-     */
-    expect(row).toMatch(/margin-inline:\s*calc\(var\(--org-switcher-list-offset\) \* -1\);/);
-    expect(row).toMatch(/padding-inline:\s*var\(--org-switcher-list-inset\);/);
+    // The command owns the outer column once; rows and search fields do not cancel it.
+    // Row marks align with the search glyph through the shared command input padding.
+    expect(row).toMatch(/margin-inline:\s*0;/);
+    expect(row).toMatch(/padding-inline:\s*var\(--command-input-padding-x\);/);
+    expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(
+      /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\);/,
+    );
     expect(shellTokens).toMatch(/--org-switcher-list-offset:\s*0px;/);
     expect(
       declarationsFor(shellStyles, '[data-slot="sheet-content"].ui-org-switcher-sheet'),
@@ -517,26 +512,17 @@ describe("responsive shell geometry", () => {
   });
 
   it("the picker's search is drawn AS A FIELD, on the heading's start line", () => {
-    /*
-     * `.ui-command-input-wrapper` ships chrome-less with one bottom rule — right for a command
-     * PALETTE, where the input IS the surface's header. In this picker it left three start lines:
-     * heading 445, row mark 445, search glyph 457 — inset the extra 12px of a field that was never
-     * painted. The inset was not wrong; the field was invisible.
-     *
-     * The inline margin is computed IN THE RULE, not in a `:root` composite. A custom property
-     * substitutes its vars where it is DECLARED, so a root-level
-     * `calc(var(--…-list-inset) - var(--…-list-offset))` bakes in the default offset of 0 and never
-     * sees the dialog's or the sheet's. That trap cost this rule one round: the field measured 457
-     * instead of 445 with the token reading correctly the whole time.
-     */
+    // The outer inset belongs to the command wrapper. The input keeps its field chrome
+    // and fills that column, so applying the inset again here would double it.
     const decls = declarationsFor(
       shellStyles,
       ".ui-org-switcher-command .ui-command-input-wrapper",
     );
     expect(decls).toMatch(/border:\s*1px solid hsl\(var\(--input\)\);/);
     expect(decls).toMatch(/border-radius:\s*var\(--control-radius\);/);
-    expect(decls).toMatch(
-      /margin-inline:\s*calc\(\s*var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\s*\);/,
+    expect(decls).toMatch(/margin-inline:\s*0;/);
+    expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(
+      /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\);/,
     );
     // The offset half must NOT be pre-substituted in a root token — that is the whole bug.
     expect(shellTokens).not.toMatch(/--org-switcher-search-space-outset:/);

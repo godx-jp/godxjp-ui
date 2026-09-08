@@ -283,7 +283,7 @@ export function StatCard({
   );
 }
 
-/** Header actions slot — pair with `CardHeader className="flex flex-row …"`. */
+/** Header actions slot — compose beside CardTitle inside CardHeader; the header owns positioning. */
 export const CardAction = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div ref={ref} data-slot="card-action" className={className} {...props} />

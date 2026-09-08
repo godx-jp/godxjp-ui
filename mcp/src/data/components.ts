@@ -45,6 +45,68 @@ export interface ComponentEntry {
 }
 
 export const COMPONENTS: ComponentEntry[] = [
+  {
+    name: "VisuallyHidden",
+    group: "general",
+    tagline: "Accessible supporting text without a visible layout box.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        description: "Text available to assistive technology.",
+      },
+    ],
+    example: "<VisuallyHidden>Unread</VisuallyHidden>",
+    docPath: "docs/general/typography.tsx",
+    storyPath: "general/typography",
+    rules: [],
+    usage: ["Use for supplementary accessible labels. Do not hide controls that remain focusable."],
+  },
+  {
+    name: "RangeTimeline",
+    group: "data-display",
+    tagline: "Horizontal intervals with token-owned geometry and optional endpoint editing.",
+    props: [
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Localized accessible name for the scrollable schedule.",
+      },
+      {
+        name: "columns",
+        type: "{ label: string; units: number }[]",
+        required: true,
+        description:
+          "Positive unit counts determine proportional column widths. Column count determines the minimum canvas width, so coarse grouping zooms out.",
+      },
+      { name: "bands", type: "{ label: string; units: number }[]", description: "Optional grouped axis labels above the ticks, for example months above days. Counts use the same units as columns and cover the same range." },
+      {
+        name: "rows",
+        type: "RangeTimelineRow[]",
+        required: true,
+        description:
+          "Each row has id, label, inclusive start/end unit offsets, and localized startLabel/endLabel including current values.",
+      },
+      { name: "today", type: "number | null", description: "Optional current unit marker." },
+      {
+        name: "onRangeChange",
+        type: '(id: string, edge: "start" | "end", delta: number) => void',
+        description:
+          "Committed endpoint movement in units. Omit for read-only. Dates remain consumer data; do not replace true anchors with clipped positions.",
+      },
+    ],
+    example:
+      '<RangeTimeline label="Schedule" columns={[{ label: "Week", units: 7 }]} rows={[{ id: "task", label: "Task", start: 0, end: 6, startLabel: "Start: day 1", endLabel: "End: day 7" }]} />',
+    docPath: "docs/data-display/timeline.tsx",
+    storyPath: "data-display/timeline",
+    rules: [],
+    usage: [
+      "Provide a precise non-drag editor in each row label when enabling changes. Clipped endpoints and short intervals omit grips; labels and their editors remain available.",
+      "Use TimelineGrid for time-of-day columns; RangeTimeline is a horizontal range axis.",
+    ],
+  },
+
   // ─── layout ─────────────────────────────────────────────────────────────
   {
     name: "PageContainer",
@@ -365,6 +427,13 @@ import { Button } from "@godxjp/ui/general";
     tagline: "Container-responsive card grid with configurable base, sm, md and lg columns.",
     props: [
       {
+        name: "flow",
+        type: '"rows" | "columns"',
+        defaultValue: '"rows"',
+        description:
+          'Rows adapt to container width. Columns keep a horizontal collection in order with token-owned column width; compose inside ScrollArea orientation="horizontal". Column flow ignores columns and preset geometry.',
+      },
+      {
         name: "columns",
         type: "number | { base?: number; sm?: number; md?: number; lg?: number }",
         defaultValue: "4",
@@ -428,8 +497,8 @@ import { StatCard } from "@godxjp/ui/data-display";
       {
         name: "sidebar",
         type: "ReactNode",
-        required: true,
-        description: "Sidebar node — typically a <Sidebar>.",
+        description:
+          "Optional sidebar node, typically a Sidebar. Omit or pass null/false to remove its landmark and grid track. Logo remains in the topbar; navRail is independent.",
       },
       {
         name: "children",
@@ -1233,6 +1302,7 @@ import { PanelLeftClose, Search } from "lucide-react";
     tagline:
       "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill.",
     props: [
+      { name: "hideBelow", type: "BreakpointProp", description: "Hide the bar cell below a design-system breakpoint without interrupting its stretch chain." },
       {
         name: "asChild",
         type: "boolean",
@@ -2059,6 +2129,13 @@ import { Trash2 } from "lucide-react";
         type: "number",
         description:
           "Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis. Visual-only — the full text stays in the DOM / accessible name. Mutually exclusive with `truncate` (`clamp` wins; dev builds warn).",
+      },
+      {
+        name: "whitespace",
+        type: '"normal" | "pre-wrap"',
+        defaultValue: '"normal"',
+        description:
+          "Whitespace handling. 'normal' is CSS's own behaviour (newlines and space runs collapse) and stays the default. 'pre-wrap' is for text a PERSON typed — a plain-text note, an issue description, a pasted log — where the line breaks and the indentation are CONTENT: it keeps both, still wraps long lines at the container edge, and breaks an over-long unbroken token (a URL, an id) instead of overflowing. Use it INSTEAD of `className=\"whitespace-pre-wrap\"`. Precedence is explicit: `truncate` is a single-line contract and wins (dev builds warn); `clamp` COMPOSES with it, showing the first N preserved lines. Not for rendered Markdown/HTML — that is `Prose`, which styles rendered elements and does nothing to whitespace.",
       },
       { name: "tabular", type: "boolean", description: "Tabular figures for aligned numbers." },
       { name: "mono", type: "boolean", description: "Monospace family for codes / ids." },
@@ -9111,6 +9188,13 @@ export function ControlledPopover() {
         defaultValue: '"hover"',
         description:
           "Scrollbar visibility strategy. 'auto' mirrors browser overflow; 'always' keeps it visible; 'scroll' shows while scrolling; 'hover' shows while hovering the scroll area.",
+      },
+      {
+        name: "orientation",
+        type: '"vertical" | "horizontal" | "both"',
+        defaultValue: '"vertical"',
+        description:
+          "Axes that scroll, and therefore which scrollbars render. This is NOT decoration: Radix derives the viewport's inline overflowX/overflowY from which scrollbars are mounted, so an axis you do not ask for is `overflow: hidden` and its content is CLIPPED, not merely missing a bar. Use 'horizontal' for a strip of non-shrinking columns (a board, a lane of cards) — the viewport keeps its tab stop so the strip stays keyboard-scrollable, and the consumer writes no overflow class of its own. Pair it with a width constraint on the root, exactly as the vertical case needs a height one.",
       },
       {
         name: "viewportRef",

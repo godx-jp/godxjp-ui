@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import type {
   ResponsiveGridColumnsProp,
+  ResponsiveGridFlowProp,
   ResponsiveGridPresetProp,
 } from "../../props/components/layout.prop";
 import { cn } from "../../lib/utils";
@@ -12,6 +13,8 @@ export type ResponsiveGridProps = {
   /** Optional structural class override. */
   className?: string;
   columns?: ResponsiveGridColumnsProp;
+  /** Keep collections in a horizontal sequence; pair with ScrollArea orientation="horizontal". */
+  flow?: ResponsiveGridFlowProp;
   /**
    * Named column geometry for a recognised collection shape — see `ResponsiveGridPresetProp`.
    * Wins over `columns` when both are set, so a caller migrating to a preset does not also need
@@ -78,6 +81,7 @@ function toStyle(resolved: {
 
 export function ResponsiveGrid({
   columns = 4,
+  flow = "rows",
   gap,
   preset,
   className,
@@ -89,7 +93,12 @@ export function ResponsiveGrid({
   // undeclared ancestor `container-type`. It therefore stays correct inside a narrow card or a
   return (
     <div className="ui-responsive-grid-scope">
-      <div className={cn("ui-responsive-grid", className)} data-gap={gap} style={toStyle(resolved)}>
+      <div
+        className={cn("ui-responsive-grid", className)}
+        data-gap={gap}
+        data-flow={flow === "columns" ? "columns" : undefined}
+        style={toStyle(resolved)}
+      >
         {children}
       </div>
     </div>

@@ -3,6 +3,7 @@
  * global scale. */
 
 :root {
+  --responsive-grid-column-width: 20rem;
   --sidebar-section-label-font-size: var(--font-size-2xs);
   --sidebar-product-tenant-font-size: var(--font-size-2xs);
   --sidebar-badge-font-size: var(--font-size-2xs);

@@ -20,6 +20,7 @@ const coveredOwners = new Set([
   "data-display/progress",
   "data-display/tree-list",
   "data-display/timeline",
+  "data-display/range-timeline",
   "data-display/popover",
   "data-display/scroll-area",
   "data-display/collapsible",
@@ -29,6 +30,7 @@ const coveredOwners = new Set([
   "data-display/qr-code",
   "general/button",
   "general/typography",
+  "general/visually-hidden",
   "general/logo",
 ]);
 
