@@ -17,7 +17,7 @@
   }
 
   .app-root[data-collapsed="true"] {
-    grid-template-columns: var(--app-shell-rail-width) minmax(0, 1fr);
+    grid-template-columns: var(--app-shell-sidebar-collapsed-width) minmax(0, 1fr);
   }
 
   /* topbarSpan="full" — the bar runs edge to edge and the rail starts beneath it, for products
@@ -28,6 +28,50 @@
       "topbar topbar"
       "sidebar main"
       "sidebar footer";
+  }
+
+  /* ── THE SECOND NAVIGATION TRACK (`navRail`) ──────────────────────────────────────────────
+   * A narrow rail OUTSIDE the sidebar, for the workspace/organization switcher shape (Slack,
+   * Teams, Discord): rail → sidebar → content, three columns.
+   *
+   * IT IS A SLOT, NOT A LAYOUT NAME. The track exists exactly when the `navRail` node is passed,
+   * the same way `footer` and `breadcrumb` already work — there is no `hasNavRail` enum and no
+   * bundled "layout preset". That is what keeps it ORTHOGONAL to `topbarSpan`: the rail answers
+   * "how many navigation columns", `topbarSpan` answers "how far the bar reaches", and all four
+   * combinations are real product shapes, so there is no invalid pairing to block.
+   *
+   * WHY A GRID TRACK AND NOT A NESTED FLEX BOX. A consumer can only reach the single `sidebar`
+   * slot, so building this by hand means putting both columns inside it — and `Sidebar`'s own
+   * `.sb-root` is `display: contents` (see below), so two Sidebars dropped in side by side
+   * dissolve into ONE flex row and both collapse to zero unless each is first wrapped in its own
+   * box. Owning the track here removes that trap, and with it the reason to override
+   * `--app-shell-sidebar-width` per route. */
+  .app-root[data-nav-rail] {
+    grid-template-areas:
+      "navrail sidebar topbar"
+      "navrail sidebar main"
+      "navrail sidebar footer";
+    grid-template-columns:
+      var(--app-shell-nav-rail-width)
+      var(--app-shell-sidebar-width)
+      minmax(0, 1fr);
+  }
+
+  /* Collapse folds the SIDEBAR track only; the rail keeps its width. That is the Slack behaviour
+   * (the channel column hides, the workspace rail stays) and it is the one that keeps the rail's
+   * destinations reachable while collapsed. */
+  .app-root[data-nav-rail][data-collapsed="true"] {
+    grid-template-columns:
+      var(--app-shell-nav-rail-width)
+      var(--app-shell-sidebar-collapsed-width)
+      minmax(0, 1fr);
+  }
+
+  .app-root[data-nav-rail][data-topbar-span="full"] {
+    grid-template-areas:
+      "topbar  topbar  topbar"
+      "navrail sidebar main"
+      "navrail sidebar footer";
   }
 
   /* NO TOP BAR AT ALL — `topbar`, `topbarLeft`, `topbarRight` and `logo` all undefined. */
@@ -56,6 +100,24 @@
     background: hsl(var(--card));
     /* Opt-in brand-chrome wash — invisible by default (--sidebar-gradient: none). */
     background-image: var(--sidebar-gradient);
+    color: hsl(var(--foreground));
+  }
+
+  /* The rail is chrome of the same rank as the sidebar, so it takes the same clip/ring treatment.
+   * It paints on --muted rather than --card to separate the two navigation columns from each other
+   * without a second border doing the work. */
+  .app-nav-rail {
+    grid-area: navrail;
+    display: flex;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
+    border-inline-end: 1px solid hsl(var(--border));
+    background: hsl(var(--muted));
     color: hsl(var(--foreground));
   }
 
@@ -538,11 +600,70 @@
     }
   }
 
+  /* The brand at the head of the rail: same inline padding as the nav items beneath it, so the
+   * wordmark starts on the column the whole sidebar reads down.
+   *
+   * HEIGHT IS THE GRID ROW'S OWN TOKEN, and it has to be. This shipped as
+   * `var(--topbar-height, var(--control-height))`, which never once resolved to either: a var
+   * fallback fires only when the variable is UNDECLARED, and `--topbar-height` is declared — as
+   * `auto`. So `block-size: auto` won, the band collapsed to its content, and the comment above it
+   * went on claiming the two rows line up. Measured on a consumer: brand band 28px against a 48px
+   * bar, the nav starting 20px higher than the content beside it. `--app-shell-bar-height` is the
+   * token the `.app-root` grid actually sizes the bar row with (line 14), so naming it is the only
+   * way the two cannot drift.
+   *
+   * The rule below it is the same band: the bar draws a bottom border and this must draw the same
+   * one, or the chrome reads as two rows at different depths instead of one edge across the fold. */
+  .app-sidebar-logo {
+    display: flex;
+    block-size: var(--app-shell-bar-height);
+    min-inline-size: 0;
+    align-items: center;
+    border-block-end: 1px solid hsl(var(--border));
+    padding-inline: var(--space-3);
+  }
+
+  /* Collapsed, the rail is 64px and the lockup is 110px — measured, the wordmark ran 58px past the
+   * rail's edge and the brand read as a clipped fragment. The MARK alone is the brand at this
+   * width (it is why a mark exists), so the wordmark steps aside and the mark centres in the
+   * column, on the same axis as the nav icons below it. */
+  .app-root[data-collapsed="true"] .app-sidebar-logo {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .app-root[data-collapsed="true"] .app-sidebar-logo [data-slot="logo-wordmark"] {
+    display: none;
+  }
+
+  /* THE STRETCH CHAIN. `.app-topbar` is `align-items: center`, which is right for its own chrome
+   * but wrong for the slots: a flex child that is not told to stretch computes to CONTENT height,
+   * and every `align-self: stretch` below it then stretches into that shorter box instead of into
+   * the bar. Measured on a consumer at 1246px before this line existed: `.app-topbar` 48px,
+   * `.app-topbar-rail` 32px @ top 7.5, `.ui-topbar` 32px, and a `TopbarItem` — whose whole
+   * contract is "as tall as the bar" — 32px, painting its hover as a pill floating in a 48px
+   * strip. That is the defect; it was never in the cell, it was in the two wrappers above it.
+   *
+   * The slots stretch; their CONTENT still centres, because each slot keeps its own
+   * `align-items: center`. So nothing that was centred moves — only the boxes get their height. */
+
   .app-topbar-rail {
     display: flex;
     min-width: 0;
     flex: 1;
     align-items: center;
+    align-self: stretch;
+    gap: var(--space-3);
+  }
+
+  /* A custom `topbar` fills whatever the logo leaves. `min-width: 0` so its own content can
+   * truncate instead of pushing the brand out of the row — the logo is the fixed part here. */
+  .app-topbar-custom {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    align-self: stretch;
     gap: var(--space-3);
   }
 
@@ -551,6 +672,7 @@
     display: flex;
     min-width: 0;
     align-items: center;
+    align-self: stretch;
     gap: var(--space-2);
   }
 
@@ -607,13 +729,54 @@
     overscroll-behavior: contain;
   }
 
+  /* TWO COLUMNS IN THE DRAWER, when the shell has a rail — the same shape and the same reading
+   * order as the docked shell, so nothing is relearned at 393px. Stacked instead, the rail sat
+   * above the section list with an empty gap between them, and it forced a choice neither answer
+   * survives: keep `collapsed` and the drawer is anonymous glyphs, drop it and the rail's app
+   * switcher becomes a second full-width list indistinguishable from the sections below it.
+   *
+   * `min-height: 0` on both the row and the columns: each column scrolls ITSELF, and a flex child
+   * without it refuses to shrink below its content and pushes the drawer's own scroll instead. */
+  .app-mobile-nav-columns {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    gap: var(--space-2);
+  }
+
+  /* Narrow again, so the rail keeps `collapsed` — see the AppShell comment that pairs with this. */
+  .app-mobile-nav-rail {
+    display: flex;
+    min-height: 0;
+    flex: 0 0 auto;
+    flex-direction: column;
+    border-inline-end: 1px solid hsl(var(--border));
+    inline-size: var(--app-shell-nav-rail-width);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .app-mobile-nav-sections {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
   .app-topbar-spacer {
     flex: 1;
   }
 
   .app-breadcrumb {
     border-bottom: 1px solid hsl(var(--border));
-    padding: var(--space-2) var(--space-4);
+    /* The INLINE padding is the page gutter, not a value of its own. The breadcrumb sits directly
+     * above `.ui-page-header`, so a rail of its own puts the trail 8px left of the H1 it labels —
+     * measured on a real app before this read the shared token. `--space-page-active-x` also
+     * carries the ≤720px step down to the compact gutter, which a hard-coded step never did. */
+    padding: var(--space-2) var(--space-page-active-x);
     color: hsl(var(--muted-foreground));
     font-size: var(--font-size-base);
   }
@@ -621,7 +784,10 @@
   /* THE ONE AppShell breakpoint — 900px (56.25rem), the DXS canonical value. */
   @media (width <= 56.25rem) {
     .app-root,
-    .app-root[data-collapsed="true"] {
+    .app-root[data-collapsed="true"],
+    .app-root[data-nav-rail],
+    .app-root[data-nav-rail][data-collapsed="true"],
+    .app-root[data-nav-rail][data-topbar-span="full"] {
       grid-template-areas:
         "topbar"
         "main"
@@ -629,7 +795,15 @@
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .app-sidebar {
+    /* BOTH navigation tracks go, and the rail MUST be named explicitly here.
+     *
+     * Measured on the real page before this rule existed: with the single-column template applied
+     * and only `.app-sidebar` hidden, `.app-nav-rail` kept `grid-area: navrail` — a name the
+     * narrow template no longer defines — so the grid auto-placed it into an IMPLICIT column and
+     * it rendered as a 33x168px sliver wedged at x=1213, y=637, on top of the page content. An
+     * `aside` that is merely unplaced does not disappear; it lands somewhere arbitrary. */
+    .app-sidebar,
+    .app-nav-rail {
       display: none;
     }
 
@@ -657,7 +831,7 @@
     }
 
     .app-root[data-responsive-navigation="docked"][data-collapsed="true"] {
-      grid-template-columns: var(--app-shell-rail-width) minmax(0, 1fr);
+      grid-template-columns: var(--app-shell-sidebar-collapsed-width) minmax(0, 1fr);
     }
 
     /* Docked mode rebuilds the two-track grid at narrow widths, which would otherwise undo
@@ -669,7 +843,36 @@
         "sidebar footer";
     }
 
-    .app-root[data-responsive-navigation="docked"] > .app-sidebar {
+    /* Docked + a rail keeps BOTH tracks, for the same reason docked keeps one: an approved product
+     * contract that retains its navigation below 900px still has two columns of it. Restated in
+     * full because the single-column rule above now also matches `[data-nav-rail]`. */
+    .app-root[data-responsive-navigation="docked"][data-nav-rail] {
+      grid-template-areas:
+        "navrail sidebar topbar"
+        "navrail sidebar main"
+        "navrail sidebar footer";
+      grid-template-columns:
+        var(--app-shell-nav-rail-width)
+        var(--app-shell-sidebar-width)
+        minmax(0, 1fr);
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-collapsed="true"] {
+      grid-template-columns:
+        var(--app-shell-nav-rail-width)
+        var(--app-shell-sidebar-collapsed-width)
+        minmax(0, 1fr);
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-topbar-span="full"] {
+      grid-template-areas:
+        "topbar  topbar  topbar"
+        "navrail sidebar main"
+        "navrail sidebar footer";
+    }
+
+    .app-root[data-responsive-navigation="docked"] > .app-sidebar,
+    .app-root[data-responsive-navigation="docked"] > .app-nav-rail {
       display: flex;
     }
 
@@ -779,9 +982,16 @@
     margin-inline-start: auto;
   }
 
+  /* Through the popover's KNOBS, not the raw properties: this file is imported before
+   * dialog-layout.css and `.ui-popover-content` carries the same one-class specificity, so a raw
+   * `width` / `padding` here never won — the menu was rendering at the default popover width with
+   * the default 16px inset. See dialog-layout.css `.ui-popover-content`. */
   .ui-org-switcher-popover {
-    width: min(var(--org-switcher-menu-width), calc(100vw - var(--space-4)));
-    padding: 0;
+    --popover-surface-inline-size: min(
+      var(--org-switcher-menu-width),
+      calc(100vw - var(--space-4))
+    );
+    --popover-space-inset: 0;
   }
 
   .ui-org-switcher-sheet {
@@ -1301,6 +1511,7 @@
    * would eat every flush-edge focus ring there with no margin to save it. */
   @supports not (overflow-clip-margin: 1px) {
     .app-sidebar,
+    .app-nav-rail,
     .app-topbar,
     .ui-topbar,
     .ui-topbar-start,

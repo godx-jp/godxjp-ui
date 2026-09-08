@@ -34,9 +34,29 @@ const read = (relativePath: string) => readFileSync(resolve(process.cwd(), relat
  */
 
 const dialogStyles = read("src/styles/dialog-layout.css");
-const controlStyles = read("src/styles/control.css");
 const feedbackTokens = read("src/tokens/components/feedback.css");
 const indexStyles = read("src/styles/index.css");
+
+/**
+ * Every stylesheet the bundle imports BEFORE dialog-layout.css — i.e. every file whose
+ * single-class rule loses to `.ui-popover-content` on order alone.
+ *
+ * This used to be the single literal `src/styles/control.css`, because the two modifiers that
+ * prompted the rule happened to live there. `.ui-org-switcher-popover` lives in shell-layout.css,
+ * so `declarationsFor` returned "" for it and all six of its assertions passed on an empty string
+ * — the gate reported the modifier as clean while it declared `width` AND `padding` raw, the exact
+ * pair the rule forbids. Read the order out of index.css instead of naming one file.
+ */
+function stylesheetsImportedBeforeDialogLayout(): { rel: string; css: string }[] {
+  const order = [...indexStyles.matchAll(/@import\s+"\.\/([a-z0-9-]+\.css)"/g)].map((m) => m[1]);
+  const dialogAt = order.indexOf("dialog-layout.css");
+  expect(dialogAt, "dialog-layout.css is not imported by styles/index.css").toBeGreaterThan(-1);
+  return order
+    .slice(0, dialogAt)
+    .map((name) => ({ rel: `src/styles/${name}`, css: read(`src/styles/${name}`) }));
+}
+
+const earlierSheets = stylesheetsImportedBeforeDialogLayout();
 
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 
@@ -75,8 +95,18 @@ function popoverModifierClasses(): string[] {
  * knob on the base rule, because a modifier can only reach it that way.
  */
 const SURFACE_PROPERTIES = [
-  { property: "width", knob: "--popover-surface-inline-size", declaredInitial: true, also: ["inline-size"] },
-  { property: "padding", knob: "--popover-space-inset", declaredInitial: false, also: ["padding-inline", "padding-block"] },
+  {
+    property: "width",
+    knob: "--popover-surface-inline-size",
+    declaredInitial: true,
+    also: ["inline-size"],
+  },
+  {
+    property: "padding",
+    knob: "--popover-space-inset",
+    declaredInitial: false,
+    also: ["padding-inline", "padding-block"],
+  },
 ];
 
 describe("popover surface knobs beat cascade order", () => {
@@ -92,12 +122,15 @@ describe("popover surface knobs beat cascade order", () => {
     expect(control).toBeLessThan(dialog);
   });
 
-  it.each(SURFACE_PROPERTIES)("reads $property through $knob", ({ property, knob, declaredInitial }) => {
-    // A role-mirror knob is declared `initial` so the call-site fallback resolves (docs/TOKENS.md);
-    // `--popover-space-inset` is a real token with a real value, so it is declared differently.
-    expect(feedbackTokens).toContain(declaredInitial ? `${knob}: initial;` : `${knob}: `);
-    expect(base).toMatch(new RegExp(`\\b${property}:\\s*var\\(${knob}[,)]`));
-  });
+  it.each(SURFACE_PROPERTIES)(
+    "reads $property through $knob",
+    ({ property, knob, declaredInitial }) => {
+      // A role-mirror knob is declared `initial` so the call-site fallback resolves (docs/TOKENS.md);
+      // `--popover-space-inset` is a real token with a real value, so it is declared differently.
+      expect(feedbackTokens).toContain(declaredInitial ? `${knob}: initial;` : `${knob}: `);
+      expect(base).toMatch(new RegExp(`\\b${property}:\\s*var\\(${knob}[,)]`));
+    },
+  );
 
   const modifiers = popoverModifierClasses();
 
@@ -106,16 +139,33 @@ describe("popover surface knobs beat cascade order", () => {
     expect(modifiers.length).toBeGreaterThan(0);
   });
 
+  it("finds each modifier's rule in a stylesheet it can read", () => {
+    // The guard the file lacked: a modifier whose rule lives in a sheet this test never opens
+    // reads as "declares nothing" and passes every assertion below on an empty string.
+    for (const modifier of modifiers) {
+      const sheets = earlierSheets.filter(
+        ({ css }) => declarationsFor(css, `.${modifier}`).length > 0,
+      );
+      expect(
+        sheets.length,
+        `no rule for .${modifier} in any stylesheet imported before dialog-layout.css`,
+      ).toBeGreaterThan(0);
+    }
+  });
+
   it.each(modifiers)("%s retunes the surface through knobs only", (modifier) => {
-    const declarations = declarationsFor(controlStyles, `.${modifier}`);
-    for (const { property, knob, also } of SURFACE_PROPERTIES) {
-      for (const raw of [property, ...also]) {
-        expect(
-          declarations,
-          `.${modifier} declares \`${raw}\` directly. It shares specificity with ` +
-            `.ui-popover-content and is imported before it, so that declaration never wins — ` +
-            `set ${knob} instead.`,
-        ).not.toMatch(new RegExp(`(^|[;{\\s])${raw}\\s*:`));
+    for (const { rel, css } of earlierSheets) {
+      const declarations = declarationsFor(css, `.${modifier}`);
+      if (!declarations) continue;
+      for (const { property, knob, also } of SURFACE_PROPERTIES) {
+        for (const raw of [property, ...also]) {
+          expect(
+            declarations,
+            `${rel}: .${modifier} declares \`${raw}\` directly. It shares specificity with ` +
+              `.ui-popover-content and is imported before it, so that declaration never wins — ` +
+              `set ${knob} instead.`,
+          ).not.toMatch(new RegExp(`(^|[;{\\s])${raw}\\s*:`));
+        }
       }
     }
   });

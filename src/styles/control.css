@@ -106,9 +106,9 @@
     box-shadow: var(--shadow-sm), var(--shadow-glow);
   }
 
-  /* antd's `colorPrimaryHover`, generated from the seed — not the primary at 90% opacity, which
-   * was an eyeballed step whose result depends on whatever surface happens to be behind the
-   * button. See src/tokens/antd.generated.css. */
+  /* `--primary-hover` from the derived tier — not the primary at 90% opacity, which was an
+   * eyeballed step whose result depends on whatever surface happens to be behind the button, and
+   * which no contrast gate could hold. See src/tokens/derived.css. */
   .ui-button--default:hover {
     background: hsl(var(--primary-hover));
   }
@@ -975,17 +975,18 @@
   }
 
   /* ── SEGMENTED ────────────────────────────────────────────────────────────────────────────
-   * antd 6.6.2 `genSegmentedStyle` (es/segmented/style/index.js), ported declaration for
-   * declaration onto this system's roles. Every length reads a knob in
-   * tokens/components/segmented.css, where the antd formula each one came from is recorded.
+   * The established enterprise Segmented spec, ported declaration for declaration onto this
+   * system's roles. Every length reads a knob in tokens/components/segmented.css, where the
+   * formula each one came from is recorded.
    *
    * TWO DEPARTURES, BOTH DELIBERATE:
    *
-   *   1. NO SLIDING THUMB. antd animates the slab between items and, while it animates, strips the
-   *      `-item-selected` class — so which item is selected lives in two places for 300ms. A static
-   *      slab reads identically at rest, cannot desynchronise, and needs no reduced-motion carve-out.
-   *   2. NO `::after` HOVER OVERLAY. antd tints hover through a `z-index: -1` pseudo-element so the
-   *      overlay can cross-fade under the label. With no thumb to coordinate with there is nothing
+   *   1. NO SLIDING THUMB. The source animates the slab between items and, while it animates,
+   *      strips the `-item-selected` class — so which item is selected lives in two places for
+   *      300ms. A static slab reads identically at rest, cannot desynchronise, and needs no
+   *      reduced-motion carve-out.
+   *   2. NO `::after` HOVER OVERLAY. The source tints hover through a `z-index: -1` pseudo-element
+   *      so the overlay can cross-fade under the label. With no thumb to coordinate with there is nothing
    *      the overlay buys, and a negative z-index inside a stacking context is a well-known way to
    *      lose an element behind an ancestor's background. The tint goes straight on the item.
    *
@@ -1019,12 +1020,12 @@
     /* The track owns the type; the item must not fall back to the UA's button font. */
     font: inherit;
     white-space: nowrap;
-    /* antd transitions COLOUR only on an item (`transition: color …`); the slab appears at once. */
+    /* Only COLOUR transitions on an item; the slab appears at once. */
     transition: color var(--duration-fast);
   }
 
-  /* antd itemHoverColor / itemHoverBg, and the heavier itemActiveBg while the pointer is down.
-   * Excluded on the selected item exactly as antd excludes it — hovering the current choice must
+  /* The item hover ink and fill, and the heavier active fill while the pointer is down.
+   * Excluded on the selected item, as the spec excludes it — hovering the current choice must
    * not repaint the slab. */
   .ui-segmented-item:not([data-state="checked"]):not([data-disabled]):hover {
     background: hsl(var(--segmented-item-hover-background));
@@ -1051,7 +1052,7 @@
     text-overflow: ellipsis;
   }
 
-  /* antd's `-item-icon > svg` rule, and for antd's own stated reason: a reset that forces
+  /* The spec's own icon rule, and for its stated reason: a reset that forces
    * `svg { display: block }` (Tailwind Preflight does) would drop the glyph onto its own line. */
   .ui-segmented-item-icon {
     display: inline-flex;
@@ -1909,6 +1910,136 @@
     }
   }
 
+  /* `width="full"` — the EMBEDDED calendar. Three independent barriers hold the default shape and
+   * all three have to go together; lifting any one alone was measured to do nothing visible:
+   *
+   *   root `fit-content`      → 248px root, grid 224px
+   *   + months on the row axis → root 1198px, grid still 224px (a flex item shrinks to content)
+   *   + fixed day-cell size    → root 1198px, grid 1174px, cells 167.7px  ← only here does it work
+   *
+   * Scoped to the attribute, never global: the picker popover is shrink-to-fit and takes ITS width
+   * from the calendar, so a global version collapsed the panel from 250px to 157.8px with 18.8px
+   * day cells. `ui-calendar-embedded-fill.test.tsx` pins both halves. */
+  /* `bordered` — GRID LINES, one per day cell.
+   *
+   * Not an outline around the calendar: a box around the whole month is what a `Card` already
+   * gives, and stacking one inside a section card produced two rounded edges 16px apart. What a
+   * month grid needs is the ruling BETWEEN days, so a week reads as a row of cells the eye can
+   * track across.
+   *
+   * `border-collapse: collapse` is still declared on `.ui-calendar-grid` further down — it is the
+   * base rule and predates this block — but it does NOTHING for these lines, and relying on it
+   * fails in the worst way: the grid is a
+   * `<table>` but `.ui-calendar-week` is `display: flex`, so the rows are not table-rows, the
+   * collapse algorithm has no structure to resolve against, and it DISCARDS the cell borders
+   * entirely — measured, computed `border-width` came back `0px` on every cell while the rule sat
+   * in the stylesheet looking correct.
+   *
+   * So each cell draws only its START and BLOCK-START edge, and the grid closes the far side. Two
+   * neighbours therefore share exactly one line, with no collapse model involved. */
+  .ui-calendar[data-bordered="true"] .ui-calendar-day,
+  .ui-calendar[data-bordered="true"] .ui-calendar-weekday {
+    border-inline-start: 1px solid hsl(var(--border));
+    border-block-start: 1px solid hsl(var(--border));
+  }
+
+  .ui-calendar[data-bordered="true"] .ui-calendar-week,
+  .ui-calendar[data-bordered="true"] .ui-calendar-weekdays {
+    border-inline-end: 1px solid hsl(var(--border));
+  }
+
+  /* The header row gets a tint once the grid is ruled. Unruled it reads as a header by position
+   * alone, which is enough; ruled, it becomes just another row of boxes unless something separates
+   * it — the same reason a data table shades its `thead`. `--muted` is the tier that already means
+   * "a surface behind a header", so the two stay in step if either is retinted. */
+  .ui-calendar[data-bordered="true"] .ui-calendar-weekday {
+    background-color: hsl(var(--muted));
+    /* The header cell keeps a radius when unruled, which reads as seven small tabs the moment the
+     * grid is ruled — the corners cut the lines that are supposed to run the width of the row. */
+    border-radius: 0;
+  }
+
+  .ui-calendar[data-bordered="true"] .ui-calendar-grid {
+    border-block-end: 1px solid hsl(var(--border));
+  }
+
+  /* The day button fills its ruled cell instead of floating inside it — otherwise the selection
+   * and the today ring sit in the middle of a box and the grid reads as two competing rectangles.
+   *
+   * The radius is set through `--button-radius`, NOT `border-radius`, and that is not a style
+   * preference: `buttonVariants` puts `rounded-[var(--button-radius)]` on every Button as a
+   * Tailwind UTILITY, and utilities are a later layer than components. A `border-radius: 0` here
+   * therefore loses to it every time — measured, the selected day kept its 3.71px corners inside a
+   * square ruled cell while this rule sat in the stylesheet looking correct. Re-pointing the
+   * variable the utility reads is the only move that works from this layer. */
+  /* A hidden day still owns its cell. `classNames.hidden` is `invisible`, which hides the BOX, so
+   * with `showOutsideDays={false}` the ruling disappeared along with the number and the last week
+   * came up short a few boxes. Put the visibility back on the cell's contents and let the cell
+   * keep drawing its two edges. */
+  .ui-calendar[data-bordered="true"] .ui-calendar-day.invisible {
+    visibility: visible;
+  }
+
+  .ui-calendar[data-bordered="true"] .ui-calendar-day.invisible > * {
+    visibility: hidden;
+  }
+
+  /* Same shape for disabled: the opacity belonged to the whole cell, so a disabled day faded its
+   * own grid lines and the ruling came out patchy. The dimming is about the day, not the grid. */
+  .ui-calendar[data-bordered="true"] .ui-calendar-day-disabled {
+    opacity: 1;
+  }
+
+  .ui-calendar[data-bordered="true"] .ui-calendar-day-disabled .ui-calendar-day-button {
+    opacity: var(--disabled-opacity);
+  }
+
+  /* Week numbers are cells of the same grid; without this the column sat outside the ruling. */
+  .ui-calendar[data-bordered="true"] .ui-calendar-week-number,
+  .ui-calendar[data-bordered="true"] .ui-calendar-week-number-header {
+    border-inline-start: 1px solid hsl(var(--border));
+    border-block-start: 1px solid hsl(var(--border));
+  }
+
+  .ui-calendar[data-bordered="true"] .ui-calendar-day-button {
+    --button-radius: 0;
+    inline-size: 100%;
+  }
+
+  /* The rows sit flush: a ruled grid with gaps between the rows is not a grid. */
+  .ui-calendar[data-bordered="true"] .ui-calendar-week {
+    margin-block-start: 0;
+  }
+
+  .ui-calendar[data-bordered="true"] .ui-calendar-grid {
+    margin-block-start: var(--calendar-grid-space-block-start);
+  }
+
+  .ui-calendar[data-width="full"] {
+    inline-size: 100%;
+  }
+
+  .ui-calendar[data-width="full"] .ui-calendar-months {
+    flex-direction: column;
+  }
+
+  .ui-calendar[data-width="full"] .ui-calendar-month {
+    inline-size: 100%;
+  }
+
+  .ui-calendar[data-width="full"] .ui-calendar-weekday,
+  .ui-calendar[data-width="full"] .ui-calendar-day {
+    inline-size: auto;
+    flex: 1 1 0;
+  }
+
+  .ui-calendar[data-width="full"] .ui-calendar-day-button {
+    inline-size: 100%;
+    /* The cell grows on the inline axis only — a day that also grew taller would turn a month into
+     * a page-height block. `--control-height` stays the row rhythm. */
+    max-inline-size: none;
+  }
+
   .ui-calendar-month {
     position: relative;
     display: flex;
@@ -1930,10 +2061,20 @@
     font-weight: var(--font-weight-medium);
   }
 
+  /* The nav overlays the caption row, so it must share that row's BOX — not a hand-set offset.
+   * With `inset-block-start: var(--space-3)` the buttons measured 4px above the month label
+   * (376.2 vs 380.2), and that 4px was only right at one caption font-size: raising
+   * `--calendar-caption-font-size` moved the label without moving the arrows. Stretching to the
+   * caption's own block size makes the two centre together at any type scale.
+   *
+   * `absolute` itself stays, and the root's `relative` is load-bearing: without it the containing
+   * block becomes the nearest transformed ancestor (the popover panel) and the chevrons fly to the
+   * popover corners. */
   .ui-calendar-nav {
     position: absolute;
     inset-inline: 0;
     inset-block-start: var(--calendar-nav-space-block-start);
+    block-size: var(--control-height);
     z-index: 10;
     display: flex;
     align-items: center;
@@ -1952,6 +2093,18 @@
   }
 
   .ui-calendar-chevron {
+    /* `fill: none` belongs HERE, not on the SVG element.
+     *
+     * lucide ships `fill="none"` as a presentation ATTRIBUTE, which is the weakest thing in the
+     * cascade — any rule beats it. react-day-picker's stylesheet has
+     * `.rdp-chevron { fill: var(--rdp-accent-color) }` with a default of literal `blue`, and RDP's
+     * own class stays on the element alongside ours, so the arrows rendered raw blue in shipped
+     * product. Measured: attribute said `none`, computed said `rgb(0, 0, 255)`.
+     *
+     * Moving the vendor imports into `layer(vendor)` was necessary but NOT sufficient: a layer
+     * only decides between rules that set the SAME property, and nothing on our side set `fill` at
+     * all. The design system has to state it to win it. */
+    fill: none;
     inline-size: var(--calendar-chevron-size);
     block-size: var(--calendar-chevron-size);
   }
@@ -1991,6 +2144,19 @@
   /* Scoped to the calendar root so it out-ranks `.ui-button--default-size`, which is declared
    * later in this file and would otherwise re-apply its block padding to a day cell. */
   .ui-calendar .ui-calendar-day-button {
+    /* `color: inherit` is what makes `modifiersClassNames` a REAL escape hatch.
+     *
+     * react-day-picker puts a modifier's class on the `<td>`, and the ghost button underneath set
+     * its own colour — so a consumer could write
+     * `modifiers={{sunday:{dayOfWeek:[0]}}} modifiersClassNames={{sunday:'text-error-strong'}}`,
+     * watch `ui-audit`, `tsc` and the build all come back clean, and see the grid render in ONE
+     * colour. Measured: distinct button colours across the whole month = 1.
+     *
+     * Inheriting hands the cell's colour to the label, which costs no API and keeps a
+     * locale convention (Japanese 日曜=赤 / 土曜=青 is a real requirement, and NOT a default anyone
+     * ships — the major component libraries mention weekends in zero files, and Google Calendar
+     * paints all seven headers the same) in the app where it belongs. The state rules above still win: they name the button. */
+    color: inherit;
     inline-size: var(--control-height);
     block-size: var(--control-height);
     padding: 0;
@@ -2002,9 +2168,103 @@
     opacity: 1;
   }
 
-  .ui-calendar-day-disabled {
+  /* STATE CLASSES LIVE ON THE `<td>`, THE PAINT LIVES ON THE BUTTON — and the `:not()` has to sit
+   * on the same element as the class it negates. Writing `.day-outside .day-button:not(.day-selected)`
+   * negates a class that is never on the button, so it excludes nothing: a selected day from the
+   * neighbouring month kept `--muted-foreground` on the primary-blue fill and failed contrast.
+   * Reported from a real screen, twice, for the same reason. */
+  /* DAY STATES — every one of them on the BUTTON.
+   *
+   * They used to be split across the `<td>` and the button, and the split is what kept breaking:
+   * the selected day painted the td (border-radius 0 → a sharp blue square) while hover painted
+   * the button (3.71px → rounded), and `outside` set a muted colour on the td that the ghost
+   * button's own colour then overrode, so neighbouring-month days were never greyed. Scoped under
+   * `.ui-calendar` so they out-rank `.ui-button--ghost`, declared later in this file. */
+  .ui-calendar .ui-calendar-day.day-selected .ui-calendar-day-button,
+  .ui-calendar .ui-calendar-day.day-selected .ui-calendar-day-button:hover,
+  .ui-calendar .ui-calendar-day.day-selected .ui-calendar-day-button:focus {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  /* TODAY is a RING, not a fill.
+   *
+   * It used to paint `--accent`, which is the same grey the day button already uses on hover — so
+   * today was indistinguishable from whatever the pointer happened to be over, and it competed
+   * with the selected day for the same visual weight. An inset ring in the brand colour reads as
+   * "you are here" without claiming the selection, which is the treatment Google Calendar, Apple
+   * and the major component libraries all converge on. `inset` so it does not enlarge the cell or overlap its neighbour. */
+  .ui-calendar .ui-calendar-day.day-today:not(.day-selected) .ui-calendar-day-button {
+    box-shadow: inset 0 0 0 1px hsl(var(--primary));
+    color: hsl(var(--text-primary));
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* Neighbouring-month days read as context, not as choices — but they stay CLICKABLE, so the ink
+   * still has to clear AA on the calendar surface. `--muted-foreground` is the tier that already
+   * promises that; a lighter ad-hoc grey would trade one bug for a contrast failure. */
+  .ui-calendar .ui-calendar-day.day-outside:not(.day-selected) .ui-calendar-day-button {
     color: hsl(var(--muted-foreground));
+  }
+
+  /* RANGE — and the `:not(.day-selected)` trap that does NOT apply here.
+   *
+   * react-day-picker marks every day of a range as `selected` AND the interior ones as
+   * `range_middle` at the same time. So excluding `.day-selected` would exclude the whole range:
+   * the middles would fall through to the solid primary fill and the band would be a row of
+   * separate pills instead of one strip. The middle rule therefore has to OUT-RANK selected, not
+   * dodge it — the extra `.day-selected` on the selector buys that. */
+  .ui-calendar .ui-calendar-day.day-range-middle.day-selected .ui-calendar-day-button,
+  .ui-calendar .ui-calendar-day.day-range-middle.day-selected .ui-calendar-day-button:hover,
+  .ui-calendar .ui-calendar-day.day-range-middle.day-selected .ui-calendar-day-button:focus,
+  .ui-calendar .ui-calendar-day.day-range-middle .ui-calendar-day-button {
+    background-color: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+    border-radius: 0;
+  }
+
+  /* A one-day range carries BOTH start and end. Flattening each side independently would erase all
+   * four corners and leave a lone square, so the single-day case keeps the full radius and only a
+   * start-WITHOUT-end (and vice versa) opens its inner edge. */
+  .ui-calendar .ui-calendar-day.day-range-start:not(.day-range-end) .ui-calendar-day-button {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .ui-calendar .ui-calendar-day.day-range-end:not(.day-range-start) .ui-calendar-day-button {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+
+  /* READ-ONLY calendars have no button at all: with neither `mode` nor `onDayClick`, react-day-picker
+   * renders the number straight into the `<td>`. Every rule above targets the button, so a display
+   * calendar would lose today / outside / disabled colouring entirely. These repeat the same three
+   * states on the cell itself, and they cost nothing in the interactive case because the td holds
+   * no text there. */
+  .ui-calendar .ui-calendar-day.day-today:not(:has(button)) {
+    box-shadow: inset 0 0 0 1px hsl(var(--primary));
+    color: hsl(var(--text-primary));
+    font-weight: var(--font-weight-medium);
+    border-radius: var(--calendar-day-radius);
+  }
+
+  .ui-calendar .ui-calendar-day.day-outside:not(:has(button)) {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-calendar .ui-calendar-day.day-selected:not(:has(button)) {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border-radius: var(--calendar-day-radius);
+  }
+
+  /* The td carries no ink of its own any more; it is the grid cell and nothing else. */
+  .ui-calendar-day-disabled {
     opacity: var(--disabled-opacity);
+  }
+
+  .ui-calendar .ui-calendar-day-disabled .ui-calendar-day-button {
+    color: hsl(var(--muted-foreground));
   }
 
   /* Footer actions (Today / Close): real tab stops under the grid. */

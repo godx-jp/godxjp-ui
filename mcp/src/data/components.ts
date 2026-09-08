@@ -53,6 +53,12 @@ export const COMPONENTS: ComponentEntry[] = [
       "Mandatory page shell — EVERY page wraps its content in PageContainer (title/subtitle/extra/footer/breadcrumb).",
     props: [
       {
+        name: "breadcrumbLabel",
+        type: "string",
+        description:
+          "Tên khả truy cập của landmark <nav> breadcrumb. Mặc định là chuỗi Breadcrumb đã dịch.",
+      },
+      {
         name: "title",
         type: "string",
         required: true,
@@ -189,7 +195,7 @@ export const COMPONENTS: ComponentEntry[] = [
       "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
       "DO: Use `preset='admin-collection'` for canonical Admin list pages. It owns the toolbar/search/control/table composition once at PageContainer level; do not repeat widths, heights, cell padding or media queries on child fields and rows.",
       "DO: Use `subtitle` (not `description`) and `extra` (not `actions`) — those are the canonical page-header names. If you see `description` / `actions` in old code, migrate them.",
-      "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`. DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
+      "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`; or a page whose ENTIRE body is a `variant='page'` EmptyState, which then takes that height and centres in it (a zero-state that is the whole page is the one short page that must NOT top-pack — see EmptyState). DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
       'DO: Reach for `headerLayout="responsive-inline"` when a SINGLE compact header control (a member search, one primary action) must stay beside the title at 390px instead of wrapping under the subtitle. Its measure is the token `--page-header-extra-measure` (11rem) — never a consumer `w-[176px]` or a media query in app CSS. Keep the default `stack` when `extra` holds a toolbar of several buttons; squeezing those into the compact measure only makes them wrap in a narrower box.',
       "DO: Know the header draws NO bottom divider by default — it is governed by the semantic token `--page-header-divider` (default `none`). A service theme opts in once, globally, with `--page-header-divider: 1px solid hsl(var(--border));` in its theme CSS. Never re-create the divider with a `border-b` utility on the header or a `<Separator>` under the title. `variant='ghost'` does NOT overrule the token: it blocks a divider from INHERITING in (so an unset token stays silent) but an explicit `--page-header-divider` still draws on a ghost page — the same shape as `--page-toolbar-divider` on the band. Ghost's real quiet half is the header's bottom pad, which it drops.",
       'DO: Bound a readable/feed page with `measure="medium"` (720px visible surface) or `measure="narrow"` (624px) — NEVER a page-local `max-w-[720px]`, a wrapper div, or a consumer CSS variable override. `measure` caps the HEADER and the BODY together, which is the whole point: with `variant="narrow"` the header action stays out at the page edge while the body is 624px, so the action and the card do not share an end edge. Retune the presets once in a service theme via `--page-measure-narrow` / `--page-measure-medium`.',
@@ -256,6 +262,37 @@ export default function OrdersPage() {
         defaultValue: '"md"',
         description:
           'Token gap between children, shared with other layout primitives. "none" is a DELIBERATE zero for two lines that read as one block — a name over its role, a weekday over its date, a tab bar with no seam — not a way to opt out of the token scale.',
+      },
+      {
+        name: "gapRaw",
+        type: "number",
+        description:
+          "ESCAPE HATCH: a gap in pixels, off every step of the scale. Real designs land on 2px, 5px, 6px, 10px, 14px — rounding to the nearest named step drifts the layout, and writing the literal in a className is blocked by ui-audit. Spend the ten named steps FIRST: `gap={3}` is 12px and follows the user's --scaling, gapRaw does not. It wins over `gap` (which then emits no class, so the two cannot fight over specificity) and leaves data-gap-raw on the DOM, so every escape stays countable.",
+      },
+      {
+        name: "pad",
+        type: "number | { inline?, block?, inlineStart?, inlineEnd?, blockStart?, blockEnd? }",
+        description:
+          'Inner padding on the token scale — one step for all four sides, or an object keyed by LOGICAL side. Exists because a missing padding prop produced 42 of 51 ui-audit errors in one real consumer (gh#408): `<Flex className="p-3">` was the only move left.',
+      },
+      {
+        name: "padRaw",
+        type: "number | { inline?, block?, inlineStart?, inlineEnd?, blockStart?, blockEnd? }",
+        description:
+          "Raw-pixel padding for values off the scale, same contract and same price as gapRaw: it leaves data-pad-raw on the DOM so each escape is countable. Overrides `pad` PER SIDE, not as a whole.",
+      },
+      {
+        name: "fill",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Take the space the siblings leave — the ELASTIC column of a `fixed | elastic | fixed` row (name · meter · figures). Also sets min-inline-size: 0, which is what lets a truncating child ellipse instead of pushing the row wider. Without this axis the only move was className="flex-1 min-w-0", which ui-audit blocks (gh#405 §2).',
+      },
+      {
+        name: "width",
+        type: "number | string",
+        description:
+          "A FIXED column: number = px, string = any CSS length. Comes with flex: none — a width a sibling can still squeeze is a suggestion, and stacked rows would start at different x offsets. Leaves data-width-raw on the DOM so the measurement stays countable, like gapRaw/padRaw.",
       },
       {
         name: "align",
@@ -442,6 +479,18 @@ import { StatCard } from "@godxjp/ui/data-display";
           "Which columns the topbar spans. content starts it beside the sidebar, so the rail runs the full window height and the bar sits over the content only. full runs the bar edge to edge with the rail beneath it, for a bar carrying space-level chrome (global search, account, notifications) that outranks the current section. full also renders the header before the aside so keyboard order follows the visual order.",
       },
       {
+        name: "navRail",
+        type: "ReactNode",
+        description:
+          "A SECOND navigation column, narrower than `sidebar` and placed before it — the workspace/organization switcher shape (Slack, Teams, Discord): rail → sidebar → content. THE THREE COLUMNS ARE THREE SCOPES, and that is what decides where a control goes. The rail is PLATFORM scope: what is true across every app in the organization — which organization, which app, notifications, messages, events, organization settings, cross-app shortcuts. The sidebar is APP scope: this app's own sections, channels, routes. The topbar is PAGE scope: where you are and what you can do here. App navigation never goes in the rail and a platform switch never goes in the sidebar; a destination that would fit both belongs to the rail, because it survives changing apps. A rail repeating the sidebar's own entries is a second chrome band carrying the first one's rank, just vertical. Passing a node adds the grid track and publishes `data-nav-rail` on the root; omitting it leaves the two-column shell unchanged. Width is `--app-shell-nav-rail-width` (3.5rem, deliberately not the collapsed sidebar's 4rem — at equal widths the two nav tracks fuse into one block when the sidebar collapses). Fully orthogonal to `topbarSpan` — the rail says how many navigation COLUMNS exist, `topbarSpan` says how far the BAR reaches, and all four combinations are supported. `sidebarCollapsed` folds the sidebar track only; the rail keeps its width (the Slack behaviour). Rendered as its own `complementary` landmark, and its content is added to the mobile drawer automatically.",
+      },
+      {
+        name: "navRailLabel",
+        type: "string",
+        description:
+          "Accessible name for the `navRail` landmark. Defaults to the localized 'Workspaces'. The rail and the sidebar are two `complementary` landmarks on one page, so ARIA requires distinct names; the shell supplies both defaults so the two columns of equal rank behave the same way.",
+      },
+      {
         name: "footer",
         type: "ReactNode",
         description: "App-level footer outside the main content area.",
@@ -484,6 +533,9 @@ import { StatCard } from "@godxjp/ui/data-display";
       "DO NOT fake the bar-less shell with `topbar={<></>}` (or `topbarLeft={<div />}`, `logo={null}`) — any defined slot counts as bar content, so the `<header>` is still rendered, still paints its border and background, and still eats the grid row. The trigger is the slot being UNDEFINED; pass nothing at all (a conditional slot must resolve to `undefined`, not to an empty node).",
       "DO wire a single `sidebarCollapsed` boolean between AppShell's `sidebarCollapsed` prop and Sidebar's `collapsed` prop — AppShell sets `data-collapsed='true'` on the root div (which CSS reads for width transitions) but does NOT own the collapsed state itself; lift the state and pass it down to both.",
       "DO place breadcrumb content in AppShell's `breadcrumb` prop (renders in the `app-breadcrumb` div inside `<main>` ABOVE children) — do NOT hand-roll a breadcrumb bar as the first child of children, and do NOT put breadcrumbs inside <Sidebar>.",
+      "DO build a three-column shell (a narrow workspace/org rail, then the channel or section sidebar, then content) by passing `navRail` — NEVER by putting two columns inside the single `sidebar` slot. Hand-rolling it hits two measured traps: `Sidebar` renders `.sb-root { display: contents }`, so two Sidebars dropped side by side dissolve into one flex row and both collapse to zero unless each is separately wrapped in its own flex-column box; and sizing the one available track for two columns means overriding `--app-shell-sidebar-width`, which is how a shipped consumer moved its content edge 64px between routes. `navRail` owns the track, so neither is needed.",
+      "DO leave `sidebarCollapsed` wired to the sidebar alone when a `navRail` is present — collapse folds the sidebar track (16rem → 4rem) and the rail keeps its width, so the rail's destinations stay reachable while collapsed. That is the Slack behaviour and it is the shell's, not something to reproduce with consumer CSS.",
+      "DO NOT pass `mobileNav` just to re-add the rail on mobile — when `navRail` is present the drawer already defaults to the rail followed by the sidebar, because BOTH docked columns are hidden below 900px and a `sidebar`-only default would silently delete every app-level destination the rail carries.",
       "DO NOT nest a second AppShell or AppShell inside AppShell's children — AppShell renders the root `app-root` div; nesting shells breaks the CSS grid layout.",
       "DO NOT add padding directly to children expecting it to reach the viewport edge — AppShell's `<main>` is a scroll container; use <PageContainer> (or <PageContainer.Inset> inside a flush PageContainer) inside children to get standard page padding.",
     ],
@@ -883,6 +935,12 @@ export function HandyInbound() {
     tagline:
       "Data-driven vertical nav rail with collapsible submenu groups and a collapsed icon-only mode — never build nav manually with raw buttons.",
     props: [
+      {
+        name: "ariaLabel",
+        type: "string",
+        description:
+          "Tên khả truy cập của landmark điều hướng. Bắt buộc khi một tài liệu có nhiều hơn một `<nav>`.",
+      },
       {
         name: "activeId",
         type: "string",
@@ -1430,9 +1488,23 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
         description:
           "Width preset for the aside rail: sm 20rem, md 22rem, lg 30rem. `lg` is for a rail that carries a panel rather than a list, and it holds off splitting until the pane is 64rem wide so the main column stays the wider of the two.",
       },
+      {
+        name: "asideLabel",
+        type: "string",
+        description:
+          "Accessible name for the `<aside>` complementary landmark. Required when more than one complementary landmark shares the document, so a screen-reader landmark list says which rail is which.",
+      },
+      {
+        name: "fill",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Take the remaining height of the parent instead of growing with the content. Default false keeps the pane content-height, which is right inside a scrolling page. Set it for an app-shell surface whose columns own their own scrolling — a chat transcript with a pinned composer, a full-height table beside a detail rail: the pane and both columns get a DEFINITE height, so overflow inside a column scrolls that column instead of pushing the page taller. The parent still decides how much height there is to fill: inside a flex column, give the wrapper `flex: 1; min-height: 0`.",
+      },
     ],
     usage: [
       "DO: pass all right-panel content via the `aside` prop — it renders inside a semantic `<aside>` element at a fixed rem width (sm=20rem, md=22rem). The `children` prop fills the main `1fr` column. Both accept any ReactNode.",
+      "DO: reach for `fill` when the pane is an app-shell surface rather than a block in a scrolling page — a chat transcript whose composer stays pinned to the bottom, a full-height table beside a detail rail. It is the supported way to say \"be as tall as what is left\"; a consumer that instead styles the pane's wrapper divs from outside (`[&>*]`, `[&>*>*]`) is targeting this component's internal DOM by position and will break the day another wrapper appears.",
       'DO: choose `asideWidth="sm"` for compact detail panels (filters, quick stats, key-value summaries) and the default `asideWidth="md"` for richer panels (forms, timelines, long metadata lists).',
       "DO: wrap SplitPane inside `PageContainer` or `PageContainer.Inset` — SplitPane provides no page padding of its own. It is a grid primitive, not a page scaffold.",
       "DO: close a collapsible rail with `aside={null}` — a Slack-style thread, a Linear-style detail panel — rather than swapping `<SplitPane aside={<Thread />}>{page}</SplitPane>` for a bare `{page}`. Both look the same on screen; only the prop keeps `children` mounted. The conditional swap changes the DEPTH of `{page}` in the React tree, so React remounts it: measured in a consumer as a message list jumping from scrollTop 400 to the bottom the instant a thread opened, losing the reader's place and any component state below it.",
@@ -2072,6 +2144,12 @@ import { Trash2 } from "lucide-react";
       "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>.",
     props: [
       {
+        name: "weight",
+        type: '"regular" | "medium" | "bold"',
+        defaultValue: "medium",
+        description: "Độ đậm theo canon 3 bậc (400 · 500 · 700). Đặt `bold` cho tiêu đề cần nhấn.",
+      },
+      {
         name: "level",
         type: "1 | 2 | 3 | 4",
         defaultValue: "2",
@@ -2152,6 +2230,12 @@ import { Trash2 } from "lucide-react";
         description:
           "Accessible name. Set → exposed as a named image (role img); omitted → decorative (aria-hidden), the correct default when a readable wordmark sits beside it. With `wordmark` set, `label` overrides the lockup's name (the wordmark text is otherwise the name).",
       },
+      {
+        name: "asChild",
+        type: "boolean",
+        description:
+          'Borrow the single child element as the logo ROOT instead of rendering a <span> — the way to make the whole logo a LINK (<a>, or a router <Link>). The borrowed tag itself carries data-slot="logo-lockup"/.ui-logo-lockup and the mark + wordmark become its children, so there is no wrapper element between the link and the lockup. Use it instead of wrapping Logo in your own <a>: .ui-logo-lockup is display:inline-flex, so a plain <a> (display:inline) puts the lockup on a line box and the strut\'s descender nudges the mark up in a topbar — the only fix left to the consumer is className="flex" on the <a>, which ui-audit rejects as no-utility-layout.',
+      },
     ],
     usage: [
       'DO import from `@godxjp/ui/general`: `import { Logo } from "@godxjp/ui/general";`',
@@ -2162,6 +2246,7 @@ import { Trash2 } from "lucide-react";
       "NOTE: the package ships NO wordmark ARTWORK — `wordmark` typesets the name in the design-system display face (`--logo-wordmark-font-family`). When design supplies a real logotype, pass it as an inline `<svg>` node to `wordmark`; do not approximate letterforms in CSS.",
       'DON\'T re-tint via `className="bg-*"` — the fill reads the `--primary` role token; retune it through a service theme (`--primary`, `--logo-radius`, `--logo-size-*`), not utilities.',
       "DO use `mark=\"godx\"` for the canonical GoDX identity mark on hosted-identity screens — it is ALREADY in the package as real inline vector artwork. DON'T pass a hand-drawn brand SVG as `glyph`, and don't ship a brand asset in the app, to reproduce it.",
+      'DO make the brand a link with `asChild`, not with a wrapper: `<Logo asChild mark="godx" wordmark="GoDX"><Link href="/" /></Logo>`. Writing `<a className="flex"><Logo …/></a>` instead is the exact shape ui-audit rejects (no-utility-layout), and dropping the `flex` misaligns the mark.',
     ],
     useCases: [
       'App-shell header brand lockup — `<Logo glyph="c" wordmark="CoreBooks" />` in the sidebar/topbar: mark decorative, wordmark readable, spacing tokenized.',
@@ -2187,7 +2272,12 @@ import { Trash2 } from "lucide-react";
 <Logo mark="godx" tone="success" wordmark="GoDX" />
 
 // Bare mark standing alone → give it an accessible name.
-<Logo label="CoreBooks" size="lg" />`,
+<Logo label="CoreBooks" size="lg" />
+
+// The whole lockup as a link — the <a> IS the lockup, no wrapper to align.
+<Logo asChild mark="godx" tone="success" wordmark="GoDX">
+  <a href="/" />
+</Logo>`,
   },
   {
     name: "Reveal",
@@ -3032,6 +3122,58 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     rules: [35],
   },
   {
+    name: "Legend",
+    group: "data-display",
+    tagline:
+      "The KEY for a colour-coded surface: which tone means what, spelled out in words once — a square swatch per tone with its label.",
+    props: [
+      {
+        name: "items",
+        type: '{ tone: "default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"; label: ReactNode }[]',
+        required: true,
+        description:
+          "The keys, in the order the marks they explain appear. `label` is required and cannot be omitted: colour alone never carries meaning (WCAG 1.4.1), so a wordless key would be the exact failure the component prevents.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class. The swatch geometry lives in the --legend-* tokens, not here.",
+      },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/data-display`: `import { Legend } from "@godxjp/ui/data-display";`',
+      "DO put it in the `CardAction` slot of the card whose bars or chart it explains, so the key sits on the same line as the card title and reads before the data.",
+      "DO feed it the same tone order as the marks it explains — a key whose order differs from the bars forces the reader to map three colours by hand.",
+      "DON'T build a key out of Badges. A Badge is a chip that reads as clickable and carries a tinted fill + border; a legend swatch is a SAMPLE of the exact colour the mark uses.",
+      'DON\'T hand-roll a coloured square: `<span className="w-[10px] h-[10px] rounded-[2px] bg-[#c0392f]" />` is blocked by ui-audit three ways at once (no-arbitrary-size, no-arbitrary-radius, no-arbitrary-hex).',
+      "DON'T give the swatch its own text or aria — it is aria-hidden on purpose, because it repeats the label beside it.",
+    ],
+    useCases: [
+      "The key above a set of `Progress` breakdown bars — 期限超過 / 期限間近 / 対応済 — so the three tones are named once for the whole card instead of on every row.",
+      "A chart card where the series colours need naming outside the chart's own runtime legend.",
+      "A status column in a dense table: name the tones once in the card header rather than repeating a Badge in every cell.",
+      "A calendar or heatmap whose cell tints encode a state (booked / held / free).",
+    ],
+    related: [
+      "Progress — `segments` draws the breakdown this key explains; the two take the same tones.",
+      "Badge — a Badge labels ONE thing in place; a Legend explains a colour used across many marks.",
+      "CardAction — the header slot a Legend usually sits in, so the key lands opposite the CardTitle.",
+    ],
+    example: `import { Legend } from "@godxjp/ui/data-display";
+
+<CardAction>
+  <Legend
+    items={[
+      { tone: "destructive", label: "期限超過" },
+      { tone: "warning", label: "期限間近" },
+      { tone: "success", label: "対応済" },
+    ]}
+  />
+</CardAction>`,
+    storyPath: "data-display/Legend.stories.tsx",
+    rules: [],
+  },
+  {
     name: "ListRow",
     group: "data-display",
     tagline:
@@ -3351,16 +3493,17 @@ import { Flex } from "@godxjp/ui/layout";
           "Label placement within each item — `vertical` stacks the label over the value (default); `horizontal` puts the label BESIDE the value in a token-aligned column (mirrors `<Form layout>`). Tune the horizontal label-column width via `--descriptions-label-width`.",
       },
       {
+        name: "labelAlign",
+        type: '"start" | "end"',
+        defaultValue: '"start"',
+        description:
+          'Applies only in layout="horizontal" — a vertical label sits above its value and end-aligning it there would read as a mistake, the same contract `Form` keeps.',
+      },
+      {
         name: "children",
         type: "ReactNode",
         required: true,
         description: "Descriptions.Item elements.",
-      },
-      {
-        name: "items",
-        type: "DescriptionsItemProp[]",
-        description:
-          "Data-driven rows `{ label, value, span? }` (label/value are ReactNode) — the alternative to composing `Descriptions.Item` children.",
       },
     ],
     usage: [
@@ -3443,6 +3586,7 @@ import { Flex } from "@godxjp/ui/layout";
       "DO omit optional secondary sections when absence has no user value. Otherwise use variant='compact' or 'section'; reserve page for the primary page job.",
       "DO match empty-state visual weight to the section's importance and expected content density — a low-priority 'no received invitations' block uses variant='compact' (no medallion, minimal padding), not the full page treatment that would outweigh real content.",
       "DO NOT wrap every empty condition in its own bordered Card. A compact/section empty state sits directly in the existing CardContent / section it belongs to; a dedicated bordered Card is only for a page-level or standalone zero-state.",
+      "DO pair `variant='page'` (the default) with `<PageContainer fill>` when the zero-state IS the whole page body — `fill` hands the body the shell's remaining height and the page zero-state then takes that height and centres in it. That is ONE fact (this page's body is its empty state), not a second prop to keep in lockstep: no `fill` on the empty state, no `h-full`/`min-h-screen`/`grid place-items-center` wrapper, no spacer div. Measured on a consumer dashboard at 1440x805: without it the block top-packed at y=240 with 348px of white below; with `fill` alone the body grew to 541px and the void merely moved; with both the block resolves to 525px and centres. Under an ordinary auto-height body nothing changes, so leave `fill` off on a page that has real content beneath the header.",
     ],
     useCases: [
       "Zero-row admin list pages (invoices, accounts, transactions) that are NOT backed by a `DataTable` — e.g. a card-grid or custom list layout where DataTable's built-in empty state doesn't apply.",
@@ -3468,15 +3612,27 @@ import { Flex } from "@godxjp/ui/layout";
     name: "Progress",
     group: "data-display",
     tagline:
-      "Horizontal progress bar 0–100 with optional label, semantic tone, and an over-capacity (striped) state for over-limit meters.",
+      "Horizontal bar in two modes: a METER (`value` 0–100, optional tone, over-capacity striped state) and a BREAKDOWN (`segments` — one total split into tone-coloured slices on a taller track).",
     props: [
       {
         name: "value",
         type: "number",
         required: true,
-        description: "Progress percentage 0–100 (clamped unless `over`).",
+        description:
+          "METER mode: progress percentage 0–100 (clamped unless `over`). Required unless you pass `segments` — the two modes are a discriminated union, so `value` and `segments` can never appear together.",
       },
-      { name: "label", type: "string", description: "Text label beside/below the bar." },
+      {
+        name: "segments",
+        type: '{ value: number; tone: "success" | "warning" | "destructive"; label: string }[]',
+        description:
+          'BREAKDOWN mode: one total split into slices. Pass ABSOLUTE amounts in one unit (counts, bytes, yen) — the bar computes each share, so three numbers never have to be rounded into 100. Renders role="img" named from every slice (a partition is not three progressbars), on a taller track (--progress-breakdown-block-size 1.375rem, --progress-breakdown-radius var(--radius)) because three abutting fills on the meter\'s 0.5rem pill read as a coloured hairline. `label` on each slice is REQUIRED — colour alone never carries meaning (WCAG 1.4.1). Mutually exclusive with value/tone/over.',
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          "Text label beside/below the bar; it also becomes the accessible name. Pass `aria-labelledby` instead when the name is ALREADY on screen (a row's company name, a card heading) — the bar then borrows it rather than repeating it.",
+      },
       {
         name: "tone",
         type: '"success" | "warning" | "destructive"',
@@ -3497,6 +3653,9 @@ import { Flex } from "@godxjp/ui/layout";
       'DO drive `tone` dynamically from business logic — e.g. `variant={pct >= 80 ? "warning" : "success"}` — to communicate threshold status semantically rather than with raw colour classes.',
       "DON'T use a `disabled` Slider as a read-only progress bar — Slider is semantically an interactive control even when disabled, which pollutes the a11y tree and exposes the wrong ARIA role (`slider` vs `progressbar`). Progress renders the correct read-only indicator.",
       "DON'T pass children or sub-components — Progress is a single self-contained element (track + bar + label). The `label` prop is the only text injection point; don't wrap it in a custom parent div to add a label alongside it.",
+      "DON'T hand-roll a stacked bar out of three divs to show a part-to-whole split — pass `segments`. Hand-rolled slices need a hex fill, an arbitrary height and an arbitrary radius, which ui-audit blocks three ways (no-arbitrary-hex, no-arbitrary-size, no-arbitrary-radius), and they leave the picture with no accessible name at all.",
+      "DON'T convert segment amounts to percentages yourself — pass the raw counts. The component divides by the total, so the slices always sum to the whole; pre-rounded percentages do not.",
+      "DO pair a breakdown with `Legend` so each tone is spelled out in words once, instead of repeating the labels on every bar.",
       "DON'T use Progress for editable numeric input or range selection — it has no callbacks, no interactivity, and no form `name` prop. Use Slider (bounded range input) or Input (free-form number) for data-entry scenarios.",
     ],
     useCases: [
@@ -3513,12 +3672,21 @@ import { Flex } from "@godxjp/ui/layout";
       "Steps — use Steps for a discrete, named sequence of phases (onboarding wizard, checkout flow) where each step has a label and a clear current/done/pending state; use Progress for a continuous 0–100 fill.",
       'Badge / Badge — use Badge or Badge to communicate a categorical status label (e.g. "Paid", "Overdue") without a fill metaphor; use Progress when the numeric proportion itself is the information.',
       "StatCard — use StatCard to headline a single KPI metric with a title; compose Progress inside or alongside StatCard when a visual fill adds meaning to the number.",
-      "BarChart / PieChart / LineChart (@godxjp/ui/charts) — Progress shows ONE ratio against a target; the moment you have several series, categories, or a part-to-whole split (or a value changing over time), move up to a chart instead of stacking many Progress bars.",
+      "Legend — the key for a breakdown: which tone means what, spelled out in words once for the whole card instead of on every bar.",
+      "BarChart / PieChart / LineChart (@godxjp/ui/charts) — a Progress breakdown handles ONE total split into a few named states, inline and without a charting runtime; move up to a chart when you have several series, many categories, or a value changing over time.",
     ],
     example: `import { Progress } from "@godxjp/ui/data-display";
 
 <Progress value={pct} label={pct + "% 使用中"} tone={pct >= 80 ? "warning" : "success"} />
-<Progress value={252} over label="252% 積載" />`,
+<Progress value={252} over label="252% 積載" />
+<Progress
+  segments={[
+    { value: 2, tone: "destructive", label: "期限超過" },
+    { value: 3, tone: "warning", label: "期限間近" },
+    { value: 12, tone: "success", label: "対応済" },
+  ]}
+  aria-labelledby={companyNameId}
+/>`,
     storyPath: "data-display/Progress.stories.tsx",
     rules: [],
   },
@@ -4117,6 +4285,17 @@ import remarkGfm from "remark-gfm";
       "Wraps a control with label, helper, and error; injects the accessible name (aria-labelledby), description (aria-describedby) and validation (aria-errormessage/aria-invalid/aria-required) contract onto the child, which forwards it to its real semantic focus target. Reads the parent Form's layout (vertical/horizontal) — overridable per field.",
     props: [
       {
+        name: "field",
+        type: "string",
+        description: "Tên trường của form — dùng khi `id` không đủ để nối control với error/aria.",
+      },
+      {
+        name: "labelAddon",
+        type: "ReactNode",
+        description:
+          "Nội dung phụ cạnh nhãn: gợi ý, badge bắt buộc, nút trợ giúp. Nằm TRONG hàng nhãn nên không phá nhịp trường.",
+      },
+      {
         name: "id",
         type: "string",
         required: true,
@@ -4184,7 +4363,7 @@ import remarkGfm from "remark-gfm";
       "DO pass a SINGLE React element as `children`. FormField calls `React.cloneElement` on it to inject `aria-describedby`, `aria-required`, and `aria-invalid` — if you pass a fragment or multiple nodes, cloneElement silently skips the injection and a11y attributes are lost.",
       "COMPOSITE CHILD: when the single child is a layout wrapper — a `Flex` holding a range from/to pair or a 年/月 input+select combo — the label still reaches every control inside. FormField publishes its label through FieldNameContext and each control's semantic focus target (Input's `<input>`, Select/SearchSelect's `role=combobox` trigger, and everything composed on them) adopts it as a LAST-RESORT accessible name; a control's own `aria-label`/`aria-labelledby` always wins, so set a per-control `aria-label` (e.g. 開始日/終了日) when the two halves should announce distinct names. The wrapper itself renders as a named `role='group'` (see Flex).",
       "DO reach for `staticText` (not `children` with a bare string/span) for a read-only field mixed into an otherwise-editable Form — e.g. an immutable name/email row above an editable role Select on the same Members-edit card. It renders with the exact typography `Descriptions.Item`'s value uses, and — because it IS a FormField reading the same Form context — it lines up with every other field's label column, `labelAlign`, and row-to-row gap automatically. A bare string as `children` instead triggers the dev-mode 'expected a single React element child' warning and has no typography contract at all.",
-      "WIDTH: a FormField FILLS its container in vertical/horizontal layout — exactly like Ant Design's Form.Item (vertical → width:100%). It works full-width inside `<Form>`, a `ResponsiveGrid` cell, a bare `<Flex direction='col'>`, or a plain block; you do NOT need to wrap it in a grid to get full width. `layout='inline'` is the only content-width exception (compact, side-by-side). To narrow just the control (keeping the label row full-width), set `controlWidth` — never constrain the FormField itself.",
+      "WIDTH: a FormField FILLS its container in vertical/horizontal layout — like the conventional Form.Item (vertical → width:100%). It works full-width inside `<Form>`, a `ResponsiveGrid` cell, a bare `<Flex direction='col'>`, or a plain block; you do NOT need to wrap it in a grid to get full width. `layout='inline'` is the only content-width exception (compact, side-by-side). To narrow just the control (keeping the label row full-width), set `controlWidth` — never constrain the FormField itself.",
       "DO use the `error` prop (not a hand-rolled `<p>`) for validation messages — it renders with `role='alert'` and `text-destructive` styling and overrides `helper` automatically. Never render an error paragraph alongside FormField.",
       "DO use `labelAddon` (a ReactNode rendered inline after the label text) for supplementary controls such as a tooltip trigger or a 'copy' icon button — never insert such controls as siblings outside FormField, which breaks layout.",
       "DON'T wrap `Switch` in FormField — use `Field` instead, which already handles the label, hidden `<input name>` for HTML form submission, error, and helper internally.",
@@ -4588,13 +4767,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "renderOption",
         type: "(option: SearchSelectOptionProp) => React.ReactNode",
         description:
-          "Custom per-option renderer for the dropdown ROWS (Ant-Design style). Defaults to label + optional sublabel. Does not change the trigger — use `labelRender` for that.",
+          "Custom per-option renderer for the dropdown ROWS. Defaults to label + optional sublabel. Does not change the trigger — use `labelRender` for that.",
       },
       {
         name: "labelRender",
         type: "(selected: { value: string; label: React.ReactNode; option?: SearchSelectOptionProp }) => React.ReactNode",
         description:
-          "Custom renderer for the SELECTED value shown on the TRIGGER (Ant Design `labelRender`) — avatar + name + role badge, etc. `option` is undefined for an async preset whose page hasn't loaded. Only used while a value is selected; the placeholder still shows when empty.",
+          "Custom renderer for the SELECTED value shown on the TRIGGER (`labelRender`) — avatar + name + role badge, etc. `option` is undefined for an async preset whose page hasn't loaded. Only used while a value is selected; the placeholder still shows when empty.",
       },
       {
         name: "selectedLabel",
@@ -5105,6 +5284,11 @@ export function PrioritySelect({ value, onValueChange }) {
     group: "data-entry",
     tagline: "Radio group accepting an options array or RadioItem children.",
     props: [
+      {
+        name: "id",
+        type: "string",
+        description: "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
+      },
       { name: "value", type: "string", description: "Controlled selected value." },
       {
         name: "onValueChange",
@@ -5173,7 +5357,7 @@ export function PrioritySelect({ value, onValueChange }) {
     name: "MonthPicker",
     group: "data-entry",
     tagline:
-      "Year/month (yyyy/MM) input with an Ant-Design-style month-grid popover — a year chevron header over a 3x4 grid of the twelve months. The input stays typeable; the grid is the visual affordance.",
+      "Year/month (yyyy/MM) input with a month-grid popover — a year chevron header over a 3x4 grid of the twelve months. The input stays typeable; the grid is the visual affordance.",
     props: [
       {
         name: "value",
@@ -6084,6 +6268,12 @@ toast.error("保存に失敗しました");`,
     tagline: "Offset/page-based pagination bar. Sits below a table card.",
     props: [
       {
+        name: "ariaLabel",
+        type: "string",
+        description:
+          "Tên khả truy cập của landmark phân trang. Bắt buộc khi một trang có nhiều bộ phân trang.",
+      },
+      {
         name: "value",
         type: "number",
         defaultValue: "1",
@@ -6209,7 +6399,7 @@ import { Button } from "@godxjp/ui/general";
   <DropdownMenuContent>
     <DropdownMenuItem>編集</DropdownMenuItem>
     <DropdownMenuSeparator />
-    <DropdownMenuItem tone="destructive">削除</DropdownMenuItem>
+    <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>`,
     storyPath: "navigation/DropdownMenu.stories.tsx",
@@ -7982,6 +8172,20 @@ function FormSlider() {
       "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker or DateRangePicker instead when you need a form-submittable input.",
     props: [
       {
+        name: "bordered",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Kẻ ô: mỗi ngày một đường viền, kể cả hàng thứ (hàng thứ còn được tô nền muted). KHÔNG phải một khung quanh cả lịch — đó là việc của Card, và lồng Card trong Card cho hai mép bo cách nhau 16px với hai lớp padding. Mặc định false vì popover của picker cần điều ngược lại: ngày được chọn phải là hình duy nhất trong tấm.",
+      },
+      {
+        name: "width",
+        type: '"auto" | "full"',
+        defaultValue: '"auto"',
+        description:
+          'How the grid claims horizontal space. `auto` (default) shrink-wraps to seven fixed day columns — the shape a picker popover needs, because the panel is shrink-to-fit and takes ITS width from the calendar inside it. Use `full` for an EMBEDDED calendar (a shift board, a booking month) that is the content of a Card rather than a dropdown: it stacks the months and lets the day cells share the row. Measured at a 1200px container: auto → root 248px / cells 32px; full → root 1200px / cells 168px; the DatePicker popover stays 250px either way. Do NOT reach for `className="w-full"` instead — it widens the root and leaves the grid at 224px pinned left.',
+      },
+      {
         name: "showToday",
         type: "boolean",
         defaultValue: "false",
@@ -8477,6 +8681,11 @@ function AccountQuickPick({ onSelect }: { onSelect: (id: string) => void }) {
     tagline:
       "Multi-select checkbox list from an options array or manual children — use `options` prop for the data-driven path, never hand-roll individual Checkbox items in a group.",
     props: [
+      {
+        name: "id",
+        type: "string",
+        description: "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
+      },
       {
         name: "options",
         type: "ChoiceOptionProp[]",
@@ -10061,7 +10270,7 @@ export default function PasswordBlock() {
     name: "Segmented",
     group: "data-entry",
     tagline:
-      "One-of-N from a small, closed, always-visible set — antd's Segmented drawn on Radix RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
+      "One-of-N from a small, closed, always-visible set — the enterprise Segmented drawn on Radix RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
     props: [
       {
         name: "options",
@@ -10470,9 +10679,9 @@ export default function PasswordBlock() {
       },
       {
         name: "appearance",
-        type: '"labeled" | "icon" | "inline"',
+        type: '"labeled" | "icon" | "bar" | "inline"',
         description:
-          'Trigger presentation. "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. "inline" renders the selected value as a chrome-less text trigger for a legal/auth footer (no border, no box). DEFAULT IS KIND-DEPENDENT: kind="locale" defaults to "icon" (its product contract is the compact language switcher); every other kind defaults to "labeled".',
+          'Trigger presentation. "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. "bar" is the SAME structural drops re-shaped as a cell OF the bar rather than a control in it — it fills the bar height and squares its corners (--topbar-item-radius, the knob TopbarItem uses), so the hover surface paints the whole strip. Reach for "bar" inside a Topbar slot or AppShell\'s bar and "icon" everywhere else: "icon" in a taller bar leaves a --control-height pill floating mid-strip, which reads as a different control family from the bar\'s own chrome. "inline" renders the selected value as a chrome-less text trigger for a legal/auth footer (no border, no box). DEFAULT IS KIND-DEPENDENT: kind="locale" defaults to "icon" (its product contract is the compact language switcher); every other kind defaults to "labeled".',
       },
       {
         name: "compact",
@@ -10547,6 +10756,94 @@ export function TopbarLocale() {
   return <Topbar end={<AppSettingPicker kind="locale" appearance="icon" />} />;
 }\`}`,
     storyPath: "navigation/AppSettingPicker.stories.tsx",
+    rules: [3, 5, 6, 23],
+  },
+  {
+    name: "AppSettingToggle",
+    group: "navigation",
+    tagline:
+      "ONE button that steps a single AppProvider setting to its NEXT value and shows that value as its glyph — theme (Sun/Moon/Monitor), density, fontSize, timeFormat. The no-menu counterpart to AppSettingPicker: same binding contract, same option order, one tap instead of open-then-choose. Renders disabled (never throws) outside AppProvider when uncontrolled.",
+    props: [
+      {
+        name: "kind",
+        type: '"theme" | "density" | "fontSize" | "timeFormat"',
+        description:
+          "Which AppProvider setting this button cycles. Deliberately the CLOSED-value-set subset of AppSettingKind — locale/timezone/dateFormat/brand are absent because a long or service-extensible list is a menu, not a cycle; reach for AppSettingPicker there. The cycle order is the SAME list AppSettingPicker offers for that kind (APP_THEMES / APP_DENSITIES / APP_FONT_SIZES / APP_TIME_FORMAT_OPTIONS), read from those constants rather than copied, so the two controls can never drift.",
+      },
+      {
+        name: "appearance",
+        type: '"bar" | "icon"',
+        defaultValue: '"bar"',
+        description:
+          'The BOX the button takes; there is no labeled/inline form because there is no menu to label. "bar" (default) renders a TopbarItem — a CELL of the bar: it stretches to the full bar height (AppShell grid row, --topbar-height, or the coarse-pointer bar), squares its corners to --topbar-item-radius, and paints the bar\'s own hover surface across the whole strip. It emits NO height of its own, deliberately: a length here would freeze a --control-height pill inside a taller bar, which is exactly the mismatch it exists to remove. "icon" is a square --control-height ghost Button for everywhere that is NOT a bar (a settings row, a card header); the kinds that show value TEXT (timeFormat) take the small labelled tier instead of a square that would clip them.',
+      },
+      {
+        name: "value",
+        type: "string",
+        description:
+          "Controlled value for the chosen kind. Omit to read the current value from AppProvider context.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description:
+          "Controlled change handler, called with the NEXT value in the cycle. Omit to call the matching AppProvider setter (setTheme/setDensity/setFontSize/setTimeFormat). Required together with value when no AppProvider is present.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Extra CSS classes merged onto the button.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description: "Disables the button.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "HTML id forwarded to the button.",
+      },
+    ],
+    usage: [
+      'DO: Reach for it in a top bar when the value set is closed and short — <AppSettingToggle kind="theme" /> is the light/dark/system switcher, and a dropdown for three values is a menu nobody wanted to open.',
+      'DO: Trust the accessible name — it always names BOTH the setting and the current value ("Theme: Dark"), because the glyph is the only visible state. Never override it with a kind-only aria-label.',
+      "DON'T: Set a height, a radius or a background on it in a bar. The bar cell shape is TopbarItem's, and any utility you add outranks @layer components and re-creates the floating-pill defect.",
+      "DON'T: Reach for it for locale, timezone, dateFormat or brand — those are not in `kind` on purpose. Use AppSettingPicker.",
+      "DON'T: Hand-roll a theme button with useAppContext + a Sun/Moon ternary — that loses the localized value-bearing name, the shared option order, and the bar-cell shape.",
+    ],
+    useCases: [
+      'Topbar light/dark/system switcher: <AppSettingToggle kind="theme" /> in a Topbar `end` slot, beside the other TopbarItem cells.',
+      'Density or font-size step-through in an admin bar, for users who resize the grid all day: <AppSettingToggle kind="density" />.',
+      'Clock-format flip (24h/12h) next to a schedule view: <AppSettingToggle kind="timeFormat" /> — the only kind that shows its value as text, since no glyph can say "24-hour".',
+      'Settings row outside a bar: <AppSettingToggle kind="theme" appearance="icon" /> beside its label.',
+    ],
+    related: [
+      "AppSettingPicker — the same settings as a Select. Use it when the value list is long (locale, timezone) or when the user must SEE the options before choosing.",
+      'TopbarItem — the bar-cell shape appearance="bar" renders; use it directly for your own bar triggers.',
+      "AppProvider — required peer unless fully controlled; supplies the value and the setter for each kind.",
+    ],
+    example: `{\`import { AppProvider } from "@godxjp/ui/app";
+import { Topbar } from "@godxjp/ui/layout";
+import { AppSettingToggle } from "@godxjp/ui/navigation";
+
+// Context-bound: one tap steps light -> dark -> system -> light.
+export function AppBar() {
+  return (
+    <AppProvider>
+      <Topbar end={<AppSettingToggle kind="theme" />} />
+    </AppProvider>
+  );
+}
+
+// Controlled - no AppProvider required.
+import { useState } from "react";
+
+export function ThemeField() {
+  const [theme, setTheme] = useState("light");
+  return <AppSettingToggle kind="theme" appearance="icon" value={theme} onValueChange={setTheme} />;
+}\`}`,
+    storyPath: "navigation/AppSettingToggle.stories.tsx",
     rules: [3, 5, 6, 23],
   },
   {
@@ -11814,6 +12111,21 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
     tagline: "Canonical scope control: all branches vs an explicit subset.",
     props: [
       {
+        name: "value",
+        type: "BranchScopeValueProp",
+        description: "Giá trị có kiểm soát: phạm vi đang chọn.",
+      },
+      {
+        name: "defaultValue",
+        type: "BranchScopeValueProp",
+        description: "Giá trị khởi tạo khi không kiểm soát.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: BranchScopeValueProp) => void",
+        description: "Phát khi phạm vi đổi.",
+      },
+      {
         name: "branches",
         type: "{ id: string; name: string; description?: string; disabled?: boolean }[]",
         required: true,
@@ -11895,6 +12207,21 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
     group: "layout",
     tagline: "Geometry (1440/1024 two-track, 390 stacked) is MasterDetail's tokens.",
     props: [
+      {
+        name: "value",
+        type: "string",
+        description: "Giá trị có kiểm soát: id vai trò đang chọn.",
+      },
+      {
+        name: "defaultValue",
+        type: "string",
+        description: "Id vai trò khởi tạo khi không kiểm soát.",
+      },
+      {
+        name: "onValueChange",
+        type: "(roleId: string) => void",
+        description: "Phát khi vai trò đổi.",
+      },
       {
         name: "roles",
         type: "{ id: string; name: string; description?: string; memberCount?: number; locked?: boolean }[]",

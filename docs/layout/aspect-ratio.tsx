@@ -4,7 +4,7 @@ import { Skeleton } from "@godxjp/ui/feedback";
 import { AspectRatio, Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * AspectRatio · Radix AspectRatio wrapper. Stabilises media/preview frames so
+ * AspectRatio · AspectRatio (thuộc tính CSS aspect-ratio, một node). Stabilises media/preview frames so
  * they do not reflow during load. ratio = width / height (number). Children fill
  * the constrained box · use object-fit: cover on images, width/height 100% on
  * iframes and SVG charts. Do not use for unconstrained text content. Composed

@@ -11,8 +11,9 @@ const DATA = [
 
 const selectAlls = () =>
   screen.getAllByRole("checkbox").filter((c) => c.getAttribute("aria-label"));
-const rowCheckbox = (title: string) =>
-  screen.getAllByRole("checkbox").find((c) => c.closest("label")?.textContent?.includes(title))!;
+// The row is no longer a <label> around the box (nested labels); the row text names the box by
+// reference instead, so the row IS the checkbox's accessible name.
+const rowCheckbox = (title: string) => screen.getByRole("checkbox", { name: new RegExp(title) });
 
 describe("Transfer — source select-all + move right", () => {
   it("select-all on the source moves every enabled item to the target", async () => {

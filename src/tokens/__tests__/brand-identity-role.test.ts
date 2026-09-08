@@ -177,9 +177,21 @@ describe("Logo identity call sites read --brand, never --success", () => {
 });
 
 describe("status surfaces still read --success", () => {
+  /*
+   * `text-layout.css` reads `--text-success`, NOT `--success`, and that difference is the point.
+   *
+   * `--success` is the FILL role — a badge body, an alert edge, a progress bar. `--text-success`
+   * is the ink tier, darker on purpose so small coloured text clears AA. This file styles
+   * `Text`/`Heading`, so it is the one status owner that must read the ink.
+   *
+   * The row used to demand `color: hsl(var(--success))` here, which pinned the defect in place:
+   * measured on a real card, `Text tone="warning"` came out at 1.74:1 and `tone="success"` at
+   * 2.18:1 — both far under AA — while `Badge` with the identical `tone` cleared 5.52:1 because it
+   * already read the ink tier. A green test was holding the unreadable half still.
+   */
   const statusOwners = {
     "src/styles/alert-layout.css": /hsl\(var\(--success\)/,
-    "src/styles/text-layout.css": /color: hsl\(var\(--success\)\)/,
+    "src/styles/text-layout.css": /color: hsl\(var\(--text-success\)\)/,
     "src/styles/card-layout.css": /hsl\(var\(--success\)\)/,
     "src/styles/data-display-layout.css": /hsl\(var\(--success\)\)/,
     "src/styles/data-entry-layout.css": /hsl\(var\(--success\)\)/,

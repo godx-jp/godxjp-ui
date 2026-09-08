@@ -1,4 +1,4 @@
-/** Ant Design `showCheckedStrategy` equivalents for TreeSelect. */
+/** `showCheckedStrategy` equivalents for TreeSelect — the conventional enterprise names. */
 export const SHOW_CHILD = "SHOW_CHILD" as const;
 export const SHOW_PARENT = "SHOW_PARENT" as const;
 export const SHOW_ALL = "SHOW_ALL" as const;

@@ -35,6 +35,38 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Breakdown（segments）</CardTitle>
+            <CardDescription>
+              1 つの合計を状態ごとに分割します。割合ではなく実数を渡すと、各スライスの比率は
+              コンポーネントが計算します。メーターより背の高いトラックになるのは、0.5rem の pill
+              上に 3 色を並べると比率が読めなくなるためです。role=&quot;img&quot;
+              として、全スライスを 1 つの名前で読み上げます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Progress
+                segments={[
+                  { value: 2, tone: "destructive", label: "期限超過" },
+                  { value: 3, tone: "warning", label: "期限間近" },
+                  { value: 12, tone: "success", label: "対応済" },
+                ]}
+                label="株式会社山田製作所"
+              />
+              <Progress
+                segments={[
+                  { value: 0, tone: "destructive", label: "期限超過" },
+                  { value: 1, tone: "warning", label: "期限間近" },
+                  { value: 6, tone: "success", label: "対応済" },
+                ]}
+                label="みどり農産株式会社（0 件のスライスは幅 0）"
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Over capacity</CardTitle>
             <CardDescription>
               over=true で 100% を超えた実値を aria-valuetext

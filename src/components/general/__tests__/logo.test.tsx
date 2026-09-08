@@ -15,6 +15,39 @@ import { Logo } from "../logo";
 const CONSUMER_CLASS = "shadow-sm";
 
 describe("Logo", () => {
+  /*
+   * `asChild` — cả cái logo là một liên kết, mà không có phần tử bọc nào ở giữa.
+   *
+   * Vì sao có phép kiểm này: bọc lockup trong một `<a>` thường là đường consumer đi khi không có
+   * `asChild`, và nó buộc họ viết `className="flex"` lên thẻ `<a>` để chống lại `display: inline`
+   * — thứ ui-audit chặn. Ở đây, chính thẻ của consumer phải MANG `.ui-logo-lockup`.
+   */
+  it("borrows the child element as the lockup root with asChild", () => {
+    render(
+      <Logo asChild mark="godx" wordmark="GoDX Chatter" className={CONSUMER_CLASS}>
+        <a href="/dashboard" />
+      </Logo>,
+    );
+    const link = screen.getByRole("link", { name: "GoDX Chatter" });
+    expect(link.tagName).toBe("A");
+    expect(link).toHaveAttribute("data-slot", "logo-lockup");
+    expect(link).toHaveClass("ui-logo-lockup", CONSUMER_CLASS);
+    // Ruột của thẻ mượn bị thay: nội dung vẫn do mark + wordmark quyết định.
+    expect(link.querySelector('[data-slot="logo-wordmark"]')).toHaveTextContent("GoDX Chatter");
+    // Không còn phần tử trung gian nào giữa liên kết và lockup.
+    expect(link.querySelector('[data-slot="logo-lockup"]')).toBeNull();
+  });
+
+  it("borrows the child element for a wordmark-less mark too", () => {
+    const { container } = render(
+      <Logo asChild label="Trang chủ">
+        <a href="/dashboard" />
+      </Logo>,
+    );
+    const link = container.querySelector("a")!;
+    expect(link).toHaveAttribute("data-slot", "logo");
+    expect(link).toHaveClass("ui-logo");
+  });
   it("renders the default glyph at md size, decorative by default", () => {
     const { container } = render(<Logo />);
     const mark = container.querySelector('[data-slot="logo"]')!;

@@ -122,6 +122,27 @@
   --progress-track-background: initial;
   --progress-fill-background: initial;
 
+  /* BREAKDOWN geometry (`segments`) — its own block size and corner, not the meter's.
+     A 0.5rem pill carries ONE fill legibly; three abutting fills at that height read as a
+     coloured hairline and the ratios stop being comparable, which is the only thing a
+     breakdown is for. The corner follows --radius rather than --radius-pill: pill ends would
+     round the first and last slice only, so the partition would look like it starts and stops
+     somewhere other than where it does. */
+  --progress-breakdown-block-size: 1.375rem;
+  --progress-breakdown-radius: var(--radius);
+
+  /* Legend — the key for a colour-coded surface. Small chrome, so it carries its own rhythm
+     rather than the stack scale: the swatch is a MARK the size of a character, not a control, and
+     the gap that reads as "these two belong together" is tighter than any named step. */
+  --legend-gap: 0.875rem; /* scale-exempt: the legend's rhythm follows its TYPE (11-12px), not the layout space scale — --space-3 (12px) is close enough to the item gap that a swatch starts binding to the label on its left, and --space-4 (16px) breaks three keys into three objects. */
+  --legend-item-gap: 0.3125rem; /* scale-exempt: half the swatch, so a mark and its label read as one word; derived from --legend-swatch-size, not from the layout scale. */
+  --legend-swatch-size: 0.625rem;
+  --legend-swatch-radius: 0.125rem; /* scale-exempt: --radius (6px) on a 10px square is 60% of the mark and reads as a DOT, a different symbol; this is the smallest corner that softens the square without becoming one. */
+  --legend-font-size: var(--font-size-xs);
+  /* `initial` so the muted role re-resolves at the call site under a scoped theme.
+     Default = hsl(var(--muted-foreground)). */
+  --legend-color: initial;
+
   /* Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme.
      Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line. */
   --timeline-dot-done-background: initial;

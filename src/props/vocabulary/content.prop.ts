@@ -19,7 +19,7 @@ export type DescriptionProp = React.ReactNode;
  */
 export type StatusProp = React.ReactNode;
 
-/** Top-right action slot on pages (Ant Design `extra`). */
+/** Top-right action slot on pages (the conventional `extra` slot). */
 export type ExtraProp = React.ReactNode;
 
 /** Bottom action bar on pages — save/cancel, pagination controls. */

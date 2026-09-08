@@ -523,11 +523,11 @@
   "baseline": {
     "recordedAt": "2026-07-30",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 291,
-    "dimensionCells": 4074,
+    "exports": 293,
+    "dimensionCells": 4102,
     "covered": 66,
-    "untested": 2234,
-    "notApplicable": 1774,
+    "untested": 2261,
+    "notApplicable": 1775,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -570,8 +570,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -579,7 +579,7 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
@@ -626,8 +626,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 5,
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -635,8 +635,8 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -1240,6 +1240,34 @@
       "owner": "navigation/app-setting-picker",
       "frames": [
         "docs/navigation/app-setting-picker.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 5,
+        "untested": 9
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "AppSettingToggle": {
+      "group": "navigation",
+      "owner": "navigation/app-setting-toggle",
+      "frames": [
+        "docs/navigation/app-setting-toggle.tsx"
       ],
       "baseline": {
         "covered": 0,
@@ -2451,8 +2479,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -2461,7 +2489,7 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -4048,8 +4076,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 5,
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -4057,8 +4085,8 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -4662,6 +4690,34 @@
       "owner": "layout/legal-document-shell",
       "frames": [
         "docs/layout/legal-document-shell/index.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "Legend": {
+      "group": "data-display",
+      "owner": "data-display/legend",
+      "frames": [
+        "docs/data-display/legend.tsx"
       ],
       "baseline": {
         "covered": 0,
@@ -6096,8 +6152,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 5,
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -6105,8 +6161,8 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -8256,8 +8312,8 @@
       ],
       "baseline": {
         "covered": 2,
-        "notApplicable": 5,
-        "untested": 7
+        "notApplicable": 4,
+        "untested": 8
       },
       "dimensions": {
         "variants": "covered:prop-evidence:variant",
@@ -8266,7 +8322,7 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -8312,8 +8368,8 @@
       ],
       "baseline": {
         "covered": 2,
-        "notApplicable": 4,
-        "untested": 8
+        "notApplicable": 3,
+        "untested": 9
       },
       "dimensions": {
         "variants": "covered:prop-evidence:variant",
@@ -8322,7 +8378,7 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
-        "states": "not-applicable:api-manifest",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -8481,8 +8537,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -8490,7 +8546,7 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",

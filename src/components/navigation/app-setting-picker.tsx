@@ -143,7 +143,12 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
     // parity with the other data-entry controls.
     const unbound = current === undefined || !handleChange;
     const Icon = ICON[kind];
-    const iconOnly = resolvedAppearance === "icon";
+    // `bar` shares every STRUCTURAL drop with `icon` (no value text, no chevron, no owned width) —
+    // it differs only in the box: bar height instead of --control-height, square instead of
+    // --control-radius. So it rides the same `iconOnly` branch and adds two utilities on top,
+    // rather than forking a third branch that would drift from it.
+    const bar = resolvedAppearance === "bar";
+    const iconOnly = bar || resolvedAppearance === "icon";
     const inline = resolvedAppearance === "inline";
     // owned per-kind width, so a LABELLED footer locale switch hugs its value instead of stretching
     // `.ui-app-setting-picker-trigger[data-kind]`). `inline` is already chrome-less, so compact is
@@ -202,6 +207,24 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                   cn(
                     "ui-app-setting-picker-icon hover:bg-accent hover:text-accent-foreground",
                     "w-[length:var(--control-height)] shrink-0 justify-center",
+                    // `bar` — a CELL of the bar, not a control in it. Both overrides are UTILITIES
+                    // for the reason the block above already records twice: SelectTrigger emits
+                    // `rounded-[var(--control-radius)]` from controlTriggerClass and takes its
+                    // height from `.ui-control`, and a rule in @layer components loses to both.
+                    //
+                    // HEIGHT IS `self-stretch` + `h-auto`, NOT A LENGTH. The bar's height comes
+                    // from a grid row in AppShell, from --topbar-height standalone, or from the
+                    // coarse-pointer override on touch — a cell that named any one of those would
+                    // be wrong in the other two. `h-auto` is what releases `.ui-control`'s height
+                    // so the stretch can take effect; without it the box stays 32px in a 48px bar
+                    // and the hover paints a pill, which is the whole defect this value fixes.
+                    // `min-h` keeps the touch target when the bar is SHORTER than --control-height.
+                    // The radius reads --topbar-item-radius, the SAME knob `TopbarItem` uses, so a
+                    // service that wants softer bar cells retunes one token and both follow. A
+                    // `rounded-none` literal here would put the shape out of a theme's reach
+                    // (rules #44/#45) and let the two bar cells drift apart.
+                    bar &&
+                      "h-auto min-h-[length:var(--control-height)] self-stretch rounded-[var(--topbar-item-radius)]",
                   )
                 : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
                   // A form field that wants a full-width control passes
@@ -216,6 +239,12 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
             className,
           )}
           data-kind={kind}
+          // The RESOLVED presentation, not the prop: the default is kind-dependent, so a consumer
+          // (and a test) that wants to know which box it actually got has to read it off the DOM.
+          // `bar` promises geometry — a cell as tall as the bar — which no jsdom assertion can
+          // reach; this attribute is the contract those assertions target instead of the utilities
+          // that happen to paint it today.
+          data-appearance={resolvedAppearance}
           // The localized aria-label is ALWAYS applied — an icon-only trigger drops the visible
           // value text, so this is its only accessible name; it can never ship nameless.
           aria-label={t(ARIA_KEY[kind])}

@@ -75,7 +75,70 @@ export type AuthShellPresetProp =
  * Without it those stacks had to carry `gap="xs"`, which is a visual change forced by a missing
  * step rather than by design.
  */
-export type GapProp = "none" | "xs" | "sm" | "md" | "lg" | "xl";
+export type GapNameProp = "none" | "xs" | "sm" | "md" | "lg" | "xl";
+
+/**
+ * Bậc SỐ, ánh xạ thẳng vào `--space-{n}` của thang gốc.
+ *
+ * Vì sao cần, dù đã có sáu tên ở trên: thang gốc có MƯỜI bậc
+ * (0·4·8·12·16·20·24·32·40·48px) nhưng lớp tên chỉ với tới năm trong số đó.
+ * `md` là 16px, `lg` là 24px — và `--space-5` (20px) tồn tại mà không có đường
+ * nào gọi tới. Người viết mã gặp một thiết kế 20px thì không còn nước đi hợp
+ * lệ nào: làm tròn thì lệch, viết literal thì `no-arbitrary-spacing` chặn.
+ *
+ * Bậc số KHÔNG theo trục — `gap={3}` là 12px ở cả hàng lẫn cột. Đó là chủ ý:
+ * tên mang ý ĐỊNH ("cách nhau vừa phải, tuỳ trục"), số mang GIÁ TRỊ ("đúng
+ * 12px"). Trộn hai nghĩa vào một thang là lý do thang cũ vừa thô vừa khó đoán.
+ */
+export type GapStepProp = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12;
+
+export type GapProp = GapNameProp | GapStepProp;
+
+/**
+ * Đệm TRONG của một primitive bố cục.
+ *
+ * ## Vì sao tồn tại
+ *
+ * Chạy `ui-audit` trên consumer thật (godx-chat, 08/09/2026): **42 trong 51
+ * lỗi** là `no-utility-spacing`, và gần như toàn bộ chúng xin cùng một thứ —
+ * padding. `<Flex className="p-3">` không phải người viết cẩu thả; đó là nước
+ * đi duy nhất còn lại khi primitive không có prop đệm. Một prop thiếu đẻ ra 42
+ * lỗi, và mỗi lỗi ấy trước nay chỉ có hai đường: để đỏ, hoặc mở issue rồi chờ.
+ *
+ * ## Vì sao ba tầng chứ không phải một
+ *
+ * Đo trên chính 51 lỗi ấy: có `p-3` (bốn cạnh), có `px-4`/`py-1` (theo trục),
+ * và **16 dòng cần cạnh riêng** (`pt-2.5` khác `pb-2.5` trên cùng phần tử).
+ * Một prop chỉ nhận một số sẽ không phủ nổi, và ép người ta quay lại class.
+ *
+ * Tên cạnh là LOGIC (`inlineStart`, `blockEnd`), không phải vật lý (`left`,
+ * `top`) — cùng luật với `ms-`/`me-` mà audit đang bắt, và là thứ giữ cho giao
+ * diện RTL không phải viết lại.
+ */
+export type PadSides<T> =
+  | T
+  | {
+      /** Hai cạnh theo trục viết (trái+phải ở LTR). */
+      inline?: T;
+      /** Hai cạnh theo trục khối (trên+dưới). */
+      block?: T;
+      inlineStart?: T;
+      inlineEnd?: T;
+      blockStart?: T;
+      blockEnd?: T;
+    };
+
+/** Đệm theo thang token — bậc tên hoặc bậc số, cùng thang với `gap`. */
+export type PadProp = PadSides<GapProp>;
+
+/**
+ * Đệm bằng pixel THÔ, cho giá trị ngoài thang.
+ *
+ * Cùng lý do với `gapRaw`, và cùng cái giá: nó để lại `data-pad-raw` trên DOM
+ * nên mỗi lần thoát đều đếm được. Thiết kế thật cần 2px, 6px, 10px, 14px, 44px
+ * — thang không có bậc nào như thế, và bịt lại không làm chúng biến mất.
+ */
+export type PadRawProp = PadSides<number>;
 
 /** DataTable row density subset. */
 export type TableDensityProp = Exclude<DensityProp, "default">;

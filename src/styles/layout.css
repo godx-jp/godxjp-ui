@@ -132,6 +132,24 @@
     flex-wrap: wrap;
   }
 
+  /* `fill` — the ELASTIC column of a row: take whatever the fixed siblings leave.
+   * `min-inline-size: 0` is load-bearing, not tidiness. A flex item floors at its content size by
+   * default, so without it a truncating child pushes the row WIDER instead of ellipsing, and the
+   * row overflows its container (gh#405 §2). */
+  .ui-flex[data-fill] {
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
+
+  /* `width` — a FIXED column. The inline-size itself rides in the style attribute (it is a raw
+   * call-site measurement, marked by data-width-raw so it stays countable); what belongs in the
+   * stylesheet is the part that makes it a COLUMN: no growing, and no shrinking either. An
+   * explicit width a sibling can still squeeze is a suggestion, and a stack of such rows no longer
+   * shares one optical axis. */
+  .ui-flex[data-width-raw] {
+    flex: none;
+  }
+
   .ui-flex[data-align="start"] {
     align-items: flex-start;
   }
@@ -179,6 +197,70 @@
   /* A DELIBERATE zero, not a missing gap: two lines that read as one block (gh#354). */
   .ui-flex-gap-none {
     gap: 0;
+  }
+
+  /*
+   * Bậc SỐ — `--space-{n}` của thang gốc, giống nhau ở cả hai trục.
+   *
+   * Lớp tên (xs…xl) chỉ với tới năm trong mười bậc của thang gốc, nên một
+   * thiết kế 20px hay 32px không có cách nào nói ra. Bậc số mở nốt phần còn
+   * lại mà không phải bịa thêm tên.
+   */
+  .ui-flex-gap-1 {
+    gap: var(--space-1);
+  }
+  .ui-flex-gap-2 {
+    gap: var(--space-2);
+  }
+  .ui-flex-gap-3 {
+    gap: var(--space-3);
+  }
+  .ui-flex-gap-4 {
+    gap: var(--space-4);
+  }
+  .ui-flex-gap-5 {
+    gap: var(--space-5);
+  }
+  .ui-flex-gap-6 {
+    gap: var(--space-6);
+  }
+  .ui-flex-gap-8 {
+    gap: var(--space-8);
+  }
+  .ui-flex-gap-10 {
+    gap: var(--space-10);
+  }
+  .ui-flex-gap-12 {
+    gap: var(--space-12);
+  }
+
+  /*
+   * Bậc TÊN biết trục (gh#401).
+   *
+   * Trước đây `.ui-flex-gap-*` luôn đọc `--space-stack-*`, kể cả khi
+   * `direction="row"` — nên `gap="md"` trên một hàng ra 16px trong khi
+   * `--space-inline-md` (12px) đã tồn tại sẵn và đúng là giá trị cần. Người
+   * tiêu dùng gặp thiết kế 12px thì không có nước đi hợp lệ: bậc gần nhất là
+   * 8 hoặc 16, mà "gần nhất" giữa hai số cách đều là một phép đoán.
+   *
+   * Đây là lý do bậc tên mang ý ĐỊNH chứ không mang giá trị: cùng một `md`,
+   * hàng ngang thì chặt hơn cột dọc, vì khe rộng cắt mạch đọc theo hàng còn
+   * khe dọc thì tách khối.
+   */
+  .ui-flex[data-direction="row"].ui-flex-gap-xs {
+    gap: var(--space-inline-xs);
+  }
+  .ui-flex[data-direction="row"].ui-flex-gap-sm {
+    gap: var(--space-inline-sm);
+  }
+  .ui-flex[data-direction="row"].ui-flex-gap-md {
+    gap: var(--space-inline-md);
+  }
+  .ui-flex[data-direction="row"].ui-flex-gap-lg {
+    gap: var(--space-inline-lg);
+  }
+  .ui-flex[data-direction="row"].ui-flex-gap-xl {
+    gap: var(--space-inline-xl);
   }
 
   .ui-flex-gap-xs {
@@ -280,6 +362,45 @@
   }
   .ui-responsive-grid[data-gap="xl"] {
     gap: var(--space-stack-xl);
+  }
+
+  /*
+   * Bậc SỐ, giống Flex — `--space-{n}` của thang gốc.
+   *
+   * Bắt buộc phải có: `ResponsiveGrid` chọn gap bằng selector thuộc tính
+   * (`[data-gap="…"]`), nên một giá trị không có luật khớp sẽ ra `data-gap="5"`
+   * mà KHÔNG có gap nào — hỏng im lặng, không lỗi, không test đỏ. Thang mà chỉ
+   * dày ở một component thì không phải một thang.
+   */
+  .ui-responsive-grid[data-gap="0"] {
+    gap: 0;
+  }
+  .ui-responsive-grid[data-gap="1"] {
+    gap: var(--space-1);
+  }
+  .ui-responsive-grid[data-gap="2"] {
+    gap: var(--space-2);
+  }
+  .ui-responsive-grid[data-gap="3"] {
+    gap: var(--space-3);
+  }
+  .ui-responsive-grid[data-gap="4"] {
+    gap: var(--space-4);
+  }
+  .ui-responsive-grid[data-gap="5"] {
+    gap: var(--space-5);
+  }
+  .ui-responsive-grid[data-gap="6"] {
+    gap: var(--space-6);
+  }
+  .ui-responsive-grid[data-gap="8"] {
+    gap: var(--space-8);
+  }
+  .ui-responsive-grid[data-gap="10"] {
+    gap: var(--space-10);
+  }
+  .ui-responsive-grid[data-gap="12"] {
+    gap: var(--space-12);
   }
 
   .ui-responsive-grid > * {
@@ -429,6 +550,27 @@
   .ui-split-pane[data-aside="closed"][data-aside-width] {
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
+  }
+
+  /* FILL — `fill`. Both wrappers take the height the parent offers and pass it down as a
+   * DEFINITE row, so a column that scrolls scrolls itself instead of growing the page. The
+   * `minmax(0, 1fr)` row (not `1fr`, which floors at min-content) is what stops a long
+   * transcript from pushing the grid past its own box. */
+  .ui-split-pane-scope[data-fill="true"] {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+    block-size: 100%;
+    min-block-size: 0;
+  }
+
+  .ui-split-pane[data-fill="true"] {
+    grid-template-rows: minmax(0, 1fr);
+    min-block-size: 0;
+  }
+
+  .ui-split-pane[data-fill="true"] > .ui-split-pane-main,
+  .ui-split-pane[data-fill="true"] > .ui-split-pane-aside {
+    min-block-size: 0;
   }
 
   .ui-resizable-panel-group {
@@ -914,6 +1056,21 @@
     gap: var(--space-stack-md);
     text-align: center;
     padding: var(--empty-state-space-y) var(--empty-state-space-x);
+  }
+
+  /* `page` already DECLARES "I am this page's primary zero-state" — the body IS this block. So
+   * when the page hands the body a definite height (PageContainer `fill`), the block takes that
+   * height and centres in it, instead of top-packing at a third of the screen above half a
+   * viewport of white. One fact (this page's body is its empty state), not a second prop the call
+   * site has to keep in lockstep with `fill`.
+   *
+   * Quiet by default (rule #44): under the ordinary auto-height body, `min-block-size: 100%`
+   * resolves against an indefinite height and `justify-content` has nothing to distribute, so
+   * every existing page renders byte-identically. `section` and `compact` are untouched — they
+   * sit INSIDE a section that owns its own height and must never stretch it. */
+  .ui-empty-state[data-variant="page"] {
+    min-block-size: 100%;
+    justify-content: center;
   }
 
   .ui-empty-state-title {

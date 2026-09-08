@@ -62,6 +62,9 @@ function OrganizationBadge({ organization }: { organization: OrgSwitcherOrganiza
   );
 }
 
+/** Arbitrary `data-*` hooks — the one escape hatch this closed component keeps open. */
+type DataAttributes = { [key: `data-${string}`]: string | number | boolean | undefined };
+
 const OrgSwitcherTrigger = React.forwardRef<HTMLButtonElement, OrgSwitcherTriggerProps>(
   ({ organization, collapsed, disabled, label, ...props }, ref) => {
     const reactId = React.useId();
@@ -77,7 +80,15 @@ const OrgSwitcherTrigger = React.forwardRef<HTMLButtonElement, OrgSwitcherTrigge
         ref={ref}
         type="button"
         variant="ghost"
-        className="ui-org-switcher-trigger"
+        // THE HEIGHT HAS TO BE A UTILITY. `.ui-org-switcher-trigger` declares
+        // `height: var(--org-switcher-trigger-height)` in @layer components, and Button emits its
+        // size as a Tailwind utility — utilities win, always, so that declaration never applied.
+        // Measured in a consumer's collapsed rail: 44 × 32px. The width was right (the collapsed
+        // rule sets a width and Button emits none, so nothing outranked it) which is exactly why
+        // it read as correct: a box that is right on one axis and silently wrong on the other.
+        // 32px is below the 44px target floor that this very token is named for (rule #24,
+        // WCAG 2.2 AA 2.5.8), so the collapsed rail trigger was under-sized wherever it shipped.
+        className={cn("ui-org-switcher-trigger", "h-[length:var(--org-switcher-trigger-height)]")}
         data-collapsed={collapsed ? "true" : undefined}
         disabled={disabled}
         aria-label={label}
@@ -214,7 +225,8 @@ export function OrgSwitcher({
   open,
   onOpenChange,
   className,
-}: OrgSwitcherProp) {
+  ...rest
+}: OrgSwitcherProp & Pick<React.ComponentPropsWithoutRef<"button">, "id"> & DataAttributes) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
   const controlled = open !== undefined;
   const resolvedOpen = controlled ? open : uncontrolledOpen;
@@ -238,12 +250,21 @@ export function OrgSwitcher({
   // Loading and empty are inspectable panel states, not disabled controls. Only the explicit
   // disabled prop removes the switcher's affordance.
   const triggerDisabled = disabled;
+  /*
+   * `data-*` and `id` REACH THE TRIGGER. Everything else about this component is deliberately
+   * closed, but a switcher that cannot be addressed is a switcher no end-to-end test can drive,
+   * and the alternative consumers reach for is worse: a hand-rolled Select they CAN address.
+   * Measured — one shipped consumer bound `[data-test="organization-switcher"]` to a raw Select
+   * for months, and swapping in this component silently detached the selector because the prop
+   * was swallowed. The accessible name is localized, so it is not a selector a test can hold.
+   */
   const trigger = (
     <OrgSwitcherTrigger
       organization={current}
       collapsed={collapsed}
       disabled={triggerDisabled}
       label={triggerLabel}
+      {...rest}
     />
   );
   const panel = (

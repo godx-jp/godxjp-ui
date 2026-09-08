@@ -66,21 +66,34 @@
   [data-slot="heading"][data-tone="primary"] {
     color: hsl(var(--primary));
   }
+  /* STATUS TONES READ THE TEXT TIER, NOT THE FILL TIER.
+   *
+   * `--success` / `--warning` / `--info` / `--destructive` are FILL roles — the colour of a badge
+   * body, a progress bar, an alert edge. Using them as ink was measured on a real page at
+   * **1.74:1** for warning and **2.18:1** for success against the card surface: both fail AA by a
+   * wide margin, and `--warning`'s own comment in foundation.css says it outright ("yellow can
+   * never pass as text").
+   *
+   * The AA-safe tier already existed and shipped alongside them — `--text-warning` at 28%
+   * lightness against `--warning` at 49% — and `Badge` was already reading it and clearing 5.52:1
+   * with the identical `tone` prop. So the same `tone="warning"` rendered readable inside a Badge
+   * and unreadable as Text, in the same product, on the same screen. Nothing caught it because
+   * `check:contrast` never had a route with status-toned body text on a card. */
   [data-slot="text"][data-tone="success"],
   [data-slot="heading"][data-tone="success"] {
-    color: hsl(var(--success));
+    color: hsl(var(--text-success));
   }
   [data-slot="text"][data-tone="warning"],
   [data-slot="heading"][data-tone="warning"] {
-    color: hsl(var(--warning));
+    color: hsl(var(--text-warning));
   }
   [data-slot="text"][data-tone="destructive"],
   [data-slot="heading"][data-tone="destructive"] {
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
   [data-slot="text"][data-tone="info"],
   [data-slot="heading"][data-tone="info"] {
-    color: hsl(var(--info));
+    color: hsl(var(--text-info));
   }
 
   /* Alignment (logical), truncate, tabular, mono — shared by text + heading. */

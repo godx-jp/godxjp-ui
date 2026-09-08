@@ -154,6 +154,7 @@
     },
     "appShell": {
       "sidebarLabel": "Thanh bên",
+      "navRailLabel": "Không gian làm việc",
       "headerLabel": "Đầu trang",
       "mainLabel": "Nội dung chính",
       "footerLabel": "Chân trang",
@@ -246,6 +247,10 @@
       "denied": "Bạn không có quyền xem ma trận này",
       "deniedDescription": "Hãy đề nghị quản trị viên cấp quyền truy cập.",
       "loading": "Đang tải quyền…"
+    },
+    "progress": {
+      "ariaLabel": "Tiến độ",
+      "breakdownSeparator": ", "
     }
   },
   "ui": {
@@ -347,6 +352,9 @@
       "logistics": "Logistics Teal",
       "partner": "Partner Orange",
       "slate": "HQ Slate"
+    },
+    "settingToggle": {
+      "label": "{setting}: {value}"
     }
   },
   "locale": {

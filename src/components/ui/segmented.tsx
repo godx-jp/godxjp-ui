@@ -37,8 +37,8 @@ export type SegmentedProp = {
 export type SegmentedProps = SegmentedProp;
 
 /**
- * Segmented — one-of-N from a small, closed, always-visible set. antd's `Segmented`
- * (docs/DESIGN-AUTHORITY.md names Ant Design the taxonomy authority) drawn on Radix's RadioGroup,
+ * Segmented — one-of-N from a small, closed, always-visible set. The established enterprise
+ * `Segmented` control (docs/DESIGN-AUTHORITY.md) drawn on Radix's RadioGroup,
  * which is this repo's authority for behaviour primitives.
  *
  * WHY NOT `ToggleGroup`. A ToggleGroup is a row of PRESSED buttons: `aria-pressed`, independently
@@ -49,7 +49,7 @@ export type SegmentedProps = SegmentedProp;
  * distinction and it is not a skin.
  *
  * The primitive gives roving tabindex, arrow-key traversal (RTL-aware), the radiogroup/radio roles
- * and the hidden input a native form submit needs. This file adds the antd geometry and nothing
+ * and the hidden input a native form submit needs. This file adds that geometry and nothing
  * else — the focus mark comes from `ui-focus-ring`, the ONE source in styles/focus-ring.css.
  */
 export const Segmented = React.forwardRef<

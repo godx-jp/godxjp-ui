@@ -51,8 +51,25 @@ export type BadgeVariantProp = "default" | "secondary" | "outline" | "dashed";
  *   STRUCTURALLY drops the value text and the picker's owned trigger width, keeping the localized
  *   `aria-label`, focus ring, keyboard behaviour and a `--control-height` tap target (which is
  *   ≥44px on coarse/touch pointers per Rule #24) — so consumers never hide internal nodes via CSS.
+ * - `bar` — the same structural drops as `icon`, re-shaped as a CELL OF THE BAR rather than a
+ *   control dropped into it: it fills the bar's height and squares its corners, so the hover
+ *   surface paints the whole strip. Reach for it in a `Topbar` slot or AppShell's own bar, where
+ *   `icon` leaves a --control-height pill floating in a taller strip and reads as a different
+ *   control family from the bar's own chrome (`TopbarItem`).
  */
-export type AppSettingPickerAppearanceProp = "labeled" | "icon" | "inline";
+export type AppSettingPickerAppearanceProp = "labeled" | "icon" | "bar" | "inline";
+
+/**
+ * AppSettingToggle presentation. The toggle has no menu, so it has no `labeled`/`inline` form —
+ * the two members here are the two BOXES a one-tap cycler can take.
+ * - `bar` (default) — a CELL of the bar (`TopbarItem`): full bar height, the bar's own hover
+ *   surface, square corners (`--topbar-item-radius`). This is the canonical placement, which is
+ *   why it is the default: a toggle exists for a top bar.
+ * - `icon` — a square `--control-height` ghost button for everywhere that is NOT a bar (a
+ *   settings row, a card header). In a taller bar this leaves a pill floating mid-strip, which is
+ *   the defect `bar` exists to avoid.
+ */
+export type AppSettingToggleAppearanceProp = "bar" | "icon";
 
 /** Button size preset. */
 export type SizeProp = "xs" | "sm" | "md" | "lg";

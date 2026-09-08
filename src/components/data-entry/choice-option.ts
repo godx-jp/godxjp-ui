@@ -2,7 +2,7 @@ import type * as React from "react";
 
 import { cn } from "../../lib/utils";
 
-/** Shared option shape — Ant Design `CheckboxOptionType` / `Radio` options. */
+/** Shared option shape — the conventional `CheckboxOptionType` / `Radio` options entry. */
 export type ChoiceOption = {
   label: React.ReactNode;
   value: string;

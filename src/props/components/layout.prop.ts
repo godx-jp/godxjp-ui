@@ -22,6 +22,8 @@ import type {
   TextToneProp,
   BreakpointProp,
   GapProp,
+  PadProp,
+  PadRawProp,
   ClassNameProp,
   ChildrenProp,
   IdProp,
@@ -31,6 +33,7 @@ import type {
   IconProp,
   HeadingLevelProp,
   ToneProp,
+  WidthProp,
 } from "../vocabulary";
 import type { EmptyStateToneProp } from "./data-display.prop";
 
@@ -149,6 +152,55 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
   as?: "div" | "span";
   direction?: FlexDirectionProp;
   gap?: GapProp;
+  /**
+   * CỬA THOÁT: một khoảng cách tính bằng pixel, ngoài mọi bậc của thang.
+   *
+   * ## Vì sao một design system lại mở cửa thoát
+   *
+   * Vì bịt nó lại không làm thiết kế biến mất — nó chỉ làm cách làm ĐÚNG trở
+   * thành bất hợp pháp. Một bản thiết kế thật dùng 2px, 5px, 6px, 10px; thang
+   * gốc không có bậc nào như thế. Người viết mã khi ấy có ba nước, và cả ba
+   * đều tệ: làm tròn xuống bậc gần nhất (lệch bố cục, và "gần nhất" giữa hai
+   * số cách đều vốn đã là một phép đoán), viết literal (audit chặn), hoặc mở
+   * issue ngược lên rồi CHỜ. Đó là lý do mọi dự án đều lệch design — không
+   * phải người viết cẩu thả.
+   *
+   * ## Cái giá của nó
+   *
+   * Nó phát ra `data-gap-raw` lên DOM. Đó không phải trang trí: nó làm mỗi lần
+   * thoát trở nên ĐẾM ĐƯỢC — grep mã nguồn hoặc quét DOM đều ra, nên một kho
+   * đang trôi dần khỏi thang sẽ tự lộ ra bằng con số thay vì bằng cảm giác.
+   *
+   * ## Khi nào ĐỪNG dùng
+   *
+   * Khi giá trị bạn cần có trong thang. `gap={3}` là 12px và nó đọc theo
+   * `--scaling` của người dùng; `gapRaw={12}` thì không, nó đứng yên khi người
+   * ta phóng to giao diện. Thang có mười bậc — hãy tiêu hết chúng trước.
+   *
+   * Khi có mặt, nó THẮNG `gap`, và `gap` không phát lớp nào nữa để hai bên
+   * không tranh độ đặc hiệu.
+   */
+  gapRaw?: number;
+  /**
+   * Đệm TRONG, theo thang token. Nhận một bậc cho cả bốn cạnh, hoặc một object
+   * theo cạnh LOGIC (`inline`, `block`, `inlineStart`, `blockEnd`…).
+   *
+   * Vì sao có: chạy `ui-audit` trên consumer thật (godx-chat, 08/09/2026) ra
+   * **42 trong 51 lỗi** là `no-utility-spacing`, và gần như tất cả xin cùng
+   * một thứ — padding. `<Flex className="p-3">` không phải cẩu thả; đó là nước
+   * đi duy nhất còn lại khi primitive không có prop đệm. Một prop thiếu đẻ ra
+   * 42 lỗi (gh#408).
+   */
+  pad?: PadProp;
+  /**
+   * Đệm bằng pixel THÔ, cho giá trị ngoài thang — cùng lý do và cùng cái giá
+   * với `gapRaw`: nó để lại `data-pad-raw` trên DOM nên mỗi lần thoát đều đếm
+   * được. Đo trên 51 lỗi ấy: thiết kế cần 2px, 6px, 10px, 14px, 44px, không
+   * bậc nào có.
+   *
+   * Ghi đè `pad` ở TỪNG CẠNH, không phải cả cụm.
+   */
+  padRaw?: PadRawProp;
   align?: FlexAlignProp;
   justify?: FlexJustifyProp;
   wrap?: boolean;
@@ -163,6 +215,31 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
    * only on the narrow side (a compact-only affordance). Omit for no attribute and no rule.
    */
   hideFrom?: BreakpointProp;
+  /**
+   * Take the space the siblings leave — the Flex becomes the row's ELASTIC column.
+   *
+   * ## Vì sao là một trục, không phải một tiện ích
+   *
+   * Một hàng thật gần như luôn có hình `cố định | co giãn | cố định`: tên bên trái, thước đo ở
+   * giữa, con số bên phải. Không có trục này thì nước đi duy nhất là `className="flex-1 min-w-0"`
+   * — mà `ui-audit` chặn `no-utility-spacing`, nên cách làm ĐÚNG lại là cách bất hợp pháp.
+   * `PageContainer` đã có `fill` với đúng nghĩa ấy; `Flex` không có là bất đối xứng, không phải
+   * quyết định (gh#405 §2).
+   *
+   * Nó kèm luôn `min-inline-size: 0`. Đó không phải chi tiết thừa: một flex item mặc định không
+   * co nhỏ hơn nội dung, nên một `Text truncate` bên trong sẽ ĐẨY hàng rộng ra thay vì cắt bớt.
+   */
+  fill?: boolean;
+  /**
+   * Bề rộng CỐ ĐỊNH của một cột trong hàng — số là px, chuỗi là mọi CSS length (`"12rem"`, `"40%"`).
+   *
+   * Đi kèm `flex: none`. Một `inline-size` mà sibling vẫn bóp được thì không phải cột, nó chỉ là
+   * một đề nghị — và sáu thanh xếp dọc dưới nhau sẽ bắt đầu ở sáu toạ độ x khác nhau.
+   *
+   * Nó để lại `data-width-raw` trên DOM, cùng lý do với `gapRaw`/`padRaw`: mỗi số đo cứng viết ở
+   * call site đều ĐẾM ĐƯỢC, nên một kho đang trôi khỏi thang tự lộ ra bằng con số.
+   */
+  width?: WidthProp;
 };
 
 /** Container column counts; omitted steps inherit from the previous step. Base defaults to 1. */
@@ -253,10 +330,49 @@ export type AppShellProp = {
    */
   topbarSpan?: "content" | "full";
   /**
+   * A SECOND navigation column, narrower than `sidebar` and placed before it — the
+   * workspace/organization switcher shape (Slack, Teams, Discord). Passing a node adds the track;
+   * omitting it leaves the two-column shell exactly as it was. Width is
+   * `--app-shell-nav-rail-width` (3.5rem — deliberately NOT the collapsed sidebar's 4rem: at equal
+   * widths the two navigation tracks fuse into one block the moment the sidebar collapses).
+   *
+   * THE THREE COLUMNS ARE THREE SCOPES, and the scope — not the free space — is what decides where
+   * a control goes. The rail is PLATFORM scope: whatever is true across every app in the
+   * organization (which organization, which app, notifications, messages, events, organization
+   * settings, cross-app shortcuts). The sidebar is APP scope: this app's own sections. The topbar
+   * is PAGE scope: where you are and what you can do here.
+   *
+   * So app navigation never goes in the rail, a platform switch never goes in the sidebar, and a
+   * destination that would fit both belongs to the rail — because it survives changing apps. A
+   * rail that repeats the sidebar's own entries is a second chrome band carrying the first one's
+   * rank, just vertical instead of horizontal.
+   *
+   * Orthogonal to `topbarSpan`: the rail says how many navigation COLUMNS there are, `topbarSpan`
+   * says how far the BAR reaches, and every combination of the two is a real shape, so they never
+   * need to be reconciled. `sidebarCollapsed` folds the sidebar track only — the rail keeps its
+   * width, which is what keeps its destinations reachable while collapsed.
+   *
+   * Building this by hand inside the single `sidebar` slot is the trap it replaces: `Sidebar`
+   * renders `.sb-root { display: contents }`, so two of them dropped side by side dissolve into
+   * one flex row and both collapse to zero unless each is separately wrapped — and sizing the one
+   * available track for two columns means overriding `--app-shell-sidebar-width`, which is how a
+   * shipped consumer moved its content edge by 64px between routes.
+   */
+  navRail?: ReactNode;
+  /**
+   * Accessible name for the `navRail` landmark. Defaults to the localized "Workspaces".
+   *
+   * The rail and the sidebar are two `complementary` landmarks on one page, so ARIA requires them
+   * to be tellable apart by name; the shell always supplies both defaults rather than requiring
+   * this prop, so the two columns of equal rank behave the same way.
+   */
+  navRailLabel?: string;
+  /**
    * Navigation shown in the mobile drawer at the DXS 900px breakpoint, where the docked sidebar is
-   * hidden. Defaults to `sidebar`, so the same nav is available on mobile with no extra wiring;
-   * pass a distinct node for a mobile-tailored menu, or `null` to opt out (only when navigation
-   * lives elsewhere, e.g. a bottom bar).
+   * hidden. Defaults to `navRail` followed by `sidebar` — both docked columns are hidden at that
+   * width, so a default of `sidebar` alone would silently strip every app-level destination the
+   * rail carries. Pass a distinct node for a mobile-tailored menu, or `null` to opt out (only when
+   * navigation lives elsewhere, e.g. a bottom bar).
    */
   mobileNav?: ReactNode;
   /** Accessible title for the mobile navigation drawer. Defaults to the localized "Menu". */
@@ -907,7 +1023,7 @@ export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> 
  * It exists because the alternative is a `Button`, and a Button in a bar is a control that landed
  * in the bar rather than a part of it — a pill of its own height floating in a taller strip, with
  * its own hover surface and its own focus ring drawn around that pill. Fluent, SLDS, Atlassian and
- * antd's ProLayout all draw a top-bar trigger the other way: the cell is as tall as the bar, its
+ * and enterprise pro-layouts all draw a top-bar trigger the other way: the cell is as tall as the bar, its
  * hover is the bar's own surface, and the focus mark is hosted INSIDE the cell because a
  * full-bleed cell has nothing outside itself to ring.
  */

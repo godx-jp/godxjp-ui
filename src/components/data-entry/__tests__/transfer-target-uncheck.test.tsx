@@ -22,10 +22,11 @@ describe("Transfer — target panel select-all toggle off", () => {
 
     await user.click(targetSelectAll()); // check all target → a,b selected
     const rows = screen.getAllByRole("checkbox").filter((c) => !c.getAttribute("aria-label"));
-    expect(rows.every((r) => r.getAttribute("aria-checked") === "true")).toBe(true);
+    // A real <input>, so the state is the `checked` property, not an `aria-checked` attribute.
+    rows.forEach((r) => expect(r).toBeChecked());
 
     await user.click(targetSelectAll()); // uncheck → onSelectAll(false) on side 1 → setSelected(1, [])
     const rowsAfter = screen.getAllByRole("checkbox").filter((c) => !c.getAttribute("aria-label"));
-    expect(rowsAfter.every((r) => r.getAttribute("aria-checked") !== "true")).toBe(true);
+    rowsAfter.forEach((r) => expect(r).not.toBeChecked());
   });
 });

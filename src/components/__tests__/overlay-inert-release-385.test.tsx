@@ -1,8 +1,8 @@
 import * as React from "react";
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { act, renderWithUi, screen, userEvent, waitFor } from "@/test/render";
-import { OverlayBackground } from "@/test/overlay-background";
+import { renderWithUi, screen, userEvent } from "@/test/render";
+import { OverlayBackground, hiddenBackgroundCount } from "@/test/overlay-background";
 
 import {
   DropdownMenu,
@@ -15,35 +15,50 @@ import { Button } from "../general/button";
 /**
  * gh#385 — WHAT A MENU ITEM MOUNTS IN PLACE MUST BE USABLE THE INSTANT IT APPEARS.
  *
- * `useInertHiddenBackground` puts `inert` on the background Radix hides while an overlay is open,
- * which is what keeps axe's `aria-hidden-focus` quiet (gh#352). Releasing it used to be keyed on
- * `data-aria-hidden` going away — and Radix removes that from `hideOthers`' undo, at UNMOUNT.
- * Presence holds the content mounted for the whole exit animation, so the background stayed
- * `inert` for an animation longer than the menu was open.
+ * An overlay takes the rest of the page out of play while it is open, which is what keeps axe's
+ * `aria-hidden-focus` quiet (gh#352). The bug was never in APPLYING that — it was in RELEASING it.
+ * Under Radix the release was keyed on `data-aria-hidden` going away, and `hideOthers` undoes
+ * itself at UNMOUNT; Presence holds the content mounted for the whole exit animation, so the
+ * background stayed `inert` for an animation longer than the menu was open.
  *
  * A `DropdownMenuItem` whose `onSelect` swaps a row into an inline edit form mounts that form
- * synchronously, in the click handler, INSIDE that still-`inert` background. The form paints,
+ * synchronously, in the click handler, INSIDE that still-hidden background. The form paints,
  * looks ordinary, and silently refuses focus and input. The consuming app that reported this saw
  * it as a data bug: typing went nowhere, Save submitted the unchanged body, and the server stamped
  * `edited_at` anyway — a post flagged "edited" with identical content.
  *
- * The portalled case (a Dialog opened from a menu item) was fixed separately by skipping focus
- * guards; it never covered content mounted in place, because that content is a descendant of the
- * very element being inerted.
+ * WHO GUARANTEES IT NOW. The menu is react-aria-components, and RAC's `usePopover` scopes
+ * `ariaHideOutside` to an effect keyed on `state.isOpen` — so the release fires on CLOSE INTENT,
+ * the same synchronous turn as the item's action, and cannot drift to unmount. That is the
+ * upstream version of what `components/general/inert-background.ts` still hand-rolls for the
+ * overlays that are still Radix (Select, ContextMenu). This file is what proves the guarantee is
+ * really there, whichever backing the menu has.
  *
- * WHY THE CONTRACT IS TESTED DIRECTLY AND NOT ONLY THROUGH THE USER FLOW. The window this bug
- * lives in is the exit ANIMATION, and jsdom has none: `getComputedStyle().animationName` is
- * always `"none"`, so Radix's Presence unmounts the content the moment the menu closes,
- * `hideOthers` undoes itself immediately, and the whole race disappears. A click-through test
- * therefore passes with or without the fix — measured, by reverting the fix and watching it stay
- * green — so on its own it would be a gate that guards nothing.
+ * WHY jsdom NEEDS A NUDGE. The window this bug lives in is the exit ANIMATION, and jsdom has no
+ * animations: `Element.prototype.getAnimations` does not exist, and RAC's `useExitAnimation`
+ * treats that as "the animation already finished" and unmounts immediately. So the whole race
+ * disappears and a click-through test passes with or without the fix — measured under Radix, by
+ * reverting the fix and watching it stay green.
  *
- * What jsdom CAN hold exactly is the DOM state that window consists of: the content still
- * mounted, `data-state` already `"closed"`, `data-aria-hidden` still on the background. Radix
- * writes that first attribute in the same synchronous turn as the item's `onSelect`, and removes
- * the second an animation later. So the first test below pins the contract at that state, and the
- * two after it keep the end-to-end shape honest.
+ * `beforeAll` therefore gives jsdom the one thing it is missing: an animation that never finishes.
+ * That is a smaller and more faithful stand-in than poking the closing overlay's attributes by
+ * hand — the component is left to close itself exactly as it would in Chrome, and it holds the
+ * content mounted for the rest of the test. All three cases below run inside that window.
  */
+const animationHost = Element.prototype as unknown as Record<string, unknown>;
+let realGetAnimations: unknown;
+
+beforeAll(() => {
+  // `useEnterAnimation` narrows with `instanceof CSSTransition` as soon as `getAnimations` exists,
+  // and jsdom has no such global; a dummy nothing is an instance of keeps that branch honest.
+  (globalThis as unknown as Record<string, unknown>).CSSTransition ??= class {};
+  realGetAnimations = animationHost.getAnimations;
+  animationHost.getAnimations = () => [{ finished: new Promise(() => {}) }];
+});
+
+afterAll(() => {
+  animationHost.getAnimations = realGetAnimations;
+});
 function InlineEditMenu() {
   const [editing, setEditing] = React.useState(false);
 
@@ -64,7 +79,7 @@ function InlineEditMenu() {
 }
 
 describe("gh#385: the background is released on close INTENT, not on unmount", () => {
-  it("drops inert while the closing menu is still mounted and the background still marked", async () => {
+  it("releases the background while the closing menu is still mounted", async () => {
     const user = userEvent.setup();
     renderWithUi(
       <OverlayBackground>
@@ -74,25 +89,29 @@ describe("gh#385: the background is released on close INTENT, not on unmount", (
 
     await user.click(screen.getByRole("button", { name: "Thao tác" }));
     const menu = await screen.findByRole("menu");
-
-    const background = document.querySelector("[inert]");
-    expect(background, "an open menu must inert the hidden background (gh#352)").not.toBeNull();
-
-    // Exactly what Radix does when an item is selected: `data-state` flips in the click handler,
-    // while Presence keeps the content mounted and `hideOthers` keeps the background marked until
-    // the exit animation ends.
-    act(() => {
-      menu.setAttribute("data-state", "closed");
-    });
+    const surface = menu.closest('[data-slot="dropdown-menu-content"]');
 
     expect(
-      background?.hasAttribute("data-aria-hidden"),
-      "the window under test is the one where the background is STILL marked",
-    ).toBe(true);
+      hiddenBackgroundCount(),
+      "an open menu must take the hidden background out of play (gh#352)",
+    ).toBeGreaterThan(0);
 
-    await waitFor(() => {
-      expect(background?.hasAttribute("inert")).toBe(false);
-    });
+    await user.click(screen.getByRole("menuitem", { name: "Sửa" }));
+
+    // The window under test, and the two halves of it have to be checked separately or the case
+    // proves nothing. First half: the menu has NOT unmounted. Under Radix this was Presence
+    // holding the content through the exit animation; here it is RAC's own exit state, which the
+    // never-finishing animation above keeps latched.
+    expect(menu.isConnected, "the closing menu must still be mounted").toBe(true);
+    expect(surface).toHaveAttribute("data-exiting", "true");
+    expect(surface).toHaveAttribute("data-state", "closed");
+
+    // Second half: and yet the background is already back in play. That is the whole of gh#385 —
+    // release on close INTENT, not on unmount.
+    expect(
+      hiddenBackgroundCount(),
+      "close intent must release the background, without waiting for the exit animation",
+    ).toBe(0);
   });
 
   it("can take focus as soon as it appears", async () => {
@@ -107,8 +126,12 @@ describe("gh#385: the background is released on close INTENT, not on unmount", (
     await user.click(await screen.findByRole("menuitem", { name: "Sửa" }));
 
     const box = await screen.findByLabelText("Sửa tin nhắn");
-    // The failing shape, stated the way the reporter measured it.
+    // The failing shape, stated the way the reporter measured it — widened by one mechanism,
+    // because RAC falls back to a bare `aria-hidden` where the platform has no `inert` and jsdom
+    // is exactly that platform. Asking only about `inert` here would pass without checking
+    // anything. See `neutralisedBackground` in `src/test/overlay-background.tsx`.
     expect(box.closest("[inert]")).toBeNull();
+    expect(box.closest('[aria-hidden="true"]')).toBeNull();
 
     box.focus();
     expect(document.activeElement).toBe(box);

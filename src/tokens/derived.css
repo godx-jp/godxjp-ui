@@ -1,0 +1,80 @@
+/* DERIVED COLOUR — the interaction states that hang off the five authored seeds.
+ *
+ * These twenty values are AUTHORED, not generated. They used to fall out of a colour algorithm
+ * run at build time; that generator is gone, so nothing re-derives them and nothing re-checks
+ * them against a formula. What holds them correct now is MEASUREMENT: four contrast suites read
+ * THIS FILE directly and hold every value to a WCAG threshold.
+ *
+ *   src/tokens/__tests__/focus-ring-contrast.test.ts     the focus mark, both switch positions
+ *   src/tokens/__tests__/destructive-contrast.test.ts    --destructive-hover / --destructive-active
+ *   src/tokens/__tests__/interactive-fill-contrast.test.ts  a fill must clear 4.5:1 on its label
+ *   src/lib/__tests__/theme-tokens-css.test.ts           the tier is loaded and complete
+ *
+ * TO CHANGE A VALUE HERE: change it, then run `pnpm test`. If a threshold breaks, the value is
+ * wrong — the tests are the authority, not this comment. See docs/DESIGN-AUTHORITY.md.
+ *
+ * The seeds these were derived from, and which they must stay consistent with, live in
+ * src/tokens/foundation.css:
+ *   light primary #0071bd · error #b82830 · success #69bf8e · warning #fab700 · info #4d6db3
+ *   dark  primary #3dabf5 · error #be373e · success #59c085 · warning #f9bf1f · info #698bd3
+ *
+ * 4 interactive fill state(s) sit on the ramp in the OPPOSITE direction to the conventional
+ * step, because stepping the fill towards the label sitting on it lands under 4.5:1
+ * (JIS X 8341-3 / WCAG AA). Same ramp, same step size; only the sign moved, and only where
+ * measured:
+ *   light --primary-hover      #208bc9 3.69:1 → #005596 7.53:1
+ *   light --primary-active     #005596 7.53:1 → #003c70 10.97:1
+ *   dark  --primary-hover      #61b6e8 7.92:1 → #61b6e8 7.92:1
+ *   dark  --primary-active     #2f76a6 3.60:1 → #8bd0f3 10.50:1
+ */
+
+:root {
+  /* the conventional hover step, #208bc9, measures 3.69:1 on its own label, under the 4.5:1 floor — same ramp, same step size, opposite sign */
+  --primary-hover: 206 100% 29.4%; /* ramp 1 step away from the label = #005596, 7.53:1 */
+  /* the conventional active step, #005596, clears the floor at 7.53:1 on its own label; it moves only because the ramp was reflected for its sibling state, and the two must stay one step apart */
+  --primary-active: 208 100% 22%; /* ramp 2 steps away from the label = #003c70, 10.97:1 */
+  /* the hue a focus outline paints on a control that has no boundary of its own */
+  --primary-border: 198 68% 66%; /* #6dc0e3 */
+  --destructive-hover: 359 50.6% 53.1%; /* #c44b4d */
+  --destructive-active: 355 70.6% 33.3%; /* #911923 */
+  /* the focus halo on a field */
+  --control-outline: 192.1 100% 44.7%; /* rgba(0,182,228,0.11) */
+  --control-outline-alpha: 0.11; /* the alpha half of that halo */
+  /* the same halo on an invalid field */
+  --control-outline-error: 4.3 87.6% 34.7%; /* rgba(166,22,11,0.09) */
+  --control-outline-error-alpha: 0.09; /* the alpha half of that halo */
+
+  /* There is no separate focus COLOUR: a focused field's border simply becomes the primary.
+   * Declared as a REFERENCE rather than a copied triple, so retinting the seed retints the
+   * focus mark with it — which is the entire point of a derived tier. Declared in
+   * BOTH blocks, not inherited from `:root`: a var() binding made once at `:root`
+   * would freeze on the light `--primary` if `.dark` ever lands on an element below
+   * `<html>` (docs/TOKENS.md, the freeze rule). */
+  --ring: var(--primary);
+}
+
+.dark,
+:root[data-theme="dark"] {
+  /* the conventional hover step, #61b6e8, clears the floor at 7.92:1 on its own label; it moves only because the ramp was reflected for its sibling state, and the two must stay one step apart */
+  --primary-hover: 202.2 74.6% 64.5%; /* ramp 1 step away from the label = #61b6e8, 7.92:1 */
+  /* the conventional active step, #2f76a6, measures 3.60:1 on its own label, under the 4.5:1 floor — same ramp, same step size, opposite sign */
+  --primary-active: 200.2 81.3% 74.9%; /* ramp 2 steps away from the label = #8bd0f3, 10.50:1 */
+  /* the hue a focus outline paints on a control that has no boundary of its own */
+  --primary-border: 204.6 46.7% 23.5%; /* #204158 */
+  --destructive-hover: 358.8 42.3% 53.1%; /* #ba5557 */
+  --destructive-active: 357.3 50.6% 34.1%; /* #832b2f */
+  /* the focus halo on a field */
+  --control-outline: 204.6 99% 61.8%; /* rgba(61,175,254,0.29) */
+  --control-outline-alpha: 0.29; /* the alpha half of that halo */
+  /* the same halo on an invalid field */
+  --control-outline-error: 351.5 98.3% 53.5%; /* rgba(253,20,53,0.06) */
+  --control-outline-error-alpha: 0.06; /* the alpha half of that halo */
+
+  /* There is no separate focus COLOUR: a focused field's border simply becomes the primary.
+   * Declared as a REFERENCE rather than a copied triple, so retinting the seed retints the
+   * focus mark with it — which is the entire point of a derived tier. Declared in
+   * BOTH blocks, not inherited from `:root`: a var() binding made once at `:root`
+   * would freeze on the light `--primary` if `.dark` ever lands on an element below
+   * `<html>` (docs/TOKENS.md, the freeze rule). */
+  --ring: var(--primary);
+}

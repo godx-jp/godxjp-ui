@@ -264,6 +264,48 @@ describe("AppSettingPicker", () => {
   });
 });
 
+describe('appearance="bar": một CELL của thanh bar, không phải control thả vào bar', () => {
+  /*
+   * Lỗi được báo bằng ảnh: mọi trigger trong topbar cao 32px và bo 6px trong một thanh cao 48px,
+   * nên hover vẽ ra một viên thuốc lơ lửng giữa dải — trong khi `TopbarItem`, thứ thư viện đã có,
+   * vẽ nền phủ hết chiều cao. Số đo trên https://ql.test/gino/dashboard trước khi sửa: bar 48px;
+   * toggle 28px @ top 10; theme picker 32px @ top 8; avatar 32px @ top 8.
+   *
+   * Lời hứa của `bar` là HÌNH HỌC — một cell cao bằng bar — và jsdom không tính bố cục nên không
+   * phép kiểm nào ở đây với tới được nó. Vì vậy chúng canh HỢP ĐỒNG (`data-appearance`) chứ không
+   * canh utility đang vẽ ra nó hôm nay; hình học thật được đo trên trình duyệt.
+   */
+  it("nói ra hình dạng nó đã giải, vì mặc định phụ thuộc kind nên prop không đủ để biết", () => {
+    renderWithUi(
+      <AppSettingPicker kind="theme" appearance="bar" value="light" onValueChange={vi.fn()} />,
+    );
+    expect(screen.getByRole("combobox")).toHaveAttribute("data-appearance", "bar");
+  });
+
+  it("mặc định phụ thuộc kind KHÔNG bị nhánh mới cướp mất", () => {
+    // `bar` phải là thứ chỉ có khi được gọi tên. Một mặc định trôi sang `bar` sẽ làm mọi picker
+    // trong một form thiết lập cao bằng... không có bar nào, tức là cao bằng dòng chứa nó.
+    const { rerender } = renderWithUi(
+      <AppSettingPicker kind="theme" value="light" onValueChange={vi.fn()} />,
+    );
+    expect(screen.getByRole("combobox")).toHaveAttribute("data-appearance", "labeled");
+
+    rerender(<AppSettingPicker kind="locale" value="ja" onValueChange={vi.fn()} />);
+    expect(screen.getByRole("combobox")).toHaveAttribute("data-appearance", "icon");
+  });
+
+  it('giữ nguyên mọi thứ "icon" đã bỏ: không chữ giá trị, vẫn có tên đọc được', () => {
+    // `bar` đi chung nhánh với `icon`; nếu nó rơi nhầm sang nhánh có nhãn thì chữ giá trị hiện ra
+    // và cái hộp lại có bề ngang riêng của nó.
+    renderWithUi(
+      <AppSettingPicker kind="theme" appearance="bar" value="dark" onValueChange={vi.fn()} />,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).toHaveAccessibleName();
+    expect(trigger).not.toHaveTextContent(/Dark|Tối|ダーク/);
+  });
+});
+
 describe('appearance="icon" giữ được ô vuông (gh#366)', () => {
   it("mang utility bề ngang, vì luật class không thắng nổi w-full của SelectTrigger", () => {
     const { container } = renderWithUi(

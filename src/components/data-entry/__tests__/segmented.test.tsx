@@ -166,7 +166,7 @@ describe("Segmented", () => {
   });
 
   it("measures exactly one --control-height, so it sits level with an Input", () => {
-    // antd: labelHeight = controlHeight − trackPadding × 2, and the track adds that padding back.
+    // label height = control height − track padding × 2, and the track adds that padding back.
     expect(segmentedTokens).toContain(
       "--segmented-item-height: calc(var(--control-height) - var(--segmented-track-padding) * 2);",
     );

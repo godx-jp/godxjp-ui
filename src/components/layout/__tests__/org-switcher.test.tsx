@@ -105,13 +105,20 @@ describe("OrgSwitcher public contract", () => {
     const onOpenChange = vi.fn();
     const user = userEvent.setup();
     renderWithUi(
-      <OrgSwitcher
-        organizations={organizations}
-        value="dxs"
-        labels={labels}
-        responsive="popover"
-        onOpenChange={onOpenChange}
-      />,
+      <>
+        <OrgSwitcher
+          organizations={organizations}
+          value="dxs"
+          labels={labels}
+          responsive="popover"
+          onOpenChange={onOpenChange}
+        />
+        {/* The switcher is never the last tabbable thing on a real page, and the popover's Tab
+            contract is defined in terms of what FOLLOWS the trigger — see the "Tab RA KHỎI panel"
+            section of `data-display/popover.tsx`. A fixture with nothing after the trigger measures
+            the document's wrap-around, not the switcher. */}
+        <button type="button">After the switcher</button>
+      </>,
     );
 
     const trigger = screen.getByRole("button", {
@@ -119,17 +126,23 @@ describe("OrgSwitcher public contract", () => {
     });
     trigger.focus();
     await user.pointer({ keys: "[TouchA]", target: trigger });
-    const dialog = await screen.findByRole("dialog", { name: "Choose organization" });
+    await screen.findByRole("dialog", { name: "Choose organization" });
     const search = await screen.findByLabelText("Search organizations");
     expect(onOpenChange).toHaveBeenCalledWith(true);
     expect(search).toHaveFocus();
-    await user.tab();
-    expect(dialog).toBeInTheDocument();
-    expect(document.activeElement).not.toBe(document.body);
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog", { name: "Choose organization" })).not.toBeInTheDocument();
     expect(onOpenChange).toHaveBeenLastCalledWith(false);
     expect(trigger).toHaveFocus();
+
+    // Tab leaves the panel the way a non-modal popover should: on to the next element after the
+    // trigger, closing the panel behind it. Focus is never dropped and never cycles back inside.
+    await user.pointer({ keys: "[TouchA]", target: trigger });
+    await screen.findByRole("dialog", { name: "Choose organization" });
+    await user.tab();
+    expect(screen.getByRole("button", { name: "After the switcher" })).toHaveFocus();
+    expect(screen.queryByRole("dialog", { name: "Choose organization" })).not.toBeInTheDocument();
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
   });
 
   it("keeps the controlled sheet stateful across touch, focus, tab, selection and close", async () => {
@@ -299,5 +312,51 @@ describe("OrgSwitcher responsive contract shares the Sheet breakpoint token (gh#
     const queries = vi.mocked(window.matchMedia).mock.calls.map(([query]) => query);
     expect(queries).toContain("(max-width: 768px)");
     expect(queries).not.toContain("(max-width: 390px)");
+  });
+
+  it("sizes its own height, because Button's size utility outranks the class rule", () => {
+    /*
+     * `.ui-org-switcher-trigger` declares `height: var(--org-switcher-trigger-height)` in
+     * @layer components, and Button emits its size as a Tailwind utility — utilities win, so that
+     * declaration never applied. Measured in a consumer's collapsed rail: 44 × 32px. The WIDTH was
+     * right, because the collapsed rule sets a width and Button emits none, and that is exactly
+     * why it read as correct for so long: right on one axis, silently wrong on the other.
+     *
+     * 32px is under the 44px target floor this token is named for (rule #24, WCAG 2.2 AA 2.5.8).
+     * jsdom does no layout, so what is pinned is the only thing that decides the outcome — whether
+     * the height is emitted where it can win.
+     */
+    const { container } = renderWithUi(
+      <OrgSwitcher organizations={organizations} value="dxs" labels={labels} collapsed />,
+    );
+    const trigger = container.querySelector<HTMLElement>(".ui-org-switcher-trigger")!;
+
+    expect(trigger.className).toContain("h-[length:var(--org-switcher-trigger-height)]");
+    // A literal would put the target size out of a theme's reach and let the two axes drift.
+    expect(trigger.className).not.toMatch(/(?:^|\s)h-\d/);
+  });
+
+  it("lets a `data-*` hook and an id reach the trigger, so an e2e test can hold it", () => {
+    /*
+     * This component is closed on purpose, but a control no test can address is a control
+     * consumers replace with a hand-rolled Select they CAN address — measured: one shipped app
+     * bound `[data-test="organization-switcher"]` to a raw Select for months, and swapping this
+     * component in silently detached the selector, because the prop was swallowed and nothing
+     * anywhere reported it. The accessible name is localized, so it is not a selector to hold.
+     */
+    const { container } = renderWithUi(
+      <OrgSwitcher
+        organizations={organizations}
+        value="dxs"
+        labels={labels}
+        id="org-switcher"
+        data-test="organization-switcher"
+      />,
+    );
+
+    const trigger = container.querySelector<HTMLElement>('[data-test="organization-switcher"]');
+    expect(trigger).not.toBeNull();
+    expect(trigger).toHaveClass("ui-org-switcher-trigger");
+    expect(trigger).toHaveAttribute("id", "org-switcher");
   });
 });

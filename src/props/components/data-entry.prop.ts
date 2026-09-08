@@ -10,6 +10,7 @@ import type { UploadFileItem } from "../../components/data-entry/upload-types";
 import type { FieldA11yProps } from "../../lib/field-a11y";
 import type {
   ClassNameProp,
+  ControlWidthProp,
   DisabledProp,
   EmptyMessageProp,
   ErrorBagProp,
@@ -267,7 +268,7 @@ export type SearchInputProp = FieldA11yProps & {
 /** @see Checkbox — extends Radix checkbox root props. */
 export type CheckboxProp = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>;
 
-/** Shared option row — Ant Design `CheckboxOptionType`. */
+/** Shared option row — the conventional `CheckboxOptionType` shape. */
 export type ChoiceOptionProp = {
   label: React.ReactNode;
   value: string;
@@ -330,6 +331,34 @@ export type CalendarProp = DayPickerProps &
   CalendarFooterProp & {
     /** Replaces the built-in footer actions. */
     footer?: React.ReactNode;
+    /**
+     * How the grid claims horizontal space. Default `auto` shrink-wraps to seven fixed day
+     * columns — the shape a picker popover needs, because the panel is shrink-to-fit and takes
+     * ITS width from the calendar inside it.
+     *
+     * `full` is for an EMBEDDED calendar — a shift board, a booking month — where the calendar is
+     * the content of a card rather than a dropdown. It stacks the months, lets each one grow, and
+     * lets the day cells share the row.
+     *
+     * Opt-in on purpose, and the default is load-bearing: making the calendar fluid globally was
+     * measured to collapse the DatePicker popover from 250px to 157.8px with 18.8px day cells.
+     * `Calendar` and `DatePicker` want opposite answers here, which is why the enterprise
+     * libraries split them too
+     * (`Calendar fullscreen` is 100% of its container; the DatePicker dropdown is a fixed 288px).
+     */
+    width?: Extract<ControlWidthProp, "auto" | "full">;
+    /**
+     * Rule the grid: one border per day cell, weekday header included.
+     *
+     * NOT a box around the calendar — that is what `Card` is for, and nesting one inside a section
+     * card was measured on a real page as two rounded edges 16px apart with both paddings stacked.
+     * What a month grid needs is the ruling BETWEEN days, so a week reads as a row of cells the
+     * eye can track across.
+     *
+     * Default `false`, because a picker popover wants the opposite: floating day buttons with no
+     * ruling, so the selected day is the only shape in the panel.
+     */
+    bordered?: boolean;
   };
 
 /** Footer actions shared by Calendar and the pickers that embed it. Both default to off. */
@@ -488,10 +517,10 @@ export type SearchSelectProp = {
   /** Remote fetcher — debounced search + infinite-scroll pagination call into this. Provide this
    *  OR `options`. */
   loadOptions?: (params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>;
-  /** Custom per-option renderer (Ant-Design style). Defaults to label + optional sublabel. */
+  /** Custom per-option renderer. Defaults to label + optional sublabel. */
   renderOption?: (option: SearchSelectOptionProp) => React.ReactNode;
   /**
-   * Custom renderer for the SELECTED value shown on the trigger (Ant Design `labelRender`).
+   * Custom renderer for the SELECTED value shown on the trigger (the conventional `labelRender`).
    * Receives the value, the resolved label, and the full option when it is loaded (undefined for
    * an async preset whose page hasn't arrived).
    */

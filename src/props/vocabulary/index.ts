@@ -56,7 +56,12 @@ export type {
   OrientationProp,
   TableDensityProp,
   DensityProp,
+  GapNameProp,
+  PadProp,
+  PadRawProp,
+  PadSides,
   GapProp,
+  GapStepProp,
 } from "./layout.prop";
 
 export type {
@@ -64,6 +69,7 @@ export type {
   ButtonSizeProp,
   BadgeVariantProp,
   AppSettingPickerAppearanceProp,
+  AppSettingToggleAppearanceProp,
   ShapeProp,
   AvatarShapeProp,
   TextSizeProp,

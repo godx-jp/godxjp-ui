@@ -46,12 +46,40 @@ describe("focus ring — reaches real elements", () => {
   // Checkbox is the control that had NO visible ring: the rule existed in the
   // components layer but `shadow-xs` (utilities) won the box-shadow. It must
   // both match the selector AND no longer carry a hand-written ring utility.
+  //
+  // The role no longer names the painted element. react-aria builds Checkbox as a `<label>`
+  // wrapping a visually hidden real `<input>`, so `getByRole("checkbox")` returns that input while
+  // the border, the background and `.ui-checkbox` all live on the label. The box is resolved
+  // through `[data-slot="checkbox"]` — the same hop `theme-axes-integration` uses for the same
+  // reason.
   it("Checkbox matches the ring selector and carries no hand-written ring utility", () => {
     renderWithUi(<Checkbox aria-label="Agree" />);
-    const box = screen.getByRole("checkbox", { name: "Agree" });
+    const input = screen.getByRole("checkbox", { name: "Agree" });
+    const box = input.closest('[data-slot="checkbox"]')!;
 
     expect(box.matches(shadowFormSelector())).toBe(true);
     expect(box.className).not.toMatch(/focus-visible:ring-/);
+  });
+
+  // Membership in the `:is()` list above is necessary but NOT sufficient any more, and the gap is
+  // silent: `:focus-visible` matches the focused element, and the focused element is now the inner
+  // `<input>` — never the label that carries `.ui-checkbox`. So the entry in that list can be
+  // present, the test above green, and the ring still invisible to every keyboard user.
+  //
+  // react-aria mirrors its own focus-visible state onto the root as `data-focus-visible`, and
+  // `focus-ring.css` hangs a second selector off it. This pins that second selector, because it is
+  // the one that actually fires.
+  it("Checkbox gets its ring from the data-focus-visible hook, not :focus-visible", () => {
+    expect(FOCUS_RING_CSS).toMatch(/\.ui-checkbox\[data-focus-visible\]/);
+
+    renderWithUi(<Checkbox aria-label="Agree" />);
+    const box = screen.getByRole("checkbox", { name: "Agree" }).closest('[data-slot="checkbox"]')!;
+
+    // Not focused: the hook is absent, so the ring rule must not apply.
+    expect(box.matches(".ui-checkbox[data-focus-visible]")).toBe(false);
+
+    box.setAttribute("data-focus-visible", "true");
+    expect(box.matches(".ui-checkbox[data-focus-visible]")).toBe(true);
   });
 
   // The opt-in class is how a NEW component joins the system without editing

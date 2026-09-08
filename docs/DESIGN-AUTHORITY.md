@@ -17,9 +17,9 @@ It changes no code by itself. It is the tie-breaker a reviewer points at.
 | Interaction semantics, keyboard, ARIA                              | **WAI-ARIA APG**                              | already followed — 33 references in `src/`                                                                                        |
 | Behaviour primitives                                               | **Radix**                                     | already the implementation — 193 references                                                                                       |
 | Component composition shape                                        | **shadcn**                                    | already the structural convention — 23 references                                                                                 |
-| Component taxonomy / grouping                                      | **Ant Design** groups                         | already the catalog shape: `data-entry`, `data-display`, `layout`, `feedback`, `navigation`, `general`                            |
+| Component taxonomy / grouping                                      | **Ant Design** groups                         | already the catalog shape: `data-entry`, `data-display`, `layout`, `feedback`, `navigation`, `general` — a naming precedent, nothing is installed |
 | Colour foundation                                                  | **SmartHR**                                   | already the palette source — `--primary` = SmartHR MAIN `#0071bd`, `--foreground` = TEXT_BLACK, `--border` = BORDER               |
-| **Derived colour — every step computed from a seed**                | **Ant Design (the algorithm itself)**         | **NEW — this decision.** antd is no longer a shape reference here: `scripts/gen-antd-tokens.mjs` runs `theme.getDesignToken()` at build time and emits the derived map |
+| **Derived colour — the interaction states hanging off each seed**    | **Measured contrast (WCAG 2.2 / JIS X 8341-3)** | Authored in `src/tokens/derived.css`; no algorithm derives them. Four contrast suites read that file and hold every value to a threshold — see below |
 | **Japanese UI convention — density, JP typography, form patterns** | **SmartHR**                                   | **NEW — this decision.** Extends SmartHR from "where the colours came from" to the authority for how a JP business screen behaves |
 | **Japanese accessibility / public-sector convention**              | **デジタル庁 Design System** (Digital Agency) | **NEW — this decision.** The reference when a JP customer asks which standard a screen meets (JIS X 8341-3)                       |
 | **Spacing, density, type scale, information architecture**         | **IBM Carbon**                                | **NEW — this decision**                                                                                                           |
@@ -187,70 +187,94 @@ Recorded rather than silently fixed, because each is a real decision:
    strokes blur far more visibly than Latin letterforms. Another reason to prefer Carbon's integer
    steps if the scale is ever revisited.
 
-## Derived colour is GENERATED, not authored
+## Derived colour is AUTHORED, and MEASUREMENT is what makes it authoritative
 
-**The problem this fixes.** The library hand-authored roughly a thousand tokens and reasoned about
-each one. A hover step was chosen by eye, an active step was chosen by eye, a focus-halo alpha was
-chosen by eye and then justified in a paragraph. Every one of those is a decision with no outside
-authority behind it, and every one has to be re-argued the next time somebody looks at it.
+**Twenty values, in `src/tokens/derived.css`:** `--primary-hover`, `--primary-active`,
+`--primary-border`, `--destructive-hover`, `--destructive-active`, `--control-outline` and its
+alpha, `--control-outline-error` and its alpha, and `--ring` — each in both themes. They are the
+interaction states that hang off the five authored seeds per theme (SmartHR MAIN plus four 和色,
+and the lifted dark ramp), which stay in `src/tokens/foundation.css`.
 
-**Ant Design already solves this exactly once**: a SEED colour goes in, an ALGORITHM runs, and the
-whole derived map falls out. This document already named antd as the authority for component
-taxonomy and focus shape; that is now extended to make antd the **generator** of derived colour.
+**These twenty were once generated.** A colour algorithm ran at build time, took the seeds and
+emitted the derived map; the authority behind each value was "the algorithm said so". That
+generator has been removed and its dependency with it. The values did not change — but the reason
+to trust them had to.
 
-`scripts/gen-antd-tokens.mjs` reads the seeds out of `src/tokens/foundation.css`, runs antd 6.6.2's
-own `theme.getDesignToken()` (`defaultAlgorithm` for light, `darkAlgorithm` for dark) and writes
-`src/tokens/antd.generated.css`. `pnpm check:antd-tokens` fails CI if that file drifts from the
-algorithm. **antd is a devDependency and a build-time tool only** — `pnpm check:no-antd-runtime`
-asserts it never reaches `dependencies`, `src/`, or `dist/`.
+**The authority is now the measurement, not the derivation.** Four suites read `derived.css`
+directly and hold every value in it to a threshold this repo has already committed to:
 
-**What is authored:** five brand colours per theme (SmartHR MAIN plus four 和色, and the lifted dark
-ramp). **What is computed:** `--primary-hover`, `--primary-active`, `--primary-border`,
-`--destructive-hover`, `--destructive-active`, `--control-outline*` and `--ring`.
+| suite                                                   | what it holds                                                                                                                                                        |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/tokens/__tests__/focus-ring-contrast.test.ts`       | the focus mark in both switch positions — ≥3:1 (WCAG 2.2 SC 1.4.11) on every surface a control sits on, and the halo proven to be decoration rather than the indicator |
+| `src/tokens/__tests__/interactive-fill-contrast.test.ts` | an interactive fill must clear **4.5:1** against the label sitting on it                                                                                              |
+| `src/tokens/__tests__/destructive-contrast.test.ts`      | `--destructive-hover` / `--destructive-active` against the same bar                                                                                                  |
+| `src/lib/__tests__/theme-tokens-css.test.ts`             | the tier is actually loaded, and complete in both themes                                                                                                             |
 
-**What is deliberately NOT taken from antd, and why — each a measurement, not a preference:**
+The first three also pin each value as a literal, so an edit to `derived.css` alone turns CI red
+rather than quietly retinting the library. **That is a stronger claim than the generator made, not
+a weaker one.** An algorithm guarantees a value is _consistent_; this repo had to override it four
+times (below) precisely because consistent is not the same as _accessible_. A threshold guarantees
+the property actually being sold.
+
+**To change a derived value:** change it, run `pnpm test`, and if a threshold breaks the value is
+wrong. Do not relax the threshold.
+
+**The four overrides that existed even while a generator did** — the clearest evidence the
+algorithm was never the real authority. Stepping an interactive fill towards the label sitting on
+it lands under 4.5:1, so those four states take the same ramp at the same step size in the
+opposite direction:
+
+| token                    | conventional step | shipped           |
+| ------------------------ | ----------------- | ----------------- |
+| light `--primary-hover`  | #208bc9 · 3.69:1  | #005596 · 7.53:1  |
+| light `--primary-active` | #005596 · 7.53:1  | #003c70 · 10.97:1 |
+| dark `--primary-hover`   | #61b6e8 · 7.92:1  | #61b6e8 · 7.92:1  |
+| dark `--primary-active`  | #2f76a6 · 3.60:1  | #8bd0f3 · 10.50:1 |
+
+**What was deliberately never derived, and why — each a measurement, not a preference:**
 
 - **The neutral spine.** Colour foundation stays SmartHR's (see the table above); the neutrals are
-  not derived from the brand seed. `colorBorder` is also the only role antd offers for a control
-  boundary and it measures **1.43:1** on the page, where `--input` is held to 3:1 by SC 1.4.11 and
-  by `input-boundary-contrast.test.ts`.
-- **The text ramp.** antd's is alpha-based (`rgba(0,0,0,0.88)`), which cannot enter this library's
-  opaque `H S% L%` triple without choosing a surface to composite against — lossy by construction.
-- **The dark `--primary` itself.** `darkAlgorithm` MOVES the seed (antd's own `#1677ff` becomes
-  `#1668dc`). Feeding this library's light seed in gives `#0363a4` at **2.81:1** on the dark spine,
-  which `primary-text-contrast.test.ts` rejects outright; antd's transform of the committed dark
-  seed gives `#3794d3` at 5.36:1 where the seed itself measures 7.07:1. The dark theme therefore
-  keeps its seed and everything derived from it is antd's. This is the one structural divergence,
-  recorded in `DIVERGENCES` in the generator.
+  not derived from the brand seed. The one derived role on offer for a control boundary measures
+  **1.43:1** on the page, where `--input` is held to 3:1 by SC 1.4.11 and by
+  `input-boundary-contrast.test.ts`.
+- **The text ramp.** The derived one is alpha-based (`rgba(0,0,0,0.88)`), which cannot enter this
+  library's opaque `H S% L%` triple without choosing a surface to composite against — lossy by
+  construction.
+- **The dark `--primary` itself.** A mechanical dark derivation MOVES the seed. Deriving from this
+  library's light seed gives `#0363a4` at **2.81:1** on the dark spine, which
+  `primary-text-contrast.test.ts` rejects outright; deriving from the committed dark seed gives
+  `#3794d3` at 5.36:1, where the seed itself measures 7.07:1. The dark theme therefore keeps its
+  own seed — recorded, with the measurement, in `focus-ring-contrast.test.ts`.
 
-**Geometry antd owns was already correct.** `lineWidth` 1, `controlOutlineWidth` 2,
-`lineWidthFocus` 3, `borderRadius` 6, `controlHeight` 32 and `fontSize` 14 all match the named
-scales this library already ships (`--stroke-*`, `--radius`, `--band-height-md`,
-`--font-size-base`). The generator asserts that agreement rather than emitting a second copy, so
-the two cannot drift apart silently.
+**The focus geometry was already on the named scale.** Border 1, halo width 2, heavy outline 3,
+radius 6, control height 32 and font size 14 all match scales this library already ships
+(`--stroke-*`, `--radius`, `--band-height-md`, `--font-size-base`), so the focus tokens bind to
+those steps instead of restating a second copy of the number.
 
-## Focus appearance — Ant Design owns the shape, and the indicator SHIPS OFF
+**antd itself is gone from this repository**, and `pnpm check:no-antd-runtime` is what keeps it
+gone: it fails if antd or any `@ant-design/*` package appears in any manifest field, is imported
+anywhere in `src/`, or leaves a trace in `dist/`. Deleting that gate re-opens the door it closes.
 
-### The two forms, read from antd's source
+## Focus appearance — a two-form convention, and the indicator SHIPS OFF
+
+### The two forms
 
 **SmartHR** (`smarthr-ui@99.6.0`) draws focus as an opaque ring held off the control by a white
-spacer. **Ant Design** (`antd@6.6.2`) has two forms instead:
+spacer. This library takes a different, two-form convention instead — widely used in enterprise
+component libraries, and surveyed across several before it was adopted here:
 
-- **Field** — `borderColor: colorPrimary` at the unchanged `lineWidth`, plus
-  `boxShadow: 0 0 0 ${controlOutlineWidth}px ${controlOutline}`
-  (`es/input/style/token.js:48-50`). `es/select/style/select-input.js:32` emits the same
-  declarations, which is why an antd Select focuses exactly like an antd Input.
-- **Non-field** — `genFocusOutline` (`es/style/index.js:60-64`):
-  `outline: ${lineWidthFocus}px solid ${colorPrimaryBorder}; outline-offset: 1`.
+- **Field** — the boundary RECOLOURS to the primary at its unchanged hairline width, plus
+  `box-shadow: 0 0 0 var(--control-outline-width) var(--control-outline)`. A Select emits the same
+  declarations as an Input, which is why the two focus identically.
+- **Non-field** — an outline outside the box model:
+  `outline: var(--focus-outline-weight) solid var(--primary-border); outline-offset: 1px`.
 
-**v5 → v6 changed none of this.** Both majors were unpacked and their own `formatToken` run side by
-side; every value is identical to the digit in `antd@5.29.3`.
-
-**Ant Design wins the shape.** The library shipped an opaque brand ring drawn immediately outside an
-untouched grey border — two outlines of different colours claiming the same edge — and a Select that
-could not be told to agree with an Input. antd's rule resolves both. SmartHR still owns the hue: the
-focus colour is `--ring`, which the generated tier declares as `var(--primary)` because antd has no
-separate focus-colour token at all.
+**Why this shape wins.** The library previously shipped an opaque brand ring drawn immediately
+outside an untouched grey border — two outlines of different colours claiming the same edge — and a
+Select that could not be told to agree with an Input. Recolouring the existing boundary rather than
+adding a second one resolves both. SmartHR still owns the hue: the focus colour is `--ring`, which
+the derived tier declares as `var(--primary)`, because a focused field takes the primary rather than
+a focus colour of its own.
 
 ### The indicator ships OFF. That forfeits WCAG 2.4.7 and a JIS X 8341-3 AA claim.
 
@@ -272,15 +296,15 @@ owner chose to ship it off and let whoever needs it turn it on. What that costs,
 <html data-focus-outline="on">
 ```
 
-**The switch is antd's own mechanism, not one invented here.** antd 6.6.2 carries a `focusOutline`
-seed flag (`es/theme/themes/seed.js:67`) and consumes it in `es/theme/util/alias.js:71`:
+**The switch is a single multiplier, not a scatter of overrides.** `--focus-outline` is one flag,
+and every painted focus length multiplies by it:
 
-```js
-lineWidthFocus: mergedToken.focusOutline === false ? 0 : mergedToken.lineWidth * 3
+```css
+--focus-ring-width: calc(var(--focus-ring-weight) * var(--focus-outline));
 ```
 
-The flag zeroes the focus line width. `--focus-outline` is that flag in CSS: every painted length
-multiplies by it, so no component rebind can bring the mark back while it is `0`. The two paints
+Setting it to `0` zeroes every focus length at once, so no component rebind can bring the mark back
+while it is off — which is the property a scatter of per-component overrides could never give. The two paints
 that are not lengths — the halo and a field's recoloured boundary — are scoped to the same attribute
 in `styles/focus-ring.css`. **Every `:focus-visible` selector stays exactly where it is**; only the
 painted result disappears.
@@ -288,8 +312,8 @@ painted result disappears.
 ### The ON state is the LIGHT one
 
 The complaint was weight, not existence, so the on-position is not the old mark restored. It paints
-antd's **field** indicator on every control — one `lineWidth` (1px) in the focus hue, plus antd's
-`controlOutline` halo — rather than antd's 3px `genFocusOutline`. Measured, in Chromium, on
+the **field** indicator on every control — one hairline (1px) in the focus hue, plus the
+`--control-outline` halo — rather than the heavy 3px outline form. Measured, in Chromium, on
 `ql.test` after the transition settles:
 
 | control | switch off | switch on |
@@ -298,8 +322,8 @@ antd's **field** indicator on every control — one `lineWidth` (1px) in the foc
 | Button (primary) | outline `0px`, resting shadow intact | `outline: 1px solid rgb(0,113,189)` @ `0px` + same halo |
 | Sidebar nav row / list row | outline `0px` | `outline: 1px solid rgb(0,113,189)` @ **`-1px`** (inset into the row) |
 
-The field pair is **byte-identical to antd's own `activeBorderColor` + `activeShadow`** for this
-seed. The nav row insets its mark into its own shape rather than wrapping an already-shaded surface,
+The field pair is the recoloured boundary plus the halo, exactly as the convention specifies for
+this seed. The nav row insets its mark into its own shape rather than wrapping an already-shaded surface,
 which is the specific stacking that read as heavy.
 
 **No control's box moves when it is focused**, measured with `getBoundingClientRect()` before and
@@ -308,11 +332,12 @@ Input, Save and Delete all stay at 32.00px.
 
 **Two criteria, and only one is met by thickness alone.** SC 1.4.11 (AA, non-text contrast) is about
 COLOUR — the 1px mark measures 5.05:1 light and 7.07:1 dark on every surface a control sits on, so
-the light weight costs nothing there. antd's own `colorPrimaryBorder` (#6dc0e3) measures **2.00:1
-light / 1.66:1 dark** and could not have satisfied it at any thickness, which is why the on-state
-takes the focus hue instead — the single place it departs from `genFocusOutline`. SC 2.4.13 Focus
-Appearance (AAA) additionally wants a 2px perimeter; the on-state does not target it, and
-`--focus-outline-weight: var(--stroke-lg)` restores antd's 3px if a customer needs the area clause.
+the light weight costs nothing there. `--primary-border` (#6dc0e3) measures **2.00:1 light /
+1.66:1 dark** and could not have satisfied it at any thickness, which is why the on-state takes the
+focus hue instead — the single place it departs from the outline form. SC 2.4.13 Focus Appearance
+(AAA) additionally wants a 2px perimeter; the on-state does not target it, and
+`--focus-outline-weight: var(--stroke-lg)` restores the 3px weight if a customer needs the area
+clause.
 
 Both positions of the switch are gated in `src/tokens/__tests__/focus-ring-contrast.test.ts`: with
 it off nothing paints and no rebind can route around it, with it on the geometry and the ≥3:1

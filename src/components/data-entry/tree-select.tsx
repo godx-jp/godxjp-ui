@@ -334,15 +334,28 @@ function TreeSelectRoot({
                       )}
                     </button>
                     {checkable ? (
-                      <label className="ui-tree-select-label">
+                      // The row must NOT WRAP the Checkbox in a `<label>`: the Checkbox is itself a
+                      // `<label>` around a real `<input>`, and a label nested in a label is
+                      // invalid HTML — the browser resolves neither, so the box loses its
+                      // accessible name. The node text sits BESIDE the box as a `for=`-associated
+                      // label instead, which both names it and keeps the text clickable.
+                      <div className="ui-tree-select-label">
                         <Checkbox
+                          id={`${treeId}-${node.value}-box`}
                           checked={isSelected}
                           tabIndex={-1}
                           disabled={Boolean(node.disabled) || Boolean(node.disableCheckbox)}
                           onCheckedChange={() => toggleSelect(node)}
+                          aria-labelledby={`${treeId}-${node.value}-label`}
                         />
-                        <span className="truncate">{node.label}</span>
-                      </label>
+                        <label
+                          className="truncate"
+                          id={`${treeId}-${node.value}-label`}
+                          htmlFor={`${treeId}-${node.value}-box`}
+                        >
+                          {node.label}
+                        </label>
+                      </div>
                     ) : (
                       <button
                         type="button"

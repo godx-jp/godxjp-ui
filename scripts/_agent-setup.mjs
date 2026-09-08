@@ -4,10 +4,15 @@
  * NON-DESTRUCTIVE: it only creates a missing file or ADDS a missing key, never
  * overwrites existing config.
  */
+import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 /** The godxjp-ui MCP server — pulled on demand via npx (no extra dependency to ship). */
+/** This package's own root — the source of the version we stamp with. */
+const SELF_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
 export const MCP_SERVER = { command: "npx", args: ["@godxjp/ui-mcp"] };
 export const MCP_KEY = "godx-ui";
 
@@ -16,7 +21,47 @@ export const AUDIT_HOOK_CMD = "node node_modules/@godxjp/ui/scripts/audit-hook.m
 export const PRIMER_CMD = "cat .claude/godxjp-ui-workflow.md";
 
 /** The per-session workflow mandate the SessionStart hook injects into the agent. */
-export const WORKFLOW_MD = `# @godxjp/ui — mandatory workflow (read every session)
+export const KIT_VERSION = readJson(join(SELF_ROOT, "package.json"))?.version ?? "0.0.0";
+
+const STAMP = (v) => `<!-- godxjp-ui:version ${v} -->`;
+const STAMP_RE = /<!-- godxjp-ui:version ([^\s]+) -->/;
+
+/** The version stamped in `text`, or null when it predates stamping. */
+export function stampedVersion(text) {
+  return text?.match(STAMP_RE)?.[1] ?? null;
+}
+
+/**
+ * A stamp that tracks the CONTENT, for the files this package owns outright.
+ *
+ * A version stamp answers "which release wrote this", which is the wrong question for a file whose
+ * whole job is to carry current guidance. Measured: editing `consumer-rule.md` without bumping the
+ * package left two of three consumers holding the previous text, with a stamp that read as current
+ * and nothing anywhere reporting a difference. The rules are edited far more often than the
+ * version moves — most of all while they are being written, which is exactly when a stale copy
+ * does the most damage.
+ *
+ * So the digest goes in alongside the version: the version stays for humans reading the file, and
+ * the digest is what the refresh actually compares. Identical body → still a no-op.
+ */
+const DIGEST_RE = /<!-- godxjp-ui:digest ([0-9a-f]{12}) -->/;
+const digestOf = (body) => createHash("sha256").update(body).digest("hex").slice(0, 12);
+const OWNED_STAMP = (body) => `${STAMP(KIT_VERSION)}\n<!-- godxjp-ui:digest ${digestOf(body)} -->`;
+
+/** The content digest stamped in `text`, or null when it predates digest stamping. */
+export function stampedDigest(text) {
+  return text?.match(DIGEST_RE)?.[1] ?? null;
+}
+
+/**
+ * Replace the MANAGED region of a file and leave everything else alone.
+ *
+ * Refreshing is only safe if it cannot eat hand-written content, so the contract is narrow: the
+ * region is delimited, and anything outside the delimiters survives byte-for-byte. A consumer that
+ * appended repo-specific sections keeps them.
+ */
+export const WORKFLOW_MD = `${STAMP(KIT_VERSION)}
+# @godxjp/ui — mandatory workflow (read every session)
 
 You are building UI in an app that uses @godxjp/ui. Follow this EVERY time you create
 or change a component, page, or form — no exceptions.
@@ -50,6 +95,7 @@ or change a component, page, or form — no exceptions.
 /** Delimited block appended to the consumer's CLAUDE.md — loaded into the agent's context
  * every turn (the most reliable "ensure it reads the rules"). Markers keep it idempotent. */
 export const CLAUDE_MD_BLOCK = `<!-- godxjp-ui:start (managed by @godxjp/ui — edit .claude/godxjp-ui-workflow.md instead) -->
+${STAMP(KIT_VERSION)}
 ## @godxjp/ui — mandatory UI workflow (do NOT skip)
 
 This app uses @godxjp/ui. EVERY time you build or change UI:
@@ -82,6 +128,24 @@ function readJson(path) {
 }
 
 /** Ensure `.mcp.json` registers the godx-ui MCP server. Returns 'created' | 'added' | 'present'. */
+/**
+ * The version that wrote each managed artefact, stamped so `postinstall` can tell "already there"
+ * apart from "already there and STALE".
+ *
+ * Everything below used to be install-once: `ensureMcpJson` returned early on a present key,
+ * `writeWorkflowMd` on a present file, `ensureClaudeMd` on a present marker. So `npm update
+ * @godxjp/ui` brought new components, new audit rules and new catalog entries — and left the
+ * agent reading whatever guidance shipped the day the package was FIRST installed. The library
+ * moved; the instructions for using it did not.
+ */
+export function refreshBlock(current, next, startMarker, endMarker) {
+  const i = current.indexOf(startMarker);
+  if (i < 0) return current.replace(/\s*$/, "") + "\n\n" + next;
+  const j = endMarker ? current.indexOf(endMarker, i) : -1;
+  const tail = j < 0 ? "" : current.slice(j + endMarker.length);
+  return current.slice(0, i) + next + tail;
+}
+
 export function ensureMcpJson(root) {
   const path = join(root, ".mcp.json");
   const json = readJson(path) ?? {};
@@ -127,7 +191,14 @@ export function ensureClaudeHooks(root) {
 export function writeWorkflowMd(root) {
   const path = join(root, ".claude", "godxjp-ui-workflow.md");
   mkdirSync(dirname(path), { recursive: true });
-  if (existsSync(path)) return false;
+  // This file is owned entirely by the package — the CLAUDE.md block tells the consumer to edit
+  // it, but nothing else reads from it, so a stale copy is pure loss. Rewrite when the stamp moves.
+  if (existsSync(path)) {
+    const cur = readFileSync(path, "utf8");
+    if (stampedVersion(cur) === KIT_VERSION) return false;
+    writeFileSync(path, WORKFLOW_MD);
+    return "refreshed";
+  }
   writeFileSync(path, WORKFLOW_MD);
   return true;
 }
@@ -139,7 +210,16 @@ export function writeWorkflowMd(root) {
 export function ensureClaudeMd(root) {
   const path = join(root, "CLAUDE.md");
   const existing = existsSync(path) ? readFileSync(path, "utf8") : null;
-  if (existing?.includes("godxjp-ui:start")) return "present";
+  if (existing?.includes("godxjp-ui:start")) {
+    // Present — but at WHICH version? Refresh only the delimited block; anything the consumer
+    // wrote around it is untouched.
+    if (stampedVersion(existing) === KIT_VERSION) return "present";
+    writeFileSync(
+      path,
+      refreshBlock(existing, CLAUDE_MD_BLOCK, "<!-- godxjp-ui:start", "<!-- godxjp-ui:end -->"),
+    );
+    return "refreshed";
+  }
   if (existing == null) {
     writeFileSync(path, CLAUDE_MD_BLOCK);
     return "created";
@@ -156,4 +236,86 @@ export function shouldSkip(root) {
   if (!pkg) return "no-package";
   if (pkg.name === "@godxjp/ui" || pkg.name === "@godxjp/ui-mcp") return "self";
   return null;
+}
+
+/**
+ * Keep an opted-in guinea-pig skill current.
+ *
+ * The file is co-authored: sections 0–7 come from this package, and section 8 onward is whatever
+ * the repo wrote about ITSELF — its package manager, its audit baseline, its deliberate
+ * exceptions. So the refresh replaces the head and keeps the tail, which is the only split that
+ * lets the guidance move without eating the consumer's own notes.
+ *
+ * Only runs where `.guinea-pig-optin` exists: the skill carries an obligation to fix things
+ * UPSTREAM, and pushing that into a repo that never asked for it would tell its agent to go edit
+ * a library it has no mandate over.
+ */
+export function refreshGuineaPigSkill(root) {
+  const dir = join(root, ".claude", "skills", "godx-ui-guinea-pig");
+  const target = join(dir, "SKILL.md");
+  const optin = join(dir, ".guinea-pig-optin");
+  if (!existsSync(optin) || !existsSync(target)) return false;
+  if (readFileSync(optin, "utf8").trim() === KIT_VERSION) return false;
+
+  const base = readFileSync(join(SELF_ROOT, "scripts", "guinea-pig-skill.md"), "utf8");
+  const current = readFileSync(target, "utf8");
+  const marker = "\n---\n\n# 8. ";
+  const i = current.indexOf(marker);
+  writeFileSync(target, base.replace(/\s*$/, "") + "\n" + (i < 0 ? "" : current.slice(i)));
+  writeFileSync(optin, `${KIT_VERSION}\n`);
+  return true;
+}
+
+/**
+ * Install the common consumer rules as a PATH-TRIGGERED file, and wire them into `.ai/rules`.
+ *
+ * The skill and this file say overlapping things on purpose, because they fire at different
+ * moments: a skill loads when the TASK matches its description — once, at the start — while an
+ * `.ai/rules` entry loads every time an agent touches a file under its glob. Measured over one
+ * session: a dashboard file was edited dozens of times and the skill was never re-read, so the
+ * laws that mattered were out of context for every edit after the first.
+ *
+ * The glob is DETECTED, not assumed. A rule wired to a directory the repo does not have is a rule
+ * that never fires, which is worse than no rule at all — it looks installed.
+ *
+ * Unlike the skill, this file is owned OUTRIGHT by the package and is rewritten whole. That is the
+ * honest shape for `.ai/rules`, where the convention is one file per concern and the index loads
+ * them all: a repo with something of its own to say writes its own rule file instead of editing
+ * this one. The file says so at the top, because the first draft preserved nothing and silently
+ * ate a note left inside it — measured, and the reason for that banner.
+ */
+export function ensureConsumerRules(root) {
+  const uiDir = ["resources/js", "app/javascript", "src/components", "src", "app"].find((d) =>
+    existsSync(join(root, d)),
+  );
+  if (!uiDir) return false;
+
+  const dir = join(root, ".ai", "rules");
+  const target = join(dir, "godxjp-ui.md");
+  const body = readFileSync(join(SELF_ROOT, "scripts", "consumer-rule.md"), "utf8");
+  const front = `---\npaths:\n    - '${uiDir}/**'\n---\n\n`;
+  // The digest covers the FRONT MATTER too: the detected glob is part of what makes this file
+  // correct, and a repo that grows a `resources/js` after shipping with `src` needs the rewrite.
+  const managed = `${front}${body}`;
+  const next = `${OWNED_STAMP(managed)}\n${managed}`;
+
+  if (existsSync(target) && stampedDigest(readFileSync(target, "utf8")) === digestOf(managed)) {
+    return false;
+  }
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(target, next);
+
+  // Only touch the index when the repo keeps one; a missing index means the repo reads rule files
+  // directly, and inventing one would change how it loads everything else.
+  const index = join(dir, "index.md");
+  if (existsSync(index)) {
+    const cur = readFileSync(index, "utf8");
+    if (!cur.includes(".ai/rules/godxjp-ui.md")) {
+      writeFileSync(
+        index,
+        cur.replace(/\s*$/, "") + `\n| ${uiDir}/** | .ai/rules/godxjp-ui.md |\n`,
+      );
+    }
+  }
+  return uiDir;
 }

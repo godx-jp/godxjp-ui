@@ -151,7 +151,12 @@ describe("theme axes integration (render + class contracts)", () => {
   describe("primary brand — checkbox/switch", () => {
     it("Checkbox uses centralized semantic class", () => {
       renderWithTheme(<Checkbox defaultChecked aria-label="ok" />);
-      expect(screen.getByRole("checkbox", { name: "ok" })).toHaveClass("ui-checkbox");
+      // `role="checkbox"` is the real `<input>` react-aria renders; the PAINTED box is the
+      // `[data-slot="checkbox"]` root around it (a `<label>` now, a `<button>` in the Radix era).
+      // The class has to be asserted on whichever element the theme actually styles, and the two
+      // have never been the same node — under Radix the input did not exist at all.
+      const box = screen.getByRole("checkbox", { name: "ok" }).closest('[data-slot="checkbox"]');
+      expect(box).toHaveClass("ui-checkbox");
     });
 
     it("Switch uses centralized semantic class", () => {
@@ -217,7 +222,15 @@ describe("theme axes integration (render + class contracts)", () => {
       // asserts the class that carries it plus the CSS rule that reads the tier.
       expect(dayButton).toHaveClass("ui-calendar-day-button");
       expect(dayButton?.className ?? "").not.toMatch(/\bsize-9\b/);
-      const controlCss = readFileSync(join(componentsDir, "../styles/control.css"), "utf8");
+      // Comments are stripped BEFORE the rule is matched. `[^}]*` stops at the first `}` it meets,
+      // and a `}` inside a CSS comment counts — a JSX example in the rule's own docstring
+      // (`modifiers={{…}}`) was enough to cut the match short and fail a rule that was correct.
+      // Same shape as the bug this repo just fixed in `check:mcp-prop-sync`, where a JSDoc block
+      // hid every documented prop from the gate.
+      const controlCss = readFileSync(join(componentsDir, "../styles/control.css"), "utf8").replace(
+        /\/\*[\s\S]*?\*\//g,
+        " ",
+      );
       expect(controlCss).toContain(".ui-calendar .ui-calendar-day-button");
       expect(controlCss).toMatch(
         /\.ui-calendar \.ui-calendar-day-button \{[^}]*var\(--control-height\)/,

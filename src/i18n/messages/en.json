@@ -157,6 +157,7 @@
     },
     "appShell": {
       "sidebarLabel": "Sidebar",
+      "navRailLabel": "Workspaces",
       "headerLabel": "Header",
       "mainLabel": "Main content",
       "footerLabel": "Footer",
@@ -252,6 +253,10 @@
       "denied": "You do not have permission to view this matrix",
       "deniedDescription": "Ask an administrator to grant you access.",
       "loading": "Loading permissions…"
+    },
+    "progress": {
+      "ariaLabel": "Progress",
+      "breakdownSeparator": ", "
     }
   },
   "ui": {
@@ -359,6 +364,9 @@
       "logistics": "Logistics Teal",
       "partner": "Partner Orange",
       "slate": "HQ Slate"
+    },
+    "settingToggle": {
+      "label": "{setting}: {value}"
     }
   },
   "locale": {

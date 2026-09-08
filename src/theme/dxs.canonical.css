@@ -33,7 +33,7 @@
  * · AppShell rail width / collapsed rail width / responsive breakpoint are
  *   still CSS literals, not tokens (gh#213), so there is nothing for a theme to
  *   bind. Add the bindings here once `--app-shell-sidebar-width` /
- *   `--app-shell-rail-width` / the breakpoint knob ship.
+ *   `--app-shell-sidebar-collapsed-width` / the breakpoint knob ship.
  * · Standalone `.ui-topbar` height/gap/inset knobs do not exist yet (gh#213).
  * · A real DXS wordmark ASSET (logotype artwork) has not been supplied by
  *   design. `<Logo wordmark="GoDX" />` typesets the name in the design-system

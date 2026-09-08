@@ -66,7 +66,7 @@ describe("axisOf — which axis is this token on", () => {
   // The false positive that keeps `-rail-width` out of the stroke patterns: one word
   // meant both a 6px painted stripe and the 4rem icon sidebar COLUMN.
   it("does not call the AppShell rail a stroke", () => {
-    expect(axisOf("--app-shell-rail-width")).toBe("width");
+    expect(axisOf("--app-shell-sidebar-collapsed-width")).toBe("width");
   });
 
   it("separates a band from a container height", () => {

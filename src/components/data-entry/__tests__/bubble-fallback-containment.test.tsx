@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { renderWithUi } from "@/test/render";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select";
-import { Checkbox } from "../checkbox";
 import { Radio } from "../radio";
 import { Switch } from "../switch";
 
@@ -33,14 +32,10 @@ describe("hidden form-fallback is clamp-targetable (gh#105)", () => {
     expect(clampTargetable(document.querySelector('select[aria-hidden="true"]'))).toBe(true);
   });
 
-  it("Checkbox renders a clamp-targetable native <input> fallback", () => {
-    renderWithUi(
-      <form>
-        <Checkbox name="agree" defaultChecked />
-      </form>,
-    );
-    expect(clampTargetable(document.querySelector('input[aria-hidden="true"]'))).toBe(true);
-  });
+  // Checkbox has NO case here any more, and needs none: react-aria renders no hidden bubble at
+  // all. Its `<input type="checkbox">` IS the form control the user operates — visually hidden by
+  // a 1×1 clipped `<span>` that is in normal flow, not the un-positioned `position:absolute` node
+  // gh#105 was about — so there is nothing left for the clamp to target.
 
   it("RadioGroup renders a clamp-targetable native <input> fallback", () => {
     renderWithUi(

@@ -193,7 +193,7 @@ export type StepsProp = {
 /** @see Steps — inline separator glyph. */
 export type StepsSeparatorProp = "chevron" | "arrow";
 
-/** Tab pane — Ant Design `items` entry. */
+/** Tab pane — the conventional `items` entry. */
 export type TabItemProp = {
   value: string;
   label: React.ReactNode;

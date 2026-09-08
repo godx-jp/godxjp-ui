@@ -286,8 +286,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>labelRender · custom selected display</CardTitle>
             <CardDescription>
-              `labelRender` (Ant Design) customizes the SELECTED value shown on the trigger: here an
-              avatar + name + a role badge. The placeholder still shows when nothing is selected.
+              `labelRender` customizes the SELECTED value shown on the trigger: here an avatar +
+              name + a role badge. The placeholder still shows when nothing is selected.
             </CardDescription>
           </CardHeader>
           <CardContent>

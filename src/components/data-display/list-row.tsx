@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
+import { Slot } from "../../lib/slot";
 
 import { useTranslation } from "../../i18n/use-translation";
 import type { ListRowDensityProp } from "../../props/components/data-display.prop";

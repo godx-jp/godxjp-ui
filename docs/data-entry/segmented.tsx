@@ -7,7 +7,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { CalendarDays, Columns3, LayoutList, Monitor, Moon, Sun } from "lucide-react";
 
 /**
- * Segmented — one-of-N from a small, closed, always-visible set. antd's Segmented drawn on Radix
+ * Segmented — one-of-N from a small, closed, always-visible set. The enterprise Segmented drawn on Radix
  * RadioGroup: a recessed track with the chosen item as a lifted slab, radiogroup semantics, arrow
  * keys between members. The track measures exactly --control-height, so it sits level with an
  * Input or a Button on the same row.

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
+import { Slot } from "../../lib/slot";
 import { cva } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -12,7 +12,7 @@ const buttonVariants = cva("ui-button", {
       // Colour is the TOKEN LAYER's (`.ui-button--default` in styles/control.css), not a utility's.
       // The three utilities that used to sit here — `bg-primary text-primary-foreground
       // hover:bg-primary/90` — restated the fill the components layer already declares and, being
-      // utilities, out-ranked it: the hover step this library generates from antd's algorithm
+      // utilities, out-ranked it: the hover step this library takes from the derived tier
       // (`--primary-hover`) could never take effect while `hover:bg-primary/90` was emitted here.
       default: "ui-button--default",
       destructive: "ui-button--destructive bg-destructive text-destructive-foreground",

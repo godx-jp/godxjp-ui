@@ -175,6 +175,97 @@ describe("SplitPane", () => {
     });
   });
 
+  /*
+   * `fill` — the pane takes the height the parent offers instead of growing with its content.
+   *
+   * Without it a consumer had no legal way to say this: SplitPane accepts no `className` and no
+   * `style`, so an app-shell surface reached PAST its own child with `[&>*]:grid` and
+   * `[&>*>*]:grid-rows-1` to reach `.ui-split-pane-scope` and `.ui-split-pane` by POSITION. That
+   * targets the library's internal DOM shape — one extra wrapper here and it breaks silently, in
+   * a repo that never sees this file.
+   */
+  describe("fill", () => {
+    const layoutCss = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "../../../styles/layout.css"),
+      "utf8",
+    );
+
+    it("is off by default, so a content-height pane is unchanged", () => {
+      const { container } = render(<SplitPane aside={null}>本文</SplitPane>);
+      expect(container.querySelector(".ui-split-pane-scope")).not.toHaveAttribute("data-fill");
+      expect(container.querySelector(".ui-split-pane")).not.toHaveAttribute("data-fill");
+    });
+
+    it("marks BOTH wrappers, not only the grid", () => {
+      // The scope element is the one the consumer's own box contains. Marking only the inner grid
+      // would leave the height stopping at the scope — exactly the gap that forced `[&>*]`.
+      const { container } = render(
+        <SplitPane aside={null} fill>
+          本文
+        </SplitPane>,
+      );
+      expect(container.querySelector(".ui-split-pane-scope")).toHaveAttribute("data-fill", "true");
+      expect(container.querySelector(".ui-split-pane")).toHaveAttribute("data-fill", "true");
+    });
+
+    // jsdom runs no layout, so what `fill` actually does can only be read from the source.
+    it("gives both wrappers a definite row, per the CSS source", () => {
+      const scope =
+        layoutCss.match(/\.ui-split-pane-scope\[data-fill="true"\]\s*\{[^}]*\}/)?.[0] ?? "";
+      // `minmax(0, 1fr)`, never a bare `1fr`: a bare `1fr` floors at min-content, so a long
+      // transcript pushes the grid past its own box and the page scrolls instead of the column.
+      expect(scope).toMatch(/grid-template-rows: minmax\(0, 1fr\);/);
+      expect(scope).toMatch(/block-size: 100%;/);
+
+      const pane = layoutCss.match(/\.ui-split-pane\[data-fill="true"\]\s*\{[^}]*\}/)?.[0] ?? "";
+      expect(pane).toMatch(/grid-template-rows: minmax\(0, 1fr\);/);
+      expect(pane).toMatch(/min-block-size: 0;/);
+    });
+
+    it("lets each column shrink below its content so the column scrolls, not the page", () => {
+      const columns =
+        layoutCss.match(
+          /\.ui-split-pane\[data-fill="true"\] > \.ui-split-pane-main,\s*\.ui-split-pane\[data-fill="true"\] > \.ui-split-pane-aside\s*\{[^}]*\}/,
+        )?.[0] ?? "";
+      expect(columns).toMatch(/min-block-size: 0;/);
+    });
+
+    it("still closes the rail and still does not remount children", () => {
+      let mounts = 0;
+      function Main() {
+        useEffect(() => {
+          mounts += 1;
+        }, []);
+        return <div data-testid="filled-main">メッセージ一覧</div>;
+      }
+
+      const { container, getByTestId, rerender } = render(
+        <SplitPane aside={null} fill>
+          <Main />
+        </SplitPane>,
+      );
+      const before = getByTestId("filled-main");
+      expect(container.querySelector(".ui-split-pane")).toHaveAttribute("data-aside", "closed");
+
+      rerender(
+        <SplitPane aside={<div>スレッド</div>} fill>
+          <Main />
+        </SplitPane>,
+      );
+      expect(getByTestId("filled-main")).toBe(before);
+      expect(mounts).toBe(1);
+      expect(container.querySelector(".ui-split-pane")).toHaveAttribute("data-fill", "true");
+    });
+
+    it("has no axe violations when filling", async () => {
+      await expectNoA11yViolations(
+        <SplitPane aside={null} fill>
+          <main>本文</main>
+        </SplitPane>,
+      );
+    });
+  });
+
   it("has no axe violations", async () => {
     await expectNoA11yViolations(
       <SplitPane aside={<nav aria-label="補助">サイド</nav>}>

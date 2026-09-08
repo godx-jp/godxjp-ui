@@ -47,7 +47,7 @@ const headerTones = [
  * Sheet > SheetTrigger (asChild) > SheetContent(side) > SheetHeader >
  * SheetTitle (a11y required) > scrollable body > SheetFooter.
  *
- * SheetFooter is an Ant-Design-style PINNED action bar: it sticks to the bottom
+ * SheetFooter is a PINNED action bar: it sticks to the bottom
  * via mt-auto, draws a full-bleed top border, and right-aligns its actions with
  * the PRIMARY button rightmost. A destructive / clear / reset action goes
  * far-LEFT · give THAT button className="me-auto". Never stack footer buttons

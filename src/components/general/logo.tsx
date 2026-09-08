@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
 
 export type LogoSize = "xs" | "sm" | "md" | "lg";
@@ -49,6 +50,23 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
    * readable wordmark sits beside it.
    */
   label?: string;
+  /**
+   * Mượn thẻ của con làm GỐC của logo thay vì dựng `<span>` — cách để cả cái logo trở thành một
+   * LIÊN KẾT (`<a>`, hay `<Link>` của router).
+   *
+   * Vì sao cần một prop chứ không phải bọc ngoài: `.ui-logo-lockup` là `display: inline-flex`, nên
+   * bọc nó trong một `<a>` thường (`display: inline`) đặt lockup lên một line box và phần descender
+   * của strut đội thêm vài px vào ô mark — logo bị nhích lên trong thanh trên. Consumer chỉ còn
+   * cách viết `className="flex"` lên thẻ `<a>`, thứ `ui-audit` chặn đúng theo luật
+   * `no-utility-layout` (đo ở godx-chat, 08/09/2026). Với `asChild`, chính thẻ của consumer MANG
+   * `.ui-logo-lockup`, nên không còn phần tử trung gian nào để canh.
+   *
+   * Đúng MỘT con, và ruột của nó bị bỏ qua: nội dung của logo vẫn do `glyph`/`mark`/`wordmark`
+   * quyết định.
+   */
+  asChild?: boolean;
+  /** Chỉ dùng cùng `asChild`: đúng một phần tử để đi mượn. */
+  children?: React.ReactNode;
 }
 
 /**
@@ -232,6 +250,8 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
       tone = "primary",
       wordmark,
       label,
+      asChild,
+      children,
       className,
       ...props
     },
@@ -240,20 +260,43 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
     const hasWordmark = wordmark !== undefined && wordmark !== null && wordmark !== false;
     const identity = { "data-mark": mark, "data-size": size, "data-tone": tone } as const;
 
+    /**
+     * Dựng gốc: `<span>` như thường, hoặc thẻ đi mượn khi `asChild`. Ruột của thẻ mượn bị thay
+     * bằng `content` — cùng cách `DropdownMenuItem` mượn thẻ, nên `Slot` gộp `className`, handler
+     * và `ref` theo đúng một luật ở cả hai chỗ.
+     */
+    const renderRoot = (rootProps: React.HTMLAttributes<HTMLElement>, content: React.ReactNode) => {
+      if (!asChild) {
+        return (
+          <span ref={ref} {...rootProps}>
+            {content}
+          </span>
+        );
+      }
+      const borrowed = React.Children.only(children) as React.ReactElement<{
+        children?: React.ReactNode;
+      }>;
+      return (
+        <Slot {...rootProps} ref={ref as React.Ref<HTMLElement>}>
+          {React.cloneElement(borrowed, undefined, content)}
+        </Slot>
+      );
+    };
+
     // Lockup: the ROOT is the mark + wordmark row (ref/className/...props land on it, so the
     // consumer positions one element). The mark is always decorative here — the wordmark text is
     // the accessible name unless `label` overrides it (role="img" makes descendants presentational).
     if (hasWordmark) {
-      return (
-        <span
-          ref={ref}
-          data-slot="logo-lockup"
-          {...identity}
-          className={cn("ui-logo-lockup", className)}
-          role={label ? "img" : undefined}
-          aria-label={label}
-          {...props}
-        >
+      return renderRoot(
+        {
+          "data-slot": "logo-lockup",
+          ...identity,
+          className: cn("ui-logo-lockup", className),
+          role: label ? "img" : undefined,
+          "aria-label": label,
+          ...props,
+        } as React.HTMLAttributes<HTMLElement>,
+        <>
           <span data-slot="logo" {...identity} className="ui-logo" aria-hidden="true">
             <MarkArtwork mark={mark} glyph={glyph} />
           </span>
@@ -265,23 +308,21 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
           <span data-slot="logo-wordmark" data-logotype className="ui-logo-wordmark">
             {wordmark}
           </span>
-        </span>
+        </>,
       );
     }
 
-    return (
-      <span
-        ref={ref}
-        data-slot="logo"
-        {...identity}
-        className={cn("ui-logo", className)}
-        role={label ? "img" : undefined}
-        aria-label={label}
-        aria-hidden={label ? undefined : true}
-        {...props}
-      >
-        <MarkArtwork mark={mark} glyph={glyph} />
-      </span>
+    return renderRoot(
+      {
+        "data-slot": "logo",
+        ...identity,
+        className: cn("ui-logo", className),
+        role: label ? "img" : undefined,
+        "aria-label": label,
+        "aria-hidden": label ? undefined : true,
+        ...props,
+      } as React.HTMLAttributes<HTMLElement>,
+      <MarkArtwork mark={mark} glyph={glyph} />,
     );
   },
 );

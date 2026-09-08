@@ -4,7 +4,14 @@
  * access to the component catalog + audit rules WITHOUT any manual step. Non-destructive (only
  * adds a missing server entry) and guarded so it never runs in CI or in the library's own repo.
  */
-import { ensureClaudeMd, ensureMcpJson, shouldSkip, writeWorkflowMd } from "./_agent-setup.mjs";
+import {
+  ensureClaudeMd,
+  ensureMcpJson,
+  ensureConsumerRules,
+  refreshGuineaPigSkill,
+  shouldSkip,
+  writeWorkflowMd,
+} from "./_agent-setup.mjs";
 
 const root = process.env.INIT_CWD || process.cwd();
 
@@ -18,9 +25,13 @@ try {
   // but no mandate). Only the hooks — which DO change the loop — stay behind `init-agent`.
   const md = ensureClaudeMd(root);
   const wf = writeWorkflowMd(root);
-  if (r === "present" && md === "present" && !wf) process.exit(0); // already configured — stay quiet
+  const skill = refreshGuineaPigSkill(root);
+  const rules = ensureConsumerRules(root);
+  if (r === "present" && md === "present" && !wf && !skill && !rules) process.exit(0); // current — stay quiet
   console.log(
     `\n  @godxjp/ui → MCP in .mcp.json (${r}); workflow mandate in CLAUDE.md (${md}).\n` +
+      (rules ? `  common consumer rules in .ai/rules/godxjp-ui.md (glob ${rules}/**).\n` : "") +
+      (skill ? "  guinea-pig skill refreshed to this version (your section 8 kept).\n" : "") +
       "  Your agent now has live component + audit guidance. Restart it to pick up the MCP.\n" +
       "  For auto-audit on every edit (PostToolUse + SessionStart hooks):\n" +
       "    npx @godxjp/ui init-agent\n",

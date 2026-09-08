@@ -137,7 +137,18 @@ export function Upload({
   // <input type="file"> is the true form control, so the FormField label/helper/error contract is
   // forwarded onto it; the visible dropzone/button keeps its own action label. Per-variant visible
   // triggers are named by their own action label — see the docs for the ownership map.
-  const inputA11y = resolveFieldA11y(ariaProps, t("dataEntry.upload.inputLabel"));
+  //
+  // ONE exception: `variant="button"`. There the visible trigger IS the widget the user sees and
+  // presses, so an `aria-label` the caller passes is naming *that*, not the input hidden behind it.
+  // Routing it to the input alone left an icon-sized trigger announced as a bare "button". The
+  // trigger takes it and the input falls back to its own intrinsic name — deliberately NOT both:
+  // the input is visually hidden but still in the a11y tree and still focusable, so the same
+  // string on both nodes is read twice for one action.
+  const triggerOwnsAriaLabel = variant === "button";
+  const inputA11y = resolveFieldA11y(
+    triggerOwnsAriaLabel ? { ...ariaProps, "aria-label": undefined } : ariaProps,
+    t("dataEntry.upload.inputLabel"),
+  );
   const accept = acceptProp ?? defaultAcceptForVariant(variant);
   const maxCount = maxCountProp ?? defaultMaxCount(variant);
   const multiple = multipleProp ?? (maxCount === 1 ? false : true);
@@ -286,6 +297,17 @@ export function Upload({
     // its shape. Anything else keeps the label visible.
     const iconOnly = typeof triggerSize === "string" && triggerSize.startsWith("icon");
     const label = children ?? t("dataEntry.upload.buttonLabel");
+    // A caller-supplied name always wins. Otherwise an icon-only trigger — which renders no text at
+    // all — falls back to the label as a string, and to the catalogue's action label when `children`
+    // is a node (an icon, say) that guarantees no readable text. A trigger showing its own text
+    // needs no `aria-label`: the text is the name.
+    const triggerAriaLabel =
+      ariaProps["aria-label"] ??
+      (iconOnly
+        ? typeof label === "string"
+          ? label
+          : t("dataEntry.upload.buttonLabel")
+        : undefined);
 
     return (
       <div className={cn("ui-stack-sm", className)}>
@@ -297,7 +319,7 @@ export function Upload({
           size={triggerSize}
           disabled={disabled}
           onClick={openPicker}
-          aria-label={iconOnly ? (typeof label === "string" ? label : undefined) : undefined}
+          aria-label={triggerAriaLabel}
         >
           <UploadIcon
             className="ui-upload-trigger-icon"

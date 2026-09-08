@@ -4,10 +4,10 @@
  */
 
 @import "./foundation.css";
-/* The DERIVED colour map — antd's own algorithm run over the seeds foundation.css commits to.
- * Sits directly after foundation so it overrides nothing a service sets in its own theme.css,
- * and before axes.css so a `data-brand` preset still wins. See scripts/gen-antd-tokens.mjs. */
-@import "./antd.generated.css";
+/* The DERIVED colour map — the interaction states hanging off the seeds foundation.css commits
+ * to. Sits directly after foundation so it overrides nothing a service sets in its own theme.css,
+ * and before axes.css so a `data-brand` preset still wins. See src/tokens/derived.css. */
+@import "./derived.css";
 @import "./semantic/layout.css";
 @import "./axes.css";
 @import "./components/control.css";

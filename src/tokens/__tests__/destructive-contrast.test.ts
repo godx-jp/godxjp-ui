@@ -13,11 +13,10 @@ import { describe, expect, it } from "vitest";
 
 /**
  * BOTH TIERS. `--destructive` is the SEED and lives in foundation.css; `--destructive-hover` and
- * `--destructive-active` are DERIVED from it by antd's algorithm and live in the generated tier
- * (scripts/gen-antd-tokens.mjs). Reading only foundation would silently skip the two states this
- * file exists to guard.
+ * `--destructive-active` hang off it and live in the derived tier (src/tokens/derived.css).
+ * Reading only foundation would silently skip the two states this file exists to guard.
  */
-const SOURCES = ["src/tokens/foundation.css", "src/tokens/antd.generated.css"].map((file) =>
+const SOURCES = ["src/tokens/foundation.css", "src/tokens/derived.css"].map((file) =>
   readFileSync(join(process.cwd(), file), "utf8"),
 );
 
@@ -85,25 +84,24 @@ describe("destructive fill contrast (gh#199)", () => {
    *
    * It used to read "hover/active never reduce contrast below the default", i.e. the states must
    * never drift lighter. That was a PROXY for the criterion, chosen when the ramp was authored by
-   * hand and every step could be pushed darker at will. `--destructive-hover` / `-active` are now
-   * antd's `colorErrorHover` / `colorErrorActive` (scripts/gen-antd-tokens.mjs), and antd's model
-   * is universally hover-lighter / active-darker — a direction, not an accident.
+   * hand and every step could be pushed darker at will. `--destructive-hover` / `-active` now sit
+   * on a ramp (src/tokens/derived.css) whose model is universally hover-lighter / active-darker —
+   * a direction, not an accident.
    *
    * What gh#199 was actually protecting is the loop above: every filled destructive surface stays
-   * clear of AA against its own label, with margin rather than on the floor. antd's steps do,
-   * measured off the committed tokens: light 6.10 → hover 4.64 → active 8.74, dark 5.53 → 4.65 →
-   * 8.94.
+   * clear of AA against its own label, with margin rather than on the floor. The committed steps
+   * do, measured off the tokens: light 6.10 → hover 4.64 → active 8.74, dark 5.53 → 4.65 → 8.94.
    *
    * So the proxy is replaced by the two things that are really being defended: hover never falls
    * to the AA floor itself, and ACTIVE — the committed, irreversible press — is never the quietest
    * state of the three.
    *
-   * THE HOVER MARGIN IS THIN ON PURPOSE — 4.64 against a 4.6 threshold. antd's hover is its
-   * shallowest interactive step and it moves TOWARDS the label, so this is the one state where a
-   * seed nudge can cross AA without anything else noticing. A generous threshold here would defeat
-   * the tripwire; a failure here means the seed moved, not that the rule is wrong. The neighbouring
+   * THE HOVER MARGIN IS THIN ON PURPOSE — 4.64 against a 4.6 threshold. Hover is the shallowest
+   * interactive step and it moves TOWARDS the label, so this is the one state where a seed nudge
+   * can cross AA without anything else noticing. A generous threshold here would defeat the
+   * tripwire; a failure here means the seed moved, not that the rule is wrong. The neighbouring
    * primary ramp already crossed that line and had to be reflected — see
-   * interactive-fill-contrast.test.ts and the reflection block in scripts/gen-antd-tokens.mjs.
+   * interactive-fill-contrast.test.ts and the reflection table in src/tokens/derived.css.
    */
   it("no state sits on the AA floor, and the pressed state is never the quietest", () => {
     const FLOOR_MARGIN = 0.1;

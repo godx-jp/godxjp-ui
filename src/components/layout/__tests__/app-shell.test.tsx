@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { AppShell } from "../app-shell";
 import { Sidebar } from "../sidebar";
-import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
+import { renderWithUi, screen, userEvent, waitFor, within } from "@/test/render";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("AppShell", () => {
@@ -63,6 +63,128 @@ describe("AppShell", () => {
     expect(getByText("本文")).toBeInTheDocument();
   });
 
+  describe("navRail — the second navigation column", () => {
+    it("adds no track at all when the slot is empty", () => {
+      const { container } = renderWithUi(<AppShell sidebar={<nav>n</nav>}>x</AppShell>);
+      const root = container.querySelector(".app-root")!;
+      // Absent, not `data-nav-rail="false"`: the two-column shell is the bare grid, so a
+      // consumer's CSS never has to out-specify a default marker.
+      expect(root).not.toHaveAttribute("data-nav-rail");
+      expect(container.querySelector(".app-nav-rail")).toBeNull();
+    });
+
+    it("publishes the track and renders the rail as its own labelled landmark", () => {
+      const { container, getByText, getAllByRole } = renderWithUi(
+        <AppShell sidebar={<nav>ナビ</nav>} navRail={<nav>レール</nav>}>
+          x
+        </AppShell>,
+      );
+      expect(container.querySelector(".app-root")).toHaveAttribute("data-nav-rail");
+      expect(getByText("レール")).toBeInTheDocument();
+      // TWO complementary landmarks, and ARIA requires them to be tellable apart by name. The
+      // shipped consumer attempt at this shape got its landmark count wrong; the shell owns it now.
+      const complementary = getAllByRole("complementary");
+      expect(complementary).toHaveLength(2);
+      const names = complementary.map((el) => el.getAttribute("aria-label"));
+      expect(new Set(names).size).toBe(2);
+      expect(names.every((n) => n && n.length > 0)).toBe(true);
+    });
+
+    it("names the rail from the DS by default, and lets the consumer override", () => {
+      // Deliberately NOT a required prop: the sidebar gets a default name, and two columns of the
+      // same rank must behave the same way rather than one throwing at runtime.
+      const { container, rerender } = renderWithUi(
+        <AppShell sidebar={<nav>n</nav>} navRail={<nav>r</nav>}>
+          x
+        </AppShell>,
+      );
+      const railName = () => container.querySelector(".app-nav-rail")!.getAttribute("aria-label");
+      expect(railName()).toBeTruthy();
+      rerender(
+        <AppShell sidebar={<nav>n</nav>} navRail={<nav>r</nav>} navRailLabel="組織">
+          x
+        </AppShell>,
+      );
+      expect(railName()).toBe("組織");
+    });
+
+    it("puts the rail before the sidebar in source, and both after a full-width bar", () => {
+      // Source order IS focus order. The rail is the leftmost column, so it leads under the
+      // default span; under `full` the bar sits visibly above both and must lead instead.
+      const { container, rerender } = renderWithUi(
+        <AppShell sidebar={<nav>n</nav>} navRail={<nav>r</nav>} logo={<span>L</span>}>
+          x
+        </AppShell>,
+      );
+      const order = () =>
+        [...container.querySelector(".app-root")!.children].map((c) => c.className.split(" ")[0]);
+      expect(order().slice(0, 3)).toEqual(["app-nav-rail", "app-sidebar", "app-topbar"]);
+      rerender(
+        <AppShell
+          sidebar={<nav>n</nav>}
+          navRail={<nav>r</nav>}
+          logo={<span>L</span>}
+          topbarSpan="full"
+        >
+          x
+        </AppShell>,
+      );
+      expect(order().slice(0, 3)).toEqual(["app-topbar", "app-nav-rail", "app-sidebar"]);
+    });
+
+    it("carries the rail into the mobile drawer alongside the sidebar", async () => {
+      // BOTH docked columns are hidden below 900px. A `sidebar`-only drawer default would delete
+      // every app-level destination the rail carries — reachable on a laptop, gone on a phone.
+      const { getByRole } = renderWithUi(
+        <AppShell sidebar={<nav>サイド項目</nav>} navRail={<nav>レール項目</nav>}>
+          x
+        </AppShell>,
+      );
+      await userEvent.click(getByRole("button", { name: /navigation|ナビ|menu|điều hướng/i }));
+      const drawer = await screen.findByRole("dialog");
+      expect(within(drawer).getByText("レール項目")).toBeInTheDocument();
+      expect(within(drawer).getByText("サイド項目")).toBeInTheDocument();
+    });
+
+    it("still honours an explicit mobileNav, and opting out with null", () => {
+      const { container } = renderWithUi(
+        <AppShell sidebar={<nav>n</nav>} navRail={<nav>r</nav>} mobileNav={null}>
+          x
+        </AppShell>,
+      );
+      // `null` means "navigation lives elsewhere" — no trigger, but the rail track still exists.
+      expect(container.querySelector(".app-mobile-nav-trigger")).toBeNull();
+      expect(container.querySelector(".app-nav-rail")).not.toBeNull();
+    });
+
+    it("composes with sidebarCollapsed without collapsing the rail's own markup", () => {
+      const { container } = renderWithUi(
+        <AppShell sidebar={<nav>n</nav>} navRail={<nav>レール</nav>} sidebarCollapsed>
+          x
+        </AppShell>,
+      );
+      const root = container.querySelector(".app-root")!;
+      expect(root).toHaveAttribute("data-collapsed", "true");
+      expect(root).toHaveAttribute("data-nav-rail");
+      // Collapse is a track-width question answered in CSS; the rail's content is untouched.
+      expect(container.querySelector(".app-nav-rail")!.textContent).toBe("レール");
+    });
+
+    it("has no axe violations with both navigation columns present", async () => {
+      // Two `complementary` landmarks in one page is exactly the shape axe's `landmark-unique`
+      // rule polices, so this is the case worth running through it.
+      await expectNoA11yViolations(
+        <AppShell
+          sidebar={<nav aria-label="セクション">ナビ</nav>}
+          navRail={<nav aria-label="ワークスペース">レール</nav>}
+          logo={<span>L</span>}
+        >
+          <h1>ページ</h1>
+        </AppShell>,
+      );
+    });
+  });
+
   it("composes the default topbar from logo / left / right slots", () => {
     const { getByText } = renderWithUi(
       <AppShell
@@ -79,14 +201,18 @@ describe("AppShell", () => {
     expect(getByText("右")).toBeInTheDocument();
   });
 
-  it("a custom topbar overrides the default rail", () => {
-    const { getByText, queryByText } = renderWithUi(
+  it("a custom topbar replaces the default rail but KEEPS the logo", () => {
+    const { getByText } = renderWithUi(
       <AppShell sidebar={<nav>n</nav>} topbar={<div>カスタム</div>} logo={<span>ロゴ</span>}>
         x
       </AppShell>,
     );
     expect(getByText("カスタム")).toBeInTheDocument();
-    expect(queryByText("ロゴ")).toBeNull();
+    // The logo is part of the shell's chrome, not one of the bar's content slots. This case used
+    // to assert the opposite — that a custom `topbar` swallowed it — which pinned a real defect in
+    // place: two consumer apps passed both props and rendered no brand at all for months, with no
+    // error and no warning, because the bar still had other content and looked right.
+    expect(getByText("ロゴ")).toBeInTheDocument();
   });
 
   it("renders breadcrumb + footer slots when provided", () => {
@@ -425,5 +551,101 @@ describe("AppShell", () => {
         <h1>ページ</h1>
       </AppShell>,
     );
+  });
+
+  it("gives the drawer the same two columns the docked shell has, when a rail exists", async () => {
+    /*
+     * Stacked, the rail sat above the section list with an empty band between them, and it forced
+     * a choice neither answer survives: honour `collapsed` and the whole drawer is anonymous
+     * glyphs; drop it and the rail's app switcher becomes a second full-width list you cannot tell
+     * from the sections beneath it. Two columns dissolve that — the rail is narrow again, so it
+     * keeps `collapsed`, and only the section column is told it is a drawer.
+     */
+    const user = userEvent.setup();
+
+    renderWithUi(
+      <AppShell
+        navRail={
+          <Sidebar
+            aria-label="Apps"
+            activeId="general"
+            collapsed
+            sections={[
+              { items: [{ id: "general", label: "General", href: "/", icon: LayoutDashboard }] },
+            ]}
+          />
+        }
+        sidebar={
+          <Sidebar
+            aria-label="Sections"
+            activeId="reports"
+            collapsed
+            sections={[
+              {
+                items: [
+                  { id: "reports", label: "Reports", href: "/reports", icon: LayoutDashboard },
+                ],
+              },
+            ]}
+          />
+        }
+        sidebarCollapsed
+      >
+        <p>body</p>
+      </AppShell>,
+    );
+
+    await user.click(screen.getByRole("button", { name: /menu/i }));
+    const drawer = await screen.findByRole("dialog");
+
+    const rail = drawer.querySelector(".app-mobile-nav-rail");
+    const sections = drawer.querySelector(".app-mobile-nav-sections");
+    expect(rail).not.toBeNull();
+    expect(sections).not.toBeNull();
+
+    // The rail is a narrow column again, so its own answer stands.
+    expect(rail!.querySelector('.sb-root[data-collapsed="true"]')).not.toBeNull();
+    // The section column is the drawer proper, and a drawer shows labels.
+    expect(sections!.querySelector('.sb-root[data-collapsed="true"]')).toBeNull();
+    expect(within(sections as HTMLElement).getByText("Reports")).toBeVisible();
+  });
+
+  it("does not carry a desktop collapse into the mobile drawer", async () => {
+    /*
+     * `collapsed` trades labels for horizontal room in a DOCKED column. The drawer has no such
+     * pressure, and below the breakpoint it is the only navigation there is — so honouring the
+     * desktop answer there leaves the user with nothing but glyphs.
+     *
+     * Measured in a consumer before this: sidebar collapsed at 1280px, resized to 393px, drawer
+     * opened — organization mark plus five unlabelled icons, no text anywhere. That repo's own
+     * browser test is named "desktop sidebar collapse stays independent from the mobile navigation
+     * drawer" and had been asserting exactly this the whole time.
+     */
+    const user = userEvent.setup();
+    const sidebar = (
+      <Sidebar
+        aria-label="Sections"
+        activeId="reports"
+        collapsed
+        sections={[
+          { items: [{ id: "reports", label: "Reports", href: "/reports", icon: LayoutDashboard }] },
+        ]}
+      />
+    );
+
+    renderWithUi(
+      <AppShell sidebar={sidebar} sidebarCollapsed>
+        <p>body</p>
+      </AppShell>,
+    );
+
+    // Docked: the consumer's own answer stands, so the rail stays a rail.
+    expect(document.querySelector('.app-sidebar .sb-root[data-collapsed="true"]')).not.toBeNull();
+
+    await user.click(screen.getByRole("button", { name: /menu/i }));
+    const drawer = await screen.findByRole("dialog");
+
+    expect(within(drawer).getByText("Reports")).toBeVisible();
+    expect(drawer.querySelector('.sb-root[data-collapsed="true"]')).toBeNull();
   });
 });

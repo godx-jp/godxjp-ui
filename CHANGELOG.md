@@ -6,6 +6,93 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [20.0.0] - 2026-09-08
+
+Bản major. Ba thay đổi PHÁ VỠ ở dưới; đọc chúng trước khi nâng.
+
+### Removed — BREAKING
+
+- **Radix không còn là nền của các primitive tương tác.** 13 component chuyển sang
+  `react-aria-components`: Dialog, Sheet, DropdownMenu, Tabs, Popover, HoverCard, Tooltip,
+  Checkbox, Toggle, Accordion, Collapsible, Label, Separator. `asChild` vẫn còn — kho tự dựng
+  `Slot` của mình nên prop không đổi. Hành vi bàn phím của `Toggle` đổi thật (ba chỗ), và tiêu
+  điểm quay về sau khi đóng Dialog/Sheet nay do FocusScope lo. Kho nào bám vào thuộc tính
+  `data-*` của Radix hoặc import thẳng `@radix-ui/*` phải sửa.
+
+- **`antd` bị gỡ khỏi devDependencies, cùng máy sinh màu của nó.** antd chưa bao giờ tới được
+  bundle của consumer — nó là generator chạy lúc build, đẻ ra 20 màu dẫn xuất. **20 giá trị và
+  20 TÊN token không đổi một byte nào**, nên không consumer nào phải sửa màu. Cái đổi là đường
+  dẫn tệp: `tokens/antd.generated.css` → `tokens/derived.css`. Kho nào import thẳng tệp đó phải
+  sửa đường dẫn; kho nào import `@godxjp/ui/styles` thì không phải làm gì.
+  Thẩm quyền của 20 giá trị ấy chuyển từ "thuật toán sinh ra chúng" sang "bốn bộ đo chứng minh
+  chúng đạt ngưỡng WCAG" — mạnh hơn chứ không yếu hơn, vì kho này đã phải ghi đè thuật toán bốn
+  lần đúng ở chỗ nó nhất quán mà không tiếp cận được.
+
+- **`--app-shell-rail-width` đổi tên thành `--app-shell-sidebar-collapsed-width`, KHÔNG có alias.**
+  Tên cũ nghĩa là "bề rộng sidebar khi thu gọn" và đụng đầu với cột rail thật thêm ở bản này —
+  hai token, cùng 4rem, cùng chữ "rail", nghĩa khác hẳn nhau. Một alias sẽ giải ra một bề rộng
+  hợp lý dưới cả hai cách đọc rồi hỏng im lặng, đúng loại lỗi gói này chặn ở mọi chỗ khác.
+
+### Added
+
+- **`AppShell navRail` — cột điều hướng thứ ba** (hình dạng Slack/Teams: rail → sidebar → nội
+  dung). Là một SLOT chứ không phải giá trị enum thứ tư, nên nó tổ hợp tự do với `topbarSpan`;
+  cả bốn tổ hợp đều là hình dạng thật. Bề rộng `--app-shell-nav-rail-width` (3.5rem, cố ý khác
+  4rem của sidebar-thu-gọn: bằng nhau thì hai cột dính thành một khối lúc sidebar gập). Là
+  landmark riêng, có nhãn mặc định, và nội dung tự vào drawer ở ≤900px.
+  Kèm **hợp đồng phạm vi**: rail = platform (đổi tổ chức, đổi app, thông báo, tin nhắn, sự kiện,
+  cài đặt tổ chức) · sidebar = app · topbar = trang. Luật nằm trong tệp rule mà gói tự cài vào
+  consumer.
+
+- **`AppSettingToggle`** — một nút xoay vòng qua một setting có tập giá trị đóng
+  (theme/density/fontSize/timeFormat), icon phản ánh GIÁ TRỊ hiện tại (Sun/Moon/Monitor), cho
+  chỗ mà một `Select` không diễn đạt được.
+
+- **`AppSettingPicker appearance="bar"`** — cùng bộ lược bỏ với `icon`, nhưng là một CELL của
+  thanh bar: cao bằng bar, góc vuông theo `--topbar-item-radius`.
+
+- **`Flex pad` / `padRaw`** (#408), **thang `gap` phơi đủ 10 bậc** (#401), **`Text link`** (#400),
+  **`Calendar bordered` + trục `width`**, **`Button icon-xs`**.
+
+### Fixed
+
+- **Cell trong thanh bar không cao bằng thanh.** `.ui-topbar-item` luôn khai `align-self: stretch`,
+  nhưng `.app-topbar-rail` và `.app-topbar-custom` không được bảo giãn nên rơi về chiều cao nội
+  dung — mọi `align-self` bên dưới giãn vào một hộp 32px thay vì vào thanh 48px. Đo trên một
+  consumer: mọi trigger 28–32px lơ lửng giữa thanh 48px, hover vẽ ra viên thuốc.
+
+- **Drawer mobile giữ đúng hình dạng của vỏ mà nó thay thế.** Có rail thì drawer là HAI CỘT —
+  rail hẹp, rồi danh sách mục — cùng thứ tự đọc với vỏ neo, nên ở 393px không phải học lại gì.
+  Bản xếp chồng đặt rail lên trên với một dải trống ở giữa, và nó ép một lựa chọn mà không đáp án
+  nào sống sót: giữ `collapsed` thì cả drawer là biểu tượng vô danh, bỏ `collapsed` thì bộ chuyển
+  app của rail thành một danh sách rộng hết bề ngang, không phân biệt được với các mục bên dưới.
+
+- **Drawer mobile thừa hưởng trạng thái thu gọn của desktop.** `collapsed` là câu trả lời của
+  desktop (đổi nhãn lấy bề ngang trong cột neo); drawer không có sức ép đó và ở dưới breakpoint
+  nó là điều hướng DUY NHẤT. Đo được: 6 biểu tượng vô danh, không một nhãn nào. Drawer nay tự
+  khai nó là drawer và `Sidebar` bỏ qua `collapsed` ở đó.
+
+- **`OrgSwitcher`**: trigger thu gọn đo được 44 × 32 trong khi token của nó tên là
+  "44px — WCAG 2.2 AA touch floor" (luật `height` ở `@layer components` thua utility của
+  `Button`); nay 44 × 44. Và `data-*` / `id` nay tới được trigger — trước đó bị nuốt, nên
+  selector e2e của consumer rời ra trong im lặng.
+
+- **`AppShell logo` bị `topbar` nuốt**: truyền `topbar` là logo biến mất, hai consumer không có
+  thương hiệu suốt nhiều tháng. Dải logo còn tự đo sai chiều cao — `var(--topbar-height,
+  var(--control-height))` không bao giờ giải ra cái nào, vì fallback chỉ chạy khi biến KHÔNG
+  ĐƯỢC KHAI, mà `--topbar-height` được khai là `auto`. Dải 28px cạnh thanh 48px, không viền dưới.
+
+- **`check:mcp-prop-sync` mù với mọi prop CÓ tài liệu** — 460/1019 prop không được quét vì bộ
+  quét không bóc chú thích trước. Mở mắt nó ra là bắt được ngay 16 mục catalog đã trôi khỏi mã.
+  Cùng đợt: vá 5 + 12 lỗ khác tìm bằng phép thử đột biến trên 35/51 cổng.
+
+### Changed
+
+- Bộ agent-kit đi theo `npm update` chứ không dừng ở lần cài đầu, và tệp rule cho consumer nay
+  so **digest nội dung** thay vì số phiên bản — sửa luật mà không phát hành thì trước đây không
+  consumer nào nhận được, đo được: 1/3 kho nhận, 2/3 giữ bản cũ dưới một dấu đọc như đang mới.
+
+
 ## [19.6.0] - 2026-09-07
 
 ### Added

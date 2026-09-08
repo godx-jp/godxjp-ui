@@ -1436,23 +1436,16 @@
           ]
         },
         "gap": {
-          "cases": ["none", "xs", "sm", "md", "lg", "xl"],
-          "evidence": [
-            "src/components/layout/__tests__/flex-phrasing-seam-354.test.tsx",
-            "docs/layout/flex.tsx",
-            "docs/showcase/table-sticky-columns.tsx"
-          ]
+          "cases": ["none", "xs", "sm", "md", "lg", "xl", 0, 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "evidence": ["src/components/layout/__tests__/flex-gap-scale-v20.test.tsx"]
         }
       }
     },
     "ResponsiveGrid": {
       "props": {
         "gap": {
-          "cases": ["none", "xs", "sm", "md", "lg", "xl"],
-          "evidence": [
-            "src/components/layout/__tests__/responsive-grid.test.tsx",
-            "docs/showcase/case6-agency-handy.tsx"
-          ]
+          "cases": ["none", "xs", "sm", "md", "lg", "xl", 0, 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "evidence": ["src/components/layout/__tests__/flex-gap-scale-v20.test.tsx"]
         }
       }
     },

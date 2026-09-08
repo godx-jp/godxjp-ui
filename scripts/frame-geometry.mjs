@@ -50,9 +50,19 @@ async function main() {
   try {
     deps = await loadDeps({ axe: false });
   } catch (cause) {
+    // BỎ QUA CHỈ Ở MÁY DEV, KHÔNG BAO GIỜ TRÊN CI — cùng luật với nhánh preview-server ngay bên
+    // dưới, vốn đã có `if (process.env.CI) throw e` mà chưa bao giờ được áp lên đây. Một bước
+    // `playwright install` hỏng lặng lẽ sẽ biến cổng này thành xanh trong khi KHÔNG khung nào được
+    // đo. Đúng hình dạng đã bắt được ở check:contrast / check:visual-audit / check:frame-axe.
     const msg = "frame-geometry needs the optional peer `playwright`";
-    if (asJson) process.stdout.write(JSON.stringify({ status: "error", message: msg }) + "\n");
-    else console.warn(`⚠ ${msg} — skipped. (${cause.message})`);
+    if (process.env.CI) {
+      const hard = `${msg} — refusing to report success without running. (${cause.message})`;
+      if (asJson) process.stdout.write(JSON.stringify({ status: "error", message: hard }) + "\n");
+      else console.error(`✗ ${hard}`);
+      process.exit(2);
+    }
+    if (asJson) process.stdout.write(JSON.stringify({ status: "skipped", message: msg }) + "\n");
+    else console.warn(`⚠ ${msg} — skipped (local only; CI fails instead). (${cause.message})`);
     return;
   }
   const { chromium } = deps;

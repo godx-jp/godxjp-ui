@@ -4,7 +4,8 @@ function range(start: number, end: number): number[] {
 }
 
 /**
- * Build visible page numbers with ellipsis — Ant Design / MUI pagination style. The item count is
+ * Build visible page numbers with ellipsis — the conventional enterprise / MUI pagination style.
+ * The item count is
  * CONSTANT wherever the current page sits.
  */
 export function buildPageRange(

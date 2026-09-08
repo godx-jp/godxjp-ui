@@ -54,10 +54,63 @@ function axeModalExemptionApplies(): boolean {
 }
 
 /**
+ * Background elements the OPEN overlay has taken out of play — hidden from assistive tech,
+ * made non-interactive, or both — and which still hold something tabbable.
+ *
+ * TWO MECHANISMS, ONE QUESTION. Radix hides through the `aria-hidden` package: `aria-hidden="true"`
+ * plus its own `data-aria-hidden` marker, and this library mirrors `inert` on top of that marker
+ * (`components/general/inert-background.ts`). react-aria-components calls
+ * `ariaHideOutside(…, { shouldUseInert: true })`, which writes NEITHER of those two attributes: it
+ * sets the `inert` PROPERTY where the platform has one, and falls back to a bare
+ * `aria-hidden="true"` (no marker) where it does not. jsdom is the fallback case —
+ * `'inert' in HTMLElement.prototype` is `false` there, which is what RAC branches on — while every
+ * browser this library supports has had `inert` since 2022/2023 and takes the first branch.
+ *
+ * So the probe asks about the RESULT rather than about which attribute produced it. The tabbable
+ * filter is axe's own condition, and it is also what separates a real background from a decorative
+ * `aria-hidden` icon.
+ */
+function neutralisedBackground(): Element[] {
+  return [...document.querySelectorAll('[inert], [aria-hidden="true"]')].filter(
+    (el) => el.querySelector(TABBABLE) != null,
+  );
+}
+
+/** Does this environment have the platform `inert` react-aria branches on? */
+const NATIVE_INERT = "inert" in HTMLElement.prototype;
+
+/**
+ * An `aria-hidden` background that react-aria produced ONLY because jsdom has no `inert`.
+ *
+ * `ariaHideOutside(…, { shouldUseInert: true })` branches on `'inert' in HTMLElement.prototype`.
+ * Where the platform has it — every browser this library supports, since 2022/2023 — RAC sets the
+ * `inert` property and writes NO `aria-hidden` at all, so axe's rule cannot even fire. jsdom takes
+ * the other branch and writes a bare `aria-hidden="true"` with no marker: a shape that ships
+ * NOWHERE, and that this probe would otherwise report as a defect on every RAC overlay.
+ *
+ * Measured on real Chromium through the consumer's browser suite (godx-chat, 08/09/2026): with a
+ * DropdownMenu open, `div.app-root` carries `inert` (attribute AND property) and `aria-hidden` is
+ * `null`. The invariant holds in the browser; it is the ENVIRONMENT that cannot express it here.
+ *
+ * The exemption is deliberately narrow, and the Radix path stays fully guarded: Radix's
+ * `aria-hidden` package leaves `data-aria-hidden` behind, and this library's own mirror
+ * (components/general/inert-background.ts) is what must put `inert` on top of that marker. An
+ * offender CARRYING the marker is still a real failure, in jsdom and everywhere else.
+ *
+ * Do not widen this into "skip the check in jsdom". The row it keeps honest used to be green for
+ * the wrong reason entirely: RAC gave every modal popover `role="dialog"`, which tripped axe's
+ * modal exemption above — so a menu, a listbox and a dialog were all waved through together. That
+ * `role` is gone (a menu is not a dialog), and this takes its place for exactly one branch of one
+ * dependency in exactly one environment.
+ */
+function isReactAriaJsdomFallback(el: Element): boolean {
+  return !NATIVE_INERT && !el.hasAttribute("data-aria-hidden");
+}
+
+/**
  * Assert the invariant behind axe's `aria-hidden-focus` rule for whatever overlay is currently
- * open: a background element Radix has hidden from assistive tech must not still be reachable by
- * Tab. Either it is `inert` (see `components/general/inert-background.ts`), or the overlay is one
- * axe already exempts as a modal.
+ * open: a background element the overlay has hidden from assistive tech must not still be reachable
+ * by Tab. Either it is `inert`, or the overlay is one axe already exempts as a modal.
  *
  * Deliberately structural rather than a `vitest-axe` run: axe in jsdom cannot see this class at
  * all. Every node has a zero-sized rect there, so its visibility filter empties the tabbable set
@@ -66,9 +119,9 @@ function axeModalExemptionApplies(): boolean {
  */
 export function expectHiddenBackgroundNotTabbable(): void {
   const exempt = axeModalExemptionApplies();
-  const offenders = [...document.querySelectorAll('[aria-hidden="true"][data-aria-hidden]')]
-    .filter((el) => el.querySelector(TABBABLE) != null)
+  const offenders = neutralisedBackground()
     .filter((el) => !el.hasAttribute("inert"))
+    .filter((el) => !isReactAriaJsdomFallback(el))
     .map((el) => el.tagName.toLowerCase() + (el.className ? `.${String(el.className)}` : ""));
 
   expect(
@@ -77,7 +130,7 @@ export function expectHiddenBackgroundNotTabbable(): void {
   ).toEqual([]);
 }
 
-/** How many background elements the open overlay hid from assistive tech. 0 = nothing to guard. */
+/** How many background elements the open overlay took out of play. 0 = nothing to guard. */
 export function hiddenBackgroundCount(): number {
-  return document.querySelectorAll('[aria-hidden="true"][data-aria-hidden]').length;
+  return neutralisedBackground().length;
 }

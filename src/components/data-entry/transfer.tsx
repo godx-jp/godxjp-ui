@@ -67,7 +67,11 @@ function TransferPanel({
   return (
     <div className="ui-transfer-pane">
       <div className="ui-transfer-pane-header">
-        <label className="ui-transfer-pane-check">
+        {/* NOT a `<label>`. Checkbox is itself a `<label>` wrapping a real `<input>`, and a label
+            nested inside a label is invalid HTML: the browser resolves neither, so the box loses
+            its accessible name (axe `label`) and a click stops reaching the control. The name is
+            carried by the box's own `aria-label` instead. */}
+        <div className="ui-transfer-pane-check">
           <Checkbox
             checked={allChecked ? true : indeterminate ? "indeterminate" : false}
             disabled={Boolean(disabled) || enabledItems.length === 0}
@@ -79,7 +83,7 @@ function TransferPanel({
             }
           />
           <span id={titleId}>{title}</span>
-        </label>
+        </div>
         <span className="text-muted-foreground text-xs">
           {selectedKeys.length}/{filtered.length}
         </span>
@@ -101,7 +105,11 @@ function TransferPanel({
           ) : (
             filtered.map((item) => (
               <li key={item.key}>
-                <label
+                {/* Same reason as the pane header above: the row must NOT WRAP a Checkbox that is
+                    already a `<label>`. The row text becomes a `for=`-associated label BESIDE the
+                    box instead — the shape Checkbox.Group's own option rows already use — so the
+                    box keeps its accessible name AND the whole row stays clickable. */}
+                <div
                   className={cn(
                     "ui-transfer-row",
                     "hover:bg-accent hover:text-accent-foreground",
@@ -109,20 +117,26 @@ function TransferPanel({
                   )}
                 >
                   <Checkbox
+                    id={`${titleId}-${item.key}-box`}
                     checked={selectedKeys.includes(item.key)}
                     disabled={Boolean(disabled) || Boolean(item.disabled)}
                     onCheckedChange={(v) => toggleKey(item.key, v === true)}
+                    aria-labelledby={`${titleId}-${item.key}`}
                     className="ui-transfer-row-check"
                   />
-                  <span className="ui-transfer-row-body">
+                  <label
+                    className="ui-transfer-row-body"
+                    id={`${titleId}-${item.key}`}
+                    htmlFor={`${titleId}-${item.key}-box`}
+                  >
                     <span className="block truncate font-medium">{item.title}</span>
                     {item.description && (
                       <span className="ui-transfer-row-description text-muted-foreground block truncate">
                         {item.description}
                       </span>
                     )}
-                  </span>
-                </label>
+                  </label>
+                </div>
               </li>
             ))
           )}

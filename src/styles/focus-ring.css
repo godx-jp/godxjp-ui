@@ -1,27 +1,24 @@
 /* FOCUS — the ONE place the keyboard-focus affordance is drawn, and the ONE switch that turns it
  * on.
  *
- * THE SWITCH SHIPS OFF. `--focus-outline` is `0` (tokens/foundation.css), which is antd's own
- * `focusOutline` seed flag written in CSS: antd zeroes `lineWidthFocus` when the flag is false
- * (es/theme/util/alias.js:71), and every painted length here multiplies by that same token. With
- * the switch off the outline resolves to `0px`, `--focus-field-shadow` is `none`, and the boundary
- * rule below never matches. Nothing paints.
+ * THE SWITCH SHIPS OFF. `--focus-outline` is `0` (tokens/foundation.css) — one 0/1 flag, and
+ * every painted length here multiplies by it. With the switch off the outline resolves to `0px`,
+ * `--focus-field-shadow` is `none`, and the boundary rule below never matches. Nothing paints.
  *
  * THE `:focus-visible` MACHINERY STAYS. Not one selector was removed to achieve that. A consumer
  * who needs the indicator sets `data-focus-outline="on"` on the root element and the whole thing
  * returns — see the axis in tokens/axes.css and the cost recorded in docs/DESIGN-AUTHORITY.md.
  *
- * WHAT THE ON STATE PAINTS. Ant Design owns the shape (docs/DESIGN-AUTHORITY.md) and has two
- * forms; this file ships the LIGHTER of them, applied uniformly:
+ * WHAT THE ON STATE PAINTS. The focus shape has two forms (docs/DESIGN-AUTHORITY.md); this file
+ * ships the LIGHTER of them, applied uniformly:
  *
- *   · a FIELD gets antd's field indicator exactly — its boundary recoloured to `colorPrimary` at
- *     the unchanged `lineWidth`, plus `0 0 0 controlOutlineWidth controlOutline`
- *     (es/input/style/token.js:48-50, `activeBorderColor` + `activeShadow`);
- *   · everything else gets the same weight and the same hue as an `outline`, rather than antd's
- *     `genFocusOutline` (3px of `colorPrimaryBorder`). Two reasons, both measured:
- *     `colorPrimaryBorder` is #6dc0e3 at 2.00:1 and cannot satisfy SC 1.4.11 at any thickness, and
- *     3px of opaque brand around an already-shaded selected nav row is exactly the weight that was
- *     reported as intrusive. One `lineWidth` in the focus hue measures 5.05:1 light / 7.07:1 dark.
+ *   · a FIELD gets the field indicator — its boundary recoloured to `--ring` at the unchanged
+ *     hairline width, plus `0 0 0 var(--control-outline-width) var(--control-outline)`;
+ *   · everything else gets the same weight and the same hue as an `outline`, rather than the heavy
+ *     outline form (3px of `--primary-border`). Two reasons, both measured: `--primary-border` is
+ *     #6dc0e3 at 2.00:1 and cannot satisfy SC 1.4.11 at any thickness, and 3px of opaque brand
+ *     around an already-shaded selected nav row is exactly the weight that was reported as
+ *     intrusive. One hairline in the focus hue measures 5.05:1 light / 7.07:1 dark.
  *
  * NO LAYOUT SHIFT IS POSSIBLE. The field form never changes a border WIDTH, only its colour, and
  * an `outline` is painted outside the box model. Nothing here can move a control's box. */
@@ -68,6 +65,11 @@
     .sb-user,
     .tb-icon-btn
   ):focus-visible,
+  /* `.ui-checkbox` is a `<label>` wrapping a visually hidden real `<input>` (react-aria), so
+   * keyboard focus lands on the INPUT and `:focus-visible` never matches the painted box.
+   * react-aria mirrors its own focus-visible state onto the root as `data-focus-visible`, which
+   * is the hook that keeps the mark on the element that actually has the border. */
+  .ui-checkbox[data-focus-visible],
   .ui-control-trigger[data-state="open"],
   .ui-tag-input:focus-within,
   .ui-control-composite-field:focus-within,
@@ -77,7 +79,7 @@
     outline: var(--focus-ring-width) solid
       hsl(var(--focus-outline-color) / var(--focus-ring-opacity, 1));
     outline-offset: var(--focus-ring-offset);
-    /* antd zeroes both, so the mark appears the instant focus lands rather than easing in. */
+    /* Both are zeroed, so the mark appears the instant focus lands rather than easing in. */
     transition:
       outline-offset 0s,
       outline 0s;
@@ -85,8 +87,8 @@
 
   /* ── THE HALO ─────────────────────────────────────────────────────────────
    *
-   * antd's `activeShadow`, and the one paint that is SCOPED to the switch rather than multiplied
-   * by it — because `box-shadow` is not a length this rule can zero.
+   * The field's focus shadow, and the one paint that is SCOPED to the switch rather than
+   * multiplied by it — because `box-shadow` is not a length this rule can zero.
    *
    * MEASURED IN CHROMIUM, AND THE REASON THIS RULE IS SEPARATE. While the declaration sat in the
    * rule above with an OFF value of `none`, a focused primary Button on ql.test reported
@@ -126,6 +128,9 @@
       .sb-user,
       .tb-icon-btn
     ):focus-visible,
+  /* Same reason as the mark above: focus lands on the hidden `<input>`, the halo belongs on the
+   * painted box. */
+  :root[data-focus-outline="on"] .ui-checkbox[data-focus-visible],
   :root[data-focus-outline="on"] .ui-control-trigger[data-state="open"],
   :root[data-focus-outline="on"] .ui-tag-input:focus-within,
   :root[data-focus-outline="on"] .ui-control-composite-field:focus-within,
@@ -139,8 +144,8 @@
 
   /* ── THE FIELD BOUNDARY ───────────────────────────────────────────────────
    *
-   * antd's `activeBorderColor`: a focused field's own edge becomes the focus hue instead of
-   * growing a second line beside it. The defect this ends, as measured on a live page, was a
+   * A focused field's own edge becomes the focus hue instead of growing a second line beside
+   * it. The defect this ends, as measured on a live page, was a
    * focused Select painting an opaque brand ring two pixels wide while its border stayed the
    * resting grey `rgb(144,135,127)` — two outlines of different colours claiming the same edge.
    *
@@ -159,7 +164,7 @@
    *
    * `.ui-switch` and `.ui-button` are deliberately ABSENT. The Switch FILLS its unchecked track
    * from `--input` rather than drawing an edge with it, so a rebind would turn a focused
-   * off-switch solid blue; and antd never recolours a Button's border on focus, whatever its
+   * off-switch solid blue; and a Button's border is never recoloured on focus, whatever its
    * variant. Both take the outline above instead. */
   :root[data-focus-outline="on"]
     :is(
@@ -253,10 +258,10 @@
    * dùng thấy là khung đỏ với quầng sáng màu thương hiệu, đọc ra như "ứng dụng không quyết được ô
    * này đúng hay sai".
    *
-   * Cả ba biến ở đây đều là token do antd sinh ra: antd có hẳn `errorActiveShadow` riêng, dùng
-   * `colorErrorOutline` chứ không phải một sắc độ của `colorError` — nên quầng sáng lỗi lấy đúng
-   * màu VÀ đúng độ mờ của antd, không phải màu đỏ pha loãng bằng mắt. Bề rộng vẫn đến từ token
-   * chung, nên công tắc `--focus-outline` vẫn tắt được cả trạng thái lỗi.
+   * Cả ba biến ở đây đều là token của tầng dẫn xuất: quầng sáng lỗi có màu VÀ độ mờ riêng
+   * (`--control-outline-error` + `--control-outline-error-alpha`), không phải một sắc độ pha
+   * loãng bằng mắt từ `--destructive`. Bề rộng vẫn đến từ token chung, nên công tắc
+   * `--focus-outline` vẫn tắt được cả trạng thái lỗi.
    *
    * Đặt ở CUỐI file để thắng các lần gán lại theo từng component ở trên, và vì nó là một lớp
    * nghĩa khác: những cái trên nói "control này cần vòng khác", cái này nói "control này đang

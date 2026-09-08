@@ -7,73 +7,59 @@
       "props": [
         {
           "name": "defaultValue",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "string | string[] | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-accordion@1.2.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types+r_b48128b1d7dde55571de5bfadf84aef7/node_modules/@radix-ui/react-accordion/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/accordion.tsx"]
         },
         {
           "name": "dir",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "Direction | undefined",
+          "type": "\"ltr\" | \"rtl\" | undefined",
           "values": ["ltr", "rtl"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-accordion@1.2.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types+r_b48128b1d7dde55571de5bfadf84aef7/node_modules/@radix-ui/react-accordion/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/accordion.tsx"]
         },
         {
           "name": "disabled",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-accordion@1.2.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types+r_b48128b1d7dde55571de5bfadf84aef7/node_modules/@radix-ui/react-accordion/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/accordion.tsx"]
         },
         {
           "name": "onValueChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((value: string) => void) | ((value: string[]) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-accordion@1.2.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types+r_b48128b1d7dde55571de5bfadf84aef7/node_modules/@radix-ui/react-accordion/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/accordion.tsx"]
         },
         {
           "name": "orientation",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-accordion@1.2.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types+r_b48128b1d7dde55571de5bfadf84aef7/node_modules/@radix-ui/react-accordion/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/accordion.tsx"]
         },
         {
           "name": "type",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": true,
           "type": "\"single\" | \"multiple\"",
           "values": ["single", "multiple"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-accordion@1.2.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types+r_b48128b1d7dde55571de5bfadf84aef7/node_modules/@radix-ui/react-accordion/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/accordion.tsx"]
         },
         {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "string | string[] | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-accordion@1.2.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types+r_b48128b1d7dde55571de5bfadf84aef7/node_modules/@radix-ui/react-accordion/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/accordion.tsx"]
         }
       ]
     },
@@ -81,14 +67,32 @@
       "group": "data-display",
       "props": [
         {
-          "name": "forceMount",
+          "name": "defaultValue",
           "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "forceMount",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-collapsible@1.1.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types_938fdfe5edfc727045ac6376e151496a/node_modules/@radix-ui/react-collapsible/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/accordion.tsx"]
         }
       ]
     },
@@ -96,30 +100,105 @@
       "group": "data-display",
       "props": [
         {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/accordion.tsx"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/components/ui/accordion.tsx"]
+        }
+      ]
+    },
+    "AccordionTrigger": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/accordion.tsx"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
           "name": "disabled",
           "origin": "inherited-behavioral",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-accordion@1.2.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types+r_b48128b1d7dde55571de5bfadf84aef7/node_modules/@radix-ui/react-accordion/dist/index.d.mts"
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "type",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
+          "values": ["button", "submit", "reset"],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
           "name": "value",
           "origin": "inherited-behavioral",
-          "required": true,
-          "type": "string",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-accordion@1.2.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types+r_b48128b1d7dde55571de5bfadf84aef7/node_modules/@radix-ui/react-accordion/dist/index.d.mts"
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
-    },
-    "AccordionTrigger": {
-      "group": "data-display",
-      "props": []
     },
     "AccountChip": {
       "group": "layout",
@@ -510,6 +589,14 @@
       "group": "feedback",
       "props": [
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
           "name": "disabled",
           "origin": "inherited-behavioral",
           "required": false,
@@ -554,6 +641,14 @@
     "AlertDialogCancel": {
       "group": "feedback",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
         {
           "name": "disabled",
           "origin": "inherited-behavioral",
@@ -601,13 +696,19 @@
       "props": [
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
+          "name": "onCloseAutoFocus",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: Event) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         },
         {
           "name": "showClose",
@@ -677,13 +778,11 @@
       "props": [
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         }
       ]
     },
@@ -691,14 +790,20 @@
       "group": "feedback",
       "props": [
         {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         }
       ]
     },
@@ -706,34 +811,36 @@
       "group": "feedback",
       "props": [
         {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
           "name": "defaultOpen",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         },
         {
           "name": "onOpenChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((open: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         },
         {
           "name": "open",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         }
       ]
     },
@@ -744,6 +851,14 @@
     "AlertDialogTrigger": {
       "group": "feedback",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
         {
           "name": "disabled",
           "origin": "inherited-behavioral",
@@ -911,7 +1026,7 @@
           "origin": "owned",
           "required": false,
           "type": "AppSettingPickerAppearanceProp | undefined",
-          "values": ["inline", "icon", "labeled"],
+          "values": ["inline", "icon", "bar", "labeled"],
           "declaredIn": ["src/props/components/app.prop.ts"]
         },
         {
@@ -989,6 +1104,67 @@
         }
       ]
     },
+    "AppSettingToggle": {
+      "group": "navigation",
+      "props": [
+        {
+          "name": "appearance",
+          "origin": "owned",
+          "required": false,
+          "type": "AppSettingToggleAppearanceProp | undefined",
+          "values": ["icon", "bar"],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "kind",
+          "origin": "owned",
+          "required": true,
+          "type": "AppSettingToggleKind",
+          "values": ["density", "fontSize", "timeFormat", "theme"],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "OnValueChangeProp<string> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        }
+      ]
+    },
     "AppShell": {
       "group": "layout",
       "props": [
@@ -1046,6 +1222,22 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "navRail",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "navRailLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -1241,7 +1433,24 @@
     },
     "AspectRatio": {
       "group": "layout",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/aspect-ratio.tsx"]
+        },
+        {
+          "name": "ratio",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/aspect-ratio.tsx"]
+        }
+      ]
     },
     "AuthAccountSummary": {
       "group": "layout",
@@ -1499,6 +1708,14 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        },
+        {
           "name": "presence",
           "origin": "owned",
           "required": false,
@@ -1526,11 +1743,45 @@
     },
     "AvatarFallback": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        },
+        {
+          "name": "delayMs",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        }
+      ]
     },
     "AvatarImage": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        },
+        {
+          "name": "onLoadingStatusChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((status: ImageLoadingStatus) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/avatar.tsx"]
+        }
+      ]
     },
     "Badge": {
       "group": "data-display",
@@ -2230,6 +2481,14 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "bordered",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "dir",
           "origin": "inherited-behavioral",
           "required": false,
@@ -2292,6 +2551,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "\"auto\" | \"full\" | undefined",
+          "values": ["auto", "full"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -2804,23 +3071,19 @@
       "props": [
         {
           "name": "checked",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "CheckedState | undefined",
+          "type": "boolean | \"indeterminate\" | undefined",
           "values": [false, true, "indeterminate"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-checkbox@1.3.11_@types+react-dom@19.2.5_@types+react@19.2.18__@types+re_6bdf7f7f62afedd7dcd0ba1bf73f5073/node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/checkbox.tsx"]
         },
         {
           "name": "defaultChecked",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "CheckedState | undefined",
+          "type": "boolean | \"indeterminate\" | undefined",
           "values": [false, true, "indeterminate"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-checkbox@1.3.11_@types+react-dom@19.2.5_@types+react@19.2.18__@types+re_6bdf7f7f62afedd7dcd0ba1bf73f5073/node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/checkbox.tsx"]
         },
         {
           "name": "disabled",
@@ -2844,23 +3107,19 @@
         },
         {
           "name": "onCheckedChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "((checked: CheckedState) => void) | undefined",
+          "type": "((checked: boolean | \"indeterminate\") => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-checkbox@1.3.11_@types+react-dom@19.2.5_@types+react@19.2.18__@types+re_6bdf7f7f62afedd7dcd0ba1bf73f5073/node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/checkbox.tsx"]
         },
         {
           "name": "required",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-checkbox@1.3.11_@types+react-dom@19.2.5_@types+react@19.2.18__@types+re_6bdf7f7f62afedd7dcd0ba1bf73f5073/node_modules/@radix-ui/react-checkbox/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/checkbox.tsx"]
         },
         {
           "name": "value",
@@ -3017,43 +3276,35 @@
       "props": [
         {
           "name": "defaultOpen",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-collapsible@1.1.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types_938fdfe5edfc727045ac6376e151496a/node_modules/@radix-ui/react-collapsible/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/collapsible.tsx"]
         },
         {
           "name": "disabled",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-collapsible@1.1.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types_938fdfe5edfc727045ac6376e151496a/node_modules/@radix-ui/react-collapsible/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/collapsible.tsx"]
         },
         {
           "name": "onOpenChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((open: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-collapsible@1.1.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types_938fdfe5edfc727045ac6376e151496a/node_modules/@radix-ui/react-collapsible/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/collapsible.tsx"]
         },
         {
           "name": "open",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-collapsible@1.1.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types_938fdfe5edfc727045ac6376e151496a/node_modules/@radix-ui/react-collapsible/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/collapsible.tsx"]
         }
       ]
     },
@@ -3062,19 +3313,46 @@
       "props": [
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-collapsible@1.1.20_@types+react-dom@19.2.5_@types+react@19.2.18__@types_938fdfe5edfc727045ac6376e151496a/node_modules/@radix-ui/react-collapsible/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/collapsible.tsx"]
         }
       ]
     },
     "CollapsibleTrigger": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/collapsible.tsx"]
+        },
+        {
+          "name": "disabled",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "type",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
+          "values": ["button", "submit", "reset"],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        }
+      ]
     },
     "ColorPicker": {
       "group": "data-entry",
@@ -4712,50 +4990,58 @@
       "group": "feedback",
       "props": [
         {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
           "name": "defaultOpen",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         },
         {
           "name": "modal",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         },
         {
           "name": "onOpenChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((open: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         },
         {
           "name": "open",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         }
       ]
     },
     "DialogAction": {
       "group": "feedback",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
         {
           "name": "disabled",
           "origin": "inherited-behavioral",
@@ -4806,6 +5092,14 @@
       "group": "feedback",
       "props": [
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
           "name": "disabled",
           "origin": "inherited-behavioral",
           "required": false,
@@ -4850,6 +5144,14 @@
     "DialogClose": {
       "group": "feedback",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
         {
           "name": "disabled",
           "origin": "inherited-behavioral",
@@ -4897,13 +5199,19 @@
       "props": [
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
+          "name": "onCloseAutoFocus",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: Event) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         },
         {
           "name": "overlayClassName",
@@ -4981,13 +5289,11 @@
       "props": [
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         }
       ]
     },
@@ -4995,14 +5301,20 @@
       "group": "feedback",
       "props": [
         {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
         }
       ]
     },
@@ -5013,6 +5325,14 @@
     "DialogTrigger": {
       "group": "feedback",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
         {
           "name": "disabled",
           "origin": "inherited-behavioral",
@@ -5060,53 +5380,43 @@
       "props": [
         {
           "name": "defaultOpen",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dropdown-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@typ_07f8a762aff1ee9ea5e606b5fc1d1de2/node_modules/@radix-ui/react-dropdown-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "dir",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "Direction | undefined",
+          "type": "\"ltr\" | \"rtl\" | undefined",
           "values": ["ltr", "rtl"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dropdown-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@typ_07f8a762aff1ee9ea5e606b5fc1d1de2/node_modules/@radix-ui/react-dropdown-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "modal",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dropdown-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@typ_07f8a762aff1ee9ea5e606b5fc1d1de2/node_modules/@radix-ui/react-dropdown-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "onOpenChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((open: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dropdown-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@typ_07f8a762aff1ee9ea5e606b5fc1d1de2/node_modules/@radix-ui/react-dropdown-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "open",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dropdown-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@typ_07f8a762aff1ee9ea5e606b5fc1d1de2/node_modules/@radix-ui/react-dropdown-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         }
       ]
     },
@@ -5114,34 +5424,52 @@
       "group": "navigation",
       "props": [
         {
-          "name": "checked",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "CheckedState | undefined",
-          "values": [false, true, "indeterminate"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
+          "name": "asChild",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "checked",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "onCheckedChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((checked: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "textValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         }
       ]
     },
@@ -5150,122 +5478,133 @@
       "props": [
         {
           "name": "align",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"center\" | \"start\" | \"end\" | undefined",
           "values": ["center", "start", "end"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "alignOffset",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "avoidCollisions",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "collisionPadding",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "hideWhenDetached",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "loop",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "side",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"left\" | \"right\" | \"top\" | \"bottom\" | undefined",
-          "values": ["left", "right", "top", "bottom"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "sideOffset",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "forceMount",
+          "origin": "owned",
+          "required": false,
+          "type": "true | undefined",
+          "values": [true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "hideWhenDetached",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "loop",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "side",
+          "origin": "owned",
+          "required": false,
+          "type": "\"left\" | \"right\" | \"top\" | \"bottom\" | undefined",
+          "values": ["left", "right", "top", "bottom"],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "sideOffset",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "sticky",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         }
       ]
     },
     "DropdownMenuGroup": {
       "group": "navigation",
-      "props": []
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        }
+      ]
     },
     "DropdownMenuItem": {
       "group": "navigation",
       "props": [
         {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
+          "name": "asChild",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "inset",
@@ -5273,6 +5612,22 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "onSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: Event) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "textValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
@@ -5289,6 +5644,22 @@
       "group": "navigation",
       "props": [
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
           "name": "inset",
           "origin": "owned",
           "required": false,
@@ -5303,13 +5674,11 @@
       "props": [
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         }
       ]
     },
@@ -5317,24 +5686,28 @@
       "group": "navigation",
       "props": [
         {
-          "name": "onValueChange",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "((value: string) => void) | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
+          "name": "className",
+          "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: string) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         }
       ]
     },
@@ -5342,180 +5715,96 @@
       "group": "navigation",
       "props": [
         {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
+          "name": "asChild",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "textValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": true,
           "type": "string",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         }
       ]
     },
     "DropdownMenuSeparator": {
       "group": "navigation",
-      "props": []
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        }
+      ]
     },
     "DropdownMenuShortcut": {
       "group": "navigation",
-      "props": []
+      "props": [
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        }
+      ]
     },
     "DropdownMenuSub": {
       "group": "navigation",
       "props": [
         {
           "name": "defaultOpen",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dropdown-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@typ_07f8a762aff1ee9ea5e606b5fc1d1de2/node_modules/@radix-ui/react-dropdown-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "onOpenChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((open: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dropdown-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@typ_07f8a762aff1ee9ea5e606b5fc1d1de2/node_modules/@radix-ui/react-dropdown-menu/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
           "name": "open",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dropdown-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@typ_07f8a762aff1ee9ea5e606b5fc1d1de2/node_modules/@radix-ui/react-dropdown-menu/dist/index.d.mts"
-          ]
-        }
-      ]
-    },
-    "DropdownMenuSubContent": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "align",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "AlignSubContent | undefined",
-          "values": ["start", "end"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "alignOffset",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "avoidCollisions",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "collisionPadding",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "hideWhenDetached",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "loop",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "sideOffset",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "sticky",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"always\" | \"partial\" | undefined",
-          "values": ["always", "partial"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
-        }
-      ]
-    },
-    "DropdownMenuSubTrigger": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "inset",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
@@ -5524,9 +5813,198 @@
         }
       ]
     },
+    "DropdownMenuSubContent": {
+      "group": "navigation",
+      "props": [
+        {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"start\" | \"end\" | undefined",
+          "values": ["center", "start", "end"],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "alignOffset",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "avoidCollisions",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "collisionPadding",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "forceMount",
+          "origin": "owned",
+          "required": false,
+          "type": "true | undefined",
+          "values": [true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "hideWhenDetached",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "loop",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "sideOffset",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "sticky",
+          "origin": "owned",
+          "required": false,
+          "type": "\"always\" | \"partial\" | undefined",
+          "values": ["always", "partial"],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        }
+      ]
+    },
+    "DropdownMenuSubTrigger": {
+      "group": "navigation",
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "inset",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "textValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        }
+      ]
+    },
     "DropdownMenuTrigger": {
       "group": "navigation",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "disabled",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "type",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
+          "values": ["button", "submit", "reset"],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "value",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        }
+      ]
     },
     "EmptyState": {
       "group": "data-display",
@@ -5981,11 +6459,27 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "fill",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "gap",
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": ["none", "xs", "sm", "md", "lg", "xl"],
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "gapRaw",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -6010,6 +6504,30 @@
           "required": false,
           "type": "FlexJustifyProp | undefined",
           "values": ["center", "start", "end", "between", "around", "evenly"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "pad",
+          "origin": "owned",
+          "required": false,
+          "type": "PadProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "padRaw",
+          "origin": "owned",
+          "required": false,
+          "type": "PadRawProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "WidthProp | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -6342,34 +6860,44 @@
       "group": "data-display",
       "props": [
         {
+          "name": "closeDelay",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
+        },
+        {
           "name": "defaultOpen",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-hover-card@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_4dae8c3946e43ff9c8b1b3f60489b991/node_modules/@radix-ui/react-hover-card/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         },
         {
           "name": "onOpenChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((open: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-hover-card@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_4dae8c3946e43ff9c8b1b3f60489b991/node_modules/@radix-ui/react-hover-card/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         },
         {
           "name": "open",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-hover-card@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_4dae8c3946e43ff9c8b1b3f60489b991/node_modules/@radix-ui/react-hover-card/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
+        },
+        {
+          "name": "openDelay",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         }
       ]
     },
@@ -6378,99 +6906,100 @@
       "props": [
         {
           "name": "align",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "\"center\" | \"start\" | \"end\" | undefined",
+          "type": "Align | undefined",
           "values": ["center", "start", "end"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         },
         {
           "name": "alignOffset",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         },
         {
           "name": "avoidCollisions",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         },
         {
           "name": "collisionPadding",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
+          "type": "number | Partial<Record<Side, number>> | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         },
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-hover-card@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_4dae8c3946e43ff9c8b1b3f60489b991/node_modules/@radix-ui/react-hover-card/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         },
         {
           "name": "hideWhenDetached",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         },
         {
           "name": "side",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "\"left\" | \"right\" | \"top\" | \"bottom\" | undefined",
+          "type": "Side | undefined",
           "values": ["left", "right", "top", "bottom"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         },
         {
           "name": "sideOffset",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         },
         {
           "name": "sticky",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
         }
       ]
     },
     "HoverCardTrigger": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/hover-card.tsx"]
+        },
+        {
+          "name": "type",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        }
+      ]
     },
     "InfiniteQueryState": {
       "group": "query",
@@ -6741,7 +7270,16 @@
     },
     "Label": {
       "group": "data-entry",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-entry/label.tsx"]
+        }
+      ]
     },
     "LegalDocumentShell": {
       "group": "layout",
@@ -6849,6 +7387,30 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "Legend": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "LegendItemProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
     },
@@ -7057,6 +7619,22 @@
     "Logo": {
       "group": "general",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/general/logo.tsx"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/general/logo.tsx"]
+        },
         {
           "name": "glyph",
           "origin": "owned",
@@ -9101,92 +9679,85 @@
       "props": [
         {
           "name": "defaultOpen",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popover@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_45eebc76b99e51315b27d73f86f5d0fb/node_modules/@radix-ui/react-popover/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "modal",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popover@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_45eebc76b99e51315b27d73f86f5d0fb/node_modules/@radix-ui/react-popover/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "onOpenChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((open: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popover@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_45eebc76b99e51315b27d73f86f5d0fb/node_modules/@radix-ui/react-popover/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "open",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popover@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_45eebc76b99e51315b27d73f86f5d0fb/node_modules/@radix-ui/react-popover/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         }
       ]
     },
     "PopoverAnchor": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/popover.tsx"]
+        }
+      ]
     },
     "PopoverContent": {
       "group": "data-display",
       "props": [
         {
           "name": "align",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "\"center\" | \"start\" | \"end\" | undefined",
+          "type": "Align | undefined",
           "values": ["center", "start", "end"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "alignOffset",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "avoidCollisions",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "collisionPadding",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
+          "type": "number | Partial<Record<Side, number>> | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "flush",
@@ -9198,53 +9769,59 @@
         },
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popover@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_45eebc76b99e51315b27d73f86f5d0fb/node_modules/@radix-ui/react-popover/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "hideWhenDetached",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
+        },
+        {
+          "name": "onCloseAutoFocus",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: Event) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/popover.tsx"]
+        },
+        {
+          "name": "onOpenAutoFocus",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: Event) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "side",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "\"left\" | \"right\" | \"top\" | \"bottom\" | undefined",
+          "type": "Side | undefined",
           "values": ["left", "right", "top", "bottom"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "sideOffset",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         },
         {
           "name": "sticky",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         }
       ]
     },
@@ -9264,11 +9841,39 @@
       "group": "data-display",
       "props": [
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/popover.tsx"]
+        },
+        {
+          "name": "disabled",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
           "name": "type",
           "origin": "inherited-behavioral",
           "required": false,
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "value",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
@@ -9342,6 +9947,14 @@
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
         {
+          "name": "segments",
+          "origin": "owned",
+          "required": false,
+          "type": "ProgressSegment[] | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/progress.tsx"]
+        },
+        {
           "name": "tone",
           "origin": "owned",
           "required": false,
@@ -9352,8 +9965,8 @@
         {
           "name": "value",
           "origin": "owned",
-          "required": true,
-          "type": "number",
+          "required": false,
+          "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/progress.tsx"]
         }
@@ -9915,7 +10528,7 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": ["none", "xs", "sm", "md", "lg", "xl"],
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {
@@ -10012,8 +10625,8 @@
           "name": "type",
           "origin": "inherited-behavioral",
           "required": false,
-          "type": "\"always\" | \"hover\" | \"auto\" | \"scroll\" | undefined",
-          "values": ["always", "hover", "auto", "scroll"],
+          "type": "\"always\" | \"hover\" | \"scroll\" | \"auto\" | undefined",
+          "values": ["always", "hover", "scroll", "auto"],
           "declaredIn": [
             "node_modules/.pnpm/@radix-ui+react-scroll-area@1.2.18_@types+react-dom@19.2.5_@types+react@19.2.18__@types_279dcd4b898c40e4a06e3a1dcec97e78/node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"
           ]
@@ -11049,44 +11662,44 @@
       "group": "feedback",
       "props": [
         {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
+        },
+        {
           "name": "defaultOpen",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
         },
         {
           "name": "modal",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
         },
         {
           "name": "onOpenChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((open: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
         },
         {
           "name": "open",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
         }
       ]
     },
@@ -11097,6 +11710,14 @@
     "SheetClose": {
       "group": "feedback",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
+        },
         {
           "name": "disabled",
           "origin": "inherited-behavioral",
@@ -11144,13 +11765,11 @@
       "props": [
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
         },
         {
           "name": "overlayClassName",
@@ -11165,7 +11784,7 @@
           "origin": "owned",
           "required": false,
           "type": "SheetResponsiveProp | undefined",
-          "values": ["auto", "side", "bottom"],
+          "values": ["auto", "bottom", "side"],
           "declaredIn": ["src/components/feedback/sheet.tsx"]
         },
         {
@@ -11244,13 +11863,11 @@
       "props": [
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
         }
       ]
     },
@@ -11258,14 +11875,20 @@
       "group": "feedback",
       "props": [
         {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
+        },
+        {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-dialog@1.1.23_@types+react-dom@19.2.5_@types+react@19.2.18__@types+reac_cbd26420350e7ad2d39e95cb6bb1d8cd/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
         }
       ]
     },
@@ -11276,6 +11899,14 @@
     "SheetTrigger": {
       "group": "feedback",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/feedback/sheet.tsx"]
+        },
         {
           "name": "disabled",
           "origin": "inherited-behavioral",
@@ -11724,6 +12355,14 @@
           "required": true,
           "type": "ReactNode",
           "values": [],
+          "declaredIn": ["src/components/layout/split-pane.tsx"]
+        },
+        {
+          "name": "fill",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/components/layout/split-pane.tsx"]
         }
       ]
@@ -12181,13 +12820,11 @@
       "props": [
         {
           "name": "activationMode",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"manual\" | \"automatic\" | undefined",
           "values": ["manual", "automatic"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tabs@1.1.21_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_427a0b760fff2ec5aba13abdb936f938/node_modules/@radix-ui/react-tabs/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
           "name": "contentClassName",
@@ -12199,23 +12836,19 @@
         },
         {
           "name": "defaultValue",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tabs@1.1.21_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_427a0b760fff2ec5aba13abdb936f938/node_modules/@radix-ui/react-tabs/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
           "name": "dir",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "(\"ltr\" | \"rtl\") | undefined",
+          "type": "\"ltr\" | \"rtl\" | undefined",
           "values": ["ltr", "rtl"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tabs@1.1.21_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_427a0b760fff2ec5aba13abdb936f938/node_modules/@radix-ui/react-tabs/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
           "name": "items",
@@ -12235,33 +12868,27 @@
         },
         {
           "name": "onValueChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((value: string) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tabs@1.1.21_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_427a0b760fff2ec5aba13abdb936f938/node_modules/@radix-ui/react-tabs/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
           "name": "orientation",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "\"vertical\" | \"horizontal\" | undefined",
+          "type": "TabsOrientation | undefined",
           "values": ["vertical", "horizontal"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tabs@1.1.21_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_427a0b760fff2ec5aba13abdb936f938/node_modules/@radix-ui/react-tabs/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tabs@1.1.21_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_427a0b760fff2ec5aba13abdb936f938/node_modules/@radix-ui/react-tabs/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
           "name": "variant",
@@ -12287,24 +12914,30 @@
           ]
         },
         {
-          "name": "forceMount",
+          "name": "dir",
           "origin": "inherited-behavioral",
           "required": false,
-          "type": "true | undefined",
-          "values": [true],
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tabs@1.1.21_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_427a0b760fff2ec5aba13abdb936f938/node_modules/@radix-ui/react-tabs/dist/index.d.mts"
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
+          "name": "forceMount",
+          "origin": "owned",
+          "required": false,
+          "type": "true | undefined",
+          "values": [true],
+          "declaredIn": ["src/components/navigation/tabs.tsx"]
+        },
+        {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": true,
           "type": "string",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tabs@1.1.21_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_427a0b760fff2ec5aba13abdb936f938/node_modules/@radix-ui/react-tabs/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/tabs.tsx"]
         }
       ]
     },
@@ -12322,14 +12955,22 @@
           ]
         },
         {
-          "name": "loop",
+          "name": "dir",
           "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "loop",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tabs@1.1.21_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_427a0b760fff2ec5aba13abdb936f938/node_modules/@radix-ui/react-tabs/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
           "name": "variant",
@@ -12355,13 +12996,24 @@
           ]
         },
         {
-          "name": "disabled",
+          "name": "dir",
           "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "src/components/navigation/tabs.tsx"
           ]
         },
         {
@@ -12376,13 +13028,11 @@
         },
         {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": true,
           "type": "string",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tabs@1.1.21_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_427a0b760fff2ec5aba13abdb936f938/node_modules/@radix-ui/react-tabs/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/navigation/tabs.tsx"]
         }
       ]
     },
@@ -12905,8 +13555,8 @@
           "name": "dir",
           "origin": "inherited-behavioral",
           "required": false,
-          "type": "\"auto\" | \"ltr\" | \"rtl\" | undefined",
-          "values": ["auto", "ltr", "rtl"],
+          "type": "\"ltr\" | \"rtl\" | \"auto\" | undefined",
+          "values": ["ltr", "rtl", "auto"],
           "declaredIn": [
             "node_modules/.pnpm/sonner@2.0.8_@types+react@19.2.18_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/sonner/dist/index.d.mts"
           ]
@@ -12933,6 +13583,24 @@
           "declaredIn": ["src/components/ui/toggle.tsx"]
         },
         {
+          "name": "defaultPressed",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/toggle.tsx"]
+        },
+        {
+          "name": "disabled",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
           "name": "name",
           "origin": "inherited-behavioral",
           "required": false,
@@ -12943,11 +13611,27 @@
           ]
         },
         {
+          "name": "onPressedChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((pressed: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/toggle.tsx"]
+        },
+        {
           "name": "overflowCount",
           "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
+          "declaredIn": ["src/components/ui/toggle.tsx"]
+        },
+        {
+          "name": "pressed",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/components/ui/toggle.tsx"]
         },
         {
@@ -12991,63 +13675,51 @@
       "props": [
         {
           "name": "defaultValue",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "string | string[] | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-toggle-group@1.1.19_@types+react-dom@19.2.5_@types+react@19.2.18__@type_e4581584b5339b3886a6230085690079/node_modules/@radix-ui/react-toggle-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
           "name": "dir",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "(\"ltr\" | \"rtl\") | undefined",
+          "type": "\"ltr\" | \"rtl\" | undefined",
           "values": ["ltr", "rtl"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-toggle-group@1.1.19_@types+react-dom@19.2.5_@types+react@19.2.18__@type_e4581584b5339b3886a6230085690079/node_modules/@radix-ui/react-toggle-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
           "name": "disabled",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-toggle-group@1.1.19_@types+react-dom@19.2.5_@types+react@19.2.18__@type_e4581584b5339b3886a6230085690079/node_modules/@radix-ui/react-toggle-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
           "name": "loop",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-toggle-group@1.1.19_@types+react-dom@19.2.5_@types+react@19.2.18__@type_e4581584b5339b3886a6230085690079/node_modules/@radix-ui/react-toggle-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
           "name": "onValueChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((value: string) => void) | ((value: string[]) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-toggle-group@1.1.19_@types+react-dom@19.2.5_@types+react@19.2.18__@type_e4581584b5339b3886a6230085690079/node_modules/@radix-ui/react-toggle-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
           "name": "orientation",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-toggle-group@1.1.19_@types+react-dom@19.2.5_@types+react@19.2.18__@type_e4581584b5339b3886a6230085690079/node_modules/@radix-ui/react-toggle-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
           "name": "size",
@@ -13059,23 +13731,19 @@
         },
         {
           "name": "type",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": true,
           "type": "\"single\" | \"multiple\"",
           "values": ["single", "multiple"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-toggle-group@1.1.19_@types+react-dom@19.2.5_@types+react@19.2.18__@type_e4581584b5339b3886a6230085690079/node_modules/@radix-ui/react-toggle-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "string | string[] | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-toggle-group@1.1.19_@types+react-dom@19.2.5_@types+react@19.2.18__@type_e4581584b5339b3886a6230085690079/node_modules/@radix-ui/react-toggle-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
           "name": "variant",
@@ -13105,6 +13773,36 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/components/ui/toggle.tsx"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "disabled",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
         },
         {
           "name": "overflowCount",
@@ -13142,13 +13840,11 @@
         },
         {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": true,
           "type": "string",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-toggle-group@1.1.19_@types+react-dom@19.2.5_@types+react@19.2.18__@type_e4581584b5339b3886a6230085690079/node_modules/@radix-ui/react-toggle-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
           "name": "variant",
@@ -13327,13 +14023,11 @@
       "props": [
         {
           "name": "defaultOpen",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tooltip@1.2.16_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_05f3ed02aa86a18c504288929ed71661/node_modules/@radix-ui/react-tooltip/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "delayDuration",
@@ -13341,40 +14035,31 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tooltip@1.2.16_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_05f3ed02aa86a18c504288929ed71661/node_modules/@radix-ui/react-tooltip/dist/index.d.mts",
-            "src/components/feedback/tooltip.tsx"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "disableHoverableContent",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tooltip@1.2.16_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_05f3ed02aa86a18c504288929ed71661/node_modules/@radix-ui/react-tooltip/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "onOpenChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((open: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tooltip@1.2.16_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_05f3ed02aa86a18c504288929ed71661/node_modules/@radix-ui/react-tooltip/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "open",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tooltip@1.2.16_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_05f3ed02aa86a18c504288929ed71661/node_modules/@radix-ui/react-tooltip/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         }
       ]
     },
@@ -13383,93 +14068,75 @@
       "props": [
         {
           "name": "align",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "\"center\" | \"start\" | \"end\" | undefined",
+          "type": "Align | undefined",
           "values": ["center", "start", "end"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "alignOffset",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "avoidCollisions",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "collisionPadding",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
+          "type": "number | Partial<Record<Side, number>> | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tooltip@1.2.16_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_05f3ed02aa86a18c504288929ed71661/node_modules/@radix-ui/react-tooltip/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "hideWhenDetached",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "side",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "\"left\" | \"right\" | \"top\" | \"bottom\" | undefined",
+          "type": "Side | undefined",
           "values": ["left", "right", "top", "bottom"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "sideOffset",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "sticky",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         }
       ]
     },
@@ -13478,39 +14145,62 @@
       "props": [
         {
           "name": "delayDuration",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tooltip@1.2.16_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_05f3ed02aa86a18c504288929ed71661/node_modules/@radix-ui/react-tooltip/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "disableHoverableContent",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tooltip@1.2.16_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_05f3ed02aa86a18c504288929ed71661/node_modules/@radix-ui/react-tooltip/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         },
         {
           "name": "skipDelayDuration",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-tooltip@1.2.16_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_05f3ed02aa86a18c504288929ed71661/node_modules/@radix-ui/react-tooltip/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
         }
       ]
     },
     "TooltipTrigger": {
       "group": "feedback",
-      "props": []
+      "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/feedback/tooltip.tsx"]
+        },
+        {
+          "name": "type",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
+          "values": ["button", "submit", "reset"],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "value",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        }
+      ]
     },
     "Topbar": {
       "group": "layout",

@@ -73,6 +73,12 @@ export type {
   AppSettingPickerProps,
   AppSettingKind,
 } from "./app-setting-picker";
+export { AppSettingToggle } from "./app-setting-toggle";
+export type {
+  AppSettingToggleProp,
+  AppSettingToggleProps,
+  AppSettingToggleKind,
+} from "./app-setting-toggle";
 export type { BreadcrumbItemProp as BreadcrumbItem } from "../../props/vocabulary/navigation.prop";
 export {
   DropdownMenu,

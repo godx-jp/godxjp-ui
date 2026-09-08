@@ -130,7 +130,7 @@ export const PROP_VI = {
     category: "data",
   },
   extra: {
-    moTa: "Khu vực action góc phải header trang (Ant Design `extra`).",
+    moTa: "Khu vực action góc phải header trang (slot `extra` theo quy ước).",
     useCase: "PageContainer: nút Create, Export cạnh title.",
     category: "data",
   },

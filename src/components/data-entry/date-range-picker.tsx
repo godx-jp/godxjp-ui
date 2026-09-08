@@ -19,7 +19,7 @@ const ISO_HINT = "yyyy-mm-dd";
 
 /**
  * DateRangePicker — WAI-ARIA date-range combobox rendered as ONE input-styled control
- * (Ant Design RangePicker convention): `[ from → to  ✕ 📅 ]`. The two inner fields stay
+ * (the established RangePicker convention): `[ from → to  ✕ 📅 ]`. The two inner fields stay
  * real, typeable ISO `yyyy-MM-dd` inputs (form-submittable via `${name}_from` /
  * `${name}_to`, screen-reader friendly, e2e-testable by filling either input); the
  * range calendar is the visual affordance.
@@ -111,7 +111,7 @@ export function DateRangePicker({
     },
   };
 
-  // Bare inputs: the BORDER lives on the shared container (one control, antd
+  // Bare inputs: the BORDER lives on the shared container (one control, RangePicker
   // RangePicker style) — an Input here would draw a second border inside it.
   const innerInputClass = "ui-month-picker-input";
 

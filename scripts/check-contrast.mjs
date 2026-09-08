@@ -33,7 +33,64 @@ const ROUTES = routeArgs.length
       // index.tsx); `general-button` resolves to nothing.
       "/isolate/general-button-index",
       "/isolate/general-button-index?theme=dark",
+      // TOAST — the surfaces this sweep could NOT see, by construction, until `?toast=` existed.
+      //
+      // Every other route here is measured by loading it: whatever the page paints on mount is
+      // what gets collected. A toast paints on NOTHING — it exists only after a user action — so
+      // for as long as this list has existed, zero toast pixels have ever been measured, and the
+      // gate reported "AA clean" while saying nothing at all about the four richest coloured
+      // surfaces the library ships. That is not a threshold that was set too loosely; it is a
+      // surface that was never in the sample. `?toast=<type>` fires exactly one toast (see
+      // PREPARE) and then the ordinary sweep runs against it.
+      //
+      // Four types × two themes, because the tone triple (`--<type>-bg` / `-border` / `-text`) is
+      // composed per type AND retuned per theme: eight independent pairs, so eight measurements.
+      "/isolate/feedback-toast?toast=success",
+      "/isolate/feedback-toast?toast=error",
+      "/isolate/feedback-toast?toast=warning",
+      "/isolate/feedback-toast?toast=info",
+      "/isolate/feedback-toast?toast=success&theme=dark",
+      "/isolate/feedback-toast?toast=error&theme=dark",
+      "/isolate/feedback-toast?toast=warning&theme=dark",
+      "/isolate/feedback-toast?toast=info&theme=dark",
     ];
+
+/**
+ * Per-route setup, run after the page has loaded and before anything is measured.
+ *
+ * A route whose surface only exists after an interaction needs one of these, or the sweep audits
+ * an empty stage and calls it clean.
+ *
+ * SETTLING IS PART OF THE SETUP, NOT AN OPTIMISATION. Sonner ramps `opacity` 0→1 over 400ms on
+ * the toast and, separately, on its children. Sampling inside that ramp measures text flattened
+ * against its own surface at a fractional alpha — measured on this very page at α=.026 → 1.01:1
+ * and α=.758 → 4.43:1, for a toast whose settled ratios are 6.61:1 and 6.68:1. Those are frames
+ * of an animation, not states of the UI, and a gate that reports them is reporting noise. Wait
+ * for `[data-title]` to reach full opacity, then measure what a reader actually gets.
+ */
+const PREPARE = {
+  "/isolate/feedback-toast": async (page, params) => {
+    const type = params.get("toast");
+    if (!type) throw new Error("feedback-toast needs ?toast=<success|error|warning|info>");
+    await page.getByRole("button", { name: type, exact: true }).first().click();
+    await page.waitForSelector(`[data-sonner-toast][data-type="${type}"] [data-title]`, {
+      timeout: 10000,
+    });
+    await page.waitForFunction(
+      (t) => {
+        const el = document.querySelector(`[data-sonner-toast][data-type="${t}"]`);
+        if (!el) return false;
+        let opacity = 1;
+        for (let n = el; n && n !== document.documentElement; n = n.parentElement) {
+          opacity *= parseFloat(getComputedStyle(n).opacity);
+        }
+        return opacity > 0.999;
+      },
+      type,
+      { timeout: 10000 },
+    );
+  },
+};
 
 const EXEC =
   process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ||
@@ -55,10 +112,30 @@ const ratio = (a, c) => {
 // Runs in the page: collect {fg, bg, size, weight, text, sel} for every leaf text element.
 function collect() {
   const parse = (c) => {
-    const m = c && c.match(/rgba?\(([^)]+)\)/);
-    if (!m) return null;
-    const p = m[1].split(",").map((s) => parseFloat(s));
-    return { rgb: [p[0], p[1], p[2]], a: p[3] === undefined ? 1 : p[3] };
+    if (!c) return null;
+    const rgb = c.match(/rgba?\(([^)]+)\)/);
+    if (rgb) {
+      const p = rgb[1]
+        .split(/[,\s/]+/)
+        .filter(Boolean)
+        .map(parseFloat);
+      return { rgb: [p[0], p[1], p[2]], a: p[3] === undefined ? 1 : p[3] };
+    }
+    // `color(srgb r g b)` — what Chromium returns for a computed `color-mix()`, and the ONLY
+    // shape every tinted surface in this system resolves to (Toast's `--success-bg` and friends
+    // are `color-mix(in srgb, hsl(var(--hue)) 5%, hsl(var(--popover)))`). The rgba()-only regex
+    // returned null for those, `effBg` treated the element as having no background and kept
+    // walking, and the sweep ended up measuring coloured text against the page — or against the
+    // [255,255,255] fallback. Every ratio it reported for a tinted surface was the wrong pair.
+    const srgb = c.match(/color\(srgb\s+([^)]+)\)/);
+    if (srgb) {
+      const p = srgb[1]
+        .split(/[\s/]+/)
+        .filter(Boolean)
+        .map(parseFloat);
+      return { rgb: [p[0] * 255, p[1] * 255, p[2] * 255], a: p[3] === undefined ? 1 : p[3] };
+    }
+    return null;
   };
   const effBg = (el) => {
     let n = el;
@@ -92,6 +169,59 @@ function collect() {
       cls: (el.className && el.className.toString().split(/\s+/)[0]) || "",
     });
   }
+  /*
+   * NON-TEXT CONTRAST — WCAG 2.2 SC 1.4.11, threshold 3:1.
+   *
+   * The sweep above walks TEXT nodes, so anything that carries meaning without carrying words is
+   * invisible to it. axe-core does not implement 1.4.11 for arbitrary graphics either, so nothing
+   * in this repo measured it at all.
+   *
+   * What it cost: a 4×4px event dot painted `bg-primary` sat inside a selected day whose fill is
+   * ALSO `--primary`. Ratio 1.00. The marker vanished at exactly the moment a user clicked the day
+   * it belonged to, and every gate stayed green — the dot has no text, so the text sweep skipped
+   * it, and no route rendered the selected+marked combination anyway.
+   *
+   * Scope is deliberately narrow: a SMALL element (≤24px on both axes, the size of a dot, a
+   * caret, a state pip) that paints its own opaque background and holds no text is a graphic that
+   * conveys state. Bigger boxes are surfaces — a card on a page legitimately sits at 1.05:1 — and
+   * flagging those would drown the signal. Borders are measured the same way when a small element
+   * draws one instead of a fill.
+   */
+  for (const el of document.querySelectorAll("body *")) {
+    if (el.closest("[data-logotype]")) continue;
+    if (el.textContent && el.textContent.trim()) continue;
+    if (el.children.length) continue;
+    const s = getComputedStyle(el);
+    if (s.visibility === "hidden" || s.display === "none" || parseFloat(s.opacity) < 0.4) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) continue;
+    if (r.width > 24 || r.height > 24) continue;
+
+    const fill = parse(s.backgroundColor);
+    const border =
+      parseFloat(s.borderTopWidth) > 0 || parseFloat(s.borderLeftWidth) > 0
+        ? parse(s.borderTopColor)
+        : null;
+    const ink = fill && fill.a > 0.5 ? fill : border && border.a > 0.5 ? border : null;
+    if (!ink) continue;
+
+    // The background BEHIND the graphic — start at the parent, since the graphic's own fill is the
+    // thing being measured.
+    const behind = el.parentElement ? effBg(el.parentElement) : [255, 255, 255];
+    out.push({
+      fg: ink.rgb,
+      bg: behind,
+      nonText: true,
+      // 1.4.11 has one threshold and no size/weight exemption; these keep the record shape uniform
+      // for the reporter, which reads `size`/`weight` to pick the text threshold.
+      size: 24,
+      weight: 700,
+      text: `[graphic ${Math.round(r.width)}×${Math.round(r.height)}]`,
+      tag: el.tagName.toLowerCase(),
+      cls: (el.className && el.className.toString().split(/\s+/)[0]) || "",
+    });
+  }
+
   return out;
 }
 
@@ -109,9 +239,15 @@ async function main() {
   let chromium;
   try {
     ({ chromium } = await import("playwright"));
-  } catch {
+  } catch (e) {
+    // Same rule as the preview-server branch below, which was written first and never applied up
+    // here: on CI a missing browser is the FAILURE, not a reason to step aside. This is the only
+    // gate that measures rendered colour, so a `playwright install` step that quietly fails turns
+    // it green while nothing is measured at all — the exact shape the comment below was written
+    // about. Locally, stepping aside is still right.
+    if (process.env.CI) throw e;
     console.warn("⚠ check:contrast skipped — playwright not installed (browser-only gate).");
-    return; // skip in a browser-less CI rather than fail the build
+    return;
   }
   let stopServer;
   try {
@@ -159,6 +295,25 @@ async function main() {
         total++;
         continue;
       }
+      // A ROUTE THAT ASKS FOR DARK MUST HAVE GOT DARK. `/isolate/**` read `?theme` nowhere until
+      // now, so `…?theme=dark` rendered the light theme and this list's two "dark" entries were
+      // byte-identical re-runs of the two light ones above them — eleven routes, nine surfaces,
+      // and a dark theme nobody had measured through this entry point. Same lesson as the
+      // not-found guard: a query string that resolves to nothing must fail, not pass quietly.
+      const params = new URL(url).searchParams;
+      if (params.get("theme") === "dark") {
+        const applied = await page.evaluate(() => document.documentElement.dataset.theme);
+        if (applied !== "dark") {
+          console.error(
+            `✗ ${route}: asked for ?theme=dark and got <html data-theme="${applied ?? ""}"> — the ` +
+              `page ignored the switch, so this route is a duplicate of its light twin.`,
+          );
+          total++;
+          continue;
+        }
+      }
+      const prepare = PREPARE[new URL(url).pathname];
+      if (prepare) await prepare(page, params);
       items = await page.evaluate(collect);
     } catch (e) {
       console.error(

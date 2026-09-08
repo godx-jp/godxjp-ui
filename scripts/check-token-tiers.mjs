@@ -31,7 +31,15 @@ const componentNameShape =
  * structural: the text of the declaration is perfectly well-formed, it is merely in a place CSS
  * does not allow it (directly inside `@media { … }` instead of inside a `:root { … }` within it).
  */
-function bareDeclarations(css) {
+function bareDeclarations(rawCss) {
+  // Comments are BLANKED first (newlines kept, so reported line numbers stay true). Measured:
+  // the identical stray declaration was reported when it sat straight after `{` and INVISIBLE the
+  // moment an ordinary comment line preceded it — the comment text lands in `buffer`, so the
+  // declaration no longer starts with `--`. Every token block in this repo is commented, so the
+  // guard was only ever catching the un-commented spelling of the bug it was written for. A `{`,
+  // `}` or `;` inside a comment desynchronises the brace stack the same way (55 CSS files carry
+  // 57 `{`, 58 `}` and 286 `;` inside comments today).
+  const css = rawCss.replace(/\/\*[\s\S]*?\*\//g, (block) => block.replace(/[^\n]/g, " "));
   const out = [];
   const stack = [];
   let buffer = "";
@@ -126,6 +134,7 @@ const componentPrefixes = {
   table: ["table"],
   "data-display": [
     "progress",
+    "legend",
     "permission-matrix",
     "tree",
     "timeline",
@@ -168,7 +177,12 @@ for (const file of cssFiles) {
   if (domainToken.test(css)) failures.push(`${rel}: forbidden tracking/domain token`);
   if (publicRawRamp.test(css)) failures.push(`${rel}: public raw gray/blue ramp token`);
 
-  if (rel === "src/styles/index.css") {
+  // `base.css`, NOT `index.css`. This branch was dead from the day it was written: `index.css` is
+  // a list of `@import`s and has never held a `@theme` block, so `themeBlock` was always "" and
+  // `hexThemeColor` never ran. Measured — a literal `--color-x: #ff00ff` inside the real block at
+  // `base.css` passed the gate. Scan every file for the block instead of naming one, so moving it
+  // again cannot silently switch the check off.
+  {
     const themeBlock = css.match(/@theme(?:\s+inline)?\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
     if (hexThemeColor.test(themeBlock)) {
       failures.push(`${rel}: @theme color exports must reference tokens, not literal hex`);

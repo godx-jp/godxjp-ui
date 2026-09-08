@@ -1,10 +1,11 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
+import { Slot } from "../../lib/slot";
 import { ChevronDown } from "lucide-react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../data-display/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
+import { useNavSurface } from "./nav-surface";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import type {
@@ -441,6 +442,21 @@ export function Sidebar({
 }: SidebarProp) {
   const { t } = useTranslation();
   const resolvedSections = sections ?? [];
+  /*
+   * COLLAPSE IS A DESKTOP ANSWER, so it does not survive into the drawer. `AppShell` hands the
+   * same node to both surfaces on purpose — a consumer should not build its navigation twice — but
+   * `collapsed` trades labels for horizontal room in a docked column, and a drawer has no such
+   * pressure while being the only navigation left below the breakpoint. Honouring it there turned
+   * a shipped consumer's drawer into six anonymous glyphs. A standalone `Sidebar` sees "docked"
+   * and keeps whatever it was given.
+   *
+   * Shadowing the parameter is deliberate: every read below is a rendering decision and every one
+   * of them must follow the surface. A separate name would leave the original in scope for the
+   * next edit to reach for by accident.
+   */
+  const surface = useNavSurface();
+  // eslint-disable-next-line no-param-reassign
+  collapsed = surface === "drawer" ? false : collapsed;
 
   return (
     <div className="sb-root" data-collapsed={collapsed ? "true" : undefined}>
