@@ -50,6 +50,61 @@ describe("ListRow", () => {
     expect(container.querySelector('li[data-slot="list-row"]')).not.toBeNull();
   });
 
+  // ── A list of links needs BOTH props, and `as` used to be dropped on the floor ─────────
+  // Measured on a consumer before this: three rows, three `border-bottom-width: 0px`. The
+  // row-to-row divider is keyed on `:not(:last-child)` among siblings, so wrapping each row
+  // by hand to keep `<li>` semantics made every row an only child and the rule stopped
+  // matching. Five screens in that app carried a hand-rolled `border-b` to paper over it.
+  it("keeps the list item AND makes the row a link when as='li' meets asChild", () => {
+    const { container } = renderWithUi(
+      <ul>
+        <ListRow as="li" asChild title="Alpha" description="PKG">
+          <a href="/projects/pkg" />
+        </ListRow>
+      </ul>,
+    );
+    const item = container.querySelector('li[data-slot="list-row-item"]');
+    expect(item).not.toBeNull();
+    // The <li> is a direct child of the <ul> — an <a> there would be invalid list markup.
+    expect(item!.parentElement!.tagName).toBe("UL");
+    const row = item!.querySelector('[data-slot="list-row"]');
+    expect(row!.tagName).toBe("A");
+    expect(screen.getByRole("link", { name: /Alpha/ })).toHaveAttribute(
+      "href",
+      "/projects/pkg",
+    );
+  });
+
+  it("gives every row but the last a divider to carry, through the item", () => {
+    const { container } = renderWithUi(
+      <ul>
+        {["Alpha", "Beta", "Gamma"].map((name) => (
+          <ListRow key={name} as="li" asChild title={name}>
+            <a href={`/p/${name}`} />
+          </ListRow>
+        ))}
+      </ul>,
+    );
+    // The ITEMS are the siblings the divider rule can see; the rows inside them are each an
+    // only child, which is exactly why the row-level rule cannot do this job.
+    const items = container.querySelectorAll('[data-slot="list-row-item"]');
+    expect(items).toHaveLength(3);
+    items.forEach((node) => {
+      expect(node.parentElement!.tagName).toBe("UL");
+      expect(node.children).toHaveLength(1);
+    });
+  });
+
+  it("leaves the row as the element itself when asChild stands alone", () => {
+    const { container } = renderWithUi(
+      <ListRow asChild title="No list here">
+        <a href="/solo" />
+      </ListRow>,
+    );
+    expect(container.querySelector('[data-slot="list-row-item"]')).toBeNull();
+    expect(container.querySelector('a[data-slot="list-row"]')).not.toBeNull();
+  });
+
   // ── #224 · overflow behaviour is SEMANTIC (a documented prop), not consumer CSS ──────────
   it("truncates by default and wraps (no truncate) with overflow='wrap'", () => {
     const { container, rerender } = renderWithUi(

@@ -20,7 +20,16 @@ export type ListRowDensity = ListRowDensityProp;
  * justify-between border-b …">`.
  */
 export interface ListRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
-  /** Render element — `div` (default) or `li` when the parent is a `<ul>`/`<ol>`. */
+  /**
+   * Render element — `div` (default) or `li` when the parent is a `<ul>`/`<ol>`.
+   *
+   * With `asChild`, the child owns the row element, so `as` steps out and becomes the
+   * LIST ITEM around it: `<li data-slot="list-row-item"><a data-slot="list-row">`. That is
+   * the only reading under which both props can hold at once, and it is the shape a list
+   * of links needs — the alternative, wrapping the row yourself, moves every row into a
+   * wrapper of its own and the row-to-row divider (keyed on `:not(:last-child)` among
+   * siblings) stops matching entirely.
+   */
   as?: "div" | "li";
   /** Use the supplied link as the entire row. Do not nest interactive trailing controls. */
   asChild?: boolean;
@@ -69,6 +78,9 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
     ref,
   ) => {
     const { t } = useTranslation();
+    // `asChild` hands the row element to the child, so it cannot ALSO be `as`. When both
+    // are set the row is the child and `as` becomes the list item wrapping it.
+    const item = asChild && as !== "div" ? (as as React.ElementType) : null;
     const Comp = (asChild ? Slot : as) as React.ElementType;
     const truncate = overflow !== "wrap";
     const content = (
@@ -94,7 +106,7 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
         {trailing != null ? <span data-slot="list-row-trailing">{trailing}</span> : null}
       </>
     );
-    return (
+    const row = (
       <Comp
         ref={ref}
         data-slot="list-row"
@@ -110,6 +122,11 @@ export const ListRow = React.forwardRef<HTMLDivElement, ListRowProps>(
           : content}
       </Comp>
     );
+    if (item === null) {
+      return row;
+    }
+    const Item = item;
+    return <Item data-slot="list-row-item">{row}</Item>;
   },
 );
 ListRow.displayName = "ListRow";
