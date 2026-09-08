@@ -186,9 +186,15 @@ async function main() {
   let chromium;
   try {
     ({ chromium } = await import("playwright"));
-  } catch {
+  } catch (e) {
+    // Same rule as the preview-server branch below, which was written first and never applied up
+    // here: on CI a missing browser is the FAILURE, not a reason to step aside. This is the only
+    // gate that measures rendered colour, so a `playwright install` step that quietly fails turns
+    // it green while nothing is measured at all — the exact shape the comment below was written
+    // about. Locally, stepping aside is still right.
+    if (process.env.CI) throw e;
     console.warn("⚠ check:contrast skipped — playwright not installed (browser-only gate).");
-    return; // skip in a browser-less CI rather than fail the build
+    return;
   }
   let stopServer;
   try {

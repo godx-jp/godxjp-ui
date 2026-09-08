@@ -40,6 +40,15 @@ async function peersAvailable() {
 
 async function main() {
   if (!(await peersAvailable())) {
+    // On CI a missing browser peer is the FAILURE, not a reason to step aside: this gate and
+    // `check:contrast` are the only two that launch Chromium, so a `playwright install` step that
+    // quietly fails would turn BOTH green while neither measures anything. Locally, stepping
+    // aside is still the right call. Same rule as check-contrast.mjs.
+    if (process.env.CI) {
+      throw new Error(
+        "check:visual-audit requires playwright + @axe-core/playwright; on CI a missing peer is a broken gate, not a skip.",
+      );
+    }
     console.warn(
       "⚠ check:visual-audit skipped — playwright/@axe-core/playwright not installed (browser-only gate).",
     );

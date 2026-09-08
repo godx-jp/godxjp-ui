@@ -24,6 +24,29 @@ const GEOMETRY =
 /** Chrome utilities (radius, elevation, border width, type scale) carrying a literal step. */
 const CHROME =
   /(?:^|[\s:])((?:rounded|shadow|border|text|leading|tracking|opacity)-(?:none|sm|md|lg|xl|\d?xl|full|px|\d+))(?=$|[\s"'`])/g;
+/**
+ * ARBITRARY-VALUE utilities — `p-[13px]`, `w-[200px]`, `rounded-[7px]`, `mt-[0.4375rem]`.
+ *
+ * These matter MORE than the named steps above, not less: a named step at least lands on the
+ * Tailwind scale, while a bracketed literal is a raw number that reaches past every token tier
+ * by construction. They were invisible to this guard — measured, `p-[13px] w-[200px]
+ * rounded-[7px]` passed all eleven token/CSS gates — which means the "0 literal" this file
+ * reported was reading low, not reading clean.
+ *
+ * The prefix list is deliberately the union of GEOMETRY and CHROME: same axes, same reason.
+ *
+ * A bracket that REFERENCES A TOKEN is not a violation and must not be flagged: `px-[var(--sheet-
+ * pad-x)]` is exactly what this guard wants people to write when no named utility exists for a
+ * component token, and a service theme reaches it. Measured on the first draft of this regex —
+ * without the `var(--` exclusion it reported 30 "violations" across 7 files, every one of them
+ * token-backed and correct. The rule is about the VALUE being unreachable, not about the bracket.
+ *
+ * CSS-wide keywords are excluded for the same reason the named-step regexes skip `w-full` and
+ * `min-w-0`: `rounded-[inherit]` states an inheritance relationship, not a size a theme could
+ * ever want to override.
+ */
+const ARBITRARY =
+  /(?:^|[\s:])((?:p|px|py|pt|pb|pl|pr|ps|pe|m|mx|my|mt|mb|ml|mr|ms|me|gap|gap-x|gap-y|w|h|min-w|max-w|min-h|max-h|size|z|inset|top|bottom|left|right|start|end|rounded|shadow|border|text|leading|tracking|opacity|translate-x|translate-y|basis)-\[(?![^\]]*var\(--)(?!(?:inherit|initial|unset|revert|auto|none)\])[^\]\s]+\])(?=$|[\s"'`])/g;
 
 function walk(dir, out = []) {
   for (const entry of readdirSync(dir)) {
@@ -45,9 +68,11 @@ function stripComments(source) {
 /** Every string literal in the file — class lists live inside them, including multi-line cn(). */
 function scan(rawSource) {
   const source = stripComments(rawSource);
-  const literals = [...source.matchAll(/"([^"\n]{2,400})"|'([^'\n]{2,400})'/g)].map(
-    (m) => m[1] ?? m[2] ?? "",
-  );
+  // Backticks included: `cn(\`px-2 h-7\`)` is the same class list as the quoted form, and swapping
+  // one quote character was enough to walk straight past this guard.
+  const literals = [
+    ...source.matchAll(/"([^"\n]{2,400})"|'([^'\n]{2,400})'|`([^`]{2,400})`/g),
+  ].map((m) => m[1] ?? m[2] ?? m[3] ?? "");
   const hits = [];
   for (const literal of literals) {
     // Cheap reject: no utility-looking token and no design-system class.
@@ -56,6 +81,7 @@ function scan(rawSource) {
     if (/^(https?:|\.\/|\.\.\/|@)/.test(literal)) continue;
     for (const m of literal.matchAll(GEOMETRY)) hits.push(m[1]);
     for (const m of literal.matchAll(CHROME)) hits.push(m[1]);
+    for (const m of literal.matchAll(ARBITRARY)) hits.push(m[1]);
   }
   return hits;
 }

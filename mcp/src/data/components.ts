@@ -2166,6 +2166,12 @@ import { Trash2 } from "lucide-react";
         description:
           "Accessible name. Set → exposed as a named image (role img); omitted → decorative (aria-hidden), the correct default when a readable wordmark sits beside it. With `wordmark` set, `label` overrides the lockup's name (the wordmark text is otherwise the name).",
       },
+      {
+        name: "asChild",
+        type: "boolean",
+        description:
+          "Borrow the single child element as the logo ROOT instead of rendering a <span> — the way to make the whole logo a LINK (<a>, or a router <Link>). The borrowed tag itself carries data-slot=\"logo-lockup\"/.ui-logo-lockup and the mark + wordmark become its children, so there is no wrapper element between the link and the lockup. Use it instead of wrapping Logo in your own <a>: .ui-logo-lockup is display:inline-flex, so a plain <a> (display:inline) puts the lockup on a line box and the strut's descender nudges the mark up in a topbar — the only fix left to the consumer is className=\"flex\" on the <a>, which ui-audit rejects as no-utility-layout.",
+      },
     ],
     usage: [
       'DO import from `@godxjp/ui/general`: `import { Logo } from "@godxjp/ui/general";`',
@@ -2176,6 +2182,7 @@ import { Trash2 } from "lucide-react";
       "NOTE: the package ships NO wordmark ARTWORK — `wordmark` typesets the name in the design-system display face (`--logo-wordmark-font-family`). When design supplies a real logotype, pass it as an inline `<svg>` node to `wordmark`; do not approximate letterforms in CSS.",
       'DON\'T re-tint via `className="bg-*"` — the fill reads the `--primary` role token; retune it through a service theme (`--primary`, `--logo-radius`, `--logo-size-*`), not utilities.',
       "DO use `mark=\"godx\"` for the canonical GoDX identity mark on hosted-identity screens — it is ALREADY in the package as real inline vector artwork. DON'T pass a hand-drawn brand SVG as `glyph`, and don't ship a brand asset in the app, to reproduce it.",
+      'DO make the brand a link with `asChild`, not with a wrapper: `<Logo asChild mark="godx" wordmark="GoDX"><Link href="/" /></Logo>`. Writing `<a className="flex"><Logo …/></a>` instead is the exact shape ui-audit rejects (no-utility-layout), and dropping the `flex` misaligns the mark.',
     ],
     useCases: [
       'App-shell header brand lockup — `<Logo glyph="c" wordmark="CoreBooks" />` in the sidebar/topbar: mark decorative, wordmark readable, spacing tokenized.',
@@ -2201,7 +2208,12 @@ import { Trash2 } from "lucide-react";
 <Logo mark="godx" tone="success" wordmark="GoDX" />
 
 // Bare mark standing alone → give it an accessible name.
-<Logo label="CoreBooks" size="lg" />`,
+<Logo label="CoreBooks" size="lg" />
+
+// The whole lockup as a link — the <a> IS the lockup, no wrapper to align.
+<Logo asChild mark="godx" tone="success" wordmark="GoDX">
+  <a href="/" />
+</Logo>`,
   },
   {
     name: "Reveal",
@@ -3365,16 +3377,17 @@ import { Flex } from "@godxjp/ui/layout";
           "Label placement within each item — `vertical` stacks the label over the value (default); `horizontal` puts the label BESIDE the value in a token-aligned column (mirrors `<Form layout>`). Tune the horizontal label-column width via `--descriptions-label-width`.",
       },
       {
+        name: "labelAlign",
+        type: '"start" | "end"',
+        defaultValue: '"start"',
+        description:
+          'Applies only in layout="horizontal" — a vertical label sits above its value and end-aligning it there would read as a mistake, the same contract `Form` keeps.',
+      },
+      {
         name: "children",
         type: "ReactNode",
         required: true,
         description: "Descriptions.Item elements.",
-      },
-      {
-        name: "items",
-        type: "DescriptionsItemProp[]",
-        description:
-          "Data-driven rows `{ label, value, span? }` (label/value are ReactNode) — the alternative to composing `Descriptions.Item` children.",
       },
     ],
     usage: [

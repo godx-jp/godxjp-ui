@@ -168,7 +168,12 @@ for (const file of cssFiles) {
   if (domainToken.test(css)) failures.push(`${rel}: forbidden tracking/domain token`);
   if (publicRawRamp.test(css)) failures.push(`${rel}: public raw gray/blue ramp token`);
 
-  if (rel === "src/styles/index.css") {
+  // `base.css`, NOT `index.css`. This branch was dead from the day it was written: `index.css` is
+  // a list of `@import`s and has never held a `@theme` block, so `themeBlock` was always "" and
+  // `hexThemeColor` never ran. Measured — a literal `--color-x: #ff00ff` inside the real block at
+  // `base.css` passed the gate. Scan every file for the block instead of naming one, so moving it
+  // again cannot silently switch the check off.
+  {
     const themeBlock = css.match(/@theme(?:\s+inline)?\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
     if (hexThemeColor.test(themeBlock)) {
       failures.push(`${rel}: @theme color exports must reference tokens, not literal hex`);

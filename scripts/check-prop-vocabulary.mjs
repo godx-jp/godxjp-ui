@@ -156,6 +156,22 @@ const COMPONENT_TYPE_ALLOWLIST = new Set([
   "TabsProps", // Radix Tabs.Root props passthrough
   "SelectProp", // union of the two Select APIs (SelectDataProp | SelectCompoundProp)
   "SelectCompoundProp", // Radix Select.Root props passthrough + the FieldA11yProps contract
+  // ── surfaced when this guard learned to read `export interface` (it previously only matched
+  // `export type X = …`, so every one of these was ungoverned in silence). Structural
+  // passthroughs first — same justification as the block above.
+  "SheetTriggerProps", // React.ComponentPropsWithRef<"button"> passthrough + asChild
+  "SheetCloseProps", // React.ComponentPropsWithRef<"button"> passthrough + asChild
+  "SheetPortalProps", // structural only (forceMount + children); no styled surface
+  "SheetOverlayProps", // React.ComponentPropsWithRef<"div"> passthrough + forceMount
+  "SheetProps", // Sheet root: open/defaultOpen/onOpenChange/modal controlled-state passthrough
+  // DEBT, not a clean passthrough: these three carry fields that DO have vocabulary types
+  // (LogoProps.tone/size, SheetContentProps.width, SheetHeaderProps.title/subtitle/tone).
+  // They are allowlisted to keep the interface-blindness fix shippable, NOT because per-field
+  // vocabulary is inapplicable. Give them real COMPONENT_PROP_REGISTRY coverage and delete
+  // these three lines.
+  "SheetContentProps",
+  "SheetHeaderProps",
+  "LogoProps",
 ]);
 
 function walkComponents(dir) {
@@ -180,8 +196,14 @@ function walkComponents(dir) {
 for (const file of walkComponents(join(root, "src/components"))) {
   const rel = file.slice(join(root, "src/").length);
   const src = readFileSync(file, "utf8");
-  for (const m of src.matchAll(/^export\s+type\s+([A-Z][A-Za-z0-9]*Props?)\s*=/gm)) {
-    const name = m[1];
+  // A prop type is a prop type however it is spelled. Matching only `export type X = …` let the
+  // IDENTICAL declaration written as `export interface X { … }` through ungoverned — verified by
+  // mutation: `export type ZzProbeProps = {…}` failed this guard while `export interface
+  // ZzProbeProps {…}` passed it.
+  for (const m of src.matchAll(
+    /^export\s+(?:type\s+([A-Z][A-Za-z0-9]*Props?)\s*=|interface\s+([A-Z][A-Za-z0-9]*Props?)\s*(?:extends\b|\{|<))/gm,
+  )) {
+    const name = m[1] ?? m[2];
     const base = name.endsWith("Props") ? `${name.slice(0, -1)}` : name; // XProps -> XProp
     if (
       components.has(name) ||
