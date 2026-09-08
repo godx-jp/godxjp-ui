@@ -1062,6 +1062,31 @@
     padding: 0;
   }
 
+  /* THE SEARCH IS A FIELD, SO IT IS DRAWN AS ONE.
+   *
+   * `.ui-command-input-wrapper` ships chrome-less with a single bottom rule — right for a command
+   * PALETTE, where the input IS the surface's header and a box around it would be a box around the
+   * whole panel. In this picker it left three different start lines: heading at 445, row mark at
+   * 445, and the search glyph at 457, inset the extra 12px of a field that was never painted. The
+   * inset was not wrong; the field was invisible. Drawing it makes the 12px read as the field's
+   * own padding instead of as a stray indent, and gives the panel a real place to type.
+   *
+   * Scoped to this panel: the palette keeps its bottom rule, which is correct there. */
+  .ui-org-switcher-command .ui-command-input-wrapper {
+    /* `border-bottom` is what the palette declares, so it is what has to be cleared — a shorthand
+     * `border` alone would leave the bottom rule doubling the field's own edge. */
+    border: 1px solid hsl(var(--input));
+    border-radius: var(--control-radius);
+    /* Inline is `inset - offset`, COMPUTED HERE so it reads the surface's own offset: the dialog and
+     * the sheet already inset the list by `offset`, and adding the full inset again pushed the
+     * field 12px past the heading; the popover insets nothing and gets the whole inset. Same pair
+     * the rows use, applied the other way round — a row CANCELS the surface inset to reach the
+     * edge, this field ADDS whatever is missing to land on the heading's line. */
+    margin-block: var(--org-switcher-search-space-block);
+    margin-inline: calc(var(--org-switcher-list-inset) - var(--org-switcher-list-offset));
+    background: hsl(var(--background));
+  }
+
   /* TWO DIFFERENT QUANTITIES, and collapsing them into one is what broke the popover.
    *
    *   --org-switcher-list-offset  what the SURFACE insets the list by, which the row cancels so

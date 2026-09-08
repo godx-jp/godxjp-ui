@@ -516,6 +516,38 @@ describe("responsive shell geometry", () => {
     expect(declarationsFor(controlStyles, ".ui-command-item")).toMatch(/border-radius:\s*calc\(/);
   });
 
+  it("the picker's search is drawn AS A FIELD, on the heading's start line", () => {
+    /*
+     * `.ui-command-input-wrapper` ships chrome-less with one bottom rule — right for a command
+     * PALETTE, where the input IS the surface's header. In this picker it left three start lines:
+     * heading 445, row mark 445, search glyph 457 — inset the extra 12px of a field that was never
+     * painted. The inset was not wrong; the field was invisible.
+     *
+     * The inline margin is computed IN THE RULE, not in a `:root` composite. A custom property
+     * substitutes its vars where it is DECLARED, so a root-level
+     * `calc(var(--…-list-inset) - var(--…-list-offset))` bakes in the default offset of 0 and never
+     * sees the dialog's or the sheet's. That trap cost this rule one round: the field measured 457
+     * instead of 445 with the token reading correctly the whole time.
+     */
+    const decls = declarationsFor(
+      shellStyles,
+      ".ui-org-switcher-command .ui-command-input-wrapper",
+    );
+    expect(decls).toMatch(/border:\s*1px solid hsl\(var\(--input\)\);/);
+    expect(decls).toMatch(/border-radius:\s*var\(--control-radius\);/);
+    expect(decls).toMatch(
+      /margin-inline:\s*calc\(\s*var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\s*\);/,
+    );
+    // The offset half must NOT be pre-substituted in a root token — that is the whole bug.
+    expect(shellTokens).not.toMatch(/--org-switcher-search-space-outset:/);
+
+    // The palette keeps its bottom rule; this is a local re-shape, not a change to Command.
+    const controlStyles = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
+    expect(declarationsFor(controlStyles, ".ui-command-input-wrapper")).toMatch(
+      /border-bottom:\s*1px solid hsl\(var\(--border\)\);/,
+    );
+  });
+
   it("a command row spaces its leading mark from its label", () => {
     /*
      * `.ui-command-item` is a flex row and shipped with NO gap, so every command / palette / picker

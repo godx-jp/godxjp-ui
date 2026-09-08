@@ -282,6 +282,12 @@
    * reach for the dialog is that a row carries more than a name; narrower than the generic
    * --dialog-width-default because it is still a list of choices, not a form. */
   --org-switcher-dialog-width: 26rem;
+  /* Breathing room above and below the search field. The INLINE side is deliberately not here:
+   * it depends on --org-switcher-list-offset, which each surface sets on itself, and a composite
+   * declared at `:root` substitutes its vars AT `:root` — it would bake in the default 0 and never
+   * see the dialog's or the sheet's value. That is the same trap --dialog-space-inset set, and it
+   * caught this rule too on the first attempt, so the inline half is computed in the rule. */
+  --org-switcher-search-space-block: var(--space-3);
   --org-switcher-menu-width: 16rem;
   --org-switcher-sheet-max-height: 75dvh;
   --org-switcher-state-min-height: 8rem;
