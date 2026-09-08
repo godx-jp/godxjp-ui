@@ -61,6 +61,37 @@ export function AppShell({
     topbarRight !== undefined ||
     logo !== undefined;
 
+  /*
+   * `topbar` NUỐT ba khe kia, và đó là thứ hỏng im lặng.
+   *
+   * `resolvedTopbar` bên dưới trả thẳng `topbar` khi có, nên `logo`,
+   * `topbarLeft` và `topbarRight` không bao giờ được vẽ. Trớ trêu là
+   * `hasTopbarContent` vẫn ĐẾM chúng, nên một shell chỉ có `logo` + `topbar`
+   * sẽ dựng dải trên vì `logo` — rồi không vẽ `logo`.
+   *
+   * Đã gặp thật: godx-chat truyền cả hai suốt nhiều tháng và logo không bao
+   * giờ hiện; không ai phát hiện vì không có lỗi, không có cảnh báo, và dải
+   * trên vẫn có nội dung khác nên trông vẫn "đúng".
+   *
+   * Cảnh báo chứ không ném lỗi: đây là hình dạng hợp lệ về kiểu, và một
+   * consumer đang chạy production không nên vỡ vì một khe bị bỏ quên. Nhưng nó
+   * phải NÓI RA.
+   */
+  if (process.env.NODE_ENV !== "production" && topbar !== undefined) {
+    const ignored = [
+      logo !== undefined && "logo",
+      topbarLeft !== undefined && "topbarLeft",
+      topbarRight !== undefined && "topbarRight",
+    ].filter(Boolean);
+
+    if (ignored.length > 0) {
+      console.warn(
+        `AppShell: \`topbar\` được truyền, nên ${ignored.join(", ")} bị bỏ qua và KHÔNG được vẽ. ` +
+          "Hoặc bỏ `topbar` để AppShell tự dựng dải từ ba khe kia, hoặc đặt nội dung đó vào trong chính `topbar`.",
+      );
+    }
+  }
+
   const resolvedTopbar =
     topbar !== undefined ? (
       topbar

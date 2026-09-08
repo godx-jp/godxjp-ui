@@ -114,6 +114,52 @@ Cửa thoát này CHỈ có cho khoảng cách. Thiếu prop ở chỗ khác th�
 issue, đừng dựng tay.`,
       },
       {
+        id: "gap-belongs-upstream",
+        title: "Khi DS thiếu thứ bạn cần",
+        tagline: "Ba câu hỏi quyết định: sửa ngược lên DS, hay dựng tại chỗ.",
+        body: `Đừng vá tạm, và cũng đừng mở issue cho mọi thứ. Hỏi ba câu — phải
+ĐỦ CẢ BA thì mới là việc của design system:
+
+1. Consumer có KHÔNG CÓ nước đi hợp lệ nào không?
+   Không phải "bất tiện" — là "bất khả": mọi prop/token đều không nói được, và
+   mọi đường còn lại đều bị ui-audit chặn.
+   Cách kiểm: viết đoạn mã bạn MUỐN viết, chạy audit lên nó. Xanh = có nước đi.
+
+2. Nó thuộc về HÌNH DẠNG component, hay NỘI DUNG một màn hình?
+   DS sở hữu hình dạng. Màn hình sở hữu nội dung.
+   "Flex không có đệm" = hình dạng. "Cột vai trò rộng 8rem" = màn hình đó.
+   Phân vân thì hỏi: consumer THỨ HAI có gặp không?
+
+3. Diễn đạt được thành một TRỤC CÓ TÊN không?
+   \`pad={{ blockStart: 3 }}\` có. \`styles={{ body: {...} }}\` không — đó là
+   một lỗ tự do, và nó đóng băng DOM nội bộ thành API công khai.
+
+LÀM NGAY nếu có một trong bốn dấu hiệu: chặn một yêu cầu tiếp cận (WCAG) ·
+hỏng IM LẶNG (không lỗi, không test đỏ) · đếm được (N lỗi audit từ cùng một
+khoảng trống) · bất đối xứng với thứ đã có (một trục có, trục kia không).
+
+MỘT GIÁ TRỊ DÙNG MỘT LẦN thì đừng đẻ prop — dùng cửa thoát (\`gapRaw\`,
+\`padRaw\`). Chúng để lại \`data-*-raw\` trên DOM nên đếm được; khi số đếm lớn
+lên, ĐÓ mới là lúc nó đáng có tên.
+
+Cổng đỏ nếu sai: no-utility-spacing, no-utility-layout, no-arbitrary-spacing
+
+SAI — vá tạm tại chỗ, khoảng trống của DS không bao giờ được sửa:
+    <Flex className="pt-3 pb-2.5">…</Flex>
+
+ĐÚNG — dùng trục đã có, hoặc cửa thoát có dấu vết nếu ngoài thang:
+    <Flex pad={{ blockStart: 3 }}>…</Flex>
+    <Flex padRaw={{ blockEnd: 10 }}>…</Flex>
+
+ĐÚNG — khi thật sự không thuộc về DS, nói ra tại chỗ bằng mã:
+    /*
+     * KHÔNG thuộc design system: bề rộng này là số đo riêng của màn quản trị
+     * thành viên, không phải một trục của Table. Màn thứ hai cần thì mở issue.
+     */
+
+Chi tiết đầy đủ: docs/WHAT-BELONGS-HERE.md`,
+      },
+      {
         id: "layout",
         title: "Bố cục",
         tagline: "Trang là PageContainer. Hàng/cột là Flex. Lưới là ResponsiveGrid.",
