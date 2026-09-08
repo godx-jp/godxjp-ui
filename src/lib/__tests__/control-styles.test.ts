@@ -69,3 +69,8 @@ describe("control-styles (token wiring)", () => {
     });
   });
 });
+
+it("clamps only SelectValue, preserving compound custom trigger content", () => {
+  expect(controlTriggerClass).toContain("[&>[data-slot=select-value]]:line-clamp-1");
+  expect(controlTriggerClass).not.toContain("[&>span]:line-clamp-1");
+});

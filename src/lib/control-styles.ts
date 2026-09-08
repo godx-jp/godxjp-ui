@@ -18,7 +18,7 @@ export const controlMultilineGhostClass =
 export const controlOpenRingClass = "ui-control-trigger";
 
 export const controlTriggerClass =
-  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] border-input bg-background transition-[color,box-shadow] focus-visible:outline-none [&>span]:line-clamp-1";
+  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] border-input bg-background transition-[color,box-shadow] focus-visible:outline-none [&>[data-slot=select-value]]:line-clamp-1";
 
 export const controlIconClass = "size-[length:var(--control-height)] shrink-0";
 
