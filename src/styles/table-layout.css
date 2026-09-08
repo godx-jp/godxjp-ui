@@ -267,14 +267,33 @@
 
   .ui-data-table-pin-end {
     position: sticky;
-    inset-inline-end: 0;
+    /* The offset is MEASURED from the rendered header row and published by the component as a
+     * unitless number (`--table-fixed-offset`), so several adjacent frozen columns stack without
+     * anyone declaring a width twice. A single pinned column resolves to 0 — byte-identical to
+     * the `inset-inline-end: 0` this replaces. */
+    inset-inline-end: calc(var(--table-fixed-offset, 0) * 1px);
     z-index: 2;
     background-color: hsl(var(--background));
     box-shadow: var(--table-pin-shadow);
   }
 
-  th.ui-data-table-pin-end {
+  /* The inline-START twin (antd `fixed: "start"`) — an identity / row-header column that stays put
+   * while the rest of the grid scrolls. */
+  .ui-data-table-pin-start {
+    position: sticky;
+    inset-inline-start: calc(var(--table-fixed-offset, 0) * 1px);
+    z-index: 2;
+    background-color: hsl(var(--background));
+    box-shadow: var(--table-fixed-shadow-start);
+  }
+
+  th.ui-data-table-pin-end,
+  th.ui-data-table-pin-start {
     background-color: hsl(var(--secondary));
+  }
+
+  [dir="rtl"] .ui-data-table-pin-start {
+    box-shadow: var(--table-fixed-shadow-start-rtl);
   }
 
   /* box-shadow has no logical offset — flip its inline direction by hand in RTL, where the pinned
@@ -285,18 +304,95 @@
 
   /* Mirror the row's hover / selected tint — a translucent muted wash layered over the opaque
    * base, so the pinned cell matches the rest of its row. */
-  .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-end {
+  .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-end,
+  .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-start {
     background-image: linear-gradient(
       var(--table-row-hover-background, hsl(var(--muted) / 0.5)),
       var(--table-row-hover-background, hsl(var(--muted) / 0.5))
     );
   }
 
-  .ui-data-table-surface tbody tr[data-state="selected"] > .ui-data-table-pin-end {
+  .ui-data-table-surface tbody tr[data-state="selected"] > .ui-data-table-pin-end,
+  .ui-data-table-surface tbody tr[data-state="selected"] > .ui-data-table-pin-start {
     background-image: linear-gradient(
       var(--table-row-selected-background, hsl(var(--muted) / 0.3)),
       var(--table-row-selected-background, hsl(var(--muted) / 0.3))
     );
+  }
+
+  /* ── antd `ellipsis` ──────────────────────────────────────────────────
+   * One line, truncated. It only truncates under `table-layout: fixed` — an auto-layout table
+   * grows to fit its widest cell instead — which is why the component switches the layout on as
+   * soon as a column asks for `ellipsis` (or `scroll.x` pins a minimum width). Same mechanism antd
+   * uses, and the reason `ellipsis` alone looks inert in every hand-rolled table. */
+  .ui-data-table-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-data-table-surface[data-table-layout="fixed"] [data-slot="table"] {
+    table-layout: fixed;
+  }
+
+  /* ── antd `scroll` ────────────────────────────────────────────────────
+   * Both lengths are CONSUMER data, published as custom properties by the component; the geometry
+   * that reads them lives here. */
+  /* Both carry a fallback rather than a `:root` default: the lengths are CONSUMER data, so there
+   * is no design value to seed them with — and a token that never resolves is a token that does
+   * not exist (`check:dist-tokens-resolve`). The fallbacks are the property's own initial
+   * behaviour, so an unpublished axis is inert even if the attribute is somehow present. */
+  .ui-data-table-scroll[data-scroll-y] {
+    overflow-y: auto;
+    max-block-size: var(--table-scroll-block-size, none);
+  }
+
+  /* BOTH boxes take the floor, and that is the whole point: the surface is `overflow: clip`, so a
+   * table wider than the surface is CLIPPED, not scrolled — measured at 1280px, the table painted
+   * 1450px inside an 848px surface and `.ui-data-table-scroll` reported scrollWidth === clientWidth
+   * === 848, i.e. `scroll.x` produced a table nobody could reach. Giving the surface the same floor
+   * makes the surface itself the wide box, so the scroll region overflows and scrolls, and the
+   * frozen columns stick against a container that actually moves. */
+  .ui-data-table-scroll[data-scroll-x] :is(.ui-data-table-surface, [data-slot="table"]) {
+    min-inline-size: var(--table-scroll-inline-size, auto);
+  }
+
+  /* ── antd `expandable` ────────────────────────────────────────────────── */
+  .ui-data-table-expand-column {
+    inline-size: var(--table-expand-column-width);
+  }
+
+  .ui-data-table-expanded-row > [data-slot="table-cell"] {
+    background-color: var(--table-row-expanded-background, hsl(var(--muted) / 0.3));
+  }
+
+  /* ── antd `summary` — the footer totals row ───────────────────────────── */
+  .ui-data-table-summary {
+    background-color: var(--table-summary-background, hsl(var(--muted)));
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-data-table-summary > tr > [data-slot="table-cell"] {
+    border-block-start: var(--table-summary-border-width) solid hsl(var(--border));
+  }
+
+  /* ── column filter menu (antd `filters`) ──────────────────────────────── */
+  .ui-data-table-filter-trigger[data-filtered] {
+    color: hsl(var(--primary));
+  }
+
+  /* ── antd `rowSelection.selections` — the header checkbox plus its menu ── */
+  .ui-data-table-selection-menu {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--table-selection-menu-gap);
+  }
+
+  /* `<DataTable bordered>` forwards antd's `bordered` to the Table primitive, whose own outer
+   * frame would otherwise stack on top of the surface's. Only the INNER column rules are wanted
+   * here; the surface keeps drawing the frame. */
+  .ui-data-table-surface .ui-table-bordered {
+    border-width: 0;
   }
 
   /* Horizontal row rules already come from TableRow's own border; here we add the outer frame and
@@ -421,7 +517,9 @@
    * than carrying a private z-index that a portaled surface could out-rank. */
   .ui-data-table-sticky-header {
     position: sticky;
-    inset-block-start: 0;
+    /* antd `sticky={{ offsetHeader }}` — the gap a page-level fixed topbar needs. Published by the
+     * component; absent, the header pins flush to its scroll container exactly as before. */
+    inset-block-start: var(--table-sticky-offset, 0);
     z-index: 10;
   }
 

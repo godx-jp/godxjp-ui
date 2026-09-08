@@ -187,6 +187,43 @@ Recorded rather than silently fixed, because each is a real decision:
    strokes blur far more visibly than Latin letterforms. Another reason to prefer Carbon's integer
    steps if the scale is ever revisited.
 
+## The PROP SURFACE of a component is antd's too, not just its group name
+
+antd was already the authority for which components exist and which group they live in. That
+answered "is there a Table" and never answered "what does a Table take". So every prop was decided
+here, one at a time, and the answer drifted per component: `DataTable` grew `pin: "end"` where antd
+has `fixed`, `sortable: true` where antd has `sorter`, and no answer at all for filters, expandable
+rows or a totals row — which is how a consumer ends up hand-rolling a `<tfoot>` and a sticky column
+in page CSS.
+
+**The rule: where antd names a capability, this library takes antd's name and antd's semantics.**
+The gap is read out of the INSTALLED types (`antd/es/table/interface.d.ts`,
+`antd/es/table/InternalTable.d.ts` and the `@rc-component/table` interface they extend) — never
+from memory, because antd's own names move between majors (`fixed: 'left'` is deprecated in favour
+of `start` inside rc-table itself).
+
+> Đọc sau 20.0.0: bản major ấy đã **gỡ `antd` khỏi devDependencies** cùng máy sinh màu của nó, và
+> `check:no-antd-runtime` canh cho nó không quay lại. Câu trên mô tả cách bề mặt prop này ĐƯỢC ĐỌC
+> lúc antd còn cài, không phải một lời mời cài lại. Lần sau muốn đối chiếu, đọc type ở một checkout
+> riêng rồi ghi số hiệu bản vào đây — đừng thêm dependency.
+
+**Three things override antd's spelling, each for a stated reason:**
+
+- **Logical over physical.** antd's `fixed: 'left' | 'right'` cannot mirror for an RTL locale, so
+  only `start` / `end` are published. Same rule that makes `check:rtl` a gate.
+- **This library's controlled vocabulary wins on values.** antd's `SortOrder` is
+  `'ascend' | 'descend'`; here it stays `SortDirectionProp` (`asc` / `desc`), because that type
+  already exists and a second spelling of the same axis is exactly what `check:prop-vocabulary`
+  exists to prevent.
+- **A capability this library already has keeps its own name.** antd's `size`
+  (`small | middle | large`) IS `density` (`compact | default | comfortable`); antd's `locale` IS
+  the `t()` layer. Adding the antd spelling as an alias would be duplication, not parity.
+
+**A knob that only a fork could reach is not parity either.** antd's `components`,
+`filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer
+replace the rendered markup. This library answers that layer with tokens (cardinal rule #45), so
+those are deliberately NOT adopted — adopting them would re-open the hole the token tiers close.
+
 ## Derived colour is AUTHORED, and MEASUREMENT is what makes it authoritative
 
 **Twenty values, in `src/tokens/derived.css`:** `--primary-hover`, `--primary-active`,
@@ -293,7 +330,7 @@ owner chose to ship it off and let whoever needs it turn it on. What that costs,
 **Turning it back on is one attribute, on the root element, with no code change:**
 
 ```html
-<html data-focus-outline="on">
+<html data-focus-outline="on"></html>
 ```
 
 **The switch is a single multiplier, not a scatter of overrides.** `--focus-outline` is one flag,
@@ -316,11 +353,11 @@ the **field** indicator on every control — one hairline (1px) in the focus hue
 `--control-outline` halo — rather than the heavy 3px outline form. Measured, in Chromium, on
 `ql.test` after the transition settles:
 
-| control | switch off | switch on |
-| --- | --- | --- |
-| Input / Select trigger | border `1px rgb(144,135,127)`, resting shadow intact | border `1px rgb(0,113,189)` + `rgba(0,182,228,0.11) 0 0 0 2px` |
-| Button (primary) | outline `0px`, resting shadow intact | `outline: 1px solid rgb(0,113,189)` @ `0px` + same halo |
-| Sidebar nav row / list row | outline `0px` | `outline: 1px solid rgb(0,113,189)` @ **`-1px`** (inset into the row) |
+| control                    | switch off                                           | switch on                                                             |
+| -------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------- |
+| Input / Select trigger     | border `1px rgb(144,135,127)`, resting shadow intact | border `1px rgb(0,113,189)` + `rgba(0,182,228,0.11) 0 0 0 2px`        |
+| Button (primary)           | outline `0px`, resting shadow intact                 | `outline: 1px solid rgb(0,113,189)` @ `0px` + same halo               |
+| Sidebar nav row / list row | outline `0px`                                        | `outline: 1px solid rgb(0,113,189)` @ **`-1px`** (inset into the row) |
 
 The field pair is the recoloured boundary plus the halo, exactly as the convention specifies for
 this seed. The nav row insets its mark into its own shape rather than wrapping an already-shaded surface,

@@ -2521,7 +2521,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         type: "ColumnDef<T>[]",
         required: true,
         description:
-          "Lean column definitions (adapted to TanStack internally — `meta.lean` is the declared home for every custom column option, so `priority` needs no second TanStack channel). Each column: { key: string; header: ReactNode; ariaLabel?: string; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end'; priority?: 'primary'|'secondary'|'meta'|'actions' }. priority is the column-priority contract read by preset=\"action-collection\" — DataTable stamps it as data-priority on the <th> AND every <td> of the column, so the preset can allocate the narrow-frame measure; leave the free-text column unmarked (it takes the remaining space), and prefer priority over width under the preset because an explicit width utility wins the cascade and defeats the measure. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column. ariaLabel gives a VISUALLY-EMPTY header (header='' — an action or selection column) a screen-reader name (e.g. 'Actions'/'Select'): it renders as an sr-only label inside the <th> so the column is never nameless (axe: empty-table-header).",
+          "Lean column definitions (adapted to TanStack internally — `meta.lean` is the declared home for every custom column option, so `priority` needs no second TanStack channel). Each column: { key: string; header: ReactNode; ariaLabel?: string; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end'; priority?: 'primary'|'secondary'|'meta'|'actions' }. priority is the column-priority contract read by preset=\"action-collection\" — DataTable stamps it as data-priority on the <th> AND every <td> of the column, so the preset can allocate the narrow-frame measure; leave the free-text column unmarked (it takes the remaining space), and prefer priority over width under the preset because an explicit width utility wins the cascade and defeats the measure. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column. ariaLabel gives a VISUALLY-EMPTY header (header='' — an action or selection column) a screen-reader name (e.g. 'Actions'/'Select'): it renders as an sr-only label inside the <th> so the column is never nameless (axe: empty-table-header). ANT DESIGN PARITY on the same column: fixed:'start'|'end' freezes the column against a scroll edge (logical, so it mirrors in RTL; the stacking offsets are MEASURED from the rendered header, so several adjacent frozen columns are correct at any width — pin:'end' is the older spelling of fixed:'end'). ellipsis holds the cell to one line and keeps the full value as its title (it also switches the table to table-layout: fixed, without which no ellipsis truncates anything). sorter is antd's richer `sortable`: true | (a, b) => number | { compare, multiple }, where multiple is the MULTI-column sort priority (highest sorts first). sortOrder / defaultSortOrder / sortDirections control and shape the cycle per column, and showSorterTooltip explains the next step. filters + onFilter + filteredValue / defaultFilteredValue / filterMultiple add a real filter menu to the header (filterMultiple: false makes it single-choice); omit onFilter for a server filter and drive it from the table's onFilterChange.",
       },
       {
         name: "getRowId",
@@ -2668,6 +2668,69 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         type: "() => void",
         description:
           "Retry handler surfaced as a Retry button inside the BUILT-IN error state only. Omit it to render the error without a retry affordance; it is intentionally never offered for `denied` (repeating a 403 cannot succeed).",
+      },
+      {
+        name: "rowSelection",
+        type: "{ type?: 'checkbox'|'radio'; selectedRowKeys?: string[]; defaultSelectedRowKeys?: string[]; onChange?: (keys, rows) => void; getCheckboxProps?: (row) => { disabled?, 'aria-label'? }; preserveSelectedRowKeys?: boolean; selections?: true | { key, text, onSelect }[]; hideSelectAll?: boolean; columnTitle?: ReactNode }",
+        description:
+          "Full row-selection configuration (antd rowSelection). Supersedes — and can be mixed with — selectable/selected/onSelectChange, which drive the same state. type:'radio' makes the column single-choice (no header checkbox at all). getCheckboxProps is the declared home for 'this row cannot be selected' (disabled) and for a per-row accessible name. preserveSelectedRowKeys keeps a key selected after its row leaves `data` (server paging / a filter), which is the only way a select-across-pages bulk action can be correct. selections adds bulk entries under the header checkbox (true = the built-in all · invert · none).",
+      },
+      {
+        name: "expandable",
+        type: "{ expandedRowRender?: (row, index, expanded) => ReactNode; rowExpandable?: (row) => boolean; defaultExpandAllRows?: boolean; expandedRowKeys?: string[]; onExpandedRowsChange?: (keys) => void; expandRowByClick?: boolean; columnTitle?: ReactNode }",
+        description:
+          "Expandable detail rows (antd expandable). Supplying expandedRowRender adds a leading expand column before the selection column and renders the panel in a real <tr> spanning every column, so the table's grid semantics survive. rowExpandable gates the affordance per row; expandedRowKeys + onExpandedRowsChange make it controlled.",
+      },
+      {
+        name: "summary",
+        type: "(rows: readonly T[]) => ReactNode",
+        description:
+          "Footer totals row (antd summary), rendered in a real <tfoot> so it keeps the column widths and the screen-reader row navigation. Receives the rows currently rendered (post sort/filter/page), so a page total and a grand total are both expressible. Compose the return with <TableRow>/<TableCell> from the Table primitive.",
+      },
+      {
+        name: "scroll",
+        type: "{ x?: number | string; y?: number | string }",
+        description:
+          "Scroll envelope (antd scroll). x is the table's MINIMUM inline size — it scrolls horizontally past it; y is the body's MAXIMUM block size — it scrolls vertically past it, with the sticky header staying put. Both are published as --table-scroll-inline-size / --table-scroll-block-size, so the lengths stay data and the geometry stays in the stylesheet. Setting x also switches the table to `table-layout: fixed`, which is what makes column widths (and `ellipsis`) authoritative.",
+      },
+      {
+        name: "sticky",
+        type: "boolean | { offsetHeader?: number | string }",
+        description:
+          "Sticky header (antd sticky). Supersedes stickyHeader when given. The object form carries the offset a page-level fixed topbar needs, published as --table-sticky-offset.",
+      },
+      {
+        name: "onRow",
+        type: "(row: T, index: number) => React.HTMLAttributes<HTMLTableRowElement>",
+        description:
+          "Per-row DOM props merged onto the <tr> (antd onRow) — a context menu, a drag handle, a data attribute for an E2E hook. The returned onClick/onKeyDown/className COMPOSE with the built-in row-click and row-tint behaviour rather than replacing it. For plain row navigation prefer onRowClick, which already handles the keyboard and the interactive-descendant guard.",
+      },
+      {
+        name: "bordered",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Draw the vertical rules between columns (antd bordered), forwarded to the Table primitive. The surface keeps drawing the outer frame, so the two never stack. Reach for it when the table carries merged cells or a dense numeric grid.",
+      },
+      {
+        name: "showSorterTooltip",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Explain the NEXT sort step in a tooltip on every sortable header (antd showSorterTooltip). Defaults to false, not antd's true, so an existing table gains no hover chrome; a column's own showSorterTooltip overrides it either way.",
+      },
+      {
+        name: "sortDirections",
+        type: "('asc' | 'desc')[]",
+        defaultValue: "['asc', 'desc']",
+        description:
+          "Table-wide sort cycle (antd sortDirections, in this library's asc/desc spelling). The cycle runs through the listed directions and then clears, so ['desc','asc'] sorts descending first — the right default for a date or amount column. A column's own sortDirections wins.",
+      },
+      {
+        name: "onFilterChange",
+        type: "(filters: Record<string, (string | number | boolean)[]>) => void",
+        description:
+          "Column filters changed, keyed by column — this library's split of the `filters` argument antd passes to the table-level onChange. Pair it with a column's filteredValue to drive filtering from a server query; omit both and the column filters client-side through its onFilter.",
       },
       {
         name: "className",
@@ -3574,9 +3637,17 @@ import { Flex } from "@godxjp/ui/layout";
     props: [
       {
         name: "columns",
-        type: "1 | 2 | 3",
+        type: "number | { sm?: number; md?: number; lg?: number; xl?: number }",
         defaultValue: "2",
-        description: "Column count; collapses to 1 on mobile.",
+        description:
+          "Column count (antd `column`, in this library's plural spelling). A plain 1 | 2 | 3 keeps the mobile-first ladder it has always painted (1 → sm:2 → lg:3). Any other number, or the responsive object, publishes --descriptions-column-count per breakpoint instead, so a 4- or 6-column reference grid — and a per-breakpoint one — is expressible without a class-name fork.",
+      },
+      {
+        name: "bordered",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Draw the grid as a bordered table with a rule between every cell and a shaded label cell (antd `bordered`) — the read-only counterpart of a dense data grid. Every cell draws its own block-start/inline-start rule and the container closes the other two edges, so the frame is complete at any column count, including a responsive one. Colour, radius and cell inset come from the --descriptions-* tokens.",
       },
       {
         name: "layout",
@@ -3595,8 +3666,13 @@ import { Flex } from "@godxjp/ui/layout";
       {
         name: "children",
         type: "ReactNode",
-        required: true,
         description: "Descriptions.Item elements.",
+      },
+      {
+        name: "items",
+        type: "{ key?: React.Key; label: ReactNode; children?: ReactNode; value?: ReactNode; mono?: boolean; span?: number | 'filled' | { sm?, md?, lg?, xl? }; className?: string }[]",
+        description:
+          "Declarative items (antd `items`) — the alternative to composing `Descriptions.Item` children. `children` is antd's name for the value and `value` is this library's older one; either works. Both APIs can be mixed: items render first, then any children. On an item, span accepts antd's 'filled' (take the whole remaining row) and the responsive object as well as the 2 | 3 the compound form has always taken.",
       },
     ],
     usage: [

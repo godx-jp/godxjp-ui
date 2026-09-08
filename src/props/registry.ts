@@ -246,6 +246,109 @@ export const VOCABULARY_REGISTRY = {
     description:
       "Table column priority for the action-collection preset — primary | secondary | meta | actions (unset = takes the remaining space)",
   },
+  ColumnFixedProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Table column sticky edge — start | end (logical; antd `fixed`, whose physical left/right cannot mirror for RTL)",
+  },
+  ColumnFilterValueProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description: "One value a table column filter can carry — string | number | boolean",
+  },
+  ColumnFilterItemProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "One option in a table column filter menu — { text, value } (antd ColumnFilterItem)",
+  },
+  ColumnFilterStateProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description: "Active filter selection for one table column (antd FilterValue)",
+  },
+  OnColumnFilterChangeProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Column-filter change handler keyed by column — this library's split of the `filters` argument antd passes to the table-level onChange",
+  },
+  ColumnCompareProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description: "Table column comparator (a, b) => number — the `compare` half of antd's sorter",
+  },
+  ColumnSorterProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Table column sort declaration — true | comparator | { compare, multiple } where `multiple` is the multi-column sort priority (antd sorter)",
+  },
+  TableSelectionItemProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "One entry in the selection-column dropdown — { key, text, onSelect } (antd SelectionItem)",
+  },
+  TableRowSelectionProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "DataTable row-selection config — type | selectedRowKeys | onChange | getCheckboxProps | preserveSelectedRowKeys | selections | hideSelectAll | columnTitle (antd TableRowSelection)",
+  },
+  TableExpandableProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "DataTable expandable-row config — expandedRowRender | rowExpandable | defaultExpandAllRows | expandedRowKeys | onExpandedRowsChange | expandRowByClick (antd/rc-table ExpandableConfig)",
+  },
+  TableSummaryProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description: "DataTable footer totals row — (rows) => ReactNode (antd/rc-table summary)",
+  },
+  TableScrollProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "DataTable scroll envelope { x, y } — published as --table-scroll-x / --table-scroll-y so the lengths stay data and the geometry stays in CSS (antd scroll)",
+  },
+  TableStickyProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "DataTable sticky header — true | { offsetHeader }, published as --table-sticky-offset (antd sticky)",
+  },
+  OnRowProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description: "Per-row DOM props merged onto the <tr> (antd onRow)",
+  },
+  DescriptionsColumnProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Descriptions column count — a number (this library's mobile-first ladder) or antd's responsive { sm, md, lg, xl } object",
+  },
+  DescriptionsSpanProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "How many columns one Descriptions item occupies — number | 'filled' (the whole remaining row) | responsive { sm, md, lg, xl } (antd span)",
+  },
+  DescriptionsItemsProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Declarative Descriptions items (antd `items`) — { key, label, children/value, mono, span } — the alternative to composing Descriptions.Item children",
+  },
+  TablePaginationProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "DataTable pagination object surface — 1-based current | pageSize | total | pageSizeOptions | showSizeChanger | onChange (antd TablePaginationConfig); `false` hides the pager",
+  },
   TableCellIndentProp: {
     file: "vocabulary/data.prop.ts",
     category: "data",
@@ -1609,6 +1712,19 @@ export const COMPONENT_PROP_REGISTRY = {
       "TablePresetProp",
       "TableColumnPriorityProp",
       "BreakpointProp",
+      "ColumnFixedProp",
+      "ColumnFilterItemProp",
+      "ColumnFilterStateProp",
+      "ColumnSorterProp",
+      "TableRowSelectionProp",
+      "TableExpandableProp",
+      "TableSummaryProp",
+      "TableScrollProp",
+      "TableStickyProp",
+      "OnRowProp",
+      "TablePaginationProp",
+      "SortDirectionProp",
+      "OnColumnFilterChangeProp",
     ],
   },
   ListRowDensityProp: {

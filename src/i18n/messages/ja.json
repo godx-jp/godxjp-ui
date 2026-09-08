@@ -400,7 +400,19 @@
     "error": "一覧を取得できませんでした",
     "errorDescription": "データを取得できませんでした。時間をおいて再試行してください。",
     "denied": "この一覧を表示する権限がありません",
-    "deniedDescription": "閲覧するには管理者に権限の付与を依頼してください。"
+    "deniedDescription": "閲覧するには管理者に権限の付与を依頼してください。",
+    "selectInvert": "選択を反転",
+    "selectNone": "選択を解除",
+    "selectionMenu": "選択オプション",
+    "filterColumn": "絞り込み",
+    "filterReset": "絞り込みを解除",
+    "expandColumn": "展開",
+    "expandRow": "行を展開",
+    "collapseRow": "行を折りたたむ",
+    "sortAscending": "昇順に並べ替え",
+    "sortDescending": "降順に並べ替え",
+    "sortCancel": "並べ替えを解除",
+    "selectColumn": "選択"
   },
   "dataGrid": {
     "search": "検索",
