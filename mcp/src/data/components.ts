@@ -5455,6 +5455,20 @@ export function PrioritySelect({ value, onValueChange }) {
     tagline: "Radio group accepting an options array or RadioItem children.",
     props: [
       {
+        name: "optionType",
+        type: '"default" | "button"',
+        defaultValue: '"default"',
+        description:
+          "antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds the choices into one segmented bar. The role stays `radiogroup`/`radio` either way: this is paint, never semantics, so a screen reader hears the same group in both.",
+      },
+      {
+        name: "buttonStyle",
+        type: '"outline" | "solid"',
+        defaultValue: '"outline"',
+        description:
+          'antd `buttonStyle` — fill of the SELECTED choice while `optionType="button"`. Inert on the default option type.',
+      },
+      {
         name: "id",
         type: "string",
         description: "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",

@@ -7178,12 +7178,36 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "addonAfter",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "addonBefore",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "allowClear",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/data-entry/input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "count",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlCountProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "defaultValue",
@@ -7211,7 +7235,7 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
-          "declaredIn": ["src/components/data-entry/input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "name",
@@ -7229,15 +7253,39 @@
           "required": false,
           "type": "(() => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "prefix",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "\"sm\" | \"md\" | undefined",
-          "values": ["sm", "md"],
-          "declaredIn": ["src/components/data-entry/input.tsx"]
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "suffix",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "trailingIcon",
@@ -7245,7 +7293,7 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
-          "declaredIn": ["src/components/data-entry/input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "type",
@@ -7266,6 +7314,14 @@
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
@@ -8745,11 +8801,27 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "changeOnWheel",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "className",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "controls",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -8777,11 +8849,27 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "formatter",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: number | null) => string) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "id",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "keyboard",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -8813,6 +8901,14 @@
           "origin": "owned",
           "required": false,
           "type": "OnValueChangeProp<number | null> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "parser",
+          "origin": "owned",
+          "required": false,
+          "type": "((display: string) => number | null) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -8857,6 +8953,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "step",
           "origin": "owned",
           "required": false,
@@ -8878,6 +8982,14 @@
           "required": false,
           "type": "number | null | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -9426,12 +9538,36 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "addonAfter",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "addonBefore",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "allowClear",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/data-entry/input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "count",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlCountProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "leadingIcon",
@@ -9439,7 +9575,7 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
-          "declaredIn": ["src/components/data-entry/input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "onClear",
@@ -9447,15 +9583,39 @@
           "required": false,
           "type": "(() => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "prefix",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "\"sm\" | \"md\" | undefined",
-          "values": ["sm", "md"],
-          "declaredIn": ["src/components/data-entry/input.tsx"]
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "suffix",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "trailingIcon",
@@ -9463,7 +9623,15 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
-          "declaredIn": ["src/components/data-entry/input.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
@@ -10203,6 +10371,14 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "buttonStyle",
+          "origin": "owned",
+          "required": false,
+          "type": "RadioButtonStyleProp | undefined",
+          "values": ["outline", "solid"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "children",
           "origin": "owned",
           "required": false,
@@ -10264,6 +10440,14 @@
           "required": false,
           "type": "ChoiceOptionProp[] | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "optionType",
+          "origin": "owned",
+          "required": false,
+          "type": "RadioOptionTypeProp | undefined",
+          "values": ["button", "default"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -10448,6 +10632,22 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "allowClear",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/rating.tsx"]
+        },
+        {
+          "name": "allowHalf",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/rating.tsx"]
+        },
+        {
           "name": "aria-label",
           "origin": "owned",
           "required": false,
@@ -10456,10 +10656,26 @@
           "declaredIn": ["src/components/ui/rating.tsx"]
         },
         {
+          "name": "character",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode | ((index: number) => React.ReactNode)",
+          "values": [],
+          "declaredIn": ["src/components/ui/rating.tsx"]
+        },
+        {
           "name": "className",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/rating.tsx"]
+        },
+        {
+          "name": "count",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/components/ui/rating.tsx"]
         },
@@ -10509,6 +10725,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/ui/rating.tsx"]
+        },
+        {
+          "name": "tooltips",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly string[] | undefined",
+          "values": [],
           "declaredIn": ["src/components/ui/rating.tsx"]
         },
         {
@@ -10838,11 +11062,27 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -10864,6 +11104,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/components/ui/segmented.tsx"]
+        },
+        {
+          "name": "block",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/components/ui/segmented.tsx"]
         },
         {
@@ -10923,11 +11171,27 @@
           "declaredIn": ["src/components/ui/segmented.tsx"]
         },
         {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/components/ui/segmented.tsx"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/components/ui/segmented.tsx"]
+        },
+        {
+          "name": "vertical",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/components/ui/segmented.tsx"]
         }
       ]
@@ -12361,6 +12625,30 @@
           ]
         },
         {
+          "name": "dots",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "included",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "marks",
+          "origin": "owned",
+          "required": false,
+          "type": "SliderMarksProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "name",
           "origin": "inherited-behavioral",
           "required": false,
@@ -12389,6 +12677,30 @@
           "declaredIn": [
             "node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
           ]
+        },
+        {
+          "name": "range",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "reverse",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "tooltip",
+          "origin": "owned",
+          "required": false,
+          "type": "SliderTooltipProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "value",
@@ -12674,7 +12986,7 @@
           "origin": "owned",
           "required": false,
           "type": "StepStatusProp | undefined",
-          "values": ["wait", "process", "finish", "error"],
+          "values": ["error", "wait", "process", "finish"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
@@ -12717,6 +13029,14 @@
           ]
         },
         {
+          "name": "checkedChildren",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "defaultChecked",
           "origin": "inherited-behavioral",
           "required": false,
@@ -12735,6 +13055,14 @@
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "name",
@@ -12783,6 +13111,14 @@
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
+        },
+        {
+          "name": "unCheckedChildren",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "value",
@@ -13353,7 +13689,7 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/data-entry/textarea.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "autoGrow",
@@ -13361,7 +13697,23 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["src/components/data-entry/textarea.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "autoSize",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | { minRows?: number; maxRows?: number; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "count",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlCountProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "defaultValue",
@@ -13389,7 +13741,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/textarea.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "minRows",
@@ -13397,7 +13749,7 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/textarea.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "name",
@@ -13415,7 +13767,23 @@
           "required": false,
           "type": "(() => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/data-entry/textarea.tsx"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "value",
@@ -13431,9 +13799,9 @@
           "name": "variant",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | \"ghost\" | undefined",
-          "values": ["default", "ghost"],
-          "declaredIn": ["src/components/data-entry/textarea.tsx"]
+          "type": "\"default\" | \"ghost\" | ControlVariantProp | undefined",
+          "values": ["default", "ghost", "outlined", "filled", "borderless"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
