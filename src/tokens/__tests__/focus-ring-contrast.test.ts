@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { readFileSync } from "node:fs";
+import { globSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -119,7 +119,10 @@ function ringOf(theme: "light" | "dark"): [number, number, number] {
  * ──────────────────────────────────────────────────────────────────────────── */
 describe.each(THEMES)("the shipped default is antd's own output ($theme)", ({ theme }) => {
   const token = antdFor(theme);
-  const body = block(generated, theme === "light" ? ":root {" : '.dark,\n:root[data-theme="dark"] {');
+  const body = block(
+    generated,
+    theme === "light" ? ":root {" : '.dark,\n:root[data-theme="dark"] {',
+  );
 
   it("the field boundary on focus is `colorPrimary` — antd `activeBorderColor`", () => {
     // LIGHT is byte-identical: antd's `defaultAlgorithm` returns the seed unchanged as
@@ -152,8 +155,9 @@ describe.each(THEMES)("the shipped default is antd's own output ($theme)", ({ th
   it("the field halo is `controlOutline`, colour AND alpha", () => {
     const outline = hexOf(hslToRgb(hsl(body, "control-outline")));
     const alpha = num(body, "control-outline-alpha");
-    expect(`rgba(${hslToRgb(hsl(body, "control-outline")).map(Math.round).join(",")},${alpha})`)
-      .toBe(token.controlOutline.replace(/\s/g, ""));
+    expect(
+      `rgba(${hslToRgb(hsl(body, "control-outline")).map(Math.round).join(",")},${alpha})`,
+    ).toBe(token.controlOutline.replace(/\s/g, ""));
     expect(outline).not.toBe(hexOf(ringOf(theme))); // antd's halo hue is NOT the primary itself
   });
 
@@ -271,9 +275,21 @@ describe("the switch is OFF by default, and nothing can paint around it", () => 
     // Rebinds set `--focus-ring-weight`; the width is `weight × switch`. A rebind that assigned
     // `--focus-ring-width` directly would paint with the switch off — the exact hole this asserts
     // is closed. `.ui-command-input` is allowed to zero its own weight.
-    const offenders = [...focusRing.matchAll(/([^{}]+)\{([^}]*--focus-ring-width:[^}]*)\}/g)].map(
-      (m) => m[1].trim().replace(/\s+/g, " "),
+    // EVERY stylesheet, not just focus-ring.css. The claim in this title is repo-wide, but the
+    // scan read one file — measured: `.ui-probe-rebind { --focus-ring-width: 3px; }` added to
+    // navigation-layout.css left all 66 tests green. The token's own declaration in
+    // tokens/foundation.css is the one legal writer.
+    const sheets = globSync("src/{styles,tokens}/**/*.css").filter(
+      (f) => !f.endsWith("src/tokens/foundation.css"),
     );
+    expect(sheets.length, "no stylesheets found to scan").toBeGreaterThan(0);
+    const offenders: string[] = [];
+    for (const file of sheets) {
+      const css = readFileSync(join(process.cwd(), file), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+      for (const m of css.matchAll(/([^{}]+)\{([^{}]*--focus-ring-width\s*:[^{}]*)\}/g)) {
+        offenders.push(`${file}: ${m[1].trim().replace(/\s+/g, " ")}`);
+      }
+    }
     expect(offenders, "rebind --focus-ring-weight, never --focus-ring-width").toEqual([]);
   });
 
@@ -282,7 +298,10 @@ describe("the switch is OFF by default, and nothing can paint around it", () => 
     // it. It must therefore be scoped, or a switched-off field would still turn blue on focus.
     const at = focusRing.indexOf("--input: var(--focus-ring-color");
     expect(at, "the boundary rule must exist").toBeGreaterThan(-1);
-    const selector = focusRing.slice(focusRing.lastIndexOf("*/", at) + 2, focusRing.lastIndexOf("{", at));
+    const selector = focusRing.slice(
+      focusRing.lastIndexOf("*/", at) + 2,
+      focusRing.lastIndexOf("{", at),
+    );
     // Split on TOP-LEVEL commas only — the selector contains `:is(a, b, c)` groups.
     const parts: string[] = [];
     let depth = 0;
@@ -447,7 +466,7 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
         const knob = value.match(/var\((--[a-z-]+)\)/)?.[1];
         return knob
           ? ((controlTokens + shellTokens).match(new RegExp(`${knob}:\\s*([^;]+);`))?.[1]?.trim() ??
-            value)
+              value)
           : value;
       }),
     ].map(step);

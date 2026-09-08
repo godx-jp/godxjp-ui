@@ -1026,7 +1026,7 @@
           "origin": "owned",
           "required": false,
           "type": "AppSettingPickerAppearanceProp | undefined",
-          "values": ["inline", "icon", "labeled"],
+          "values": ["inline", "icon", "bar", "labeled"],
           "declaredIn": ["src/props/components/app.prop.ts"]
         },
         {
@@ -1104,6 +1104,67 @@
         }
       ]
     },
+    "AppSettingToggle": {
+      "group": "navigation",
+      "props": [
+        {
+          "name": "appearance",
+          "origin": "owned",
+          "required": false,
+          "type": "AppSettingToggleAppearanceProp | undefined",
+          "values": ["icon", "bar"],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "kind",
+          "origin": "owned",
+          "required": true,
+          "type": "AppSettingToggleKind",
+          "values": ["density", "fontSize", "timeFormat", "theme"],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "OnValueChangeProp<string> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/app.prop.ts"]
+        }
+      ]
+    },
     "AppShell": {
       "group": "layout",
       "props": [
@@ -1161,6 +1222,22 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "navRail",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "navRailLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -2403,6 +2480,14 @@
     "Calendar": {
       "group": "data-entry",
       "props": [
+        {
+          "name": "bordered",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
         {
           "name": "dir",
           "origin": "inherited-behavioral",
@@ -6374,6 +6459,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "fill",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "gap",
           "origin": "owned",
           "required": false,
@@ -6426,6 +6519,14 @@
           "origin": "owned",
           "required": false,
           "type": "PadRawProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "WidthProp | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
@@ -7286,6 +7387,30 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "Legend": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "LegendItemProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
     },
@@ -9822,6 +9947,14 @@
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
         {
+          "name": "segments",
+          "origin": "owned",
+          "required": false,
+          "type": "ProgressSegment[] | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/progress.tsx"]
+        },
+        {
           "name": "tone",
           "origin": "owned",
           "required": false,
@@ -9832,8 +9965,8 @@
         {
           "name": "value",
           "origin": "owned",
-          "required": true,
-          "type": "number",
+          "required": false,
+          "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/progress.tsx"]
         }

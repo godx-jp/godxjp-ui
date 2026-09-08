@@ -95,12 +95,31 @@
   --app-shell-bar-inset: var(--space-page-x);
   --app-shell-bar-inset-compact: var(--space-page-compact-x);
   --app-shell-bar-gap: var(--space-3);
-  /* Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service
+  /* Docked navigation TRACK widths — the SINGLE most-retuned shell constant (rule #45). A service
    * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once
-   * instead of forking `.app-root`. `-rail-` is the icon-only width used at
-   * `<AppShell sidebarCollapsed>`. */
+   * instead of forking `.app-root`.
+   *
+   * THREE WIDTHS, THREE DIFFERENT QUESTIONS — and two of them used to share the word "rail":
+   *
+   *  - `--app-shell-sidebar-width`           the sidebar track, expanded.
+   *  - `--app-shell-sidebar-collapsed-width` the SAME track at `<AppShell sidebarCollapsed>`.
+   *  - `--app-shell-nav-rail-width`          a SECOND, separate track that only exists when the
+   *                                          `navRail` slot is filled (the Slack/Teams shape).
+   *
+   * The middle one shipped as `--app-shell-rail-width` through 19.x, which read as "the width of
+   * the rail" and therefore collided head-on with the real rail added in 20.0.0 — two tokens, both
+   * 4rem, both spelled "rail", meaning entirely different things. Renamed with NO alias: an alias
+   * would resolve to a plausible width in either reading and break silently, which is precisely the
+   * failure class this package gates against everywhere else. */
   --app-shell-sidebar-width: 16rem;
-  --app-shell-rail-width: 4rem;
+  --app-shell-sidebar-collapsed-width: 4rem;
+  /* 3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default
+   * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide
+   * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed
+   * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar
+   * collapsed. 3.5rem still clears the coarse-pointer 44px tap target. It is a token precisely so
+   * a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`. */
+  --app-shell-nav-rail-width: 3.5rem;
   --app-shell-page-max-width: 80rem;
   --app-shell-main-background: hsl(var(--muted) / 0.4);
   --app-shell-mobile-nav-width: 22.5rem;

@@ -157,6 +157,7 @@
     },
     "appShell": {
       "sidebarLabel": "Sidebar",
+      "navRailLabel": "Workspaces",
       "headerLabel": "Header",
       "mainLabel": "Main content",
       "footerLabel": "Footer",
@@ -254,7 +255,8 @@
       "loading": "Loading permissions…"
     },
     "progress": {
-      "ariaLabel": "Progress"
+      "ariaLabel": "Progress",
+      "breakdownSeparator": ", "
     }
   },
   "ui": {
@@ -362,6 +364,9 @@
       "logistics": "Logistics Teal",
       "partner": "Partner Orange",
       "slate": "HQ Slate"
+    },
+    "settingToggle": {
+      "label": "{setting}: {value}"
     }
   },
   "locale": {

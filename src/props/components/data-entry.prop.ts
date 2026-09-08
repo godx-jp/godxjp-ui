@@ -346,6 +346,18 @@ export type CalendarProp = DayPickerProps &
      * (`Calendar fullscreen` is 100% of its container; the DatePicker dropdown is a fixed 288px).
      */
     width?: Extract<ControlWidthProp, "auto" | "full">;
+    /**
+     * Rule the grid: one border per day cell, weekday header included.
+     *
+     * NOT a box around the calendar — that is what `Card` is for, and nesting one inside a section
+     * card was measured on a real page as two rounded edges 16px apart with both paddings stacked.
+     * What a month grid needs is the ruling BETWEEN days, so a week reads as a row of cells the
+     * eye can track across.
+     *
+     * Default `false`, because a picker popover wants the opposite: floating day buttons with no
+     * ruling, so the selected day is the only shape in the panel.
+     */
+    bordered?: boolean;
   };
 
 /** Footer actions shared by Calendar and the pickers that embed it. Both default to off. */

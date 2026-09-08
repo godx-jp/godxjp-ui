@@ -85,12 +85,36 @@ describe("shared overlay scrim (gh#215)", () => {
   });
 
   it("leaves no overlay opted out of the shared scrim with a hard-coded backdrop", () => {
-    expect(
-      declarationsFor(dialogStyles, '[data-slot="dialog-overlay"].ui-two-factor-setup-overlay'),
-    ).toBe("");
-    for (const sheet of [dialogStyles, shellStyles]) {
+    // This used to assert `declarationsFor(dialogStyles, '[data-slot="dialog-overlay"].ui-two-
+    // factor-setup-overlay') === ""` — one exact compound selector that has never existed in any
+    // stylesheet, so it could only ever compare "" with "". Measured: adding
+    // `.ui-two-factor-setup-overlay { background-color: hsl(0 0% 0% / 0.45); }` to
+    // dialog-layout.css — precisely the opt-out named in the title — left all 8 tests green. Walk
+    // the overlay rules instead: whatever the selector, a scrim's backdrop must resolve from
+    // `--overlay-background`, which is the whole point of the shared token.
+    const scrims: { sheet: string; selector: string; value: string }[] = [];
+    for (const [name, sheet] of [
+      ["dialog-layout.css", dialogStyles],
+      ["shell-layout.css", shellStyles],
+    ] as const) {
       const stripped = sheet.replace(/\/\*[\s\S]*?\*\//g, "");
-      expect(stripped).not.toMatch(/background-color:\s*rgb\(0 0 0/);
+      for (const rule of stripped.matchAll(/([^{}]*)\{([^{}]*)\}/g)) {
+        const selector = rule[1].trim().replace(/\s+/g, " ");
+        if (!/overlay|scrim|backdrop/i.test(selector)) continue;
+        for (const declaration of rule[2].split(";")) {
+          const match = declaration.match(/^\s*(background(?:-color)?)\s*:([\s\S]+)$/);
+          if (match) scrims.push({ sheet: name, selector, value: match[2] });
+        }
+      }
+    }
+    // Guard the guard: an empty list would make the loop below assert nothing.
+    expect(scrims.length, "no overlay backdrop declarations found to check").toBeGreaterThan(0);
+    for (const { sheet, selector, value } of scrims) {
+      expect(
+        value,
+        `${sheet}: \`${selector}\` paints its backdrop without --overlay-background — a service ` +
+          `that retunes the shared scrim token gets no effect on this overlay.`,
+      ).toMatch(/var\(\s*--overlay-background\b/);
     }
   });
 });

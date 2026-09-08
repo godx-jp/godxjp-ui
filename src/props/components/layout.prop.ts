@@ -33,6 +33,7 @@ import type {
   IconProp,
   HeadingLevelProp,
   ToneProp,
+  WidthProp,
 } from "../vocabulary";
 import type { EmptyStateToneProp } from "./data-display.prop";
 
@@ -214,6 +215,31 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
    * only on the narrow side (a compact-only affordance). Omit for no attribute and no rule.
    */
   hideFrom?: BreakpointProp;
+  /**
+   * Take the space the siblings leave — the Flex becomes the row's ELASTIC column.
+   *
+   * ## Vì sao là một trục, không phải một tiện ích
+   *
+   * Một hàng thật gần như luôn có hình `cố định | co giãn | cố định`: tên bên trái, thước đo ở
+   * giữa, con số bên phải. Không có trục này thì nước đi duy nhất là `className="flex-1 min-w-0"`
+   * — mà `ui-audit` chặn `no-utility-spacing`, nên cách làm ĐÚNG lại là cách bất hợp pháp.
+   * `PageContainer` đã có `fill` với đúng nghĩa ấy; `Flex` không có là bất đối xứng, không phải
+   * quyết định (gh#405 §2).
+   *
+   * Nó kèm luôn `min-inline-size: 0`. Đó không phải chi tiết thừa: một flex item mặc định không
+   * co nhỏ hơn nội dung, nên một `Text truncate` bên trong sẽ ĐẨY hàng rộng ra thay vì cắt bớt.
+   */
+  fill?: boolean;
+  /**
+   * Bề rộng CỐ ĐỊNH của một cột trong hàng — số là px, chuỗi là mọi CSS length (`"12rem"`, `"40%"`).
+   *
+   * Đi kèm `flex: none`. Một `inline-size` mà sibling vẫn bóp được thì không phải cột, nó chỉ là
+   * một đề nghị — và sáu thanh xếp dọc dưới nhau sẽ bắt đầu ở sáu toạ độ x khác nhau.
+   *
+   * Nó để lại `data-width-raw` trên DOM, cùng lý do với `gapRaw`/`padRaw`: mỗi số đo cứng viết ở
+   * call site đều ĐẾM ĐƯỢC, nên một kho đang trôi khỏi thang tự lộ ra bằng con số.
+   */
+  width?: WidthProp;
 };
 
 /** Container column counts; omitted steps inherit from the previous step. Base defaults to 1. */
@@ -304,10 +330,37 @@ export type AppShellProp = {
    */
   topbarSpan?: "content" | "full";
   /**
+   * A SECOND navigation column, narrower than `sidebar` and placed before it — the
+   * workspace/organization switcher shape (Slack, Teams, Discord). Passing a node adds the track;
+   * omitting it leaves the two-column shell exactly as it was. Width is
+   * `--app-shell-nav-rail-width` (4rem).
+   *
+   * Orthogonal to `topbarSpan`: the rail says how many navigation COLUMNS there are, `topbarSpan`
+   * says how far the BAR reaches, and every combination of the two is a real shape, so they never
+   * need to be reconciled. `sidebarCollapsed` folds the sidebar track only — the rail keeps its
+   * width, which is what keeps its destinations reachable while collapsed.
+   *
+   * Building this by hand inside the single `sidebar` slot is the trap it replaces: `Sidebar`
+   * renders `.sb-root { display: contents }`, so two of them dropped side by side dissolve into
+   * one flex row and both collapse to zero unless each is separately wrapped — and sizing the one
+   * available track for two columns means overriding `--app-shell-sidebar-width`, which is how a
+   * shipped consumer moved its content edge by 64px between routes.
+   */
+  navRail?: ReactNode;
+  /**
+   * Accessible name for the `navRail` landmark. Defaults to the localized "Workspaces".
+   *
+   * The rail and the sidebar are two `complementary` landmarks on one page, so ARIA requires them
+   * to be tellable apart by name; the shell always supplies both defaults rather than requiring
+   * this prop, so the two columns of equal rank behave the same way.
+   */
+  navRailLabel?: string;
+  /**
    * Navigation shown in the mobile drawer at the DXS 900px breakpoint, where the docked sidebar is
-   * hidden. Defaults to `sidebar`, so the same nav is available on mobile with no extra wiring;
-   * pass a distinct node for a mobile-tailored menu, or `null` to opt out (only when navigation
-   * lives elsewhere, e.g. a bottom bar).
+   * hidden. Defaults to `navRail` followed by `sidebar` — both docked columns are hidden at that
+   * width, so a default of `sidebar` alone would silently strip every app-level destination the
+   * rail carries. Pass a distinct node for a mobile-tailored menu, or `null` to opt out (only when
+   * navigation lives elsewhere, e.g. a bottom bar).
    */
   mobileNav?: ReactNode;
   /** Accessible title for the mobile navigation drawer. Defaults to the localized "Menu". */

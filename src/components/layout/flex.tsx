@@ -2,6 +2,10 @@ import { mergeAriaIds } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { flexGapClass, padStyle } from "../../lib/variants";
 import type { FlexProp } from "../../props/components/layout.prop";
+import type { WidthProp } from "../../props/vocabulary";
+
+const toCssLength = (value: WidthProp): string =>
+  typeof value === "number" ? `${value}px` : value;
 
 export type {
   FlexAlignProp,
@@ -23,6 +27,8 @@ export function Flex({
   wrap = false,
   hideBelow,
   hideFrom,
+  fill = false,
+  width,
   className,
   style,
   children,
@@ -60,6 +66,9 @@ export function Flex({
       // inert-default contract) — the stylesheet has no `[data-hide-below]`-less selector.
       data-hide-below={hideBelow}
       data-hide-from={hideFrom}
+      data-fill={fill ? "" : undefined}
+      // Cùng hợp đồng với `gapRaw`/`padRaw`: một số đo cứng ở call site phải ĐẾM ĐƯỢC trên DOM.
+      data-width-raw={width === undefined ? undefined : ""}
       // `gapRaw` thắng `gap`, và `gap` thôi phát lớp — hai bên cùng đặt
       // `gap` thì lớp CSS và style nội tuyến sẽ tranh nhau, mà kết quả của
       // cuộc tranh ấy phụ thuộc thứ tự chèn stylesheet, tức không đoán được.
@@ -69,6 +78,7 @@ export function Flex({
       style={{
         ...style,
         ...(gapRaw === undefined ? undefined : { gap: `${gapRaw}px` }),
+        ...(width === undefined ? undefined : { inlineSize: toCssLength(width) }),
         ...padStyle(pad, padRaw),
       }}
       {...domProps}

@@ -57,6 +57,25 @@ import type {
   DescriptionsLayoutProp,
 } from "../vocabulary";
 
+/**
+ * One key in a `Legend`: a tone, and the words that tone stands for.
+ *
+ * `label` is required and there is no way to omit it. That is the point of a key — colour alone
+ * never carries meaning (WCAG 1.4.1), and a legend whose entries could be wordless would be a
+ * component that lets a caller build the exact failure it exists to prevent.
+ */
+export type LegendItemProp = {
+  /** The tone this key explains — the SAME tone the marks it stands for are drawn in. */
+  tone: ToneProp;
+  label: LabelProp;
+};
+
+/** @see Legend — the key for a colour-coded surface: a breakdown bar, a chart, a status column. */
+export type LegendProp = Omit<React.HTMLAttributes<HTMLUListElement>, "children"> & {
+  items: LegendItemProp[];
+  className?: ClassNameProp;
+};
+
 /** @see EmptyState */
 /**
  * Semantic intent of the EmptyState icon medallion — a subset of the shared `ToneProp` vocabulary

@@ -39,12 +39,25 @@ const NOT_CONTROL =
 // sizing). Ignore sub-control heights < 1.5rem (carets, separators, glyphs).
 const LITERAL_BOX = /\b(?:min-)?height:\s*(?:1\.[5-9]|[2-9])(?:\.[0-9]+)?rem\b/;
 
+/**
+ * Comments, blanked but line-preserving.
+ *
+ * Both scans below read CSS as text, and `([^{}]+)\{…\}` happily swallows the comment that
+ * precedes almost every rule in this repo into the SELECTOR capture — so `NOT_CONTROL` was being
+ * tested against prose. Measured: 15 real control rules were excluded because a nearby comment
+ * happened to contain "label", "content", "icon"…, and a literal `height: 2.5rem` added to
+ * `.ui-form-field` (its comment says "label stacked above the control column") passed the gate.
+ * 53 of the 55 CSS files carry a brace inside a comment, so the block pairing was wrong repo-wide.
+ */
+const blankComments = (css) =>
+  css.replace(/\/\*[\s\S]*?\*\//g, (block) => block.replace(/[^\n]/g, " "));
+
 const errors = [];
 const warns = [];
 
 for (const file of cssFiles) {
   const rel = file.slice(root.length + 1);
-  const css = readFileSync(file, "utf8");
+  const css = blankComments(readFileSync(file, "utf8"));
 
   // ── error: ad-hoc tier offset outside tier-definition files ──
   if (!TIER_DEF_FILES.has(rel)) {

@@ -104,13 +104,23 @@ describe("bundled-font cascade order (issue #210)", () => {
     expect(fonts).not.toContain("@fontsource/montserrat");
   });
 
-  it("keeps the published dist entry in the same order", () => {
-    const distIndex = resolve(REPO_ROOT, "dist/styles/index.css");
-    if (!existsSync(distIndex)) return; // dist is only present after a build
-
-    const index = stripComments(readFileSync(distIndex, "utf8"));
-    expect(index.indexOf('@import "./fonts.css"')).toBeGreaterThan(
-      index.indexOf('@import "./base.css"'),
-    );
-  });
+  // `skipIf`, not a bare `return`. The CI test shards run `pnpm test` with NO build step (ci.yml:
+  // "No build step: the suite imports from `src`, not from `dist`"), so `dist/` is never there and
+  // the old `if (!existsSync(distIndex)) return;` reported a PASS that had measured nothing —
+  // measured: deleting dist/styles/index.css left this file at "6 passed". A skip says so out loud.
+  it.skipIf(!existsSync(resolve(REPO_ROOT, "dist/styles/index.css")))(
+    "keeps the published dist entry in the same order",
+    () => {
+      const index = stripComments(
+        readFileSync(resolve(REPO_ROOT, "dist/styles/index.css"), "utf8"),
+      );
+      const base = index.indexOf('@import "./base.css"');
+      const fonts = index.indexOf('@import "./fonts.css"');
+      // Both anchors asserted present: `fonts > base` is also true when base is simply absent
+      // (`n > -1`), which is the same nothing-measured pass in a second disguise.
+      expect(base, "dist/styles/index.css must import ./base.css").toBeGreaterThan(-1);
+      expect(fonts, "dist/styles/index.css must import ./fonts.css").toBeGreaterThan(-1);
+      expect(fonts).toBeGreaterThan(base);
+    },
+  );
 });

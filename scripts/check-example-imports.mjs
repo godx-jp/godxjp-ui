@@ -121,7 +121,22 @@ async function main() {
     }
   }
 
+  // A scan that opened no file is not a pass. `examples/` was removed from this repo, and
+  // `collectFiles` swallows the ENOENT — so half this gate's declared scope (`.preview.tsx`) has
+  // matched nothing for a long time, and the run was byte-identical to a real one: no output at
+  // all. If `docs/` ever moves the same way, the gate would keep printing success over 0 files.
+  if (files.length === 0) {
+    console.error(
+      "[check:example-imports] scanned 0 files — neither examples/**/*.preview.tsx nor " +
+        "docs/**/*.tsx matched. A gate that opened no file has proven nothing.",
+    );
+    return 1;
+  }
+
   if (violations.length === 0) {
+    console.log(
+      `✓ check:example-imports — ${files.length} example source(s) import only the public API.`,
+    );
     return 0;
   }
 

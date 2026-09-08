@@ -23,6 +23,8 @@ export function AppShell({
   sidebarCollapsed = false,
   responsiveNavigation = "drawer",
   topbarSpan = "content",
+  navRail,
+  navRailLabel,
   mobileNav,
   mobileNavLabel,
   mobileNavOpen,
@@ -34,7 +36,26 @@ export function AppShell({
   // hamburger trigger in the topbar opens a focus-trapped Sheet (Radix Dialog → Esc + overlay
   // close, focus returns to the trigger). The drawer nav defaults to the SAME `sidebar` node, so
   // to opt out.
-  const drawerNav = mobileNav !== undefined ? mobileNav : sidebar;
+  /*
+   * BOTH docked columns are hidden at the breakpoint, so both have to reach the drawer.
+   *
+   * The default used to be `sidebar` alone. Once a `navRail` exists that is no longer the whole
+   * navigation: the rail carries the app-level destinations (the workspace switcher, the top-level
+   * sections), and hiding its track without re-homing its content deletes them outright below
+   * 900px — reachable on a laptop, gone on a phone. A control that exists on only some viewports
+   * is not a control, it is a trap.
+   */
+  const drawerNav =
+    mobileNav !== undefined ? (
+      mobileNav
+    ) : navRail !== undefined ? (
+      <>
+        {navRail}
+        {sidebar}
+      </>
+    ) : (
+      sidebar
+    );
   const hasDrawer = responsiveNavigation === "drawer" && drawerNav != null;
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
   const drawerOpen = mobileNavOpen ?? uncontrolledOpen;
@@ -92,15 +113,31 @@ export function AppShell({
     }
   }
 
+  /*
+   * THE LOGO BELONGS TO WHOEVER OWNS THE TOP-LEFT CORNER, and `topbarSpan` already says who that
+   * is — so the brand follows that axis instead of getting one of its own.
+   *
+   * `topbarSpan="content"` (the default, the admin-console arrangement) runs the rail the full
+   * height of the window with the bar starting beside it. The corner is the SIDEBAR's, so the
+   * brand sits at its head, aligned to the rail's width — the shape every console with a docked
+   * sidebar uses, and the one this consumer asked for after seeing the logo floating in the
+   * content column at x=280, indented 24px past the rail it should have been sitting above.
+   *
+   * `topbarSpan="full"` is the other arrangement: the bar runs edge to edge and the sidebar starts
+   * beneath it. There the corner is the BAR's, and the brand goes in the bar with the rest of the
+   * space-level chrome.
+   */
+  const logoInRail = logo !== undefined && topbarSpan !== "full";
+
   const resolvedTopbar =
     topbar !== undefined ? (
       <div className="app-topbar-rail">
-        {logo !== undefined && <div className="app-topbar-logo">{logo}</div>}
+        {!logoInRail && logo !== undefined && <div className="app-topbar-logo">{logo}</div>}
         <div className="app-topbar-custom">{topbar}</div>
       </div>
     ) : (
       <div className="app-topbar-rail">
-        {logo !== undefined && <div className="app-topbar-logo">{logo}</div>}
+        {!logoInRail && logo !== undefined && <div className="app-topbar-logo">{logo}</div>}
         {topbarLeft !== undefined && <div className="app-topbar-left">{topbarLeft}</div>}
         <div className="app-topbar-spacer" />
         {topbarRight !== undefined && <div className="app-topbar-right">{topbarRight}</div>}
@@ -109,9 +146,26 @@ export function AppShell({
 
   const rail = (
     <aside className="app-sidebar" aria-label={t("layout.appShell.sidebarLabel")}>
+      {logoInRail && <div className="app-sidebar-logo">{logo}</div>}
       {sidebar}
     </aside>
   );
+
+  /*
+   * The second navigation column. It is a landmark of the same rank as the sidebar, so it gets the
+   * same treatment: its own `aside`, and a name the shell supplies by default. Two `complementary`
+   * landmarks on one page must be distinguishable by name (ARIA), and leaving that to the consumer
+   * is how the shipped attempt at this shape ended up with an inconsistent landmark count.
+   */
+  const navRailRegion =
+    navRail === undefined ? null : (
+      <aside
+        className="app-nav-rail"
+        aria-label={navRailLabel ?? t("layout.appShell.navRailLabel")}
+      >
+        {navRail}
+      </aside>
+    );
 
   // The ONE thing that survives in a bar-less shell: AppShell's own hamburger. Below the 900px
   // breakpoint the docked sidebar is hidden, so dropping the bar there as well would leave the
@@ -172,13 +226,28 @@ export function AppShell({
       data-responsive-navigation={responsiveNavigation}
       data-topbar={hasTopbarContent ? undefined : "none"}
       data-topbar-span={topbarSpan === "full" ? "full" : undefined}
+      data-nav-rail={navRail !== undefined ? "" : undefined}
     >
       {/* Grid areas place these regardless of source order, so source order is free to be the
        * ACCESSIBLE one: whichever region the eye reaches first comes first in the DOM. With a
        * full-width bar above the rail, leaving the aside first would send Tab into the sidebar
        * while the bar sits visibly above it (WCAG 2.4.3 / 1.3.2). */}
-      {topbarSpan === "full" ? bar : rail}
-      {topbarSpan === "full" ? rail : bar}
+      {/* The nav rail is the leftmost column, so it precedes the sidebar in source for the same
+       * reason the bar precedes both under `topbarSpan="full"`: source order IS the focus order,
+       * and it has to match the visual one (WCAG 2.4.3 / 1.3.2). */}
+      {topbarSpan === "full" ? (
+        <>
+          {bar}
+          {navRailRegion}
+          {rail}
+        </>
+      ) : (
+        <>
+          {navRailRegion}
+          {rail}
+          {bar}
+        </>
+      )}
       <main className="app-main" aria-label={t("layout.appShell.mainLabel")} tabIndex={0}>
         {breadcrumb !== undefined && <div className="app-breadcrumb">{breadcrumb}</div>}
         {children}

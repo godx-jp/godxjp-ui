@@ -62,7 +62,12 @@ Nó là đầu vào của §3, không phải một ngoại lệ để nới.
 ### Bước 1 — Chứng minh đó là khoảng trống, đừng cảm thấy
 
 Viết ra đúng đoạn mã bạn **muốn** viết, rồi chạy `ui-audit` lên nó.
-**Xanh nghĩa là bạn đã có nước đi** — dùng nó, dừng ở đây.
+
+Audit xanh nghĩa là **không có gì CẤM** bạn — chưa phải là bạn có nước đi. Nước
+đi chỉ có thật khi bạn MỞ TRANG và thấy nó đổi pixel. Đo được: consumer viết
+`modifiers` + `modifiersClassNames` cho màu cuối tuần, audit xanh, tsc xanh,
+build xanh, và **số màu chữ trên cả lưới vẫn là 1** — class rơi vào `<td>` còn
+`<button>` tự đặt màu. Một API chết im lặng trông y hệt một API đang chạy.
 
 Chỉ khi mọi prop và token hiện có đều không nói được điều cần nói, VÀ mọi đường
 còn lại đều bị audit chặn, thì mới là bất khả.
@@ -162,9 +167,12 @@ lỗi chính tả — nó là mã mà agent sau sẽ chép.
   `check:no-tailwind-class-assertions` chặn.
 
 Vì sao role/nhãn: 138 trên 160 selector của bộ Playwright ở consumer bám vào
-`getByRole`/`getByLabel`. Chúng không phải nghi thức a11y — chúng là **cái cân
-duy nhất** cho biết một lần đổi nền thư viện có làm hỏng UI hay không. Gỡ chúng
-là mất cân, không phải tiết kiệm.
+`getByRole`/`getByLabel`. Chúng không phải nghi thức a11y — chúng là cái cân cho
+biết một lần đổi nền thư viện có làm vỡ CẤU TRÚC hay không. Gỡ chúng là mất cân.
+
+Nhưng chúng **không đo được màu, bo góc, hay phần tử nào đang được tô** — cả một
+đợt lỗi calendar đi qua chúng mà không cái nào đỏ. Cấu trúc và diện mạo là hai
+thước khác nhau; xem §5c.
 
 ## 5b. Một cổng canh được đúng thứ nó CHẠY QUA
 
@@ -239,6 +247,51 @@ cùng của DS.** Hai lỗi tương phản trên do `php artisan test` của con
 được, không phải do CI thư viện. Đừng bỏ axe ra khỏi bộ trình duyệt chỉ vì "hệ
 thống nội bộ" — ở đây nó không đo tuân thủ, nó đo xem DS có phát ra chữ đọc được
 hay không.
+
+## 5c. CSS hỏng IM LẶNG theo ba cách — và cách duy nhất thấy được
+
+Một luật CSS sai không báo lỗi, không cảnh báo, và đọc lên vẫn thuyết phục. Ba
+cơ chế, cả ba đo được trong một ngày:
+
+1. **Nhắm vào class không tồn tại.** `weekdays: cn("flex", …)` — không có class
+   DS, nên mọi luật viết cho `.ui-calendar-weekdays` chưa từng khớp lần nào.
+2. **Thua tầng khác.** `buttonVariants` đặt `rounded-[var(--button-radius)]` như
+   một Tailwind **utility**, mà `utilities` sau `components` — nên không luật
+   components nào đổi được bo góc của một Button. Phải trỏ lại chính biến đó.
+   Cùng lớp: CSS bên thứ ba nhập KHÔNG layer thắng mọi thứ; nhập sai vị trí
+   layer thì thua cả reset. Thứ tự đúng: `theme, base, vendor, components, utilities`.
+3. **Class ở phần tử này, sơn ở phần tử kia.** RDP đặt `day-selected` lên `<td>`,
+   còn nền/bo góc ở `<button>` bên trong → ngày chọn ra hình vuông sắc trong khi
+   hover thì tròn. Quy tắc: **một phần tử sở hữu bề mặt**, mọi trạng thái tô lên nó.
+
+Cách duy nhất phát hiện: **mở trang, `getComputedStyle`, rồi CHỤP MÀN HÌNH.** Đo
+đúng thuộc tính vừa sửa là chưa đủ — ba lần liên tiếp tôi báo "xong" trong khi
+khối đó đang vỡ ở chỗ khác.
+
+Token màu có HAI TẦNG: `--success/--warning/--info/--destructive` là màu **TÔ**;
+chữ phải đọc `--text-success/-warning/-info/-error`. Đo: `Text tone="warning"`
+đọc nhầm tầng cho **1,74:1**, đúng tầng cho **5,90:1**.
+
+## 5d. Tra catalog TRƯỚC khi tự dựng — bốn lần trong một ngày
+
+`CardContent flush` (đường kẻ chạm mép), `CardHeader banded` (header có kẻ khi
+thân là danh sách flush), `ListRow asChild` (hàng LÀ liên kết, thay cho một nút
+rời), `Calendar bordered` — cả bốn **đã có sẵn** và tôi vẫn tự dựng bằng thứ
+khác, vì không hỏi. Lỗi không phải "đoán sai tên prop" mà là **cho rằng thứ đó
+không tồn tại nên không hỏi**.
+
+Trước khi viết bất kỳ bố cục nào: `search_components` + `get_component`. Rẻ hơn
+mọi lần sửa sau.
+
+**Nhưng catalog chở PROP, không chở LUẬT BỐ CỤC** — và đó là một khoảng trống
+thật của catalog, không chỉ là lỗi của người dùng nó. Ví dụ đo được: `CardBar`
+trong manifest có đúng một prop (`extra`), không dòng nào nói nó **tự lấy đường
+kẻ theo VỊ TRÍ** — đầu thì kẻ dưới, cuối thì kẻ trên, ở giữa thì cả hai. Luật ấy
+chỉ nằm trong chú thích của `src/styles/card-layout.css`, cùng chỗ định nghĩa hai
+nhịp `section` (header phẳng) và `band` (header có kẻ).
+
+Nên khi làm bố cục bên trong một component của DS: **mở tệp `*-layout.css` của
+nó ra đọc**. Một agent hỏi MCP đúng cách vẫn sẽ không biết những luật này.
 
 ## 6. Thứ KHÔNG đẩy lên DS
 

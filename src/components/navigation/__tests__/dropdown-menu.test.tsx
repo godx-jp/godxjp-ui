@@ -71,6 +71,30 @@ describe("DropdownMenu", () => {
     expect(screen.queryByRole("menuitem", { name: "Xóa" })).not.toBeInTheDocument();
   });
 
+  /*
+   * Một menu KHÔNG được tự xưng là dialog.
+   *
+   * RAC gắn `role="dialog"` cho mọi popover modal; Radix thì không, và một consumer mở hộp thoại
+   * TỪ một mục menu sẽ thấy hai `role="dialog"` cùng lúc trong lúc menu chạy animation thoát —
+   * đúng thứ đã làm đỏ 12 phép kiểm trình duyệt ở godx-chat. Bám role, không bám class.
+   */
+  it("does not expose the menu surface as a dialog", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button type="button">Surface</Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>Sửa</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>,
+    );
+    await user.click(screen.getByRole("button", { name: "Surface" }));
+    expect(screen.getByRole("menu")).toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
   it("renders checkbox, radio, and shortcut slots", async () => {
     const user = userEvent.setup();
     renderWithUi(

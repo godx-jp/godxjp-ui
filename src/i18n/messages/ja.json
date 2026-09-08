@@ -154,6 +154,7 @@
     },
     "appShell": {
       "sidebarLabel": "サイドバー",
+      "navRailLabel": "ワークスペース",
       "headerLabel": "ヘッダー",
       "mainLabel": "メインコンテンツ",
       "footerLabel": "フッター",
@@ -248,7 +249,8 @@
       "loading": "権限を読み込み中…"
     },
     "progress": {
-      "ariaLabel": "進捗"
+      "ariaLabel": "進捗",
+      "breakdownSeparator": "、"
     }
   },
   "ui": {
@@ -350,6 +352,9 @@
       "logistics": "Logistics Teal",
       "partner": "Partner Orange",
       "slate": "HQ Slate"
+    },
+    "settingToggle": {
+      "label": "{setting}：{value}"
     }
   },
   "locale": {

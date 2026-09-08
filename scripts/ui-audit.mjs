@@ -29,6 +29,23 @@ const EMOJI = /\p{Extended_Pictographic}/u;
 const EMOJI_FLAG = /\p{Regional_Indicator}/u;
 
 /**
+ * The attribute run of a JSX OPEN TAG, for rules that must see the whole element rather than one
+ * class name. Two things a plain `[^>]*` gets wrong, both of them the "green because it measured
+ * nothing" shape:
+ *
+ *  1. `[^>]` stops at the `>` of an arrow function, so `<Button onClick={() => go()} size="icon">`
+ *     was invisible while the identical `<Button size="icon" onClick={() => go()}>` was flagged.
+ *     A rule that depends on ATTRIBUTE ORDER is a rule an author flips by moving a prop — the same
+ *     defect `no-hand-rolled-surface` had with CLASS order. `(?:=>[^>]*)*` lets the run step over
+ *     an arrow and keep going; the tag's own `>` still ends it.
+ *  2. The scanner below feeds rules ONE LINE at a time, and prettier wraps any element wider than
+ *     printWidth onto several lines. Every rule anchored on `<Tag …>` therefore only ever saw
+ *     single-line elements. Rules carrying `spansElement: true` are matched against the whole file
+ *     instead (line number derived from the match offset), so wrapping no longer hides a violation.
+ */
+const ATTRS = String.raw`[^>]*(?:=>[^>]*)*`;
+
+/**
  * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string, exempt?:RegExp}[]}
  *
  * `exempt` is an optional SECOND escape a rule may declare, matched against the ORIGINAL (un-blanked)
@@ -70,7 +87,25 @@ const RULES = [
     severity: "warn",
     // rounded + border/bg on the consumer's own element = a fake Card / Badge / Avatar / ListRow
     // that drifts from the real ones (a 38px account pill beside 32px controls).
-    test: /className=(?:"[^"]*|'[^']*|\{`[^`]*)\brounded(?:-(?:full|sm|md|lg|xl|2xl))?\b[^"'`]*\b(?:border|bg-)/,
+    //
+    // ORDER-INDEPENDENT, and it has to be: the old single regex required `rounded` to appear
+    // BEFORE `border`/`bg-`, so the identical element passed or failed depending on how the
+    // classes happened to be sorted — and prettier's Tailwind plugin sorts them. A `bg-current …
+    // rounded-full` dot was clean, `prettier --write` reordered it to `rounded-full bg-current`,
+    // and the warning appeared with no source change. A rule a formatter can flip is a rule
+    // nobody can trust.
+    test: (line) => {
+      const m = line.match(/className=(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`)/);
+      if (!m) return false;
+      const cls = m[1] ?? m[2] ?? m[3] ?? "";
+      // A MARKER is not a surface. `size-1` is 4px — a dot, a pip, a status bead. The primitives
+      // this rule points at (Card, Badge, Avatar, ListRow, Descriptions, EmptyState) all start at
+      // control height, so none of them can express one, and flagging it sends the reader looking
+      // for a component that does not exist. The cut-off is `size-2` / 8px: below that there is no
+      // room for the padding and type that make something a surface.
+      if (/\b(?:size|[wh])-(?:0\.5|1|1\.5|2)\b/.test(cls)) return false;
+      return /\brounded(?:-(?:full|sm|md|lg|xl|2xl))?\b/.test(cls) && /\b(?:border|bg-)/.test(cls);
+    },
     message:
       "Hand-rolled surface (rounded + border/bg) — use Card, Badge, Avatar, ListRow, Descriptions or EmptyState so height, padding and radius come from the tokens (docs/CONSUMER-RULES.md §4).",
   },
@@ -92,11 +127,15 @@ const RULES = [
   {
     id: "status-tone-not-variant",
     severity: "error",
+    spansElement: true,
     // Only the tone-driven status components (Badge/Tag/StatCard) are wrong here — they expose a
     // `tone` prop and reserve `variant` for STRUCTURE (default|secondary|outline). Button, Alert,
     // DropdownMenuItem, ContextMenuItem, AlertDialog etc. legitimately use `variant` for emphasis,
     // so they must NOT be flagged.
-    test: /<(?:Badge|Tag|StatCard)\b[^>]*\bvariant=["'](?:success|warning|destructive|info|neutral)["']/,
+    test: new RegExp(
+      `<(?:Badge|Tag|StatCard)\\b${ATTRS}\\bvariant=["'](?:success|warning|destructive|info|neutral)["']`,
+      "g",
+    ),
     message:
       "Badge/Tag/StatCard status uses tone, not variant (variant is structural: default|secondary|outline). Use tone='success|warning|destructive|info|neutral'.",
   },
@@ -110,7 +149,12 @@ const RULES = [
   {
     id: "value-callback-on-value-change",
     severity: "error",
-    test: /<(?:Checkbox\.Group|Upload|Cascader|TreeSelect|Transfer|SearchSelect|DatePicker|DateRangePicker|TimePicker|ColorPicker|LocalePicker|TimezonePicker|DateFormatPicker|TimeFormatPicker)\b[^>]*\bonChange=/,
+    spansElement: true,
+    test: new RegExp(
+      "<(?:Checkbox\\.Group|Upload|Cascader|TreeSelect|Transfer|SearchSelect|DatePicker|" +
+        `DateRangePicker|TimePicker|ColorPicker|LocalePicker|TimezonePicker|DateFormatPicker|TimeFormatPicker)\\b${ATTRS}\\bonChange=`,
+      "g",
+    ),
     message:
       "Abstract value components use onValueChange, not onChange. Reserve onChange for DOM events.",
   },
@@ -219,7 +263,8 @@ const RULES = [
   {
     id: "card-manual-padding",
     severity: "error",
-    test: /<Card\b[^>]*\bp-[1-9]/,
+    spansElement: true,
+    test: new RegExp(`<Card\\b${ATTRS}\\bp-[1-9]`, "g"),
     message:
       "Don't hand-roll padding on <Card> (className='p-4'…) — wrap the body in <CardContent>. (p-0 for a full-bleed table is fine.)",
   },
@@ -232,7 +277,8 @@ const RULES = [
   {
     id: "manual-field-error",
     severity: "warn",
-    test: /<p[^>]*className="[^"]*text-(xs|sm)[^"]*text-destructive/,
+    spansElement: true,
+    test: new RegExp(`<p${ATTRS}className="[^"]*text-(?:xs|sm)[^"]*text-destructive`, "g"),
     message:
       "Field errors should use <FormField error=…>, not a hand-rolled <p> (rules §1). OK only for checkbox/radio groups.",
   },
@@ -281,9 +327,13 @@ const RULES = [
   {
     id: "icon-button-needs-name",
     severity: "warn",
+    spansElement: true,
     // An icon-only Button (size="icon") with no author-supplied accessible name. A combobox/icon
     // button's name is computed from author (aria-label / aria-labelledby / title), not glyph content.
-    test: /<Button\b(?=[^>]*\bsize=["']icon["'])(?![^>]*\b(?:aria-label|aria-labelledby|title)=)[^>]*>/,
+    test: new RegExp(
+      `<Button\\b(?=${ATTRS}\\bsize=["']icon["'])(?!${ATTRS}\\b(?:aria-label|aria-labelledby|title)=)${ATTRS}>`,
+      "g",
+    ),
     standard: "WCAG 2.2 SC 4.1.2 · 1.1.1 · WAI-ARIA 1.2",
     message:
       "Icon-only <Button size=\"icon\"> needs an accessible name — add aria-label={t('…')}. The icon is decorative (aria-hidden); the name comes from the author, not the glyph.",
@@ -291,7 +341,8 @@ const RULES = [
   {
     id: "img-needs-alt",
     severity: "warn",
-    test: /<img\b(?![^>]*\balt=)[^>]*>/,
+    spansElement: true,
+    test: new RegExp(`<img\\b(?!${ATTRS}\\balt=)${ATTRS}>`, "g"),
     standard: "WCAG 2.2 SC 1.1.1 · HTML Living Standard (WHATWG)",
     message:
       'Every <img> needs an alt attribute (alt="" for purely decorative images). Prefer the <Avatar>/<AspectRatio> primitives for product imagery.',
@@ -476,16 +527,22 @@ function walk(dir, acc = []) {
 // Structural: a <Card> (without p-0) whose first child is body content rather than a Card
 // sub-component sits FLUSH (no padding). Per-line regexes can't see across lines, so this is a
 // whole-file pass. The body must be wrapped in <CardContent> (titles in <CardHeader>).
-const CARD_FLUSH =
-  /<Card(?![^>]*\bp-0\b)(?:\s[^>]*)?>\s*<(?!CardContent|CardHeader|CardCover|CardFooter|CardBar|\/Card)/g;
+const CARD_FLUSH = new RegExp(
+  `<Card(?!${ATTRS}\\bp-0\\b)(?:\\s${ATTRS})?>\\s*<(?!CardContent|CardHeader|CardCover|CardFooter|CardBar|\\/Card)`,
+  "g",
+);
 
 // Structural: a bare <label>/<Label> paired with a TEXT control (its sibling) instead of a
 // <FormField>. FormField OWNS the label↔control association (htmlFor/id), aria-describedby/
 // error wiring, AND the field rhythm (label gap + field spacing) — a hand-rolled Label+Input
 // loses all of it (the cramped login-form failure mode). Checkbox/Radio/Switch use Field/Label
 // legitimately, so they are NOT matched. Whole-file pass (the pair spans lines).
-const BARE_FIELD =
-  /<(?:label|Label)\b[^>]*>[\s\S]{0,240}?<\/(?:label|Label)>\s*<(?:Input|Select|Textarea|NumberInput|SearchInput|SearchSelect|DatePicker|DateRangePicker|TimePicker|MonthPicker|MonthRangePicker|Cascader|TreeSelect|input)\b/g;
+const BARE_FIELD = new RegExp(
+  `<(?:label|Label)\\b${ATTRS}>[\\s\\S]{0,240}?</(?:label|Label)>\\s*` +
+    "<(?:Input|Select|Textarea|NumberInput|SearchInput|SearchSelect|DatePicker|DateRangePicker|" +
+    "TimePicker|MonthPicker|MonthRangePicker|Cascader|TreeSelect|input)\\b",
+  "g",
+);
 
 // Two <Card> siblings written back to back at the same indentation with nothing between them.
 // Direct children of PageContainer are spaced by the page; anywhere else they touch.
@@ -507,17 +564,20 @@ const ACTIVE_RULES =
   SELF && !args.includes("--consumer") ? RULES.filter((r) => r.scope !== "consumer") : RULES;
 
 const findings = [];
+let filesScanned = 0;
 for (const dir of SCAN_DIRS) {
   for (const file of walk(isAbsolute(dir) ? dir : join(CWD, dir))) {
     const rel = relative(CWD, file);
+    filesScanned += 1;
     const content = readFileSync(file, "utf8");
     const origLines = content.split("\n");
     const scanContent = stripComments(content); // comments blanked; strings + line numbers kept
     const scanLines = scanContent.split("\n");
     scanLines.forEach((line, i) => {
       for (const rule of ACTIVE_RULES) {
+        if (rule.spansElement) continue; // matched over the whole file below, not line by line
         if (
-          rule.test.test(line) &&
+          (typeof rule.test === "function" ? rule.test(line) : rule.test.test(line)) &&
           !isSuppressed(rule.id, origLines[i], origLines[i - 1]) &&
           !isExempt(rule, origLines[i], origLines[i - 1])
         ) {
@@ -533,6 +593,26 @@ for (const dir of SCAN_DIRS) {
         }
       }
     });
+    // Element-spanning rules: matched against the WHOLE file, because a JSX element prettier wrapped
+    // over five lines is invisible to a line-by-line scan. Same offset→line-number idiom as the
+    // block rules below.
+    for (const rule of ACTIVE_RULES) {
+      if (!rule.spansElement) continue;
+      for (const match of scanContent.matchAll(rule.test)) {
+        const lineNo = scanContent.slice(0, match.index).split("\n").length;
+        if (isSuppressed(rule.id, origLines[lineNo - 1], origLines[lineNo - 2])) continue;
+        if (isExempt(rule, origLines[lineNo - 1], origLines[lineNo - 2])) continue;
+        findings.push({
+          file: rel,
+          line: lineNo,
+          rule: rule.id,
+          severity: rule.severity,
+          standard: rule.standard,
+          message: rule.message,
+          snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
+        });
+      }
+    }
     for (const match of scanContent.matchAll(CARD_FLUSH)) {
       const lineNo = scanContent.slice(0, match.index).split("\n").length;
       if (isSuppressed("card-needs-content", origLines[lineNo - 1], origLines[lineNo - 2]))
@@ -589,7 +669,28 @@ for (const dir of SCAN_DIRS) {
 const errors = findings.filter((f) => f.severity === "error");
 const warnings = findings.filter((f) => f.severity === "warn");
 
-if (asJson) {
+// A run that opened NO file is not a clean run. The default SCAN_DIRS are a consumer's
+// `resources/js/{components,pages,layouts}`; `walk()` swallows ENOENT and returns [], so in any
+// tree without that layout — this repo included — `pnpm audit` printed
+// "✓ No UI-standardization violations found." and exited 0 having read nothing at all.
+if (filesScanned === 0) {
+  const message =
+    `ui-audit scanned 0 files — none of [${SCAN_DIRS.join(", ")}] exists (or all were filtered). ` +
+    `Pass the directories to scan, e.g. \`node scripts/ui-audit.mjs src docs\`. ` +
+    `Reporting a clean audit without opening a file is not a result.`;
+  if (asJson) {
+    process.stdout.write(
+      JSON.stringify({ summary: null, error: message, findings: [] }, null, 2) + "\n",
+    );
+  } else {
+    console.error(`✗ ${message}`);
+  }
+  process.exitCode = 2;
+}
+
+if (filesScanned === 0) {
+  // already reported above
+} else if (asJson) {
   process.stdout.write(
     JSON.stringify(
       { summary: { errors: errors.length, warnings: warnings.length }, findings },
@@ -622,4 +723,4 @@ if (asJson) {
 }
 
 // See the note above --rules: exitCode, so a large JSON report drains fully.
-process.exitCode = errors.length > 0 ? 1 : 0;
+if (filesScanned > 0) process.exitCode = errors.length > 0 ? 1 : 0;

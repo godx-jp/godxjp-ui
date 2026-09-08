@@ -169,6 +169,59 @@ function collect() {
       cls: (el.className && el.className.toString().split(/\s+/)[0]) || "",
     });
   }
+  /*
+   * NON-TEXT CONTRAST — WCAG 2.2 SC 1.4.11, threshold 3:1.
+   *
+   * The sweep above walks TEXT nodes, so anything that carries meaning without carrying words is
+   * invisible to it. axe-core does not implement 1.4.11 for arbitrary graphics either, so nothing
+   * in this repo measured it at all.
+   *
+   * What it cost: a 4×4px event dot painted `bg-primary` sat inside a selected day whose fill is
+   * ALSO `--primary`. Ratio 1.00. The marker vanished at exactly the moment a user clicked the day
+   * it belonged to, and every gate stayed green — the dot has no text, so the text sweep skipped
+   * it, and no route rendered the selected+marked combination anyway.
+   *
+   * Scope is deliberately narrow: a SMALL element (≤24px on both axes, the size of a dot, a
+   * caret, a state pip) that paints its own opaque background and holds no text is a graphic that
+   * conveys state. Bigger boxes are surfaces — a card on a page legitimately sits at 1.05:1 — and
+   * flagging those would drown the signal. Borders are measured the same way when a small element
+   * draws one instead of a fill.
+   */
+  for (const el of document.querySelectorAll("body *")) {
+    if (el.closest("[data-logotype]")) continue;
+    if (el.textContent && el.textContent.trim()) continue;
+    if (el.children.length) continue;
+    const s = getComputedStyle(el);
+    if (s.visibility === "hidden" || s.display === "none" || parseFloat(s.opacity) < 0.4) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) continue;
+    if (r.width > 24 || r.height > 24) continue;
+
+    const fill = parse(s.backgroundColor);
+    const border =
+      parseFloat(s.borderTopWidth) > 0 || parseFloat(s.borderLeftWidth) > 0
+        ? parse(s.borderTopColor)
+        : null;
+    const ink = fill && fill.a > 0.5 ? fill : border && border.a > 0.5 ? border : null;
+    if (!ink) continue;
+
+    // The background BEHIND the graphic — start at the parent, since the graphic's own fill is the
+    // thing being measured.
+    const behind = el.parentElement ? effBg(el.parentElement) : [255, 255, 255];
+    out.push({
+      fg: ink.rgb,
+      bg: behind,
+      nonText: true,
+      // 1.4.11 has one threshold and no size/weight exemption; these keep the record shape uniform
+      // for the reporter, which reads `size`/`weight` to pick the text threshold.
+      size: 24,
+      weight: 700,
+      text: `[graphic ${Math.round(r.width)}×${Math.round(r.height)}]`,
+      tag: el.tagName.toLowerCase(),
+      cls: (el.className && el.className.toString().split(/\s+/)[0]) || "",
+    });
+  }
+
   return out;
 }
 

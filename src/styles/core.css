@@ -10,8 +10,39 @@
  * loaded 11 of 18 layers and shipped an unstyled DropdownMenu. Load everything; a layer is a few
  * KB and tree-shaking CSS by layer buys nothing measurable.
  */
-@import "sonner/dist/styles.css";
-@import "react-day-picker/style.css";
+/* LAYER ORDER, declared before the first @import because that is the only place a bare `@layer`
+ * statement is allowed to set it.
+ *
+ * `@import "tailwindcss"` (via base.css) establishes `theme, base, components, utilities`. Naming
+ * `vendor` here puts it BETWEEN base and components, which is the only position that works:
+ *
+ *   - unlayered (how it used to be) → vendor beats everything, and react-day-picker's
+ *     `.rdp-chevron { fill: var(--rdp-accent-color) }` painted the nav arrows raw blue in product.
+ *   - below base (what `layer(vendor)` gave on its own, because the import comes first and layer
+ *     order follows first appearance) → preflight beats the vendor sheet, and TWO rules that were
+ *     doing real work lost: `select { opacity: 0 }` lost to preflight's `opacity: 1`, so the
+ *     native select text rendered ON TOP of its own visible label — the duplicated caption — and
+ *     `.rdp-chevron { display: inline-block }` lost to `svg { display: block }`, dropping the
+ *     dropdown arrow onto a second line and pushing the label to 40px inside a 32px caption.
+ *
+ * Between the two: the reset still normalises the vendor sheet, the vendor sheet still owns its
+ * own layout, and anything this package says still wins. Measured on a real page both ways. */
+@layer theme, base, vendor, components, utilities;
+
+/* Third-party stylesheets go in a NAMED LAYER, and the reason is a CSS cascade rule that is easy
+ * to get backwards: an unlayered declaration beats a layered one ALWAYS, whatever the specificity.
+ * Every rule below lives in `@layer components`, so while sonner and react-day-picker were
+ * imported bare they outranked the design system by construction — not by being more specific.
+ *
+ * Measured cost of that: react-day-picker's `.rdp-chevron { fill: var(--rdp-accent-color) }` with
+ * its default `blue` painted the calendar nav arrows a raw blue, overriding lucide's own
+ * `fill="none"` presentation attribute, in shipped product. No gate saw it: `check:token-tiers`
+ * reads `src/tokens` and `src/styles`, never third-party CSS this package re-exports.
+ *
+ * `layer(vendor)` puts them first in the cascade order, so anything the design system says wins.
+ * It does not stop them loading — the base layout rules they carry are still wanted. */
+@import "sonner/dist/styles.css" layer(vendor);
+@import "react-day-picker/style.css" layer(vendor);
 @import "./base.css";
 @import "./shell-layout.css";
 @import "./motion.css";

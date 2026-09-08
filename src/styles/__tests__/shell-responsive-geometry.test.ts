@@ -227,15 +227,95 @@ describe("responsive shell geometry", () => {
     // The single most-retuned shell constant: a service on a 255px grid sets the token once instead
     // of forking `.app-root`. Defaults are unchanged (16rem expanded / 4rem collapsed).
     expect(shellTokens).toContain("--app-shell-sidebar-width: 16rem;");
-    expect(shellTokens).toContain("--app-shell-rail-width: 4rem;");
+    expect(shellTokens).toContain("--app-shell-sidebar-collapsed-width: 4rem;");
     expect(declarationsFor(shellStyles, ".app-root")).toMatch(
       /grid-template-columns:\s*var\(--app-shell-sidebar-width\) minmax\(0, 1fr\);/,
     );
     expect(declarationsFor(shellStyles, '.app-root[data-collapsed="true"]')).toMatch(
-      /grid-template-columns:\s*var\(--app-shell-rail-width\) minmax\(0, 1fr\);/,
+      /grid-template-columns:\s*var\(--app-shell-sidebar-collapsed-width\) minmax\(0, 1fr\);/,
     );
     // No literal rail track may survive anywhere in the shell sheet.
     expect(shellStyles).not.toMatch(/grid-template-columns:\s*(?:16rem|4rem) minmax/);
+  });
+
+  it("adds a THIRD navigation track when `navRail` is filled, from its own token", () => {
+    /*
+     * The rail is a separate track, not a re-use of the collapsed-sidebar width — a service that
+     * retunes one must not silently move the other.
+     *
+     * So this asserts they are two DECLARATIONS WITH DIFFERENT VALUES, not one pinned number. The
+     * earlier version pinned `4rem`, which was the collapsed sidebar's value too: it would have
+     * stayed green through the exact regression it exists to catch (someone aliasing the rail to
+     * the collapsed width), and instead went red the day the default legitimately moved to 3.5rem.
+     * An assertion that survives the bug and fails on the fix is worse than none.
+     */
+    const railWidth = /--app-shell-nav-rail-width:\s*([^;]+);/.exec(shellTokens)?.[1]?.trim();
+    const collapsedWidth = /--app-shell-sidebar-collapsed-width:\s*([^;]+);/
+      .exec(shellTokens)?.[1]
+      ?.trim();
+    expect(railWidth).toBeDefined();
+    expect(collapsedWidth).toBeDefined();
+    expect(railWidth).not.toBe(collapsedWidth);
+    expect(declarationsFor(shellStyles, ".app-root[data-nav-rail]")).toMatch(
+      /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-width\)\s*minmax\(0, 1fr\);/,
+    );
+    expect(declarationsFor(shellStyles, ".app-root[data-nav-rail]")).toMatch(
+      /grid-template-areas:\s*"navrail sidebar topbar"\s*"navrail sidebar main"\s*"navrail sidebar footer";/,
+    );
+  });
+
+  it("folds only the SIDEBAR track on collapse and leaves the rail at full width", () => {
+    // Slack's behaviour, and the one that keeps the rail's destinations reachable while collapsed.
+    // If this ever read `--app-shell-sidebar-collapsed-width` twice, both columns would shrink and
+    // the workspace switcher would become a second strip of anonymous icons.
+    expect(
+      declarationsFor(shellStyles, '.app-root[data-nav-rail][data-collapsed="true"]'),
+    ).toMatch(
+      /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-collapsed-width\)\s*minmax\(0, 1fr\);/,
+    );
+  });
+
+  it("composes the rail with topbarSpan='full' — two independent axes, not a preset", () => {
+    // The whole argument for a slot rather than a fourth enum value: the bar spans every column
+    // while BOTH navigation columns start beneath it.
+    expect(
+      declarationsFor(shellStyles, '.app-root[data-nav-rail][data-topbar-span="full"]'),
+    ).toMatch(
+      /grid-template-areas:\s*"topbar\s+topbar\s+topbar"\s*"navrail sidebar main"\s*"navrail sidebar footer";/,
+    );
+  });
+
+  it("HIDES the rail below 900px instead of letting the grid auto-place it (measured bug)", () => {
+    // Measured on the real page before this rule existed: the narrow template drops the `navrail`
+    // area name, so an `.app-nav-rail` that is merely unplaced does NOT disappear — the grid put it
+    // in an implicit column and it rendered as a 33x168px sliver at x=1213, y=637, over the page
+    // content. Being absent from the template is not the same as being hidden.
+    const restructuring = mediaBlocksMentioning(shellStyles, ".app-root");
+    expect(restructuring).toHaveLength(1);
+    const narrow = restructuring[0].body;
+    expect(declarationsFor(narrow, ".app-nav-rail")).toMatch(/display:\s*none;/);
+    // And the single-column template must actually apply to a railed shell, in every combination
+    // with the other axes — otherwise the three-column columns survive at phone width.
+    for (const selector of [
+      ".app-root[data-nav-rail]",
+      '.app-root[data-nav-rail][data-collapsed="true"]',
+      '.app-root[data-nav-rail][data-topbar-span="full"]',
+    ]) {
+      expect(declarationsFor(narrow, selector)).toMatch(
+        /grid-template-columns:\s*minmax\(0, 1fr\);/,
+      );
+    }
+  });
+
+  it("keeps BOTH tracks under responsiveNavigation='docked' at narrow widths", () => {
+    const narrow = mediaBlocksMentioning(shellStyles, ".app-root")[0].body;
+    expect(
+      declarationsFor(narrow, '.app-root[data-responsive-navigation="docked"][data-nav-rail]'),
+    ).toMatch(/grid-template-areas:\s*"navrail sidebar topbar"/);
+    // The rail is re-shown explicitly; the blanket `display: none` above would otherwise win.
+    expect(
+      declarationsFor(narrow, '.app-root[data-responsive-navigation="docked"] > .app-nav-rail'),
+    ).toMatch(/display:\s*flex;/);
   });
 
   it("restructures the shell at exactly ONE breakpoint and never deletes the footer (gh#213)", () => {
@@ -341,8 +421,11 @@ describe("responsive shell geometry", () => {
     expect(restructuring[0].body).toMatch(
       /grid-template-columns:\s*var\(--app-shell-sidebar-width\) minmax\(0, 1fr\);/,
     );
+    // `[^{]*` rather than `\s*` after the selector: docked now re-shows BOTH navigation columns,
+    // so `> .app-sidebar` heads a grouped selector and is followed by `, … > .app-nav-rail` before
+    // the brace. The assertion is unchanged — docked still restores the sidebar.
     expect(restructuring[0].body).toMatch(
-      /data-responsive-navigation="docked"[^}]*> \.app-sidebar\s*\{[^}]*display:\s*flex;/s,
+      /data-responsive-navigation="docked"[^}]*> \.app-sidebar[^{]*\{[^}]*display:\s*flex;/s,
     );
     expect(restructuring[0].body).toMatch(
       /data-responsive-navigation="docked"[^}]*\.app-mobile-nav-trigger\s*\{[^}]*display:\s*none;/s,

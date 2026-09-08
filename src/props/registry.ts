@@ -309,6 +309,12 @@ export const VOCABULARY_REGISTRY = {
     description:
       "AppSettingPicker trigger presentation: labeled (icon + value) | icon (square icon-only topbar trigger) | inline (compact text footer trigger)",
   },
+  AppSettingToggleAppearanceProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "AppSettingToggle box: bar (default — a full-height CELL of the bar, TopbarItem shape) | icon (square --control-height ghost button for anywhere that is not a bar)",
+  },
   ShapeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -525,6 +531,18 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           "Trigger DENSITY for the picker only (sm control tier + content-hugging width) — orthogonal to `appearance`, and not the page-level DensityProp scope.",
       },
+    ],
+  },
+  AppSettingToggleProp: {
+    group: "app",
+    file: "components/app.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "IdProp",
+      "ClassNameProp",
+      "AppSettingToggleAppearanceProp",
     ],
   },
   PageContainerHeaderLayoutProp: {
@@ -2064,7 +2082,17 @@ export const COMPONENT_PROP_REGISTRY = {
   ProgressProp: {
     group: "data-display",
     file: "components/data-display/progress.tsx",
-    vocabulary: ["ValueProp", "LabelProp", "ClassNameProp"],
+    vocabulary: ["ValueProp", "LabelProp", "ToneProp", "ClassNameProp"],
+  },
+  LegendItemProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ToneProp", "LabelProp"],
+  },
+  LegendProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ClassNameProp"],
   },
   CodeBlockProp: {
     group: "data-display",

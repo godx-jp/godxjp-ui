@@ -193,9 +193,90 @@
     );
   }
 
+  /* BREAKDOWN (`segments`) — the track becomes the partition itself: a flex row of abutting
+   * slices, each sized by the component from its share of the total. `overflow: hidden` is what
+   * gives the whole bar ONE outer corner instead of a rounded first slice and a rounded last one.
+   * Slices carry no gap on purpose — a partition with gaps reads as separate bars, and the eye
+   * then compares lengths that no longer sum to the whole. */
+  .ui-progress[data-breakdown] .ui-progress-track {
+    display: flex;
+    height: var(--progress-breakdown-block-size);
+    border-radius: var(--progress-breakdown-radius);
+  }
+
+  .ui-progress-segment {
+    height: 100%;
+  }
+
+  .ui-progress-segment[data-tone="success"] {
+    background: hsl(var(--success));
+  }
+
+  .ui-progress-segment[data-tone="warning"] {
+    background: hsl(var(--warning));
+  }
+
+  .ui-progress-segment[data-tone="destructive"] {
+    background: hsl(var(--destructive));
+  }
+
   .ui-progress-label {
     color: hsl(var(--muted-foreground));
     font-size: var(--progress-label-font-size);
+  }
+
+  /* Legend — a wrapping row of keys. It wraps rather than scrolls: a key that scrolled out of
+   * sight would take the meaning of a colour with it. */
+  .ui-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--legend-gap);
+    color: var(--legend-color, hsl(var(--muted-foreground)));
+    font-size: var(--legend-font-size);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ui-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--legend-item-gap);
+  }
+
+  /* A square, not the pill a Badge would draw: the mark has to read as a SAMPLE of the colour the
+   * bar/chart uses, and a pill reads as a chip you could click. */
+  .ui-legend-swatch {
+    flex: none;
+    inline-size: var(--legend-swatch-size);
+    block-size: var(--legend-swatch-size);
+    border-radius: var(--legend-swatch-radius);
+  }
+
+  .ui-legend-swatch[data-tone="default"] {
+    background: hsl(var(--primary));
+  }
+
+  .ui-legend-swatch[data-tone="success"] {
+    background: hsl(var(--success));
+  }
+
+  .ui-legend-swatch[data-tone="warning"] {
+    background: hsl(var(--warning));
+  }
+
+  .ui-legend-swatch[data-tone="destructive"] {
+    background: hsl(var(--destructive));
+  }
+
+  .ui-legend-swatch[data-tone="info"] {
+    background: hsl(var(--info));
+  }
+
+  .ui-legend-swatch[data-tone="muted"],
+  .ui-legend-swatch[data-tone="neutral"] {
+    background: hsl(var(--muted-foreground));
   }
 
   .ui-tree-list {

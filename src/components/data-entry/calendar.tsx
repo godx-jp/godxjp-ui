@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { DayPicker, dateMatchModifiers } from "react-day-picker";
 import type { DateRange, Modifiers } from "react-day-picker";
 import { useTranslation } from "../../i18n/use-translation";
@@ -30,6 +30,7 @@ export function Calendar({
   onClose,
   footer,
   width = "auto",
+  bordered = false,
   month: monthProp,
   onMonthChange,
   ...props
@@ -124,6 +125,7 @@ export function Calendar({
       // throws the chevrons to the popover corners.
       className={cn("ui-calendar", className)}
       data-width={width === "full" ? "full" : undefined}
+      data-bordered={bordered ? "true" : undefined}
       classNames={{
         months: cn("ui-calendar-months", classNames?.months),
         month: cn("ui-calendar-month", classNames?.month),
@@ -146,53 +148,91 @@ export function Calendar({
           classNames?.button_next,
         ),
         month_grid: cn("ui-calendar-grid", classNames?.month_grid),
-        weekdays: cn("flex", classNames?.weekdays),
+        /*
+         * The weekday row needs a DS class of its own. It only ever carried `flex`, so any rule
+         * written for it — the ruled grid's end edge, the header tint — matched nothing and failed
+         * silently while looking correct in the stylesheet.
+         */
+        weekdays: cn("ui-calendar-weekdays flex", classNames?.weekdays),
+        /*
+         * Named for the same reason the weekday row is: a slot with no DS class cannot be styled
+         * from this package, and a rule written for one fails silently. These two only render with
+         * `showWeekNumber`, which is exactly why the gap went unnoticed.
+         */
+        week_number: cn("ui-calendar-week-number", classNames?.week_number),
+        week_number_header: cn("ui-calendar-week-number-header", classNames?.week_number_header),
         weekday: cn("ui-calendar-weekday", classNames?.weekday),
         week: cn("ui-calendar-week", classNames?.week),
-        day: cn(
-          "ui-calendar-day",
-          "[&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50",
-          "[&:has([aria-selected].day-range-end)]:rounded-e-md",
-          classNames?.day,
-        ),
+        /*
+         * ONE ELEMENT OWNS THE DAY SURFACE, and it is the `<button>`.
+         *
+         * It used to be split: hover painted the button, selection painted the `<td>`. Measured on
+         * a real page — the selected day came out a SHARP blue square (td, border-radius 0) while
+         * hover was a rounded grey (button, 3.71px). Same for `outside`: `text-muted-foreground`
+         * sat on the td while the ghost button set its own colour underneath, so days from the
+         * neighbouring month were not greyed at all. Two symptoms, one cause.
+         *
+         * So the `td` keeps ONLY grid duties — column width, the row it sits in — and every state
+         * (hover, selected, today, outside, disabled, range) is expressed on the button, where the
+         * radius and the padding already live. Adding a state later means adding it in one place;
+         * that was the part that kept going wrong.
+         */
+        day: cn("ui-calendar-day", classNames?.day),
         day_button: cn(
           buttonVariants({ variant: "ghost" }),
           "ui-calendar-day-button",
           classNames?.day_button,
         ),
-        range_start: cn("day-range-start rounded-s-md", classNames?.range_start),
-        range_end: cn("day-range-end rounded-e-md", classNames?.range_end),
-        range_middle: cn(
-          "aria-selected:bg-accent aria-selected:text-accent-foreground",
-          classNames?.range_middle,
-        ),
-        selected: cn(
-          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-          // The day is a ghost <button> that sets its OWN (dark --foreground) text colour, which
-          // overrides the cell's text-primary-foreground and fails contrast on the blue fill
-          // (axe color-contrast). Force the button label to primary-foreground through hover/focus.
-          "[&>button]:text-primary-foreground [&>button:hover]:bg-primary [&>button:hover]:text-primary-foreground [&>button:focus]:text-primary-foreground",
-          classNames?.selected,
-        ),
-        today: cn("bg-accent text-accent-foreground", classNames?.today),
-        outside: cn(
-          "day-outside text-muted-foreground aria-selected:text-muted-foreground",
-          classNames?.outside,
-        ),
+        range_start: cn("day-range-start", classNames?.range_start),
+        range_end: cn("day-range-end", classNames?.range_end),
+        range_middle: cn("day-range-middle", classNames?.range_middle),
+        selected: cn("day-selected", classNames?.selected),
+        today: cn("day-today", classNames?.today),
+        outside: cn("day-outside", classNames?.outside),
         disabled: cn("ui-calendar-day-disabled", classNames?.disabled),
         hidden: cn("invisible", classNames?.hidden),
         footer: cn("ui-calendar-footer", classNames?.footer),
-        ...classNames,
+        /*
+         * NO `...classNames` here. Spreading the consumer's object last REPLACED each slot that it
+         * names, so `classNames={{ day: "my-class" }}` dropped `.ui-calendar-day` — and with it
+         * every state selector, because they all key on that class. The slots above already merge
+         * the consumer's value through `cn()`; this line only ever un-merged them.
+         *
+         * A slot this component does not name still passes straight through: react-day-picker
+         * reads its own defaults for anything absent from this object.
+         */
       }}
+      {...props}
       components={{
+        /*
+         * FOUR orientations, not two. `Nav` asks for left/right, but `Dropdown` asks for "down" —
+         * and mapping everything that is not "left" to ChevronRight pointed the month and year
+         * selects sideways. react-day-picker's own Chevron handles all four; ours has to as well.
+         */
         Chevron: ({ orientation, className: chevronClassName }) => {
-          const Icon = orientation === "left" ? ChevronLeft : ChevronRight;
+          const Icon =
+            orientation === "left"
+              ? ChevronLeft
+              : orientation === "up"
+                ? ChevronUp
+                : orientation === "down"
+                  ? ChevronDown
+                  : ChevronRight;
           return (
             <Icon className={cn("ui-calendar-chevron", chevronClassName)} aria-hidden="true" />
           );
         },
+        /*
+         * A consumer's `components` MERGE with ours; they must not replace the object.
+         *
+         * `{...props}` used to sit after this block, so `components={{ DayButton: Custom }}` — the
+         * documented way to put a marker on a day — silently deleted our `Chevron` too. Measured
+         * on a live page: the nav arrows came back as react-day-picker's own polygon chevron,
+         * which needs a `fill` and therefore picked up `--rdp-accent-color: blue`. The consumer
+         * replaced one component and lost an unrelated one, with no error.
+         */
+        ...props.components,
       }}
-      {...props}
       {...rangeDefaults}
     />
   );

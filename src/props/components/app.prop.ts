@@ -12,6 +12,7 @@ import type {
 import type { AppBrand, AppDensity, AppFontSize, AppTheme } from "../../app/theme-axes";
 import type {
   AppSettingPickerAppearanceProp,
+  AppSettingToggleAppearanceProp,
   ChildrenProp,
   ClassNameProp,
   DisabledProp,
@@ -109,6 +110,35 @@ export type AppSettingPickerProp = {
   id?: IdProp;
   /** Form field name — submits the selected value with the form. */
   name?: NameProp;
+  /** Controlled value; default reads/writes the matching AppProvider context. */
+  value?: ValueProp<string>;
+  onValueChange?: OnValueChangeProp<string>;
+};
+
+/**
+ * The {@link AppSettingToggle} subset of {@link AppSettingKind} — the settings whose value set is
+ * CLOSED and short enough to cycle by tapping. `locale`, `timezone`, `dateFormat` and `brand` are
+ * deliberately absent: a 400-entry IANA list (or a palette a service extends) is a menu, not a
+ * cycle, and tapping through it is not a control anyone can use.
+ */
+export type AppSettingToggleKind = Extract<
+  AppSettingKind,
+  "theme" | "density" | "fontSize" | "timeFormat"
+>;
+
+/**
+ * @see AppSettingToggle — one BUTTON that steps a single AppProvider setting to its next value and
+ * shows that value as its glyph. The no-menu counterpart to {@link AppSettingPickerProp}: same
+ * binding contract (context-bound by default, controlled via value + onValueChange), same option
+ * order, one tap instead of open-then-choose.
+ */
+export type AppSettingToggleProp = {
+  kind: AppSettingToggleKind;
+  /** Box the button takes. Default: `"bar"` — a toggle exists for a top bar. */
+  appearance?: AppSettingToggleAppearanceProp;
+  className?: ClassNameProp;
+  disabled?: DisabledProp;
+  id?: IdProp;
   /** Controlled value; default reads/writes the matching AppProvider context. */
   value?: ValueProp<string>;
   onValueChange?: OnValueChangeProp<string>;

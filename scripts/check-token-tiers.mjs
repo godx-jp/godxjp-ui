@@ -31,7 +31,15 @@ const componentNameShape =
  * structural: the text of the declaration is perfectly well-formed, it is merely in a place CSS
  * does not allow it (directly inside `@media { … }` instead of inside a `:root { … }` within it).
  */
-function bareDeclarations(css) {
+function bareDeclarations(rawCss) {
+  // Comments are BLANKED first (newlines kept, so reported line numbers stay true). Measured:
+  // the identical stray declaration was reported when it sat straight after `{` and INVISIBLE the
+  // moment an ordinary comment line preceded it — the comment text lands in `buffer`, so the
+  // declaration no longer starts with `--`. Every token block in this repo is commented, so the
+  // guard was only ever catching the un-commented spelling of the bug it was written for. A `{`,
+  // `}` or `;` inside a comment desynchronises the brace stack the same way (55 CSS files carry
+  // 57 `{`, 58 `}` and 286 `;` inside comments today).
+  const css = rawCss.replace(/\/\*[\s\S]*?\*\//g, (block) => block.replace(/[^\n]/g, " "));
   const out = [];
   const stack = [];
   let buffer = "";
@@ -126,6 +134,7 @@ const componentPrefixes = {
   table: ["table"],
   "data-display": [
     "progress",
+    "legend",
     "permission-matrix",
     "tree",
     "timeline",

@@ -1,5 +1,7 @@
 export { Badge, StatusBadge } from "./badge";
 export type { BadgeProps } from "./badge";
+export { Legend } from "./legend";
+export type { LegendItemProp, LegendProp, LegendProps } from "./legend";
 export { ListRow } from "./list-row";
 export type { ListRowProps, ListRowDensity } from "./list-row";
 export { CredentialReveal } from "./credential-reveal";
@@ -47,7 +49,7 @@ export { CodeBlock } from "./code-block";
 export type { CodeBlockProp, CodeBlockProps } from "./code-block";
 export { Prose } from "./prose";
 export type { ProseProp, ProseProps } from "./prose";
-export type { ProgressProps, ProgressTone } from "./progress";
+export type { ProgressProps, ProgressSegment, ProgressTone } from "./progress";
 export { TreeList } from "./tree-list";
 export type { TreeListItem, TreeListProps } from "./tree-list";
 export { Timeline } from "./timeline";

@@ -94,7 +94,23 @@ export function radixItemState(state: MenuItemRenderProps): Record<string, strin
   };
 }
 
-/** Dịch trạng thái popover của RAC sang `data-state` / `data-side` của Radix. */
+/**
+ * Dịch trạng thái popover của RAC sang `data-state` / `data-side` của Radix.
+ *
+ * ĐI KÈM: hai chỗ gọi nó đều bỏ `role` khỏi DOM (`role={undefined}`). RAC tự gắn `role="dialog"`
+ * cho MỌI popover modal — "Automatically render Popover with role=dialog except when isNonModal is
+ * true" — kể cả khi ruột của nó là một `role="menu"`. Radix không làm thế, và hợp đồng của tệp này
+ * là giữ hình dạng Radix ở CẢ cây a11y chứ không chỉ ở tên prop.
+ *
+ * Cái giá, đo được ở consumer chuột bạch (godx-chat, 08/09/2026): mở một hộp thoại TỪ một mục menu
+ * để lại HAI phần tử `role="dialog"` trong DOM suốt ~300ms — popover của menu đang chạy animation
+ * thoát (`data-exiting`), cộng chính hộp thoại vừa mở. 12 phép kiểm Playwright đỏ bằng "strict mode
+ * violation" trên `getByRole('dialog')`, thứ Playwright KHÔNG thử lại. Và với trình đọc màn hình,
+ * một menu vẫn tự xưng là "dialog".
+ *
+ * Bỏ đúng THUỘC TÍNH, không đụng hành vi: state `isDialog` bên trong RAC không đổi, nên việc đưa
+ * tiêu điểm vào popover lúc mở vẫn chạy nguyên như cũ.
+ */
 export function radixSurfaceState(state: PopoverRenderProps): Record<string, string | undefined> {
   return {
     "data-state": state.isExiting ? "closed" : "open",
@@ -355,7 +371,10 @@ export function DropdownMenuContent({
           "ui-dropdown-menu-content data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 origin-[var(--trigger-anchor-point)]",
           className,
         )}
-        render={(props, state) => <div {...props} {...radixSurfaceState(state)} />}
+        render={(props, state) => (
+          // `role={undefined}`: một menu không phải một dialog — xem radixSurfaceState.
+          <div {...props} role={undefined} {...radixSurfaceState(state)} />
+        )}
       >
         <Menu shouldFocusWrap={loop}>{children}</Menu>
       </Popover>
@@ -664,7 +683,10 @@ export function DropdownMenuSubContent({
         "ui-dropdown-menu-sub-content data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 origin-[var(--trigger-anchor-point)]",
         className,
       )}
-      render={(props, state) => <div {...props} {...radixSurfaceState(state)} />}
+      render={(props, state) => (
+        // `role={undefined}`: một menu không phải một dialog — xem radixSurfaceState.
+        <div {...props} role={undefined} {...radixSurfaceState(state)} />
+      )}
     >
       <Menu shouldFocusWrap={loop}>{children}</Menu>
     </Popover>

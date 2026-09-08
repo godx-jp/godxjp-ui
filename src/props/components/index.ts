@@ -88,6 +88,8 @@ export type {
   AppContextValue,
   AppSettingKind,
   AppSettingPickerProp,
+  AppSettingToggleKind,
+  AppSettingToggleProp,
 } from "./app.prop";
 export type {
   ZodSchemaProp,

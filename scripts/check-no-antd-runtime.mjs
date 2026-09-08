@@ -31,11 +31,24 @@ if (!pkg.devDependencies?.antd) {
   failures.push("package.json: antd must be present in devDependencies — the generator needs it");
 }
 
-/** A source import of antd, in any of the forms a bundler would follow. */
-const IMPORT = /(?:from\s+|require\(\s*|import\(\s*)["'](antd|@ant-design\/[\w-]+)["']/;
+/**
+ * A source import of antd, in any of the forms a bundler would follow.
+ *
+ * The package name may be followed by a SUBPATH and the statement may be a side-effect import
+ * with no `from` — both forms were invisible before, and one of them is what this repo's own
+ * generator uses (`require("antd/lib/theme/index.js")` in scripts/gen-antd-tokens.mjs). A deep
+ * import pulls the same runtime into the bundle, so it must count.
+ */
+const IMPORT =
+  /(?:from\s+|require\(\s*|import\(\s*|import\s+)["'](antd|@ant-design\/[\w-]+)(?:\/[^"']*)?["']/;
 
 for (const file of walk(join(ROOT, "src"))) {
   if (!/\.(tsx?|jsx?|css)$/.test(file)) continue;
+  // Tests are not shipped (tsup does not emit them; `dist/**/__tests__` is empty), and running
+  // antd's own token generator inside a test is the sanctioned build-time use this gate exists to
+  // protect — src/tokens/__tests__/focus-ring-contrast.test.ts does exactly that, on purpose. The
+  // dist half below is what guards the shipped artefact.
+  if (/[\\/]__tests__[\\/]|\.(?:test|spec)\.[jt]sx?$/.test(file)) continue;
   const text = readFileSync(file, "utf8");
   if (IMPORT.test(text) || /@import\s+["']antd/.test(text)) {
     failures.push(`${relative(ROOT, file)}: imports antd — it is a BUILD-TIME tool only`);
