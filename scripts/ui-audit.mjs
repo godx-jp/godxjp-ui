@@ -9,13 +9,22 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { isAbsolute, join, relative } from "node:path";
 
 const CWD = process.cwd();
+const SELF = (() => {
+  try {
+    return JSON.parse(readFileSync(join(CWD, "package.json"), "utf8")).name === "@godxjp/ui";
+  } catch {
+    return false;
+  }
+})();
 const args = process.argv.slice(2);
 const asJson = args.includes("--format") && args[args.indexOf("--format") + 1] === "json";
 const quiet = args.includes("--quiet");
 const dirArgs = args.filter((a) => !a.startsWith("--") && a !== "json");
 const SCAN_DIRS = dirArgs.length
   ? dirArgs
-  : ["resources/js/components", "resources/js/pages", "resources/js/layouts"];
+  : SELF
+    ? ["src", "docs"]
+    : ["resources/js/components", "resources/js/pages", "resources/js/layouts"];
 
 const PALETTE =
   "red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|gray|grey|slate|zinc|neutral|stone";
@@ -43,7 +52,7 @@ const EMOJI_FLAG = /\p{Regional_Indicator}/u;
  *     single-line elements. Rules carrying `spansElement: true` are matched against the whole file
  *     instead (line number derived from the match offset), so wrapping no longer hides a violation.
  */
-const ATTRS = String.raw`[^>]*(?:=>[^>]*)*`;
+const ATTRS = String.raw`(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|=>|[^>"'])*`;
 
 /**
  * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string, exempt?:RegExp}[]}
@@ -232,6 +241,7 @@ const RULES = [
   },
   {
     id: "no-raw-select",
+    scope: "consumer-control",
     severity: "error",
     test: /<select[\s>]/,
     message: "Use <Select> from @godxjp/ui, not a raw <select> (rules §3).",
@@ -244,18 +254,22 @@ const RULES = [
   },
   {
     id: "no-raw-textarea",
+    scope: "consumer-control",
     severity: "warn",
     test: /<textarea[\s>]/,
     message: "Use <Textarea> from @godxjp/ui, not a raw <textarea> (rules §3).",
   },
   {
     id: "no-raw-input",
+    scope: "consumer-control",
     severity: "error",
-    test: /<input[\s>]/,
+    spansElement: true,
+    test: new RegExp(`<input\\b(?!${ATTRS}\\btype=["']hidden["'])${ATTRS}>`, "g"),
     message: "Use <Input> from @godxjp/ui, not a raw <input> (rules §3).",
   },
   {
     id: "no-raw-button",
+    scope: "consumer-control",
     severity: "error",
     test: /<button[\s>]/,
     message: "Use <Button> from @godxjp/ui, not a raw <button> (rules §3).",
@@ -359,7 +373,11 @@ const RULES = [
     id: "hardcoded-currency",
     severity: "warn",
     // A currency glyph glued to an interpolation in JSX text: `>¥{amount}` / `>{x}円`.
-    test: /(?:>[\s]*[¥$€£₫]\s*\{)|(?:\}\s*円)/,
+    spansElement: true,
+    test: new RegExp(
+      `<(?:[A-Za-z][\\w.:]*(?:\\s${ATTRS})?)?(?<!=)>[^<>{}]*[¥$€£₫]\\s*\\{|\\}\\s*円\\s*</`,
+      "g",
+    ),
     standard: "ISO 4217 · ECMA-402 Intl.NumberFormat",
     message:
       "Don't hand-format currency (¥{amount}). Use Intl.NumberFormat(locale, { style: 'currency', currency }) — ISO 4217 code drives the symbol and minor units per locale.",
@@ -553,13 +571,7 @@ const SIBLING_CARDS = /^([ \t]*)<\/Card>\s*\n\1<Card\b/gm;
  * utilities are the design system itself (that is where `flex`/`gap-*` are supposed to live), so
  * those rules are skipped when the CWD package is @godxjp/ui — unless `--consumer` forces them.
  */
-const SELF = (() => {
-  try {
-    return JSON.parse(readFileSync(join(CWD, "package.json"), "utf8")).name === "@godxjp/ui";
-  } catch {
-    return false;
-  }
-})();
+
 const ACTIVE_RULES =
   SELF && !args.includes("--consumer") ? RULES.filter((r) => r.scope !== "consumer") : RULES;
 
@@ -569,12 +581,18 @@ for (const dir of SCAN_DIRS) {
   for (const file of walk(isAbsolute(dir) ? dir : join(CWD, dir))) {
     const rel = relative(CWD, file);
     filesScanned += 1;
+    // A primitive implements native controls; asking Input to render Input recurses.
+    // Consumer applications and executable docs still receive these composition checks.
+    const fileRules =
+      SELF && !args.includes("--consumer") && rel.startsWith("src/components/")
+        ? ACTIVE_RULES.filter((rule) => rule.scope !== "consumer-control")
+        : ACTIVE_RULES;
     const content = readFileSync(file, "utf8");
     const origLines = content.split("\n");
     const scanContent = stripComments(content); // comments blanked; strings + line numbers kept
     const scanLines = scanContent.split("\n");
     scanLines.forEach((line, i) => {
-      for (const rule of ACTIVE_RULES) {
+      for (const rule of fileRules) {
         if (rule.spansElement) continue; // matched over the whole file below, not line by line
         if (
           (typeof rule.test === "function" ? rule.test(line) : rule.test.test(line)) &&
@@ -596,7 +614,7 @@ for (const dir of SCAN_DIRS) {
     // Element-spanning rules: matched against the WHOLE file, because a JSX element prettier wrapped
     // over five lines is invisible to a line-by-line scan. Same offset→line-number idiom as the
     // block rules below.
-    for (const rule of ACTIVE_RULES) {
+    for (const rule of fileRules) {
       if (!rule.spansElement) continue;
       for (const match of scanContent.matchAll(rule.test)) {
         const lineNo = scanContent.slice(0, match.index).split("\n").length;

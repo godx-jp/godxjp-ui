@@ -16,16 +16,20 @@ const css = readFileSync(
 );
 
 describe("data-display-layout.css structural selectors select the rendered DOM", () => {
-  it("tree item chevron sizing hits the chevron, not the type glyph after it", () => {
-    const selector = ruleSelector(css, ".ui-tree-item > svg:first-child");
-    const items: TreeListItem[] = [{ id: "a", title: "勘定科目" }];
+  it("tree depth and current-item selectors match real rows without decorative controls", () => {
+    const selector = ruleSelector(css, '.ui-tree-item[data-active="true"]');
+    const items: TreeListItem[] = [
+      { id: "a", title: "勘定科目", active: true },
+      { id: "b", title: "売上", depth: 6, badge: 0 },
+    ];
     const { container } = renderWithUi(<TreeList items={items} />);
-
-    const item = container.querySelector(".ui-tree-item")!;
-    const svgs = [...item.querySelectorAll(":scope > svg")];
-    expect(svgs.length, "a tree item renders chevron + glyph as direct children").toBe(2);
-    expect(svgs[0].matches(selector)).toBe(true);
-    expect(svgs[1].matches(selector)).toBe(false);
+    const rows = [...container.querySelectorAll(".ui-tree-item")];
+    expect(rows).toHaveLength(2);
+    expect(rows[0].matches(selector)).toBe(true);
+    expect(rows[1].matches(selector)).toBe(false);
+    expect(rows[1].getAttribute("data-depth")).toBe("6");
+    expect(rows[1].textContent).toContain("0");
+    expect(container.querySelectorAll(".ui-tree-item > svg, button")).toHaveLength(0);
   });
 
   it("the last timeline item drops its trailing body padding", () => {

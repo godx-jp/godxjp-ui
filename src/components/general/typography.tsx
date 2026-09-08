@@ -27,6 +27,7 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
       align,
       truncate,
       clamp,
+      whitespace,
       tabular,
       mono,
       link,
@@ -42,6 +43,11 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
       typeof clamp === "number" && Number.isFinite(clamp) && clamp >= 1
         ? Math.floor(clamp)
         : undefined;
+    // The single-line contract, after `clamp` has already taken precedence over `truncate`. It is
+    // what `whitespace` yields to, and naming it keeps that precedence in ONE place: a CSS-ordering
+    // fight between `white-space: nowrap` and `white-space: pre-wrap` is decided by stylesheet
+    // insertion order, which is not a contract anyone can read off this file.
+    const truncating = truncate === true && clampLines === undefined;
     if (typeof process !== "undefined" && process.env?.NODE_ENV !== "production") {
       if (clamp !== undefined && clampLines === undefined) {
         console.warn(
@@ -54,6 +60,11 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
           "Text: `truncate` and `clamp` are mutually exclusive — `clamp` takes precedence; drop `truncate`.",
         );
       }
+      if (whitespace === "pre-wrap" && truncating) {
+        console.warn(
+          "Text: `truncate` and `whitespace=\"pre-wrap\"` are mutually exclusive — `truncate` takes precedence (one line, one ellipsis); use `clamp` to keep preserved line breaks and still bound the height.",
+        );
+      }
     }
     const typography = {
       "data-slot": "text",
@@ -62,8 +73,11 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
       "data-link": link ? "" : undefined,
       "data-weight": weight,
       "data-align": align,
-      "data-truncate": truncate && clampLines === undefined ? "" : undefined,
+      "data-truncate": truncating ? "" : undefined,
       "data-clamp": clampLines !== undefined ? "" : undefined,
+      // Inert default: `normal` is CSS's own behaviour, so it emits no attribute and there is no
+      // `[data-whitespace="normal"]` rule to lose a specificity argument with anything.
+      "data-whitespace": whitespace === "pre-wrap" && !truncating ? "pre-wrap" : undefined,
       style:
         clampLines !== undefined
           ? ({ ...style, "--text-clamp": clampLines } as React.CSSProperties)

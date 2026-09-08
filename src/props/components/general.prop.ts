@@ -20,6 +20,7 @@ import type {
   TextAlignProp,
   TextSizeProp,
   TextToneProp,
+  TextWhitespaceProp,
 } from "../vocabulary";
 
 /** @see Text — typographic primitive; replaces hand-rolled `<span className="text-[13px] …">`. */
@@ -72,6 +73,19 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
    * line-clamp styling (never write the `line-clamp-N` utility page-side).
    */
   clamp?: number;
+  /**
+   * Whitespace handling. Default `normal` (CSS's own: newlines and space runs collapse).
+   *
+   * `pre-wrap` is for text a PERSON typed — a plain-text note, an issue description, a pasted log
+   * — where the line breaks and the indentation are CONTENT, not formatting. It preserves both and
+   * still wraps long lines at the container edge, and it breaks an over-long unbroken token (a URL,
+   * an id) rather than letting it overflow.
+   *
+   * Precedence is explicit and resolved in the component, not by CSS ordering: `truncate` is a
+   * single-line contract and WINS (dev builds warn, and `data-whitespace` is not emitted), while
+   * `clamp` composes with it — a clamped pre-wrap block shows its first N real lines.
+   */
+  whitespace?: TextWhitespaceProp;
   /** Tabular figures for aligned numbers. */
   tabular?: boolean;
   /** Monospace family (codes, ids). */

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { axe } from "vitest-axe";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -118,7 +119,16 @@ it("keeps a selected range readable at every position, including the middle", as
   expect(container.querySelector('[data-day="2026-05-14"]')).toHaveClass("day-range-end");
   expect(container.querySelector('[data-day="2026-05-10"]')).not.toHaveClass("day-range-middle");
 
-  await expectNoA11yViolations(
-    <Calendar mode="range" selected={range} defaultMonth={MAY_2026} showOutsideDays={false} />,
-  );
+  /*
+   * Axes the calendar ALREADY on screen instead of rendering a second one.
+   *
+   * `expectNoA11yViolations` renders its own copy, and since it audits `document.body` (overlays
+   * portal out of the container, so anything narrower audits an empty box) both copies are in
+   * scope. Two calendars means two `<nav aria-label="Calendar navigation">`, which axe correctly
+   * reports as landmark-unique — a finding about the TEST, not the component.
+   *
+   * Worth its own issue, though, and not fixed here: two real date pickers on one page produce the
+   * same collision, and neither can be told from the other by name.
+   */
+  expect(await axe(document.body, { rules: { region: { enabled: false } } })).toHaveNoViolations();
 });

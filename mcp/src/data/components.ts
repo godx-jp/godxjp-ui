@@ -45,6 +45,68 @@ export interface ComponentEntry {
 }
 
 export const COMPONENTS: ComponentEntry[] = [
+  {
+    name: "VisuallyHidden",
+    group: "general",
+    tagline: "Accessible supporting text without a visible layout box.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        description: "Text available to assistive technology.",
+      },
+    ],
+    example: "<VisuallyHidden>Unread</VisuallyHidden>",
+    docPath: "docs/general/typography.tsx",
+    storyPath: "general/typography",
+    rules: [],
+    usage: ["Use for supplementary accessible labels. Do not hide controls that remain focusable."],
+  },
+  {
+    name: "RangeTimeline",
+    group: "data-display",
+    tagline: "Horizontal intervals with token-owned geometry and optional endpoint editing.",
+    props: [
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Localized accessible name for the scrollable schedule.",
+      },
+      {
+        name: "columns",
+        type: "{ label: string; units: number }[]",
+        required: true,
+        description:
+          "Positive unit counts determine proportional column widths. Column count determines the minimum canvas width, so coarse grouping zooms out.",
+      },
+      { name: "bands", type: "{ label: string; units: number }[]", description: "Optional grouped axis labels above the ticks, for example months above days. Counts use the same units as columns and cover the same range." },
+      {
+        name: "rows",
+        type: "RangeTimelineRow[]",
+        required: true,
+        description:
+          "Each row has id, label, inclusive start/end unit offsets, and localized startLabel/endLabel including current values.",
+      },
+      { name: "today", type: "number | null", description: "Optional current unit marker." },
+      {
+        name: "onRangeChange",
+        type: '(id: string, edge: "start" | "end", delta: number) => void',
+        description:
+          "Committed endpoint movement in units. Omit for read-only. Dates remain consumer data; do not replace true anchors with clipped positions.",
+      },
+    ],
+    example:
+      '<RangeTimeline label="Schedule" columns={[{ label: "Week", units: 7 }]} rows={[{ id: "task", label: "Task", start: 0, end: 6, startLabel: "Start: day 1", endLabel: "End: day 7" }]} />',
+    docPath: "docs/data-display/timeline.tsx",
+    storyPath: "data-display/timeline",
+    rules: [],
+    usage: [
+      "Provide a precise non-drag editor in each row label when enabling changes. Clipped endpoints and short intervals omit grips; labels and their editors remain available.",
+      "Use TimelineGrid for time-of-day columns; RangeTimeline is a horizontal range axis.",
+    ],
+  },
+
   // ─── layout ─────────────────────────────────────────────────────────────
   {
     name: "PageContainer",
@@ -365,6 +427,13 @@ import { Button } from "@godxjp/ui/general";
     tagline: "Container-responsive card grid with configurable base, sm, md and lg columns.",
     props: [
       {
+        name: "flow",
+        type: '"rows" | "columns"',
+        defaultValue: '"rows"',
+        description:
+          'Rows adapt to container width. Columns keep a horizontal collection in order with token-owned column width; compose inside ScrollArea orientation="horizontal". Column flow ignores columns and preset geometry.',
+      },
+      {
         name: "columns",
         type: "number | { base?: number; sm?: number; md?: number; lg?: number }",
         defaultValue: "4",
@@ -428,8 +497,8 @@ import { StatCard } from "@godxjp/ui/data-display";
       {
         name: "sidebar",
         type: "ReactNode",
-        required: true,
-        description: "Sidebar node — typically a <Sidebar>.",
+        description:
+          "Optional sidebar node, typically a Sidebar. Omit or pass null/false to remove its landmark and grid track. Logo remains in the topbar; navRail is independent.",
       },
       {
         name: "children",
@@ -1233,6 +1302,7 @@ import { PanelLeftClose, Search } from "lucide-react";
     tagline:
       "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill.",
     props: [
+      { name: "hideBelow", type: "BreakpointProp", description: "Hide the bar cell below a design-system breakpoint without interrupting its stretch chain." },
       {
         name: "asChild",
         type: "boolean",
@@ -2059,6 +2129,13 @@ import { Trash2 } from "lucide-react";
         type: "number",
         description:
           "Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis. Visual-only — the full text stays in the DOM / accessible name. Mutually exclusive with `truncate` (`clamp` wins; dev builds warn).",
+      },
+      {
+        name: "whitespace",
+        type: '"normal" | "pre-wrap"',
+        defaultValue: '"normal"',
+        description:
+          "Whitespace handling. 'normal' is CSS's own behaviour (newlines and space runs collapse) and stays the default. 'pre-wrap' is for text a PERSON typed — a plain-text note, an issue description, a pasted log — where the line breaks and the indentation are CONTENT: it keeps both, still wraps long lines at the container edge, and breaks an over-long unbroken token (a URL, an id) instead of overflowing. Use it INSTEAD of `className=\"whitespace-pre-wrap\"`. Precedence is explicit: `truncate` is a single-line contract and wins (dev builds warn); `clamp` COMPOSES with it, showing the first N preserved lines. Not for rendered Markdown/HTML — that is `Prose`, which styles rendered elements and does nothing to whitespace.",
       },
       { name: "tabular", type: "boolean", description: "Tabular figures for aligned numbers." },
       { name: "mono", type: "boolean", description: "Monospace family for codes / ids." },
@@ -9407,6 +9484,13 @@ export function ControlledPopover() {
           "Scrollbar visibility strategy. 'auto' mirrors browser overflow; 'always' keeps it visible; 'scroll' shows while scrolling; 'hover' shows while hovering the scroll area.",
       },
       {
+        name: "orientation",
+        type: '"vertical" | "horizontal" | "both"',
+        defaultValue: '"vertical"',
+        description:
+          "Axes that scroll, and therefore which scrollbars render. This is NOT decoration: Radix derives the viewport's inline overflowX/overflowY from which scrollbars are mounted, so an axis you do not ask for is `overflow: hidden` and its content is CLIPPED, not merely missing a bar. Use 'horizontal' for a strip of non-shrinking columns (a board, a lane of cards) — the viewport keeps its tab stop so the strip stays keyboard-scrollable, and the consumer writes no overflow class of its own. Pair it with a width constraint on the root, exactly as the vertical case needs a height one.",
+      },
+      {
         name: "viewportRef",
         type: "React.Ref<HTMLDivElement>",
         description:
@@ -12258,10 +12342,10 @@ export function NotifyRow() {
       { name: "onRetry", type: "() => void", description: "Consumer-owned retry callback." },
       {
         name: "responsive",
-        type: '"auto" | "popover" | "sheet"',
+        type: '"auto" | "popover" | "sheet" | "dialog"',
         defaultValue: '"auto"',
         description:
-          'Responsive presentation contract. "auto" resolves through the SHARED Sheet hook useSheetResponsiveMode(): desktop popover above --sheet-responsive-breakpoint-width (48rem/768px), focus-trapped bottom Sheet at/below it. Move that one token to move the line for every overlay.',
+          'Which SURFACE the panel opens on. "auto" (default) is a desktop popover above --sheet-responsive-breakpoint-width (48rem/768px) and a focus-trapped bottom Sheet at/below it. "dialog" is a centred modal above that breakpoint and the SAME Sheet below it — reach for it once a row carries more than a name (a role, a plan, a member count, a create-organization action): a popover is anchored to its trigger, clipped by the viewport and sized by --org-switcher-menu-width, while a dialog has a real title, a scrolling body and room for a footer, and takes full attention, which is the right trade when switching organization re-scopes everything on screen. "popover" and "sheet" pin one surface at every width, for deterministic embedded surfaces and component tests. "auto" and "dialog" are the two RESPONSIVE pairs and share their mobile half, because a centred modal on a phone is a Sheet with worse ergonomics. All four resolve the breakpoint through the shared useSheetResponsiveMode() hook, so moving that one token moves the line for every overlay. Width of the dialog surface is --org-switcher-dialog-width (26rem), separate from --dialog-width-default so re-tuning the picker does not re-tune every dialog.',
       },
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
@@ -12294,6 +12378,104 @@ import { Badge } from "@godxjp/ui/data-display";
   labels={labels}
 />`,
     storyPath: "layout/OrgSwitcher.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "AppLauncher",
+    group: "layout",
+    tagline:
+      "Nine-dot topbar app grid — the platform-standard way to switch app (the Google Workspace shape).",
+    props: [
+      {
+        name: "apps",
+        type: "readonly AppLauncherApp[]",
+        required: true,
+        description:
+          "Ungrouped app tiles, rendered first with no heading. Each is { id, name, href, icon?, current?, external? } and each tile is a REAL <a href> — pass only apps the viewer may open; there is no disabled tile.",
+      },
+      {
+        name: "groups",
+        type: "readonly AppLauncherGroup[]",
+        description:
+          'Labelled sections rendered after `apps` — the "more from …" band. Each group is a named role="group", not a heading, so the same markup is correct inside the popover and inside the Sheet.',
+      },
+      {
+        name: "labels",
+        type: "AppLauncherLabels",
+        required: true,
+        description:
+          "Localized trigger name, panel title, empty/loading/retry copy, and the optional `externalHint` announced on an external tile (WCAG 3.2.5). `trigger` is a plain string, not a function of the current app: the nine-dot button shows no current value.",
+      },
+      {
+        name: "columns",
+        type: "number",
+        defaultValue: "3",
+        description:
+          "Grid column count, written inline to the `--app-launcher-columns` custom property. Omit it and `.ui-app-launcher-panel` keeps its own declaration of 3 — the default sits in the stylesheet, where a theme can reach it, rather than in a component token (the token NAME vocabulary has no word for a count).",
+      },
+      {
+        name: "linkComponent",
+        type: "SidebarLinkComponentProp",
+        description:
+          'Framework router link — the SAME contract `Sidebar` and `NavList` take, so `inertiaSidebarLink(Link)` / `createSidebarLink(Link, "to")` is reused verbatim. The launcher still composes the tile; `external` apps bypass it and render a plain anchor.',
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Shows the loading state; the trigger stays openable.",
+      },
+      { name: "error", type: "ReactNode", description: "Consumer-supplied error state." },
+      { name: "onRetry", type: "() => void", description: "Consumer-owned retry callback." },
+      {
+        name: "responsive",
+        type: '"auto" | "popover" | "sheet"',
+        defaultValue: '"auto"',
+        description:
+          'Responsive presentation contract. "auto" resolves through the SHARED Sheet hook useSheetResponsiveMode(): desktop popover above --sheet-responsive-breakpoint-width (48rem/768px), focus-trapped bottom Sheet at/below it.',
+      },
+      { name: "open", type: "boolean", description: "Controlled open state." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Open-state callback.",
+      },
+    ],
+    usage: [
+      "DO drop it straight into a Topbar slot. It renders NO wrapper element, so the trigger is the slot's own flex child and `.ui-topbar-item { align-self: stretch }` reaches the bar's height.",
+      'DON\'T build the trigger out of `Button variant="ghost"`. A Button in a bar is a --control-height pill floating in a taller strip, with its own hover fill and its own focus ring — the exact regression corrected in 20.0.0. The trigger is a `TopbarItem`.',
+      'DO mark the app the viewer is inside with `current` — it becomes `aria-current="page"`, which is what both the tint and the announcement key off.',
+      "DO set `external` on a destination outside this SPA. It renders a plain anchor with target/rel and skips `linkComponent`, because a client-side router link to another origin routes nowhere.",
+      'DON\'T wrap it in your own media query to pick popover vs sheet — `responsive="auto"` already reads the shared --sheet-responsive-breakpoint-width token.',
+      "`className`, `id` and every `data-*` land on the TRIGGER, so an end-to-end selector can hold it without depending on the localized accessible name.",
+    ],
+    useCases: [
+      "A platform with several apps (console, billing, chat, people) where the bar must offer all of them from every page.",
+      "Replacing a hand-rolled dropdown of product links in the topbar end slot.",
+    ],
+    related: [
+      "ServiceLauncherCard — the PAGE-SIZED launcher tile (status, hostname, plan, action, locked reason) for a service-catalogue page, where choosing is a considered act. AppLauncher's tile is bar-sized: mark + name, the whole tile one link, because changing app is a reflex. Neither is built out of the other; a grid of ServiceLauncherCards inside a popover is the wrong component.",
+      "AppShell (navRail) — the SAME platform scope expressed as a docked column instead of a bar control. Pick ONE: the launcher for a platform with MANY apps where switching is occasional (Google Workspace), the rail for a single product where switching workspace is constant enough to deserve permanent screen width (Slack).",
+      "OrgSwitcher — the other platform-scope control: which ORGANIZATION you are in, not which app. They compose; they do not replace each other.",
+      "TopbarItem — the bar cell the trigger is built from; use it directly for a one-off bar control.",
+    ],
+    example: `import { AppLauncher, Topbar } from "@godxjp/ui/layout";
+
+<Topbar
+  start={brand}
+  end={
+    <AppLauncher
+      apps={[
+        { id: "console", name: t("app.console"), href: "/console", icon: <BarChart3 />, current: true },
+        { id: "billing", name: t("app.billing"), href: "/billing", icon: <Receipt /> },
+      ]}
+      groups={[{ label: t("app.more"), apps: [{ id: "support", name: t("app.support"), href: supportUrl, external: true }] }]}
+      linkComponent={inertiaSidebarLink(Link)}
+      labels={labels}
+    />
+  }
+/>`,
+    storyPath: "layout/AppLauncher.stories.tsx",
     rules: [],
   },
   {

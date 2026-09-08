@@ -26,12 +26,13 @@ describe("TreeList", () => {
     expect(items[1]).toHaveAttribute("data-depth", "1");
   });
 
-  it("marks the active item with aria-current, data-active and an sr-only prefix", () => {
+  it("marks the active item semantically without injecting an English prefix", () => {
     renderWithUi(<TreeList items={ITEMS} />);
     const activeItem = screen.getByText("売掛金").closest("li")!;
     expect(activeItem).toHaveAttribute("aria-current", "true");
     expect(activeItem).toHaveAttribute("data-active", "true");
-    expect(activeItem).toHaveTextContent("Current:");
+    expect(activeItem).toHaveTextContent("売掛金");
+    expect(activeItem).not.toHaveTextContent("Current:");
   });
 
   it("does not mark inactive items as current", () => {

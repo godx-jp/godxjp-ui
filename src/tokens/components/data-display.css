@@ -38,6 +38,7 @@
   --prose-code-space-inline: var(--space-1);
   --prose-code-radius: var(--radius-sm);
   --prose-image-radius: var(--radius-md);
+  --tree-item-indent-width: var(--space-5);
   --tree-item-title-font-size: var(--font-size-xs);
   --tree-item-description-font-size: var(--font-size-xs);
   --timeline-note-font-size: var(--font-size-xs);
@@ -224,4 +225,12 @@
   /* Floor for the scrolling body — below this the columns collapse into unreadable slivers, so
    * the table scrolls instead. Mirrors --table-surface-min-inline-size on DataTable. */
   --permission-matrix-min-width: 48rem;
+}
+
+:root {
+  --range-timeline-label-width: var(--app-shell-sidebar-width);
+  --range-timeline-unit-width: calc(var(--control-height-sm) * 2);
+  --range-timeline-row-height: var(--control-height-lg);
+  --range-timeline-bar-height: var(--control-height-sm);
+  --range-timeline-border-color: var(--border);
 }

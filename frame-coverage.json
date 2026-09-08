@@ -51,7 +51,9 @@
     "general/button": "general/button/index",
     "layout/legal-document-shell": "layout/legal-document-shell/index",
     "layout/error-surface": "layout/error-surface/index",
-    "data-entry/form-errors": "data-entry/form"
+    "data-entry/form-errors": "data-entry/form",
+    "data-display/range-timeline": "data-display/timeline",
+    "general/visually-hidden": "general/typography"
   },
   "excludeExports": [
     "useFormLayout",
@@ -3105,7 +3107,10 @@
       }
     },
     {
-      "exports": ["Upload", "Command"],
+      "exports": [
+        "Upload",
+        "Command"
+      ],
       "dimensions": {
         "journey": {
           "status": "pass",

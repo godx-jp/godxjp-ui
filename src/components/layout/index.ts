@@ -18,6 +18,14 @@ export { NavList } from "./nav-list";
 export type { NavListProp, NavListProps } from "./nav-list";
 export { AppShell } from "./app-shell";
 export type { AppShellProps } from "./app-shell";
+export { AppLauncher } from "./app-launcher";
+export type {
+  AppLauncherApp,
+  AppLauncherGroup,
+  AppLauncherLabels,
+  AppLauncherProp,
+  AppLauncherProps,
+} from "./app-launcher";
 export { OrgSwitcher } from "./org-switcher";
 export type {
   OrgSwitcherLabels,

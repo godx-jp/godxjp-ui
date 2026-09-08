@@ -372,3 +372,14 @@ export default function Demo() {
     </AppShell>
   );
 }
+
+/** A dashboard keeps the canonical topbar and main area without a sidebar track. */
+export function WithoutSidebar() {
+  return (
+    <AppShell topbar={<Topbar start={<Text>Workspace</Text>} />}>
+      <PageContainer title="Dashboard">
+        <Text>Project overview</Text>
+      </PageContainer>
+    </AppShell>
+  );
+}

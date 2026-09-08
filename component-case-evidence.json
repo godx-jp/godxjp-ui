@@ -122,6 +122,83 @@
         }
       }
     },
+    "AppLauncher": {
+      "complete": true,
+      "props": {
+        "apps": {
+          "cases": ["four apps with marks and a current one", "empty list"],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx"
+          ]
+        },
+        "groups": {
+          "cases": ["one labelled section after the ungrouped apps", "omitted"],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx"
+          ]
+        },
+        "labels": {
+          "cases": ["consumer-owned localized copy including externalHint"],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx"
+          ]
+        },
+        "columns": {
+          "cases": ["omitted — the stylesheet default of 3", 4],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx"
+          ]
+        },
+        "linkComponent": {
+          "cases": ["router link component", "omitted — plain anchor"],
+          "evidence": ["src/components/layout/__tests__/app-launcher.test.tsx"]
+        },
+        "loading": {
+          "cases": [true, false],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx"
+          ]
+        },
+        "error": {
+          "cases": ["error node with retry", "omitted"],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx"
+          ]
+        },
+        "onRetry": {
+          "cases": ["retry callback"],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx"
+          ]
+        },
+        "responsive": {
+          "cases": ["auto", "popover", "sheet"],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx"
+          ]
+        },
+        "open": {
+          "cases": [false, true],
+          "evidence": ["src/components/layout/__tests__/app-launcher.test.tsx"]
+        },
+        "onOpenChange": {
+          "cases": ["open/close callback"],
+          "evidence": ["src/components/layout/__tests__/app-launcher.test.tsx"]
+        },
+        "className": {
+          "cases": ["consumer class merged onto the trigger"],
+          "evidence": ["src/components/layout/__tests__/app-launcher.test.tsx"]
+        }
+      }
+    },
     "AppSettingPicker": {
       "props": {
         "appearance": {

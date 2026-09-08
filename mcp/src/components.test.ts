@@ -140,3 +140,11 @@ it("documents ResponsiveGrid base columns with the actual default", async () => 
   const grid = COMPONENTS.find((component) => component.name === "ResponsiveGrid")!;
   expect(grid.props.find((prop) => prop.name === "columns")?.defaultValue).toBe("4");
 });
+
+it("documents an optional AppShell sidebar without reserving empty navigation", () => {
+  const shell = COMPONENTS.find((component) => component.name === "AppShell");
+  const sidebar = shell?.props.find((prop) => prop.name === "sidebar");
+  expect(sidebar).toBeDefined();
+  expect(sidebar?.required).not.toBe(true);
+  expect(sidebar?.description).toContain("grid track");
+});

@@ -77,6 +77,7 @@ export type {
   FontWeightProp,
   HeadingLevelProp,
   TextAlignProp,
+  TextWhitespaceProp,
   SizeProp,
   ControlStatusProp,
   ControlVariantProp,

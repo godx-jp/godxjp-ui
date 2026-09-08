@@ -158,3 +158,24 @@ describe("ResponsiveGrid — preset='pricing-plans' (3/3/1 contract)", () => {
     });
   });
 });
+
+describe("ResponsiveGrid flow", () => {
+  it("opts into columns without changing the default responsive row flow", () => {
+    const { container, rerender } = render(
+      <ResponsiveGrid flow="columns">
+        <article>A</article>
+        <article>B</article>
+      </ResponsiveGrid>,
+    );
+    expect(container.querySelector('[data-flow="columns"]')).not.toBeNull();
+    expect(container.querySelectorAll("article")).toHaveLength(2);
+    rerender(
+      <ResponsiveGrid>
+        <article>A</article>
+        <article>B</article>
+      </ResponsiveGrid>,
+    );
+    expect(container.querySelector('[data-flow="columns"]')).toBeNull();
+    expect(container.querySelectorAll("article")).toHaveLength(2);
+  });
+});

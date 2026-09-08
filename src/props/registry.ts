@@ -351,6 +351,12 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description: "Inline text alignment start | center | end (logical, RTL-safe)",
   },
+  TextWhitespaceProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "Whitespace handling normal | pre-wrap: `pre-wrap` keeps the newlines and indentation a person typed (a plain-text note, a pasted log) and still wraps at the container edge; `truncate` outranks it",
+  },
   SizeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -651,6 +657,7 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  ResponsiveGridFlowProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   ResponsiveGridColumnsProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   ResponsiveGridPresetProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   MasterDetailRailWidthProp: {
@@ -1085,6 +1092,33 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: ["LabelProp"],
+  },
+  AppLauncherApp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["IdProp", "LabelProp", "IconProp"],
+  },
+  AppLauncherGroup: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["LabelProp"],
+  },
+  AppLauncherLabels: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["LabelProp"],
+  },
+  AppLauncherProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "OpenProp",
+      "OnOpenChangeProp",
+      "OnValueChangeProp",
+      "ErrorProp",
+      "PendingProp",
+      "ClassNameProp",
+    ],
   },
   OrgSwitcherOrganization: {
     group: "layout",
@@ -1633,10 +1667,27 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  ScrollAreaOrientationProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "orientation",
+        local: true,
+        reason:
+          'Axes that scroll ("vertical" | "horizontal" | "both"). Not the shared OrientationProp: that union has no "both". Radix derives the viewport\'s inline overflowX/overflowY from which scrollbars are mounted, so an axis left out is CLIPPED.',
+      },
+    ],
+  },
   ScrollAreaProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
     vocabulary: [
+      {
+        field: "orientation",
+        local: true,
+        reason: "See ScrollAreaOrientationProp, the scrolling-axis vocabulary.",
+      },
       "OnValueChangeProp",
       {
         field: "viewportRef",
@@ -2330,6 +2381,18 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/data-display/service-launcher-card.tsx",
     vocabulary: ["LabelProp", "ClassNameProp"],
+  },
+  RangeTimelineProp: {
+    group: "data-display",
+    file: "components/data-display/range-timeline.tsx",
+    vocabulary: [
+      "LabelProp",
+      { field: "columns", local: true, reason: "Labels and positive numeric unit counts define a consumer-supplied axis." },
+      { field: "bands", local: true, reason: "Optional grouped labels in the same axis units, such as months above daily ticks." },
+      { field: "rows", local: true, reason: "Consumer-supplied interval records preserve true inclusive endpoints independently of clipping." },
+      { field: "today", local: true, reason: "Optional current position in the same numeric units as the axis." },
+      { field: "onRangeChange", local: true, reason: "An endpoint movement command, not an internally owned value; the consumer commits its row data." },
+    ],
   },
   ResponsiveGridProp: {
     group: "layout",

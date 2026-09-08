@@ -268,9 +268,7 @@ describe("responsive shell geometry", () => {
     // Slack's behaviour, and the one that keeps the rail's destinations reachable while collapsed.
     // If this ever read `--app-shell-sidebar-collapsed-width` twice, both columns would shrink and
     // the workspace switcher would become a second strip of anonymous icons.
-    expect(
-      declarationsFor(shellStyles, '.app-root[data-nav-rail][data-collapsed="true"]'),
-    ).toMatch(
+    expect(declarationsFor(shellStyles, '.app-root[data-nav-rail][data-collapsed="true"]')).toMatch(
       /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-collapsed-width\)\s*minmax\(0, 1fr\);/,
     );
   });
@@ -454,5 +452,113 @@ describe("responsive shell geometry", () => {
     expect(root).toMatch(/flex:\s*1 1 0%;/);
     expect(root).toMatch(/overflow:\s*clip;/);
     expect(root).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
+  });
+
+  it("OrgSwitcher's sheet re-tunes the chrome inset at a specificity that can actually win", () => {
+    /*
+     * `[data-slot="sheet-content"]` declares --sheet-pad-x in dialog-layout.css at (0,1,0), and
+     * THIS file is imported before it — so a bare `.ui-org-switcher-sheet` ties and loses on order,
+     * silently. Measured before the pairing: the heading sat 24px from the edge while the rows sat
+     * at 12px, two starts visibly out of line on a 359px panel.
+     *
+     * Pinning the SELECTOR, not the computed value: jsdom does no cascade, so the only thing that
+     * decides this is whether both hooks are in the selector.
+     */
+    const decls = declarationsFor(shellStyles, '[data-slot="sheet-content"].ui-org-switcher-sheet');
+    expect(decls).toMatch(/--sheet-pad-x:\s*var\(--org-switcher-sheet-inset\);/);
+    // The bare class must NOT be where the inset lives, or the pairing above is decoration.
+    expect(declarationsFor(shellStyles, ".ui-org-switcher-sheet")).not.toMatch(/--sheet-pad-x:/);
+    expect(shellTokens).toMatch(/--org-switcher-sheet-inset:\s*var\(--space-3\);/);
+  });
+
+  it("OrgSwitcher aligns ruled rows and the search field through one shared column", () => {
+    /*
+     * `.ui-command-item` rounds and fills because its home is a command PALETTE — a search-anything
+     * surface where a floating highlight tracks a cursor through results (Raycast, cmdk, Spotlight).
+     * This list is "choose one of N": a closed set, where what a reader needs is to see where one
+     * row ends and the next begins.
+     *
+     * Scoped to this panel and deliberately NOT pushed into `.ui-command-item`, which eight
+     * components use as a palette and would be wrong to re-shape.
+     */
+    const row = declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-item");
+    expect(row).toMatch(/border-radius:\s*0;/);
+    // The command owns the outer column once; rows and search fields do not cancel it.
+    // Row marks align with the search glyph through the shared command input padding.
+    expect(row).toMatch(/margin-inline:\s*0;/);
+    expect(row).toMatch(/padding-inline:\s*var\(--command-input-padding-x\);/);
+    expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(
+      /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\);/,
+    );
+    expect(shellTokens).toMatch(/--org-switcher-list-offset:\s*0px;/);
+    expect(
+      declarationsFor(shellStyles, '[data-slot="sheet-content"].ui-org-switcher-sheet'),
+    ).toMatch(/--org-switcher-list-offset:\s*var\(--org-switcher-sheet-inset\);/);
+
+    // The group's padding goes on BOTH axes: inline it was a second inset, block it was a 4px band
+    // above the first row and below the last (measured: list 82-179 against rows 86-175).
+    expect(declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-group")).toMatch(
+      /padding:\s*0;/,
+    );
+
+    // `+` and not a border on every row, so nothing hangs above the first item.
+    expect(
+      declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-item + .ui-command-item"),
+    ).toMatch(/border-block-start:\s*1px solid hsl\(var\(--border\)\);/);
+
+    // The palette itself keeps its pill — this must stay a local re-shape.
+    const controlStyles = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
+    expect(declarationsFor(controlStyles, ".ui-command-item")).toMatch(/border-radius:\s*calc\(/);
+  });
+
+  it("the picker's search is drawn AS A FIELD, on the heading's start line", () => {
+    // The outer inset belongs to the command wrapper. The input keeps its field chrome
+    // and fills that column, so applying the inset again here would double it.
+    const decls = declarationsFor(
+      shellStyles,
+      ".ui-org-switcher-command .ui-command-input-wrapper",
+    );
+    expect(decls).toMatch(/border:\s*1px solid hsl\(var\(--input\)\);/);
+    expect(decls).toMatch(/border-radius:\s*var\(--control-radius\);/);
+    expect(decls).toMatch(/margin-inline:\s*0;/);
+    expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(
+      /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\);/,
+    );
+    // The offset half must NOT be pre-substituted in a root token — that is the whole bug.
+    expect(shellTokens).not.toMatch(/--org-switcher-search-space-outset:/);
+
+    // The palette keeps its bottom rule; this is a local re-shape, not a change to Command.
+    const controlStyles = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
+    expect(declarationsFor(controlStyles, ".ui-command-input-wrapper")).toMatch(
+      /border-bottom:\s*1px solid hsl\(var\(--border\)\);/,
+    );
+  });
+
+  it("a command row spaces its leading mark from its label", () => {
+    /*
+     * `.ui-command-item` is a flex row and shipped with NO gap, so every command / palette / picker
+     * row with an icon rendered its glyph flush against the text — measured at 0px between an
+     * organization mark and its name, in eight components that use CommandItem.
+     */
+    const controlStyles = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
+    expect(declarationsFor(controlStyles, ".ui-command-item")).toMatch(
+      /gap:\s*var\(--command-item-gap\);/,
+    );
+    const controlTokens = readFileSync(
+      resolve(process.cwd(), "src/tokens/components/control.css"),
+      "utf8",
+    );
+    // --control-gap, not a literal: a command row is a control row, and it should move with them.
+    expect(controlTokens).toMatch(/--command-item-gap:\s*var\(--control-gap\);/);
+  });
+
+  it("OrgSwitcher sizes its glyphs and its mark from scales, not from literals", () => {
+    // Both shipped as literals that happened to equal the token — same number, out of a theme's
+    // reach, and out of reach of the icon-size ratchet, whose pattern looks for `icon|glyph` and
+    // never saw `chevron`, `check` or `spinner`.
+    const glyphs = declarationsFor(shellStyles, ".ui-org-switcher-chevron");
+    expect(glyphs).toMatch(/width:\s*var\(--icon-size-md\);/);
+    expect(glyphs).not.toMatch(/width:\s*1rem/);
+    expect(shellTokens).toMatch(/--org-switcher-avatar-size:\s*var\(--control-height-sm\);/);
   });
 });

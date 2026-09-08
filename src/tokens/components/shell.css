@@ -3,6 +3,7 @@
  * global scale. */
 
 :root {
+  --responsive-grid-column-width: 20rem;
   --sidebar-section-label-font-size: var(--font-size-2xs);
   --sidebar-product-tenant-font-size: var(--font-size-2xs);
   --sidebar-badge-font-size: var(--font-size-2xs);
@@ -266,10 +267,69 @@
   --topbar-item-focus-ring-offset: calc(-1 * var(--focus-ring-width));
   --org-switcher-trigger-height: var(--band-height-xl);
   --org-switcher-trigger-padding-x: var(--space-2);
-  --org-switcher-avatar-size: 1.75rem;
+  /* 1.75rem was the literal; --control-height-sm IS 1.75rem and is the tier this mark belongs to,
+   * so a service that re-tiers its controls moves the mark with them instead of leaving it behind. */
+  --org-switcher-avatar-size: var(--control-height-sm);
+  /* The compact-picker inset, shared by the sheet heading and the list — see .ui-org-switcher-sheet. */
+  --org-switcher-sheet-inset: var(--space-3);
+  /* Where a row's LABEL starts — the same on every surface, so it lines up with the heading. */
+  --org-switcher-list-inset: var(--org-switcher-sheet-inset);
+  /* What the SURROUNDING SURFACE insets the list by, which a row cancels so its fill and its rule
+   * reach both edges. Zero by default: the popover publishes --popover-space-inset: 0, so there is
+   * nothing to cancel there, and cancelling anyway drags the row outside the panel and puts its
+   * text on the border. The sheet, which does inset its body, overrides this. */
+  --org-switcher-list-offset: 0px;
+  /* The dialog surface's measure. Wider than --org-switcher-menu-width because the whole reason to
+   * reach for the dialog is that a row carries more than a name; narrower than the generic
+   * --dialog-width-default because it is still a list of choices, not a form. */
+  --org-switcher-dialog-width: 26rem;
+  /* Breathing room above and below the search field. The INLINE side is deliberately not here:
+   * it depends on --org-switcher-list-offset, which each surface sets on itself, and a composite
+   * declared at `:root` substitutes its vars AT `:root` — it would bake in the default 0 and never
+   * see the dialog's or the sheet's value. That is the same trap --dialog-space-inset set, and it
+   * caught this rule too on the first attempt, so the inline half is computed in the rule. */
+  --org-switcher-search-space-block: var(--space-3);
   --org-switcher-menu-width: 16rem;
   --org-switcher-sheet-max-height: 75dvh;
   --org-switcher-state-min-height: 8rem;
+
+  /* APP LAUNCHER — the nine-dot platform app grid in the topbar.
+   *
+   * NO TRIGGER GEOMETRY KNOB, deliberately, for exactly the reason `--topbar-item-*` declares no
+   * height: the trigger IS a `TopbarItem`, so the bar's own height and the bar's own hover surface
+   * are already its answer, and a second answer here would go stale the moment either moves.
+   *
+   * NO COLUMN-COUNT TOKEN EITHER, and that one is a GAP, not a choice: the component-token name
+   * vocabulary (scripts/check-token-tiers.mjs) has words for every length and colour and none for
+   * a count, so `--app-launcher-columns` cannot be spelled legally here. It is declared on
+   * `.ui-app-launcher-panel` in styles/shell-layout.css instead, which keeps it themeable but out
+   * of this tier. Give the vocabulary a `count` word and it moves here with the rest. */
+  --app-launcher-panel-width: 20rem;
+  --app-launcher-panel-max-height: 26rem;
+  --app-launcher-panel-gap: var(--space-3);
+  --app-launcher-sheet-max-height: 75dvh;
+  --app-launcher-grid-gap: var(--space-1);
+  --app-launcher-tile-gap: var(--space-1);
+  --app-launcher-tile-padding: var(--space-2);
+  /* The tap floor (rule #24, WCAG 2.2 AA 2.5.8) — a tile is a link on a phone before it is a tile
+   * on a desktop, and the comfortable control tier IS that floor. */
+  --app-launcher-tile-min-height: var(--control-height-comfortable);
+  --app-launcher-tile-radius: var(--radius);
+  --app-launcher-tile-color: var(--foreground);
+  --app-launcher-tile-hover-background: var(--accent);
+  --app-launcher-tile-hover-color: var(--accent-foreground);
+  /* The app you are already in. `initial` so the role default re-resolves at the call site under a
+   * scoped theme, the same reason `--sidebar-item-active-*` does. Default = hsl(var(--secondary)). */
+  --app-launcher-tile-current-background: initial;
+  --app-launcher-mark-size: 2.5rem;
+  --app-launcher-mark-radius: var(--radius);
+  --app-launcher-mark-background: var(--secondary);
+  --app-launcher-mark-foreground: var(--secondary-foreground);
+  --app-launcher-mark-font-size: var(--font-size-sm);
+  --app-launcher-name-font-size: var(--font-size-2xs);
+  --app-launcher-group-label-font-size: var(--font-size-2xs);
+  --app-launcher-group-label-color: var(--muted-foreground);
+  --app-launcher-state-min-height: 8rem;
 
   /* Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site
    * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override

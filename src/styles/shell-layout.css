@@ -656,6 +656,13 @@
     gap: var(--space-3);
   }
 
+  /* Brand links must not add an inline baseline/descender gap below the lockup. */
+  .app-topbar-logo,
+  .app-topbar-logo > a {
+    display: flex;
+    align-items: center;
+  }
+
   /* A custom `topbar` fills whatever the logo leaves. `min-width: 0` so its own content can
    * truncate instead of pushing the brand out of the row — the logo is the fixed part here. */
   .app-topbar-custom {
@@ -782,6 +789,14 @@
   }
 
   /* THE ONE AppShell breakpoint — 900px (56.25rem), the DXS canonical value. */
+  .app-root:where([data-sidebar="none"])[data-nav-rail] {
+    grid-template-columns: var(--app-shell-nav-rail-width) minmax(0, 1fr);
+    grid-template-areas: "navrail topbar" "navrail main" "navrail footer";
+  }
+  .app-root:where([data-sidebar="none"])[data-nav-rail][data-topbar-span="full"] {
+    grid-template-areas: "topbar topbar" "navrail main" "navrail footer";
+  }
+
   @media (width <= 56.25rem) {
     .app-root,
     .app-root[data-collapsed="true"],
@@ -876,6 +891,14 @@
       display: flex;
     }
 
+    .app-root[data-sidebar="none"][data-nav-rail][data-responsive-navigation="docked"] {
+      grid-template-columns: var(--app-shell-nav-rail-width) minmax(0, 1fr);
+      grid-template-areas: "navrail topbar" "navrail main" "navrail footer";
+    }
+    .app-root[data-sidebar="none"][data-nav-rail][data-responsive-navigation="docked"][data-topbar-span="full"] {
+      grid-template-areas: "topbar topbar" "navrail main" "navrail footer";
+    }
+
     /* (There is deliberately no `padding-inline` undo for docked mode any more. */
     .app-root[data-responsive-navigation="docked"] .app-mobile-nav-trigger {
       display: none;
@@ -950,7 +973,9 @@
   .ui-org-switcher-name,
   .ui-org-switcher-meta {
     overflow: hidden;
-    line-height: 1.25;
+    /* --line-height-tight IS 1.25; the literal was the same number with no way for a theme to
+     * reach it, and `no-arbitrary-typography` bans exactly this shape in consumer code. */
+    line-height: var(--line-height-tight);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -965,11 +990,14 @@
     font-size: var(--sidebar-user-role-font-size);
   }
 
+  /* --icon-size-md IS 1rem. The literals said the same thing while putting the size out of a
+   * theme's reach — and out of reach of the icon-size ratchet, whose pattern looks for
+   * `icon|glyph` in a selector and therefore never saw `chevron`, `check` or `spinner`. */
   .ui-org-switcher-chevron,
   .ui-org-switcher-check,
   .ui-org-switcher-spinner {
-    width: 1rem;
-    height: 1rem;
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
     flex: 0 0 auto;
   }
 
@@ -994,14 +1022,127 @@
     --popover-space-inset: 0;
   }
 
-  .ui-org-switcher-sheet {
+  /* ONE INSET FOR THE WHOLE PANEL. Sheet's own chrome inset is sized for a full-height sheet with
+   * prose in it; this is a compact picker, and at 359px it put the heading 24px from the edge while
+   * the rows sat at 12px (4px body + 8px row) — two starts, visibly out of line, and heavy for the
+   * width. The rows keep their own 8px because their hover surface is meant to bleed wider than
+   * the label, the way every list row in this library does. */
+  /* The selector carries BOTH hooks on purpose. `[data-slot="sheet-content"]` declares the default
+   * inset at specificity (0,1,0) in dialog-layout.css, which this file is imported BEFORE — so a
+   * bare `.ui-org-switcher-sheet` ties and loses on order, silently. Pairing them makes it (0,2,0)
+   * and states the relationship: this IS a sheet, re-tuned. */
+  /* The dialog surface. Same one inset as the sheet, for the same reason: the heading and the list
+   * must start on one line. The dialog's own chrome inset is sized for prose, and this is a picker.
+   * Width comes from the component's own knob rather than --dialog-width-default, so re-tuning the
+   * picker does not re-tune every dialog in the service. */
+  [data-slot="dialog-content"].ui-org-switcher-dialog {
+    /* OVERRIDE THE COMPOSITE, NOT ITS PART. `--dialog-space-inset` is declared at `:root` as
+     * `var(--dialog-space-y) var(--dialog-space-x)`, and a custom property substitutes its vars
+     * WHERE IT IS DECLARED — so re-declaring `--dialog-space-x` further down changes nothing the
+     * padding can see. Measured: the rule shipped, the token read 12px, and the box still padded
+     * 24px. This is the same class of silent no-op as a `var()` fallback that never fires. */
+    --dialog-space-inset: var(--dialog-space-y) var(--org-switcher-sheet-inset);
+    --org-switcher-list-offset: var(--org-switcher-sheet-inset);
+    max-inline-size: var(--org-switcher-dialog-width);
+  }
+
+  [data-slot="sheet-content"].ui-org-switcher-sheet {
+    --sheet-pad-x: var(--org-switcher-sheet-inset);
+    /* The sheet DOES inset its body, so its rows have that much to cancel. The popover keeps the
+     * default 0 because `--popover-space-inset: 0` leaves them nothing. */
+    --org-switcher-list-offset: var(--org-switcher-sheet-inset);
     max-height: var(--org-switcher-sheet-max-height);
     border-start-start-radius: var(--radius-lg);
     border-start-end-radius: var(--radius-lg);
   }
 
+  /* ONE CONTENT COLUMN FOR THE WHOLE PANEL.
+   *
+   * The inset lands HERE, on the block, instead of on each part — so the heading, the search field
+   * and every row share one start and one end, on all three surfaces. Put on the parts instead, it
+   * produced a panel where the search field ran 445-835 while the row fills ran 433-847: the rows
+   * broke out of the column everything else respected, and the selected row's band ran to the
+   * panel's border. `inset - offset` because the sheet and the dialog already inset their bodies
+   * by `offset`; the popover insets nothing and needs the whole thing. */
   .ui-org-switcher-command {
     width: 100%;
+    padding-inline: calc(var(--org-switcher-list-inset) - var(--org-switcher-list-offset));
+  }
+
+  /* A PICKER LIST IS RULED, NOT PILLED — and the two are different affordances, not two styles.
+   *
+   * `.ui-command-item` rounds its corners and fills on selection because its home is a command
+   * PALETTE: a search-anything surface where the highlight tracks a cursor moving through results,
+   * and a floating pill is exactly right (Raycast, cmdk, Spotlight). This list is not that. It is
+   * "choose one of N", the rows are a closed set, and what a reader needs is to see where one row
+   * ends and the next begins — the same hairline every other list in this library draws.
+   *
+   * Scoped to this panel and NOT pushed down into `.ui-command-item`, which eight components use
+   * as a palette and would be wrong to re-shape.
+   *
+   * The rule runs FULL BLEED: negative inline margin cancels the list's inset so it meets both
+   * edges of the panel, and the padding is added back so the text stays on the same start line as
+   * the heading above it. `+` rather than a border on every row, so the list has no rule hanging
+   * under its last item. */
+  /* The group's padding goes on BOTH axes. Inline, it was a second inset between the row and the
+   * panel edge, and with two of them no single value could reach the edge and still keep the label
+   * on the heading's start line. Block, it was a 4px band above the first row and below the last —
+   * measured on the desktop popover as list 82-179 against rows 86-175, and reported as "empty
+   * space at the top and the bottom". A ruled list draws its own boundaries; it needs no inner
+   * frame. */
+  .ui-org-switcher-command .ui-command-group {
+    padding: 0;
+  }
+
+  /* THE SEARCH IS A FIELD, SO IT IS DRAWN AS ONE.
+   *
+   * `.ui-command-input-wrapper` ships chrome-less with a single bottom rule — right for a command
+   * PALETTE, where the input IS the surface's header and a box around it would be a box around the
+   * whole panel. In this picker it left three different start lines: heading at 445, row mark at
+   * 445, and the search glyph at 457, inset the extra 12px of a field that was never painted. The
+   * inset was not wrong; the field was invisible. Drawing it makes the 12px read as the field's
+   * own padding instead of as a stray indent, and gives the panel a real place to type.
+   *
+   * Scoped to this panel: the palette keeps its bottom rule, which is correct there. */
+  .ui-org-switcher-command .ui-command-input-wrapper {
+    /* `border-bottom` is what the palette declares, so it is what has to be cleared — a shorthand
+     * `border` alone would leave the bottom rule doubling the field's own edge. */
+    border: 1px solid hsl(var(--input));
+    border-radius: var(--control-radius);
+    /* Inline margin is 0: `.ui-org-switcher-command` owns the column now, so the field simply
+     * fills it. It used to carry the inset itself, which is how the rows and the field ended up on
+     * two different columns in the first place. */
+    margin-block: var(--org-switcher-search-space-block);
+    margin-inline: 0;
+    background: hsl(var(--background));
+  }
+
+  /* TWO DIFFERENT QUANTITIES, and collapsing them into one is what broke the popover.
+   *
+   *   --org-switcher-list-offset  what the SURFACE insets the list by, which the row cancels so
+   *                               its fill and its rule reach both edges. The sheet has one; the
+   *                               popover sets --popover-space-inset: 0 and therefore has none.
+   *   --org-switcher-list-inset   where the LABEL starts, which is the same on every surface.
+   *
+   * The first attempt used one value for both. On the sheet that was right by coincidence — its
+   * body inset happens to equal the label inset — and on the popover the row was pulled 12px
+   * OUTSIDE a panel that had nothing to cancel, putting the text flush against the border. */
+  /* TWO LEADING GLYPHS SIT ON TOP OF EACH OTHER HERE — the search magnifier and the row's mark —
+   * and they have to share a start. They did not: the magnifier at 458 (inside the field's own
+   * padding) and the mark at 445, thirteen pixels apart, which reads as the lower one being shoved
+   * against the edge. Every number measured against the PANEL looked right; the wrong one was the
+   * relationship between the two icons, which is what a reader actually sees.
+   *
+   * So a row takes the same inner padding the field gives its glyph, and no negative margin: its
+   * fill and its rule stay inside the column with everything else. */
+  .ui-org-switcher-command .ui-command-item {
+    border-radius: 0;
+    margin-inline: 0;
+    padding-inline: var(--command-input-padding-x);
+  }
+
+  .ui-org-switcher-command .ui-command-item + .ui-command-item {
+    border-block-start: 1px solid hsl(var(--border));
   }
 
   .ui-org-switcher-state {
@@ -1017,6 +1158,151 @@
   }
 
   .ui-org-switcher-spinner {
+    animation: spin 1s linear infinite;
+  }
+
+  /* ── APP LAUNCHER ─────────────────────────────────────────────────────────────────────────
+   * The nine-dot platform app grid. There is deliberately NO `.ui-app-launcher-trigger` rule: the
+   * trigger is a `TopbarItem`, so `.ui-topbar-item` already owns every pixel of it — full bar
+   * height through `align-self: stretch`, the bar's own hover surface, the focus mark hosted
+   * inside the cell. A rule here would be a second answer to a question that is already answered,
+   * and — since this file's classes live in `@layer components` while a utility does not — the
+   * kind of second answer that loses silently. */
+  .ui-app-launcher-popover {
+    /* Through the popover's KNOBS, not the raw properties: `.ui-popover-content` carries the same
+     * one-class specificity and is imported after this file, so a raw width/padding never wins. */
+    --popover-surface-inline-size: min(
+      var(--app-launcher-panel-width),
+      calc(100vw - var(--space-4))
+    );
+    --popover-space-inset: var(--space-2);
+  }
+
+  .ui-app-launcher-sheet {
+    max-height: var(--app-launcher-sheet-max-height);
+    border-start-start-radius: var(--radius-lg);
+    border-start-end-radius: var(--radius-lg);
+  }
+
+  .ui-app-launcher-panel {
+    /* THE DEFAULT COLUMN COUNT LIVES HERE, not in the component's props and not in
+     * tokens/components/shell.css. Not in the props, because a default nobody can restyle is not a
+     * default a design system owns; not in the token file, because the component-token NAME
+     * vocabulary (scripts/check-token-tiers.mjs) has a word for every length and colour and none
+     * for a count. Declared on the element the grid reads it from, so `AppLauncher columns={…}`
+     * overrides it inline and a theme overrides it with any more specific selector. */
+    --app-launcher-columns: 3;
+
+    display: grid;
+    max-height: var(--app-launcher-panel-max-height);
+    gap: var(--app-launcher-panel-gap);
+    overflow-y: auto;
+  }
+
+  .ui-app-launcher-grid {
+    display: grid;
+    /* The count is the ONE value this component takes from a prop rather than a token — see
+     * `AppLauncher`'s panel comment. `minmax(0, 1fr)` and not `1fr`, so a long app name shrinks its
+     * own column instead of pushing the grid wider than the popover. */
+    grid-template-columns: repeat(var(--app-launcher-columns), minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    gap: var(--app-launcher-grid-gap);
+    list-style: none;
+  }
+
+  .ui-app-launcher-cell {
+    display: flex;
+  }
+
+  .ui-app-launcher-tile {
+    display: flex;
+    min-width: 0;
+    min-height: var(--app-launcher-tile-min-height);
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--app-launcher-tile-gap);
+    padding: var(--app-launcher-tile-padding);
+    border-radius: var(--app-launcher-tile-radius);
+    color: hsl(var(--app-launcher-tile-color));
+    text-align: center;
+    text-decoration: none;
+    transition:
+      background-color var(--duration-fast),
+      color var(--duration-fast);
+  }
+
+  .ui-app-launcher-tile:hover {
+    background: hsl(var(--app-launcher-tile-hover-background));
+    color: hsl(var(--app-launcher-tile-hover-color));
+  }
+
+  /* The app you are already in. Keyed off `aria-current`, the attribute that CARRIES the meaning,
+   * so the tint and the announcement can never drift apart. */
+  .ui-app-launcher-tile[aria-current="page"] {
+    background: var(--app-launcher-tile-current-background, hsl(var(--secondary)));
+  }
+
+  .ui-app-launcher-mark {
+    display: grid;
+    width: var(--app-launcher-mark-size);
+    height: var(--app-launcher-mark-size);
+    flex: 0 0 auto;
+    place-items: center;
+    overflow: hidden;
+    border-radius: var(--app-launcher-mark-radius);
+    background: hsl(var(--app-launcher-mark-background));
+    color: hsl(var(--app-launcher-mark-foreground));
+    font-size: var(--app-launcher-mark-font-size);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .ui-app-launcher-mark > * {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* WRAPS, never truncates. An app name is a proper noun and the tile is three-to-a-row narrow, so
+   * an ellipsis here would routinely eat the half that tells two products of one suite apart. The
+   * grid row grows instead; `overflow-wrap: anywhere` keeps a long unbroken name inside its column
+   * rather than widening the panel. */
+  .ui-app-launcher-name {
+    max-width: 100%;
+    font-size: var(--app-launcher-name-font-size);
+    line-height: var(--line-height-tight);
+    overflow-wrap: anywhere;
+  }
+
+  .ui-app-launcher-group {
+    display: grid;
+    gap: var(--app-launcher-grid-gap);
+  }
+
+  .ui-app-launcher-group-label {
+    padding-inline: var(--app-launcher-tile-padding);
+    color: hsl(var(--app-launcher-group-label-color));
+    font-size: var(--app-launcher-group-label-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-app-launcher-state {
+    display: flex;
+    min-height: var(--app-launcher-state-min-height);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    color: hsl(var(--muted-foreground));
+    text-align: center;
+  }
+
+  .ui-app-launcher-spinner {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+    flex: 0 0 auto;
     animation: spin 1s linear infinite;
   }
 
@@ -2080,5 +2366,13 @@
       --centered-shell-landing-section-gap: var(--centered-shell-landing-section-gap-compact);
       --centered-shell-landing-heading-size: var(--centered-shell-landing-heading-size-compact);
     }
+  }
+}
+
+@layer components {
+  /* An absent sidebar removes its track; a persisted collapse preference cannot reserve it. */
+  .app-root[data-sidebar="none"]:not([data-nav-rail]) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "topbar" "main" "footer";
   }
 }

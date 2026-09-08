@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 293,
-    dimensionCells: 4102,
+    exports: 296,
+    dimensionCells: 4144,
     covered: 72,
-    untested: 2261,
-    notApplicable: 1769,
+    untested: 2284,
+    notApplicable: 1788,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -117,6 +117,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"AlertMutationFeedback","group":"query","frame":"docs/query/mutation-feedback.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"AlertQueryError","group":"feedback","frame":"docs/feedback/alert.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"AlertTitle","group":"feedback","frame":"docs/feedback/alert.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"AppLauncher","group":"layout","frame":"docs/layout/app-launcher.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"AppSettingPicker","group":"navigation","frame":"docs/navigation/app-setting-picker.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"AppSettingToggle","group":"navigation","frame":"docs/navigation/app-setting-toggle.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"AppShell","group":"layout","frame":"docs/layout/app-shell.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
@@ -301,6 +302,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"RadioGroup","group":"data-entry","frame":"docs/data-entry/radio-group.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"RadioGroupRoot","group":"data-entry","frame":"docs/data-entry/radio-group.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"RadioItem","group":"data-entry","frame":"docs/data-entry/radio-group.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
+  {"name":"RangeTimeline","group":"data-display","frame":"docs/data-display/timeline.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Rating","group":"data-entry","frame":"docs/data-entry/rating.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"ResizableHandle","group":"layout","frame":"docs/layout/resizable-panel.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"ResizablePanel","group":"layout","frame":"docs/layout/resizable-panel.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
@@ -385,6 +387,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"TreeSelect","group":"data-entry","frame":"docs/data-entry/tree-select.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"TwoFactorSetup","group":"feedback","frame":"docs/feedback/two-factor-setup.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"Upload","group":"data-entry","frame":"docs/data-entry/upload.tsx","covered":["variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones"]},
+  {"name":"VisuallyHidden","group":"general","frame":"docs/general/typography.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
 ];
 
 const BY_NAME = new Map(FRAME_COVERAGE.map((entry) => [entry.name.toLowerCase(), entry]));

@@ -57,7 +57,7 @@
     "upload": {
       "dropzoneLabel": "ファイルをアップロード",
       "dropzoneHint": "ここにドラッグ＆ドロップ、またはクリックして選択",
-      "dropzoneMeta": "一時ストレージに保存 — フォーム保存時に promote",
+      "dropzoneMeta": "選択したファイルはここに表示されます。",
       "buttonLabel": "ファイルを選択",
       "addImage": "画像を追加",
       "uploading": "アップロード中…",
@@ -468,5 +468,13 @@
     "summaryPie": "{slices}区分の円グラフ",
     "summaryTrend": "{points}データ点の推移棒グラフ",
     "trendCurrent": "現在"
+  },
+  "rangeTimeline": {
+    "outsideRange": "表示範囲外",
+    "schedule": "スケジュール"
+  },
+  "textExamples": {
+    "preservedText": "プレーンテキスト",
+    "sampleText": "最初の行\n  字下げした行\n\n最後の行"
   }
 }

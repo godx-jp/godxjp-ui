@@ -255,15 +255,32 @@ export function refreshGuineaPigSkill(root) {
   const target = join(dir, "SKILL.md");
   const optin = join(dir, ".guinea-pig-optin");
   if (!existsSync(optin) || !existsSync(target)) return false;
-  if (readFileSync(optin, "utf8").trim() === KIT_VERSION) return false;
 
   const base = readFileSync(join(SELF_ROOT, "scripts", "guinea-pig-skill.md"), "utf8");
+  /*
+   * The marker tracks the BASE TEXT, not the release — the same correction the consumer rule file
+   * needed, for the same reason. A version marker means editing this skill without cutting a
+   * release reaches nobody, and the skill is edited far more often than the version moves. The
+   * digest covers only the base: everything from the `# 8.` marker down belongs to the repo and
+   * must not make the package's own content look changed.
+   *
+   * `<version>:<digest>` rather than a bare digest, so the file still says which release wrote it
+   * to anyone reading it. Only the digest half is compared.
+   */
+  const stamp = `${KIT_VERSION}:${digestOf(base)}`;
+  if (readFileSync(optin, "utf8").trim().split(":").pop() === digestOf(base)) return false;
+
   const current = readFileSync(target, "utf8");
   const marker = "\n---\n\n# 8. ";
   const i = current.indexOf(marker);
   writeFileSync(target, base.replace(/\s*$/, "") + "\n" + (i < 0 ? "" : current.slice(i)));
-  writeFileSync(optin, `${KIT_VERSION}\n`);
+  writeFileSync(optin, `${stamp}\n`);
   return true;
+}
+
+/** The stamp `init-guinea-pig` writes on a fresh install, so the first refresh is a no-op. */
+export function guineaPigStamp() {
+  return `${KIT_VERSION}:${digestOf(readFileSync(join(SELF_ROOT, "scripts", "guinea-pig-skill.md"), "utf8"))}`;
 }
 
 /**

@@ -92,3 +92,5 @@ export type {
   PermissionMatrixProps,
   PermissionMatrixRoleProp,
 } from "./permission-matrix";
+export { RangeTimeline } from "./range-timeline";
+export type { RangeTimelineProps, RangeTimelineRow } from "./range-timeline";

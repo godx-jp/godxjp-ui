@@ -40,6 +40,19 @@ export type HeadingLevelProp = 1 | 2 | 3 | 4;
 /** Inline text alignment (logical, RTL-safe). */
 export type TextAlignProp = "start" | "center" | "end";
 
+/**
+ * How a run of text treats the whitespace it was given.
+ *
+ * `normal` is CSS's own behaviour and the default: newlines and runs of spaces collapse. That is
+ * right for a label and wrong for text a PERSON typed into a textarea — a plain-text note, a
+ * pasted log, an issue description — where the line breaks and the indentation ARE content.
+ *
+ * `pre-wrap` keeps both and still wraps at the container's edge, so the block cannot force a
+ * horizontal scrollbar the way `pre` would. It is a closed union rather than a boolean because the
+ * remaining CSS keywords (`pre`, `pre-line`, `nowrap`) are values on the same axis, not more flags.
+ */
+export type TextWhitespaceProp = "normal" | "pre-wrap";
+
 /** Badge visual style. */
 export type BadgeVariantProp = "default" | "secondary" | "outline" | "dashed";
 

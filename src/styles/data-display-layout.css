@@ -300,12 +300,8 @@
     background: var(--tree-item-active-background, hsl(var(--primary) / 0.05));
   }
 
-  .ui-tree-item[data-depth="1"] {
-    margin-inline-start: 1.375rem;
-  }
-
-  .ui-tree-item[data-depth="2"] {
-    margin-inline-start: 2.75rem;
+  .ui-tree-item {
+    margin-inline-start: calc(var(--tree-item-depth, 0) * var(--tree-item-indent-width));
   }
 
   .ui-tree-item > svg {
@@ -1249,5 +1245,80 @@
   }
   [dir="rtl"] a.ui-list-row[aria-current="page"] {
     box-shadow: inset calc(-1 * var(--space-1)) 0 0 hsl(var(--primary));
+  }
+}
+
+@layer components {
+  .ui-range-timeline {
+    overflow: auto;
+    border: 1px solid hsl(var(--range-timeline-border-color));
+    border-radius: var(--radius-md);
+  }
+  .ui-range-timeline-canvas {
+    min-inline-size: calc(
+      var(--range-timeline-label-width) + var(--range-timeline-columns) *
+        var(--range-timeline-unit-width)
+    );
+  }
+  .ui-range-timeline-header,
+  .ui-range-timeline-row {
+    display: grid;
+    grid-template-columns: var(--range-timeline-label-width) minmax(0, 1fr);
+    min-block-size: var(--range-timeline-row-height);
+  }
+  .ui-range-timeline-header {
+    background: hsl(var(--muted));
+  }
+  .ui-range-timeline-label {
+    position: sticky;
+    inset-inline-start: 0;
+    z-index: 1;
+    background: hsl(var(--card));
+    padding: var(--space-2);
+    border-inline-end: 1px solid hsl(var(--range-timeline-border-color));
+  }
+  .ui-range-timeline-columns {
+    display: flex;
+  }
+  .ui-range-timeline-column {
+    min-inline-size: 0;
+    overflow: hidden;
+    padding: var(--space-2);
+    border-inline-end: 1px solid hsl(var(--range-timeline-border-color));
+  }
+  .ui-range-timeline-track {
+    position: relative;
+    min-inline-size: 0;
+  }
+  .ui-range-timeline-bar {
+    position: absolute;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    block-size: var(--range-timeline-bar-height);
+    border-radius: var(--radius-sm);
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+  .ui-range-timeline-handle {
+    position: absolute;
+    inset-block: 0;
+    min-inline-size: 0;
+    inline-size: var(--control-height-sm);
+    block-size: 100%;
+    padding: 0;
+    color: inherit;
+    touch-action: none;
+    cursor: ew-resize;
+  }
+  .ui-range-timeline-handle[data-edge="start"] {
+    inset-inline-start: 0;
+  }
+  .ui-range-timeline-handle[data-edge="end"] {
+    inset-inline-end: 0;
+  }
+  .ui-range-timeline-today {
+    position: absolute;
+    inset-block: 0;
+    border-inline-start: 1px solid hsl(var(--primary));
   }
 }

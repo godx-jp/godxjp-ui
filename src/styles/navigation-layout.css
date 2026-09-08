@@ -525,6 +525,12 @@
     box-shadow: var(--shadow-md), var(--shadow-glow);
   }
 
+  /* React Aria focuses the menu container on pointer-open; rows own the focus highlight. */
+  .ui-dropdown-menu-content [role="menu"],
+  .ui-dropdown-menu-sub-content [role="menu"] {
+    outline: none;
+  }
+
   .ui-dropdown-menu-content {
     max-height: var(--radix-dropdown-menu-content-available-height);
     overflow-x: hidden;
@@ -782,6 +788,11 @@
     background: transparent;
     padding-inline: 0;
     box-shadow: none;
+  }
+
+  .ui-app-setting-picker-icon[data-appearance="bar"] {
+    border-width: var(--app-setting-picker-bar-border-width);
+    box-shadow: var(--app-setting-picker-bar-shadow);
   }
 
   .ui-app-setting-picker-glyph {

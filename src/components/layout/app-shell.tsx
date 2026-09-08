@@ -32,6 +32,7 @@ export function AppShell({
   onMobileNavOpenChange,
 }: AppShellProp) {
   const { t } = useTranslation();
+  const hasSidebar = sidebar !== undefined && sidebar !== null && sidebar !== false;
 
   // The docked sidebar is hidden at the DXS 900px breakpoint, so AppShell OWNS an accessible mobile drawer: a
   // hamburger trigger in the topbar opens a focus-trapped Sheet (Radix Dialog → Esc + overlay
@@ -57,7 +58,7 @@ export function AppShell({
     ) : (
       sidebar
     );
-  const hasDrawer = responsiveNavigation === "drawer" && drawerNav != null;
+  const hasDrawer = responsiveNavigation === "drawer" && drawerNav != null && drawerNav !== false;
   /* Only the DEFAULT drawer nav splits into columns. A consumer that supplied `mobileNav` built
    * one node for one surface and gets it back untouched — the shell does not know where its two
    * halves would be. */
@@ -66,12 +67,34 @@ export function AppShell({
   const drawerOpen = mobileNavOpen ?? uncontrolledOpen;
   const setDrawerOpen = onMobileNavOpenChange ?? setUncontrolledOpen;
 
-  // Tapping a destination (a leaf link/row) inside the drawer closes it — the expected mobile
-  // pattern — while a group expand/collapse trigger keeps it open so the user can drill in.
+  /*
+   * Tapping a DESTINATION inside the drawer closes it — the expected mobile pattern. Tapping a
+   * control that OPENS something must not, and the difference is not a list of class names.
+   *
+   * This shipped as "any button except `.sb-nav-group-trigger`", which was the only disclosure
+   * the drawer had at the time. The moment the rail carried an organization switcher, tapping it
+   * closed the whole drawer out from under the panel it had just opened — reported from a phone,
+   * and the panel is portalled so it took the drawer's dismissal with it.
+   *
+   * A control that opens something SAYS SO, in the attributes it must carry anyway for assistive
+   * tech: `aria-expanded` on a disclosure, `aria-haspopup` on anything that summons a menu,
+   * dialog or listbox. Reading those instead of a class means every future overlay trigger — one
+   * this file has never heard of — is handled the day it is added. The group trigger keeps its
+   * name here only as a belt: it is a disclosure and already carries `aria-expanded`.
+   */
   const handleDrawerClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
     const hit = target.closest("a[href], button, [role='menuitem']");
-    if (hit && !hit.classList.contains("sb-nav-group-trigger")) {
+    if (!hit) {
+      return;
+    }
+
+    const opensSomething =
+      hit.hasAttribute("aria-expanded") ||
+      hit.hasAttribute("aria-haspopup") ||
+      hit.classList.contains("sb-nav-group-trigger");
+
+    if (!opensSomething) {
       setDrawerOpen(false);
     }
   };
@@ -132,7 +155,7 @@ export function AppShell({
    * beneath it. There the corner is the BAR's, and the brand goes in the bar with the rest of the
    * space-level chrome.
    */
-  const logoInRail = logo !== undefined && topbarSpan !== "full";
+  const logoInRail = hasSidebar && logo !== undefined && topbarSpan !== "full";
 
   const resolvedTopbar =
     topbar !== undefined ? (
@@ -149,12 +172,12 @@ export function AppShell({
       </div>
     );
 
-  const rail = (
+  const rail = hasSidebar ? (
     <aside className="app-sidebar" aria-label={t("layout.appShell.sidebarLabel")}>
       {logoInRail && <div className="app-sidebar-logo">{logo}</div>}
       {sidebar}
     </aside>
-  );
+  ) : null;
 
   /*
    * The second navigation column. It is a landmark of the same rank as the sidebar, so it gets the
@@ -249,7 +272,8 @@ export function AppShell({
   return (
     <div
       className="app-root"
-      data-collapsed={sidebarCollapsed ? "true" : undefined}
+      data-collapsed={hasSidebar && sidebarCollapsed ? "true" : undefined}
+      data-sidebar={hasSidebar ? undefined : "none"}
       data-responsive-navigation={responsiveNavigation}
       data-topbar={hasTopbarContent ? undefined : "none"}
       data-topbar-span={topbarSpan === "full" ? "full" : undefined}
