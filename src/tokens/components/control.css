@@ -151,6 +151,12 @@
   --command-group-padding: var(--space-1);
   --command-item-padding-y: var(--space-2);
   --command-item-padding-x: var(--space-2);
+  /* The gap between a row's leading mark and its label. `.ui-command-item` is a flex row and had
+   * NO gap at all, so every command/palette/picker row with an icon rendered its glyph flush
+   * against the text — measured at 0px between an organization mark and its name. It reads
+   * --control-gap because a command row is a control row: the same distance the trigger it opened
+   * from already puts between its own icon and label. */
+  --command-item-gap: var(--control-gap);
   --command-palette-width: 35rem;
   --command-palette-inset-top: calc(var(--space-6) * 4);
   --command-palette-viewport-inset: var(--space-3);

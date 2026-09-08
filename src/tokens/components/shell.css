@@ -266,7 +266,15 @@
   --topbar-item-focus-ring-offset: calc(-1 * var(--focus-ring-width));
   --org-switcher-trigger-height: var(--band-height-xl);
   --org-switcher-trigger-padding-x: var(--space-2);
-  --org-switcher-avatar-size: 1.75rem;
+  /* 1.75rem was the literal; --control-height-sm IS 1.75rem and is the tier this mark belongs to,
+   * so a service that re-tiers its controls moves the mark with them instead of leaving it behind. */
+  --org-switcher-avatar-size: var(--control-height-sm);
+  /* The compact-picker inset, shared by the sheet heading and the list — see .ui-org-switcher-sheet. */
+  --org-switcher-sheet-inset: var(--space-3);
+  /* The list's own inline inset, which a row cancels and re-adds, so the rule meets both edges of
+   * the panel while the label stays on the heading's start line. Matches --command-item-padding-x,
+   * which is what the list is inset by. */
+  --org-switcher-list-inset: var(--org-switcher-sheet-inset);
   --org-switcher-menu-width: 16rem;
   --org-switcher-sheet-max-height: 75dvh;
   --org-switcher-state-min-height: 8rem;

@@ -950,7 +950,9 @@
   .ui-org-switcher-name,
   .ui-org-switcher-meta {
     overflow: hidden;
-    line-height: 1.25;
+    /* --line-height-tight IS 1.25; the literal was the same number with no way for a theme to
+     * reach it, and `no-arbitrary-typography` bans exactly this shape in consumer code. */
+    line-height: var(--line-height-tight);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -965,11 +967,14 @@
     font-size: var(--sidebar-user-role-font-size);
   }
 
+  /* --icon-size-md IS 1rem. The literals said the same thing while putting the size out of a
+   * theme's reach — and out of reach of the icon-size ratchet, whose pattern looks for
+   * `icon|glyph` in a selector and therefore never saw `chevron`, `check` or `spinner`. */
   .ui-org-switcher-chevron,
   .ui-org-switcher-check,
   .ui-org-switcher-spinner {
-    width: 1rem;
-    height: 1rem;
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
     flex: 0 0 auto;
   }
 
@@ -994,7 +999,17 @@
     --popover-space-inset: 0;
   }
 
-  .ui-org-switcher-sheet {
+  /* ONE INSET FOR THE WHOLE PANEL. Sheet's own chrome inset is sized for a full-height sheet with
+   * prose in it; this is a compact picker, and at 359px it put the heading 24px from the edge while
+   * the rows sat at 12px (4px body + 8px row) — two starts, visibly out of line, and heavy for the
+   * width. The rows keep their own 8px because their hover surface is meant to bleed wider than
+   * the label, the way every list row in this library does. */
+  /* The selector carries BOTH hooks on purpose. `[data-slot="sheet-content"]` declares the default
+   * inset at specificity (0,1,0) in dialog-layout.css, which this file is imported BEFORE — so a
+   * bare `.ui-org-switcher-sheet` ties and loses on order, silently. Pairing them makes it (0,2,0)
+   * and states the relationship: this IS a sheet, re-tuned. */
+  [data-slot="sheet-content"].ui-org-switcher-sheet {
+    --sheet-pad-x: var(--org-switcher-sheet-inset);
     max-height: var(--org-switcher-sheet-max-height);
     border-start-start-radius: var(--radius-lg);
     border-start-end-radius: var(--radius-lg);
@@ -1002,6 +1017,38 @@
 
   .ui-org-switcher-command {
     width: 100%;
+  }
+
+  /* A PICKER LIST IS RULED, NOT PILLED — and the two are different affordances, not two styles.
+   *
+   * `.ui-command-item` rounds its corners and fills on selection because its home is a command
+   * PALETTE: a search-anything surface where the highlight tracks a cursor moving through results,
+   * and a floating pill is exactly right (Raycast, cmdk, Spotlight). This list is not that. It is
+   * "choose one of N", the rows are a closed set, and what a reader needs is to see where one row
+   * ends and the next begins — the same hairline every other list in this library draws.
+   *
+   * Scoped to this panel and NOT pushed down into `.ui-command-item`, which eight components use
+   * as a palette and would be wrong to re-shape.
+   *
+   * The rule runs FULL BLEED: negative inline margin cancels the list's inset so it meets both
+   * edges of the panel, and the padding is added back so the text stays on the same start line as
+   * the heading above it. `+` rather than a border on every row, so the list has no rule hanging
+   * under its last item. */
+  /* The group's own inline padding goes, so there is exactly ONE inset between a row and the panel
+   * edge for the row to cancel. Left in, the rule stopped 8px short of both edges and no single
+   * value could both reach the edge and keep the label on the heading's start line. */
+  .ui-org-switcher-command .ui-command-group {
+    padding-inline: 0;
+  }
+
+  .ui-org-switcher-command .ui-command-item {
+    border-radius: 0;
+    margin-inline: calc(var(--org-switcher-list-inset) * -1);
+    padding-inline: var(--org-switcher-list-inset);
+  }
+
+  .ui-org-switcher-command .ui-command-item + .ui-command-item {
+    border-block-start: 1px solid hsl(var(--border));
   }
 
   .ui-org-switcher-state {
