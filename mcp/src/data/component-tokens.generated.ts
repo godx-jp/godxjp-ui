@@ -636,7 +636,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-focus-ring-width",
     "value": "var(--stroke-hairline)",
-    "description": "Mark width for a BORDERED FIELD. * * This knob exists because a field is the one control that already owns a boundary, so it is * the one place the mark could plausibly be dropped and the recoloured border left to carry the * state — which is exactly what Ant Design does (a focused antd field is a primary border plus a * translucent halo, nothing in between; verified in antd 6.6.2, `es/input/style/token.js:48`). * * It ships at the same step as `--focus-outline-weight`, antd's `lineWidth`, so a field and a * button carry the same weight. A gate asserts the two stay equal, because this token cannot * literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule). * * It feeds `--focus-ring-weight`, never `--focus-ring-width`. The width is * `weight × --focus-outline`, so a field's mark is still switched off with everything else — a * knob that bypassed the switch would be a hole in it. * * If a service sets this, note the unit: the halo's spread is summed with a length in * `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole * box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`."
+    "description": "Mark width for a BORDERED FIELD. * * This knob exists because a field is the one control that already owns a boundary, so it is * the one place the mark could plausibly be dropped and the recoloured border left to carry the * state — which is the established treatment for a bordered field: a primary border plus a * translucent halo, nothing in between. * * It ships at the same step as `--focus-outline-weight`, the hairline stroke, so a field and a * button carry the same weight. A gate asserts the two stay equal, because this token cannot * literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule). * * It feeds `--focus-ring-weight`, never `--focus-ring-width`. The width is * `weight × --focus-outline`, so a field's mark is still switched off with everything else — a * knob that bypassed the switch would be a hole in it. * * If a service sets this, note the unit: the halo's spread is summed with a length in * `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole * box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`."
   },
   {
     "name": "--rating-focus-ring-offset",
@@ -1919,6 +1919,46 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme. Track reads --secondary, fill reads --success; a service re-tones once. Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill."
   },
   {
+    "name": "--progress-breakdown-block-size",
+    "value": "1.375rem",
+    "description": "BREAKDOWN geometry (`segments`) — its own block size and corner, not the meter's. A 0.5rem pill carries ONE fill legibly; three abutting fills at that height read as a coloured hairline and the ratios stop being comparable, which is the only thing a breakdown is for. The corner follows --radius rather than --radius-pill: pill ends would round the first and last slice only, so the partition would look like it starts and stops somewhere other than where it does."
+  },
+  {
+    "name": "--progress-breakdown-radius",
+    "value": "var(--radius)",
+    "description": "BREAKDOWN geometry (`segments`) — its own block size and corner, not the meter's. A 0.5rem pill carries ONE fill legibly; three abutting fills at that height read as a coloured hairline and the ratios stop being comparable, which is the only thing a breakdown is for. The corner follows --radius rather than --radius-pill: pill ends would round the first and last slice only, so the partition would look like it starts and stops somewhere other than where it does."
+  },
+  {
+    "name": "--legend-gap",
+    "value": "0.875rem",
+    "description": "Legend — the key for a colour-coded surface. Small chrome, so it carries its own rhythm rather than the stack scale: the swatch is a MARK the size of a character, not a control, and the gap that reads as \"these two belong together\" is tighter than any named step."
+  },
+  {
+    "name": "--legend-item-gap",
+    "value": "0.3125rem",
+    "description": "scale-exempt: the legend's rhythm follows its TYPE (11-12px), not the layout space scale — --space-3 (12px) is close enough to the item gap that a swatch starts binding to the label on its left, and --space-4 (16px) breaks three keys into three objects."
+  },
+  {
+    "name": "--legend-swatch-size",
+    "value": "0.625rem",
+    "description": "scale-exempt: half the swatch, so a mark and its label read as one word; derived from --legend-swatch-size, not from the layout scale."
+  },
+  {
+    "name": "--legend-swatch-radius",
+    "value": "0.125rem",
+    "description": "scale-exempt: half the swatch, so a mark and its label read as one word; derived from --legend-swatch-size, not from the layout scale."
+  },
+  {
+    "name": "--legend-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "scale-exempt: --radius (6px) on a 10px square is 60% of the mark and reads as a DOT, a different symbol; this is the smallest corner that softens the square without becoming one."
+  },
+  {
+    "name": "--legend-color",
+    "value": "initial",
+    "description": "`initial` so the muted role re-resolves at the call site under a scoped theme. Default = hsl(var(--muted-foreground))."
+  },
+  {
     "name": "--timeline-dot-done-background",
     "value": "initial",
     "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line."
@@ -2864,6 +2904,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above)."
   },
   {
+    "name": "--popover-surface-inline-size",
+    "value": "initial",
+    "description": "Width knob, for a panel that owns its own box — a time column pair, a calendar. The three * colour knobs above already existed and padding already read `--popover-space-inset`; width was * the one surface property left absolute, so a modifier could only reach it by re-declaring the * property — which loses to import order (styles/__tests__/popover-surface-knob-cascade)."
+  },
+  {
     "name": "--toast-icon-size",
     "value": "var(--icon-size-md)",
     "description": "TOAST (Sonner) — the status glyph in the toast's leading slot. * * WHY A KNOB AND NOT A UTILITY: sonner renders the toast body itself and takes the five status * glyphs through ONE `icons={{ success, info, warning, error, loading }}` config prop. That prop * is all-or-nothing — a consumer who wants a different glyph size must re-declare all five icons, * re-importing lucide and re-deriving the aria wiring. Routing the size through a token makes it * a one-line theme override instead (rule #45). * * Raw rem, not var(--space-N): it replaces a flat Tailwind `size-4` step, and the 16px box sonner * gives `[data-icon]` is itself fixed — scaling the glyph with density alone would overflow it. * * NAMESPACE NOTE: sonner publishes its own `--toast-*` custom properties (--toast-icon-margin-*, * --toast-svg-margin-*, --toast-button-margin-*, --toast-close-button-*). Neither name below * collides with those; keep it that way when adding to this group."
@@ -3212,6 +3257,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--logo-glyph-optical-offset",
     "value": "initial",
     "description": "The escape hatch, for a mark none of the four bands fits — a face with unusual metrics, or a * glyph the classifier cannot see (an inline `<svg>`, which is left unclassified on purpose). * Set once and it PINS every band to that value. * * Declared `initial` (guaranteed-invalid) so it is inert by default and the per-band default at * the CALL SITE wins — the same pattern as --logo-godx-size (docs/TOKENS.md). * Documented default: --logo-glyph-optical-offset = the --logo-glyph-*-optical-offset for the * band the glyph was classified into, or 0 when it was not classified."
+  },
+  {
+    "name": "--logo-glyph-fullwidth-width",
+    "value": "1",
+    "description": "── Fitting the glyph to the mark box (`<Logo glyph=\"東京\" size=\"xs\" />`, gh#377) ─────────── * `.ui-logo` is a fixed square and the glyph was set at a fixed per-tier font-size, so nothing * related the string's INLINE ADVANCE to the box it had to fit in. A full-width form occupies a * whole em, and CJK offers a line-break opportunity between EVERY pair of ideographs — so two * kanji in the 20px `xs` box did not overflow, they WRAPPED into a two-line mark. Latin never * showed this because a Latin word has no interior break opportunity: it silently spilled * instead. Measured across Noto Sans JP / M PLUS 2 / Hiragino Sans / the system stack × the four * tiers, the wrap hit 東京 神戸 ゴジ 株式 at xs and sm, 東京都 at every tier, and — already * inside the gh#370 sample — 神A and Aあ on Hiragino at xs. * * THE FIX IS THE SAME SHAPE AS gh#370. CSS cannot see the string, so it cannot know what advance * to make room for; the COMPONENT can. It counts the string's characters in four classes and * emits them as --logo-glyph-fullwidth-count / --logo-glyph-wide-count / --logo-glyph-narrow-count * / --logo-glyph-space-count (pure, no measurement, * no layout read, SSR-safe). styles/logo-layout.css turns those counts into a modelled advance * and caps the glyph's font-size at the size that advance fits in — `min()`, so a mark whose * advance already fits keeps its tier font-size EXACTLY and nothing that renders correctly today * moves. `white-space: nowrap` sits under it as the invariant: a brand mark is one line. * * EACH CONSTANT IS AN UPPER BOUND OF ITS CLASS — that is the entire contract. Over-stating an * advance sets the mark a little smaller than it had to be; under-stating it puts the mark * OUTSIDE the box, which is the defect this whole mechanism exists to remove. The first cut * carried one constant for every proportional form and dropped white space from the count, and * both under-states shipped as spill (`WW` 3.50px, `東 京` 2.63px — see below). * * THE INVARIANT, stated as the gate asserts it: for every mark, at every tier, on every bundled * face, the FITTED font-size times the PAINTED advance stays inside the box. Not \"each constant * bounds its class in isolation\" — see the recorded slack below. * * MEASURED advance in em, per character, max over the four faces (a DOM advance read at 200px, * never a canvas `fillText`: that substitutes a fallback face for a webfont): * full-width form 1 ← 1.000 神 · 東 · あ · ゴ · 株 · 「 · 、 · Ｇ, every one 1.0000 * em-wide Latin 1.06 ← 1.058 W 1.0580 · m 1.0100 · M 0.9870 — all Hiragino Sans * other Latin/digit 0.81 ← 0.863 w 0.8630 · O/Q 0.8380 · U 0.8291 · H 0.8260 · N 0.8210 · * X 0.8110 · 8 0.7120 · k/t 0.5435 · l 0.3150 * collapsible space 0.34 ← 0.333 Hiragino 0.3330 · M PLUS 2 0.2730 · Noto 0.2270 · * system 0.1978 * * `M W m` get a class of their own because they REACH the full-width em — `W` passes it, at * 1.058em WIDER than a kanji — so no proportional constant holds them without shrinking every * other Latin mark to fit. With them out of the way the narrow class stays at 0.81. * * RECORDED SLACK, not an oversight: six forms (w · O · Q · U · H · N · X) measure 0.811–0.863em, * above the 0.81 constant, by at most 0.053em. Measured, none of them reaches the box edge at * its tier's font-size — `ww` at xs paints 19.2px of a 20px box — so raising the constant to * 0.87 would shrink 120 of 480 measured cells to buy nothing, against this file's own rule that * a mark which already fits keeps its tier font-size to the byte. The gate re-derives the margin * from the shipped tokens, so a change to the type scale or the box ramp re-tests it rather than * inheriting this conclusion. * * --logo-glyph-fit-max-width is the share of the box a FITTED glyph's modelled advance may take. * 0.95 leaves 0.50px (xs) / 0.60px (sm) / 0.70px (md) of fill clear of the modelled ink on each * side of a two-kanji mark — measured on the paint, 0.50–1.50px at xs across the four faces, * against the 0.5px minimum the library already ships (神A on M PLUS 2 at xs). It is a CAP, not * a target: it only binds on the marks that do not fit."
+  },
+  {
+    "name": "--logo-glyph-wide-width",
+    "value": "1.06",
+    "description": "── Fitting the glyph to the mark box (`<Logo glyph=\"東京\" size=\"xs\" />`, gh#377) ─────────── * `.ui-logo` is a fixed square and the glyph was set at a fixed per-tier font-size, so nothing * related the string's INLINE ADVANCE to the box it had to fit in. A full-width form occupies a * whole em, and CJK offers a line-break opportunity between EVERY pair of ideographs — so two * kanji in the 20px `xs` box did not overflow, they WRAPPED into a two-line mark. Latin never * showed this because a Latin word has no interior break opportunity: it silently spilled * instead. Measured across Noto Sans JP / M PLUS 2 / Hiragino Sans / the system stack × the four * tiers, the wrap hit 東京 神戸 ゴジ 株式 at xs and sm, 東京都 at every tier, and — already * inside the gh#370 sample — 神A and Aあ on Hiragino at xs. * * THE FIX IS THE SAME SHAPE AS gh#370. CSS cannot see the string, so it cannot know what advance * to make room for; the COMPONENT can. It counts the string's characters in four classes and * emits them as --logo-glyph-fullwidth-count / --logo-glyph-wide-count / --logo-glyph-narrow-count * / --logo-glyph-space-count (pure, no measurement, * no layout read, SSR-safe). styles/logo-layout.css turns those counts into a modelled advance * and caps the glyph's font-size at the size that advance fits in — `min()`, so a mark whose * advance already fits keeps its tier font-size EXACTLY and nothing that renders correctly today * moves. `white-space: nowrap` sits under it as the invariant: a brand mark is one line. * * EACH CONSTANT IS AN UPPER BOUND OF ITS CLASS — that is the entire contract. Over-stating an * advance sets the mark a little smaller than it had to be; under-stating it puts the mark * OUTSIDE the box, which is the defect this whole mechanism exists to remove. The first cut * carried one constant for every proportional form and dropped white space from the count, and * both under-states shipped as spill (`WW` 3.50px, `東 京` 2.63px — see below). * * THE INVARIANT, stated as the gate asserts it: for every mark, at every tier, on every bundled * face, the FITTED font-size times the PAINTED advance stays inside the box. Not \"each constant * bounds its class in isolation\" — see the recorded slack below. * * MEASURED advance in em, per character, max over the four faces (a DOM advance read at 200px, * never a canvas `fillText`: that substitutes a fallback face for a webfont): * full-width form 1 ← 1.000 神 · 東 · あ · ゴ · 株 · 「 · 、 · Ｇ, every one 1.0000 * em-wide Latin 1.06 ← 1.058 W 1.0580 · m 1.0100 · M 0.9870 — all Hiragino Sans * other Latin/digit 0.81 ← 0.863 w 0.8630 · O/Q 0.8380 · U 0.8291 · H 0.8260 · N 0.8210 · * X 0.8110 · 8 0.7120 · k/t 0.5435 · l 0.3150 * collapsible space 0.34 ← 0.333 Hiragino 0.3330 · M PLUS 2 0.2730 · Noto 0.2270 · * system 0.1978 * * `M W m` get a class of their own because they REACH the full-width em — `W` passes it, at * 1.058em WIDER than a kanji — so no proportional constant holds them without shrinking every * other Latin mark to fit. With them out of the way the narrow class stays at 0.81. * * RECORDED SLACK, not an oversight: six forms (w · O · Q · U · H · N · X) measure 0.811–0.863em, * above the 0.81 constant, by at most 0.053em. Measured, none of them reaches the box edge at * its tier's font-size — `ww` at xs paints 19.2px of a 20px box — so raising the constant to * 0.87 would shrink 120 of 480 measured cells to buy nothing, against this file's own rule that * a mark which already fits keeps its tier font-size to the byte. The gate re-derives the margin * from the shipped tokens, so a change to the type scale or the box ramp re-tests it rather than * inheriting this conclusion. * * --logo-glyph-fit-max-width is the share of the box a FITTED glyph's modelled advance may take. * 0.95 leaves 0.50px (xs) / 0.60px (sm) / 0.70px (md) of fill clear of the modelled ink on each * side of a two-kanji mark — measured on the paint, 0.50–1.50px at xs across the four faces, * against the 0.5px minimum the library already ships (神A on M PLUS 2 at xs). It is a CAP, not * a target: it only binds on the marks that do not fit."
+  },
+  {
+    "name": "--logo-glyph-narrow-width",
+    "value": "0.81",
+    "description": "── Fitting the glyph to the mark box (`<Logo glyph=\"東京\" size=\"xs\" />`, gh#377) ─────────── * `.ui-logo` is a fixed square and the glyph was set at a fixed per-tier font-size, so nothing * related the string's INLINE ADVANCE to the box it had to fit in. A full-width form occupies a * whole em, and CJK offers a line-break opportunity between EVERY pair of ideographs — so two * kanji in the 20px `xs` box did not overflow, they WRAPPED into a two-line mark. Latin never * showed this because a Latin word has no interior break opportunity: it silently spilled * instead. Measured across Noto Sans JP / M PLUS 2 / Hiragino Sans / the system stack × the four * tiers, the wrap hit 東京 神戸 ゴジ 株式 at xs and sm, 東京都 at every tier, and — already * inside the gh#370 sample — 神A and Aあ on Hiragino at xs. * * THE FIX IS THE SAME SHAPE AS gh#370. CSS cannot see the string, so it cannot know what advance * to make room for; the COMPONENT can. It counts the string's characters in four classes and * emits them as --logo-glyph-fullwidth-count / --logo-glyph-wide-count / --logo-glyph-narrow-count * / --logo-glyph-space-count (pure, no measurement, * no layout read, SSR-safe). styles/logo-layout.css turns those counts into a modelled advance * and caps the glyph's font-size at the size that advance fits in — `min()`, so a mark whose * advance already fits keeps its tier font-size EXACTLY and nothing that renders correctly today * moves. `white-space: nowrap` sits under it as the invariant: a brand mark is one line. * * EACH CONSTANT IS AN UPPER BOUND OF ITS CLASS — that is the entire contract. Over-stating an * advance sets the mark a little smaller than it had to be; under-stating it puts the mark * OUTSIDE the box, which is the defect this whole mechanism exists to remove. The first cut * carried one constant for every proportional form and dropped white space from the count, and * both under-states shipped as spill (`WW` 3.50px, `東 京` 2.63px — see below). * * THE INVARIANT, stated as the gate asserts it: for every mark, at every tier, on every bundled * face, the FITTED font-size times the PAINTED advance stays inside the box. Not \"each constant * bounds its class in isolation\" — see the recorded slack below. * * MEASURED advance in em, per character, max over the four faces (a DOM advance read at 200px, * never a canvas `fillText`: that substitutes a fallback face for a webfont): * full-width form 1 ← 1.000 神 · 東 · あ · ゴ · 株 · 「 · 、 · Ｇ, every one 1.0000 * em-wide Latin 1.06 ← 1.058 W 1.0580 · m 1.0100 · M 0.9870 — all Hiragino Sans * other Latin/digit 0.81 ← 0.863 w 0.8630 · O/Q 0.8380 · U 0.8291 · H 0.8260 · N 0.8210 · * X 0.8110 · 8 0.7120 · k/t 0.5435 · l 0.3150 * collapsible space 0.34 ← 0.333 Hiragino 0.3330 · M PLUS 2 0.2730 · Noto 0.2270 · * system 0.1978 * * `M W m` get a class of their own because they REACH the full-width em — `W` passes it, at * 1.058em WIDER than a kanji — so no proportional constant holds them without shrinking every * other Latin mark to fit. With them out of the way the narrow class stays at 0.81. * * RECORDED SLACK, not an oversight: six forms (w · O · Q · U · H · N · X) measure 0.811–0.863em, * above the 0.81 constant, by at most 0.053em. Measured, none of them reaches the box edge at * its tier's font-size — `ww` at xs paints 19.2px of a 20px box — so raising the constant to * 0.87 would shrink 120 of 480 measured cells to buy nothing, against this file's own rule that * a mark which already fits keeps its tier font-size to the byte. The gate re-derives the margin * from the shipped tokens, so a change to the type scale or the box ramp re-tests it rather than * inheriting this conclusion. * * --logo-glyph-fit-max-width is the share of the box a FITTED glyph's modelled advance may take. * 0.95 leaves 0.50px (xs) / 0.60px (sm) / 0.70px (md) of fill clear of the modelled ink on each * side of a two-kanji mark — measured on the paint, 0.50–1.50px at xs across the four faces, * against the 0.5px minimum the library already ships (神A on M PLUS 2 at xs). It is a CAP, not * a target: it only binds on the marks that do not fit."
+  },
+  {
+    "name": "--logo-glyph-space-width",
+    "value": "0.34",
+    "description": "── Fitting the glyph to the mark box (`<Logo glyph=\"東京\" size=\"xs\" />`, gh#377) ─────────── * `.ui-logo` is a fixed square and the glyph was set at a fixed per-tier font-size, so nothing * related the string's INLINE ADVANCE to the box it had to fit in. A full-width form occupies a * whole em, and CJK offers a line-break opportunity between EVERY pair of ideographs — so two * kanji in the 20px `xs` box did not overflow, they WRAPPED into a two-line mark. Latin never * showed this because a Latin word has no interior break opportunity: it silently spilled * instead. Measured across Noto Sans JP / M PLUS 2 / Hiragino Sans / the system stack × the four * tiers, the wrap hit 東京 神戸 ゴジ 株式 at xs and sm, 東京都 at every tier, and — already * inside the gh#370 sample — 神A and Aあ on Hiragino at xs. * * THE FIX IS THE SAME SHAPE AS gh#370. CSS cannot see the string, so it cannot know what advance * to make room for; the COMPONENT can. It counts the string's characters in four classes and * emits them as --logo-glyph-fullwidth-count / --logo-glyph-wide-count / --logo-glyph-narrow-count * / --logo-glyph-space-count (pure, no measurement, * no layout read, SSR-safe). styles/logo-layout.css turns those counts into a modelled advance * and caps the glyph's font-size at the size that advance fits in — `min()`, so a mark whose * advance already fits keeps its tier font-size EXACTLY and nothing that renders correctly today * moves. `white-space: nowrap` sits under it as the invariant: a brand mark is one line. * * EACH CONSTANT IS AN UPPER BOUND OF ITS CLASS — that is the entire contract. Over-stating an * advance sets the mark a little smaller than it had to be; under-stating it puts the mark * OUTSIDE the box, which is the defect this whole mechanism exists to remove. The first cut * carried one constant for every proportional form and dropped white space from the count, and * both under-states shipped as spill (`WW` 3.50px, `東 京` 2.63px — see below). * * THE INVARIANT, stated as the gate asserts it: for every mark, at every tier, on every bundled * face, the FITTED font-size times the PAINTED advance stays inside the box. Not \"each constant * bounds its class in isolation\" — see the recorded slack below. * * MEASURED advance in em, per character, max over the four faces (a DOM advance read at 200px, * never a canvas `fillText`: that substitutes a fallback face for a webfont): * full-width form 1 ← 1.000 神 · 東 · あ · ゴ · 株 · 「 · 、 · Ｇ, every one 1.0000 * em-wide Latin 1.06 ← 1.058 W 1.0580 · m 1.0100 · M 0.9870 — all Hiragino Sans * other Latin/digit 0.81 ← 0.863 w 0.8630 · O/Q 0.8380 · U 0.8291 · H 0.8260 · N 0.8210 · * X 0.8110 · 8 0.7120 · k/t 0.5435 · l 0.3150 * collapsible space 0.34 ← 0.333 Hiragino 0.3330 · M PLUS 2 0.2730 · Noto 0.2270 · * system 0.1978 * * `M W m` get a class of their own because they REACH the full-width em — `W` passes it, at * 1.058em WIDER than a kanji — so no proportional constant holds them without shrinking every * other Latin mark to fit. With them out of the way the narrow class stays at 0.81. * * RECORDED SLACK, not an oversight: six forms (w · O · Q · U · H · N · X) measure 0.811–0.863em, * above the 0.81 constant, by at most 0.053em. Measured, none of them reaches the box edge at * its tier's font-size — `ww` at xs paints 19.2px of a 20px box — so raising the constant to * 0.87 would shrink 120 of 480 measured cells to buy nothing, against this file's own rule that * a mark which already fits keeps its tier font-size to the byte. The gate re-derives the margin * from the shipped tokens, so a change to the type scale or the box ramp re-tests it rather than * inheriting this conclusion. * * --logo-glyph-fit-max-width is the share of the box a FITTED glyph's modelled advance may take. * 0.95 leaves 0.50px (xs) / 0.60px (sm) / 0.70px (md) of fill clear of the modelled ink on each * side of a two-kanji mark — measured on the paint, 0.50–1.50px at xs across the four faces, * against the 0.5px minimum the library already ships (神A on M PLUS 2 at xs). It is a CAP, not * a target: it only binds on the marks that do not fit."
+  },
+  {
+    "name": "--logo-glyph-fit-max-width",
+    "value": "0.95",
+    "description": "── Fitting the glyph to the mark box (`<Logo glyph=\"東京\" size=\"xs\" />`, gh#377) ─────────── * `.ui-logo` is a fixed square and the glyph was set at a fixed per-tier font-size, so nothing * related the string's INLINE ADVANCE to the box it had to fit in. A full-width form occupies a * whole em, and CJK offers a line-break opportunity between EVERY pair of ideographs — so two * kanji in the 20px `xs` box did not overflow, they WRAPPED into a two-line mark. Latin never * showed this because a Latin word has no interior break opportunity: it silently spilled * instead. Measured across Noto Sans JP / M PLUS 2 / Hiragino Sans / the system stack × the four * tiers, the wrap hit 東京 神戸 ゴジ 株式 at xs and sm, 東京都 at every tier, and — already * inside the gh#370 sample — 神A and Aあ on Hiragino at xs. * * THE FIX IS THE SAME SHAPE AS gh#370. CSS cannot see the string, so it cannot know what advance * to make room for; the COMPONENT can. It counts the string's characters in four classes and * emits them as --logo-glyph-fullwidth-count / --logo-glyph-wide-count / --logo-glyph-narrow-count * / --logo-glyph-space-count (pure, no measurement, * no layout read, SSR-safe). styles/logo-layout.css turns those counts into a modelled advance * and caps the glyph's font-size at the size that advance fits in — `min()`, so a mark whose * advance already fits keeps its tier font-size EXACTLY and nothing that renders correctly today * moves. `white-space: nowrap` sits under it as the invariant: a brand mark is one line. * * EACH CONSTANT IS AN UPPER BOUND OF ITS CLASS — that is the entire contract. Over-stating an * advance sets the mark a little smaller than it had to be; under-stating it puts the mark * OUTSIDE the box, which is the defect this whole mechanism exists to remove. The first cut * carried one constant for every proportional form and dropped white space from the count, and * both under-states shipped as spill (`WW` 3.50px, `東 京` 2.63px — see below). * * THE INVARIANT, stated as the gate asserts it: for every mark, at every tier, on every bundled * face, the FITTED font-size times the PAINTED advance stays inside the box. Not \"each constant * bounds its class in isolation\" — see the recorded slack below. * * MEASURED advance in em, per character, max over the four faces (a DOM advance read at 200px, * never a canvas `fillText`: that substitutes a fallback face for a webfont): * full-width form 1 ← 1.000 神 · 東 · あ · ゴ · 株 · 「 · 、 · Ｇ, every one 1.0000 * em-wide Latin 1.06 ← 1.058 W 1.0580 · m 1.0100 · M 0.9870 — all Hiragino Sans * other Latin/digit 0.81 ← 0.863 w 0.8630 · O/Q 0.8380 · U 0.8291 · H 0.8260 · N 0.8210 · * X 0.8110 · 8 0.7120 · k/t 0.5435 · l 0.3150 * collapsible space 0.34 ← 0.333 Hiragino 0.3330 · M PLUS 2 0.2730 · Noto 0.2270 · * system 0.1978 * * `M W m` get a class of their own because they REACH the full-width em — `W` passes it, at * 1.058em WIDER than a kanji — so no proportional constant holds them without shrinking every * other Latin mark to fit. With them out of the way the narrow class stays at 0.81. * * RECORDED SLACK, not an oversight: six forms (w · O · Q · U · H · N · X) measure 0.811–0.863em, * above the 0.81 constant, by at most 0.053em. Measured, none of them reaches the box edge at * its tier's font-size — `ww` at xs paints 19.2px of a 20px box — so raising the constant to * 0.87 would shrink 120 of 480 measured cells to buy nothing, against this file's own rule that * a mark which already fits keeps its tier font-size to the byte. The gate re-derives the margin * from the shipped tokens, so a change to the type scale or the box ramp re-tests it rather than * inheriting this conclusion. * * --logo-glyph-fit-max-width is the share of the box a FITTED glyph's modelled advance may take. * 0.95 leaves 0.50px (xs) / 0.60px (sm) / 0.70px (md) of fill clear of the modelled ink on each * side of a two-kanji mark — measured on the paint, 0.50–1.50px at xs across the four faces, * against the 0.5px minimum the library already ships (神A on M PLUS 2 at xs). It is a CAP, not * a target: it only binds on the marks that do not fit."
   },
   {
     "name": "--logo-godx-size-xs",
@@ -3721,72 +3791,72 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--segmented-track-padding",
     "value": "calc(var(--space-1) / 2)",
-    "description": "antd trackPadding = lineWidthBold = 2px. Half the base spacing step rather than a raw length, * so it rides `--scaling` with everything else."
+    "description": "track padding = the bold line width = 2px. Half the base spacing step rather than a raw length, * so it rides `--scaling` with everything else."
   },
   {
     "name": "--segmented-track-background",
     "value": "var(--muted)",
-    "description": "antd trackBg = colorBgLayout — the recessed ground a control group sits in."
+    "description": "track background — the recessed ground a control group sits in."
   },
   {
     "name": "--segmented-track-radius",
     "value": "var(--radius)",
-    "description": "antd track radius = borderRadius; item radius = borderRadiusSM. antd steps the PAIR down the * radius scale rather than subtracting the track padding (the two coincide only because that * scale happens to step by 2) — ported as a pair for the same reason."
+    "description": "track radius = the base radius; item radius = one step DOWN the radius scale, not * `radius − trackPadding` (the two coincide only because the source scale happens to step by 2). * This scale is φ-spaced, so \"one step down\" from --radius is --radius-md (6px → 3.71px, against * the source's 6 → 4); --radius-sm is two steps and reads visibly squarer. The same pair is * already what TabsList (`rounded-lg`) and TabsTrigger (`rounded-md`) use — this library's other * track-and-slab control."
   },
   {
     "name": "--segmented-item-radius",
-    "value": "var(--radius-sm)",
-    "description": "antd track radius = borderRadius; item radius = borderRadiusSM. antd steps the PAIR down the * radius scale rather than subtracting the track padding (the two coincide only because that * scale happens to step by 2) — ported as a pair for the same reason."
+    "value": "var(--radius-md)",
+    "description": "track radius = the base radius; item radius = one step DOWN the radius scale, not * `radius − trackPadding` (the two coincide only because the source scale happens to step by 2). * This scale is φ-spaced, so \"one step down\" from --radius is --radius-md (6px → 3.71px, against * the source's 6 → 4); --radius-sm is two steps and reads visibly squarer. The same pair is * already what TabsList (`rounded-lg`) and TabsTrigger (`rounded-md`) use — this library's other * track-and-slab control."
   },
   {
     "name": "--segmented-item-height",
     "value": "calc(var(--control-height) - var(--segmented-track-padding) * 2)",
-    "description": "antd labelHeight = controlHeight − trackPadding × 2. The track therefore measures exactly * --control-height, so a Segmented sits level with an Input and a Button on the same row."
+    "description": "label height = control height − track padding × 2. The track therefore measures exactly * --control-height, so a Segmented sits level with an Input and a Button on the same row."
   },
   {
     "name": "--segmented-item-padding-inline",
     "value": "calc(var(--control-padding-x) - 1px)",
-    "description": "antd segmentedPaddingHorizontal = controlPaddingHorizontal − lineWidth."
+    "description": "item padding-inline = control padding-x − one border width."
   },
   {
     "name": "--segmented-item-gap",
     "value": "calc(var(--space-3) / 2)",
-    "description": "antd icon gap = marginSM / 2."
+    "description": "icon gap = the small margin step / 2."
   },
   {
     "name": "--segmented-item-color",
     "value": "var(--muted-foreground)",
-    "description": "antd itemColor = colorTextLabel · itemHoverColor / itemSelectedColor = colorText."
+    "description": "item ink = the label ink · hover / selected ink = the body ink."
   },
   {
     "name": "--segmented-item-hover-color",
     "value": "var(--foreground)",
-    "description": "antd itemColor = colorTextLabel · itemHoverColor / itemSelectedColor = colorText."
+    "description": "item ink = the label ink · hover / selected ink = the body ink."
   },
   {
     "name": "--segmented-item-selected-color",
     "value": "var(--foreground)",
-    "description": "antd itemColor = colorTextLabel · itemHoverColor / itemSelectedColor = colorText."
+    "description": "item ink = the label ink · hover / selected ink = the body ink."
   },
   {
     "name": "--segmented-item-hover-background",
     "value": "var(--accent)",
-    "description": "antd itemHoverBg = colorFillSecondary · itemActiveBg = colorFill (the heavier of the pair)."
+    "description": "item hover fill = the lighter neutral · active fill = the heavier of the pair."
   },
   {
     "name": "--segmented-item-active-background",
     "value": "var(--secondary)",
-    "description": "antd itemHoverBg = colorFillSecondary · itemActiveBg = colorFill (the heavier of the pair)."
+    "description": "item hover fill = the lighter neutral · active fill = the heavier of the pair."
   },
   {
     "name": "--segmented-item-selected-background",
     "value": "var(--background)",
-    "description": "antd itemSelectedBg = colorBgElevated + boxShadowTertiary — the selected slab reads as lifted * off the recessed track, which is the whole affordance."
+    "description": "selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted * off the recessed track, which is the whole affordance."
   },
   {
     "name": "--segmented-item-selected-shadow",
     "value": "var(--shadow-sm)",
-    "description": "antd itemSelectedBg = colorBgElevated + boxShadowTertiary — the selected slab reads as lifted * off the recessed track, which is the whole affordance."
+    "description": "selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted * off the recessed track, which is the whole affordance."
   },
   {
     "name": "--separator-rule-size",
@@ -4041,27 +4111,32 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--app-shell-sidebar-width",
     "value": "16rem",
-    "description": "Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. `-rail-` is the icon-only width used at * `<AppShell sidebarCollapsed>`."
+    "description": "Docked navigation TRACK widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. * * THREE WIDTHS, THREE DIFFERENT QUESTIONS — and two of them used to share the word \"rail\": * * - `--app-shell-sidebar-width` the sidebar track, expanded. * - `--app-shell-sidebar-collapsed-width` the SAME track at `<AppShell sidebarCollapsed>`. * - `--app-shell-nav-rail-width` a SECOND, separate track that only exists when the * `navRail` slot is filled (the Slack/Teams shape). * * The middle one shipped as `--app-shell-rail-width` through 19.x, which read as \"the width of * the rail\" and therefore collided head-on with the real rail added in 20.0.0 — two tokens, both * 4rem, both spelled \"rail\", meaning entirely different things. Renamed with NO alias: an alias * would resolve to a plausible width in either reading and break silently, which is precisely the * failure class this package gates against everywhere else."
   },
   {
-    "name": "--app-shell-rail-width",
+    "name": "--app-shell-sidebar-collapsed-width",
     "value": "4rem",
-    "description": "Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. `-rail-` is the icon-only width used at * `<AppShell sidebarCollapsed>`."
+    "description": "Docked navigation TRACK widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. * * THREE WIDTHS, THREE DIFFERENT QUESTIONS — and two of them used to share the word \"rail\": * * - `--app-shell-sidebar-width` the sidebar track, expanded. * - `--app-shell-sidebar-collapsed-width` the SAME track at `<AppShell sidebarCollapsed>`. * - `--app-shell-nav-rail-width` a SECOND, separate track that only exists when the * `navRail` slot is filled (the Slack/Teams shape). * * The middle one shipped as `--app-shell-rail-width` through 19.x, which read as \"the width of * the rail\" and therefore collided head-on with the real rail added in 20.0.0 — two tokens, both * 4rem, both spelled \"rail\", meaning entirely different things. Renamed with NO alias: an alias * would resolve to a plausible width in either reading and break silently, which is precisely the * failure class this package gates against everywhere else."
+  },
+  {
+    "name": "--app-shell-nav-rail-width",
+    "value": "3.5rem",
+    "description": "3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar * collapsed. 3.5rem still clears the coarse-pointer 44px tap target. It is a token precisely so * a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`."
   },
   {
     "name": "--app-shell-page-max-width",
     "value": "80rem",
-    "description": "Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. `-rail-` is the icon-only width used at * `<AppShell sidebarCollapsed>`."
+    "description": "3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar * collapsed. 3.5rem still clears the coarse-pointer 44px tap target. It is a token precisely so * a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`."
   },
   {
     "name": "--app-shell-main-background",
     "value": "hsl(var(--muted) / 0.4)",
-    "description": "Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. `-rail-` is the icon-only width used at * `<AppShell sidebarCollapsed>`."
+    "description": "3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar * collapsed. 3.5rem still clears the coarse-pointer 44px tap target. It is a token precisely so * a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`."
   },
   {
     "name": "--app-shell-mobile-nav-width",
     "value": "22.5rem",
-    "description": "Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. `-rail-` is the icon-only width used at * `<AppShell sidebarCollapsed>`."
+    "description": "3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar * collapsed. 3.5rem still clears the coarse-pointer 44px tap target. It is a token precisely so * a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`."
   },
   {
     "name": "--app-shell-mobile-nav-background",
@@ -4206,17 +4281,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--topbar-item-padding-inline",
     "value": "var(--space-3)",
-    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, antd ProLayout's `right-content`) draws a trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
+    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, and the right-hand action slot of enterprise pro-layouts generally) draws a * trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
   },
   {
     "name": "--topbar-item-gap",
     "value": "var(--space-2)",
-    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, antd ProLayout's `right-content`) draws a trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
+    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, and the right-hand action slot of enterprise pro-layouts generally) draws a * trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
   },
   {
     "name": "--topbar-item-min-width",
     "value": "var(--control-height)",
-    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, antd ProLayout's `right-content`) draws a trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
+    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, and the right-hand action slot of enterprise pro-layouts generally) draws a * trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
   },
   {
     "name": "--topbar-item-radius",
@@ -5132,6 +5207,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-flush-divider-width",
     "value": "var(--table-row-border-width)",
     "description": "Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside * `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three * edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind * it, so without it the header band floats (gh#306). Scoped by construction to the case that * needs it — a BANDED header, a CardBar or a headerless card already draw their own line there * and never reach this token — so a service tunes only the plain-header divider: `0` for a * borderless full-bleed table, heavier for a stronger band. Colour and style are NOT set here: * only the width is restored, so the surface's own border declaration still owns them and a * scoped [data-tenant]/.dark override of --border reaches it. * Default = the same hairline the table's other rules draw."
+  },
+  {
+    "name": "--text-link-underline-offset",
+    "value": "0.2em",
+    "description": "Distance from the text baseline to the underline. In `em` on purpose: the rule has to stay * proportional across the seven type steps, and a px value that reads right at `lg` crowds the * descenders at `2xs`."
+  },
+  {
+    "name": "--text-link-underline-width",
+    "value": "auto",
+    "description": "`auto` lets the face decide; a theme that wants a heavier rule names a length."
   },
   {
     "name": "--toggle-count-min-width",

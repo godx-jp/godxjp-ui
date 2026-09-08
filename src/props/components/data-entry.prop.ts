@@ -268,7 +268,7 @@ export type SearchInputProp = FieldA11yProps & {
 /** @see Checkbox — extends Radix checkbox root props. */
 export type CheckboxProp = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>;
 
-/** Shared option row — Ant Design `CheckboxOptionType`. */
+/** Shared option row — the conventional `CheckboxOptionType` shape. */
 export type ChoiceOptionProp = {
   label: React.ReactNode;
   value: string;
@@ -342,7 +342,8 @@ export type CalendarProp = DayPickerProps &
      *
      * Opt-in on purpose, and the default is load-bearing: making the calendar fluid globally was
      * measured to collapse the DatePicker popover from 250px to 157.8px with 18.8px day cells.
-     * `Calendar` and `DatePicker` want opposite answers here, which is why antd splits them too
+     * `Calendar` and `DatePicker` want opposite answers here, which is why the enterprise
+     * libraries split them too
      * (`Calendar fullscreen` is 100% of its container; the DatePicker dropdown is a fixed 288px).
      */
     width?: Extract<ControlWidthProp, "auto" | "full">;
@@ -516,10 +517,10 @@ export type SearchSelectProp = {
   /** Remote fetcher — debounced search + infinite-scroll pagination call into this. Provide this
    *  OR `options`. */
   loadOptions?: (params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>;
-  /** Custom per-option renderer (Ant-Design style). Defaults to label + optional sublabel. */
+  /** Custom per-option renderer. Defaults to label + optional sublabel. */
   renderOption?: (option: SearchSelectOptionProp) => React.ReactNode;
   /**
-   * Custom renderer for the SELECTED value shown on the trigger (Ant Design `labelRender`).
+   * Custom renderer for the SELECTED value shown on the trigger (the conventional `labelRender`).
    * Receives the value, the resolved label, and the full option when it is loaded (undefined for
    * an async preset whose page hasn't arrived).
    */

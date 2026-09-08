@@ -1023,7 +1023,7 @@ export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> 
  * It exists because the alternative is a `Button`, and a Button in a bar is a control that landed
  * in the bar rather than a part of it — a pill of its own height floating in a taller strip, with
  * its own hover surface and its own focus ring drawn around that pill. Fluent, SLDS, Atlassian and
- * antd's ProLayout all draw a top-bar trigger the other way: the cell is as tall as the bar, its
+ * and enterprise pro-layouts all draw a top-bar trigger the other way: the cell is as tall as the bar, its
  * hover is the bar's own surface, and the focus mark is hosted INSIDE the cell because a
  * full-bleed cell has nothing outside itself to ring.
  */

@@ -1,6 +1,6 @@
 import type * as React from "react";
 
-/** Normalized tree node — Ant Design `treeData` / Cascader `options`. */
+/** Normalized tree node — the conventional `treeData` / Cascader `options` shape. */
 export type TreeOption = {
   value: string;
   label: React.ReactNode;

@@ -1,4 +1,3 @@
-import { createRequire } from "node:module";
 import { globSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -8,17 +7,15 @@ import { contrast, hsl, hslToRgb, NON_TEXT, over } from "./wcag-contrast";
 /**
  * THE FOCUS MARK HAS TWO APPEARANCES, AND THIS FILE HOLDS BOTH TO A DIFFERENT BAR.
  *
- * The shipped DEFAULT is Ant Design's formula, unaltered — not "antd-shaped", the same derivation,
- * run from antd's own package at test time and compared against what this repo emits:
+ * The shipped DEFAULT is the two-form focus convention this library adopted, and the values it
+ * needs live in `src/tokens/derived.css`:
  *
- *   FIELD   `borderColor: colorPrimary` at the unchanged `lineWidth`, plus
- *           `boxShadow: 0 0 0 ${controlOutlineWidth}px ${controlOutline}`
- *           (es/input/style/token.js:48-50).
- *   OUTLINE `outline: ${lineWidthFocus}px solid ${colorPrimaryBorder}; outline-offset: 1`
- *           (es/style/index.js:60-64, `genFocusOutline`).
+ *   FIELD   the boundary recolours to the primary at the unchanged hairline width, plus
+ *           `boxShadow: 0 0 0 ${--control-outline-width} ${--control-outline}`.
+ *   OUTLINE `outline: ${--focus-outline-weight} solid ${--primary-border}; outline-offset: 1`.
  *
  * That default is AA on a field and, measured rather than assumed, is NOT AA on the outline form:
- * `colorPrimaryBorder` for this seed is #6dc0e3, which reaches 2.00:1 against the page. The
+ * `--primary-border` for this seed is #6dc0e3, which reaches 2.00:1 against the page. The
  * stricter indicator lives behind the `data-focus-appearance="aaa"` axis in tokens/axes.css, and
  * the second half of this file is the gate on that axis.
  *
@@ -34,12 +31,8 @@ import { contrast, hsl, hslToRgb, NON_TEXT, over } from "./wcag-contrast";
  * defend.
  */
 
-const require = createRequire(import.meta.url);
-/** antd is a devDependency and a BUILD-TIME tool; importing it in a TEST ships nothing. */
-const antdTheme = require("antd/lib/theme/index.js").default;
-
 const css = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
-const generated = readFileSync(join(process.cwd(), "src/tokens/antd.generated.css"), "utf8");
+const generated = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
 const axes = readFileSync(join(process.cwd(), "src/tokens/axes.css"), "utf8");
 const controlTokens = readFileSync(
   join(process.cwd(), "src/tokens/components/control.css"),
@@ -83,28 +76,40 @@ const THEMES = [
 ] as const;
 
 /**
- * antd's answer for the seed this library actually ships, recomputed here rather than pinned.
+ * THE DERIVED VALUES, PINNED — the other half of the lock on `src/tokens/derived.css`.
  *
- * The seed is read out of foundation.css exactly as scripts/gen-antd-tokens.mjs reads it, so this
- * cannot pass by agreeing with a stale copy of the generator's own numbers.
+ * These used to be recomputed from a colour algorithm at test time. That generator is gone, so
+ * the twenty derived values are now AUTHORED, and the thing that keeps them honest is this file:
+ * every assertion below compares what `derived.css` declares against the literal recorded here,
+ * and then MEASURES the result against a WCAG threshold. Editing one side alone turns this red.
+ *
+ * `controlOutline` / `colorErrorOutline` are the halo colour and alpha as one rgba string,
+ * because the CSS splits them across two tokens and the pair must stay consistent.
  */
-function antdFor(theme: "light" | "dark") {
-  const body = block(css, THEMES.find((t) => t.theme === theme)!.selector);
-  const seed = Object.fromEntries(
-    (
-      [
-        ["colorPrimary", "primary"],
-        ["colorError", "destructive"],
-        ["colorSuccess", "success"],
-        ["colorWarning", "warning"],
-        ["colorInfo", "info"],
-      ] as const
-    ).map(([key, role]) => [key, hexOf(hslToRgb(hsl(body, role)))]),
-  );
-  return antdTheme.getDesignToken(
-    theme === "dark" ? { token: seed, algorithm: antdTheme.darkAlgorithm } : { token: seed },
-  );
-}
+const DERIVED = {
+  light: {
+    /** `--ring` resolves here through `var(--primary)`; the light seed is unchanged by derivation. */
+    ring: "#0071bd",
+    controlOutline: "rgba(0,182,228,0.11)",
+    colorErrorOutline: "rgba(166,22,11,0.09)",
+    primaryBorder: "#6dc0e3",
+  },
+  dark: {
+    ring: "#3dabf5",
+    controlOutline: "rgba(61,175,254,0.29)",
+    colorErrorOutline: "rgba(253,20,53,0.06)",
+    primaryBorder: "#204158",
+  },
+} as const;
+
+/**
+ * The dark primary that a mechanical derivation from the light seed WOULD have produced, kept so
+ * the divergence stays a measurement instead of a preference. See the first test below.
+ */
+const DARK_PRIMARY_REJECTED = "#3794d3";
+
+/** The geometry the focus system declares, and which the named stroke scale must agree with. */
+const GEOMETRY = { lineWidth: 1, controlOutlineWidth: 2, lineWidthFocus: 3 } as const;
 
 /** `--ring` is generated as `var(--primary)`, so the focus hue IS the seed. */
 function ringOf(theme: "light" | "dark"): [number, number, number] {
@@ -115,76 +120,75 @@ function ringOf(theme: "light" | "dark"): [number, number, number] {
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
- * 1. THE DEFAULT IS ANT DESIGN'S, TO THE BYTE.
+ * 1. THE DERIVED TIER IS WHAT IT SAYS IT IS.
  * ──────────────────────────────────────────────────────────────────────────── */
-describe.each(THEMES)("the shipped default is antd's own output ($theme)", ({ theme }) => {
-  const token = antdFor(theme);
+describe.each(THEMES)("the shipped default matches the derived tier ($theme)", ({ theme }) => {
+  const token = DERIVED[theme];
   const body = block(
     generated,
     theme === "light" ? ":root {" : '.dark,\n:root[data-theme="dark"] {',
   );
 
-  it("the field boundary on focus is `colorPrimary` — antd `activeBorderColor`", () => {
-    // LIGHT is byte-identical: antd's `defaultAlgorithm` returns the seed unchanged as
-    // `colorPrimary`, so `--ring: var(--primary)` IS antd's `activeBorderColor`.
+  it("the field boundary on focus is the primary itself", () => {
+    // LIGHT the seed is unchanged by derivation, so `--ring: var(--primary)` IS the focus colour.
     //
-    // DARK is the one structural divergence in this change, and it is recorded rather than
-    // smoothed over. `darkAlgorithm` MOVES the seed (antd's own #1677ff becomes #1668dc), so
-    // antd's dark `colorPrimary` for this seed is #3794d3 — 5.36:1 on this spine, where the seed
-    // itself measures 7.07:1. Feeding the LIGHT seed to `darkAlgorithm` instead gives #0363a4 at
-    // 2.81:1, which primary-text-contrast.test.ts rejects outright. So the dark theme is seeded
-    // with the lifted ramp foundation.css commits to and paints that seed, while everything
-    // DERIVED from it below — hover, active, halo, outline hue — is antd's.
-    // See DIVERGENCES in scripts/gen-antd-tokens.mjs.
+    // DARK is the one structural divergence, and it is recorded rather than smoothed over. A
+    // mechanical dark derivation MOVES the seed: it gives #3794d3 for this seed — 5.36:1 on this
+    // spine, where the committed seed itself measures 7.07:1. Deriving from the LIGHT seed
+    // instead gives #0363a4 at 2.81:1, which primary-text-contrast.test.ts rejects outright. So
+    // the dark theme keeps the lifted ramp foundation.css commits to, and the assertion below is
+    // the reason: the shipped seed must be the LOUDER of the two, or the derived answer would
+    // simply be better and should be taken instead.
     if (theme === "light") {
-      expect(hexOf(ringOf(theme))).toBe(token.colorPrimary);
+      expect(hexOf(ringOf(theme))).toBe(token.ring);
     } else {
       const seed = hexOf(ringOf(theme));
-      expect(seed).not.toBe(token.colorPrimary);
+      expect(seed).toBe(token.ring);
+      expect(seed).not.toBe(DARK_PRIMARY_REJECTED);
       const background = hslToRgb(hsl(block(css, THEMES[1].selector), "background"));
       expect(
         contrast(hslToRgb(hsl(block(css, THEMES[1].selector), "primary")), background),
-        "the seed must be the LOUDER of the two, or antd's transform would simply be better",
-      ).toBeGreaterThan(contrast(hexToRgbTuple(token.colorPrimary), background));
+        "the seed must be the LOUDER of the two, or the derived answer would simply be better",
+      ).toBeGreaterThan(contrast(hexToRgbTuple(DARK_PRIMARY_REJECTED), background));
     }
     // And the rule feeds the utility that paints that border, rather than declaring a colour it
     // would lose to. `@theme inline` compiles `border-input` to `border-color: hsl(var(--input))`.
     expect(focusRing).toMatch(/--input:\s*var\(--focus-ring-color, var\(--ring\)\)/);
   });
 
-  it("the field halo is `controlOutline`, colour AND alpha", () => {
+  it("the field halo is `--control-outline`, colour AND alpha", () => {
     const outline = hexOf(hslToRgb(hsl(body, "control-outline")));
     const alpha = num(body, "control-outline-alpha");
     expect(
       `rgba(${hslToRgb(hsl(body, "control-outline")).map(Math.round).join(",")},${alpha})`,
-    ).toBe(token.controlOutline.replace(/\s/g, ""));
-    expect(outline).not.toBe(hexOf(ringOf(theme))); // antd's halo hue is NOT the primary itself
+    ).toBe(token.controlOutline);
+    expect(outline).not.toBe(hexOf(ringOf(theme))); // the halo hue is NOT the primary itself
   });
 
-  it("the invalid field halo is `colorErrorOutline`, not a diluted `--destructive`", () => {
+  it("the invalid field halo is its own hue, not a diluted `--destructive`", () => {
     const alpha = num(body, "control-outline-error-alpha");
     expect(
       `rgba(${hslToRgb(hsl(body, "control-outline-error")).map(Math.round).join(",")},${alpha})`,
-    ).toBe(token.colorErrorOutline.replace(/\s/g, ""));
+    ).toBe(token.colorErrorOutline);
     expect(focusRing).toContain("--focus-ring-glow-color: var(--control-outline-error)");
   });
 
-  it("`colorPrimaryBorder` is generated even though the mark no longer paints it", () => {
-    // antd's `genFocusOutline` hue. It is derived and checked in because it IS antd's answer, and
-    // because the reason this library does not use it is a MEASUREMENT (see the SC 1.4.11 block
-    // below) rather than a preference — the measurement needs the value to exist.
-    expect(hexOf(hslToRgb(hsl(body, "primary-border")))).toBe(token.colorPrimaryBorder);
+  it("`--primary-border` is declared even though the mark no longer paints it", () => {
+    // The hue the OUTLINE form of the focus mark would take. It stays in the tier because the
+    // reason this library does not use it is a MEASUREMENT (see the SC 1.4.11 block below)
+    // rather than a preference — and the measurement needs the value to exist.
+    expect(hexOf(hslToRgb(hsl(body, "primary-border")))).toBe(token.primaryBorder);
   });
 
-  it("the geometry antd owns is the geometry this library declares", () => {
+  it("the focus geometry is the geometry the stroke scale already carries", () => {
     const root = block(css, ":root {");
-    expect(token.lineWidth).toBe(1);
-    expect(token.controlOutlineWidth).toBe(2);
-    expect(token.lineWidthFocus).toBe(3);
+    expect(GEOMETRY.lineWidth).toBe(1);
+    expect(GEOMETRY.controlOutlineWidth).toBe(2);
+    expect(GEOMETRY.lineWidthFocus).toBe(3);
     expect(root).toMatch(/--control-outline-width:\s*calc\(var\(--stroke-md\) \* /); // 2px
     expect(css).toMatch(/--stroke-md:\s*2px;/);
-    expect(css).toMatch(/--stroke-lg:\s*3px;/); // antd lineWidthFocus, one token away
-    expect(css).toMatch(/--stroke-hairline:\s*1px;/); // antd lineWidth, the shipped ON weight
+    expect(css).toMatch(/--stroke-lg:\s*3px;/); // the heavy outline weight, one token away
+    expect(css).toMatch(/--stroke-hairline:\s*1px;/); // the shipped ON weight
   });
 
   it("focus never changes a border WIDTH, so no control can move when it is focused", () => {
@@ -199,7 +203,7 @@ describe.each(THEMES)("the shipped default is antd's own output ($theme)", ({ th
 /* ────────────────────────────────────────────────────────────────────────────
  * 2. WHAT THAT DEFAULT COSTS, STATED AS A MEASUREMENT.
  * ──────────────────────────────────────────────────────────────────────────── */
-describe.each(THEMES)("the cost of following antd exactly ($theme)", ({ theme, selector }) => {
+describe.each(THEMES)("the cost of the default appearance ($theme)", ({ theme, selector }) => {
   const body = block(css, selector);
   const background = hslToRgb(hsl(body, "background"));
   const generatedBody = block(
@@ -213,7 +217,7 @@ describe.each(THEMES)("the cost of following antd exactly ($theme)", ({ theme, s
 
   it("the OUTLINE hue does NOT clear 3:1 — recorded, because it is the price of the default", () => {
     // Not an aspiration and not a bug report: `colorPrimaryBorder` is a light tint by
-    // construction. If antd ever changes that, this test fails and the axis stops being needed.
+    // construction. If that hue is ever retuned, this test fails and the axis stops being needed.
     const primaryBorder = hslToRgb(hsl(generatedBody, "primary-border"));
     expect(contrast(primaryBorder, background)).toBeLessThan(NON_TEXT);
   });
@@ -236,10 +240,10 @@ describe.each(THEMES)("the cost of following antd exactly ($theme)", ({ theme, s
 describe("the switch is OFF by default, and nothing can paint around it", () => {
   const root = block(css, ":root {");
 
-  it("is antd's own `focusOutline` flag, at 0", () => {
-    // antd 6.6.2 es/theme/util/alias.js:71 —
-    //   lineWidthFocus: mergedToken.focusOutline === false ? 0 : mergedToken.lineWidth * 3
-    // The CSS mirror multiplies every focus length by the flag, which is the same operation.
+  it("is a single multiplier flag, at 0", () => {
+    // The flag is the one seam: every focus length in CSS multiplies by it, so setting it to 0
+    //   focus width = weight * --focus-outline
+    // zeroes every painted length at once, and no component rebind can bring one back.
     expect(root).toMatch(/--focus-outline:\s*0;/);
     expect(root).toMatch(
       /--focus-ring-width:\s*calc\(var\(--focus-ring-weight\) \* var\(--focus-outline\)\)/,
@@ -358,13 +362,13 @@ describe("the ON position is the LIGHT one, and it still carries the criterion",
     expect(focusRing).toContain('[data-focus-outline="on"]');
   });
 
-  it("the weight is antd's `lineWidth`, not antd's `lineWidthFocus`", () => {
+  it("the weight is the hairline stroke, not the heavy one", () => {
     // The complaint was weight, not existence: 3px of opaque brand around an already-shaded
-    // selected nav row is two heavy treatments on one element. antd's own FIELD indicator is one
-    // `lineWidth`, and WCAG's AA bar for an indicator is CONTRAST, not thickness.
+    // selected nav row is two heavy treatments on one element. The FIELD form of this indicator
+    // is one hairline, and WCAG's AA bar for an indicator is CONTRAST, not thickness.
     expect(root).toMatch(/--focus-outline-weight:\s*var\(--stroke-hairline\)/);
     expect(css).toMatch(/--stroke-hairline:\s*1px;/);
-    // antd's heavier `genFocusOutline` weight stays one token away.
+    // The heavier outline weight stays one token away.
     expect(css).toMatch(/--stroke-lg:\s*3px;/);
   });
 
@@ -385,7 +389,7 @@ describe("the ON position is the LIGHT one, and it still carries the criterion",
     expect(rule).toContain("calc(-1 * var(--focus-ring-width))");
   });
 
-  it("the hue is the focus hue, because antd's `colorPrimaryBorder` cannot clear 3:1", () => {
+  it("the hue is the focus hue, because `--primary-border` cannot clear 3:1", () => {
     expect(root).toMatch(/--focus-outline-color:\s*var\(--focus-ring-color, var\(--ring\)\)/);
   });
 });
@@ -427,7 +431,7 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
     expect(contrast(ring, background)).toBeGreaterThanOrEqual(contrast(input, background));
   });
 
-  it("antd's own outline hue would NOT have cleared it — recorded, not assumed", () => {
+  it("the outline hue would NOT have cleared it — recorded, not assumed", () => {
     const primaryBorder = hslToRgb(hsl(generatedBody, "primary-border"));
     expect(contrast(primaryBorder, background)).toBeLessThan(NON_TEXT);
   });
@@ -449,7 +453,7 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
 
   it("the widest mark still fits the clip headroom it is given", () => {
     // Chrome that clips its overflow reserves `--focus-ring-clip-margin`. The widest paint is the
-    // ON mark plus antd's halo. If a future mark outgrows the margin it is shaved at the edge,
+    // ON mark plus the field halo. If a future mark outgrows the margin it is shaved at the edge,
     // which is how gh#291 / gh#376 happened.
     const root = block(css, ":root {");
     const clip = Number.parseFloat(
@@ -470,7 +474,7 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
           : value;
       }),
     ].map(step);
-    const halo = 2; // antd controlOutlineWidth
+    const halo = 2; // --control-outline-width
     expect(Math.max(...weights) + halo, "widest focus paint").toBeLessThan(clip);
   });
 });
@@ -489,10 +493,10 @@ describe.each(THEMES)("the halo is decoration, not the indicator ($theme)", ({ t
     hsl(block(css, THEMES.find((t) => t.theme === theme)!.selector), "background"),
   );
 
-  it("declares a glow alpha in this theme, and it is antd's", () => {
+  it("declares a glow alpha in this theme, and it is the one the tier commits to", () => {
     expect(alpha).toBeGreaterThan(0);
     expect(alpha).toBeLessThan(1);
-    expect(alpha).toBe(Number(/,([\d.]+)\)/.exec(antdFor(theme).controlOutline)![1]));
+    expect(alpha).toBe(Number(/,([\d.]+)\)/.exec(DERIVED[theme].controlOutline)![1]));
   });
 
   it("sits well under the opaque stop, so it can never be mistaken for it", () => {
@@ -539,13 +543,13 @@ describe("one focus language, applied consistently", () => {
   it("does NOT rebind the boundary on the Switch, which FILLS from --input", () => {
     // `.ui-switch` paints its unchecked TRACK with --input rather than an edge, so including it
     // in the field rule would turn a focused off-switch solid blue. It takes the outline form,
-    // which is also what antd does with a Switch.
+    // which is the conventional treatment for a Switch.
     const fieldRule = focusRing.match(/:is\(\s*\.ui-input,[^}]*--input:[^}]*\}/s)?.[0] ?? "";
     expect(fieldRule, "the field rule must exist").not.toBe("");
     expect(fieldRule).not.toContain(".ui-switch");
   });
 
-  it("the Button takes the OUTLINE form in every variant, as antd does", () => {
+  it("the Button takes the OUTLINE form in every variant", () => {
     const fieldRule = focusRing.match(/:is\(\s*\.ui-input,[^}]*--input:[^}]*\}/s)?.[0] ?? "";
     expect(fieldRule).not.toContain(".ui-button");
     const outlineRule = focusRing.match(/:is\([^)]*\.ui-button,[^}]*outline:[^}]*\}/s)?.[0] ?? "";

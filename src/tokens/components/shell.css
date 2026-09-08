@@ -235,7 +235,8 @@
 
   /* TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped
    * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's
-   * navigation, antd ProLayout's `right-content`) draws a trigger as a full-height cell whose
+   * navigation, and the right-hand action slot of enterprise pro-layouts generally) draws a
+   * trigger as a full-height cell whose
    * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its
    * own hover fill and its own ring, floating inside a taller strip.
    *

@@ -55,10 +55,10 @@
    *
    * This knob exists because a field is the one control that already owns a boundary, so it is
    * the one place the mark could plausibly be dropped and the recoloured border left to carry the
-   * state — which is exactly what Ant Design does (a focused antd field is a primary border plus a
-   * translucent halo, nothing in between; verified in antd 6.6.2, `es/input/style/token.js:48`).
+   * state — which is the established treatment for a bordered field: a primary border plus a
+   * translucent halo, nothing in between.
    *
-   * It ships at the same step as `--focus-outline-weight`, antd's `lineWidth`, so a field and a
+   * It ships at the same step as `--focus-outline-weight`, the hairline stroke, so a field and a
    * button carry the same weight. A gate asserts the two stay equal, because this token cannot
    * literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule).
    *

@@ -28,7 +28,7 @@ export const EMAIL_COLOR_ROLES = {
   primary: "--primary",
   primaryForeground: "--primary-foreground",
   // The focus hue. It reads `--primary` and not `--ring` because `--ring` is no longer a value:
-  // antd has no separate focus-colour token — a focused control simply takes `colorPrimary` —
+  // There is no separate focus-colour token — a focused control simply takes the primary —
   // so the generated tier declares `--ring: var(--primary)`. An email is a static document
   // with no focus state; this slot exists so a CTA can be tinted with the same hue the app
   // focuses with, and the seed is where that hue lives.

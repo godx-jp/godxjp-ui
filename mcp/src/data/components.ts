@@ -4363,7 +4363,7 @@ import remarkGfm from "remark-gfm";
       "DO pass a SINGLE React element as `children`. FormField calls `React.cloneElement` on it to inject `aria-describedby`, `aria-required`, and `aria-invalid` — if you pass a fragment or multiple nodes, cloneElement silently skips the injection and a11y attributes are lost.",
       "COMPOSITE CHILD: when the single child is a layout wrapper — a `Flex` holding a range from/to pair or a 年/月 input+select combo — the label still reaches every control inside. FormField publishes its label through FieldNameContext and each control's semantic focus target (Input's `<input>`, Select/SearchSelect's `role=combobox` trigger, and everything composed on them) adopts it as a LAST-RESORT accessible name; a control's own `aria-label`/`aria-labelledby` always wins, so set a per-control `aria-label` (e.g. 開始日/終了日) when the two halves should announce distinct names. The wrapper itself renders as a named `role='group'` (see Flex).",
       "DO reach for `staticText` (not `children` with a bare string/span) for a read-only field mixed into an otherwise-editable Form — e.g. an immutable name/email row above an editable role Select on the same Members-edit card. It renders with the exact typography `Descriptions.Item`'s value uses, and — because it IS a FormField reading the same Form context — it lines up with every other field's label column, `labelAlign`, and row-to-row gap automatically. A bare string as `children` instead triggers the dev-mode 'expected a single React element child' warning and has no typography contract at all.",
-      "WIDTH: a FormField FILLS its container in vertical/horizontal layout — exactly like Ant Design's Form.Item (vertical → width:100%). It works full-width inside `<Form>`, a `ResponsiveGrid` cell, a bare `<Flex direction='col'>`, or a plain block; you do NOT need to wrap it in a grid to get full width. `layout='inline'` is the only content-width exception (compact, side-by-side). To narrow just the control (keeping the label row full-width), set `controlWidth` — never constrain the FormField itself.",
+      "WIDTH: a FormField FILLS its container in vertical/horizontal layout — like the conventional Form.Item (vertical → width:100%). It works full-width inside `<Form>`, a `ResponsiveGrid` cell, a bare `<Flex direction='col'>`, or a plain block; you do NOT need to wrap it in a grid to get full width. `layout='inline'` is the only content-width exception (compact, side-by-side). To narrow just the control (keeping the label row full-width), set `controlWidth` — never constrain the FormField itself.",
       "DO use the `error` prop (not a hand-rolled `<p>`) for validation messages — it renders with `role='alert'` and `text-destructive` styling and overrides `helper` automatically. Never render an error paragraph alongside FormField.",
       "DO use `labelAddon` (a ReactNode rendered inline after the label text) for supplementary controls such as a tooltip trigger or a 'copy' icon button — never insert such controls as siblings outside FormField, which breaks layout.",
       "DON'T wrap `Switch` in FormField — use `Field` instead, which already handles the label, hidden `<input name>` for HTML form submission, error, and helper internally.",
@@ -4767,13 +4767,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "renderOption",
         type: "(option: SearchSelectOptionProp) => React.ReactNode",
         description:
-          "Custom per-option renderer for the dropdown ROWS (Ant-Design style). Defaults to label + optional sublabel. Does not change the trigger — use `labelRender` for that.",
+          "Custom per-option renderer for the dropdown ROWS. Defaults to label + optional sublabel. Does not change the trigger — use `labelRender` for that.",
       },
       {
         name: "labelRender",
         type: "(selected: { value: string; label: React.ReactNode; option?: SearchSelectOptionProp }) => React.ReactNode",
         description:
-          "Custom renderer for the SELECTED value shown on the TRIGGER (Ant Design `labelRender`) — avatar + name + role badge, etc. `option` is undefined for an async preset whose page hasn't loaded. Only used while a value is selected; the placeholder still shows when empty.",
+          "Custom renderer for the SELECTED value shown on the TRIGGER (`labelRender`) — avatar + name + role badge, etc. `option` is undefined for an async preset whose page hasn't loaded. Only used while a value is selected; the placeholder still shows when empty.",
       },
       {
         name: "selectedLabel",
@@ -5357,7 +5357,7 @@ export function PrioritySelect({ value, onValueChange }) {
     name: "MonthPicker",
     group: "data-entry",
     tagline:
-      "Year/month (yyyy/MM) input with an Ant-Design-style month-grid popover — a year chevron header over a 3x4 grid of the twelve months. The input stays typeable; the grid is the visual affordance.",
+      "Year/month (yyyy/MM) input with a month-grid popover — a year chevron header over a 3x4 grid of the twelve months. The input stays typeable; the grid is the visual affordance.",
     props: [
       {
         name: "value",
@@ -10270,7 +10270,7 @@ export default function PasswordBlock() {
     name: "Segmented",
     group: "data-entry",
     tagline:
-      "One-of-N from a small, closed, always-visible set — antd's Segmented drawn on Radix RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
+      "One-of-N from a small, closed, always-visible set — the enterprise Segmented drawn on Radix RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
     props: [
       {
         name: "options",

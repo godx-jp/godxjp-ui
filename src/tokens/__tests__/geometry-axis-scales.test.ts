@@ -173,7 +173,7 @@ describe("stroke scale — tier 1 (gh#324)", () => {
     // `--focus-ring-width` was the system's only NAMED line thickness before; it is now a
     // member of the axis rather than a parallel authority, so a theme retunes both at once.
     // Since the focus mark gained an on/off switch it is `weight × switch`, and the WEIGHT is
-    // what reads the scale — at antd's `lineWidth` step, which is the light mark.
+    // what reads the scale — at the hairline step, which is the light mark.
     expect(root.get("--focus-ring-width")).toBe(
       "calc(var(--focus-ring-weight) * var(--focus-outline))",
     );

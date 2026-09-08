@@ -102,7 +102,7 @@ describe("正常系: キーボードフォーカスの輪郭", () => {
 });
 
 describe("正常系: ページ番号の並び (件数一定)", () => {
-  // Ant Design / MUI clamp the window instead, so the strip keeps its width wherever the
+  // The enterprise libraries and MUI clamp the window instead, so the strip keeps its width wherever the
   // current page sits.
   it("先頭・中央・末尾のどこでも表示件数が変わらない", () => {
     const first = buildPageRange(1, 1060);

@@ -142,7 +142,7 @@ CardContent.displayName = "CardContent";
 export type CardFooterProps = React.HTMLAttributes<HTMLDivElement> & {
   /** Top border + symmetric action band — form Save/Cancel, table summary. */
   separated?: boolean;
-  /** Full-bleed footer (Ant Design `actions` bar). */
+  /** Full-bleed footer (the conventional `actions` bar). */
   flush?: boolean;
 };
 

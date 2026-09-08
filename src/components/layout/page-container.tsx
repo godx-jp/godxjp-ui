@@ -1,4 +1,4 @@
-/** PageContainer — mandatory shell for every admin page (Ant Design PageHeader equivalent). */
+/** PageContainer — mandatory shell for every admin page (the PageHeader equivalent). */
 import { useEffect, useRef, useState } from "react";
 import { ChevronRight } from "lucide-react";
 

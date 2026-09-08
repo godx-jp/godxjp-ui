@@ -8,16 +8,17 @@ import { contrast, hsl, hslToRgb } from "./wcag-contrast";
  *
  * `primary-text-contrast.test.ts` already holds the RESTING fill against its own label. It stops
  * there, and that gap is where a real defect lived: a consuming app's axe sweep caught the primary
- * submit button mid-hover at 4.2:1, because antd steps an interactive fill one ramp position
- * LIGHTER on hover in the light theme — straight towards the near-white label sitting on it — and
- * one position DARKER on press in the dark theme, straight towards the near-black label there.
- * antd is content with that (its own stock primary button measures 3.1:1 on white); this library is
- * not, because docs/DESIGN-AUTHORITY.md hands anything the user READS to the Japanese standard and
- * JIS X 8341-3 tracks WCAG AA.
+ * submit button mid-hover at 4.2:1, because the conventional ramp steps an interactive fill one
+ * position LIGHTER on hover in the light theme — straight towards the near-white label sitting on
+ * it — and one position DARKER on press in the dark theme, straight towards the near-black label
+ * there. Most libraries are content with that (a stock primary button of this kind measures 3.1:1
+ * on white); this library is not, because docs/DESIGN-AUTHORITY.md hands anything the user READS
+ * to the Japanese standard and JIS X 8341-3 tracks WCAG AA.
  *
- * The fix lives in scripts/gen-antd-tokens.mjs — it reflects the ramp rather than picking a colour
- * — so this file is the floor that fix is held to, not a restatement of it. It reads the GENERATED
- * stylesheet on purpose: a reflection quietly dropped from the generator lands here as a failure.
+ * The fix is in the values themselves: those four states take the same ramp at the same step size
+ * in the OPPOSITE direction (recorded in src/tokens/derived.css). This file is the floor that fix
+ * is held to, not a restatement of it — it reads the DERIVED stylesheet on purpose, so a
+ * reflection quietly undone there lands here as a failure.
  *
  * A state is only worth asserting on if a label actually rides on it, hence `--*-foreground` as the
  * measured pair rather than the page background: on a hovered primary button the page is nowhere
@@ -27,7 +28,7 @@ import { contrast, hsl, hslToRgb } from "./wcag-contrast";
 const AA_TEXT = 4.5;
 
 const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
-const generated = readFileSync(join(process.cwd(), "src/tokens/antd.generated.css"), "utf8");
+const generated = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(css: string, selector: string): string {

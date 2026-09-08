@@ -90,13 +90,13 @@ describe("focus ring — single source", () => {
 
   // Turning the ring off must stay possible AND stay a deliberate act: the
   // shipped default is on (WCAG 2.4.7), and width:0 is the documented switch.
-  it("ships the mark OFF by default, behind antd's own focusOutline flag", () => {
+  it("ships the mark OFF by default, behind the one multiplier flag", () => {
     const foundation = readFileSync(join(STYLES_DIR, "../tokens/foundation.css"), "utf8");
     const axes = readFileSync(join(STYLES_DIR, "../tokens/axes.css"), "utf8");
     // OFF is the shipped default and a recorded product decision — docs/DESIGN-AUTHORITY.md.
     expect(foundation).toMatch(/--focus-outline:\s*0;/);
     // The thickness is still a member of the stroke scale rather than a parallel authority, so a
-    // theme retunes marks and borders together. The ON weight is antd's lineWidth = 1px.
+    // theme retunes marks and borders together. The ON weight is the hairline stroke = 1px.
     expect(foundation).toMatch(/--focus-outline-weight:\s*var\(--stroke-hairline\)/);
     expect(foundation).toMatch(/--stroke-hairline:\s*1px;/);
     expect(foundation).toMatch(/--focus-ring-opacity:\s*1/);

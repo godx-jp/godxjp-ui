@@ -46,7 +46,7 @@ export function CheckboxVisual({
     >
       {/* No state → no glyph. `.ui-checkbox[data-state="checked"]` in styles/control.css owns the
           fill; an indeterminate box deliberately keeps the resting fill and shows only the dash,
-          the way antd draws a partial selection. */}
+          the conventional way to draw a partial selection. */}
       {checked || indeterminate ? <CheckboxGlyph state={state} /> : null}
     </span>
   );
@@ -178,7 +178,7 @@ const CheckboxRoot = React.forwardRef<HTMLLabelElement, CheckboxRootProps>((prop
 });
 CheckboxRoot.displayName = "Checkbox";
 
-/** Checkbox — dùng standalone hoặc `Checkbox.Group` với `options` (Ant Design style). */
+/** Checkbox — dùng standalone hoặc `Checkbox.Group` với `options` (theo quy ước phổ biến). */
 export const Checkbox = Object.assign(CheckboxRoot, {
   Group: CheckboxGroup,
 });

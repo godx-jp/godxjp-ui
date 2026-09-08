@@ -27,7 +27,7 @@ const parseYm = (raw: string): Date | undefined => {
 };
 
 /**
- * MonthPicker — year/month (`yyyy/MM`) input with an Ant-Design-style month grid
+ * MonthPicker — year/month (`yyyy/MM`) input with a 12-cell month grid
  * popover: a year header with chevrons over a 3×4 grid of the twelve months.
  * The field stays a real, typeable input (form-submittable via `name` as
  * `yyyy-MM`); the grid is the visual affordance.

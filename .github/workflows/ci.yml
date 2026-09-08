@@ -95,7 +95,7 @@ jobs:
       # `check:*` is reachable from nothing — so adding a gate and forgetting to wire it is red HERE
       # rather than discovered by a consumer. `pnpm check:gate-coverage --report` prints the lane
       # each gate lands in. Measured 0.14s; the three gates it forced into this chain
-      # (check:registry, check:antd-tokens, check:no-antd-runtime) add 0.52s to a 73s job.
+      # (check:registry, check:no-antd-runtime) add 0.38s to a 73s job.
       #
       # IT DELIBERATELY DOES NOT AUDIT `verify:ci`. No workflow runs `verify:ci` — this job runs
       # verify:ci:static + check:frame-contracts, the suite runs below, and the Chromium gates run
@@ -104,8 +104,8 @@ jobs:
       # and gates that no runner executes as "wired". That mistaken audit is written down in an
       # earlier revision of scripts/guinea-pig-skill.md §5b; the corrected §5b explains why.
       #
-      # WHERE THE 51 GATES RUN, as of this commit:
-      #   this job              36  29 via verify:ci:static, 6 via check:frame-contracts,
+      # WHERE THE 50 GATES RUN, as of this commit:
+      #   this job              35  28 via verify:ci:static, 6 via check:frame-contracts,
       #                             plus check:frame-contracts itself as its own step
       #   ci-browser.yml         3  check:contrast + check:visual-audit (via verify:browser),
       #                             check:frame-axe

@@ -1,7 +1,7 @@
 import type { ToneProp } from "../../props/vocabulary";
 
 /**
- * Soft semantic background band for an overlay header (Sheet / Dialog / Drawer), Ant-Design style.
+ * Soft semantic background band for an overlay header (Sheet / Dialog / Drawer).
  * Tints ONLY the background — text stays `--foreground` (渋み: never invert the band into a loud
  * solid fill).
  */

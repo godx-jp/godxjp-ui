@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 /**
- * antd is a GENERATOR, not a dependency.
+ * antd IS GONE, AND THIS GATE IS WHY IT STAYS GONE.
  *
- * scripts/gen-antd-tokens.mjs runs Ant Design's own algorithm at build time and writes plain CSS
- * custom properties. Nothing from antd may reach a consumer: not a module in `dist/`, not a class
- * in the shipped stylesheet, not an entry in `dependencies` or `peerDependencies`. The whole
- * argument for adopting antd as the colour authority is that it costs the bundle nothing, so that
- * claim gets a gate rather than a sentence in a doc.
+ * The build-time colour generator that used antd was removed; the derived tier is now authored in
+ * src/tokens/derived.css and held correct by measurement (see docs/DESIGN-AUTHORITY.md). antd must
+ * therefore appear NOWHERE — not in `dependencies`, `devDependencies` or `peerDependencies`, not
+ * as an import in `src/`, not as a module or a class name in `dist/`.
+ *
+ * This is the difference between "we removed it" as a claim in a commit message and "it cannot
+ * come back" as a fact CI enforces. Removing this file re-opens the door it closes.
  */
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -24,34 +26,40 @@ function walk(dir, out = []) {
 }
 
 const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
-for (const field of ["dependencies", "peerDependencies", "optionalDependencies"]) {
-  if (pkg[field]?.antd) failures.push(`package.json: antd must not appear in ${field}`);
-}
-if (!pkg.devDependencies?.antd) {
-  failures.push("package.json: antd must be present in devDependencies — the generator needs it");
+for (const field of [
+  "dependencies",
+  "devDependencies",
+  "peerDependencies",
+  "optionalDependencies",
+]) {
+  for (const name of Object.keys(pkg[field] ?? {})) {
+    if (name === "antd" || name.startsWith("@ant-design/")) {
+      failures.push(`package.json: ${name} must not appear in ${field}`);
+    }
+  }
 }
 
 /**
  * A source import of antd, in any of the forms a bundler would follow.
  *
  * The package name may be followed by a SUBPATH and the statement may be a side-effect import
- * with no `from` — both forms were invisible before, and one of them is what this repo's own
- * generator uses (`require("antd/lib/theme/index.js")` in scripts/gen-antd-tokens.mjs). A deep
- * import pulls the same runtime into the bundle, so it must count.
+ * with no `from` — both forms were invisible to an earlier version of this check, and a deep
+ * import such as `require("antd/lib/theme/index.js")` pulls the same runtime into the bundle, so
+ * it must count.
  */
 const IMPORT =
   /(?:from\s+|require\(\s*|import\(\s*|import\s+)["'](antd|@ant-design\/[\w-]+)(?:\/[^"']*)?["']/;
 
 for (const file of walk(join(ROOT, "src"))) {
   if (!/\.(tsx?|jsx?|css)$/.test(file)) continue;
-  // Tests are not shipped (tsup does not emit them; `dist/**/__tests__` is empty), and running
-  // antd's own token generator inside a test is the sanctioned build-time use this gate exists to
-  // protect — src/tokens/__tests__/focus-ring-contrast.test.ts does exactly that, on purpose. The
-  // dist half below is what guards the shipped artefact.
+  // Tests are not shipped (tsup does not emit them; `dist/**/__tests__` is empty). They are
+  // skipped here only because the dist half below is the authoritative guard on the shipped
+  // artefact; no test imports antd any more either — focus-ring-contrast.test.ts used to, and
+  // now pins the derived values instead.
   if (/[\\/]__tests__[\\/]|\.(?:test|spec)\.[jt]sx?$/.test(file)) continue;
   const text = readFileSync(file, "utf8");
   if (IMPORT.test(text) || /@import\s+["']antd/.test(text)) {
-    failures.push(`${relative(ROOT, file)}: imports antd — it is a BUILD-TIME tool only`);
+    failures.push(`${relative(ROOT, file)}: imports antd — antd was removed from this repo`);
   }
 }
 
@@ -74,4 +82,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("✓ check:no-antd-runtime — antd is a devDependency and reaches no shipped artefact.");
+console.log("✓ check:no-antd-runtime — antd appears in no manifest, no source and no artefact.");

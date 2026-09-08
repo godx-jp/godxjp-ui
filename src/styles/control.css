@@ -106,9 +106,9 @@
     box-shadow: var(--shadow-sm), var(--shadow-glow);
   }
 
-  /* antd's `colorPrimaryHover`, generated from the seed — not the primary at 90% opacity, which
-   * was an eyeballed step whose result depends on whatever surface happens to be behind the
-   * button. See src/tokens/antd.generated.css. */
+  /* `--primary-hover` from the derived tier — not the primary at 90% opacity, which was an
+   * eyeballed step whose result depends on whatever surface happens to be behind the button, and
+   * which no contrast gate could hold. See src/tokens/derived.css. */
   .ui-button--default:hover {
     background: hsl(var(--primary-hover));
   }
@@ -975,17 +975,18 @@
   }
 
   /* ── SEGMENTED ────────────────────────────────────────────────────────────────────────────
-   * antd 6.6.2 `genSegmentedStyle` (es/segmented/style/index.js), ported declaration for
-   * declaration onto this system's roles. Every length reads a knob in
-   * tokens/components/segmented.css, where the antd formula each one came from is recorded.
+   * The established enterprise Segmented spec, ported declaration for declaration onto this
+   * system's roles. Every length reads a knob in tokens/components/segmented.css, where the
+   * formula each one came from is recorded.
    *
    * TWO DEPARTURES, BOTH DELIBERATE:
    *
-   *   1. NO SLIDING THUMB. antd animates the slab between items and, while it animates, strips the
-   *      `-item-selected` class — so which item is selected lives in two places for 300ms. A static
-   *      slab reads identically at rest, cannot desynchronise, and needs no reduced-motion carve-out.
-   *   2. NO `::after` HOVER OVERLAY. antd tints hover through a `z-index: -1` pseudo-element so the
-   *      overlay can cross-fade under the label. With no thumb to coordinate with there is nothing
+   *   1. NO SLIDING THUMB. The source animates the slab between items and, while it animates,
+   *      strips the `-item-selected` class — so which item is selected lives in two places for
+   *      300ms. A static slab reads identically at rest, cannot desynchronise, and needs no
+   *      reduced-motion carve-out.
+   *   2. NO `::after` HOVER OVERLAY. The source tints hover through a `z-index: -1` pseudo-element
+   *      so the overlay can cross-fade under the label. With no thumb to coordinate with there is nothing
    *      the overlay buys, and a negative z-index inside a stacking context is a well-known way to
    *      lose an element behind an ancestor's background. The tint goes straight on the item.
    *
@@ -1019,12 +1020,12 @@
     /* The track owns the type; the item must not fall back to the UA's button font. */
     font: inherit;
     white-space: nowrap;
-    /* antd transitions COLOUR only on an item (`transition: color …`); the slab appears at once. */
+    /* Only COLOUR transitions on an item; the slab appears at once. */
     transition: color var(--duration-fast);
   }
 
-  /* antd itemHoverColor / itemHoverBg, and the heavier itemActiveBg while the pointer is down.
-   * Excluded on the selected item exactly as antd excludes it — hovering the current choice must
+  /* The item hover ink and fill, and the heavier active fill while the pointer is down.
+   * Excluded on the selected item, as the spec excludes it — hovering the current choice must
    * not repaint the slab. */
   .ui-segmented-item:not([data-state="checked"]):not([data-disabled]):hover {
     background: hsl(var(--segmented-item-hover-background));
@@ -1051,7 +1052,7 @@
     text-overflow: ellipsis;
   }
 
-  /* antd's `-item-icon > svg` rule, and for antd's own stated reason: a reset that forces
+  /* The spec's own icon rule, and for its stated reason: a reset that forces
    * `svg { display: block }` (Tailwind Preflight does) would drop the glyph onto its own line. */
   .ui-segmented-item-icon {
     display: inline-flex;
@@ -2153,8 +2154,8 @@
      *
      * Inheriting hands the cell's colour to the label, which costs no API and keeps a
      * locale convention (Japanese 日曜=赤 / 土曜=青 is a real requirement, and NOT a default anyone
-     * ships — antd mentions weekends in zero files, Google Calendar paints all seven headers the
-     * same) in the app where it belongs. The state rules above still win: they name the button. */
+     * ships — the major component libraries mention weekends in zero files, and Google Calendar
+     * paints all seven headers the same) in the app where it belongs. The state rules above still win: they name the button. */
     color: inherit;
     inline-size: var(--control-height);
     block-size: var(--control-height);
@@ -2191,8 +2192,8 @@
    * It used to paint `--accent`, which is the same grey the day button already uses on hover — so
    * today was indistinguishable from whatever the pointer happened to be over, and it competed
    * with the selected day for the same visual weight. An inset ring in the brand colour reads as
-   * "you are here" without claiming the selection, which is the treatment antd, Google Calendar
-   * and Apple all converge on. `inset` so it does not enlarge the cell or overlap its neighbour. */
+   * "you are here" without claiming the selection, which is the treatment Google Calendar, Apple
+   * and the major component libraries all converge on. `inset` so it does not enlarge the cell or overlap its neighbour. */
   .ui-calendar .ui-calendar-day.day-today:not(.day-selected) .ui-calendar-day-button {
     box-shadow: inset 0 0 0 1px hsl(var(--primary));
     color: hsl(var(--text-primary));

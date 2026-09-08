@@ -424,7 +424,7 @@ export const SheetBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivE
 );
 
 export const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  // Pinned action bar (Ant Design Drawer footer): sticks to the bottom, full-bleed top border, actions
+  // Pinned action bar (the Drawer footer convention): sticks to the bottom, full-bleed top border, actions
   // RIGHT-aligned (primary rightmost). A destructive / clear / reset action goes far-LEFT — give it
   // `className="me-auto"`. See cardinal rule "Drawer & dialog footer layout".
   // Owns its full vertical padding (symmetric 16/16) via `py-4`; `-mb-6` cancels SheetContent's

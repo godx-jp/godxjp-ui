@@ -60,7 +60,7 @@ _làm trước hay sau_.
 ### a. Nó chặn một yêu cầu TIẾP CẬN
 
 Không thương lượng, làm trước.
-Ví dụ đã gặp: vòng tiêu điểm của Input là 1px (antd hạ xuống có chủ ý), không
+Ví dụ đã gặp: vòng tiêu điểm của Input là 1px (hạ xuống có chủ ý), không
 đạt WCAG 2.4.11 vốn đòi vùng chỉ báo tương đương đường 2px. Và `FormRoot` không
 có móc `onInvalid`, nên không đưa được tiêu điểm về trường lỗi đầu tiên — WCAG
 3.3.1 / 2.4.3.

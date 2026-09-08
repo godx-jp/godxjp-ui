@@ -30,7 +30,7 @@ const parseYm = (raw: string): Date | undefined => {
 const ymIndex = (d: Date): number => d.getFullYear() * 12 + d.getMonth();
 
 /**
- * MonthRangePicker — year/month (`yyyy/MM`) RANGE rendered as ONE input-styled control (Ant Design
+ * MonthRangePicker — year/month (`yyyy/MM`) RANGE rendered as ONE input-styled control (the
  * RangePicker convention): `[ from → to ✕ 📅 ]`. The two inner fields stay real, typeable
  * `yyyy/MM` inputs (form-submittable via `${name}_from` / `${name}_to`); the Ant-style month grid
  * is the visual affordance.
@@ -143,7 +143,7 @@ export function MonthRangePicker({
     },
   };
 
-  // Bare inputs: the BORDER lives on the shared container (one control, antd
+  // Bare inputs: the BORDER lives on the shared container (one control, RangePicker
   // RangePicker style) — an Input here would draw a second border inside it.
   const innerInputClass = "ui-month-picker-input";
 
