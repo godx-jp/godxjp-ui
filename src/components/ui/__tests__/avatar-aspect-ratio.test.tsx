@@ -338,14 +338,16 @@ describe("AspectRatio — một node, thuộc tính CSS `aspect-ratio`", () => {
 
   it("mặc định 16/9, và consumer KHÔNG ghi đè được phần định vị của hộp", () => {
     const { container } = render(
-      <AspectRatio className="rounded-md" style={{ position: "static", color: "red" }}>
+      <AspectRatio className="consumer-own-class" style={{ position: "static", color: "red" }}>
         <div>x</div>
       </AspectRatio>,
     );
 
     const root = container.firstElementChild as HTMLElement;
     expect(root.style.aspectRatio).toBe(`${16 / 9} / 1`);
-    expect(root).toHaveClass("rounded-md");
+    // Một lớp CỦA CONSUMER, cố ý không phải utility của Tailwind: điều đang
+    // kiểm là "className đi qua", không phải "DS vẽ bằng lớp gì".
+    expect(root).toHaveClass("consumer-own-class");
     // Style của consumer đi qua, trừ đúng phần làm hộp thôi là hộp tỉ lệ.
     expect(root.style.color).toBe("red");
     expect(root.style.position).toBe("relative");
