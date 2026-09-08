@@ -217,7 +217,7 @@ export default function Demo() {
             <CardDescription>
               名前付きコレクション geometry: コンテナ幅が lg ステップ（64rem）に達するまでは 1
               列、そこから 3 列に切り替わる。ResponsiveGrid には lg
-              より上のステップが無いため、1024px 相当でも 1440px 相当でも同じ 3 列になる —
+              より上のステップが無いため、1024px 相当でも 1440px 相当でも同じ 3 列になる ·
               課金プランカタログの「3/3/1」契約 （dxs-platform/platform#333）。`columns` の代わりに
               `preset` を渡すだけで、呼び出し側がブレークポイント値を自作する必要がない。
             </CardDescription>

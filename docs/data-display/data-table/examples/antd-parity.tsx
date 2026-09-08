@@ -243,7 +243,7 @@ export default function AntdParityDemo() {
             <Descriptions bordered columns={{ sm: 2, lg: 4 }}>
               <Descriptions.Item label="伝票数">{ROWS.length}</Descriptions.Item>
               <Descriptions.Item label="通貨">JPY</Descriptions.Item>
-              <Descriptions.Item label="期間">2024-04-08 — 2024-04-12</Descriptions.Item>
+              <Descriptions.Item label="期間">2024-04-08 ～ 2024-04-12</Descriptions.Item>
               <Descriptions.Item label="ステータス">確定前</Descriptions.Item>
               <Descriptions.Item label="メモ" span="filled">
                 Ant Design 6.6.2 の `bordered` と `column` レスポンシブ指定をそのまま受ける。

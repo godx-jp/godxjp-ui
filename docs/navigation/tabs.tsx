@@ -117,7 +117,7 @@ export default function Demo() {
             <CardTitle level={2}>320px stress · 長いローカライズラベル</CardTitle>
             <CardDescription>
               狭いコンテナでも長いラベルはクリップされず、水平タブリストが自身でスクロールする
-              。compact navigation への変換は Tabs API に存在しないため擬似実装しない —
+              。compact navigation への変換は Tabs API に存在しないため擬似実装しない ·
               スクロールが意図した縮退動作。
             </CardDescription>
           </CardHeader>

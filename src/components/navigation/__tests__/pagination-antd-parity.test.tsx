@@ -35,12 +35,15 @@ describe("Pagination — antd `showQuickJumper`", () => {
     expect(screen.queryByRole("spinbutton")).toBeNull();
   });
 
-  it("names its field with a REAL <label htmlFor>, not an aria-label", () => {
+  it("names and focuses the jump field through its visible FormField label", async () => {
+    const user = userEvent.setup();
     const { container } = render(<Pagination {...BASE} showQuickJumper onValueChange={vi.fn()} />);
     const field = screen.getByRole("spinbutton");
-    const label = container.querySelector<HTMLLabelElement>(".ui-pagination-jumper-label");
-    expect(label?.htmlFor).toBe(field.id);
-    expect(field).not.toHaveAttribute("aria-label");
+    const label = container.querySelector('[data-slot="pagination-jumper"] [data-slot="label"]')!;
+    expect(field).toHaveAttribute("aria-labelledby", label.id);
+    expect(field).toHaveAccessibleName(label.textContent!);
+    await user.click(label);
+    expect(field).toHaveFocus();
   });
 
   it("commits on Enter and reports the typed page", async () => {

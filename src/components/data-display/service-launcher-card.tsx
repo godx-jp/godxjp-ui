@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import { cn } from "../../lib/utils";
 import type { HeadingLevelProp, ToneProp } from "../../props/vocabulary";
 import { Badge } from "./badge";
-import { Card } from "./card";
+import { Card, CardContent } from "./card";
 
 export type ServiceLauncherStatusTone = Extract<
   ToneProp,
@@ -60,28 +60,30 @@ export const ServiceLauncherCard = React.forwardRef<HTMLDivElement, ServiceLaunc
         data-unavailable={disabledReason != null ? "" : undefined}
         {...props}
       >
-        <div data-slot="service-launcher-heading">
-          <span data-slot="service-launcher-icon" aria-hidden="true">
-            <Icon />
-          </span>
-          <Heading data-slot="service-launcher-title">{title}</Heading>
-          {statusLabel != null ? (
-            <Badge tone={statusTone} data-slot="service-launcher-status">
-              {statusLabel}
-            </Badge>
+        <CardContent solo>
+          <div data-slot="service-launcher-heading">
+            <span data-slot="service-launcher-icon" aria-hidden="true">
+              <Icon />
+            </span>
+            <Heading data-slot="service-launcher-title">{title}</Heading>
+            {statusLabel != null ? (
+              <Badge tone={statusTone} data-slot="service-launcher-status">
+                {statusLabel}
+              </Badge>
+            ) : null}
+          </div>
+          {description != null ? (
+            <div data-slot="service-launcher-description">{description}</div>
           ) : null}
-        </div>
-        {description != null ? (
-          <div data-slot="service-launcher-description">{description}</div>
-        ) : null}
-        {metadata != null ? <div data-slot="service-launcher-metadata">{metadata}</div> : null}
-        {/* The reason precedes the action on purpose: a disabled control announces nothing about
-         * WHY, so screen-reader and keyboard users must meet the explanation first in DOM order
-         * (WCAG 2.2 · 1.3.2 meaningful sequence). */}
-        {disabledReason != null ? (
-          <div data-slot="service-launcher-disabled-reason">{disabledReason}</div>
-        ) : null}
-        <div data-slot="service-launcher-action">{action}</div>
+          {metadata != null ? <div data-slot="service-launcher-metadata">{metadata}</div> : null}
+          {/* The reason precedes the action on purpose: a disabled control announces nothing about
+           * WHY, so screen-reader and keyboard users must meet the explanation first in DOM order
+           * (WCAG 2.2 · 1.3.2 meaningful sequence). */}
+          {disabledReason != null ? (
+            <div data-slot="service-launcher-disabled-reason">{disabledReason}</div>
+          ) : null}
+          <div data-slot="service-launcher-action">{action}</div>
+        </CardContent>
       </Card>
     );
   },
@@ -107,9 +109,11 @@ export const ServiceCatalogCta = React.forwardRef<HTMLDivElement, ServiceCatalog
       data-service-catalog-cta=""
       {...props}
     >
-      <Icon data-slot="service-catalog-icon" aria-hidden="true" />
-      <div data-slot="service-catalog-title">{title}</div>
-      <div data-slot="service-catalog-action">{action}</div>
+      <CardContent solo>
+        <Icon data-slot="service-catalog-icon" aria-hidden="true" />
+        <div data-slot="service-catalog-title">{title}</div>
+        <div data-slot="service-catalog-action">{action}</div>
+      </CardContent>
     </Card>
   ),
 );
@@ -133,15 +137,17 @@ export function ServiceLauncherCardSkeleton({
       aria-busy="true"
       {...props}
     >
-      <span className="sr-only">{label}</span>
-      <div data-slot="service-launcher-skeleton-heading">
-        <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-icon" />
-        <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-title" />
-        <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-status" />
-      </div>
-      <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-description" />
-      <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-metadata" />
-      <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-action" />
+      <CardContent solo>
+        <span className="sr-only">{label}</span>
+        <div data-slot="service-launcher-skeleton-heading">
+          <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-icon" />
+          <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-title" />
+          <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-status" />
+        </div>
+        <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-description" />
+        <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-metadata" />
+        <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-action" />
+      </CardContent>
     </Card>
   );
 }

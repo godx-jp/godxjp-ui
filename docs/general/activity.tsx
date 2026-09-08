@@ -99,7 +99,7 @@ export default function Demo() {
             <Flex direction="col" gap="md">
               <Flex direction="col" gap="xs">
                 <Text size="xs" tone="muted">
-                  dots（既定）— 3 点が順に浮く。&ldquo;入力中&rdquo; の省略記号の慣習。
+                  dots（既定）· 3 点が順に浮く。&ldquo;入力中&rdquo; の省略記号の慣習。
                 </Text>
                 <Activity variant="dots" label="佐藤さんが入力しています…" />
               </Flex>
@@ -156,7 +156,7 @@ export default function Demo() {
             <Flex direction="col" gap="md">
               <Flex direction="col" gap="xs">
                 <Text size="xs" tone="muted">
-                  label のみ —
+                  label のみ ·
                   マークの隣に可視テキストとして描画される。アニメーションだけで意味を運ばせない。
                 </Text>
                 <Activity label="佐藤さんが入力しています…" />

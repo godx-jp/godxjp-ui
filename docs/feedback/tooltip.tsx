@@ -125,7 +125,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Shared delay across a toolbar (TooltipProvider)</CardTitle>
             <CardDescription>
-              Wrap a cluster in TooltipProvider to set one delayDuration for every tooltip inside —
+              Wrap a cluster in TooltipProvider to set one delayDuration for every tooltip inside ·
               a dense toolbar feels snappy without repeating the prop on each Tooltip.
             </CardDescription>
           </CardHeader>

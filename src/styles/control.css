@@ -2877,8 +2877,12 @@
     line-height: 1;
   }
 
+  .ui-switch:has(.ui-switch-content)[data-state="unchecked"] {
+    background: var(--switch-unchecked-background, hsl(var(--muted-foreground)));
+  }
+
   .ui-switch[data-state="unchecked"] .ui-switch-content {
-    color: hsl(var(--muted-foreground));
+    color: var(--switch-content-unchecked-foreground, hsl(var(--background)));
   }
 
   .ui-switch[data-state="checked"] .ui-switch-content {

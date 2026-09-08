@@ -514,11 +514,10 @@
   }
 
   /* ── Service launcher — organization-scoped downstream app tile ─────── */
-  [data-slot="card"][data-service-launcher] {
+  [data-slot="card"][data-service-launcher] > [data-slot="card-content"] {
     display: flex;
     flex-direction: column;
     gap: var(--card-service-launcher-space-gap);
-    padding: var(--card-space-inset);
   }
 
   [data-slot="service-launcher-heading"],
@@ -598,13 +597,16 @@
 
   [data-slot="card"][data-service-catalog-cta] {
     min-height: var(--card-service-launcher-cta-min-height);
+    border-style: dashed;
+  }
+
+  [data-slot="card"][data-service-catalog-cta] > [data-slot="card-content"] {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: var(--card-service-launcher-space-gap);
-    border-style: dashed;
-    padding: var(--card-space-inset);
     text-align: center;
   }
 

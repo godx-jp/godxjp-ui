@@ -51,7 +51,7 @@ export default function Demo() {
             <CardTitle level={2}>検索フィルター (未選択)</CardTitle>
             <CardDescription>
               初期値なし。確定済み範囲の上でもう一度選ぶと新しい範囲が開始される (reset-on-complete
-              — 開始月が固まって選び直せない、が起きない)。
+              · 開始月が固まって選び直せない、が起きない)。
             </CardDescription>
           </CardHeader>
           <CardContent>

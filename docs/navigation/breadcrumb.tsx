@@ -145,6 +145,7 @@ export default function Demo() {
             <Flex direction="col" gap="sm">
               <div id="antd-breadcrumb-slash">
                 <Breadcrumb
+                  ariaLabel="区切り文字のパンくず"
                   separator="/"
                   items={[
                     { label: "ホーム", to: "/" },
@@ -155,6 +156,7 @@ export default function Demo() {
               </div>
               <div id="antd-breadcrumb-menu">
                 <Breadcrumb
+                  ariaLabel="プロジェクト切替のパンくず"
                   items={[
                     { label: "ホーム", to: "/" },
                     {

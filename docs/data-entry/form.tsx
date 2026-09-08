@@ -437,8 +437,7 @@ export default function Demo() {
                   disabledTime={() => {
                     const [startHour, startMinute] = startTime.split(":").map(Number);
                     return {
-                      disabledHours: () =>
-                        Array.from({ length: startHour }, (_, hour) => hour),
+                      disabledHours: () => Array.from({ length: startHour }, (_, hour) => hour),
                       disabledMinutes: (hour) =>
                         hour === startHour
                           ? Array.from({ length: 60 }, (_, minute) => minute).filter(
@@ -684,9 +683,9 @@ export default function Demo() {
             <CardDescription>
               Form に errors（Inertia の form.errors）を渡すと、name
               を持つフィールドは自分のメッセージをバッグから自動解決してキーを消費（claim）する。
-              FormErrors は残り —
+              FormErrors は残り ·
               隠し・派生フィールド（action_mode、page…）に付いた、どのフィールドにも表示先が無いエラー
-              — だけを role=alert のバナーとして表示する。
+              · だけを role=alert のバナーとして表示する。
             </CardDescription>
           </CardHeader>
           <CardContent>

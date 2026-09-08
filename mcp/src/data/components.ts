@@ -58,7 +58,7 @@ export const COMPONENTS: ComponentEntry[] = [
     ],
     example: "<VisuallyHidden>Unread</VisuallyHidden>",
     docPath: "docs/general/typography.tsx",
-    storyPath: "general/typography",
+    storyPath: "general/typography.tsx",
     rules: [],
     usage: ["Use for supplementary accessible labels. Do not hide controls that remain focusable."],
   },
@@ -104,7 +104,7 @@ export const COMPONENTS: ComponentEntry[] = [
     example:
       '<RangeTimeline label="Schedule" columns={[{ label: "Week", units: 7 }]} rows={[{ id: "task", label: "Task", start: 0, end: 6, startLabel: "Start: day 1", endLabel: "End: day 7" }]} />',
     docPath: "docs/data-display/timeline.tsx",
-    storyPath: "data-display/timeline",
+    storyPath: "data-display/timeline.tsx",
     rules: [],
     usage: [
       "Provide a precise non-drag editor in each row label when enabling changes. Clipped endpoints and short intervals omit grips; labels and their editors remain available.",

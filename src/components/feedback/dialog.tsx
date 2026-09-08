@@ -12,7 +12,7 @@ import { buttonVariants } from "../general/button";
 import { useTranslation } from "../../i18n/use-translation";
 import { Button } from "../general/button";
 import { Input } from "../data-entry/input";
-import { Label } from "../data-entry/label";
+import { FormField } from "../data-entry/form-field";
 import type { AlertDialogProp } from "../../props/components/feedback.prop";
 
 export type {
@@ -668,10 +668,7 @@ function AlertDialog({
         </DialogHeader>
 
         {needsPhrase && (
-          <div className="ui-stack-xs">
-            {/* No size class: `Label` already ships `text-sm` in its own variant, so the local
-                copy was an exact duplicate at the same specificity. */}
-            <Label htmlFor={inputId}>{t("common.typeToConfirm", { phrase })}</Label>
+          <FormField id={inputId} label={t("common.typeToConfirm", { phrase })}>
             <Input
               id={inputId}
               value={typed}
@@ -684,7 +681,7 @@ function AlertDialog({
               aria-required="true"
               disabled={busy}
             />
-          </div>
+          </FormField>
         )}
 
         {stepUpFailed && (

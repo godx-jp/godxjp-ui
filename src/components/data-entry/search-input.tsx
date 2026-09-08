@@ -102,7 +102,7 @@ export function SearchInput({
           variant={variant}
           {...fieldA11y}
           className={cn(
-            "ui-search-input-control !pr-[var(--search-input-end-padding)] !pl-[var(--search-input-start-padding)]",
+            "ui-search-input-control !ps-[var(--search-input-start-padding)] !pe-[var(--search-input-end-padding)]",
             inputClassName,
           )}
           disabled={disabled}

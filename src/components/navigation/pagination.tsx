@@ -5,6 +5,8 @@ import { useTranslation } from "../../i18n/use-translation";
 import { useIsMobile, useScrollableRegionTabIndex } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
+import { Form } from "../data-entry/form";
+import { FormField } from "../data-entry/form-field";
 import { Input } from "../data-entry/input";
 import {
   Select,
@@ -195,35 +197,42 @@ export function Pagination({
   const goButton =
     showQuickJumper && typeof showQuickJumper === "object" ? showQuickJumper.goButton : undefined;
   const quickJumper = showQuickJumper ? (
-    <span className="ui-pagination-jumper" data-slot="pagination-jumper">
-      {/* A real <label htmlFor>, not an aria-label: the jumper is a text field the user types
-       * into, so its name has to be selectable/clickable text (WCAG 2.5.3, 1.3.1). */}
-      <label htmlFor={jumperId} className="ui-pagination-jumper-label">
-        {t("navigation.pagination.jumpTo")}
-      </label>
-      <Input
-        id={jumperId}
-        size={size}
-        type="number"
-        inputMode="numeric"
-        min={1}
-        max={totalPages}
-        disabled={disabled}
-        className="ui-pagination-jumper-input w-[var(--pagination-jumper-width)]"
-        value={jumperDraft}
-        onChange={(event) => setJumperDraft(event.target.value)}
-        onKeyDown={(event) => {
-          if (event.key !== "Enter") return;
-          event.preventDefault();
-          commitJump();
-        }}
-      />
+    <div className="ui-pagination-jumper" data-slot="pagination-jumper">
+      <Form asChild layout="horizontal" collapseBelow={false}>
+        <div>
+          <FormField
+            id={jumperId}
+            label={t("navigation.pagination.jumpTo")}
+            layout="horizontal"
+            labelWidth="auto"
+            controlWidth="auto"
+          >
+            <Input
+              id={jumperId}
+              size={size}
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={totalPages}
+              disabled={disabled}
+              className="ui-pagination-jumper-input w-[var(--pagination-jumper-width)]"
+              value={jumperDraft}
+              onChange={(event) => setJumperDraft(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter") return;
+                event.preventDefault();
+                commitJump();
+              }}
+            />
+          </FormField>
+        </div>
+      </Form>
       {goButton ? (
         <Button type="button" variant="outline" size="sm" disabled={disabled} onClick={commitJump}>
           {goButton}
         </Button>
       ) : null}
-    </span>
+    </div>
   ) : null;
 
   if (compact) {

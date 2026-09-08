@@ -1256,7 +1256,7 @@
   }
   .ui-range-timeline-canvas {
     min-inline-size: calc(
-      var(--range-timeline-label-width) + var(--range-timeline-columns) *
+      var(--range-timeline-label-width) + var(--range-timeline-columns, 1) *
         var(--range-timeline-unit-width)
     );
   }

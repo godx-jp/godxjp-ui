@@ -203,6 +203,10 @@
    * below the WCAG SC 1.4.11 floor (rule #45); whatever you set still owes 3:1 against the page
    * and against the thumb (--background), or "off" stops being a visible state. */
   --switch-unchecked-background: initial;
+  /* A labelled OFF track defaults to muted-foreground rather than the input boundary role:
+   * text needs 4.5:1, not the 3:1 required of an empty track. Pair custom track fills with this
+   * foreground; the default background role contrasts in both light and dark themes. */
+  --switch-content-unchecked-foreground: initial;
 
   /* ColorPicker — width of the hex text field beside the swatch. */
   --color-picker-input-width: 6.5rem;

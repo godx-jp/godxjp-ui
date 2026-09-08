@@ -500,7 +500,7 @@ button {
 .simple-demo-block-preview {
   padding: 40px 48px;
   min-height: 80px;
-  background: #fff;
+  background: hsl(var(--background));
 }
 
 .simple-demo-block-preview .preview-loading,
@@ -516,7 +516,7 @@ button {
   border: 1px solid #bdbdbd;
   border-radius: 4px;
   overflow: hidden;
-  background: #fff;
+  background: hsl(var(--background));
   box-shadow: 0 1px 3px hsl(var(--foreground) / 0.06);
 }
 
@@ -660,7 +660,7 @@ button {
 .demo-block-frame {
   flex: 0 0 auto;
   height: auto;
-  background: #fff;
+  background: hsl(var(--background));
   border: 1px solid #bdbdbd;
   box-shadow: 0 8px 24px hsl(var(--foreground) / 0.12);
   overflow: auto;
