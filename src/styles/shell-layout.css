@@ -546,6 +546,16 @@
     gap: var(--space-3);
   }
 
+  /* A custom `topbar` fills whatever the logo leaves. `min-width: 0` so its own content can
+   * truncate instead of pushing the brand out of the row — the logo is the fixed part here. */
+  .app-topbar-custom {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
   .app-topbar-left,
   .app-topbar-right {
     display: flex;
@@ -783,9 +793,16 @@
     margin-inline-start: auto;
   }
 
+  /* Through the popover's KNOBS, not the raw properties: this file is imported before
+   * dialog-layout.css and `.ui-popover-content` carries the same one-class specificity, so a raw
+   * `width` / `padding` here never won — the menu was rendering at the default popover width with
+   * the default 16px inset. See dialog-layout.css `.ui-popover-content`. */
   .ui-org-switcher-popover {
-    width: min(var(--org-switcher-menu-width), calc(100vw - var(--space-4)));
-    padding: 0;
+    --popover-surface-inline-size: min(
+      var(--org-switcher-menu-width),
+      calc(100vw - var(--space-4))
+    );
+    --popover-space-inset: 0;
   }
 
   .ui-org-switcher-sheet {

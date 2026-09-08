@@ -62,24 +62,23 @@ export function AppShell({
     logo !== undefined;
 
   /*
-   * `topbar` NUỐT ba khe kia, và đó là thứ hỏng im lặng.
+   * `logo` LÀ MỘT PHẦN CỦA DẢI TRÊN, không phải một khe mà `topbar` được nuốt.
    *
-   * `resolvedTopbar` bên dưới trả thẳng `topbar` khi có, nên `logo`,
-   * `topbarLeft` và `topbarRight` không bao giờ được vẽ. Trớ trêu là
-   * `hasTopbarContent` vẫn ĐẾM chúng, nên một shell chỉ có `logo` + `topbar`
-   * sẽ dựng dải trên vì `logo` — rồi không vẽ `logo`.
+   * Trước đây `resolvedTopbar` trả thẳng `topbar` khi có, nên một shell truyền cả `logo` lẫn
+   * `topbar` sẽ KHÔNG BAO GIỜ vẽ logo. Trớ trêu là `hasTopbarContent` vẫn ĐẾM `logo`, nên dải trên
+   * được dựng VÌ có logo — rồi không vẽ logo.
    *
-   * Đã gặp thật: godx-chat truyền cả hai suốt nhiều tháng và logo không bao
-   * giờ hiện; không ai phát hiện vì không có lỗi, không có cảnh báo, và dải
-   * trên vẫn có nội dung khác nên trông vẫn "đúng".
+   * Đã gặp thật ở hai kho: godx-chat truyền cả hai suốt nhiều tháng, và gino-cloud đang truyền
+   * đúng khe `logo` mà trên trang không có logo nào. Không lỗi, không cảnh báo, và dải trên vẫn có
+   * nội dung khác nên trông vẫn "đúng" — đúng hình dạng hỏng im lặng.
    *
-   * Cảnh báo chứ không ném lỗi: đây là hình dạng hợp lệ về kiểu, và một
-   * consumer đang chạy production không nên vỡ vì một khe bị bỏ quên. Nhưng nó
-   * phải NÓI RA.
+   * Nay logo luôn được vẽ, và `topbar` điền phần còn lại của dải. `topbarLeft`/`topbarRight` thì
+   * vẫn bị `topbar` thay thế — chúng là các khe của bố cục MẶC ĐỊNH, và một `topbar` tự viết chính
+   * là việc thay bố cục ấy. Nhận diện thương hiệu thì không: nó thuộc về khung, không thuộc về
+   * nội dung của trang.
    */
   if (process.env.NODE_ENV !== "production" && topbar !== undefined) {
     const ignored = [
-      logo !== undefined && "logo",
       topbarLeft !== undefined && "topbarLeft",
       topbarRight !== undefined && "topbarRight",
     ].filter(Boolean);
@@ -87,14 +86,18 @@ export function AppShell({
     if (ignored.length > 0) {
       console.warn(
         `AppShell: \`topbar\` được truyền, nên ${ignored.join(", ")} bị bỏ qua và KHÔNG được vẽ. ` +
-          "Hoặc bỏ `topbar` để AppShell tự dựng dải từ ba khe kia, hoặc đặt nội dung đó vào trong chính `topbar`.",
+          "Hoặc bỏ `topbar` để AppShell tự dựng dải từ các khe kia, hoặc đặt nội dung đó vào trong chính `topbar`. " +
+          "(`logo` KHÔNG nằm trong số này — nó luôn được vẽ.)",
       );
     }
   }
 
   const resolvedTopbar =
     topbar !== undefined ? (
-      topbar
+      <div className="app-topbar-rail">
+        {logo !== undefined && <div className="app-topbar-logo">{logo}</div>}
+        <div className="app-topbar-custom">{topbar}</div>
+      </div>
     ) : (
       <div className="app-topbar-rail">
         {logo !== undefined && <div className="app-topbar-logo">{logo}</div>}

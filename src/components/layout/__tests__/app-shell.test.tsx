@@ -79,14 +79,18 @@ describe("AppShell", () => {
     expect(getByText("右")).toBeInTheDocument();
   });
 
-  it("a custom topbar overrides the default rail", () => {
-    const { getByText, queryByText } = renderWithUi(
+  it("a custom topbar replaces the default rail but KEEPS the logo", () => {
+    const { getByText } = renderWithUi(
       <AppShell sidebar={<nav>n</nav>} topbar={<div>カスタム</div>} logo={<span>ロゴ</span>}>
         x
       </AppShell>,
     );
     expect(getByText("カスタム")).toBeInTheDocument();
-    expect(queryByText("ロゴ")).toBeNull();
+    // The logo is part of the shell's chrome, not one of the bar's content slots. This case used
+    // to assert the opposite — that a custom `topbar` swallowed it — which pinned a real defect in
+    // place: two consumer apps passed both props and rendered no brand at all for months, with no
+    // error and no warning, because the bar still had other content and looked right.
+    expect(getByText("ロゴ")).toBeInTheDocument();
   });
 
   it("renders breadcrumb + footer slots when provided", () => {

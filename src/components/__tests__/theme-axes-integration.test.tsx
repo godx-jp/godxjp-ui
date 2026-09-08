@@ -222,7 +222,15 @@ describe("theme axes integration (render + class contracts)", () => {
       // asserts the class that carries it plus the CSS rule that reads the tier.
       expect(dayButton).toHaveClass("ui-calendar-day-button");
       expect(dayButton?.className ?? "").not.toMatch(/\bsize-9\b/);
-      const controlCss = readFileSync(join(componentsDir, "../styles/control.css"), "utf8");
+      // Comments are stripped BEFORE the rule is matched. `[^}]*` stops at the first `}` it meets,
+      // and a `}` inside a CSS comment counts — a JSX example in the rule's own docstring
+      // (`modifiers={{…}}`) was enough to cut the match short and fail a rule that was correct.
+      // Same shape as the bug this repo just fixed in `check:mcp-prop-sync`, where a JSDoc block
+      // hid every documented prop from the gate.
+      const controlCss = readFileSync(join(componentsDir, "../styles/control.css"), "utf8").replace(
+        /\/\*[\s\S]*?\*\//g,
+        " ",
+      );
       expect(controlCss).toContain(".ui-calendar .ui-calendar-day-button");
       expect(controlCss).toMatch(
         /\.ui-calendar \.ui-calendar-day-button \{[^}]*var\(--control-height\)/,

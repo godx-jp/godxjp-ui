@@ -20,22 +20,26 @@ describe("AppShell — `topbar` nuốt các khe khác", () => {
 
   afterEach(() => warn.mockClear());
 
-  it("nói ra khi `logo` bị bỏ qua", () => {
-    render(
+  it("KHÔNG cảnh báo về `logo` — nó luôn được vẽ", () => {
+    const { getByText } = render(
       <AppShell topbar={<div>bar</div>} logo={<div>logo</div>} sidebar={<div />}>
         <div />
       </AppShell>,
     );
 
-    expect(warn).toHaveBeenCalledOnce();
-    expect(warn.mock.calls[0]![0]).toContain("logo");
+    // Đảo ngược hợp đồng cũ, có chủ ý: `logo` không còn là khe bị `topbar` nuốt, nên không còn gì
+    // để cảnh báo. Cảnh báo chỉ dành cho `topbarLeft`/`topbarRight` — chúng là khe của bố cục MẶC
+    // ĐỊNH, và một `topbar` tự viết chính là việc thay bố cục ấy.
+    expect(getByText("logo")).toBeInTheDocument();
+    expect(getByText("bar")).toBeInTheDocument();
+    expect(warn).not.toHaveBeenCalled();
   });
 
-  it("liệt kê ĐỦ ba khe khi cả ba bị bỏ qua", () => {
-    render(
+  it("liệt kê ĐỦ hai khe bị bỏ qua, và logo KHÔNG nằm trong số đó", () => {
+    const { getByText } = render(
       <AppShell
         topbar={<div>bar</div>}
-        logo={<div />}
+        logo={<div>logo</div>}
         topbarLeft={<div />}
         topbarRight={<div />}
         sidebar={<div />}
@@ -46,9 +50,13 @@ describe("AppShell — `topbar` nuốt các khe khác", () => {
 
     const message = String(warn.mock.calls[0]![0]);
 
-    expect(message).toContain("logo");
     expect(message).toContain("topbarLeft");
     expect(message).toContain("topbarRight");
+
+    // KHÔNG dùng `expect(message).not.toContain("logo")`: câu cảnh báo cố ý nhắc tên `logo` để nói
+    // rằng nó KHÔNG bị bỏ qua, nên phép kiểm chuỗi ấy sẽ xanh hay đỏ tuỳ cách hành văn, không tuỳ
+    // hành vi. Bằng chứng đúng là logo có mặt trong DOM.
+    expect(getByText("logo")).toBeInTheDocument();
   });
 
   it("im lặng khi KHÔNG có `topbar` — lúc ấy ba khe kia được dùng thật", () => {
