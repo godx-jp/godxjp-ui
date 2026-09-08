@@ -135,6 +135,29 @@ có cổng CI:
 
 ---
 
+## Một lợi ích ẩn của việc rời Radix, đo được
+
+`check:doc-prop-existence` canh chiều "mọi prop dùng trong ví dụ đều phải tồn
+tại" — chính lớp lỗi khiến agent chép ví dụ rồi viết ra mã hỏng
+(`<Dialog mode="confirm">`, `<Input onValueChange>`). Nhưng nó **bỏ qua mọi
+component bọc primitive bên thứ ba**, vì với chúng manifest chỉ là cận dưới:
+prop thật nằm trong types của Radix, generator không mở ra được.
+
+Số đo (08/09/2026):
+
+|                                               | component KHÔNG kiểm được |
+| --------------------------------------------- | ------------------------- |
+| `main`                                        | **139 / 289**             |
+| `feat/v20-react-aria` (6 primitive đã chuyển) | **126 / 289**             |
+
+Mỗi primitive rời Radix là `declaredIn` chuyển từ `node_modules` vào `src/`, và
+component đó **bước vào vùng kiểm được**. Sáu primitive đầu đã gỡ rào cho 13
+component.
+
+Nên đợt đổi nền không chỉ là thay thư viện. Nó là cách duy nhất làm cho 126
+component còn lại có thể được canh — và trong số đó có `Dialog`, `Input`,
+`Badge`, tức đúng những component mà ví dụ sai đã lọt qua.
+
 ## Khi câu trả lời là "không thuộc về đây"
 
 Nói ra ở chỗ gặp nó, bằng mã:
