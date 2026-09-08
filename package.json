@@ -32,6 +32,7 @@
     "scripts/init-agent-kit.mjs",
     "scripts/init-guinea-pig.mjs",
     "scripts/guinea-pig-skill.md",
+    "scripts/consumer-rule.md",
     "scripts/postinstall.mjs",
     "scripts/_agent-setup.mjs",
     "scripts/cli.mjs",

@@ -242,3 +242,53 @@ export function refreshGuineaPigSkill(root) {
   writeFileSync(optin, `${KIT_VERSION}\n`);
   return true;
 }
+
+/**
+ * Install the common consumer rules as a PATH-TRIGGERED file, and wire them into `.ai/rules`.
+ *
+ * The skill and this file say overlapping things on purpose, because they fire at different
+ * moments: a skill loads when the TASK matches its description — once, at the start — while an
+ * `.ai/rules` entry loads every time an agent touches a file under its glob. Measured over one
+ * session: a dashboard file was edited dozens of times and the skill was never re-read, so the
+ * laws that mattered were out of context for every edit after the first.
+ *
+ * The glob is DETECTED, not assumed. A rule wired to a directory the repo does not have is a rule
+ * that never fires, which is worse than no rule at all — it looks installed.
+ *
+ * Unlike the skill, this file is owned OUTRIGHT by the package and is rewritten whole. That is the
+ * honest shape for `.ai/rules`, where the convention is one file per concern and the index loads
+ * them all: a repo with something of its own to say writes its own rule file instead of editing
+ * this one. The file says so at the top, because the first draft preserved nothing and silently
+ * ate a note left inside it — measured, and the reason for that banner.
+ */
+export function ensureConsumerRules(root) {
+  const uiDir = ["resources/js", "app/javascript", "src/components", "src", "app"].find((d) =>
+    existsSync(join(root, d)),
+  );
+  if (!uiDir) return false;
+
+  const dir = join(root, ".ai", "rules");
+  const target = join(dir, "godxjp-ui.md");
+  const body = readFileSync(join(SELF_ROOT, "scripts", "consumer-rule.md"), "utf8");
+  const next = `${STAMP(KIT_VERSION)}\n---\npaths:\n    - '${uiDir}/**'\n---\n\n${body}`;
+
+  if (existsSync(target) && stampedVersion(readFileSync(target, "utf8")) === KIT_VERSION) {
+    return false;
+  }
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(target, next);
+
+  // Only touch the index when the repo keeps one; a missing index means the repo reads rule files
+  // directly, and inventing one would change how it loads everything else.
+  const index = join(dir, "index.md");
+  if (existsSync(index)) {
+    const cur = readFileSync(index, "utf8");
+    if (!cur.includes(".ai/rules/godxjp-ui.md")) {
+      writeFileSync(
+        index,
+        cur.replace(/\s*$/, "") + `\n| ${uiDir}/** | .ai/rules/godxjp-ui.md |\n`,
+      );
+    }
+  }
+  return uiDir;
+}

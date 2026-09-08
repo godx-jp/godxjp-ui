@@ -7,6 +7,7 @@
 import {
   ensureClaudeMd,
   ensureMcpJson,
+  ensureConsumerRules,
   refreshGuineaPigSkill,
   shouldSkip,
   writeWorkflowMd,
@@ -25,9 +26,11 @@ try {
   const md = ensureClaudeMd(root);
   const wf = writeWorkflowMd(root);
   const skill = refreshGuineaPigSkill(root);
-  if (r === "present" && md === "present" && !wf && !skill) process.exit(0); // current — stay quiet
+  const rules = ensureConsumerRules(root);
+  if (r === "present" && md === "present" && !wf && !skill && !rules) process.exit(0); // current — stay quiet
   console.log(
     `\n  @godxjp/ui → MCP in .mcp.json (${r}); workflow mandate in CLAUDE.md (${md}).\n` +
+      (rules ? `  common consumer rules in .ai/rules/godxjp-ui.md (glob ${rules}/**).\n` : "") +
       (skill ? "  guinea-pig skill refreshed to this version (your section 8 kept).\n" : "") +
       "  Your agent now has live component + audit guidance. Restart it to pick up the MCP.\n" +
       "  For auto-audit on every edit (PostToolUse + SessionStart hooks):\n" +
