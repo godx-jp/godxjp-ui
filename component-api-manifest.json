@@ -2307,6 +2307,14 @@
           "declaredIn": ["src/components/layout/breadcrumb.tsx"]
         },
         {
+          "name": "itemRender",
+          "origin": "owned",
+          "required": false,
+          "type": "BreadcrumbItemRenderProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/layout/breadcrumb.tsx"]
+        },
+        {
           "name": "items",
           "origin": "owned",
           "required": true,
@@ -2319,6 +2327,14 @@
           "origin": "owned",
           "required": false,
           "type": "ElementType | undefined",
+          "values": [],
+          "declaredIn": ["src/components/layout/breadcrumb.tsx"]
+        },
+        {
+          "name": "separator",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
           "values": [],
           "declaredIn": ["src/components/layout/breadcrumb.tsx"]
         }
@@ -5890,6 +5906,14 @@
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
+          "name": "arrow",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
           "name": "avoidCollisions",
           "origin": "owned",
           "required": false,
@@ -5935,6 +5959,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "placement",
+          "origin": "owned",
+          "required": false,
+          "type": "DropdownMenuPlacementProp | undefined",
+          "values": ["top", "bottom", "topStart", "topEnd", "bottomStart", "bottomEnd"],
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
@@ -7653,7 +7685,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless"],
+          "values": ["outlined", "filled", "borderless", "underlined"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -9322,7 +9354,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless"],
+          "values": ["outlined", "filled", "borderless", "underlined"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -9621,6 +9653,14 @@
       "group": "navigation",
       "props": [
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "PaginationAlignProp | undefined",
+          "values": ["center", "start", "end"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "ariaLabel",
           "origin": "owned",
           "required": false,
@@ -9677,6 +9717,22 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "responsive",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "showQuickJumper",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | { goButton?: React.ReactNode; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "showSizeChanger",
           "origin": "owned",
           "required": false,
@@ -9698,6 +9754,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "PaginationSizeProp | undefined",
+          "values": ["sm", "md"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
@@ -9772,6 +9836,16 @@
           "declaredIn": ["src/components/navigation/pagination.tsx"]
         },
         {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
           "name": "value",
           "origin": "inherited-behavioral",
           "required": false,
@@ -9814,6 +9888,16 @@
           "declaredIn": ["src/components/navigation/pagination.tsx"]
         },
         {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
           "name": "value",
           "origin": "inherited-behavioral",
           "required": false,
@@ -9854,6 +9938,16 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/navigation/pagination.tsx"]
+        },
+        {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
         },
         {
           "name": "value",
@@ -9963,7 +10057,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless"],
+          "values": ["outlined", "filled", "borderless", "underlined"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -11494,7 +11588,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless"],
+          "values": ["outlined", "filled", "borderless", "underlined"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -12583,7 +12677,7 @@
           "origin": "owned",
           "required": false,
           "type": "SheetResponsiveProp | undefined",
-          "values": ["auto", "bottom", "side"],
+          "values": ["bottom", "auto", "side"],
           "declaredIn": ["src/components/feedback/sheet.tsx"]
         },
         {
@@ -13421,6 +13515,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "percent",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "separator",
           "origin": "owned",
           "required": false,
@@ -13456,8 +13558,8 @@
           "name": "type",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | \"inline\" | \"dot\" | undefined",
-          "values": ["default", "inline", "dot"],
+          "type": "StepsTypeProp | undefined",
+          "values": ["default", "inline", "dot", "navigation"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
@@ -13698,12 +13800,39 @@
           "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
+          "name": "addIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "centered",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "contentClassName",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/navigation/tabs.tsx"]
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
           "name": "defaultValue",
@@ -13711,7 +13840,15 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/navigation/tabs.tsx"]
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "destroyOnHidden",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
           "name": "dir",
@@ -13722,12 +13859,28 @@
           "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
+          "name": "extra",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsExtraProp",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "hideAdd",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "items",
           "origin": "owned",
           "required": false,
-          "type": "TabsItem[] | undefined",
+          "type": "TabItemProp[] | undefined",
           "values": [],
-          "declaredIn": ["src/components/navigation/tabs.tsx"]
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
           "name": "listClassName",
@@ -13735,7 +13888,15 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/navigation/tabs.tsx"]
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "onEdit",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsOnEditProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
           "name": "onValueChange",
@@ -13743,7 +13904,7 @@
           "required": false,
           "type": "((value: string) => void) | undefined",
           "values": [],
-          "declaredIn": ["src/components/navigation/tabs.tsx"]
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
           "name": "orientation",
@@ -13754,20 +13915,36 @@
           "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "tabPlacement",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsPlacementProp | undefined",
+          "values": ["start", "end", "top", "bottom"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/components/navigation/tabs.tsx"]
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
           "name": "variant",
           "origin": "owned",
           "required": false,
-          "type": "\"line\" | \"default\" | \"card\" | undefined",
-          "values": ["line", "default", "card"],
-          "declaredIn": ["src/components/navigation/tabs.tsx"]
+          "type": "TabsVariantProp | undefined",
+          "values": ["line", "default", "card", "editable-card"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         }
       ]
     },
@@ -13885,6 +14062,16 @@
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/components/navigation/tabs.tsx"
+          ]
+        },
+        {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -14327,7 +14514,7 @@
           "origin": "owned",
           "required": false,
           "type": "\"default\" | \"ghost\" | ControlVariantProp | undefined",
-          "values": ["default", "ghost", "outlined", "filled", "borderless"],
+          "values": ["default", "ghost", "outlined", "filled", "borderless", "underlined"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]

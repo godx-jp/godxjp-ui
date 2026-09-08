@@ -526,8 +526,8 @@
     "exports": 296,
     "dimensionCells": 4144,
     "covered": 78,
-    "untested": 2285,
-    "notApplicable": 1781,
+    "untested": 2291,
+    "notApplicable": 1779,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -4554,10 +4554,10 @@
       "baseline": {
         "covered": 2,
         "notApplicable": 3,
-        "untested": 9
+        "untested": 10
       },
       "dimensions": {
-        "variants": "covered:prop-evidence:variant",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
@@ -5619,10 +5619,10 @@
       "baseline": {
         "covered": 2,
         "notApplicable": 3,
-        "untested": 9
+        "untested": 10
       },
       "dimensions": {
-        "variants": "covered:prop-evidence:variant",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
@@ -5703,13 +5703,13 @@
       "embeddable": true,
       "baseline": {
         "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
+        "notApplicable": 4,
+        "untested": 10
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "untested",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -5900,10 +5900,10 @@
       "baseline": {
         "covered": 2,
         "notApplicable": 5,
-        "untested": 7
+        "untested": 8
       },
       "dimensions": {
-        "variants": "covered:prop-evidence:variant",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
@@ -6686,10 +6686,10 @@
       "baseline": {
         "covered": 1,
         "notApplicable": 4,
-        "untested": 9
+        "untested": 10
       },
       "dimensions": {
-        "variants": "covered:prop-evidence:variant",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -8058,14 +8058,14 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 1,
-        "notApplicable": 5,
+        "covered": 2,
+        "notApplicable": 4,
         "untested": 8
       },
       "dimensions": {
         "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -8228,10 +8228,10 @@
       "baseline": {
         "covered": 2,
         "notApplicable": 3,
-        "untested": 9
+        "untested": 10
       },
       "dimensions": {
-        "variants": "covered:prop-evidence:variant",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
         "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",

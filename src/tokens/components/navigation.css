@@ -20,6 +20,15 @@
    * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now
    * follows density like every other control glyph instead of staying a flat 1rem. */
   --pagination-icon-size: var(--control-icon-size);
+  /* Ant Design `size="small"`. Retuned as ONE local --control-height on the bar, so the page
+   * buttons, the size-changer trigger and the quick-jumper field shrink together instead of each
+   * carrying its own tier — exactly how a service would retune the whole footer. */
+  --pagination-control-height-sm: var(--band-height-sm);
+  /* Ant Design `showQuickJumper`. The field is sized to a page NUMBER, not to a sentence, so it
+   * gets its own width rather than the shared control measure. */
+  --pagination-jumper-gap: var(--space-inline-xs);
+  --pagination-jumper-width: 4rem;
+  --pagination-jumper-font-size: var(--pagination-total-font-size);
   --filter-bar-gap: var(--space-3);
   --filter-bar-padding-y: var(--space-2);
   --filter-label-font-size: var(--font-size-xs);
@@ -48,6 +57,9 @@
   --app-setting-picker-compact-gap: var(--space-1);
   --app-setting-picker-compact-font-size: var(--font-size-xs);
   --breadcrumb-font-size: var(--font-size-xs);
+  /* Ant Design `BreadcrumbItemType.menu` — the sibling picker hung off a segment. The trigger is
+   * the segment's own text plus a disclosure chevron, so it only needs the gap between them. */
+  --breadcrumb-menu-trigger-gap: var(--space-inline-xs);
   --menubar-shortcut-font-size: var(--font-size-xs);
   --tabs-list-max-inline-size: 100%;
   --tabs-list-overflow: auto;
@@ -102,6 +114,46 @@
   --tabs-trigger-line-padding-x: 1rem;
   --tabs-trigger-line-padding-y: 0.5rem;
 
+  /* TABS SIZE TIERS — Ant Design's `size` (`small`/`middle`/`large`) expressed as this library's
+   * own control bands, so a tab strip and the Buttons beside it land on the same rhythm instead of
+   * on antd's 24/32/40 ladder. `md` reproduces today's trigger exactly: `--band-height-md` is the
+   * default control band and `--font-size-base` is what the `text-sm` step already resolved to. */
+  --tabs-trigger-height-sm: var(--band-height-sm);
+  --tabs-trigger-height-md: var(--band-height-md);
+  --tabs-trigger-height-lg: var(--band-height-lg);
+  --tabs-trigger-font-size-sm: var(--font-size-xs);
+  --tabs-trigger-font-size-md: var(--font-size-base);
+  --tabs-trigger-font-size-lg: var(--font-size-lg);
+  --tabs-trigger-padding-x-sm: var(--space-2);
+  --tabs-trigger-padding-x-md: var(--space-3);
+  --tabs-trigger-padding-x-lg: var(--space-4);
+
+  /* TABS CARD FACE (`variant="card"` / `"editable-card"`). The strip loses the pill container —
+   * transparent, no inset, no radius — and gains a rail its tabs sit on; each tab becomes a boxed
+   * face rounded on the leading block edge only, and the ACTIVE one drops its block-end edge so it
+   * reads as joined to the panel. `--tabs-card-background` is a role-mirror knob (docs/TOKENS.md):
+   * `initial` so the --muted default re-resolves at the CALL SITE under a scoped [data-tenant] or
+   * .dark theme instead of freezing at :root. */
+  --tabs-card-list-radius: 0px;
+  --tabs-card-list-space-inset: 0px;
+  --tabs-card-list-space-gap: var(--space-1);
+  --tabs-card-radius: var(--radius-md);
+  --tabs-card-rail-border-width: var(--stroke-hairline);
+  --tabs-card-background: initial; /* default = var(--muted) at the call site */
+
+  /* TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the
+   * `extra` (antd `tabBarExtraContent`) slots. */
+  --tabs-bar-gap: var(--space-2);
+  --tabs-extra-gap: var(--space-2);
+  --tabs-add-size: var(--band-height-md);
+  --tabs-add-radius: var(--radius-md);
+  --tabs-add-icon-size: var(--control-icon-size);
+  --tabs-trigger-icon-size: var(--control-icon-size);
+  --tabs-tab-remove-size: var(--band-height-xs);
+  --tabs-tab-remove-radius: var(--radius-sm);
+  --tabs-tab-remove-icon-size: var(--icon-size-xs);
+  --tabs-tab-remove-space-inline-end: var(--space-1);
+
   /* Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site
    * under a scoped theme (a :root binding to a role var freezes at :root).
    * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text. */
@@ -149,6 +201,12 @@
   --menu-content-min-width: 10rem;
   /* DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu. */
   --dropdown-content-min-width: 8rem;
+  /* Ant Design `arrow` — the pointer at the anchored edge. Radix stamps a 10×5 svg; these two
+   * knobs override it so the pointer scales with a service theme's menu chrome. `--dropdown-arrow-
+   * background` is a role-mirror knob: `initial`, so --popover re-resolves at the CALL SITE. */
+  --dropdown-arrow-width: var(--space-3);
+  --dropdown-arrow-height: var(--space-inline-xs);
+  --dropdown-arrow-background: initial; /* default = var(--popover) at the call site */
   --menu-separator-space-block: var(--space-1);
   --menu-separator-space-inline: calc(var(--space-1) * -1);
 
@@ -186,6 +244,23 @@
   --steps-horizontal-text-space-inline: var(--space-2);
   --steps-connector-inset: 1.25rem;
   --steps-connector-space-block-start: var(--space-4);
+
+  /* STEPS `navigation` (Ant Design `type="navigation"`) — each step becomes a slab that points at
+   * the next one. The rail's hairline connector is switched OFF for this type, so the join is the
+   * chevron plus this gap; the slab tint is the same `--muted` / `--accent` pair every other quiet
+   * surface in the library uses, so a service retunes it once at the role. */
+  --steps-nav-space-gap: var(--space-2);
+  --steps-nav-space-inline: var(--space-4);
+  --steps-nav-space-block: var(--space-3);
+  --steps-nav-radius: var(--radius-md);
+  --steps-nav-separator-size: var(--control-icon-size-sm);
+
+  /* STEPS `percent` (Ant Design) — the determinate arc around the CURRENT marker. It is a ring
+   * drawn in a padding box AROUND the existing marker, so no status face changes geometry.
+   * `--steps-progress-track-color` is a role-mirror knob (docs/TOKENS.md): `initial`, so the
+   * --muted default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme. */
+  --steps-progress-ring-width: var(--stroke-md);
+  --steps-progress-track-color: initial; /* default = var(--muted) at the call site */
 
   /* APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest
    * value it can show: a timezone name is far wider than a theme name. These were literal

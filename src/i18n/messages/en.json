@@ -295,8 +295,13 @@
     }
   },
   "navigation": {
+    "tabs": {
+      "addTab": "Add tab",
+      "removeTab": "Close tab"
+    },
     "steps": {
       "ariaLabel": "Progress",
+      "percentLabel": "Current step progress",
       "status": {
         "wait": "Waiting",
         "process": "Current step",
@@ -337,6 +342,7 @@
       "page": "Page {page}",
       "pageSize": "Page size",
       "pageSizeTrigger": "{size} / page",
+      "jumpTo": "Go to page",
       "pageSizeOption": "{size} / page",
       "total": {
         "one": "Total {total} item",

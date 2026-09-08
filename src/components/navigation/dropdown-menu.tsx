@@ -9,6 +9,7 @@ import {
   Popover,
   Pressable,
   Separator,
+  OverlayArrow,
   SubmenuTrigger,
   type MenuItemRenderProps,
   type PopoverProps,
@@ -17,6 +18,31 @@ import {
 import { Check, ChevronRight } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { Slot } from "../../lib/slot";
+import type { DropdownMenuPlacementProp } from "../../props/components/navigation.prop";
+
+export type { DropdownMenuPlacementProp } from "../../props/components/navigation.prop";
+
+/**
+ * Ant Design `placement` → the two Radix anchors it is made of. `align` is LOGICAL in Radix
+ * (`start`/`end` follow the writing direction), which is why the block-axis anchors can be offered
+ * on the logical axis at no cost.
+ *
+ * antd's inline-side placements (`left`, `leftTop`, `rightBottom`, …) are deliberately NOT here:
+ * Radix's `side` is physical, this library ships no `DirectionProvider`, and a `side="left"` menu
+ * would open on the wrong edge of an RTL screen. A consumer who genuinely wants a physical inline
+ * side still passes Radix's own `side` / `align`, which this component forwards untouched.
+ */
+const DROPDOWN_MENU_PLACEMENT: Record<
+  DropdownMenuPlacementProp,
+  { side: "top" | "bottom"; align: "start" | "center" | "end" }
+> = {
+  top: { side: "top", align: "center" },
+  topStart: { side: "top", align: "start" },
+  topEnd: { side: "top", align: "end" },
+  bottom: { side: "bottom", align: "center" },
+  bottomStart: { side: "bottom", align: "start" },
+  bottomEnd: { side: "bottom", align: "end" },
+};
 
 /*
  * NỀN: React Aria Components, không còn @radix-ui/react-dropdown-menu.
@@ -311,6 +337,8 @@ export function DropdownMenuSub({ children }: DropdownMenuSubProps) {
 }
 
 interface DropdownMenuContentPropsOwn {
+  placement?: DropdownMenuPlacementProp;
+  arrow?: boolean;
   className?: string;
   side?: "top" | "right" | "bottom" | "left";
   align?: "start" | "center" | "end";
@@ -345,6 +373,8 @@ export function DropdownMenuContent({
   side,
   align,
   sideOffset = 4,
+  placement,
+  arrow,
   alignOffset,
   avoidCollisions,
   collisionPadding,
@@ -357,12 +387,13 @@ export function DropdownMenuContent({
   void sticky;
   void forceMount;
   const { modal } = React.useContext(DropdownMenuModalContext);
+  const anchor = placement ? DROPDOWN_MENU_PLACEMENT[placement] : undefined;
   return (
     <DropdownMenuPortal>
       <Popover
         data-slot="dropdown-menu-content"
         isNonModal={!modal}
-        placement={toPlacement(side, align)}
+        placement={toPlacement(side ?? anchor?.side, align ?? anchor?.align)}
         offset={sideOffset}
         crossOffset={alignOffset}
         shouldFlip={avoidCollisions}
@@ -377,6 +408,7 @@ export function DropdownMenuContent({
         )}
       >
         <Menu shouldFocusWrap={loop}>{children}</Menu>
+        {arrow ? <OverlayArrow><svg data-slot="dropdown-menu-arrow" className="ui-dropdown-menu-arrow" viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0 Z" /></svg></OverlayArrow> : null}
       </Popover>
     </DropdownMenuPortal>
   );

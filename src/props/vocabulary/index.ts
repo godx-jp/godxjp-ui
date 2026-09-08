@@ -102,7 +102,14 @@ export type {
   ActivityAnnounceProp,
 } from "./interaction.prop";
 
-export type { BreadcrumbItemProp, BreadcrumbProp } from "./navigation.prop";
+export type {
+  BreadcrumbItemProp,
+  BreadcrumbProp,
+  BreadcrumbItemMenuProp,
+  BreadcrumbItemMenuEntryProp,
+  BreadcrumbSeparatorProp,
+  BreadcrumbItemRenderProp,
+} from "./navigation.prop";
 
 export type {
   GetRowIdProp,

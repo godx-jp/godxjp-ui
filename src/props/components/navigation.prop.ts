@@ -150,10 +150,50 @@ export type PaginationProp = {
    */
   hideOnSinglePage?: boolean;
   simple?: boolean;
+  /**
+   * Ant Design `showQuickJumper`. Adds a "go to page" number field at the inline end of the bar;
+   * committing it (Enter, or the optional Go button) clamps into `[1, pageCount]` and fires
+   * `onValueChange`. Pass an object to supply the confirm button's content.
+   */
+  showQuickJumper?: boolean | { goButton?: React.ReactNode };
+  /**
+   * Control tier of every button in the bar. `md` (default) is the library's standard control
+   * height; `sm` is Ant Design's `size="small"` pager for a dense table footer.
+   */
+  size?: PaginationSizeProp;
+  /**
+   * Ant Design `align`. Where the pager sits on its own inline axis — `end` (default) keeps the
+   * long-standing table-footer alignment.
+   */
+  align?: PaginationAlignProp;
+  /**
+   * Ant Design `responsive`. `true` (the default) collapses the bar to its `simple` form below the
+   * library's single mobile breakpoint (`useIsMobile`, max-width 767px) instead of leaving a number
+   * strip wider than the phone to scroll — measured at 390px: 224px wide, zero page buttons, no
+   * horizontal overflow. `simple` always wins; `responsive={false}` pins the full pager at every
+   * width.
+   */
+  responsive?: boolean;
   disabled?: DisabledProp;
   className?: ClassNameProp;
   onValueChange?: (page: number, pageSize: number) => void;
 };
+
+/** @see Pagination — control tier (Ant Design `size`: `small` → `sm`, `middle` → `md`). */
+export type PaginationSizeProp = "sm" | "md";
+
+/** @see Pagination — inline-axis alignment of the bar (Ant Design `align`, RTL-logical). */
+export type PaginationAlignProp = "start" | "center" | "end";
+
+/**
+ * @see DropdownMenuContent — Ant Design `placement`, spelled on the LOGICAL inline axis.
+ * antd's names are physical (`bottomLeft`, `topRight`); the same six anchors are `bottomStart`,
+ * `topEnd` and so on here, so an Arabic or Hebrew app anchors on the correct edge with no second
+ * value. Only the block-axis set is offered — see the note on the `placement` prop for why the
+ * inline-side ones (antd `left*` / `right*`) stay on Radix's own physical `side`.
+ */
+export type DropdownMenuPlacementProp =
+  "top" | "topStart" | "topEnd" | "bottom" | "bottomStart" | "bottomEnd";
 
 export type StepStatusProp = "wait" | "process" | "finish" | "error";
 
@@ -167,6 +207,14 @@ export type StepItemProp = {
   disabled?: boolean;
 };
 
+/**
+ * @see Steps — marker/rail appearance.
+ * `dot` IS Ant Design's `progressDot` (antd 6.6.2 deprecates that prop in favour of exactly this
+ * value). `inline` is the compact numbered auth/device progress row. `navigation` is antd's
+ * chevron-sectioned bar: each step becomes a full-width slab pointing at the next one.
+ */
+export type StepsTypeProp = "default" | "dot" | "inline" | "navigation";
+
 /** @see Steps */
 export type StepsProp = {
   items?: StepItemProp[];
@@ -176,11 +224,18 @@ export type StepsProp = {
   orientation?: "horizontal" | "vertical";
   /**
    * Marker appearance. `inline` renders the compact numbered auth/device progress row without the
-   * icon rail while preserving the same status and current-step semantics.
+   * icon rail while preserving the same status and current-step semantics; `navigation` renders
+   * Ant Design's chevron-sectioned bar.
    */
-  type?: "default" | "dot" | "inline";
+  type?: StepsTypeProp;
   size?: "md" | "sm";
   titlePlacement?: "horizontal" | "vertical";
+  /**
+   * Ant Design `percent` — completion of the CURRENT (`process`) step only, 0–100. Draws a
+   * determinate arc around that step's marker and exposes it to assistive tech as a
+   * `progressbar`. Ignored by `inline`, which has no marker to draw into.
+   */
+  percent?: number;
   /**
    * The glyph between inline steps (`type="inline"` only). `chevron` (default, `›`) is the
    * breadcrumb-flavoured original.
@@ -199,7 +254,48 @@ export type TabItemProp = {
   label: React.ReactNode;
   content: React.ReactNode;
   disabled?: boolean;
+  /** Leading glyph inside the trigger (Ant Design `Tab.icon`). */
+  icon?: React.ReactNode;
+  /**
+   * Ant Design `Tab.closable`. Honoured only by `variant="editable-card"`, where it puts a remove
+   * button in the trigger that calls `onEdit(value, "remove")`. Defaults to `true` there.
+   */
+  closable?: boolean;
+  /** Ant Design `Tab.closeIcon` — replaces the default × on this item's remove button. */
+  closeIcon?: React.ReactNode;
 };
+
+/**
+ * @see Tabs — trigger-strip appearance. This is Ant Design's `type` spelled in the library's own
+ * `variant` vocabulary: `line`, `card` and `editable-card` are antd's values, `default` is the
+ * library's pill strip (antd has no equivalent).
+ */
+export type TabsVariantProp = "default" | "line" | "card" | "editable-card";
+
+/**
+ * @see Tabs — which edge the trigger strip parks on. This is Ant Design 6.6.2's `tabPlacement`
+ * (its `tabPosition` is deprecated there), so the inline values are already RTL-logical —
+ * `start`/`end`, never `left`/`right`. Both inline values also flip the tablist to vertical
+ * roving focus (WAI-ARIA APG), which is what `orientation="vertical"` did on its own before.
+ */
+export type TabsPlacementProp = "top" | "bottom" | "start" | "end";
+
+/**
+ * @see Tabs — Ant Design `tabBarExtraContent`, held to the library's `extra` slot name and to its
+ * logical inline axis: antd's `left`/`right` keys are `start`/`end` here, so an Arabic or Hebrew
+ * app gets the slot on the correct edge with no second code path.
+ */
+export type TabsExtraProp = React.ReactNode | { start?: React.ReactNode; end?: React.ReactNode };
+
+/**
+ * @see Tabs — Ant Design `onEdit`. It is a NAMED alias rather than an inline signature so the
+ * field reads as one prop everywhere: the catalog-sync guard splits an object type on top-level
+ * commas, and an inline `(target, action) => void` leaks its second PARAMETER as a phantom prop.
+ */
+export type TabsOnEditProp = (
+  target: string | React.MouseEvent<HTMLButtonElement>,
+  action: "add" | "remove",
+) => void;
 
 /** @see Tabs — high-level tabs with optional `items` array. */
 export type TabsProp = {
@@ -207,7 +303,28 @@ export type TabsProp = {
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
-  variant?: "default" | "line" | "card";
+  variant?: TabsVariantProp;
+  /** Ant Design `tabPlacement`. Default `top`. */
+  tabPlacement?: TabsPlacementProp;
+  /** Control tier of the triggers. Default `md`. Ant Design `size` (`small`/`middle`/`large`). */
+  size?: "sm" | "md" | "lg";
+  /** Ant Design `centered` — centre the trigger strip on its own inline axis. */
+  centered?: boolean;
+  /** Ant Design `tabBarExtraContent`, renamed and made logical. @see TabsExtraProp */
+  extra?: TabsExtraProp;
+  /**
+   * Ant Design `destroyOnHidden`. `true` (the default here, and Radix's own behaviour) unmounts a
+   * panel the moment it stops being selected. `false` keeps EVERY panel mounted and only hides the
+   * inactive ones, so a live chart, a scroll position or an unsent form draft survives a tab
+   * switch. The default is deliberately the opposite of antd's, which keeps panels mounted.
+   */
+  destroyOnHidden?: boolean;
+  /** Ant Design `onEdit`. `remove` passes the item's `value`; `add` passes the click event. */
+  onEdit?: TabsOnEditProp;
+  /** Ant Design `addIcon` — replaces the default + on the `editable-card` add button. */
+  addIcon?: React.ReactNode;
+  /** Ant Design `hideAdd` — keep `editable-card`'s remove buttons but drop the add button. */
+  hideAdd?: boolean;
   className?: ClassNameProp;
   listClassName?: ClassNameProp;
   contentClassName?: ClassNameProp;

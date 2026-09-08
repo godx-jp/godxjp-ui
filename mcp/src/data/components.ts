@@ -1923,7 +1923,20 @@ export function TermsPage() {
         name: "items",
         type: "BreadcrumbItemProp[]",
         required: true,
-        description: "Array of { label, to? } — omit `to` on the last (current) segment.",
+        description:
+          'Array of { label, to?, menu? } — omit `to` on the last (current) segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role="menuitem"`.',
+      },
+      {
+        name: "separator",
+        type: "React.ReactNode",
+        description:
+          'Ant Design `separator`. Defaults to the chevron glyph; a string (`"/"`) or any node replaces it and `""` removes it. Always `aria-hidden` — the trail\'s structure is the `<ol>`/`<li>`, so a screen reader never reads the glyph.',
+      },
+      {
+        name: "itemRender",
+        type: "(item: BreadcrumbItemProp, info: { index: number; isLast: boolean; items: BreadcrumbItemProp[] }) => React.ReactNode",
+        description:
+          "Ant Design `itemRender`. Replaces ONE segment's body while Breadcrumb keeps owning the `<nav>` landmark, the `<ol>`/`<li>`, the separators and `aria-current`. Use it to hand the trail a router `<Link>` (Inertia, react-router) instead of a bare `<a>`.",
       },
       {
         name: "aria-label",
@@ -6621,9 +6634,9 @@ toast.error("保存に失敗しました");`,
     props: [
       {
         name: "items",
-        type: "{ value: string; label: React.ReactNode; content: React.ReactNode; disabled?: boolean }[]",
+        type: "{ value: string; label: React.ReactNode; content: React.ReactNode; disabled?: boolean; icon?: React.ReactNode; closable?: boolean; closeIcon?: React.ReactNode }[]",
         description:
-          "Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled.",
+          'Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled. `icon` is a leading glyph in the trigger (Ant Design `Tab.icon`). `closable` / `closeIcon` only apply under `variant="editable-card"`; `closable: false` opts one tab out of removal (Ant Design `getRemovable`).',
       },
       { name: "value", type: "string", description: "Controlled active tab key." },
       {
@@ -6639,10 +6652,61 @@ toast.error("保存に失敗しました");`,
       },
       {
         name: "variant",
-        type: '"default" | "line" | "card"',
+        type: '"default" | "line" | "card" | "editable-card"',
         defaultValue: '"default"',
         description:
-          'Trigger-strip appearance. `default`/`card` keep the pill/card chrome (a selected trigger gets a soft `ring-primary/25` ring). `line` is UNDERLINE-ONLY: the selected trigger gets no ring or card border at all — only the token-owned 2px primary bar (--tabs-indicator-{background,size,offset}) — so the `:focus-visible` keyboard ring stays visible and clearly distinct from selection. With `items`, the variant is forwarded to the list; when composing manually, pass the same value to `<TabsList variant="line">`.',
+          "Trigger-strip appearance — this is Ant Design's `type` under the library's own `variant` vocabulary. `default` is the pill strip (antd has no equivalent). `line` is UNDERLINE-ONLY: the selected trigger gets no ring or card border at all — only the token-owned 2px primary bar (--tabs-indicator-{background,size,offset}) — so the `:focus-visible` keyboard ring stays visible and clearly distinct from selection. `card` gives each tab a boxed face on a rail (--tabs-card-*). `editable-card` is `card` plus the add button and per-tab remove shortcut, and needs `onEdit` to do anything. With `items`, the variant is forwarded to the list; when composing manually, pass the same value to `<TabsList variant=\"line\">`.",
+      },
+      {
+        name: "tabPlacement",
+        type: '"top" | "bottom" | "start" | "end"',
+        defaultValue: '"top"',
+        description:
+          'Which edge the trigger strip parks on — Ant Design 6.6.2\'s `tabPlacement` (its `tabPosition` is deprecated there), so the inline values are already RTL-logical. `start`/`end` also flip the tablist to vertical roving focus, which is what `orientation="vertical"` did on its own before; either prop still works and the other is derived from it. The strip stays FIRST in the DOM at every placement — `bottom`/`end` are a flex reversal, not a re-ordered tree.',
+      },
+      {
+        name: "size",
+        type: '"sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          "Control tier of the triggers (Ant Design `size`). Expressed as the library's own control bands (--tabs-trigger-height-*/--tabs-trigger-font-size-*), so a tab strip and the Buttons beside it stay on one rhythm; `md` reproduces the previous trigger exactly.",
+      },
+      {
+        name: "centered",
+        type: "boolean",
+        description:
+          "Ant Design `centered` — centre the strip on its own inline axis. Keeps the `safe` centring rule the strip depends on, so a strip that overflows still falls back to start alignment instead of stranding the leading tab outside the scrollport.",
+      },
+      {
+        name: "extra",
+        type: "React.ReactNode | { start?: React.ReactNode; end?: React.ReactNode }",
+        description:
+          "Ant Design `tabBarExtraContent`, renamed to the library's `extra` slot and made logical: antd's `left`/`right` keys are `start`/`end` here. A bare node goes to `end` (antd's own default). Renders a bar row beside the strip; without it — and without an add button — no extra wrapper is emitted at all.",
+      },
+      {
+        name: "destroyOnHidden",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Ant Design `destroyOnHidden`. `true` (the default here, and Radix's own behaviour) unmounts a panel the moment it stops being selected. `false` keeps EVERY panel mounted and only hides the inactive ones, so a live chart, a scroll position or an unsent form draft survives a tab switch. The default is deliberately the opposite of antd's, which keeps panels mounted.",
+      },
+      {
+        name: "onEdit",
+        type: '(target: string | React.MouseEvent<HTMLButtonElement>, action: "add" | "remove") => void',
+        description:
+          'Ant Design `onEdit`. Required for `variant="editable-card"` to grow its controls. `remove` passes the item\'s own `value`; `add` passes the click event. Tabs never mutates `items` itself — the consumer owns the list.',
+      },
+      {
+        name: "addIcon",
+        type: "React.ReactNode",
+        description:
+          "Ant Design `addIcon` — replaces the default + on the editable-card add button.",
+      },
+      {
+        name: "hideAdd",
+        type: "boolean",
+        description:
+          "Ant Design `hideAdd` — keep editable-card's remove shortcuts but drop the add button.",
       },
     ],
     usage: [
@@ -6655,6 +6719,8 @@ toast.error("保存に失敗しました");`,
       "DO trust the horizontal `TabsList` to scroll its own overflow (hidden scrollbar, swipeable) instead of clipping when tab labels — especially long localized ones (Japanese, German) — don't fit a narrow container. Don't wrap it in your own `overflow-x-auto` div or truncate labels to work around clipping; that is now the framework's job.",
       "DON'T assume the first item is ever auto-selected when it is `disabled` — Tabs always resolves the fallback to the first ENABLED item (or none, if all are disabled). A `disabled: true` first item is safe to author without also setting `defaultValue`.",
       'DON\'T write your own resize/scroll-into-view effect to keep the selected tab on screen — `TabsList` observes its own size and its triggers\' `data-state` and re-pins the active (or focused, under `activationMode="manual"`) trigger with `scrollIntoView({ block: "nearest", inline: "nearest" })`, honoring `prefers-reduced-motion` and leaving a deliberate manual scroll alone. Before that, a 1440 → 1024 → 390 resize could strand the ACTIVE FIRST tab entirely outside the strip while it still reported `aria-selected="true"`.',
+      'DO reach for `variant="editable-card"` + `onEdit` instead of hand-rolling a closable tab bar. The × inside a tab is an `aria-hidden` pointer shortcut and the announced keyboard route is Delete/Backspace on the focused tab (`aria-keyshortcuts`) — a real <button> there is an axe failure twice over (`aria-required-children`, because a tablist may own nothing but tabs, and `nested-interactive`). The ADD button is a real button because it sits outside the tablist.',
+      "DO use `destroyOnHidden={false}` when a hidden panel must keep state — a mounted chart, a scroll position, an unsent draft. Note it is the opposite default from Ant Design: here panels are destroyed unless you say otherwise.",
       "DON'T re-centre the strip with a `justify-center` utility. `TabsList` aligns with `safe center` on purpose: plain centring splits the overflow across BOTH edges while `scrollLeft` only ever covers the trailing one, so the leading tab ends up permanently outside the scrollport and no gesture reaches it. `safe` keeps the centred look while the tabs fit and falls back to start alignment the moment they don't.",
     ],
     useCases: [
@@ -6734,6 +6800,33 @@ toast.error("保存に失敗しました");`,
           "Compact form for narrow contexts — Prev / n·N / Next, no page-number buttons. The intentional mobile transformation (desktop never wraps).",
       },
       {
+        name: "showQuickJumper",
+        type: "boolean | { goButton?: React.ReactNode }",
+        description:
+          "Ant Design `showQuickJumper` — a 'go to page' number field at the inline end of the bar. Enter (or the optional `goButton`) commits, clamped into [1, pageCount]; a non-numeric commit is ignored rather than jumping to NaN. The field is named by a real `<label htmlFor>`, not an aria-label.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md"',
+        defaultValue: '"md"',
+        description:
+          "Ant Design `size` (`small` → `sm`, `middle` → `md`). Implemented as ONE local `--control-height` on the bar, so the page buttons, the size-changer trigger and the quick-jumper field shrink together and cannot drift apart.",
+      },
+      {
+        name: "align",
+        type: '"start" | "center" | "end"',
+        defaultValue: '"end"',
+        description:
+          "Ant Design `align`, on the logical inline axis. `end` keeps the long-standing table-footer position.",
+      },
+      {
+        name: "responsive",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Ant Design `responsive`. Collapses the bar to its `simple` form below the library's single mobile breakpoint (`useIsMobile`, max-width 767px) instead of leaving a number strip wider than the phone to scroll. `simple` always wins; pass `responsive={false}` to pin the full pager at every width.",
+      },
+      {
         name: "disabled",
         type: "boolean",
         description: "Disable all navigation controls.",
@@ -6781,11 +6874,23 @@ toast.error("保存に失敗しました");`,
     tagline:
       "Radix dropdown menu. Compose DropdownMenu/DropdownMenuTrigger/DropdownMenuContent/DropdownMenuItem/DropdownMenuSeparator.",
     props: [
-      { name: "open", type: "boolean", description: "Controlled open state." },
+      { name: "open", type: "boolean", description: "Controlled open state (Ant Design `open`)." },
       {
         name: "onOpenChange",
         type: "(open: boolean) => void",
-        description: "Open-state change handler.",
+        description: "Open-state change handler (Ant Design `onOpenChange`).",
+      },
+      {
+        name: "placement",
+        type: '"top" | "topStart" | "topEnd" | "bottom" | "bottomStart" | "bottomEnd"',
+        description:
+          "On DropdownMenuContent. Ant Design `placement`, spelled on the LOGICAL inline axis (antd's `bottomLeft` is `bottomStart` here), so an RTL app anchors on the correct edge with no second value. It is sugar over Radix's `side` + `align`, and an explicitly passed `side`/`align` still wins. antd's inline-side placements (`left*`/`right*`) are deliberately absent — Radix's `side` is physical and this library ships no DirectionProvider, so they would open on the wrong edge in RTL; pass Radix's own `side` if you knowingly want a physical one.",
+      },
+      {
+        name: "arrow",
+        type: "boolean",
+        description:
+          "On DropdownMenuContent. Ant Design `arrow` — paints the pointer at the anchored edge (default off). Sized from --dropdown-arrow-{width,height,background} rather than Radix's built-in 10×5.",
       },
     ],
     usage: [
@@ -6859,8 +6964,15 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "type",
-        type: '"default" | "dot" | "inline"',
-        description: "Render full markers, compact dots, or a numbered inline auth progress row.",
+        type: '"default" | "dot" | "inline" | "navigation"',
+        description:
+          "Render full markers, compact dots, a numbered inline auth progress row, or Ant Design's `navigation` bar — slab steps with a chevron between them (the default hairline connector is switched off there so it is not drawn through the glyph). `dot` IS antd's `progressDot`; antd 6.6.2 deprecates that prop in favour of exactly this value.",
+      },
+      {
+        name: "percent",
+        type: "number",
+        description:
+          'Ant Design `percent` — completion of the CURRENT (`process`) step only, 0–100 (out-of-range values are clamped). Draws a determinate arc around that step\'s marker and exposes it as a real `progressbar` with aria-valuenow/min/max. Ignored by `type="inline"`, which has no marker to draw into.',
       },
       {
         name: "size",

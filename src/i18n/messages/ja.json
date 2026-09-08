@@ -289,8 +289,13 @@
     }
   },
   "navigation": {
+    "tabs": {
+      "addTab": "タブを追加",
+      "removeTab": "タブを閉じる"
+    },
     "steps": {
       "ariaLabel": "進行状況",
+      "percentLabel": "現在のステップの進捗",
       "status": {
         "wait": "未完了",
         "process": "現在のステップ",
@@ -328,6 +333,7 @@
       "page": "ページ {page}",
       "pageSize": "ページサイズ",
       "pageSizeTrigger": "{size}件",
+      "jumpTo": "ページへ移動",
       "pageSizeOption": "{size} 件/ページ",
       "total": "全 {total} 件"
     },

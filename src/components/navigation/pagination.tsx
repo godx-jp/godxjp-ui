@@ -2,9 +2,10 @@ import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
-import { useScrollableRegionTabIndex } from "../../lib/hooks";
+import { useIsMobile, useScrollableRegionTabIndex } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
+import { Input } from "../data-entry/input";
 import {
   Select,
   SelectContent,
@@ -18,6 +19,8 @@ import type { PaginationProp } from "../../props/components/navigation.prop";
 export type {
   PaginationProp,
   PaginationProp as PaginationProps,
+  PaginationSizeProp,
+  PaginationAlignProp,
 } from "../../props/components/navigation.prop";
 
 const PaginationContent = React.forwardRef<
@@ -138,20 +141,39 @@ export function Pagination({
   showTotal,
   hideOnSinglePage = true,
   simple,
+  showQuickJumper,
+  size = "md",
+  align = "end",
+  responsive = true,
   disabled,
   className,
   onValueChange,
 }: PaginationProp) {
   const { t } = useTranslation();
+  const jumperId = React.useId();
+  const [jumperDraft, setJumperDraft] = React.useState("");
+  // Ant Design's `responsive` collapses the bar on a phone rather than leaving a number strip
+  // wider than the viewport to scroll. The breakpoint is the library's ONE mobile query
+  // (`useIsMobile`, max-width 767px) — never a second literal that could drift from it.
+  const isNarrowViewport = useIsMobile();
   const navLabel = ariaLabel ?? t("navigation.pagination.ariaLabel");
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const safeCurrent = Math.min(Math.max(1, value), totalPages);
   const pages = buildPageRange(safeCurrent, totalPages);
+  const compact = Boolean(simple) || (responsive && isNarrowViewport);
 
   const go = (page: number, size = pageSize) => {
     if (disabled) return;
     const nextPage = Math.min(Math.max(1, page), Math.max(1, Math.ceil(total / size)));
     onValueChange?.(nextPage, size);
+  };
+
+  /** Ant Design's quick jumper: a free-typed page number, clamped into `[1, pageCount]` on commit. */
+  const commitJump = () => {
+    const parsed = Number.parseInt(jumperDraft, 10);
+    setJumperDraft("");
+    if (!Number.isFinite(parsed)) return;
+    go(parsed);
   };
 
   const totalLabel =
@@ -170,9 +192,49 @@ export function Pagination({
   if (total <= 0) return null;
   if (hideOnSinglePage && totalPages <= 1) return null;
 
-  if (simple) {
+  const goButton =
+    showQuickJumper && typeof showQuickJumper === "object" ? showQuickJumper.goButton : undefined;
+  const quickJumper = showQuickJumper ? (
+    <span className="ui-pagination-jumper" data-slot="pagination-jumper">
+      {/* A real <label htmlFor>, not an aria-label: the jumper is a text field the user types
+       * into, so its name has to be selectable/clickable text (WCAG 2.5.3, 1.3.1). */}
+      <label htmlFor={jumperId} className="ui-pagination-jumper-label">
+        {t("navigation.pagination.jumpTo")}
+      </label>
+      <Input
+        id={jumperId}
+        size={size}
+        type="number"
+        inputMode="numeric"
+        min={1}
+        max={totalPages}
+        disabled={disabled}
+        className="ui-pagination-jumper-input w-[var(--pagination-jumper-width)]"
+        value={jumperDraft}
+        onChange={(event) => setJumperDraft(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key !== "Enter") return;
+          event.preventDefault();
+          commitJump();
+        }}
+      />
+      {goButton ? (
+        <Button type="button" variant="outline" size="sm" disabled={disabled} onClick={commitJump}>
+          {goButton}
+        </Button>
+      ) : null}
+    </span>
+  ) : null;
+
+  if (compact) {
     return (
-      <nav aria-label={navLabel} data-simple="true" className={cn("ui-pagination", className)}>
+      <nav
+        aria-label={navLabel}
+        data-simple="true"
+        data-size={size}
+        data-align={align}
+        className={cn("ui-pagination", className)}
+      >
         {totalLabel && <span className="ui-pagination-total">{totalLabel}</span>}
         <Button
           type="button"
@@ -198,12 +260,18 @@ export function Pagination({
         >
           <ChevronRight aria-hidden="true" />
         </Button>
+        {quickJumper}
       </nav>
     );
   }
 
   return (
-    <nav aria-label={navLabel} className={cn("ui-pagination", className)}>
+    <nav
+      aria-label={navLabel}
+      data-size={size}
+      data-align={align}
+      className={cn("ui-pagination", className)}
+    >
       {totalLabel && <span className="ui-pagination-total">{totalLabel}</span>}
 
       {showSizeChanger && (
@@ -223,9 +291,9 @@ export function Pagination({
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {pageSizeOptions.map((size) => (
-              <SelectItem key={size} value={String(size)}>
-                {size}
+            {pageSizeOptions.map((option) => (
+              <SelectItem key={option} value={String(option)}>
+                {option}
               </SelectItem>
             ))}
           </SelectContent>
@@ -274,6 +342,8 @@ export function Pagination({
           </PaginationNext>
         </PaginationItem>
       </PaginationContent>
+
+      {quickJumper}
     </nav>
   );
 }

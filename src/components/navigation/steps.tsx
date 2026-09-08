@@ -12,7 +12,14 @@ export type {
   StepItemProp,
   StepStatusProp,
   StepsSeparatorProp,
+  StepsTypeProp,
 } from "../../props/components/navigation.prop";
+
+/** Ant Design clamps `percent` into 0–100 rather than letting a bad number paint a broken arc. */
+function boundStepPercent(percent: number): number {
+  if (!Number.isFinite(percent)) return 0;
+  return Math.min(100, Math.max(0, percent));
+}
 
 function resolveStepStatus(
   index: number,
@@ -73,6 +80,7 @@ export function Steps({
   size = "md",
   titlePlacement = "horizontal",
   separator = "chevron",
+  percent,
   onValueChange,
   className,
 }: StepsProp) {
@@ -81,12 +89,22 @@ export function Steps({
   const isVertical = orientation === "vertical";
   const compact = size === "sm";
   const inline = type === "inline";
+  // antd's `navigation` bar: slab steps that point at the next one. It keeps the full marker/text
+  // block (unlike `inline`), so it rides the SAME list and item markup and differs only in paint.
+  const navigation = type === "navigation";
   // Both glyphs point along the reading direction, so both flip under dir="rtl".
   const SeparatorIcon = separator === "arrow" ? ArrowRight : ChevronRight;
+  // `percent` is antd's completion of the CURRENT step only, so it needs a marker to draw into —
+  // `inline` has none. The ratio is computed OUT of the JSX so the style object carries a value,
+  // never an arithmetic literal (check:no-inline-magic-numbers).
+  const showPercent = percent !== undefined && !inline;
+  const boundedPercent = boundStepPercent(percent ?? 0);
+  const progressRatio = boundedPercent / 100;
 
   return (
     <ol
       data-direction={inline ? undefined : isVertical ? "vertical" : "horizontal"}
+      data-type={type}
       className={cn("flex w-full", inline ? "ui-steps-inline" : "ui-steps-list", className)}
       aria-label={t("navigation.steps.ariaLabel")}
     >
@@ -127,7 +145,21 @@ export function Steps({
           </>
         ) : (
           <>
-            <StepIcon status={stepStatus} icon={item.icon} type={type} />
+            {showPercent && absoluteIndex === current ? (
+              <span
+                className="ui-steps-progress"
+                role="progressbar"
+                aria-valuenow={boundedPercent}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={t("navigation.steps.percentLabel")}
+                style={{ "--steps-progress-ratio": progressRatio } as React.CSSProperties}
+              >
+                <StepIcon status={stepStatus} icon={item.icon} type={type} />
+              </span>
+            ) : (
+              <StepIcon status={stepStatus} icon={item.icon} type={type} />
+            )}
             <div className="ui-steps-text">
               <div
                 className="ui-steps-title"
@@ -152,7 +184,11 @@ export function Steps({
             aria-current={isCurrent ? "step" : undefined}
             data-direction={inline ? undefined : isVertical ? "vertical" : "horizontal"}
             data-title-placement={titlePlacement}
-            data-connector={!isVertical && !inline && index < items.length - 1 ? "" : undefined}
+            // The hairline connector is the DEFAULT rail's join. `navigation` draws an explicit
+            // chevron between slabs instead, so emitting both would put a line through the glyph.
+            data-connector={
+              !isVertical && !inline && !navigation && index < items.length - 1 ? "" : undefined
+            }
             className={cn(!inline && "flex-1", inline ? "ui-steps-inline-item" : "ui-steps-item")}
             data-status={stepStatus}
           >
@@ -171,9 +207,12 @@ export function Steps({
                 {stepInner}
               </span>
             )}
-            {inline && index < items.length - 1 ? (
+            {(inline || (navigation && !isVertical)) && index < items.length - 1 ? (
               <SeparatorIcon
-                className="ui-steps-inline-separator rtl:rotate-180"
+                className={cn(
+                  inline ? "ui-steps-inline-separator" : "ui-steps-nav-separator",
+                  "rtl:rotate-180",
+                )}
                 aria-hidden="true"
               />
             ) : null}

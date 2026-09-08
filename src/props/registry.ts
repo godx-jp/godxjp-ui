@@ -585,6 +585,26 @@ export const VOCABULARY_REGISTRY = {
     category: "navigation",
     description: "Breadcrumb trail array",
   },
+  BreadcrumbItemMenuProp: {
+    file: "vocabulary/navigation.prop.ts",
+    category: "navigation",
+    description: "Sibling dropdown hung off one breadcrumb segment (antd BreadcrumbItemType.menu)",
+  },
+  BreadcrumbItemMenuEntryProp: {
+    file: "vocabulary/navigation.prop.ts",
+    category: "navigation",
+    description: "One entry of a breadcrumb segment's sibling dropdown",
+  },
+  BreadcrumbSeparatorProp: {
+    file: "vocabulary/navigation.prop.ts",
+    category: "navigation",
+    description: "Glyph drawn between breadcrumb segments (antd `separator`)",
+  },
+  BreadcrumbItemRenderProp: {
+    file: "vocabulary/navigation.prop.ts",
+    category: "navigation",
+    description: "Per-segment render override (antd `itemRender`)",
+  },
   ZodSchemaProp: {
     file: "components/form.prop.ts",
     category: "form",
@@ -2233,7 +2253,22 @@ export const COMPONENT_PROP_REGISTRY = {
   PaginationProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp"],
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp", "SizeProp"],
+  },
+  PaginationSizeProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  DropdownMenuPlacementProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  PaginationAlignProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
   },
   StepsProp: {
     group: "navigation",
@@ -2266,15 +2301,47 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/navigation.prop.ts",
     vocabulary: [],
   },
+  StepsTypeProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
   TabsProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "ClassNameProp"],
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "ClassNameProp",
+      "SizeProp",
+      "ExtraProp",
+    ],
+  },
+  TabsVariantProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  TabsPlacementProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  TabsExtraProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["ExtraProp"],
+  },
+  TabsOnEditProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["HandlerProp"],
   },
   TabItemProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["ValueProp", "LabelProp", "ChildrenProp", "DisabledProp"],
+    vocabulary: ["ValueProp", "LabelProp", "ChildrenProp", "DisabledProp", "IconProp"],
   },
   FormRootProp: {
     group: "form",

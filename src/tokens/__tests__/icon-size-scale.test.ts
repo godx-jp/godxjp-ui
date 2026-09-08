@@ -96,6 +96,12 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--stat-card-icon-size": ["2.25rem", "2.25rem", "2.25rem"],
   "--steps-marker-icon-size": ["1rem", "1rem", "1rem"],
   "--steps-wait-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
+  // Ant Design parity surface on Tabs. All three track existing tiers, so no new value enters the
+  // scale: the trigger/add glyphs ride --control-icon-size (density-aware, like every control
+  // glyph) and the editable-card × rides the fixed --icon-size-xs.
+  "--tabs-trigger-icon-size": ["1rem", "0.92rem", "1.08rem"],
+  "--tabs-add-icon-size": ["1rem", "0.92rem", "1.08rem"],
+  "--tabs-tab-remove-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
   "--table-pagination-icon-size": ["1rem", "1rem", "1rem"],
   "--table-sort-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
   "--table-toolbar-icon-size": ["1rem", "1rem", "1rem"],

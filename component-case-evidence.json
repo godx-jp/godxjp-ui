@@ -2539,15 +2539,40 @@
           ]
         },
         "variant": {
-          "cases": [
-            "line",
-            "default",
-            "card"
-          ],
+          "cases": ["line", "default", "card", "editable-card"],
           "evidence": [
             "docs/navigation/tabs.tsx",
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+            "src/components/navigation/__tests__/tabs-variants.test.tsx",
+            "src/components/navigation/__tests__/tabs-antd-parity.test.tsx"
           ]
+        },
+        "tabPlacement": {
+          "cases": ["top", "bottom", "start", "end"],
+          "evidence": ["src/components/navigation/__tests__/tabs-antd-parity.test.tsx"]
+        },
+        "size": {
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["src/components/navigation/__tests__/tabs-antd-parity.test.tsx"]
+        },
+        "centered": {
+          "cases": [true, false],
+          "evidence": ["src/components/navigation/__tests__/tabs-antd-parity.test.tsx"]
+        },
+        "extra": {
+          "cases": ["bare node", "start/end map", "absent"],
+          "evidence": ["src/components/navigation/__tests__/tabs-antd-parity.test.tsx"]
+        },
+        "destroyOnHidden": {
+          "cases": [true, false],
+          "evidence": ["src/components/navigation/__tests__/tabs-antd-parity.test.tsx"]
+        },
+        "onEdit": {
+          "cases": ["add", "remove"],
+          "evidence": ["src/components/navigation/__tests__/tabs-antd-parity.test.tsx"]
+        },
+        "hideAdd": {
+          "cases": [true, false],
+          "evidence": ["src/components/navigation/__tests__/tabs-antd-parity.test.tsx"]
         }
       }
     },

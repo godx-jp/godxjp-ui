@@ -259,6 +259,43 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        {/* Ant Design parity surface — percent + navigation */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>percent · navigation (Ant Design パリティ)</CardTitle>
+            <CardDescription>
+              percent は antd と同じく「現在ステップ」の進捗のみ(0–100
+              にクランプ)。マーカーの周りに確定アークを描き、role=&quot;progressbar&quot;
+              として読み上げられる。type=&quot;navigation&quot; は antd
+              のスラブ型ナビゲーションバーで、既定のヘアライン
+              コネクタは切られ、代わりにシェブロンで繋がる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <div id="antd-steps-percent">
+                <Steps
+                  value={1}
+                  percent={40}
+                  items={[{ title: "申込" }, { title: "審査" }, { title: "完了" }]}
+                />
+              </div>
+              <div id="antd-steps-navigation">
+                <Steps
+                  type="navigation"
+                  value={1}
+                  onValueChange={() => {}}
+                  items={[
+                    { title: "申込", description: "受付済" },
+                    { title: "審査", description: "書類確認中" },
+                    { title: "完了", description: "未着手" },
+                  ]}
+                />
+              </div>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

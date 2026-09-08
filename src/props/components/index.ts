@@ -80,12 +80,20 @@ export type {
   PrefetchLinkProp,
 } from "./query.prop";
 export type {
+  DropdownMenuPlacementProp,
   PaginationProp,
+  PaginationSizeProp,
+  PaginationAlignProp,
   StepsProp,
   StepItemProp,
   StepStatusProp,
+  StepsTypeProp,
   TabsProp,
   TabItemProp,
+  TabsVariantProp,
+  TabsPlacementProp,
+  TabsExtraProp,
+  TabsOnEditProp,
 } from "./navigation.prop";
 export type {
   AppProviderProp,
