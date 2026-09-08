@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`ListRow` giữ được `<li>` khi dùng `asChild`.** Trước đây `const Comp = asChild ? Slot : as`
+  nên `as` bị bỏ im lặng: một danh sách LIÊN KẾT phải chọn giữa ngữ nghĩa `<ul>/<li>` và việc cả
+  hàng là liên kết. Consumer nào cũng chọn cả hai bằng cách tự bọc mỗi hàng trong `<li>` hoặc
+  `role="listitem"` — và làm thế thì mỗi hàng thành con DUY NHẤT của wrapper, nên luật đường kẻ
+  `[data-slot="list-row"]:not(:last-child)` **không khớp lần nào**: cả danh sách dính liền, không
+  lỗi, không cảnh báo, `ui-audit` vẫn xanh. Đo trên godx-task ở 20.0.0: ba hàng, cả ba
+  `border-bottom-width: 0px`; năm màn hình của kho ấy đang mang một `border-b` viết tay để che.
+
+  Nay `as` + `asChild` ĐI CÙNG NHAU: con giữ phần tử hàng, còn `as` lùi ra thành list item bọc
+  ngoài — `<li data-slot="list-row-item"><a data-slot="list-row">`. Item mang đường kẻ thay cho
+  hàng (hàng bên trong là `:last-child` nên luật cũ tự im). Đo lại trên cùng bố cục: 2 đường kẻ,
+  hàng cuối trống, không nhân đôi. `asChild` đứng một mình không đổi gì.
+
+
 ## [20.0.0] - 2026-09-08
 
 Bản major. Ba thay đổi PHÁ VỠ ở dưới; đọc chúng trước khi nâng.

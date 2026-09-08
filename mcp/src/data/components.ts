@@ -3184,7 +3184,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         type: "boolean",
         defaultValue: "false",
         description:
-          "Supply a link child to make the entire row a native link. Use aria-current=page for the current destination; never nest interactive trailing controls.",
+          'Supply a link child to make the entire row a native link. Use aria-current=page for the current destination; never nest interactive trailing controls. Combine with `as="li"` inside a `<ul>`/`<ol>` — the row stays the link and `as` supplies the list item around it.',
       },
       {
         name: "title",
@@ -3219,7 +3219,8 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         name: "as",
         type: '"div" | "li"',
         defaultValue: '"div"',
-        description: "Render element — `li` when the parent is a semantic `<ul>`/`<ol>`.",
+        description:
+          'Render element — `li` when the parent is a semantic `<ul>`/`<ol>`. WITH `asChild` the child owns the row element, so `as` becomes the list ITEM around it: `<li data-slot="list-row-item"><a data-slot="list-row">`. Use both for a list of links — do not wrap the row in an `<li>` (or a `role="listitem"` div) yourself, because that makes every row an only child and the row-to-row divider, keyed on `:not(:last-child)` among siblings, stops matching on every row.',
       },
       {
         name: "overflow",
@@ -3245,6 +3246,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     usage: [
       "DO use ListRow for a SHORT (≈2–8 item) list of entities inside a Card where each row is one line with an action — account sessions, API keys, linked identities, passkeys. Stack rows in a `<Card><CardContent flush>` so the rows draw their own quiet dividers edge-to-edge.",
       "DON'T reach for DataTable here — it carries sorting/selection/pagination chrome that a 3-item list doesn't need. DON'T nest a Card per row either (card-in-card). ListRow is the in-between surface.",
+      'DO write a list of LINKS as `<ul>` + `<ListRow as="li" asChild><Link/></ListRow>` — one call gives the list item, the whole-row link and the divider. DON\'T wrap the row in your own `<li>` or `role="listitem"` element to get list semantics back: the divider rule reads `:not(:last-child)` among the rows themselves, so a wrapper per row makes each one an only child and EVERY divider disappears — silently, with the audit still green.',
       'DON\'T hand-roll `<div className="flex items-center justify-between border-b py-3">` — that is exactly the repeated pattern ListRow replaces (border/radius/padding are tokenized via `--list-row-*`).',
       'DO put the row\'s action in `trailing` (a `ghost`/`outline` Button, a DropdownMenu trigger, a Switch, or a status Badge). DO pass `as="li"` when the rows live inside a semantic `<ul>`.',
       'DO use `unread` for a notification list — the dot is a SHAPE with localized `sr-only` text ("Unread"/"Read"), so it never reads as colour alone, and the row surface reads `--list-row-unread-background` (default `hsl(var(--muted))` — chosen so the xs muted description line stays WCAG AA on the emphasized surface; `--accent` would drop it to 4.23:1). DON\'T substitute a `Badge` — that renders a labelled pill, not a compact status dot.',
@@ -3304,6 +3306,20 @@ import { Smartphone } from "lucide-react";
       }
     />
     <ListRow unread={false} align="start" overflow="wrap" title="請求書が発行されました" description="2026-07-28 18:40 JST" />
+  </CardContent>
+</Card>
+
+// A list of LINKS — \`as="li"\` gives the list item, \`asChild\` gives the whole-row link,
+// and the item carries the divider. Never wrap the row in your own <li>.
+<Card>
+  <CardContent flush>
+    <ul>
+      {projects.map((project) => (
+        <ListRow key={project.key} as="li" asChild title={project.name} description={project.key}>
+          <Link href={\`/projects/\${project.key}\`} />
+        </ListRow>
+      ))}
+    </ul>
   </CardContent>
 </Card>`,
     storyPath: "data-display/ListRow.stories.tsx",

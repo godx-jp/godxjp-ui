@@ -677,6 +677,17 @@
   [data-slot="list-row"]:not(:last-child) {
     border-block-end: var(--list-row-border, 1px solid hsl(var(--border)));
   }
+  /* The same divider when `as` + `asChild` put the row inside a list item: the row is then
+   * an only child, so the rule above can never match it and the whole list runs together
+   * with nothing between the rows. The item owns the divider on the row's behalf; the row's
+   * own rule stays quiet because it is `:last-child` inside the item. */
+  [data-slot="list-row-item"] {
+    display: block;
+    list-style: none;
+  }
+  [data-slot="list-row-item"]:not(:last-child) {
+    border-block-end: var(--list-row-border, 1px solid hsl(var(--border)));
+  }
   [data-slot="list-row-indicator"] {
     position: relative;
     display: block;
