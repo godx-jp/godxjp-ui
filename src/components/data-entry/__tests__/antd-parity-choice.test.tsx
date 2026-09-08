@@ -9,35 +9,54 @@ import { Switch } from "../switch";
 import { Rating } from "../rating";
 import { Slider } from "../slider";
 
-describe("Checkbox — antd `indeterminate`", () => {
-  it("paints the PARTIAL mark and announces mixed, without touching `checked`", () => {
-    renderWithUi(<Checkbox aria-label="全選択" indeterminate checked={false} />);
+/**
+ * Tri-state Checkbox — main spells antd's `indeterminate` as a THIRD value of `checked`, not as a
+ * separate boolean flag, and that spelling survived the react-aria migration on purpose:
+ * `checked` / `defaultChecked` / `onCheckedChange` are the pre-migration public names, and the
+ * translation to react-aria's `isSelected` + `isIndeterminate` happens inside the component.
+ *
+ * These three cases arrived on a branch written against the flag API. Ported rather than dropped:
+ * the repo had no DIRECT test of the tri-state contract — only an indirect one through Cascader —
+ * so nothing was holding the mixed state to `aria-checked="mixed"`.
+ */
+/**
+ * Tri-state Checkbox — main spells antd's `indeterminate` as a THIRD value of `checked`, not as a
+ * separate boolean flag, and that spelling is deliberate: `checked` / `defaultChecked` /
+ * `onCheckedChange` are the pre-migration public names, and the translation to react-aria's
+ * `isSelected` + `isIndeterminate` happens inside the component.
+ *
+ * These cases arrived on a branch written before that migration, asserting `data-state` — a Radix
+ * attribute the rewrite no longer emits, on an element the rewrite no longer renders (it is a
+ * native `<input type="checkbox">` now, with an implicit role). Ported to the ACCESSIBLE state
+ * instead, which is the thing that has to hold whatever the library underneath is: a partial
+ * checkbox must read as mixed, not as unchecked.
+ *
+ * Worth porting rather than dropping — the repo had no DIRECT test of the tri-state contract, only
+ * an indirect one through Cascader.
+ */
+describe("Checkbox — the tri-state `checked`", () => {
+  it("reads as MIXED when partial, not as unchecked", () => {
+    renderWithUi(<Checkbox aria-label="全選択" checked="indeterminate" />);
     const box = screen.getByRole("checkbox", { name: "全選択" });
-    expect(box).toHaveAttribute("data-state", "indeterminate");
-    expect(box).toHaveAttribute("aria-checked", "mixed");
+    expect(box).toBePartiallyChecked();
+    expect(box).not.toBeChecked();
   });
 
-  it("falls back to the underlying `checked` the moment the flag goes false", () => {
-    const { rerender } = renderWithUi(
-      <Checkbox aria-label="全選択" indeterminate checked={true} />,
-    );
-    expect(screen.getByRole("checkbox", { name: "全選択" })).toHaveAttribute(
-      "data-state",
-      "indeterminate",
-    );
-    rerender(<Checkbox aria-label="全選択" indeterminate={false} checked={true} />);
-    expect(screen.getByRole("checkbox", { name: "全選択" })).toHaveAttribute(
-      "data-state",
-      "checked",
-    );
+  it("returns to the plain checked state when the third value goes away", () => {
+    const { rerender } = renderWithUi(<Checkbox aria-label="全選択" checked="indeterminate" />);
+    expect(screen.getByRole("checkbox", { name: "全選択" })).toBePartiallyChecked();
+    rerender(<Checkbox aria-label="全選択" checked={true} />);
+    const box = screen.getByRole("checkbox", { name: "全選択" });
+    expect(box).toBeChecked();
+    expect(box).not.toBePartiallyChecked();
   });
 
-  it("without the flag nothing changes", () => {
-    renderWithUi(<Checkbox aria-label="同意" />);
-    expect(screen.getByRole("checkbox", { name: "同意" })).toHaveAttribute(
-      "data-state",
-      "unchecked",
-    );
+  it("is unchecked when `checked` is omitted", () => {
+    const box =
+      renderWithUi(<Checkbox aria-label="同意" />) &&
+      screen.getByRole("checkbox", { name: "同意" });
+    expect(box).not.toBeChecked();
+    expect(box).not.toBePartiallyChecked();
   });
 });
 
