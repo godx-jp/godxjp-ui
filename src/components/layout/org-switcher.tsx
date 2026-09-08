@@ -77,7 +77,15 @@ const OrgSwitcherTrigger = React.forwardRef<HTMLButtonElement, OrgSwitcherTrigge
         ref={ref}
         type="button"
         variant="ghost"
-        className="ui-org-switcher-trigger"
+        // THE HEIGHT HAS TO BE A UTILITY. `.ui-org-switcher-trigger` declares
+        // `height: var(--org-switcher-trigger-height)` in @layer components, and Button emits its
+        // size as a Tailwind utility — utilities win, always, so that declaration never applied.
+        // Measured in a consumer's collapsed rail: 44 × 32px. The width was right (the collapsed
+        // rule sets a width and Button emits none, so nothing outranked it) which is exactly why
+        // it read as correct: a box that is right on one axis and silently wrong on the other.
+        // 32px is below the 44px target floor that this very token is named for (rule #24,
+        // WCAG 2.2 AA 2.5.8), so the collapsed rail trigger was under-sized wherever it shipped.
+        className={cn("ui-org-switcher-trigger", "h-[length:var(--org-switcher-trigger-height)]")}
         data-collapsed={collapsed ? "true" : undefined}
         disabled={disabled}
         aria-label={label}

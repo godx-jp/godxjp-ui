@@ -313,4 +313,26 @@ describe("OrgSwitcher responsive contract shares the Sheet breakpoint token (gh#
     expect(queries).toContain("(max-width: 768px)");
     expect(queries).not.toContain("(max-width: 390px)");
   });
+
+  it("sizes its own height, because Button's size utility outranks the class rule", () => {
+    /*
+     * `.ui-org-switcher-trigger` declares `height: var(--org-switcher-trigger-height)` in
+     * @layer components, and Button emits its size as a Tailwind utility — utilities win, so that
+     * declaration never applied. Measured in a consumer's collapsed rail: 44 × 32px. The WIDTH was
+     * right, because the collapsed rule sets a width and Button emits none, and that is exactly
+     * why it read as correct for so long: right on one axis, silently wrong on the other.
+     *
+     * 32px is under the 44px target floor this token is named for (rule #24, WCAG 2.2 AA 2.5.8).
+     * jsdom does no layout, so what is pinned is the only thing that decides the outcome — whether
+     * the height is emitted where it can win.
+     */
+    const { container } = renderWithUi(
+      <OrgSwitcher organizations={organizations} value="dxs" labels={labels} collapsed />,
+    );
+    const trigger = container.querySelector<HTMLElement>(".ui-org-switcher-trigger")!;
+
+    expect(trigger.className).toContain("h-[length:var(--org-switcher-trigger-height)]");
+    // A literal would put the target size out of a theme's reach and let the two axes drift.
+    expect(trigger.className).not.toMatch(/(?:^|\s)h-\d/);
+  });
 });
