@@ -6,13 +6,54 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
+/**
+ * Strip line and block comments, preserving string/template literal contents.
+ * Without this every prop carrying a JSDoc comment is invisible to the field splitter
+ * below (the member text starts with the comment, so the `^\s*key:` match fails).
+ */
+function stripComments(src) {
+  let out = "";
+  let i = 0;
+  while (i < src.length) {
+    const ch = src[i];
+    if (ch === '"' || ch === "'" || ch === "`") {
+      out += ch;
+      i++;
+      while (i < src.length) {
+        if (src[i] === "\\") {
+          out += src[i] + (src[i + 1] ?? "");
+          i += 2;
+          continue;
+        }
+        out += src[i];
+        if (src[i] === ch) {
+          i++;
+          break;
+        }
+        i++;
+      }
+      continue;
+    }
+    if (ch === "/" && (src[i + 1] === "*" || src[i + 1] === "/")) {
+      const close = src[i + 1] === "*" ? "*/" : "\n";
+      const end = src.indexOf(close, i + 2);
+      i = end === -1 ? src.length : end + close.length;
+      out += " ";
+      continue;
+    }
+    out += ch;
+    i++;
+  }
+  return out;
+}
+
 const root = process.cwd();
-const componentsSrc = readFileSync(join(root, "mcp/src/data/components.ts"), "utf8");
+const componentsSrc = stripComments(readFileSync(join(root, "mcp/src/data/components.ts"), "utf8"));
 
 const propFiles = ["general", "layout", "data-display", "data-entry", "feedback", "navigation"].map(
   (g) => readFileSync(join(root, `src/props/components/${g}.prop.ts`), "utf8"),
 );
-const allPropsSrc = propFiles.join("\n");
+const allPropsSrc = stripComments(propFiles.join("\n"));
 
 /** MCP component name → the `*Prop` type(s) whose literal fields it must document. */
 const TYPE_OVERRIDES = {
@@ -113,7 +154,11 @@ function catalogProps(name) {
     if (depth === 0) break;
   }
   const body = componentsSrc.slice(propsAt, end);
-  return new Set([...body.matchAll(/name:\s*"([^"]+)"/g)].map((m) => m[1]));
+  // A catalog entry may document several sibling props under one slash-joined name
+  // (`"value / defaultValue / onValueChange"`) — count each of them as documented.
+  return new Set(
+    [...body.matchAll(/name:\s*"([^"]+)"/g)].flatMap((m) => m[1].split("/").map((n) => n.trim())),
+  );
 }
 
 const failures = [];
