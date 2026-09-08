@@ -127,19 +127,24 @@ có cổng CI:
    `check:frame-coverage-ledger`. Bằng chứng phải trỏ vào test THẬT SỰ chạy qua
    nhánh ấy, không phải một tệp cho có.
 
-3. **Có ví dụ BIÊN DỊCH ĐƯỢC.** Ví dụ trong catalog hiện không được kiểm, và
-   hậu quả đo được: pattern `confirm-destructive` viết `<Dialog mode="confirm">`
-   (không có prop `mode`), hướng dẫn DataTable viết `variant="success"` (chính
-   thứ luật `status-tone-not-variant` cấm), ví dụ Input viết `onValueChange`
-   (prop không tồn tại). Agent chép chúng và viết ra mã hỏng.
+3. **Có ví dụ BIÊN DỊCH ĐƯỢC.** Hậu quả đo được khi không kiểm: pattern
+   `confirm-destructive` truyền cho `Dialog` một prop `mode` không tồn tại,
+   hướng dẫn DataTable dùng `variant="success"` (chính thứ luật
+   `status-tone-not-variant` cấm), và ví dụ `Input` gọi một prop
+   `onValueChange` không có thật. Agent chép chúng và viết ra mã hỏng.
+
+   Ba chỗ ấy đã sửa, và `check:doc-prop-existence` nay bắt được lớp lỗi đó.
+   Lưu ý khi viết tài liệu: cổng ấy đọc mọi đoạn JSX trong `docs/**` như mã
+   THẬT, nên **trích dẫn một API sai để làm ví dụ cũng bị bắt**. Mô tả bằng lời
+   như đoạn trên, đừng dán một thẻ JSX hoàn chỉnh vào.
 
 ---
 
 ## Một lợi ích ẩn của việc rời Radix, đo được
 
 `check:doc-prop-existence` canh chiều "mọi prop dùng trong ví dụ đều phải tồn
-tại" — chính lớp lỗi khiến agent chép ví dụ rồi viết ra mã hỏng
-(`<Dialog mode="confirm">`, `<Input onValueChange>`). Nhưng nó **bỏ qua mọi
+tại" — chính lớp lỗi khiến agent chép ví dụ rồi viết ra mã hỏng (prop `mode`
+trên `Dialog`, prop `onValueChange` trên `Input`). Nhưng nó **bỏ qua mọi
 component bọc primitive bên thứ ba**, vì với chúng manifest chỉ là cận dưới:
 prop thật nằm trong types của Radix, generator không mở ra được.
 

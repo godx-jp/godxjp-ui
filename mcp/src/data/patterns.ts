@@ -383,10 +383,10 @@ import { Flex } from "@godxjp/ui/layout";
   {
     name: "confirm-destructive",
     tagline:
-      'Type-to-confirm destructive dialog — Dialog mode="confirm" + Input gate + toast (real @godxjp/ui API).',
+      'Type-to-confirm destructive dialog — AlertDialogRoot + Input gate + toast (real @godxjp/ui API).',
     tags: ["dialog", "confirm", "destructive", "delete"],
     code: `import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@godxjp/ui/feedback";
+import { AlertDialogRoot, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@godxjp/ui/feedback";
 import { Input } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
 import { Flex } from "@godxjp/ui/layout";
@@ -395,21 +395,23 @@ import { toast } from "sonner";
 export function DeleteProjectDialog({ open, onOpenChange, slug }: { open: boolean; onOpenChange: (v: boolean) => void; slug: string }) {
   const [confirm, setConfirm] = useState("");
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} mode="confirm">
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>プロジェクトを削除</DialogTitle>
-          <DialogDescription>この操作は取り消せません。確認のためプロジェクト名 "{slug}" と入力してください。</DialogDescription>
-        </DialogHeader>
+    <AlertDialogRoot open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>プロジェクトを削除</AlertDialogTitle>
+          <AlertDialogDescription>この操作は取り消せません。確認のためプロジェクト名 "{slug}" と入力してください。</AlertDialogDescription>
+        </AlertDialogHeader>
         <Flex direction="col" gap="md">
-          <Input value={confirm} onValueChange={(e) => setConfirm(e.target.value)} placeholder={slug} />
+          <Input value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder={slug} />
         </Flex>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>キャンセル</Button>
-          <Button variant="destructive" disabled={confirm !== slug} onClick={() => { toast.success("削除しました"); onOpenChange(false); }}>完全に削除</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <AlertDialogFooter>
+          <AlertDialogCancel asChild><Button variant="outline">キャンセル</Button></AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <Button variant="destructive" disabled={confirm !== slug} onClick={() => { toast.success("削除しました"); onOpenChange(false); }}>完全に削除</Button>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialogRoot>
   );
 }`,
   },

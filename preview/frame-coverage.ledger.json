@@ -526,8 +526,8 @@
     "exports": 291,
     "dimensionCells": 4074,
     "covered": 66,
-    "untested": 2240,
-    "notApplicable": 1768,
+    "untested": 2245,
+    "notApplicable": 1763,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -4048,8 +4048,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 5,
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -4057,8 +4057,8 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -6096,8 +6096,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 5,
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -6105,8 +6105,8 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -8481,8 +8481,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -8490,7 +8490,7 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",

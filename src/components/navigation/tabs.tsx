@@ -257,7 +257,21 @@ export function Tabs({
   );
 }
 
-export type TabsListProps = React.ComponentPropsWithoutRef<"div"> & {
+/*
+ * Prop types below are DELIBERATELY not exported.
+ *
+ * None of them was exported before this file left Radix — `dropdown-menu.tsx` exported no prop
+ * type at all, and `tabs.tsx` exported only `TabsProps`. They appeared here only because moving
+ * off a third-party primitive forces the shapes to be written down locally, and exporting them
+ * would grow the package's public surface as a side effect of an internal change: every field
+ * would become an API promise nobody asked for, on a component whose internals just moved once
+ * and may move again.
+ *
+ * Nothing in this repo consumes them and the package barrel re-exports the COMPONENTS only, so no
+ * consumer can be relying on them today. Export one when a consumer has a real reason, and govern
+ * it in COMPONENT_PROP_REGISTRY at the same time.
+ */
+type TabsListProps = React.ComponentPropsWithoutRef<"div"> & {
   variant?: "default" | "line";
   /**
    * ACCEPTED AND IGNORED. Radix's `RovingFocusGroup` took a `loop` switch; React Aria's tab list
@@ -317,7 +331,7 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
 );
 TabsList.displayName = "TabsList";
 
-export type TabsTriggerProps = Omit<React.ComponentPropsWithoutRef<"button">, "value"> & {
+type TabsTriggerProps = Omit<React.ComponentPropsWithoutRef<"button">, "value"> & {
   /** The tab's key — RAC `id` (its DOM `id` stays RAC-generated, exactly as Radix generated one). */
   value: string;
   /** RAC `isDisabled`; ALSO written to the button so `disabled:` utilities keep matching. */
@@ -384,7 +398,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
 );
 TabsTrigger.displayName = "TabsTrigger";
 
-export type TabsContentProps = Omit<React.ComponentPropsWithoutRef<"div">, "value"> & {
+type TabsContentProps = Omit<React.ComponentPropsWithoutRef<"div">, "value"> & {
   /** The panel's key — must match a `TabsTrigger value`. RAC `id`. */
   value: string;
   /** Keep the panel mounted while another tab is selected — RAC `shouldForceMount`. */

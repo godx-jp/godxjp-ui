@@ -6224,7 +6224,7 @@ import { Button } from "@godxjp/ui/general";
   <DropdownMenuContent>
     <DropdownMenuItem>編集</DropdownMenuItem>
     <DropdownMenuSeparator />
-    <DropdownMenuItem tone="destructive">削除</DropdownMenuItem>
+    <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>`,
     storyPath: "navigation/DropdownMenu.stories.tsx",

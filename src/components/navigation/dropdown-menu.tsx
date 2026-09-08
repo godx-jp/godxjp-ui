@@ -126,6 +126,20 @@ export function selectEvent(name: string): Event {
 type ModalOptions = { modal: boolean };
 const DropdownMenuModalContext = React.createContext<ModalOptions>({ modal: true });
 
+/*
+ * Prop types below are DELIBERATELY not exported.
+ *
+ * None of them was exported before this file left Radix — `dropdown-menu.tsx` exported no prop
+ * type at all, and `tabs.tsx` exported only `TabsProps`. They appeared here only because moving
+ * off a third-party primitive forces the shapes to be written down locally, and exporting them
+ * would grow the package's public surface as a side effect of an internal change: every field
+ * would become an API promise nobody asked for, on a component whose internals just moved once
+ * and may move again.
+ *
+ * Nothing in this repo consumes them and the package barrel re-exports the COMPONENTS only, so no
+ * consumer can be relying on them today. Export one when a consumer has a real reason, and govern
+ * it in COMPONENT_PROP_REGISTRY at the same time.
+ */
 interface DropdownMenuPropsOwn {
   /** Trạng thái mở có kiểm soát (Radix). Bên trong là `isOpen` của RAC. */
   open?: boolean;
@@ -140,7 +154,7 @@ interface DropdownMenuPropsOwn {
   dir?: "ltr" | "rtl";
 }
 
-export type DropdownMenuProps = React.PropsWithChildren<DropdownMenuPropsOwn>;
+type DropdownMenuProps = React.PropsWithChildren<DropdownMenuPropsOwn>;
 
 export function DropdownMenu({
   children,
@@ -161,7 +175,7 @@ export function DropdownMenu({
   );
 }
 
-export interface DropdownMenuTriggerProps extends React.ComponentPropsWithoutRef<"button"> {
+interface DropdownMenuTriggerProps extends React.ComponentPropsWithoutRef<"button"> {
   /** Giao hành vi mở cho phần tử con thay vì `<button>` mặc định — như Radix. */
   asChild?: boolean;
 }
@@ -201,7 +215,7 @@ interface DropdownMenuPortalPropsOwn {
   forceMount?: true;
 }
 
-export type DropdownMenuPortalProps = React.PropsWithChildren<DropdownMenuPortalPropsOwn>;
+type DropdownMenuPortalProps = React.PropsWithChildren<DropdownMenuPortalPropsOwn>;
 
 /** RAC `Popover` đã tự cổng, nên Portal chỉ còn là chỗ giữ hình dạng cây của Radix. */
 export function DropdownMenuPortal({ children }: DropdownMenuPortalProps) {
@@ -212,7 +226,7 @@ interface DropdownMenuGroupPropsOwn {
   className?: string;
 }
 
-export type DropdownMenuGroupProps = React.PropsWithChildren<DropdownMenuGroupPropsOwn>;
+type DropdownMenuGroupProps = React.PropsWithChildren<DropdownMenuGroupPropsOwn>;
 
 /** Radix dựng `<div role="group">`; RAC `MenuSection` dựng `<section role="group">`. */
 export function DropdownMenuGroup({ children, className }: DropdownMenuGroupProps) {
@@ -229,7 +243,7 @@ interface DropdownMenuRadioGroupPropsOwn {
   onValueChange?: (value: string) => void;
 }
 
-export type DropdownMenuRadioGroupProps = React.PropsWithChildren<DropdownMenuRadioGroupPropsOwn>;
+type DropdownMenuRadioGroupProps = React.PropsWithChildren<DropdownMenuRadioGroupPropsOwn>;
 
 /**
  * Radix giữ trạng thái chọn ở chính RadioGroup; RAC giữ ở collection, khoá theo `id` của item.
@@ -269,7 +283,7 @@ interface DropdownMenuSubPropsOwn {
   onOpenChange?: (open: boolean) => void;
 }
 
-export type DropdownMenuSubProps = React.PropsWithChildren<DropdownMenuSubPropsOwn>;
+type DropdownMenuSubProps = React.PropsWithChildren<DropdownMenuSubPropsOwn>;
 
 /**
  * `SubmenuTrigger` đọc children THEO VỊ TRÍ — `children[0]` là item mở submenu, `children[1]` là
@@ -296,7 +310,7 @@ interface DropdownMenuContentPropsOwn {
   sticky?: "partial" | "always";
 }
 
-export type DropdownMenuContentProps = React.PropsWithChildren<DropdownMenuContentPropsOwn>;
+type DropdownMenuContentProps = React.PropsWithChildren<DropdownMenuContentPropsOwn>;
 
 /**
  * Một phần tử của Radix (`Content`) tách thành HAI ở RAC: `Popover` là hộp được định vị, `Menu` là
@@ -360,7 +374,7 @@ interface DropdownMenuItemPropsOwn {
   asChild?: boolean;
 }
 
-export type DropdownMenuItemProps = React.PropsWithChildren<DropdownMenuItemPropsOwn>;
+type DropdownMenuItemProps = React.PropsWithChildren<DropdownMenuItemPropsOwn>;
 
 export function DropdownMenuItem({
   children,
@@ -409,7 +423,7 @@ interface DropdownMenuLabelPropsOwn {
   asChild?: boolean;
 }
 
-export type DropdownMenuLabelProps = React.PropsWithChildren<DropdownMenuLabelPropsOwn>;
+type DropdownMenuLabelProps = React.PropsWithChildren<DropdownMenuLabelPropsOwn>;
 
 /**
  * Radix dựng `<div>`; nút nhãn của một collection RAC là `Header`, tức `<header>`.
@@ -438,7 +452,7 @@ export function DropdownMenuLabel({ children, className, inset, asChild }: Dropd
   );
 }
 
-export interface DropdownMenuSeparatorProps {
+interface DropdownMenuSeparatorProps {
   className?: string;
 }
 
@@ -461,8 +475,7 @@ interface DropdownMenuCheckboxItemPropsOwn {
   asChild?: boolean;
 }
 
-export type DropdownMenuCheckboxItemProps =
-  React.PropsWithChildren<DropdownMenuCheckboxItemPropsOwn>;
+type DropdownMenuCheckboxItemProps = React.PropsWithChildren<DropdownMenuCheckboxItemPropsOwn>;
 
 /**
  * Ở Radix mỗi CheckboxItem tự giữ `checked`. Ở RAC không có `isSelected` trên item: `aria-checked`
@@ -527,7 +540,7 @@ interface DropdownMenuRadioItemPropsOwn {
   asChild?: boolean;
 }
 
-export type DropdownMenuRadioItemProps = React.PropsWithChildren<DropdownMenuRadioItemPropsOwn>;
+type DropdownMenuRadioItemProps = React.PropsWithChildren<DropdownMenuRadioItemPropsOwn>;
 
 export function DropdownMenuRadioItem({
   children,
@@ -567,7 +580,7 @@ interface DropdownMenuSubTriggerPropsOwn {
   asChild?: boolean;
 }
 
-export type DropdownMenuSubTriggerProps = React.PropsWithChildren<DropdownMenuSubTriggerPropsOwn>;
+type DropdownMenuSubTriggerProps = React.PropsWithChildren<DropdownMenuSubTriggerPropsOwn>;
 
 export function DropdownMenuSubTrigger({
   children,
@@ -621,7 +634,7 @@ interface DropdownMenuSubContentPropsOwn {
   sticky?: "partial" | "always";
 }
 
-export type DropdownMenuSubContentProps = React.PropsWithChildren<DropdownMenuSubContentPropsOwn>;
+type DropdownMenuSubContentProps = React.PropsWithChildren<DropdownMenuSubContentPropsOwn>;
 
 export function DropdownMenuSubContent({
   children,
