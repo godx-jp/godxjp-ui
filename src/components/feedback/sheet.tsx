@@ -1,15 +1,40 @@
 import * as React from "react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { chain, mergeRefs } from "@react-aria/utils";
+import { Dialog as RacDialog, Modal, ModalOverlay } from "react-aria-components";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 import { useMediaQuery } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
+import { Slot } from "../../lib/slot";
 import type { SheetResponsiveProp } from "../../props/components/feedback.prop";
 import type { ToneProp, WidthProp } from "../../props/vocabulary";
 import { overlayHeaderToneClass } from "./overlay-header-tone";
+import { useOverlayCloseFocus } from "./overlay-close-focus";
 import { useTranslation } from "../../i18n/use-translation";
 
 export type { SheetResponsiveProp } from "../../props/components/feedback.prop";
+
+/*
+ * Sheet — cùng một đợt đổi nền như `dialog.tsx`: `@radix-ui/react-dialog` →
+ * `ModalOverlay` / `Modal` / `Dialog` của react-aria-components.
+ *
+ * RAC KHÔNG có Drawer. Nó cũng không cần có: một drawer là một modal dialog
+ * neo vào một cạnh, và toàn bộ diện mạo ấy đã nằm trong `sheetVariants` +
+ * `.ui-sheet-*` của kho này. Nên phần đổi là nền hành vi, còn hình học —
+ * `data-side`, `data-responsive`, `--sheet-width`, mọi lớp trượt-vào — giữ
+ * nguyên từng ký tự.
+ *
+ * Ba điểm lệch, giống hệt `dialog.tsx` (đọc chú thích đầu tệp đó cho lý do):
+ *
+ *   • `SheetPortal` thành ống dẫn, `SheetOverlay` không dựng gì — màn nền là
+ *     `ModalOverlay` do `SheetContent` phát ra, vẫn mang `data-slot="sheet-overlay"`
+ *     + `.ui-sheet-overlay`. `overlayClassName` vẫn là cửa để đặt lớp riêng lên
+ *     nó (AppShell dùng: `app-mobile-nav-overlay`).
+ *   • `data-state` được phát lại từ trạng thái mở của kho, vì 12 lớp
+ *     `data-[state=…]` dưới đây (trượt vào / trượt ra theo từng cạnh) đọc nó.
+ *   • Tấm nội dung là `<section>` chứ không còn `<div>` — thẻ mà RAC chờ đợi ở
+ *     khe `render`; `role="dialog"` phủ lên vai ngầm của nó.
+ */
 
 /** number → px; string → any CSS length. */
 const toCssLength = (v: WidthProp): string => (typeof v === "number" ? `${v}px` : v);
@@ -67,39 +92,143 @@ export function useSheetResponsiveMode(
   return compact ? "bottom" : "side";
 }
 
-export function Sheet(props: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="sheet" {...props} />;
+/** Gói prop khe `render` của RAC trao lại — nó có thêm `data-rac`, thứ kiểu JSX không khai báo. */
+type RacSectionProps = React.ComponentPropsWithRef<"section"> & { "data-rac"?: string };
+
+/** Trạng thái mở dùng chung cho Sheet ↔ SheetTrigger ↔ SheetContent ↔ SheetClose. */
+interface SheetOpenState {
+  readonly isOpen: boolean;
+  setOpen: (open: boolean) => void;
 }
 
-export function SheetTrigger(props: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
-  return <DialogPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
+const SheetOpenContext = React.createContext<SheetOpenState | null>(null);
+
+function useSheetOpenState(component: string): SheetOpenState {
+  const state = React.useContext(SheetOpenContext);
+  if (!state) {
+    throw new Error(`\`${component}\` phải nằm trong \`Sheet\`.`);
+  }
+  return state;
 }
 
-export function SheetClose(props: React.ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="sheet-close" {...props} />;
+/** Cặp id `SheetContent` sinh ra và `SheetTitle` / `SheetDescription` đọc lại — hợp đồng của Radix. */
+const SheetLabelContext = React.createContext<{
+  titleId: string;
+  descriptionId: string;
+} | null>(null);
+
+export interface SheetProps {
+  /** Trạng thái mở, có kiểm soát. */
+  open?: boolean;
+  /** Trạng thái mở ban đầu khi không kiểm soát. */
+  defaultOpen?: boolean;
+  /** Gọi khi trạng thái mở đổi. */
+  onOpenChange?: (open: boolean) => void;
+  /**
+   * Giữ tên prop của Radix. RAC không có kiểu overlay không-modal: `Modal` LUÔN khoá cuộn và ẩn
+   * nền khỏi trình đọc màn hình, nên `modal={false}` không còn tắt được điều đó.
+   */
+  modal?: boolean;
+  children?: React.ReactNode;
 }
 
-export function SheetPortal(props: React.ComponentProps<typeof DialogPrimitive.Portal>) {
-  return <DialogPrimitive.Portal data-slot="sheet-portal" {...props} />;
+export function Sheet({ open, defaultOpen, onOpenChange, modal: _modal, children }: SheetProps) {
+  const [uncontrolled, setUncontrolled] = React.useState(defaultOpen ?? false);
+  const isOpen = open ?? uncontrolled;
+
+  // Chỉ gọi `onOpenChange` khi giá trị THẬT SỰ đổi, để `ModalOverlay` (nơi RAC tự gọi `setOpen`
+  // lúc Escape / click ngoài) không phát trùng — đúng nết `useControllableState` của Radix.
+  const setOpen = React.useCallback(
+    (next: boolean) => {
+      if (next === isOpen) {
+        return;
+      }
+      if (open === undefined) {
+        setUncontrolled(next);
+      }
+      onOpenChange?.(next);
+    },
+    [isOpen, open, onOpenChange],
+  );
+
+  const state = React.useMemo<SheetOpenState>(() => ({ isOpen, setOpen }), [isOpen, setOpen]);
+
+  return <SheetOpenContext.Provider value={state}>{children}</SheetOpenContext.Provider>;
 }
 
-export const SheetOverlay = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Overlay
-    ref={ref}
-    data-slot="sheet-overlay"
-    className={cn(
-      // Scrim colour comes from the shared --overlay-background token (see dialog-layout.css),
-      // so a service tints every overlay's backdrop from one knob instead of a baked bg-black/50.
-      "ui-sheet-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed",
-      className,
-    )}
-    {...props}
-  />
-));
-SheetOverlay.displayName = DialogPrimitive.Overlay.displayName;
+export interface SheetTriggerProps extends React.ComponentPropsWithRef<"button"> {
+  /** Mượn thẻ của con thay vì dựng `<button>` riêng. */
+  asChild?: boolean;
+}
+
+export function SheetTrigger({ asChild, onClick, ...props }: SheetTriggerProps) {
+  const state = useSheetOpenState("SheetTrigger");
+  const Comp = (asChild ? Slot : "button") as React.ElementType;
+
+  return (
+    <Comp
+      type="button"
+      data-slot="sheet-trigger"
+      aria-haspopup="dialog"
+      aria-expanded={state.isOpen}
+      data-state={state.isOpen ? "open" : "closed"}
+      {...props}
+      onClick={chain(onClick, () => {
+        state.setOpen(!state.isOpen);
+      })}
+    />
+  );
+}
+
+export interface SheetCloseProps extends React.ComponentPropsWithRef<"button"> {
+  /** Mượn thẻ của con thay vì dựng `<button>` riêng. */
+  asChild?: boolean;
+}
+
+export function SheetClose({ asChild, onClick, ...props }: SheetCloseProps) {
+  const state = useSheetOpenState("SheetClose");
+  const Comp = (asChild ? Slot : "button") as React.ElementType;
+
+  return (
+    <Comp
+      type="button"
+      data-slot="sheet-close"
+      {...props}
+      onClick={chain(onClick, () => {
+        state.setOpen(false);
+      })}
+    />
+  );
+}
+
+export interface SheetPortalProps {
+  /** Giữ tên prop của Radix; RAC tự portal ra `document.body` từ `ModalOverlay`. */
+  forceMount?: true;
+  children?: React.ReactNode;
+}
+
+export function SheetPortal({ children }: SheetPortalProps) {
+  return <>{children}</>;
+}
+
+export interface SheetOverlayProps extends React.ComponentPropsWithRef<"div"> {
+  /** Giữ tên prop của Radix. */
+  forceMount?: true;
+}
+
+/**
+ * Không dựng gì — xem đầu tệp. Màn nền là `ModalOverlay` bên trong `SheetContent`, và nó vẫn mang
+ * `data-slot="sheet-overlay"` + `.ui-sheet-overlay` như trước.
+ */
+export function SheetOverlay(_props: SheetOverlayProps) {
+  return null;
+}
+SheetOverlay.displayName = "SheetOverlay";
+
+/** Scrim colour comes from the shared --overlay-background token (see dialog-layout.css),
+ * so a service tints every overlay's backdrop from one knob instead of a baked bg-black/50. */
+const SHEET_OVERLAY_CLASS =
+  "ui-sheet-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed";
 
 const sheetVariants = cva(
   "ui-sheet-panel fixed flex flex-col gap-[var(--space-chrome-gap)] bg-background px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)] transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
@@ -122,12 +251,12 @@ const sheetVariants = cva(
 );
 
 export interface SheetContentProps
-  extends
-    React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {
+  extends React.ComponentPropsWithRef<"section">, VariantProps<typeof sheetVariants> {
   showCloseButton?: boolean;
   /** Optional semantic class for the owned backdrop (for a shell-specific overlay token). */
   overlayClassName?: string;
+  /** Giữ tên prop của Radix; RAC tự portal ra `document.body` từ `ModalOverlay`. */
+  forceMount?: true;
   /**
    * Desired panel size for side left/right (Ant Drawer `width`). Omit to keep the canonical drawer
    * default from `--sheet-width-default`.
@@ -140,45 +269,58 @@ export interface SheetContentProps
   responsive?: SheetResponsiveProp;
 }
 
-export const SheetContent = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Content>,
-  SheetContentProps
->(
-  (
-    {
-      side = "right",
-      className,
-      children,
-      showCloseButton = true,
-      overlayClassName,
-      width,
-      responsive = "side",
-      style,
-      ...props
-    },
-    ref,
-  ) => {
-    const { t } = useTranslation();
-    const presentation = useSheetResponsiveMode(responsive);
-    // The bottom sheet REPLACES the named side (never merges with it) so the geometry classes stay
-    // a single coherent set — a side variant's inset classes UNIONED with the bottom variant's would
-    // pin all four edges and produce a full-screen overlay instead of a drawer.
-    const resolvedSide = presentation === "bottom" ? "bottom" : side;
-    const bottomSheet = responsive !== "side" && presentation === "bottom";
-    const horizontal = resolvedSide === "left" || resolvedSide === "right";
-    const widthSet = width != null && horizontal;
-    const mergedStyle = widthSet
-      ? ({ ...style, ["--sheet-width" as string]: toCssLength(width) } as React.CSSProperties)
-      : style;
-    return (
-      <SheetPortal>
-        <SheetOverlay className={overlayClassName} />
-        <DialogPrimitive.Content
-          ref={ref}
+export function SheetContent({
+  side = "right",
+  className,
+  children,
+  showCloseButton = true,
+  overlayClassName,
+  forceMount: _forceMount,
+  width,
+  responsive = "side",
+  style,
+  ref,
+  ...props
+}: SheetContentProps) {
+  const { t } = useTranslation();
+  const state = useSheetOpenState("SheetContent");
+  const presentation = useSheetResponsiveMode(responsive);
+  const titleId = React.useId();
+  const descriptionId = React.useId();
+  const labels = React.useMemo(() => ({ titleId, descriptionId }), [titleId, descriptionId]);
+  // The bottom sheet REPLACES the named side (never merges with it) so the geometry classes stay
+  // a single coherent set — a side variant's inset classes UNIONED with the bottom variant's would
+  // pin all four edges and produce a full-screen overlay instead of a drawer.
+  const resolvedSide = presentation === "bottom" ? "bottom" : side;
+  const bottomSheet = responsive !== "side" && presentation === "bottom";
+  const horizontal = resolvedSide === "left" || resolvedSide === "right";
+  const widthSet = width != null && horizontal;
+  const mergedStyle = widthSet
+    ? ({ ...style, ["--sheet-width" as string]: toCssLength(width) } as React.CSSProperties)
+    : style;
+  const dataState = state.isOpen ? "open" : "closed";
+
+  useOverlayCloseFocus(state.isOpen);
+
+  return (
+    <ModalOverlay
+      isOpen={state.isOpen}
+      onOpenChange={state.setOpen}
+      isDismissable
+      data-slot="sheet-overlay"
+      data-state={dataState}
+      className={cn(SHEET_OVERLAY_CLASS, overlayClassName)}
+    >
+      {/* `display: contents` — thẻ `Modal` là chỗ RAC treo khoá cuộn / bẫy tiêu điểm, không phải
+          một hộp bố cục. Bỏ nó đi thì `useInteractOutside` mất mốc để so. */}
+      <Modal className="contents">
+        <RacDialog
+          aria-labelledby={props["aria-labelledby"] ?? titleId}
+          aria-describedby={props["aria-describedby"] ?? descriptionId}
           data-slot="sheet-content"
+          data-state={dataState}
           data-responsive={responsive}
           data-side={resolvedSide}
-          style={mergedStyle}
           className={cn(
             sheetVariants({ side: resolvedSide }),
             // `width` caps at the viewport: full-width panel on a small screen, capped on a large one.
@@ -188,31 +330,37 @@ export const SheetContent = React.forwardRef<
             bottomSheet && "max-h-[var(--sheet-bottom-max-height)]",
             className,
           )}
-          {...props}
+          render={(racProps) => {
+            const { "data-rac": _rac, ref: racRef, ...rest } = racProps as RacSectionProps;
+            return (
+              <section {...rest} {...props} style={mergedStyle} ref={mergeRefs(ref, racRef)} />
+            );
+          }}
         >
-          {children}
-          {showCloseButton ? (
-            <DialogPrimitive.Close
-              data-slot="sheet-close"
-              // `ui-focus-ring` = the single focus source. It replaces a hand-rolled
-              // `focus:ring-2 focus:ring-offset-2 focus:ring-ring` — token-blind, on `:focus`
-              // rather than `:focus-visible`, and with a 2px offset nothing else in the system
-              // used. Matches DialogClose, which already carries the marker class.
-              className="ui-sheet-close ui-focus-ring disabled:pointer-events-none"
-            >
-              <X className="ui-sheet-close-icon" aria-hidden="true" />
-              <span className="sr-only">{t("feedback.alert.dismiss")}</span>
-            </DialogPrimitive.Close>
-          ) : null}
-        </DialogPrimitive.Content>
-      </SheetPortal>
-    );
-  },
-);
-SheetContent.displayName = DialogPrimitive.Content.displayName;
+          <SheetLabelContext.Provider value={labels}>
+            {children}
+            {showCloseButton ? (
+              <SheetClose
+                // `ui-focus-ring` = the single focus source. It replaces a hand-rolled
+                // `focus:ring-2 focus:ring-offset-2 focus:ring-ring` — token-blind, on `:focus`
+                // rather than `:focus-visible`, and with a 2px offset nothing else in the system
+                // used. Matches DialogClose, which already carries the marker class.
+                className="ui-sheet-close ui-focus-ring disabled:pointer-events-none"
+              >
+                <X className="ui-sheet-close-icon" aria-hidden="true" />
+                <span className="sr-only">{t("feedback.alert.dismiss")}</span>
+              </SheetClose>
+            ) : null}
+          </SheetLabelContext.Provider>
+        </RacDialog>
+      </Modal>
+    </ModalOverlay>
+  );
+}
+SheetContent.displayName = "SheetContent";
 
 export interface SheetHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
-  /** Header title (Ant Drawer-style). Rendered as the Radix-bound SheetTitle (accessible name). */
+  /** Header title (Ant Drawer-style). Rendered as the bound SheetTitle (accessible name). */
   title?: React.ReactNode;
   /** Secondary line under the title (rendered as SheetDescription). */
   subtitle?: React.ReactNode;
@@ -292,27 +440,35 @@ export const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDi
 );
 
 export const SheetTitle = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    data-slot="sheet-title"
-    className={cn("ui-sheet-title", className)}
-    {...props}
-  />
-));
-SheetTitle.displayName = DialogPrimitive.Title.displayName;
+  HTMLHeadingElement,
+  React.ComponentPropsWithoutRef<"h2">
+>(({ className, ...props }, ref) => {
+  const labels = React.useContext(SheetLabelContext);
+  return (
+    <h2
+      ref={ref}
+      id={labels?.titleId}
+      data-slot="sheet-title"
+      className={cn("ui-sheet-title", className)}
+      {...props}
+    />
+  );
+});
+SheetTitle.displayName = "SheetTitle";
 
 export const SheetDescription = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description
-    ref={ref}
-    data-slot="sheet-description"
-    className={cn("ui-sheet-description", className)}
-    {...props}
-  />
-));
-SheetDescription.displayName = DialogPrimitive.Description.displayName;
+  HTMLParagraphElement,
+  React.ComponentPropsWithoutRef<"p">
+>(({ className, ...props }, ref) => {
+  const labels = React.useContext(SheetLabelContext);
+  return (
+    <p
+      ref={ref}
+      id={labels?.descriptionId}
+      data-slot="sheet-description"
+      className={cn("ui-sheet-description", className)}
+      {...props}
+    />
+  );
+});
+SheetDescription.displayName = "SheetDescription";
