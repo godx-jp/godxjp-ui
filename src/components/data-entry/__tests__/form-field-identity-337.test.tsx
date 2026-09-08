@@ -305,7 +305,11 @@ describe("Select / Radio / Checkbox addressability (gh#337)", () => {
       </FormField>,
     );
     const box = document.getElementById("flags-52")!;
-    expect(box).toHaveAttribute("role", "checkbox");
+    // The role is the box's IMPLICIT one (`<input type="checkbox">`) rather than a written
+    // `role="checkbox"` attribute — react-aria renders a real input where Radix rendered a
+    // `<button role="checkbox">`. `toHaveRole` resolves both, so this still pins "the element the
+    // id addresses is the checkbox itself", which is the whole claim.
+    expect(box).toHaveRole("checkbox");
     expect(box).toHaveAttribute("data-field", "flags");
     expect(document.querySelector('label[for="flags-53"]')).toHaveTextContent("大阪支社");
   });

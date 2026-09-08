@@ -33,11 +33,11 @@ describe("Transfer — disabled / titles / single toggle", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     renderWithUi(<Transfer dataSource={DATA} targetKeys={[]} onValueChange={onValueChange} />);
-    // check NV-001's row checkbox (not select-all)
-    const rowCheckbox = screen
-      .getAllByRole("checkbox")
-      .find((cb) => cb.closest("label")?.textContent?.includes("NV-001"));
-    await user.click(rowCheckbox!);
+    // check NV-001's row checkbox (not select-all). The row is no longer a <label> around the box
+    // — a label inside a label is invalid — so the row text names it by reference instead, which
+    // makes the row the checkbox's accessible name.
+    const rowCheckbox = screen.getByRole("checkbox", { name: /NV-001/ });
+    await user.click(rowCheckbox);
     // now the move-right button (the only enabled move button) is active
     const moveBtn = screen.getAllByRole("button").find((b) => !(b as HTMLButtonElement).disabled);
     await user.click(moveBtn!);
@@ -46,9 +46,7 @@ describe("Transfer — disabled / titles / single toggle", () => {
 
   it("a disabled item's checkbox cannot be toggled", () => {
     renderWithUi(<Transfer dataSource={DATA} targetKeys={[]} onValueChange={vi.fn()} />);
-    const disabledRow = screen
-      .getAllByRole("checkbox")
-      .find((cb) => cb.closest("label")?.textContent?.includes("NV-003"));
+    const disabledRow = screen.getByRole("checkbox", { name: /NV-003/ });
     expect(disabledRow).toBeDisabled();
   });
 });

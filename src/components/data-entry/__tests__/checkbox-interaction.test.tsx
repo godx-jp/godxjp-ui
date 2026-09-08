@@ -8,26 +8,30 @@ import { Checkbox } from "../checkbox";
  * Behavioral interaction tests for Checkbox + Checkbox.Group.
  * Codifies real runtime behavior so future runs need NO browser MCP.
  *
- * The standalone Checkbox is a Radix primitive: it exposes `checked`
- * (controlled) / `defaultChecked` (uncontrolled) and fires `onCheckedChange`.
- * Checkbox.Group is a multi-select wrapper: it owns a string[] `value`
- * and fires `onValueChange(next[])`.
+ * The standalone Checkbox exposes `checked` (controlled) / `defaultChecked`
+ * (uncontrolled) and fires `onCheckedChange` — the public prop names are the
+ * same they were on the Radix primitive. Checkbox.Group is a multi-select
+ * wrapper: it owns a string[] `value` and fires `onValueChange(next[])`.
  *
- * Radix renders the checkbox as role="checkbox" (a <button>), NOT an
- * <input>, so we assert `aria-checked` / `data-state`, not `.toBeChecked()`.
+ * react-aria renders the checkbox as a REAL <input type="checkbox"> wrapped in
+ * a <label> (Radix rendered a <button role="checkbox">), so the checked state
+ * is the input's own `checked` property — `.toBeChecked()` — rather than an
+ * `aria-checked` attribute. `data-state` is still written, on the wrapping box,
+ * because 12k lines of CSS key off it.
  */
 describe("Checkbox (standalone) — toggle behavior", () => {
-  it("uncontrolled: click toggles aria-checked true/false", async () => {
+  it("uncontrolled: click toggles the checked state true/false", async () => {
     const user = userEvent.setup();
     renderWithUi(<Checkbox aria-label="agree" />);
     const box = screen.getByRole("checkbox", { name: "agree" });
 
-    expect(box).toHaveAttribute("aria-checked", "false");
+    expect(box).not.toBeChecked();
     await user.click(box);
-    expect(box).toHaveAttribute("aria-checked", "true");
-    expect(box).toHaveAttribute("data-state", "checked");
+    expect(box).toBeChecked();
+    // The CSS hook the checked fill hangs off, on the box that paints it.
+    expect(box.closest('[data-slot="checkbox"]')).toHaveAttribute("data-state", "checked");
     await user.click(box);
-    expect(box).toHaveAttribute("aria-checked", "false");
+    expect(box).not.toBeChecked();
   });
 
   it("onCheckedChange fires with the new boolean on click", async () => {
@@ -51,7 +55,7 @@ describe("Checkbox (standalone) — toggle behavior", () => {
     await user.tab();
     expect(box).toHaveFocus();
     await user.keyboard("{ }"); // Space
-    expect(box).toHaveAttribute("aria-checked", "true");
+    expect(box).toBeChecked();
     expect(onCheckedChange).toHaveBeenLastCalledWith(true);
   });
 
@@ -70,9 +74,9 @@ describe("Checkbox (standalone) — toggle behavior", () => {
     renderWithUi(<Controlled />);
     const box = screen.getByRole("checkbox", { name: "ctrl" });
 
-    expect(box).toHaveAttribute("aria-checked", "false");
+    expect(box).not.toBeChecked();
     await user.click(box);
-    expect(box).toHaveAttribute("aria-checked", "true");
+    expect(box).toBeChecked();
   });
 
   it("controlled without a state-syncing handler is FROZEN (stays checked=false)", async () => {
@@ -84,7 +88,7 @@ describe("Checkbox (standalone) — toggle behavior", () => {
     const box = screen.getByRole("checkbox", { name: "frozen" });
 
     await user.click(box);
-    expect(box).toHaveAttribute("aria-checked", "false"); // never moves
+    expect(box).not.toBeChecked(); // never moves
   });
 
   it("disabled blocks click and keyboard, no onCheckedChange", async () => {
@@ -95,14 +99,14 @@ describe("Checkbox (standalone) — toggle behavior", () => {
 
     await user.click(box);
     expect(onCheckedChange).not.toHaveBeenCalled();
-    expect(box).toHaveAttribute("aria-checked", "false");
+    expect(box).not.toBeChecked();
     expect(box).toBeDisabled();
   });
 
   it("defaultChecked renders initially checked (uncontrolled)", async () => {
     renderWithUi(<Checkbox aria-label="pre" defaultChecked />);
     const box = screen.getByRole("checkbox", { name: "pre" });
-    expect(box).toHaveAttribute("aria-checked", "true");
+    expect(box).toBeChecked();
   });
 });
 
@@ -135,11 +139,11 @@ describe("Checkbox.Group — multi-select behavior", () => {
 
     const email = screen.getByRole("checkbox", { name: "メール" });
     const sms = screen.getByRole("checkbox", { name: "SMS" });
-    expect(email).toHaveAttribute("aria-checked", "true");
-    expect(sms).toHaveAttribute("aria-checked", "false");
+    expect(email).toBeChecked();
+    expect(sms).not.toBeChecked();
 
     await user.click(sms);
-    expect(sms).toHaveAttribute("aria-checked", "true");
+    expect(sms).toBeChecked();
   });
 
   it("controlled: parent state drives checked, value sticks", async () => {
@@ -152,9 +156,9 @@ describe("Checkbox.Group — multi-select behavior", () => {
 
     const sms = screen.getByRole("checkbox", { name: "SMS" });
     await user.click(sms);
-    expect(sms).toHaveAttribute("aria-checked", "true");
+    expect(sms).toBeChecked();
     await user.click(sms);
-    expect(sms).toHaveAttribute("aria-checked", "false");
+    expect(sms).not.toBeChecked();
   });
 
   it("per-option disabled blocks that option only", async () => {

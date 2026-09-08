@@ -45,7 +45,9 @@ describe("DataTable.SelectAll", () => {
     // selecting a single row checkbox → SelectAll becomes indeterminate
     const rowCheckbox = within(screen.getByText("Mai Nguyen").closest("tr")!).getByRole("checkbox");
     await user.click(rowCheckbox);
-    expect(selectAll).toHaveAttribute("aria-checked", "mixed");
+    // react-aria drives a real `<input>`, whose partial state is the `indeterminate` PROPERTY
+    // rather than `aria-checked="mixed"`; `toBePartiallyChecked` accepts either spelling.
+    expect(selectAll).toBePartiallyChecked();
   });
 });
 

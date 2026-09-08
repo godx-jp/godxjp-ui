@@ -5,7 +5,9 @@ import { Checkbox } from "../checkbox";
 describe("Checkbox", () => {
   it("renders checkbox role", () => {
     renderWithUi(<Checkbox aria-label="accept" />);
-    expect(screen.getByRole("checkbox")).toHaveAttribute("data-slot", "checkbox");
+    // The role lives on the real `<input>` and the `data-slot` CSS hook on the box react-aria
+    // wraps it in — one widget, two elements — so assert the hook from the role, not on it.
+    expect(screen.getByRole("checkbox").closest('[data-slot="checkbox"]')).not.toBeNull();
   });
 
   it("can be checked", async () => {

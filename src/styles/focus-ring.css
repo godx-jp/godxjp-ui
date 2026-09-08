@@ -68,6 +68,11 @@
     .sb-user,
     .tb-icon-btn
   ):focus-visible,
+  /* `.ui-checkbox` is a `<label>` wrapping a visually hidden real `<input>` (react-aria), so
+   * keyboard focus lands on the INPUT and `:focus-visible` never matches the painted box.
+   * react-aria mirrors its own focus-visible state onto the root as `data-focus-visible`, which
+   * is the hook that keeps the mark on the element that actually has the border. */
+  .ui-checkbox[data-focus-visible],
   .ui-control-trigger[data-state="open"],
   .ui-tag-input:focus-within,
   .ui-control-composite-field:focus-within,
@@ -126,6 +131,9 @@
       .sb-user,
       .tb-icon-btn
     ):focus-visible,
+  /* Same reason as the mark above: focus lands on the hidden `<input>`, the halo belongs on the
+   * painted box. */
+  :root[data-focus-outline="on"] .ui-checkbox[data-focus-visible],
   :root[data-focus-outline="on"] .ui-control-trigger[data-state="open"],
   :root[data-focus-outline="on"] .ui-tag-input:focus-within,
   :root[data-focus-outline="on"] .ui-control-composite-field:focus-within,
