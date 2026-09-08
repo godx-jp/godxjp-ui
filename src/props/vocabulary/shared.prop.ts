@@ -99,26 +99,6 @@ export type WidthProp = number | string;
 export type ControlWidthProp = "full" | "auto" | "bounded";
 
 /**
- * Validation status of a selection control — the Ant Design `status` contract (antd 6.6.2,
- * `es/_util/statusUtils`: `'' | 'warning' | 'error'`; the empty string is expressed here as
- * `undefined`).
- *
- * `error` ALSO sets `aria-invalid` on the control, because a colour-only error state fails WCAG
- * 2.2 SC 1.4.1 for anyone who cannot see the recolour — antd's own `status="error"` is purely
- * visual and this library does not copy that part.
- */
-export type ControlStatusProp = "error" | "warning";
-
-/**
- * Surface treatment of a control — the Ant Design `variant` contract (antd 6.6.2,
- * `es/config-provider`: `outlined | borderless | filled | underlined`).
- *
- * The four surfaces are drawn from `--control-{surface,filled,borderless,underlined}-*` tokens, so
- * a service theme retunes them once instead of per call site.
- */
-export type ControlVariantProp = "outlined" | "filled" | "borderless" | "underlined";
-
-/**
  * antd `allowClear`: `true`/`false`, or the object form carrying a replacement icon and the
  * accessible label for the clear control (antd 6.6.2, `BaseSelectProps.allowClear`).
  */

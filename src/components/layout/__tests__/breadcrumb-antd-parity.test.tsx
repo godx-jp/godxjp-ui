@@ -84,7 +84,8 @@ describe("Breadcrumb — antd `BreadcrumbItemType.menu`", () => {
   it("turns the segment into a menu button rather than a link that goes nowhere", () => {
     renderWithUi(<Breadcrumb items={withMenu} />);
     const trigger = screen.getByRole("button", { name: /プロジェクトA/ });
-    expect(trigger).toHaveAttribute("aria-haspopup", "menu");
+    // ARIA true and menu both announce a menu popup; React Aria emits true.
+    expect(trigger).toHaveAttribute("aria-haspopup", "true");
     expect(screen.queryByRole("link", { name: /プロジェクトA/ })).toBeNull();
   });
 

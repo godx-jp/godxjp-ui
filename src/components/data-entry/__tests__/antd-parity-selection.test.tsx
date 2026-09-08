@@ -63,7 +63,6 @@ describe("antd parity — surface: status / variant / size", () => {
   it.each([
     ["filled", "filled"],
     ["borderless", "borderless"],
-    ["underlined", "underlined"],
   ] as const)("Select variant=%s reaches the DOM as data-variant", (variant, expected) => {
     renderWithUi(
       <Select options={OPTIONS} placeholder="通貨" aria-label="通貨" variant={variant} />,
@@ -125,7 +124,7 @@ describe("antd parity — surface: status / variant / size", () => {
     },
   );
 
-  it.each(["outlined", "filled", "borderless", "underlined"] as const)(
+  it.each(["outlined", "filled", "borderless"] as const)(
     "SelectTrigger accepts variant=%s",
     (variant) => {
       renderWithUi(
@@ -146,7 +145,7 @@ describe("antd parity — surface: status / variant / size", () => {
     else expect(field).toHaveAttribute("data-size", size);
   });
 
-  it.each(["outlined", "filled", "borderless", "underlined"] as const)(
+  it.each(["outlined", "filled", "borderless"] as const)(
     "TagInput accepts variant=%s",
     (variant) => {
       renderWithUi(<TagInput aria-label="タグ" variant={variant} />);
@@ -166,7 +165,7 @@ describe("antd parity — surface: status / variant / size", () => {
     else expect(trigger).toHaveAttribute("data-size", size);
   });
 
-  it.each(["outlined", "filled", "borderless", "underlined"] as const)(
+  it.each(["outlined", "filled", "borderless"] as const)(
     "Cascader accepts variant=%s",
     (variant) => {
       renderWithUi(<Cascader options={TREE} aria-label="地域" variant={variant} />);
@@ -191,7 +190,7 @@ describe("antd parity — surface: status / variant / size", () => {
     else expect(trigger).toHaveAttribute("data-size", size);
   });
 
-  it.each(["outlined", "filled", "borderless", "underlined"] as const)(
+  it.each(["outlined", "filled", "borderless"] as const)(
     "TreeSelect accepts variant=%s",
     (variant) => {
       renderWithUi(<TreeSelect treeData={TREE} aria-label="組織" variant={variant} />);

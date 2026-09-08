@@ -26,8 +26,6 @@ export type {
   FlushProp,
   WidthProp,
   ControlWidthProp,
-  ControlStatusProp,
-  ControlVariantProp,
   AllowClearProp,
   MaxTagCountProp,
   MaxTagPlaceholderProp,

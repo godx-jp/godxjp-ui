@@ -18,7 +18,7 @@ const page2: Row[] = [{ id: "d", name: "高橋" }];
 const columns: ColumnDef<Row>[] = [{ key: "name", header: "名前" }];
 
 const rowBoxes = (container: HTMLElement) =>
-  Array.from(container.querySelectorAll('tbody [role="checkbox"]')) as HTMLElement[];
+  Array.from(container.querySelectorAll('tbody input[type="checkbox"]')) as HTMLElement[];
 
 describe("DataTable — antd `rowSelection`", () => {
   it("turns selection on by itself, without the older `selectable` flag", () => {
@@ -52,7 +52,9 @@ describe("DataTable — antd `rowSelection`", () => {
         rowSelection={{ selectedRowKeys: ["c"] }}
       />,
     );
-    const states = rowBoxes(container).map((box) => box.getAttribute("data-state"));
+    const states = rowBoxes(container).map((box) =>
+      (box as HTMLInputElement).checked ? "checked" : "unchecked",
+    );
     expect(states).toEqual(["unchecked", "unchecked", "checked"]);
   });
 
@@ -66,9 +68,9 @@ describe("DataTable — antd `rowSelection`", () => {
         rowSelection={{ defaultSelectedRowKeys: ["a"] }}
       />,
     );
-    expect(rowBoxes(container)[0]).toHaveAttribute("data-state", "checked");
+    expect(rowBoxes(container)[0]).toBeChecked();
     await user.click(rowBoxes(container)[0]);
-    expect(rowBoxes(container)[0]).toHaveAttribute("data-state", "unchecked");
+    expect(rowBoxes(container)[0]).not.toBeChecked();
   });
 
   it("disables the row whose `getCheckboxProps` says so, and names it", () => {
@@ -105,7 +107,7 @@ describe("DataTable — antd `rowSelection`", () => {
     const radios = screen.getAllByRole("radio");
     expect(radios).toHaveLength(3);
     // The header cell exists (the column is still there) but carries no select-all control.
-    expect(container.querySelectorAll('thead [role="checkbox"]')).toHaveLength(0);
+    expect(container.querySelectorAll('thead input[type="checkbox"]')).toHaveLength(0);
 
     await user.click(radios[0]);
     expect(onChange).toHaveBeenLastCalledWith(["a"], [page1[0]]);
@@ -123,7 +125,7 @@ describe("DataTable — antd `rowSelection`", () => {
         rowSelection={{ hideSelectAll: true }}
       />,
     );
-    expect(container.querySelectorAll('thead [role="checkbox"]')).toHaveLength(0);
+    expect(container.querySelectorAll('thead input[type="checkbox"]')).toHaveLength(0);
     expect(rowBoxes(container)).toHaveLength(3);
   });
 
@@ -177,7 +179,9 @@ describe("DataTable — antd `rowSelection`", () => {
     const items = await screen.findAllByRole("menuitem");
     expect(items).toHaveLength(3);
     await user.click(items[1]); // invert
-    const states = rowBoxes(container).map((box) => box.getAttribute("data-state"));
+    const states = rowBoxes(container).map((box) =>
+      (box as HTMLInputElement).checked ? "checked" : "unchecked",
+    );
     expect(states).toEqual(["unchecked", "checked", "checked"]);
   });
 

@@ -26,11 +26,12 @@ export type {
 
 export type TabsOrientation = "vertical" | "horizontal";
 export type TabsItem = TabItemProp;
-export type TabsProps = Omit<React.ComponentPropsWithoutRef<"div">, "defaultValue" | "dir"> & TabsProp & {
-  orientation?: TabsOrientation;
-  dir?: "ltr" | "rtl";
-  activationMode?: "manual" | "automatic";
-};
+export type TabsProps = Omit<React.ComponentPropsWithoutRef<"div">, "defaultValue" | "dir"> &
+  TabsProp & {
+    orientation?: TabsOrientation;
+    dir?: "ltr" | "rtl";
+    activationMode?: "manual" | "automatic";
+  };
 
 type TabsFrame = {
   /**
@@ -180,8 +181,12 @@ export function Tabs({
     tabPlacement,
     orientation,
   );
-  const selectionSuppressed = value === undefined && items != null && items.length > 0 && resolvedDefault === undefined;
-  const frame = React.useMemo<TabsFrame>(() => ({ orientation: resolvedOrientation, selectionSuppressed }), [resolvedOrientation, selectionSuppressed]);
+  const selectionSuppressed =
+    value === undefined && items != null && items.length > 0 && resolvedDefault === undefined;
+  const frame = React.useMemo<TabsFrame>(
+    () => ({ orientation: resolvedOrientation, selectionSuppressed }),
+    [resolvedOrientation, selectionSuppressed],
+  );
   const editable = variant === "editable-card";
 
   // The selection MIRROR. Radix still owns the state; this only reflects it, so that the panels
@@ -338,7 +343,15 @@ export function Tabs({
                 className="ui-tabs-tab-remove"
                 aria-hidden="true"
                 title={t("navigation.tabs.removeTab")}
+                onPointerDown={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }}
                 onMouseDown={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }}
+                onClick={(event) => {
                   // Radix selects a tab on mousedown, so the stop has to happen there: on click it
                   // would already have switched tabs before removing one.
                   event.preventDefault();
@@ -357,89 +370,97 @@ export function Tabs({
 
   return (
     <TabsFrameContext.Provider value={frame}>
-    <AriaTabs
-      data-slot="tabs"
-      data-orientation={resolvedOrientation}
-      // The variant AS ASKED FOR. The list deliberately collapses `card`/`editable-card` into
-      // what a service theme, and a test, need to key on.
-      data-variant={variant}
-      data-placement={placement}
-      data-size={size}
-      data-centered={centered ? "true" : undefined}
-      orientation={resolvedOrientation}
-      keyboardActivation={activationMode}
-      selectedKey={value}
-      defaultSelectedKey={value === undefined ? resolvedDefault : undefined}
-      onSelectionChange={(key) => handleValueChange(String(key))}
-      className={cn(
-        // Structure only. The paint (and the placement flip, which is `order`/`flex-direction`)
-        // lives in src/styles/navigation-layout.css so the gap reads --tabs-root-gap and a service
-        // can retune it.
-        "group/tabs flex data-[orientation=horizontal]:flex-col",
-        // PLACEMENT is a flex REVERSAL, never a re-ordered tree: the strip stays first in the DOM
-        // at every placement, so reading order and the APG tablist → tabpanel relationship do not
-        // depend on which edge the bar is painted on. Both classes carry the same modifier as the
-        // base step they replace, so tailwind-merge drops that step instead of stacking two
-        // flex-direction values on one element.
-        placement === "bottom" && "data-[orientation=horizontal]:flex-col-reverse",
-        placement === "end" && "flex-row-reverse",
-        className,
-      )}
-      render={(domProps) => withDomProps("div", "tabs", { dir, ...props }, domProps, { "data-orientation": resolvedOrientation, "data-variant": variant, "data-placement": placement, "data-size": size, "data-centered": centered ? "true" : undefined })}
-    >
-      {items ? (
-        <>
-          {needsBar ? (
-            <div data-slot="tabs-bar" className="ui-tabs-bar">
-              {extraStart ? (
-                <div data-slot="tabs-extra" data-side="start" className="ui-tabs-extra">
-                  {extraStart}
-                </div>
-              ) : null}
-              {list}
-              {showAdd ? (
-                <button
-                  type="button"
-                  data-slot="tabs-add"
-                  className="ui-tabs-add"
-                  aria-label={t("navigation.tabs.addTab")}
-                  onClick={(event) => onEdit?.(event, "add")}
-                >
-                  {addIcon ?? <Plus className="ui-tabs-add-icon" aria-hidden="true" />}
-                </button>
-              ) : null}
-              {extraEnd ? (
-                <div data-slot="tabs-extra" data-side="end" className="ui-tabs-extra">
-                  {extraEnd}
-                </div>
-              ) : null}
-            </div>
-          ) : (
-            list
-          )}
-          {items.map((item) => (
-            <TabsContent
-              key={item.value}
-              value={item.value}
-              data-slot="tabs-panel"
-              // `destroyOnHidden={false}` keeps every panel mounted. `forceMount` alone is not
-              // enough: Radix writes `hidden: !present` and `present` is `forceMount || isSelected`,
-              // so a force-mounted panel would paint on top of the active one. The attribute is
-              // therefore driven from the selection mirror.
-              forceMount={destroyOnHidden ? undefined : true}
-              hidden={destroyOnHidden ? undefined : item.value !== activeValue}
-              // No variant geometry: the panel has never carried a top margin (the root is a flex
-              // column with --tabs-root-gap).
-              className={contentClassName}
-            >
-              {item.content}
-            </TabsContent>
-          ))}
-        </>
-      ) : (
-        children
-      )}
-    </AriaTabs>
+      <AriaTabs
+        data-slot="tabs"
+        data-orientation={resolvedOrientation}
+        // The variant AS ASKED FOR. The list deliberately collapses `card`/`editable-card` into
+        // what a service theme, and a test, need to key on.
+        data-variant={variant}
+        data-placement={placement}
+        data-size={size}
+        data-centered={centered ? "true" : undefined}
+        orientation={resolvedOrientation}
+        keyboardActivation={activationMode}
+        selectedKey={value}
+        defaultSelectedKey={value === undefined ? resolvedDefault : undefined}
+        onSelectionChange={(key) => handleValueChange(String(key))}
+        className={cn(
+          // Structure only. The paint (and the placement flip, which is `order`/`flex-direction`)
+          // lives in src/styles/navigation-layout.css so the gap reads --tabs-root-gap and a service
+          // can retune it.
+          "group/tabs flex data-[orientation=horizontal]:flex-col",
+          // PLACEMENT is a flex REVERSAL, never a re-ordered tree: the strip stays first in the DOM
+          // at every placement, so reading order and the APG tablist → tabpanel relationship do not
+          // depend on which edge the bar is painted on. Both classes carry the same modifier as the
+          // base step they replace, so tailwind-merge drops that step instead of stacking two
+          // flex-direction values on one element.
+          placement === "bottom" && "data-[orientation=horizontal]:flex-col-reverse",
+          placement === "end" && "flex-row-reverse",
+          className,
+        )}
+        render={(domProps) =>
+          withDomProps("div", "tabs", { dir, ...props }, domProps, {
+            "data-orientation": resolvedOrientation,
+            "data-variant": variant,
+            "data-placement": placement,
+            "data-size": size,
+            "data-centered": centered ? "true" : undefined,
+          })
+        }
+      >
+        {items ? (
+          <>
+            {needsBar ? (
+              <div data-slot="tabs-bar" className="ui-tabs-bar">
+                {extraStart ? (
+                  <div data-slot="tabs-extra" data-side="start" className="ui-tabs-extra">
+                    {extraStart}
+                  </div>
+                ) : null}
+                {list}
+                {showAdd ? (
+                  <button
+                    type="button"
+                    data-slot="tabs-add"
+                    className="ui-tabs-add"
+                    aria-label={t("navigation.tabs.addTab")}
+                    onClick={(event) => onEdit?.(event, "add")}
+                  >
+                    {addIcon ?? <Plus className="ui-tabs-add-icon" aria-hidden="true" />}
+                  </button>
+                ) : null}
+                {extraEnd ? (
+                  <div data-slot="tabs-extra" data-side="end" className="ui-tabs-extra">
+                    {extraEnd}
+                  </div>
+                ) : null}
+              </div>
+            ) : (
+              list
+            )}
+            {items.map((item) => (
+              <TabsContent
+                key={item.value}
+                value={item.value}
+                data-slot="tabs-panel"
+                // `destroyOnHidden={false}` keeps every panel mounted. `forceMount` alone is not
+                // enough: Radix writes `hidden: !present` and `present` is `forceMount || isSelected`,
+                // so a force-mounted panel would paint on top of the active one. The attribute is
+                // therefore driven from the selection mirror.
+                forceMount={destroyOnHidden ? undefined : true}
+                hidden={destroyOnHidden ? undefined : item.value !== activeValue}
+                // No variant geometry: the panel has never carried a top margin (the root is a flex
+                // column with --tabs-root-gap).
+                className={contentClassName}
+              >
+                {item.content}
+              </TabsContent>
+            ))}
+          </>
+        ) : (
+          children
+        )}
+      </AriaTabs>
     </TabsFrameContext.Provider>
   );
 }
@@ -526,7 +547,7 @@ type TabsTriggerProps = Omit<React.ComponentPropsWithoutRef<"button">, "value"> 
 };
 
 export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
-  ({ className, value, disabled, children, ...props }, ref) => {
+  ({ className, value, disabled, children, onKeyDown, ...props }, ref) => {
     const { orientation, selectionSuppressed } = React.useContext(TabsFrameContext);
     return (
       <AriaTab
@@ -572,6 +593,14 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
             "aria-selected": renderProps.isSelected && !selectionSuppressed,
             "data-orientation": orientation,
             disabled,
+            onKeyDown: (event: React.KeyboardEvent<HTMLButtonElement>) => {
+              onKeyDown?.(event);
+              if (!event.defaultPrevented) {
+                (domProps.onKeyDown as React.KeyboardEventHandler<HTMLButtonElement> | undefined)?.(
+                  event,
+                );
+              }
+            },
             tabIndex:
               (props as { tabIndex?: number }).tabIndex ??
               (domProps as { tabIndex?: number }).tabIndex,

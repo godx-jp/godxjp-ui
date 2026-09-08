@@ -612,14 +612,6 @@
   --control-borderless-background: transparent;
   --control-borderless-shadow: none;
 
-  /* `underlined` — one rule on the block-end edge, square corners. The radius is expressed by
-   * rebinding --control-radius on the element, so the `rounded-[var(--control-radius)]` utility the
-   * trigger already carries resolves to the sharp step instead of being fought. */
-  --control-underlined-border-color: hsl(var(--input));
-  --control-underlined-background: transparent;
-  --control-underlined-shadow: none;
-  --control-underlined-radius: var(--radius-sharp);
-
   /* STATUS. `error` reuses the destructive role already wired to the focus halo through the
    * `[aria-invalid="true"]` rule in focus-ring.css.
    *

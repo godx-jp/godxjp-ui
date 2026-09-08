@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   Header,
+  Button as AriaButton,
   Menu,
   MenuItem,
   MenuSection,
@@ -244,11 +245,14 @@ export function DropdownMenuTrigger({ asChild, children, ...props }: DropdownMen
     );
   }
   return (
-    <Pressable>
-      <button type="button" data-slot="dropdown-menu-trigger" data-state={dataState} {...props}>
-        {children}
-      </button>
-    </Pressable>
+    <AriaButton
+      {...(props as unknown as React.ComponentProps<typeof AriaButton>)}
+      isDisabled={props.disabled}
+      data-slot="dropdown-menu-trigger"
+      data-state={dataState}
+    >
+      {children}
+    </AriaButton>
   );
 }
 
@@ -404,11 +408,27 @@ export function DropdownMenuContent({
         )}
         render={(props, state) => (
           // `role={undefined}`: một menu không phải một dialog — xem radixSurfaceState.
-          <div {...props} role={undefined} {...radixSurfaceState(state)} />
+          <div
+            {...props}
+            role={undefined}
+            {...radixSurfaceState(state)}
+            data-align={align ?? anchor?.align ?? "center"}
+          />
         )}
       >
         <Menu shouldFocusWrap={loop}>{children}</Menu>
-        {arrow ? <OverlayArrow><svg data-slot="dropdown-menu-arrow" className="ui-dropdown-menu-arrow" viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0 Z" /></svg></OverlayArrow> : null}
+        {arrow ? (
+          <OverlayArrow>
+            <svg
+              data-slot="dropdown-menu-arrow"
+              className="ui-dropdown-menu-arrow"
+              viewBox="0 0 10 5"
+              aria-hidden="true"
+            >
+              <path d="M0 0 L5 5 L10 0 Z" />
+            </svg>
+          </OverlayArrow>
+        ) : null}
       </Popover>
     </DropdownMenuPortal>
   );
@@ -550,7 +570,6 @@ type DropdownMenuCheckboxItemProps = React.PropsWithChildren<DropdownMenuCheckbo
  * Nên mỗi hàng độc lập được bọc trong một `MenuSection` một-phần-tử — đó là cái giá để giữ đúng
  * vai trò ARIA mà consumer đang test.
  */
-const CHECKBOX_KEY = "checked-item";
 
 export function DropdownMenuCheckboxItem({
   children,
@@ -561,18 +580,19 @@ export function DropdownMenuCheckboxItem({
   textValue,
   asChild,
 }: DropdownMenuCheckboxItemProps) {
+  const checkboxKey = React.useId();
   const tag = borrowedTag(children, asChild);
   return (
     <MenuSection
       selectionMode="multiple"
       shouldCloseOnSelect
-      selectedKeys={checked ? [CHECKBOX_KEY] : []}
+      selectedKeys={checked ? [checkboxKey] : []}
       onSelectionChange={(keys) => {
-        onCheckedChange?.(keys === "all" ? true : keys.has(CHECKBOX_KEY));
+        onCheckedChange?.(keys === "all" ? true : keys.has(checkboxKey));
       }}
     >
       <MenuItem
-        id={CHECKBOX_KEY}
+        id={checkboxKey}
         isDisabled={disabled}
         textValue={textValue}
         className={cn("ui-dropdown-menu-checkbox-item", className)}
@@ -733,7 +753,12 @@ export function DropdownMenuSubContent({
       )}
       render={(props, state) => (
         // `role={undefined}`: một menu không phải một dialog — xem radixSurfaceState.
-        <div {...props} role={undefined} {...radixSurfaceState(state)} />
+        <div
+          {...props}
+          role={undefined}
+          {...radixSurfaceState(state)}
+          data-align={align ?? "center"}
+        />
       )}
     >
       <Menu shouldFocusWrap={loop}>{children}</Menu>

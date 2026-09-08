@@ -3277,7 +3277,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless", "underlined"],
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -7685,7 +7685,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless", "underlined"],
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -9354,7 +9354,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless", "underlined"],
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -10057,7 +10057,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless", "underlined"],
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -11588,7 +11588,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless", "underlined"],
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -12191,7 +12191,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless", "underlined"],
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
@@ -14230,7 +14230,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless", "underlined"],
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/components/ui/tag-input.tsx"]
         }
       ]
@@ -14514,7 +14514,7 @@
           "origin": "owned",
           "required": false,
           "type": "\"default\" | \"ghost\" | ControlVariantProp | undefined",
-          "values": ["default", "ghost", "outlined", "filled", "borderless", "underlined"],
+          "values": ["default", "ghost", "outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -15885,7 +15885,7 @@
           "origin": "owned",
           "required": false,
           "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless", "underlined"],
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]

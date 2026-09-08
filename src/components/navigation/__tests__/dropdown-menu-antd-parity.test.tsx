@@ -28,21 +28,21 @@ function open(placementProps: React.ComponentProps<typeof DropdownMenuContent> =
 describe("DropdownMenu — antd `placement`", () => {
   it("resolves an antd anchor into the Radix side + align it is made of", () => {
     open({ placement: "topEnd" });
-    const content = screen.getByRole("menu");
+    const content = screen.getByRole("menu").closest('[data-slot="dropdown-menu-content"]');
     expect(content).toHaveAttribute("data-side", "top");
     expect(content).toHaveAttribute("data-align", "end");
   });
 
   it("centres on the bare block anchors", () => {
     open({ placement: "bottom" });
-    const content = screen.getByRole("menu");
+    const content = screen.getByRole("menu").closest('[data-slot="dropdown-menu-content"]');
     expect(content).toHaveAttribute("data-side", "bottom");
     expect(content).toHaveAttribute("data-align", "center");
   });
 
   it("lets an explicitly passed Radix `side` win, so the two APIs can be mixed", () => {
     open({ placement: "topStart", side: "bottom" });
-    const content = screen.getByRole("menu");
+    const content = screen.getByRole("menu").closest('[data-slot="dropdown-menu-content"]');
     expect(content).toHaveAttribute("data-side", "bottom");
     // …while the half the caller did NOT override still comes from the antd anchor.
     expect(content).toHaveAttribute("data-align", "start");
@@ -50,7 +50,10 @@ describe("DropdownMenu — antd `placement`", () => {
 
   it("changes nothing when it is not passed", () => {
     open();
-    expect(screen.getByRole("menu")).toHaveAttribute("data-side", "bottom");
+    expect(screen.getByRole("menu").closest('[data-slot="dropdown-menu-content"]')).toHaveAttribute(
+      "data-side",
+      "bottom",
+    );
   });
 });
 
@@ -65,7 +68,7 @@ describe("DropdownMenu — antd `arrow`", () => {
     const arrow = container.ownerDocument.querySelector('[data-slot="dropdown-menu-arrow"]');
     expect(arrow).not.toBeNull();
     // Decorative: it must never enter the accessible tree of the menu.
-    expect(arrow?.closest('[role="menu"]')).not.toBeNull();
+    expect(arrow).toHaveAttribute("aria-hidden", "true");
     expect(arrow?.tagName.toLowerCase()).toBe("svg");
   });
 });

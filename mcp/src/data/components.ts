@@ -80,7 +80,12 @@ export const COMPONENTS: ComponentEntry[] = [
         description:
           "Positive unit counts determine proportional column widths. Column count determines the minimum canvas width, so coarse grouping zooms out.",
       },
-      { name: "bands", type: "{ label: string; units: number }[]", description: "Optional grouped axis labels above the ticks, for example months above days. Counts use the same units as columns and cover the same range." },
+      {
+        name: "bands",
+        type: "{ label: string; units: number }[]",
+        description:
+          "Optional grouped axis labels above the ticks, for example months above days. Counts use the same units as columns and cover the same range.",
+      },
       {
         name: "rows",
         type: "RangeTimelineRow[]",
@@ -1302,7 +1307,12 @@ import { PanelLeftClose, Search } from "lucide-react";
     tagline:
       "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill.",
     props: [
-      { name: "hideBelow", type: "BreakpointProp", description: "Hide the bar cell below a design-system breakpoint without interrupting its stretch chain." },
+      {
+        name: "hideBelow",
+        type: "BreakpointProp",
+        description:
+          "Hide the bar cell below a design-system breakpoint without interrupting its stretch chain.",
+      },
       {
         name: "asChild",
         type: "boolean",
@@ -5218,9 +5228,9 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
       {
         name: "variant",
-        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        type: '"outlined" | "filled" | "borderless"',
         description:
-          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless,underlined}-* tokens, so a theme retunes all four at once.",
+          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless}-* tokens, so a theme retunes all three at once.",
       },
       {
         name: "loading",
@@ -7742,9 +7752,9 @@ export function InvoicePeriodFilter() {
       },
       {
         name: "variant",
-        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        type: '"outlined" | "filled" | "borderless"',
         description:
-          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless,underlined}-* tokens, so a theme retunes all four at once.",
+          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless}-* tokens, so a theme retunes all three at once.",
       },
       {
         name: "loading",
@@ -8068,9 +8078,9 @@ function MultiRegionPicker() {
       },
       {
         name: "variant",
-        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        type: '"outlined" | "filled" | "borderless"',
         description:
-          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless,underlined}-* tokens, so a theme retunes all four at once.",
+          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless}-* tokens, so a theme retunes all three at once.",
       },
       {
         name: "loading",
@@ -11241,9 +11251,9 @@ export default function PasswordBlock() {
       },
       {
         name: "variant",
-        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        type: '"outlined" | "filled" | "borderless"',
         description:
-          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless,underlined}-* tokens, so a theme retunes all four at once.",
+          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless}-* tokens, so a theme retunes all three at once.",
       },
       {
         name: "size",

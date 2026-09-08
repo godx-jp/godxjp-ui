@@ -132,16 +132,6 @@ export const VOCABULARY_REGISTRY = {
     category: "shared",
     description: "Inline sizing of a control: full (fill the column) | auto (hug the label)",
   },
-  ControlStatusProp: {
-    file: "vocabulary/shared.prop.ts",
-    category: "shared",
-    description: "Validation status of a control (antd `status`): error | warning",
-  },
-  ControlVariantProp: {
-    file: "vocabulary/shared.prop.ts",
-    category: "shared",
-    description: "Control surface (antd `variant`): outlined | filled | borderless | underlined",
-  },
   AllowClearProp: {
     file: "vocabulary/shared.prop.ts",
     category: "shared",
@@ -2656,11 +2646,33 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display/range-timeline.tsx",
     vocabulary: [
       "LabelProp",
-      { field: "columns", local: true, reason: "Labels and positive numeric unit counts define a consumer-supplied axis." },
-      { field: "bands", local: true, reason: "Optional grouped labels in the same axis units, such as months above daily ticks." },
-      { field: "rows", local: true, reason: "Consumer-supplied interval records preserve true inclusive endpoints independently of clipping." },
-      { field: "today", local: true, reason: "Optional current position in the same numeric units as the axis." },
-      { field: "onRangeChange", local: true, reason: "An endpoint movement command, not an internally owned value; the consumer commits its row data." },
+      {
+        field: "columns",
+        local: true,
+        reason: "Labels and positive numeric unit counts define a consumer-supplied axis.",
+      },
+      {
+        field: "bands",
+        local: true,
+        reason: "Optional grouped labels in the same axis units, such as months above daily ticks.",
+      },
+      {
+        field: "rows",
+        local: true,
+        reason:
+          "Consumer-supplied interval records preserve true inclusive endpoints independently of clipping.",
+      },
+      {
+        field: "today",
+        local: true,
+        reason: "Optional current position in the same numeric units as the axis.",
+      },
+      {
+        field: "onRangeChange",
+        local: true,
+        reason:
+          "An endpoint movement command, not an internally owned value; the consumer commits its row data.",
+      },
     ],
   },
   ResponsiveGridProp: {

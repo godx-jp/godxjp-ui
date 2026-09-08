@@ -1226,14 +1226,6 @@
     background: var(--control-borderless-background);
   }
 
-  .ui-control-surface[data-variant="underlined"] {
-    --control-shadow: var(--control-underlined-shadow);
-    --control-radius: var(--control-underlined-radius);
-    border-color: transparent;
-    border-block-end-color: var(--control-underlined-border-color);
-    background: var(--control-underlined-background);
-  }
-
   /* A FormField error reaches the trigger as `aria-invalid`, never as `status` — so the two have to
    * paint the same edge, or the same mistake would look different depending on which layer noticed
    * it. Radix's Select trigger carries the `aria-invalid:border-destructive` utility for this;
@@ -1248,16 +1240,6 @@
     --focus-ring-color: var(--warning);
     --focus-outline-color: var(--warning);
     --focus-ring-glow-color: var(--control-status-warning-outline-color);
-  }
-
-  .ui-control-surface[data-variant="underlined"][data-status="error"] {
-    border-color: transparent;
-    border-block-end-color: var(--control-status-error-border-color);
-  }
-
-  .ui-control-surface[data-variant="underlined"][data-status="warning"] {
-    border-color: transparent;
-    border-block-end-color: var(--control-status-warning-border-color);
   }
 
   .ui-number-input[data-size="sm"] {
