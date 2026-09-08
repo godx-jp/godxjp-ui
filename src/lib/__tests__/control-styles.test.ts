@@ -3,6 +3,7 @@ import {
   controlIconClass,
   controlIconSmClass,
   controlMultilineClass,
+  controlSurfaceTriggerClass,
   controlTriggerClass,
   tableCellPaddingClass,
   tableHeadHeightClass,
@@ -26,6 +27,23 @@ describe("control-styles (token wiring)", () => {
       expect(controlTriggerClass).toContain("flex");
       expect(controlTriggerClass).toContain("items-center");
       expect(controlTriggerClass).not.toMatch(/\bh-9\b/);
+      // The historical surface pair stays on THIS export — every non-select consumer still reads
+      // its border and fill from the utilities layer.
+      expect(controlTriggerClass).toContain("border-input");
+      expect(controlTriggerClass).toContain("bg-background");
+    });
+
+    it("controlSurfaceTriggerClass withholds the surface utilities and wears ui-control-surface", () => {
+      // The point of the export: `@layer utilities` beats `@layer components`, so a trigger that
+      // carries `border-input` / `bg-background` can never be recoloured by the antd
+      // `variant` × `status` rules in control.css (the gh#366 / gh#375 trap). It must therefore
+      // state neither, and must carry the class those rules key on.
+      expect(controlSurfaceTriggerClass).toContain("ui-control-surface");
+      expect(controlSurfaceTriggerClass).not.toMatch(/\bborder-input\b/);
+      expect(controlSurfaceTriggerClass).not.toMatch(/\bbg-background\b/);
+      // Everything else about the trigger is unchanged.
+      expect(controlSurfaceTriggerClass).toContain("ui-control-trigger");
+      expect(controlSurfaceTriggerClass).toContain("rounded-[var(--control-radius)]");
     });
   });
 

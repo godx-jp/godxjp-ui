@@ -28,8 +28,23 @@ export const controlMultilineFilledClass =
  */
 export const controlOpenRingClass = "ui-control-trigger";
 
-export const controlTriggerClass =
-  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] border-input bg-background transition-[color,box-shadow] focus-visible:outline-none [&>[data-slot=select-value]]:line-clamp-1";
+/**
+ * The trigger WITHOUT a surface — no `border-input`, no `bg-background`.
+ *
+ * Those two are Tailwind utilities, and `@layer utilities` beats `@layer components`, so a
+ * `[data-variant]` / `[data-status]` rule in control.css can never recolour a trigger that carries
+ * them (the same trap that killed `.ui-app-setting-picker-icon` in gh#366 and
+ * `--control-bounded-width` in gh#375). A control that wants the antd `variant` × `status` matrix
+ * therefore composes THIS class plus `ui-control-surface`, which supplies the identical resting
+ * border and fill from `--control-surface-*`.
+ */
+export const controlTriggerBaseClass =
+  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] transition-[color,box-shadow] focus-visible:outline-none [&>[data-slot=select-value]]:line-clamp-1";
+
+export const controlTriggerClass = `${controlTriggerBaseClass} border-input bg-background`;
+
+/** `controlTriggerBaseClass` + the token-driven surface — the select-family trigger. */
+export const controlSurfaceTriggerClass = `${controlTriggerBaseClass} ui-control-surface`;
 
 export const controlIconClass = "size-[length:var(--control-height)] shrink-0";
 

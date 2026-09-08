@@ -33,8 +33,15 @@ import type {
   DensityProp,
   SizeProp,
   TitleProp,
+  DefaultOpenProp,
   ControlStatusProp,
   ControlVariantProp,
+  AllowClearProp,
+  MaxTagCountProp,
+  MaxTagPlaceholderProp,
+  NotFoundContentProp,
+  PopupMatchWidthProp,
+  PendingProp,
 } from "../vocabulary";
 import type { ResponsiveGridColumnsProp } from "./layout.prop";
 
@@ -777,8 +784,24 @@ export type SearchSelectProp = {
   readOnly?: boolean;
   /** Trigger height tier — forwarded to the underlying Button. Default matches Button's own default. */
   size?: SizeProp;
+  /**
+   * Validation status (antd `status`). `error` recolours the trigger AND sets `aria-invalid`;
+   * `warning` recolours only. A `status` set here never overrides an `aria-invalid` arriving from
+   * `FormField` — the field's own validation state wins.
+   */
+  status?: ControlStatusProp;
+  /** Control surface (antd `variant`). Default `outlined`. */
+  variant?: ControlVariantProp;
+  /**
+   * In-flight state (antd `loading`) — the trailing chevron becomes a spinner and the trigger
+   * reports `aria-busy`. Distinct from the internal `loadOptions` fetch spinner, which describes
+   * the LIST; this one describes the FIELD (e.g. the form is still hydrating its value).
+   */
+  loading?: PendingProp;
   /** Controlled open state for the popover (uncontrolled by default). */
   open?: OpenProp;
+  /** Uncontrolled initial open state (antd `defaultOpen`). */
+  defaultOpen?: DefaultOpenProp;
   onOpenChange?: OnOpenChangeProp;
   /** Controlled search-box query (uncontrolled by default). Pairs with `onSearchChange`. */
   search?: string;
@@ -789,6 +812,45 @@ export type SearchSelectProp = {
    * query; return true to keep the row.
    */
   filterOption?: (option: SearchSelectOptionProp, query: string) => boolean;
+  /**
+   * Order the filtered rows (antd `filterSort`). Runs AFTER `filterOption`, on the client, in
+   * `options` mode only — with `loadOptions` the server owns the order.
+   */
+  filterSort?: (
+    a: SearchSelectOptionProp,
+    b: SearchSelectOptionProp,
+    info: { searchValue: string },
+  ) => number;
+  /**
+   * Clear the search box after a pick (antd `autoClearSearchValue`, default `true`). Set `false`
+   * to keep the query so the next open resumes the same filtered list.
+   */
+  autoClearSearchValue?: boolean;
+  /**
+   * Per-option renderer in antd's own shape — `(option, { index })`. Takes precedence over the
+   * older `renderOption`, which stays for the many call sites already using it.
+   */
+  optionRender?: (option: SearchSelectOptionProp, info: { index: number }) => React.ReactNode;
+  /**
+   * Node rendered on the SELECTED row (antd `menuItemSelectedIcon`). Off by default: this library's
+   * selected row is marked by fill + weight, which costs no width.
+   */
+  menuItemSelectedIcon?: React.ReactNode;
+  /** Node shown when the list has nothing to offer (antd `notFoundContent`). Beats `emptyMessage`. */
+  notFoundContent?: NotFoundContentProp;
+  /**
+   * Popup width (antd `popupMatchSelectWidth`). `true` (default) pins it to the trigger, `false`
+   * lets it hug its content, a number pins it to that many pixels.
+   */
+  popupMatchSelectWidth?: PopupMatchWidthProp;
+  /**
+   * antd `allowClear`. `true`/`false` toggles the clear ✕ (same meaning as `clearable`, which
+   * stays as this library's own name); the OBJECT form additionally replaces the icon and/or the
+   * accessible label. When both are given, `allowClear` wins — it is the more specific statement.
+   */
+  allowClear?: AllowClearProp;
+  /** Fired after the value is cleared through the ✕ (antd `onClear`). */
+  onClear?: () => void;
   /**
    * Custom error slot — receives the resolved message and a `retry` callback that reloads from the
    * first page (a predictable recovery, not a resume of a failed page-N append). Overrides the
@@ -912,7 +974,48 @@ export type CascaderProp = FieldA11yProps & {
   id?: IdProp;
   expandTrigger?: "click" | "hover";
   fieldNames?: TreeFieldNamesProp;
-  allowClear?: boolean;
+  allowClear?: AllowClearProp;
+  /** Control height tier (antd `size`) — the shared `--control-height` ladder. */
+  size?: SizeProp;
+  /** Validation status (antd `status`). `error` also sets `aria-invalid`; `warning` recolours only. */
+  status?: ControlStatusProp;
+  /** Control surface (antd `variant`). Default `outlined`. */
+  variant?: ControlVariantProp;
+  /** In-flight state (antd `loading`) — spinner in place of the chevron, `aria-busy` on the trigger. */
+  loading?: PendingProp;
+  /** Controlled panel open state (antd `open`). */
+  open?: OpenProp;
+  /** Uncontrolled initial open state (antd `defaultOpen`). */
+  defaultOpen?: DefaultOpenProp;
+  /** Panel open change (antd `onOpenChange`). Fires for both controlled and uncontrolled panels. */
+  onOpenChange?: OnOpenChangeProp;
+  /**
+   * `multiple` only — which checked paths appear in the trigger label (antd `showCheckedStrategy`).
+   * `SHOW_PARENT` collapses a fully-checked parent's children into the parent; `SHOW_CHILD`
+   * (default) lists the leaves. `SHOW_ALL` is TreeSelect-only in antd and is not accepted here.
+   */
+  showCheckedStrategy?: Exclude<ShowCheckedStrategyProp, "SHOW_ALL">;
+  /**
+   * Lazy children (antd `loadData`). Called ONCE per node the first time a branch with no
+   * `children` and `isLeaf !== true` is expanded; push the fetched children into `options`.
+   */
+  loadData?: (selectedOptions: TreeOptionProp[]) => void | Promise<void>;
+  /** Render the trigger label from the selected path (antd `displayRender`). */
+  displayRender?: (labels: string[], selectedOptions?: TreeOptionProp[]) => React.ReactNode;
+  /** Per-option renderer for a column row (antd `optionRender`). */
+  optionRender?: (option: TreeOptionProp) => React.ReactNode;
+  /** `multiple` only — visible paths in the trigger before the rest collapse (antd `maxTagCount`). */
+  maxTagCount?: MaxTagCountProp;
+  /** The node standing in for what `maxTagCount` hid (antd `maxTagPlaceholder`). */
+  maxTagPlaceholder?: MaxTagPlaceholderProp;
+  /** Node shown when the search finds nothing (antd `notFoundContent`). */
+  notFoundContent?: NotFoundContentProp;
+  /** Clear the search box after a pick (antd `autoClearSearchValue`, default `true`). */
+  autoClearSearchValue?: boolean;
+  /** Controlled search query (antd `showSearch.searchValue`). */
+  search?: string;
+  /** Search query change (antd `showSearch.onSearch`). */
+  onSearchChange?: OnSearchChangeProp;
   "aria-label"?: string;
   "aria-labelledby"?: string;
   "aria-describedby"?: string;
@@ -937,10 +1040,43 @@ export type TreeSelectProp = FieldA11yProps & {
   treeDefaultExpandAll?: boolean;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;
-  allowClear?: boolean;
+  allowClear?: AllowClearProp;
   className?: ClassNameProp;
   id?: IdProp;
   fieldNames?: TreeFieldNamesProp;
+  /** Control height tier (antd `size`) — the shared `--control-height` ladder. */
+  size?: SizeProp;
+  /** Validation status (antd `status`). `error` also sets `aria-invalid`; `warning` recolours only. */
+  status?: ControlStatusProp;
+  /** Control surface (antd `variant`). Default `outlined`. */
+  variant?: ControlVariantProp;
+  /** In-flight state (antd `loading`) — spinner in place of the chevron, `aria-busy` on the trigger. */
+  loading?: PendingProp;
+  /** Controlled panel open state (antd `open`). */
+  open?: OpenProp;
+  /** Uncontrolled initial open state (antd `defaultOpen`). */
+  defaultOpen?: DefaultOpenProp;
+  /** Panel open change (antd `onOpenChange`). Fires for both controlled and uncontrolled panels. */
+  onOpenChange?: OnOpenChangeProp;
+  /**
+   * Lazy children (antd `loadData`). Called ONCE per node the first time a branch with no
+   * `children` and `isLeaf !== true` is expanded; push the fetched children into `treeData`.
+   */
+  loadData?: (node: TreeOptionProp) => void | Promise<void>;
+  /** Render a node's title (antd `treeTitleRender`). */
+  treeTitleRender?: (node: TreeOptionProp) => React.ReactNode;
+  /** Visible values in the trigger label before the rest collapse (antd `maxTagCount`). */
+  maxTagCount?: MaxTagCountProp;
+  /** The node standing in for what `maxTagCount` hid (antd `maxTagPlaceholder`). */
+  maxTagPlaceholder?: MaxTagPlaceholderProp;
+  /** Node shown when the tree has nothing to list (antd `notFoundContent`). */
+  notFoundContent?: NotFoundContentProp;
+  /** Clear the search box after a pick (antd `autoClearSearchValue`, default `true`). */
+  autoClearSearchValue?: boolean;
+  /** Controlled search query (antd `showSearch.searchValue`). */
+  search?: string;
+  /** Search query change (antd `showSearch.onSearch`). */
+  onSearchChange?: OnSearchChangeProp;
   "aria-label"?: string;
   "aria-labelledby"?: string;
   "aria-describedby"?: string;

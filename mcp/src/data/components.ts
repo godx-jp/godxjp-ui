@@ -5197,6 +5197,76 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         description:
           "Compound API only. Set false to omit the built-in chevron disclosure indicator from the DOM entirely (not a CSS hide) — for specialized triggers (icon-only, etc.) that render their own affordance, so no consumer descendant CSS is needed.",
       },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "antd `status`. `error` recolours the control AND sets aria-invalid (a colour-only error fails WCAG 2.2 SC 1.4.1); `warning` recolours only. An aria-invalid injected by FormField always wins.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        description:
+          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless,underlined}-* tokens, so a theme retunes all four at once.",
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        description:
+          "antd `loading` — the FIELD is in flight: the trailing chevron becomes a spinner and the trigger reports aria-busy. Distinct from the list-level spinner an async loadOptions shows inside the popup.",
+      },
+      {
+        name: "defaultOpen",
+        type: "boolean",
+        description: "antd `defaultOpen` — uncontrolled initial popup state.",
+      },
+      {
+        name: "allowClear",
+        type: "boolean | { clearIcon?: React.ReactNode; label?: string }",
+        description:
+          "antd `allowClear`. The object form replaces the ✕ icon and/or its accessible label. Beats `clearable` when both are given.",
+      },
+      {
+        name: "onClear",
+        type: "() => void",
+        description: "antd `onClear` — fires after the value is cleared through the ✕.",
+      },
+      {
+        name: "notFoundContent",
+        type: "React.ReactNode",
+        description:
+          "antd `notFoundContent` — the node shown when the popup has nothing to list. Outranks the string-only emptyMessage.",
+      },
+      {
+        name: "autoClearSearchValue",
+        type: "boolean",
+        description:
+          "antd `autoClearSearchValue` (default true) — clear the search box after a pick / on close. Set false to resume the same filtered list on the next open.",
+      },
+      {
+        name: "filterSort",
+        type: "(a: SearchSelectOptionProp, b: SearchSelectOptionProp, info: { searchValue: string }) => number",
+        description:
+          "antd `filterSort` — orders what filterOption kept. Static options only; with loadOptions the server owns the order. Never mutates the caller's array.",
+      },
+      {
+        name: "optionRender",
+        type: "(option: SearchSelectOptionProp, info: { index: number }) => React.ReactNode",
+        description:
+          "antd `optionRender` — per-option renderer in antd's own (option, { index }) shape. Outranks the older renderOption.",
+      },
+      {
+        name: "menuItemSelectedIcon",
+        type: "React.ReactNode",
+        description:
+          "antd `menuItemSelectedIcon` — a decorative mark on the picked row. Off by default: the picked row is already marked by fill + weight, which costs no width.",
+      },
+      {
+        name: "popupMatchSelectWidth",
+        type: "boolean | number",
+        description:
+          "antd `popupMatchSelectWidth`. true (default) pins the popup to the trigger width, false lets it hug its rows, a number pins it to that many pixels.",
+      },
     ],
     usage: [
       "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
@@ -7552,6 +7622,102 @@ export function InvoicePeriodFilter() {
         type: "string",
         description: "HTML id forwarded to the trigger button. Use to associate a <label htmlFor>.",
       },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "antd `status`. `error` recolours the control AND sets aria-invalid (a colour-only error fails WCAG 2.2 SC 1.4.1); `warning` recolours only. An aria-invalid injected by FormField always wins.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        description:
+          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless,underlined}-* tokens, so a theme retunes all four at once.",
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        description:
+          "antd `loading` — the FIELD is in flight: the trailing chevron becomes a spinner and the trigger reports aria-busy. Distinct from the list-level spinner an async loadOptions shows inside the popup.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        description: "antd `size` — height tier on the shared --control-height ladder.",
+      },
+      {
+        name: "open",
+        type: "boolean",
+        description:
+          "antd `open` — controlled panel state. The consumer is the authority: nothing internal closes a pinned panel.",
+      },
+      {
+        name: "defaultOpen",
+        type: "boolean",
+        description: "antd `defaultOpen` — uncontrolled initial panel state.",
+      },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "antd `onOpenChange` — fires for both controlled and uncontrolled panels.",
+      },
+      {
+        name: "maxTagCount",
+        type: "number",
+        description:
+          'antd `maxTagCount` — how many selected values stay visible before the rest collapse into the overflow node. antd\'s `"responsive"` is not supported (see the parity PR).',
+      },
+      {
+        name: "maxTagPlaceholder",
+        type: "React.ReactNode | ((omitted: { value: string; label: React.ReactNode }[]) => React.ReactNode)",
+        description:
+          "antd `maxTagPlaceholder` — the node standing in for what maxTagCount hid. Defaults to a localized `+N`.",
+      },
+      {
+        name: "notFoundContent",
+        type: "React.ReactNode",
+        description:
+          "antd `notFoundContent` — the node shown when the popup has nothing to list. Outranks the string-only emptyMessage.",
+      },
+      {
+        name: "autoClearSearchValue",
+        type: "boolean",
+        description:
+          "antd `autoClearSearchValue` (default true) — clear the search box after a pick / on close. Set false to resume the same filtered list on the next open.",
+      },
+      {
+        name: "showCheckedStrategy",
+        type: '"SHOW_CHILD" | "SHOW_PARENT"',
+        description:
+          "antd `showCheckedStrategy` (multiple only). SHOW_PARENT collapses a fully-checked branch into the branch itself; SHOW_CHILD (default) lists the leaves.",
+      },
+      {
+        name: "loadData",
+        type: "(selectedOptions: TreeOptionProp[]) => void | Promise<void>",
+        description:
+          "antd `loadData` — lazy children. Called ONCE per branch that has no children and isLeaf !== true, the first time it is expanded; push the fetched children into options.",
+      },
+      {
+        name: "displayRender",
+        type: "(labels: string[], selectedOptions?: TreeOptionProp[]) => React.ReactNode",
+        description: "antd `displayRender` — owns the trigger label built from the selected path.",
+      },
+      {
+        name: "optionRender",
+        type: "(option: TreeOptionProp) => React.ReactNode",
+        description:
+          "antd `optionRender` — owns a column row's body. The checkbox, check mark and chevron stay with the component.",
+      },
+      {
+        name: "search",
+        type: "string",
+        description: "Controlled search query (antd `showSearch.searchValue`).",
+      },
+      {
+        name: "onSearchChange",
+        type: "(query: string) => void",
+        description: "Search query change (antd `showSearch.onSearch`).",
+      },
     ],
     usage: [
       "DO pass a string[] path as value in single mode (e.g. ['country','region','city']). DON'T pass a flat string ID — the component treats value as an ordered path array and will render nothing if you pass a bare string.",
@@ -7781,6 +7947,91 @@ function MultiRegionPicker() {
         type: "{ label?: string; value?: string; children?: string }",
         description:
           "Remap data object keys. Example: `{ label: 'name', value: 'id', content: 'items' }` so you don't have to transform your API response before passing it to `treeData`.",
+      },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "antd `status`. `error` recolours the control AND sets aria-invalid (a colour-only error fails WCAG 2.2 SC 1.4.1); `warning` recolours only. An aria-invalid injected by FormField always wins.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        description:
+          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless,underlined}-* tokens, so a theme retunes all four at once.",
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        description:
+          "antd `loading` — the FIELD is in flight: the trailing chevron becomes a spinner and the trigger reports aria-busy. Distinct from the list-level spinner an async loadOptions shows inside the popup.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        description: "antd `size` — height tier on the shared --control-height ladder.",
+      },
+      {
+        name: "open",
+        type: "boolean",
+        description:
+          "antd `open` — controlled panel state. The consumer is the authority: nothing internal closes a pinned panel.",
+      },
+      {
+        name: "defaultOpen",
+        type: "boolean",
+        description: "antd `defaultOpen` — uncontrolled initial panel state.",
+      },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "antd `onOpenChange` — fires for both controlled and uncontrolled panels.",
+      },
+      {
+        name: "maxTagCount",
+        type: "number",
+        description:
+          'antd `maxTagCount` — how many selected values stay visible before the rest collapse into the overflow node. antd\'s `"responsive"` is not supported (see the parity PR).',
+      },
+      {
+        name: "maxTagPlaceholder",
+        type: "React.ReactNode | ((omitted: { value: string; label: React.ReactNode }[]) => React.ReactNode)",
+        description:
+          "antd `maxTagPlaceholder` — the node standing in for what maxTagCount hid. Defaults to a localized `+N`.",
+      },
+      {
+        name: "notFoundContent",
+        type: "React.ReactNode",
+        description:
+          "antd `notFoundContent` — the node shown when the popup has nothing to list. Outranks the string-only emptyMessage.",
+      },
+      {
+        name: "autoClearSearchValue",
+        type: "boolean",
+        description:
+          "antd `autoClearSearchValue` (default true) — clear the search box after a pick / on close. Set false to resume the same filtered list on the next open.",
+      },
+      {
+        name: "loadData",
+        type: "(node: TreeOptionProp) => void | Promise<void>",
+        description:
+          "antd `loadData` — lazy children. Called ONCE per node that has no children and isLeaf !== true, the first time it is expanded; push the fetched children into treeData. Such a node still reads as expandable (aria-expanded + a working expander).",
+      },
+      {
+        name: "treeTitleRender",
+        type: "(node: TreeOptionProp) => React.ReactNode",
+        description:
+          "antd `treeTitleRender` — owns a node's title only; the checkbox, expander and row ARIA stay with the component.",
+      },
+      {
+        name: "search",
+        type: "string",
+        description: "Controlled search query (antd `showSearch.searchValue`).",
+      },
+      {
+        name: "onSearchChange",
+        type: "(query: string) => void",
+        description: "Search query change (antd `showSearch.onSearch`).",
       },
     ],
     usage: [
@@ -10869,6 +11120,53 @@ export default function PasswordBlock() {
         name: "name",
         type: "string",
         description: "Hidden input (comma-joined) for native form submission.",
+      },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "antd `status`. `error` recolours the control AND sets aria-invalid (a colour-only error fails WCAG 2.2 SC 1.4.1); `warning` recolours only. An aria-invalid injected by FormField always wins.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        description:
+          "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless,underlined}-* tokens, so a theme retunes all four at once.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        description: "antd `size` — height tier on the shared --control-height ladder.",
+      },
+      {
+        name: "maxTagCount",
+        type: "number",
+        description:
+          'antd `maxTagCount` — how many selected values stay visible before the rest collapse into the overflow node. antd\'s `"responsive"` is not supported (see the parity PR).',
+      },
+      {
+        name: "maxTagPlaceholder",
+        type: "React.ReactNode | ((omitted: { value: string; label: React.ReactNode }[]) => React.ReactNode)",
+        description:
+          "antd `maxTagPlaceholder` — the node standing in for what maxTagCount hid. Defaults to a localized `+N`.",
+      },
+      {
+        name: "maxCount",
+        type: "number",
+        description:
+          "antd `maxCount` — a hard ceiling on how many tags may be held. A tag past the limit is refused, so the value handed to onValueChange is never over it.",
+      },
+      {
+        name: "tagRender",
+        type: "(props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean }) => React.ReactNode",
+        description:
+          "antd `tagRender` — owns the chip body. The onClose it receives is the same remover the built-in ✕ calls, so a custom chip can never be unremovable.",
+      },
+      {
+        name: "tokenSeparators",
+        type: "string[]",
+        description:
+          'antd `tokenSeparators` (default [","]) — characters that commit the draft into a tag. A pasted run containing one is split into several tags. Enter always commits and is not a separator.',
       },
     ],
     usage: [

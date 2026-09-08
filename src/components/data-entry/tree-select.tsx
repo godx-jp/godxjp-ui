@@ -1,10 +1,16 @@
 import * as React from "react";
-import { ChevronDown, ChevronRight, ChevronsUpDown, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronsUpDown, Loader2, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
-import { controlTriggerClass } from "../../lib/control-styles";
+import { controlSurfaceTriggerClass } from "../../lib/control-styles";
+import {
+  applyMaxTagCount,
+  controlSurfaceAttrs,
+  resolveAllowClear,
+  resolveAriaInvalid,
+} from "./control-surface";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { ScrollArea } from "../data-display/scroll-area";
 import { Checkbox } from "./checkbox";
@@ -70,10 +76,25 @@ function TreeSelectRoot({
   treeDefaultExpandAll,
   placeholder,
   disabled,
-  allowClear = true,
+  allowClear,
   className,
   id,
   fieldNames,
+  size,
+  status,
+  variant,
+  loading = false,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  loadData,
+  treeTitleRender,
+  maxTagCount,
+  maxTagPlaceholder,
+  notFoundContent,
+  autoClearSearchValue = true,
+  search: searchProp,
+  onSearchChange,
   ...ariaProps
 }: TreeSelectProp) {
   const { t } = useTranslation();
@@ -91,8 +112,32 @@ function TreeSelectRoot({
   );
 
   const checkable = treeCheckable ?? multiple;
-  const [open, setOpen] = React.useState(false);
-  const [search, setSearch] = React.useState("");
+  // Controlled/uncontrolled search query (controlled-triad rule): `search` wins when provided,
+  // otherwise internal state; `onSearchChange` fires either way.
+  const [internalSearch, setInternalSearch] = React.useState("");
+  const isSearchControlled = searchProp !== undefined;
+  const search = isSearchControlled ? searchProp : internalSearch;
+  const setSearch = React.useCallback(
+    (next: string) => {
+      if (!isSearchControlled) setInternalSearch(next);
+      onSearchChange?.(next);
+    },
+    [isSearchControlled, onSearchChange],
+  );
+  // Same triad for the panel: `open` wins when provided, otherwise internal state seeded from
+  // `defaultOpen`; `onOpenChange` fires either way.
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
+  const isOpenControlled = openProp !== undefined;
+  const open = isOpenControlled ? openProp : internalOpen;
+  const setOpen = React.useCallback(
+    (next: boolean) => {
+      if (!isOpenControlled) setInternalOpen(next);
+      onOpenChange?.(next);
+      // antd `autoClearSearchValue` (default true) — the query is spent when the panel closes.
+      if (!next && autoClearSearchValue) setSearch("");
+    },
+    [isOpenControlled, onOpenChange, autoClearSearchValue, setSearch],
+  );
   const [expandedKeys, setExpandedKeys] = React.useState<Set<string>>(
     () => new Set(treeDefaultExpandAll ? collectAllExpandableKeys(options) : []),
   );
@@ -116,7 +161,21 @@ function TreeSelectRoot({
     onValueChange?.(checkable || multiple ? next : (next[0] ?? undefined));
   };
 
-  const toggleExpand = (key: string) => {
+  // antd `loadData` fires ONCE per node. Without this ledger, collapsing and re-expanding the same
+  // branch would refetch it every time.
+  const requestedLoads = React.useRef(new Set<string>());
+  const toggleExpand = (node: NormalizedTreeOption) => {
+    const key = node.value;
+    const willExpand = !expandedKeys.has(key);
+    // A node with no children that is not declared a leaf is UNRESOLVED, not empty — that is the
+    // whole contract of `loadData`, and it is what makes a deep org tree loadable one level at a
+    // time instead of shipping every node on first paint.
+    if (willExpand && loadData && !(node.children?.length ?? 0) && node.isLeaf !== true) {
+      if (!requestedLoads.current.has(key)) {
+        requestedLoads.current.add(key);
+        void loadData(node);
+      }
+    }
     setExpandedKeys((prev) => {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
@@ -151,12 +210,29 @@ function TreeSelectRoot({
   };
 
   const displayKeys = displayValues(selected, options, showCheckedStrategy, treeCheckStrictly);
-  const displayLabel = displayKeys
-    .map((v) => {
-      const label = findNodeByValue(options, v)?.label;
-      return label ? reactNodeText(label) : v;
-    })
-    .join(", ");
+  const displayItems = displayKeys.map((v) => {
+    const label = findNodeByValue(options, v)?.label;
+    return { value: v, label: label ? reactNodeText(label) : v };
+  });
+  // antd `maxTagCount` / `maxTagPlaceholder`. Without it a 40-node checked tree renders 40 comma-
+  // separated labels into a one-line trigger, and everything after the first two is a truncation.
+  const {
+    visible: visibleItems,
+    omitted: omittedItems,
+    overflow,
+  } = applyMaxTagCount(displayItems, maxTagCount, maxTagPlaceholder);
+  const displayLabel: React.ReactNode =
+    omittedItems.length === 0 ? (
+      visibleItems.map((item) => item.label).join(", ")
+    ) : (
+      <>
+        {visibleItems.map((item) => item.label).join(", ")}
+        {", "}
+        <span data-slot="tree-select-overflow">
+          {overflow ?? t("dataEntry.selection.overflow", { count: omittedItems.length })}
+        </span>
+      </>
+    );
 
   const clearValue = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -203,7 +279,7 @@ function TreeSelectRoot({
       case "ArrowRight": {
         event.preventDefault();
         if (hasChildren && !expanded) {
-          toggleExpand(node.value);
+          toggleExpand(node);
         } else if (hasChildren && expanded) {
           focusByOffset(node.value, 1);
         }
@@ -212,7 +288,7 @@ function TreeSelectRoot({
       case "ArrowLeft": {
         event.preventDefault();
         if (hasChildren && expanded) {
-          toggleExpand(node.value);
+          toggleExpand(node);
         }
         break;
       }
@@ -226,6 +302,10 @@ function TreeSelectRoot({
         break;
     }
   };
+
+  const clearControl = resolveAllowClear(allowClear, true, t("dataEntry.treeSelect.clear"));
+  const showClear = clearControl.enabled && displayKeys.length > 0 && !disabled && !loading;
+  const surface = controlSurfaceAttrs({ variant, status, size });
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -241,11 +321,14 @@ function TreeSelectRoot({
             aria-haspopup="tree"
             aria-controls={open ? treeId : undefined}
             {...fieldA11y}
+            {...surface}
+            aria-invalid={resolveAriaInvalid(fieldA11y["aria-invalid"], status)}
+            aria-busy={loading || undefined}
             disabled={disabled}
             className={cn(
-              controlTriggerClass,
+              controlSurfaceTriggerClass,
               "w-full justify-between",
-              allowClear && displayKeys.length > 0 && !disabled && "ui-tree-select-trigger-affixed",
+              showClear && "ui-tree-select-trigger-affixed",
               !displayKeys.length && "text-muted-foreground",
               className,
             )}
@@ -254,20 +337,26 @@ function TreeSelectRoot({
               {displayKeys.length ? displayLabel : resolvedPlaceholder}
             </span>
             <span className="ms-2 flex shrink-0 items-center">
-              {!(allowClear && displayKeys.length > 0 && !disabled) && (
+              {loading ? (
+                <Loader2
+                  data-slot="tree-select-loading"
+                  className="ui-tree-select-chevron animate-spin"
+                  aria-hidden="true"
+                />
+              ) : showClear ? null : (
                 <ChevronsUpDown className="ui-tree-select-chevron" aria-hidden="true" />
               )}
             </span>
           </button>
         </PopoverTrigger>
-        {allowClear && displayKeys.length > 0 && !disabled && (
+        {showClear && (
           <button
             type="button"
-            aria-label={t("dataEntry.treeSelect.clear")}
+            aria-label={clearControl.label}
             className="ui-tree-select-clear"
             onClick={clearValue}
           >
-            <X className="ui-control-affix-icon" aria-hidden="true" />
+            {clearControl.clearIcon ?? <X className="ui-control-affix-icon" aria-hidden="true" />}
           </button>
         )}
       </div>
@@ -291,11 +380,18 @@ function TreeSelectRoot({
             className="ui-tree-select-panel"
           >
             {visible.length === 0 ? (
-              <p className="ui-tree-select-empty">{t("dataEntry.treeSelect.empty")}</p>
+              <p className="ui-tree-select-empty">
+                {notFoundContent ?? t("dataEntry.treeSelect.empty")}
+              </p>
             ) : (
               visible.map(({ node, depth, hasChildren }) => {
                 const expanded = expandedKeys.has(node.value);
                 const isSelected = selected.includes(node.value);
+                // A `loadData` branch has no children YET — it must still read and behave as
+                // expandable, or the only affordance that would fetch them is hidden.
+                const expandable =
+                  hasChildren ||
+                  Boolean(loadData && node.isLeaf === false && !node.children?.length);
                 return (
                   <div
                     key={node.value}
@@ -304,10 +400,10 @@ function TreeSelectRoot({
                     }}
                     role="treeitem"
                     tabIndex={node.disabled ? -1 : rovingKey === node.value ? 0 : -1}
-                    aria-expanded={hasChildren ? expanded : undefined}
+                    aria-expanded={expandable ? expanded : undefined}
                     aria-selected={isSelected}
                     onFocus={() => setActiveKey(node.value)}
-                    onKeyDown={(event) => onTreeItemKeyDown(event, node, hasChildren, expanded)}
+                    onKeyDown={(event) => onTreeItemKeyDown(event, node, expandable, expanded)}
                     data-selected={isSelected ? "true" : "false"}
                     data-disabled={node.disabled ? "" : undefined}
                     className="ui-tree-select-row ui-focus-ring"
@@ -323,9 +419,9 @@ function TreeSelectRoot({
                           ? t("dataEntry.treeSelect.collapse")
                           : t("dataEntry.treeSelect.expand")
                       }
-                      data-leaf={hasChildren ? undefined : ""}
+                      data-leaf={expandable ? undefined : ""}
                       className="ui-tree-select-toggle"
-                      onClick={() => toggleExpand(node.value)}
+                      onClick={() => toggleExpand(node)}
                     >
                       {expanded ? (
                         <ChevronDown className="ui-tree-select-toggle-icon" aria-hidden="true" />
@@ -353,7 +449,7 @@ function TreeSelectRoot({
                           id={`${treeId}-${node.value}-label`}
                           htmlFor={`${treeId}-${node.value}-box`}
                         >
-                          {node.label}
+                          {treeTitleRender ? treeTitleRender(node) : node.label}
                         </label>
                       </div>
                     ) : (
@@ -364,7 +460,7 @@ function TreeSelectRoot({
                         disabled={node.disabled}
                         onClick={() => toggleSelect(node)}
                       >
-                        {node.label}
+                        {treeTitleRender ? treeTitleRender(node) : node.label}
                       </button>
                     )}
                   </div>

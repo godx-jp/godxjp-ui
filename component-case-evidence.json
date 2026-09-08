@@ -650,6 +650,22 @@
         }
       }
     },
+    "Cascader": {
+      "props": {
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
+        "status": {
+          "cases": ["warning", "error"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
+        "variant": {
+          "cases": ["outlined", "filled", "borderless", "underlined"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        }
+      }
+    },
     "Checkbox": {
       "complete": true,
       "props": {
@@ -950,6 +966,26 @@
           ],
           "evidence": [
             "docs/layout/error-surface/index.tsx"
+          ]
+        }
+      }
+    },
+    "Flex": {
+      "props": {
+        "as": {
+          "cases": ["div", "span"],
+          "evidence": [
+            "src/components/layout/__tests__/flex-phrasing-seam-354.test.tsx",
+            "docs/showcase/table-view-tabs.tsx",
+            "docs/showcase/org-switcher.tsx"
+          ]
+        },
+        "gap": {
+          "cases": ["none", "xs", "sm", "md", "lg", "xl"],
+          "evidence": [
+            "src/components/layout/__tests__/flex-phrasing-seam-354.test.tsx",
+            "docs/layout/flex.tsx",
+            "docs/showcase/table-sticky-columns.tsx"
           ]
         }
       }
@@ -2080,6 +2116,17 @@
         }
       }
     },
+    "ResponsiveGrid": {
+      "props": {
+        "gap": {
+          "cases": ["none", "xs", "sm", "md", "lg", "xl"],
+          "evidence": [
+            "src/components/layout/__tests__/responsive-grid.test.tsx",
+            "docs/showcase/case6-agency-handy.tsx"
+          ]
+        }
+      }
+    },
     "SearchInput": {
       "complete": true,
       "props": {
@@ -2276,12 +2323,10 @@
     "SelectTrigger": {
       "props": {
         "size": {
-          "cases": [
-            "sm",
-            "md"
-          ],
+          "cases": ["xs", "sm", "md", "lg"],
           "evidence": [
-            "docs/data-entry/select.tsx"
+            "docs/data-entry/select.tsx",
+            "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
           ]
         }
       }
@@ -2568,6 +2613,18 @@
             "docs/data-entry/tag-input.tsx"
           ]
         },
+        "maxCount": {
+          "cases": [2],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
+        "maxTagCount": {
+          "cases": [1],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
+        "maxTagPlaceholder": {
+          "cases": ["function → ほか2件"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
         "name": {
           "cases": [
             "cc_emails",
@@ -2599,6 +2656,22 @@
             "src/components/data-entry/__tests__/tag-input-extra.test.tsx"
           ]
         },
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
+        "status": {
+          "cases": ["warning", "error"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
+        "tagRender": {
+          "cases": ["custom chip + onClose"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
+        "tokenSeparators": {
+          "cases": [[","], [";"]],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
         "value": {
           "cases": [
             [
@@ -2610,6 +2683,10 @@
             "docs/data-entry/tag-input.tsx",
             "src/components/data-entry/__tests__/tag-input-extra.test.tsx"
           ]
+        },
+        "variant": {
+          "cases": ["outlined", "filled", "borderless", "underlined"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
         }
       }
     },
@@ -3130,6 +3207,66 @@
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
+        }
+      }
+    },
+    "Toggle": {
+      "props": {
+        "variant": {
+          "cases": ["default", "outline"],
+          "evidence": ["docs/data-entry/toggle.tsx"]
+        },
+        "size": {
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["docs/data-entry/toggle.tsx"]
+        }
+      }
+    },
+    "ToggleGroup": {
+      "props": {
+        "variant": {
+          "cases": ["default", "outline"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
+        },
+        "size": {
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
+        }
+      }
+    },
+    "ToggleGroupItem": {
+      "props": {
+        "variant": {
+          "cases": ["default", "outline"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
+        },
+        "size": {
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
+        }
+      }
+    },
+    "TreeSelect": {
+      "props": {
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
+        "status": {
+          "cases": ["warning", "error"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        },
+        "variant": {
+          "cases": ["outlined", "filled", "borderless", "underlined"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
+        }
+      }
+    },
+    "Upload": {
+      "props": {
+        "variant": {
+          "cases": ["button", "picture", "dropzone", "picture-card", "avatar", "avatar-crop"],
+          "evidence": ["docs/data-entry/upload.tsx"]
         }
       }
     }

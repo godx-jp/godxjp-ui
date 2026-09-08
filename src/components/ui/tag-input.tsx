@@ -3,7 +3,19 @@ import { X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { applyMaxTagCount, controlSurfaceAttrs } from "../data-entry/control-surface";
+import type {
+  ControlStatusProp,
+  ControlVariantProp,
+  MaxTagCountProp,
+  MaxTagPlaceholderProp,
+  SizeProp,
+} from "../../props/vocabulary";
 
+/**
+ * TagInput is this library's answer to antd's `Select mode="tags"` — a free-text token field — so
+ * it takes the same token-level props antd puts on that mode.
+ */
 export type TagInputProps = {
   value?: string[];
   defaultValue?: string[];
@@ -14,7 +26,38 @@ export type TagInputProps = {
   className?: string;
   id?: string;
   "aria-label"?: string;
+  /** Control height tier (antd `size`) — the shared `--control-height` ladder. */
+  size?: SizeProp;
+  /** Validation status (antd `status`). `error` also sets `aria-invalid`; `warning` recolours only. */
+  status?: ControlStatusProp;
+  /** Control surface (antd `variant`). Default `outlined`. */
+  variant?: ControlVariantProp;
+  /** Hard ceiling on how many tags may be held (antd `maxCount`). Further input is refused. */
+  maxCount?: number;
+  /** How many chips render before the rest collapse into the overflow node (antd `maxTagCount`). */
+  maxTagCount?: MaxTagCountProp;
+  /** The node standing in for what `maxTagCount` hid (antd `maxTagPlaceholder`). */
+  maxTagPlaceholder?: MaxTagPlaceholderProp;
+  /** Render one chip yourself (antd `tagRender`) — receives the value and an `onClose` remover. */
+  tagRender?: (props: {
+    value: string;
+    label: React.ReactNode;
+    onClose: () => void;
+    index: number;
+    disabled: boolean;
+  }) => React.ReactNode;
+  /**
+   * Characters that commit the draft into a tag (antd `tokenSeparators`). Default `[","]`; Enter
+   * always commits and is not a separator. Pasting a run containing a separator splits it into
+   * several tags, which is antd's behaviour and the reason the prop exists.
+   */
+  tokenSeparators?: string[];
 };
+
+/** Escape a separator so it is a literal inside the `[...]` character class built from the list. */
+function escapeForCharClass(character: string): string {
+  return character.replace(/[\\\]^-]/g, "\\$&");
+}
 
 export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
   (
@@ -28,6 +71,14 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       className,
       id,
       "aria-label": ariaLabel,
+      size,
+      status,
+      variant,
+      maxCount,
+      maxTagCount,
+      maxTagPlaceholder,
+      tagRender,
+      tokenSeparators = [","],
     },
     ref,
   ) => {
@@ -43,12 +94,30 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     const add = (raw: string) => {
       const tag = raw.trim();
       if (!tag || tags.includes(tag)) return;
+      // antd `maxCount` — a HARD ceiling, not a hint: the tag is refused rather than accepted and
+      // trimmed later, so the value handed to `onValueChange` is never over the limit.
+      if (maxCount !== undefined && tags.length >= maxCount) return;
       commit([...tags, tag]);
+    };
+    /** Commit a run of text, splitting it on every `tokenSeparators` entry (antd's paste contract). */
+    const addAll = (raw: string) => {
+      let next = [...tags];
+      const pieces = tokenSeparators.length
+        ? raw.split(new RegExp(`[${tokenSeparators.map(escapeForCharClass).join("")}]`))
+        : [raw];
+      for (const piece of pieces) {
+        const tag = piece.trim();
+        if (!tag || next.includes(tag)) continue;
+        if (maxCount !== undefined && next.length >= maxCount) break;
+        next = [...next, tag];
+      }
+      if (next.length !== tags.length) commit(next);
     };
     const removeAt = (i: number) => commit(tags.filter((_, idx) => idx !== i));
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" || e.key === ",") {
+      // Enter always commits — it is the field's submit gesture, not a separator character.
+      if (e.key === "Enter" || tokenSeparators.includes(e.key)) {
         e.preventDefault();
         add(draft);
         setDraft("");
@@ -56,6 +125,13 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
         removeAt(tags.length - 1);
       }
     };
+
+    const chips = tags.map((tag, index) => ({ value: tag, label: tag, index }));
+    const {
+      visible: visibleChips,
+      omitted: omittedChips,
+      overflow,
+    } = applyMaxTagCount(chips, maxTagCount, maxTagPlaceholder);
 
     return (
       <div
@@ -67,30 +143,57 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
         // node under `aria-disabled="true"`) — the same exemption native disabled form controls
         // get for free.
         aria-disabled={disabled || undefined}
-        className={cn("ui-tag-input", disabled && "ui-tag-input-disabled", className)}
+        // The same `variant` × `status` × `size` matrix the select family reads, so a form row
+        // holding a Select and a TagInput cannot end up with two different fields.
+        {...controlSurfaceAttrs({ variant, status, size })}
+        aria-invalid={status === "error" ? true : undefined}
+        className={cn(
+          "ui-tag-input ui-control-surface",
+          disabled && "ui-tag-input-disabled",
+          className,
+        )}
       >
         {tags.length > 0 ? (
           <ul role="list" className="ui-tag-input-list" data-slot="tag-input-list">
-            {tags.map((tag, i) => (
+            {visibleChips.map((chip) => (
               <li
-                key={tag}
+                key={chip.value}
                 role="listitem"
                 className="ui-tag-input-chip"
                 data-slot="tag-input-chip"
               >
-                {tag}
-                {!disabled ? (
-                  <button
-                    type="button"
-                    className="ui-tag-input-remove"
-                    aria-label={t("ui.tagInput.removeTag", { tag })}
-                    onClick={() => removeAt(i)}
-                  >
-                    <X aria-hidden="true" />
-                  </button>
-                ) : null}
+                {/* antd `tagRender` replaces the chip BODY. The remover it receives is the same
+                    `removeAt` the built-in ✕ calls, so a custom chip cannot end up unremovable. */}
+                {tagRender ? (
+                  tagRender({
+                    value: chip.value,
+                    label: chip.label,
+                    index: chip.index,
+                    disabled: Boolean(disabled),
+                    onClose: () => removeAt(chip.index),
+                  })
+                ) : (
+                  <>
+                    {chip.value}
+                    {!disabled ? (
+                      <button
+                        type="button"
+                        className="ui-tag-input-remove"
+                        aria-label={t("ui.tagInput.removeTag", { tag: chip.value })}
+                        onClick={() => removeAt(chip.index)}
+                      >
+                        <X aria-hidden="true" />
+                      </button>
+                    ) : null}
+                  </>
+                )}
               </li>
             ))}
+            {omittedChips.length > 0 ? (
+              <li role="listitem" className="ui-tag-input-chip" data-slot="tag-input-overflow">
+                {overflow ?? t("dataEntry.selection.overflow", { count: omittedChips.length })}
+              </li>
+            ) : null}
           </ul>
         ) : null}
         <input
@@ -104,6 +207,15 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
           aria-label={ariaLabel ?? t("ui.tagInput.inputLabel")}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
+          onPaste={(e) => {
+            // A pasted "a, b, c" is three tags, not one — that is what `tokenSeparators` buys, and
+            // it is the whole reason a bulk paste from a spreadsheet is usable at all.
+            const text = e.clipboardData.getData("text");
+            if (!tokenSeparators.some((separator) => text.includes(separator))) return;
+            e.preventDefault();
+            addAll(text);
+            setDraft("");
+          }}
           onBlur={() => {
             if (draft.trim()) {
               add(draft);
