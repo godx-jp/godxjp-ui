@@ -30,6 +30,8 @@
     "scripts/visual-audit-rules.mjs",
     "scripts/audit-hook.mjs",
     "scripts/init-agent-kit.mjs",
+    "scripts/init-guinea-pig.mjs",
+    "scripts/guinea-pig-skill.md",
     "scripts/postinstall.mjs",
     "scripts/_agent-setup.mjs",
     "scripts/cli.mjs",
