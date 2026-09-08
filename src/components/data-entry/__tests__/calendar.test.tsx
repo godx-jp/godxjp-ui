@@ -86,3 +86,21 @@ describe("Calendar", () => {
     );
   });
 });
+
+it("range middle keeps its own foreground on the child button, including interaction states", async () => {
+  const range = { from: new Date(2026, 4, 10), to: new Date(2026, 4, 14) };
+  const { container } = render(
+    <Calendar mode="range" selected={range} defaultMonth={MAY_2026} showOutsideDays={false} />,
+  );
+  const middle = container.querySelector('[data-day="2026-05-12"]')!;
+  expect(middle).toHaveAttribute("aria-selected", "true");
+  for (const state of ["", ":hover", ":focus"]) {
+    expect(middle).toHaveClass(`aria-selected:[&>button${state}]:text-accent-foreground`);
+  }
+  expect(container.querySelector('[data-day="2026-05-10"]')).not.toHaveClass(
+    "aria-selected:[&>button]:text-accent-foreground",
+  );
+  await expectNoA11yViolations(
+    <Calendar mode="range" selected={range} defaultMonth={MAY_2026} showOutsideDays={false} />,
+  );
+});

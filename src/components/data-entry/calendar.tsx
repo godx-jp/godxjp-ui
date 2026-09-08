@@ -154,6 +154,9 @@ export function Calendar({
         range_end: cn("day-range-end rounded-e-md", classNames?.range_end),
         range_middle: cn(
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
+          // A selected middle cell uses accent, unlike the primary endpoints.
+          // The ghost button owns its label colour, including hover and focus.
+          "aria-selected:[&>button]:text-accent-foreground aria-selected:[&>button:hover]:bg-accent aria-selected:[&>button:hover]:text-accent-foreground aria-selected:[&>button:focus]:bg-accent aria-selected:[&>button:focus]:text-accent-foreground",
           classNames?.range_middle,
         ),
         selected: cn(
