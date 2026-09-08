@@ -486,10 +486,24 @@ describe("responsive shell geometry", () => {
     // Negative inline margin cancels the ONE inset between the row and the panel edge; the padding
     // adds it back so the label stays on the heading's start line. Measured: rows span 0-560 in a
     // 560px panel, against 8-552 before the group's own padding was removed.
-    expect(row).toMatch(/margin-inline:\s*calc\(var\(--org-switcher-list-inset\) \* -1\);/);
+    /*
+     * TWO QUANTITIES, and collapsing them is what broke the popover. `-offset` is what the SURFACE
+     * insets the list by, which the row cancels; `-inset` is where the LABEL starts. The sheet's
+     * body inset happens to equal the label inset, so one value looked right there — and on the
+     * popover, which publishes `--popover-space-inset: 0`, the row was dragged 12px outside a panel
+     * with nothing to cancel and its text landed on the border.
+     */
+    expect(row).toMatch(/margin-inline:\s*calc\(var\(--org-switcher-list-offset\) \* -1\);/);
     expect(row).toMatch(/padding-inline:\s*var\(--org-switcher-list-inset\);/);
+    expect(shellTokens).toMatch(/--org-switcher-list-offset:\s*0px;/);
+    expect(
+      declarationsFor(shellStyles, '[data-slot="sheet-content"].ui-org-switcher-sheet'),
+    ).toMatch(/--org-switcher-list-offset:\s*var\(--org-switcher-sheet-inset\);/);
+
+    // The group's padding goes on BOTH axes: inline it was a second inset, block it was a 4px band
+    // above the first row and below the last (measured: list 82-179 against rows 86-175).
     expect(declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-group")).toMatch(
-      /padding-inline:\s*0;/,
+      /padding:\s*0;/,
     );
 
     // `+` and not a border on every row, so nothing hangs above the first item.

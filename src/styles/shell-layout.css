@@ -1010,6 +1010,9 @@
    * and states the relationship: this IS a sheet, re-tuned. */
   [data-slot="sheet-content"].ui-org-switcher-sheet {
     --sheet-pad-x: var(--org-switcher-sheet-inset);
+    /* The sheet DOES inset its body, so its rows have that much to cancel. The popover keeps the
+     * default 0 because `--popover-space-inset: 0` leaves them nothing. */
+    --org-switcher-list-offset: var(--org-switcher-sheet-inset);
     max-height: var(--org-switcher-sheet-max-height);
     border-start-start-radius: var(--radius-lg);
     border-start-end-radius: var(--radius-lg);
@@ -1034,16 +1037,29 @@
    * edges of the panel, and the padding is added back so the text stays on the same start line as
    * the heading above it. `+` rather than a border on every row, so the list has no rule hanging
    * under its last item. */
-  /* The group's own inline padding goes, so there is exactly ONE inset between a row and the panel
-   * edge for the row to cancel. Left in, the rule stopped 8px short of both edges and no single
-   * value could both reach the edge and keep the label on the heading's start line. */
+  /* The group's padding goes on BOTH axes. Inline, it was a second inset between the row and the
+   * panel edge, and with two of them no single value could reach the edge and still keep the label
+   * on the heading's start line. Block, it was a 4px band above the first row and below the last —
+   * measured on the desktop popover as list 82-179 against rows 86-175, and reported as "empty
+   * space at the top and the bottom". A ruled list draws its own boundaries; it needs no inner
+   * frame. */
   .ui-org-switcher-command .ui-command-group {
-    padding-inline: 0;
+    padding: 0;
   }
 
+  /* TWO DIFFERENT QUANTITIES, and collapsing them into one is what broke the popover.
+   *
+   *   --org-switcher-list-offset  what the SURFACE insets the list by, which the row cancels so
+   *                               its fill and its rule reach both edges. The sheet has one; the
+   *                               popover sets --popover-space-inset: 0 and therefore has none.
+   *   --org-switcher-list-inset   where the LABEL starts, which is the same on every surface.
+   *
+   * The first attempt used one value for both. On the sheet that was right by coincidence — its
+   * body inset happens to equal the label inset — and on the popover the row was pulled 12px
+   * OUTSIDE a panel that had nothing to cancel, putting the text flush against the border. */
   .ui-org-switcher-command .ui-command-item {
     border-radius: 0;
-    margin-inline: calc(var(--org-switcher-list-inset) * -1);
+    margin-inline: calc(var(--org-switcher-list-offset) * -1);
     padding-inline: var(--org-switcher-list-inset);
   }
 

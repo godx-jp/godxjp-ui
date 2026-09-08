@@ -271,10 +271,13 @@
   --org-switcher-avatar-size: var(--control-height-sm);
   /* The compact-picker inset, shared by the sheet heading and the list — see .ui-org-switcher-sheet. */
   --org-switcher-sheet-inset: var(--space-3);
-  /* The list's own inline inset, which a row cancels and re-adds, so the rule meets both edges of
-   * the panel while the label stays on the heading's start line. Matches --command-item-padding-x,
-   * which is what the list is inset by. */
+  /* Where a row's LABEL starts — the same on every surface, so it lines up with the heading. */
   --org-switcher-list-inset: var(--org-switcher-sheet-inset);
+  /* What the SURROUNDING SURFACE insets the list by, which a row cancels so its fill and its rule
+   * reach both edges. Zero by default: the popover publishes --popover-space-inset: 0, so there is
+   * nothing to cancel there, and cancelling anyway drags the row outside the panel and puts its
+   * text on the border. The sheet, which does inset its body, overrides this. */
+  --org-switcher-list-offset: 0px;
   --org-switcher-menu-width: 16rem;
   --org-switcher-sheet-max-height: 75dvh;
   --org-switcher-state-min-height: 8rem;
