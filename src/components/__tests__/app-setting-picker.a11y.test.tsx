@@ -11,6 +11,16 @@ describe("AppSettingPicker a11y", () => {
     await expectNoA11yViolations(<AppSettingPicker kind="locale" />);
   });
 
+  it('has no axe violations for the bar cell (appearance="bar")', async () => {
+    /*
+     * `bar` drops the value text exactly as `icon` does, so the localized aria-label is again the
+     * ONLY accessible name — and it changes the box and the hover surface, which is where a
+     * contrast regression would land. Same drops, different paint, so it gets its own case rather
+     * than riding on `icon`'s.
+     */
+    await expectNoA11yViolations(<AppSettingPicker kind="theme" appearance="bar" />);
+  });
+
   it('has no axe violations for the icon-only (appearance="icon") locale trigger', async () => {
     await expectNoA11yViolations(<AppSettingPicker kind="locale" appearance="icon" />);
   });

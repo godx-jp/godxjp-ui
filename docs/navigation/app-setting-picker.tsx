@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
-import { Flex, PageContainer, Topbar } from "@godxjp/ui/layout";
+import { Flex, PageContainer, Topbar, TopbarItem } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
@@ -118,6 +118,31 @@ export default function Demo() {
                     <AppSettingPicker kind="locale" appearance="inline" id="topbar-locale-inline" />
                     <AppSettingPicker kind="locale" appearance="icon" id="topbar-locale-icon" />
                   </Flex>
+                }
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>バーのセル（appearance=&quot;bar&quot;）</CardTitle>
+              <CardDescription>
+                <code>icon</code> と同じ構造上の省略を保ったまま、箱だけがバーの
+                <strong>セル</strong>になる。バーの高さいっぱいに伸び、角は
+                <code>--topbar-item-radius</code>（<code>TopbarItem</code> と同じつまみ）で四角い。
+                ホバーの面はバーそのものを塗る。
+                <code>icon</code> をバーに置くと <code>--control-height</code>
+                の丸い錠剤が背の高い帯の中に浮き、バー本来のクロームとは別系統に読める。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Topbar
+                start={<TopbarItem>プロジェクト</TopbarItem>}
+                end={
+                  <>
+                    <AppSettingPicker kind="locale" appearance="bar" id="topbar-locale-bar" />
+                    <AppSettingPicker kind="theme" appearance="bar" id="topbar-theme-bar" />
+                  </>
                 }
               />
             </CardContent>
