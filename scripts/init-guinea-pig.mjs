@@ -11,7 +11,7 @@ import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { KIT_VERSION, shouldSkip } from "./_agent-setup.mjs";
+import { KIT_VERSION, guineaPigStamp, shouldSkip } from "./_agent-setup.mjs";
 
 const root = process.env.INIT_CWD || process.cwd();
 const skip = shouldSkip(root);
@@ -28,10 +28,32 @@ if (skip === "no-package") {
 const source = join(dirname(fileURLToPath(import.meta.url)), "guinea-pig-skill.md");
 const target = join(root, ".claude", "skills", "godx-ui-guinea-pig", "SKILL.md");
 
+const optin = join(dirname(target), ".guinea-pig-optin");
+
 if (existsSync(target)) {
-  console.log(`  guinea-pig skill already present:\n    ${target}`);
+  /*
+   * PRESENT IS NOT THE SAME AS OPTED IN, and this used to exit here regardless — printing "its
+   * BASE sections now refresh on `npm update`" at a repo where they never would.
+   *
+   * `refreshGuineaPigSkill` keys entirely off the marker: no marker, no refresh, ever, and no
+   * report of it either. Measured across the three guinea pigs: one carried the marker and kept
+   * up; two had SKILL.md copied by an older path and had been reading whatever guidance was
+   * current the day it landed. Re-running is exactly how someone would try to fix that, so
+   * re-running has to actually fix it.
+   */
+  if (!existsSync(optin)) {
+    writeFileSync(optin, `${guineaPigStamp()}\n`);
+    console.log(`
+  guinea-pig skill was present but NOT opted in — its base sections would never have refreshed.
+  Marker written; it now tracks @godxjp/ui@${KIT_VERSION}:
+    • ${target}
+`);
+    process.exit(0);
+  }
+
+  console.log(`  guinea-pig skill already present and opted in:\n    ${target}`);
   console.log(
-    "\n  Its BASE sections now refresh on `npm update @godxjp/ui`; anything you appended below\n" +
+    "\n  Its BASE sections refresh on `npm update @godxjp/ui`; anything you appended below\n" +
       "  the `# 8.` marker is preserved. Re-running this command changes nothing.\n",
   );
   process.exit(0);
@@ -48,7 +70,7 @@ copyFileSync(source, target);
  * exact staleness this whole change exists to remove. The marker lives next to the skill rather
  * than in package.json so it travels with the thing it describes.
  */
-writeFileSync(join(dirname(target), ".guinea-pig-optin"), `${KIT_VERSION}\n`);
+writeFileSync(optin, `${guineaPigStamp()}\n`);
 
 console.log(`
   guinea-pig skill installed:

@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 // prettier-ignore
 // @ts-expect-error — plain ESM script without a declaration file
-import { ensureConsumerRules, stampedDigest, stampedVersion } from "../../scripts/_agent-setup.mjs";
+import { ensureConsumerRules, guineaPigStamp, refreshGuineaPigSkill, stampedDigest, stampedVersion } from "../../scripts/_agent-setup.mjs";
 
 /*
  * `ensureConsumerRules` writes the package-owned rule file into a consumer repo. What it decides is
@@ -103,5 +103,55 @@ describe("ensureConsumerRules", () => {
     expect(written).toContain("navRail");
     expect(written).toMatch(/platform/i);
     expect(written).toContain("--app-shell-nav-rail-width");
+  });
+});
+
+describe("refreshGuineaPigSkill", () => {
+  const skillDir = (root: string) => join(root, ".claude", "skills", "godx-ui-guinea-pig");
+  const skillPath = (root: string) => join(skillDir(root), "SKILL.md");
+  const optinPath = (root: string) => join(skillDir(root), ".guinea-pig-optin");
+
+  function optedIn(stamp = guineaPigStamp(), tail = "") {
+    const root = consumerRepo();
+    mkdirSync(skillDir(root), { recursive: true });
+    writeFileSync(skillPath(root), `stale base\n${tail}`);
+    writeFileSync(optinPath(root), `${stamp}\n`);
+    return root;
+  }
+
+  it("is a no-op while the base text is unchanged, whatever the release number", () => {
+    // The marker tracks the BASE TEXT, not the release: a version marker means editing the skill
+    // without cutting a release reaches nobody, and the skill moves far more often than the
+    // version does. Same correction the consumer rule file needed, same reason.
+    const root = optedIn();
+    expect(refreshGuineaPigSkill(root)).toBe(false);
+    expect(readFileSync(skillPath(root), "utf8")).toContain("stale base");
+  });
+
+  it("refreshes when the base text changed under an unchanged version", () => {
+    const root = optedIn("20.0.0:000000000000");
+    expect(refreshGuineaPigSkill(root)).toBe(true);
+    expect(readFileSync(skillPath(root), "utf8")).not.toContain("stale base");
+    expect(readFileSync(optinPath(root), "utf8").trim()).toBe(guineaPigStamp());
+  });
+
+  it("preserves everything the repo appended below the `# 8.` marker", () => {
+    // The base is the package's; section 8 down is the repo's — a deliberate audit exception, its
+    // package manager, its open findings. A refresh that ate them would make repos stop opting in.
+    const root = optedIn("20.0.0:000000000000", "\n---\n\n# 8. This repo\n\nits own note\n");
+    refreshGuineaPigSkill(root);
+    const written = readFileSync(skillPath(root), "utf8");
+    expect(written).toContain("# 8. This repo");
+    expect(written).toContain("its own note");
+    expect(written).not.toContain("stale base");
+  });
+
+  it("declines a repo that never opted in — the skill carries an obligation, not a default", () => {
+    // Installing it in an ordinary consumer would tell its agent to go edit a library it has no
+    // mandate over.
+    const root = consumerRepo();
+    mkdirSync(skillDir(root), { recursive: true });
+    writeFileSync(skillPath(root), "base");
+    expect(refreshGuineaPigSkill(root)).toBe(false);
   });
 });

@@ -553,6 +553,45 @@ describe("AppShell", () => {
     );
   });
 
+  it("keeps the drawer open when the tap opens something instead of going somewhere", async () => {
+    /*
+     * Reported from a phone: tapping the organization switcher in the drawer's rail closed the
+     * whole drawer, taking the panel it had just opened with it (the panel is portalled, so the
+     * drawer's dismissal reaches it).
+     *
+     * The close rule shipped as "any button except `.sb-nav-group-trigger`" — the only disclosure
+     * the drawer had at the time. It now reads the attributes a control must carry anyway for
+     * assistive tech, so every future overlay trigger is covered the day it is added rather than
+     * the day someone remembers to add its class here.
+     */
+    const user = userEvent.setup();
+
+    renderWithUi(
+      <AppShell
+        sidebar={
+          <div>
+            <button type="button" aria-haspopup="dialog" aria-expanded="false">
+              Switch organization
+            </button>
+            <a href="/reports">Reports</a>
+          </div>
+        }
+      >
+        <p>body</p>
+      </AppShell>,
+    );
+
+    await user.click(screen.getByRole("button", { name: /menu/i }));
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Switch organization" }));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    // A destination still closes it — that is the mobile pattern this rule exists for.
+    await user.click(screen.getByRole("link", { name: "Reports" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  });
+
   it("gives the drawer the same two columns the docked shell has, when a rail exists", async () => {
     /*
      * Stacked, the rail sat above the section list with an empty band between them, and it forced
