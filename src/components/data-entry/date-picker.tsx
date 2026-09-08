@@ -1,5 +1,4 @@
 import * as React from "react";
-import { startOfWeek, startOfMonth, startOfQuarter, startOfYear } from "date-fns";
 import { CalendarIcon, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { toIsoDate } from "../../lib/datetime/parse";
@@ -7,6 +6,7 @@ import {
   formatPickerDate,
   parsePickerDate,
   pickerDateAllowed,
+  pickerPeriodStart,
 } from "../../lib/datetime/picker-format";
 import { Button } from "../general/button";
 import { Flex } from "../layout/flex";
@@ -127,16 +127,7 @@ export function DatePicker(props: DatePickerProp) {
   const working = hasPending ? pending : value;
   const selectedDate = Array.isArray(working) ? working[0] : working;
   const [viewYear, setViewYear] = React.useState((selectedDate ?? new Date()).getFullYear());
-  const periodDate = (date: Date) =>
-    picker === "week"
-      ? startOfWeek(date, { locale: dayPickerLocale })
-      : picker === "month"
-        ? startOfMonth(date)
-        : picker === "quarter"
-          ? startOfQuarter(date)
-          : picker === "year"
-            ? startOfYear(date)
-            : date;
+  const periodDate = (date: Date) => pickerPeriodStart(date, picker, dayPickerLocale);
   const emit = (next: Date | Date[] | undefined) => {
     if (!isControlled) setInternalValue(next);
     if (props.multiple)

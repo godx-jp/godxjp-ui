@@ -1,5 +1,18 @@
-import { format as formatDate, isValid, parse, startOfDay } from "date-fns";
-import type { PickerDateFormatProp } from "../../props/components/data-entry.prop";
+import {
+  format as formatDate,
+  isValid,
+  parse,
+  startOfDay,
+  startOfWeek,
+  startOfMonth,
+  startOfQuarter,
+  startOfYear,
+  type Locale,
+} from "date-fns";
+import type {
+  DatePickerBaseProp,
+  PickerDateFormatProp,
+} from "../../props/components/data-entry.prop";
 import { parseDateInput, toIsoDate } from "./parse";
 
 /** Display is independent from the canonical value submitted by the field. */
@@ -47,4 +60,24 @@ export function pickerDateAllowed(
     (!max || startOfDay(date) <= startOfDay(max)) &&
     !disabled?.(date)
   );
+}
+
+/** Normalize a reporting period with the active calendar's week convention. */
+export function pickerPeriodStart(
+  date: Date,
+  picker: DatePickerBaseProp["picker"],
+  locale: Pick<Locale, "options">,
+): Date {
+  switch (picker) {
+    case "week":
+      return startOfWeek(date, { locale });
+    case "month":
+      return startOfMonth(date);
+    case "quarter":
+      return startOfQuarter(date);
+    case "year":
+      return startOfYear(date);
+    default:
+      return date;
+  }
 }
