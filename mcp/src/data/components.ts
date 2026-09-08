@@ -53,6 +53,12 @@ export const COMPONENTS: ComponentEntry[] = [
       "Mandatory page shell — EVERY page wraps its content in PageContainer (title/subtitle/extra/footer/breadcrumb).",
     props: [
       {
+        name: "breadcrumbLabel",
+        type: "string",
+        description:
+          "Tên khả truy cập của landmark <nav> breadcrumb. Mặc định là chuỗi Breadcrumb đã dịch.",
+      },
+      {
         name: "title",
         type: "string",
         required: true,
@@ -256,6 +262,37 @@ export default function OrdersPage() {
         defaultValue: '"md"',
         description:
           'Token gap between children, shared with other layout primitives. "none" is a DELIBERATE zero for two lines that read as one block — a name over its role, a weekday over its date, a tab bar with no seam — not a way to opt out of the token scale.',
+      },
+      {
+        name: "gapRaw",
+        type: "number",
+        description:
+          "ESCAPE HATCH: a gap in pixels, off every step of the scale. Real designs land on 2px, 5px, 6px, 10px, 14px — rounding to the nearest named step drifts the layout, and writing the literal in a className is blocked by ui-audit. Spend the ten named steps FIRST: `gap={3}` is 12px and follows the user's --scaling, gapRaw does not. It wins over `gap` (which then emits no class, so the two cannot fight over specificity) and leaves data-gap-raw on the DOM, so every escape stays countable.",
+      },
+      {
+        name: "pad",
+        type: "number | { inline?, block?, inlineStart?, inlineEnd?, blockStart?, blockEnd? }",
+        description:
+          "Inner padding on the token scale — one step for all four sides, or an object keyed by LOGICAL side. Exists because a missing padding prop produced 42 of 51 ui-audit errors in one real consumer (gh#408): `<Flex className=\"p-3\">` was the only move left.",
+      },
+      {
+        name: "padRaw",
+        type: "number | { inline?, block?, inlineStart?, inlineEnd?, blockStart?, blockEnd? }",
+        description:
+          "Raw-pixel padding for values off the scale, same contract and same price as gapRaw: it leaves data-pad-raw on the DOM so each escape is countable. Overrides `pad` PER SIDE, not as a whole.",
+      },
+      {
+        name: "fill",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Take the space the siblings leave — the ELASTIC column of a `fixed | elastic | fixed` row (name · meter · figures). Also sets min-inline-size: 0, which is what lets a truncating child ellipse instead of pushing the row wider. Without this axis the only move was className=\"flex-1 min-w-0\", which ui-audit blocks (gh#405 §2).",
+      },
+      {
+        name: "width",
+        type: "number | string",
+        description:
+          "A FIXED column: number = px, string = any CSS length. Comes with flex: none — a width a sibling can still squeeze is a suggestion, and stacked rows would start at different x offsets. Leaves data-width-raw on the DOM so the measurement stays countable, like gapRaw/padRaw.",
       },
       {
         name: "align",
@@ -883,6 +920,12 @@ export function HandyInbound() {
     tagline:
       "Data-driven vertical nav rail with collapsible submenu groups and a collapsed icon-only mode — never build nav manually with raw buttons.",
     props: [
+      {
+        name: "ariaLabel",
+        type: "string",
+        description:
+          "Tên khả truy cập của landmark điều hướng. Bắt buộc khi một tài liệu có nhiều hơn một `<nav>`.",
+      },
       {
         name: "activeId",
         type: "string",
@@ -2086,6 +2129,13 @@ import { Trash2 } from "lucide-react";
       "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>.",
     props: [
       {
+        name: "weight",
+        type: '"regular" | "medium" | "bold"',
+        defaultValue: "medium",
+        description:
+          "Độ đậm theo canon 3 bậc (400 · 500 · 700). Đặt `bold` cho tiêu đề cần nhấn.",
+      },
+      {
         name: "level",
         type: "1 | 2 | 3 | 4",
         defaultValue: "2",
@@ -3058,6 +3108,58 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     rules: [35],
   },
   {
+    name: "Legend",
+    group: "data-display",
+    tagline:
+      "The KEY for a colour-coded surface: which tone means what, spelled out in words once — a square swatch per tone with its label.",
+    props: [
+      {
+        name: "items",
+        type: '{ tone: "default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"; label: ReactNode }[]',
+        required: true,
+        description:
+          "The keys, in the order the marks they explain appear. `label` is required and cannot be omitted: colour alone never carries meaning (WCAG 1.4.1), so a wordless key would be the exact failure the component prevents.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class. The swatch geometry lives in the --legend-* tokens, not here.",
+      },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/data-display`: `import { Legend } from "@godxjp/ui/data-display";`',
+      "DO put it in the `CardAction` slot of the card whose bars or chart it explains, so the key sits on the same line as the card title and reads before the data.",
+      "DO feed it the same tone order as the marks it explains — a key whose order differs from the bars forces the reader to map three colours by hand.",
+      "DON'T build a key out of Badges. A Badge is a chip that reads as clickable and carries a tinted fill + border; a legend swatch is a SAMPLE of the exact colour the mark uses.",
+      "DON'T hand-roll a coloured square: `<span className=\"w-[10px] h-[10px] rounded-[2px] bg-[#c0392f]\" />` is blocked by ui-audit three ways at once (no-arbitrary-size, no-arbitrary-radius, no-arbitrary-hex).",
+      "DON'T give the swatch its own text or aria — it is aria-hidden on purpose, because it repeats the label beside it.",
+    ],
+    useCases: [
+      "The key above a set of `Progress` breakdown bars — 期限超過 / 期限間近 / 対応済 — so the three tones are named once for the whole card instead of on every row.",
+      "A chart card where the series colours need naming outside the chart's own runtime legend.",
+      "A status column in a dense table: name the tones once in the card header rather than repeating a Badge in every cell.",
+      "A calendar or heatmap whose cell tints encode a state (booked / held / free).",
+    ],
+    related: [
+      "Progress — `segments` draws the breakdown this key explains; the two take the same tones.",
+      "Badge — a Badge labels ONE thing in place; a Legend explains a colour used across many marks.",
+      "CardAction — the header slot a Legend usually sits in, so the key lands opposite the CardTitle.",
+    ],
+    example: `import { Legend } from "@godxjp/ui/data-display";
+
+<CardAction>
+  <Legend
+    items={[
+      { tone: "destructive", label: "期限超過" },
+      { tone: "warning", label: "期限間近" },
+      { tone: "success", label: "対応済" },
+    ]}
+  />
+</CardAction>`,
+    storyPath: "data-display/Legend.stories.tsx",
+    rules: [],
+  },
+  {
     name: "ListRow",
     group: "data-display",
     tagline:
@@ -3496,15 +3598,27 @@ import { Flex } from "@godxjp/ui/layout";
     name: "Progress",
     group: "data-display",
     tagline:
-      "Horizontal progress bar 0–100 with optional label, semantic tone, and an over-capacity (striped) state for over-limit meters.",
+      "Horizontal bar in two modes: a METER (`value` 0–100, optional tone, over-capacity striped state) and a BREAKDOWN (`segments` — one total split into tone-coloured slices on a taller track).",
     props: [
       {
         name: "value",
         type: "number",
         required: true,
-        description: "Progress percentage 0–100 (clamped unless `over`).",
+        description:
+          "METER mode: progress percentage 0–100 (clamped unless `over`). Required unless you pass `segments` — the two modes are a discriminated union, so `value` and `segments` can never appear together.",
       },
-      { name: "label", type: "string", description: "Text label beside/below the bar." },
+      {
+        name: "segments",
+        type: "{ value: number; tone: \"success\" | \"warning\" | \"destructive\"; label: string }[]",
+        description:
+          "BREAKDOWN mode: one total split into slices. Pass ABSOLUTE amounts in one unit (counts, bytes, yen) — the bar computes each share, so three numbers never have to be rounded into 100. Renders role=\"img\" named from every slice (a partition is not three progressbars), on a taller track (--progress-breakdown-block-size 1.375rem, --progress-breakdown-radius var(--radius)) because three abutting fills on the meter's 0.5rem pill read as a coloured hairline. `label` on each slice is REQUIRED — colour alone never carries meaning (WCAG 1.4.1). Mutually exclusive with value/tone/over.",
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          "Text label beside/below the bar; it also becomes the accessible name. Pass `aria-labelledby` instead when the name is ALREADY on screen (a row's company name, a card heading) — the bar then borrows it rather than repeating it.",
+      },
       {
         name: "tone",
         type: '"success" | "warning" | "destructive"',
@@ -3525,6 +3639,9 @@ import { Flex } from "@godxjp/ui/layout";
       'DO drive `tone` dynamically from business logic — e.g. `variant={pct >= 80 ? "warning" : "success"}` — to communicate threshold status semantically rather than with raw colour classes.',
       "DON'T use a `disabled` Slider as a read-only progress bar — Slider is semantically an interactive control even when disabled, which pollutes the a11y tree and exposes the wrong ARIA role (`slider` vs `progressbar`). Progress renders the correct read-only indicator.",
       "DON'T pass children or sub-components — Progress is a single self-contained element (track + bar + label). The `label` prop is the only text injection point; don't wrap it in a custom parent div to add a label alongside it.",
+      "DON'T hand-roll a stacked bar out of three divs to show a part-to-whole split — pass `segments`. Hand-rolled slices need a hex fill, an arbitrary height and an arbitrary radius, which ui-audit blocks three ways (no-arbitrary-hex, no-arbitrary-size, no-arbitrary-radius), and they leave the picture with no accessible name at all.",
+      "DON'T convert segment amounts to percentages yourself — pass the raw counts. The component divides by the total, so the slices always sum to the whole; pre-rounded percentages do not.",
+      "DO pair a breakdown with `Legend` so each tone is spelled out in words once, instead of repeating the labels on every bar.",
       "DON'T use Progress for editable numeric input or range selection — it has no callbacks, no interactivity, and no form `name` prop. Use Slider (bounded range input) or Input (free-form number) for data-entry scenarios.",
     ],
     useCases: [
@@ -3541,12 +3658,21 @@ import { Flex } from "@godxjp/ui/layout";
       "Steps — use Steps for a discrete, named sequence of phases (onboarding wizard, checkout flow) where each step has a label and a clear current/done/pending state; use Progress for a continuous 0–100 fill.",
       'Badge / Badge — use Badge or Badge to communicate a categorical status label (e.g. "Paid", "Overdue") without a fill metaphor; use Progress when the numeric proportion itself is the information.',
       "StatCard — use StatCard to headline a single KPI metric with a title; compose Progress inside or alongside StatCard when a visual fill adds meaning to the number.",
-      "BarChart / PieChart / LineChart (@godxjp/ui/charts) — Progress shows ONE ratio against a target; the moment you have several series, categories, or a part-to-whole split (or a value changing over time), move up to a chart instead of stacking many Progress bars.",
+      "Legend — the key for a breakdown: which tone means what, spelled out in words once for the whole card instead of on every bar.",
+      "BarChart / PieChart / LineChart (@godxjp/ui/charts) — a Progress breakdown handles ONE total split into a few named states, inline and without a charting runtime; move up to a chart when you have several series, many categories, or a value changing over time.",
     ],
     example: `import { Progress } from "@godxjp/ui/data-display";
 
 <Progress value={pct} label={pct + "% 使用中"} tone={pct >= 80 ? "warning" : "success"} />
-<Progress value={252} over label="252% 積載" />`,
+<Progress value={252} over label="252% 積載" />
+<Progress
+  segments={[
+    { value: 2, tone: "destructive", label: "期限超過" },
+    { value: 3, tone: "warning", label: "期限間近" },
+    { value: 12, tone: "success", label: "対応済" },
+  ]}
+  aria-labelledby={companyNameId}
+/>`,
     storyPath: "data-display/Progress.stories.tsx",
     rules: [],
   },
@@ -4144,6 +4270,18 @@ import remarkGfm from "remark-gfm";
     tagline:
       "Wraps a control with label, helper, and error; injects the accessible name (aria-labelledby), description (aria-describedby) and validation (aria-errormessage/aria-invalid/aria-required) contract onto the child, which forwards it to its real semantic focus target. Reads the parent Form's layout (vertical/horizontal) — overridable per field.",
     props: [
+      {
+        name: "field",
+        type: "string",
+        description:
+          "Tên trường của form — dùng khi `id` không đủ để nối control với error/aria.",
+      },
+      {
+        name: "labelAddon",
+        type: "ReactNode",
+        description:
+          "Nội dung phụ cạnh nhãn: gợi ý, badge bắt buộc, nút trợ giúp. Nằm TRONG hàng nhãn nên không phá nhịp trường.",
+      },
       {
         name: "id",
         type: "string",
@@ -5133,6 +5271,12 @@ export function PrioritySelect({ value, onValueChange }) {
     group: "data-entry",
     tagline: "Radio group accepting an options array or RadioItem children.",
     props: [
+      {
+        name: "id",
+        type: "string",
+        description:
+          "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
+      },
       { name: "value", type: "string", description: "Controlled selected value." },
       {
         name: "onValueChange",
@@ -6111,6 +6255,12 @@ toast.error("保存に失敗しました");`,
     group: "navigation",
     tagline: "Offset/page-based pagination bar. Sits below a table card.",
     props: [
+      {
+        name: "ariaLabel",
+        type: "string",
+        description:
+          "Tên khả truy cập của landmark phân trang. Bắt buộc khi một trang có nhiều bộ phân trang.",
+      },
       {
         name: "value",
         type: "number",
@@ -8010,6 +8160,13 @@ function FormSlider() {
       "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker or DateRangePicker instead when you need a form-submittable input.",
     props: [
       {
+        name: "bordered",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Kẻ ô: mỗi ngày một đường viền, kể cả hàng thứ (hàng thứ còn được tô nền muted). KHÔNG phải một khung quanh cả lịch — đó là việc của Card, và lồng Card trong Card cho hai mép bo cách nhau 16px với hai lớp padding. Mặc định false vì popover của picker cần điều ngược lại: ngày được chọn phải là hình duy nhất trong tấm.",
+      },
+      {
         name: "width",
         type: '"auto" | "full"',
         defaultValue: '"auto"',
@@ -8512,6 +8669,12 @@ function AccountQuickPick({ onSelect }: { onSelect: (id: string) => void }) {
     tagline:
       "Multi-select checkbox list from an options array or manual children — use `options` prop for the data-driven path, never hand-roll individual Checkbox items in a group.",
     props: [
+      {
+        name: "id",
+        type: "string",
+        description:
+          "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
+      },
       {
         name: "options",
         type: "ChoiceOptionProp[]",
@@ -11849,6 +12012,24 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
     tagline: "Canonical scope control: all branches vs an explicit subset.",
     props: [
       {
+        name: "value",
+        type: "BranchScopeValueProp",
+        description:
+          "Giá trị có kiểm soát: phạm vi đang chọn.",
+      },
+      {
+        name: "defaultValue",
+        type: "BranchScopeValueProp",
+        description:
+          "Giá trị khởi tạo khi không kiểm soát.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: BranchScopeValueProp) => void",
+        description:
+          "Phát khi phạm vi đổi.",
+      },
+      {
         name: "branches",
         type: "{ id: string; name: string; description?: string; disabled?: boolean }[]",
         required: true,
@@ -11930,6 +12111,24 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
     group: "layout",
     tagline: "Geometry (1440/1024 two-track, 390 stacked) is MasterDetail's tokens.",
     props: [
+      {
+        name: "value",
+        type: "string",
+        description:
+          "Giá trị có kiểm soát: id vai trò đang chọn.",
+      },
+      {
+        name: "defaultValue",
+        type: "string",
+        description:
+          "Id vai trò khởi tạo khi không kiểm soát.",
+      },
+      {
+        name: "onValueChange",
+        type: "(roleId: string) => void",
+        description:
+          "Phát khi vai trò đổi.",
+      },
       {
         name: "roles",
         type: "{ id: string; name: string; description?: string; memberCount?: number; locked?: boolean }[]",

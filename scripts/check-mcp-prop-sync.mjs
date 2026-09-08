@@ -35,7 +35,24 @@ const IGNORED_FIELDS = new Set([
 ]);
 
 /** Extract the field names declared in the FIRST object literal(s) of `export type Name = …`. */
-function literalFields(src, typeName) {
+function literalFields(rawSrc, typeName) {
+  /*
+   * STRIP COMMENTS FIRST — this gate was blind to every prop that had documentation.
+   *
+   * The member split ran on text that still held its JSDoc, and the name regex anchors at `^\s*`,
+   * so a member reading `\n  /** … *\/\n  gapRaw?: number` never matched: the comment sat where
+   * the name had to be. The gate therefore only ever checked props that NOBODY had documented —
+   * measured across `src/props/components/**`, 460 of 1019 declared props were invisible to it.
+   *
+   * That is the mechanism behind a failure already paid for: `Flex`'s `pad` / `padRaw` / `gapRaw`
+   * shipped in code and never reached the MCP catalog, and an agent that queried the catalog
+   * correctly concluded "Flex only has gap". The catalog drifted and the gate watching for drift
+   * could not see the drifting half.
+   *
+   * Stripping before the brace scan, not after: a `{` inside a JSDoc example also skewed the
+   * depth counter that finds the end of the type body.
+   */
+  const src = rawSrc.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/[^\n]*/g, "$1");
   const start = src.indexOf(`export type ${typeName}`);
   if (start === -1) return null;
   const equals = src.indexOf("=", start);
