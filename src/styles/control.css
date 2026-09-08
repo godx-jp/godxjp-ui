@@ -1909,6 +1909,41 @@
     }
   }
 
+  /* `width="full"` — the EMBEDDED calendar. Three independent barriers hold the default shape and
+   * all three have to go together; lifting any one alone was measured to do nothing visible:
+   *
+   *   root `fit-content`      → 248px root, grid 224px
+   *   + months on the row axis → root 1198px, grid still 224px (a flex item shrinks to content)
+   *   + fixed day-cell size    → root 1198px, grid 1174px, cells 167.7px  ← only here does it work
+   *
+   * Scoped to the attribute, never global: the picker popover is shrink-to-fit and takes ITS width
+   * from the calendar, so a global version collapsed the panel from 250px to 157.8px with 18.8px
+   * day cells. `ui-calendar-embedded-fill.test.tsx` pins both halves. */
+  .ui-calendar[data-width="full"] {
+    inline-size: 100%;
+  }
+
+  .ui-calendar[data-width="full"] .ui-calendar-months {
+    flex-direction: column;
+  }
+
+  .ui-calendar[data-width="full"] .ui-calendar-month {
+    inline-size: 100%;
+  }
+
+  .ui-calendar[data-width="full"] .ui-calendar-weekday,
+  .ui-calendar[data-width="full"] .ui-calendar-day {
+    inline-size: auto;
+    flex: 1 1 0;
+  }
+
+  .ui-calendar[data-width="full"] .ui-calendar-day-button {
+    inline-size: 100%;
+    /* The cell grows on the inline axis only — a day that also grew taller would turn a month into
+     * a page-height block. `--control-height` stays the row rhythm. */
+    max-inline-size: none;
+  }
+
   .ui-calendar-month {
     position: relative;
     display: flex;

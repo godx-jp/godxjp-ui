@@ -1268,7 +1268,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["DisabledProp"],
   },
-  CalendarProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: [] },
+  CalendarProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ControlWidthProp"],
+  },
   CalendarFooterProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

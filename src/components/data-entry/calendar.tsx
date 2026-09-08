@@ -29,6 +29,7 @@ export function Calendar({
   showClose = false,
   onClose,
   footer,
+  width = "auto",
   month: monthProp,
   onMonthChange,
   ...props
@@ -108,12 +109,21 @@ export function Calendar({
         ...labels,
         labelNav: labels?.labelNav ?? (() => `${ariaLabel ?? "Calendar"} navigation`),
       }}
-      // fill a wide container — w-fit shrink-wraps the grid so the nav sits beside it, not at
-      // the container edges. Consumers can still widen via `className` if they truly need to.
+      // The calendar has an INTRINSIC width — seven fixed day columns — and `width="auto"` (the
+      // default) shrink-wraps to it so the nav sits beside the grid, not at the container edges.
+      // That first line was deleted by adf52906, which left the rest of this comment saying the
+      // opposite of what the CSS does.
+      //
+      // `className` is NOT an escape hatch for widening, and the old comment promising it was
+      // measured wrong: `w-full` gives a 1198px root with the grid still 224px, pinned to the
+      // left edge — wrong layout, no error. Use `width="full"` instead; it lifts all three
+      // barriers (root `fit-content`, the ≥40rem row axis, and the fixed day-cell size) together.
+      //
       // `relative` is load-bearing: the absolute nav must anchor to THIS root. Without it the
-      // containing block becomes the nearest transformed ancestor (Radix PopoverContent), which
+      // containing block becomes the nearest transformed ancestor (the popover panel), which
       // throws the chevrons to the popover corners.
       className={cn("ui-calendar", className)}
+      data-width={width === "full" ? "full" : undefined}
       classNames={{
         months: cn("ui-calendar-months", classNames?.months),
         month: cn("ui-calendar-month", classNames?.month),

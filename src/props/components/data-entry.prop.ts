@@ -10,6 +10,7 @@ import type { UploadFileItem } from "../../components/data-entry/upload-types";
 import type { FieldA11yProps } from "../../lib/field-a11y";
 import type {
   ClassNameProp,
+  ControlWidthProp,
   DisabledProp,
   EmptyMessageProp,
   ErrorBagProp,
@@ -330,6 +331,21 @@ export type CalendarProp = DayPickerProps &
   CalendarFooterProp & {
     /** Replaces the built-in footer actions. */
     footer?: React.ReactNode;
+    /**
+     * How the grid claims horizontal space. Default `auto` shrink-wraps to seven fixed day
+     * columns — the shape a picker popover needs, because the panel is shrink-to-fit and takes
+     * ITS width from the calendar inside it.
+     *
+     * `full` is for an EMBEDDED calendar — a shift board, a booking month — where the calendar is
+     * the content of a card rather than a dropdown. It stacks the months, lets each one grow, and
+     * lets the day cells share the row.
+     *
+     * Opt-in on purpose, and the default is load-bearing: making the calendar fluid globally was
+     * measured to collapse the DatePicker popover from 250px to 157.8px with 18.8px day cells.
+     * `Calendar` and `DatePicker` want opposite answers here, which is why antd splits them too
+     * (`Calendar fullscreen` is 100% of its container; the DatePicker dropdown is a fixed 288px).
+     */
+    width?: Extract<ControlWidthProp, "auto" | "full">;
   };
 
 /** Footer actions shared by Calendar and the pickers that embed it. Both default to off. */

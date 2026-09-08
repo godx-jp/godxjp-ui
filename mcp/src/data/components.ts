@@ -8010,6 +8010,13 @@ function FormSlider() {
       "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker or DateRangePicker instead when you need a form-submittable input.",
     props: [
       {
+        name: "width",
+        type: '"auto" | "full"',
+        defaultValue: '"auto"',
+        description:
+          'How the grid claims horizontal space. `auto` (default) shrink-wraps to seven fixed day columns — the shape a picker popover needs, because the panel is shrink-to-fit and takes ITS width from the calendar inside it. Use `full` for an EMBEDDED calendar (a shift board, a booking month) that is the content of a Card rather than a dropdown: it stacks the months and lets the day cells share the row. Measured at a 1200px container: auto → root 248px / cells 32px; full → root 1200px / cells 168px; the DatePicker popover stays 250px either way. Do NOT reach for `className="w-full"` instead — it widens the root and leaves the grid at 224px pinned left.',
+      },
+      {
         name: "showToday",
         type: "boolean",
         defaultValue: "false",

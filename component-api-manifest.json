@@ -2467,6 +2467,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "\"auto\" | \"full\" | undefined",
+          "values": ["auto", "full"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
@@ -7486,6 +7494,22 @@
     "Logo": {
       "group": "general",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/general/logo.tsx"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/general/logo.tsx"]
+        },
         {
           "name": "glyph",
           "origin": "owned",
