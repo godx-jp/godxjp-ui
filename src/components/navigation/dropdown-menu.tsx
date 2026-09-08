@@ -1,184 +1,586 @@
 import * as React from "react";
-import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+import {
+  Header,
+  Menu,
+  MenuItem,
+  MenuSection,
+  MenuTrigger,
+  OverlayTriggerStateContext,
+  Popover,
+  Pressable,
+  Separator,
+  SubmenuTrigger,
+  type MenuItemRenderProps,
+  type PopoverProps,
+  type PopoverRenderProps,
+} from "react-aria-components";
 import { Check, ChevronRight } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { useInertHiddenBackground } from "../general/inert-background";
 
-export function DropdownMenu(props: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
-  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
+/*
+ * NỀN: React Aria Components, không còn @radix-ui/react-dropdown-menu.
+ *
+ * API CÔNG KHAI GIỮ NGUYÊN HÌNH DẠNG RADIX (compound + tên prop Radix). RAC gọi mọi thứ bằng tên
+ * khác — `isOpen`, `isDisabled`, `onAction`, `isSelected` — và những tên đó KHÔNG được rò ra
+ * ngoài; chúng được dịch ngay trong tệp này.
+ *
+ * RAC `Menu` là một COLLECTION: nó dựng cây từ children qua một lượt render ẩn. Wrapper tự viết
+ * vẫn hợp lệ miễn là chúng trả về một nút collection (`MenuItem`, `MenuSection`, `Separator`,
+ * `Header`, `SubmenuTrigger`). Hệ quả: hook đặt trong
+ * wrapper chạy ở LƯỢT ẨN, nơi chưa có state của menu; mọi thứ phụ thuộc trạng thái item phải đi
+ * qua prop `render` của RAC, thứ được gọi ở lượt DOM thật.
+ *
+ * `render` cũng là chỗ tái lập các `data-*` của Radix mà 12k dòng CSS đang bám: RAC phát
+ * `data-focused` / `data-selected` / `data-placement`, CSS ở đây đọc `data-highlighted` /
+ * `data-state` / `data-side`.
+ */
+
+/** Thuộc tính DOM mà `render` của một MenuItem nhận (nhánh không-phải-link của RAC). */
+type ItemDomProps = React.JSX.IntrinsicElements["div"];
+
+/**
+ * Dịch trạng thái item của RAC sang bộ `data-*` mà Radix phát ra và CSS của kho đang bám.
+ *
+ * `data-highlighted` là móc tô sáng bàn phím (`.ui-dropdown-menu-item[data-highlighted]`);
+ * `data-state` mang cả hai nghĩa của Radix — "open" cho sub-trigger, "checked" cho hàng có chọn.
+ */
+export function radixItemState(state: MenuItemRenderProps): Record<string, string | undefined> {
+  return {
+    "data-highlighted": state.isFocused ? "" : undefined,
+    "data-disabled": state.isDisabled ? "" : undefined,
+    "data-state": state.hasSubmenu
+      ? state.isOpen
+        ? "open"
+        : "closed"
+      : state.selectionMode === "none"
+        ? undefined
+        : state.isSelected
+          ? "checked"
+          : "unchecked",
+  };
 }
 
-export function DropdownMenuTrigger(
-  props: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>,
-) {
-  return <DropdownMenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />;
+/** Dịch trạng thái popover của RAC sang `data-state` / `data-side` của Radix. */
+export function radixSurfaceState(state: PopoverRenderProps): Record<string, string | undefined> {
+  return {
+    "data-state": state.isExiting ? "closed" : "open",
+    "data-side": state.placement && state.placement !== "center" ? state.placement : undefined,
+  };
 }
 
-export function DropdownMenuPortal(
-  props: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>,
-) {
-  return <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />;
+/** Radix `side` + `align` → `placement` của RAC. `align="center"` là placement trần. */
+export function toPlacement(
+  side?: "top" | "right" | "bottom" | "left",
+  align?: "start" | "center" | "end",
+): PopoverProps["placement"] {
+  const resolvedSide = side ?? "bottom";
+  if (!align || align === "center") return resolvedSide;
+  return `${resolvedSide} ${align}` as PopoverProps["placement"];
 }
 
-export function DropdownMenuGroup(props: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
-  return <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />;
+/**
+ * Radix trao cho `onSelect` một `Event` huỷ được. RAC's `onAction` không có sự kiện nào, nên ta
+ * dựng một cái tương đương để consumer gọi `preventDefault()` không nổ — nhưng nó KHÔNG còn giữ
+ * menu mở được nữa (xem báo cáo di trú).
+ */
+export function selectEvent(name: string): Event {
+  return typeof CustomEvent === "function"
+    ? new CustomEvent(name, { bubbles: false, cancelable: true })
+    : ({ defaultPrevented: false, preventDefault() {} } as unknown as Event);
 }
 
-export function DropdownMenuRadioGroup(
-  props: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>,
-) {
-  return <DropdownMenuPrimitive.RadioGroup data-slot="dropdown-menu-radio-group" {...props} />;
+type ModalOptions = { modal: boolean };
+const DropdownMenuModalContext = React.createContext<ModalOptions>({ modal: true });
+
+interface DropdownMenuPropsOwn {
+  /** Trạng thái mở có kiểm soát (Radix). Bên trong là `isOpen` của RAC. */
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** `modal={false}` → `isNonModal` của RAC: nền không bị khoá cuộn, không bị `inert`. */
+  modal?: boolean;
+  /**
+   * Radix đọc `dir` để đảo mũi tên trái/phải. RAC lấy hướng từ locale (`I18nProvider` /
+   * `useLocale`), nên prop này còn trong API vì hợp đồng, nhưng không tự đảo hướng.
+   */
+  dir?: "ltr" | "rtl";
 }
 
-export function DropdownMenuSub(props: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
-  return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />;
+export type DropdownMenuProps = React.PropsWithChildren<DropdownMenuPropsOwn>;
+
+export function DropdownMenu({
+  children,
+  open,
+  defaultOpen,
+  onOpenChange,
+  modal = true,
+  dir,
+}: DropdownMenuProps) {
+  void dir;
+  const options = React.useMemo<ModalOptions>(() => ({ modal }), [modal]);
+  return (
+    <DropdownMenuModalContext.Provider value={options}>
+      <MenuTrigger isOpen={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+        {children}
+      </MenuTrigger>
+    </DropdownMenuModalContext.Provider>
+  );
 }
 
-export const DropdownMenuContent = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => {
-  // Radix hides the app behind an open menu from assistive tech but leaves it tabbable —
-  // axe `aria-hidden-focus`. See components/general/inert-background.ts.
-  // Đăng ký chính phần tử content: nó mang `data-state`, và đó là tín hiệu ý định đóng mà
-  // nền dựa vào để nhả `inert` NGAY, thay vì đợi hết animation thoát (gh#385).
-  const contentRef = useInertHiddenBackground(ref);
+export interface DropdownMenuTriggerProps extends React.ComponentPropsWithoutRef<"button"> {
+  /** Giao hành vi mở cho phần tử con thay vì `<button>` mặc định — như Radix. */
+  asChild?: boolean;
+}
+
+/**
+ * RAC không nhận một `<button>` trần làm trigger: hành vi nhấn đi qua `PressResponder`, và chỉ
+ * `Pressable` (hoặc một component gọi `usePress`) mới nhận được nó. `asChild` vì vậy trở thành
+ * "bọc con trong `Pressable`" thay vì "hợp nhất props vào con" — kết quả với consumer là như nhau:
+ * chính phần tử của họ mang `aria-haspopup` / `aria-expanded` và nhận cú nhấn.
+ */
+export function DropdownMenuTrigger({ asChild, children, ...props }: DropdownMenuTriggerProps) {
+  const state = React.useContext(OverlayTriggerStateContext);
+  const dataState = state?.isOpen ? "open" : "closed";
+  if (asChild && React.isValidElement(children)) {
+    return (
+      <Pressable>
+        {
+          React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
+            "data-slot": "dropdown-menu-trigger",
+            "data-state": dataState,
+          }) as React.ReactElement<React.DOMAttributes<Element>, string>
+        }
+      </Pressable>
+    );
+  }
+  return (
+    <Pressable>
+      <button type="button" data-slot="dropdown-menu-trigger" data-state={dataState} {...props}>
+        {children}
+      </button>
+    </Pressable>
+  );
+}
+
+interface DropdownMenuPortalPropsOwn {
+  /** Giữ tên vì hợp đồng: RAC `Popover` tự cổng ra `document.body`, không có bản dựng cưỡng bức. */
+  forceMount?: true;
+}
+
+export type DropdownMenuPortalProps = React.PropsWithChildren<DropdownMenuPortalPropsOwn>;
+
+/** RAC `Popover` đã tự cổng, nên Portal chỉ còn là chỗ giữ hình dạng cây của Radix. */
+export function DropdownMenuPortal({ children }: DropdownMenuPortalProps) {
+  return <>{children}</>;
+}
+
+interface DropdownMenuGroupPropsOwn {
+  className?: string;
+}
+
+export type DropdownMenuGroupProps = React.PropsWithChildren<DropdownMenuGroupPropsOwn>;
+
+/** Radix dựng `<div role="group">`; RAC `MenuSection` dựng `<section role="group">`. */
+export function DropdownMenuGroup({ children, className }: DropdownMenuGroupProps) {
+  return (
+    <MenuSection data-slot="dropdown-menu-group" className={className}>
+      {children}
+    </MenuSection>
+  );
+}
+
+interface DropdownMenuRadioGroupPropsOwn {
+  className?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
+}
+
+export type DropdownMenuRadioGroupProps = React.PropsWithChildren<DropdownMenuRadioGroupPropsOwn>;
+
+/**
+ * Radix giữ trạng thái chọn ở chính RadioGroup; RAC giữ ở collection, khoá theo `id` của item.
+ * Nên `value` của consumer trở thành `selectedKeys` và `value` của RadioItem trở thành khoá.
+ */
+export function DropdownMenuRadioGroup({
+  children,
+  className,
+  value,
+  onValueChange,
+}: DropdownMenuRadioGroupProps) {
+  return (
+    <MenuSection
+      data-slot="dropdown-menu-radio-group"
+      className={className}
+      selectionMode="single"
+      disallowEmptySelection
+      selectedKeys={value == null ? [] : [value]}
+      onSelectionChange={(keys) => {
+        if (keys === "all") return;
+        const [first] = [...keys];
+        if (first != null) onValueChange?.(String(first));
+      }}
+    >
+      {children}
+    </MenuSection>
+  );
+}
+
+interface DropdownMenuSubPropsOwn {
+  /**
+   * RAC `SubmenuTrigger` tự giữ trạng thái mở của submenu và không phơi ra chỗ nào để điều khiển
+   * nó. Ba prop này còn trong API vì hợp đồng, nhưng không còn tác dụng.
+   */
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export type DropdownMenuSubProps = React.PropsWithChildren<DropdownMenuSubPropsOwn>;
+
+/**
+ * `SubmenuTrigger` đọc children THEO VỊ TRÍ — `children[0]` là item mở submenu, `children[1]` là
+ * popover — nên thứ tự `<SubTrigger/>` rồi `<SubContent/>` của Radix ánh xạ thẳng.
+ */
+export function DropdownMenuSub({ children }: DropdownMenuSubProps) {
+  const parts = React.Children.toArray(children).filter(React.isValidElement);
+  return <SubmenuTrigger>{parts as React.ReactElement[]}</SubmenuTrigger>;
+}
+
+interface DropdownMenuContentPropsOwn {
+  className?: string;
+  side?: "top" | "right" | "bottom" | "left";
+  align?: "start" | "center" | "end";
+  sideOffset?: number;
+  alignOffset?: number;
+  avoidCollisions?: boolean;
+  collisionPadding?: number;
+  /** Radix `loop` cho điều hướng bàn phím → `shouldFocusWrap` của RAC. */
+  loop?: boolean;
+  /** Giữ tên vì hợp đồng; RAC không có bản dựng cưỡng bức và không tự tháo khi trigger rời màn. */
+  forceMount?: true;
+  hideWhenDetached?: boolean;
+  sticky?: "partial" | "always";
+}
+
+export type DropdownMenuContentProps = React.PropsWithChildren<DropdownMenuContentPropsOwn>;
+
+/**
+ * Một phần tử của Radix (`Content`) tách thành HAI ở RAC: `Popover` là hộp được định vị, `Menu` là
+ * phần tử mang `role="menu"`. `data-slot` và lớp `ui-dropdown-menu-content` ở lại trên HỘP, cùng
+ * chỗ với `data-state` / `data-side` mà các utility animate đang đọc.
+ *
+ * `useInertHiddenBackground` đã được gỡ ở đây: RAC gọi `ariaHideOutside(..., {shouldUseInert:
+ * true})` — nền thành `inert` thật chứ không chỉ `aria-hidden`, nên axe `aria-hidden-focus` không
+ * còn cửa để nổ. Và hiệu ứng đó khoá theo `state.isOpen`, không theo unmount, nên `inert` được nhả
+ * NGAY ở ý định đóng: đúng lớp lỗi gh#385, đã sửa ở thượng nguồn. Phép đo là
+ * `src/components/__tests__/overlay-inert-release-385.test.tsx`.
+ */
+export function DropdownMenuContent({
+  children,
+  className,
+  side,
+  align,
+  sideOffset = 4,
+  alignOffset,
+  avoidCollisions,
+  collisionPadding,
+  loop,
+  hideWhenDetached,
+  sticky,
+  forceMount,
+}: DropdownMenuContentProps) {
+  void hideWhenDetached;
+  void sticky;
+  void forceMount;
+  const { modal } = React.useContext(DropdownMenuModalContext);
   return (
     <DropdownMenuPortal>
-      <DropdownMenuPrimitive.Content
-        ref={contentRef}
+      <Popover
         data-slot="dropdown-menu-content"
-        sideOffset={sideOffset}
+        isNonModal={!modal}
+        placement={toPlacement(side, align)}
+        offset={sideOffset}
+        crossOffset={alignOffset}
+        shouldFlip={avoidCollisions}
+        containerPadding={collisionPadding}
         className={cn(
-          "ui-dropdown-menu-content data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 origin-[var(--radix-dropdown-menu-content-transform-origin)]",
+          "ui-dropdown-menu-content data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 origin-[var(--trigger-anchor-point)]",
           className,
         )}
-        {...props}
-      />
+        render={(props, state) => <div {...props} {...radixSurfaceState(state)} />}
+      >
+        <Menu shouldFocusWrap={loop}>{children}</Menu>
+      </Popover>
     </DropdownMenuPortal>
   );
-});
-DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
+}
 
-export const DropdownMenuItem = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
-    inset?: boolean;
-    variant?: "default" | "destructive";
-  }
->(({ className, inset, variant = "default", ...props }, ref) => (
-  <DropdownMenuPrimitive.Item
-    ref={ref}
-    data-slot="dropdown-menu-item"
-    data-inset={inset}
-    data-variant={variant}
-    className={cn(
-      "ui-dropdown-menu-item [&_svg:not([class*='text-'])]:text-muted-foreground",
-      className,
-    )}
-    {...props}
-  />
-));
-DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
+interface DropdownMenuItemPropsOwn {
+  className?: string;
+  inset?: boolean;
+  variant?: "default" | "destructive";
+  disabled?: boolean;
+  onSelect?: (event: Event) => void;
+  textValue?: string;
+}
 
-export const DropdownMenuLabel = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.Label>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & { inset?: boolean }
->(({ className, inset, ...props }, ref) => (
-  <DropdownMenuPrimitive.Label
-    ref={ref}
-    data-slot="dropdown-menu-label"
-    data-inset={inset}
-    className={cn("ui-dropdown-menu-label", className)}
-    {...props}
-  />
-));
-DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName;
+export type DropdownMenuItemProps = React.PropsWithChildren<DropdownMenuItemPropsOwn>;
 
-export const DropdownMenuSeparator = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.Separator>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
->(({ className, ...props }, ref) => (
-  <DropdownMenuPrimitive.Separator
-    ref={ref}
-    data-slot="dropdown-menu-separator"
-    className={cn("ui-dropdown-menu-separator", className)}
-    {...props}
-  />
-));
-DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
+export function DropdownMenuItem({
+  children,
+  className,
+  inset,
+  variant = "default",
+  disabled,
+  onSelect,
+  textValue,
+}: DropdownMenuItemProps) {
+  return (
+    <MenuItem
+      isDisabled={disabled}
+      textValue={textValue}
+      onAction={onSelect ? () => onSelect(selectEvent("dropdownmenu.itemSelect")) : undefined}
+      className={cn(
+        "ui-dropdown-menu-item [&_svg:not([class*='text-'])]:text-muted-foreground",
+        className,
+      )}
+      render={(props, state) => (
+        <div
+          {...(props as ItemDomProps)}
+          data-slot="dropdown-menu-item"
+          data-inset={inset}
+          data-variant={variant}
+          {...radixItemState(state)}
+        />
+      )}
+    >
+      {children}
+    </MenuItem>
+  );
+}
 
-export const DropdownMenuCheckboxItem = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.CheckboxItem>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem>
->(({ className, children, checked, ...props }, ref) => (
-  <DropdownMenuPrimitive.CheckboxItem
-    ref={ref}
-    data-slot="dropdown-menu-checkbox-item"
-    className={cn("ui-dropdown-menu-checkbox-item", className)}
-    checked={checked}
-    {...props}
-  >
-    <span className="ui-dropdown-menu-indicator-slot">
-      <DropdownMenuPrimitive.ItemIndicator>
-        <Check className="ui-dropdown-menu-check" aria-hidden="true" />
-      </DropdownMenuPrimitive.ItemIndicator>
-    </span>
-    {children}
-  </DropdownMenuPrimitive.CheckboxItem>
-));
-DropdownMenuCheckboxItem.displayName = DropdownMenuPrimitive.CheckboxItem.displayName;
+interface DropdownMenuLabelPropsOwn {
+  className?: string;
+  inset?: boolean;
+}
 
-export const DropdownMenuRadioItem = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.RadioItem>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem>
->(({ className, children, ...props }, ref) => (
-  <DropdownMenuPrimitive.RadioItem
-    ref={ref}
-    data-slot="dropdown-menu-radio-item"
-    className={cn("ui-dropdown-menu-radio-item", className)}
-    {...props}
-  >
-    {children}
-  </DropdownMenuPrimitive.RadioItem>
-));
-DropdownMenuRadioItem.displayName = DropdownMenuPrimitive.RadioItem.displayName;
+export type DropdownMenuLabelProps = React.PropsWithChildren<DropdownMenuLabelPropsOwn>;
 
-export const DropdownMenuSubTrigger = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.SubTrigger>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & { inset?: boolean }
->(({ className, inset, children, ...props }, ref) => (
-  <DropdownMenuPrimitive.SubTrigger
-    ref={ref}
-    data-slot="dropdown-menu-sub-trigger"
-    data-inset={inset}
-    className={cn(
-      "ui-dropdown-menu-sub-trigger [&_svg:not([class*='text-'])]:text-muted-foreground",
-      className,
-    )}
-    {...props}
-  >
-    {children}
-    <ChevronRight className="ui-dropdown-menu-sub-trigger-icon" aria-hidden="true" />
-  </DropdownMenuPrimitive.SubTrigger>
-));
-DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayName;
+/** Radix dựng `<div>`; nút nhãn của một collection RAC là `Header`, tức `<header>`. */
+export function DropdownMenuLabel({ children, className, inset }: DropdownMenuLabelProps) {
+  return (
+    <Header
+      data-slot="dropdown-menu-label"
+      data-inset={inset}
+      className={cn("ui-dropdown-menu-label", className)}
+    >
+      {children}
+    </Header>
+  );
+}
 
-export const DropdownMenuSubContent = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.SubContent>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent>
->(({ className, ...props }, ref) => (
-  <DropdownMenuPrimitive.SubContent
-    ref={ref}
-    data-slot="dropdown-menu-sub-content"
-    className={cn(
-      "ui-dropdown-menu-sub-content data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 origin-[var(--radix-dropdown-menu-content-transform-origin)]",
-      className,
-    )}
-    {...props}
-  />
-));
-DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName;
+export interface DropdownMenuSeparatorProps {
+  className?: string;
+}
+
+export function DropdownMenuSeparator({ className }: DropdownMenuSeparatorProps) {
+  return (
+    <Separator
+      data-slot="dropdown-menu-separator"
+      className={cn("ui-dropdown-menu-separator", className)}
+    />
+  );
+}
+
+interface DropdownMenuCheckboxItemPropsOwn {
+  className?: string;
+  checked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  textValue?: string;
+}
+
+export type DropdownMenuCheckboxItemProps =
+  React.PropsWithChildren<DropdownMenuCheckboxItemPropsOwn>;
+
+/**
+ * Ở Radix mỗi CheckboxItem tự giữ `checked`. Ở RAC không có `isSelected` trên item: `aria-checked`
+ * và `role="menuitemcheckbox"` chỉ xuất hiện khi collection BAO QUANH khai báo `selectionMode`.
+ * Nên mỗi hàng độc lập được bọc trong một `MenuSection` một-phần-tử — đó là cái giá để giữ đúng
+ * vai trò ARIA mà consumer đang test.
+ */
+const CHECKBOX_KEY = "checked-item";
+
+export function DropdownMenuCheckboxItem({
+  children,
+  className,
+  checked,
+  onCheckedChange,
+  disabled,
+  textValue,
+}: DropdownMenuCheckboxItemProps) {
+  return (
+    <MenuSection
+      selectionMode="multiple"
+      shouldCloseOnSelect
+      selectedKeys={checked ? [CHECKBOX_KEY] : []}
+      onSelectionChange={(keys) => {
+        onCheckedChange?.(keys === "all" ? true : keys.has(CHECKBOX_KEY));
+      }}
+    >
+      <MenuItem
+        id={CHECKBOX_KEY}
+        isDisabled={disabled}
+        textValue={textValue}
+        className={cn("ui-dropdown-menu-checkbox-item", className)}
+        render={(props, state) => {
+          const { children: content, ...rest } = props as ItemDomProps;
+          return (
+            <div {...rest} data-slot="dropdown-menu-checkbox-item" {...radixItemState(state)}>
+              <span className="ui-dropdown-menu-indicator-slot">
+                {state.isSelected ? (
+                  <Check className="ui-dropdown-menu-check" aria-hidden="true" />
+                ) : null}
+              </span>
+              {content}
+            </div>
+          );
+        }}
+      >
+        {children}
+      </MenuItem>
+    </MenuSection>
+  );
+}
+
+interface DropdownMenuRadioItemPropsOwn {
+  className?: string;
+  value: string;
+  disabled?: boolean;
+  textValue?: string;
+}
+
+export type DropdownMenuRadioItemProps = React.PropsWithChildren<DropdownMenuRadioItemPropsOwn>;
+
+export function DropdownMenuRadioItem({
+  children,
+  className,
+  value,
+  disabled,
+  textValue,
+}: DropdownMenuRadioItemProps) {
+  return (
+    <MenuItem
+      id={value}
+      isDisabled={disabled}
+      textValue={textValue}
+      className={cn("ui-dropdown-menu-radio-item", className)}
+      render={(props, state) => (
+        <div
+          {...(props as ItemDomProps)}
+          data-slot="dropdown-menu-radio-item"
+          {...radixItemState(state)}
+        />
+      )}
+    >
+      {children}
+    </MenuItem>
+  );
+}
+
+interface DropdownMenuSubTriggerPropsOwn {
+  className?: string;
+  inset?: boolean;
+  disabled?: boolean;
+  textValue?: string;
+}
+
+export type DropdownMenuSubTriggerProps = React.PropsWithChildren<DropdownMenuSubTriggerPropsOwn>;
+
+export function DropdownMenuSubTrigger({
+  children,
+  className,
+  inset,
+  disabled,
+  textValue,
+}: DropdownMenuSubTriggerProps) {
+  return (
+    <MenuItem
+      isDisabled={disabled}
+      textValue={textValue}
+      className={cn(
+        "ui-dropdown-menu-sub-trigger [&_svg:not([class*='text-'])]:text-muted-foreground",
+        className,
+      )}
+      render={(props, state) => {
+        const { children: content, ...rest } = props as ItemDomProps;
+        return (
+          <div
+            {...rest}
+            data-slot="dropdown-menu-sub-trigger"
+            data-inset={inset}
+            {...radixItemState(state)}
+          >
+            {content}
+            <ChevronRight className="ui-dropdown-menu-sub-trigger-icon" aria-hidden="true" />
+          </div>
+        );
+      }}
+    >
+      {children}
+    </MenuItem>
+  );
+}
+
+interface DropdownMenuSubContentPropsOwn {
+  className?: string;
+  align?: "start" | "center" | "end";
+  alignOffset?: number;
+  sideOffset?: number;
+  avoidCollisions?: boolean;
+  collisionPadding?: number;
+  loop?: boolean;
+  forceMount?: true;
+  hideWhenDetached?: boolean;
+  sticky?: "partial" | "always";
+}
+
+export type DropdownMenuSubContentProps = React.PropsWithChildren<DropdownMenuSubContentPropsOwn>;
+
+export function DropdownMenuSubContent({
+  children,
+  className,
+  align,
+  alignOffset,
+  sideOffset,
+  avoidCollisions,
+  collisionPadding,
+  loop,
+  forceMount,
+  hideWhenDetached,
+  sticky,
+}: DropdownMenuSubContentProps) {
+  void forceMount;
+  void hideWhenDetached;
+  void sticky;
+  return (
+    <Popover
+      data-slot="dropdown-menu-sub-content"
+      placement={align ? toPlacement("right", align) : undefined}
+      offset={sideOffset}
+      crossOffset={alignOffset}
+      shouldFlip={avoidCollisions}
+      containerPadding={collisionPadding}
+      className={cn(
+        "ui-dropdown-menu-sub-content data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 origin-[var(--trigger-anchor-point)]",
+        className,
+      )}
+      render={(props, state) => <div {...props} {...radixSurfaceState(state)} />}
+    >
+      <Menu shouldFocusWrap={loop}>{children}</Menu>
+    </Popover>
+  );
+}
 
 export const DropdownMenuShortcut = ({
   className,
