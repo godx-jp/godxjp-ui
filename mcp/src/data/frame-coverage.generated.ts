@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 293,
-    dimensionCells: 4102,
+    exports: 294,
+    dimensionCells: 4116,
     covered: 66,
-    untested: 2261,
-    notApplicable: 1775,
+    untested: 2270,
+    notApplicable: 1780,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -117,6 +117,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"AlertMutationFeedback","group":"query","frame":"docs/query/mutation-feedback.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"AlertQueryError","group":"feedback","frame":"docs/feedback/alert.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"AlertTitle","group":"feedback","frame":"docs/feedback/alert.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"AppLauncher","group":"layout","frame":"docs/layout/app-launcher.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"AppSettingPicker","group":"navigation","frame":"docs/navigation/app-setting-picker.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"AppSettingToggle","group":"navigation","frame":"docs/navigation/app-setting-toggle.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"AppShell","group":"layout","frame":"docs/layout/app-shell.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},

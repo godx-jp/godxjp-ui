@@ -1076,6 +1076,33 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["LabelProp"],
   },
+  AppLauncherApp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["IdProp", "LabelProp", "IconProp"],
+  },
+  AppLauncherGroup: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["LabelProp"],
+  },
+  AppLauncherLabels: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["LabelProp"],
+  },
+  AppLauncherProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "OpenProp",
+      "OnOpenChangeProp",
+      "OnValueChangeProp",
+      "ErrorProp",
+      "PendingProp",
+      "ClassNameProp",
+    ],
+  },
   OrgSwitcherOrganization: {
     group: "layout",
     file: "components/layout.prop.ts",

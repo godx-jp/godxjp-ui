@@ -1020,6 +1020,151 @@
     animation: spin 1s linear infinite;
   }
 
+  /* ── APP LAUNCHER ─────────────────────────────────────────────────────────────────────────
+   * The nine-dot platform app grid. There is deliberately NO `.ui-app-launcher-trigger` rule: the
+   * trigger is a `TopbarItem`, so `.ui-topbar-item` already owns every pixel of it — full bar
+   * height through `align-self: stretch`, the bar's own hover surface, the focus mark hosted
+   * inside the cell. A rule here would be a second answer to a question that is already answered,
+   * and — since this file's classes live in `@layer components` while a utility does not — the
+   * kind of second answer that loses silently. */
+  .ui-app-launcher-popover {
+    /* Through the popover's KNOBS, not the raw properties: `.ui-popover-content` carries the same
+     * one-class specificity and is imported after this file, so a raw width/padding never wins. */
+    --popover-surface-inline-size: min(
+      var(--app-launcher-panel-width),
+      calc(100vw - var(--space-4))
+    );
+    --popover-space-inset: var(--space-2);
+  }
+
+  .ui-app-launcher-sheet {
+    max-height: var(--app-launcher-sheet-max-height);
+    border-start-start-radius: var(--radius-lg);
+    border-start-end-radius: var(--radius-lg);
+  }
+
+  .ui-app-launcher-panel {
+    /* THE DEFAULT COLUMN COUNT LIVES HERE, not in the component's props and not in
+     * tokens/components/shell.css. Not in the props, because a default nobody can restyle is not a
+     * default a design system owns; not in the token file, because the component-token NAME
+     * vocabulary (scripts/check-token-tiers.mjs) has a word for every length and colour and none
+     * for a count. Declared on the element the grid reads it from, so `AppLauncher columns={…}`
+     * overrides it inline and a theme overrides it with any more specific selector. */
+    --app-launcher-columns: 3;
+
+    display: grid;
+    max-height: var(--app-launcher-panel-max-height);
+    gap: var(--app-launcher-panel-gap);
+    overflow-y: auto;
+  }
+
+  .ui-app-launcher-grid {
+    display: grid;
+    /* The count is the ONE value this component takes from a prop rather than a token — see
+     * `AppLauncher`'s panel comment. `minmax(0, 1fr)` and not `1fr`, so a long app name shrinks its
+     * own column instead of pushing the grid wider than the popover. */
+    grid-template-columns: repeat(var(--app-launcher-columns), minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    gap: var(--app-launcher-grid-gap);
+    list-style: none;
+  }
+
+  .ui-app-launcher-cell {
+    display: flex;
+  }
+
+  .ui-app-launcher-tile {
+    display: flex;
+    min-width: 0;
+    min-height: var(--app-launcher-tile-min-height);
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--app-launcher-tile-gap);
+    padding: var(--app-launcher-tile-padding);
+    border-radius: var(--app-launcher-tile-radius);
+    color: hsl(var(--app-launcher-tile-color));
+    text-align: center;
+    text-decoration: none;
+    transition:
+      background-color var(--duration-fast),
+      color var(--duration-fast);
+  }
+
+  .ui-app-launcher-tile:hover {
+    background: hsl(var(--app-launcher-tile-hover-background));
+    color: hsl(var(--app-launcher-tile-hover-color));
+  }
+
+  /* The app you are already in. Keyed off `aria-current`, the attribute that CARRIES the meaning,
+   * so the tint and the announcement can never drift apart. */
+  .ui-app-launcher-tile[aria-current="page"] {
+    background: var(--app-launcher-tile-current-background, hsl(var(--secondary)));
+  }
+
+  .ui-app-launcher-mark {
+    display: grid;
+    width: var(--app-launcher-mark-size);
+    height: var(--app-launcher-mark-size);
+    flex: 0 0 auto;
+    place-items: center;
+    overflow: hidden;
+    border-radius: var(--app-launcher-mark-radius);
+    background: hsl(var(--app-launcher-mark-background));
+    color: hsl(var(--app-launcher-mark-foreground));
+    font-size: var(--app-launcher-mark-font-size);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .ui-app-launcher-mark > * {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* WRAPS, never truncates. An app name is a proper noun and the tile is three-to-a-row narrow, so
+   * an ellipsis here would routinely eat the half that tells two products of one suite apart. The
+   * grid row grows instead; `overflow-wrap: anywhere` keeps a long unbroken name inside its column
+   * rather than widening the panel. */
+  .ui-app-launcher-name {
+    max-width: 100%;
+    font-size: var(--app-launcher-name-font-size);
+    line-height: var(--line-height-tight);
+    overflow-wrap: anywhere;
+  }
+
+  .ui-app-launcher-group {
+    display: grid;
+    gap: var(--app-launcher-grid-gap);
+  }
+
+  .ui-app-launcher-group-label {
+    padding-inline: var(--app-launcher-tile-padding);
+    color: hsl(var(--app-launcher-group-label-color));
+    font-size: var(--app-launcher-group-label-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-app-launcher-state {
+    display: flex;
+    min-height: var(--app-launcher-state-min-height);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    color: hsl(var(--muted-foreground));
+    text-align: center;
+  }
+
+  .ui-app-launcher-spinner {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+    flex: 0 0 auto;
+    animation: spin 1s linear infinite;
+  }
+
   .sb-product,
   .sb-brand {
     display: flex;

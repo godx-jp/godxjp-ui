@@ -155,6 +155,7 @@ const componentPrefixes = {
     "kbd",
     "app-shell",
     "org-switcher",
+    "app-launcher",
     "auth-identity",
     "auth-account-summary",
     "auth-requester",

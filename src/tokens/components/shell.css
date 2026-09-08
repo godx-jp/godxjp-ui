@@ -271,6 +271,44 @@
   --org-switcher-sheet-max-height: 75dvh;
   --org-switcher-state-min-height: 8rem;
 
+  /* APP LAUNCHER — the nine-dot platform app grid in the topbar.
+   *
+   * NO TRIGGER GEOMETRY KNOB, deliberately, for exactly the reason `--topbar-item-*` declares no
+   * height: the trigger IS a `TopbarItem`, so the bar's own height and the bar's own hover surface
+   * are already its answer, and a second answer here would go stale the moment either moves.
+   *
+   * NO COLUMN-COUNT TOKEN EITHER, and that one is a GAP, not a choice: the component-token name
+   * vocabulary (scripts/check-token-tiers.mjs) has words for every length and colour and none for
+   * a count, so `--app-launcher-columns` cannot be spelled legally here. It is declared on
+   * `.ui-app-launcher-panel` in styles/shell-layout.css instead, which keeps it themeable but out
+   * of this tier. Give the vocabulary a `count` word and it moves here with the rest. */
+  --app-launcher-panel-width: 20rem;
+  --app-launcher-panel-max-height: 26rem;
+  --app-launcher-panel-gap: var(--space-3);
+  --app-launcher-sheet-max-height: 75dvh;
+  --app-launcher-grid-gap: var(--space-1);
+  --app-launcher-tile-gap: var(--space-1);
+  --app-launcher-tile-padding: var(--space-2);
+  /* The tap floor (rule #24, WCAG 2.2 AA 2.5.8) — a tile is a link on a phone before it is a tile
+   * on a desktop, and the comfortable control tier IS that floor. */
+  --app-launcher-tile-min-height: var(--control-height-comfortable);
+  --app-launcher-tile-radius: var(--radius);
+  --app-launcher-tile-color: var(--foreground);
+  --app-launcher-tile-hover-background: var(--accent);
+  --app-launcher-tile-hover-color: var(--accent-foreground);
+  /* The app you are already in. `initial` so the role default re-resolves at the call site under a
+   * scoped theme, the same reason `--sidebar-item-active-*` does. Default = hsl(var(--secondary)). */
+  --app-launcher-tile-current-background: initial;
+  --app-launcher-mark-size: 2.5rem;
+  --app-launcher-mark-radius: var(--radius);
+  --app-launcher-mark-background: var(--secondary);
+  --app-launcher-mark-foreground: var(--secondary-foreground);
+  --app-launcher-mark-font-size: var(--font-size-sm);
+  --app-launcher-name-font-size: var(--font-size-2xs);
+  --app-launcher-group-label-font-size: var(--font-size-2xs);
+  --app-launcher-group-label-color: var(--muted-foreground);
+  --app-launcher-state-min-height: 8rem;
+
   /* Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site
    * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override
    * never reaches it). A service re-tunes the active sub-item accent without forking CSS.

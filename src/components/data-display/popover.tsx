@@ -158,6 +158,25 @@ type PopoverRootValue = {
   /** `PopoverAnchor` có mặt → panel định vị theo anchor, không theo trigger (đúng như Radix). */
   anchored: boolean;
   setAnchored: (anchored: boolean) => void;
+  /*
+   * NAMING THE DIALOG. `PopoverContent` publishes `role="dialog"`, and a dialog without an
+   * accessible name is announced as the bare word "dialog" (axe: aria-dialog-name, WCAG 4.1.2).
+   * This shipped nameless: `PopoverTitle` was a plain `<div>` with no id and nothing wired to it,
+   * so even a popover that DID render a title had none. It went unseen because the shared a11y
+   * helper audited the render container while every overlay portals into `document.body`.
+   *
+   * `PopoverTitle` registers on mount; the content points at it when it is there and falls back to
+   * the TRIGGER's own name when it is not — a popover with no heading is named by the control that
+   * opened it, which is what the reader just activated. Pointing at an unrendered id would be a
+   * different violation (a reference to a missing element), so the fallback is not optional.
+   */
+  titleId: string;
+  descriptionId: string;
+  hasTitle: boolean;
+  hasDescription: boolean;
+  registerTitle: (present: boolean) => void;
+  registerDescription: (present: boolean) => void;
+  triggerId: string;
 };
 
 const PopoverRootContext = React.createContext<PopoverRootValue | null>(null);
@@ -193,6 +212,11 @@ export function Popover({
   const triggerRef = React.useRef<HTMLElement | null>(null);
   const anchorRef = React.useRef<HTMLElement | null>(null);
   const contentId = React.useId();
+  const titleId = React.useId();
+  const descriptionId = React.useId();
+  const triggerId = React.useId();
+  const [hasTitle, registerTitle] = React.useState(false);
+  const [hasDescription, registerDescription] = React.useState(false);
   const isOpen = open ?? uncontrolledOpen;
 
   const setOpen = React.useCallback(
@@ -215,8 +239,26 @@ export function Popover({
       anchorRef,
       anchored,
       setAnchored,
+      titleId,
+      descriptionId,
+      hasTitle,
+      hasDescription,
+      registerTitle,
+      registerDescription,
+      triggerId,
     }),
-    [isOpen, setOpen, contentId, modal, anchored],
+    [
+      isOpen,
+      setOpen,
+      contentId,
+      modal,
+      anchored,
+      titleId,
+      descriptionId,
+      hasTitle,
+      hasDescription,
+      triggerId,
+    ],
   );
 
   return <PopoverRootContext.Provider value={value}>{children}</PopoverRootContext.Provider>;
@@ -239,6 +281,7 @@ export function PopoverTrigger({ asChild, onClick, ref, ...props }: PopoverTrigg
       aria-expanded={root.open}
       /* `aria-controls` chỉ khi ĐANG MỞ: panel bị tháo khi đóng, và trỏ vào id không tồn tại là
        * lỗi axe thật. Radix cũng làm đúng vậy. */
+      id={props.id ?? root.triggerId}
       aria-controls={root.open ? root.contentId : undefined}
       data-state={root.open ? "open" : "closed"}
       {...props}
@@ -425,6 +468,20 @@ export function PopoverContent({
             data-state={isExiting ? "closed" : "open"}
             data-flush={flush ? "" : undefined}
             {...props}
+            /*
+             * AFTER `{...props}`, and computed from `props` rather than `rest`: `rest` is RAC's own
+             * DOM bag, so a consumer's `aria-label` is not in it. Reading the wrong bag put an
+             * `aria-labelledby` alongside an explicit `aria-label`, and labelledby WINS the
+             * accessible-name algorithm — OrgSwitcher's "Choose organization" panel silently became
+             * the trigger's name instead. An explicit label from the consumer has to survive.
+             */
+            aria-labelledby={
+              props["aria-labelledby"] ??
+              (props["aria-label"] ? undefined : root.hasTitle ? root.titleId : root.triggerId)
+            }
+            aria-describedby={
+              props["aria-describedby"] ?? (root.hasDescription ? root.descriptionId : undefined)
+            }
             ref={mergeRefs(ref, racRef, contentRef)}
             className={cn(
               "ui-popover-content origin-[var(--radix-popover-content-transform-origin)]",
@@ -464,17 +521,42 @@ export const PopoverHeader = ({ className, ...props }: React.HTMLAttributes<HTML
   <div data-slot="popover-header" className={cn("ui-popover-header", className)} {...props} />
 );
 
-export const PopoverTitle = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div data-slot="popover-title" className={cn("font-medium", className)} {...props} />
-);
+export const PopoverTitle = ({ className, id, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+  const root = usePopoverRoot("PopoverTitle");
+  // Registering on mount rather than having the content look for a title: the content renders in a
+  // portal and cannot see what its own children are, and a title added later must still name it.
+  React.useEffect(() => {
+    root.registerTitle(true);
+    return () => root.registerTitle(false);
+  }, [root]);
+
+  return (
+    <div
+      data-slot="popover-title"
+      id={id ?? root.titleId}
+      className={cn("font-medium", className)}
+      {...props}
+    />
+  );
+};
 
 export const PopoverDescription = ({
   className,
+  id,
   ...props
-}: React.HTMLAttributes<HTMLParagraphElement>) => (
-  <p
-    data-slot="popover-description"
-    className={cn("text-muted-foreground", className)}
-    {...props}
-  />
-);
+}: React.HTMLAttributes<HTMLParagraphElement>) => {
+  const root = usePopoverRoot("PopoverDescription");
+  React.useEffect(() => {
+    root.registerDescription(true);
+    return () => root.registerDescription(false);
+  }, [root]);
+
+  return (
+    <p
+      data-slot="popover-description"
+      id={id ?? root.descriptionId}
+      className={cn("text-muted-foreground", className)}
+      {...props}
+    />
+  );
+};

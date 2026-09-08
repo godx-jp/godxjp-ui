@@ -947,6 +947,114 @@ export type OrgSwitcherProp = {
   className?: ClassNameProp;
 };
 
+/**
+ * One app tile in the public {@link AppLauncher} contract.
+ *
+ * A tile is a REAL LINK, always. There is no `onClick`-only entry and no `disabled` entry: an app
+ * the viewer may not open is an app the consumer does not pass. A launcher that renders inert tiles
+ * is a launcher that teaches its users to stop trusting the grid.
+ */
+export type AppLauncherApp = {
+  /** Stable app identifier — the React key, and the `data-app` hook an end-to-end test holds. */
+  id: string;
+  /** Visible app name. It is also the tile's accessible name — the mark is presentational. */
+  name: string;
+  /** The destination. Required, because the tile IS an `<a href>` (WCAG 2.2 / APG: link, not button). */
+  href: string;
+  /**
+   * Owned mark — a Lucide icon, a `<Logo>`, an `<img>`, an `<Avatar>`. Rendered `aria-hidden`;
+   * when omitted the launcher falls back to the first character of `name`, exactly as
+   * `OrgSwitcher` does for an organization with no avatar.
+   */
+  icon?: ReactNode;
+  /** The app the viewer is currently inside. That tile carries `aria-current="page"`. */
+  current?: boolean;
+  /**
+   * The destination leaves this SPA. Such a tile renders a plain `<a target="_blank" rel="noreferrer
+   * noopener">` and DELIBERATELY bypasses `linkComponent`: a client-side router link to another
+   * origin is a router asked to route somewhere it does not own, which is how a launcher entry
+   * turns into a blank screen. Pair it with `labels.externalHint` (WCAG 3.2.5).
+   */
+  external?: boolean;
+};
+
+/** A labelled section of the launcher grid — the "more from …" band of the Google-style panel. */
+export type AppLauncherGroup = {
+  /** Section heading. Rendered as a real heading and used to name the section's own grid. */
+  label: string;
+  apps: readonly AppLauncherApp[];
+};
+
+/** Localized copy owned by the consuming product, never hard-coded by the component. */
+export type AppLauncherLabels = {
+  /**
+   * Accessible name of the nine-dot trigger ("Apps" / "アプリ"). A plain string, NOT a function of
+   * the current app the way `OrgSwitcherLabels.trigger` is a function of the organization: the
+   * launcher's trigger shows no current value, so naming one in the trigger would announce a
+   * destination the button does not go to.
+   */
+  trigger: string;
+  /** Panel name — the popover's accessible name and the bottom Sheet's header title. */
+  title: string;
+  empty: string;
+  loading: string;
+  retry?: string;
+  /** Screen-reader suffix for an `external` tile, e.g. "(opens in a new tab)" (WCAG 3.2.5). */
+  externalHint?: string;
+};
+
+/**
+ * @see AppLauncher — the PLATFORM-scope app switcher that lives in the topbar.
+ *
+ * Related, and repeatedly confused with it:
+ *
+ * - `ServiceLauncherCard` (data-display) is also a launcher tile, but a PAGE-SIZED one: status,
+ *   hostname, plan, an action button, a reason it is locked. It belongs on a service-catalogue
+ *   page, where choosing is a considered act. `AppLauncher`'s tile is bar-sized — mark plus name,
+ *   the whole tile a link — because switching app is a reflex, not a decision. Neither is built
+ *   out of the other; a grid of `ServiceLauncherCard`s inside a popover is the wrong component.
+ * - `AppShellProp.navRail` expresses the SAME platform scope as a docked column. These are the two
+ *   ways to say it, and a product picks ONE: the launcher suits a platform with MANY apps where
+ *   switching is occasional (the Google Workspace shape), the rail suits a single product where
+ *   switching workspace is a constant action worth permanent screen width (the Slack shape).
+ *   Shipping both puts one scope in two places and makes neither authoritative.
+ */
+export type AppLauncherProp = {
+  /** Ungrouped apps, rendered first, with no heading above them. */
+  apps: readonly AppLauncherApp[];
+  /** Labelled sections rendered after `apps`, in order. */
+  groups?: readonly AppLauncherGroup[];
+  labels: AppLauncherLabels;
+  /**
+   * Grid column count. Omit it and the panel keeps the stylesheet's own `--app-launcher-columns`
+   * (3, the Google-launcher shape, declared on `.ui-app-launcher-panel`): the default is where a
+   * theme can reach it, and this prop is the per-instance override written inline on top.
+   */
+  columns?: number;
+  /**
+   * THE framework-router contract, reusing `SidebarLinkComponentProp` VERBATIM — the same type
+   * `Sidebar` and `NavList` take, so a service that already wrote `inertiaSidebarLink(Link)` or
+   * `createSidebarLink(Link, "to")` for its rail hands the same value here. The launcher still
+   * composes the tile (mark, name, `aria-current`, the external hint); the consumer supplies only
+   * the element type. `external` apps bypass it — see {@link AppLauncherApp.external}.
+   */
+  linkComponent?: SidebarLinkComponentProp;
+  loading?: boolean;
+  /** Error content replaces the grid while preserving the trigger and the retry affordance. */
+  error?: ReactNode;
+  onRetry?: () => void;
+  /**
+   * `"auto"` (default) uses the desktop popover above `--sheet-responsive-breakpoint-width` and a
+   * focus-trapped bottom Sheet at/below it — the SAME token that drives `SheetContent
+   * responsive="auto"`, resolved through the shared `useSheetResponsiveMode()` hook, so a service
+   * moves the drawer line once for every overlay instead of per component.
+   */
+  responsive?: "auto" | "popover" | "sheet";
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  className?: ClassNameProp;
+};
+
 /** @see Sidebar */
 export type SidebarProp = {
   /** Accessible navigation landmark name; make it unique when multiple sidebars share a document. */

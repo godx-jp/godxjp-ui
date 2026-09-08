@@ -1,4 +1,8 @@
 export type {
+  AppLauncherApp,
+  AppLauncherGroup,
+  AppLauncherLabels,
+  AppLauncherProp,
   AppShellProp,
   AuthFooterProp,
   AuthIdentityProp,

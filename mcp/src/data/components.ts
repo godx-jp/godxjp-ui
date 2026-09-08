@@ -11893,6 +11893,104 @@ import { Badge } from "@godxjp/ui/data-display";
     rules: [],
   },
   {
+    name: "AppLauncher",
+    group: "layout",
+    tagline:
+      "Nine-dot topbar app grid — the platform-standard way to switch app (the Google Workspace shape).",
+    props: [
+      {
+        name: "apps",
+        type: "readonly AppLauncherApp[]",
+        required: true,
+        description:
+          "Ungrouped app tiles, rendered first with no heading. Each is { id, name, href, icon?, current?, external? } and each tile is a REAL <a href> — pass only apps the viewer may open; there is no disabled tile.",
+      },
+      {
+        name: "groups",
+        type: "readonly AppLauncherGroup[]",
+        description:
+          'Labelled sections rendered after `apps` — the "more from …" band. Each group is a named role="group", not a heading, so the same markup is correct inside the popover and inside the Sheet.',
+      },
+      {
+        name: "labels",
+        type: "AppLauncherLabels",
+        required: true,
+        description:
+          "Localized trigger name, panel title, empty/loading/retry copy, and the optional `externalHint` announced on an external tile (WCAG 3.2.5). `trigger` is a plain string, not a function of the current app: the nine-dot button shows no current value.",
+      },
+      {
+        name: "columns",
+        type: "number",
+        defaultValue: "3",
+        description:
+          "Grid column count, written inline to the `--app-launcher-columns` custom property. Omit it and `.ui-app-launcher-panel` keeps its own declaration of 3 — the default sits in the stylesheet, where a theme can reach it, rather than in a component token (the token NAME vocabulary has no word for a count).",
+      },
+      {
+        name: "linkComponent",
+        type: "SidebarLinkComponentProp",
+        description:
+          'Framework router link — the SAME contract `Sidebar` and `NavList` take, so `inertiaSidebarLink(Link)` / `createSidebarLink(Link, "to")` is reused verbatim. The launcher still composes the tile; `external` apps bypass it and render a plain anchor.',
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Shows the loading state; the trigger stays openable.",
+      },
+      { name: "error", type: "ReactNode", description: "Consumer-supplied error state." },
+      { name: "onRetry", type: "() => void", description: "Consumer-owned retry callback." },
+      {
+        name: "responsive",
+        type: '"auto" | "popover" | "sheet"',
+        defaultValue: '"auto"',
+        description:
+          'Responsive presentation contract. "auto" resolves through the SHARED Sheet hook useSheetResponsiveMode(): desktop popover above --sheet-responsive-breakpoint-width (48rem/768px), focus-trapped bottom Sheet at/below it.',
+      },
+      { name: "open", type: "boolean", description: "Controlled open state." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Open-state callback.",
+      },
+    ],
+    usage: [
+      "DO drop it straight into a Topbar slot. It renders NO wrapper element, so the trigger is the slot's own flex child and `.ui-topbar-item { align-self: stretch }` reaches the bar's height.",
+      'DON\'T build the trigger out of `Button variant="ghost"`. A Button in a bar is a --control-height pill floating in a taller strip, with its own hover fill and its own focus ring — the exact regression corrected in 20.0.0. The trigger is a `TopbarItem`.',
+      'DO mark the app the viewer is inside with `current` — it becomes `aria-current="page"`, which is what both the tint and the announcement key off.',
+      "DO set `external` on a destination outside this SPA. It renders a plain anchor with target/rel and skips `linkComponent`, because a client-side router link to another origin routes nowhere.",
+      'DON\'T wrap it in your own media query to pick popover vs sheet — `responsive="auto"` already reads the shared --sheet-responsive-breakpoint-width token.',
+      "`className`, `id` and every `data-*` land on the TRIGGER, so an end-to-end selector can hold it without depending on the localized accessible name.",
+    ],
+    useCases: [
+      "A platform with several apps (console, billing, chat, people) where the bar must offer all of them from every page.",
+      "Replacing a hand-rolled dropdown of product links in the topbar end slot.",
+    ],
+    related: [
+      "ServiceLauncherCard — the PAGE-SIZED launcher tile (status, hostname, plan, action, locked reason) for a service-catalogue page, where choosing is a considered act. AppLauncher's tile is bar-sized: mark + name, the whole tile one link, because changing app is a reflex. Neither is built out of the other; a grid of ServiceLauncherCards inside a popover is the wrong component.",
+      "AppShell (navRail) — the SAME platform scope expressed as a docked column instead of a bar control. Pick ONE: the launcher for a platform with MANY apps where switching is occasional (Google Workspace), the rail for a single product where switching workspace is constant enough to deserve permanent screen width (Slack).",
+      "OrgSwitcher — the other platform-scope control: which ORGANIZATION you are in, not which app. They compose; they do not replace each other.",
+      "TopbarItem — the bar cell the trigger is built from; use it directly for a one-off bar control.",
+    ],
+    example: `import { AppLauncher, Topbar } from "@godxjp/ui/layout";
+
+<Topbar
+  start={brand}
+  end={
+    <AppLauncher
+      apps={[
+        { id: "console", name: t("app.console"), href: "/console", icon: <BarChart3 />, current: true },
+        { id: "billing", name: t("app.billing"), href: "/billing", icon: <Receipt /> },
+      ]}
+      groups={[{ label: t("app.more"), apps: [{ id: "support", name: t("app.support"), href: supportUrl, external: true }] }]}
+      linkComponent={inertiaSidebarLink(Link)}
+      labels={labels}
+    />
+  }
+/>`,
+    storyPath: "layout/AppLauncher.stories.tsx",
+    rules: [],
+  },
+  {
     name: "FilterBar",
     group: "navigation",
     tagline:
