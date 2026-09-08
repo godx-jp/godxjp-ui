@@ -6,8 +6,12 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 /** The godxjp-ui MCP server — pulled on demand via npx (no extra dependency to ship). */
+/** This package's own root — the source of the version we stamp with. */
+const SELF_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
 export const MCP_SERVER = { command: "npx", args: ["@godxjp/ui-mcp"] };
 export const MCP_KEY = "godx-ui";
 
@@ -16,7 +20,25 @@ export const AUDIT_HOOK_CMD = "node node_modules/@godxjp/ui/scripts/audit-hook.m
 export const PRIMER_CMD = "cat .claude/godxjp-ui-workflow.md";
 
 /** The per-session workflow mandate the SessionStart hook injects into the agent. */
-export const WORKFLOW_MD = `# @godxjp/ui — mandatory workflow (read every session)
+export const KIT_VERSION = readJson(join(SELF_ROOT, "package.json"))?.version ?? "0.0.0";
+
+const STAMP = (v) => `<!-- godxjp-ui:version ${v} -->`;
+const STAMP_RE = /<!-- godxjp-ui:version ([^\s]+) -->/;
+
+/** The version stamped in `text`, or null when it predates stamping. */
+export function stampedVersion(text) {
+  return text?.match(STAMP_RE)?.[1] ?? null;
+}
+
+/**
+ * Replace the MANAGED region of a file and leave everything else alone.
+ *
+ * Refreshing is only safe if it cannot eat hand-written content, so the contract is narrow: the
+ * region is delimited, and anything outside the delimiters survives byte-for-byte. A consumer that
+ * appended repo-specific sections keeps them.
+ */
+export const WORKFLOW_MD = `${STAMP(KIT_VERSION)}
+# @godxjp/ui — mandatory workflow (read every session)
 
 You are building UI in an app that uses @godxjp/ui. Follow this EVERY time you create
 or change a component, page, or form — no exceptions.
@@ -50,6 +72,7 @@ or change a component, page, or form — no exceptions.
 /** Delimited block appended to the consumer's CLAUDE.md — loaded into the agent's context
  * every turn (the most reliable "ensure it reads the rules"). Markers keep it idempotent. */
 export const CLAUDE_MD_BLOCK = `<!-- godxjp-ui:start (managed by @godxjp/ui — edit .claude/godxjp-ui-workflow.md instead) -->
+${STAMP(KIT_VERSION)}
 ## @godxjp/ui — mandatory UI workflow (do NOT skip)
 
 This app uses @godxjp/ui. EVERY time you build or change UI:
@@ -82,6 +105,24 @@ function readJson(path) {
 }
 
 /** Ensure `.mcp.json` registers the godx-ui MCP server. Returns 'created' | 'added' | 'present'. */
+/**
+ * The version that wrote each managed artefact, stamped so `postinstall` can tell "already there"
+ * apart from "already there and STALE".
+ *
+ * Everything below used to be install-once: `ensureMcpJson` returned early on a present key,
+ * `writeWorkflowMd` on a present file, `ensureClaudeMd` on a present marker. So `npm update
+ * @godxjp/ui` brought new components, new audit rules and new catalog entries — and left the
+ * agent reading whatever guidance shipped the day the package was FIRST installed. The library
+ * moved; the instructions for using it did not.
+ */
+export function refreshBlock(current, next, startMarker, endMarker) {
+  const i = current.indexOf(startMarker);
+  if (i < 0) return current.replace(/\s*$/, "") + "\n\n" + next;
+  const j = endMarker ? current.indexOf(endMarker, i) : -1;
+  const tail = j < 0 ? "" : current.slice(j + endMarker.length);
+  return current.slice(0, i) + next + tail;
+}
+
 export function ensureMcpJson(root) {
   const path = join(root, ".mcp.json");
   const json = readJson(path) ?? {};
@@ -127,7 +168,14 @@ export function ensureClaudeHooks(root) {
 export function writeWorkflowMd(root) {
   const path = join(root, ".claude", "godxjp-ui-workflow.md");
   mkdirSync(dirname(path), { recursive: true });
-  if (existsSync(path)) return false;
+  // This file is owned entirely by the package — the CLAUDE.md block tells the consumer to edit
+  // it, but nothing else reads from it, so a stale copy is pure loss. Rewrite when the stamp moves.
+  if (existsSync(path)) {
+    const cur = readFileSync(path, "utf8");
+    if (stampedVersion(cur) === KIT_VERSION) return false;
+    writeFileSync(path, WORKFLOW_MD);
+    return "refreshed";
+  }
   writeFileSync(path, WORKFLOW_MD);
   return true;
 }
@@ -139,7 +187,16 @@ export function writeWorkflowMd(root) {
 export function ensureClaudeMd(root) {
   const path = join(root, "CLAUDE.md");
   const existing = existsSync(path) ? readFileSync(path, "utf8") : null;
-  if (existing?.includes("godxjp-ui:start")) return "present";
+  if (existing?.includes("godxjp-ui:start")) {
+    // Present — but at WHICH version? Refresh only the delimited block; anything the consumer
+    // wrote around it is untouched.
+    if (stampedVersion(existing) === KIT_VERSION) return "present";
+    writeFileSync(
+      path,
+      refreshBlock(existing, CLAUDE_MD_BLOCK, "<!-- godxjp-ui:start", "<!-- godxjp-ui:end -->"),
+    );
+    return "refreshed";
+  }
   if (existing == null) {
     writeFileSync(path, CLAUDE_MD_BLOCK);
     return "created";
@@ -156,4 +213,32 @@ export function shouldSkip(root) {
   if (!pkg) return "no-package";
   if (pkg.name === "@godxjp/ui" || pkg.name === "@godxjp/ui-mcp") return "self";
   return null;
+}
+
+/**
+ * Keep an opted-in guinea-pig skill current.
+ *
+ * The file is co-authored: sections 0–7 come from this package, and section 8 onward is whatever
+ * the repo wrote about ITSELF — its package manager, its audit baseline, its deliberate
+ * exceptions. So the refresh replaces the head and keeps the tail, which is the only split that
+ * lets the guidance move without eating the consumer's own notes.
+ *
+ * Only runs where `.guinea-pig-optin` exists: the skill carries an obligation to fix things
+ * UPSTREAM, and pushing that into a repo that never asked for it would tell its agent to go edit
+ * a library it has no mandate over.
+ */
+export function refreshGuineaPigSkill(root) {
+  const dir = join(root, ".claude", "skills", "godx-ui-guinea-pig");
+  const target = join(dir, "SKILL.md");
+  const optin = join(dir, ".guinea-pig-optin");
+  if (!existsSync(optin) || !existsSync(target)) return false;
+  if (readFileSync(optin, "utf8").trim() === KIT_VERSION) return false;
+
+  const base = readFileSync(join(SELF_ROOT, "scripts", "guinea-pig-skill.md"), "utf8");
+  const current = readFileSync(target, "utf8");
+  const marker = "\n---\n\n# 8. ";
+  const i = current.indexOf(marker);
+  writeFileSync(target, base.replace(/\s*$/, "") + "\n" + (i < 0 ? "" : current.slice(i)));
+  writeFileSync(optin, `${KIT_VERSION}\n`);
+  return true;
 }
