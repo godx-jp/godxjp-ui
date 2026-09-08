@@ -273,7 +273,7 @@ export default function OrdersPage() {
         name: "pad",
         type: "number | { inline?, block?, inlineStart?, inlineEnd?, blockStart?, blockEnd? }",
         description:
-          "Inner padding on the token scale — one step for all four sides, or an object keyed by LOGICAL side. Exists because a missing padding prop produced 42 of 51 ui-audit errors in one real consumer (gh#408): `<Flex className=\"p-3\">` was the only move left.",
+          'Inner padding on the token scale — one step for all four sides, or an object keyed by LOGICAL side. Exists because a missing padding prop produced 42 of 51 ui-audit errors in one real consumer (gh#408): `<Flex className="p-3">` was the only move left.',
       },
       {
         name: "padRaw",
@@ -286,7 +286,7 @@ export default function OrdersPage() {
         type: "boolean",
         defaultValue: "false",
         description:
-          "Take the space the siblings leave — the ELASTIC column of a `fixed | elastic | fixed` row (name · meter · figures). Also sets min-inline-size: 0, which is what lets a truncating child ellipse instead of pushing the row wider. Without this axis the only move was className=\"flex-1 min-w-0\", which ui-audit blocks (gh#405 §2).",
+          'Take the space the siblings leave — the ELASTIC column of a `fixed | elastic | fixed` row (name · meter · figures). Also sets min-inline-size: 0, which is what lets a truncating child ellipse instead of pushing the row wider. Without this axis the only move was className="flex-1 min-w-0", which ui-audit blocks (gh#405 §2).',
       },
       {
         name: "width",
@@ -482,7 +482,7 @@ import { StatCard } from "@godxjp/ui/data-display";
         name: "navRail",
         type: "ReactNode",
         description:
-          "A SECOND navigation column, narrower than `sidebar` and placed before it — the workspace/organization switcher shape (Slack, Teams, Discord): rail → sidebar → content. Passing a node adds the grid track and publishes `data-nav-rail` on the root; omitting it leaves the two-column shell unchanged. Width is `--app-shell-nav-rail-width` (4rem). Fully orthogonal to `topbarSpan` — the rail says how many navigation COLUMNS exist, `topbarSpan` says how far the BAR reaches, and all four combinations are supported. `sidebarCollapsed` folds the sidebar track only; the rail keeps its width (the Slack behaviour). Rendered as its own `complementary` landmark, and its content is added to the mobile drawer automatically.",
+          "A SECOND navigation column, narrower than `sidebar` and placed before it — the workspace/organization switcher shape (Slack, Teams, Discord): rail → sidebar → content. THE THREE COLUMNS ARE THREE SCOPES, and that is what decides where a control goes. The rail is PLATFORM scope: what is true across every app in the organization — which organization, which app, notifications, messages, events, organization settings, cross-app shortcuts. The sidebar is APP scope: this app's own sections, channels, routes. The topbar is PAGE scope: where you are and what you can do here. App navigation never goes in the rail and a platform switch never goes in the sidebar; a destination that would fit both belongs to the rail, because it survives changing apps. A rail repeating the sidebar's own entries is a second chrome band carrying the first one's rank, just vertical. Passing a node adds the grid track and publishes `data-nav-rail` on the root; omitting it leaves the two-column shell unchanged. Width is `--app-shell-nav-rail-width` (3.5rem, deliberately not the collapsed sidebar's 4rem — at equal widths the two nav tracks fuse into one block when the sidebar collapses). Fully orthogonal to `topbarSpan` — the rail says how many navigation COLUMNS exist, `topbarSpan` says how far the BAR reaches, and all four combinations are supported. `sidebarCollapsed` folds the sidebar track only; the rail keeps its width (the Slack behaviour). Rendered as its own `complementary` landmark, and its content is added to the mobile drawer automatically.",
       },
       {
         name: "navRailLabel",
@@ -2147,8 +2147,7 @@ import { Trash2 } from "lucide-react";
         name: "weight",
         type: '"regular" | "medium" | "bold"',
         defaultValue: "medium",
-        description:
-          "Độ đậm theo canon 3 bậc (400 · 500 · 700). Đặt `bold` cho tiêu đề cần nhấn.",
+        description: "Độ đậm theo canon 3 bậc (400 · 500 · 700). Đặt `bold` cho tiêu đề cần nhấn.",
       },
       {
         name: "level",
@@ -2235,7 +2234,7 @@ import { Trash2 } from "lucide-react";
         name: "asChild",
         type: "boolean",
         description:
-          "Borrow the single child element as the logo ROOT instead of rendering a <span> — the way to make the whole logo a LINK (<a>, or a router <Link>). The borrowed tag itself carries data-slot=\"logo-lockup\"/.ui-logo-lockup and the mark + wordmark become its children, so there is no wrapper element between the link and the lockup. Use it instead of wrapping Logo in your own <a>: .ui-logo-lockup is display:inline-flex, so a plain <a> (display:inline) puts the lockup on a line box and the strut's descender nudges the mark up in a topbar — the only fix left to the consumer is className=\"flex\" on the <a>, which ui-audit rejects as no-utility-layout.",
+          'Borrow the single child element as the logo ROOT instead of rendering a <span> — the way to make the whole logo a LINK (<a>, or a router <Link>). The borrowed tag itself carries data-slot="logo-lockup"/.ui-logo-lockup and the mark + wordmark become its children, so there is no wrapper element between the link and the lockup. Use it instead of wrapping Logo in your own <a>: .ui-logo-lockup is display:inline-flex, so a plain <a> (display:inline) puts the lockup on a line box and the strut\'s descender nudges the mark up in a topbar — the only fix left to the consumer is className="flex" on the <a>, which ui-audit rejects as no-utility-layout.',
       },
     ],
     usage: [
@@ -3146,7 +3145,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "DO put it in the `CardAction` slot of the card whose bars or chart it explains, so the key sits on the same line as the card title and reads before the data.",
       "DO feed it the same tone order as the marks it explains — a key whose order differs from the bars forces the reader to map three colours by hand.",
       "DON'T build a key out of Badges. A Badge is a chip that reads as clickable and carries a tinted fill + border; a legend swatch is a SAMPLE of the exact colour the mark uses.",
-      "DON'T hand-roll a coloured square: `<span className=\"w-[10px] h-[10px] rounded-[2px] bg-[#c0392f]\" />` is blocked by ui-audit three ways at once (no-arbitrary-size, no-arbitrary-radius, no-arbitrary-hex).",
+      'DON\'T hand-roll a coloured square: `<span className="w-[10px] h-[10px] rounded-[2px] bg-[#c0392f]" />` is blocked by ui-audit three ways at once (no-arbitrary-size, no-arbitrary-radius, no-arbitrary-hex).',
       "DON'T give the swatch its own text or aria — it is aria-hidden on purpose, because it repeats the label beside it.",
     ],
     useCases: [
@@ -3624,9 +3623,9 @@ import { Flex } from "@godxjp/ui/layout";
       },
       {
         name: "segments",
-        type: "{ value: number; tone: \"success\" | \"warning\" | \"destructive\"; label: string }[]",
+        type: '{ value: number; tone: "success" | "warning" | "destructive"; label: string }[]',
         description:
-          "BREAKDOWN mode: one total split into slices. Pass ABSOLUTE amounts in one unit (counts, bytes, yen) — the bar computes each share, so three numbers never have to be rounded into 100. Renders role=\"img\" named from every slice (a partition is not three progressbars), on a taller track (--progress-breakdown-block-size 1.375rem, --progress-breakdown-radius var(--radius)) because three abutting fills on the meter's 0.5rem pill read as a coloured hairline. `label` on each slice is REQUIRED — colour alone never carries meaning (WCAG 1.4.1). Mutually exclusive with value/tone/over.",
+          'BREAKDOWN mode: one total split into slices. Pass ABSOLUTE amounts in one unit (counts, bytes, yen) — the bar computes each share, so three numbers never have to be rounded into 100. Renders role="img" named from every slice (a partition is not three progressbars), on a taller track (--progress-breakdown-block-size 1.375rem, --progress-breakdown-radius var(--radius)) because three abutting fills on the meter\'s 0.5rem pill read as a coloured hairline. `label` on each slice is REQUIRED — colour alone never carries meaning (WCAG 1.4.1). Mutually exclusive with value/tone/over.',
       },
       {
         name: "label",
@@ -4288,8 +4287,7 @@ import remarkGfm from "remark-gfm";
       {
         name: "field",
         type: "string",
-        description:
-          "Tên trường của form — dùng khi `id` không đủ để nối control với error/aria.",
+        description: "Tên trường của form — dùng khi `id` không đủ để nối control với error/aria.",
       },
       {
         name: "labelAddon",
@@ -5289,8 +5287,7 @@ export function PrioritySelect({ value, onValueChange }) {
       {
         name: "id",
         type: "string",
-        description:
-          "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
+        description: "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
       },
       { name: "value", type: "string", description: "Controlled selected value." },
       {
@@ -8687,8 +8684,7 @@ function AccountQuickPick({ onSelect }: { onSelect: (id: string) => void }) {
       {
         name: "id",
         type: "string",
-        description:
-          "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
+        description: "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
       },
       {
         name: "options",
@@ -12117,20 +12113,17 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
       {
         name: "value",
         type: "BranchScopeValueProp",
-        description:
-          "Giá trị có kiểm soát: phạm vi đang chọn.",
+        description: "Giá trị có kiểm soát: phạm vi đang chọn.",
       },
       {
         name: "defaultValue",
         type: "BranchScopeValueProp",
-        description:
-          "Giá trị khởi tạo khi không kiểm soát.",
+        description: "Giá trị khởi tạo khi không kiểm soát.",
       },
       {
         name: "onValueChange",
         type: "(value: BranchScopeValueProp) => void",
-        description:
-          "Phát khi phạm vi đổi.",
+        description: "Phát khi phạm vi đổi.",
       },
       {
         name: "branches",
@@ -12217,20 +12210,17 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
       {
         name: "value",
         type: "string",
-        description:
-          "Giá trị có kiểm soát: id vai trò đang chọn.",
+        description: "Giá trị có kiểm soát: id vai trò đang chọn.",
       },
       {
         name: "defaultValue",
         type: "string",
-        description:
-          "Id vai trò khởi tạo khi không kiểm soát.",
+        description: "Id vai trò khởi tạo khi không kiểm soát.",
       },
       {
         name: "onValueChange",
         type: "(roleId: string) => void",
-        description:
-          "Phát khi vai trò đổi.",
+        description: "Phát khi vai trò đổi.",
       },
       {
         name: "roles",

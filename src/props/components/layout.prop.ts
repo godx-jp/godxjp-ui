@@ -333,7 +333,19 @@ export type AppShellProp = {
    * A SECOND navigation column, narrower than `sidebar` and placed before it — the
    * workspace/organization switcher shape (Slack, Teams, Discord). Passing a node adds the track;
    * omitting it leaves the two-column shell exactly as it was. Width is
-   * `--app-shell-nav-rail-width` (4rem).
+   * `--app-shell-nav-rail-width` (3.5rem — deliberately NOT the collapsed sidebar's 4rem: at equal
+   * widths the two navigation tracks fuse into one block the moment the sidebar collapses).
+   *
+   * THE THREE COLUMNS ARE THREE SCOPES, and the scope — not the free space — is what decides where
+   * a control goes. The rail is PLATFORM scope: whatever is true across every app in the
+   * organization (which organization, which app, notifications, messages, events, organization
+   * settings, cross-app shortcuts). The sidebar is APP scope: this app's own sections. The topbar
+   * is PAGE scope: where you are and what you can do here.
+   *
+   * So app navigation never goes in the rail, a platform switch never goes in the sidebar, and a
+   * destination that would fit both belongs to the rail — because it survives changing apps. A
+   * rail that repeats the sidebar's own entries is a second chrome band carrying the first one's
+   * rank, just vertical instead of horizontal.
    *
    * Orthogonal to `topbarSpan`: the rail says how many navigation COLUMNS there are, `topbarSpan`
    * says how far the BAR reaches, and every combination of the two is a real shape, so they never

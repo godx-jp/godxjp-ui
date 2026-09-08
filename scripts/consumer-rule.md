@@ -9,18 +9,54 @@
 `docs/CONSUMER-RULES.md` (10 luật) và, với kho chuột bạch, ở
 `.claude/skills/godx-ui-guinea-pig/SKILL.md`.
 
+## Bố cục chuẩn của platform: BA CỘT, và ba cột là BA PHẠM VI
+
+Vỏ mặc định của mọi app trên platform là ba cột, dựng bằng một `AppShell`:
+
+```
+navRail (3.5rem) │ sidebar (16rem) │ content
+```
+
+Không tự dựng ba cột bằng cách nhét hai cột vào một khe `sidebar` rồi nới
+`--app-shell-sidebar-width`. Hai bẫy đã đo được: `Sidebar` render
+`.sb-root { display: contents }` nên hai `Sidebar` đặt cạnh nhau **tan vào một
+flex row** và cùng co về 0; và nới token dùng chung khiến mép nội dung **nhảy
+64px giữa các route**. `navRail` sở hữu track riêng nên không cần cả hai.
+
+**Đặt một control vào cột nào là câu hỏi về PHẠM VI, không phải về chỗ trống:**
+
+| Cột       | Phạm vi                                                       | Chứa gì                                                                                     |
+| --------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `navRail` | **platform** — đúng với cả tổ chức, sống sót qua việc đổi app | đổi tổ chức · đổi app · thông báo · tin nhắn · sự kiện · cài đặt tổ chức · lối tắt liên-app |
+| `sidebar` | **app** — của riêng app đang mở                               | mục/kênh/route của chính app này                                                            |
+| `topbar`  | **trang** — bạn đang ở đâu, làm được gì ở đây                 | breadcrumb · hành động của trang · menu tài khoản                                           |
+
+Hai luật phủ định, và chúng làm được việc:
+
+- Điều hướng của app **không bao giờ** vào rail. Một rail lặp lại mục của
+  sidebar là dải chrome thứ hai mang thứ hạng của dải thứ nhất, chỉ dựng đứng.
+- Công tắc cấp platform **không bao giờ** vào sidebar — đổi app xong nó biến
+  mất, trong khi nó vẫn phải ở đó.
+- Đích nào hợp cả hai thì thuộc **rail**: nó sống sót qua việc đổi app.
+
+`sidebarCollapsed` chỉ gập cột `sidebar`; rail giữ nguyên bề rộng, nên đích cấp
+platform vẫn với tới được lúc gập. Đừng dựng lại hành vi này bằng CSS của kho.
+
+Bề rộng rail là token `--app-shell-nav-rail-width` — kho nào muốn rail rộng kiểu
+Slack thì đặt lại **một dòng**, không fork `.app-nav-rail`.
+
 ## Trước khi viết bố cục: TRA, đừng dựng
 
 Hỏi MCP `godxjp-ui` (`search_components`, `get_component`). Đo được trong một
 ngày: năm thứ cần đều ĐÃ CÓ và vẫn bị dựng lại bằng thứ khác —
 
-| Cần | Đã có |
-|---|---|
-| đường kẻ chạm mép Card | `<CardContent flush>` |
+| Cần                                      | Đã có                 |
+| ---------------------------------------- | --------------------- |
+| đường kẻ chạm mép Card                   | `<CardContent flush>` |
 | header có kẻ khi thân là danh sách flush | `<CardHeader banded>` |
-| một hàng LÀ liên kết (thay cho nút rời) | `<ListRow asChild>` |
-| kẻ ô từng ngày trong lịch | `<Calendar bordered>` |
-| dải giữa hai vùng, tự kẻ theo VỊ TRÍ | `<CardBar>` |
+| một hàng LÀ liên kết (thay cho nút rời)  | `<ListRow asChild>`   |
+| kẻ ô từng ngày trong lịch                | `<Calendar bordered>` |
+| dải giữa hai vùng, tự kẻ theo VỊ TRÍ     | `<CardBar>`           |
 
 Lỗi không phải "đoán sai tên prop" mà là **cho rằng nó không tồn tại nên không
 hỏi**.

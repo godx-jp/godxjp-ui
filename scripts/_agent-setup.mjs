@@ -4,6 +4,7 @@
  * NON-DESTRUCTIVE: it only creates a missing file or ADDS a missing key, never
  * overwrites existing config.
  */
+import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,6 +29,28 @@ const STAMP_RE = /<!-- godxjp-ui:version ([^\s]+) -->/;
 /** The version stamped in `text`, or null when it predates stamping. */
 export function stampedVersion(text) {
   return text?.match(STAMP_RE)?.[1] ?? null;
+}
+
+/**
+ * A stamp that tracks the CONTENT, for the files this package owns outright.
+ *
+ * A version stamp answers "which release wrote this", which is the wrong question for a file whose
+ * whole job is to carry current guidance. Measured: editing `consumer-rule.md` without bumping the
+ * package left two of three consumers holding the previous text, with a stamp that read as current
+ * and nothing anywhere reporting a difference. The rules are edited far more often than the
+ * version moves — most of all while they are being written, which is exactly when a stale copy
+ * does the most damage.
+ *
+ * So the digest goes in alongside the version: the version stays for humans reading the file, and
+ * the digest is what the refresh actually compares. Identical body → still a no-op.
+ */
+const DIGEST_RE = /<!-- godxjp-ui:digest ([0-9a-f]{12}) -->/;
+const digestOf = (body) => createHash("sha256").update(body).digest("hex").slice(0, 12);
+const OWNED_STAMP = (body) => `${STAMP(KIT_VERSION)}\n<!-- godxjp-ui:digest ${digestOf(body)} -->`;
+
+/** The content digest stamped in `text`, or null when it predates digest stamping. */
+export function stampedDigest(text) {
+  return text?.match(DIGEST_RE)?.[1] ?? null;
 }
 
 /**
@@ -270,9 +293,13 @@ export function ensureConsumerRules(root) {
   const dir = join(root, ".ai", "rules");
   const target = join(dir, "godxjp-ui.md");
   const body = readFileSync(join(SELF_ROOT, "scripts", "consumer-rule.md"), "utf8");
-  const next = `${STAMP(KIT_VERSION)}\n---\npaths:\n    - '${uiDir}/**'\n---\n\n${body}`;
+  const front = `---\npaths:\n    - '${uiDir}/**'\n---\n\n`;
+  // The digest covers the FRONT MATTER too: the detected glob is part of what makes this file
+  // correct, and a repo that grows a `resources/js` after shipping with `src` needs the rewrite.
+  const managed = `${front}${body}`;
+  const next = `${OWNED_STAMP(managed)}\n${managed}`;
 
-  if (existsSync(target) && stampedVersion(readFileSync(target, "utf8")) === KIT_VERSION) {
+  if (existsSync(target) && stampedDigest(readFileSync(target, "utf8")) === digestOf(managed)) {
     return false;
   }
   mkdirSync(dir, { recursive: true });
