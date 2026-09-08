@@ -62,6 +62,9 @@ function OrganizationBadge({ organization }: { organization: OrgSwitcherOrganiza
   );
 }
 
+/** Arbitrary `data-*` hooks — the one escape hatch this closed component keeps open. */
+type DataAttributes = { [key: `data-${string}`]: string | number | boolean | undefined };
+
 const OrgSwitcherTrigger = React.forwardRef<HTMLButtonElement, OrgSwitcherTriggerProps>(
   ({ organization, collapsed, disabled, label, ...props }, ref) => {
     const reactId = React.useId();
@@ -222,7 +225,8 @@ export function OrgSwitcher({
   open,
   onOpenChange,
   className,
-}: OrgSwitcherProp) {
+  ...rest
+}: OrgSwitcherProp & Pick<React.ComponentPropsWithoutRef<"button">, "id"> & DataAttributes) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
   const controlled = open !== undefined;
   const resolvedOpen = controlled ? open : uncontrolledOpen;
@@ -246,12 +250,21 @@ export function OrgSwitcher({
   // Loading and empty are inspectable panel states, not disabled controls. Only the explicit
   // disabled prop removes the switcher's affordance.
   const triggerDisabled = disabled;
+  /*
+   * `data-*` and `id` REACH THE TRIGGER. Everything else about this component is deliberately
+   * closed, but a switcher that cannot be addressed is a switcher no end-to-end test can drive,
+   * and the alternative consumers reach for is worse: a hand-rolled Select they CAN address.
+   * Measured — one shipped consumer bound `[data-test="organization-switcher"]` to a raw Select
+   * for months, and swapping in this component silently detached the selector because the prop
+   * was swallowed. The accessible name is localized, so it is not a selector a test can hold.
+   */
   const trigger = (
     <OrgSwitcherTrigger
       organization={current}
       collapsed={collapsed}
       disabled={triggerDisabled}
       label={triggerLabel}
+      {...rest}
     />
   );
   const panel = (

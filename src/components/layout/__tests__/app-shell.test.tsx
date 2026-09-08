@@ -98,8 +98,7 @@ describe("AppShell", () => {
           x
         </AppShell>,
       );
-      const railName = () =>
-        container.querySelector(".app-nav-rail")!.getAttribute("aria-label");
+      const railName = () => container.querySelector(".app-nav-rail")!.getAttribute("aria-label");
       expect(railName()).toBeTruthy();
       rerender(
         <AppShell sidebar={<nav>n</nav>} navRail={<nav>r</nav>} navRailLabel="組織">
@@ -552,5 +551,41 @@ describe("AppShell", () => {
         <h1>ページ</h1>
       </AppShell>,
     );
+  });
+
+  it("does not carry a desktop collapse into the mobile drawer", async () => {
+    /*
+     * `collapsed` trades labels for horizontal room in a DOCKED column. The drawer has no such
+     * pressure, and below the breakpoint it is the only navigation there is — so honouring the
+     * desktop answer there leaves the user with nothing but glyphs.
+     *
+     * Measured in a consumer before this: sidebar collapsed at 1280px, resized to 393px, drawer
+     * opened — organization mark plus five unlabelled icons, no text anywhere. That repo's own
+     * browser test is named "desktop sidebar collapse stays independent from the mobile navigation
+     * drawer" and had been asserting exactly this the whole time.
+     */
+    const user = userEvent.setup();
+    const sidebar = (
+      <Sidebar
+        aria-label="Sections"
+        collapsed
+        sections={[{ items: [{ id: "reports", label: "Reports", href: "/reports" }] }]}
+      />
+    );
+
+    renderWithUi(
+      <AppShell sidebar={sidebar} sidebarCollapsed>
+        <p>body</p>
+      </AppShell>,
+    );
+
+    // Docked: the consumer's own answer stands, so the rail stays a rail.
+    expect(document.querySelector('.app-sidebar .sb-root[data-collapsed="true"]')).not.toBeNull();
+
+    await user.click(screen.getByRole("button", { name: /menu/i }));
+    const drawer = await screen.findByRole("dialog");
+
+    expect(within(drawer).getByText("Reports")).toBeVisible();
+    expect(drawer.querySelector('.sb-root[data-collapsed="true"]')).toBeNull();
   });
 });

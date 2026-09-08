@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { Button } from "../general/button";
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTrigger } from "../feedback/sheet";
+import { NavSurfaceProvider } from "./nav-surface";
 import type { AppShellProp } from "../../props/components/layout.prop";
 
 export type {
@@ -210,7 +211,11 @@ export function AppShell({
                 className="app-mobile-nav-body px-[var(--app-shell-mobile-nav-inset)]"
                 onClick={handleDrawerClick}
               >
-                {drawerNav}
+                {/* The drawer announces itself, so the navigation it hosts can drop a desktop
+                 * answer that does not apply here. `collapsed` buys horizontal room in a docked
+                 * column; in a drawer that is the only navigation left, it buys nothing and costs
+                 * every label. */}
+                <NavSurfaceProvider surface="drawer">{drawerNav}</NavSurfaceProvider>
               </SheetBody>
             </SheetContent>
           </Sheet>

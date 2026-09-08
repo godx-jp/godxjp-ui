@@ -335,4 +335,28 @@ describe("OrgSwitcher responsive contract shares the Sheet breakpoint token (gh#
     // A literal would put the target size out of a theme's reach and let the two axes drift.
     expect(trigger.className).not.toMatch(/(?:^|\s)h-\d/);
   });
+
+  it("lets a `data-*` hook and an id reach the trigger, so an e2e test can hold it", () => {
+    /*
+     * This component is closed on purpose, but a control no test can address is a control
+     * consumers replace with a hand-rolled Select they CAN address — measured: one shipped app
+     * bound `[data-test="organization-switcher"]` to a raw Select for months, and swapping this
+     * component in silently detached the selector, because the prop was swallowed and nothing
+     * anywhere reported it. The accessible name is localized, so it is not a selector to hold.
+     */
+    const { container } = renderWithUi(
+      <OrgSwitcher
+        organizations={organizations}
+        value="dxs"
+        labels={labels}
+        id="org-switcher"
+        data-test="organization-switcher"
+      />,
+    );
+
+    const trigger = container.querySelector<HTMLElement>('[data-test="organization-switcher"]');
+    expect(trigger).not.toBeNull();
+    expect(trigger).toHaveClass("ui-org-switcher-trigger");
+    expect(trigger).toHaveAttribute("id", "org-switcher");
+  });
 });
