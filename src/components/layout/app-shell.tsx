@@ -58,6 +58,10 @@ export function AppShell({
       sidebar
     );
   const hasDrawer = responsiveNavigation === "drawer" && drawerNav != null;
+  /* Only the DEFAULT drawer nav splits into columns. A consumer that supplied `mobileNav` built
+   * one node for one surface and gets it back untouched — the shell does not know where its two
+   * halves would be. */
+  const railInDrawer = mobileNav === undefined && navRail !== undefined;
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
   const drawerOpen = mobileNavOpen ?? uncontrolledOpen;
   const setDrawerOpen = onMobileNavOpenChange ?? setUncontrolledOpen;
@@ -211,11 +215,29 @@ export function AppShell({
                 className="app-mobile-nav-body px-[var(--app-shell-mobile-nav-inset)]"
                 onClick={handleDrawerClick}
               >
-                {/* The drawer announces itself, so the navigation it hosts can drop a desktop
-                 * answer that does not apply here. `collapsed` buys horizontal room in a docked
-                 * column; in a drawer that is the only navigation left, it buys nothing and costs
-                 * every label. */}
-                <NavSurfaceProvider surface="drawer">{drawerNav}</NavSurfaceProvider>
+                {/* THE DRAWER KEEPS THE SHAPE OF THE SHELL IT REPLACES. With a rail, it is two
+                 * columns — narrow rail, then the section list — the same reading order the
+                 * docked shell has, so nothing has to be relearned at 393px.
+                 *
+                 * Stacking them instead put one column above the other with the section list
+                 * pushed to the middle of an otherwise empty sheet, and it forced a choice
+                 * neither answer survives: honour `collapsed` and the whole drawer is anonymous
+                 * glyphs, drop it and the rail's app switcher becomes a second full-width list
+                 * indistinguishable from the sections beneath it.
+                 *
+                 * Two columns dissolve that. The rail is narrow again, so it KEEPS `collapsed`
+                 * (surface="docked"); only the section column is told it is a drawer, where a
+                 * desktop collapse buys no room and costs every label. */}
+                {railInDrawer ? (
+                  <div className="app-mobile-nav-columns">
+                    <div className="app-mobile-nav-rail">{navRail}</div>
+                    <NavSurfaceProvider surface="drawer">
+                      <div className="app-mobile-nav-sections">{sidebar}</div>
+                    </NavSurfaceProvider>
+                  </div>
+                ) : (
+                  <NavSurfaceProvider surface="drawer">{drawerNav}</NavSurfaceProvider>
+                )}
               </SheetBody>
             </SheetContent>
           </Sheet>

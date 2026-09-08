@@ -729,6 +729,43 @@
     overscroll-behavior: contain;
   }
 
+  /* TWO COLUMNS IN THE DRAWER, when the shell has a rail — the same shape and the same reading
+   * order as the docked shell, so nothing is relearned at 393px. Stacked instead, the rail sat
+   * above the section list with an empty gap between them, and it forced a choice neither answer
+   * survives: keep `collapsed` and the drawer is anonymous glyphs, drop it and the rail's app
+   * switcher becomes a second full-width list indistinguishable from the sections below it.
+   *
+   * `min-height: 0` on both the row and the columns: each column scrolls ITSELF, and a flex child
+   * without it refuses to shrink below its content and pushes the drawer's own scroll instead. */
+  .app-mobile-nav-columns {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    gap: var(--space-2);
+  }
+
+  /* Narrow again, so the rail keeps `collapsed` — see the AppShell comment that pairs with this. */
+  .app-mobile-nav-rail {
+    display: flex;
+    min-height: 0;
+    flex: 0 0 auto;
+    flex-direction: column;
+    border-inline-end: 1px solid hsl(var(--border));
+    inline-size: var(--app-shell-nav-rail-width);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .app-mobile-nav-sections {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
   .app-topbar-spacer {
     flex: 1;
   }

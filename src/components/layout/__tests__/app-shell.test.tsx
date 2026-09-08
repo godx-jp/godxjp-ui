@@ -553,6 +553,63 @@ describe("AppShell", () => {
     );
   });
 
+  it("gives the drawer the same two columns the docked shell has, when a rail exists", async () => {
+    /*
+     * Stacked, the rail sat above the section list with an empty band between them, and it forced
+     * a choice neither answer survives: honour `collapsed` and the whole drawer is anonymous
+     * glyphs; drop it and the rail's app switcher becomes a second full-width list you cannot tell
+     * from the sections beneath it. Two columns dissolve that — the rail is narrow again, so it
+     * keeps `collapsed`, and only the section column is told it is a drawer.
+     */
+    const user = userEvent.setup();
+
+    renderWithUi(
+      <AppShell
+        navRail={
+          <Sidebar
+            aria-label="Apps"
+            activeId="general"
+            collapsed
+            sections={[
+              { items: [{ id: "general", label: "General", href: "/", icon: LayoutDashboard }] },
+            ]}
+          />
+        }
+        sidebar={
+          <Sidebar
+            aria-label="Sections"
+            activeId="reports"
+            collapsed
+            sections={[
+              {
+                items: [
+                  { id: "reports", label: "Reports", href: "/reports", icon: LayoutDashboard },
+                ],
+              },
+            ]}
+          />
+        }
+        sidebarCollapsed
+      >
+        <p>body</p>
+      </AppShell>,
+    );
+
+    await user.click(screen.getByRole("button", { name: /menu/i }));
+    const drawer = await screen.findByRole("dialog");
+
+    const rail = drawer.querySelector(".app-mobile-nav-rail");
+    const sections = drawer.querySelector(".app-mobile-nav-sections");
+    expect(rail).not.toBeNull();
+    expect(sections).not.toBeNull();
+
+    // The rail is a narrow column again, so its own answer stands.
+    expect(rail!.querySelector('.sb-root[data-collapsed="true"]')).not.toBeNull();
+    // The section column is the drawer proper, and a drawer shows labels.
+    expect(sections!.querySelector('.sb-root[data-collapsed="true"]')).toBeNull();
+    expect(within(sections as HTMLElement).getByText("Reports")).toBeVisible();
+  });
+
   it("does not carry a desktop collapse into the mobile drawer", async () => {
     /*
      * `collapsed` trades labels for horizontal room in a DOCKED column. The drawer has no such
@@ -568,8 +625,11 @@ describe("AppShell", () => {
     const sidebar = (
       <Sidebar
         aria-label="Sections"
+        activeId="reports"
         collapsed
-        sections={[{ items: [{ id: "reports", label: "Reports", href: "/reports" }] }]}
+        sections={[
+          { items: [{ id: "reports", label: "Reports", href: "/reports", icon: LayoutDashboard }] },
+        ]}
       />
     );
 
