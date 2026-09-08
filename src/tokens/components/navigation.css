@@ -201,6 +201,16 @@
   --menu-content-min-width: 10rem;
   /* DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu. */
   --dropdown-content-min-width: 8rem;
+  /* MENU WIDTH LADDER (gh#396) — the measures `<DropdownMenuContent width="sm|md|lg">` selects.
+   * Read ONLY when the prop is set, so an untouched menu keeps --dropdown-content-min-width above
+   * and moves by nothing. They exist because a menu wider than its trigger — a user menu, a
+   * project switcher, a notification panel — had exactly one mechanism left at the call site
+   * (`className="min-w-56"`), which put the width of every menu in the app beyond a theme's reach.
+   * A regular ladder, not the three literals one app happened to write: a service that wants
+   * 22.5rem notification panels retunes --menu-content-width-lg once. */
+  --menu-content-width-sm: 12rem;
+  --menu-content-width-md: 16rem;
+  --menu-content-width-lg: 20rem;
   /* Ant Design `arrow` — the pointer at the anchored edge. Radix stamps a 10×5 svg; these two
    * knobs override it so the pointer scales with a service theme's menu chrome. `--dropdown-arrow-
    * background` is a role-mirror knob: `initial`, so --popover re-resolves at the CALL SITE. */

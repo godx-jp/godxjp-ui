@@ -49,6 +49,14 @@ describe("list_audit_rules tool", () => {
     expect(out).toMatch(/before any visual review/i);
   });
 
+  it("tells the agent how to opt a deliberate exception out", async () => {
+    const out = await dispatchTool("list_audit_rules", {});
+    expect(out).toMatch(/ui-audit-disable-line <rule-id>/);
+    expect(out).toMatch(/ui-audit-disable-begin <rule-id> — <reason/);
+    expect(out).toMatch(/ui-audit-disable-end <rule-id>/);
+    expect(out).toMatch(/no reason is IGNORED/);
+  });
+
   it("filters by category", async () => {
     const i18n = await dispatchTool("list_audit_rules", { category: "i18n" });
     expect(i18n).toMatch(/ISO 4217|Intl/);

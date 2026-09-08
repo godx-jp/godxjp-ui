@@ -23,7 +23,8 @@
     },
     "datePicker": {
       "placeholder": "日付を選択",
-      "openCalendar": "カレンダーを開く"
+      "openCalendar": "カレンダーを開く",
+      "quarter": "第{quarter}四半期"
     },
     "dateRangePicker": {
       "placeholder": "期間を選択",
@@ -41,7 +42,8 @@
       "am": "午前",
       "pm": "午後",
       "now": "現在時刻",
-      "confirm": "確定"
+      "confirm": "確定",
+      "second": "秒"
     },
     "searchInput": {
       "placeholder": "検索…"

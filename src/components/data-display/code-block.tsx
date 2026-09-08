@@ -9,7 +9,7 @@ export const CodeBlock = React.forwardRef<
   HTMLPreElement,
   CodeBlockProp & Omit<React.ComponentPropsWithoutRef<"pre">, keyof CodeBlockProp>
 >(function CodeBlock(
-  { children, wrap = true, maxHeight = "none", size = "sm", language, className, ...rest },
+  { children, wrap = true, maxHeight = "none", size = "sm", language, className, style, ...rest },
   ref,
 ) {
   // A block that can scroll must be reachable from the keyboard (WCAG 2.1.1).
@@ -19,7 +19,15 @@ export const CodeBlock = React.forwardRef<
       ref={ref}
       data-slot="code-block"
       data-wrap={wrap ? undefined : "false"}
-      data-max-height={maxHeight === "none" ? undefined : maxHeight}
+      data-max-height={
+        typeof maxHeight === "string" && maxHeight !== "none" ? maxHeight : undefined
+      }
+      style={{
+        ...style,
+        ...(typeof maxHeight === "object"
+          ? { maxBlockSize: maxHeight.value, overflow: "auto" }
+          : undefined),
+      }}
       data-size={size === "sm" ? undefined : size}
       data-language={language}
       tabIndex={scrolls ? 0 : undefined}

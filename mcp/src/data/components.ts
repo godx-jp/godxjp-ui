@@ -46,6 +46,130 @@ export interface ComponentEntry {
 
 export const COMPONENTS: ComponentEntry[] = [
   {
+    name: "CardBar",
+    group: "data-display",
+    tagline: "Inline card toolbar with scoped inset and divider edges.",
+    props: [
+      {
+        name: "pad",
+        type: "PadProp",
+        description: "Instance padding on the token scale.",
+      },
+      {
+        name: "padRaw",
+        type: "PadRawProp",
+        description: "Measured padding escape.",
+      },
+      {
+        name: "gap",
+        type: "GapProp",
+        description: "Spacing between main and extra slots.",
+      },
+      {
+        name: "surface",
+        type: '"muted"',
+        description: "Optional muted ground.",
+      },
+      {
+        name: "border",
+        type: '"none" | "block-start" | "block-end" | "both"',
+        description: "Override positional divider edges for stacked bars.",
+      },
+    ],
+    storyPath: "data-display/Card.stories.tsx",
+    docPath: "docs/data-display/card/index.tsx",
+    rules: [9],
+    usage: [
+      "Compose inside Card. Unset border follows its position; explicit border prevents double rules in stacked bars.",
+    ],
+    related: ["Card", "Flex"],
+    useCases: ["Composer tool strips and view tabs."],
+    example: '<Card><CardBar pad={{block:2,inline:3}} border="block-start">Tools</CardBar></Card>',
+  },
+  {
+    name: "TimeRangePicker",
+    group: "data-entry",
+    tagline: "Ordered time range with optional endpoints and canonical native fields.",
+    props: [
+      {
+        name: "value",
+        type: "[string,string]",
+        description: "Controlled canonical times.",
+      },
+      {
+        name: "defaultValue",
+        type: "[string,string]",
+        description: "Uncontrolled initial range.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: [string,string]) => void",
+        description: "Reports edited range.",
+      },
+      {
+        name: "order",
+        type: "boolean",
+        description: "Sort times automatically; false allows overnight ranges.",
+      },
+      {
+        name: "allowEmpty",
+        type: "[boolean,boolean]",
+        description: "Permitted empty endpoints, default [true,true].",
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "Native names are name_from and name_to.",
+      },
+      {
+        name: "format",
+        type: "string",
+        description: "TimePicker display format.",
+      },
+      {
+        name: "disabledTime",
+        type: "TimePickerDisabledTimeProp",
+        description: "Shared time constraints.",
+      },
+      {
+        name: "showSeconds",
+        type: "boolean",
+        description: "Enable second precision.",
+      },
+      {
+        name: "minuteStep",
+        type: "number",
+        description: "Minute column step.",
+      },
+      {
+        name: "hourStep",
+        type: "number",
+        description: "Hour column step.",
+      },
+      {
+        name: "secondStep",
+        type: "number",
+        description: "Second column step.",
+      },
+      {
+        name: "allowClear",
+        type: "boolean",
+        description: "Permit clear only for an endpoint also allowed empty.",
+      },
+    ],
+    usage: [
+      "Use for a start/end time pair. Set order=false for overnight intervals.",
+      "Each endpoint follows the one-trailing-icon rule; allowEmpty=false suppresses its clear action.",
+    ],
+    useCases: ["Shift scheduling and reception hours."],
+    related: ["TimePicker", "DateRangePicker"],
+    example:
+      'import { TimeRangePicker } from "@godxjp/ui/data-entry";\n<TimeRangePicker aria-label="Shift" defaultValue={["09:00", "18:00"]} />',
+    storyPath: "data-entry/time-range-picker.tsx",
+    docPath: "docs/data-entry/time-range-picker.tsx",
+    rules: [9],
+  },
+  {
     name: "VisuallyHidden",
     group: "general",
     tagline: "Accessible supporting text without a visible layout box.",
@@ -119,6 +243,16 @@ export const COMPONENTS: ComponentEntry[] = [
     tagline:
       "Mandatory page shell — EVERY page wraps its content in PageContainer (title/subtitle/extra/footer/breadcrumb).",
     props: [
+      {
+        name: "footerPad",
+        type: "PadProp",
+        description: "Instance footer inset; omitted preserves the theme.",
+      },
+      {
+        name: "toolbarPad",
+        type: "PadProp",
+        description: "Instance toolbar inset; omitted preserves the theme.",
+      },
       {
         name: "breadcrumbLabel",
         type: "string",
@@ -310,18 +444,28 @@ export default function OrdersPage() {
       "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls.",
     props: [
       {
-        name: "as",
-        type: '"div" | "span"',
-        defaultValue: '"div"',
+        name: "reveal",
+        type: '"hover"',
         description:
-          'Render element. Swaps the TAG only — `.ui-flex` carries `display: flex`, so the box is identical either way. Pass "span" whenever the Flex sits in a PHRASING context where a <div> is invalid HTML: inside a TabsTrigger, a PopoverTrigger or a Button (each renders a <button>, whose content model is phrasing content only), inside a <label>, or inside a <p>. Nest consistently — a <div> inside a "span" Flex is invalid again.',
+          "Floating child actions shown on parent hover/focus-within; always visible on touch.",
+      },
+      { name: "bleed", type: "GapProp", description: "Negative inline inset on the token scale." },
+      {
+        name: "surface",
+        type: '"muted" | "popover" | "warning"',
+        description: "Lightweight surface, without Card structure.",
+      },
+      { name: "shrink", type: "boolean", description: "false prevents shrinking." },
+      { name: "grow", type: "boolean", description: "Grow into remaining flex space." },
+      {
+        name: "as",
+        type: '"div" | "span" | "ul" | "ol" | "li"',
+        description: "Semantic element. Lists preserve markers and indentation.",
       },
       {
         name: "direction",
-        type: '"row" | "col"',
-        defaultValue: '"row"',
-        description:
-          "Main axis direction. Defaults to the CSS platform initial value, row; use col explicitly for vertical stacks.",
+        type: '"row" | "col" | {base?: "row" | "col"; sm?: "row" | "col"; md?: "row" | "col"; lg?: "row" | "col"; xl?: "row" | "col"}',
+        description: "Responsive axis; omitted steps inherit.",
       },
       {
         name: "gap",
@@ -432,6 +576,12 @@ import { Button } from "@godxjp/ui/general";
     tagline: "Container-responsive card grid with configurable base, sm, md and lg columns.",
     props: [
       {
+        name: "padRaw",
+        type: "PadRawProp",
+        description: "Measured inset escape; stamped data-pad-raw.",
+      },
+      { name: "pad", type: "PadProp", description: "Token inset, scalar or logical sides." },
+      {
         name: "flow",
         type: '"rows" | "columns"',
         defaultValue: '"rows"',
@@ -460,6 +610,7 @@ import { Button } from "@godxjp/ui/general";
       },
     ],
     usage: [
+      "ResponsiveGrid.Item span={2} owns a responsive column span; an object {base:1,lg:2} sets explicit steps, clamped to the parent columns.",
       "DO place StatCard tiles directly as immediate children — StatCard IS already a bordered card; never wrap it in an extra <Card><CardContent>. The canonical pattern is <ResponsiveGrid columns={4}><StatCard .../><StatCard .../></ResponsiveGrid>.",
       "DO use columns={2|3|4} to declare the target desktop column count — the grid collapses automatically to 1 column on narrow containers (mobile-first via CSS container queries), via 2-column intermediate at ≥640px, then full target count at ≥1024px. Use columns={{ base: 2, sm: 4 }} for two mobile columns and four wider-container columns; no consumer CSS is needed.",
       "DO NOT place a DataTable inside a ResponsiveGrid column beside a card or chart. DataTable must occupy its own full-width row in a Card with CardContent flush. Nesting a multi-column table in a grid column squeezes CJK text to one character per line (see rule 37).",
@@ -598,6 +749,7 @@ import { StatCard } from "@godxjp/ui/data-display";
       },
     ],
     usage: [
+      "useAppShellNavigationMode() returns drawer/docked at the same 56.25rem boundary as AppShell. The root also publishes data-navigation. Use this instead of a consumer media query.",
       "DO pass a <Sidebar> node to `sidebar` (required) and page content to `children` (required) — these are the only two required props. Everything else is optional and omitting optional slots simply removes that zone from the rendered DOM.",
       "DO rely on AppShell's OWNED mobile drawer at or below 900px (NOT the Tailwind `lg` 1024px step — the shipped media query is `width <= 56.25rem`): it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
       'DO set `responsiveNavigation="docked"` only when the approved product contract retains its sidebar below 900px. AppShell keeps the same sidebar/footer/active navigation in a token-sized grid track and removes the redundant drawer trigger; never reproduce this with consumer media queries.',
@@ -1205,6 +1357,13 @@ export default function Shell() {
     tagline:
       "A PURE SLOT bar for the app shell — positions three clusters (start / center / end) and owns ONLY the bar layout. It bakes NO chrome: no product switcher, no search box, no notification bell, no language picker. The CONSUMER composes those from real primitives and drops them into a slot; whether a control is icon-only / labelled / bordered is that control's own config, never the shell's.",
     props: [
+      { name: "pad", type: "PadProp", description: "Instance inset using logical token steps." },
+      {
+        name: "height",
+        type: '"bar" | "auto"',
+        description:
+          "bar uses shell bar height/inset. Renders a div, suitable for nested panel chrome.",
+      },
       {
         name: "start",
         type: "ReactNode",
@@ -1307,6 +1466,17 @@ import { PanelLeftClose, Search } from "lucide-react";
     tagline:
       "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill.",
     props: [
+      {
+        name: "badge",
+        type: "ReactNode",
+        description:
+          "Overlaid count; does not change the bar cell width. Not rendered with asChild.",
+      },
+      {
+        name: "badgeTone",
+        type: '"neutral" | "destructive"',
+        description: "Count tone, shared with Sidebar badges.",
+      },
       {
         name: "hideBelow",
         type: "BreakpointProp",
@@ -1466,10 +1636,8 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
       },
       {
         name: "railWidth",
-        type: '"compact" | "standard"',
-        defaultValue: '"standard"',
-        description:
-          "Token-owned rail preset: compact=300px (--master-detail-rail-compact), standard=320px (--master-detail-rail-standard).",
+        type: '"narrow" | "compact" | "standard" | "wide"',
+        description: "Token rail steps: 12rem, 18.75rem, 20rem, 24rem.",
       },
       {
         name: "masterViewport",
@@ -1507,7 +1675,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
       "DO wire the two together: give the master controls `aria-controls={detailId}`, and move focus to `document.getElementById(detailId)` when a selection replaces the detail (the region is `tabIndex={-1}` so that focus call works).",
       "DO choose `compact` for the 300px rail and `standard` for 320px. Never reproduce these tracks with consumer CSS.",
       "DO provide `masterLabel` and `detailLabel` when the surrounding headings do not already identify both regions.",
-      "DON'T use ResponsiveGrid for master-detail hierarchy; its equal tracks cannot represent this composition.",
+      "Use ResponsiveGrid.Item span for proportional tracks, or MasterDetail when the rail needs a bounded width.",
       'DO set `masterViewport="compact"` (or `"standard"`) whenever the collection is a REAL, unbounded list. Left at `auto` a 200-row list renders ~3,700px tall, and once the layout stacks the detail lands thousands of pixels below the fold; bounded, the collection scrolls inside the rail and the detail stays near the top of the screen. Pass `masterLabel` too, so the scroll region is announced.',
       "DON'T reproduce that bound with a consumer `max-height`/`overflow` rule or a pixel prop — there is none by design. Retune `--master-detail-master-viewport-compact` / `-standard` in the service theme, and `--master-detail-master-viewport-inset` if the collection's focus ring needs more room.",
       "The collapse threshold is a real token: below `--master-detail-collapse-below` (default 40rem, measured against the COMPOSITION's own inline size, never the viewport) master stacks above detail. A theme retunes it globally, `collapseBelow` overrides it per instance. It is implemented as a flex-basis threshold rather than a media query precisely because a query CONDITION cannot read a var().",
@@ -1996,7 +2164,7 @@ export function TermsPage() {
     props: [
       {
         name: "variant",
-        type: '"default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link"',
+        type: '"default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link" | "bare"',
         defaultValue: '"default"',
         description:
           "Visual style. `dashed` = outline with a dashed border (Ant-style add-row / placeholder action).",
@@ -2120,6 +2288,16 @@ import { Trash2 } from "lucide-react";
     tagline:
       'Typographic primitive — use INSTEAD of a hand-rolled `<span className="text-[13px] font-medium text-muted-foreground">`. Size is a type-scale step (never px); tone/weight are tokens.',
     props: [
+      {
+        name: "decoration",
+        type: '"none" | "underline" | "line-through"',
+        description: "Text decoration, including deleted Markdown content.",
+      },
+      {
+        name: "chip",
+        type: "boolean",
+        description: 'Inline code chip: compose Text as="code" chip without Prose wrapper.',
+      },
       {
         name: "size",
         type: '"2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl"',
@@ -3902,10 +4080,9 @@ import { Flex } from "@godxjp/ui/layout";
       },
       {
         name: "maxHeight",
-        type: '"sm" | "md" | "lg" | "none"',
-        defaultValue: '"none"',
+        type: '"sm" | "md" | "lg" | "none" | { value: string }',
         description:
-          "Scroll inside the block past this height (--code-block-max-height-sm/md/lg). `none` grows with the content.",
+          'Token presets, or one explicit CSS length such as {value:"16rem"}. Still keyboard scrollable.',
       },
       {
         name: "size",
@@ -4181,6 +4358,23 @@ import remarkGfm from "remark-gfm";
       "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables.",
     props: [
       {
+        name: "align",
+        type: '"start" | "center" | "end"',
+        description: "On TableHead/TableCell: logical text alignment.",
+      },
+      {
+        name: "numeric",
+        type: "boolean",
+        description:
+          "On TableHead/TableCell: tabular figures and end alignment; explicit align wins.",
+      },
+      { name: "wrap", type: "boolean", description: "On TableHead/TableCell: allow text to wrap." },
+      {
+        name: "width",
+        type: "WidthProp",
+        description: "On TableHead/TableCell: column measure; numbers mean CSS pixels.",
+      },
+      {
         name: "children",
         type: "ReactNode",
         required: true,
@@ -4218,10 +4412,10 @@ import remarkGfm from "remark-gfm";
     usage: [
       "DO compose all six sub-parts in order: wrap with `<Table>`, then `<TableHeader>` containing `<TableRow><TableHead>…</TableRow>`, then `<TableBody>` containing one or more `<TableRow><TableCell>…` rows. Skipping any layer (e.g. bare `<th>` inside `<Table>`) bypasses the design tokens and hover/border styles.",
       'DO use `TableHead` (not `TableCell`) for header cells — it renders `<th>` with `data-slot="table-head"` and the `--table-row-height` CSS variable for consistent header sizing across the design system. `TableCell` renders `<td>` with `data-slot="table-cell"` and is for body rows only.',
-      'DO apply numeric alignment via `className` on individual `TableHead`/`TableCell` elements (e.g. `className="text-right"`). There are no built-in alignment props — all styling goes through Tailwind class overrides.',
+      'DO use `numeric` on TableHead/TableCell for tabular end-aligned numbers; `align="start|center|end"` overrides alignment, `wrap` allows multi-line text, and `width` sets a CSS column measure. These props replace alignment and width classes.',
       "DO NOT hand-roll empty-state handling inside a Table composition. When data can be empty, switch to `DataTable` (which has a built-in empty state) or wrap the `<Table>` with a conditional that renders `<EmptyState>` — never leave a table with only a header and zero rows.",
       "DO NOT use Table for lists that need sorting, filtering, pagination, or row selection — those features are only in `DataTable`. Table is intentionally stateless: it owns no TanStack Table instance, no column definitions, and no toolbar.",
-      'DO reach for `preset="action-collection"` for a dense approval / action queue (requester · target · reason · requested date · row actions) that must stay readable at 390px, and mark every column with `priority` on BOTH its `TableHead` and its `TableCell`: `primary` (the row subject), `secondary` (its target), `meta` (a timestamp/id), `actions` (the row-action affordance, whose measure is reserved first so it can never be pushed off-screen). Leave the free-text column unmarked — it takes the remaining space. Never add a consumer width, a hidden column or a page-local breakpoint to make a table fit; retune `--table-action-collection-*` instead. The IDENTICAL preset exists on `DataTable` (`preset` + `collapseBelow` on the table, `priority` on the `ColumnDef`) sharing these same tokens — use DataTable when the queue is data-driven and needs sorting/selection/pagination, and reach for the raw `Table` only for a hand-authored queue.',
+      'DO reach for `preset="action-collection"` for a dense approval / action queue (requester · target · reason · requested date · row actions) that must stay readable at 390px, and mark every column with `priority` on BOTH its `TableHead` and its `TableCell`: `primary` (the row subject), `secondary` (its target), `meta` (a timestamp/id), `actions` (the row-action affordance, whose measure is reserved first so it can never be pushed off-screen). Leave the free-text column unmarked — it takes the remaining space. For text actions such as 対応する, set ColumnDef.width (or TableHead width) to reserve the label measure; leave a content column fluid. The default actions token is sized for icon actions. Do not add a hidden column or page-local breakpoint to make a table fit. The IDENTICAL preset exists on `DataTable` (`preset` + `collapseBelow` on the table, `priority` on the `ColumnDef`) sharing these same tokens — use DataTable when the queue is data-driven and needs sorting/selection/pagination, and reach for the raw `Table` only for a hand-authored queue.',
       "DO reach for `<TableCell flush>` when the cell's CONTENT owns its inset — an expanded detail panel under a row (`<TableCell flush colSpan={n}>`), a nested table, a full-bleed media strip. It drops the cell's own padding so the child spans the whole cell; without it the panel is indented by `--table-cell-space-x` and the only route was a `p-0` utility, which no service theme can reach.",
       "DO express hierarchy with `<TableCell indent={depth}>` — a grouped table's detail rows under their subtotal header, or a tree row under its parent. The measure is `--table-cell-space-x + depth x --table-cell-indent-space-step`, so level 0 sits on the column's own text axis and a service retunes (or flattens) the step in one token. Never hand-roll `style={{ paddingInlineStart }}` at the call site — that is a per-page constant no theme can reach, and it breaks in RTL unless you remember the logical property.",
       "DO place `<Table>` inside a `<CardContent flush>` (or `p-0` card) when embedding in a Card, so the built-in `overflow-auto` wrapper sits flush to the card edges. Wrapping with plain `<CardContent>` adds padding that clips the horizontal scroll shadow.",
@@ -4242,10 +4436,10 @@ import remarkGfm from "remark-gfm";
     example: `import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@godxjp/ui/data-display";
 
 <Table>
-  <TableHeader><TableRow><TableHead>項目</TableHead><TableHead className="text-right">金額</TableHead></TableRow></TableHeader>
+  <TableHeader><TableRow><TableHead>項目</TableHead><TableHead numeric>金額</TableHead></TableRow></TableHeader>
   <TableBody>
-    <TableRow><TableCell>送料</TableCell><TableCell className="text-right">¥500</TableCell></TableRow>
-    <TableRow><TableCell indent={1}>うち離島加算</TableCell><TableCell className="text-right">¥200</TableCell></TableRow>
+    <TableRow><TableCell>送料</TableCell><TableCell numeric>¥500</TableCell></TableRow>
+    <TableRow><TableCell indent={1}>うち離島加算</TableCell><TableCell numeric>¥200</TableCell></TableRow>
     <TableRow><TableCell flush colSpan={2}><ShippingBreakdown /></TableCell></TableRow>
   </TableBody>
 </Table>`,
@@ -5500,6 +5694,16 @@ export function PrioritySelect({ value, onValueChange }) {
     tagline: "Styled wrapper around native <textarea>. Pair with FormField for labelled fields.",
     props: [
       {
+        name: "padRaw",
+        type: "PadRawProp",
+        description: "Measured padding escape, stamped on the field.",
+      },
+      {
+        name: "pad",
+        type: "PadProp",
+        description: "Instance padding with logical asymmetric sides.",
+      },
+      {
         name: "status",
         type: '"error" | "warning"',
         description:
@@ -5974,6 +6178,99 @@ export function NegotiationYmField() {
     tagline:
       "WAI-ARIA date combobox with a real typeable ISO-8601 input — give it a `name` for form submission and fill the input in e2e tests; the calendar is the visual-only affordance.",
     props: [
+      { name: "open", type: "boolean", description: "Controlled panel visibility." },
+      { name: "defaultOpen", type: "boolean", description: "Initial panel visibility." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Panel visibility changes.",
+      },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description: "Validation appearance; error announces invalid state.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless"',
+        description: "Shared control surface.",
+      },
+      { name: "size", type: '"sm" | "md" | "lg"', description: "Shared control sizing." },
+      {
+        name: "inputReadOnly",
+        type: "boolean",
+        description: "Disable typing while preserving panel selection.",
+      },
+      {
+        name: "preserveInvalidOnBlur",
+        type: "boolean",
+        description: "Keep invalid draft text on blur; never submit it as a committed value.",
+      },
+      {
+        name: "placement",
+        type: '"bottom-start" | "bottom-end" | "top-start" | "top-end"',
+        description: "Logical popup placement.",
+      },
+      {
+        name: "renderExtraFooter",
+        type: "() => ReactNode",
+        description: "Additional panel footer content.",
+      },
+      {
+        name: "ref",
+        type: "Ref<HTMLInputElement>",
+        description: "Ref to the editable input (range start).",
+      },
+      {
+        name: "format",
+        type: "string | Intl.DateTimeFormatOptions | ((date: Date) => string)",
+        description:
+          "Display using date-fns patterns, Intl options (Japanese era supported), or a callback. Submission stays ISO.",
+      },
+      {
+        name: "parseFormat",
+        type: "(text: string) => Date | undefined",
+        description: "Parser for custom or era display. Complete ISO input always works.",
+      },
+      {
+        name: "minDate",
+        type: "Date",
+        description: "Earliest date, including typed entry and navigation. Alias of fromDate.",
+      },
+      {
+        name: "maxDate",
+        type: "Date",
+        description: "Latest date, including typed entry and navigation. Alias of toDate.",
+      },
+      { name: "showWeek", type: "boolean", description: "Show week numbers." },
+      {
+        name: "needConfirm",
+        type: "boolean",
+        description: "Stage choices until confirmed; defaults on with showTime.",
+      },
+      {
+        name: "showTime",
+        type: "boolean | object",
+        description: "Include time editing; object takes TimePicker steps/hour-cycle/disabledTime.",
+      },
+      {
+        name: "presets",
+        type: "{ label: ReactNode; value: Date | (() => Date) }[]",
+        description: "Quick choices resolved on click, checked against constraints.",
+      },
+      {
+        name: "picker",
+        type: '"date" | "week" | "month" | "quarter" | "year"',
+        description: "Select a day or period; periods normalize to their start.",
+      },
+      {
+        name: "multiple",
+        type: "boolean",
+        description:
+          "Select several dates; value/defaultValue and callback use Date[]. Incompatible with showTime.",
+      },
+      { name: "order", type: "boolean", description: "Sort multiple dates, default true." },
+
       {
         name: "cellRender",
         type: "(date: Date, info: { originNode: ReactNode }) => ReactNode",
@@ -6077,6 +6374,7 @@ export function NegotiationYmField() {
       },
     ],
     usage: [
+      "One trailing icon: empty shows calendar/clock; filled and clearable shows only ×; allowClear=false retains the picker icon. Click the input or ArrowDown to open a filled picker.",
       "DO use `name` to make the field form-submittable — the underlying `<input>` emits the value as an ISO-8601 `yyyy-MM-dd` string. No hidden input is needed.",
       "DO test by filling the input directly: `await user.type(screen.getByRole('combobox'), '2024-04-15')` or with Playwright `page.fill('[role=combobox]', '2024-04-15')`. The calendar popover is secondary and not required for testing.",
       "DO use `fromDate` / `toDate` to restrict selectable dates (e.g. ETD must be after today, period end must be after period start).",
@@ -6884,6 +7182,12 @@ toast.error("保存に失敗しました");`,
     tagline:
       "Radix dropdown menu. Compose DropdownMenu/DropdownMenuTrigger/DropdownMenuContent/DropdownMenuItem/DropdownMenuSeparator.",
     props: [
+      {
+        name: "width",
+        type: '"trigger" | "auto" | "sm" | "md" | "lg"',
+        description:
+          "On DropdownMenuContent: match the trigger, fit content, or use a token width. Omit to keep the default minimum.",
+      },
       { name: "open", type: "boolean", description: "Controlled open state (Ant Design `open`)." },
       {
         name: "onOpenChange",
@@ -7334,13 +7638,77 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
     name: "TimePicker",
     group: "data-entry",
     tagline:
-      "24h HH:mm time combobox with a scrollable hour/minute popover — the visible input IS the form field; give it a `name` prop and it submits directly, no hidden mirror needed.",
+      "Time combobox with hours, minutes, optional seconds, confirmation and 12-hour formatting. Native submission stays canonical 24-hour time.",
     props: [
+      {
+        name: "changeOnScroll",
+        type: "boolean",
+        description:
+          "Opt-in wheel selection, skipping disabled entries without closing the panel. Defaults off.",
+      },
+      { name: "open", type: "boolean", description: "Controlled panel visibility." },
+      { name: "defaultOpen", type: "boolean", description: "Initial panel visibility." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Panel visibility changes.",
+      },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description: "Validation appearance; error announces invalid state.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless"',
+        description: "Shared control surface.",
+      },
+      { name: "size", type: '"sm" | "md" | "lg"', description: "Shared control sizing." },
+      {
+        name: "inputReadOnly",
+        type: "boolean",
+        description: "Disable typing while preserving panel selection.",
+      },
+      {
+        name: "preserveInvalidOnBlur",
+        type: "boolean",
+        description: "Keep invalid draft text on blur; never submit it as a committed value.",
+      },
+      {
+        name: "placement",
+        type: '"bottom-start" | "bottom-end" | "top-start" | "top-end"',
+        description: "Logical popup placement.",
+      },
+      {
+        name: "renderExtraFooter",
+        type: "() => ReactNode",
+        description: "Additional panel footer content.",
+      },
+      {
+        name: "ref",
+        type: "Ref<HTMLInputElement>",
+        description: "Ref to the editable input (range start).",
+      },
+      { name: "hourStep", type: "number", description: "Hour column step, default 1." },
+      { name: "secondStep", type: "number", description: "Second column step, default 1." },
+      {
+        name: "showSeconds",
+        type: "boolean",
+        description: "Enable seconds in the panel and canonical value.",
+      },
+      { name: "use12Hours", type: "boolean", description: "Override the locale hour cycle." },
+      {
+        name: "format",
+        type: "string",
+        description:
+          "HH:mm, HH:mm:ss, h:mm A or date-fns a. Canonical value stays HH:mm or HH:mm:ss.",
+      },
+
       {
         name: "disabledTime",
         type: "TimePickerDisabledTimeProp",
         description:
-          "Forbid individual hours and minutes. Without it a 開始/終了 pair has no way to stop the end time being set before the start — the columns will happily offer it. Applies to BOTH routes into the value: a disabled option cannot be clicked, is skipped by the arrow keys, and a forbidden time typed into the field is rejected.",
+          "Forbid individual hours, minutes and seconds. Without it a 開始/終了 pair has no way to stop the end time being set before the start — the columns will happily offer it. Applies to BOTH routes into the value: a disabled option cannot be clicked, is skipped by the arrow keys, and a forbidden time typed into the field is rejected.",
       },
       {
         name: "hideDisabledOptions",
@@ -7367,7 +7735,7 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
         name: "value",
         type: "string",
         description:
-          "Controlled value in HH:mm (24h) format. When provided the component is fully controlled — you must update it via `onChange`.",
+          "Controlled value in HH:mm (24h) format. When provided the component is fully controlled — you must update it via `onValueChange`.",
       },
       {
         name: "defaultValue",
@@ -7376,7 +7744,7 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
           "Uncontrolled initial value in HH:mm format. Used only when `value` is not provided.",
       },
       {
-        name: "onChange",
+        name: "onValueChange",
         type: "(value: string) => void",
         description:
           "Called with the canonical HH:mm string whenever the user commits a time (picks from columns or types and blurs/presses Enter). Not called for every keystroke.",
@@ -7385,7 +7753,7 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
         name: "name",
         type: "string",
         description:
-          "HTML form field name. The visible `<input>` carries this name and emits the canonical HH:mm value on native form submission — no hidden element needed.",
+          "Native form field name. Formatted or staged controls manage a hidden canonical value internally; do not add a second hidden field.",
       },
       {
         name: "id",
@@ -7426,18 +7794,14 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
         description:
           "Inline ✕ on the trigger that resets the value when one is set (Ant-style). Pass `false` to hide it (e.g. a required field).",
       },
-      {
-        name: "onValueChange",
-        type: "(value: string) => void",
-        description: "Fires with the canonical 24h `HH:mm` string (empty when cleared).",
-      },
     ],
     usage: [
-      "DO give it a `name` prop whenever it lives inside a `<form>` — the visible input carries the name and emits `HH:mm` on native submission. You do NOT need a hidden element.",
-      "DO use the controlled pattern (`value` + `onChange`) in React-managed forms (e.g. useForm). For simple HTML forms without React state, omit `value` and use `defaultValue` for the uncontrolled pattern.",
+      "One trailing icon: empty shows calendar/clock; filled and clearable shows only ×; allowClear=false retains the picker icon. Click the input or ArrowDown to open a filled picker.",
+      "DO give it a name in native forms. It submits HH:mm or HH:mm:ss, regardless of display format; the component manages any hidden canonical field.",
+      "DO use the controlled pattern (`value` + `onValueChange`) in React-managed forms (e.g. useForm). For simple HTML forms without React state, omit `value` and use `defaultValue` for the uncontrolled pattern.",
       "DON'T pass a raw `<input type='time'>` alongside or instead — this component IS the input, fully accessible (role='combobox', aria-expanded, aria-haspopup) and e2e-testable by filling the text input directly.",
       "DO pair with a `<label htmlFor={id}>` for screen-reader accessibility — the component renders a plain `<input>` internally that `id` connects to.",
-      "DON'T expect `onChange` on every keystroke — it fires only when a valid HH:mm is committed (column pick closes popover; typed value normalised on blur or Enter). Guard downstream logic accordingly.",
+      "DON'T expect `onValueChange` on every keystroke — it fires only when a valid HH:mm is committed (column pick closes popover; typed value normalised on blur or Enter). Guard downstream logic accordingly.",
       "DO adjust `minuteStep` for domain needs (e.g. `minuteStep={15}` for scheduling, `minuteStep={1}` for precise entry) — the minute column only shows multiples, but the type-in field accepts any valid HH:mm.",
     ],
     useCases: [
@@ -7445,7 +7809,7 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
       "Invoice or transaction timestamp fields that require a 24h HH:mm time alongside a DatePicker — pair the two in a flex row.",
       "Logistics cut-off time configuration (e.g. 'last order by') where the default `minuteStep={5}` aligns with typical operational granularity.",
       "Admin settings panels that persist a canonical HH:mm string to the database — the `name` prop makes native form submission trivial.",
-      "Time-range pickers (from/to) — render two TimePicker instances side-by-side with separate controlled values and validate that `to > from` in `onChange`.",
+      "Time-range pickers (from/to) — render two TimePicker instances side-by-side with separate controlled values and validate that `to > from` in `onValueChange`.",
       "E2E-tested forms — test helpers can fill the text input directly (it accepts typed HH:mm) without needing to interact with the popover columns.",
     ],
     related: [
@@ -7501,6 +7865,88 @@ export function CutoffTimeForm() {
     tagline:
       "WAI-ARIA date-range control with two typeable ISO inputs + popover calendar — form-submits as `${name}_from` / `${name}_to`, never hand-roll two DatePickers side-by-side.",
     props: [
+      { name: "open", type: "boolean", description: "Controlled panel visibility." },
+      { name: "defaultOpen", type: "boolean", description: "Initial panel visibility." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Panel visibility changes.",
+      },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description: "Validation appearance; error announces invalid state.",
+      },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless"',
+        description: "Shared control surface.",
+      },
+      { name: "size", type: '"sm" | "md" | "lg"', description: "Shared control sizing." },
+      {
+        name: "inputReadOnly",
+        type: "boolean",
+        description: "Disable typing while preserving panel selection.",
+      },
+      {
+        name: "preserveInvalidOnBlur",
+        type: "boolean",
+        description: "Keep invalid draft text on blur; never submit it as a committed value.",
+      },
+      {
+        name: "placement",
+        type: '"bottom-start" | "bottom-end" | "top-start" | "top-end"',
+        description: "Logical popup placement.",
+      },
+      {
+        name: "renderExtraFooter",
+        type: "() => ReactNode",
+        description: "Additional panel footer content.",
+      },
+      {
+        name: "ref",
+        type: "Ref<HTMLInputElement>",
+        description: "Ref to the editable input (range start).",
+      },
+      {
+        name: "format",
+        type: "string | Intl.DateTimeFormatOptions | ((date: Date) => string)",
+        description:
+          "Display using date-fns patterns, Intl options (Japanese era supported), or a callback. Submission stays ISO.",
+      },
+      {
+        name: "parseFormat",
+        type: "(text: string) => Date | undefined",
+        description: "Parser for custom or era display. Complete ISO input always works.",
+      },
+      {
+        name: "minDate",
+        type: "Date",
+        description: "Earliest date, including typed entry and navigation. Alias of fromDate.",
+      },
+      {
+        name: "maxDate",
+        type: "Date",
+        description: "Latest date, including typed entry and navigation. Alias of toDate.",
+      },
+      { name: "showWeek", type: "boolean", description: "Show week numbers." },
+      {
+        name: "needConfirm",
+        type: "boolean",
+        description: "Stage choices until confirmed; defaults on with showTime.",
+      },
+      {
+        name: "presets",
+        type: "{ label: ReactNode; value: DateRange | (() => DateRange) }[]",
+        description: "Quick range choices, checked against constraints.",
+      },
+      {
+        name: "allowEmpty",
+        type: "[boolean, boolean]",
+        description: "Which endpoints may be empty, default [true,true] for compatibility.",
+      },
+      { name: "order", type: "boolean", description: "Sort reversed endpoints, default true." },
+
       {
         name: "cellRender",
         type: "(date: Date, info: { originNode: ReactNode }) => ReactNode",
@@ -7604,6 +8050,7 @@ export function CutoffTimeForm() {
       },
     ],
     usage: [
+      "One trailing icon: empty shows calendar/clock; filled and clearable shows only ×; allowClear=false retains the picker icon. Click the input or ArrowDown to open a filled picker.",
       "DO use controlled mode (`value` + `onChange`) in all form contexts — this component has no `defaultValue` prop; initialize state with `useState<DateRange | undefined>()`.",
       "DO set `name` when the form is submitted natively or via Inertia useForm: the component emits `${name}_from` and `${name}_to` as ISO yyyy-MM-dd strings — read them as separate fields on the server.",
       'DO wrap in `<FormField id="..." label="...">` to attach the label; pass the same string to both `FormField`\'s `id` and `DateRangePicker`\'s `id` so the label targets the FROM input.',
@@ -8471,7 +8918,7 @@ export function AccountMapping() {
       },
       {
         name: "triggerVariant",
-        type: '"default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link"',
+        type: '"default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link" | "bare"',
         defaultValue: '"outline"',
         description:
           '`variant="button"` only — visual weight of the visible trigger, forwarded to Button. Default `outline` suits a standalone form field. Pass `ghost` when the trigger sits in a toolbar row beside other icon buttons — inside a chat composer, say — where a bordered square reads as the odd one out.',
@@ -10531,6 +10978,14 @@ import { fetchInvoice } from "@/api/invoices";
     tagline:
       "Tokenized horizontal or vertical rule, optionally INTERRUPTED by a localized label (day divider, unread watermark, auth conjunction).",
     props: [
+      { name: "hideFrom", type: "BreakpointProp", description: "Hide from viewport breakpoint." },
+      { name: "hideBelow", type: "BreakpointProp", description: "Hide below viewport breakpoint." },
+      { name: "space", type: "GapProp", description: "Block spacing on the token scale." },
+      {
+        name: "labelSize",
+        type: '"2xs" | "xs" | "sm" | "md"',
+        description: "Label typography step.",
+      },
       {
         name: "orientation",
         type: '"horizontal" | "vertical"',

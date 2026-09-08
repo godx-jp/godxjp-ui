@@ -3,9 +3,19 @@
  * @see docs/PROPS-VOCABULARY.md#interaction-variants
  */
 
-/** Button visual style. */
+/**
+ * Button visual style.
+ *
+ * `bare` (gh#404) is the control WITHOUT geometry: a real button — hitbox, focus ring, keyboard
+ * semantics, `aria-label` — around content that already IS the shape (a `Badge`, a truncating
+ * title). Every other variant loads a height and an inline inset from its `size`, so wrapping a
+ * chip meant writing `className="h-auto p-0"`, an audit error with no legal replacement; `link`
+ * was not it either, since it still loads a size class and adds primary colour plus a hover
+ * underline. The 24×24 target WCAG 2.2 SC 2.5.8 requires is kept by a pseudo-element, so the box
+ * stays exactly as big as its content.
+ */
 export type ButtonVariantProp =
-  "default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link";
+  "default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link" | "bare";
 
 /**
  * Corner shape — maps to the radius tokens (default = control/component radius). Shared by Button

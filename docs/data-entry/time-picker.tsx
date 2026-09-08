@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, TimePicker } from "@godxjp/ui/data-entry";
+import { FormField, TimePicker, TimeRangePicker } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -89,6 +89,90 @@ export default function Demo() {
                 value="09:00"
                 disabled
                 className="w-36"
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>秒単位の締切</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FormField id="precision-time" label="締切時刻">
+              <TimePicker
+                id="precision-time"
+                name="precision"
+                defaultValue="17:50:15"
+                format="HH:mm:ss"
+                hourStep={2}
+                minuteStep={10}
+                secondStep={15}
+                changeOnScroll
+                needConfirm
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>12時間表示</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FormField id="twelve-time" label="開始時刻">
+              <TimePicker
+                id="twelve-time"
+                name="twelve"
+                defaultValue="13:30"
+                format="h:mm A"
+                use12Hours
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>入力状態</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <FormField id="readonly-time" label="選択のみ">
+                <TimePicker
+                  id="readonly-time"
+                  inputReadOnly
+                  defaultValue="09:00"
+                  allowClear={false}
+                  size="sm"
+                  variant="filled"
+                />
+              </FormField>
+              <FormField id="invalid-time" label="入力を保持">
+                <TimePicker id="invalid-time" preserveInvalidOnBlur status="error" size="lg" />
+              </FormField>
+              <FormField id="quiet-time" label="任意時刻">
+                <TimePicker
+                  id="quiet-time"
+                  variant="borderless"
+                  status="warning"
+                  placement="top-start"
+                  showNow={false}
+                />
+              </FormField>
+            </Flex>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>勤務時間帯</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FormField id="shift-range" label="勤務時間">
+              <TimeRangePicker
+                id="shift-range"
+                name="shift"
+                defaultValue={["09:00", "18:00"]}
+                allowEmpty={[false, true]}
+                minuteStep={15}
               />
             </FormField>
           </CardContent>

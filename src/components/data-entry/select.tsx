@@ -221,7 +221,7 @@ export const SelectTrigger = React.forwardRef<
           // `.ui-app-setting-picker-icon` (gh#366, gh#371).
           width === "auto" && "w-auto",
           width === "full" && "w-full",
-          "aria-invalid:border-destructive data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground whitespace-nowrap transition-[color,box-shadow] outline-none *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center",
+          "aria-invalid:border-destructive data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground whitespace-nowrap transition-[color,box-shadow] *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center",
           className,
         )}
         {...props}

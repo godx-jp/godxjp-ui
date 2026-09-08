@@ -151,7 +151,7 @@
     background-image: var(--gradient-glow);
     /* Sole scroll/clip boundary for the page area. */
     contain: paint;
-    background-color: var(--app-shell-main-background);
+    background-color: var(--app-shell-main-background, var(--surface-recessed));
   }
 
   /* `.app-main` carries tabindex="0" (axe scrollable-region-focusable, dbad118) because it IS the
@@ -1889,6 +1889,48 @@
   .ui-topbar-item[data-disabled] {
     opacity: var(--disabled-opacity);
     cursor: not-allowed;
+  }
+
+  /* COUNT PILL (gh#398) — the cell becomes a positioning context ONLY when it carries one, so a
+   * cell without a badge keeps the exact box it has always had. */
+  .ui-topbar-item:has(> [data-slot="topbar-item-badge"]) {
+    position: relative;
+  }
+
+  .ui-topbar-item-badge {
+    position: absolute;
+    /* Anchored to the GLYPH's corner, not the cell's: the cell is as tall as the bar, so a pill
+     * pinned to the cell's own top-end edge would float half a bar above the bell it counts. The
+     * cell centres its glyph, so the glyph's corner is `50% - icon/2` in from each edge, and the
+     * two knobs push the pill outward from there. Logical on both axes, so the pill moves to the
+     * other corner under dir="rtl" with the glyph it marks. */
+    inset-block-start: calc(
+      50% - var(--topbar-icon-size) / 2 - var(--topbar-item-badge-offset-block)
+    );
+    inset-inline-end: calc(
+      50% - var(--topbar-icon-size) / 2 - var(--topbar-item-badge-offset-inline)
+    );
+    display: inline-flex;
+    min-inline-size: var(--topbar-item-badge-size);
+    block-size: var(--topbar-item-badge-size);
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--topbar-item-badge-padding-inline);
+    border-radius: var(--radius-pill);
+    background: var(--topbar-item-badge-background, hsl(var(--secondary)));
+    color: var(--topbar-item-badge-foreground, hsl(var(--muted-foreground)));
+    font-size: var(--topbar-item-badge-font-size);
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+    /* The pill is decoration ON the trigger, never a second hit target inside it. */
+    pointer-events: none;
+  }
+
+  /* The count is ADDRESSED TO YOU (an @mention, a failure waiting on you), not merely unread —
+   * the same distinction `.sb-badge[data-tone="destructive"]` draws in the rail. */
+  .ui-topbar-item-badge[data-tone="destructive"] {
+    background: var(--topbar-item-badge-destructive-background, hsl(var(--destructive)));
+    color: var(--topbar-item-badge-destructive-foreground, hsl(var(--destructive-foreground)));
   }
 
   /* Same glyph size as the shell's own bar chrome (`.tb-icon-btn svg`), so a consumer-supplied

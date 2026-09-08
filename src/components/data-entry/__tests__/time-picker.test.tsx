@@ -124,7 +124,7 @@ describe("TimePicker — disabled + 12h + a11y", () => {
     await expectNoA11yViolations(<TimePicker defaultValue="09:00" />);
   });
 
-  it("keeps the clock trigger while a value is set, with the clear (×) beside it", async () => {
+  it("replaces the clock with clear while filled, then restores it", async () => {
     const user = userEvent.setup();
     function Controlled() {
       const [v, setV] = React.useState("");
@@ -135,11 +135,10 @@ describe("TimePicker — disabled + 12h + a11y", () => {
     // Empty: only the open-picker (clock) trigger, nothing to clear yet.
     expect(screen.getByRole("button", { name: /open time picker/i })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /^clear$/i })).toBeNull();
-    // With a value BOTH show: the clock icon is the only visual sign that this field
-    // opens a picker, so the clear must not take its place.
+    // Filled: clear replaces the clock; clicking the input still opens the picker.
     await user.type(combobox(), "13:30");
     expect(screen.getByRole("button", { name: /^clear$/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /open time picker/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /open time picker/i })).toBeNull();
     // Clearing empties the field and drops the ✕; the clock stays.
     await user.click(screen.getByRole("button", { name: /^clear$/i }));
     expect(combobox()).toHaveValue("");

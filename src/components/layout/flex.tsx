@@ -1,6 +1,7 @@
+import type { CSSProperties } from "react";
 import { mergeAriaIds } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
-import { flexGapClass, padStyle } from "../../lib/variants";
+import { flexGapClass, padStyle, padStepToken } from "../../lib/variants";
 import type { FlexProp } from "../../props/components/layout.prop";
 import type { WidthProp } from "../../props/vocabulary";
 
@@ -18,6 +19,11 @@ export type {
 export function Flex({
   as: Element = "div",
   direction = "row",
+  grow,
+  shrink,
+  surface,
+  bleed,
+  reveal,
   gap = "md",
   gapRaw,
   pad,
@@ -57,9 +63,25 @@ export function Flex({
       "aria-describedby": mergeAriaIds(props["aria-describedby"], ariaErrorMessage),
     };
   }
+  const responsive = typeof direction === "object";
+  const axes = responsive ? direction : { base: direction };
+  const cssDirection = (axis: string | undefined) => (axis === "col" ? "column" : axis);
+  const directionVars = responsive
+    ? Object.fromEntries(
+        Object.entries(axes).map(([step, axis]) => [
+          `--flex-direction-${step}`,
+          cssDirection(axis),
+        ]),
+      )
+    : {};
   return (
     <Element
-      data-direction={direction}
+      data-direction={responsive ? "responsive" : direction}
+      data-grow={grow ? "" : undefined}
+      data-shrink={shrink === false ? "false" : undefined}
+      data-surface={surface}
+      data-reveal={reveal}
+      data-list={Element === "ul" ? "disc" : Element === "ol" ? "decimal" : undefined}
       data-align={align}
       data-justify={justify}
       data-wrap={wrap ? "true" : undefined}
@@ -75,12 +97,18 @@ export function Flex({
       data-gap-raw={gapRaw}
       className={cn("ui-flex", gapRaw === undefined ? flexGapClass[gap] : undefined, className)}
       data-pad-raw={padRaw === undefined ? undefined : ""}
-      style={{
-        ...style,
-        ...(gapRaw === undefined ? undefined : { gap: `${gapRaw}px` }),
-        ...(width === undefined ? undefined : { inlineSize: toCssLength(width) }),
-        ...padStyle(pad, padRaw),
-      }}
+      style={
+        {
+          ...style,
+          ...directionVars,
+          ...(bleed === undefined
+            ? undefined
+            : { marginInline: `calc(-1 * ${padStepToken(bleed)})` }),
+          ...(gapRaw === undefined ? undefined : { gap: `${gapRaw}px` }),
+          ...(width === undefined ? undefined : { inlineSize: toCssLength(width) }),
+          ...padStyle(pad, padRaw),
+        } as CSSProperties
+      }
       {...domProps}
     >
       {children}

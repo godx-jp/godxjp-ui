@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Separator as AriaSeparator } from "react-aria-components";
 
+import { padStepToken } from "../../lib/variants";
 import { cn } from "../../lib/utils";
 import type { SeparatorProp } from "../../props/components/layout.prop";
 
@@ -24,6 +25,11 @@ export const Separator = React.forwardRef<HTMLDivElement, SeparatorProp>(
   (
     {
       className,
+      labelSize,
+      space,
+      hideBelow,
+      hideFrom,
+      style,
       orientation = "horizontal",
       decorative,
       label,
@@ -55,6 +61,13 @@ export const Separator = React.forwardRef<HTMLDivElement, SeparatorProp>(
         // `div`, not RAC's default `hr`: the labelled form is a three-cell grid and `hr` is void.
         elementType="div"
         data-slot="separator"
+        data-label-size={labelSize}
+        data-hide-below={hideBelow}
+        data-hide-from={hideFrom}
+        style={{
+          ...style,
+          ...(space === undefined ? undefined : { marginBlock: padStepToken(space) }),
+        }}
         data-orientation={orientation}
         data-tone={tone}
         data-labelled={labelled ? "" : undefined}

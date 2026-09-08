@@ -1,6 +1,6 @@
 /** Shared control sizing — reads `--control-height`, `--font-size-*` from density / theme. */
 export const controlMultilineClass =
-  "ui-control-multiline aria-invalid:border-destructive data-[status=error]:border-destructive data-[status=warning]:border-warning w-full rounded-[var(--control-radius)] border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none";
+  "ui-control-multiline aria-invalid:border-destructive data-[status=error]:border-destructive data-[status=warning]:border-warning w-full rounded-[var(--control-radius)] border-input bg-background ring-offset-background placeholder:text-muted-foreground";
 
 /**
  * Multiline control with its own chrome removed, for a textarea EMBEDDED in a surface that already
@@ -8,7 +8,7 @@ export const controlMultilineClass =
  * Two nested rounded borders is the tell that this was missing.
  */
 export const controlMultilineGhostClass =
-  "ui-control-multiline data-[status=error]:border-destructive data-[status=warning]:border-warning w-full min-h-0 border-0 bg-transparent shadow-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0";
+  "ui-control-multiline data-[status=error]:border-destructive data-[status=warning]:border-warning w-full min-h-0 border-0 bg-transparent shadow-none placeholder:text-muted-foreground focus-visible:ring-0";
 
 /**
  * Multiline control drawn as antd's `filled` variant — a tinted surface instead of a boundary.
@@ -19,7 +19,7 @@ export const controlMultilineGhostClass =
  * would catch it. The two lists differ only in which chrome utilities they carry.
  */
 export const controlMultilineFilledClass =
-  "ui-control-multiline ui-control--filled aria-invalid:border-destructive data-[status=error]:border-destructive data-[status=warning]:border-warning w-full rounded-[var(--control-radius)] ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none";
+  "ui-control-multiline ui-control--filled aria-invalid:border-destructive data-[status=error]:border-destructive data-[status=warning]:border-warning w-full rounded-[var(--control-radius)] ring-offset-background placeholder:text-muted-foreground";
 
 /**
  * Open-state ring for popup-style triggers (Select / Cascader / TreeSelect / SearchSelect). Radix
@@ -39,7 +39,7 @@ export const controlOpenRingClass = "ui-control-trigger";
  * border and fill from `--control-surface-*`.
  */
 export const controlTriggerBaseClass =
-  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] transition-[color,box-shadow] focus-visible:outline-none [&>[data-slot=select-value]]:line-clamp-1";
+  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] transition-[color,box-shadow] [&>[data-slot=select-value]]:line-clamp-1";
 
 export const controlTriggerClass = `${controlTriggerBaseClass} border-input bg-background`;
 

@@ -99,3 +99,5 @@ export type {
   ServiceRolePanelProp,
   ServiceRolePanelProps,
 } from "./service-role-panel";
+
+export { useAppShellNavigationMode } from "./app-shell";

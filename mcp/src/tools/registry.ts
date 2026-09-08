@@ -42,7 +42,12 @@ import {
   checksByCategory,
   type AuditCheck,
 } from "../data/redesign-audit.js";
-import { AUDIT_COMMAND, auditRulesByCategory, type AuditRule } from "../data/audit-rules.js";
+import {
+  AUDIT_COMMAND,
+  AUDIT_SUPPRESSION,
+  auditRulesByCategory,
+  type AuditRule,
+} from "../data/audit-rules.js";
 import {
   VISUAL_AUDIT_COMMAND,
   visualRulesByCategory,
@@ -666,6 +671,7 @@ function listAuditRules(cat?: AuditRule["category"]): string {
     }
     out += "\n";
   }
+  out += `## suppressing a DELIBERATE exception\n\n\`\`\`\n${AUDIT_SUPPRESSION}\n\`\`\`\n`;
   return out;
 }
 

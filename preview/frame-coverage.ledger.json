@@ -523,11 +523,11 @@
   "baseline": {
     "recordedAt": "2026-07-30",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 296,
-    "dimensionCells": 4144,
+    "exports": 297,
+    "dimensionCells": 4158,
     "covered": 79,
-    "untested": 2286,
-    "notApplicable": 1779,
+    "untested": 2303,
+    "notApplicable": 1776,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -3264,13 +3264,13 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
+        "notApplicable": 3,
+        "untested": 11
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "untested",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -3292,13 +3292,13 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
+        "notApplicable": 3,
+        "untested": 11
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "untested",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -8312,13 +8312,41 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
+        "notApplicable": 3,
+        "untested": 11
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "untested",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "TimeRangePicker": {
+      "group": "data-entry",
+      "owner": "data-entry/time-range-picker",
+      "frames": [
+        "docs/data-entry/time-range-picker.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 3,
+        "untested": 11
+      },
+      "dimensions": {
+        "variants": "untested",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "untested",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",

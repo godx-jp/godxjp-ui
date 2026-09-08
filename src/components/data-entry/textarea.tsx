@@ -1,6 +1,7 @@
 import * as React from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
+import { padStyle } from "../../lib/variants";
 import { cn } from "../../lib/utils";
 import { useFieldIdentity } from "../../lib/field-a11y";
 import {
@@ -25,6 +26,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
   (
     {
       className,
+      pad,
+      padRaw,
       allowClear = false,
       onClear,
       variant = "outlined",
@@ -164,6 +167,20 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
     };
 
     const floorRows = floorRowsProp ?? (typeof rows === "number" ? rows : undefined);
+    const inset = padStyle(pad, padRaw);
+    const mirrorInset = inset
+      ? {
+          "--textarea-padding-block-start":
+            inset.paddingBlockStart ?? inset.padding ?? "var(--control-multiline-padding-block)",
+          "--textarea-padding-block-end":
+            inset.paddingBlockEnd ?? inset.padding ?? "var(--control-multiline-padding-block)",
+          "--textarea-padding-inline-start":
+            inset.paddingInlineStart ?? inset.padding ?? "var(--control-padding-x)",
+          "--textarea-padding-inline-end":
+            inset.paddingInlineEnd ?? inset.padding ?? "var(--control-padding-x)",
+          "--textarea-autogrow-box-inset": `calc(var(--textarea-padding-block-start) + var(--textarea-padding-block-end) + ${resolvedVariant === "borderless" ? "0px" : "var(--control-border-width) * 2"})`,
+        }
+      : undefined;
     const autoGrowVars = growing
       ? ({
           ...(floorRows === undefined
@@ -195,7 +212,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
         onChange={needsWrapper ? handleChange : onChange}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
-        style={style}
+        style={{ ...style, ...padStyle(pad, padRaw) }}
+        data-pad-raw={padRaw === undefined ? undefined : ""}
         className={cn(base, showClear && "ui-input--trailing-affix", className)}
         {...props}
         {...identity}
@@ -209,7 +227,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
       <span
         data-slot="textarea-affix-wrapper"
         data-autogrow-value={growing ? mirror : undefined}
-        style={autoGrowVars}
+        style={{ ...autoGrowVars, ...mirrorInset } as React.CSSProperties}
         className={cn(
           "relative w-full",
           growing ? "grid" : "block",

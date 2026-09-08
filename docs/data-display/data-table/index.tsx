@@ -117,6 +117,29 @@ export default function Demo() {
       subtitle="sortable · selectable · bulk actions · row actions · loading · clickable rows · empty state"
     >
       <Flex direction="col" gap="lg">
+        <Flex direction="col" gap="sm" id="text-action-width">
+          <Text weight="medium">日本語の行アクション</Text>
+          <DataTable
+            preset="action-collection"
+            columns={[
+              { key: "partner", header: "取引先" },
+              { key: "date", header: "期限日", width: "104px" },
+              {
+                key: "action",
+                header: "操作",
+                priority: "actions",
+                width: "104px",
+                render: () => (
+                  <Button size="sm" variant="ghost">
+                    対応する
+                  </Button>
+                ),
+              },
+            ]}
+            data={invoices}
+            getRowId={(row) => row.id}
+          />
+        </Flex>
         {/* Primary: sorted (amount desc), one row preselected, clickable rows,
             controlled density (comfortable), kebab row actions, pagination footer. */}
         <DataTable

@@ -46,31 +46,31 @@ export default function Demo() {
               <TableHeader>
                 <TableRow>
                   <TableHead>勘定科目</TableHead>
-                  <TableHead className="text-end">借方</TableHead>
-                  <TableHead className="text-end">貸方</TableHead>
+                  <TableHead align="end">借方</TableHead>
+                  <TableHead align="end">貸方</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
                   <TableCell>売掛金</TableCell>
-                  <TableCell className="text-end tabular-nums">¥482,000</TableCell>
-                  <TableCell className="text-end">—</TableCell>
+                  <TableCell numeric>¥482,000</TableCell>
+                  <TableCell align="end">—</TableCell>
                 </TableRow>
                 {/* Built-in selected-row state — data-[state=selected]:bg-primary/[0.06]. */}
                 <TableRow data-state="selected">
                   <TableCell>売上高</TableCell>
-                  <TableCell className="text-end">—</TableCell>
-                  <TableCell className="text-end tabular-nums">¥438,182</TableCell>
+                  <TableCell align="end">—</TableCell>
+                  <TableCell numeric>¥438,182</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>仮受消費税</TableCell>
-                  <TableCell className="text-end">—</TableCell>
-                  <TableCell className="text-end tabular-nums">¥43,818</TableCell>
+                  <TableCell align="end">—</TableCell>
+                  <TableCell numeric>¥43,818</TableCell>
                 </TableRow>
                 <TableRow className="font-medium">
                   <TableCell>合計</TableCell>
-                  <TableCell className="text-end tabular-nums">¥482,000</TableCell>
-                  <TableCell className="text-end tabular-nums">¥482,000</TableCell>
+                  <TableCell numeric>¥482,000</TableCell>
+                  <TableCell numeric>¥482,000</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -90,41 +90,41 @@ export default function Demo() {
               <TableHeader>
                 <TableRow>
                   <TableHead>勘定科目</TableHead>
-                  <TableHead className="text-end">1月</TableHead>
-                  <TableHead className="text-end">2月</TableHead>
-                  <TableHead className="text-end">3月</TableHead>
-                  <TableHead className="text-end">4月</TableHead>
-                  <TableHead className="text-end">5月</TableHead>
-                  <TableHead className="text-end">6月</TableHead>
-                  <TableHead className="text-end">7月</TableHead>
-                  <TableHead className="text-end">8月</TableHead>
-                  <TableHead className="text-end">9月</TableHead>
+                  <TableHead align="end">1月</TableHead>
+                  <TableHead align="end">2月</TableHead>
+                  <TableHead align="end">3月</TableHead>
+                  <TableHead align="end">4月</TableHead>
+                  <TableHead align="end">5月</TableHead>
+                  <TableHead align="end">6月</TableHead>
+                  <TableHead align="end">7月</TableHead>
+                  <TableHead align="end">8月</TableHead>
+                  <TableHead align="end">9月</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
                   <TableCell>売上高</TableCell>
-                  <TableCell className="text-end tabular-nums">¥412,000</TableCell>
-                  <TableCell className="text-end tabular-nums">¥438,182</TableCell>
-                  <TableCell className="text-end tabular-nums">¥455,900</TableCell>
-                  <TableCell className="text-end tabular-nums">¥471,300</TableCell>
-                  <TableCell className="text-end tabular-nums">¥482,000</TableCell>
-                  <TableCell className="text-end tabular-nums">¥499,540</TableCell>
-                  <TableCell className="text-end tabular-nums">¥510,200</TableCell>
-                  <TableCell className="text-end tabular-nums">¥528,770</TableCell>
-                  <TableCell className="text-end tabular-nums">¥541,090</TableCell>
+                  <TableCell numeric>¥412,000</TableCell>
+                  <TableCell numeric>¥438,182</TableCell>
+                  <TableCell numeric>¥455,900</TableCell>
+                  <TableCell numeric>¥471,300</TableCell>
+                  <TableCell numeric>¥482,000</TableCell>
+                  <TableCell numeric>¥499,540</TableCell>
+                  <TableCell numeric>¥510,200</TableCell>
+                  <TableCell numeric>¥528,770</TableCell>
+                  <TableCell numeric>¥541,090</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>売上原価</TableCell>
-                  <TableCell className="text-end tabular-nums">¥206,000</TableCell>
-                  <TableCell className="text-end tabular-nums">¥219,091</TableCell>
-                  <TableCell className="text-end tabular-nums">¥227,950</TableCell>
-                  <TableCell className="text-end tabular-nums">¥235,650</TableCell>
-                  <TableCell className="text-end tabular-nums">¥241,000</TableCell>
-                  <TableCell className="text-end tabular-nums">¥249,770</TableCell>
-                  <TableCell className="text-end tabular-nums">¥255,100</TableCell>
-                  <TableCell className="text-end tabular-nums">¥264,385</TableCell>
-                  <TableCell className="text-end tabular-nums">¥270,545</TableCell>
+                  <TableCell numeric>¥206,000</TableCell>
+                  <TableCell numeric>¥219,091</TableCell>
+                  <TableCell numeric>¥227,950</TableCell>
+                  <TableCell numeric>¥235,650</TableCell>
+                  <TableCell numeric>¥241,000</TableCell>
+                  <TableCell numeric>¥249,770</TableCell>
+                  <TableCell numeric>¥255,100</TableCell>
+                  <TableCell numeric>¥264,385</TableCell>
+                  <TableCell numeric>¥270,545</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -150,23 +150,23 @@ export default function Demo() {
                 <TableRow>
                   <TableHead>倉庫</TableHead>
                   <TableHead>伝票番号</TableHead>
-                  <TableHead className="text-end">個数</TableHead>
+                  <TableHead align="end">個数</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
                   <TableCell rowSpan={2}>東京第一</TableCell>
                   <TableCell>SH-2026-0412</TableCell>
-                  <TableCell className="text-end tabular-nums">18</TableCell>
+                  <TableCell numeric>18</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>SH-2026-0413</TableCell>
-                  <TableCell className="text-end tabular-nums">6</TableCell>
+                  <TableCell numeric>6</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>大阪南</TableCell>
                   <TableCell>SH-2026-0414</TableCell>
-                  <TableCell className="text-end tabular-nums">24</TableCell>
+                  <TableCell numeric>24</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -187,14 +187,14 @@ export default function Demo() {
                 <TableRow>
                   <TableHead>倉庫</TableHead>
                   <TableHead>伝票番号</TableHead>
-                  <TableHead className="text-end">個数</TableHead>
+                  <TableHead align="end">個数</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
                   <TableCell>東京第一</TableCell>
                   <TableCell>SH-2026-0412</TableCell>
-                  <TableCell className="text-end tabular-nums">18</TableCell>
+                  <TableCell numeric>18</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -217,14 +217,73 @@ export default function Demo() {
                 <TableRow>
                   <TableHead>倉庫</TableHead>
                   <TableHead>伝票番号</TableHead>
-                  <TableHead className="text-end">個数</TableHead>
+                  <TableHead align="end">個数</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
                   <TableCell>東京第一</TableCell>
                   <TableCell>SH-2026-0412</TableCell>
-                  <TableCell className="text-end tabular-nums">18</TableCell>
+                  <TableCell numeric>18</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* ── The COLUMN AXES (gh#410) ──────────────────────────────────────
+            align · numeric · wrap · width. Every one of these was a className before, and the
+            alignment utility the catalog recommended was a physical direction this package lints
+            against. `wrap` is the one that is not cosmetic: a cell is `white-space: nowrap` by
+            default (right for a data grid) and that inherits into everything it holds, so a
+            free-text column can never break without it. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>問い合わせ一覧 · column axes</CardTitle>
+            <CardDescription>
+              `width` fixes the id and status columns; the free-text subject takes `wrap` so a long
+              Japanese title breaks inside its cell instead of stretching the table into a scroll;
+              the count column takes `numeric`, which is tabular figures and end alignment as one
+              concept, and the status column takes `align=&quot;center&quot;`.
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead width="7rem">受付番号</TableHead>
+                  <TableHead wrap>件名</TableHead>
+                  <TableHead width="6rem" align="center">
+                    状態
+                  </TableHead>
+                  <TableHead width="5rem" numeric>
+                    返信
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>INQ-2026-0188</TableCell>
+                  <TableCell wrap>
+                    請求書の宛名を法人名から屋号に変更したいのですが、過去分もまとめて再発行できますか
+                  </TableCell>
+                  <TableCell align="center">対応中</TableCell>
+                  <TableCell numeric>3</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>INQ-2026-0189</TableCell>
+                  <TableCell wrap>
+                    ログイン時の二要素認証コードが届かない端末があるため、SMS
+                    から認証アプリへ切り替える手順を知りたい
+                  </TableCell>
+                  <TableCell align="center">未対応</TableCell>
+                  <TableCell numeric>0</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>INQ-2026-0190</TableCell>
+                  <TableCell wrap>API のレート制限について</TableCell>
+                  <TableCell align="center">完了</TableCell>
+                  <TableCell numeric>12</TableCell>
                 </TableRow>
               </TableBody>
             </Table>

@@ -323,7 +323,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "success", "warning", "destructive", "info", "muted", "primary"],
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -382,7 +382,7 @@
           "origin": "owned",
           "required": false,
           "type": "ToneProp | undefined",
-          "values": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "neutral"],
           "declaredIn": ["src/props/components/feedback.prop.ts"]
         },
         {
@@ -768,7 +768,7 @@
           "origin": "owned",
           "required": false,
           "type": "ToneProp | undefined",
-          "values": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "neutral"],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
         }
       ]
@@ -1950,11 +1950,11 @@
           "type": "BadgeTone | null | undefined",
           "values": [
             "default",
-            "success",
+            "muted",
             "warning",
+            "success",
             "destructive",
             "info",
-            "muted",
             "neutral",
             "primary"
           ],
@@ -2016,7 +2016,7 @@
           "origin": "owned",
           "required": false,
           "type": "ToneProp | undefined",
-          "values": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "neutral"],
           "declaredIn": ["src/props/components/feedback.prop.ts"]
         }
       ]
@@ -2442,7 +2442,7 @@
           "origin": "owned",
           "required": false,
           "type": "ButtonSizeProp | undefined",
-          "values": ["default", "xs", "sm", "md", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "values": ["xs", "sm", "md", "lg", "default", "icon", "icon-xs", "icon-sm", "icon-lg"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -2470,7 +2470,16 @@
           "origin": "owned",
           "required": false,
           "type": "ButtonVariantProp | undefined",
-          "values": ["link", "default", "ghost", "destructive", "secondary", "outline", "dashed"],
+          "values": [
+            "link",
+            "default",
+            "ghost",
+            "destructive",
+            "secondary",
+            "outline",
+            "dashed",
+            "bare"
+          ],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -2579,7 +2588,7 @@
           "origin": "owned",
           "required": false,
           "type": "ButtonSizeProp | undefined",
-          "values": ["default", "xs", "sm", "md", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "values": ["xs", "sm", "md", "lg", "default", "icon", "icon-xs", "icon-sm", "icon-lg"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -2597,7 +2606,16 @@
           "origin": "owned",
           "required": false,
           "type": "ButtonVariantProp | undefined",
-          "values": ["link", "default", "ghost", "destructive", "secondary", "outline", "dashed"],
+          "values": [
+            "link",
+            "default",
+            "ghost",
+            "destructive",
+            "secondary",
+            "outline",
+            "dashed",
+            "bare"
+          ],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -2712,7 +2730,7 @@
           "origin": "owned",
           "required": false,
           "type": "CardAccent | undefined",
-          "values": ["success", "warning", "destructive", "info", "primary", "attention"],
+          "values": ["warning", "success", "destructive", "info", "primary", "attention"],
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
@@ -2749,11 +2767,51 @@
       "group": "data-display",
       "props": [
         {
+          "name": "border",
+          "origin": "owned",
+          "required": false,
+          "type": "\"none\" | \"block-start\" | \"block-end\" | \"both\" | undefined",
+          "values": ["none", "block-start", "block-end", "both"],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
           "name": "extra",
           "origin": "owned",
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "gap",
+          "origin": "owned",
+          "required": false,
+          "type": "GapProp | undefined",
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "pad",
+          "origin": "owned",
+          "required": false,
+          "type": "PadProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "padRaw",
+          "origin": "owned",
+          "required": false,
+          "type": "PadRawProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "surface",
+          "origin": "owned",
+          "required": false,
+          "type": "\"muted\" | undefined",
+          "values": ["muted"],
           "declaredIn": ["src/components/data-display/card.tsx"]
         }
       ]
@@ -3100,8 +3158,8 @@
           "name": "expandTrigger",
           "origin": "owned",
           "required": false,
-          "type": "\"click\" | \"hover\" | undefined",
-          "values": ["click", "hover"],
+          "type": "\"hover\" | \"click\" | undefined",
+          "values": ["hover", "click"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -3526,8 +3584,8 @@
           "name": "maxHeight",
           "origin": "owned",
           "required": false,
-          "type": "\"none\" | \"sm\" | \"md\" | \"lg\" | undefined",
-          "values": ["none", "sm", "md", "lg"],
+          "type": "\"none\" | \"sm\" | \"md\" | \"lg\" | { value: string; } | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
@@ -5100,10 +5158,18 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "defaultOpen",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
-          "type": "Date | undefined",
+          "type": "Date | Date[] | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -5124,6 +5190,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "format",
+          "origin": "owned",
+          "required": false,
+          "type": "PickerDateFormatProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "fromDate",
           "origin": "owned",
           "required": false,
@@ -5140,11 +5214,43 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "inputReadOnly",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "locale",
           "origin": "owned",
           "required": false,
           "type": "Partial<import(\"react-day-picker\").DayPickerLocale> | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "maxDate",
+          "origin": "owned",
+          "required": false,
+          "type": "Date | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "minDate",
+          "origin": "owned",
+          "required": false,
+          "type": "Date | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "multiple",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -5156,11 +5262,59 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "needConfirm",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onOpenChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((open: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
-          "type": "OnValueChangeProp<Date | undefined> | undefined",
+          "type": "((value: Date | undefined) => void) | ((value: Date[] | undefined) => void) | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "open",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "order",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "parseFormat",
+          "origin": "owned",
+          "required": false,
+          "type": "((text: string) => Date | undefined) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "picker",
+          "origin": "owned",
+          "required": false,
+          "type": "\"date\" | \"month\" | \"week\" | \"quarter\" | \"year\" | undefined",
+          "values": ["date", "month", "week", "quarter", "year"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -5168,6 +5322,46 @@
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "placement",
+          "origin": "owned",
+          "required": false,
+          "type": "\"bottom-start\" | \"bottom-end\" | \"top-start\" | \"top-end\" | undefined",
+          "values": ["bottom-start", "bottom-end", "top-start", "top-end"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "preserveInvalidOnBlur",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "presets",
+          "origin": "owned",
+          "required": false,
+          "type": "{ label: React.ReactNode; value: Date | (() => Date); }[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "ref",
+          "origin": "owned",
+          "required": false,
+          "type": "React.Ref<HTMLInputElement> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "renderExtraFooter",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => React.ReactNode) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -5180,11 +5374,43 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "showTime",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | Pick<TimePickerProp, \"hourStep\" | \"minuteStep\" | \"secondStep\" | \"showSeconds\" | \"use12Hours\" | \"disabledTime\"> | (Pick<TimePickerProp, \"hourStep\" | \"minuteStep\" | \"secondStep\" | \"showSeconds\" | \"use12Hours\" | \"disabledTime\"> & false) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "showToday",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "showWeek",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -5199,8 +5425,16 @@
           "name": "value",
           "origin": "owned",
           "required": false,
-          "type": "Date | undefined",
+          "type": "Date | Date[] | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -5214,6 +5448,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "allowEmpty",
+          "origin": "owned",
+          "required": false,
+          "type": "[boolean, boolean] | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -5233,6 +5475,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "defaultOpen",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
@@ -5257,6 +5507,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "format",
+          "origin": "owned",
+          "required": false,
+          "type": "PickerDateFormatProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "fromDate",
           "origin": "owned",
           "required": false,
@@ -5273,10 +5531,34 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "inputReadOnly",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "locale",
           "origin": "owned",
           "required": false,
           "type": "Partial<import(\"react-day-picker\").DayPickerLocale> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "maxDate",
+          "origin": "owned",
+          "required": false,
+          "type": "Date | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "minDate",
+          "origin": "owned",
+          "required": false,
+          "type": "Date | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -5289,6 +5571,22 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "needConfirm",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onOpenChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((open: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
@@ -5297,10 +5595,74 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "open",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "order",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "parseFormat",
+          "origin": "owned",
+          "required": false,
+          "type": "((text: string) => Date | undefined) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "placeholder",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "placement",
+          "origin": "owned",
+          "required": false,
+          "type": "\"bottom-start\" | \"bottom-end\" | \"top-start\" | \"top-end\" | undefined",
+          "values": ["bottom-start", "bottom-end", "top-start", "top-end"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "preserveInvalidOnBlur",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "presets",
+          "origin": "owned",
+          "required": false,
+          "type": "{ label: React.ReactNode; value: DateRange | (() => DateRange); }[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "ref",
+          "origin": "owned",
+          "required": false,
+          "type": "React.Ref<HTMLInputElement> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "renderExtraFooter",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => React.ReactNode) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -5321,6 +5683,30 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "showWeek",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "toDate",
           "origin": "owned",
           "required": false,
@@ -5334,6 +5720,14 @@
           "required": false,
           "type": "DateRange | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -5692,7 +6086,7 @@
           "origin": "owned",
           "required": false,
           "type": "ToneProp | undefined",
-          "values": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "neutral"],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
         }
       ]
@@ -5991,6 +6385,14 @@
           "required": false,
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "DropdownMenuContentWidth | undefined",
+          "values": ["sm", "md", "lg", "auto", "trigger"],
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         }
       ]
@@ -6499,7 +6901,7 @@
           "origin": "owned",
           "required": false,
           "type": "EmptyStateToneProp | undefined",
-          "values": ["success", "warning", "destructive", "info", "muted"],
+          "values": ["muted", "warning", "success", "destructive", "info"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
@@ -6640,7 +7042,7 @@
           "origin": "owned",
           "required": false,
           "type": "EmptyStateToneProp | undefined",
-          "values": ["success", "warning", "destructive", "info", "muted"],
+          "values": ["muted", "warning", "success", "destructive", "info"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -6875,16 +7277,24 @@
           "name": "as",
           "origin": "owned",
           "required": false,
-          "type": "\"div\" | \"span\" | undefined",
-          "values": ["div", "span"],
+          "type": "\"div\" | \"li\" | \"ol\" | \"span\" | \"ul\" | undefined",
+          "values": ["div", "li", "ol", "span", "ul"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "bleed",
+          "origin": "owned",
+          "required": false,
+          "type": "GapProp | undefined",
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
           "name": "direction",
           "origin": "owned",
           "required": false,
-          "type": "FlexDirectionProp | undefined",
-          "values": ["col", "row"],
+          "type": "FlexDirectionProp | Partial<Record<\"base\" | BreakpointProp, FlexDirectionProp>> | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -6909,6 +7319,14 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "grow",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -6949,6 +7367,30 @@
           "required": false,
           "type": "PadRawProp | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "reveal",
+          "origin": "owned",
+          "required": false,
+          "type": "\"hover\" | undefined",
+          "values": ["hover"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "shrink",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "surface",
+          "origin": "owned",
+          "required": false,
+          "type": "\"muted\" | \"popover\" | \"warning\" | undefined",
+          "values": ["muted", "popover", "warning"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -7264,7 +7706,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "success", "warning", "destructive", "info", "muted", "primary"],
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -8266,7 +8708,7 @@
           "origin": "owned",
           "required": false,
           "type": "MasterDetailRailWidthProp | undefined",
-          "values": ["compact", "standard"],
+          "values": ["compact", "narrow", "wide", "standard"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
@@ -9544,6 +9986,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "footerPad",
+          "origin": "owned",
+          "required": false,
+          "type": "PadProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "footerReveal",
           "origin": "owned",
           "required": false,
@@ -9636,6 +10086,14 @@
           "origin": "owned",
           "required": false,
           "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "toolbarPad",
+          "origin": "owned",
+          "required": false,
+          "type": "PadProp | undefined",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
@@ -9836,16 +10294,6 @@
           "declaredIn": ["src/components/navigation/pagination.tsx"]
         },
         {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
-          ]
-        },
-        {
           "name": "value",
           "origin": "inherited-behavioral",
           "required": false,
@@ -9888,16 +10336,6 @@
           "declaredIn": ["src/components/navigation/pagination.tsx"]
         },
         {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
-          ]
-        },
-        {
           "name": "value",
           "origin": "inherited-behavioral",
           "required": false,
@@ -9938,16 +10376,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/navigation/pagination.tsx"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
-          ]
         },
         {
           "name": "value",
@@ -10644,7 +11072,7 @@
           "origin": "owned",
           "required": false,
           "type": "ProgressTone | undefined",
-          "values": ["success", "warning", "destructive"],
+          "values": ["warning", "success", "destructive"],
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
         {
@@ -11331,6 +11759,22 @@
           "required": false,
           "type": "GapProp | undefined",
           "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "declaredIn": ["src/components/layout/responsive-grid.tsx"]
+        },
+        {
+          "name": "pad",
+          "origin": "owned",
+          "required": false,
+          "type": "PadProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/layout/responsive-grid.tsx"]
+        },
+        {
+          "name": "padRaw",
+          "origin": "owned",
+          "required": false,
+          "type": "PadRawProp | undefined",
+          "values": [],
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {
@@ -12242,6 +12686,22 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "hideBelow",
+          "origin": "owned",
+          "required": false,
+          "type": "BreakpointProp | undefined",
+          "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "hideFrom",
+          "origin": "owned",
+          "required": false,
+          "type": "BreakpointProp | undefined",
+          "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "label",
           "origin": "owned",
           "required": false,
@@ -12258,6 +12718,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "labelSize",
+          "origin": "owned",
+          "required": false,
+          "type": "\"xs\" | \"sm\" | \"md\" | \"2xs\" | undefined",
+          "values": ["xs", "sm", "md", "2xs"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "orientation",
           "origin": "owned",
           "required": false,
@@ -12266,11 +12734,19 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "space",
+          "origin": "owned",
+          "required": false,
+          "type": "GapProp | undefined",
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "tone",
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "success", "warning", "destructive", "info", "muted", "primary"],
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
@@ -12360,7 +12836,7 @@
           "origin": "owned",
           "required": false,
           "type": "ServiceLauncherStatusTone | undefined",
-          "values": ["success", "warning", "destructive", "info", "muted", "neutral"],
+          "values": ["muted", "warning", "success", "destructive", "info", "neutral"],
           "declaredIn": ["src/components/data-display/service-launcher-card.tsx"]
         },
         {
@@ -12522,7 +12998,7 @@
           "origin": "owned",
           "required": false,
           "type": "MasterDetailRailWidthProp | undefined",
-          "values": ["compact", "standard"],
+          "values": ["compact", "narrow", "wide", "standard"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -12746,7 +13222,7 @@
           "origin": "owned",
           "required": false,
           "type": "ToneProp | undefined",
-          "values": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "neutral"],
           "declaredIn": ["src/components/feedback/sheet.tsx"]
         }
       ]
@@ -13316,7 +13792,7 @@
           "origin": "owned",
           "required": false,
           "type": "CardAccent | undefined",
-          "values": ["success", "warning", "destructive", "info", "primary", "attention"],
+          "values": ["warning", "success", "destructive", "info", "primary", "attention"],
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
@@ -13451,11 +13927,11 @@
           "type": "BadgeTone | null | undefined",
           "values": [
             "default",
-            "success",
+            "muted",
             "warning",
+            "success",
             "destructive",
             "info",
-            "muted",
             "neutral",
             "primary"
           ],
@@ -13734,6 +14210,14 @@
       "group": "data-display",
       "props": [
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"start\" | \"end\" | undefined",
+          "values": ["center", "start", "end"],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
           "name": "flush",
           "origin": "owned",
           "required": false,
@@ -13758,11 +14242,38 @@
           "declaredIn": ["src/components/data-display/table.tsx"]
         },
         {
+          "name": "numeric",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
           "name": "priority",
           "origin": "owned",
           "required": false,
           "type": "TableColumnPriorityProp | undefined",
           "values": ["meta", "secondary", "primary", "actions"],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "string | number | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "src/components/data-display/table.tsx"
+          ]
+        },
+        {
+          "name": "wrap",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/components/data-display/table.tsx"]
         }
       ]
@@ -13771,11 +14282,43 @@
       "group": "data-display",
       "props": [
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"start\" | \"end\" | undefined",
+          "values": ["center", "start", "end"],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
+          "name": "numeric",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
           "name": "priority",
           "origin": "owned",
           "required": false,
           "type": "TableColumnPriorityProp | undefined",
           "values": ["meta", "secondary", "primary", "actions"],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "WidthProp | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
+          "name": "wrap",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/components/data-display/table.tsx"]
         }
       ]
@@ -14278,11 +14821,27 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "chip",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "clamp",
           "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "decoration",
+          "origin": "owned",
+          "required": false,
+          "type": "\"none\" | \"underline\" | \"line-through\" | undefined",
+          "values": ["none", "underline", "line-through"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -14365,7 +14924,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "success", "warning", "destructive", "info", "muted", "primary"],
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -14480,6 +15039,22 @@
           "origin": "owned",
           "required": false,
           "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "pad",
+          "origin": "owned",
+          "required": false,
+          "type": "PadProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "padRaw",
+          "origin": "owned",
+          "required": false,
+          "type": "PadRawProp | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -14637,11 +15212,27 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "changeOnScroll",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "className",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "defaultOpen",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -14669,6 +15260,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "format",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "hideDisabledOptions",
           "origin": "owned",
           "required": false,
@@ -14677,11 +15276,27 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "hourStep",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "id",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "inputReadOnly",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -14709,6 +15324,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "onOpenChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((open: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
@@ -14717,10 +15340,58 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "open",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "placeholder",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "placement",
+          "origin": "owned",
+          "required": false,
+          "type": "\"bottom-start\" | \"bottom-end\" | \"top-start\" | \"top-end\" | undefined",
+          "values": ["bottom-start", "bottom-end", "top-start", "top-end"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "preserveInvalidOnBlur",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "ref",
+          "origin": "owned",
+          "required": false,
+          "type": "React.Ref<HTMLInputElement> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "renderExtraFooter",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "secondStep",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -14733,11 +15404,320 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "showSeconds",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "use12Hours",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        }
+      ]
+    },
+    "TimeRangePicker": {
+      "group": "data-entry",
+      "props": [
+        {
+          "name": "allowClear",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "allowEmpty",
+          "origin": "owned",
+          "required": false,
+          "type": "[boolean, boolean] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "changeOnScroll",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "defaultOpen",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "owned",
+          "required": false,
+          "type": "[string, string] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "disabledTime",
+          "origin": "owned",
+          "required": false,
+          "type": "TimePickerDisabledTimeProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "format",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "hideDisabledOptions",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "hourStep",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "inputReadOnly",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "minuteStep",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "name",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "needConfirm",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onOpenChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((open: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: [string, string]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "open",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "order",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "placeholder",
+          "origin": "owned",
+          "required": false,
+          "type": "[string, string] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "placement",
+          "origin": "owned",
+          "required": false,
+          "type": "\"bottom-start\" | \"bottom-end\" | \"top-start\" | \"top-end\" | undefined",
+          "values": ["bottom-start", "bottom-end", "top-start", "top-end"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "preserveInvalidOnBlur",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "ref",
+          "origin": "owned",
+          "required": false,
+          "type": "React.Ref<HTMLInputElement> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "renderExtraFooter",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "secondStep",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "showNow",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "showSeconds",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "use12Hours",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "[string, string] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
@@ -15424,6 +16404,22 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "height",
+          "origin": "owned",
+          "required": false,
+          "type": "\"auto\" | \"bar\" | undefined",
+          "values": ["auto", "bar"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "pad",
+          "origin": "owned",
+          "required": false,
+          "type": "PadProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "start",
           "origin": "owned",
           "required": false,
@@ -15442,6 +16438,22 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "badge",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "badgeTone",
+          "origin": "owned",
+          "required": false,
+          "type": "SidebarBadgeToneProp | undefined",
+          "values": ["destructive", "neutral"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -16086,8 +17098,8 @@
           "name": "triggerSize",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | undefined",
-          "values": ["default", "xs", "sm", "md", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"default\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | undefined",
+          "values": ["xs", "sm", "md", "lg", "default", "icon", "icon-xs", "icon-sm", "icon-lg"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {

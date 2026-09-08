@@ -694,6 +694,32 @@
     overflow-y: auto;
   }
 
+  /* MENU WIDTH AXIS (gh#396) — `<DropdownMenuContent width>`. Each value only re-points the
+   * surface's own --menu-content-min-width knob, so the panel still GROWS past the measure for a
+   * long label instead of clipping it; `auto` releases the floor entirely and lets the menu shrink
+   * to its content. `trigger` reads React Aria's --trigger-width, the same anchor measure
+   * Popover already maps for the searchable Select surfaces. No `[data-width]` attribute is
+   * emitted when the prop is unset, so an existing menu matches none of these rules. */
+  .ui-dropdown-menu-content[data-width="auto"] {
+    --menu-content-min-width: 0;
+  }
+
+  .ui-dropdown-menu-content[data-width="trigger"] {
+    --menu-content-min-width: var(--trigger-width, var(--dropdown-content-min-width));
+  }
+
+  .ui-dropdown-menu-content[data-width="sm"] {
+    --menu-content-min-width: var(--menu-content-width-sm);
+  }
+
+  .ui-dropdown-menu-content[data-width="md"] {
+    --menu-content-min-width: var(--menu-content-width-md);
+  }
+
+  .ui-dropdown-menu-content[data-width="lg"] {
+    --menu-content-min-width: var(--menu-content-width-lg);
+  }
+
   .ui-dropdown-menu-sub-content {
     overflow: hidden;
   }

@@ -1,7 +1,16 @@
 import * as React from "react";
-import { CalendarIcon, X } from "lucide-react";
+import { startOfWeek, startOfMonth, startOfQuarter, startOfYear } from "date-fns";
+import { CalendarIcon, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
-import { parseDateInput, toIsoDate } from "../../lib/datetime/parse";
+import { toIsoDate } from "../../lib/datetime/parse";
+import {
+  formatPickerDate,
+  parsePickerDate,
+  pickerDateAllowed,
+} from "../../lib/datetime/picker-format";
+import { Button } from "../general/button";
+import { Flex } from "../layout/flex";
+import { TimePicker } from "./time-picker";
 import { useControlledLatch } from "../../lib/hooks";
 import { pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
@@ -22,28 +31,81 @@ const ISO_HINT = "yyyy-mm-dd";
  * `yyyy-MM-dd` string (the international standard): it is form-submittable (give it a `name`),
  * screen-reader friendly, and e2e-testable by simply filling the input.
  */
-export function DatePicker({
-  value: valueProp,
-  defaultValue,
-  onValueChange,
-  placeholder,
-  disabled,
-  className,
-  id,
-  name,
-  locale: localeProp,
-  showToday,
-  showClose,
-  fromDate,
-  toDate,
-  disabledDate,
-  cellRender,
-  allowClear = true,
-  ...ariaProps
-}: DatePickerProp) {
+export function DatePicker(props: DatePickerProp) {
+  const {
+    value: valueProp,
+    defaultValue,
+    placeholder,
+    disabled,
+    className,
+    id,
+    name,
+    locale: localeProp,
+    showToday,
+    showClose,
+    fromDate,
+    toDate,
+    disabledDate,
+    cellRender,
+    allowClear = true,
+    format: formatProp,
+    parseFormat,
+    minDate,
+    maxDate,
+    showWeek,
+    showTime,
+    presets,
+    multiple = false,
+    picker = "date",
+    order = true,
+    needConfirm = Boolean(showTime),
+    open: openProp,
+    defaultOpen = false,
+    onOpenChange,
+    inputReadOnly,
+    preserveInvalidOnBlur,
+    placement = "bottom-start",
+    renderExtraFooter,
+    size,
+    status,
+    variant,
+    ref,
+    ...ariaProps
+  } = props;
+  const format =
+    formatProp ??
+    (typeof showTime === "object" && showTime.showSeconds ? "yyyy-MM-dd HH:mm:ss" : undefined);
   const { t } = useTranslation();
-  const { dayPickerLocale } = usePickerLocales(localeProp);
-  const [open, setOpen] = React.useState(false);
+  const { dayPickerLocale, locale } = usePickerLocales(localeProp);
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
+  const open = !disabled && (openProp ?? internalOpen);
+  const [pending, setPending] = React.useState<Date | Date[] | undefined>();
+  const [hasPending, setHasPending] = React.useState(false);
+  const setOpen = (next: boolean) => {
+    if (disabled && next) return;
+    if (openProp === undefined) setInternalOpen(next);
+    onOpenChange?.(next);
+    if (!next) {
+      setHasPending(false);
+      setPending(undefined);
+    }
+  };
+  const timeAllowed = (date: Date) => {
+    const rules = typeof showTime === "object" ? showTime.disabledTime?.() : undefined;
+    return !(
+      rules?.disabledHours?.().includes(date.getHours()) ||
+      rules?.disabledMinutes?.(date.getHours()).includes(date.getMinutes()) ||
+      rules?.disabledSeconds?.(date.getHours(), date.getMinutes()).includes(date.getSeconds())
+    );
+  };
+  const minimum = minDate ?? fromDate;
+  const maximum = maxDate ?? toDate;
+  const allowed = (date: Date) => pickerDateAllowed(date, minimum, maximum, disabledDate);
+  const display = (date: Date | Date[] | undefined): string =>
+    Array.isArray(date)
+      ? date.map((day) => formatPickerDate(day, format, locale)).join(", ")
+      : formatPickerDate(date, format, locale, Boolean(showTime));
+  const parse = (text: string) => parsePickerDate(text, format, parseFormat, Boolean(showTime));
   // The typeable <input> is the semantic focus target: forward the FormField label/helper/error
   // contract onto it (never the wrapper div) so the visible label names the control for AT.
   const fieldA11y = pickFieldA11y(ariaProps);
@@ -60,19 +122,38 @@ export function DatePicker({
   // empty-mounted form can still restore a saved value later. Uncontrolled
   // state seeds from `defaultValue`.
   const isControlled = useControlledLatch(valueProp !== undefined);
-  const [internalValue, setInternalValue] = React.useState<Date | undefined>(defaultValue);
+  const [internalValue, setInternalValue] = React.useState<Date | Date[] | undefined>(defaultValue);
   const value = isControlled ? valueProp : internalValue;
-  const emit = (next: Date | undefined) => {
+  const working = hasPending ? pending : value;
+  const selectedDate = Array.isArray(working) ? working[0] : working;
+  const [viewYear, setViewYear] = React.useState((selectedDate ?? new Date()).getFullYear());
+  const periodDate = (date: Date) =>
+    picker === "week"
+      ? startOfWeek(date, { locale: dayPickerLocale })
+      : picker === "month"
+        ? startOfMonth(date)
+        : picker === "quarter"
+          ? startOfQuarter(date)
+          : picker === "year"
+            ? startOfYear(date)
+            : date;
+  const emit = (next: Date | Date[] | undefined) => {
     if (!isControlled) setInternalValue(next);
-    onValueChange?.(next);
+    if (props.multiple)
+      props.onValueChange?.(Array.isArray(next) ? next : next ? [next] : undefined);
+    else props.onValueChange?.(Array.isArray(next) ? next[0] : next);
   };
   // Local text mirrors the input while the user types a (possibly incomplete) date; the committed
   // value flows back through `onValueChange`. Kept in sync whenever the controlled `value` changes.
-  const [text, setText] = React.useState(() => toIsoDate(value));
+  const [text, setText] = React.useState(() => display(value));
 
   React.useEffect(() => {
-    setText(toIsoDate(value));
-  }, [value]);
+    setText(
+      Array.isArray(value)
+        ? value.map((date) => formatPickerDate(date, format, locale)).join(", ")
+        : formatPickerDate(value, format, locale, Boolean(showTime)),
+    );
+  }, [value, format, locale, showTime]);
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.datePicker.placeholder") ?? ISO_HINT;
 
@@ -81,44 +162,75 @@ export function DatePicker({
     setText("");
   };
 
-  // Input's `allowClear` REPLACES the
-  // trailingIcon while a value is set — right for a plain text field, wrong for a picker,
-  // where the calendar icon is the only visual sign that this field HAS a calendar. So the
-  // picker renders its own trailing cluster and leaves Input's `allowClear` untouched
-  // (nothing changes for every other Input consumer).
+  // One trailing action: clear when permitted, otherwise the calendar trigger.
   const showClear = allowClear && text !== "" && !disabled;
 
+  const choose = (input: Date | Date[] | undefined) => {
+    let date = input;
+    if (Array.isArray(date)) {
+      if (date.some((day) => !allowed(day))) return;
+      if (order) date = [...date].sort((a, b) => +a - +b);
+    } else if (date) {
+      date = periodDate(date);
+      if (!allowed(date) || (!needConfirm && !timeAllowed(date))) return;
+      if (multiple) {
+        const current = Array.isArray(working) ? working : [];
+        date = current.some((day) => +day === +date!)
+          ? current.filter((day) => +day !== +date!)
+          : [...current, date];
+        if (order) date.sort((a, b) => +a - +b);
+      }
+    }
+    if (needConfirm) {
+      setPending(date);
+      setHasPending(true);
+    } else {
+      emit(date);
+      setText(display(date));
+    }
+  };
   const commit = (raw: string) => {
-    const trimmed = raw.trim();
-    if (trimmed === "") {
-      emit(undefined);
+    if (!raw.trim()) {
+      choose(undefined);
       return;
     }
-    // A partial string fed to the lenient parser
-    // (parseISO("20") is a valid year-2000 date) would change `value`, and the text-mirror
-    // effect then rewrites the field mid-type — mangling input. onBlur normalizes loose entry.
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return;
-    const parsed = parseDateInput(trimmed);
-    // A forbidden date is rejected on the typed route too. Leaving it open would make the keyboard
-    // a way around the rule the calendar enforces, and the value would then fail server-side with
-    // no sign of which field caused it.
-    if (parsed && !disabledDate?.(parsed)) {
-      emit(parsed);
-    }
+    const parsed = parse(raw);
+    if (parsed && allowed(parsed)) choose(parsed);
   };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
+      {(format || showTime || multiple || needConfirm || preserveInvalidOnBlur) && resolvedName ? (
+        <input
+          type="hidden"
+          disabled={disabled}
+          name={resolvedName}
+          value={
+            showTime
+              ? ((Array.isArray(value) ? value[0] : value)?.toISOString() ?? "")
+              : Array.isArray(value)
+                ? value.map(toIsoDate).join(",")
+                : toIsoDate(value)
+          }
+        />
+      ) : null}
       {/* Anchor the calendar to the whole FIELD wrapper (a plain div with a reliable ref) so
        * align="start" drops it under the field's leading edge — the international date-picker
        * convention (Google/Ant/MUI), not flush to the trailing icon. */}
       <PopoverAnchor asChild>
         <div className={cn("relative", className)}>
-          {/* The field owns the value; the calendar is a secondary popup. The clear (×) sits
-              BESIDE the calendar trigger, never in place of it — see `showClear` above. */}
           <Input
             id={id}
-            name={resolvedName}
+            name={
+              format || showTime || multiple || needConfirm || preserveInvalidOnBlur
+                ? ""
+                : resolvedName
+            }
+            ref={ref}
+            size={size}
+            status={status}
+            variant={variant}
+            readOnly={inputReadOnly || multiple}
             data-field={resolvedField}
             value={text}
             disabled={disabled}
@@ -130,8 +242,7 @@ export function DatePicker({
             aria-haspopup="dialog"
             aria-controls={open ? dialogId : undefined}
             {...fieldA11y}
-            // Two 20px buttons + gap need more room than Input's single-icon `pe-9`.
-            className={showClear ? "ui-control-inline-affix-pair-affixed" : undefined}
+
             trailingIcon={
               <span className="ui-time-picker-affix">
                 {showClear ? (
@@ -139,23 +250,31 @@ export function DatePicker({
                     type="button"
                     tabIndex={-1}
                     aria-label={t("common.clear") ?? "Clear"}
-                    onClick={clear}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      event.currentTarget
+                        .closest("div")
+                        ?.querySelector<HTMLInputElement>("input:not([type=hidden])")
+                        ?.focus();
+                      clear();
+                    }}
                     className="ui-control-inline-affix-action"
                   >
                     <X className="ui-control-inline-affix-icon" aria-hidden="true" />
                   </button>
-                ) : null}
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    disabled={disabled}
-                    tabIndex={-1}
-                    aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
-                    className="ui-control-inline-affix-action"
-                  >
-                    <CalendarIcon className="ui-control-inline-affix-icon" aria-hidden="true" />
-                  </button>
-                </PopoverTrigger>
+                ) : (
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      disabled={disabled}
+                      tabIndex={-1}
+                      aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
+                      className="ui-control-inline-affix-action"
+                    >
+                      <CalendarIcon className="ui-control-inline-affix-icon" aria-hidden="true" />
+                    </button>
+                  </PopoverTrigger>
+                )}
               </span>
             }
             // Combobox semantics made real: clicking the field (or ArrowDown) opens the calendar —
@@ -168,6 +287,14 @@ export function DatePicker({
               if (event.key === "ArrowDown") {
                 event.preventDefault();
                 setOpen(true);
+              } else if (event.key === "Enter") {
+                const parsed = parse(text);
+                if (parsed && allowed(parsed) && timeAllowed(parsed)) {
+                  const next = periodDate(parsed);
+                  emit(next);
+                  setText(display(parsed));
+                  setOpen(false);
+                }
               } else if (event.key === "Escape" && open) {
                 setOpen(false);
               }
@@ -178,9 +305,10 @@ export function DatePicker({
             }}
             onBlur={(event) => {
               // Normalise a valid entry back to canonical ISO; revert an unparseable one.
-              const parsed = parseDateInput(event.target.value.trim());
-              const accepted = parsed && !disabledDate?.(parsed) ? parsed : undefined;
-              setText(accepted ? toIsoDate(accepted) : toIsoDate(value));
+              const parsed = parse(event.target.value);
+              const accepted =
+                parsed && allowed(parsed) && timeAllowed(parsed) ? parsed : undefined;
+              if (!preserveInvalidOnBlur) setText(accepted ? display(accepted) : display(value));
             }}
           />
           <PopoverContent
@@ -188,31 +316,181 @@ export function DatePicker({
             role="dialog"
             aria-label={t("dataEntry.datePicker.openCalendar") ?? "Calendar"}
             className="ui-control-panel-flush"
-            align="start"
+            side={placement.startsWith("top") ? "top" : "bottom"}
+            align={placement.endsWith("end") ? "end" : "start"}
             onOpenAutoFocus={(event) => event.preventDefault()}
           >
-            <Calendar
-              mode="single"
-              selected={value}
-              defaultMonth={value}
-              onSelect={(date) => {
-                emit(date);
-                setText(toIsoDate(date));
-                setOpen(false);
-              }}
-              locale={dayPickerLocale}
-              disabled={[
-                ...(fromDate ? [{ before: fromDate }] : []),
-                ...(toDate ? [{ after: toDate }] : []),
-                ...(disabledDate ? [disabledDate] : []),
-              ]}
-              cellRender={cellRender}
-              startMonth={fromDate}
-              endMonth={toDate}
-              showToday={showToday}
-              showClose={showClose}
-              onClose={() => setOpen(false)}
-            />
+            {presets?.length ? (
+              <Flex wrap gap="xs" pad="sm">
+                {presets.map((preset, index) => (
+                  <Button
+                    key={index}
+                    variant="ghost"
+                    size="sm"
+                    type="button"
+                    onClick={() => {
+                      const date =
+                        typeof preset.value === "function" ? preset.value() : preset.value;
+                      if (!allowed(date)) return;
+                      choose(date);
+                      if (!needConfirm && !multiple) setOpen(false);
+                    }}
+                  >
+                    {preset.label}
+                  </Button>
+                ))}
+              </Flex>
+            ) : null}
+            {picker === "date" || picker === "week" ? (
+              multiple ? (
+                <Calendar
+                  mode="multiple"
+                  selected={Array.isArray(working) ? working : []}
+                  defaultMonth={selectedDate}
+                  locale={dayPickerLocale}
+                  onSelect={choose}
+                  disabled={(day) => !allowed(day)}
+                  cellRender={cellRender}
+                  showWeekNumber={showWeek}
+                  startMonth={minimum}
+                  endMonth={maximum}
+                  showToday={showToday}
+                  showClose={showClose}
+                  onClose={() => setOpen(false)}
+                />
+              ) : (
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  defaultMonth={selectedDate}
+                  showWeekNumber={showWeek}
+                  onSelect={(date) => {
+                    if (date && showTime && selectedDate)
+                      date.setHours(
+                        selectedDate.getHours(),
+                        selectedDate.getMinutes(),
+                        selectedDate.getSeconds(),
+                      );
+                    choose(date);
+                    if (!needConfirm && !multiple) setOpen(false);
+                  }}
+                  locale={dayPickerLocale}
+                  disabled={[
+                    ...(minimum ? [{ before: minimum }] : []),
+                    ...(maximum ? [{ after: maximum }] : []),
+                    ...(disabledDate ? [disabledDate] : []),
+                  ]}
+                  cellRender={cellRender}
+                  startMonth={minimum}
+                  endMonth={maximum}
+                  showToday={showToday}
+                  showClose={showClose}
+                  onClose={() => setOpen(false)}
+                />
+              )
+            ) : (
+              <div className="ui-month-picker-panel">
+                <Flex justify="between" align="center">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    aria-label={t("dataEntry.monthPicker.previousYear")}
+                    onClick={() => setViewYear(viewYear - (picker === "year" ? 12 : 1))}
+                  >
+                    <ChevronLeft aria-hidden="true" />
+                  </Button>
+                  <span aria-live="polite">
+                    {new Intl.NumberFormat(locale, { useGrouping: false }).format(viewYear)}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    aria-label={t("dataEntry.monthPicker.nextYear")}
+                    onClick={() => setViewYear(viewYear + (picker === "year" ? 12 : 1))}
+                  >
+                    <ChevronRight aria-hidden="true" />
+                  </Button>
+                </Flex>
+                <div className="ui-month-picker-grid">
+                  {Array.from({ length: picker === "quarter" ? 4 : 12 }, (_, index) => {
+                    const date =
+                      picker === "year"
+                        ? new Date(viewYear + index, 0, 1)
+                        : new Date(viewYear, index * (picker === "quarter" ? 3 : 1), 1);
+                    const label =
+                      picker === "year"
+                        ? new Intl.DateTimeFormat(locale, { year: "numeric" }).format(date)
+                        : picker === "quarter"
+                          ? t("dataEntry.datePicker.quarter", { quarter: index + 1 })
+                          : new Intl.DateTimeFormat(locale, { month: "short" }).format(date);
+                    const selected = (
+                      Array.isArray(working) ? working : working ? [working] : []
+                    ).some((day) => +periodDate(day) === +date);
+                    return (
+                      <Button
+                        key={index}
+                        type="button"
+                        variant={selected ? "default" : "ghost"}
+                        aria-pressed={selected}
+                        disabled={!allowed(date)}
+                        onClick={() => {
+                          choose(date);
+                          if (!needConfirm && !multiple) setOpen(false);
+                        }}
+                      >
+                        {label}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {showTime ? (
+              <Flex pad="sm">
+                <TimePicker
+                  {...(typeof showTime === "object" ? showTime : {})}
+                  aria-label={t("dataEntry.timePicker.openPicker")}
+                  value={
+                    selectedDate
+                      ? [
+                          selectedDate.getHours(),
+                          selectedDate.getMinutes(),
+                          ...(typeof showTime === "object" && showTime.showSeconds
+                            ? [selectedDate.getSeconds()]
+                            : []),
+                        ]
+                          .map((n) => String(n).padStart(2, "0"))
+                          .join(":")
+                      : ""
+                  }
+                  onValueChange={(time) => {
+                    if (!time) return;
+                    const date = new Date(selectedDate ?? new Date());
+                    const [h, m, sec = 0] = time.split(":").map(Number);
+                    date.setHours(h, m, sec, 0);
+                    choose(date);
+                  }}
+                />
+              </Flex>
+            ) : null}
+            {needConfirm ? (
+              <Flex pad="sm" justify="end">
+                <Button
+                  type="button"
+                  disabled={!selectedDate || !allowed(selectedDate) || !timeAllowed(selectedDate)}
+                  onClick={() => {
+                    if (selectedDate && allowed(selectedDate) && timeAllowed(selectedDate)) {
+                      emit(working);
+                      setText(display(working));
+                      setOpen(false);
+                    }
+                  }}
+                >
+                  {t("dataEntry.timePicker.confirm")}
+                </Button>
+              </Flex>
+            ) : null}
+            {renderExtraFooter?.()}
           </PopoverContent>
         </div>
       </PopoverAnchor>

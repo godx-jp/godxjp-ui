@@ -204,8 +204,8 @@ pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2
 **`pnpm test` and a bare `pnpm vitest run` are FORBIDDEN here.** That is 506 files /
 3700+ tests; run from an agent loop, and multiplied by parallel agents, it has put 70
 vitest workers on one machine at load 90 and burnt a monthly API budget. The full suite
-is CI's job on the PR — `tal --help` says it outright: *FULL SUITE KHÔNG THUỘC VỀ VÒNG
-LẶP.* `pnpm preview:build` / `pnpm verify:ci:static` run AT MOST ONCE, immediately
+is CI's job on the PR — `tal --help` says it outright: _FULL SUITE KHÔNG THUỘC VỀ VÒNG
+LẶP._ `pnpm preview:build` / `pnpm verify:ci:static` run AT MOST ONCE, immediately
 before opening the PR, never inside the loop.
 
 Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
@@ -244,3 +244,7 @@ Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
 - `docs/roadmap/international-standardization.md` (the i18n/a11y/vocab audit + fixes)
 - godx-ui MCP: `get_rule`, `list_anti_ai_tells`, `get_component`, `get_vocab`, `get_tokens`
 - Memory: `godxui-examples-absolute-rules`, `mf-godxui-compose-rules`
+
+## Picker trailing action (confirmed 2026-09-09)
+
+Every date/time/month picker and range field has exactly one trailing action. Empty: calendar/clock icon. Filled and clearing permitted: only the clear ×. Filled with clearing forbidden or disabled: only the picker icon. Never render the clear and picker icons together. Clicking the input or pressing ArrowDown must still open the panel; clear keeps an accessible name and returns focus to the input. This supersedes the former gh#308 two-icon rule and its tests.

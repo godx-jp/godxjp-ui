@@ -1,0 +1,8 @@
+/** Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs. */
+:root {
+  --flex-surface-background: initial;
+  --flex-surface-warning-alpha: 0.04;
+  --flex-surface-radius: initial;
+  --flex-actions-offset-block: initial;
+  --flex-actions-offset-inline: initial;
+}

@@ -7,6 +7,7 @@ import type {
   TableCellIndentProp,
   TableColumnPriorityProp,
   TablePresetProp,
+  WidthProp,
 } from "../../props/vocabulary";
 
 export type TableProps = React.HTMLAttributes<HTMLTableElement> & {
@@ -114,6 +115,21 @@ TableRow.displayName = "TableRow";
  */
 type TableCellPriority = { priority?: TableColumnPriorityProp };
 
+/** Logical column alignment, wrapping and measure, shared by header and body cells.
+ * Numeric cells use tabular figures and end alignment unless align is explicit. */
+type TableCellAxes = {
+  align?: "start" | "center" | "end";
+  numeric?: boolean;
+  wrap?: boolean;
+  width?: WidthProp;
+};
+
+/** `WidthProp` follows React's own style semantics: a bare number is px, a string is a CSS length. */
+function cellWidth(width: WidthProp | undefined): string | undefined {
+  if (width === undefined) return undefined;
+  return typeof width === "number" ? `${width}px` : width;
+}
+
 /**
  * Rendered into the DOM unconditionally (so it exists for the preset's CSS to reveal) but visually
  * hidden above the collapse step, where the real `<th>` already carries the label — an ordinary
@@ -123,13 +139,17 @@ type TableCellLabel = { label?: React.ReactNode };
 
 export const TableHead = React.forwardRef<
   HTMLTableCellElement,
-  React.ThHTMLAttributes<HTMLTableCellElement> & TableCellPriority
->(({ className, priority, ...props }, ref) => (
+  Omit<React.ThHTMLAttributes<HTMLTableCellElement>, "align"> & TableCellPriority & TableCellAxes
+>(({ className, priority, align, numeric, wrap, width, style, ...props }, ref) => (
   <th
     ref={ref}
     data-slot="table-head"
     data-priority={priority}
+    data-align={align}
+    data-numeric={numeric ? "" : undefined}
+    data-wrap={wrap ? "" : undefined}
     className={cn(tableHeadHeightClass, className)}
+    style={width === undefined ? style : { ...style, inlineSize: cellWidth(width) }}
     {...props}
   />
 ));
@@ -152,32 +172,58 @@ type TableCellIndent = { indent?: TableCellIndentProp };
 
 export const TableCell = React.forwardRef<
   HTMLTableCellElement,
-  React.TdHTMLAttributes<HTMLTableCellElement> &
+  Omit<React.TdHTMLAttributes<HTMLTableCellElement>, "align"> &
     TableCellPriority &
     TableCellLabel &
     TableCellFlush &
-    TableCellIndent
->(({ className, priority, label, flush, indent, children, style, ...props }, ref) => (
-  <td
-    ref={ref}
-    data-slot="table-cell"
-    data-priority={priority}
-    data-flush={flush ? "" : undefined}
-    data-indent={indent === undefined ? undefined : indent}
-    className={cn(className)}
-    style={
-      indent === undefined
-        ? style
-        : ({ ...style, "--table-cell-indent-level": indent } as React.CSSProperties)
-    }
-    {...props}
-  >
-    {label !== undefined ? (
-      <span className="ui-table-stacked-collection-label" aria-hidden="true">
-        {label}
-      </span>
-    ) : null}
-    {children}
-  </td>
-));
+    TableCellIndent &
+    TableCellAxes
+>(
+  (
+    {
+      className,
+      priority,
+      label,
+      flush,
+      indent,
+      align,
+      numeric,
+      wrap,
+      width,
+      children,
+      style,
+      ...props
+    },
+    ref,
+  ) => (
+    <td
+      ref={ref}
+      data-slot="table-cell"
+      data-priority={priority}
+      data-flush={flush ? "" : undefined}
+      data-indent={indent === undefined ? undefined : indent}
+      data-align={align}
+      data-numeric={numeric ? "" : undefined}
+      data-wrap={wrap ? "" : undefined}
+      className={cn(className)}
+      style={
+        indent === undefined && width === undefined
+          ? style
+          : ({
+              ...style,
+              ...(indent === undefined ? null : { "--table-cell-indent-level": indent }),
+              ...(width === undefined ? null : { inlineSize: cellWidth(width) }),
+            } as React.CSSProperties)
+      }
+      {...props}
+    >
+      {label !== undefined ? (
+        <span className="ui-table-stacked-collection-label" aria-hidden="true">
+          {label}
+        </span>
+      ) : null}
+      {children}
+    </td>
+  ),
+);
 TableCell.displayName = "TableCell";

@@ -18,7 +18,6 @@
       "--button-icon-space-inline-xs",
       "--cascader-result-space-block",
       "--choice-description-gap",
-      "--control-inline-affix-pair-space-inline-end",
       "--control-inline-affix-space-inline-end",
       "--control-label-space-gap",
       "--control-trigger-space-inline-end",
@@ -29,9 +28,7 @@
       "--tree-select-depth-space-step",
       "--tree-select-row-space-block"
     ],
-    "src/tokens/components/data-display.css": [
-      "--permission-matrix-name-space-gap"
-    ],
+    "src/tokens/components/data-display.css": ["--permission-matrix-name-space-gap"],
     "src/tokens/components/data-entry.css": [
       "--branch-scope-picker-badges-gap",
       "--branch-scope-picker-gap",
@@ -42,9 +39,7 @@
       "--descriptions-column-gap",
       "--descriptions-label-gap"
     ],
-    "src/tokens/components/feedback.css": [
-      "--sheet-header-space-gap"
-    ],
+    "src/tokens/components/feedback.css": ["--sheet-header-space-gap"],
     "src/tokens/components/navigation.css": [
       "--tabs-root-gap",
       "--tabs-trigger-line-padding-x",
@@ -82,8 +77,6 @@
       "--sidebar-nav-item-padding-x",
       "--topbar-chip-icon-size"
     ],
-    "src/tokens/components/upload.css": [
-      "--upload-picture-badge-space-block"
-    ]
+    "src/tokens/components/upload.css": ["--upload-picture-badge-space-block"]
   }
 }

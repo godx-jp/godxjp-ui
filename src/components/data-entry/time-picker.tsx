@@ -2,7 +2,8 @@ import * as React from "react";
 import { Clock, X } from "lucide-react";
 
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
-import { isValidHhmm, normalizeHhmm } from "../../lib/datetime";
+import { normalizeHhmm } from "../../lib/datetime";
+import { useControlledLatch } from "../../lib/hooks";
 import { pickFieldA11y } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -23,18 +24,51 @@ function pad2(n: number) {
   return String(n).padStart(2, "0");
 }
 
-function buildMinutes(step: number) {
-  const safe = Math.min(60, Math.max(1, step));
+function buildMinutes(step: number, limit = 60) {
+  const safe = Number.isFinite(step) ? Math.min(limit, Math.max(1, Math.floor(step))) : 1;
   const items: number[] = [];
-  for (let m = 0; m < 60; m += safe) items.push(m);
+  for (let m = 0; m < limit; m += safe) items.push(m);
   return items;
 }
 
-function parseHhmm(value: string | undefined): { hour: number; minute: number } {
-  const normalized = value ? normalizeHhmm(value) : null;
-  if (!normalized) return { hour: 9, minute: 0 };
-  const [h, m] = normalized.split(":").map(Number);
-  return { hour: h, minute: m };
+function normalizeTime(raw: string, seconds = false): string | null {
+  const match = /^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(am|pm)?$/i.exec(raw.trim());
+  if (!match) return seconds ? null : normalizeHhmm(raw);
+  let hour = Number(match[1]);
+  const minute = Number(match[2]);
+  const second = Number(match[3] ?? 0);
+  if (match[4]) {
+    if (hour < 1 || hour > 12) return null;
+    hour = (hour % 12) + (match[4].toLowerCase() === "pm" ? 12 : 0);
+  }
+  if (hour > 23 || minute > 59 || second > 59) return null;
+  return `${pad2(hour)}:${pad2(minute)}${seconds ? `:${pad2(second)}` : ""}`;
+}
+
+function parseHhmm(value: string | undefined) {
+  const [hour, minute, second] = (normalizeTime(value ?? "", true) ?? "09:00:00")
+    .split(":")
+    .map(Number);
+  return { hour, minute, second };
+}
+
+function displayTime(value: string, pattern: string | undefined): string {
+  if (!value || !pattern) return value;
+  const { hour, minute, second } = parseHhmm(value);
+  return pattern.replace(
+    /HH|hh|H|h|mm|ss|A|a/g,
+    (token) =>
+      ({
+        HH: pad2(hour),
+        H: String(hour),
+        hh: pad2(to12h(hour)),
+        h: String(to12h(hour)),
+        mm: pad2(minute),
+        ss: pad2(second),
+        A: hour >= 12 ? "PM" : "AM",
+        a: hour >= 12 ? "pm" : "am",
+      })[token] ?? token,
+  );
 }
 
 /** Convert a canonical 24h hour into a 12h display hour (1-12). */
@@ -52,6 +86,10 @@ function from12h(hour12: number, meridiem: "am" | "pm"): number {
 interface TimePickerPanelProps {
   value: string;
   minuteStep: number;
+  hourStep: number;
+  secondStep: number;
+  showSeconds: boolean;
+  changeOnScroll?: boolean;
   use12h: boolean;
   disabledTime?: TimePickerDisabledTimeProp;
   hideDisabledOptions?: boolean;
@@ -81,13 +119,14 @@ function useTimeRefusals(disabledTime: TimePickerDisabledTimeProp | undefined) {
 /** Is this exact `HH:mm` one the rule refuses? The gate for BOTH routes into the value. */
 function isTimeRefused(value: string, disabledTime: TimePickerDisabledTimeProp | undefined) {
   if (!disabledTime) return false;
-  const normalized = normalizeHhmm(value);
+  const normalized = normalizeTime(value, true);
   if (!normalized) return false;
-  const [hour, minute] = normalized.split(":").map(Number);
+  const [hour, minute, second] = normalized.split(":").map(Number);
   const rules = disabledTime();
   return (
     (rules.disabledHours?.().includes(hour) ?? false) ||
-    (rules.disabledMinutes?.(hour).includes(minute) ?? false)
+    (rules.disabledMinutes?.(hour).includes(minute) ?? false) ||
+    (rules.disabledSeconds?.(hour, minute).includes(second) ?? false)
   );
 }
 
@@ -99,6 +138,7 @@ function TimeColumn({
   onSelect,
   isDisabled,
   hideDisabled = false,
+  onScrollSelect,
 }: {
   label: string;
   items: number[];
@@ -108,6 +148,7 @@ function TimeColumn({
   /** Refuse this option — `disabledTime` said so (gh#390). */
   isDisabled?: (value: number) => boolean;
   hideDisabled?: boolean;
+  onScrollSelect?: (value: number) => void;
 }) {
   const listRef = React.useRef<HTMLDivElement>(null);
 
@@ -116,6 +157,28 @@ function TimeColumn({
   }, [selected]);
 
   const visible = hideDisabled && isDisabled ? items.filter((item) => !isDisabled(item)) : items;
+
+  React.useEffect(() => {
+    const list = listRef.current;
+    if (!list || !onScrollSelect) return;
+    const wheel = (event: WheelEvent) => {
+      if (!event.deltaY) return;
+      event.preventDefault();
+      const step = Math.sign(event.deltaY);
+      for (
+        let index = visible.indexOf(selected) + step;
+        index >= 0 && index < visible.length;
+        index += step
+      ) {
+        if (!isDisabled?.(visible[index])) {
+          onScrollSelect(visible[index]);
+          break;
+        }
+      }
+    };
+    list.addEventListener("wheel", wheel, { passive: false });
+    return () => list.removeEventListener("wheel", wheel);
+  }, [onScrollSelect, selected, visible, isDisabled]);
 
   /**
    * Move to the next option the rule allows, in `step` direction. A disabled option is still in
@@ -179,7 +242,14 @@ function TimeColumn({
               // option silently absent (APG listbox pattern).
               aria-disabled={refused || undefined}
               data-disabled={refused || undefined}
-              tabIndex={isSelected && !refused ? 0 : -1}
+              tabIndex={
+                !refused &&
+                (isSelected ||
+                  (!visible.some((option) => option === selected && !isDisabled?.(option)) &&
+                    index === visible.findIndex((option) => !isDisabled?.(option))))
+                  ? 0
+                  : -1
+              }
               className="ui-time-picker-option"
               onClick={() => {
                 if (!refused) onSelect(item);
@@ -198,6 +268,10 @@ function TimeColumn({
 function TimePickerPanel({
   value,
   minuteStep,
+  hourStep,
+  secondStep,
+  showSeconds,
+  changeOnScroll,
   use12h,
   disabledTime,
   hideDisabledOptions,
@@ -218,7 +292,10 @@ function TimePickerPanel({
    */
   const [pending, setPending] = React.useState<string | null>(null);
   const working = needConfirm ? (pending ?? value) : value;
-  const { hour, minute } = parseHhmm(working);
+  const { hour, minute, second } = parseHhmm(working);
+  const seconds = buildMinutes(secondStep);
+  const time = (h: number, m: number, s = second) =>
+    `${pad2(h)}:${pad2(m)}${showSeconds ? `:${pad2(s)}` : ""}`;
   const snappedMinute = minutes.includes(minute) ? minute : minutes[0];
   const meridiem: "am" | "pm" = hour >= 12 ? "pm" : "am";
 
@@ -228,7 +305,7 @@ function TimePickerPanel({
   }, [value]);
 
   const commitDraft = () => {
-    const normalized = normalizeHhmm(draft);
+    const normalized = normalizeTime(draft, showSeconds);
     // A refused time typed into the panel's own field is rejected exactly like an unparseable one,
     // so the keyboard cannot walk around the rule the columns enforce.
     if (!normalized || isTimeRefused(normalized, disabledTime)) return;
@@ -244,6 +321,7 @@ function TimePickerPanel({
    * caught by time-picker.test.tsx, which had pinned exactly this.
    */
   const choose = (next: string, { done }: { done: boolean }) => {
+    if (isTimeRefused(next, disabledTime)) return;
     if (needConfirm) {
       setPending(next);
       setDraft(next);
@@ -253,28 +331,53 @@ function TimePickerPanel({
     if (done) onDone?.();
   };
 
+  const chooseHour = (nextHour: number) => {
+    const candidates = [snappedMinute, ...minutes.filter((m) => m !== snappedMinute)];
+    for (const nextMinute of candidates) {
+      const candidateSeconds = showSeconds ? [second, ...seconds.filter((s) => s !== second)] : [0];
+      for (const nextSecond of candidateSeconds) {
+        const next = time(nextHour, nextMinute, nextSecond);
+        if (!isTimeRefused(next, disabledTime)) {
+          choose(next, { done: false });
+          return;
+        }
+      }
+    }
+  };
+
   const confirm = () => {
-    if (pending) onChange(pending);
+    const next = normalizeTime(draft, showSeconds);
+    if (!next || isTimeRefused(next, disabledTime)) return;
+    onChange(next);
     onDone?.();
   };
 
   const now = () => {
     const at = new Date();
-    const snapped = Math.floor(at.getMinutes() / minuteStep) * minuteStep;
-    return `${pad2(at.getHours())}:${pad2(snapped)}`;
+    const snapped = minutes.filter((minute) => minute <= at.getMinutes()).at(-1) ?? 0;
+    return time(
+      at.getHours(),
+      snapped,
+      seconds.filter((second) => second <= at.getSeconds()).at(-1) ?? 0,
+    );
   };
   const nowValue = now();
   const nowRefused = isTimeRefused(nowValue, disabledTime);
 
   const hourItems = use12h
-    ? Array.from({ length: 12 }, (_, i) => i + 1)
-    : Array.from({ length: 24 }, (_, i) => i);
+    ? buildMinutes(hourStep, 12).map((hour) => hour || 12)
+    : buildMinutes(hourStep, 24);
   const selectedHourItem = use12h ? to12h(hour) : hour;
 
   return (
     <div className="ui-time-picker-panel" data-hour-cycle={use12h ? "h12" : "h23"}>
       <div className="divide-border flex divide-x">
         <TimeColumn
+          onScrollSelect={
+            changeOnScroll
+              ? (h) => choose(time(use12h ? from12h(h, meridiem) : h, minute), { done: false })
+              : undefined
+          }
           label={t("dataEntry.timePicker.hour")}
           items={hourItems}
           selected={selectedHourItem}
@@ -284,10 +387,13 @@ function TimePickerPanel({
           onSelect={(h) => {
             const hour24 = use12h ? from12h(h, meridiem) : h;
             // The minute is still unchosen, so the panel stays open.
-            choose(`${pad2(hour24)}:${pad2(snappedMinute)}`, { done: false });
+            chooseHour(hour24);
           }}
         />
         <TimeColumn
+          onScrollSelect={
+            changeOnScroll ? (m) => choose(time(hour, m), { done: false }) : undefined
+          }
           label={t("dataEntry.timePicker.minute")}
           items={minutes}
           selected={snappedMinute}
@@ -295,9 +401,23 @@ function TimePickerPanel({
           isDisabled={(m) => isMinuteRefused(hour, m)}
           hideDisabled={hideDisabledOptions}
           onSelect={(m) => {
-            choose(`${pad2(hour)}:${pad2(m)}`, { done: true });
+            choose(time(hour, m), { done: !showSeconds });
           }}
         />
+        {showSeconds && (
+          <TimeColumn
+            onScrollSelect={
+              changeOnScroll ? (s) => choose(time(hour, minute, s), { done: false }) : undefined
+            }
+            label={t("dataEntry.timePicker.second")}
+            items={seconds}
+            selected={second}
+            formatItem={pad2}
+            hideDisabled={hideDisabledOptions}
+            isDisabled={(s) => isTimeRefused(time(hour, minute, s), disabledTime)}
+            onSelect={(s) => choose(time(hour, minute, s), { done: true })}
+          />
+        )}
         {use12h && (
           <TimeColumn
             label={t("dataEntry.timePicker.meridiem")}
@@ -309,7 +429,7 @@ function TimePickerPanel({
             onSelect={(m) => {
               const nextMeridiem: "am" | "pm" = m === 1 ? "pm" : "am";
               const hour24 = from12h(to12h(hour), nextMeridiem);
-              choose(`${pad2(hour24)}:${pad2(snappedMinute)}`, { done: false });
+              chooseHour(hour24);
             }}
           />
         )}
@@ -333,7 +453,7 @@ function TimePickerPanel({
             }
           }}
           onBlur={() => {
-            const normalized = normalizeHhmm(draft);
+            const normalized = normalizeTime(draft, showSeconds);
             if (normalized) setDraft(normalized);
           }}
         />
@@ -382,6 +502,23 @@ export function TimePicker({
   id,
   name,
   minuteStep = 5,
+  hourStep = 1,
+  changeOnScroll,
+  secondStep = 1,
+  showSeconds: showSecondsProp = false,
+  use12Hours,
+  format,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  inputReadOnly,
+  preserveInvalidOnBlur,
+  placement = "bottom-end",
+  renderExtraFooter,
+  size,
+  status,
+  variant,
+  ref,
   disabledTime,
   hideDisabledOptions,
   showNow = true,
@@ -391,22 +528,29 @@ export function TimePicker({
 }: TimePickerProp) {
   const { t } = useTranslation();
   const { timeFormat } = usePickerLocales();
-  const use12h = timeFormat === "12h";
-  const [open, setOpen] = React.useState(false);
+  const use12h = use12Hours ?? (format ? /h|a|A/.test(format) : timeFormat === "12h");
+  const showSeconds = showSecondsProp || Boolean(format?.includes("ss"));
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
+  const open = !disabled && (openProp ?? internalOpen);
+  const setOpen = (next: boolean) => {
+    if (disabled && next) return;
+    if (openProp === undefined) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
   // Forward the FormField label/helper/error contract onto the typeable input (focus target).
   const fieldA11y = pickFieldA11y(ariaProps);
   const reactId = React.useId();
   const dialogId = `${id ?? reactId}-dialog`;
   const [internal, setInternal] = React.useState(defaultValue ?? "");
-  const isControlled = controlledValue !== undefined;
-  const value = isControlled ? controlledValue : internal;
+  const isControlled = useControlledLatch(controlledValue !== undefined);
+  const value = (isControlled ? controlledValue : internal) ?? "";
   const resolvedPlaceholder = placeholder ?? t("dataEntry.timePicker.placeholder") ?? "hh:mm";
   // Local text mirrors the input while typing; the canonical HH:mm flows out through onValueChange.
-  const [text, setText] = React.useState(value);
+  const [text, setText] = React.useState(displayTime(value, format));
 
   React.useEffect(() => {
-    setText(value);
-  }, [value]);
+    setText(displayTime(value, format));
+  }, [value, format]);
 
   const setValue = (next: string) => {
     if (!isControlled) setInternal(next);
@@ -418,19 +562,24 @@ export function TimePicker({
     setText("");
   };
 
-  // clock icon is the only visual sign this field opens a time panel, so the clear (×) sits
-  // beside it instead of replacing it. Input's own `allowClear` is left alone.
+  // The trailing action is exclusive: clear a value, otherwise open the picker.
   const showClear = allowClear && text !== "" && !disabled;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
+      {(format || needConfirm || preserveInvalidOnBlur) && name ? (
+        <input type="hidden" disabled={disabled} name={name} value={value} />
+      ) : null}
       <PopoverAnchor asChild>
         <div className={cn("relative", className)}>
-          {/* The clear (×) sits BESIDE the clock trigger, never in place of it (see `showClear`);
-              the field itself (onClick / ArrowDown) still opens the panel. */}
           <Input
             id={id}
-            name={name}
+            ref={ref}
+            size={size}
+            status={status}
+            variant={variant}
+            readOnly={inputReadOnly}
+            name={format || needConfirm || preserveInvalidOnBlur ? "" : name}
             value={text}
             disabled={disabled}
             placeholder={resolvedPlaceholder}
@@ -441,8 +590,8 @@ export function TimePicker({
             aria-haspopup="dialog"
             aria-controls={open ? dialogId : undefined}
             {...fieldA11y}
-            // Two affix buttons + gap need more room than Input's single-icon reserve.
-            className={cn("tabular-nums", showClear && "ui-control-inline-affix-pair-affixed")}
+
+            className="tabular-nums"
             trailingIcon={
               <span className="ui-time-picker-affix">
                 {showClear ? (
@@ -450,23 +599,31 @@ export function TimePicker({
                     type="button"
                     tabIndex={-1}
                     aria-label={t("common.clear") ?? "Clear"}
-                    onClick={clear}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      event.currentTarget
+                        .closest("div")
+                        ?.querySelector<HTMLInputElement>("input:not([type=hidden])")
+                        ?.focus();
+                      clear();
+                    }}
                     className="ui-control-inline-affix-action"
                   >
                     <X className="ui-control-inline-affix-icon" aria-hidden="true" />
                   </button>
-                ) : null}
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    disabled={disabled}
-                    tabIndex={-1}
-                    aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
-                    className="ui-control-inline-affix-action"
-                  >
-                    <Clock className="ui-control-inline-affix-icon" aria-hidden="true" />
-                  </button>
-                </PopoverTrigger>
+                ) : (
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      disabled={disabled}
+                      tabIndex={-1}
+                      aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
+                      className="ui-control-inline-affix-action"
+                    >
+                      <Clock className="ui-control-inline-affix-icon" aria-hidden="true" />
+                    </button>
+                  </PopoverTrigger>
+                )}
               </span>
             }
             onClick={() => {
@@ -476,21 +633,34 @@ export function TimePicker({
               if (event.key === "ArrowDown") {
                 event.preventDefault();
                 setOpen(true);
+              } else if (event.key === "Enter") {
+                const next = normalizeTime(text, showSeconds);
+                if (next && !isTimeRefused(next, disabledTime)) {
+                  setValue(next);
+                  setOpen(false);
+                }
               } else if (event.key === "Escape" && open) {
                 setOpen(false);
               }
             }}
             onChange={(event) => {
               setText(event.target.value);
-              const normalized = normalizeHhmm(event.target.value);
+              const normalized = normalizeTime(event.target.value, showSeconds);
               // A refused time is rejected on the typed route too — see `isTimeRefused`.
-              if (normalized && !isTimeRefused(normalized, disabledTime)) setValue(normalized);
+              if (
+                normalized &&
+                (!showSeconds || /^\d{1,2}:\d{2}:\d{2}/.test(event.target.value)) &&
+                (!format || !/[aA]/.test(format) || /[ap]m$/i.test(event.target.value.trim())) &&
+                !isTimeRefused(normalized, disabledTime) &&
+                !needConfirm
+              )
+                setValue(normalized);
             }}
             onBlur={(event) => {
-              const normalized = normalizeHhmm(event.target.value);
+              const normalized = normalizeTime(event.target.value, showSeconds);
               const accepted =
                 normalized && !isTimeRefused(normalized, disabledTime) ? normalized : undefined;
-              setText(accepted ?? (isValidHhmm(value) ? value : ""));
+              if (!preserveInvalidOnBlur) setText(displayTime(accepted ?? value, format));
             }}
           />
         </div>
@@ -500,12 +670,17 @@ export function TimePicker({
         role="dialog"
         aria-label={t("dataEntry.timePicker.openPicker") ?? "Time picker"}
         className="ui-time-picker-popover"
-        align="end"
+        side={placement.startsWith("top") ? "top" : "bottom"}
+        align={placement.endsWith("start") ? "start" : "end"}
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
         <TimePickerPanel
-          value={value || "09:00"}
+          value={(needConfirm ? normalizeTime(text, showSeconds) : undefined) || value || "09:00"}
           minuteStep={minuteStep}
+          hourStep={hourStep}
+          changeOnScroll={changeOnScroll}
+          secondStep={secondStep}
+          showSeconds={showSeconds}
           use12h={use12h}
           disabledTime={disabledTime}
           hideDisabledOptions={hideDisabledOptions}
@@ -513,12 +688,13 @@ export function TimePicker({
           needConfirm={needConfirm}
           onChange={(next) => {
             setValue(next);
-            setText(next);
+            setText(displayTime(next, format));
           }}
           onDone={() => {
             setOpen(false);
           }}
         />
+        {renderExtraFooter?.()}
       </PopoverContent>
     </Popover>
   );

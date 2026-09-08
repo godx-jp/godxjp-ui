@@ -1,4 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Pencil, Plus, Trash2 } from "lucide-react";
@@ -56,6 +63,12 @@ export default function Demo() {
               <Button variant="dashed">追加 Add row</Button>
               <Button variant="ghost">詳細 Details</Button>
               <Button variant="link">もっと見る More</Button>
+              <Button id="bare-count" variant="bare">
+                返信 <Badge icon={null}>12</Badge>
+              </Button>
+              <Button id="ghost-count" variant="ghost">
+                返信 <Badge icon={null}>12</Badge>
+              </Button>
               <Button variant="destructive">削除 Delete</Button>
             </Flex>
           </CardContent>

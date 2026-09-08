@@ -2,7 +2,19 @@ import * as React from "react";
 import { ArrowRight, CalendarIcon, X } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
-import { parseDateInput, toIsoDate } from "../../lib/datetime";
+import { toIsoDate } from "../../lib/datetime";
+import {
+  formatPickerDate,
+  parsePickerDate,
+  pickerDateAllowed,
+} from "../../lib/datetime/picker-format";
+import { Button } from "../general/button";
+import { Flex } from "../layout/flex";
+import {
+  CONTROL_VARIANT_CHROME_CLASS,
+  CONTROL_STATUS_CHROME_CLASS,
+  controlAppearanceAttributes,
+} from "./control-appearance";
 import { useControlledLatch } from "../../lib/hooks";
 import { pickGroupFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
@@ -41,11 +53,49 @@ export function DateRangePicker({
   disabledDate,
   cellRender,
   allowClear = true,
+  format,
+  parseFormat,
+  minDate,
+  maxDate,
+  showWeek,
+  presets,
+  needConfirm = false,
+  allowEmpty = [true, true],
+  order = true,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  inputReadOnly,
+  preserveInvalidOnBlur,
+  placement = "bottom-start",
+  renderExtraFooter,
+  size,
+  status,
+  variant = "outlined",
+  ref,
   ...ariaProps
 }: DateRangePickerProp) {
   const { t } = useTranslation();
-  const { dayPickerLocale } = usePickerLocales(localeProp);
-  const [open, setOpen] = React.useState(false);
+  const { dayPickerLocale, locale } = usePickerLocales(localeProp);
+  const appearance = controlAppearanceAttributes({ status, variant });
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
+  const open = !disabled && (openProp ?? internalOpen);
+  const [pending, setPending] = React.useState<DateRange | undefined>();
+  const [hasPending, setHasPending] = React.useState(false);
+  const setOpen = (next: boolean) => {
+    if (disabled && next) return;
+    if (openProp === undefined) setInternalOpen(next);
+    onOpenChange?.(next);
+    if (!next) {
+      setHasPending(false);
+      setPending(undefined);
+    }
+  };
+  const minimum = minDate ?? fromDate;
+  const maximum = maxDate ?? toDate;
+  const allowed = (date: Date) => pickerDateAllowed(date, minimum, maximum, disabledDate);
+  const display = (date: Date | undefined) => formatPickerDate(date, format, locale);
+  const parse = (text: string) => parsePickerDate(text, format, parseFormat);
   // The range has no single labelable focus target (two inputs) — the shell is a role="group"
   // named by the FormField label. pickGroupFieldA11y forwards aria-labelledby/-describedby (error
   // folded in) — the widget-only aria-invalid/-required are invalid on role="group".
@@ -67,13 +117,14 @@ export function DateRangePicker({
   const isControlled = useControlledLatch(valueProp !== undefined);
   const [internalValue, setInternalValue] = React.useState<DateRange | undefined>(defaultValue);
   const value = isControlled ? valueProp : internalValue;
-  const [fromText, setFromText] = React.useState(() => toIsoDate(value?.from));
-  const [toText, setToText] = React.useState(() => toIsoDate(value?.to));
+  const working = hasPending ? pending : value;
+  const [fromText, setFromText] = React.useState(() => display(value?.from));
+  const [toText, setToText] = React.useState(() => display(value?.to));
 
   React.useEffect(() => {
-    setFromText(toIsoDate(value?.from));
-    setToText(toIsoDate(value?.to));
-  }, [value?.from, value?.to]);
+    setFromText(formatPickerDate(value?.from, format, locale));
+    setToText(formatPickerDate(value?.to, format, locale));
+  }, [value?.from, value?.to, format, locale]);
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.dateRangePicker.placeholder") ?? ISO_HINT;
 
@@ -82,7 +133,8 @@ export function DateRangePicker({
     onValueChange?.(next);
   };
 
-  const showClear = allowClear && Boolean(value?.from || value?.to) && !disabled;
+  const showClear =
+    allowClear && allowEmpty.every(Boolean) && Boolean(value?.from || value?.to) && !disabled;
 
   const clear = () => {
     emit(undefined);
@@ -90,19 +142,29 @@ export function DateRangePicker({
     setToText("");
   };
 
+  const validRange = (next: DateRange | undefined) =>
+    Boolean(
+      next &&
+      (next.from ? allowed(next.from) : allowEmpty[0]) &&
+      (next.to ? allowed(next.to) : allowEmpty[1]),
+    );
+  const choose = (range: DateRange | undefined) => {
+    let next = range;
+    if ((next?.from && !allowed(next.from)) || (next?.to && !allowed(next.to))) return;
+    if (order && next?.from && next.to && next.from > next.to)
+      next = { from: next.to, to: next.from };
+    if (needConfirm) {
+      setPending(next);
+      setHasPending(true);
+    } else emit(next);
+  };
   const commitEdge = (edge: "from" | "to", raw: string) => {
     const trimmed = raw.trim();
-    // Feeding a partial string to the lenient
-    // parser (parseISO("20") is a valid year-2000 date) would change `value`, and the
-    // text-mirror effect would then rewrite the field mid-type — mangling input. Partial
-    // input keeps the text and emits nothing; onBlur normalizes any loose-but-complete entry.
-    if (trimmed !== "" && !/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return;
-    const parsed = trimmed === "" ? undefined : (parseDateInput(trimmed) ?? undefined);
-    // A forbidden date is rejected on the typed route too, so the keyboard cannot walk around the
-    // rule the calendar enforces.
-    if (parsed && disabledDate?.(parsed)) return;
-    const next = { from: value?.from, to: value?.to, [edge]: parsed } as DateRange;
-    emit(next.from || next.to ? next : undefined);
+    const parsed = parse(trimmed);
+    if (trimmed && (!parsed || !allowed(parsed))) return;
+    if (!trimmed && !allowEmpty[edge === "from" ? 0 : 1]) return;
+    const next = { from: working?.from, to: working?.to, [edge]: parsed };
+    choose(next.from || next.to ? next : undefined);
   };
 
   const sharedKeyHandlers = {
@@ -122,6 +184,22 @@ export function DateRangePicker({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
+      {(format || needConfirm || preserveInvalidOnBlur) && rangeName ? (
+        <>
+          <input
+            type="hidden"
+            disabled={disabled}
+            name={`${rangeName}_from`}
+            value={toIsoDate(value?.from)}
+          />
+          <input
+            type="hidden"
+            disabled={disabled}
+            name={`${rangeName}_to`}
+            value={toIsoDate(value?.to)}
+          />
+        </>
+      ) : null}
       {/* Anchor the calendar to the whole control so align="start" puts it under the
        * leading (from) edge — the international date-picker convention. */}
       <PopoverAnchor asChild>
@@ -130,6 +208,8 @@ export function DateRangePicker({
           id={groupId}
           {...groupA11y}
           data-field={rangeField}
+          data-size={size}
+          {...appearance}
           aria-disabled={disabled ? true : undefined}
           data-state={open ? "open" : "closed"}
           className={cn(
@@ -137,6 +217,8 @@ export function DateRangePicker({
             // this and the month range picker cannot drift into two slightly different fields.
             "ui-control ui-control-composite-field",
             "aria-invalid:border-destructive",
+            CONTROL_VARIANT_CHROME_CLASS[variant],
+            CONTROL_STATUS_CHROME_CLASS,
             className,
           )}
           onClick={() => {
@@ -146,7 +228,13 @@ export function DateRangePicker({
           <input
             id={fromId}
             data-field={rangeField ? `${rangeField}_from` : undefined}
-            name={rangeName ? `${rangeName}_from` : undefined}
+            name={
+              !format && !needConfirm && !preserveInvalidOnBlur && rangeName
+                ? `${rangeName}_from`
+                : undefined
+            }
+            ref={ref}
+            readOnly={inputReadOnly}
             value={fromText}
             disabled={disabled}
             placeholder={resolvedPlaceholder}
@@ -160,16 +248,22 @@ export function DateRangePicker({
               commitEdge("from", event.target.value);
             }}
             onBlur={(event) => {
-              const parsed = parseDateInput(event.target.value.trim());
-              const accepted = parsed && !disabledDate?.(parsed) ? parsed : undefined;
-              setFromText(accepted ? toIsoDate(accepted) : toIsoDate(value?.from));
+              const parsed = parse(event.target.value);
+              const accepted = parsed && allowed(parsed) ? parsed : undefined;
+              if (!preserveInvalidOnBlur)
+                setFromText(accepted ? display(accepted) : display(value?.from));
             }}
           />
           <ArrowRight className="ui-month-picker-separator-icon" aria-hidden="true" />
           <input
             id={toId}
             data-field={rangeField ? `${rangeField}_to` : undefined}
-            name={rangeName ? `${rangeName}_to` : undefined}
+            name={
+              !format && !needConfirm && !preserveInvalidOnBlur && rangeName
+                ? `${rangeName}_to`
+                : undefined
+            }
+            readOnly={inputReadOnly}
             value={toText}
             disabled={disabled}
             placeholder={resolvedPlaceholder}
@@ -183,9 +277,10 @@ export function DateRangePicker({
               commitEdge("to", event.target.value);
             }}
             onBlur={(event) => {
-              const parsed = parseDateInput(event.target.value.trim());
-              const accepted = parsed && !disabledDate?.(parsed) ? parsed : undefined;
-              setToText(accepted ? toIsoDate(accepted) : toIsoDate(value?.to));
+              const parsed = parse(event.target.value);
+              const accepted = parsed && allowed(parsed) ? parsed : undefined;
+              if (!preserveInvalidOnBlur)
+                setToText(accepted ? display(accepted) : display(value?.to));
             }}
           />
           {/* ONE trailing icon: the clear (×) replaces the calendar while a range is set;
@@ -198,53 +293,97 @@ export function DateRangePicker({
               className="text-muted-foreground hover:text-foreground shrink-0"
               onClick={(event) => {
                 event.stopPropagation();
+                event.currentTarget
+                  .closest("div")
+                  ?.querySelector<HTMLInputElement>("input:not([type=hidden])")
+                  ?.focus();
                 clear();
               }}
             >
               <X className="ui-month-picker-icon" aria-hidden="true" />
             </button>
-          ) : null}
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              disabled={disabled}
-              tabIndex={-1}
-              aria-label={t("dataEntry.dateRangePicker.openCalendar") ?? "Open calendar"}
-              className="text-muted-foreground hover:text-foreground shrink-0"
-            >
-              <CalendarIcon className="ui-month-picker-icon" aria-hidden="true" />
-            </button>
-          </PopoverTrigger>
+          ) : (
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                disabled={disabled}
+                tabIndex={-1}
+                aria-label={t("dataEntry.dateRangePicker.openCalendar") ?? "Open calendar"}
+                className="text-muted-foreground hover:text-foreground shrink-0"
+              >
+                <CalendarIcon className="ui-month-picker-icon" aria-hidden="true" />
+              </button>
+            </PopoverTrigger>
+          )}
           <PopoverContent
             className="ui-control-panel-flush"
-            align="start"
+            side={placement.startsWith("top") ? "top" : "bottom"}
+            align={placement.endsWith("end") ? "end" : "start"}
+            onClick={(event) => event.stopPropagation()}
             onOpenAutoFocus={(event) => event.preventDefault()}
           >
+            {presets?.length ? (
+              <Flex wrap gap="xs" pad="sm">
+                {presets.map((preset, index) => (
+                  <Button
+                    key={index}
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      const range =
+                        typeof preset.value === "function" ? preset.value() : preset.value;
+                      if (validRange(range)) choose(range);
+                    }}
+                  >
+                    {preset.label}
+                  </Button>
+                ))}
+              </Flex>
+            ) : null}
             <Calendar
               mode="range"
-              selected={value}
-              defaultMonth={value?.from}
+              selected={working}
+              defaultMonth={working?.from}
+              showWeekNumber={showWeek}
               // A range picker shows two months so a cross-month range can be picked without
               // navigating. The Calendar wrapper stacks them vertically below `sm` for mobile.
               numberOfMonths={2}
               onSelect={(range) => {
-                emit(range);
-                setFromText(toIsoDate(range?.from));
-                setToText(toIsoDate(range?.to));
+                choose(range);
+                setFromText(display(range?.from));
+                setToText(display(range?.to));
               }}
               locale={dayPickerLocale}
               disabled={[
-                ...(fromDate ? [{ before: fromDate }] : []),
-                ...(toDate ? [{ after: toDate }] : []),
+                ...(minimum ? [{ before: minimum }] : []),
+                ...(maximum ? [{ after: maximum }] : []),
                 ...(disabledDate ? [disabledDate] : []),
               ]}
               cellRender={cellRender}
-              startMonth={fromDate}
-              endMonth={toDate}
+              startMonth={minimum}
+              endMonth={maximum}
               showToday={showToday}
               showClose={showClose}
               onClose={() => setOpen(false)}
             />
+            {needConfirm ? (
+              <Flex pad="sm" justify="end">
+                <Button
+                  type="button"
+                  disabled={!validRange(working)}
+                  onClick={() => {
+                    if (validRange(working)) {
+                      emit(working);
+                      setOpen(false);
+                    }
+                  }}
+                >
+                  {t("dataEntry.timePicker.confirm")}
+                </Button>
+              </Flex>
+            ) : null}
+            {renderExtraFooter?.()}
           </PopoverContent>
         </div>
       </PopoverAnchor>

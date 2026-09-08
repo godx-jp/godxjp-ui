@@ -62,6 +62,8 @@ export type PageContainerHeaderScaleProp = "document" | "chrome";
 
 /** @see PageContainer */
 export type PageContainerProp = {
+  toolbarPad?: PadProp;
+  footerPad?: PadProp;
   title: TitleProp;
   subtitle?: SubtitleProp;
   /**
@@ -141,7 +143,7 @@ export type FlexAlignProp = "start" | "center" | "end" | "stretch" | "baseline";
 export type FlexJustifyProp = "start" | "center" | "end" | "between" | "around" | "evenly";
 
 /** @see Flex */
-export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
+export type FlexProp = React.HTMLAttributes<HTMLElement> & {
   /**
    * Render element — `div` (default) or `span` when the Flex sits in a PHRASING context and a
    * `<div>` would be invalid HTML: inside a `TabsTrigger`/`PopoverTrigger`/`Button` (all of which
@@ -149,8 +151,16 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
    * inside a `<p>`. Same closed shape as `ListRow`'s `as` — it swaps the TAG, nothing else: the
    * `.ui-flex` rules carry `display: flex`, so the box is identical either way.
    */
-  as?: "div" | "span";
-  direction?: FlexDirectionProp;
+  as?: "div" | "span" | "ul" | "ol" | "li";
+  /** Lightweight surfaces for rows and notices; no Card elevation by default. */
+  surface?: "muted" | "popover" | "warning";
+  /** Negative inline inset, using the same spacing scale as pad. */
+  bleed?: GapProp;
+  /** Floating row actions: show on parent hover, focus-within, and touch. */
+  reveal?: "hover";
+  direction?: FlexDirectionProp | Partial<Record<"base" | BreakpointProp, FlexDirectionProp>>;
+  grow?: boolean;
+  shrink?: boolean;
   gap?: GapProp;
   /**
    * CỬA THOÁT: một khoảng cách tính bằng pixel, ngoài mọi bậc của thang.
@@ -255,7 +265,7 @@ export type ResponsiveGridFlowProp = "rows" | "columns";
 
 export type ResponsiveGridPresetProp = "pricing-plans";
 
-export type MasterDetailRailWidthProp = "compact" | "standard";
+export type MasterDetailRailWidthProp = "narrow" | "compact" | "standard" | "wide";
 export type MasterDetailRailProp = "master" | "detail";
 /**
  * Bounded viewport preset for the master collection. `auto` (default) never bounds it — the region
@@ -515,6 +525,10 @@ export type MobileShellProp = {
  * so a service retunes a day divider or an unread watermark from its theme and never forks CSS.
  */
 export type SeparatorProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
+  labelSize?: "2xs" | "xs" | "sm" | "md";
+  space?: GapProp;
+  hideBelow?: BreakpointProp;
+  hideFrom?: BreakpointProp;
   /** Rule axis. Default `"horizontal"`. */
   orientation?: OrientationProp;
   /**
@@ -1133,6 +1147,8 @@ export type SidebarProp = {
  * configured via THEIR own props and dropped into a slot.
  */
 export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
+  height?: "bar" | "auto";
+  pad?: PadProp;
   /** Inline-start cluster — typically the sidebar toggle + a brand mark (`Avatar`) + primary nav. */
   start?: ReactNode;
   /** Center cluster — optional (e.g. a search trigger or a page/entity switcher). */
@@ -1161,6 +1177,23 @@ export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
    */
   /** Hide below a shared responsive breakpoint, without changing cell height. */
   hideBelow?: BreakpointProp;
+  /**
+   * Unread count OVERLAID on the cell's glyph — the notification-bell affordance the cell's own use
+   * cases name (gh#398). Pass the CONTENT ONLY, exactly like `SidebarItemProp.badge`: a number, a
+   * string, `"99+"`. Position, size and colour come from `--topbar-item-badge-*`, so the count does
+   * NOT widen the cell (an inline chip pushes the end cluster's shrink budget around every time the
+   * count crosses a digit boundary) and a theme can retune the overlay once.
+   *
+   * The count is not an accessible name: give the cell an `aria-label` that says what the number
+   * means (`aria-label={t("topbar.notifications.unread", { count })}`).
+   */
+  badge?: ReactNode;
+  /**
+   * Emphasis of `badge`. Vocabulary shared VERBATIM with `SidebarItemProp.badgeTone` so one count
+   * pill reads the same in the rail and in the bar: `destructive` when the count is addressed to
+   * the user rather than merely unread.
+   */
+  badgeTone?: SidebarBadgeToneProp;
   asChild?: boolean;
   children?: ReactNode;
   className?: ClassNameProp;

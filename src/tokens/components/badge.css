@@ -6,6 +6,10 @@
   --badge-space-y: var(--space-1);
   /* Small-by-design (badge/pill/counter). A knob (rule #45) so a service can
    * re-tune badge text without touching the global --font-size-xs step. */
+  /* Corner of the chip (gh#404). Default = the historical literal `--radius-md`, so nothing moves;
+   * it exists so a NESTING context can restate it through the cascade (a Badge inside a bordered
+   * Button squares down to --radius-sm) and a call site can restate it back. */
+  --badge-radius: var(--radius-md);
   --badge-font-size: var(--font-size-xs);
   /* Companion to --badge-font-size (gh#260). The cva's old `text-xs` utility also set
    * line-height via Tailwind's default `--text-xs--line-height: calc(1 / 0.75)` (the theme

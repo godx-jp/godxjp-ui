@@ -654,3 +654,23 @@
     height: var(--control-height);
   }
 }
+
+@layer components {
+  .ui-card-bar[data-surface="muted"] {
+    background: hsl(var(--muted));
+  }
+  .ui-card-bar[data-border="none"] {
+    border-block: 0;
+  }
+  .ui-card-bar[data-border="block-start"] {
+    border-block-end: 0;
+    border-block-start: var(--stroke-hairline) solid hsl(var(--border));
+  }
+  .ui-card-bar[data-border="block-end"] {
+    border-block-start: 0;
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+  }
+  .ui-card-bar[data-border="both"] {
+    border-block: var(--stroke-hairline) solid hsl(var(--border));
+  }
+}

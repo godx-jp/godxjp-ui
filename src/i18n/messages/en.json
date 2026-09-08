@@ -23,7 +23,8 @@
     },
     "datePicker": {
       "placeholder": "Select date",
-      "openCalendar": "Open calendar"
+      "openCalendar": "Open calendar",
+      "quarter": "Q{quarter}"
     },
     "dateRangePicker": {
       "placeholder": "Select date range",
@@ -41,7 +42,8 @@
       "am": "AM",
       "pm": "PM",
       "now": "Now",
-      "confirm": "OK"
+      "confirm": "OK",
+      "second": "Second"
     },
     "searchInput": {
       "placeholder": "Search…"

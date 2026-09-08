@@ -20,10 +20,26 @@ export type {
  * file resolves, including nothing at all while the `--focus-outline` switch ships off.
  */
 export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(function TopbarItem(
-  { asChild = false, className, type, hideBelow, ...props },
+  { asChild = false, className, type, hideBelow, badge, badgeTone, children, ...props },
   ref,
 ) {
   const Comp = asChild ? Slot : "button";
+  // The count pill is OVERLAID on the glyph rather than placed beside it, so a bar whose end
+  // cluster is `flex: 0 0 auto` keeps its width when the count crosses a digit boundary
+  // (gh#398). Empty string is treated as absent, exactly like the Sidebar row's own badge.
+  // Ignored under `asChild`: Slot borrows the child's single element and has nowhere to put a
+  // sibling — the same rule `Button`'s `count` follows.
+  const showBadge = !asChild && badge !== undefined && badge !== "";
+  const badgeNode = showBadge ? (
+    <span
+      data-slot="topbar-item-badge"
+      className="ui-topbar-item-badge"
+      // Absent when the tone is the default, so a cell that never sets it renders the same node.
+      data-tone={badgeTone === "destructive" ? "destructive" : undefined}
+    >
+      {badge}
+    </span>
+  ) : null;
   return (
     <Comp
       ref={ref}
@@ -34,6 +50,15 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
       // its own element and must not be handed a `type` it may not accept (an `<a>`, a `<div>`).
       type={asChild ? undefined : (type ?? "button")}
       {...props}
-    />
+    >
+      {asChild ? (
+        children
+      ) : (
+        <>
+          {children}
+          {badgeNode}
+        </>
+      )}
+    </Comp>
   );
 });

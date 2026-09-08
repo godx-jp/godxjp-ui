@@ -23,6 +23,22 @@ export interface AuditRule {
 export const AUDIT_COMMAND =
   "node node_modules/@godxjp/ui/scripts/ui-audit.mjs  (add --format json for machine output, --rules to print this catalog)";
 
+/**
+ * How to opt a DELIBERATE exception out of the audit. Every form names the rule explicitly, and the
+ * block form additionally requires a reason, so an opt-out is always readable as a decision.
+ */
+export const AUDIT_SUPPRESSION = `// ui-audit-disable-line <rule-id>          — this line
+// ui-audit-disable-next-line <rule-id>     — the line below
+// ui-audit-disable-begin <rule-id> — <reason, 12+ chars>
+//   … the whole region (one marker, however prettier wraps it) …
+// ui-audit-disable-end <rule-id>
+
+A block with no reason is IGNORED and the finding stands. An unclosed block runs to end of file.
+The class-shaped rules (gap-*/p-*/m-*, bg-<palette>-*, w-[…], pr-*, dark:*) only read class
+expressions — a className/class attribute, a class-named binding (\`baseClass\`, \`statusStyles\`,
+\`badgeVariants\`) or a cn()/clsx()/cva() call — so prose that merely spells a utility is not a
+finding and needs no suppression.`;
+
 export const AUDIT_RULES: AuditRule[] = [
   // ── composition (layout owners, not utilities) ───────────────────────────
   {

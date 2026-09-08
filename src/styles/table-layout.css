@@ -23,7 +23,9 @@
     vertical-align: middle;
     background: var(--table-header-background, hsl(var(--muted)));
     font-size: var(--table-head-font-size);
-    font-weight: var(--font-weight-medium);
+    /* gh#410 — ~18 call sites in one app wrote `font-normal` back onto their headers. A quiet
+     * header row that common is a THEME decision, not eighteen classNames. Default unchanged. */
+    font-weight: var(--table-head-font-weight);
     color: var(--table-header-foreground, hsl(var(--muted-foreground)));
     white-space: nowrap;
   }
@@ -49,6 +51,38 @@
 
   [data-slot="table-cell"]:has([role="checkbox"]) {
     padding-inline-end: 0;
+  }
+
+  /* ── COLUMN AXES (gh#410) — `align` / `numeric` / `wrap` on TableHead and TableCell ───────────
+   * Every one of these was a `className` before, and the alignment utility the catalog recommended
+   * (`text-right`) is a physical direction this package lints against everywhere else.
+   *
+   * `numeric` is declared BEFORE `align` on purpose: both selectors have the same specificity, so
+   * an explicit `align` on a numeric column wins by source order — a count column that reads
+   * better centred can say so without losing its tabular figures. */
+  :is([data-slot="table-head"], [data-slot="table-cell"])[data-numeric] {
+    font-variant-numeric: tabular-nums;
+    text-align: end;
+  }
+
+  :is([data-slot="table-head"], [data-slot="table-cell"])[data-align="start"] {
+    text-align: start;
+  }
+
+  :is([data-slot="table-head"], [data-slot="table-cell"])[data-align="center"] {
+    text-align: center;
+  }
+
+  :is([data-slot="table-head"], [data-slot="table-cell"])[data-align="end"] {
+    text-align: end;
+  }
+
+  /* `nowrap` is the right default for a data grid and the wrong one for a free-text column. The
+   * cell's `white-space` INHERITS into everything it holds (measured: a `.ui-text` inside a cell
+   * reported nowrap it never asked for), so releasing it on the cell releases the whole column —
+   * which is why the escape had to be a per-column prop and not a class on the child. */
+  :is([data-slot="table-head"], [data-slot="table-cell"])[data-wrap] {
+    white-space: normal;
   }
 
   /* HIERARCHY INDENT (gh#354) — `<TableCell indent={depth}>`. The level rides on the cell as

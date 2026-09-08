@@ -29,6 +29,8 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
       clamp,
       whitespace,
       tabular,
+      decoration,
+      chip,
       mono,
       link,
       className,
@@ -62,7 +64,7 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
       }
       if (whitespace === "pre-wrap" && truncating) {
         console.warn(
-          "Text: `truncate` and `whitespace=\"pre-wrap\"` are mutually exclusive — `truncate` takes precedence (one line, one ellipsis); use `clamp` to keep preserved line breaks and still bound the height.",
+          'Text: `truncate` and `whitespace="pre-wrap"` are mutually exclusive — `truncate` takes precedence (one line, one ellipsis); use `clamp` to keep preserved line breaks and still bound the height.',
         );
       }
     }
@@ -83,6 +85,8 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
           ? ({ ...style, "--text-clamp": clampLines } as React.CSSProperties)
           : style,
       "data-tabular": tabular ? "" : undefined,
+      "data-decoration": decoration,
+      "data-chip": chip ? "" : undefined,
       "data-mono": mono ? "" : undefined,
       className: cn("ui-text", className),
       ...props,

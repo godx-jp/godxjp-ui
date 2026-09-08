@@ -4,24 +4,11 @@
     "Alert": {
       "props": {
         "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
-          "evidence": [
-            "docs/feedback/alert.tsx"
-          ]
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "evidence": ["docs/feedback/alert.tsx"]
         },
         "variant": {
-          "cases": [
-            "default",
-            "banner"
-          ],
+          "cases": ["default", "banner"],
           "evidence": [
             "docs/feedback/alert.tsx",
             "docs/feedback/banner.tsx",
@@ -33,54 +20,33 @@
     "AlertDialog": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "destructive"
-          ],
-          "evidence": [
-            "docs/feedback/alert-dialog.tsx"
-          ]
+          "cases": ["default", "destructive"],
+          "evidence": ["docs/feedback/alert-dialog.tsx"]
         }
       }
     },
     "AlertDialogHeader": {
       "props": {
         "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
-          "evidence": [
-            "docs/feedback/alert-dialog.tsx"
-          ]
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "evidence": ["docs/feedback/alert-dialog.tsx"]
         },
         "title": {
-          "cases": [
-            "prop-driven title"
-          ],
+          "cases": ["prop-driven title"],
           "evidence": [
             "docs/feedback/alert-dialog.tsx",
             "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
           ]
         },
         "subtitle": {
-          "cases": [
-            "prop-driven subtitle"
-          ],
+          "cases": ["prop-driven subtitle"],
           "evidence": [
             "docs/feedback/alert-dialog.tsx",
             "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
           ]
         },
         "extra": {
-          "cases": [
-            "trailing badge slot"
-          ],
+          "cases": ["trailing badge slot"],
           "evidence": [
             "docs/feedback/alert-dialog.tsx",
             "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
@@ -91,30 +57,18 @@
     "AlertDialogRoot": {
       "props": {
         "open": {
-          "cases": [
-            true,
-            false
-          ],
+          "cases": [true, false],
           "evidence": [
             "docs/feedback/alert-dialog.tsx",
             "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
           ]
         },
         "defaultOpen": {
-          "cases": [
-            true,
-            false
-          ],
-          "evidence": [
-            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
-          ]
+          "cases": [true, false],
+          "evidence": ["src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"]
         },
         "onOpenChange": {
-          "cases": [
-            "controlled callback",
-            "cancel",
-            "escape"
-          ],
+          "cases": ["controlled callback", "cancel", "escape"],
           "evidence": [
             "docs/feedback/alert-dialog.tsx",
             "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
@@ -202,42 +156,26 @@
     "AppSettingPicker": {
       "props": {
         "appearance": {
-          "cases": [
-            "bar",
-            "icon",
-            "inline",
-            "labeled"
-          ],
+          "cases": ["bar", "icon", "inline", "labeled"],
           "evidence": [
             "docs/navigation/app-setting-picker.tsx",
             "src/components/__tests__/app-setting-picker.a11y.test.tsx"
           ]
         },
         "className": {
-          "cases": [
-            "trigger class override"
-          ],
-          "evidence": [
-            "src/components/__tests__/app-setting-picker.a11y.test.tsx"
-          ]
+          "cases": ["trigger class override"],
+          "evidence": ["src/components/__tests__/app-setting-picker.a11y.test.tsx"]
         },
         "disabled": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/navigation/app-setting-picker.tsx",
             "src/components/__tests__/app-setting-picker.a11y.test.tsx"
           ]
         },
         "id": {
-          "cases": [
-            "form id"
-          ],
-          "evidence": [
-            "docs/navigation/app-setting-picker.tsx"
-          ]
+          "cases": ["form id"],
+          "evidence": ["docs/navigation/app-setting-picker.tsx"]
         },
         "kind": {
           "cases": [
@@ -256,28 +194,21 @@
           ]
         },
         "name": {
-          "cases": [
-            "locale form field"
-          ],
+          "cases": ["locale form field"],
           "evidence": [
             "docs/navigation/app-setting-picker.tsx",
             "src/components/__tests__/app-setting-picker.a11y.test.tsx"
           ]
         },
         "onValueChange": {
-          "cases": [
-            "controlled callback"
-          ],
+          "cases": ["controlled callback"],
           "evidence": [
             "docs/navigation/app-setting-picker.tsx",
             "src/components/__tests__/app-setting-picker.a11y.test.tsx"
           ]
         },
         "value": {
-          "cases": [
-            "controlled",
-            "provider-bound"
-          ],
+          "cases": ["controlled", "provider-bound"],
           "evidence": [
             "docs/navigation/app-setting-picker.tsx",
             "src/components/__tests__/app-setting-picker.a11y.test.tsx"
@@ -288,66 +219,36 @@
     "AreaChart": {
       "props": {
         "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/charts/size-tiers.tsx"
-          ]
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/charts/size-tiers.tsx"]
         }
       }
     },
     "AuthShell": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "canonical"
-          ],
-          "evidence": [
-            "docs/layout/auth-shell-variants.tsx",
-            "docs/layout/auth-shell.tsx"
-          ]
+          "cases": ["default", "canonical"],
+          "evidence": ["docs/layout/auth-shell-variants.tsx", "docs/layout/auth-shell.tsx"]
         },
         "density": {
-          "cases": [
-            "compact",
-            "comfortable"
-          ],
-          "evidence": [
-            "docs/layout/auth-shell-variants.tsx"
-          ]
+          "cases": ["compact", "comfortable"],
+          "evidence": ["docs/layout/auth-shell-variants.tsx"]
         }
       }
     },
     "Avatar": {
       "props": {
         "shape": {
-          "cases": [
-            "circle",
-            "square"
-          ],
-          "evidence": [
-            "docs/data-display/avatar.tsx"
-          ]
+          "cases": ["circle", "square"],
+          "evidence": ["docs/data-display/avatar.tsx"]
         }
       }
     },
     "Badge": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "secondary",
-            "outline",
-            "dashed"
-          ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
+          "cases": ["default", "secondary", "outline", "dashed"],
+          "evidence": ["docs/data-display/badge.tsx"]
         },
         "tone": {
           "cases": [
@@ -360,25 +261,14 @@
             "neutral",
             "primary"
           ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
+          "evidence": ["docs/data-display/badge.tsx"]
         },
         "shape": {
-          "cases": [
-            "default",
-            "pill",
-            "sharp"
-          ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
+          "cases": ["default", "pill", "sharp"],
+          "evidence": ["docs/data-display/badge.tsx"]
         },
         "as": {
-          "cases": [
-            "div",
-            "span"
-          ],
+          "cases": ["div", "span"],
           "evidence": [
             "src/components/data-display/__tests__/badge-phrasing-seam-354.test.tsx",
             "docs/showcase/table-view-tabs.tsx"
@@ -389,15 +279,7 @@
     "Banner": {
       "props": {
         "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
           "evidence": [
             "docs/feedback/banner.tsx",
             "src/components/feedback/__tests__/banner.test.tsx"
@@ -408,15 +290,8 @@
     "BarChart": {
       "props": {
         "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/charts/size-tiers.tsx"
-          ]
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/charts/size-tiers.tsx"]
         }
       }
     },
@@ -430,26 +305,18 @@
             "dashed",
             "secondary",
             "ghost",
-            "link"
+            "link",
+            "bare"
           ],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
-            "scripts/check-display-runtime-evidence.mjs"
+            "scripts/check-display-runtime-evidence.mjs",
+            "src/components/general/__tests__/button-bare-404.test.tsx"
           ]
         },
         "size": {
-          "cases": [
-            "default",
-            "md",
-            "xs",
-            "sm",
-            "lg",
-            "icon",
-            "icon-xs",
-            "icon-sm",
-            "icon-lg"
-          ],
+          "cases": ["default", "md", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -457,11 +324,7 @@
           ]
         },
         "shape": {
-          "cases": [
-            "default",
-            "pill",
-            "sharp"
-          ],
+          "cases": ["default", "pill", "sharp"],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -469,10 +332,7 @@
           ]
         },
         "fullWidth": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -480,10 +340,7 @@
           ]
         },
         "asChild": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -491,10 +348,7 @@
           ]
         },
         "disabled": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -502,10 +356,7 @@
           ]
         },
         "loading": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -513,10 +364,7 @@
           ]
         },
         "loadingText": {
-          "cases": [
-            "omitted",
-            "provided"
-          ],
+          "cases": ["omitted", "provided"],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -524,12 +372,7 @@
           ]
         },
         "count": {
-          "cases": [
-            "omitted",
-            0,
-            18,
-            128
-          ],
+          "cases": ["omitted", 0, 18, 128],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -537,10 +380,7 @@
           ]
         },
         "overflowCount": {
-          "cases": [
-            "default-99",
-            "custom-9"
-          ],
+          "cases": ["default-99", "custom-9"],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -548,10 +388,7 @@
           ]
         },
         "showZero": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -559,11 +396,7 @@
           ]
         },
         "type": {
-          "cases": [
-            "button",
-            "reset",
-            "submit"
-          ],
+          "cases": ["button", "reset", "submit"],
           "evidence": [
             "docs/general/button/index.tsx",
             "src/components/general/__tests__/button.test.tsx",
@@ -571,14 +404,8 @@
           ]
         },
         "onClick": {
-          "cases": [
-            "fires when enabled",
-            "blocked when disabled",
-            "blocked while loading"
-          ],
-          "evidence": [
-            "src/components/general/__tests__/button.test.tsx"
-          ]
+          "cases": ["fires when enabled", "blocked when disabled", "blocked while loading"],
+          "evidence": ["src/components/general/__tests__/button.test.tsx"]
         }
       }
     },
@@ -592,61 +419,30 @@
             "destructive",
             "secondary",
             "outline",
-            "dashed"
+            "dashed",
+            "bare"
           ],
-          "evidence": [
-            "docs/query/button-refetch.tsx"
-          ]
+          "evidence": ["docs/query/button-refetch.tsx"]
         },
         "size": {
-          "cases": [
-            "default",
-            "xs",
-            "sm",
-            "md",
-            "lg",
-            "icon",
-            "icon-xs",
-            "icon-sm",
-            "icon-lg"
-          ],
-          "evidence": [
-            "docs/query/button-refetch.tsx"
-          ]
+          "cases": ["default", "xs", "sm", "md", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "evidence": ["docs/query/button-refetch.tsx"]
         },
         "shape": {
-          "cases": [
-            "default",
-            "pill",
-            "sharp"
-          ],
-          "evidence": [
-            "docs/query/button-refetch.tsx"
-          ]
+          "cases": ["default", "pill", "sharp"],
+          "evidence": ["docs/query/button-refetch.tsx"]
         }
       }
     },
     "Card": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "muted",
-            "outline",
-            "featured"
-          ],
-          "evidence": [
-            "docs/data-display/card/index.tsx"
-          ]
+          "cases": ["default", "muted", "outline", "featured"],
+          "evidence": ["docs/data-display/card/index.tsx"]
         },
         "density": {
-          "cases": [
-            "tight",
-            "cozy"
-          ],
-          "evidence": [
-            "docs/data-display/card/index.tsx"
-          ]
+          "cases": ["tight", "cozy"],
+          "evidence": ["docs/data-display/card/index.tsx"]
         }
       }
     },
@@ -670,11 +466,7 @@
       "complete": true,
       "props": {
         "checked": {
-          "cases": [
-            false,
-            true,
-            "indeterminate"
-          ],
+          "cases": [false, true, "indeterminate"],
           "evidence": [
             "docs/data-entry/checkbox.tsx",
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
@@ -682,145 +474,76 @@
           ]
         },
         "defaultChecked": {
-          "cases": [
-            false,
-            true,
-            "indeterminate"
-          ],
+          "cases": [false, true, "indeterminate"],
           "evidence": [
             "docs/data-entry/checkbox.tsx",
             "src/components/data-entry/__tests__/checkbox-interaction.test.tsx"
           ]
         },
         "disabled": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/checkbox.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
         },
         "onCheckedChange": {
-          "cases": [
-            "pointer",
-            "keyboard"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/checkbox-interaction.test.tsx"
-          ]
+          "cases": ["pointer", "keyboard"],
+          "evidence": ["src/components/data-entry/__tests__/checkbox-interaction.test.tsx"]
         },
         "required": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/data-entry/checkbox.tsx",
             "src/components/data-entry/__tests__/checkbox.a11y.test.tsx"
           ]
         },
         "name": {
-          "cases": [
-            "explicit",
-            "resolved-from-id"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/form-field-identity-337.test.tsx"
-          ]
+          "cases": ["explicit", "resolved-from-id"],
+          "evidence": ["src/components/data-entry/__tests__/form-field-identity-337.test.tsx"]
         },
         "value": {
-          "cases": [
-            "on",
-            "option-code"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/form-field-identity-337.test.tsx"
-          ]
+          "cases": ["on", "option-code"],
+          "evidence": ["src/components/data-entry/__tests__/form-field-identity-337.test.tsx"]
         }
       }
     },
     "CheckboxGroup": {
       "props": {
         "children": {
-          "cases": [
-            "custom Field child"
-          ],
-          "evidence": [
-            "docs/data-entry/checkbox.tsx"
-          ]
+          "cases": ["custom Field child"],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
         },
         "className": {
-          "cases": [
-            "contract-checkbox-children"
-          ],
-          "evidence": [
-            "docs/data-entry/checkbox.tsx"
-          ]
+          "cases": ["contract-checkbox-children"],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
         },
         "defaultValue": {
-          "cases": [
-            [
-              "pdf"
-            ]
-          ],
-          "evidence": [
-            "docs/data-entry/checkbox.tsx"
-          ]
+          "cases": [["pdf"]],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
         },
         "disabled": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/checkbox.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
         },
         "name": {
-          "cases": [
-            "export"
-          ],
-          "evidence": [
-            "docs/data-entry/checkbox.tsx"
-          ]
+          "cases": ["export"],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
         },
         "onValueChange": {
-          "cases": [
-            "pointer",
-            "keyboard"
-          ],
+          "cases": ["pointer", "keyboard"],
           "evidence": [
             "docs/data-entry/checkbox.tsx",
             "src/components/data-entry/__tests__/checkbox-interaction.test.tsx"
           ]
         },
         "options": {
-          "cases": [
-            "enabled",
-            "disabled",
-            "described"
-          ],
-          "evidence": [
-            "docs/data-entry/checkbox.tsx"
-          ]
+          "cases": ["enabled", "disabled", "described"],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
         },
         "orientation": {
-          "cases": [
-            "vertical",
-            "horizontal"
-          ],
-          "evidence": [
-            "docs/data-entry/checkbox.tsx"
-          ]
+          "cases": ["vertical", "horizontal"],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
         },
         "value": {
-          "cases": [
-            [
-              "email",
-              "sms"
-            ]
-          ],
+          "cases": [["email", "sms"]],
           "evidence": [
             "docs/data-entry/checkbox.tsx",
             "src/components/data-entry/__tests__/checkbox-group.test.tsx"
@@ -831,25 +554,15 @@
     "CompactBarTrend": {
       "props": {
         "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/charts/compact-bar-trend.tsx"
-          ]
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/charts/compact-bar-trend.tsx"]
         }
       }
     },
     "ContextMenuItem": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "destructive"
-          ],
+          "cases": ["default", "destructive"],
           "evidence": [
             "docs/navigation/context-menu.tsx",
             "src/components/navigation/__tests__/context-menu.test.tsx"
@@ -860,67 +573,35 @@
     "CredentialReveal": {
       "props": {
         "tone": {
-          "cases": [
-            "warning",
-            "destructive",
-            "info"
-          ],
-          "evidence": [
-            "docs/data-display/credential-reveal.tsx"
-          ]
+          "cases": ["warning", "destructive", "info"],
+          "evidence": ["docs/data-display/credential-reveal.tsx"]
         },
         "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/data-display/credential-reveal.tsx"
-          ]
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/data-display/credential-reveal.tsx"]
         }
       }
     },
     "DataTable": {
       "props": {
         "density": {
-          "cases": [
-            "compact",
-            "default",
-            "comfortable"
-          ],
-          "evidence": [
-            "docs/data-display/data-table/index.tsx"
-          ]
+          "cases": ["compact", "default", "comfortable"],
+          "evidence": ["docs/data-display/data-table/index.tsx"]
         }
       }
     },
     "DialogHeader": {
       "props": {
         "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
-          "evidence": [
-            "docs/feedback/dialog.tsx"
-          ]
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "evidence": ["docs/feedback/dialog.tsx"]
         }
       }
     },
     "DropdownMenuItem": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "destructive"
-          ],
+          "cases": ["default", "destructive"],
           "evidence": [
             "docs/navigation/dropdown-menu.tsx",
             "src/components/navigation/__tests__/dropdown-menu.a11y.test.tsx"
@@ -931,62 +612,37 @@
     "EmptyState": {
       "props": {
         "variant": {
-          "cases": [
-            "section",
-            "compact",
-            "page"
-          ],
-          "evidence": [
-            "docs/data-display/empty-state.tsx"
-          ]
+          "cases": ["section", "compact", "page"],
+          "evidence": ["docs/data-display/empty-state.tsx"]
         },
         "tone": {
-          "cases": [
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted"
-          ],
-          "evidence": [
-            "docs/data-display/empty-state.tsx"
-          ]
+          "cases": ["success", "warning", "destructive", "info", "muted"],
+          "evidence": ["docs/data-display/empty-state.tsx"]
         }
       }
     },
     "ErrorSurface": {
       "props": {
         "tone": {
-          "cases": [
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted"
-          ],
-          "evidence": [
-            "docs/layout/error-surface/index.tsx"
-          ]
+          "cases": ["success", "warning", "destructive", "info", "muted"],
+          "evidence": ["docs/layout/error-surface/index.tsx"]
         }
       }
     },
     "Flex": {
       "props": {
         "as": {
-          "cases": ["div", "span"],
+          "cases": ["div", "span", "ul", "ol", "li"],
           "evidence": [
             "src/components/layout/__tests__/flex-phrasing-seam-354.test.tsx",
             "docs/showcase/table-view-tabs.tsx",
-            "docs/showcase/org-switcher.tsx"
+            "docs/showcase/org-switcher.tsx",
+            "src/components/layout/__tests__/consumer-layout-gaps.test.tsx"
           ]
         },
         "gap": {
-          "cases": ["none", "xs", "sm", "md", "lg", "xl"],
-          "evidence": [
-            "src/components/layout/__tests__/flex-phrasing-seam-354.test.tsx",
-            "docs/layout/flex.tsx",
-            "docs/showcase/table-sticky-columns.tsx"
-          ]
+          "cases": ["none", "xs", "sm", "md", "lg", "xl", 0, 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "evidence": ["src/components/layout/__tests__/flex-gap-scale-v20.test.tsx"]
         }
       }
     },
@@ -994,96 +650,43 @@
       "complete": true,
       "props": {
         "asChild": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/form.tsx"]
         },
         "className": {
-          "cases": [
-            "contract-collapse-form"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
+          "cases": ["contract-collapse-form"],
+          "evidence": ["docs/data-entry/form.tsx"]
         },
         "collapseBelow": {
-          "cases": [
-            false,
-            "sm",
-            "md",
-            "lg",
-            "xl"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
+          "cases": [false, "sm", "md", "lg", "xl"],
+          "evidence": ["docs/data-entry/form.tsx", "scripts/check-data-entry-frame-runtime.mjs"]
         },
         "columns": {
-          "cases": [
-            2
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
+          "cases": [2],
+          "evidence": ["docs/data-entry/form.tsx"]
         },
         "controlWidth": {
-          "cases": [
-            "18rem"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
+          "cases": ["18rem"],
+          "evidence": ["docs/data-entry/form.tsx"]
         },
         "density": {
-          "cases": [
-            "compact",
-            "default",
-            "comfortable"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
+          "cases": ["compact", "default", "comfortable"],
+          "evidence": ["docs/data-entry/form.tsx"]
         },
         "labelAlign": {
-          "cases": [
-            "start",
-            "end"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
+          "cases": ["start", "end"],
+          "evidence": ["docs/data-entry/form.tsx"]
         },
         "labelWidth": {
-          "cases": [
-            120,
-            "6rem",
-            "8rem"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx"
-          ]
+          "cases": [120, "6rem", "8rem"],
+          "evidence": ["docs/data-entry/form.tsx"]
         },
         "layout": {
-          "cases": [
-            "vertical",
-            "horizontal",
-            "inline"
-          ],
-          "evidence": [
-            "docs/data-entry/form.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
+          "cases": ["vertical", "horizontal", "inline"],
+          "evidence": ["docs/data-entry/form.tsx", "scripts/check-data-entry-frame-runtime.mjs"]
         },
         "errors": {
-          "cases": [
-            "bag",
-            "omitted"
-          ],
+          "cases": ["bag", "omitted"],
           "evidence": [
             "docs/data-entry/form.tsx",
             "src/components/data-entry/__tests__/form-errors.test.tsx"
@@ -1095,28 +698,18 @@
       "complete": true,
       "props": {
         "className": {
-          "cases": [
-            "default"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/form-errors.test.tsx"
-          ]
+          "cases": ["default"],
+          "evidence": ["src/components/data-entry/__tests__/form-errors.test.tsx"]
         },
         "errors": {
-          "cases": [
-            "from-form",
-            "explicit"
-          ],
+          "cases": ["from-form", "explicit"],
           "evidence": [
             "docs/data-entry/form.tsx",
             "src/components/data-entry/__tests__/form-errors.test.tsx"
           ]
         },
         "title": {
-          "cases": [
-            "custom",
-            "localized-default"
-          ],
+          "cases": ["custom", "localized-default"],
           "evidence": [
             "src/components/data-entry/__tests__/form-errors.test.tsx",
             "src/components/data-entry/__tests__/form-errors.a11y.test.tsx"
@@ -1128,19 +721,14 @@
       "complete": true,
       "props": {
         "children": {
-          "cases": [
-            "sibling-forms"
-          ],
+          "cases": ["sibling-forms"],
           "evidence": [
             "docs/data-entry/form.tsx",
             "src/components/data-entry/__tests__/form-errors.test.tsx"
           ]
         },
         "errors": {
-          "cases": [
-            "shared-bag",
-            "shadowed-by-inner-form"
-          ],
+          "cases": ["shared-bag", "shadowed-by-inner-form"],
           "evidence": [
             "docs/data-entry/form.tsx",
             "src/components/data-entry/__tests__/form-errors.test.tsx"
@@ -1152,140 +740,81 @@
       "complete": true,
       "props": {
         "children": {
-          "cases": [
-            "Input",
-            "Select"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
+          "cases": ["Input", "Select"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
         },
         "className": {
-          "cases": [
-            "contract-auto-id"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
+          "cases": ["contract-auto-id"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
         },
         "colSpan": {
-          "cases": [
-            2
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
+          "cases": [2],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
         },
         "controlWidth": {
-          "cases": [
-            "16rem",
-            "20rem"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
+          "cases": ["16rem", "20rem"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
         },
         "error": {
-          "cases": [
-            "client",
-            "server"
-          ],
+          "cases": ["client", "server"],
           "evidence": [
             "docs/data-entry/form-field/index.tsx",
             "src/components/data-entry/__tests__/form-field.a11y.test.tsx"
           ]
         },
         "helper": {
-          "cases": [
-            "present",
-            "absent"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
+          "cases": ["present", "absent"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
         },
         "id": {
-          "cases": [
-            "explicit",
-            "generated"
-          ],
+          "cases": ["explicit", "generated"],
           "evidence": [
             "docs/data-entry/form-field/index.tsx",
             "src/components/data-entry/__tests__/form-field.test.tsx"
           ]
         },
         "label": {
-          "cases": [
-            "text",
-            "long-locale"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
+          "cases": ["text", "long-locale"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
         },
         "labelAddon": {
-          "cases": [
-            "button"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
+          "cases": ["button"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
         },
         "labelWidth": {
-          "cases": [
-            "8rem",
-            "12rem"
-          ],
-          "evidence": [
-            "docs/data-entry/form-field/index.tsx"
-          ]
+          "cases": ["8rem", "12rem"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
         },
         "layout": {
-          "cases": [
-            "vertical",
-            "horizontal",
-            "inline"
-          ],
+          "cases": ["vertical", "horizontal", "inline"],
           "evidence": [
             "docs/data-entry/form-field/index.tsx",
             "scripts/check-data-entry-frame-runtime.mjs"
           ]
         },
         "required": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/data-entry/form-field/index.tsx",
             "src/components/data-entry/__tests__/form-field.a11y.test.tsx"
           ]
         },
         "staticText": {
-          "cases": [
-            "text",
-            "node"
-          ],
+          "cases": ["text", "node"],
           "evidence": [
             "docs/data-entry/form-field/index.tsx",
             "src/components/data-entry/__tests__/form-field.test.tsx"
           ]
         },
         "name": {
-          "cases": [
-            "claimed",
-            "unbound"
-          ],
+          "cases": ["claimed", "unbound"],
           "evidence": [
             "docs/data-entry/form.tsx",
             "src/components/data-entry/__tests__/form-errors.test.tsx"
           ]
         },
         "field": {
-          "cases": [
-            "derived-from-id",
-            "explicit"
-          ],
+          "cases": ["derived-from-id", "explicit"],
           "evidence": [
             "docs/data-entry/form-field/index.tsx",
             "src/components/data-entry/__tests__/form-field-identity-337.test.tsx"
@@ -1296,18 +825,8 @@
     "Heading": {
       "props": {
         "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "primary"
-          ],
-          "evidence": [
-            "docs/general/typography.tsx"
-          ]
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "primary"],
+          "evidence": ["docs/general/typography.tsx"]
         }
       }
     },
@@ -1315,95 +834,55 @@
       "complete": true,
       "props": {
         "allowClear": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/input-clear.test.tsx"
           ]
         },
         "defaultValue": {
-          "cases": [
-            "filled"
-          ],
-          "evidence": [
-            "docs/data-entry/input.tsx"
-          ]
+          "cases": ["filled"],
+          "evidence": ["docs/data-entry/input.tsx"]
         },
         "disabled": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/input.a11y.test.tsx"
           ]
         },
         "leadingIcon": {
-          "cases": [
-            "currency"
-          ],
-          "evidence": [
-            "docs/data-entry/input.tsx"
-          ]
+          "cases": ["currency"],
+          "evidence": ["docs/data-entry/input.tsx"]
         },
         "onClear": {
-          "cases": [
-            "callback"
-          ],
+          "cases": ["callback"],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/input-clear.test.tsx"
           ]
         },
         "trailingIcon": {
-          "cases": [
-            "reference"
-          ],
-          "evidence": [
-            "docs/data-entry/input.tsx"
-          ]
+          "cases": ["reference"],
+          "evidence": ["docs/data-entry/input.tsx"]
         },
         "type": {
-          "cases": [
-            "text",
-            "password",
-            "number",
-            "date",
-            "file",
-            "email"
-          ],
-          "evidence": [
-            "docs/data-entry/input.tsx"
-          ]
+          "cases": ["text", "password", "number", "date", "file", "email"],
+          "evidence": ["docs/data-entry/input.tsx"]
         },
         "value": {
-          "cases": [
-            "controlled"
-          ],
+          "cases": ["controlled"],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/input-interactions.test.tsx"
           ]
         },
         "name": {
-          "cases": [
-            "explicit",
-            "resolved-from-id"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/form-field-identity-337.test.tsx"
-          ]
+          "cases": ["explicit", "resolved-from-id"],
+          "evidence": ["src/components/data-entry/__tests__/form-field-identity-337.test.tsx"]
         },
         "size": {
-          "cases": [
-            "sm",
-            "md",
-            "lg"
-          ],
+          "cases": ["sm", "md", "lg"],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/input-size.test.tsx",
@@ -1411,10 +890,7 @@
           ]
         },
         "status": {
-          "cases": [
-            "warning",
-            "error"
-          ],
+          "cases": ["warning", "error"],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
@@ -1422,11 +898,7 @@
           ]
         },
         "variant": {
-          "cases": [
-            "outlined",
-            "filled",
-            "borderless"
-          ],
+          "cases": ["outlined", "filled", "borderless"],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
@@ -1434,9 +906,7 @@
           ]
         },
         "prefix": {
-          "cases": [
-            "currency"
-          ],
+          "cases": ["currency"],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
@@ -1444,9 +914,7 @@
           ]
         },
         "suffix": {
-          "cases": [
-            "unit"
-          ],
+          "cases": ["unit"],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
@@ -1454,9 +922,7 @@
           ]
         },
         "addonBefore": {
-          "cases": [
-            "protocol"
-          ],
+          "cases": ["protocol"],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
@@ -1464,9 +930,7 @@
           ]
         },
         "addonAfter": {
-          "cases": [
-            "domain"
-          ],
+          "cases": ["domain"],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
@@ -1474,13 +938,7 @@
           ]
         },
         "count": {
-          "cases": [
-            "max",
-            "exceeded",
-            "formatter",
-            "strategy",
-            "show-false"
-          ],
+          "cases": ["max", "exceeded", "formatter", "strategy", "show-false"],
           "evidence": [
             "docs/data-entry/input.tsx",
             "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
@@ -1492,141 +950,77 @@
     "LineChart": {
       "props": {
         "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/charts/size-tiers.tsx"
-          ]
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/charts/size-tiers.tsx"]
         }
       }
     },
     "ListRow": {
       "props": {
         "density": {
-          "cases": [
-            "compact",
-            "default"
-          ],
-          "evidence": [
-            "docs/data-display/list-row.tsx"
-          ]
+          "cases": ["compact", "default"],
+          "evidence": ["docs/data-display/list-row.tsx"]
         }
       }
     },
     "Logo": {
       "props": {
         "tone": {
-          "cases": [
-            "primary",
-            "success"
-          ],
-          "evidence": [
-            "docs/general/logo.tsx"
-          ]
+          "cases": ["primary", "success"],
+          "evidence": ["docs/general/logo.tsx"]
         },
         "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/general/logo.tsx"
-          ]
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/general/logo.tsx"]
         }
       }
     },
     "MenubarItem": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "destructive"
-          ],
-          "evidence": [
-            "docs/navigation/menubar.tsx"
-          ]
+          "cases": ["default", "destructive"],
+          "evidence": ["docs/navigation/menubar.tsx"]
         }
       }
     },
     "NumberInput": {
       "props": {
         "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
+          "cases": ["xs", "sm", "md", "lg"],
           "evidence": [
             "docs/data-entry/number-input.tsx",
             "scripts/check-data-entry-frame-runtime.mjs"
           ]
         },
         "status": {
-          "cases": [
-            "warning",
-            "error"
-          ],
+          "cases": ["warning", "error"],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         },
         "variant": {
-          "cases": [
-            "outlined",
-            "filled",
-            "borderless"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"
-          ]
+          "cases": ["outlined", "filled", "borderless"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"]
         },
         "formatter": {
-          "cases": [
-            "currency-prefix"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"
-          ]
+          "cases": ["currency-prefix"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"]
         },
         "parser": {
-          "cases": [
-            "currency-prefix"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"
-          ]
+          "cases": ["currency-prefix"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"]
         },
         "keyboard": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"]
         },
         "changeOnWheel": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-number-input.test.tsx"]
         },
         "controls": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-number-input.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
@@ -1637,105 +1031,65 @@
     "PageContainer": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "narrow",
-            "flush",
-            "ghost"
-          ],
-          "evidence": [
-            "docs/layout/page-container.tsx"
-          ]
+          "cases": ["default", "narrow", "flush", "ghost"],
+          "evidence": ["docs/layout/page-container.tsx"]
         },
         "density": {
-          "cases": [
-            "compact",
-            "default",
-            "comfortable"
-          ],
-          "evidence": [
-            "docs/layout/page-container.tsx"
-          ]
+          "cases": ["compact", "default", "comfortable"],
+          "evidence": ["docs/layout/page-container.tsx"]
         }
       }
     },
     "Pagination": {
       "props": {
         "ariaLabel": {
-          "cases": [
-            "localized default",
-            "custom"
-          ],
+          "cases": ["localized default", "custom"],
           "evidence": [
             "docs/navigation/pagination.tsx",
             "src/components/navigation/__tests__/pagination-full.test.tsx"
           ]
         },
         "className": {
-          "cases": [
-            "custom class"
-          ],
-          "evidence": [
-            "src/components/navigation/__tests__/pagination-full.test.tsx"
-          ]
+          "cases": ["custom class"],
+          "evidence": ["src/components/navigation/__tests__/pagination-full.test.tsx"]
         },
         "disabled": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/navigation/pagination.tsx",
             "src/components/navigation/__tests__/pagination-full.test.tsx"
           ]
         },
         "onValueChange": {
-          "cases": [
-            "next",
-            "previous",
-            "page size"
-          ],
+          "cases": ["next", "previous", "page size"],
           "evidence": [
             "src/components/navigation/__tests__/pagination-full.test.tsx",
             "scripts/check-layout-nav-frames.mjs"
           ]
         },
         "pageSize": {
-          "cases": [
-            5,
-            10,
-            20
-          ],
+          "cases": [5, 10, 20],
           "evidence": [
             "docs/navigation/pagination.tsx",
             "src/components/navigation/__tests__/pagination-full.test.tsx"
           ]
         },
         "pageSizeOptions": {
-          "cases": [
-            "5,10,20,50"
-          ],
+          "cases": ["5,10,20,50"],
           "evidence": [
             "docs/navigation/pagination.tsx",
             "src/components/navigation/__tests__/pagination-full.test.tsx"
           ]
         },
         "showSizeChanger": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/navigation/pagination.tsx",
             "src/components/navigation/__tests__/pagination-full.test.tsx"
           ]
         },
         "showTotal": {
-          "cases": [
-            false,
-            true,
-            "render function"
-          ],
+          "cases": [false, true, "render function"],
           "evidence": [
             "docs/navigation/pagination.tsx",
             "src/components/navigation/__tests__/pagination-full.test.tsx",
@@ -1743,33 +1097,21 @@
           ]
         },
         "simple": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/navigation/pagination.tsx",
             "src/components/navigation/__tests__/pagination-full.test.tsx"
           ]
         },
         "total": {
-          "cases": [
-            0,
-            47,
-            50,
-            95
-          ],
+          "cases": [0, 47, 50, 95],
           "evidence": [
             "docs/navigation/pagination.tsx",
             "src/components/navigation/__tests__/pagination-full.test.tsx"
           ]
         },
         "value": {
-          "cases": [
-            1,
-            2,
-            3
-          ],
+          "cases": [1, 2, 3],
           "evidence": [
             "docs/navigation/pagination.tsx",
             "src/components/navigation/__tests__/pagination-full.test.tsx",
@@ -1782,109 +1124,61 @@
       "complete": true,
       "props": {
         "allowClear": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/password-input.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/password-input.tsx"]
         },
         "leadingIcon": {
-          "cases": [
-            "present"
-          ],
+          "cases": ["present"],
           "evidence": [
             "docs/data-entry/password-input.tsx",
             "src/components/data-entry/__tests__/password-input.test.tsx"
           ]
         },
         "onClear": {
-          "cases": [
-            "callback"
-          ],
-          "evidence": [
-            "docs/data-entry/password-input.tsx"
-          ]
+          "cases": ["callback"],
+          "evidence": ["docs/data-entry/password-input.tsx"]
         },
         "trailingIcon": {
-          "cases": [
-            "present"
-          ],
-          "evidence": [
-            "docs/data-entry/password-input.tsx"
-          ]
+          "cases": ["present"],
+          "evidence": ["docs/data-entry/password-input.tsx"]
         },
         "size": {
-          "cases": [
-            "sm",
-            "md",
-            "lg"
-          ],
+          "cases": ["sm", "md", "lg"],
           "evidence": [
             "src/components/data-entry/__tests__/input-size.test.tsx",
             "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"
           ]
         },
         "status": {
-          "cases": [
-            "warning",
-            "error"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"
-          ]
+          "cases": ["warning", "error"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"]
         },
         "variant": {
-          "cases": [
-            "outlined",
-            "filled",
-            "borderless"
-          ],
+          "cases": ["outlined", "filled", "borderless"],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
             "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"
           ]
         },
         "prefix": {
-          "cases": [
-            "inherited-from-input"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"
-          ]
+          "cases": ["inherited-from-input"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"]
         },
         "suffix": {
-          "cases": [
-            "inherited-from-input"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"
-          ]
+          "cases": ["inherited-from-input"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"]
         },
         "addonBefore": {
-          "cases": [
-            "inherited-from-input"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"
-          ]
+          "cases": ["inherited-from-input"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"]
         },
         "addonAfter": {
-          "cases": [
-            "inherited-from-input"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"
-          ]
+          "cases": ["inherited-from-input"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"]
         },
         "count": {
-          "cases": [
-            "inherited-from-input"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"
-          ]
+          "cases": ["inherited-from-input"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx"]
         }
       }
     },
@@ -1892,39 +1186,25 @@
       "complete": true,
       "props": {
         "labels": {
-          "cases": [
-            "custom"
-          ],
+          "cases": ["custom"],
           "evidence": [
             "docs/data-entry/password-strength.tsx",
             "src/components/data-entry/__tests__/password-strength.test.tsx"
           ]
         },
         "rules": {
-          "cases": [
-            "default",
-            "custom"
-          ],
+          "cases": ["default", "custom"],
           "evidence": [
             "docs/data-entry/password-strength.tsx",
             "src/components/data-entry/__tests__/password-strength.test.tsx"
           ]
         },
         "showChecklist": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/password-strength.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/password-strength.tsx"]
         },
         "value": {
-          "cases": [
-            "empty",
-            "weak",
-            "strong"
-          ],
+          "cases": ["empty", "weak", "strong"],
           "evidence": [
             "docs/data-entry/password-strength.tsx",
             "src/components/data-entry/__tests__/password-strength.test.tsx"
@@ -1935,29 +1215,16 @@
     "PieChart": {
       "props": {
         "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/charts/size-tiers.tsx"
-          ]
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/charts/size-tiers.tsx"]
         }
       }
     },
     "Progress": {
       "props": {
         "tone": {
-          "cases": [
-            "success",
-            "warning",
-            "destructive"
-          ],
-          "evidence": [
-            "docs/data-display/progress.tsx"
-          ]
+          "cases": ["success", "warning", "destructive"],
+          "evidence": ["docs/data-display/progress.tsx"]
         }
       }
     },
@@ -1965,150 +1232,89 @@
       "complete": true,
       "props": {
         "value": {
-          "cases": [
-            "otpauth URI",
-            "HTTPS URL"
-          ],
+          "cases": ["otpauth URI", "HTTPS URL"],
           "evidence": [
             "docs/data-display/qr-code.tsx",
             "src/components/data-display/__tests__/qr-code.test.tsx"
           ]
         },
         "label": {
-          "cases": [
-            "localized purpose-specific label"
-          ],
+          "cases": ["localized purpose-specific label"],
           "evidence": [
             "docs/data-display/qr-code.tsx",
             "src/components/data-display/__tests__/qr-code.a11y.test.tsx"
           ]
         },
         "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg"
-          ],
+          "cases": ["xs", "sm", "md", "lg"],
           "evidence": [
             "docs/data-display/qr-code.tsx",
             "src/components/data-display/__tests__/qr-code.test.tsx"
           ]
         },
         "className": {
-          "cases": [
-            "consumer-class"
-          ],
-          "evidence": [
-            "src/components/data-display/__tests__/qr-code.test.tsx"
-          ]
+          "cases": ["consumer-class"],
+          "evidence": ["src/components/data-display/__tests__/qr-code.test.tsx"]
         },
         "id": {
-          "cases": [
-            "enrollment-code"
-          ],
-          "evidence": [
-            "src/components/data-display/__tests__/qr-code.test.tsx"
-          ]
+          "cases": ["enrollment-code"],
+          "evidence": ["src/components/data-display/__tests__/qr-code.test.tsx"]
         }
       }
     },
     "RadioGroup": {
       "props": {
         "children": {
-          "cases": [
-            "RadioItem"
-          ],
-          "evidence": [
-            "docs/data-entry/radio-group.tsx"
-          ]
+          "cases": ["RadioItem"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
         },
         "className": {
-          "cases": [
-            "contract-radio-group"
-          ],
-          "evidence": [
-            "docs/data-entry/radio-group.tsx"
-          ]
+          "cases": ["contract-radio-group"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
         },
         "defaultValue": {
-          "cases": [
-            "taxed",
-            "locked"
-          ],
-          "evidence": [
-            "docs/data-entry/radio-group.tsx"
-          ]
+          "cases": ["taxed", "locked"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
         },
         "disabled": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/radio-group.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
         },
         "name": {
-          "cases": [
-            "notification_channel"
-          ],
-          "evidence": [
-            "docs/data-entry/radio-group.tsx"
-          ]
+          "cases": ["notification_channel"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
         },
         "onValueChange": {
-          "cases": [
-            "pointer",
-            "keyboard"
-          ],
+          "cases": ["pointer", "keyboard"],
           "evidence": [
             "docs/data-entry/radio-group.tsx",
             "src/components/data-entry/__tests__/radio.test.tsx"
           ]
         },
         "options": {
-          "cases": [
-            "enabled",
-            "disabled"
-          ],
-          "evidence": [
-            "docs/data-entry/radio-group.tsx"
-          ]
+          "cases": ["enabled", "disabled"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
         },
         "orientation": {
-          "cases": [
-            "vertical",
-            "horizontal"
-          ],
-          "evidence": [
-            "docs/data-entry/radio-group.tsx"
-          ]
+          "cases": ["vertical", "horizontal"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
         },
         "value": {
-          "cases": [
-            "email"
-          ],
+          "cases": ["email"],
           "evidence": [
             "docs/data-entry/radio-group.tsx",
             "src/components/data-entry/__tests__/radio.test.tsx"
           ]
         },
         "optionType": {
-          "cases": [
-            "default",
-            "button"
-          ],
+          "cases": ["default", "button"],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         },
         "buttonStyle": {
-          "cases": [
-            "outline",
-            "solid"
-          ],
+          "cases": ["outline", "solid"],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
@@ -2119,11 +1325,8 @@
     "ResponsiveGrid": {
       "props": {
         "gap": {
-          "cases": ["none", "xs", "sm", "md", "lg", "xl"],
-          "evidence": [
-            "src/components/layout/__tests__/responsive-grid.test.tsx",
-            "docs/showcase/case6-agency-handy.tsx"
-          ]
+          "cases": ["none", "xs", "sm", "md", "lg", "xl", 0, 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "evidence": ["src/components/layout/__tests__/flex-gap-scale-v20.test.tsx"]
         }
       }
     },
@@ -2131,188 +1334,103 @@
       "complete": true,
       "props": {
         "ariaLabel": {
-          "cases": [
-            "勘定科目コード検索"
-          ],
-          "evidence": [
-            "docs/data-entry/search-input.tsx"
-          ]
+          "cases": ["勘定科目コード検索"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "className": {
-          "cases": [
-            "contract-search-wrapper"
-          ],
-          "evidence": [
-            "docs/data-entry/search-input.tsx"
-          ]
+          "cases": ["contract-search-wrapper"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "debounce": {
-          "cases": [
-            250,
-            300
-          ],
+          "cases": [250, 300],
           "evidence": [
             "docs/data-entry/search-input.tsx",
             "src/components/data-entry/__tests__/search-input.test.tsx"
           ]
         },
         "defaultValue": {
-          "cases": [
-            "",
-            "2026年5月"
-          ],
-          "evidence": [
-            "docs/data-entry/search-input.tsx"
-          ]
+          "cases": ["", "2026年5月"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "disabled": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/data-entry/search-input.tsx",
             "src/components/data-entry/__tests__/search-input.test.tsx"
           ]
         },
         "id": {
-          "cases": [
-            "account-code-search"
-          ],
-          "evidence": [
-            "docs/data-entry/search-input.tsx"
-          ]
+          "cases": ["account-code-search"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "inputClassName": {
-          "cases": [
-            "contract-search-field"
-          ],
-          "evidence": [
-            "docs/data-entry/search-input.tsx"
-          ]
+          "cases": ["contract-search-field"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "label": {
-          "cases": [
-            "visible",
-            "screen-reader fallback"
-          ],
-          "evidence": [
-            "docs/data-entry/search-input.tsx"
-          ]
+          "cases": ["visible", "screen-reader fallback"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "onSearch": {
-          "cases": [
-            "debounced callback"
-          ],
+          "cases": ["debounced callback"],
           "evidence": [
             "docs/data-entry/search-input.tsx",
             "src/components/data-entry/__tests__/search-input.test.tsx"
           ]
         },
         "onValueChange": {
-          "cases": [
-            "immediate callback"
-          ],
-          "evidence": [
-            "docs/data-entry/search-input.tsx"
-          ]
+          "cases": ["immediate callback"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "placeholder": {
-          "cases": [
-            "custom"
-          ],
-          "evidence": [
-            "docs/data-entry/search-input.tsx"
-          ]
+          "cases": ["custom"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "value": {
-          "cases": [
-            "controlled"
-          ],
-          "evidence": [
-            "docs/data-entry/search-input.tsx"
-          ]
+          "cases": ["controlled"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "status": {
-          "cases": [
-            "warning",
-            "error"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"
-          ]
+          "cases": ["warning", "error"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"]
         },
         "variant": {
-          "cases": [
-            "outlined",
-            "filled",
-            "borderless"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"
-          ]
+          "cases": ["outlined", "filled", "borderless"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"]
         }
       }
     },
     "Select": {
       "props": {
         "defaultValue": {
-          "cases": [
-            "suzuki"
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx"
-          ]
+          "cases": ["suzuki"],
+          "evidence": ["docs/data-entry/select.tsx"]
         },
         "disabled": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/select.tsx", "scripts/check-data-entry-frame-runtime.mjs"]
         },
         "name": {
-          "cases": [
-            "select_default_open"
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx"
-          ]
+          "cases": ["select_default_open"],
+          "evidence": ["docs/data-entry/select.tsx"]
         },
         "onOpenChange": {
-          "cases": [
-            "controlled callback"
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx"
-          ]
+          "cases": ["controlled callback"],
+          "evidence": ["docs/data-entry/select.tsx"]
         },
         "onValueChange": {
-          "cases": [
-            "controlled callback"
-          ],
+          "cases": ["controlled callback"],
           "evidence": [
             "docs/data-entry/select.tsx",
             "src/components/data-entry/__tests__/select-interaction.test.tsx"
           ]
         },
         "open": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "docs/data-entry/select.tsx",
-            "scripts/check-data-entry-frame-runtime.mjs"
-          ]
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/select.tsx", "scripts/check-data-entry-frame-runtime.mjs"]
         },
         "value": {
-          "cases": [
-            "tanaka"
-          ],
+          "cases": ["tanaka"],
           "evidence": [
             "docs/data-entry/select.tsx",
             "src/components/data-entry/__tests__/select-controlled-empty.test.tsx"
@@ -2334,18 +1452,8 @@
     "SheetHeader": {
       "props": {
         "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "neutral"
-          ],
-          "evidence": [
-            "docs/feedback/sheet.tsx"
-          ]
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "evidence": ["docs/feedback/sheet.tsx"]
         }
       }
     },
@@ -2355,15 +1463,8 @@
     "StatusBadge": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "secondary",
-            "outline",
-            "dashed"
-          ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
+          "cases": ["default", "secondary", "outline", "dashed"],
+          "evidence": ["docs/data-display/badge.tsx"]
         },
         "tone": {
           "cases": [
@@ -2376,29 +1477,18 @@
             "neutral",
             "primary"
           ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
+          "evidence": ["docs/data-display/badge.tsx"]
         },
         "shape": {
-          "cases": [
-            "default",
-            "pill",
-            "sharp"
-          ],
-          "evidence": [
-            "docs/data-display/badge.tsx"
-          ]
+          "cases": ["default", "pill", "sharp"],
+          "evidence": ["docs/data-display/badge.tsx"]
         }
       }
     },
     "Steps": {
       "props": {
         "size": {
-          "cases": [
-            "sm",
-            "md"
-          ],
+          "cases": ["sm", "md"],
           "evidence": [
             "docs/navigation/steps.tsx",
             "src/components/navigation/__tests__/steps-compact.test.tsx"
@@ -2409,10 +1499,7 @@
     "Switch": {
       "props": {
         "size": {
-          "cases": [
-            "sm",
-            "md"
-          ],
+          "cases": ["sm", "md"],
           "evidence": [
             "docs/data-entry/switch.tsx",
             "src/components/data-entry/__tests__/switch-interaction.test.tsx",
@@ -2420,10 +1507,7 @@
           ]
         },
         "loading": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/data-entry/switch.tsx",
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
@@ -2431,9 +1515,7 @@
           ]
         },
         "checkedChildren": {
-          "cases": [
-            "label"
-          ],
+          "cases": ["label"],
           "evidence": [
             "docs/data-entry/switch.tsx",
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
@@ -2441,9 +1523,7 @@
           ]
         },
         "unCheckedChildren": {
-          "cases": [
-            "label"
-          ],
+          "cases": ["label"],
           "evidence": [
             "docs/data-entry/switch.tsx",
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
@@ -2455,37 +1535,22 @@
     "Tabs": {
       "props": {
         "activationMode": {
-          "cases": [
-            "manual",
-            "automatic"
-          ],
+          "cases": ["manual", "automatic"],
           "evidence": [
             "src/components/navigation/__tests__/tabs-variants.test.tsx",
             "scripts/check-layout-nav-frames.mjs"
           ]
         },
         "contentClassName": {
-          "cases": [
-            "custom class"
-          ],
-          "evidence": [
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
-          ]
+          "cases": ["custom class"],
+          "evidence": ["src/components/navigation/__tests__/tabs-variants.test.tsx"]
         },
         "defaultValue": {
-          "cases": [
-            "explicit",
-            "first enabled fallback"
-          ],
-          "evidence": [
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
-          ]
+          "cases": ["explicit", "first enabled fallback"],
+          "evidence": ["src/components/navigation/__tests__/tabs-variants.test.tsx"]
         },
         "dir": {
-          "cases": [
-            "ltr",
-            "rtl"
-          ],
+          "cases": ["ltr", "rtl"],
           "evidence": [
             "docs/navigation/tabs-rtl.tsx",
             "src/components/navigation/__tests__/tabs-variants.test.tsx",
@@ -2493,46 +1558,29 @@
           ]
         },
         "items": {
-          "cases": [
-            "items API",
-            "compound children"
-          ],
+          "cases": ["items API", "compound children"],
           "evidence": [
             "docs/navigation/tabs.tsx",
             "src/components/navigation/__tests__/tabs-variants.test.tsx"
           ]
         },
         "listClassName": {
-          "cases": [
-            "custom class"
-          ],
-          "evidence": [
-            "src/components/navigation/__tests__/tabs-variants.test.tsx"
-          ]
+          "cases": ["custom class"],
+          "evidence": ["src/components/navigation/__tests__/tabs-variants.test.tsx"]
         },
         "onValueChange": {
-          "cases": [
-            "controlled callback"
-          ],
-          "evidence": [
-            "docs/navigation/tabs.tsx",
-            "scripts/check-layout-nav-frames.mjs"
-          ]
+          "cases": ["controlled callback"],
+          "evidence": ["docs/navigation/tabs.tsx", "scripts/check-layout-nav-frames.mjs"]
         },
         "orientation": {
-          "cases": [
-            "vertical",
-            "horizontal"
-          ],
+          "cases": ["vertical", "horizontal"],
           "evidence": [
             "docs/navigation/tabs.tsx",
             "src/components/navigation/__tests__/tabs-variants.test.tsx"
           ]
         },
         "value": {
-          "cases": [
-            "controlled"
-          ],
+          "cases": ["controlled"],
           "evidence": [
             "docs/navigation/tabs.tsx",
             "src/components/navigation/__tests__/tabs-variants.test.tsx"
@@ -2579,10 +1627,7 @@
     "TabsList": {
       "props": {
         "variant": {
-          "cases": [
-            "line",
-            "default"
-          ],
+          "cases": ["line", "default"],
           "evidence": [
             "docs/navigation/tabs.tsx",
             "src/components/navigation/__tests__/tabs-line-active-ring-248.test.tsx"
@@ -2594,49 +1639,30 @@
       "complete": true,
       "props": {
         "aria-label": {
-          "cases": [
-            "CC送信先メール"
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx"
-          ]
+          "cases": ["CC送信先メール"],
+          "evidence": ["docs/data-entry/tag-input.tsx"]
         },
         "className": {
-          "cases": [
-            "contract-tag-input"
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx"
-          ]
+          "cases": ["contract-tag-input"],
+          "evidence": ["docs/data-entry/tag-input.tsx"]
         },
         "defaultValue": {
-          "cases": [
-            [
-              "approver@example.jp"
-            ]
-          ],
+          "cases": [["approver@example.jp"]],
           "evidence": [
             "docs/data-entry/tag-input.tsx",
             "src/components/data-entry/__tests__/tag-input.test.tsx"
           ]
         },
         "disabled": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "docs/data-entry/tag-input.tsx",
             "src/components/data-entry/__tests__/tag-input.test.tsx"
           ]
         },
         "id": {
-          "cases": [
-            "recipient-emails"
-          ],
-          "evidence": [
-            "docs/data-entry/tag-input.tsx"
-          ]
+          "cases": ["recipient-emails"],
+          "evidence": ["docs/data-entry/tag-input.tsx"]
         },
         "maxCount": {
           "cases": [2],
@@ -2651,31 +1677,18 @@
           "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
         },
         "name": {
-          "cases": [
-            "cc_emails",
-            "locked_tags"
-          ],
+          "cases": ["cc_emails", "locked_tags"],
           "evidence": [
             "docs/data-entry/tag-input.tsx",
             "src/components/data-entry/__tests__/tag-input.test.tsx"
           ]
         },
         "onValueChange": {
-          "cases": [
-            "add",
-            "remove",
-            "backspace",
-            "blur"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/tag-input.test.tsx"
-          ]
+          "cases": ["add", "remove", "backspace", "blur"],
+          "evidence": ["src/components/data-entry/__tests__/tag-input.test.tsx"]
         },
         "placeholder": {
-          "cases": [
-            "empty visible",
-            "populated hidden"
-          ],
+          "cases": ["empty visible", "populated hidden"],
           "evidence": [
             "docs/data-entry/tag-input.tsx",
             "src/components/data-entry/__tests__/tag-input-extra.test.tsx"
@@ -2698,12 +1711,7 @@
           "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
         },
         "value": {
-          "cases": [
-            [
-              "営業部",
-              "Q1"
-            ]
-          ],
+          "cases": [["営業部", "Q1"]],
           "evidence": [
             "docs/data-entry/tag-input.tsx",
             "src/components/data-entry/__tests__/tag-input-extra.test.tsx"
@@ -2718,45 +1726,19 @@
     "Text": {
       "props": {
         "tone": {
-          "cases": [
-            "default",
-            "success",
-            "warning",
-            "destructive",
-            "info",
-            "muted",
-            "primary"
-          ],
-          "evidence": [
-            "docs/general/typography.tsx"
-          ]
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "primary"],
+          "evidence": ["docs/general/typography.tsx"]
         },
         "size": {
-          "cases": [
-            "xs",
-            "sm",
-            "md",
-            "lg",
-            "xl",
-            "2xs",
-            "2xl"
-          ],
-          "evidence": [
-            "docs/general/typography.tsx"
-          ]
+          "cases": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl"],
+          "evidence": ["docs/general/typography.tsx"]
         }
       }
     },
     "Textarea": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "ghost",
-            "outlined",
-            "filled",
-            "borderless"
-          ],
+          "cases": ["default", "ghost", "outlined", "filled", "borderless"],
           "evidence": [
             "docs/data-entry/textarea.tsx",
             "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
@@ -2764,10 +1746,7 @@
           ]
         },
         "status": {
-          "cases": [
-            "warning",
-            "error"
-          ],
+          "cases": ["warning", "error"],
           "evidence": [
             "docs/data-entry/textarea.tsx",
             "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx",
@@ -2775,20 +1754,14 @@
           ]
         },
         "size": {
-          "cases": [
-            "sm",
-            "md",
-            "lg"
-          ],
+          "cases": ["sm", "md", "lg"],
           "evidence": [
             "docs/data-entry/textarea.tsx",
             "src/components/data-entry/__tests__/antd-parity-status-variant.test.tsx"
           ]
         },
         "count": {
-          "cases": [
-            "max"
-          ],
+          "cases": ["max"],
           "evidence": [
             "docs/data-entry/textarea.tsx",
             "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
@@ -2796,11 +1769,7 @@
           ]
         },
         "autoSize": {
-          "cases": [
-            true,
-            false,
-            "row-bounds"
-          ],
+          "cases": [true, false, "row-bounds"],
           "evidence": [
             "docs/data-entry/textarea.tsx",
             "src/components/data-entry/__tests__/antd-parity-input-affix.test.tsx",
@@ -2812,175 +1781,59 @@
     "Timeline": {
       "props": {
         "variant": {
-          "cases": [
-            "icon",
-            "status",
-            "ordinal"
-          ],
-          "evidence": [
-            "docs/data-display/timeline.tsx"
-          ]
+          "cases": ["icon", "status", "ordinal"],
+          "evidence": ["docs/data-display/timeline.tsx"]
         }
       }
     },
     "Toggle": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "outline"
-          ],
-          "evidence": [
-            "docs/data-entry/toggle.tsx"
-          ]
+          "cases": ["default", "outline"],
+          "evidence": ["docs/data-entry/toggle.tsx"]
         },
         "size": {
-          "cases": [
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/data-entry/toggle.tsx"
-          ]
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["docs/data-entry/toggle.tsx"]
         }
       }
     },
     "ToggleGroup": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "outline"
-          ],
-          "evidence": [
-            "docs/data-entry/toggle-group.tsx"
-          ]
+          "cases": ["default", "outline"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
         },
         "size": {
-          "cases": [
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/data-entry/toggle-group.tsx"
-          ]
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
         }
       }
     },
     "ToggleGroupItem": {
       "props": {
         "variant": {
-          "cases": [
-            "default",
-            "outline"
-          ],
-          "evidence": [
-            "docs/data-entry/toggle-group.tsx"
-          ]
+          "cases": ["default", "outline"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
         },
         "size": {
-          "cases": [
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "docs/data-entry/toggle-group.tsx"
-          ]
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
         }
       }
     },
     "Upload": {
       "props": {
         "variant": {
-          "cases": [
-            "button",
-            "picture",
-            "dropzone",
-            "picture-card",
-            "avatar",
-            "avatar-crop"
-          ],
-          "evidence": [
-            "docs/data-entry/upload.tsx"
-          ]
-        }
-      }
-    },
-    "Flex": {
-      "props": {
-        "as": {
-          "cases": [
-            "div",
-            "span"
-          ],
-          "evidence": [
-            "src/components/layout/__tests__/flex-phrasing-seam-354.test.tsx",
-            "docs/showcase/table-view-tabs.tsx",
-            "docs/showcase/org-switcher.tsx"
-          ]
-        },
-        "gap": {
-          "cases": [
-            "none",
-            "xs",
-            "sm",
-            "md",
-            "lg",
-            "xl",
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            8,
-            10,
-            12
-          ],
-          "evidence": [
-            "src/components/layout/__tests__/flex-gap-scale-v20.test.tsx"
-          ]
-        }
-      }
-    },
-    "ResponsiveGrid": {
-      "props": {
-        "gap": {
-          "cases": [
-            "none",
-            "xs",
-            "sm",
-            "md",
-            "lg",
-            "xl",
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            8,
-            10,
-            12
-          ],
-          "evidence": [
-            "src/components/layout/__tests__/flex-gap-scale-v20.test.tsx"
-          ]
+          "cases": ["button", "picture", "dropzone", "picture-card", "avatar", "avatar-crop"],
+          "evidence": ["docs/data-entry/upload.tsx"]
         }
       }
     },
     "TimelineGrid": {
       "props": {
         "label": {
-          "cases": [
-            "週シフト 2026年5月11日〜15日",
-            "会議室の予約 5月14日"
-          ],
+          "cases": ["週シフト 2026年5月11日〜15日", "会議室の予約 5月14日"],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
             "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
@@ -2988,11 +1841,7 @@
           ]
         },
         "columns": {
-          "cases": [
-            "day columns",
-            "room columns",
-            "a column marked current"
-          ],
+          "cases": ["day columns", "room columns", "a column marked current"],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
             "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
@@ -3014,10 +1863,7 @@
           ]
         },
         "start": {
-          "cases": [
-            "06:00",
-            "derived from the events"
-          ],
+          "cases": ["06:00", "derived from the events"],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
             "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
@@ -3025,11 +1871,7 @@
           ]
         },
         "end": {
-          "cases": [
-            "22:00",
-            "24:00",
-            "derived from the events"
-          ],
+          "cases": ["22:00", "24:00", "derived from the events"],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
             "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
@@ -3037,10 +1879,7 @@
           ]
         },
         "interval": {
-          "cases": [
-            "1",
-            "2"
-          ],
+          "cases": ["1", "2"],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
             "src/components/data-display/__tests__/timeline-grid-354.a11y.test.tsx",
@@ -3048,10 +1887,7 @@
           ]
         },
         "now": {
-          "cases": [
-            "14:35",
-            "omitted"
-          ],
+          "cases": ["14:35", "omitted"],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
             "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
@@ -3059,10 +1895,7 @@
           ]
         },
         "onEventSelect": {
-          "cases": [
-            "provided (blocks are buttons)",
-            "omitted (read-only board)"
-          ],
+          "cases": ["provided (blocks are buttons)", "omitted (read-only board)"],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
             "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
@@ -3070,20 +1903,12 @@
           ]
         },
         "className": {
-          "cases": [
-            "omitted"
-          ],
-          "evidence": [
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx"
-          ]
+          "cases": ["omitted"],
+          "evidence": ["src/components/data-display/__tests__/timeline-grid-354.test.tsx"]
         },
         "id": {
-          "cases": [
-            "omitted"
-          ],
-          "evidence": [
-            "src/components/data-display/__tests__/timeline-grid-354.test.tsx"
-          ]
+          "cases": ["omitted"],
+          "evidence": ["src/components/data-display/__tests__/timeline-grid-354.test.tsx"]
         }
       }
     },
@@ -3093,80 +1918,51 @@
     "Segmented": {
       "props": {
         "block": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         },
         "vertical": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         },
         "size": {
-          "cases": [
-            "sm",
-            "md",
-            "lg"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx"
-          ]
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
         }
       }
     },
     "Rating": {
       "props": {
         "count": {
-          "cases": [
-            "3",
-            "5"
-          ],
+          "cases": ["3", "5"],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         },
         "allowHalf": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         },
         "allowClear": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
         },
         "character": {
-          "cases": [
-            "per-index"
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx"
-          ]
+          "cases": ["per-index"],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
         },
         "tooltips": {
-          "cases": [
-            "per-step"
-          ],
+          "cases": ["per-step"],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
@@ -3177,97 +1973,40 @@
     "Slider": {
       "props": {
         "range": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         },
         "marks": {
-          "cases": [
-            "labelled"
-          ],
+          "cases": ["labelled"],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         },
         "dots": {
-          "cases": [
-            false,
-            true
-          ],
+          "cases": [false, true],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
         },
         "included": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
         },
         "reverse": {
-          "cases": [
-            false,
-            true
-          ],
-          "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx"
-          ]
+          "cases": [false, true],
+          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
         },
         "tooltip": {
-          "cases": [
-            false,
-            "formatter"
-          ],
+          "cases": [false, "formatter"],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
             "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
           ]
-        }
-      }
-    },
-    "Toggle": {
-      "props": {
-        "variant": {
-          "cases": ["default", "outline"],
-          "evidence": ["docs/data-entry/toggle.tsx"]
-        },
-        "size": {
-          "cases": ["sm", "md", "lg"],
-          "evidence": ["docs/data-entry/toggle.tsx"]
-        }
-      }
-    },
-    "ToggleGroup": {
-      "props": {
-        "variant": {
-          "cases": ["default", "outline"],
-          "evidence": ["docs/data-entry/toggle-group.tsx"]
-        },
-        "size": {
-          "cases": ["sm", "md", "lg"],
-          "evidence": ["docs/data-entry/toggle-group.tsx"]
-        }
-      }
-    },
-    "ToggleGroupItem": {
-      "props": {
-        "variant": {
-          "cases": ["default", "outline"],
-          "evidence": ["docs/data-entry/toggle-group.tsx"]
-        },
-        "size": {
-          "cases": ["sm", "md", "lg"],
-          "evidence": ["docs/data-entry/toggle-group.tsx"]
         }
       }
     },
@@ -3284,14 +2023,6 @@
         "variant": {
           "cases": ["outlined", "filled", "borderless", "underlined"],
           "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
-        }
-      }
-    },
-    "Upload": {
-      "props": {
-        "variant": {
-          "cases": ["button", "picture", "dropzone", "picture-card", "avatar", "avatar-crop"],
-          "evidence": ["docs/data-entry/upload.tsx"]
         }
       }
     }

@@ -1,88 +1,73 @@
 import { describe, expect, it } from "vitest";
-import { renderWithUi, screen } from "@/test/render";
-
+import { renderWithUi, screen, userEvent } from "@/test/render";
 import { DatePicker } from "../date-picker";
 import { DateRangePicker } from "../date-range-picker";
-import { Input } from "../input";
 import { MonthPicker } from "../month-picker";
 import { MonthRangePicker } from "../month-range-picker";
 import { TimePicker } from "../time-picker";
 
-/**
- * a picker must keep its trigger icon while it holds a value.
- *
- * `Input`'s `allowClear` REPLACES the configured `trailingIcon` with the ✕ (one trailing icon,
- * never two). Correct for a plain text field; wrong for a picker, where the calendar/clock icon
- * is the ONLY visual sign that the field opens a picker at all — a consumer measured a filled
- * DatePicker rendering just ["BUTTON:クリア", "svg:lucide-x"], so a user looking at a filled date
- * field could not tell it had a calendar (clicking the field still opened it — the affordance was
- * invisible, not gone). Pickers therefore render their own trailing cluster; `Input` is untouched.
- */
+const date = new Date(2026, 5, 15);
+const cases = [
+  {
+    name: "DatePicker",
+    render: (filled: boolean, allowClear = true) => (
+      <DatePicker defaultValue={filled ? date : undefined} allowClear={allowClear} />
+    ),
+    icon: "Mở lịch",
+  },
+  {
+    name: "TimePicker",
+    render: (filled: boolean, allowClear = true) => (
+      <TimePicker defaultValue={filled ? "09:30" : undefined} allowClear={allowClear} />
+    ),
+    icon: "Mở chọn giờ",
+  },
+  {
+    name: "MonthPicker",
+    render: (filled: boolean, allowClear = true) => (
+      <MonthPicker defaultValue={filled ? date : undefined} allowClear={allowClear} />
+    ),
+    icon: "Mở chọn tháng",
+  },
+  {
+    name: "DateRangePicker",
+    render: (filled: boolean, allowClear = true) => (
+      <DateRangePicker
+        defaultValue={filled ? { from: date, to: date } : undefined}
+        allowClear={allowClear}
+      />
+    ),
+    icon: "Mở lịch",
+  },
+  {
+    name: "MonthRangePicker",
+    render: (filled: boolean, allowClear = true) => (
+      <MonthRangePicker
+        defaultValue={filled ? { from: date, to: date } : undefined}
+        allowClear={allowClear}
+      />
+    ),
+    icon: "Mở chọn tháng",
+  },
+];
 
-const clearBtn = () => screen.queryByRole("button", { name: "Xóa" });
-
-describe("Pickers keep the trigger icon beside the clear ✕ (gh#308)", () => {
-  it("DatePicker shows the calendar trigger AND the clear ✕ while filled", () => {
-    renderWithUi(<DatePicker defaultValue={new Date(2026, 5, 15)} />);
-    expect(screen.getByRole("button", { name: "Mở lịch" })).toBeInTheDocument();
-    expect(clearBtn()).toBeInTheDocument();
+describe.each(cases)("$name exclusive trailing action", ({ render: picker, icon }) => {
+  it("shows only the picker icon when empty", () => {
+    renderWithUi(picker(false));
+    expect(screen.getByRole("button", { name: icon })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Xóa" })).not.toBeInTheDocument();
   });
-
-  it("DatePicker shows only the calendar trigger while empty", () => {
-    renderWithUi(<DatePicker />);
-    expect(screen.getByRole("button", { name: "Mở lịch" })).toBeInTheDocument();
-    expect(clearBtn()).toBeNull();
+  it("shows only clear when filled, then restores the picker icon", async () => {
+    const user = userEvent.setup();
+    renderWithUi(picker(true));
+    expect(screen.queryByRole("button", { name: icon })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Xóa" }));
+    expect(screen.getByRole("button", { name: icon })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Xóa" })).not.toBeInTheDocument();
   });
-
-  it("MonthPicker shows the grid trigger AND the clear ✕ while filled", () => {
-    renderWithUi(<MonthPicker defaultValue={new Date(2026, 5, 1)} />);
-    expect(screen.getByRole("button", { name: "Mở chọn tháng" })).toBeInTheDocument();
-    expect(clearBtn()).toBeInTheDocument();
-  });
-
-  it("DateRangePicker shows the calendar trigger AND the clear ✕ while filled", () => {
-    renderWithUi(
-      <DateRangePicker defaultValue={{ from: new Date(2026, 5, 15), to: new Date(2026, 5, 20) }} />,
-    );
-    expect(screen.getByRole("button", { name: "Mở lịch" })).toBeInTheDocument();
-    expect(clearBtn()).toBeInTheDocument();
-  });
-
-  it("MonthRangePicker shows the grid trigger AND the clear ✕ while filled", () => {
-    renderWithUi(
-      <MonthRangePicker defaultValue={{ from: new Date(2026, 2, 1), to: new Date(2026, 5, 1) }} />,
-    );
-    expect(screen.getByRole("button", { name: "Mở chọn tháng" })).toBeInTheDocument();
-    expect(clearBtn()).toBeInTheDocument();
-  });
-
-  it("TimePicker shows the clock trigger AND the clear ✕ while filled", () => {
-    renderWithUi(<TimePicker defaultValue="09:30" />);
-    expect(screen.getByRole("button", { name: "Mở chọn giờ" })).toBeInTheDocument();
-    expect(clearBtn()).toBeInTheDocument();
-  });
-
-  it("allowClear={false} leaves the trigger alone and renders no ✕", () => {
-    renderWithUi(<DatePicker defaultValue={new Date(2026, 5, 15)} allowClear={false} />);
-    expect(screen.getByRole("button", { name: "Mở lịch" })).toBeInTheDocument();
-    expect(clearBtn()).toBeNull();
-  });
-
-  // The one-icon rule is still right for a plain Input — this fix must not leak into it.
-  it("plain Input still swaps its trailingIcon for the ✕ (rule unchanged)", () => {
-    renderWithUi(
-      <Input
-        defaultValue="hello"
-        allowClear
-        aria-label="plain"
-        trailingIcon={
-          <button type="button" aria-label="Trailing affordance">
-            <span aria-hidden="true">@</span>
-          </button>
-        }
-      />,
-    );
-    expect(clearBtn()).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Trailing affordance" })).toBeNull();
+  it("keeps the picker icon when clearing is forbidden", () => {
+    renderWithUi(picker(true, false));
+    expect(screen.getByRole("button", { name: icon })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Xóa" })).not.toBeInTheDocument();
   });
 });

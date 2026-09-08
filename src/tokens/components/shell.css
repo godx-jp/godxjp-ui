@@ -122,7 +122,17 @@
    * a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`. */
   --app-shell-nav-rail-width: 3.5rem;
   --app-shell-page-max-width: 80rem;
-  --app-shell-main-background: hsl(var(--muted) / 0.4);
+  /* Page ground behind `.app-main` (gh#399). Declared `initial` so the CALL SITE resolves the
+   * default — `var(--app-shell-main-background, var(--surface-recessed))` — against the LIVE
+   * theme: `--surface-recessed` is re-stated by the dark arm in tokens/semantic/layout.css, and a
+   * `:root` binding here would freeze it at the light value for any SCOPED dark subtree
+   * (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`").
+   * It used to bind `hsl(var(--muted) / 0.4)` directly, which inverted the page/card elevation on
+   * dark (the page composited 1.015:1 LIGHTER than the cards standing on it) — see the
+   * --surface-recessed comment for the measurement. Light is byte-identical; dark now sits behind
+   * the card at 1.089:1. A service that wants its own ground still sets this token.
+   * Default = var(--surface-recessed). */
+  --app-shell-main-background: initial;
   --app-shell-mobile-nav-width: 22.5rem;
   /* Mobile-drawer scrim — `initial` so the shared --overlay-background default re-resolves at the
    * CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding freezes at :root). Default =
@@ -257,6 +267,25 @@
   --topbar-item-hover-background: var(--accent);
   --topbar-item-hover-color: var(--accent-foreground);
   --topbar-item-active-background: var(--secondary);
+  /* COUNT PILL overlaid on the cell's glyph (gh#398) — the unread affordance the bell needs. The
+   * offsets are what a call site used to hand-write as `relative` + `absolute -end-0.5 -top-0.5`,
+   * i.e. a position the cell owns and no theme could retune; they are measured from the GLYPH box
+   * (the pill is centred on the cell, then pushed out by these), so a bar that retunes
+   * --topbar-icon-size keeps the pill on the glyph's corner.
+   * Colour mirrors `.sb-badge`: quiet by default, `badgeTone="destructive"` for a count addressed
+   * to the user. The two role-mirror knobs stay `initial` so a scoped [data-tenant]/.dark override
+   * of --secondary/--destructive still reaches the pill (docs/TOKENS.md).
+   * Defaults = hsl(var(--secondary)) · hsl(var(--muted-foreground)) ·
+   * hsl(var(--destructive)) · hsl(var(--destructive-foreground)). */
+  --topbar-item-badge-offset-block: var(--space-1);
+  --topbar-item-badge-offset-inline: var(--space-1);
+  --topbar-item-badge-size: 1rem;
+  --topbar-item-badge-padding-inline: var(--space-1);
+  --topbar-item-badge-font-size: var(--font-size-2xs);
+  --topbar-item-badge-background: initial;
+  --topbar-item-badge-foreground: initial;
+  --topbar-item-badge-destructive-background: initial;
+  --topbar-item-badge-destructive-foreground: initial;
   /* The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar
    * family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an
    * outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the

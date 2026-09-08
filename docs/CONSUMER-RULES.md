@@ -12,3 +12,16 @@ Read this once; the audit enforces it. Everything else in `docs/` is for contrib
 8. Sizes come from props (`size`, `width`, `columns`), never `w-[240px]` / `max-h-[420px]`.
 9. Logical directions (`ms-`, `me-`, `start-`, `end-`) when a utility is unavoidable; never `ml-` / `left-`.
 10. Run `node node_modules/@godxjp/ui/scripts/ui-audit.mjs <dir>` before every review; then `visual-audit.mjs <url>` on the running app. Zero errors is the bar.
+
+**Opting a deliberate exception out.** Name the rule; the block form also has to say why.
+
+```tsx
+// ui-audit-disable-line no-physical-direction
+// ui-audit-disable-next-line no-physical-direction
+
+// ui-audit-disable-begin no-utility-spacing — vendor widget ships its own grid, gh#123
+const legacyClasses = ["gap-3", "p-2"];
+// ui-audit-disable-end no-utility-spacing
+```
+
+A block with no reason (or under 12 characters of it) is ignored and the finding stands; an unclosed block runs to the end of the file. The class-shaped rules (`gap-*`, `bg-red-500`, `w-[37px]`, `pr-*`, `dark:*`) only read class expressions — a `className`/`class` attribute, a class-named binding (`baseClass`, `statusStyles`, `badgeVariants`) or a `cn()`/`clsx()`/`cva()` call — so product copy or an i18n value that happens to spell a utility is never a finding.

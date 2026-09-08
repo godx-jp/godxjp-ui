@@ -1,3 +1,4 @@
+import { padStyle } from "../../lib/variants";
 import { cn } from "../../lib/utils";
 import type { TopbarProp } from "../../props/components/layout.prop";
 
@@ -7,9 +8,25 @@ export type { TopbarProp, TopbarProp as TopbarProps } from "../../props/componen
  * Topbar — a PURE SLOT bar. It positions three clusters (`start` / `center` / `end`) and owns the
  * bar's flex layout; it does NOT bake any chrome.
  */
-export function Topbar({ start, center, end, className, children, ...props }: TopbarProp) {
+export function Topbar({
+  start,
+  center,
+  end,
+  className,
+  children,
+  height,
+  pad,
+  style,
+  ...props
+}: TopbarProp) {
   return (
-    <div data-slot="topbar" className={cn("ui-topbar", className)} {...props}>
+    <div
+      data-height={height}
+      style={{ ...style, ...padStyle(pad, undefined) }}
+      data-slot="topbar"
+      className={cn("ui-topbar", className)}
+      {...props}
+    >
       {children ?? (
         <>
           {start != null ? (

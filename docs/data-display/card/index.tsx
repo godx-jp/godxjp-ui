@@ -281,6 +281,28 @@ export default function Demo() {
             </Card>
           </ResponsiveGrid>
         </Flex>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>連続したツールバー</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Text>本文</Text>
+          </CardContent>
+          <CardBar pad={{ block: 1, inline: 3 }} surface="muted" border="block-start" gap="sm">
+            <Button variant="ghost" size="sm">
+              添付
+            </Button>
+          </CardBar>
+          <CardBar
+            pad={{ block: 2, inline: 3 }}
+            border="block-start"
+            gap="sm"
+            extra={<Button>送信</Button>}
+          >
+            <Text tone="muted">下書きを保存しました</Text>
+          </CardBar>
+        </Card>
       </Flex>
     </PageContainer>
   );

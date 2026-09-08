@@ -35,6 +35,17 @@ export default function Demo() {
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>
+              <CardTitle level={2}>インライン表示</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Flex gap="md" align="center">
+                <Text>表示言語</Text>
+                <AppSettingPicker kind="locale" appearance="inline" id="setting-inline" />
+              </Flex>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
               <CardTitle level={2}>kind で対象設定を選ぶ</CardTitle>
               <CardDescription>
                 旧 Locale / Timezone / DateFormat / TimeFormat ピッカーを 1 コンポーネントに統合。

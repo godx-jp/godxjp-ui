@@ -218,23 +218,28 @@ export function MonthRangePicker({
               className="text-muted-foreground hover:text-foreground shrink-0"
               onClick={(event) => {
                 event.stopPropagation();
+                event.currentTarget
+                  .closest("div")
+                  ?.querySelector<HTMLInputElement>("input:not([type=hidden])")
+                  ?.focus();
                 clear();
               }}
             >
               <X className="ui-month-picker-icon" aria-hidden="true" />
             </button>
-          ) : null}
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              disabled={disabled}
-              tabIndex={-1}
-              aria-label={t("dataEntry.monthPicker.openGrid") ?? "Open month grid"}
-              className="text-muted-foreground hover:text-foreground shrink-0"
-            >
-              <CalendarIcon className="ui-month-picker-icon" aria-hidden="true" />
-            </button>
-          </PopoverTrigger>
+          ) : (
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                disabled={disabled}
+                tabIndex={-1}
+                aria-label={t("dataEntry.monthPicker.openGrid") ?? "Open month grid"}
+                className="text-muted-foreground hover:text-foreground shrink-0"
+              >
+                <CalendarIcon className="ui-month-picker-icon" aria-hidden="true" />
+              </button>
+            </PopoverTrigger>
+          )}
           <PopoverContent
             className="ui-month-picker-panel"
             align="start"

@@ -1327,7 +1327,9 @@ DataTable.Content = function DataTableContent() {
   // widest cell — so the fixed layout goes on as soon as a column asks for it, or as soon as
   // `scroll.x` pins a minimum width. This is antd's own switch, and it is the reason a hand-rolled
   // `text-overflow: ellipsis` on a `<td>` looks inert.
-  const fixedTableLayout = scroll?.x !== undefined || visibleColumns.some((col) => col.ellipsis);
+  const fixedTableLayout =
+    scroll?.x !== undefined ||
+    visibleColumns.some((col) => col.ellipsis || columnWidth(col.width).style !== undefined);
 
   // Accessible-header contract: a column whose `header` renders no visible text
   // (an action / selection column) MUST carry an `ariaLabel` so its <th> keeps a

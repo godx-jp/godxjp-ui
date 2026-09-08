@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AppShell, Flex, PageContainer, Sidebar, Topbar } from "@godxjp/ui/layout";
+import { AppShell, Flex, PageContainer, Sidebar, Topbar, TopbarItem } from "@godxjp/ui/layout";
 import type { SidebarSectionProp } from "@godxjp/ui/layout";
 import {
   Avatar,
@@ -154,18 +154,14 @@ export default function Demo() {
       <Badge tone="warning" className="text-xs">
         ステージング
       </Badge>
-      <Button
-        variant="ghost"
-        size="icon-sm"
+      <TopbarItem
         aria-label="通知"
-        className="relative"
+        badge={unread ? 12 : undefined}
+        badgeTone="destructive"
         onClick={() => setUnread(false)}
       >
         <Bell />
-        {unread ? (
-          <span className="bg-destructive absolute end-1.5 top-1.5 size-1.5 rounded-full" />
-        ) : null}
-      </Button>
+      </TopbarItem>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon-sm" aria-label="アカウントメニュー">

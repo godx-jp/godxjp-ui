@@ -81,6 +81,7 @@ function VariantBlock() {
           <ButtonRefetch query={query} variant="ghost" label="ghost" />
           <ButtonRefetch query={query} variant="destructive" label="destructive" />
           <ButtonRefetch query={query} variant="link" label="link" />
+          <ButtonRefetch query={query} variant="bare" label="bare" />
         </Flex>
       </CardContent>
     </Card>

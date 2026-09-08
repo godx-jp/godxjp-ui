@@ -43,6 +43,11 @@
    * what `preset="action-collection"` does, because there the priority measures own the width. */
   --table-surface-min-inline-size: 640px;
   --table-head-font-size: var(--font-size-xs);
+  /* Header WEIGHT (gh#410). Was the literal `var(--font-weight-medium)` in table-layout.css, which
+   * left a service that wants a quiet header row writing `font-normal` on every `<TableHead>` — 18
+   * of them in the app that reported this. Default is byte-identical; a quiet header is now one
+   * declaration (`--table-head-font-weight: var(--font-weight-normal)`). */
+  --table-head-font-weight: var(--font-weight-medium);
   /* Header band — its OWN bg + fg knobs (decoupled from --secondary). Declared `initial` so the
    * default re-resolves to the LIVE --muted / --muted-foreground roles at the call site: a :root
    * binding to a role var freezes at the :root value and a scoped [data-tenant] role override never

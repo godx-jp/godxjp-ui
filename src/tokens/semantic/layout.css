@@ -27,6 +27,8 @@
 
   /* Master-detail geometry. Consumers choose a semantic rail preset; they never author grid tracks. */
   --master-detail-rail-compact: 18.75rem; /* 300px */
+  --master-detail-rail-narrow: 12rem;
+  --master-detail-rail-wide: 24rem;
   --master-detail-rail-standard: 20rem; /* 320px */
   --master-detail-gap: var(--space-stack-md);
   /* The collapse threshold: MasterDetail keeps its two-track split while the composition's OWN
@@ -70,6 +72,20 @@
    * never reach the overlay. Overlays are portaled, so a tenant scope must also sit on the portal
    * container (see docs/CUSTOMER-THEMING.md). */
   --overlay-background: rgb(0 0 0 / 0.5);
+
+  /* RECESSED SURFACE role (gh#399) — "the ground a card sits on", one step BEHIND `--card`.
+   *
+   * It is a ROLE, not a derivation: the two themes order their surfaces differently, so no single
+   * expression is correct on both. Light puts `--muted` (95%) behind `--card` (99%); dark puts it
+   * (18%) in FRONT of `--card` (12%), so the shipped `hsl(var(--muted) / 0.4)` composited to
+   * rgb(35,33,30) against a rgb(33,32,28) card — the page read 1.015:1 LIGHTER than the cards on
+   * it, i.e. the elevation inverted. No alpha fixes that: the mix runs from `--background`
+   * (correct) toward `--muted` (wrong), so anything above ~0.33 crosses the card.
+   *
+   * Each theme therefore states its own ground below. Light keeps the exact shipped composite
+   * (1.036:1 behind the card); dark takes the page `--background`, which measures 1.089:1 —
+   * matching the light theme's separation instead of inverting it. */
+  --surface-recessed: hsl(var(--muted) / 0.4);
 
   /* Full-bleed rule under the PageContainer header. OFF by default — the title/body
    * gap already separates them; a divider is a service-theme opt-in:
@@ -253,6 +269,14 @@
    * a control or a value (FormField, Descriptions, Form, any label-above stack). Single source so the
    * whole system stays in sync (gh feedback: Descriptions was ~0px while FormField was 8px). */
   --field-label-gap: var(--space-2); /* 8px */
+}
+
+/* Dark arm of the recessed-surface role (gh#399). Stated per theme, exactly like the surface roles
+ * in foundation.css, because "one step behind the card" is not the same expression on both spines.
+ * `.dark` stays an equal alias of the `data-theme` axis, matching foundation.css. */
+.dark,
+:root[data-theme="dark"] {
+  --surface-recessed: hsl(var(--background));
 }
 
 /* Canonical admin collection composition. Services may retune these semantic knobs once. */

@@ -254,6 +254,26 @@ export default function Demo() {
             </ResponsiveGrid>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>一覧と補助情報 2:1</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveGrid columns={{ base: 1, lg: 3 }} pad={{ block: 2 }}>
+              <ResponsiveGrid.Item span={{ base: 1, lg: 2 }}>
+                <Flex id="grid-main" surface="muted" pad={3}>
+                  <Text>メインの一覧</Text>
+                </Flex>
+              </ResponsiveGrid.Item>
+              <ResponsiveGrid.Item>
+                <Flex id="grid-rail" surface="muted" pad={3}>
+                  <Text>補助情報</Text>
+                </Flex>
+              </ResponsiveGrid.Item>
+            </ResponsiveGrid>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

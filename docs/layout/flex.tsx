@@ -260,6 +260,56 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>レスポンシブな操作行</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Flex
+              id="responsive-actions"
+              direction={{ base: "col", lg: "row" }}
+              gap="md"
+              align="start"
+            >
+              <Flex fill>
+                <Text>画面幅に合わせて操作をまとめます。</Text>
+              </Flex>
+              <Button>保存</Button>
+              <Button variant="outline">キャンセル</Button>
+            </Flex>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>軽い強調と行アクション</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex id="hover-notice" surface="warning" pad={3} tabIndex={0}>
+                <Text>締切を確認してください。</Text>
+                <Flex reveal="hover" surface="popover" gap="xs" pad={1}>
+                  <Button variant="ghost" size="sm">
+                    編集
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    解除
+                  </Button>
+                </Flex>
+              </Flex>
+              <Flex as="ul" direction="col" gap="xs">
+                <li>添付ファイルを確認</li>
+                <li>担当者を選択</li>
+              </Flex>
+              <Flex surface="muted" pad={{ block: 2, inline: 3 }}>
+                <Text as="code" chip decoration="line-through">
+                  old_status
+                </Text>
+                <Text>更新済み</Text>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

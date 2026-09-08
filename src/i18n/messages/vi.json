@@ -23,7 +23,8 @@
     },
     "datePicker": {
       "placeholder": "Chọn ngày",
-      "openCalendar": "Mở lịch"
+      "openCalendar": "Mở lịch",
+      "quarter": "Quý {quarter}"
     },
     "dateRangePicker": {
       "placeholder": "Chọn khoảng ngày",
@@ -41,7 +42,8 @@
       "am": "SA",
       "pm": "CH",
       "now": "Bây giờ",
-      "confirm": "Chọn"
+      "confirm": "Chọn",
+      "second": "Giây"
     },
     "searchInput": {
       "placeholder": "Tìm kiếm…"

@@ -186,6 +186,91 @@ export default function Demo() {
             </FormField>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>表示形式と元号</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <FormField id="formatted-date" label="契約日">
+                <DatePicker
+                  id="formatted-date"
+                  name="contract"
+                  defaultValue={new Date(2026, 8, 9)}
+                  format="yyyy年MM月dd日"
+                />
+              </FormField>
+              <FormField id="era-date" label="和暦">
+                <DatePicker
+                  id="era-date"
+                  name="era"
+                  defaultValue={new Date(2026, 8, 9)}
+                  format={{
+                    calendar: "japanese",
+                    era: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }}
+                  inputReadOnly
+                />
+              </FormField>
+            </Flex>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>日時の予約</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FormField id="appointment-date" label="予約日時">
+              <DatePicker
+                id="appointment-date"
+                name="appointment"
+                defaultValue={new Date(2026, 8, 9, 17, 30)}
+                showTime
+                needConfirm
+                presets={[{ label: "翌営業日", value: () => new Date(2026, 8, 10, 9, 0) }]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>集計単位</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {(["week", "month", "quarter", "year"] as const).map((picker) => (
+                <FormField key={picker} id={`period-${picker}`} label={picker}>
+                  <DatePicker
+                    id={`period-${picker}`}
+                    picker={picker}
+                    defaultValue={new Date(2026, 8, 9)}
+                    showWeek
+                  />
+                </FormField>
+              ))}
+            </Flex>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>複数日を確定</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FormField id="multiple-dates" label="出勤日">
+              <DatePicker
+                id="multiple-dates"
+                name="attendance"
+                multiple
+                needConfirm
+                defaultValue={[new Date(2026, 8, 9), new Date(2026, 8, 11)]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

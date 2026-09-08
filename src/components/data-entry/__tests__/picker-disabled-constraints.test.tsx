@@ -29,7 +29,7 @@ describe("TimePicker disabledTime (gh#390)", () => {
     const user = userEvent.setup();
     renderWithUi(<TimePicker defaultValue="11:00" disabledTime={before10} />);
 
-    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+    await user.click(screen.getByRole("combobox"));
     const nine = await screen.findByRole("option", { name: "09" });
 
     // Present and announced, not absent: a refused option is how the reader learns the rule exists.
@@ -42,7 +42,7 @@ describe("TimePicker disabledTime (gh#390)", () => {
     const user = userEvent.setup();
     renderWithUi(<TimePicker defaultValue="11:00" disabledTime={before10} />);
 
-    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+    await user.click(screen.getByRole("combobox"));
     await user.click(await screen.findByRole("option", { name: "14" }));
 
     await waitFor(() => expect(screen.getByRole("combobox")).toHaveValue("14:00"));
@@ -91,7 +91,7 @@ describe("TimePicker disabledTime (gh#390)", () => {
     const user = userEvent.setup();
     renderWithUi(<TimePicker defaultValue="11:00" disabledTime={before10} hideDisabledOptions />);
 
-    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+    await user.click(screen.getByRole("combobox"));
     await screen.findByRole("option", { name: "11" });
 
     expect(screen.queryByRole("option", { name: "09" })).toBeNull();
@@ -155,7 +155,7 @@ describe("Calendar cellRender (gh#390 · lát 2)", () => {
       />,
     );
 
-    await user.click(screen.getByLabelText(/open calendar|mở lịch/i));
+    await user.click(screen.getByRole("combobox"));
     await screen.findByRole("grid");
 
     expect(document.querySelectorAll('[data-test="holiday"]')).toHaveLength(1);
@@ -177,7 +177,7 @@ describe("Calendar cellRender (gh#390 · lát 2)", () => {
       />,
     );
 
-    await user.click(screen.getByLabelText(/open calendar|mở lịch/i));
+    await user.click(screen.getByRole("combobox"));
     await user.click(await screen.findByRole("button", { name: /21/ }));
 
     // Rebuilding the cell instead of wrapping it would lose exactly this.
@@ -192,7 +192,7 @@ describe("TimePicker footer actions (gh#390 · lát 3)", () => {
     const user = userEvent.setup();
     renderWithUi(<TimePicker minuteStep={15} onValueChange={onValueChange} />);
 
-    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+    await user.click(screen.getByRole("combobox"));
     await user.click(await screen.findByRole("button", { name: /now|bây giờ|現在時刻/i }));
 
     const at = new Date();
@@ -208,7 +208,7 @@ describe("TimePicker footer actions (gh#390 · lát 3)", () => {
     const nothingAllowed = () => ({ disabledHours: () => Array.from({ length: 24 }, (_, h) => h) });
     renderWithUi(<TimePicker disabledTime={nothingAllowed} />);
 
-    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+    await user.click(screen.getByRole("combobox"));
 
     expect(await screen.findByRole("button", { name: /now|bây giờ|現在時刻/i })).toBeDisabled();
   });
@@ -218,7 +218,7 @@ describe("TimePicker footer actions (gh#390 · lát 3)", () => {
     const user = userEvent.setup();
     renderWithUi(<TimePicker defaultValue="09:00" needConfirm onValueChange={onValueChange} />);
 
-    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+    await user.click(screen.getByRole("combobox"));
     await user.click(await screen.findByRole("option", { name: "14" }));
 
     // The whole point of needConfirm: selecting is not committing.
@@ -233,7 +233,7 @@ describe("TimePicker footer actions (gh#390 · lát 3)", () => {
     const user = userEvent.setup();
     renderWithUi(<TimePicker defaultValue="09:00" onValueChange={onValueChange} />);
 
-    await user.click(screen.getByLabelText(/open time picker|chọn giờ/i));
+    await user.click(screen.getByRole("combobox"));
     await user.click(await screen.findByRole("option", { name: "14" }));
 
     expect(onValueChange).toHaveBeenLastCalledWith("14:00");

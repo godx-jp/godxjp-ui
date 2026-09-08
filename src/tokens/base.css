@@ -3,6 +3,7 @@
  * App-specific overrides live in app theme.css after importing @godxjp/ui/styles.
  */
 
+@import "./components/flex.css";
 @import "./foundation.css";
 /* The DERIVED colour map — the interaction states hanging off the seeds foundation.css commits
  * to. Sits directly after foundation so it overrides nothing a service sets in its own theme.css,

@@ -24,6 +24,10 @@ const buttonVariants = cva("ui-button", {
         "ui-button--secondary bg-secondary text-secondary-foreground hover:bg-secondary/80",
       ghost: "ui-button--ghost hover:bg-accent hover:text-accent-foreground",
       link: "ui-button--link text-primary underline-offset-4 hover:underline",
+      // NO utilities, deliberately: `bare` is the absence of geometry, and every property it has
+      // to unset (the size tier's height and inline inset) is declared in the components layer.
+      // A utility here would be the only thing that could out-rank it. See `.ui-button--bare`.
+      bare: "ui-button--bare",
     },
     size: {
       default: "ui-button--default-size",

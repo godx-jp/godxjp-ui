@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
-import { densityClass, pageContainerVariantClass } from "../../lib/variants";
+import { densityClass, pageContainerVariantClass, padStyle } from "../../lib/variants";
 import type { PageContainerProp, PageInsetProp } from "../../props/components/layout.prop";
 
 /** Nearest scrollable ancestor (the page's scroll viewport), else the window. */
@@ -67,6 +67,8 @@ function PageContainerRoot({
   extra,
   toolbar,
   footer,
+  toolbarPad,
+  footerPad,
   breadcrumb,
   breadcrumbLabel,
   breadcrumbAriaLabel,
@@ -192,11 +194,19 @@ function PageContainerRoot({
       </header>
 
       {/* It is a SIBLING of `.ui-page-body`, never a child, because under `fill` the body is the scroll viewport: as a `flex: none` sibling the band stays put and the transcript scrolls beneath NOTHING, whereas a `position: sticky` strip inside the scroller keeps content flowing under it (the half-sliced row a hand-laid page chrome always produces). Absent → no element and no gap at all. */}
-      {toolbar != null && <div className="ui-page-toolbar">{toolbar}</div>}
+      {toolbar != null && (
+        <div className="ui-page-toolbar" style={padStyle(toolbarPad, undefined)}>
+          {toolbar}
+        </div>
+      )}
 
       {children != null && <div className="ui-page-body">{children}</div>}
 
-      {footer && <footer className="ui-page-footer">{footer}</footer>}
+      {footer && (
+        <footer className="ui-page-footer" style={padStyle(footerPad, undefined)}>
+          {footer}
+        </footer>
+      )}
     </div>
   );
 }

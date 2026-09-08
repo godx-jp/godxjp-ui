@@ -116,3 +116,6 @@ export type {
   BranchScopePickerProps,
   BranchScopeValueProp,
 } from "./branch-scope-picker";
+
+export { TimeRangePicker } from "./time-range-picker";
+export type { TimeRangePickerProps } from "./time-range-picker";

@@ -28,7 +28,16 @@ describe("DXS hi-fi visual contract", () => {
     // Product override (direct instruction): the search trigger now fills its Topbar center slot
     // by default instead of floating as a fixed ~420px box with dead space on either side.
     expect(tokens).toMatch(/--topbar-search-max-width:\s*none/);
-    expect(tokens).toMatch(/--app-shell-main-background:\s*hsl\(var\(--muted\) \/ 0\.4\)/);
+    // gh#399 — the ground is a per-theme ROLE now, not a `--muted` derivation baked at :root: the
+    // knob is `initial` and the call site falls back to --surface-recessed, whose LIGHT value is
+    // the identical composite this used to assert.
+    expect(tokens).toMatch(/--app-shell-main-background:\s*initial/);
+    expect(read("../../tokens/semantic/layout.css")).toMatch(
+      /--surface-recessed:\s*hsl\(var\(--muted\) \/ 0\.4\)/,
+    );
+    expect(shell).toMatch(
+      /background-color: var\(--app-shell-main-background, var\(--surface-recessed\)\)/,
+    );
     expect(shell).toMatch(
       /\.app-main \.ui-page-container\s*\{[^}]*max-width:\s*var\(--app-shell-page-max-width\)/s,
     );

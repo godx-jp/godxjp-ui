@@ -321,9 +321,6 @@
   --textarea-autogrow-box-inset: calc(
     (var(--control-multiline-padding-block) + var(--control-border-width)) * 2
   );
-  /* A field parking TWO inline affixes (TimePicker's clear+clock, DatePicker's clear+calendar)
-   * reserves a wider end than the single-affix case. */
-  --control-inline-affix-pair-space-inline-end: 3.5rem;
   /* COMPOSITE FIELD — the bordered box that wraps two inputs plus a separator (date/month
    * range pickers) or one input plus affixes. Shared so the four range/picker fields cannot
    * drift into four slightly different boxes. */
@@ -500,6 +497,10 @@
    * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets
    * --button-xs-height back. */
   --button-xs-height: var(--control-height-xs);
+  /* Minimum TARGET of `variant="bare"` (gh#404) — the pseudo-element hit area, not a box height,
+   * so it never shows up as geometry. Points at the same xs tier the note above settled on as this
+   * package's WCAG 2.2 SC 2.5.8 floor (1.5rem = 24px), and moves with it and with density. */
+  --button-bare-target-size: var(--control-height-xs);
   --button-xs-space-inline: var(--space-2);
   --button-xs-space-gap: var(--space-1);
   --button-xs-font-size: var(--font-size-xs);
@@ -635,4 +636,11 @@
     --control-height-compact: var(--band-height-xl);
     --control-height-default: var(--band-height-xl);
   }
+}
+
+:root {
+  --textarea-padding-block-start: initial;
+  --textarea-padding-block-end: initial;
+  --textarea-padding-inline-start: initial;
+  --textarea-padding-inline-end: initial;
 }

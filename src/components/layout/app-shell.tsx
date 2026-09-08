@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Menu } from "lucide-react";
 
+import { useMediaQuery } from "../../lib/hooks";
 import { useTranslation } from "../../i18n/use-translation";
 import { Button } from "../general/button";
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTrigger } from "../feedback/sheet";
@@ -11,6 +12,11 @@ export type {
   AppShellProp,
   AppShellProp as AppShellProps,
 } from "../../props/components/layout.prop";
+
+/** Same rail boundary as shell-layout.css; SSR starts in docked mode. */
+export function useAppShellNavigationMode(): "drawer" | "docked" {
+  return useMediaQuery("(width <= 56.25rem)") ? "drawer" : "docked";
+}
 
 export function AppShell({
   sidebar,
@@ -32,6 +38,7 @@ export function AppShell({
   onMobileNavOpenChange,
 }: AppShellProp) {
   const { t } = useTranslation();
+  const navigationMode = useAppShellNavigationMode();
   const hasSidebar = sidebar !== undefined && sidebar !== null && sidebar !== false;
 
   // The docked sidebar is hidden at the DXS 900px breakpoint, so AppShell OWNS an accessible mobile drawer: a
@@ -275,6 +282,7 @@ export function AppShell({
       data-collapsed={hasSidebar && sidebarCollapsed ? "true" : undefined}
       data-sidebar={hasSidebar ? undefined : "none"}
       data-responsive-navigation={responsiveNavigation}
+      data-navigation={navigationMode}
       data-topbar={hasTopbarContent ? undefined : "none"}
       data-topbar-span={topbarSpan === "full" ? "full" : undefined}
       data-nav-rail={navRail !== undefined ? "" : undefined}

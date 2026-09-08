@@ -55,7 +55,12 @@ const EMOJI_FLAG = /\p{Regional_Indicator}/u;
 const ATTRS = String.raw`(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|=>|[^>"'])*`;
 
 /**
- * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string, exempt?:RegExp}[]}
+ * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string,
+ *         exempt?:RegExp, classOnly?:boolean}[]}
+ *
+ * `classOnly` marks a rule whose pattern is a CLASS NAME (`gap-3`, `bg-red-500`, `pr-4`). Those are
+ * matched against the class-expression mask (see `classExpressionsOnly`), never the raw line, so
+ * product copy, an i18n value or a JSX text node that merely spells a utility is not a finding.
  *
  * `exempt` is an optional SECOND escape a rule may declare, matched against the ORIGINAL (un-blanked)
  * line or the one above it. `ui-audit-disable-line <id>` silences any rule; an `exempt` marker is for
@@ -71,6 +76,7 @@ const ATTRS = String.raw`(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|=>|[^>"'])*`;
 const RULES = [
   {
     id: "no-utility-spacing",
+    classOnly: true,
     scope: "consumer",
     severity: "error",
     // Any Tailwind spacing step on the consumer's own markup. Arbitrary values ([13px]) have their
@@ -120,12 +126,14 @@ const RULES = [
   },
   {
     id: "no-space-xy",
+    classOnly: true,
     severity: "error",
     test: /\bspace-[xy]-\d/,
     message: "Use <Stack>/<Inline> with gap, not space-x/y-* (rules §5).",
   },
   {
     id: "no-raw-palette-color",
+    classOnly: true,
     severity: "error",
     test: new RegExp(
       `\\b(bg|text|border|ring|fill|stroke|from|to|via|divide|outline)-(${PALETTE})-\\d`,
@@ -169,6 +177,7 @@ const RULES = [
   },
   {
     id: "no-arbitrary-hex",
+    classOnly: true,
     severity: "error",
     test: /(bg|text|border|ring|fill|stroke|from|to|via)-\[#[0-9a-fA-F]{3,8}\]/,
     message: "No hardcoded hex colors in className; use design-system tokens (rules §4).",
@@ -178,6 +187,7 @@ const RULES = [
   // (they start with a letter), so token-driven values stay legal (rules §4–§5).
   {
     id: "no-arbitrary-spacing",
+    classOnly: true,
     severity: "error",
     test: /\b(p|px|py|pt|pb|pl|pr|pe|ps|m|mx|my|mt|mb|ml|mr|me|ms|gap|gap-x|gap-y|inset|inset-x|inset-y|top|right|bottom|left)-\[-?\.?\d/,
     message:
@@ -185,6 +195,7 @@ const RULES = [
   },
   {
     id: "no-arbitrary-size",
+    classOnly: true,
     severity: "error",
     // `min-w-[…]` / `min-h-[…]` are allowed: a MINIMUM dimension is the legit responsive
     // pattern (horizontal-scroll tables `<Table className="min-w-[720px]">`, collapse
@@ -196,6 +207,7 @@ const RULES = [
   },
   {
     id: "no-arbitrary-typography",
+    classOnly: true,
     severity: "error",
     test: /\b(text|leading|tracking|font)-\[-?\.?\d/,
     message:
@@ -203,6 +215,7 @@ const RULES = [
   },
   {
     id: "no-arbitrary-radius",
+    classOnly: true,
     severity: "error",
     test: /\brounded(?:-[a-z]+)?-\[-?\.?\d/,
     message: "No arbitrary radius (rounded-[6px]…). Use rounded-sm/md/lg radius tokens (rules §4).",
@@ -284,6 +297,7 @@ const RULES = [
   },
   {
     id: "no-dark-color-override",
+    classOnly: true,
     severity: "warn",
     test: /\bdark:(bg|text|border|ring|fill|stroke)-/,
     message: "Don't add dark: color overrides — semantic tokens already adapt (rules §4).",
@@ -305,6 +319,7 @@ const RULES = [
   },
   {
     id: "raw-white-black",
+    classOnly: true,
     severity: "warn",
     test: /\b(bg|text|border)-(white|black)\b/,
     message:
@@ -330,6 +345,7 @@ const RULES = [
   },
   {
     id: "no-physical-direction",
+    classOnly: true,
     severity: "warn",
     // Physical-edge utilities break RTL. Logical equivalents: ms-/me-/ps-/pe-, start-/end-,
     // text-start/end, border-s/e, rounded-s/e. `-mx-`/`-px-` (both edges) are RTL-safe → not matched.
@@ -499,6 +515,128 @@ function stripComments(src) {
   return out;
 }
 
+/** End index (inclusive) of the string / template literal opening at `i`. `${…}` is stepped over as
+ *  a brace group, so a quote nested inside an interpolation never closes the template early. */
+function endOfString(src, i) {
+  const quote = src[i];
+  for (let j = i + 1; j < src.length; j++) {
+    const c = src[j];
+    if (c === "\\") j++;
+    else if (quote === "`" && c === "$" && src[j + 1] === "{") {
+      const close = matchBracket(src, j + 1);
+      if (close < 0) return src.length - 1;
+      j = close;
+    } else if (c === quote) return j;
+  }
+  return src.length - 1;
+}
+
+/** End index (inclusive) of the bracket group opening at `i`, or -1 when it never closes. */
+function matchBracket(src, i) {
+  const CLOSER = { "{": "}", "[": "]", "(": ")" };
+  const stack = [CLOSER[src[i]]];
+  for (let j = i + 1; j < src.length; j++) {
+    const c = src[j];
+    if (c === '"' || c === "'" || c === "`") j = endOfString(src, j);
+    else if (CLOSER[c]) stack.push(CLOSER[c]);
+    else if (c === stack[stack.length - 1]) {
+      stack.pop();
+      if (stack.length === 0) return j;
+    }
+  }
+  return -1;
+}
+
+/** The value that starts at `i`: a literal or bracket group in full, otherwise the rest of the line
+ *  (`= base + " p-2"`, a ternary) — enough to see the classes, never the next statement. */
+function valueEnd(src, i) {
+  const c = src[i];
+  if (c === '"' || c === "'" || c === "`") return endOfString(src, i);
+  if (c === "{" || c === "[" || c === "(") {
+    const close = matchBracket(src, i);
+    return close < 0 ? src.length - 1 : close;
+  }
+  const nl = src.indexOf("\n", i);
+  return nl < 0 ? src.length - 1 : nl - 1;
+}
+
+/** A call that BUILDS a class list — its arguments are classes wherever they are written. */
+const CLASS_HELPER = /(?<![\w$.])(?:cn|clsx|classnames|classNames|cx|cva|tv|twMerge|twJoin)\s*\(/g;
+/** `className={…}` / `wrapperClass = "…"` / `const flexGapClass: Record<…> = {…}` — an assignment
+ *  (JSX attribute, variable, default) whose NAME says class. The optional `: …` is a type annotation. */
+const CLASS_ASSIGN = /(?<![\w$.])([A-Za-z_$][\w$]*)\s*(?::[^=;\n]*?)?=(?!=)\s*/g;
+/** `className: "…"` — the same, written as an object key (a DataTable column, a slots map). */
+const CLASS_KEY = /(?<![\w$.])([A-Za-z_$][\w$]*)\s*:\s*/g;
+/**
+ * The names a class list is actually bound to, as a SUFFIX so every prefix works: `className`,
+ * `rowClassName`, `baseClass`, `cellClasses` — plus the three conventional aliases for a class MAP,
+ * `statusStyles` / `badgeVariants` / `toneVariant`, which are how a palette of class strings is
+ * written when it is not inside `cva()`. A class list bound to a name outside this set (`const map =
+ * { … }`) is NOT scanned — that is the cost of the mask, and the reason the set errs wide.
+ */
+const CLASS_NAMED = /(?:class(?:es|name|names)?|styles?|variants?)$/i;
+
+/**
+ * Blank everything that is NOT a class expression, keeping newlines so line numbers stay true.
+ *
+ * The `classOnly` rules are plain regexes over source text, so before this pass any line that merely
+ * CONTAINED a utility-shaped word was reported: product copy, an i18n value, a test fixture, a JSX
+ * text node (`<Text>văn bản JSX nhắc gap-3</Text>`). The bar is zero errors, so a false positive is
+ * not a nuisance — it blocks the review. What survives the mask is the three places a class can
+ * actually be written: a class-named binding's value, a class-named object key's value, and the
+ * arguments of a class-building helper. The NAME stays inside the region, so rules that anchor on
+ * `className="` keep matching.
+ */
+function classExpressionsOnly(src) {
+  const keep = new Uint8Array(src.length);
+  const mark = (from, to) => {
+    for (let i = Math.max(from, 0); i <= Math.min(to, src.length - 1); i++) keep[i] = 1;
+  };
+  for (const m of src.matchAll(CLASS_HELPER)) {
+    const close = matchBracket(src, m.index + m[0].length - 1);
+    mark(m.index, close < 0 ? src.length - 1 : close);
+  }
+  for (const pattern of [CLASS_ASSIGN, CLASS_KEY]) {
+    for (const m of src.matchAll(pattern)) {
+      if (!CLASS_NAMED.test(m[1])) continue;
+      mark(m.index, valueEnd(src, m.index + m[0].length));
+    }
+  }
+  const out = Array.from(src, (c, i) => (keep[i] || c === "\n" ? c : " "));
+  return out.join("");
+}
+
+/** `ui-audit-disable-begin <rule> — <why>` … `ui-audit-disable-end <rule>`: ONE marker for a whole
+ *  region instead of one per line (prettier wrapping a 24-item literal used to cost 24 identical
+ *  comments, so the formatter was being bent to satisfy the linter). The reason is MANDATORY — a
+ *  marker without `— <12+ chars>` is ignored and the finding stands, so an opt-out always says why.
+ *  A block that is never closed runs to the end of the file. */
+const DISABLE_BEGIN = /ui-audit-disable-begin\s+([a-z][a-z0-9-]*)\s*[—:]\s*(\S[^\n]{11,})/;
+const DISABLE_END = /ui-audit-disable-end\s+([a-z][a-z0-9-]*)/;
+
+/** @returns {(ruleId: string, lineIndex: number) => boolean} */
+function blockSuppressions(lines) {
+  /** @type {Map<string, {from:number, to:number}[]>} */
+  const ranges = new Map();
+  /** @type {Map<string, number>} */
+  const open = new Map();
+  const close = (ruleId, to) => {
+    const from = open.get(ruleId);
+    open.delete(ruleId);
+    if (!ranges.has(ruleId)) ranges.set(ruleId, []);
+    ranges.get(ruleId).push({ from, to });
+  };
+  lines.forEach((line, i) => {
+    const begin = DISABLE_BEGIN.exec(line);
+    if (begin && !open.has(begin[1])) open.set(begin[1], i);
+    const end = DISABLE_END.exec(line);
+    if (end && open.has(end[1])) close(end[1], i);
+  });
+  for (const ruleId of [...open.keys()]) close(ruleId, lines.length - 1);
+  return (ruleId, lineIndex) =>
+    (ranges.get(ruleId) ?? []).some((r) => lineIndex >= r.from && lineIndex <= r.to);
+}
+
 /** A finding is suppressed by `ui-audit-disable-line <rule>` on the same line, or
  *  `ui-audit-disable-next-line <rule>` on the line above (explicit rule id required). */
 function isSuppressed(ruleId, sameLine, prevLine) {
@@ -627,6 +765,12 @@ for (const dir of SCAN_DIRS) {
     const origLines = content.split("\n");
     const scanContent = stripComments(content); // comments blanked; strings + line numbers kept
     const scanLines = scanContent.split("\n");
+    // `classOnly` rules read this instead — everything but a real class expression blanked.
+    const classLines = classExpressionsOnly(scanContent).split("\n");
+    const inDisabledBlock = blockSuppressions(origLines);
+    /** Both opt-outs, by line index: the per-line markers and the reason-carrying block. */
+    const suppressed = (ruleId, i) =>
+      isSuppressed(ruleId, origLines[i], origLines[i - 1]) || inDisabledBlock(ruleId, i);
     const isJsx = file.endsWith(".tsx");
     // This compiler output intentionally resolves CSS variables to email-safe literals.
     // gen-email-tokens.mjs --check verifies it against its canonical token sources.
@@ -639,9 +783,10 @@ for (const dir of SCAN_DIRS) {
         if (!isJsx && rule.scope === "consumer-control") continue;
         if (compiledEmailTokens && rule.id === "no-off-scale-token-value") continue;
         if (rule.spansElement) continue; // matched over the whole file below, not line by line
+        const target = rule.classOnly ? (classLines[i] ?? "") : line;
         if (
-          (typeof rule.test === "function" ? rule.test(line) : rule.test.test(line)) &&
-          !isSuppressed(rule.id, origLines[i], origLines[i - 1]) &&
+          (typeof rule.test === "function" ? rule.test(target) : rule.test.test(target)) &&
+          !suppressed(rule.id, i) &&
           !isExempt(rule, origLines[i], origLines[i - 1])
         ) {
           findings.push({
@@ -672,7 +817,7 @@ for (const dir of SCAN_DIRS) {
         )
           continue;
         const lineNo = scanContent.slice(0, match.index).split("\n").length;
-        if (isSuppressed(rule.id, origLines[lineNo - 1], origLines[lineNo - 2])) continue;
+        if (suppressed(rule.id, lineNo - 1)) continue;
         if (isExempt(rule, origLines[lineNo - 1], origLines[lineNo - 2])) continue;
         findings.push({
           file: rel,
@@ -688,8 +833,7 @@ for (const dir of SCAN_DIRS) {
     if (!isJsx) continue;
     for (const match of scanContent.matchAll(CARD_FLUSH)) {
       const lineNo = scanContent.slice(0, match.index).split("\n").length;
-      if (isSuppressed("card-needs-content", origLines[lineNo - 1], origLines[lineNo - 2]))
-        continue;
+      if (suppressed("card-needs-content", lineNo - 1)) continue;
       findings.push({
         file: rel,
         line: lineNo,
@@ -706,8 +850,7 @@ for (const dir of SCAN_DIRS) {
     ) {
       for (const match of scanContent.matchAll(SIBLING_CARDS)) {
         const lineNo = scanContent.slice(0, match.index).split("\n").length + 1;
-        if (isSuppressed("sibling-cards-need-flex", origLines[lineNo - 1], origLines[lineNo - 2]))
-          continue;
+        if (suppressed("sibling-cards-need-flex", lineNo - 1)) continue;
         findings.push({
           file: rel,
           line: lineNo,
@@ -721,10 +864,7 @@ for (const dir of SCAN_DIRS) {
     }
     for (const match of scanContent.matchAll(BARE_FIELD)) {
       const lineNo = scanContent.slice(0, match.index).split("\n").length;
-      if (
-        isSuppressed("bare-control-needs-formfield", origLines[lineNo - 1], origLines[lineNo - 2])
-      )
-        continue;
+      if (suppressed("bare-control-needs-formfield", lineNo - 1)) continue;
       findings.push({
         file: rel,
         line: lineNo,

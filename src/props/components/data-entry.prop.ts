@@ -42,6 +42,8 @@ import type {
   NotFoundContentProp,
   PopupMatchWidthProp,
   PendingProp,
+  PadProp,
+  PadRawProp,
 } from "../vocabulary";
 import type { ResponsiveGridColumnsProp } from "./layout.prop";
 
@@ -113,6 +115,8 @@ export type InputProp = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"
 
 /** @see Textarea */
 export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  pad?: PadProp;
+  padRaw?: PadRawProp;
   /** Show an inline ✕ (top-end) that clears the field while it holds text (default false). */
   allowClear?: boolean;
   /** Called after the field is cleared via the inline ✕. */
@@ -544,35 +548,86 @@ export type CalendarFooterProp = {
   onClose?: () => void;
 };
 
+/** Shared picker chrome. Placement uses logical start/end so RTL follows the locale. */
+export type PickerChromeProp = {
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  status?: ControlStatusProp;
+  variant?: ControlVariantProp;
+  size?: Extract<SizeProp, "sm" | "md" | "lg">;
+  inputReadOnly?: boolean;
+  preserveInvalidOnBlur?: boolean;
+  placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
+  renderExtraFooter?: () => React.ReactNode;
+  ref?: React.Ref<HTMLInputElement>;
+};
+
+/** date-fns pattern, Intl options (including Japanese era), or a display function. */
+export type PickerDateFormatProp = string | Intl.DateTimeFormatOptions | ((date: Date) => string);
+
 /** @see DatePicker */
-export type DatePickerProp = FieldA11yProps & {
-  value?: ValueProp<Date>;
-  defaultValue?: DefaultValueProp<Date | undefined>;
-  onValueChange?: OnValueChangeProp<Date | undefined>;
-  placeholder?: PlaceholderProp;
-  disabled?: DisabledProp;
-  className?: ClassNameProp;
-  id?: IdProp;
-  /** Form field name — emits the value as an ISO-8601 `yyyy-MM-dd` string for native submission. */
-  name?: NameProp;
-  locale?: DayPickerProps["locale"];
-  fromDate?: Date;
-  toDate?: Date;
-  /** Decorate a day cell — 祝日, a booked day, a deadline. @see CalendarCellRenderProp */
-  cellRender?: CalendarCellRenderProp;
-  /**
-   * Forbid individual dates by predicate — the rule `fromDate`/`toDate` cannot express, because a
-   * business calendar is rarely one contiguous range: 土日, a closed accounting period, a 祝日, a
-   * day already fully booked.
-   *
-   * Applies to BOTH routes into the value. The calendar greys the cell out, and a date typed into
-   * the field is rejected the same way an unparseable one is — otherwise the keyboard becomes a
-   * way around the rule the mouse obeys.
-   */
-  disabledDate?: (date: Date) => boolean;
-  /** Show an inline ✕ to clear the value when one is set (default true). */
-  allowClear?: boolean;
-} & Pick<CalendarFooterProp, "showToday" | "showClose">;
+export type DatePickerBaseProp = FieldA11yProps &
+  PickerChromeProp & {
+    /** Display format; native submission remains ISO. */
+    format?: PickerDateFormatProp;
+    /** Parser for a custom display function or Intl era display; ISO always remains accepted. */
+    parseFormat?: (text: string) => Date | undefined;
+    minDate?: Date;
+    maxDate?: Date;
+    showWeek?: boolean;
+    needConfirm?: boolean;
+    picker?: "date" | "week" | "month" | "quarter" | "year";
+    order?: boolean;
+    showTime?:
+      | boolean
+      | Pick<
+          TimePickerProp,
+          "hourStep" | "minuteStep" | "secondStep" | "showSeconds" | "use12Hours" | "disabledTime"
+        >;
+    presets?: { label: React.ReactNode; value: Date | (() => Date) }[];
+    placeholder?: PlaceholderProp;
+    disabled?: DisabledProp;
+    className?: ClassNameProp;
+    id?: IdProp;
+    /** Form field name — emits the value as an ISO-8601 `yyyy-MM-dd` string for native submission. */
+    name?: NameProp;
+    locale?: DayPickerProps["locale"];
+    fromDate?: Date;
+    toDate?: Date;
+    /** Decorate a day cell — 祝日, a booked day, a deadline. @see CalendarCellRenderProp */
+    cellRender?: CalendarCellRenderProp;
+    /**
+     * Forbid individual dates by predicate — the rule `fromDate`/`toDate` cannot express, because a
+     * business calendar is rarely one contiguous range: 土日, a closed accounting period, a 祝日, a
+     * day already fully booked.
+     *
+     * Applies to BOTH routes into the value. The calendar greys the cell out, and a date typed into
+     * the field is rejected the same way an unparseable one is — otherwise the keyboard becomes a
+     * way around the rule the mouse obeys.
+     */
+    disabledDate?: (date: Date) => boolean;
+    /** Show an inline ✕ to clear the value when one is set (default true). */
+    allowClear?: boolean;
+  } & Pick<CalendarFooterProp, "showToday" | "showClose">;
+
+/** Single and multiple selections keep their callback types distinct. */
+export type DatePickerProp = DatePickerBaseProp &
+  (
+    | {
+        multiple?: false;
+        value?: Date;
+        defaultValue?: Date;
+        onValueChange?: (value: Date | undefined) => void;
+      }
+    | {
+        multiple: true;
+        value?: Date[];
+        defaultValue?: Date[];
+        onValueChange?: (value: Date[] | undefined) => void;
+        showTime?: false;
+      }
+  );
 
 /** @see MonthPicker */
 export type MonthPickerProp = FieldA11yProps & {
@@ -614,26 +669,38 @@ export type MonthRangePickerProp = FieldA11yProps & {
 };
 
 /** @see DateRangePicker */
-export type DateRangePickerProp = FieldA11yProps & {
-  value?: ValueProp<DateRange>;
-  defaultValue?: DefaultValueProp<DateRange | undefined>;
-  onValueChange?: OnValueChangeProp<DateRange | undefined>;
-  placeholder?: PlaceholderProp;
-  disabled?: DisabledProp;
-  className?: ClassNameProp;
-  id?: IdProp;
-  /** Form field name — emits the range as `${name}_from` / `${name}_to` ISO `yyyy-MM-dd` fields. */
-  name?: NameProp;
-  locale?: DayPickerProps["locale"];
-  fromDate?: Date;
-  toDate?: Date;
-  /** Decorate a day cell — see `CalendarCellRenderProp`. */
-  cellRender?: CalendarCellRenderProp;
-  /** Forbid individual dates by predicate — see `DatePickerProp.disabledDate`. */
-  disabledDate?: (date: Date) => boolean;
-  /** Show an inline ✕ to clear the range when one is set (default true). */
-  allowClear?: boolean;
-} & Pick<CalendarFooterProp, "showToday" | "showClose">;
+export type DateRangePickerProp = FieldA11yProps &
+  PickerChromeProp & {
+    /** Display format; native submission remains ISO. */
+    format?: PickerDateFormatProp;
+    /** Parser for a custom display function or Intl era display; ISO always remains accepted. */
+    parseFormat?: (text: string) => Date | undefined;
+    minDate?: Date;
+    maxDate?: Date;
+    showWeek?: boolean;
+    needConfirm?: boolean;
+    presets?: { label: React.ReactNode; value: DateRange | (() => DateRange) }[];
+    allowEmpty?: [boolean, boolean];
+    order?: boolean;
+    value?: ValueProp<DateRange>;
+    defaultValue?: DefaultValueProp<DateRange | undefined>;
+    onValueChange?: OnValueChangeProp<DateRange | undefined>;
+    placeholder?: PlaceholderProp;
+    disabled?: DisabledProp;
+    className?: ClassNameProp;
+    id?: IdProp;
+    /** Form field name — emits the range as `${name}_from` / `${name}_to` ISO `yyyy-MM-dd` fields. */
+    name?: NameProp;
+    locale?: DayPickerProps["locale"];
+    fromDate?: Date;
+    toDate?: Date;
+    /** Decorate a day cell — see `CalendarCellRenderProp`. */
+    cellRender?: CalendarCellRenderProp;
+    /** Forbid individual dates by predicate — see `DatePickerProp.disabledDate`. */
+    disabledDate?: (date: Date) => boolean;
+    /** Show an inline ✕ to clear the range when one is set (default true). */
+    allowClear?: boolean;
+  } & Pick<CalendarFooterProp, "showToday" | "showClose">;
 
 /**
  * Which times a TimePicker refuses, in antd's shape: one call returns the two predicates, so a
@@ -647,52 +714,75 @@ export type DateRangePickerProp = FieldA11yProps & {
 export type TimePickerDisabledTimeProp = () => {
   disabledHours?: () => number[];
   disabledMinutes?: (hour: number) => number[];
+  disabledSeconds?: (hour: number, minute: number) => number[];
 };
 
 /** @see TimePicker — popover HH:mm picker (canonical 24h storage). */
-export type TimePickerProp = FieldA11yProps & {
-  value?: ValueProp;
-  defaultValue?: DefaultValueProp;
-  onValueChange?: OnValueChangeProp;
-  placeholder?: PlaceholderProp;
-  disabled?: DisabledProp;
-  className?: ClassNameProp;
-  id?: IdProp;
-  /** Form field name — emits the value as a canonical 24h `HH:mm` string for native submission. */
-  name?: NameProp;
-  /** Minute column step — default 5 (logistics cut-offs). */
-  minuteStep?: number;
-  /**
-   * Forbid individual hours and minutes. Without it a 開始/終了 pair has no way to stop the end
-   * time being set before the start time — the columns will happily offer it.
-   *
-   * Applies to BOTH routes into the value: a disabled option cannot be clicked, is skipped by the
-   * arrow keys, and a forbidden time typed into the field is rejected.
-   */
-  disabledTime?: TimePickerDisabledTimeProp;
-  /**
-   * Drop disabled options from the columns instead of showing them greyed out (default false, as
-   * antd). Greyed-out is usually the better default — a visible-but-refused option tells the
-   * reader the rule exists — but a column that is mostly forbidden reads better short.
-   */
-  hideDisabledOptions?: boolean;
-  /**
-   * Offer a "now" action in the panel footer (default true, as antd's `showNow`). It is refused,
-   * not hidden, when `disabledTime` forbids the current time — the same treatment a forbidden
-   * column option gets, and for the same reason.
-   */
-  showNow?: boolean;
-  /**
-   * Hold the panel's choices as a DRAFT until a confirm action commits them (antd's `needConfirm`).
-   *
-   * DEFAULT `false`, which is where this diverges from antd deliberately. antd defaults it on; this
-   * library has always committed on select and closed, and every consumer's flow is built on that.
-   * Flipping the default would silently add a click to every existing time field. Opt in where the
-   * value is expensive to change (a saved shift, a published slot); leave it off otherwise.
-   */
-  needConfirm?: boolean;
-  /** Show an inline ✕ to clear the value when one is set (default true). */
-  allowClear?: boolean;
+export type TimePickerProp = FieldA11yProps &
+  PickerChromeProp & {
+    /** Opt-in wheel selection; defaults off to avoid accidental edits. */
+    changeOnScroll?: boolean;
+    hourStep?: number;
+    secondStep?: number;
+    showSeconds?: boolean;
+    use12Hours?: boolean;
+    /** Time pattern: HH:mm, HH:mm:ss, h:mm A (or date-fns a). Storage stays 24-hour. */
+    format?: string;
+    value?: ValueProp;
+    defaultValue?: DefaultValueProp;
+    onValueChange?: OnValueChangeProp;
+    placeholder?: PlaceholderProp;
+    disabled?: DisabledProp;
+    className?: ClassNameProp;
+    id?: IdProp;
+    /** Form field name — emits the value as a canonical 24h `HH:mm` string for native submission. */
+    name?: NameProp;
+    /** Minute column step — default 5 (logistics cut-offs). */
+    minuteStep?: number;
+    /**
+     * Forbid individual hours and minutes. Without it a 開始/終了 pair has no way to stop the end
+     * time being set before the start time — the columns will happily offer it.
+     *
+     * Applies to BOTH routes into the value: a disabled option cannot be clicked, is skipped by the
+     * arrow keys, and a forbidden time typed into the field is rejected.
+     */
+    disabledTime?: TimePickerDisabledTimeProp;
+    /**
+     * Drop disabled options from the columns instead of showing them greyed out (default false, as
+     * antd). Greyed-out is usually the better default — a visible-but-refused option tells the
+     * reader the rule exists — but a column that is mostly forbidden reads better short.
+     */
+    hideDisabledOptions?: boolean;
+    /**
+     * Offer a "now" action in the panel footer (default true, as antd's `showNow`). It is refused,
+     * not hidden, when `disabledTime` forbids the current time — the same treatment a forbidden
+     * column option gets, and for the same reason.
+     */
+    showNow?: boolean;
+    /**
+     * Hold the panel's choices as a DRAFT until a confirm action commits them (antd's `needConfirm`).
+     *
+     * DEFAULT `false`, which is where this diverges from antd deliberately. antd defaults it on; this
+     * library has always committed on select and closed, and every consumer's flow is built on that.
+     * Flipping the default would silently add a click to every existing time field. Opt in where the
+     * value is expensive to change (a saved shift, a published slot); leave it off otherwise.
+     */
+    needConfirm?: boolean;
+    /** Show an inline ✕ to clear the value when one is set (default true). */
+    allowClear?: boolean;
+  };
+
+/** A pair of canonical times, ordered by default; empty endpoints are explicitly configurable. */
+export type TimeRangePickerProp = Omit<
+  TimePickerProp,
+  "value" | "defaultValue" | "onValueChange" | "placeholder"
+> & {
+  value?: [string, string];
+  defaultValue?: [string, string];
+  onValueChange?: (value: [string, string]) => void;
+  placeholder?: [string, string];
+  order?: boolean;
+  allowEmpty?: [boolean, boolean];
 };
 
 /** @see ColorPicker */

@@ -8,7 +8,7 @@ export type CodeBlockProp = {
   /** Soft-wrap long lines (default true). `false` scrolls horizontally instead. */
   wrap?: boolean;
   /** Scroll inside the block past this height. Default `none` (grows with the content). */
-  maxHeight?: "sm" | "md" | "lg" | "none";
+  maxHeight?: "sm" | "md" | "lg" | "none" | { value: string };
   /** Type size. Default `sm`. */
   size?: Extract<SizeProp, "xs" | "sm">;
   /** Cosmetic: lands on `data-language`; no highlighter is bundled. */

@@ -88,6 +88,9 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
   whitespace?: TextWhitespaceProp;
   /** Tabular figures for aligned numbers. */
   tabular?: boolean;
+  decoration?: "none" | "underline" | "line-through";
+  /** Inline code chip; use with as="code". */
+  chip?: boolean;
   /** Monospace family (codes, ids). */
   mono?: boolean;
   htmlFor?: string;

@@ -340,9 +340,18 @@ export function DropdownMenuSub({ children }: DropdownMenuSubProps) {
   return <SubmenuTrigger>{parts as React.ReactElement[]}</SubmenuTrigger>;
 }
 
+/**
+ * Width axis of the menu surface (gh#396) — the vocabulary `Select` already publishes, extended to
+ * the one member of the family that never got it. `"trigger"` matches the anchor, `"auto"` releases
+ * the floor and shrinks to the content, and `sm | md | lg` select the `--menu-content-width-*`
+ * ladder. Unset = today's `--dropdown-content-min-width`, so nothing moves.
+ */
+type DropdownMenuContentWidth = "trigger" | "auto" | "sm" | "md" | "lg";
+
 interface DropdownMenuContentPropsOwn {
   placement?: DropdownMenuPlacementProp;
   arrow?: boolean;
+  width?: DropdownMenuContentWidth;
   className?: string;
   side?: "top" | "right" | "bottom" | "left";
   align?: "start" | "center" | "end";
@@ -379,6 +388,7 @@ export function DropdownMenuContent({
   sideOffset = 4,
   placement,
   arrow,
+  width,
   alignOffset,
   avoidCollisions,
   collisionPadding,
@@ -413,6 +423,9 @@ export function DropdownMenuContent({
             role={undefined}
             {...radixSurfaceState(state)}
             data-align={align ?? anchor?.align ?? "center"}
+            // Absent when the prop is unset (the `data-priority` rule), so an untouched menu
+            // matches none of the width rules and keeps --dropdown-content-min-width.
+            data-width={width}
           />
         )}
       >

@@ -164,6 +164,41 @@
     text-decoration-line: underline;
   }
 
+  /* ── BARE (gh#404) — a control with NO geometry of its own ───────────────────────────────────
+   * The row that needs a real button (hitbox, focus ring, keyboard semantics, `aria-label`) around
+   * content that ALREADY is the shape: a Badge, a truncating title. Every other variant loads a
+   * height and an inline inset from its `size` tier, so the call site was writing
+   * `className="h-auto p-0"` — an audit error with no legal replacement.
+   *
+   * Two-class specificity (0-2-0) so it out-ranks the size tiers (`.ui-button--default-size` and
+   * friends, 0-1-0) regardless of source order — the sizes are still free to move in this file.
+   * Type and colour INHERIT: a bare button wrapping a document title must not silently promote it
+   * to the control font-weight. `size` remains meaningful, but only for the icon step. */
+  .ui-button.ui-button--bare {
+    position: relative;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+  }
+
+  /* The TARGET, separated from the box. WCAG 2.2 SC 2.5.8 asks for 24×24 CSS px of target, not for
+   * 24px of ink — so the minimum lives on a pseudo-element that can be larger than the content
+   * without pushing anything around. `inset: 0` + `margin: auto` centres it on BOTH axes with no
+   * physical offset and no translate, so it is correct under dir="rtl" as written (CSS 2.1 §10.3.7
+   * / §10.6.4: auto margins split the over-constrained free space, negative included). */
+  .ui-button.ui-button--bare::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    min-inline-size: var(--button-bare-target-size);
+    min-block-size: var(--button-bare-target-size);
+    margin: auto;
+  }
+
   .ui-button--default-size {
     height: var(--control-height);
     padding-inline: var(--control-padding-x);
@@ -182,11 +217,28 @@
   }
 
   /* A Badge nested in a Button is a compact count/indicator chip, not a free-standing status chip.
- */
-  .ui-button [data-slot="badge"] {
-    padding-block: 0;
-    line-height: var(--line-height-tight);
-    border-radius: var(--radius-sm);
+   *
+   * SCOPED TO THE VARIANTS THAT HAVE A BOX (gh#404). The premise — a chip must not fight the
+   * button's own frame — holds for a filled/bordered control and NOT for `ghost`, `link` or
+   * `bare`, which have no frame for it to fight: there the rule merely collapsed the chip from
+   * 19.1px to 11.1px, and there was no way out from the call site (this selector is 0-3-0 against
+   * Badge's own 0-1-0 shape class, and it wrote the two values as CONSTANTS).
+   *
+   * Both values now go through the Badge's OWN knobs instead of being set directly, so a call site
+   * that wants its chip back declares `--badge-space-y` / `--badge-radius` on it — a utility sits
+   * in `@layer utilities` and out-ranks this block whatever its specificity, which is what makes
+   * the opt-out honest rather than an !important fight. */
+  .ui-button:is(
+      .ui-button--default,
+      .ui-button--destructive,
+      .ui-button--outline,
+      .ui-button--dashed,
+      .ui-button--secondary
+    )
+    [data-slot="badge"] {
+    --badge-space-y: 0;
+    --badge-line-height: var(--line-height-tight);
+    --badge-radius: var(--radius-sm);
   }
 
   .ui-button--lg {
@@ -297,8 +349,13 @@
     overflow-wrap: break-word;
     font-size: var(--control-font-size);
     line-height: var(--textarea-autogrow-line-height, var(--line-height-normal));
-    padding-block: var(--control-multiline-padding-block);
-    padding-inline: var(--control-padding-x);
+    padding-block-start: var(
+      --textarea-padding-block-start,
+      var(--control-multiline-padding-block)
+    );
+    padding-block-end: var(--textarea-padding-block-end, var(--control-multiline-padding-block));
+    padding-inline-start: var(--textarea-padding-inline-start, var(--control-padding-x));
+    padding-inline-end: var(--textarea-padding-inline-end, var(--control-padding-x));
     border: var(--control-border-width) solid transparent;
     /* The floor never undercuts the control tier, so a resting one-row composer still lines up
      * with the Input / Button on its row; above it the box counts in rows. */
@@ -1799,16 +1856,11 @@
     --popover-space-inset: 0;
   }
 
-  /* Two affix controls (clear + clock), so a wider reserved end than the single-affix triggers. */
   /* A popover whose content owns its own padding (a Calendar, a month grid) — the panel just hugs
    * it. */
   .ui-control-panel-flush {
     --popover-surface-inline-size: auto;
     --popover-space-inset: 0;
-  }
-
-  .ui-control-inline-affix-pair-affixed {
-    padding-inline-end: var(--control-inline-affix-pair-space-inline-end);
   }
 
   .ui-time-picker-affix {

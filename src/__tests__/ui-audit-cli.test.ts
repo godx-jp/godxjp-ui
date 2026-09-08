@@ -94,6 +94,89 @@ describe("consumer audit CLI regressions", () => {
       '"hardcoded-currency"',
     );
   });
+  it("reads class-shaped rules from class expressions only, not prose (#406)", () => {
+    // Copy, an i18n value or a JSX text node that merely SPELLS a utility is not a class.
+    expect(audit("const note = 'chuỗi có chữ gap-3 trong đó';").output).not.toContain(
+      '"no-utility-spacing"',
+    );
+    expect(audit("<Text>văn bản JSX nhắc gap-3</Text>").output).not.toContain(
+      '"no-utility-spacing"',
+    );
+    expect(audit('const messages = { hint: "Total gap-3 items" };').output).not.toContain(
+      '"no-utility-spacing"',
+    );
+    expect(audit('<Text title="Spacing: use gap-3">Read me</Text>').output).not.toContain(
+      '"no-utility-spacing"',
+    );
+    // …and the text of an element that DOES carry a class is still only text.
+    const mixed = audit('<div className="flex">gap-3 items</div>').output;
+    expect(mixed).toContain('"no-utility-layout"');
+    expect(mixed).not.toContain('"no-utility-spacing"');
+  });
+
+  it("still catches a class wherever a class can actually be written (#406)", () => {
+    expect(audit('<div className="gap-3" />').output).toContain('"no-utility-spacing"');
+    expect(audit('<div className={cn("gap-3", isWide && "p-2")} />').output).toContain(
+      '"no-utility-spacing"',
+    );
+    expect(audit("<div className={clsx(\n  active && `gap-3`,\n)} />").output).toContain(
+      '"no-utility-spacing"',
+    );
+    expect(audit("<div className={`pr-4 ${extra}`} />").output).toContain(
+      '"no-physical-direction"',
+    );
+    expect(audit('const baseClass = "space-x-2";').output).toContain('"no-space-xy"');
+    expect(audit('const columns = [{ className: "text-white" }];').output).toContain(
+      '"raw-white-black"',
+    );
+    // A class MAP under its conventional names — the shape `cva()` is not used for.
+    expect(
+      audit('const statusStyles: Record<string, string> = {\n  spam: "bg-red-100",\n};').output,
+    ).toContain('"no-raw-palette-color"');
+    expect(audit('const badgeVariants = {\n  lead: "dark:bg-red-500/15",\n};').output).toContain(
+      '"no-dark-color-override"',
+    );
+  });
+
+  it("suppresses a block only when a reason is given, and only for that rule (#406)", () => {
+    const block = (begin: string) =>
+      audit(
+        `${begin}\nconst aClass = "gap-3";\nconst bClass = "p-2";\n// ui-audit-disable-end no-utility-spacing\nconst cClass = "gap-4";`,
+      );
+
+    // Reason present → one marker covers every line of the block.
+    const suppressed = block(
+      "// ui-audit-disable-begin no-utility-spacing — legacy grid, tracked in gh#123",
+    );
+    expect(suppressed.output).toContain('"line": 5'); // the line AFTER the block still reports
+    expect(suppressed.output.match(/"no-utility-spacing"/g)).toHaveLength(1);
+
+    // Reason missing, or too short to say anything → the finding stands on all three lines.
+    for (const begin of [
+      "// ui-audit-disable-begin no-utility-spacing",
+      "// ui-audit-disable-begin no-utility-spacing — why",
+    ]) {
+      expect(block(begin).output.match(/"no-utility-spacing"/g), begin).toHaveLength(3);
+    }
+
+    // A block names ONE rule; every other rule keeps reporting inside it.
+    const scoped = audit(
+      "// ui-audit-disable-begin no-utility-spacing — spacing is deliberate here\n" +
+        'const aClass = "gap-3 bg-red-500";\n' +
+        "// ui-audit-disable-end no-utility-spacing",
+    );
+    expect(scoped.output).not.toContain('"no-utility-spacing"');
+    expect(scoped.output).toContain('"no-raw-palette-color"');
+
+    // An unclosed block runs to the end of the file.
+    expect(
+      audit(
+        "// ui-audit-disable-begin no-utility-spacing — whole fixture is legacy markup\n" +
+          'const aClass = "gap-3";\nconst bClass = "p-2";',
+      ).output,
+    ).not.toContain('"no-utility-spacing"');
+  });
+
   it("scans framework defaults and still detects a violation", () => {
     const result = audit('<input type="text" />', true);
     expect(result.status).toBe(1);

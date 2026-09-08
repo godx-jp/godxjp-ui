@@ -37,6 +37,27 @@ export default function Demo() {
       subtitle="Radix dropdown · Trigger asChild + Content + Item/Separator/Sub"
     >
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>メニュー幅</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Flex wrap gap="md">
+              {(["auto", "trigger", "sm", "md", "lg"] as const).map((width) => (
+                <DropdownMenu key={width}>
+                  <DropdownMenuTrigger asChild>
+                    <Button id={`menu-width-${width}`} variant="outline">
+                      {width}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent width={width}>
+                    <DropdownMenuItem>編集</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ))}
+            </Flex>
+          </CardContent>
+        </Card>
         {/* Row action menu — the most common use */}
         <Card>
           <CardHeader>

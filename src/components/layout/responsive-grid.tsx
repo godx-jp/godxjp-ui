@@ -4,10 +4,14 @@ import type {
   ResponsiveGridFlowProp,
   ResponsiveGridPresetProp,
 } from "../../props/components/layout.prop";
+import { padStyle } from "../../lib/variants";
+import type { PadProp, PadRawProp } from "../../props/vocabulary";
 import { cn } from "../../lib/utils";
 import type { GapProp } from "../../props/vocabulary/layout.prop";
 
 export type ResponsiveGridProps = {
+  pad?: PadProp;
+  padRaw?: PadRawProp;
   /** Gap between cells, the same steps as Flex. Default `md`. */
   gap?: GapProp;
   /** Optional structural class override. */
@@ -83,6 +87,8 @@ export function ResponsiveGrid({
   columns = 4,
   flow = "rows",
   gap,
+  pad,
+  padRaw,
   preset,
   className,
   children,
@@ -97,10 +103,34 @@ export function ResponsiveGrid({
         className={cn("ui-responsive-grid", className)}
         data-gap={gap}
         data-flow={flow === "columns" ? "columns" : undefined}
-        style={toStyle(resolved)}
+        style={{ ...toStyle(resolved), ...padStyle(pad, padRaw) }}
+        data-pad-raw={padRaw === undefined ? undefined : ""}
       >
         {children}
       </div>
     </div>
   );
 }
+
+/** A grid item owns its responsive span; no extra implicit columns on a narrow container. */
+export function ResponsiveGridItem({
+  span = 1,
+  children,
+  className,
+}: {
+  span?: ResponsiveGridColumnsProp;
+  children?: ReactNode;
+  className?: string;
+}) {
+  const steps =
+    typeof span === "number" ? { base: 1, sm: span, md: span, lg: span } : resolveColumns(span);
+  const style = Object.fromEntries(
+    Object.entries(steps).map(([step, value]) => [`--responsive-grid-item-${step}`, value]),
+  ) as CSSProperties;
+  return (
+    <div className={cn("ui-responsive-grid-item", className)} style={style}>
+      {children}
+    </div>
+  );
+}
+ResponsiveGrid.Item = ResponsiveGridItem;

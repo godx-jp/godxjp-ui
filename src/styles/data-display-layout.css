@@ -1346,6 +1346,20 @@
     grid-column: 1 / -1;
   }
 
+  /* ── RULED ROWS (gh#414) ────────────────────────────────────────────────
+   * The two knobs that were keeping a hand-rolled `<Flex className="min-h-10 border-b">` row alive
+   * at the call site. Both default quiet (`none` / `auto`), so a Descriptions that opts into
+   * neither renders byte-identically. Scoped away from `bordered`, which already rules every cell
+   * edge and would otherwise draw a second line under each row. */
+  [data-slot="descriptions"]:not([data-bordered]) [data-slot="descriptions-item"] {
+    border-block-end: var(--descriptions-row-border);
+    min-block-size: var(--descriptions-row-min-height);
+    /* Centres the pair inside a BAND. A no-op while the band height is `auto` (an auto-height grid
+     * has no free space to distribute), so this costs nothing until the knob above is set — and
+     * without it a ruled row would print its label hard against the rule above it. */
+    align-content: center;
+  }
+
   /* ── antd `bordered` ────────────────────────────────────────────────────
    * Every cell draws its own block-start and inline-start rule and the container closes the other
    * two edges, so the grid is complete at any column count without anyone knowing which cell is
@@ -1464,5 +1478,23 @@
         )
       );
     }
+  }
+}
+
+@layer components {
+  .ui-text[data-decoration="line-through"] {
+    text-decoration: line-through;
+  }
+  .ui-text[data-decoration="underline"] {
+    text-decoration: underline;
+  }
+  .ui-text[data-decoration="none"] {
+    text-decoration: none;
+  }
+  .ui-text[data-chip] {
+    background: hsl(var(--muted));
+    border-radius: var(--prose-code-radius);
+    padding-inline: var(--prose-code-space-inline);
+    font-size: var(--prose-code-font-size);
   }
 }

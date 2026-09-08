@@ -1521,6 +1521,32 @@ export const COMPONENT_PROP_REGISTRY = {
     ],
     local: ["showToday", "showClose"],
   },
+  PickerChromeProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "OpenProp",
+      "DefaultOpenProp",
+      "OnOpenChangeProp",
+      "ControlVariantProp",
+      "SizeProp",
+    ],
+  },
+  PickerDateFormatProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  DatePickerBaseProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["PlaceholderProp", "DisabledProp", "ClassNameProp", "IdProp", "NameProp"],
+  },
+  TimeRangePickerProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "PlaceholderProp"],
+  },
   DatePickerProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

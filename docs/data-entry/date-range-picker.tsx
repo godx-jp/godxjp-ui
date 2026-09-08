@@ -143,6 +143,32 @@ export default function Demo() {
             </FormField>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>期間プリセットと確定</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FormField id="preset-range" label="集計期間">
+              <DateRangePicker
+                id="preset-range"
+                name="report"
+                format="yyyy/MM/dd"
+                needConfirm
+                allowEmpty={[false, true]}
+                showWeek
+                minDate={new Date(2026, 0, 1)}
+                maxDate={new Date(2026, 11, 31)}
+                presets={[
+                  {
+                    label: "9月",
+                    value: () => ({ from: new Date(2026, 8, 1), to: new Date(2026, 8, 30) }),
+                  },
+                ]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

@@ -7,6 +7,7 @@ import {
   CardTitle,
   Descriptions,
 } from "@godxjp/ui/data-display";
+import type { CSSProperties } from "react";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -133,6 +134,46 @@ export default function Demo() {
               <Descriptions.Item label="作成者">山田 太郎</Descriptions.Item>
               <Descriptions.Item label="メタデータ" mono span={3}>
                 {'{ "channel": "web", "tax_rate": 0.1, "currency": "JPY" }'}
+              </Descriptions.Item>
+            </Descriptions>
+          </CardContent>
+        </Card>
+
+        {/* ── The RULED property panel (gh#414) ─────────────────────────────
+            Two token knobs, both OFF by default, turn a horizontal Descriptions into the ruled
+            panel a detail page usually wants. They exist so a service stops hand-rolling a
+            `<Flex className="min-h-10 border-b">` row: the label column, the gaps and the value
+            type step were already Descriptions'; only the rule and the band height were missing.
+            The row gap goes to 0 in the same declaration — the gap is the space BETWEEN rules, so
+            leaving it would draw detached hairlines instead of a ruled list. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>案件の詳細 · ruled rows</CardTitle>
+            <CardDescription>
+              一行ごとに罫線を引いた属性パネル。--descriptions-row-border と
+              --descriptions-row-min-height をテーマで一度設定するだけで、コンポーネントは同じです。
+            </CardDescription>
+          </CardHeader>
+          {/* The knobs are declared on the CARD BODY, not on the grid: custom properties inherit,
+              so one scope re-tunes every Descriptions inside it — which is how a service theme
+              would set them (once, globally), not per call site. */}
+          <CardContent
+            style={
+              {
+                "--descriptions-row-border": "1px solid hsl(var(--border))",
+                "--descriptions-row-min-height": "var(--band-height-lg)",
+                "--descriptions-row-gap": "0px",
+              } as CSSProperties
+            }
+          >
+            <Descriptions columns={1} layout="horizontal">
+              <Descriptions.Item label="案件名">2026年度 基幹システム更改</Descriptions.Item>
+              <Descriptions.Item label="担当">山田 太郎</Descriptions.Item>
+              <Descriptions.Item label="状態">
+                <Badge status="active" />
+              </Descriptions.Item>
+              <Descriptions.Item label="契約ID" mono>
+                CT-2026-0088
               </Descriptions.Item>
             </Descriptions>
           </CardContent>

@@ -1,3 +1,5 @@
+import { padStyle, padStepToken } from "../../lib/variants";
+import type { GapProp, PadProp, PadRawProp } from "../../props/vocabulary";
 import * as React from "react";
 import type { LucideIcon } from "lucide-react";
 
@@ -161,6 +163,11 @@ export const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
 CardFooter.displayName = "CardFooter";
 
 export type CardBarProps = React.HTMLAttributes<HTMLDivElement> & {
+  pad?: PadProp;
+  padRaw?: PadRawProp;
+  gap?: GapProp;
+  surface?: "muted";
+  border?: "none" | "block-start" | "block-end" | "both";
   /** Right-aligned actions slot (settings/save), Ant `tabBarExtraContent`-style. */
   extra?: React.ReactNode;
 };
@@ -172,8 +179,21 @@ export type CardBarProps = React.HTMLAttributes<HTMLDivElement> & {
  * border is enough).
  */
 export const CardBar = React.forwardRef<HTMLDivElement, CardBarProps>(
-  ({ className, children, extra, ...props }, ref) => (
-    <div ref={ref} data-slot="card-bar" className={cn("ui-card-bar", className)} {...props}>
+  ({ className, children, extra, pad, padRaw, gap, surface, border, style, ...props }, ref) => (
+    <div
+      ref={ref}
+      data-surface={surface}
+      data-border={border}
+      data-pad-raw={padRaw === undefined ? undefined : ""}
+      style={{
+        ...style,
+        ...padStyle(pad, padRaw),
+        ...(gap === undefined ? undefined : { gap: padStepToken(gap) }),
+      }}
+      data-slot="card-bar"
+      className={cn("ui-card-bar", className)}
+      {...props}
+    >
       <div data-slot="card-bar-main" className="ui-card-bar-main">
         {children}
       </div>

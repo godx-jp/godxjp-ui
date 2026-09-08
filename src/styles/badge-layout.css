@@ -9,7 +9,10 @@
     vertical-align: middle;
     gap: var(--badge-space-gap);
     padding: var(--badge-space-y) var(--badge-space-x);
-    border-radius: var(--radius-md);
+    /* A knob, not a literal (gh#404): the chip had a spacing knob and no corner knob at all, so a
+     * context that reshapes it — a Badge nested in a bordered Button — could only write the radius
+     * as a constant nobody could reach back past. Default is byte-identical. */
+    border-radius: var(--badge-radius);
     border-width: 1px;
     font-size: var(--badge-font-size);
     /* Default reproduces `text-xs` exactly. */
