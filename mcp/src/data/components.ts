@@ -5561,6 +5561,18 @@ export function NegotiationYmField() {
       "WAI-ARIA date combobox with a real typeable ISO-8601 input — give it a `name` for form submission and fill the input in e2e tests; the calendar is the visual-only affordance.",
     props: [
       {
+        name: "cellRender",
+        type: "(date: Date, info: { originNode: ReactNode }) => ReactNode",
+        description:
+          "Decorate a day cell — 祝日, a booked day, a deadline. It WRAPS the library's own day button rather than replacing it: `originNode` already carries the selection state, `aria-selected`, the disabled handling and its place in the grid's roving tabindex. Write `<>{originNode}<Badge …/></>` — decorate, never rebuild, or every marker re-derives all of that and most get it wrong.",
+      },
+      {
+        name: "disabledDate",
+        type: "(date: Date) => boolean",
+        description:
+          "Forbid individual dates by predicate — a business rule the `fromDate`/`toDate` window cannot express (holidays, blackout days, a 開始 date already chosen). A forbidden day is refused on BOTH routes into the value: it cannot be clicked and it is rejected when typed.",
+      },
+      {
         name: "showToday",
         type: "boolean",
         defaultValue: "false",
@@ -6812,6 +6824,33 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
       "24h HH:mm time combobox with a scrollable hour/minute popover — the visible input IS the form field; give it a `name` prop and it submits directly, no hidden mirror needed.",
     props: [
       {
+        name: "disabledTime",
+        type: "TimePickerDisabledTimeProp",
+        description:
+          "Forbid individual hours and minutes. Without it a 開始/終了 pair has no way to stop the end time being set before the start — the columns will happily offer it. Applies to BOTH routes into the value: a disabled option cannot be clicked, is skipped by the arrow keys, and a forbidden time typed into the field is rejected.",
+      },
+      {
+        name: "hideDisabledOptions",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Drop disabled options from the columns instead of greying them out (antd's default too). Greyed-out is usually better — a visible-but-refused option tells the reader the rule exists — but a column that is mostly forbidden reads better short.",
+      },
+      {
+        name: "showNow",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Offer a \\u201cnow\\u201d action in the panel footer (antd's `showNow`). It is REFUSED, not hidden, when `disabledTime` forbids the current time — the same treatment a forbidden column option gets.",
+      },
+      {
+        name: "needConfirm",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Hold the panel's choices as a DRAFT until a confirm action commits them (antd's `needConfirm`). Default `false` diverges from antd deliberately: this library has always committed on select and closed, and flipping the default would silently add a click to every existing time field. Opt in where the value is expensive to change (a saved shift, a published slot).",
+      },
+      {
         name: "value",
         type: "string",
         description:
@@ -6949,6 +6988,18 @@ export function CutoffTimeForm() {
     tagline:
       "WAI-ARIA date-range control with two typeable ISO inputs + popover calendar — form-submits as `${name}_from` / `${name}_to`, never hand-roll two DatePickers side-by-side.",
     props: [
+      {
+        name: "cellRender",
+        type: "(date: Date, info: { originNode: ReactNode }) => ReactNode",
+        description:
+          "Decorate a day cell — 祝日, a booked day, a deadline. It WRAPS the library's own day button rather than replacing it: `originNode` already carries the selection state, `aria-selected`, the disabled handling and its place in the grid's roving tabindex. Write `<>{originNode}<Badge …/></>` — decorate, never rebuild, or every marker re-derives all of that and most get it wrong.",
+      },
+      {
+        name: "disabledDate",
+        type: "(date: Date) => boolean",
+        description:
+          "Forbid individual dates by predicate — a business rule the `fromDate`/`toDate` window cannot express (holidays, blackout days, a 開始 date already chosen). A forbidden day is refused on BOTH routes into the value: it cannot be clicked and it is rejected when typed.",
+      },
       {
         name: "showToday",
         type: "boolean",
@@ -8187,6 +8238,12 @@ function FormSlider() {
     tagline:
       "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker or DateRangePicker instead when you need a form-submittable input.",
     props: [
+      {
+        name: "cellRender",
+        type: "(date: Date, info: { originNode: ReactNode }) => ReactNode",
+        description:
+          "Decorate a day cell — 祝日, a booked day, a deadline. It WRAPS the library's own day button rather than replacing it: `originNode` already carries the selection state, `aria-selected`, the disabled handling and its place in the grid's roving tabindex. Write `<>{originNode}<Badge …/></>` — decorate, never rebuild, or every marker re-derives all of that and most get it wrong.",
+      },
       {
         name: "bordered",
         type: "boolean",
