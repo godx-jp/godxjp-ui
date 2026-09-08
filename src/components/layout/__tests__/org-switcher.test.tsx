@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import * as React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
@@ -6,6 +9,8 @@ import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { Badge } from "../../data-display/badge";
 import { OrgSwitcher } from "../org-switcher";
+
+const shellStyles = readFileSync(resolve(process.cwd(), "src/styles/shell-layout.css"), "utf8");
 
 const organizations = [
   { id: "dxs", name: "DXS Holdings", meta: "Owner" },
@@ -358,5 +363,58 @@ describe("OrgSwitcher responsive contract shares the Sheet breakpoint token (gh#
     expect(trigger).not.toBeNull();
     expect(trigger).toHaveClass("ui-org-switcher-trigger");
     expect(trigger).toHaveAttribute("id", "org-switcher");
+  });
+
+  it('responsive="dialog" opens a named modal on desktop and the SAME sheet on mobile', async () => {
+    /*
+     * `auto` and `dialog` are the two responsive PAIRS and share their mobile half: below the
+     * breakpoint both are the bottom Sheet, because a centred modal on a phone is a Sheet with
+     * worse ergonomics. They differ only in the desktop half — which is the whole point of the
+     * value: a popover is anchored to its trigger, clipped by the viewport and sized by
+     * --org-switcher-menu-width, and none of that survives a row that carries a role, a plan and a
+     * member count.
+     */
+    setViewport(1440);
+    const user = userEvent.setup();
+    const { unmount } = renderWithUi(
+      <OrgSwitcher organizations={organizations} value="dxs" labels={labels} responsive="dialog" />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /Current organization/ }));
+    const desktop = await screen.findByRole("dialog", { name: "Choose organization" });
+    expect(desktop.getAttribute("data-slot")).toBe("dialog-content");
+    unmount();
+
+    setViewport(390);
+    renderWithUi(
+      <OrgSwitcher organizations={organizations} value="dxs" labels={labels} responsive="dialog" />,
+    );
+    await user.click(screen.getByRole("button", { name: /Current organization/ }));
+    const mobile = await screen.findByRole("dialog", { name: "Choose organization" });
+    expect(mobile.getAttribute("data-slot")).toBe("sheet-content");
+  });
+
+  it('leaves "auto" on the popover, so the new value is opt-in', () => {
+    // A default that quietly became a modal would re-shape every consumer that never asked.
+    expect(shellStyles).toContain('[data-slot="dialog-content"].ui-org-switcher-dialog');
+  });
+
+  it("the dialog surface overrides the COMPOSITE inset, not one of its parts", () => {
+    /*
+     * `--dialog-space-inset` is declared at `:root` as `var(--dialog-space-y) var(--dialog-space-x)`,
+     * and a custom property substitutes its vars WHERE IT IS DECLARED — so re-declaring
+     * `--dialog-space-x` on the element changes nothing the padding can see. Measured exactly that:
+     * the rule shipped, the token read 12px, and the box still padded 24px, leaving the rows 13px
+     * short of both edges.
+     *
+     * Pinning which property is written, because that IS the fix; the geometry it buys is measured
+     * in a browser (rows 433-847 in a panel at 432-848, against 445-835 before).
+     */
+    const decls = shellStyles.slice(
+      shellStyles.indexOf('[data-slot="dialog-content"].ui-org-switcher-dialog'),
+    );
+    const block = decls.slice(0, decls.indexOf("}"));
+    expect(block).toMatch(/--dialog-space-inset:\s*var\(--dialog-space-y\)/);
+    expect(block).not.toMatch(/--dialog-space-x:/);
   });
 });

@@ -9006,8 +9006,8 @@
           "name": "responsive",
           "origin": "owned",
           "required": false,
-          "type": "\"popover\" | \"auto\" | \"sheet\" | undefined",
-          "values": ["popover", "auto", "sheet"],
+          "type": "\"dialog\" | \"popover\" | \"auto\" | \"sheet\" | undefined",
+          "values": ["dialog", "popover", "auto", "sheet"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {

@@ -935,13 +935,25 @@ export type OrgSwitcherProp = {
   onRetry?: () => void;
   labels: OrgSwitcherLabels;
   /**
-   * `"auto"` (default) uses the desktop popover above `--sheet-responsive-breakpoint-width` and a
-   * focus-trapped bottom Sheet at/below it — the SAME token that drives `SheetContent
-   * responsive="auto"`, resolved through the shared `useSheetResponsiveMode()` hook, so a service
-   * moves the drawer line once for every overlay instead of per component.
-   * Explicit modes are useful for deterministic embedded surfaces and component tests.
+   * WHICH SURFACE the panel opens on.
+   *
+   * - `"auto"` (default) — popover above `--sheet-responsive-breakpoint-width`, focus-trapped
+   *   bottom Sheet at or below it.
+   * - `"dialog"` — a centred modal above that breakpoint, the same bottom Sheet below it. Reach for
+   *   this once the panel carries more than a name per row — a role, a plan, a member count, a
+   *   "create organization" action. A popover is anchored to its trigger, clipped by the viewport
+   *   and sized by `--org-switcher-menu-width`; a dialog has a real title, a scrolling body and a
+   *   footer, and takes the reader's full attention, which is the right trade when switching
+   *   organization re-scopes everything on screen.
+   * - `"popover"` / `"sheet"` — pinned to one surface at every width. Useful for a deterministic
+   *   embedded surface or a component test, rarely in a product.
+   *
+   * `auto` and `dialog` are the two RESPONSIVE pairs and differ only in their desktop half; the
+   * mobile half is the same Sheet, because a centred modal on a phone is a Sheet with worse
+   * ergonomics. All four resolve the breakpoint through the shared `useSheetResponsiveMode()`
+   * hook, so a service moves the line once for every overlay.
    */
-  responsive?: "auto" | "popover" | "sheet";
+  responsive?: "auto" | "popover" | "sheet" | "dialog";
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   className?: ClassNameProp;
@@ -1048,6 +1060,10 @@ export type AppLauncherProp = {
    * focus-trapped bottom Sheet at/below it — the SAME token that drives `SheetContent
    * responsive="auto"`, resolved through the shared `useSheetResponsiveMode()` hook, so a service
    * moves the drawer line once for every overlay instead of per component.
+   *
+   * No `"dialog"` here, unlike `OrgSwitcher`: a launcher grid is a jump table, and a modal that
+   * takes over the screen to offer nine links is heavier than the errand. Switching ORGANIZATION
+   * re-scopes everything on screen and earns the interruption; opening an app does not.
    */
   responsive?: "auto" | "popover" | "sheet";
   open?: boolean;

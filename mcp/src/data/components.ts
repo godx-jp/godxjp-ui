@@ -11854,10 +11854,10 @@ export function NotifyRow() {
       { name: "onRetry", type: "() => void", description: "Consumer-owned retry callback." },
       {
         name: "responsive",
-        type: '"auto" | "popover" | "sheet"',
+        type: '"auto" | "popover" | "sheet" | "dialog"',
         defaultValue: '"auto"',
         description:
-          'Responsive presentation contract. "auto" resolves through the SHARED Sheet hook useSheetResponsiveMode(): desktop popover above --sheet-responsive-breakpoint-width (48rem/768px), focus-trapped bottom Sheet at/below it. Move that one token to move the line for every overlay.',
+          'Which SURFACE the panel opens on. "auto" (default) is a desktop popover above --sheet-responsive-breakpoint-width (48rem/768px) and a focus-trapped bottom Sheet at/below it. "dialog" is a centred modal above that breakpoint and the SAME Sheet below it — reach for it once a row carries more than a name (a role, a plan, a member count, a create-organization action): a popover is anchored to its trigger, clipped by the viewport and sized by --org-switcher-menu-width, while a dialog has a real title, a scrolling body and room for a footer, and takes full attention, which is the right trade when switching organization re-scopes everything on screen. "popover" and "sheet" pin one surface at every width, for deterministic embedded surfaces and component tests. "auto" and "dialog" are the two RESPONSIVE pairs and share their mobile half, because a centred modal on a phone is a Sheet with worse ergonomics. All four resolve the breakpoint through the shared useSheetResponsiveMode() hook, so moving that one token moves the line for every overlay. Width of the dialog surface is --org-switcher-dialog-width (26rem), separate from --dialog-width-default so re-tuning the picker does not re-tune every dialog.',
       },
       { name: "open", type: "boolean", description: "Controlled open state." },
       {

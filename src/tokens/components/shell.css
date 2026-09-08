@@ -278,6 +278,10 @@
    * nothing to cancel there, and cancelling anyway drags the row outside the panel and puts its
    * text on the border. The sheet, which does inset its body, overrides this. */
   --org-switcher-list-offset: 0px;
+  /* The dialog surface's measure. Wider than --org-switcher-menu-width because the whole reason to
+   * reach for the dialog is that a row carries more than a name; narrower than the generic
+   * --dialog-width-default because it is still a list of choices, not a form. */
+  --org-switcher-dialog-width: 26rem;
   --org-switcher-menu-width: 16rem;
   --org-switcher-sheet-max-height: 75dvh;
   --org-switcher-state-min-height: 8rem;

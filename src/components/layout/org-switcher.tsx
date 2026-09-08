@@ -3,6 +3,14 @@ import { Check, ChevronsUpDown, Loader2, RotateCcw } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import type { OrgSwitcherOrganization, OrgSwitcherProp } from "../../props/components/layout.prop";
+import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../feedback/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import {
   Command,
@@ -243,7 +251,14 @@ export function OrgSwitcher({
   // The popover→bottom-sheet switch is the SHARED Sheet contract, not a page-local media query:
   // one themeable knob (--sheet-responsive-breakpoint-width) moves the drawer line for every
   const compactViewport = useSheetResponsiveMode("auto") === "bottom";
-  const sheet = responsive === "sheet" || (responsive === "auto" && compactViewport);
+  /*
+   * `auto` and `dialog` are the two RESPONSIVE pairs and share their mobile half: below the
+   * breakpoint both are the bottom Sheet, because a centred modal on a phone is a Sheet with worse
+   * ergonomics. They differ only in the desktop half. `popover` and `sheet` stay pinned.
+   */
+  const responsivePair = responsive === "auto" || responsive === "dialog";
+  const sheet = responsive === "sheet" || (responsivePair && compactViewport);
+  const dialog = responsive === "dialog" && !sheet;
   const current = organizations.find((organization) => organization.id === value);
   const fallbackName = current?.name ?? labels.title;
   const triggerLabel = labels.trigger(fallbackName);
@@ -301,6 +316,29 @@ export function OrgSwitcher({
             <SheetBody>{panel}</SheetBody>
           </SheetContent>
         </Sheet>
+      </div>
+    );
+  }
+
+  if (dialog) {
+    /*
+     * The panel earns a modal once it carries more than a name per row. A popover is anchored to
+     * its trigger, clipped by the viewport and sized by --org-switcher-menu-width; a dialog has a
+     * real title, a scrolling body and room for a footer — and it takes the reader's full
+     * attention, which is the right trade when switching organization re-scopes everything on
+     * screen.
+     */
+    return (
+      <div className={cn("ui-org-switcher", className)} data-collapsed={collapsed || undefined}>
+        <Dialog open={resolvedOpen} onOpenChange={setOpen}>
+          <DialogTrigger asChild>{trigger}</DialogTrigger>
+          <DialogContent className="ui-org-switcher-dialog">
+            <DialogHeader>
+              <DialogTitle>{labels.title}</DialogTitle>
+            </DialogHeader>
+            <DialogBody>{panel}</DialogBody>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }

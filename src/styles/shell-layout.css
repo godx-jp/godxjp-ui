@@ -1008,6 +1008,21 @@
    * inset at specificity (0,1,0) in dialog-layout.css, which this file is imported BEFORE — so a
    * bare `.ui-org-switcher-sheet` ties and loses on order, silently. Pairing them makes it (0,2,0)
    * and states the relationship: this IS a sheet, re-tuned. */
+  /* The dialog surface. Same one inset as the sheet, for the same reason: the heading and the list
+   * must start on one line. The dialog's own chrome inset is sized for prose, and this is a picker.
+   * Width comes from the component's own knob rather than --dialog-width-default, so re-tuning the
+   * picker does not re-tune every dialog in the service. */
+  [data-slot="dialog-content"].ui-org-switcher-dialog {
+    /* OVERRIDE THE COMPOSITE, NOT ITS PART. `--dialog-space-inset` is declared at `:root` as
+     * `var(--dialog-space-y) var(--dialog-space-x)`, and a custom property substitutes its vars
+     * WHERE IT IS DECLARED — so re-declaring `--dialog-space-x` further down changes nothing the
+     * padding can see. Measured: the rule shipped, the token read 12px, and the box still padded
+     * 24px. This is the same class of silent no-op as a `var()` fallback that never fires. */
+    --dialog-space-inset: var(--dialog-space-y) var(--org-switcher-sheet-inset);
+    --org-switcher-list-offset: var(--org-switcher-sheet-inset);
+    max-inline-size: var(--org-switcher-dialog-width);
+  }
+
   [data-slot="sheet-content"].ui-org-switcher-sheet {
     --sheet-pad-x: var(--org-switcher-sheet-inset);
     /* The sheet DOES inset its body, so its rows have that much to cancel. The popover keeps the
