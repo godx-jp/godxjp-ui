@@ -217,12 +217,15 @@
    * whatever sits in `end` (a locale picker, notification bell, account menu) — rather than
    * floating as a fixed ~420px box with dead space on either side at normal desktop widths. A
    * consumer that wants a capped, centered search box (the previous look) sets this explicitly. */
-  /* The trigger's FLOOR, so it reads as a search field wherever it is placed. `.tb-search` is
-   * `width: 100%`, which was written for the `center` slot (flex: 1 1 0) and collapses to content
-   * width in `start` (flex: 0 1 auto) — measured at 186px beside a sidebar toggle, narrower than
-   * the placeholder it holds. A floor fixes it for every slot instead of asking each consumer for
-   * a page-local width. Below the compact step the existing rule still squares it to an icon. */
-  --topbar-search-min-width: 16rem;
+  /* The trigger's PREFERRED width, consumed as a flex BASIS — deliberately not a minimum.
+   *
+   * `.tb-search` is `width: 100%`, written for the `center` slot (flex: 1 1 0); in `start`
+   * (flex: 0 1 auto) that collapses to content width, so the trigger came out at 186px, narrower
+   * than the placeholder it holds. A hard `min-inline-size` fixed that and broke something worse:
+   * the bar's shrink contract. Measured at 1024 with a long account name, an unshrinkable trigger
+   * pushed the start cluster into the end cluster — the collision that contract exists to prevent.
+   * As a BASIS it holds this width where there is room and yields where there is not. */
+  --topbar-search-width: 16rem;
   --topbar-search-max-width: none;
   /* Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally
    * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs

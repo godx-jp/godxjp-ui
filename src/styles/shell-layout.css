@@ -2126,7 +2126,10 @@
     /* `width: 100%` + `max-width: none` is the pair that makes both cases work from ONE token: a
      * set length caps it, an unset one (`none`) doesn't. */
     width: 100%;
-    min-inline-size: var(--topbar-search-min-width);
+    /* Preferred, not minimum. `min-inline-size: 0` is the load-bearing half: a flex item's
+     * automatic minimum is its own content, which would re-freeze the box under pressure. */
+    flex: 0 1 var(--topbar-search-width);
+    min-inline-size: 0;
     max-width: var(--topbar-search-max-width);
     height: var(--control-height-sm);
     align-items: center;
@@ -2227,6 +2230,7 @@
        * `min-inline-size` are different properties in a horizontal writing mode only by name, and
        * the cascade resolves the LAST one declared. Stating the same axis both ways would leave
        * the compact icon at the 16rem floor. */
+      flex: 0 0 auto;
       min-inline-size: var(--control-height);
       min-width: var(--control-height);
     }
