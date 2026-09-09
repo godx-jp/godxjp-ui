@@ -168,7 +168,7 @@ const RULES = [
     severity: "error",
     spansElement: true,
     test: new RegExp(
-      "<(?:Checkbox\\.Group|Upload|Cascader|TreeSelect|Transfer|SearchSelect|DatePicker|" +
+      "<(?:Checkbox\\.Group|Upload|Cascader|TreeSelect|Transfer|Select|SearchSelect|DatePicker|" +
         `DateRangePicker|TimePicker|ColorPicker|LocalePicker|TimezonePicker|DateFormatPicker|TimeFormatPicker)\\b${ATTRS}\\bonChange=`,
       "g",
     ),

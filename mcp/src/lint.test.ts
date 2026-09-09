@@ -88,3 +88,10 @@ describe("lint_jsx — no false positives", () => {
     );
   });
 });
+
+it("catches unsupported Select callbacks without rejecting the value callback", async () => {
+  expect(await lint("<Select options={options} onChange={setValue} />")).toContain("onValueChange");
+  expect(await lint("<Select options={options} onValueChange={setValue} />")).not.toContain(
+    "Select value changes",
+  );
+});

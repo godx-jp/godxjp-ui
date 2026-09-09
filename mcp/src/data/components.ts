@@ -5576,7 +5576,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
           "Uncontrolled initial value (data-driven API). The trigger shows the matching option's label at rest — including in searchable (showSearch) mode — so an edit form pre-filled from server data renders the label, not the placeholder. Selected option is marked by a background tint (no check icon).",
       },
       {
-        name: "onChange",
+        name: "onValueChange",
         type: "(value: string, option?: SearchSelectOptionProp) => void",
         description:
           "Change handler for the data-driven API. Receives the new value string and the matching option object.",

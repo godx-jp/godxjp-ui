@@ -129,3 +129,9 @@ describe("draft_bug_report", () => {
     expect(out).toMatch(/'\\''/); // single-quote escaping present
   });
 });
+
+it("documents the callback Select actually invokes", async () => {
+  const out = await dispatchTool("get_component", { name: "Select" });
+  expect(out).toContain("`onValueChange`");
+  expect(out).not.toContain("`onChange`");
+});

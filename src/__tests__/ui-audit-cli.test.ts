@@ -225,3 +225,12 @@ describe("consumer audit CLI regressions", () => {
     }
   });
 });
+
+it("rejects Select onChange and accepts the supported value callback", () => {
+  expect(audit("<Select options={options} onChange={setValue} />").output).toContain(
+    '"value-callback-on-value-change"',
+  );
+  expect(audit("<Select options={options} onValueChange={setValue} />").output).not.toContain(
+    '"value-callback-on-value-change"',
+  );
+});

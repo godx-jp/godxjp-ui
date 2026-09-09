@@ -1134,6 +1134,7 @@ function lintJsx(jsx: string): string {
   check(/<button[\s>]/, "Use `<Button>` instead of raw `<button>` (rule 29).");
   check(/<input[\s>]/, "Use `<Input>` instead of raw `<input>` (rule 29).");
   check(/<select[\s>]/, "Use `<Select>` instead of raw `<select>` (rule 29).");
+  check(/<Select\b[^>]*\bonChange=/, "Select value changes use `onValueChange`, not `onChange`.");
   check(/<textarea[\s>]/, "Use `<Textarea>` instead of raw `<textarea>` (rule 29).");
   check(
     /<(table|thead|tbody)[\s>]/,
