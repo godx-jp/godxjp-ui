@@ -519,3 +519,28 @@ describe("audit + a11y drift guards", () => {
     expect(rule, "the zeroed floor must not come back").not.toMatch(/min-height:\s*0/);
   });
 });
+
+
+describe("Truncating boxes contain their own ink", () => {
+  it("never pairs a clipped overflow with a tight line box", () => {
+    /*
+     * `overflow: hidden` is what makes `text-overflow: ellipsis` work, and it clips whatever the
+     * line box does not cover — so in a truncating rule the line-height is the CLIPPING BOUNDARY,
+     * not a rhythm choice. 1.25 was picked against Latin, where a `g` descender still lands inside
+     * the box. Vietnamese does not: measured on the org switcher's meta line at 11.11px in a
+     * 13.88px box, the dot-below of `ị` in 「Quản trị viên」 was cut at the baseline edge. Japanese
+     * and every other diacritic-stacking script sit in the same trap, so this is a family, not one
+     * selector — three rules carried the pair when it was first swept.
+     */
+    const offenders: string[] = [];
+    for (const file of readdirSync(resolve(process.cwd(), "src/styles")).filter((f) => f.endsWith(".css"))) {
+      const css = readFileSync(resolve(process.cwd(), "src/styles", file), "utf8");
+      for (const [, selector, body] of css.matchAll(/([.[][^{}]{0,90}?)\s*\{([^}]*)\}/g)) {
+        const clips = body.includes("text-overflow: ellipsis") || body.includes("overflow: hidden");
+        const tight = /line-height:\s*(var\(--line-height-tight\)|1(\.[01]\d*)?\s*);/.test(body);
+        if (clips && tight) offenders.push(`${file}: ${selector.trim().replace(/\s+/g, " ")}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+});

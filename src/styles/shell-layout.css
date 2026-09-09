@@ -1040,11 +1040,20 @@
   }
 
   .ui-org-switcher-name,
+  /* A TRUNCATING line box must be tall enough to contain its own ink.
+   *
+   * `overflow: hidden` is what makes the ellipsis work, and it clips anything the line box does
+   * not cover — so the line-height is not a rhythm choice here, it is the clipping boundary.
+   * 1.25 was picked against Latin, where the descender of a `g` still lands inside the box.
+   * Vietnamese does not: measured at 11.11px in a 13.88px box, the dot-below of `ị` in
+   * 「Quản trị viên」 was cut off at the baseline edge. Japanese and the other diacritic-stacking
+   * scripts sit in the same trap.
+   *
+   * `--line-height-normal` (1.5) gives 16.7px at the same step, which contains the mark. The row
+   * grows by 2.8px; a clipped glyph is not a smaller row, it is a wrong word. */
   .ui-org-switcher-meta {
     overflow: hidden;
-    /* --line-height-tight IS 1.25; the literal was the same number with no way for a theme to
-     * reach it, and `no-arbitrary-typography` bans exactly this shape in consumer code. */
-    line-height: var(--line-height-tight);
+    line-height: var(--line-height-normal);
     text-overflow: ellipsis;
     white-space: nowrap;
   }

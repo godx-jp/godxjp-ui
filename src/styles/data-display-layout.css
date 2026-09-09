@@ -1177,7 +1177,10 @@
     );
     color: hsl(var(--foreground));
     font-size: var(--timeline-grid-event-font-size);
-    line-height: var(--line-height-tight);
+    /* Truncating box: the line box is the CLIPPING boundary, not a rhythm choice, so it must
+     * contain descender ink. 1.25 clipped the dot-below of Vietnamese `ị` elsewhere in this file
+     * (see .ui-org-switcher-meta, measured); this carries localized text through the same shape. */
+    line-height: var(--line-height-normal);
     text-align: start;
   }
 
