@@ -4,6 +4,8 @@ import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { useControlledLatch } from "../../lib/hooks";
 import { pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
+import { resolveAllowClear, resolveAriaInvalid } from "./control-surface";
+import { CONTROL_STATUS_CHROME_CLASS, CONTROL_VARIANT_CHROME_CLASS } from "./control-appearance";
 import { Button } from "../general/button";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import type { MonthPickerProp } from "../../props/components/data-entry.prop";
@@ -43,12 +45,36 @@ export function MonthPicker({
   name,
   fromYear,
   toYear,
-  allowClear = true,
+  allowClear,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  status,
+  variant,
+  size,
+  inputReadOnly,
+  preserveInvalidOnBlur,
+  placement = "bottom-start",
+  renderExtraFooter,
+  ref,
   ...ariaProps
 }: MonthPickerProp) {
   const { t } = useTranslation();
   const { locale } = usePickerLocales();
-  const [open, setOpen] = React.useState(false);
+  // Controlled/uncontrolled open (the picker-chrome contract every other picker already states):
+  // `open` wins when provided, otherwise internal state seeded from `defaultOpen`; `onOpenChange`
+  // fires either way. Read-only never opens.
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
+  const isOpenControlled = openProp !== undefined;
+  const open = isOpenControlled ? openProp : internalOpen;
+  const setOpen = React.useCallback(
+    (next: boolean) => {
+      if (next && inputReadOnly) return;
+      if (!isOpenControlled) setInternalOpen(next);
+      onOpenChange?.(next);
+    },
+    [isOpenControlled, onOpenChange, inputReadOnly],
+  );
   const autoId = React.useId();
   const inputId = id ?? autoId;
   const dialogId = `${inputId}-dialog`;
@@ -81,7 +107,10 @@ export function MonthPicker({
     onValueChange?.(next);
   };
 
-  const showClear = allowClear && Boolean(value) && !disabled;
+  // antd `allowClear`, incl. its `{ clearIcon, label }` form — the same `resolveAllowClear` the
+  // select family routes through, so a per-instance clear label is expressible here too.
+  const clearControl = resolveAllowClear(allowClear, true, t("common.clear") ?? "Clear");
+  const showClear = clearControl.enabled && Boolean(value) && !disabled && !inputReadOnly;
   const prevDisabled = fromYear !== undefined && viewYear <= fromYear;
   const nextDisabled = toYear !== undefined && viewYear >= toYear;
 
@@ -91,9 +120,18 @@ export function MonthPicker({
         <div
           data-disabled={disabled ? "" : undefined}
           data-state={open ? "open" : "closed"}
+          // The same `variant` × `status` × `size` axes DateRangePicker already puts on the shared
+          // composite-field shell, through the same helper — a month field and a date field in one
+          // form row cannot end up on two different ladders. (`aria-invalid` belongs on the INPUT,
+          // the focus target, not on this presentational shell.)
+          data-size={size}
+          data-status={status}
+          data-variant={variant}
           className={cn(
             "ui-control ui-control-composite-field",
             "aria-invalid:border-destructive",
+            CONTROL_VARIANT_CHROME_CLASS[variant ?? "outlined"],
+            CONTROL_STATUS_CHROME_CLASS,
             className,
           )}
           onClick={() => {
@@ -101,11 +139,13 @@ export function MonthPicker({
           }}
         >
           <input
+            ref={ref}
             id={inputId}
             name={name ?? identity.name}
             data-field={fieldA11y["data-field"] ?? identity["data-field"]}
             value={text}
             disabled={disabled}
+            readOnly={inputReadOnly}
             placeholder={placeholder ?? t("dataEntry.monthPicker.placeholder") ?? YM_HINT}
             inputMode="numeric"
             autoComplete="off"
@@ -113,7 +153,9 @@ export function MonthPicker({
             aria-expanded={open}
             aria-haspopup="dialog"
             aria-controls={open ? dialogId : undefined}
+            aria-readonly={inputReadOnly || undefined}
             {...fieldA11y}
+            aria-invalid={resolveAriaInvalid(fieldA11y["aria-invalid"], status)}
             className="ui-month-picker-input"
             onKeyDown={(event) => {
               if (event.key === "ArrowDown") {
@@ -129,14 +171,18 @@ export function MonthPicker({
               if (parsed) emit(parsed);
               else if (event.target.value.trim() === "") emit(undefined);
             }}
-            onBlur={() => setText(toYmText(value))}
+            onBlur={() => {
+              // antd `preserveInvalidOnBlur` — keep a half-typed `2026/1` visible instead of
+              // reverting it, so a mistyped month can be corrected rather than retyped.
+              if (!preserveInvalidOnBlur) setText(toYmText(value));
+            }}
           />
           {}
           {showClear ? (
             <button
               type="button"
               tabIndex={-1}
-              aria-label={t("common.clear") ?? "Clear"}
+              aria-label={clearControl.label}
               className="text-muted-foreground hover:text-foreground shrink-0"
               onClick={(event) => {
                 event.stopPropagation();
@@ -148,7 +194,7 @@ export function MonthPicker({
                 setText("");
               }}
             >
-              <X className="ui-month-picker-icon" aria-hidden="true" />
+              {clearControl.clearIcon ?? <X className="ui-month-picker-icon" aria-hidden="true" />}
             </button>
           ) : (
             <PopoverTrigger asChild>
@@ -168,7 +214,8 @@ export function MonthPicker({
             role="dialog"
             aria-label={t("dataEntry.monthPicker.openGrid") ?? "Month grid"}
             className="ui-month-picker-panel"
-            align="start"
+            side={placement.startsWith("top") ? "top" : "bottom"}
+            align={placement.endsWith("end") ? "end" : "start"}
             onOpenAutoFocus={(event) => event.preventDefault()}
             // The content is portaled but stays a React child of the shell div,
             // so grid clicks would bubble to its onClick={setOpen(true)} and
@@ -223,6 +270,7 @@ export function MonthPicker({
                 );
               })}
             </div>
+            {renderExtraFooter?.()}
           </PopoverContent>
         </div>
       </PopoverAnchor>

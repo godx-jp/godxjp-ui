@@ -9,7 +9,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = process.cwd();
-const SCAN_DIRS = ["src/components", "src/app"].map((d) => join(ROOT, d));
+const SCAN_DIRS = ["src/components", "src/app", "src/form"].map((d) => join(ROOT, d));
 const MCP_DATA = join(ROOT, "mcp/src/data/components.ts");
 
 /** Every PascalCase value exported anywhere under src/components (components + sub-parts). */

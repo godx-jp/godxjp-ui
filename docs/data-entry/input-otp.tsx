@@ -225,6 +225,30 @@ export default function Demo() {
             </FormField>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>マスク・入力の正規化</CardTitle>
+            <CardDescription>
+              入力と貼り付けを大文字に変換。マスクは表示だけに適用されます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="masked-code" label="確認コード">
+              <InputOTP
+                maxLength={4}
+                defaultValue=""
+                mask
+                formatter={(value) => value.toUpperCase()}
+              >
+                <InputOTPGroup>
+                  {[0, 1, 2, 3].map((index) => (
+                    <InputOTPSlot key={index} index={index} />
+                  ))}
+                </InputOTPGroup>
+              </InputOTP>
+            </FormField>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

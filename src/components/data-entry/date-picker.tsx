@@ -14,6 +14,7 @@ import { TimePicker } from "./time-picker";
 import { useControlledLatch } from "../../lib/hooks";
 import { pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
+import { resolveAllowClear } from "./control-surface";
 import { Input } from "./input";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
@@ -47,7 +48,7 @@ export function DatePicker(props: DatePickerProp) {
     toDate,
     disabledDate,
     cellRender,
-    allowClear = true,
+    allowClear,
     format: formatProp,
     parseFormat,
     minDate,
@@ -154,7 +155,10 @@ export function DatePicker(props: DatePickerProp) {
   };
 
   // One trailing action: clear when permitted, otherwise the calendar trigger.
-  const showClear = allowClear && text !== "" && !disabled;
+  // antd `allowClear`, incl. its `{ clearIcon, label }` form — the SAME `resolveAllowClear` the
+  // select family routes through, so "clear this field" is one mechanism across the library.
+  const clearControl = resolveAllowClear(allowClear, true, t("common.clear") ?? "Clear");
+  const showClear = clearControl.enabled && text !== "" && !disabled;
 
   const choose = (input: Date | Date[] | undefined) => {
     let date = input;
@@ -240,7 +244,7 @@ export function DatePicker(props: DatePickerProp) {
                   <button
                     type="button"
                     tabIndex={-1}
-                    aria-label={t("common.clear") ?? "Clear"}
+                    aria-label={clearControl.label}
                     onClick={(event) => {
                       event.stopPropagation();
                       event.currentTarget
@@ -251,7 +255,9 @@ export function DatePicker(props: DatePickerProp) {
                     }}
                     className="ui-control-inline-affix-action"
                   >
-                    <X className="ui-control-inline-affix-icon" aria-hidden="true" />
+                    {clearControl.clearIcon ?? (
+                      <X className="ui-control-inline-affix-icon" aria-hidden="true" />
+                    )}
                   </button>
                 ) : (
                   <PopoverTrigger asChild>

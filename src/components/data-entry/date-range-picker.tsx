@@ -18,6 +18,7 @@ import {
 import { useControlledLatch } from "../../lib/hooks";
 import { pickGroupFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
+import { resolveAllowClear } from "./control-surface";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
 import type { DateRangePickerProp } from "../../props/components/data-entry.prop";
@@ -52,7 +53,7 @@ export function DateRangePicker({
   toDate,
   disabledDate,
   cellRender,
-  allowClear = true,
+  allowClear,
   format,
   parseFormat,
   minDate,
@@ -133,8 +134,14 @@ export function DateRangePicker({
     onValueChange?.(next);
   };
 
+  // antd `allowClear`, incl. its `{ clearIcon, label }` form — the SAME `resolveAllowClear` the
+  // select family routes through, so "clear this field" is one mechanism across the library.
+  const clearControl = resolveAllowClear(allowClear, true, t("common.clear") ?? "Clear");
   const showClear =
-    allowClear && allowEmpty.every(Boolean) && Boolean(value?.from || value?.to) && !disabled;
+    clearControl.enabled &&
+    allowEmpty.every(Boolean) &&
+    Boolean(value?.from || value?.to) &&
+    !disabled;
 
   const clear = () => {
     emit(undefined);
@@ -289,7 +296,7 @@ export function DateRangePicker({
             <button
               type="button"
               tabIndex={-1}
-              aria-label={t("common.clear") ?? "Clear"}
+              aria-label={clearControl.label}
               className="text-muted-foreground hover:text-foreground shrink-0"
               onClick={(event) => {
                 event.stopPropagation();
@@ -300,7 +307,7 @@ export function DateRangePicker({
                 clear();
               }}
             >
-              <X className="ui-month-picker-icon" aria-hidden="true" />
+              {clearControl.clearIcon ?? <X className="ui-month-picker-icon" aria-hidden="true" />}
             </button>
           ) : (
             <PopoverTrigger asChild>

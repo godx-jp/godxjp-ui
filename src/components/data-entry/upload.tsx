@@ -1,5 +1,14 @@
 import * as React from "react";
-import { Camera, ImagePlus, RotateCcw, Trash2, Upload as UploadIcon, X } from "lucide-react";
+import {
+  Camera,
+  Download,
+  Eye,
+  ImagePlus,
+  RotateCcw,
+  Trash2,
+  Upload as UploadIcon,
+  X,
+} from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { formatBytes } from "../../lib/format";
@@ -10,11 +19,16 @@ import { Button } from "../general/button";
 import type { UploadProp } from "../../props/components/data-entry.prop";
 import { UploadCropDialog } from "./upload-crop-dialog";
 import {
+  UPLOAD_LIST_IGNORE,
   createUploadItem,
   revokePreviewUrl,
   type UploadFileItem,
   type UploadVariant,
 } from "./upload-types";
+import { readDroppedFiles } from "./upload-files";
+import { uploadRequest } from "./upload-request";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../feedback/dialog";
+import { Progress } from "../data-display/progress";
 import { useUploadDraft } from "./use-upload-draft";
 
 export type {
@@ -24,7 +38,7 @@ export type {
   UploadVariantProp,
 } from "../../props/components/data-entry.prop";
 export type { UploadFileItem, UploadVariant, UploadCommitAction } from "./upload-types";
-export { collectUploadCommitActions, createUploadItem } from "./upload-types";
+export { collectUploadCommitActions, createUploadItem, UPLOAD_LIST_IGNORE } from "./upload-types";
 export { useUploadDraft } from "./use-upload-draft";
 
 function defaultAcceptForVariant(variant: UploadVariant): string | undefined {
@@ -47,9 +61,12 @@ function defaultMaxCount(variant: UploadVariant): number | undefined {
 function fileMatchesAccept(file: File, accept?: string): boolean {
   if (!accept) return true;
   return accept.split(",").some((rule) => {
-    const trimmed = rule.trim();
-    if (trimmed.endsWith("/*")) return file.type.startsWith(trimmed.slice(0, -1));
-    return file.type === trimmed || file.name.endsWith(trimmed);
+    const trimmed = rule.trim().toLowerCase();
+    if (trimmed.endsWith("/*")) return file.type.toLowerCase().startsWith(trimmed.slice(0, -1));
+    return (
+      file.type.toLowerCase() === trimmed ||
+      (trimmed.startsWith(".") && file.name.toLowerCase().endsWith(trimmed))
+    );
   });
 }
 
@@ -81,38 +98,6 @@ function useUploadList(
   return [items, setItems] as const;
 }
 
-async function runUpload(
-  file: File,
-  item: UploadFileItem,
-  onUpload: NonNullable<UploadProp["onUpload"]>,
-  setItems: ReturnType<typeof useUploadList>[1],
-) {
-  const uid = item.uid;
-  setItems((prev) => prev.map((it) => (it.uid === uid ? { ...it, status: "uploading" } : it)));
-
-  try {
-    const result = await onUpload(file, item);
-    setItems((prev) =>
-      prev.map((it) =>
-        it.uid === uid
-          ? {
-              ...it,
-              status: "done",
-              mediaId: result.mediaId,
-              previewUrl: result.previewUrl ?? it.previewUrl,
-              file: undefined,
-            }
-          : it,
-      ),
-    );
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    setItems((prev) =>
-      prev.map((it) => (it.uid === uid ? { ...it, status: "error", error: message } : it)),
-    );
-  }
-}
-
 export function Upload({
   variant = "dropzone",
   triggerSize,
@@ -124,7 +109,26 @@ export function Upload({
   multiple: multipleProp,
   maxCount: maxCountProp,
   maxSizeBytes,
-  disabled,
+  disabled: disabledProp,
+  readOnly = false,
+  directory = false,
+  pastable = false,
+  openFileDialogOnClick = true,
+  name,
+  action,
+  method,
+  headers,
+  data,
+  withCredentials,
+  beforeUpload,
+  onReject,
+  onRemove,
+  onPreview,
+  onDownload,
+  previewFile,
+  onDrop,
+  showUploadList = true,
+  itemRender,
   removable = true,
   onUpload,
   id,
@@ -133,6 +137,7 @@ export function Upload({
   ...ariaProps
 }: UploadProp) {
   const { t } = useTranslation();
+  const disabled = disabledProp || readOnly;
   // Upload is a composite widget (visible trigger + hidden file input + file list). The native
   // <input type="file"> is the true form control, so the FormField label/helper/error contract is
   // forwarded onto it; the visible dropzone/button keeps its own action label. Per-variant visible
@@ -155,6 +160,7 @@ export function Upload({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = React.useState(false);
   const [cropFile, setCropFile] = React.useState<File | null>(null);
+  const [previewItem, setPreviewItem] = React.useState<UploadFileItem | null>(null);
   const [items, setItems] = useUploadList(value, defaultValue, onValueChange);
 
   const isSingleAvatar =
@@ -168,55 +174,310 @@ export function Upload({
     },
   });
 
-  const pickFiles = (fileList: FileList | null) => {
-    if (!fileList?.length || disabled) return;
-
-    const slotsLeft = maxCount != null ? Math.max(0, maxCount - items.length) : fileList.length;
-    const candidates = Array.from(fileList).slice(0, multiple ? slotsLeft || fileList.length : 1);
-
-    for (const file of candidates) {
-      if (!fileMatchesAccept(file, accept)) continue;
-      if (maxSizeBytes != null && file.size > maxSizeBytes) continue;
-
-      if (variant === "avatar-crop") {
-        setCropFile(file);
-        return;
+  const cropAutomatic = React.useRef(true);
+  const requests = React.useRef(new Map<string, AbortController>());
+  const mounted = React.useRef(true);
+  const queue = React.useRef(Promise.resolve());
+  const selectionGeneration = React.useRef(0);
+  const initialItems = React.useRef(value ?? defaultValue ?? []);
+  const current = React.useRef({ items, disabled });
+  current.current = { items, disabled };
+  const ownedUrls = React.useRef(new Set<string>());
+  const [rejection, setRejection] = React.useState<string>();
+  React.useEffect(() => {
+    mounted.current = true;
+    const active = requests.current;
+    const urls = ownedUrls.current;
+    return () => {
+      mounted.current = false;
+      active.forEach((controller) => controller.abort());
+      active.clear();
+      urls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, []);
+  React.useEffect(() => {
+    for (const [uid, controller] of requests.current) {
+      if (!items.some((item) => item.uid === uid && !item.pendingDelete)) {
+        controller.abort();
+        requests.current.delete(uid);
       }
+    }
+  }, [items]);
 
-      if (isSingleAvatar) {
-        const baseline = items[0];
-        const item = createUploadItem(file, {
-          pendingReplace: Boolean(baseline?.mediaId),
-          replacesMediaId: baseline?.mediaId,
-        });
-        setItems([item]);
-        if (onUpload) void runUpload(file, item, onUpload, setItems);
-        return;
-      }
-
-      const item = createUploadItem(file);
-      setItems((prev) => [...prev, item]);
-      if (onUpload) void runUpload(file, item, onUpload, setItems);
+  const updateItems = (update: (previous: UploadFileItem[]) => UploadFileItem[]) => {
+    if (!mounted.current) return;
+    setItems((previous) => {
+      const next = update(previous);
+      current.current.items = next;
+      return next;
+    });
+  };
+  const startUpload = async (item: UploadFileItem) => {
+    if (!item.file || (!onUpload && !action) || current.current.disabled) return;
+    const controller = new AbortController();
+    requests.current.get(item.uid)?.abort();
+    requests.current.set(item.uid, controller);
+    const isCurrent = () =>
+      mounted.current &&
+      !controller.signal.aborted &&
+      requests.current.get(item.uid) === controller;
+    updateItems((previous) =>
+      previous.map((entry) =>
+        entry.uid === item.uid
+          ? { ...entry, status: "uploading", percent: 0, error: undefined }
+          : entry,
+      ),
+    );
+    try {
+      const context = {
+        signal: controller.signal,
+        onProgress: (percent: number) => {
+          if (!isCurrent() || !Number.isFinite(percent)) return;
+          updateItems((previous) =>
+            previous.map((entry) =>
+              entry.uid === item.uid
+                ? { ...entry, percent: Math.max(0, Math.min(100, percent)) }
+                : entry,
+            ),
+          );
+        },
+      };
+      const result = onUpload
+        ? await onUpload(item.file, item, context)
+        : await uploadRequest(
+            item.file,
+            { action, method, headers, data, name, withCredentials },
+            context,
+          );
+      if (!isCurrent()) return;
+      updateItems((previous) =>
+        previous.map((entry) =>
+          entry.uid === item.uid
+            ? {
+                ...entry,
+                ...result,
+                previewUrl: result.previewUrl ?? entry.previewUrl,
+                status: "done",
+                percent: 100,
+                file: undefined,
+              }
+            : entry,
+        ),
+      );
+    } catch (error) {
+      if (!isCurrent()) return;
+      updateItems((previous) =>
+        previous.map((entry) =>
+          entry.uid === item.uid
+            ? {
+                ...entry,
+                status: "error",
+                error: error instanceof Error ? error.message : String(error),
+              }
+            : entry,
+        ),
+      );
+    } finally {
+      if (requests.current.get(item.uid) === controller) requests.current.delete(item.uid);
     }
   };
+  const cancelUpload = (uid: string) => {
+    requests.current.get(uid)?.abort();
+    requests.current.delete(uid);
+    updateItems((previous) =>
+      previous.map((item) =>
+        item.uid === uid ? { ...item, status: "idle", percent: undefined } : item,
+      ),
+    );
+  };
+  const rejectFile = (
+    file: File,
+    reason: "accept" | "size" | "count" | "beforeUpload",
+    error?: unknown,
+  ) => {
+    setRejection(
+      t(
+        `dataEntry.upload.reject${reason[0].toUpperCase()}${reason.slice(1)}` as Parameters<
+          typeof t
+        >[0],
+        { name: file.name },
+      ),
+    );
+    onReject?.({ file, reason, error });
+  };
+  const pickFiles = (fileList: FileList | File[] | null) => {
+    if (!fileList?.length || current.current.disabled) return;
+    const files = Array.from(fileList);
+    const generation = selectionGeneration.current;
+    queue.current = queue.current
+      .then(async () => {
+        setRejection(undefined);
+        for (const original of multiple ? files : files.slice(0, 1)) {
+          if (
+            !mounted.current ||
+            current.current.disabled ||
+            generation !== selectionGeneration.current
+          )
+            return;
+          if (!fileMatchesAccept(original, accept)) {
+            rejectFile(original, "accept");
+            continue;
+          }
+          if (maxSizeBytes != null && original.size > maxSizeBytes) {
+            rejectFile(original, "size");
+            continue;
+          }
+          let file = original;
+          let automatic = true;
+          try {
+            const decision = await beforeUpload?.(file, files);
+            if (decision === UPLOAD_LIST_IGNORE) continue;
+            if (decision === false) automatic = false;
+            if (decision instanceof Blob)
+              file =
+                decision instanceof File
+                  ? decision
+                  : new File([decision], original.name, {
+                      type: decision.type,
+                      lastModified: original.lastModified,
+                    });
+          } catch (error) {
+            rejectFile(original, "beforeUpload", error);
+            continue;
+          }
+          if (
+            !mounted.current ||
+            current.current.disabled ||
+            generation !== selectionGeneration.current
+          )
+            return;
+          if (maxSizeBytes != null && file.size > maxSizeBytes) {
+            rejectFile(file, "size");
+            continue;
+          }
+          if (maxCount !== 1 && maxCount != null && current.current.items.length >= maxCount) {
+            rejectFile(file, "count");
+            continue;
+          }
+          if (variant === "avatar-crop") {
+            cropAutomatic.current = automatic;
+            setCropFile(file);
+            return;
+          }
+          const baseline = isSingleAvatar ? current.current.items[0] : undefined;
+          const item = createUploadItem(file, {
+            relativePath: original.webkitRelativePath || undefined,
+            pendingReplace: Boolean(baseline?.mediaId),
+            replacesMediaId: baseline?.mediaId,
+          });
+          if (item.previewUrl?.startsWith("blob:")) ownedUrls.current.add(item.previewUrl);
+          updateItems((previous) => (maxCount === 1 ? [item] : [...previous, item]));
+          if (previewFile)
+            void previewFile(file)
+              .then((url) => {
+                updateItems((previous) =>
+                  previous.map((entry) =>
+                    entry.uid === item.uid ? { ...entry, previewUrl: url } : entry,
+                  ),
+                );
+              })
+              .catch(() => {});
+          if (automatic) void startUpload(item);
+        }
+      })
+      .catch(() => {});
+  };
 
-  const removeItem = (uid: string) => {
+  const removeItem = async (uid: string) => {
+    if (current.current.disabled) return;
+    const target = current.current.items.find((item) => item.uid === uid);
+    if (!target) return;
+    try {
+      if ((await onRemove?.(target)) === false) return;
+    } catch {
+      return;
+    }
+    if (
+      !mounted.current ||
+      current.current.disabled ||
+      !current.current.items.some((item) => item.uid === uid)
+    )
+      return;
+    requests.current.get(uid)?.abort();
+    requests.current.delete(uid);
     if (isSingleAvatar) {
       draft.markRemove();
       return;
     }
-    setItems((prev) => {
-      const target = prev.find((it) => it.uid === uid);
-      revokePreviewUrl(target);
-      return prev.filter((it) => it.uid !== uid);
-    });
+    revokePreviewUrl(target);
+    updateItems((previous) => previous.filter((item) => item.uid !== uid));
   };
+  React.useEffect(() => {
+    const form = inputRef.current?.form;
+    if (!form || !name) return;
+    const appendFiles = (event: FormDataEvent) => {
+      if (disabledProp) return;
+      for (const item of current.current.items) {
+        if (item.file && !item.pendingDelete) event.formData.append(name, item.file, item.name);
+      }
+    };
+    form.addEventListener("formdata", appendFiles);
+    return () => form.removeEventListener("formdata", appendFiles);
+  }, [name, disabledProp]);
+  React.useEffect(() => {
+    const form = inputRef.current?.form;
+    if (!form) return;
+    const reset = (event: Event) => {
+      queueMicrotask(() => {
+        if (!mounted.current || event.defaultPrevented) return;
+        selectionGeneration.current += 1;
+        queue.current = Promise.resolve();
+        requests.current.forEach((controller) => controller.abort());
+        requests.current.clear();
+        setCropFile(null);
+        setRejection(undefined);
+        if (value === undefined) updateItems(() => initialItems.current);
+      });
+    };
+    form.addEventListener("reset", reset);
+    return () => form.removeEventListener("reset", reset);
+  });
+  React.useEffect(() => {
+    if (name) inputRef.current?.dispatchEvent(new Event("input", { bubbles: true }));
+  }, [items, name]);
+
+  const pasteProps = {
+    onPaste: (event: React.ClipboardEvent<HTMLElement>) => {
+      if (!pastable || disabled || !event.clipboardData.files.length) return;
+      event.preventDefault();
+      pickFiles(event.clipboardData.files);
+    },
+  };
+  const showPreview = (item: UploadFileItem) => {
+    if (onPreview) onPreview(item);
+    else if (item.previewUrl) setPreviewItem(item);
+  };
+  const list =
+    showUploadList && items.length > 0 ? (
+      <UploadFileList
+        items={items}
+        onRemove={removable && !disabled ? removeItem : undefined}
+        onStart={!disabled && (onUpload || action) ? startUpload : undefined}
+        onCancel={!disabled ? cancelUpload : undefined}
+        onPreview={showPreview}
+        hasCustomPreview={Boolean(onPreview)}
+        onDownload={onDownload}
+        itemRender={itemRender}
+        showThumbnails={variant === "picture"}
+      />
+    ) : null;
 
   const hiddenInput = (
     <input
       ref={inputRef}
       id={id}
       type="file"
+      {...(directory ? { webkitdirectory: "", directory: "" } : {})}
       className="sr-only"
       accept={accept}
       multiple={multiple && !isSingleAvatar}
@@ -234,28 +495,55 @@ export function Upload({
   const doneCount = items.filter((it) => it.status === "done").length;
   const errorCount = items.filter((it) => it.status === "error").length;
   const liveRegion = (
-    <span aria-live="polite" className="sr-only" data-slot="upload-status">
-      {errorCount > 0
-        ? t("dataEntry.upload.statusFailed", { count: errorCount })
-        : uploadingCount > 0
-          ? t("dataEntry.upload.statusUploading", { count: uploadingCount })
-          : items.length > 0
-            ? t("dataEntry.upload.statusReady", { count: items.length, done: doneCount })
-            : ""}
-    </span>
+    <>
+      <Dialog
+        open={previewItem != null}
+        onOpenChange={(open) => {
+          if (!open) setPreviewItem(null);
+        }}
+      >
+        <DialogContent aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle>{previewItem?.name ?? t("dataEntry.upload.preview")}</DialogTitle>
+          </DialogHeader>
+          {previewItem?.previewUrl && (
+            <img
+              src={previewItem.previewUrl}
+              alt={previewItem.name}
+              className="ui-upload-picture-img"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+      <span aria-live="polite" className="sr-only" data-slot="upload-status">
+        {rejection ??
+          (errorCount > 0
+            ? t("dataEntry.upload.statusFailed", { count: errorCount })
+            : uploadingCount > 0
+              ? t("dataEntry.upload.statusUploading", { count: uploadingCount })
+              : items.length > 0
+                ? t("dataEntry.upload.statusReady", { count: items.length, done: doneCount })
+                : "")}
+      </span>
+    </>
   );
 
   const openPicker = () => {
-    if (!disabled) inputRef.current?.click();
+    if (!disabled && openFileDialogOnClick) inputRef.current?.click();
   };
 
   if (variant === "dropzone") {
     return (
-      <div className={cn("ui-stack-sm", className)}>
+      <div {...pasteProps} className={cn("ui-stack-sm", className)}>
         {hiddenInput}
         {liveRegion}
+        {rejection && (
+          <p role="alert" className="text-destructive">
+            {rejection}
+          </p>
+        )}
         <div
-          role="button"
+          role={openFileDialogOnClick ? "button" : "group"}
           tabIndex={disabled ? -1 : 0}
           aria-disabled={disabled}
           aria-label={t("dataEntry.upload.dropzoneLabel")}
@@ -268,13 +556,19 @@ export function Upload({
           }}
           onDragOver={(e) => {
             e.preventDefault();
-            setDragActive(true);
+            if (!disabled) setDragActive(true);
           }}
           onDragLeave={() => setDragActive(false)}
           onDrop={(e) => {
             e.preventDefault();
             setDragActive(false);
-            pickFiles(e.dataTransfer.files);
+            onDrop?.(e);
+            if (disabled) return;
+            void readDroppedFiles(e.dataTransfer, directory)
+              .then(pickFiles)
+              .catch(() => {
+                if (mounted.current) setRejection(t("dataEntry.upload.readFailed"));
+              });
           }}
           data-drag-active={dragActive ? "" : undefined}
           data-disabled={disabled ? "" : undefined}
@@ -284,9 +578,7 @@ export function Upload({
           <p className="ui-upload-dropzone-hint">{t("dataEntry.upload.dropzoneHint")}</p>
           <p className="ui-upload-dropzone-meta">{t("dataEntry.upload.dropzoneMeta")}</p>
         </div>
-        {items.length > 0 && (
-          <UploadFileList items={items} onRemove={removable ? removeItem : undefined} />
-        )}
+        {list}
       </div>
     );
   }
@@ -310,9 +602,14 @@ export function Upload({
         : undefined);
 
     return (
-      <div className={cn("ui-stack-sm", className)}>
+      <div {...pasteProps} className={cn("ui-stack-sm", className)}>
         {hiddenInput}
         {liveRegion}
+        {rejection && (
+          <p role="alert" className="text-destructive">
+            {rejection}
+          </p>
+        )}
         <Button
           type="button"
           variant={triggerVariant}
@@ -328,9 +625,7 @@ export function Upload({
           />
           {iconOnly ? null : label}
         </Button>
-        {items.length > 0 && (
-          <UploadFileList items={items} onRemove={removable ? removeItem : undefined} />
-        )}
+        {list}
       </div>
     );
   }
@@ -338,14 +633,23 @@ export function Upload({
   if (variant === "picture-card") {
     const canAdd = maxCount == null || items.length < maxCount;
     return (
-      <div className={cn("ui-upload-grid", className)}>
+      <div {...pasteProps} className={cn("ui-upload-grid", className)}>
         {hiddenInput}
         {liveRegion}
-        {items.map((item) => (
+        {rejection && (
+          <p role="alert" className="text-destructive">
+            {rejection}
+          </p>
+        )}
+        {(showUploadList ? items : []).map((item) => (
           <UploadPictureCard
             key={item.uid}
             item={item}
-            onRemove={removable ? () => removeItem(item.uid) : undefined}
+            onStart={!disabled && (onUpload || action) ? () => void startUpload(item) : undefined}
+            onCancel={!disabled ? () => cancelUpload(item.uid) : undefined}
+            onPreview={onPreview || item.previewUrl ? () => showPreview(item) : undefined}
+            onDownload={onDownload ? () => onDownload(item) : undefined}
+            onRemove={removable && !disabled ? () => void removeItem(item.uid) : undefined}
           />
         ))}
         {canAdd && (
@@ -365,12 +669,35 @@ export function Upload({
     );
   }
 
+  if (variant === "picture" && !isSingleAvatar) {
+    return (
+      <div {...pasteProps} className={cn("ui-stack-sm", className)}>
+        {hiddenInput}
+        {liveRegion}
+        {rejection && (
+          <p role="alert" className="text-destructive">
+            {rejection}
+          </p>
+        )}
+        <Button type="button" disabled={disabled} variant={triggerVariant} onClick={openPicker}>
+          {children ?? t("dataEntry.upload.addImage")}
+        </Button>
+        {list}
+      </div>
+    );
+  }
+
   if (variant === "picture") {
     const item = draft.state.display;
     return (
-      <div className={cn("ui-stack-sm ui-upload-picture", className)}>
+      <div {...pasteProps} className={cn("ui-stack-sm ui-upload-picture", className)}>
         {hiddenInput}
         {liveRegion}
+        {rejection && (
+          <p role="alert" className="text-destructive">
+            {rejection}
+          </p>
+        )}
         {item?.previewUrl && !item.pendingDelete ? (
           <div className="ui-upload-picture-frame">
             <img src={item.previewUrl} alt="" className="ui-upload-picture-img" />
@@ -404,7 +731,7 @@ export function Upload({
   const showPlaceholder = !item?.previewUrl || item.pendingDelete;
 
   return (
-    <div className={cn("ui-stack-sm items-start", className)}>
+    <div {...pasteProps} className={cn("ui-stack-sm items-start", className)}>
       {hiddenInput}
       {liveRegion}
       <UploadCropDialog
@@ -412,6 +739,12 @@ export function Upload({
         onOpenChange={(open) => !open && setCropFile(null)}
         file={cropFile}
         onConfirm={(cropped) => {
+          if (!mounted.current || current.current.disabled) return;
+          if (maxSizeBytes != null && cropped.size > maxSizeBytes) {
+            rejectFile(cropped, "size");
+            setCropFile(null);
+            return;
+          }
           const baseline = items[0];
           const item = createUploadItem(cropped, {
             pendingReplace: Boolean(baseline?.mediaId),
@@ -419,7 +752,8 @@ export function Upload({
           });
           setItems([item]);
           setCropFile(null);
-          if (onUpload) void runUpload(cropped, item, onUpload, setItems);
+          if (item.previewUrl?.startsWith("blob:")) ownedUrls.current.add(item.previewUrl);
+          if (cropAutomatic.current) void startUpload(item);
         }}
       />
       <div className="relative inline-block">
@@ -447,7 +781,7 @@ export function Upload({
           <button
             type="button"
             disabled={disabled}
-            onClick={() => draft.markRemove()}
+            onClick={() => void removeItem(item.uid)}
             className="ui-upload-avatar-remove"
             aria-label={t("dataEntry.upload.removeAvatar")}
           >
@@ -501,26 +835,101 @@ function UploadDraftActions({
   return null;
 }
 
-function UploadPictureCard({ item, onRemove }: { item: UploadFileItem; onRemove?: () => void }) {
+function UploadPictureCard({
+  item,
+  onRemove,
+  onStart,
+  onCancel,
+  onPreview,
+  onDownload,
+}: {
+  item: UploadFileItem;
+  onRemove?: () => void;
+  onStart?: () => void;
+  onCancel?: () => void;
+  onPreview?: () => void;
+  onDownload?: () => void;
+}) {
   const { t } = useTranslation();
   return (
-    <div className="ui-upload-tile">
-      {item.previewUrl ? (
-        <img src={item.previewUrl} alt="" className="ui-upload-avatar-image" />
-      ) : (
-        <div className="ui-upload-tile-placeholder">…</div>
+    <div className="ui-upload-picture-item ui-stack-xs">
+      <div className="ui-upload-tile">
+        {item.previewUrl ? (
+          <img src={item.previewUrl} alt="" className="ui-upload-avatar-image" />
+        ) : (
+          <div className="ui-upload-tile-placeholder">
+            <ImagePlus aria-hidden="true" />
+          </div>
+        )}
+        {item.status === "uploading" && (
+          <div className="ui-upload-overlay">
+            <Progress value={item.percent ?? 0} aria-label={t("dataEntry.upload.uploading")} />
+          </div>
+        )}
+        {onRemove && (
+          <button
+            type="button"
+            onClick={onRemove}
+            className="ui-upload-tile-remove"
+            aria-label={t("dataEntry.upload.removeImage")}
+          >
+            <X className="ui-upload-remove-icon" aria-hidden="true" />
+          </button>
+        )}
+      </div>
+      {item.status === "error" && (
+        <span role="alert" className="text-destructive">
+          {item.error}
+        </span>
       )}
-      {item.status === "uploading" && <div className="ui-upload-overlay">…</div>}
-      {onRemove && (
-        <button
-          type="button"
-          onClick={onRemove}
-          className="ui-upload-tile-remove"
-          aria-label={t("dataEntry.upload.removeImage")}
-        >
-          <X className="ui-upload-remove-icon" aria-hidden="true" />
-        </button>
-      )}
+      <div className="ui-inline-xs">
+        {onCancel && item.status === "uploading" && (
+          <Button
+            type="button"
+            size="icon-xs"
+            variant="ghost"
+            onClick={onCancel}
+            aria-label={t("dataEntry.upload.cancel")}
+          >
+            <X aria-hidden="true" />
+          </Button>
+        )}
+        {onStart && item.file && (item.status === "idle" || item.status === "error") && (
+          <Button
+            type="button"
+            size="icon-xs"
+            variant="ghost"
+            onClick={onStart}
+            aria-label={t(
+              item.status === "error" ? "dataEntry.upload.retry" : "dataEntry.upload.start",
+            )}
+          >
+            <RotateCcw aria-hidden="true" />
+          </Button>
+        )}
+        {onPreview && (
+          <Button
+            type="button"
+            size="icon-xs"
+            variant="ghost"
+            onClick={onPreview}
+            aria-label={t("dataEntry.upload.preview")}
+          >
+            <Eye aria-hidden="true" />
+          </Button>
+        )}
+        {onDownload && (
+          <Button
+            type="button"
+            size="icon-xs"
+            variant="ghost"
+            onClick={onDownload}
+            aria-label={t("dataEntry.upload.download")}
+          >
+            <Download aria-hidden="true" />
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
@@ -528,41 +937,95 @@ function UploadPictureCard({ item, onRemove }: { item: UploadFileItem; onRemove?
 function UploadFileList({
   items,
   onRemove,
+  onStart,
+  onCancel,
+  onPreview,
+  hasCustomPreview,
+  onDownload,
+  itemRender,
+  showThumbnails,
 }: {
   items: UploadFileItem[];
+  showThumbnails?: boolean;
   onRemove?: (uid: string) => void;
+  onStart?: (item: UploadFileItem) => void;
+  onCancel?: (uid: string) => void;
+  onPreview?: UploadProp["onPreview"];
+  hasCustomPreview?: boolean;
+  onDownload?: UploadProp["onDownload"];
+  itemRender?: UploadProp["itemRender"];
 }) {
   const { t } = useTranslation();
   return (
     <ul className="ui-stack-xs">
-      {items.map((item) => (
-        <li key={item.uid} className="ui-upload-row">
-          <div className="ui-upload-row-main">
-            <div className="truncate font-medium">{item.name}</div>
-            <div className="text-muted-foreground text-xs">
-              {formatBytes(item.size)}
-              {item.status === "uploading" && " · …"}
-              {item.status === "error" && item.error && (
-                <span className="text-destructive"> · {item.error}</span>
-              )}
-              {item.mediaId && (
-                <span className="text-muted-foreground"> · {item.mediaId.slice(0, 8)}…</span>
+      {items.map((item) => {
+        const node = (
+          <div className="ui-upload-row">
+            {showThumbnails && item.previewUrl && (
+              <img src={item.previewUrl} alt="" className="ui-upload-list-thumb" />
+            )}
+            <div className="ui-upload-row-main">
+              <div className="truncate font-medium">{item.name}</div>
+              <div className="text-muted-foreground text-xs">
+                {formatBytes(item.size)}
+                {item.status === "error" && item.error && (
+                  <span role="alert" className="text-destructive">
+                    {" "}
+                    · {item.error}
+                  </span>
+                )}
+              </div>
+              {item.status === "uploading" && (
+                <Progress value={item.percent ?? 0} aria-label={t("dataEntry.upload.uploading")} />
               )}
             </div>
+            {onPreview && (hasCustomPreview || item.previewUrl) && (
+              <Button type="button" size="sm" variant="ghost" onClick={() => onPreview(item)}>
+                {t("dataEntry.upload.preview")}
+              </Button>
+            )}
+            {onDownload && (
+              <Button type="button" size="sm" variant="ghost" onClick={() => onDownload(item)}>
+                {t("dataEntry.upload.download")}
+              </Button>
+            )}
+            {onStart && item.file && item.status !== "uploading" && item.status !== "done" && (
+              <Button type="button" size="sm" variant="ghost" onClick={() => onStart(item)}>
+                {t(item.status === "error" ? "dataEntry.upload.retry" : "dataEntry.upload.start")}
+              </Button>
+            )}
+            {onCancel && item.status === "uploading" && (
+              <Button type="button" size="sm" variant="ghost" onClick={() => onCancel(item.uid)}>
+                {t("dataEntry.upload.cancel")}
+              </Button>
+            )}
+            {onRemove && (
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                aria-label={t("dataEntry.upload.removeFile", { name: item.name })}
+                onClick={() => onRemove(item.uid)}
+              >
+                <X className="ui-upload-row-icon" aria-hidden="true" />
+              </Button>
+            )}
           </div>
-          {onRemove && (
-            <Button
-              type="button"
-              size="sm"
-              variant="ghost"
-              aria-label={t("dataEntry.upload.removeFile", { name: item.name })}
-              onClick={() => onRemove(item.uid)}
-            >
-              <X className="ui-upload-row-icon" aria-hidden="true" />
-            </Button>
-          )}
-        </li>
-      ))}
+        );
+        return (
+          <li key={item.uid}>
+            {itemRender
+              ? itemRender(node, item, items, {
+                  remove: () => onRemove?.(item.uid),
+                  preview: () => onPreview?.(item),
+                  download: () => onDownload?.(item),
+                  upload: () => onStart?.(item),
+                  cancel: () => onCancel?.(item.uid),
+                })
+              : node}
+          </li>
+        );
+      })}
     </ul>
   );
 }

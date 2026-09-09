@@ -12,6 +12,8 @@ export type { FormProp, FormProp as FormProps } from "../../props/components/dat
 /** Resolved layout settings shared from a Form down to its FormFields (override per field). */
 export interface FormLayoutContextValue {
   layout: FormLayoutProp;
+  disabled?: boolean;
+  requiredMark?: boolean | "optional";
   labelWidth?: WidthProp;
   controlWidth?: WidthProp;
   labelAlign: "start" | "end";
@@ -33,6 +35,8 @@ export function useFormLayout(): FormLayoutContextValue | null {
 export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
   {
     layout = "vertical",
+    disabled,
+    requiredMark,
     labelWidth,
     controlWidth,
     labelAlign = "end",
@@ -48,8 +52,8 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
   ref,
 ) {
   const ctx = React.useMemo<FormLayoutContextValue>(
-    () => ({ layout, labelWidth, controlWidth, labelAlign, collapseBelow }),
-    [layout, labelWidth, controlWidth, labelAlign, collapseBelow],
+    () => ({ layout, labelWidth, controlWidth, labelAlign, collapseBelow, disabled, requiredMark }),
+    [layout, labelWidth, controlWidth, labelAlign, collapseBelow, disabled, requiredMark],
   );
   const content =
     columns != null ? <ResponsiveGrid columns={columns}>{children}</ResponsiveGrid> : children;

@@ -3,8 +3,13 @@ import { X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
-import { applyMaxTagCount, controlSurfaceAttrs } from "../data-entry/control-surface";
+import {
+  applyMaxTagCount,
+  controlSurfaceAttrs,
+  resolveAllowClear,
+} from "../data-entry/control-surface";
 import type {
+  AllowClearProp,
   ControlStatusProp,
   ControlVariantProp,
   MaxTagCountProp,
@@ -22,6 +27,13 @@ export type TagInputProps = {
   onValueChange?: (tags: string[]) => void;
   placeholder?: string;
   disabled?: boolean;
+  /**
+   * Read-only: the tags stay visible, selectable and submitted, but nothing can be added or
+   * removed — the draft field is read-only, the chip removers and the clear ✕ are withdrawn, and
+   * the container reports `aria-readonly`. Mirrors Select's readOnly contract (still focusable and
+   * still in the tab order, unlike `disabled`).
+   */
+  readOnly?: boolean;
   name?: string;
   className?: string;
   id?: string;
@@ -34,6 +46,13 @@ export type TagInputProps = {
   variant?: ControlVariantProp;
   /** Hard ceiling on how many tags may be held (antd `maxCount`). Further input is refused. */
   maxCount?: number;
+  /**
+   * antd `allowClear` — a single ✕ that drops EVERY tag at once. Off by default (antd's own
+   * default for a tags field). The object form replaces the icon and/or the accessible label.
+   */
+  allowClear?: AllowClearProp;
+  /** Fired after every tag is dropped through the ✕ (antd `onClear`). */
+  onClear?: () => void;
   /** How many chips render before the rest collapse into the overflow node (antd `maxTagCount`). */
   maxTagCount?: MaxTagCountProp;
   /** The node standing in for what `maxTagCount` hid (antd `maxTagPlaceholder`). */
@@ -67,6 +86,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       onValueChange,
       placeholder,
       disabled,
+      readOnly,
       name,
       className,
       id,
@@ -75,6 +95,8 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       status,
       variant,
       maxCount,
+      allowClear,
+      onClear,
       maxTagCount,
       maxTagPlaceholder,
       tagRender,
@@ -116,6 +138,13 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     const removeAt = (i: number) => commit(tags.filter((_, idx) => idx !== i));
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (readOnly) return;
+      // JAPANESE INPUT: between compositionstart and compositionend the box holds a CANDIDATE, and
+      // the Enter that ends a conversion is "accept this 変換", not "commit this field". Without
+      // this guard「とうきょう」→「東京」would land a half-converted reading as a tag and swallow
+      // the keystroke the IME needed. `isComposing` is the DOM's own answer (KeyboardEvent.
+      // isComposing, UI Events §5.1.4) and is what NumberInput/SearchInput/Textarea already read.
+      if (e.nativeEvent.isComposing) return;
       // Enter always commits — it is the field's submit gesture, not a separator character.
       if (e.key === "Enter" || tokenSeparators.includes(e.key)) {
         e.preventDefault();
@@ -124,6 +153,15 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       } else if (e.key === "Backspace" && draft === "" && tags.length > 0) {
         removeAt(tags.length - 1);
       }
+    };
+
+    // antd `allowClear` — OFF unless asked for (a tags field clears one chip at a time by default).
+    // Withdrawn while disabled/read-only/empty, exactly like Input's and Select's ✕.
+    const clearControl = resolveAllowClear(allowClear, false, t("common.clear"));
+    const showClear = clearControl.enabled && tags.length > 0 && !disabled && !readOnly;
+    const clearAll = () => {
+      commit([]);
+      onClear?.();
     };
 
     const chips = tags.map((tag, index) => ({ value: tag, label: tag, index }));
@@ -143,6 +181,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
         // node under `aria-disabled="true"`) — the same exemption native disabled form controls
         // get for free.
         aria-disabled={disabled || undefined}
+        aria-readonly={readOnly || undefined}
         // The same `variant` × `status` × `size` matrix the select family reads, so a form row
         // holding a Select and a TagInput cannot end up with two different fields.
         {...controlSurfaceAttrs({ variant, status, size })}
@@ -169,13 +208,13 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                     value: chip.value,
                     label: chip.label,
                     index: chip.index,
-                    disabled: Boolean(disabled),
+                    disabled: Boolean(disabled) || Boolean(readOnly),
                     onClose: () => removeAt(chip.index),
                   })
                 ) : (
                   <>
                     {chip.value}
-                    {!disabled ? (
+                    {!disabled && !readOnly ? (
                       <button
                         type="button"
                         className="ui-tag-input-remove"
@@ -202,8 +241,9 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
           type="text"
           className="ui-tag-input-field"
           value={draft}
-          placeholder={tags.length === 0 ? placeholder : undefined}
+          placeholder={tags.length === 0 && !readOnly ? placeholder : undefined}
           disabled={disabled}
+          readOnly={readOnly}
           aria-label={ariaLabel ?? t("ui.tagInput.inputLabel")}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
@@ -217,12 +257,31 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
             setDraft("");
           }}
           onBlur={() => {
+            // DELIBERATE DIVERGENCE from antd, which DISCARDS the draft on blur: a half-typed tag
+            // that vanishes when the user tabs to the next field is a silent data loss, and the
+            // count/✕ would disagree with what the box showed. Committing is the recoverable
+            // choice — the chip is visible and removable.
+            if (readOnly) return;
             if (draft.trim()) {
               add(draft);
               setDraft("");
             }
           }}
         />
+        {showClear ? (
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-label={clearControl.label}
+            data-slot="tag-input-clear"
+            className="ui-control-inline-affix-action ui-tag-input-clear"
+            onClick={clearAll}
+          >
+            {clearControl.clearIcon ?? (
+              <X className="ui-control-inline-affix-icon" aria-hidden="true" />
+            )}
+          </button>
+        ) : null}
         <span aria-live="polite" className="sr-only" data-slot="tag-input-status">
           {t("ui.tagInput.tagCount", { count: tags.length })}
         </span>

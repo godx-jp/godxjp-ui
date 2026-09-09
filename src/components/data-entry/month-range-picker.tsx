@@ -5,6 +5,8 @@ import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { useControlledLatch } from "../../lib/hooks";
 import { pickGroupFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
+import { resolveAllowClear } from "./control-surface";
+import { CONTROL_STATUS_CHROME_CLASS, CONTROL_VARIANT_CHROME_CLASS } from "./control-appearance";
 import { Button } from "../general/button";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import type { MonthRangePickerProp } from "../../props/components/data-entry.prop";
@@ -46,12 +48,36 @@ export function MonthRangePicker({
   name,
   fromYear,
   toYear,
-  allowClear = true,
+  allowClear,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  status,
+  variant,
+  size,
+  inputReadOnly,
+  preserveInvalidOnBlur,
+  placement = "bottom-start",
+  renderExtraFooter,
+  ref,
   ...ariaProps
 }: MonthRangePickerProp) {
   const { t } = useTranslation();
   const { locale } = usePickerLocales();
-  const [open, setOpen] = React.useState(false);
+  // Controlled/uncontrolled open (the picker-chrome contract every other picker already states):
+  // `open` wins when provided, otherwise internal state seeded from `defaultOpen`; `onOpenChange`
+  // fires either way. Read-only never opens.
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
+  const isOpenControlled = openProp !== undefined;
+  const open = isOpenControlled ? openProp : internalOpen;
+  const setOpen = React.useCallback(
+    (next: boolean) => {
+      if (next && inputReadOnly) return;
+      if (!isOpenControlled) setInternalOpen(next);
+      onOpenChange?.(next);
+    },
+    [isOpenControlled, onOpenChange, inputReadOnly],
+  );
   // No single labelable focus target (two inputs) — the shell is a role="group" named by the
   // FormField label; pickGroupFieldA11y forwards aria-labelledby/-describedby (error folded in).
   const groupA11y = pickGroupFieldA11y(ariaProps);
@@ -93,7 +119,11 @@ export function MonthRangePicker({
     onValueChange?.(next);
   };
 
-  const showClear = allowClear && Boolean(value?.from || value?.to) && !disabled;
+  // antd `allowClear`, incl. its `{ clearIcon, label }` form — routed through the same
+  // `resolveAllowClear` the select family uses.
+  const clearControl = resolveAllowClear(allowClear, true, t("common.clear") ?? "Clear");
+  const showClear =
+    clearControl.enabled && Boolean(value?.from || value?.to) && !disabled && !inputReadOnly;
   const prevDisabled = fromYear !== undefined && viewYear <= fromYear;
   const nextDisabled = toYear !== undefined && viewYear >= toYear;
 
@@ -162,9 +192,17 @@ export function MonthRangePicker({
           aria-disabled={disabled ? true : undefined}
           data-disabled={disabled ? "" : undefined}
           data-state={open ? "open" : "closed"}
+          // The same `variant` × `status` × `size` axes DateRangePicker already puts on the shared
+          // composite-field shell, through the same helper — two range fields in one form row
+          // cannot end up on different ladders.
+          data-size={size}
+          data-status={status}
+          data-variant={variant}
           className={cn(
             "ui-control ui-control-composite-field",
             "aria-invalid:border-destructive",
+            CONTROL_VARIANT_CHROME_CLASS[variant ?? "outlined"],
+            CONTROL_STATUS_CHROME_CLASS,
             className,
           )}
           onClick={() => {
@@ -172,11 +210,14 @@ export function MonthRangePicker({
           }}
         >
           <input
+            ref={ref}
             id={fromId}
             data-field={rangeField ? `${rangeField}_from` : undefined}
             name={rangeName ? `${rangeName}_from` : undefined}
             value={fromText}
             disabled={disabled}
+            readOnly={inputReadOnly}
+            aria-readonly={inputReadOnly || undefined}
             placeholder={resolvedPlaceholder}
             inputMode="numeric"
             autoComplete="off"
@@ -187,7 +228,10 @@ export function MonthRangePicker({
               setFromText(event.target.value);
               commitEdge("from", event.target.value);
             }}
-            onBlur={() => setFromText(toYmText(value?.from))}
+            // antd `preserveInvalidOnBlur` — keep a half-typed edge visible instead of reverting it.
+            onBlur={() => {
+              if (!preserveInvalidOnBlur) setFromText(toYmText(value?.from));
+            }}
           />
           <ArrowRight className="ui-month-picker-separator-icon" aria-hidden="true" />
           <input
@@ -196,6 +240,8 @@ export function MonthRangePicker({
             name={rangeName ? `${rangeName}_to` : undefined}
             value={toText}
             disabled={disabled}
+            readOnly={inputReadOnly}
+            aria-readonly={inputReadOnly || undefined}
             placeholder={resolvedPlaceholder}
             inputMode="numeric"
             autoComplete="off"
@@ -206,7 +252,9 @@ export function MonthRangePicker({
               setToText(event.target.value);
               commitEdge("to", event.target.value);
             }}
-            onBlur={() => setToText(toYmText(value?.to))}
+            onBlur={() => {
+              if (!preserveInvalidOnBlur) setToText(toYmText(value?.to));
+            }}
           />
           {/* ONE trailing icon: the clear (×) replaces the calendar while a range is set;
               the field itself still opens the grid (onClick). */}
@@ -214,7 +262,7 @@ export function MonthRangePicker({
             <button
               type="button"
               tabIndex={-1}
-              aria-label={t("common.clear") ?? "Clear"}
+              aria-label={clearControl.label}
               className="text-muted-foreground hover:text-foreground shrink-0"
               onClick={(event) => {
                 event.stopPropagation();
@@ -225,7 +273,7 @@ export function MonthRangePicker({
                 clear();
               }}
             >
-              <X className="ui-month-picker-icon" aria-hidden="true" />
+              {clearControl.clearIcon ?? <X className="ui-month-picker-icon" aria-hidden="true" />}
             </button>
           ) : (
             <PopoverTrigger asChild>
@@ -242,7 +290,8 @@ export function MonthRangePicker({
           )}
           <PopoverContent
             className="ui-month-picker-panel"
-            align="start"
+            side={placement.startsWith("top") ? "top" : "bottom"}
+            align={placement.endsWith("end") ? "end" : "start"}
             onOpenAutoFocus={(event) => event.preventDefault()}
             // The content is portaled but stays a React child of the shell div,
             // so grid clicks would bubble to its onClick={setOpen(true)} and
@@ -303,6 +352,7 @@ export function MonthRangePicker({
                 );
               })}
             </div>
+            {renderExtraFooter?.()}
           </PopoverContent>
         </div>
       </PopoverAnchor>

@@ -13,6 +13,10 @@ export type UploadFileItem = {
   mediaId?: string;
   status: UploadFileStatus;
   error?: string;
+  percent?: number;
+  response?: unknown;
+  url?: string;
+  relativePath?: string;
   /** Local file before / during upload */
   file?: File;
   /** Undo clears this before save — media-service has no restore API. */
@@ -75,3 +79,29 @@ export function collectUploadCommitActions(items: UploadFileItem[]): UploadCommi
     promoteMediaIds: [...new Set(promoteMediaIds)],
   };
 }
+
+/** Returning this from beforeUpload excludes the file entirely. false keeps it staged. */
+export const UPLOAD_LIST_IGNORE = Symbol("upload-list-ignore");
+export type UploadRequestContext = {
+  signal: AbortSignal;
+  onProgress: (percent: number) => void;
+};
+export type UploadResult = {
+  mediaId?: string;
+  previewUrl?: string;
+  url?: string;
+  response?: unknown;
+};
+export type UploadRejection = {
+  file: File;
+  reason: "accept" | "size" | "count" | "beforeUpload";
+  error?: unknown;
+};
+
+export type UploadItemActions = {
+  remove: () => void;
+  preview: () => void;
+  download: () => void;
+  upload: () => void;
+  cancel: () => void;
+};

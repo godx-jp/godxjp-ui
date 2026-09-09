@@ -14,6 +14,7 @@ export interface InertiaFormLike<TData extends Record<string, unknown> = Record<
   errors: Partial<Record<string, string>>;
   /** True while a submit request is in flight. */
   processing: boolean;
+  reset?(): void;
 }
 
 /**
@@ -49,6 +50,7 @@ export function inertiaAdapter<TData extends Record<string, unknown>>(
     getError: (name) => form.errors[name],
     isSubmitting: form.processing,
     getValues: () => form.data,
+    reset: form.reset ? () => form.reset?.() : undefined,
   };
 }
 
@@ -131,4 +133,81 @@ export function inertiaSidebarLink<P extends InertiaLinkLike>(
   Link: ComponentType<P>,
 ): SidebarLinkComponentProp {
   return createSidebarLink(Link, "href");
+}
+
+/** Visit callbacks needed to connect Upload to an Inertia multipart endpoint. */
+export interface InertiaUploadCallbacks {
+  forceFormData: true;
+  async: true;
+  onProgress: (progress: { percentage?: number } | undefined) => void;
+  onSuccess: () => void;
+  onError: (errors: Record<string, string>) => void;
+  onCancelToken: (token: { cancel: () => void }) => void;
+  onCancel: () => void;
+  onNetworkError: (error: Error) => boolean;
+  onHttpException: () => boolean;
+  onFinish: () => void;
+}
+
+/** Bridge redirect-based Inertia uploads to Upload's progress/abort/retry lifecycle. */
+export function inertiaUpload(
+  send: (file: File, callbacks: InertiaUploadCallbacks) => void,
+  errorMessage: string,
+): NonNullable<import("../props/components/data-entry.prop").UploadProp["onUpload"]> {
+  return (file, _item, context) =>
+    new Promise((resolve, reject) => {
+      let cancel: (() => void) | undefined;
+      let settled = false;
+      const abort = () => {
+        cancel?.();
+        fail(new DOMException("Upload aborted", "AbortError"));
+      };
+      const cleanup = () => context.signal.removeEventListener("abort", abort);
+      const fail = (error: unknown) => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        reject(error);
+      };
+      if (context.signal.aborted) {
+        abort();
+        return;
+      }
+      context.signal.addEventListener("abort", abort, { once: true });
+      try {
+        send(file, {
+          forceFormData: true,
+          async: true,
+          onProgress: (progress) => {
+            if (!settled) context.onProgress(progress?.percentage ?? 0);
+          },
+          onSuccess: () => {
+            if (!settled) {
+              settled = true;
+              cleanup();
+              resolve({});
+            }
+          },
+          onError: (errors) => fail(new Error(Object.values(errors)[0] ?? errorMessage)),
+          onCancelToken: (token) => {
+            cancel = token.cancel;
+            if (context.signal.aborted) token.cancel();
+          },
+          onCancel: () => fail(new DOMException("Upload aborted", "AbortError")),
+          onNetworkError: () => {
+            fail(new Error(errorMessage));
+            return false;
+          },
+          onHttpException: () => {
+            fail(new Error(errorMessage));
+            return false;
+          },
+          onFinish: () => {
+            if (!settled) fail(new Error(errorMessage));
+          },
+        });
+      } catch (error) {
+        fail(error);
+      }
+    });
 }

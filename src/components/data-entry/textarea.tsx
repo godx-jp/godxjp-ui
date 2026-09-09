@@ -10,6 +10,7 @@ import {
   controlMultilineGhostClass,
 } from "../../lib/control-styles";
 import { controlAppearanceAttributes, resolveControlCount } from "./control-appearance";
+import { resolveAllowClear } from "./control-surface";
 import type { ControlVariantProp } from "../../props/vocabulary";
 
 import type { TextareaProp } from "../../props/components/data-entry.prop";
@@ -28,7 +29,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
       className,
       pad,
       padRaw,
-      allowClear = false,
+      allowClear,
       onClear,
       variant = "outlined",
       status,
@@ -43,6 +44,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
       value,
       defaultValue,
       onChange,
+      onValueChange,
       onCompositionStart,
       onCompositionEnd,
       ...props
@@ -136,7 +138,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       if (value === undefined) setText(event.target.value);
       if (growing && !composing.current) setMirror(event.target.value);
-      onChange?.(event);
+      onValueChange?.(event.target.value);
+      if ((onChange as unknown) !== onValueChange) onChange?.(event);
     };
 
     const handleCompositionStart = (event: React.CompositionEvent<HTMLTextAreaElement>) => {
@@ -195,9 +198,13 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
         } as React.CSSProperties)
       : undefined;
 
-    const showClear = allowClear && hasText && !props.disabled && !props.readOnly;
+    // antd `allowClear`, incl. its `{ clearIcon, label }` form — the SAME `resolveAllowClear` the
+    // select family routes through. The `clearable` fallback is `false`: a text field does not grow
+    // a ✕ unless asked.
+    const clearControl = resolveAllowClear(allowClear, false, t("common.clear") ?? "Clear");
+    const showClear = clearControl.enabled && hasText && !props.disabled && !props.readOnly;
     const counter = resolveControlCount(count, text);
-    const needsWrapper = allowClear || growing || counter !== null;
+    const needsWrapper = clearControl.enabled || growing || counter !== null;
 
     const field = (
       <textarea
@@ -240,11 +247,13 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
           <button
             type="button"
             tabIndex={-1}
-            aria-label={t("common.clear") ?? "Clear"}
+            aria-label={clearControl.label}
             onClick={clear}
             className="ui-control-inline-affix-action ui-textarea-clear"
           >
-            <X className="ui-control-inline-affix-icon" aria-hidden="true" />
+            {clearControl.clearIcon ?? (
+              <X className="ui-control-inline-affix-icon" aria-hidden="true" />
+            )}
           </button>
         ) : null}
         {counter ? (

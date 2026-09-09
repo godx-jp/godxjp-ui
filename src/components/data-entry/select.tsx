@@ -403,53 +403,75 @@ function groupDataOptions(options: SearchSelectOptionProp[]) {
   return order.map((key) => ({ heading: key || undefined, items: buckets.get(key) ?? [] }));
 }
 
-function DataSelect({
-  options = [],
-  loadOptions,
-  showSearch,
-  value,
-  defaultValue,
-  onValueChange,
-  renderOption,
-  labelRender,
-  selectedLabel,
-  selectedIcon,
-  placeholder,
-  searchPlaceholder,
-  emptyMessage,
-  loadingMessage,
-  errorMessage,
-  clearLabel,
-  clearable,
-  disabled,
-  readOnly,
-  size,
-  status,
-  variant,
-  loading,
-  open,
-  defaultOpen,
-  onOpenChange,
-  search,
-  onSearchChange,
-  filterOption,
-  filterSort,
-  autoClearSearchValue,
-  optionRender,
-  menuItemSelectedIcon,
-  notFoundContent,
-  popupMatchSelectWidth,
-  allowClear,
-  onClear,
-  renderError,
-  renderLoadMore,
-  name,
-  id,
-  className,
-  "data-testid": dataTestId,
-  "data-field": dataField,
-  ...rest
-}: SelectDataProp) {
+function DataSelect(props: SelectDataProp) {
+  const { t } = useTranslation();
+  // Radix owns the value of an
+  // UNCONTROLLED select and changing it does not re-render this component, so the pick is mirrored
+  // here; a controlled select reads straight off the prop. Declared ABOVE the `searchable` branch
+  // because that branch returns early and a hook may not be called conditionally.
+  const [uncontrolledValue, setUncontrolledValue] = React.useState<string | undefined>(
+    typeof props.defaultValue === "string" ? props.defaultValue : undefined,
+  );
+  // Resolved here rather than
+  // on the trigger: `name` belongs on the Radix root / SearchSelect's hidden input (what a native
+  // submit reads), and only `data-field` travels on to the visible trigger.
+  const identity = useFieldIdentity({
+    id: props.id,
+    name: props.name,
+    "data-field": props["data-field"],
+  });
+  const resolvedName = props.name ?? identity.name;
+  const resolvedField = props["data-field"] ?? identity["data-field"];
+  const options = props.options ?? [];
+  const hasOptions = options.length > 0;
+  // antd defaults `showSearch` to true for a multiple select, and this library has no no-search
+  // multi surface at all: Radix's Select is single-value by construction, so `mode="multiple"`
+  // always routes to the searchable panel (a `showSearch={false}` beside it is ignored, and says
+  // so in the prop docs).
+  const searchable = props.showSearch ?? (Boolean(props.loadOptions) || props.mode === "multiple");
+
+  if (props.mode === "multiple" || searchable) {
+    return (
+      <SearchSelect
+        {...props}
+        options={options}
+        disabled={props.disabled || (!props.loadOptions && !hasOptions)}
+        name={resolvedName}
+        data-field={resolvedField}
+      />
+    );
+  }
+
+  // ── Plain (no-search) SINGLE select, Radix-powered ──────────────────────────────────────────
+  const {
+    renderOption,
+    optionRender,
+    menuItemSelectedIcon,
+    placeholder,
+    clearLabel,
+    clearable,
+    disabled,
+    readOnly,
+    size,
+    status,
+    variant,
+    loading,
+    open,
+    defaultOpen,
+    onOpenChange,
+    notFoundContent,
+    popupMatchSelectWidth,
+    allowClear,
+    onClear,
+    value,
+    defaultValue,
+    onValueChange,
+    id,
+    className,
+    "data-testid": dataTestId,
+    ...rest
+  } = props;
+  const currentValue = value ?? uncontrolledValue;
   // FormField injects a11y wiring (aria-labelledby/-describedby/-errormessage/
   // -invalid) via cloneElement — forward it to the trigger or the control loses
   // its accessible name. Only aria-* passes through; anything else in rest
@@ -457,72 +479,6 @@ function DataSelect({
   const ariaProps = Object.fromEntries(
     Object.entries(rest as Record<string, unknown>).filter(([key]) => key.startsWith("aria-")),
   );
-  const { t } = useTranslation();
-  // Radix owns the value of an
-  // UNCONTROLLED select and changing it does not re-render this component, so the pick is mirrored
-  // here; a controlled select reads straight off the prop. Declared ABOVE the `searchable` branch
-  // because that branch returns early and a hook may not be called conditionally.
-  const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
-  const currentValue = value ?? uncontrolledValue;
-  // Resolved here rather than
-  // on the trigger: `name` belongs on the Radix root / SearchSelect's hidden input (what a native
-  // submit reads), and only `data-field` travels on to the visible trigger.
-  const identity = useFieldIdentity({ id, name, "data-field": dataField });
-  const resolvedName = name ?? identity.name;
-  const resolvedField = dataField ?? identity["data-field"];
-  const searchable = showSearch ?? Boolean(loadOptions);
-  const hasOptions = options.length > 0;
-
-  if (searchable) {
-    return (
-      <SearchSelect
-        value={value}
-        defaultValue={defaultValue}
-        onValueChange={onValueChange}
-        options={options}
-        loadOptions={loadOptions}
-        renderOption={renderOption}
-        labelRender={labelRender}
-        selectedLabel={selectedLabel}
-        selectedIcon={selectedIcon}
-        placeholder={placeholder}
-        searchPlaceholder={searchPlaceholder}
-        emptyMessage={emptyMessage}
-        loadingMessage={loadingMessage}
-        errorMessage={errorMessage}
-        clearLabel={clearLabel}
-        clearable={clearable}
-        disabled={disabled || (!loadOptions && !hasOptions)}
-        readOnly={readOnly}
-        size={size}
-        status={status}
-        variant={variant}
-        loading={loading}
-        open={open}
-        defaultOpen={defaultOpen}
-        onOpenChange={onOpenChange}
-        search={search}
-        onSearchChange={onSearchChange}
-        filterOption={filterOption}
-        filterSort={filterSort}
-        autoClearSearchValue={autoClearSearchValue}
-        optionRender={optionRender}
-        menuItemSelectedIcon={menuItemSelectedIcon}
-        notFoundContent={notFoundContent}
-        popupMatchSelectWidth={popupMatchSelectWidth}
-        allowClear={allowClear}
-        onClear={onClear}
-        renderError={renderError}
-        renderLoadMore={renderLoadMore}
-        name={resolvedName}
-        id={id}
-        className={className}
-        data-testid={dataTestId}
-        data-field={resolvedField}
-        {...ariaProps}
-      />
-    );
-  }
 
   const optionTestId = (optionValue: string) =>
     dataTestId ? `${dataTestId}-option-${optionValue}` : undefined;

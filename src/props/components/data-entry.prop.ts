@@ -3,6 +3,7 @@ import type * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import type * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import type * as SliderPrimitive from "@radix-ui/react-slider";
 import type * as SwitchPrimitive from "@radix-ui/react-switch";
+import type { RenderProps as InputOTPRenderProps } from "input-otp";
 import type { DayPickerProps } from "react-day-picker";
 import type { DateRange } from "react-day-picker";
 import type * as React from "react";
@@ -64,6 +65,72 @@ export type InputOTPGroupProp = React.HTMLAttributes<HTMLDivElement> & {
 export type InputOTPAlignProp = "start" | "center" | "end";
 
 /**
+ * antd `Input.OTP mask`. `true` paints every filled slot as `•`; a STRING uses that character
+ * instead. Only the PAINT changes — the real code stays in the field's value, so submission,
+ * `onChange` and the accessible value are untouched (a mask that ate the value would be a bug,
+ * not a privacy feature).
+ */
+export type InputOTPMaskProp = boolean | string;
+
+/**
+ * @see InputOTP — the one-time-code field. A passthrough of `input-otp`'s `OTPInput` (the hidden
+ * real `<input>` that owns paste, caret and arrow-key behaviour) plus this library's control-surface
+ * axes, so a code field lines up with the `Input`/`Select` beside it in a form row.
+ *
+ * The value is ALWAYS driven from here (`value` controlled, or `defaultValue` + internal state), so
+ * `formatter` and `readOnly` hold for typing AND for paste — `input-otp` writes its own internal
+ * state on paste, which a wrapper that only intercepted `onChange` could not undo.
+ */
+export type InputOTPProp = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "value" | "defaultValue" | "onChange" | "size" | "children"
+> & {
+  /** Number of slots — antd `length`. Required by `input-otp`. */
+  maxLength: number;
+  value?: string;
+  /** Uncontrolled seed — the field then owns its own value. */
+  defaultValue?: string;
+  /** Controlled-vocabulary change handler; receives the bare code, never an event. */
+  onValueChange?: (value: string) => void;
+  /** `input-otp`'s own name for the same callback — kept for the existing call sites. */
+  onChange?: (value: string) => void;
+  /** Fires once the last slot is filled (auto-submit). */
+  onComplete?: (value: string) => void;
+  /**
+   * antd `Input.OTP formatter` — normalise every code the field accepts (upper-case, strip spaces).
+   * Runs AFTER `pattern`, which `input-otp` matches against the raw keystroke: a pattern must
+   * therefore accept what the user actually types, not only what the formatter produces.
+   */
+  formatter?: (value: string) => string;
+  /** antd `Input.OTP mask` — paint only; the real code stays in the value. */
+  mask?: InputOTPMaskProp;
+  /** Main-axis alignment of the whole code row. */
+  align?: InputOTPAlignProp;
+  /** Control height tier — the shared `--control-height` ladder, as on every other field. */
+  size?: SizeProp;
+  /** Validation state the field paints — antd `status`. `error` also reports `aria-invalid`. */
+  status?: ControlStatusProp;
+  /** Chrome level — antd `variant`. Default `outlined`. */
+  variant?: ControlVariantProp;
+  /** Regex source (or literal) every accepted value must match — `input-otp`'s `pattern`. */
+  pattern?: string;
+  /** Rewrite pasted text before it reaches the field — `input-otp`'s `pasteTransformer`. */
+  pasteTransformer?: (pasted: string) => string;
+  /** Class on the row container that `input-otp` renders (the slots' flex parent). */
+  containerClassName?: ClassNameProp;
+  /** Password-manager badge avoidance strategy — `input-otp`'s own escape hatch. */
+  pushPasswordManagerStrategy?: "increase-width" | "none";
+  /** No-JS fallback stylesheet emitted by `input-otp`; `null` disables it. */
+  noScriptCSSFallback?: string | null;
+  /** CSP nonce for the stylesheet `input-otp` injects. */
+  nonce?: string;
+  /** The slot tree (`InputOTPGroup` > `InputOTPSlot`) — the normal API. */
+  children?: React.ReactNode;
+  /** `input-otp`'s headless escape hatch: render the whole row yourself from the slot state. */
+  render?: (props: InputOTPRenderProps) => React.ReactNode;
+};
+
+/**
  * Character-counter configuration shared by `Input` and `Textarea` — Ant Design's `count`
  * (`@rc-component/input`'s `CountConfig`).
  *
@@ -87,14 +154,18 @@ export type ControlCountProp = {
 
 /** @see Input */
 export type InputProp = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "prefix"> & {
+  onValueChange?: (value: string) => void;
   /** Control height tier: `md` (default), `sm` or `lg` — the same tiers as SelectTrigger. */
   size?: "sm" | "md" | "lg";
   /** Validation state the field paints — antd `status`. `error` also reports `aria-invalid`. */
   status?: ControlStatusProp;
   /** Chrome level — antd `variant`. Default `outlined`. */
   variant?: ControlVariantProp;
-  /** Show an inline ✕ that clears the field while it holds text (default false). */
-  allowClear?: boolean;
+  /**
+   * antd `allowClear` — show an inline ✕ that clears the field while it holds text (default
+   * false). The OBJECT form additionally replaces the icon and/or the accessible label.
+   */
+  allowClear?: AllowClearProp;
   /** Called after the field is cleared via the inline ✕. */
   onClear?: () => void;
   /** A leading affordance pinned inside the start of the field (e.g. a mail/lock icon). */
@@ -115,10 +186,14 @@ export type InputProp = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"
 
 /** @see Textarea */
 export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  onValueChange?: (value: string) => void;
   pad?: PadProp;
   padRaw?: PadRawProp;
-  /** Show an inline ✕ (top-end) that clears the field while it holds text (default false). */
-  allowClear?: boolean;
+  /**
+   * antd `allowClear` — an inline ✕ (top-end) that clears the field while it holds text (default
+   * false). The OBJECT form additionally replaces the icon and/or the accessible label.
+   */
+  allowClear?: AllowClearProp;
   /** Called after the field is cleared via the inline ✕. */
   onClear?: () => void;
   /**
@@ -203,6 +278,8 @@ export type NumberInputProp = FieldA11yProps & {
  * horizontal). `columns` lays fields out in a responsive grid (reuses ResponsiveGrid).
  */
 export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
+  disabled?: boolean;
+  requiredMark?: boolean | "optional";
   layout?: FormLayoutProp;
   labelWidth?: WidthProp;
   controlWidth?: WidthProp;
@@ -253,6 +330,9 @@ export type FormFieldProp =
       required?: RequiredProp;
       helper?: HelperProp;
       error?: ErrorProp;
+      validateStatus?: "success" | "warning" | "error" | "validating";
+      hasFeedback?: boolean;
+      feedback?: React.ReactNode;
       /** Optional control rendered inline after the label (e.g. a help button). */
       labelAddon?: React.ReactNode;
       /** Override the Form's layout for this field only. */
@@ -282,6 +362,9 @@ export type FormFieldProp =
       required?: RequiredProp;
       helper?: HelperProp;
       error?: ErrorProp;
+      validateStatus?: "success" | "warning" | "error" | "validating";
+      hasFeedback?: boolean;
+      feedback?: React.ReactNode;
       /** Optional control rendered inline after the label (e.g. a help button). */
       labelAddon?: React.ReactNode;
       /** Override the Form's layout for this field only. */
@@ -607,8 +690,11 @@ export type DatePickerBaseProp = FieldA11yProps &
      * way around the rule the mouse obeys.
      */
     disabledDate?: (date: Date) => boolean;
-    /** Show an inline ✕ to clear the value when one is set (default true). */
-    allowClear?: boolean;
+    /**
+     * antd `allowClear` — an inline ✕ that clears the value when one is set (default true). The
+     * OBJECT form additionally replaces the icon and/or the accessible label.
+     */
+    allowClear?: AllowClearProp;
   } & Pick<CalendarFooterProp, "showToday" | "showClose">;
 
 /** Single and multiple selections keep their callback types distinct. */
@@ -630,43 +716,55 @@ export type DatePickerProp = DatePickerBaseProp &
   );
 
 /** @see MonthPicker */
-export type MonthPickerProp = FieldA11yProps & {
-  value?: ValueProp<Date>;
-  defaultValue?: DefaultValueProp<Date | undefined>;
-  onValueChange?: OnValueChangeProp<Date | undefined>;
-  placeholder?: PlaceholderProp;
-  disabled?: DisabledProp;
-  className?: ClassNameProp;
-  id?: IdProp;
-  /** Form field name — submits the display text (`yyyy/MM`). */
-  name?: NameProp;
-  /** Clamp the year navigation (inclusive). */
-  fromYear?: number;
-  toYear?: number;
-  /** Show an inline ✕ to clear the value when one is set (default true). */
-  allowClear?: boolean;
-};
+export type MonthPickerProp = FieldA11yProps &
+  PickerChromeProp & {
+    value?: ValueProp<Date>;
+    defaultValue?: DefaultValueProp<Date | undefined>;
+    onValueChange?: OnValueChangeProp<Date | undefined>;
+    placeholder?: PlaceholderProp;
+    disabled?: DisabledProp;
+    className?: ClassNameProp;
+    id?: IdProp;
+    /** Form field name — submits the display text (`yyyy/MM`). */
+    name?: NameProp;
+    /** Clamp the year navigation (inclusive). */
+    fromYear?: number;
+    toYear?: number;
+    /**
+     * Show an inline ✕ to clear the value when one is set (default true). The OBJECT form
+     * additionally replaces the icon and/or the accessible label (antd `allowClear`).
+     */
+    allowClear?: AllowClearProp;
+    /** Node appended below the month grid (antd `renderExtraFooter`). */
+    renderExtraFooter?: () => React.ReactNode;
+  };
 
 /**
  * @see MonthRangePicker — both edges are normalized to the FIRST day of their month
  * (the `DateRange` shape is shared with DateRangePicker so ranges interop).
  */
-export type MonthRangePickerProp = FieldA11yProps & {
-  value?: ValueProp<DateRange>;
-  defaultValue?: DefaultValueProp<DateRange | undefined>;
-  onValueChange?: OnValueChangeProp<DateRange | undefined>;
-  placeholder?: PlaceholderProp;
-  disabled?: DisabledProp;
-  className?: ClassNameProp;
-  id?: IdProp;
-  /** Form field name — emits the range as `${name}_from` / `${name}_to` `yyyy/MM` fields. */
-  name?: NameProp;
-  /** Clamp the year navigation (inclusive). */
-  fromYear?: number;
-  toYear?: number;
-  /** Show an inline ✕ to clear the range when one is set (default true). */
-  allowClear?: boolean;
-};
+export type MonthRangePickerProp = FieldA11yProps &
+  PickerChromeProp & {
+    value?: ValueProp<DateRange>;
+    defaultValue?: DefaultValueProp<DateRange | undefined>;
+    onValueChange?: OnValueChangeProp<DateRange | undefined>;
+    placeholder?: PlaceholderProp;
+    disabled?: DisabledProp;
+    className?: ClassNameProp;
+    id?: IdProp;
+    /** Form field name — emits the range as `${name}_from` / `${name}_to` `yyyy/MM` fields. */
+    name?: NameProp;
+    /** Clamp the year navigation (inclusive). */
+    fromYear?: number;
+    toYear?: number;
+    /**
+     * Show an inline ✕ to clear the range when one is set (default true). The OBJECT form
+     * additionally replaces the icon and/or the accessible label (antd `allowClear`).
+     */
+    allowClear?: AllowClearProp;
+    /** Node appended below the month grid (antd `renderExtraFooter`). */
+    renderExtraFooter?: () => React.ReactNode;
+  };
 
 /** @see DateRangePicker */
 export type DateRangePickerProp = FieldA11yProps &
@@ -698,8 +796,11 @@ export type DateRangePickerProp = FieldA11yProps &
     cellRender?: CalendarCellRenderProp;
     /** Forbid individual dates by predicate — see `DatePickerProp.disabledDate`. */
     disabledDate?: (date: Date) => boolean;
-    /** Show an inline ✕ to clear the range when one is set (default true). */
-    allowClear?: boolean;
+    /**
+     * antd `allowClear` — an inline ✕ that clears the range when one is set (default true). The
+     * OBJECT form additionally replaces the icon and/or the accessible label.
+     */
+    allowClear?: AllowClearProp;
   } & Pick<CalendarFooterProp, "showToday" | "showClose">;
 
 /**
@@ -768,8 +869,11 @@ export type TimePickerProp = FieldA11yProps &
      * value is expensive to change (a saved shift, a published slot); leave it off otherwise.
      */
     needConfirm?: boolean;
-    /** Show an inline ✕ to clear the value when one is set (default true). */
-    allowClear?: boolean;
+    /**
+     * antd `allowClear` — an inline ✕ that clears the value when one is set (default true). The
+     * OBJECT form additionally replaces the icon and/or the accessible label.
+     */
+    allowClear?: AllowClearProp;
   };
 
 /** A pair of canonical times, ordered by default; empty endpoints are explicitly configurable. */
@@ -787,9 +891,17 @@ export type TimeRangePickerProp = Omit<
 
 /** @see ColorPicker */
 export type ColorPickerProp = FieldA11yProps & {
+  /** Hex colour (`#rgb` or `#rrggbb`). `""`/omitted = no colour chosen. */
   value?: ValueProp;
+  /**
+   * Uncontrolled initial colour (controlled-triad rule). Without it the control starts EMPTY —
+   * it never invents a colour of its own, so nothing brand-shaped is baked into the framework.
+   */
+  defaultValue?: DefaultValueProp;
   onValueChange?: OnValueChangeProp;
   disabled?: DisabledProp;
+  /** Form field name — submits the hex through a hidden input (`""` while no colour is chosen). */
+  name?: NameProp;
   className?: ClassNameProp;
   id?: IdProp;
   showHexInput?: boolean;
@@ -826,11 +938,7 @@ export type SearchSelectLoadResultProp = {
  * @see Select — the data-driven entry point (`<Select options|loadOptions showSearch …/>`).
  * This is the shape of its internal engine (`SelectDataProp` extends it); use `Select` directly.
  */
-export type SearchSelectProp = {
-  value?: ValueProp;
-  /** Uncontrolled initial value — the trigger shows its option's label at rest (controlled-triad). */
-  defaultValue?: DefaultValueProp;
-  onValueChange?: (value: string, option?: SearchSelectOptionProp) => void;
+export type SearchSelectBaseProp = {
   /** Static option list (client-side filtered). Provide this OR `loadOptions`, not both. */
   options?: SearchSelectOptionProp[];
   /** Remote fetcher — debounced search + infinite-scroll pagination call into this. Provide this
@@ -972,14 +1080,66 @@ export type SearchSelectProp = {
 };
 
 /**
+ * Single-select (the default): one `string` in, one `string` out — `""` means nothing selected.
+ * `mode` is absent rather than `"single"` so every existing call site keeps its exact type.
+ */
+export type SearchSelectSingleProp = {
+  mode?: undefined;
+  value?: ValueProp;
+  /** Uncontrolled initial value — the trigger shows its option's label at rest (controlled-triad). */
+  defaultValue?: DefaultValueProp;
+  onValueChange?: (value: string, option?: SearchSelectOptionProp) => void;
+  /** Fired when an option is picked (antd `onSelect`). */
+  onSelect?: (value: string, option: SearchSelectOptionProp) => void;
+};
+
+/**
+ * antd `mode="multiple"` — pick several from ONE flat, searchable, possibly async option list.
+ *
+ * The panel stays OPEN across picks (a multi-pick is a run of gestures, not one), each row toggles,
+ * and the trigger collapses the picked labels through the shared `maxTagCount` / `maxTagPlaceholder`
+ * helper Cascader and TreeSelect already use — so three multi-value triggers in one form read the
+ * same. Removal happens in the list (or with the clear ✕): the trigger is a `<button>`, and a
+ * per-chip remove button inside it would be a button nested in a button.
+ */
+export type SearchSelectMultipleProp = {
+  mode: "multiple";
+  value?: ValueProp<string[]>;
+  /** Uncontrolled initial selection (controlled-triad). */
+  defaultValue?: DefaultValueProp<string[]>;
+  onValueChange?: (value: string[], options?: SearchSelectOptionProp[]) => void;
+  /** Fired when an option JOINS the selection (antd `onSelect`). */
+  onSelect?: (value: string, option: SearchSelectOptionProp) => void;
+  /** Fired when an option LEAVES the selection (antd `onDeselect`). */
+  onDeselect?: (value: string, option: SearchSelectOptionProp) => void;
+  /**
+   * Hard ceiling on how many options may be held (antd `maxCount`). A pick past the ceiling is
+   * REFUSED — the value handed to `onValueChange` is never over the limit — and the remaining rows
+   * report `aria-disabled` so the ceiling is visible before it is hit.
+   */
+  maxCount?: number;
+  /** How many labels the trigger shows before the rest collapse (antd `maxTagCount`). */
+  maxTagCount?: MaxTagCountProp;
+  /** The node standing in for what `maxTagCount` hid (antd `maxTagPlaceholder`). */
+  maxTagPlaceholder?: MaxTagPlaceholderProp;
+};
+
+/** @see Select — the searchable engine. Single by default; `mode="multiple"` switches the shape. */
+export type SearchSelectProp = SearchSelectBaseProp &
+  (SearchSelectSingleProp | SearchSelectMultipleProp);
+
+/**
  * Data-driven (Ant-style) form of {@link Select} — one component covering static `options` or
  * async `loadOptions`, with `showSearch` toggling the searchable combobox vs a plain listbox.
  * Passing `options`/`loadOptions` to `<Select>` switches it from the compound API to this one.
  */
-export type SelectDataProp = SearchSelectProp & {
-  /** Show the search box (combobox). Defaults to true when `loadOptions` is set, otherwise false. */
+export type SelectDataProp = SearchSelectBaseProp & {
+  /**
+   * Show the search box (combobox). Defaults to true when `loadOptions` is set or
+   * `mode="multiple"` is in force (antd's own defaults), otherwise false.
+   */
   showSearch?: boolean;
-};
+} & (SearchSelectSingleProp | SearchSelectMultipleProp);
 
 /** @see UploadFileItem */
 export type UploadFileItemProp = UploadFileItem;
@@ -999,12 +1159,55 @@ export type UploadProp = FieldA11yProps & {
   maxCount?: number;
   maxSizeBytes?: number;
   disabled?: DisabledProp;
+  readOnly?: boolean;
+  directory?: boolean;
+  pastable?: boolean;
+  openFileDialogOnClick?: boolean;
+  name?: string;
+  action?: string | ((file: File) => string | Promise<string>);
+  method?: "POST" | "PUT" | "PATCH";
+  headers?: Record<string, string>;
+  data?:
+    | Record<string, string | Blob>
+    | ((file: File) => Record<string, string | Blob> | Promise<Record<string, string | Blob>>);
+  withCredentials?: boolean;
+  beforeUpload?: (
+    file: File,
+    files: File[],
+  ) =>
+    | boolean
+    | File
+    | Blob
+    | typeof import("../../components/data-entry/upload-types").UPLOAD_LIST_IGNORE
+    | Promise<
+        | boolean
+        | File
+        | Blob
+        | typeof import("../../components/data-entry/upload-types").UPLOAD_LIST_IGNORE
+      >;
+  onReject?: (
+    rejection: import("../../components/data-entry/upload-types").UploadRejection,
+  ) => void;
+  onRemove?: (item: UploadFileItemProp) => boolean | void | Promise<boolean | void>;
+  onPreview?: (item: UploadFileItemProp) => void;
+  onDownload?: (item: UploadFileItemProp) => void;
+  previewFile?: (file: File) => Promise<string>;
+  onDrop?: React.DragEventHandler<HTMLElement>;
+  showUploadList?: boolean;
+  itemRender?: (
+    node: React.ReactElement,
+    item: UploadFileItemProp,
+    items: UploadFileItemProp[],
+    actions: import("../../components/data-entry/upload-types").UploadItemActions,
+  ) => React.ReactNode;
+
   removable?: boolean;
   /** App: issue → PUT → complete; return mediaId + optional preview URL */
   onUpload?: (
     file: File,
     item: UploadFileItemProp,
-  ) => Promise<{ mediaId: string; previewUrl?: string }>;
+    context: import("../../components/data-entry/upload-types").UploadRequestContext,
+  ) => Promise<import("../../components/data-entry/upload-types").UploadResult>;
   /** Injected by FormField (or set directly) — applied to the native `<input type="file">`. */
   id?: IdProp;
   /**
@@ -1060,6 +1263,18 @@ export type CascaderProp = FieldA11yProps & {
   showSearch?: boolean;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;
+  /**
+   * Read-only: the selection stays visible, focusable and submitted, but the panel refuses to open
+   * and the clear ✕ is withdrawn. The same contract Select states — unlike `disabled`, the field
+   * keeps its tab stop and still posts its value, which is what a locked-for-this-role field needs.
+   */
+  readOnly?: boolean;
+  /**
+   * Form field name — submits through hidden input(s). A path is joined with `/`
+   * (`"jp/13/shibuya"`), and `multiple` emits ONE field per selected path under the same name (the
+   * native `<select multiple>` contract). Option values must therefore not contain `/`.
+   */
+  name?: NameProp;
   className?: ClassNameProp;
   id?: IdProp;
   expandTrigger?: "click" | "hover";
@@ -1130,6 +1345,17 @@ export type TreeSelectProp = FieldA11yProps & {
   treeDefaultExpandAll?: boolean;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;
+  /**
+   * Read-only: the selection stays visible, focusable and submitted, but the tree refuses to open
+   * and the clear ✕ is withdrawn. The same contract Select states — unlike `disabled`, the field
+   * keeps its tab stop and still posts its value.
+   */
+  readOnly?: boolean;
+  /**
+   * Form field name — submits through hidden input(s). `multiple`/`treeCheckable` emits ONE field
+   * per checked value under the same name (the native `<select multiple>` contract).
+   */
+  name?: NameProp;
   allowClear?: AllowClearProp;
   className?: ClassNameProp;
   id?: IdProp;
@@ -1185,11 +1411,44 @@ export type TransferItemProp = {
 
 /** @see Transfer — dual-list shuttle (Checkbox + SearchInput). */
 export type TransferProp = FieldA11yProps & {
+  /** Canonical controlled value; wins over targetKeys when both are provided. */
+  value?: string[];
+  defaultValue?: string[];
+  name?: string;
+  readOnly?: boolean;
+  /** Independent per-pane pagination. Select-all applies to visible enabled rows. */
+  pagination?: boolean | { pageSize?: number };
   dataSource: TransferItemProp[];
-  targetKeys: string[];
+  /**
+   * The keys currently in the TARGET pane (antd's own name, and the controlled half of the triad).
+   * Optional since the control can run uncontrolled from `defaultTargetKeys`.
+   */
+  targetKeys?: string[];
+  /**
+   * Uncontrolled initial target keys (controlled-triad rule). Without one the shuttle starts empty
+   * and still shuttles — a Transfer with no `targetKeys` handler used to be frozen.
+   */
+  defaultTargetKeys?: string[];
   onValueChange?: (targetKeys: string[], direction: "left" | "right", moveKeys: string[]) => void;
   titles?: [React.ReactNode, React.ReactNode];
   showSearch?: boolean;
+  /**
+   * Render one row's body yourself (antd `render`). Receives the item; return the node shown beside
+   * its checkbox. The checkbox, its label association and the row's keyboard behaviour stay ours —
+   * a custom row cannot end up unlabelled.
+   */
+  render?: (item: TransferItemProp) => React.ReactNode;
+  /**
+   * Override the search predicate (antd `filterOption`). Receives the trimmed query and the item;
+   * return true to keep the row. Default matches title + description, case-insensitively.
+   */
+  filterOption?: (query: string, item: TransferItemProp) => boolean;
+  /**
+   * Show the per-pane select-all checkbox (antd `showSelectAll`, default `true`). `false` withdraws
+   * it — a pane whose items are individually meaningful (permissions, billable seats) often should
+   * not offer "all" as one click.
+   */
+  showSelectAll?: boolean;
   oneWay?: boolean;
   disabled?: DisabledProp;
   /** Injected by FormField (or set directly) — applied to the `role="group"` shuttle container. */

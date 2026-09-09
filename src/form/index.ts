@@ -4,7 +4,15 @@ export { FormRoot } from "./form-root";
 export type { FormRootProp } from "./form-root";
 export { FormFieldControl } from "./form-field-control";
 export type { FormFieldControlProp } from "./form-field-control";
-export { useFormSubmitting, useFormAdapter } from "./form-context";
+export { FormFieldArray } from "./form-field-array";
+export type { FormFieldArrayProp } from "./form-field-array";
+export {
+  useFormSubmitting,
+  useFormAdapter,
+  useFormDisabled,
+  useFormInstance,
+  useFormWatch,
+} from "./form-context";
 export type {
   ZodSchemaProp,
   FieldErrorMessageProp,

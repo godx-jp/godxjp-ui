@@ -79,7 +79,17 @@
       "statusFailed": "{count} tệp tải lên thất bại",
       "removeImage": "Xóa ảnh",
       "removeFile": "Xóa {name}",
-      "cropDescription": "Kéo thanh thu phóng rồi lưu để cắt ảnh thành hình vuông."
+      "cropDescription": "Kéo thanh thu phóng rồi lưu để cắt ảnh thành hình vuông.",
+      "preview": "Xem trước",
+      "download": "Tải xuống",
+      "retry": "Thử lại",
+      "start": "Tải lên",
+      "cancel": "Huỷ",
+      "rejectAccept": "{name}: loại tệp không được phép.",
+      "rejectSize": "{name}: tệp quá lớn.",
+      "rejectCount": "{name}: đã đủ số lượng tệp.",
+      "rejectBeforeUpload": "{name}: kiểm tra tệp thất bại.",
+      "readFailed": "Không thể đọc thư mục đã chọn."
     },
     "cascader": {
       "placeholder": "Chọn…",
@@ -139,6 +149,14 @@
     },
     "formErrors": {
       "title": "Dữ liệu nhập có lỗi, vui lòng kiểm tra"
+    },
+    "form": {
+      "optional": "(không bắt buộc)",
+      "success": "Hợp lệ",
+      "warning": "Cần kiểm tra",
+      "error": "Không hợp lệ",
+      "validating": "Đang kiểm tra",
+      "submitFailed": "Không thể gửi biểu mẫu. Vui lòng thử lại."
     }
   },
   "feedback": {

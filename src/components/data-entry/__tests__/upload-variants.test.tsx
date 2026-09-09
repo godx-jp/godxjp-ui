@@ -23,7 +23,7 @@ describe("Upload — dropzone drag & drop + file list", () => {
     // state would have passed.
     expect(zone).not.toHaveAttribute("data-drag-active");
     fireEvent.drop(zone, { dataTransfer: { files: [img()] } });
-    expect(onValueChange).toHaveBeenCalled();
+    await waitFor(() => expect(onValueChange).toHaveBeenCalled());
     expect(onValueChange.mock.calls.at(-1)![0]).toHaveLength(1);
   });
 
@@ -42,7 +42,7 @@ describe("Upload — dropzone drag & drop + file list", () => {
       <Upload variant="dropzone" defaultValue={[item]} removable onValueChange={onValueChange} />,
     );
     const li = screen.getByText("invoice.png").closest("li")!;
-    await user.click(within(li).getByRole("button"));
+    await user.click(within(li).getByRole("button", { name: /Xóa|Remove/ }));
     expect(onValueChange).toHaveBeenLastCalledWith([]);
   });
 });

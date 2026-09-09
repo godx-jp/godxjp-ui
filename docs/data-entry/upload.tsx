@@ -1,7 +1,13 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Upload, type UploadFileItem } from "@godxjp/ui/data-entry";
+import {
+  Form,
+  Upload,
+  type UploadFileItem,
+  type UploadRequestContext,
+} from "@godxjp/ui/data-entry";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -11,12 +17,19 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * Composed only from real @godxjp/ui components.
  */
 
-/** No-op uploader: resolves immediately with a fake mediaId for preview purposes. */
-async function noopUpload(_file: File, _item: UploadFileItem) {
-  return { mediaId: "preview-media-id" };
+/** Simulated transport: progress, abort, and retry remain observable in the preview. */
+async function demoUpload(file: File, _item: UploadFileItem, context: UploadRequestContext) {
+  for (let percent = 0; percent <= 100; percent += 20) {
+    await new Promise((resolve) => setTimeout(resolve, 180));
+    context.signal.throwIfAborted();
+    context.onProgress(percent);
+  }
+  if (file.name.startsWith("fail")) throw new Error("アップロードに失敗しました。再試行できます。");
+  return { mediaId: crypto.randomUUID() };
 }
 
 export default function Demo() {
+  const [submittedFiles, setSubmittedFiles] = useState<string[]>([]);
   const [dropzoneItems, setDropzoneItems] = useState<UploadFileItem[]>([]);
   const [buttonItems, setButtonItems] = useState<UploadFileItem[]>([]);
   const [pictureCardItems, setPictureCardItems] = useState<UploadFileItem[]>([]);
@@ -42,6 +55,37 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Multipart form</CardTitle>
+            <CardDescription>
+              選択・ドロップ・貼り付けしたファイルをフォームでまとめて送信します。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form
+              onReset={() => setSubmittedFiles([])}
+              onSubmit={(event) => {
+                event.preventDefault();
+                const data = new FormData(event.currentTarget);
+                setSubmittedFiles(
+                  data
+                    .getAll("attachments[]")
+                    .filter((value): value is File => value instanceof File)
+                    .map((value) => value.name),
+                );
+              }}
+            >
+              <Upload name="attachments[]" pastable maxCount={3} />
+              <Button type="submit">添付ファイルを確認</Button>
+              <Button type="reset" variant="outline">
+                リセット
+              </Button>
+              <Text>{submittedFiles.join("、")}</Text>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Dropzone</CardTitle>
             <CardDescription>
               ドラッグ＆ドロップエリア · PDF・Excel などの書類添付に使用。
@@ -53,9 +97,10 @@ export default function Demo() {
               value={dropzoneItems}
               onValueChange={setDropzoneItems}
               accept=".pdf,.xlsx,.csv"
+              pastable
               maxCount={5}
               maxSizeBytes={20 * 1024 * 1024}
-              onUpload={noopUpload}
+              onUpload={demoUpload}
             />
           </CardContent>
         </Card>
@@ -64,8 +109,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Error and recovery</CardTitle>
             <CardDescription>
-              失敗理由は対象ファイルの行に表示する。Upload は自動 retry prop を持たないため、
-              不正なファイルを削除して修正済みファイルを再選択する。
+              失敗したファイルは再試行できます。処理中のファイルはキャンセルできます。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -98,7 +142,7 @@ export default function Demo() {
               value={buttonItems}
               onValueChange={setButtonItems}
               accept=".csv"
-              onUpload={noopUpload}
+              onUpload={demoUpload}
             >
               CSVをインポート
             </Upload>
@@ -119,7 +163,7 @@ export default function Demo() {
               onValueChange={setPictureCardItems}
               accept="image/*"
               maxCount={6}
-              onUpload={noopUpload}
+              onUpload={demoUpload}
             />
           </CardContent>
         </Card>
@@ -138,7 +182,7 @@ export default function Demo() {
               onValueChange={setPictureItem}
               accept="image/*"
               maxCount={1}
-              onUpload={noopUpload}
+              onUpload={demoUpload}
             />
           </CardContent>
         </Card>
@@ -154,7 +198,7 @@ export default function Demo() {
               value={avatarItem}
               onValueChange={setAvatarItem}
               accept="image/*"
-              onUpload={noopUpload}
+              onUpload={demoUpload}
             />
           </CardContent>
         </Card>
@@ -174,7 +218,7 @@ export default function Demo() {
               onValueChange={setAvatarCropItem}
               accept="image/*"
               maxSizeBytes={5 * 1024 * 1024}
-              onUpload={noopUpload}
+              onUpload={demoUpload}
             />
           </CardContent>
         </Card>

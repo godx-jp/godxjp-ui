@@ -71,6 +71,7 @@ function primaryComponents() {
     }
   };
   walk(COMPONENTS_DIR);
+  walk(join(ROOT, "src/form"));
   return found;
 }
 

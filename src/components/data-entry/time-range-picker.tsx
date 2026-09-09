@@ -11,6 +11,19 @@ export type {
   TimeRangePickerProp as TimeRangePickerProps,
 } from "../../props/components/data-entry.prop";
 
+/**
+ * One edge's clear affordance. `allowEmpty[i]` is the harder constraint — an edge that may not be
+ * empty cannot offer a ✕ at all — so it gates first; otherwise the caller's `allowClear` passes
+ * through UNCHANGED, object form included, so a custom `clearIcon`/`label` reaches both edges.
+ */
+function edgeAllowClear(
+  allowClear: TimeRangePickerProp["allowClear"],
+  edgeAllowsEmpty: boolean,
+): TimeRangePickerProp["allowClear"] {
+  if (!edgeAllowsEmpty || allowClear === false) return false;
+  return allowClear ?? true;
+}
+
 /** A range owns ordering and partial endpoints; the time controls own editing and constraints. */
 export function TimeRangePicker({
   value: controlledValue,
@@ -64,7 +77,7 @@ export function TimeRangePicker({
         placeholder={placeholder?.[0]}
         value={value[0]}
         onValueChange={(time) => choose(0, time)}
-        allowClear={props.allowClear !== false && allowEmpty[0]}
+        allowClear={edgeAllowClear(props.allowClear, allowEmpty[0])}
       />
       <TimePicker
         {...props}
@@ -77,7 +90,7 @@ export function TimeRangePicker({
         placeholder={placeholder?.[1]}
         value={value[1]}
         onValueChange={(time) => choose(1, time)}
-        allowClear={props.allowClear !== false && allowEmpty[1]}
+        allowClear={edgeAllowClear(props.allowClear, allowEmpty[1])}
       />
     </Flex>
   );

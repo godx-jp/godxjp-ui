@@ -188,6 +188,19 @@
     gap: var(--upload-tile-space-gap);
   }
 
+  .ui-upload-list-thumb {
+    inline-size: var(--control-height-lg);
+    block-size: var(--control-height-lg);
+    object-fit: cover;
+    border-radius: var(--radius);
+    flex-shrink: 0;
+  }
+
+  .ui-upload-picture-item {
+    inline-size: var(--upload-tile-size);
+    overflow-wrap: anywhere;
+  }
+
   .ui-upload-tile {
     position: relative;
     inline-size: var(--upload-tile-size);

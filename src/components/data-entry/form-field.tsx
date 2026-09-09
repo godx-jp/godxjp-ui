@@ -1,6 +1,9 @@
 import * as React from "react";
+import { CheckCircle, CircleAlert, LoaderCircle, TriangleAlert } from "lucide-react";
+import { useTranslation } from "../../i18n/use-translation";
 
 import { Label } from "../data-entry/label";
+import { controlIconClass } from "../../lib/control-styles";
 import { cn } from "../../lib/utils";
 import { FieldIdentityContext, FieldNameContext, mergeAriaIds } from "../../lib/field-a11y";
 import { useOptionalAppContext } from "../../app/app-provider";
@@ -28,6 +31,9 @@ export function FormField({
   required,
   helper,
   error: errorProp,
+  validateStatus,
+  hasFeedback,
+  feedback,
   labelAddon,
   layout: layoutProp,
   labelWidth: labelWidthProp,
@@ -39,6 +45,7 @@ export function FormField({
 }: FormFieldProp) {
   // Form context provides defaults; per-field props override (Form → FormField priority).
   const form = useFormLayout();
+  const { t } = useTranslation();
   const layout = layoutProp ?? form?.layout ?? "vertical";
   const labelWidth = labelWidthProp ?? form?.labelWidth;
   const controlWidth = controlWidthProp ?? form?.controlWidth;
@@ -62,6 +69,16 @@ export function FormField({
   const resolvedId = id ?? autoId;
   const labelId = `${resolvedId}-label`;
   const helperId = helper ? `${resolvedId}-helper` : undefined;
+  const validationStatus = error ? "error" : validateStatus;
+  const feedbackId = hasFeedback && validationStatus ? `${resolvedId}-feedback` : undefined;
+  const FeedbackIcon =
+    validationStatus === "validating"
+      ? LoaderCircle
+      : validationStatus === "error"
+        ? CircleAlert
+        : validationStatus === "warning"
+          ? TriangleAlert
+          : CheckCircle;
   const errorId = error ? `${resolvedId}-error` : undefined;
 
   //
@@ -127,6 +144,8 @@ export function FormField({
       // controls (Radio.Group, checkbox lists, range pairs) have no labelable root,
       // and a dangling `for` triggers Chrome's "Incorrect use of <label>" issue.
       id: (childProps?.id as string | undefined) ?? resolvedId,
+      ...(form?.disabled && childProps?.disabled !== false ? { disabled: true } : {}),
+      ...(validationStatus === "validating" ? { "aria-busy": true } : {}),
       // Read the child's own value first in BOTH cases: cloneElement
       // overwrites every key present in the config bag, `undefined` included, so a bare
       // `"data-field": fieldKey` would erase a value the control set for itself.
@@ -147,6 +166,7 @@ export function FormField({
       "aria-describedby": mergeIds(
         childProps?.["aria-describedby"] as string | undefined,
         helperId,
+        feedbackId,
       ),
       "aria-errormessage": mergeIds(
         childProps?.["aria-errormessage"] as string | undefined,
@@ -155,9 +175,10 @@ export function FormField({
       "aria-required": required
         ? true
         : (childProps?.["aria-required"] as React.AriaAttributes["aria-required"]),
-      "aria-invalid": error
-        ? true
-        : (childProps?.["aria-invalid"] as React.AriaAttributes["aria-invalid"]),
+      "aria-invalid":
+        validationStatus === "error"
+          ? true
+          : (childProps?.["aria-invalid"] as React.AriaAttributes["aria-invalid"]),
     })
   ) : (
     children
@@ -212,7 +233,10 @@ export function FormField({
                 thì nó ngắt dòng theo chữ như mọi nội dung inline khác. */}
             <span>
               {label}
-              {required && (
+              {!required && form?.requiredMark === "optional" && (
+                <span className="text-muted-foreground"> {t("dataEntry.form.optional")}</span>
+              )}
+              {required && form?.requiredMark !== false && form?.requiredMark !== "optional" && (
                 <span aria-hidden="true" className="ui-form-field-required">
                   *
                 </span>
@@ -228,10 +252,31 @@ export function FormField({
         ) : (
           <FieldNameContext.Provider value={fieldNameContext}>
             <FieldIdentityContext.Provider value={fieldIdentityContext}>
-              {childWithA11y}
+              <fieldset
+                role="presentation"
+                className="contents"
+                disabled={form?.disabled && childProps?.disabled !== false}
+              >
+                {childWithA11y}
+              </fieldset>
             </FieldIdentityContext.Provider>
           </FieldNameContext.Provider>
         )}
+        {hasFeedback && validationStatus ? (
+          <span id={feedbackId} role="status" className="ui-inline-xs text-xs">
+            {feedback ?? (
+              <FeedbackIcon
+                aria-hidden="true"
+                className={
+                  validationStatus === "validating"
+                    ? `${controlIconClass} motion-safe:animate-spin`
+                    : controlIconClass
+                }
+              />
+            )}
+            {t(`dataEntry.form.${validationStatus}`)}
+          </span>
+        ) : null}
         {helper ? (
           <p id={helperId} className="text-muted-foreground text-xs">
             {helper}

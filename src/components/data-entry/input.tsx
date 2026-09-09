@@ -9,6 +9,7 @@ import {
   controlAppearanceAttributes,
   resolveControlCount,
 } from "./control-appearance";
+import { resolveAllowClear } from "./control-surface";
 import type { InputProp } from "../../props/components/data-entry.prop";
 
 export type { InputProp, InputProp as InputProps } from "../../props/components/data-entry.prop";
@@ -36,7 +37,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
       variant = "outlined",
       className,
       type,
-      allowClear = false,
+      allowClear,
       onClear,
       leadingIcon,
       trailingIcon,
@@ -48,6 +49,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
       value,
       defaultValue,
       onChange,
+      onValueChange,
       ...props
     },
     ref,
@@ -94,7 +96,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       if (value === undefined) setText(event.target.value);
-      onChange?.(event);
+      onValueChange?.(event.target.value);
+      if ((onChange as unknown) !== onValueChange) onChange?.(event);
     };
 
     const clear = () => {
@@ -114,6 +117,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
       onClear?.();
     };
 
+    // antd `allowClear`, incl. its `{ clearIcon, label }` form — the SAME `resolveAllowClear` the
+    // select family routes through, so "clear this field" is one mechanism across the library.
+    // The `clearable` fallback is `false`: a text field does not grow a ✕ unless asked.
+    const clearControl = resolveAllowClear(allowClear, false, t("common.clear") ?? "Clear");
     const chrome = CONTROL_VARIANT_CHROME_CLASS[variant];
     const counter = resolveControlCount(count, text);
     // `prefix`/`suffix` are antd's names for content pinned inside the box; `leadingIcon`/
@@ -124,7 +131,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
     const hasAddon = addonBefore != null || addonAfter != null;
 
     // Fast path: no affix at all → a bare <input>, unchanged.
-    if (!allowClear && leading == null && trailingIcon == null && suffix == null && !counter) {
+    if (
+      !clearControl.enabled &&
+      leading == null &&
+      trailingIcon == null &&
+      suffix == null &&
+      !counter
+    ) {
       const bare = (
         <input
           type={type}
@@ -144,18 +157,20 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
       return hasAddon ? withAddons(bare, addonBefore, addonAfter, size, appearance) : bare;
     }
 
-    const showClear = allowClear && hasText && !props.disabled && !props.readOnly;
+    const showClear = clearControl.enabled && hasText && !props.disabled && !props.readOnly;
     // ONE trailing icon, never two: the clear ✕ REPLACES the configured trailingIcon while
     // the field holds a clearable value; otherwise the trailingIcon shows.
     const trailing = showClear ? (
       <button
         type="button"
         tabIndex={-1}
-        aria-label={t("common.clear") ?? "Clear"}
+        aria-label={clearControl.label}
         onClick={clear}
         className="ui-control-inline-affix-action"
       >
-        <X className="ui-control-inline-affix-icon" aria-hidden="true" />
+        {clearControl.clearIcon ?? (
+          <X className="ui-control-inline-affix-icon" aria-hidden="true" />
+        )}
       </button>
     ) : (
       (suffix ?? trailingIcon)

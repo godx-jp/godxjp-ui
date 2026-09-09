@@ -36,9 +36,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godx
 import { Button, Heading, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
-/** No-op uploader: resolves immediately with a fake mediaId for preview purposes. */
+/** Keep the upload lifecycle visible in the form example. */
 async function noopUpload(_file: File, _item: UploadFileItem) {
-  return { mediaId: "preview-media-id" };
+  await new Promise((resolve) => setTimeout(resolve, 800));
+  return { mediaId: crypto.randomUUID() };
 }
 
 /** Expense category tree for the Cascader field. */
@@ -121,6 +122,39 @@ export default function Demo() {
       subtitle="全フィールド型 × 全レイアウト × 全状態 · 実画面のフォーム例 (real primitives only)"
     >
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Validation feedback</CardTitle>
+            <CardDescription>確認中・成功・注意・エラーを区別します。</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form requiredMark="optional">
+              <FormField label="確認済み" hasFeedback validateStatus="success">
+                <Input defaultValue="verified@example.jp" />
+              </FormField>
+              <FormField label="確認中" hasFeedback validateStatus="validating">
+                <Input defaultValue="checking@example.jp" />
+              </FormField>
+              <FormField
+                label="注意"
+                hasFeedback
+                validateStatus="warning"
+                helper="内容を確認してください。"
+              >
+                <Input defaultValue="review@example.jp" />
+              </FormField>
+              <FormField
+                label="エラー"
+                required
+                hasFeedback
+                error="メールアドレスを入力してください。"
+              >
+                <Input />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
         {/* ════════════════════ 1. EVERY FIELD TYPE ════════════════════ */}
         <Heading level={2}>1. 全フィールド型 · すべての入力コントロール</Heading>
         <Text tone="muted" size="sm">

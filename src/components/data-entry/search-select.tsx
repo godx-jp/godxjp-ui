@@ -5,7 +5,12 @@ import { useTranslation } from "../../i18n/use-translation";
 import { useFieldIdentity, useFieldNameFallback } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { controlSurfaceTriggerClass } from "../../lib/control-styles";
-import { controlSurfaceAttrs, resolveAllowClear, resolveAriaInvalid } from "./control-surface";
+import {
+  applyMaxTagCount,
+  controlSurfaceAttrs,
+  resolveAllowClear,
+  resolveAriaInvalid,
+} from "./control-surface";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Command, CommandGroup } from "./command";
 import { Input } from "./input";
@@ -17,6 +22,9 @@ import type {
 export type {
   SearchSelectProp,
   SearchSelectProp as SearchSelectProps,
+  SearchSelectBaseProp,
+  SearchSelectSingleProp,
+  SearchSelectMultipleProp,
   SearchSelectOptionProp,
   SearchSelectOptionProp as SearchSelectOption,
   SearchSelectLoadParamsProp,
@@ -31,57 +39,59 @@ const DEBOUNCE_MS = 250;
  * with `loadOptions({ query, page })` (server search + infinite scroll) OR with a static `options`
  * array (client-side filter) — the latter supersedes the legacy `Autocomplete`.
  */
-export function SearchSelect({
-  value: valueProp,
-  defaultValue,
-  onValueChange,
-  options: staticOptions,
-  loadOptions,
-  renderOption,
-  labelRender,
-  selectedLabel,
-  selectedIcon,
-  placeholder,
-  searchPlaceholder,
-  emptyMessage,
-  loadingMessage,
-  errorMessage,
-  clearLabel,
-  clearable = true,
-  disabled = false,
-  readOnly = false,
-  size,
-  status,
-  variant,
-  loading: loadingProp = false,
-  open: openProp,
-  defaultOpen = false,
-  onOpenChange,
-  search: searchProp,
-  onSearchChange,
-  filterOption,
-  filterSort,
-  autoClearSearchValue = true,
-  optionRender,
-  menuItemSelectedIcon,
-  notFoundContent,
-  popupMatchSelectWidth = true,
-  allowClear,
-  onClear,
-  renderError,
-  renderLoadMore,
-  name,
-  id,
-  className,
-  "data-testid": dataTestId,
-  "data-field": dataField,
-  "aria-label": ariaLabel,
-  "aria-labelledby": ariaLabelledby,
-  "aria-describedby": ariaDescribedby,
-  "aria-errormessage": ariaErrorMessage,
-  "aria-invalid": ariaInvalid,
-  "aria-required": ariaRequired,
-}: SearchSelectProp) {
+export function SearchSelect(props: SearchSelectProp) {
+  const {
+    options: staticOptions,
+    loadOptions,
+    renderOption,
+    labelRender,
+    selectedLabel,
+    selectedIcon,
+    placeholder,
+    searchPlaceholder,
+    emptyMessage,
+    loadingMessage,
+    errorMessage,
+    clearLabel,
+    clearable = true,
+    disabled = false,
+    readOnly = false,
+    size,
+    status,
+    variant,
+    loading: loadingProp = false,
+    open: openProp,
+    defaultOpen = false,
+    onOpenChange,
+    search: searchProp,
+    onSearchChange,
+    filterOption,
+    filterSort,
+    autoClearSearchValue = true,
+    optionRender,
+    menuItemSelectedIcon,
+    notFoundContent,
+    popupMatchSelectWidth = true,
+    allowClear,
+    onClear,
+    renderError,
+    renderLoadMore,
+    name,
+    id,
+    className,
+    "data-testid": dataTestId,
+    "data-field": dataField,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledby,
+    "aria-describedby": ariaDescribedby,
+    "aria-errormessage": ariaErrorMessage,
+    "aria-invalid": ariaInvalid,
+    "aria-required": ariaRequired,
+  } = props;
+  // antd `mode="multiple"`. The panel stays open across picks, each row toggles, and the trigger
+  // collapses the picked labels through the SAME `applyMaxTagCount` helper Cascader and TreeSelect
+  // use — one overflow wording for every multi-value trigger in the library.
+  const multiple = props.mode === "multiple";
   const { t } = useTranslation();
   // under a layout wrapper that the cloneElement contract cannot reach. `{}` when already named.
   const nameFallback = useFieldNameFallback({
@@ -133,13 +143,30 @@ export function SearchSelect({
   // show an error affordance instead of masquerading as empty (or leaking an unhandled rejection).
   const [error, setError] = React.useState(false);
   const [activeIndex, setActiveIndex] = React.useState(0);
-  const [picked, setPicked] = React.useState<SearchSelectOptionProp | null>(null);
+  // Every option this control has ever handed out, keyed by value. An async list only holds the
+  // CURRENT page, so without this ledger a multi-selection made two searches ago would decay into
+  // raw ids on the trigger the moment its page scrolled away.
+  const [pickedOptions, setPickedOptions] = React.useState<Record<string, SearchSelectOptionProp>>(
+    {},
+  );
 
   // Controlled/uncontrolled value (controlled-triad rule): `value` wins when provided; otherwise
   // an internal state seeded from `defaultValue` so the trigger reflects selection without wiring.
-  const [internalValue, setInternalValue] = React.useState(defaultValue ?? "");
-  const isControlled = valueProp !== undefined;
-  const value = isControlled ? valueProp : internalValue;
+  const [internalValue, setInternalValue] = React.useState<string | string[]>(
+    props.defaultValue ?? (props.mode === "multiple" ? [] : ""),
+  );
+  const isControlled = props.value !== undefined;
+  const rawValue: string | string[] = isControlled ? props.value! : internalValue;
+  /** The multi-mode selection, in pick order. Empty (and unused) in single mode. */
+  const values = React.useMemo<string[]>(() => {
+    if (!multiple) return [];
+    return Array.isArray(rawValue) ? rawValue : rawValue ? [rawValue] : [];
+  }, [multiple, rawValue]);
+  /** The single-mode value. `""` in multiple mode — that branch reads `values`. */
+  const value = multiple ? "" : Array.isArray(rawValue) ? (rawValue[0] ?? "") : rawValue;
+  const isSelected = (optionValue: string) =>
+    multiple ? values.includes(optionValue) : value === optionValue;
+  const hasSelection = multiple ? values.length > 0 : Boolean(value);
 
   const reqId = React.useRef(0);
 
@@ -236,25 +263,77 @@ export function SearchSelect({
   );
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.searchSelect.placeholder");
-  // Resolve the label from the current value across everything we know — the last pick, the static
-  // list, and the loaded page — so a controlled/`defaultValue` selection shows its label at rest
-  // (not the placeholder). `selectedLabel` covers an async value whose option isn't loaded yet.
-  const selectedOption = value
-    ? ([picked, ...(staticOptions ?? []), ...loaded].find((option) => option?.value === value) ??
-      null)
-    : null;
+  /**
+   * Resolve one value's option across everything we know — the ledger of past picks, the static
+   * list, and the loaded page — so a controlled/`defaultValue` selection shows its label at rest
+   * (not the placeholder, and not a raw id).
+   */
+  const optionFor = (optionValue: string): SearchSelectOptionProp | null =>
+    pickedOptions[optionValue] ??
+    (staticOptions ?? []).find((option) => option.value === optionValue) ??
+    loaded.find((option) => option.value === optionValue) ??
+    null;
+  // `selectedLabel` covers an async value whose option isn't loaded yet.
+  const selectedOption = value ? optionFor(value) : null;
   const currentLabel = value
     ? (selectedOption?.label ?? selectedLabel ?? value)
     : resolvedPlaceholder;
   // Icon for the trigger: the loaded option's icon, else `selectedIcon` for an async value whose
   // option page hasn't arrived yet (the trigger counterpart of `selectedLabel`).
   const currentIcon = value ? (selectedOption?.icon ?? selectedIcon) : null;
+  // antd `maxTagCount` / `maxTagPlaceholder`, through the SAME helper Cascader, TreeSelect and
+  // TagInput share — "+2" means one thing across every multi-value trigger in the library.
+  const selectedChips = multiple
+    ? values.map((entry) => ({
+        value: entry,
+        label: optionFor(entry)?.label ?? entry,
+      }))
+    : [];
+  const {
+    visible: visibleChips,
+    omitted: omittedChips,
+    overflow: chipOverflow,
+  } = applyMaxTagCount(
+    selectedChips,
+    props.mode === "multiple" ? props.maxTagCount : undefined,
+    props.mode === "multiple" ? props.maxTagPlaceholder : undefined,
+  );
+  // antd `maxCount` — a HARD ceiling: a pick past it is refused, and the rows that would break it
+  // report `aria-disabled` so the limit is visible BEFORE it is hit rather than as a dead click.
+  const maxCount = props.mode === "multiple" ? props.maxCount : undefined;
+  const atMaxCount = maxCount !== undefined && values.length >= maxCount;
+
+  const remember = (option: SearchSelectOptionProp) =>
+    setPickedOptions((prev) => ({ ...prev, [option.value]: option }));
 
   const select = (option: SearchSelectOptionProp) => {
     if (option.disabled) return;
-    setPicked(option);
+    if (props.mode === "multiple") {
+      const already = values.includes(option.value);
+      if (!already && atMaxCount) return;
+      const next = already
+        ? values.filter((entry) => entry !== option.value)
+        : [...values, option.value];
+      remember(option);
+      if (!isControlled) setInternalValue(next);
+      props.onValueChange?.(
+        next,
+        next
+          .map((entry) => (entry === option.value ? option : optionFor(entry)))
+          .filter((entry): entry is SearchSelectOptionProp => entry !== null),
+      );
+      if (already) props.onDeselect?.(option.value, option);
+      else props.onSelect?.(option.value, option);
+      // antd `autoClearSearchValue` (default true): the query is spent once it produced a pick.
+      if (autoClearSearchValue) setQuery("");
+      // The panel STAYS OPEN — a multi-pick is a run of gestures, and closing after each one
+      // makes picking three options cost three round trips through the trigger.
+      return;
+    }
+    remember(option);
     if (!isControlled) setInternalValue(option.value);
-    onValueChange?.(option.value, option);
+    props.onValueChange?.(option.value, option);
+    props.onSelect?.(option.value, option);
     // antd `autoClearSearchValue` (default true): the query is spent once it produced a pick.
     // `false` keeps it, so reopening resumes the same filtered list instead of the full one.
     if (autoClearSearchValue) setQuery("");
@@ -262,9 +341,13 @@ export function SearchSelect({
   };
 
   const clear = () => {
-    setPicked(null);
-    if (!isControlled) setInternalValue("");
-    onValueChange?.("", undefined);
+    if (props.mode === "multiple") {
+      if (!isControlled) setInternalValue([]);
+      props.onValueChange?.([], []);
+    } else {
+      if (!isControlled) setInternalValue("");
+      props.onValueChange?.("", undefined);
+    }
     onClear?.();
     setOpen(false);
   };
@@ -331,8 +414,7 @@ export function SearchSelect({
     clearable,
     clearLabel ?? t("dataEntry.searchSelect.clear"),
   );
-  const showClear =
-    clearControl.enabled && Boolean(value) && !disabled && !readOnly && !loadingProp;
+  const showClear = clearControl.enabled && hasSelection && !disabled && !readOnly && !loadingProp;
   const surface = controlSurfaceAttrs({ variant, status, size });
 
   return (
@@ -368,7 +450,8 @@ export function SearchSelect({
             data-testid={dataTestId}
             data-field={resolvedField}
             // label. `""` (nothing selected) is omitted rather than rendered as an empty attribute.
-            data-value={value || undefined}
+            data-value={(multiple ? values.join(",") : value) || undefined}
+            data-mode={multiple ? "multiple" : undefined}
             className={cn(
               controlSurfaceTriggerClass,
               "w-full justify-start",
@@ -379,10 +462,44 @@ export function SearchSelect({
             <span
               className={cn(
                 "ui-search-select-option-body text-start",
-                !value && "text-muted-foreground",
+                !hasSelection && "text-muted-foreground",
               )}
             >
-              {value && labelRender ? (
+              {multiple ? (
+                hasSelection ? (
+                  // Labels, not removable chips: the trigger IS a <button>, and a per-label remove
+                  // button inside it would be a button nested in a button (invalid HTML →
+                  // hydration error). Removal is a second click on the row, or the clear ✕.
+                  <span className="ui-search-select-values" data-slot="search-select-values">
+                    {visibleChips.map((chip) => (
+                      <span
+                        key={chip.value}
+                        className="ui-search-select-value"
+                        data-slot="search-select-value"
+                      >
+                        {labelRender
+                          ? labelRender({
+                              value: chip.value,
+                              label: chip.label,
+                              option: optionFor(chip.value) ?? undefined,
+                            })
+                          : chip.label}
+                      </span>
+                    ))}
+                    {omittedChips.length > 0 ? (
+                      <span
+                        className="ui-search-select-value"
+                        data-slot="search-select-value-overflow"
+                      >
+                        {chipOverflow ??
+                          t("dataEntry.selection.overflow", { count: omittedChips.length })}
+                      </span>
+                    ) : null}
+                  </span>
+                ) : (
+                  <span className="truncate">{resolvedPlaceholder}</span>
+                )
+              ) : value && labelRender ? (
                 labelRender({ value, label: currentLabel, option: selectedOption ?? undefined })
               ) : (
                 <>
@@ -397,8 +514,18 @@ export function SearchSelect({
             </span>
           </button>
         </PopoverTrigger>
-        {/* Hidden field so the selection submits with a native form. */}
-        {resolvedName ? <input type="hidden" name={resolvedName} value={value} readOnly /> : null}
+        {/* Hidden field(s) so the selection submits with a native form. `mode="multiple"` emits ONE
+            field per value under the same name — the native `<select multiple>` contract, which is
+            what every server-side form parser already understands. */}
+        {resolvedName ? (
+          multiple ? (
+            values.map((entry) => (
+              <input key={entry} type="hidden" name={resolvedName} value={entry} readOnly />
+            ))
+          ) : (
+            <input type="hidden" name={resolvedName} value={value} readOnly />
+          )
+        ) : null}
         <PopoverContent
           aria-label={triggerAriaLabelledby ? undefined : (triggerAriaLabel ?? resolvedPlaceholder)}
           aria-labelledby={triggerAriaLabelledby}
@@ -452,6 +579,7 @@ export function SearchSelect({
             <div
               id={listId}
               role="listbox"
+              aria-multiselectable={multiple || undefined}
               // Announce the in-flight fetch (APG combobox) so the empty/error message that follows
               // isn't read as a settled result while a request is still resolving.
               aria-busy={loading}
@@ -468,15 +596,19 @@ export function SearchSelect({
                     id={optionDomId(option.value)}
                     role="option"
                     data-testid={optionTestId(option.value)}
-                    aria-selected={value === option.value}
-                    aria-disabled={option.disabled || undefined}
-                    data-disabled={option.disabled || undefined}
+                    aria-selected={isSelected(option.value)}
+                    aria-disabled={
+                      option.disabled || (atMaxCount && !isSelected(option.value)) || undefined
+                    }
+                    data-disabled={
+                      option.disabled || (atMaxCount && !isSelected(option.value)) || undefined
+                    }
                     className={cn(
                       "ui-command-item",
                       // Selected = persistent bg-accent + medium weight (NO check icon — saves width),
                       // matching the plain SelectItem's `data-[state=checked]` convention; active =
                       // hover/keyboard accent. Same bg so selection stays coherent across both Selects.
-                      value === option.value && "bg-accent text-foreground font-medium",
+                      isSelected(option.value) && "bg-accent text-foreground font-medium",
                       activeIndex === index && "bg-accent text-accent-foreground",
                     )}
                     onMouseEnter={() => !option.disabled && setActiveIndex(index)}
@@ -511,7 +643,7 @@ export function SearchSelect({
                     {/* antd `menuItemSelectedIcon` — opt-in, because this library marks the picked
                         row with fill + weight, which costs no width. Decorative: `aria-selected`
                         on the row is what a screen reader reads. */}
-                    {menuItemSelectedIcon && value === option.value ? (
+                    {menuItemSelectedIcon && isSelected(option.value) ? (
                       <span
                         data-slot="search-select-selected-icon"
                         className="ui-search-select-selected-icon"

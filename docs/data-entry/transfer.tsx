@@ -91,6 +91,23 @@ export default function Demo() {
             />
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>検索・ページ分割・初期値</CardTitle>
+            <CardDescription>
+              表示中の有効な行だけを一括選択。移動後も別ページの選択を保持します。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Transfer
+              dataSource={ALL_ACCOUNTS}
+              defaultValue={[]}
+              showSearch
+              pagination={{ pageSize: 3 }}
+              name="accounts[]"
+            />
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

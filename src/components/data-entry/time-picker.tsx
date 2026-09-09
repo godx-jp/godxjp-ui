@@ -6,6 +6,7 @@ import { normalizeHhmm } from "../../lib/datetime";
 import { useControlledLatch } from "../../lib/hooks";
 import { pickFieldA11y } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
+import { resolveAllowClear } from "./control-surface";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Button } from "../general/button";
 import { Input } from "./input";
@@ -523,7 +524,7 @@ export function TimePicker({
   hideDisabledOptions,
   showNow = true,
   needConfirm = false,
-  allowClear = true,
+  allowClear,
   ...ariaProps
 }: TimePickerProp) {
   const { t } = useTranslation();
@@ -563,7 +564,10 @@ export function TimePicker({
   };
 
   // The trailing action is exclusive: clear a value, otherwise open the picker.
-  const showClear = allowClear && text !== "" && !disabled;
+  // antd `allowClear`, incl. its `{ clearIcon, label }` form — the SAME `resolveAllowClear` the
+  // select family routes through, so "clear this field" is one mechanism across the library.
+  const clearControl = resolveAllowClear(allowClear, true, t("common.clear") ?? "Clear");
+  const showClear = clearControl.enabled && text !== "" && !disabled;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -598,7 +602,7 @@ export function TimePicker({
                   <button
                     type="button"
                     tabIndex={-1}
-                    aria-label={t("common.clear") ?? "Clear"}
+                    aria-label={clearControl.label}
                     onClick={(event) => {
                       event.stopPropagation();
                       event.currentTarget
@@ -609,7 +613,9 @@ export function TimePicker({
                     }}
                     className="ui-control-inline-affix-action"
                   >
-                    <X className="ui-control-inline-affix-icon" aria-hidden="true" />
+                    {clearControl.clearIcon ?? (
+                      <X className="ui-control-inline-affix-icon" aria-hidden="true" />
+                    )}
                   </button>
                 ) : (
                   <PopoverTrigger asChild>

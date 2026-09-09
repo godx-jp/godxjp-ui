@@ -365,6 +365,33 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>複数選択・上限・検索</CardTitle>
+            <CardDescription>
+              最大 3 件を選択。選択行の再クリック・クリア・キーボード操作に対応。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="reviewers" label="レビュアー">
+              <Select
+                mode="multiple"
+                name="reviewers[]"
+                defaultValue={["tanaka"]}
+                showSearch
+                maxCount={3}
+                maxTagCount={2}
+                allowClear
+                options={[
+                  { value: "tanaka", label: "田中" },
+                  { value: "sato", label: "佐藤" },
+                  { value: "suzuki", label: "鈴木" },
+                  { value: "ito", label: "伊藤" },
+                ]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

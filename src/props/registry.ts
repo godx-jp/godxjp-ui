@@ -1587,6 +1587,47 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp"],
   },
+  SearchSelectBaseProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "PlaceholderProp",
+      "EmptyMessageProp",
+      "DisabledProp",
+      "NameProp",
+      "IdProp",
+      "ClassNameProp",
+      "OpenProp",
+      "OnOpenChangeProp",
+      "SizeProp",
+      "DefaultOpenProp",
+      "ControlStatusProp",
+      "ControlVariantProp",
+      "AllowClearProp",
+      "NotFoundContentProp",
+      "PopupMatchWidthProp",
+      "PendingProp",
+    ],
+    note: "Internal — everything on `<Select options>` except the value shape; use Select.",
+  },
+  SearchSelectSingleProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp"],
+    note: "Internal — the single-select value shape of `<Select options>`; use Select.",
+  },
+  SearchSelectMultipleProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "MaxTagCountProp",
+      "MaxTagPlaceholderProp",
+    ],
+    note: 'Internal — the `mode="multiple"` value shape of `<Select options>`; use Select.',
+  },
   SearchSelectProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
@@ -2291,6 +2332,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/navigation.prop.ts",
     vocabulary: ["ValueProp", "DefaultValueProp", "SizeProp", "OnValueChangeProp", "ClassNameProp"],
   },
+  InputOTPProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["SizeProp", "ControlStatusProp", "ControlVariantProp"],
+  },
   InputOTPGroupProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
@@ -2302,6 +2348,11 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: [],
   },
   InputOTPAlignProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  InputOTPMaskProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: [],
@@ -2358,6 +2409,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "navigation",
     file: "components/navigation.prop.ts",
     vocabulary: ["ValueProp", "LabelProp", "ChildrenProp", "DisabledProp", "IconProp"],
+  },
+  FormFieldArrayProp: {
+    group: "form",
+    file: "components/form.prop.ts",
+    vocabulary: ["NameProp", "ChildrenProp", "DisabledProp"],
   },
   FormRootProp: {
     group: "form",
@@ -2479,6 +2535,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-entry",
     file: "components/ui/password-input.tsx",
     vocabulary: ["ClassNameProp"],
+  },
+  PasswordVisibilityToggleProp: {
+    group: "data-entry",
+    file: "components/ui/password-input.tsx",
+    vocabulary: [],
   },
   PasswordStrengthProp: {
     group: "data-entry",

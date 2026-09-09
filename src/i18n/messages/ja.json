@@ -79,7 +79,17 @@
       "statusFailed": "{count} 件のアップロードに失敗",
       "removeImage": "画像を削除",
       "removeFile": "{name} を削除",
-      "cropDescription": "ズームスライダーを調整し、保存すると写真を正方形に切り抜きます。"
+      "cropDescription": "ズームスライダーを調整し、保存すると写真を正方形に切り抜きます。",
+      "preview": "プレビュー",
+      "download": "ダウンロード",
+      "retry": "再試行",
+      "start": "アップロード",
+      "cancel": "キャンセル",
+      "rejectAccept": "{name}: 許可されていない形式です。",
+      "rejectSize": "{name}: ファイルが大きすぎます。",
+      "rejectCount": "{name}: ファイル数の上限です。",
+      "rejectBeforeUpload": "{name}: ファイルの検証に失敗しました。",
+      "readFailed": "選択したフォルダーを読み取れませんでした。"
     },
     "cascader": {
       "placeholder": "選択…",
@@ -139,6 +149,14 @@
     },
     "formErrors": {
       "title": "入力内容にエラーがあります"
+    },
+    "form": {
+      "optional": "（任意）",
+      "success": "確認済み",
+      "warning": "確認してください",
+      "error": "入力エラー",
+      "validating": "確認中",
+      "submitFailed": "フォームを送信できませんでした。再試行してください。"
     }
   },
   "feedback": {

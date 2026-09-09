@@ -64,7 +64,13 @@ export type {
   SearchSelectLoadParamsProp as SelectLoadParams,
   SearchSelectLoadResultProp as SelectLoadResult,
 } from "./search-select";
-export { Upload, collectUploadCommitActions, createUploadItem, useUploadDraft } from "./upload";
+export {
+  UPLOAD_LIST_IGNORE,
+  Upload,
+  collectUploadCommitActions,
+  createUploadItem,
+  useUploadDraft,
+} from "./upload";
 export type { UploadProps, UploadFileItem, UploadVariant, UploadCommitAction } from "./upload";
 export { Cascader } from "./cascader";
 export type { CascaderProps, TreeOption, TreeFieldNames } from "./cascader";
@@ -88,7 +94,7 @@ export type {
   CommandPaletteProps,
 } from "./command-palette";
 export { PasswordInput } from "./password-input";
-export type { PasswordInputProps } from "./password-input";
+export type { PasswordInputProps, PasswordVisibilityToggleProp } from "./password-input";
 export { PasswordStrength, usePasswordStrength } from "./password-strength";
 export type {
   PasswordRule,
@@ -98,9 +104,13 @@ export type {
 } from "./password-strength";
 export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "./input-otp";
 export type {
+  InputOTPAlignProp,
   InputOTPGroupAppearanceProp,
   InputOTPGroupProp,
   InputOTPGroupProps,
+  InputOTPMaskProp,
+  InputOTPProp,
+  InputOTPProps,
 } from "./input-otp";
 export { Rating } from "./rating";
 export type { RatingProps } from "./rating";
@@ -119,3 +129,7 @@ export type {
 
 export { TimeRangePicker } from "./time-range-picker";
 export type { TimeRangePickerProps } from "./time-range-picker";
+
+export type { UploadRequestContext, UploadResult, UploadRejection } from "./upload-types";
+
+export type { UploadItemActions } from "./upload-types";

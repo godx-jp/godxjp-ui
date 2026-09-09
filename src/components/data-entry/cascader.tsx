@@ -167,6 +167,8 @@ export function Cascader({
   showSearch,
   placeholder,
   disabled,
+  readOnly,
+  name,
   className,
   id,
   expandTrigger = "click",
@@ -194,10 +196,10 @@ export function Cascader({
   const { t } = useTranslation();
   // Forward the FormField label/helper/error contract onto the combobox trigger (focus target).
   const fieldA11y = pickFieldA11y(ariaProps);
-  // This control has
-  // no native-submit path at all (documented: read the value through onValueChange), so only
-  // `data-field` is resolved here — there is no element a `name` could honestly go on.
-  const identity = useFieldIdentity({ id, "data-field": fieldA11y["data-field"] });
+  // `name` rides the hidden input(s) below (a combobox trigger is a <button>, which submits
+  // nothing); only `data-field` continues on to the visible trigger.
+  const identity = useFieldIdentity({ id, name, "data-field": fieldA11y["data-field"] });
+  const resolvedName = name ?? identity.name;
   const reactId = React.useId();
   const panelId = `${id ?? reactId}-panel`;
   const options = React.useMemo(
@@ -392,6 +394,9 @@ export function Cascader({
   );
 
   const handleOpenChange = (next: boolean) => {
+    // Read-only never opens (no pick surface) — closing (next=false) still passes through so an
+    // externally-forced close (e.g. Escape) is honored. Mirrors SearchSelect exactly.
+    if (readOnly && next) return;
     setOpen(next);
     if (next) {
       // Seed the columns to the current selection so an existing value is VISIBLE and
@@ -496,7 +501,9 @@ export function Cascader({
   );
 
   const clearControl = resolveAllowClear(allowClear, true, t("dataEntry.cascader.clear"));
-  const showClear = clearControl.enabled && hasValue && !disabled && !loading;
+  // Read-only keeps the value visible and submitted but offers no way to MUTATE it, so the clear
+  // affordance goes with the panel.
+  const showClear = clearControl.enabled && hasValue && !disabled && !readOnly && !loading;
   const surface = controlSurfaceAttrs({ variant, status, size });
 
   return (
@@ -518,6 +525,7 @@ export function Cascader({
             {...surface}
             aria-invalid={resolveAriaInvalid(fieldA11y["aria-invalid"], status)}
             aria-busy={loading || undefined}
+            aria-readonly={readOnly || undefined}
             disabled={disabled}
             className={cn(
               controlSurfaceTriggerClass,
@@ -530,6 +538,20 @@ export function Cascader({
             <span className="truncate">{hasValue ? displayLabel : resolvedPlaceholder}</span>
           </button>
         </PopoverTrigger>
+        {/* Hidden field(s) so the selection submits with a native form. A path is joined with `/`;
+            `multiple` emits ONE field per path under the same name — the native `<select multiple>`
+            contract every server-side form parser already understands. */}
+        {resolvedName
+          ? (multiple ? multiValue : singleValue.length ? [singleValue] : []).map((path, index) => (
+              <input
+                key={`${pathKey(path)}-${index}`}
+                type="hidden"
+                name={resolvedName}
+                value={path.join("/")}
+                readOnly
+              />
+            ))
+          : null}
         <PopoverContent id={panelId} className="ui-cascader-popover" align="start">
           {/* CommandInput already draws ONE bottom separator + its own inline padding — don't
               wrap it in another bordered/padded box (that double-borders the search row). */}

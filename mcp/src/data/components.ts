@@ -46,6 +46,294 @@ export interface ComponentEntry {
 
 export const COMPONENTS: ComponentEntry[] = [
   {
+    name: "inertiaUpload",
+    group: "data-entry",
+    importPath: "@godxjp/ui/inertia",
+    tagline:
+      "Bridge Inertia multipart visits to Upload progress, cancellation, retry and error recovery.",
+    props: [
+      {
+        name: "send",
+        type: "(file: File, callbacks: InertiaUploadCallbacks) => void",
+        description: "Start a router.post visit with the supplied callbacks and file.",
+      },
+      {
+        name: "errorMessage",
+        type: "string",
+        description: "Localized fallback for network or HTTP failures.",
+      },
+    ],
+    usage: [
+      "Pass the returned callback to Upload.onUpload. Spread callbacks into router.post options; they enable multipart and independent async requests.",
+      "Keep failed items in controlled value so the user can retry; remove only done items when server props provide the saved list.",
+    ],
+    example:
+      'import { inertiaUpload } from "@godxjp/ui/inertia";\nconst upload = inertiaUpload((file, callbacks) => router.post(endpoint, { file }, callbacks), t("Upload failed"));\n<Upload onUpload={upload} />;',
+    docPath: "FORMS.md",
+    storyPath: "data-entry/Upload.stories.tsx",
+    rules: [1],
+    related: ["Upload", "FormRoot"],
+  },
+  {
+    name: "FormRoot",
+    tagline:
+      "Client or server-adapted forms with shared layout, validation, submission, reset and error recovery.",
+    props: [
+      {
+        name: "form",
+        type: "UseFormReturn<T>",
+        description: "RHF form returned by useZodForm; use either form or adapter.",
+      },
+      {
+        name: "adapter",
+        type: "FormStateAdapter",
+        description:
+          "External store with getValue/setValue/getError/getValues/isSubmitting and optional reset.",
+      },
+      {
+        name: "onSubmit",
+        type: "(values: T) => void | Promise<void>",
+        description: "Validated submit callback.",
+      },
+      {
+        name: "onSubmitFailed",
+        type: "(errors: FieldErrors<T>) => void",
+        description: "Validation failure callback.",
+      },
+      {
+        name: "onSubmitError",
+        type: "(error: unknown) => void",
+        description: "Handle rejected submission.",
+      },
+      {
+        name: "onReset",
+        type: "() => void",
+        description: "Called after values reset.",
+      },
+      {
+        name: "scrollToFirstError",
+        type: "boolean",
+        description: "Scroll the first invalid field into view.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description: "Disable field mutations.",
+      },
+      {
+        name: "layout",
+        type: "FormLayoutProp",
+        description: "Shared Form layout.",
+      },
+      {
+        name: "labelWidth",
+        type: "WidthProp",
+        description: "Shared label width.",
+      },
+      {
+        name: "controlWidth",
+        type: "WidthProp",
+        description: "Shared control width.",
+      },
+      {
+        name: "labelAlign",
+        type: '"start" | "end"',
+        description: "Shared label alignment.",
+      },
+      {
+        name: "collapseBelow",
+        type: "BreakpointProp | false",
+        description: "Responsive stacking breakpoint.",
+      },
+      {
+        name: "density",
+        type: "DensityProp",
+        description: "Control density.",
+      },
+      {
+        name: "errors",
+        type: "ErrorBagProp",
+        description: "Server error bag.",
+      },
+      {
+        name: "requiredMark",
+        type: 'boolean | "optional"',
+        description: "Required/optional marking policy.",
+      },
+      {
+        name: "columns",
+        type: "ResponsiveGridColumnsProp",
+        description: "Responsive field grid rendered inside the form element.",
+      },
+    ],
+    example:
+      'import { FormRoot, FormFieldControl, useZodForm } from "@godxjp/ui/form";\nimport { Input } from "@godxjp/ui/data-entry";\nimport { z } from "zod";\nconst schema = z.object({ email: z.string().email() });\n// Inside your component:\nconst form = useZodForm(schema, { defaultValues: { email: "" } });\n<FormRoot form={form} onSubmit={save} layout="horizontal"><FormFieldControl name="email" label="Email">{field => <Input {...field} value={String(field.value ?? "")} />}</FormFieldControl></FormRoot>;',
+    docPath: "docs/data-entry/form-root.tsx",
+    group: "data-entry",
+    importPath: "@godxjp/ui/form",
+    storyPath: "data-entry/Form.stories.tsx",
+    rules: [23, 31],
+    usage: [
+      "Use inside the documented form composition; do not nest native form elements.",
+      "Use godx-ui controls and preserve field names, errors and disabled state.",
+    ],
+    useCases: ["Validated settings forms", "Nested repeating data entry"],
+    related: ["Form", "FormField", "FormRoot", "FormFieldControl"],
+  },
+  {
+    name: "FormFieldControl",
+    tagline:
+      "Bind a typed field to RHF or a server adapter, with shared FormField presentation and validation.",
+    props: [
+      {
+        name: "name",
+        type: "FieldPath<T>",
+        description: "Typed field path, including nested list rows.",
+      },
+      {
+        name: "label",
+        type: "React.ReactNode",
+        description: "Visible field label.",
+      },
+      {
+        name: "dependencies",
+        type: "FieldPath<T>[]",
+        description: "Dependent fields that trigger revalidation.",
+      },
+      {
+        name: "getValueFromEvent",
+        type: "(...args: unknown[]) => unknown",
+        description: "Extract the control value.",
+      },
+      {
+        name: "normalize",
+        type: "(value: unknown, previous: unknown) => unknown",
+        description: "Normalize before storage.",
+      },
+      {
+        name: "preserve",
+        type: "boolean",
+        description: "Keep value after unmount, default true.",
+      },
+      {
+        name: "help",
+        type: "React.ReactNode",
+        description: "Override validation error text.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description: "Field-level disabled state.",
+      },
+      {
+        name: "validateStatus",
+        type: '"success" | "warning" | "error" | "validating"',
+        description: "Validation feedback state.",
+      },
+      {
+        name: "hasFeedback",
+        type: "boolean",
+        description: "Show accessible validation feedback.",
+      },
+      {
+        name: "feedback",
+        type: "React.ReactNode",
+        description: "Custom feedback icon/content.",
+      },
+      {
+        name: "children",
+        type: "(field) => React.ReactNode",
+        description: "Render a godx-ui control bound to the field.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "Optional DOM identity; defaults to a unique id even across sibling forms.",
+      },
+      { name: "layout", type: "FormLayoutProp", description: "Per-field layout override." },
+      { name: "labelWidth", type: "WidthProp", description: "Per-field label width." },
+      { name: "controlWidth", type: "WidthProp", description: "Per-field control width." },
+      { name: "labelAddon", type: "React.ReactNode", description: "Inline label help or action." },
+      { name: "colSpan", type: "number", description: "Grid column span." },
+    ],
+    example:
+      'import { FormFieldControl } from "@godxjp/ui/form";\nimport { Input } from "@godxjp/ui/data-entry";\n<FormFieldControl name="email" label="Email" required>{field => <Input {...field} value={String(field.value ?? "")} />}</FormFieldControl>;',
+    docPath: "docs/data-entry/form-root.tsx",
+    group: "data-entry",
+    importPath: "@godxjp/ui/form",
+    storyPath: "data-entry/Form.stories.tsx",
+    rules: [23, 31],
+    usage: [
+      "Use inside the documented form composition; do not nest native form elements.",
+      "Use godx-ui controls and preserve field names, errors and disabled state.",
+    ],
+    useCases: ["Validated settings forms", "Nested repeating data entry"],
+    related: ["Form", "FormField", "FormRoot", "FormFieldControl"],
+  },
+  {
+    name: "FormFieldArray",
+    tagline:
+      "Dynamic typed field collections with stable keys, nested validation and append/remove/reorder operations.",
+    props: [
+      {
+        name: "name",
+        type: "FieldArrayPath<T>",
+        description: "Array field path in the surrounding RHF FormRoot.",
+      },
+      {
+        name: "children",
+        type: "(collection) => React.ReactNode",
+        description:
+          "Receives fields with stable key/name/index, append/prepend/insert/remove/move/swap/replace, array error and disabled state.",
+      },
+    ],
+    example:
+      'import { FormFieldArray, FormFieldControl } from "@godxjp/ui/form";\nimport { Input } from "@godxjp/ui/data-entry";\n<FormFieldArray name="contacts">{({fields}) => fields.map(row => <FormFieldControl key={row.key} name={`${row.name}.email`} label="Email">{field => <Input {...field} value={String(field.value ?? "")} />}</FormFieldControl>)}</FormFieldArray>;',
+    docPath: "docs/FORMS.md",
+    group: "data-entry",
+    importPath: "@godxjp/ui/form",
+    storyPath: "data-entry/Form.stories.tsx",
+    rules: [23, 31],
+    usage: [
+      "Use inside the documented form composition; do not nest native form elements.",
+      "Use godx-ui controls and preserve field names, errors and disabled state.",
+    ],
+    useCases: ["Validated settings forms", "Nested repeating data entry"],
+    related: ["Form", "FormField", "FormRoot", "FormFieldControl"],
+  },
+  {
+    name: "useZodForm",
+    tagline:
+      "Create a typed React Hook Form instance with Zod validation; reuse reset, setValue, trigger, formState and field errors.",
+    props: [
+      {
+        name: "schema",
+        type: "z.ZodType<T>",
+        description: "Zod schema, including async refinements.",
+      },
+      {
+        name: "options",
+        type: "UseZodFormOptionsProp<T>",
+        description:
+          "RHF options such as defaultValues, mode, reValidateMode, criteriaMode and shouldUnregister.",
+      },
+    ],
+    example:
+      'import { useZodForm } from "@godxjp/ui/form";\nimport { z } from "zod";\nconst form = useZodForm(z.object({email: z.string().email()}), {defaultValues: {email: ""}, mode: "onBlur"});',
+    docPath: "docs/FORMS.md",
+    group: "data-entry",
+    importPath: "@godxjp/ui/form",
+    storyPath: "data-entry/Form.stories.tsx",
+    rules: [23, 31],
+    usage: [
+      "Use inside the documented form composition; do not nest native form elements.",
+      "Use godx-ui controls and preserve field names, errors and disabled state.",
+    ],
+    useCases: ["Validated settings forms", "Nested repeating data entry"],
+    related: ["Form", "FormField", "FormRoot", "FormFieldControl"],
+  },
+
+  {
     name: "CardBar",
     group: "data-display",
     tagline: "Inline card toolbar with scoped inset and divider edges.",
@@ -4633,6 +4921,16 @@ import remarkGfm from "remark-gfm";
         type: '"compact" | "default" | "comfortable"',
         description: "Apply a density to controls inside the form.",
       },
+      {
+        name: "disabled",
+        type: "boolean",
+        description: "Disable controls inside FormField, including nested native controls.",
+      },
+      {
+        name: "requiredMark",
+        type: 'boolean | "optional"',
+        description: "Show required marks, hide them, or mark optional fields.",
+      },
     ],
     usage: [
       "DO set `layout`, `labelWidth`, `controlWidth` ONCE on `<Form>` — every `<FormField>` inside inherits them. Override a single field by passing the same prop on that `<FormField>` (Form → FormField priority).",
@@ -4743,6 +5041,22 @@ import remarkGfm from "remark-gfm";
         description:
           "Read-only VALUE instead of an interactive control — renders as plain text styled to match `Descriptions.Item`'s value typography byte-for-byte (`text-sm break-all`), skipping all of FormField's id/aria-* control wiring (there is nothing to label). Mutually exclusive with `children`. Use this to put a read-only field (name, email — anything immutable) on the SAME `<Form>` as editable fields, so it inherits the exact same layout/labelAlign/row-gap automatically instead of reaching for a separate `Descriptions` block that needs its own props reconciled to match.",
       },
+      {
+        name: "validateStatus",
+        type: '"success" | "warning" | "error" | "validating"',
+        description:
+          "Validation state; an actual error takes priority. Warnings do not mark values invalid.",
+      },
+      {
+        name: "hasFeedback",
+        type: "boolean",
+        description: "Show a localized accessible validation status beside its feedback icon.",
+      },
+      {
+        name: "feedback",
+        type: "React.ReactNode",
+        description: "Custom feedback content; the localized status remains available.",
+      },
     ],
     usage: [
       "DO pass the same string to both `id` on `<FormField>` and `id` on the child control — the component wires `<Label htmlFor={id}>`, and builds `{id}-helper` / `{id}-error` ids for `aria-describedby`. If the ids diverge the label click and screen-reader announcements break.",
@@ -4757,7 +5071,7 @@ import remarkGfm from "remark-gfm";
       "CONTRACT (which element owns each ARIA relationship): every data-entry control accepts and FORWARDS the injected props to its real semantic focus target, not a wrapper div — Input/Textarea/NumberInput → the `<input>/<textarea>`; Select/SearchSelect/Cascader/TreeSelect → the `role=combobox` trigger (with aria-expanded + aria-haspopup + aria-controls per the WAI-ARIA APG combobox pattern); DatePicker/MonthPicker/TimePicker → the typeable `role=combobox` input (aria-haspopup=dialog); ColorPicker → the `<input type=color>` swatch; SearchInput → the `role=searchbox` input. GROUP controls own the relationship on their container: RadioGroup → `role=radiogroup` (full validation incl. aria-invalid/-errormessage/-required); CheckboxGroup, DateRangePicker/MonthRangePicker (two inputs), and Transfer → `role=group` — per ARIA 1.2 a group is not a widget, so the error id is folded into aria-describedby instead of aria-invalid/-errormessage. Upload forwards the label/description onto its native `<input type=file>`; its visible dropzone/button keeps its own action label. This forwarding is implemented once in `src/lib/field-a11y.ts` (`pickFieldA11y` / `pickGroupFieldA11y` / `resolveFieldA11y`) — do not reinvent it per control.",
       "FIELD IDENTITY / AUTOMATION: FormField also injects a `data-field` — the field's stable MACHINE key, resolved as `field` → `name` → `id` — onto the same semantic focus target the ARIA relationships land on, and onto every option of a RadioGroup/CheckboxGroup. Use it (not a generated id, and never the visible Japanese label) as the selector in e2e tests and screen automation. It reaches NESTED controls too: when the direct child is a layout wrapper (a Flex holding a from/to pair, a 年/月 combo, a value beside a 「不明」 checkbox) cloneElement stops on that wrapper, so FormField also publishes the field through context and each control inside resolves its own key from its OWN `id` \u2014 which is what keeps `search_billing_date_from` and `..._to` distinct instead of collapsing onto one shared key. A nested control with NO id of its own deliberately gets nothing: a fabricated key is worse than a missing one, because automation binds to it and breaks silently. Two companion pieces: a `Select`'s trigger also carries `data-value` = the selected CODE (the trigger shows the option LABEL, and Radix keeps the value in an aria-hidden 1x1px native `<select>`), and each RadioGroup/CheckboxGroup option gets a deterministic `{groupId}-{optionValue}` id instead of a per-mount `React.useId()` token. Nothing here is opt-in and no DOM structure changed. A `data-field` written on the control itself always wins.",
       "NATIVE `name` IS OPT-IN: FormField emits the same key as a real `name` attribute ONLY when the app set `<AppProvider emitFieldNames>`. It is off by default because `name` decides what a native `<form>` submit sends — turning it on globally in a shared package would make every consumer start posting new keys to its backend on an upgrade. Turn it on in apps that need native form posts or a screen-automation contract; a `name` written on the control itself always wins.",
-      "NATIVE FORM PARTICIPATION: pass `name` to a control for HTML form submission — Input/Textarea/NumberInput/Select submit natively; SearchSelect submits via a hidden input; DatePicker/TimePicker emit ISO strings (`yyyy-MM-dd` / 24h `HH:mm`); the range pickers emit `${name}_from` / `${name}_to`. `required`/`readOnly`/`disabled` map to the underlying control. Cascader/TreeSelect/Transfer/Upload are NOT native-form-submittable — read their value via `onValueChange` and submit programmatically.",
+      "NATIVE FORM PARTICIPATION: pass `name` to a control for HTML form submission — Input/Textarea/NumberInput/Select submit natively; SearchSelect submits via a hidden input; DatePicker/TimePicker emit ISO strings (`yyyy-MM-dd` / 24h `HH:mm`); the range pickers emit `${name}_from` / `${name}_to`. `required`/`readOnly`/`disabled` map to the underlying control. Cascader/TreeSelect/Transfer submit named values via hidden inputs; Upload appends staged local files to FormData when named. Disabled controls are excluded.",
       "ERROR TIMING & RECOVERY: pass `error` only after a field is dirty or the form is submitted (don't show errors on pristine mount). The error node renders with `role='alert'` so it is announced live the moment it appears; clearing `error` (e.g. after the user corrects the value or a server round-trip succeeds) removes aria-invalid and restores the helper. On submit, focus the first invalid control and/or render an error summary that links to each field by `id`.",
     ],
     useCases: [
@@ -4896,11 +5210,6 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       { name: "placeholder", type: "string", description: "Placeholder." },
       { name: "value", type: "string | number", description: "Controlled value." },
       {
-        name: "onValueChange",
-        type: "React.ChangeEventHandler<HTMLInputElement>",
-        description: "Native change handler.",
-      },
-      {
         name: "allowClear",
         type: "boolean",
         defaultValue: "false",
@@ -4923,6 +5232,12 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         type: "React.ReactNode",
         description:
           "A trailing affordance pinned inside the field (e.g. a calendar / clock popover trigger). ONE trailing icon shows at a time: when `allowClear` and the field holds a value the clear ✕ REPLACES this icon; otherwise this icon shows. Never both — this is how DatePicker/TimePicker render their open trigger.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description:
+          "Immediate value callback; native onChange remains supported. Shared form bindings are emitted once.",
       },
     ],
     usage: [
@@ -5217,6 +5532,17 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     tagline:
       "Polymorphic single-select: pass options/loadOptions for the data-driven (Ant-style) API, or compose sub-parts manually — never use a raw <select>.",
     props: [
+      {
+        name: "mode",
+        type: '"multiple"',
+        description: "Select several options; value/defaultValue become string arrays.",
+      },
+      {
+        name: "maxCount",
+        type: "number",
+        description: "Maximum selected options; selected items remain removable.",
+      },
+      { name: "maxTagCount", type: "number", description: "Collapse extra selected labels." },
       {
         name: "options",
         type: "SearchSelectOptionProp[]",
@@ -5775,6 +6101,12 @@ export function PrioritySelect({ value, onValueChange }) {
         description:
           "Ceiling in text rows while `autoGrow`; beyond it the box stops growing and scrolls internally rather than pushing the page. Pass `0` for no ceiling — only correct inside an owning scroll container. Theme-global default is the `--textarea-autogrow-max-height-rows` token. Ignored when `autoGrow` is false.",
       },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description:
+          "Immediate value callback; native onChange remains supported. Shared form bindings are emitted once.",
+      },
     ],
     usage: [
       'DO reach for `variant="ghost"` ONLY when a parent surface already draws the box and owns focus — the composer Card, an inline edit cell. A standalone field keeps the default: without its own border it reads as plain text, not something you can type into.',
@@ -5993,6 +6325,23 @@ export function PrioritySelect({ value, onValueChange }) {
     tagline:
       "Year/month (yyyy/MM) input with a month-grid popover — a year chevron header over a 3x4 grid of the twelve months. The input stays typeable; the grid is the visual affordance.",
     props: [
+      { name: "size", type: '"xs" | "sm" | "md" | "lg"', description: "Shared control tier." },
+      { name: "status", type: '"error" | "warning"', description: "Validation appearance." },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        description: "Field chrome.",
+      },
+      {
+        name: "inputReadOnly",
+        type: "boolean",
+        description: "Disable typing while keeping panel selection.",
+      },
+      {
+        name: "renderExtraFooter",
+        type: "() => ReactNode",
+        description: "Additional month-panel content.",
+      },
       {
         name: "value",
         type: "Date | undefined",
@@ -6083,6 +6432,23 @@ export function OrderMonthField() {
     tagline:
       "Year/month (yyyy/MM) RANGE rendered as ONE input-styled control `[ from → to  ✕ 📅 ]` (Ant RangePicker convention, same shell as DateRangePicker) with an Ant-style month-grid popover. Both inputs stay typeable; picks are two-step with from ≤ to always enforced.",
     props: [
+      { name: "size", type: '"xs" | "sm" | "md" | "lg"', description: "Shared control tier." },
+      { name: "status", type: '"error" | "warning"', description: "Validation appearance." },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        description: "Field chrome.",
+      },
+      {
+        name: "inputReadOnly",
+        type: "boolean",
+        description: "Disable typing while keeping panel selection.",
+      },
+      {
+        name: "renderExtraFooter",
+        type: "() => ReactNode",
+        description: "Additional month-panel content.",
+      },
       {
         name: "value",
         type: "DateRange | undefined",
@@ -8105,6 +8471,16 @@ export function InvoicePeriodFilter() {
       "Multi-level hierarchical path picker (Popover + cascading columns); value is always a string[] path, never a flat ID — passing a bare string breaks it.",
     props: [
       {
+        name: "name",
+        type: "string",
+        description: "Native form field name; repeated values for multiple paths.",
+      },
+      {
+        name: "readOnly",
+        type: "boolean",
+        description: "Prevent edits while preserving the displayed value.",
+      },
+      {
         name: "options",
         type: "TreeOptionProp[]",
         required: true,
@@ -8395,6 +8771,12 @@ function MultiRegionPicker() {
     tagline:
       "Hierarchical tree picker in a Popover (single or multi-select with checkboxes) — `onChange` receives `string` in single mode and `string[]` in multi/checkable mode; never use a raw `<select>` for tree-structured data.",
     props: [
+      {
+        name: "name",
+        type: "string",
+        description: "Native form field name; repeated values for multiple selections.",
+      },
+      { name: "readOnly", type: "boolean", description: "Prevent edits while preserving value." },
       {
         name: "treeData",
         type: "TreeOptionProp[]",
@@ -8701,6 +9083,47 @@ export function DepartmentFilter() {
       "Dual-list shuttle that moves items between source and target via Checkbox selection — you own targetKeys state; never hand-roll a two-panel picker.",
     props: [
       {
+        name: "value",
+        type: "string[]",
+        description: "Canonical controlled target keys; takes precedence over targetKeys.",
+      },
+      { name: "defaultValue", type: "string[]", description: "Initial uncontrolled target keys." },
+      {
+        name: "defaultTargetKeys",
+        type: "string[]",
+        description: "Compatibility name for uncontrolled initial target keys.",
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "Native form name; repeats once per target key.",
+      },
+      {
+        name: "readOnly",
+        type: "boolean",
+        description: "Preserve assignment while preventing edits.",
+      },
+      {
+        name: "pagination",
+        type: "boolean | { pageSize?: number }",
+        description: "Independent pane pages; select-all affects visible enabled rows.",
+      },
+      {
+        name: "showSelectAll",
+        type: "boolean",
+        description: "Show each pane select-all control; defaults true.",
+      },
+      {
+        name: "filterOption",
+        type: "(query: string, item: TransferItemProp) => boolean",
+        description: "Custom search predicate.",
+      },
+      {
+        name: "render",
+        type: "(item: TransferItemProp) => ReactNode",
+        description: "Custom non-interactive row content; checkbox labels remain associated.",
+      },
+      {
         name: "dataSource",
         type: "TransferItemProp[]",
         required: true,
@@ -8777,7 +9200,7 @@ export function DepartmentFilter() {
       "DO enable `showSearch` for lists longer than ~10 items; the built-in SearchInput filters by both `title` and `description` text content, including ReactNode content via `reactNodeText`.",
       "DO use `oneWay={true}` for append-only flows (e.g. adding permissions to a role) where items must never be moved back.",
       "DO control `selectedKeys` / `onSelectChange` only when you need to read which items are currently checked (e.g. for a bulk-action toolbar outside the component). For most cases, leave both props out and let Transfer manage selection internally.",
-      "AVOID using Transfer for simple single-select or toggle scenarios — use a Checkbox list, Select, or MultiSelect instead. Transfer is specifically for shuttle/dual-panel assignment flows.",
+      "AVOID using Transfer for simple single-select or toggle scenarios — use a Checkbox list or Select multiple instead. Transfer is specifically for shuttle/dual-panel assignment flows.",
     ],
     useCases: [
       "Assigning roles or permissions to a user: source panel shows available roles, target panel shows assigned roles; `oneWay={false}` allows removal.",
@@ -8824,7 +9247,7 @@ export function AccountMapping() {
     name: "Upload",
     group: "data-entry",
     tagline:
-      "Drag-and-drop / button / avatar / picture file uploader in six variants — wire onUpload to your media-service and call collectUploadCommitActions on form submit; never submit raw File objects from form state.",
+      "Drag-and-drop / button / avatar / picture file uploader in six variants — wire onUpload to your media-service and call collectUploadCommitActions on form submit; supports multipart forms and custom media storage.",
     props: [
       {
         name: "variant",
@@ -8846,12 +9269,6 @@ export function AccountMapping() {
           "Initial list of file items for uncontrolled usage. Ignored once value is provided.",
       },
       {
-        name: "onChange",
-        type: "(items: UploadFileItem[]) => void",
-        description:
-          "Fires every time the item list changes (add, remove, status transitions). In controlled mode this is your state setter.",
-      },
-      {
         name: "accept",
         type: "string",
         description:
@@ -8867,13 +9284,13 @@ export function AccountMapping() {
         name: "maxCount",
         type: "number",
         description:
-          "Hard upper bound on the number of items. avatar/avatar-crop/picture auto-default to 1. Once the limit is reached the add button is hidden (picture-card) or new picks replace the existing item.",
+          "Hard upper bound on the number of items. avatar/avatar-crop/picture auto-default to 1. Once the limit is reached the add button is hidden (picture-card) or additions are rejected; maxCount=1 replaces the current item.",
       },
       {
         name: "maxSizeBytes",
         type: "number",
         description:
-          "Files larger than this byte limit are silently discarded before being added to the list. No built-in error message — show your own validation feedback if needed.",
+          "Files larger than this limit are rejected with localized feedback and onReject.",
       },
       {
         name: "disabled",
@@ -8890,7 +9307,7 @@ export function AccountMapping() {
       },
       {
         name: "onUpload",
-        type: "(file: File, item: UploadFileItem) => Promise<{ mediaId: string; previewUrl?: string }>",
+        type: "(file: File, item: UploadFileItem, context: UploadRequestContext) => Promise<UploadResult>",
         description:
           "Called immediately after a file is picked (before form submit). Transitions the item to status='uploading', then 'done' on resolve or 'error' on reject. Wire this to your media-service issue/PUT/complete cycle. If omitted files stay in status='idle' and the raw File object remains in item.file.",
       },
@@ -8923,12 +9340,111 @@ export function AccountMapping() {
         description:
           '`variant="button"` only — visual weight of the visible trigger, forwarded to Button. Default `outline` suits a standalone form field. Pass `ghost` when the trigger sits in a toolbar row beside other icon buttons — inside a chat composer, say — where a bordered square reads as the odd one out.',
       },
+      {
+        name: "readOnly",
+        type: "boolean",
+        description: "Displays existing files, blocks changes, preserves staged form data.",
+      },
+      {
+        name: "directory",
+        type: "boolean",
+        description: "Select a folder; each item preserves relativePath.",
+      },
+      {
+        name: "pastable",
+        type: "boolean",
+        description:
+          "Paste clipboard files while focus is inside this Upload; text paste is untouched.",
+      },
+      {
+        name: "openFileDialogOnClick",
+        type: "boolean",
+        description: "Defaults true. Disable native dialog activation for drop-only surfaces.",
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "Multipart file field name; named staged files also join native FormData.",
+      },
+      {
+        name: "action",
+        type: "string | ((file: File) => string | Promise<string>)",
+        description: "Multipart upload URL; onUpload takes precedence.",
+      },
+      {
+        name: "method",
+        type: '"POST" | "PUT" | "PATCH"',
+        description: "Request method, default POST.",
+      },
+      {
+        name: "headers",
+        type: "Record<string, string>",
+        description:
+          "Request headers such as CSRF tokens; multipart boundaries remain browser-owned.",
+      },
+      {
+        name: "data",
+        type: "Record<string, string | Blob> | ((file: File) => Record<string, string | Blob> | Promise<Record<string, string | Blob>>)",
+        description: "Additional multipart fields, optionally resolved per file.",
+      },
+      {
+        name: "withCredentials",
+        type: "boolean",
+        description: "Send credentials with the default transport.",
+      },
+      {
+        name: "beforeUpload",
+        type: "(file: File, files: File[]) => boolean | File | Blob | typeof UPLOAD_LIST_IGNORE | Promise<boolean | File | Blob | typeof UPLOAD_LIST_IGNORE>",
+        description:
+          "Validate or transform before upload; false stages manually; UPLOAD_LIST_IGNORE excludes. Rejections are reported.",
+      },
+      {
+        name: "onReject",
+        type: "(rejection: UploadRejection) => void",
+        description: "Reports accept, size, count, or preflight rejection.",
+      },
+      {
+        name: "onRemove",
+        type: "(item: UploadFileItem) => boolean | void | Promise<boolean | void>",
+        description:
+          "Returning false or rejecting vetoes removal. Accepted removal aborts active upload.",
+      },
+      {
+        name: "onPreview",
+        type: "(item: UploadFileItem) => void",
+        description: "Preview action callback.",
+      },
+      {
+        name: "onDownload",
+        type: "(item: UploadFileItem) => void",
+        description: "Download action callback.",
+      },
+      {
+        name: "previewFile",
+        type: "(file: File) => Promise<string>",
+        description: "Asynchronously generate a custom thumbnail.",
+      },
+      {
+        name: "onDrop",
+        type: "React.DragEventHandler<HTMLElement>",
+        description: "Observe drop events.",
+      },
+      {
+        name: "showUploadList",
+        type: "boolean",
+        description: "Show the default file list, default true.",
+      },
+      {
+        name: "itemRender",
+        type: "(node: React.ReactElement, item: UploadFileItem, items: UploadFileItem[], actions: UploadItemActions) => React.ReactNode",
+        description: "Customize a file row while preserving its default actions.",
+      },
     ],
     usage: [
       "DO provide onUpload to auto-upload on pick. The callback must return { mediaId, previewUrl? } — the component transitions item.status through uploading → done/error automatically. Without onUpload the File object sits in item.file until you manually process it.",
-      "DO call collectUploadCommitActions(items) on form submit to get { deleteMediaIds, promoteMediaIds } for your media-service. Never send raw File objects or blob URLs to the server — those are local-only.",
+      "DO call collectUploadCommitActions(items) on form submit to get { deleteMediaIds, promoteMediaIds } for your media-service. For multipart endpoints submit File objects via FormData; never submit blob URLs as persisted media.",
       "DO use createUploadItem(file) to build UploadFileItem objects when pre-populating value from server data (e.g. edit forms). Set status='done' and mediaId on existing server media so the draft/undo machinery tracks them correctly.",
-      "DON'T put an Upload inside a form expecting it to serialize files via a native form submission — the hidden input is sr-only and not named. Upload is a controlled/uncontrolled React state component. Submit by reading items state and calling collectUploadCommitActions.",
+      "For native multipart or Inertia Form submissions, set name: staged local files are appended during the formdata event. Completed media uploads use collectUploadCommitActions instead.",
       "Avatar/picture variants (maxCount=1) use internal soft-delete draft logic: removing an item marks it pendingDelete so the user can undo before committing. On form submit, collectUploadCommitActions converts pendingDelete → deleteMediaIds and done mediaIds → promoteMediaIds.",
       "For avatar-crop: a crop dialog opens after pick. The cropped Blob is staged as a new UploadFileItem. The original file never enters the list — only the cropped version is passed to onUpload.",
     ],
@@ -9102,6 +9618,8 @@ export function AvatarField() {
     tagline:
       "Native color-swatch picker with an optional editable hex input — always pass a valid 3- or 6-digit hex `value`; invalid hex is silently ignored and the previous value is restored.",
     props: [
+      { name: "defaultValue", type: "string", description: "Initial uncontrolled color." },
+      { name: "name", type: "string", description: "Native form field name." },
       {
         name: "value",
         type: "string",
@@ -11361,6 +11879,16 @@ import { Separator } from "@godxjp/ui/layout";
       "Input for passwords with a built-in show/hide eye toggle. Accepts all Input props except `type`.",
     props: [
       {
+        name: "visibilityToggle",
+        type: "boolean | { visible?: boolean; defaultVisible?: boolean; onVisibleChange?: (visible: boolean) => void }",
+        description: "Control password visibility; false hides the reveal action.",
+      },
+      {
+        name: "iconRender",
+        type: "(visible: boolean) => ReactNode",
+        description: "Customize the reveal glyph. The reveal action owns the single trailing slot.",
+      },
+      {
         name: "status",
         type: '"error" | "warning"',
         description:
@@ -11475,6 +12003,34 @@ export default function PasswordBlock() {
     tagline:
       "One-time-code / 2FA input (input-otp) — N single-character slots that behave as one field. Compose InputOTP > InputOTPGroup > InputOTPSlot.",
     props: [
+      { name: "defaultValue", type: "string", description: "Initial uncontrolled code." },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description: "Canonical value callback, compatible with FormFieldControl.",
+      },
+      {
+        name: "mask",
+        type: "boolean | string",
+        description: "Mask filled visual slots without changing the submitted code.",
+      },
+      {
+        name: "formatter",
+        type: "(value: string) => string",
+        description: "Normalize typed and pasted codes.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        description: "Shared control height tier.",
+      },
+      { name: "status", type: '"error" | "warning"', description: "Validation appearance." },
+      {
+        name: "variant",
+        type: '"outlined" | "filled" | "borderless" | "underlined"',
+        description: "Shared field chrome.",
+      },
+      { name: "readOnly", type: "boolean", description: "Refuse edits including paste." },
       {
         name: "maxLength",
         type: "number",
@@ -11685,6 +12241,7 @@ export default function PasswordBlock() {
     tagline:
       "Chips/tags input — type + Enter (or comma) to add a tag, Backspace to remove the last; controlled via value/onValueChange (string[]).",
     props: [
+      { name: "readOnly", type: "boolean", description: "Prevent adding and removing tags." },
       { name: "value", type: "string[]", description: "Controlled tag list." },
       { name: "defaultValue", type: "string[]", description: "Uncontrolled initial tags." },
       {

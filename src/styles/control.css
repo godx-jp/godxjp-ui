@@ -894,6 +894,53 @@
   .ui-otp-input:disabled {
     cursor: not-allowed;
   }
+
+  /* SIZE — the slot box rides the SHARED control-height ladder (never its own literal), so a code
+   * field lines up with the Input/Select beside it in a form row. `--otp-slot-size` and its
+   * per-axis siblings stay `initial`, so the fallback chain in `.ui-otp-slot` resolves to this. */
+  .ui-otp-container:has(.ui-otp-input[data-size="xs"]) {
+    --control-height: var(--control-height-xs);
+  }
+  .ui-otp-container:has(.ui-otp-input[data-size="sm"]) {
+    --control-height: var(--control-height-sm);
+  }
+  .ui-otp-container:has(.ui-otp-input[data-size="lg"]) {
+    --control-height: var(--control-height-lg);
+  }
+
+  /* VARIANT — the same antd axis the rest of the family reads through `.ui-control-surface`. The
+   * OTP cannot wear that class (the painting boxes are the slots, and the attribute is on the
+   * hidden input), so the matrix is restated here from the SAME tokens rather than new ones. */
+  .ui-otp-container:has(.ui-otp-input[data-variant="filled"]) .ui-otp-slot,
+  .ui-otp-container:has(.ui-otp-input[data-variant="filled"])
+    .ui-otp-group[data-appearance="grouped"] {
+    border-color: var(--control-filled-border-color);
+    background: var(--control-filled-background);
+  }
+  .ui-otp-container:has(.ui-otp-input[data-variant="borderless"]) .ui-otp-slot,
+  .ui-otp-container:has(.ui-otp-input[data-variant="borderless"])
+    .ui-otp-group[data-appearance="grouped"] {
+    border-color: var(--control-borderless-border-color);
+    background: var(--control-borderless-background);
+  }
+
+  /* STATUS — `error` arrives as `aria-invalid` (resolveAriaInvalid folds it), so it is already
+   * handled by the invalid rules below. `warning` needs its own edge and ring hue, and is placed
+   * AFTER variant so it survives a borderless surface — the same ordering rule as
+   * `.ui-control-surface`. */
+  .ui-otp-container:has(.ui-otp-input[data-status="warning"]) {
+    --focus-ring-color: var(--warning);
+  }
+  .ui-otp-container:has(.ui-otp-input[data-status="warning"]) .ui-otp-slot,
+  .ui-otp-container:has(.ui-otp-input[data-status="warning"])
+    .ui-otp-group[data-appearance="grouped"] {
+    border-color: var(--control-status-warning-border-color);
+  }
+
+  /* readOnly keeps the tab stop and the value; only the "you may type here" affordance goes. */
+  .ui-otp-container:has(.ui-otp-input[readonly]) .ui-otp-slot {
+    cursor: default;
+  }
   .ui-otp-group {
     display: flex;
     align-items: center;
@@ -1189,6 +1236,12 @@
     width: 0.75rem;
     height: 0.75rem;
   }
+  /* The clear-all ✕ is the LAST item of the wrapping row and is pushed to the trailing edge, so it
+   * never lands between two chips. Not a tab stop (tabIndex -1), exactly like Input's own ✕. */
+  .ui-tag-input-clear {
+    flex-shrink: 0;
+    margin-inline-start: auto;
+  }
   .ui-tag-input-field {
     flex: 1;
     min-width: 6rem;
@@ -1476,6 +1529,32 @@
     flex: 1 1 0%;
     align-items: center;
     gap: var(--search-select-option-space-gap);
+  }
+
+  /* The multi-value row inside the trigger. Non-interactive by design (the trigger is a <button>
+   * and a remove button inside it would be a button in a button) — it reads as a run of chips, so
+   * it reuses the TagInput chip tokens rather than inventing a second chip scale. */
+  .ui-search-select-values {
+    display: flex;
+    min-inline-size: 0;
+    flex: 1 1 0%;
+    align-items: center;
+    gap: var(--search-select-option-space-gap);
+    overflow: hidden;
+  }
+
+  .ui-search-select-value {
+    display: inline-flex;
+    max-inline-size: 100%;
+    align-items: center;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: hsl(var(--secondary));
+    padding: 0.0625rem var(--space-2);
+    color: hsl(var(--secondary-foreground));
+    font-size: var(--tag-input-chip-font-size);
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .ui-search-select-option-text {

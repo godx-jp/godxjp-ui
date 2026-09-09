@@ -79,7 +79,17 @@
       "statusFailed": "{count} upload(s) failed",
       "removeImage": "Remove image",
       "removeFile": "Remove {name}",
-      "cropDescription": "Drag the zoom slider, then save to crop your photo to a square."
+      "cropDescription": "Drag the zoom slider, then save to crop your photo to a square.",
+      "preview": "Preview",
+      "download": "Download",
+      "retry": "Retry",
+      "start": "Upload",
+      "cancel": "Cancel",
+      "rejectAccept": "{name}: file type is not allowed.",
+      "rejectSize": "{name}: file is too large.",
+      "rejectCount": "{name}: file limit reached.",
+      "rejectBeforeUpload": "{name}: file validation failed.",
+      "readFailed": "Could not read the selected folder."
     },
     "cascader": {
       "placeholder": "Select…",
@@ -142,6 +152,14 @@
     },
     "formErrors": {
       "title": "Please review the following errors"
+    },
+    "form": {
+      "optional": "(optional)",
+      "success": "Valid",
+      "warning": "Please review",
+      "error": "Invalid",
+      "validating": "Validating",
+      "submitFailed": "Could not submit the form. Please try again."
     }
   },
   "feedback": {
