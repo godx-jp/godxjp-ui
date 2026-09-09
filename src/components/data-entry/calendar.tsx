@@ -2,7 +2,7 @@ import * as React from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { DayButton, DayPicker, dateMatchModifiers } from "react-day-picker";
 import type { DateRange, Modifiers } from "react-day-picker";
-import { useTranslation } from "../../i18n/use-translation";
+import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { controlIconSmClass } from "../../lib/control-styles";
 import { Button, buttonVariants } from "../general/button";
@@ -35,9 +35,23 @@ export function Calendar({
   cellRender,
   month: monthProp,
   onMonthChange,
+  locale: localeProp,
   ...props
 }: CalendarProp) {
   const { t } = useTranslation();
+  /*
+   * THE CALENDAR FOLLOWS THE PROVIDER, like everything else in this library.
+   *
+   * It did not. `locale` arrived only through `{...props}`, so with nothing passed react-day-picker
+   * fell back to its own en-US default — and a Japanese page rendered Su Mo Tu We Th Fr Sa inside a
+   * card whose every other string was Japanese. Nothing failed and nothing warned: the component
+   * had no opinion, so the library's default quietly won over the application's setting.
+   *
+   * A consumer's own `locale` still wins — `usePickerLocales` takes it as the override — which is
+   * what a booking screen pinned to one market needs. The change is only about what happens when
+   * nobody says anything.
+   */
+  const { dayPickerLocale } = usePickerLocales(localeProp);
   // The Today action must be able to move the month, so the month is latched here whenever the
   // footer is on; a consumer's own `month` still wins.
   const [month, setMonth] = React.useState<Date | undefined>(monthProp ?? props.defaultMonth);
@@ -100,6 +114,7 @@ export function Calendar({
     props.mode === "range" ? { resetOnSelect: props.resetOnSelect ?? true } : null;
   return (
     <DayPicker
+      locale={dayPickerLocale}
       showOutsideDays={showOutsideDays}
       aria-label={ariaLabel}
       month={showToday ? (monthProp ?? month) : monthProp}
@@ -110,7 +125,15 @@ export function Calendar({
       footer={footer ?? actions}
       labels={{
         ...labels,
-        labelNav: labels?.labelNav ?? (() => `${ariaLabel ?? "Calendar"} navigation`),
+        /*
+         * LOCALIZED, like every other string this component renders. It was an English literal
+         * built by template — so a Japanese calendar announced its own month controls as "Calendar
+         * navigation" while the two buttons INSIDE that container said 前の月へ and 次の月へ. Nothing
+         * failed and nothing warned; the only reader affected was the one using a screen reader.
+         */
+        labelNav:
+          labels?.labelNav ??
+          (() => t("dataEntry.calendar.nav", { label: ariaLabel ?? t("dataEntry.calendar.name") })),
       }}
       // The calendar has an INTRINSIC width — seven fixed day columns — and `width="auto"` (the
       // default) shrink-wraps to it so the nav sits beside the grid, not at the container edges.

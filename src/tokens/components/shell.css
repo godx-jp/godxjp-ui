@@ -118,9 +118,43 @@
    * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide
    * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed
    * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar
-   * collapsed. 3.5rem still clears the coarse-pointer 44px tap target. It is a token precisely so
-   * a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`. */
-  --app-shell-nav-rail-width: 3.5rem;
+   * collapsed. 3rem (48px) still clears the coarse-pointer 44px tap target, with 2px either side
+   * of a 44px control. It is a token precisely so a service that wants Slack's wider rail sets
+   * this one line — never a forked `.app-nav-rail`. */
+  --app-shell-nav-rail-width: 2.5rem;
+  /* The SIZE OF A RAIL CELL, and the reason the rail can be this narrow. The controls the rail
+   * hosts carry their own band token (`OrgSwitcher`'s collapsed trigger is a square of
+   * `--org-switcher-trigger-height`), so a narrower TRACK alone does not narrow them — it clips
+   * them, because the rail clips. The rail therefore sizes its own cells, exactly as the bar sizes
+   * a `TopbarItem` by stretching it to `--app-shell-bar-height`: chrome decides how big its cells
+   * are, the cell does not decide how big the chrome is.
+   *
+   * 2.25rem (36px) on a mouse — comfortably over the 24x24 of WCAG 2.2 SC 2.5.8 — and the coarse
+   * block below lifts it back to the 44px tap floor of rule #24, together with the track. */
+  --app-shell-nav-rail-item-size: var(--band-height-lg);
+  /* The SAME rail turned 90°: its thickness when `navRailPosition` is a block edge (top/bottom)
+   * and the column becomes a full-measure strip. A separate token rather than one "size", because
+   * a width read as a height is the kind of name that survives review and then confuses every
+   * later override.
+   *
+   * A strip is THINNER than the column, and 2.75rem is where thinner stops: `--band-height-xl` is
+   * 44px, the WCAG 2.2 AA touch floor this library states as rule #24 and enforces on every
+   * consumer, and it is also exactly `--org-switcher-trigger-height`. Below it the shell's own
+   * platform bar would be the one control on the page under the floor — and with the rail's
+   * `overflow: clip`, a control taller than the strip is clipped rather than shrunk.
+   *
+   * ONE THICKNESS, TWO AXES: it resolves to the width, so the rail is the same measure whichever
+   * edge it is docked to and a service retunes both with one line. It briefly carried a `+ 1px`
+   * for the strip's own separator — needed only while the cell was exactly as tall as the track;
+   * with `--app-shell-nav-rail-item-size` smaller than the track the border has room, and two
+   * different numbers for one rail is a worse defect than the pixel it bought. */
+  --app-shell-nav-rail-height: var(--app-shell-nav-rail-width);
+  /* Block inset of the rail's own content — the counterpart of the sidebar's
+   * `--sidebar-nav-scroll-padding`, so the two navigation columns start their content on the same
+   * line under `topbarSpan="full"`. It is deliberately NOT applied to the top edge under
+   * `topbarSpan="content"`: there the rail runs to y=0 and its first row IS the shell's top row,
+   * so it takes the bar's band instead and the three columns share one centre line. */
+  --app-shell-nav-rail-inset: var(--space-3);
   --app-shell-page-max-width: 80rem;
   /* Page ground behind `.app-main` (gh#399). Declared `initial` so the CALL SITE resolves the
    * default — `var(--app-shell-main-background, var(--surface-recessed))` — against the LIVE
@@ -676,6 +710,10 @@
 @media (pointer: coarse) {
   :root {
     --app-shell-bar-height: var(--band-height-3xl);
+    /* Same rule #24 companion for the second navigation track: a finger gets the 44px floor back,
+     * and the track widens with the cell so the cell is not clipped by the rail it sits in. */
+    --app-shell-nav-rail-width: 3rem;
+    --app-shell-nav-rail-item-size: var(--band-height-xl);
   }
 }
 

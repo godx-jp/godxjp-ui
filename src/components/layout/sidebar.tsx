@@ -458,10 +458,20 @@ export function Sidebar({
   // eslint-disable-next-line no-param-reassign
   collapsed = surface === "drawer" ? false : collapsed;
 
+  /*
+   * The brand slot follows the SAME effective value the rows do. A consumer's node is built
+   * outside this component and cannot read the surface (the context is deliberately not public),
+   * so a `brand` shaped by the consumer's own `collapsed` boolean showed a glyph-only lockup in a
+   * full-width drawer. The escape hatch was a second hand-built Sidebar passed as
+   * `AppShell.mobileNav` — which is exactly the override that turns `railInDrawer` off and drops
+   * the `navRail` from mobile. Accepting a function removes the reason to build that second node.
+   */
+  const brandNode = typeof brand === "function" ? brand(collapsed) : brand;
+
   return (
     <div className="sb-root" data-collapsed={collapsed ? "true" : undefined}>
       {brand !== undefined ? (
-        <SidebarHeader>{brand}</SidebarHeader>
+        <SidebarHeader>{brandNode}</SidebarHeader>
       ) : product ? (
         (() => {
           // The header is a SWITCHER only when `onProductClick` is wired. Without it, it's a plain

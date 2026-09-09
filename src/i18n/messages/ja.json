@@ -19,7 +19,9 @@
   "dataEntry": {
     "calendar": {
       "today": "今日",
-      "close": "閉じる"
+      "close": "閉じる",
+      "nav": "{label}のナビゲーション",
+      "name": "カレンダー"
     },
     "datePicker": {
       "placeholder": "日付を選択",

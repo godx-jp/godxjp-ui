@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AppShell, Flex, PageContainer, Sidebar, Topbar } from "@godxjp/ui/layout";
+import { AppShell, Flex, PageContainer, Sidebar, Topbar, TopbarItem } from "@godxjp/ui/layout";
 import type { SidebarSectionProp } from "@godxjp/ui/layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
@@ -95,9 +95,9 @@ export default function Demo() {
       topbar={
         <Topbar
           start={
-            <Button
-              size="sm"
-              variant="ghost"
+            // A bar cell is a TopbarItem, not a Button: a Button in a bar is a --control-height
+            // pill floating in a taller strip, with its own hover fill and its own focus ring.
+            <TopbarItem
               aria-label={collapsed ? "サイドバーを開く" : "サイドバーを閉じる"}
               aria-expanded={!collapsed}
               onClick={() => setCollapsed((c) => !c)}
@@ -107,7 +107,7 @@ export default function Demo() {
               ) : (
                 <PanelLeftClose aria-hidden="true" />
               )}
-            </Button>
+            </TopbarItem>
           }
         />
       }

@@ -10,6 +10,7 @@ import type {
   AppDateFormat,
 } from "../../app/types";
 import type { AppBrand, AppDensity, AppFontSize, AppTheme } from "../../app/theme-axes";
+import type { AppPreferenceAxis } from "../../app/storage";
 import type {
   AppSettingPickerAppearanceProp,
   AppSettingToggleAppearanceProp,
@@ -44,8 +45,18 @@ export type AppProviderProp = {
   timezoneOptions?: readonly AppTimezone[];
   /** localStorage key. Default: `godxjp.app`. */
   storageKey?: string;
-  /** Persist user choices. Default: true. */
-  persist?: boolean;
+  /**
+   * Which viewer preferences survive a reload. `true` (default) every axis, `false` none, or a
+   * LIST of axes — `["theme", "density", "fontSize"]`.
+   *
+   * The list exists because the axes do not share an owner. `theme` / `brand` / `density` /
+   * `fontSize` / `scaling` are the VIEWER's and belong in this browser. `locale` / `timezone` /
+   * `timeFormat` / `dateFormat` are frequently the SERVER's, resolved per request from a cookie,
+   * an account row or a header — and a stored copy then WINS over the value the server just sent,
+   * because storage is read after the props. Faced with one all-or-nothing flag, that consumer
+   * sets `persist={false}` and loses the viewer's theme along with it; naming the axes keeps both.
+   */
+  persist?: boolean | readonly AppPreferenceAxis[];
   /**
    * Initial theme choice. `"light"` / `"dark"` are written straight to `<html data-theme>`;
    * `"system"` defers to `prefers-color-scheme` and is re-resolved whenever the OS changes.

@@ -3,6 +3,7 @@ import { axe } from "vitest-axe";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { enUS } from "react-day-picker/locale";
 import { Calendar } from "../calendar";
 import { expectNoA11yViolations } from "@/test/a11y";
 
@@ -50,7 +51,16 @@ describe("Calendar", () => {
 
   it("navigates to the next month via the nav button", async () => {
     const user = userEvent.setup();
-    render(<Calendar mode="single" showOutsideDays={false} defaultMonth={MAY_2026} />);
+    /*
+     * PINNED TO `en`, and that is now a statement rather than an accident. This case reads the
+     * nav button by an English accessible name and counts on a Sunday-start grid, both of which
+     * used to be true for free: the calendar ignored the app locale and always rendered en-US.
+     * It follows the provider now, whose default is `vi` — Monday-start, Vietnamese labels — so a
+     * test that wants en-US has to ask for it.
+     */
+    render(
+      <Calendar mode="single" locale={enUS} showOutsideDays={false} defaultMonth={MAY_2026} />,
+    );
     expect(dayCell("31")).toBeInTheDocument(); // May has 31 days
     const nextBtn = screen
       .getAllByRole("button")

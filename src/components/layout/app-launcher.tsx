@@ -280,6 +280,7 @@ export function AppLauncher({
   error,
   onRetry,
   responsive = "auto",
+  appearance = "bar",
   open,
   onOpenChange,
   className,
@@ -312,15 +313,29 @@ export function AppLauncher({
    * silently detached one shipped consumer's `[data-test=…]` selector. The accessible name is
    * localized, so it is not a selector a test can hold.
    */
-  const trigger = (
-    <TopbarItem
-      className={cn("ui-app-launcher-trigger", className)}
-      aria-label={labels.trigger}
-      {...rest}
-    >
-      <Grip aria-hidden="true" />
-    </TopbarItem>
-  );
+  /*
+   * THE BOX FOLLOWS THE CHROME IT SITS IN — the same split `AppSettingToggle` already draws.
+   * `bar` is a `TopbarItem`: a cell as tall as the bar, whose hover IS the bar's surface. `icon` is
+   * a square ghost `Button`, for chrome that is NOT a bar — a nav rail, a card header, a toolbar.
+   * A `TopbarItem` there has no bar to bleed to: it stretches to a container that never set a band
+   * height, and its squared corners and full-bleed hover read as a broken cell rather than a
+   * control. `Grip` is the glyph either way; only the box changes.
+   */
+  const triggerProps = {
+    className: cn("ui-app-launcher-trigger", className),
+    "aria-label": labels.trigger,
+    ...rest,
+  };
+  const trigger =
+    appearance === "bar" ? (
+      <TopbarItem {...triggerProps}>
+        <Grip aria-hidden="true" />
+      </TopbarItem>
+    ) : (
+      <Button variant="ghost" size="icon-sm" {...triggerProps}>
+        <Grip aria-hidden="true" />
+      </Button>
+    );
   const panel = (
     <AppLauncherPanel
       apps={apps}

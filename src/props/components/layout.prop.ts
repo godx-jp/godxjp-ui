@@ -379,6 +379,30 @@ export type AppShellProp = {
    * to be tellable apart by name; the shell always supplies both defaults rather than requiring
    * this prop, so the two columns of equal rank behave the same way.
    */
+  /**
+   * WHICH EDGE the rail sits on. `start` (default) and `end` are the INLINE edges — logical, so an
+   * RTL document mirrors them without a `[dir]` rule; `top` and `bottom` are the block edges, where
+   * the rail becomes a full-measure horizontal strip and the shell grows a ROW instead of a column.
+   *
+   * The scope contract does not move with it: wherever it sits, the rail is PLATFORM scope. The
+   * edge is a presentation choice — a docked column reads as permanent chrome (Slack), a bottom
+   * strip reads as the phone/tab-bar shape, a top strip as a platform band above the app's own bar.
+   * Thickness follows the orientation: `--app-shell-nav-rail-width` as a column,
+   * `--app-shell-nav-rail-height` as a strip.
+   *
+   * Collapsing the sidebar folds the sidebar track only, at every position.
+   */
+  navRailPosition?: "start" | "end" | "top" | "bottom";
+  /**
+   * Rail content pinned to its FAR end — the counterpart of `Sidebar`'s `footer`, and the tray end
+   * of a taskbar: settings, appearance, the account glyph. It follows the orientation, so it is the
+   * bottom of a column and the inline-end of a strip, and it stays put while `navRail` scrolls.
+   *
+   * A slot rather than "whatever you put last", because pinning it needs an auto margin on the
+   * right axis — geometry that would otherwise land in consumer CSS, which this library does not
+   * accept. Ignored when `navRail` is not passed: there is no rail to pin anything to.
+   */
+  navRailEnd?: ReactNode;
   navRailLabel?: string;
   /**
    * Navigation shown in the mobile drawer at the DXS 900px breakpoint, where the docked sidebar is
@@ -1099,6 +1123,15 @@ export type AppLauncherProp = {
    * re-scopes everything on screen and earns the interruption; opening an app does not.
    */
   responsive?: "auto" | "popover" | "sheet";
+  /**
+   * The BOX the trigger takes — the same split `AppSettingToggle` draws, and for the same reason.
+   * `bar` (default) is a `TopbarItem`: a cell as tall as the bar, whose hover is the bar's own
+   * surface. `icon` is a square ghost `Button`, for chrome that is NOT a bar — a nav rail, a card
+   * header, a toolbar. A `TopbarItem` outside a bar has nothing to bleed to: it stretches to a
+   * container that never set a band height, and its squared corners and full-bleed hover read as a
+   * broken cell. The panel, the grid and the responsive contract are identical either way.
+   */
+  appearance?: "bar" | "icon";
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   className?: ClassNameProp;
@@ -1113,7 +1146,21 @@ export type SidebarProp = {
   sections?: SidebarSectionProp[];
   product?: SidebarProductProp;
   onProductClick?: () => void;
-  brand?: ReactNode;
+  /**
+   * Header slot ABOVE the navigation, replacing `product`.
+   *
+   * Pass a FUNCTION to follow the EFFECTIVE collapsed state. A plain node cannot: `AppShell` hands
+   * the same Sidebar to the drawer and the drawer un-collapses the rows (see `NavSurface`), so a
+   * node built from the consumer's own `collapsed` boolean renders a glyph-only lockup inside a
+   * full-width drawer. The escape hatch consumers reach for is a SECOND hand-built `Sidebar` in
+   * `AppShell.mobileNav` — and that override is precisely what switches off `railInDrawer`, so the
+   * `navRail` silently stops reaching mobile. The function is called with the surface-effective
+   * value, which removes the reason to build the second node at all.
+   *
+   * SCOPE: this is the APP's brand lockup. A PLATFORM switch (which organization, which app) does
+   * not belong here — see AppShell's `navRail` for where it goes and why.
+   */
+  brand?: ReactNode | ((collapsed: boolean) => ReactNode);
   collapsed?: boolean;
   children?: ChildrenProp;
   /**

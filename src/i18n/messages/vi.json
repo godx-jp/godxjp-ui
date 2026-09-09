@@ -19,7 +19,9 @@
   "dataEntry": {
     "calendar": {
       "today": "Hôm nay",
-      "close": "Đóng"
+      "close": "Đóng",
+      "nav": "Điều hướng {label}",
+      "name": "Lịch"
     },
     "datePicker": {
       "placeholder": "Chọn ngày",
