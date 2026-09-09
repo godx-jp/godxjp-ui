@@ -216,7 +216,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
          * `--textarea-autogrow-*-rows` knobs instead. */
         rows={growing ? 1 : rows}
         data-size={size}
-        onChange={needsWrapper ? handleChange : onChange}
+        onChange={handleChange}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
         style={{ ...style, ...padStyle(pad, padRaw) }}

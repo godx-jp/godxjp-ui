@@ -17,6 +17,17 @@ import { Transfer } from "../transfer";
  *      internally (antd-parity-input-affix.test.tsx:45).
  */
 describe("PasswordInput — visibilityToggle", () => {
+  it("reports value changes once and respects a controlled password", async () => {
+    const user = userEvent.setup();
+    const change = vi.fn();
+    const { container } = renderWithUi(
+      <PasswordInput aria-label="Password" value="secret" onValueChange={change} />,
+    );
+    await user.type(container.querySelector("input")!, "x");
+    expect(change).toHaveBeenCalledOnce();
+    expect(change).toHaveBeenCalledWith("secretx");
+    expect(container.querySelector("input")).toHaveValue("secret");
+  });
   it("visibilityToggle={false} removes the eye AND forces the field masked", () => {
     const { container } = renderWithUi(
       <PasswordInput aria-label="パスワード" visibilityToggle={false} defaultValue="secret" />,

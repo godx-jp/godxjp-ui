@@ -4,11 +4,27 @@ import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { FormRoot, FormFieldControl, useZodForm } from "../index";
+import { Textarea } from "../../components/data-entry/textarea";
 import { Input } from "../../components/data-entry/input";
 import { Select } from "../../components/data-entry/select";
 import { Button } from "../../components/general/button";
 
 describe("form integration", () => {
+  it("plain input and textarea emit the value callback without affixes or counters", async () => {
+    const user = userEvent.setup();
+    const inputChange = vi.fn();
+    const textareaChange = vi.fn();
+    renderWithUi(
+      <>
+        <Input aria-label="Name" onValueChange={inputChange} />
+        <Textarea aria-label="Notes" onValueChange={textareaChange} />
+      </>,
+    );
+    await user.type(screen.getByRole("textbox", { name: "Name" }), "A");
+    await user.type(screen.getByRole("textbox", { name: "Notes" }), "B");
+    expect(inputChange).toHaveBeenCalledExactlyOnceWith("A");
+    expect(textareaChange).toHaveBeenCalledExactlyOnceWith("B");
+  });
   it("binds native and value-based controls using the same field bag", async () => {
     const user = userEvent.setup();
     const save = vi.fn();

@@ -6,6 +6,28 @@ import { Flex } from "../../layout/flex";
 import { Input } from "../input";
 
 describe("Form field feedback", () => {
+  it("supports custom success feedback and hiding the required marker", () => {
+    const { rerender } = renderWithUi(
+      <Form requiredMark={false}>
+        <FormField label="Email" required hasFeedback validateStatus="success" feedback="Verified">
+          <Input />
+        </FormField>
+      </Form>,
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("Verified");
+    expect(screen.queryByText("*")).not.toBeInTheDocument();
+    rerender(
+      <Form requiredMark={true} disabled={false}>
+        <FormField label="Email" required hasFeedback={false} validateStatus="error">
+          <Input />
+        </FormField>
+      </Form>,
+    );
+    expect(screen.getByText("*")).toBeVisible();
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(screen.getByRole("textbox")).toBeEnabled();
+    expect(screen.getByRole("textbox")).toHaveAttribute("aria-invalid", "true");
+  });
   it("disables nested controls without changing their values", () => {
     renderWithUi(
       <Form disabled>

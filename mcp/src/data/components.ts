@@ -11880,7 +11880,7 @@ import { Separator } from "@godxjp/ui/layout";
     props: [
       {
         name: "visibilityToggle",
-        type: "boolean | { visible?: boolean; defaultVisible?: boolean; onVisibleChange?: (visible: boolean) => void }",
+        type: "boolean | { visible?: boolean; onVisibleChange?: (visible: boolean) => void }",
         description: "Control password visibility; false hides the reveal action.",
       },
       {

@@ -526,8 +526,8 @@
     "exports": 297,
     "dimensionCells": 4158,
     "covered": 79,
-    "untested": 2303,
-    "notApplicable": 1776,
+    "untested": 2316,
+    "notApplicable": 1763,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -4301,8 +4301,8 @@
       ],
       "baseline": {
         "covered": 1,
-        "notApplicable": 6,
-        "untested": 7
+        "notApplicable": 5,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -4311,7 +4311,7 @@
         "shapes": "not-applicable:api-manifest",
         "density": "covered:prop-evidence:density",
         "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -4581,16 +4581,16 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 6,
-        "untested": 8
+        "notApplicable": 3,
+        "untested": 11
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "untested",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "untested",
         "async": "untested",
         "responsive": "untested",
@@ -4609,8 +4609,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -4618,7 +4618,7 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
@@ -4637,8 +4637,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -4646,7 +4646,7 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
@@ -4665,8 +4665,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -4674,7 +4674,7 @@
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
@@ -5310,13 +5310,13 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
+        "notApplicable": 3,
+        "untested": 11
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "untested",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -5338,13 +5338,13 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
+        "notApplicable": 3,
+        "untested": 11
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "untested",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -5899,8 +5899,8 @@
       ],
       "baseline": {
         "covered": 2,
-        "notApplicable": 5,
-        "untested": 7
+        "notApplicable": 3,
+        "untested": 9
       },
       "dimensions": {
         "variants": "covered:prop-evidence:variant",
@@ -5908,8 +5908,8 @@
         "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
-        "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",

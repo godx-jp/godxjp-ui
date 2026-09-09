@@ -146,7 +146,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
           ref={setRefs}
           value={value}
           defaultValue={defaultValue}
-          onChange={hasAddon ? handleChange : onChange}
+          onChange={handleChange}
           className={cn(inputBaseClass, chrome, className)}
           {...props}
           {...nameFallback}
