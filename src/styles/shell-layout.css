@@ -2113,6 +2113,15 @@
     height: var(--topbar-icon-size);
   }
 
+  /* The shortcut cap sits at the END of the trigger. `.kbd` is (0,1,0), and so is `.ui-text` —
+   * so the moment the cap is composed as a <Text> instead of a raw span, whichever of the two the
+   * bundler emits last decides the margin, and the cap silently collapses back against the label.
+   * The scoped rule below re-states it at (0,2,0) inside the trigger, where the placement is a
+   * contract rather than a default. */
+  .tb-search .kbd {
+    margin-inline-start: auto;
+  }
+
   .kbd {
     display: inline-flex;
     align-items: center;
