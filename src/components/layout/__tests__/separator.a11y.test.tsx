@@ -64,14 +64,20 @@ describe("Separator a11y (gh#308)", () => {
     await expectNoA11yViolations(<Separator label="or" decorative />);
   });
 
-  it("has no axe violations across the labelled matrix, both directions", async () => {
-    for (const align of ["start", "center", "end"] as const) {
-      for (const tone of ["default", "muted", "primary", "warning", "destructive"] as const) {
-        await expectNoA11yViolations(
-          <Separator label="新しいメッセージはここから" labelAlign={align} tone={tone} />,
-        );
-      }
-    }
+  it.each(
+    (["start", "center", "end"] as const).flatMap((align) =>
+      (["default", "muted", "primary", "warning", "destructive"] as const).map((tone) => ({
+        align,
+        tone,
+      })),
+    ),
+  )("has no axe violations for $align / $tone", async ({ align, tone }) => {
+    await expectNoA11yViolations(
+      <Separator label="新しいメッセージはここから" labelAlign={align} tone={tone} />,
+    );
+  });
+
+  it("has no axe violations in RTL", async () => {
     await expectNoA11yViolations(
       <div dir="rtl">
         <Separator label="رسائل جديدة" labelAlign="start" tone="primary" />
