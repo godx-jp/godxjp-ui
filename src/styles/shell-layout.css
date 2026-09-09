@@ -1909,7 +1909,15 @@
    * bottom, with no way to get the room back (`overflow-clip-margin` is ignored on `hidden`).
    * `.ui-topbar-start` itself already made this choice two rules up; this one was the gap.
    * `text-overflow: ellipsis` renders identically under `clip`, so truncation is unaffected. */
-  .ui-topbar-start > :last-child {
+  /* The start cluster's LAST child is truncated so a long tenant/brand/screen string cannot spill
+   * over a sibling — but this was written when that child was always TEXT, and it strips
+   * `min-width` from whatever sits there. Put a CONTROL last (a search trigger, the GitHub
+   * placement) and the rule flattens its own minimum: measured at 186px against a 16rem floor,
+   * because (0,1,1) here beats the control's own (0,1,0).
+   *
+   * Truncation is a TEXT contract, so it now excludes interactive boxes. A control keeps its own
+   * measure and does its own clipping; a string still ellipses. */
+  .ui-topbar-start > :last-child:not(:is(button, a, [role="button"], .ui-button)) {
     max-width: 100%;
     min-width: 0;
     flex: 0 1 auto;
@@ -2118,6 +2126,7 @@
     /* `width: 100%` + `max-width: none` is the pair that makes both cases work from ONE token: a
      * set length caps it, an unset one (`none`) doesn't. */
     width: 100%;
+    min-inline-size: var(--topbar-search-min-width);
     max-width: var(--topbar-search-max-width);
     height: var(--control-height-sm);
     align-items: center;
@@ -2214,6 +2223,11 @@
 
     .tb-search {
       width: auto;
+      /* Logical, so it actually beats the base rule's `min-inline-size` — `min-width` and
+       * `min-inline-size` are different properties in a horizontal writing mode only by name, and
+       * the cascade resolves the LAST one declared. Stating the same axis both ways would leave
+       * the compact icon at the 16rem floor. */
+      min-inline-size: var(--control-height);
       min-width: var(--control-height);
     }
 
