@@ -12693,7 +12693,7 @@ export default function PasswordBlock() {
     ],
     useCases: [
       'App-shell top-nav language switcher: <AppSettingPicker kind="locale" /> under AppProvider, persisting to localStorage with no extra state.',
-      'Icon-only topbar locale switcher (globe): <AppSettingPicker kind="locale" appearance="icon" /> in a Topbar `end` slot — square, value-less, keyboard + aria-label preserved.',
+      "Topbar locale switcher (globe): <AppSettingPicker kind=\"locale\" appearance=\"bar\" /> in a Topbar `end` slot — a CELL of the bar: full bar height, squared to --topbar-item-radius, so its hover surface matches the TopbarItem beside it. appearance=\"icon\" is the same structural drops shaped as a CONTROL, for a toolbar or card header; in a taller bar it leaves a --control-height pill floating mid-strip and reads as a foreign control family. This line said \"icon\" while the prop doc said \"bar\", and a consumer duly shipped the pill.",
       'Auth-footer locale switch: <AppSettingPicker kind="locale" appearance="labeled" compact /> inside an <AuthFooter locale={…}> slot — the readable language name at the small control tier, hugging its value.',
       "User settings page with all four preferences — render kind=locale, kind=timezone, kind=dateFormat, kind=timeFormat together under one AppProvider.",
       "Onboarding step that picks language/timezone before the rest of the app is configured — AppProvider persist={false} + controlled values to keep state local.",
@@ -12728,12 +12728,13 @@ export function LocaleField() {
   return <AppSettingPicker kind="locale" value={locale} onValueChange={setLocale} />;
 }
 
-// Icon-only topbar locale switcher (globe) — supported compact trigger, no CSS overrides
+// Topbar locale switcher (globe) — a cell OF the bar, no CSS overrides
 import { Topbar } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 export function TopbarLocale() {
-  return <Topbar end={<AppSettingPicker kind="locale" appearance="icon" />} />;
+  // "bar" inside a Topbar slot; "icon" everywhere else.
+  return <Topbar end={<AppSettingPicker kind="locale" appearance="bar" />} />;
 }\`}`,
     storyPath: "navigation/AppSettingPicker.stories.tsx",
     rules: [3, 5, 6, 23],
