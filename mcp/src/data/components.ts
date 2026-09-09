@@ -1695,7 +1695,7 @@ export default function Shell() {
     ],
     usage: [
       "DO compose the bar yourself: a brand mark (an `Avatar`) + sidebar toggle in `start`, a search trigger in `center`, settings pickers + notifications + user menu in `end`. The shell only positions; it never decides WHICH controls exist.",
-      'DO build the sidebar toggle as a `Button variant="ghost" size="icon-sm"` with a `PanelLeftClose`/`PanelLeftOpen` icon and your own `t()` aria-label, wired to AppShell\'s `sidebarCollapsed`. There is no baked toggle.',
+      "DO build the sidebar toggle as a `TopbarItem` with a `PanelLeftClose`/`PanelLeftOpen` icon and your own `t()` aria-label, wired to AppShell's `sidebarCollapsed`. There is no baked toggle — but there IS a bar CELL, and it is not a Button: a Button in a slot is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill instead of the cell. The same holds for the notifications bell and the account trigger.",
       "DO put a locale/theme switcher in `end` using `AppSettingPicker` (or your own control) — icon-only vs labelled, bordered vs not, is THAT component's prop, not Topbar's. Topbar does not ship or force a language picker.",
       "DON'T look for `product`/`project`/`onSearchOpen`/`onNotificationsOpen`/`collapsed` props — they were removed. A chrome control only exists if YOU put it in a slot, so there is never a dead dropdown / empty search with nothing behind it.",
       "DO render Topbar inside `AppShell`'s `topbar` slot (or any `<header>`). For a non-three-cluster layout, pass `children` and lay it out yourself.",
@@ -1714,7 +1714,7 @@ export default function Shell() {
       "AppSettingPicker — locale/theme/timezone/currency picker; the consumer drops it into `end`. Its appearance (icon-only, labelled, bordered) is configured on IT, not on Topbar.",
       "DropdownMenu — wrap a `Button` to build an entity switcher or user menu yourself, then place it in a slot.",
     ],
-    example: `import { Topbar, AppShell } from "@godxjp/ui/layout";
+    example: `import { Topbar, TopbarItem, AppShell } from "@godxjp/ui/layout";
 import { Button } from "@godxjp/ui/general";
 import { Avatar, AvatarFallback } from "@godxjp/ui/data-display";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
@@ -1727,19 +1727,19 @@ import { PanelLeftClose, Search } from "lucide-react";
     <Topbar
       start={
         <>
-          <Button variant="ghost" size="icon-sm" aria-label={t("toggleSidebar")} onClick={toggle}>
+          <TopbarItem aria-label={t("toggleSidebar")} onClick={toggle}>
             <PanelLeftClose />
-          </Button>
+          </TopbarItem>
           <Avatar className="rounded-md">
             <AvatarFallback className="bg-primary text-primary-foreground font-bold">C</AvatarFallback>
           </Avatar>
         </>
       }
       center={
-        <Button variant="outline" size="sm" onClick={openSearch}>
+        <TopbarItem onClick={openSearch}>
           <Search />
           {t("search")}
-        </Button>
+        </TopbarItem>
       }
       end={
         <>
@@ -2568,6 +2568,7 @@ export function TermsPage() {
       "Refetch / retry trigger when NOT using TanStack Query — for manual cache refresh inside a TanStack Query context use `ButtonRefetch` instead, which owns its own `disabled`/`onClick` lifecycle.",
     ],
     related: [
+      "TopbarItem — the same trigger INSIDE a Topbar slot. A Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring around the pill instead of the cell; TopbarItem is the bar cell itself. Anywhere that is not a bar, Button is right.",
       "DropdownMenu — when a button needs to reveal a list of actions (e.g. 'Actions ▾' in a DataTable row), wrap the Button as a `DropdownMenuTrigger` inside a `DropdownMenu` compound; don't open a Sheet/Dialog just to show a list of options.",
       "ButtonRefetch — a pre-wired Button variant from `@godxjp/ui/query` that binds directly to a TanStack Query result (shows spinner, auto-disables while fetching, retries on click). Use it instead of a raw Button whenever the action is a query refetch — do not pass `onClick`/`disabled` to it manually.",
       "AlertMutationFeedback — for surfacing mutation errors and a retry action; it renders its own retry Button internally. Do not add a separate Button alongside AlertMutationFeedback for the same mutation.",
@@ -5276,6 +5277,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "Numeric/currency input in accounting forms (`type='number'`, `inputMode='decimal'`) for quantities, exchange rates, or tax amounts where a free-form numeric entry is required rather than a slider or stepper.",
     ],
     related: [
+      "PasswordInput — the password field. It owns the reveal toggle, the caps-lock hint and the autocomplete contract; a raw Input with type=password re-implements all three.",
       "SearchInput — use instead of Input when the value drives a live filter or search query; SearchInput debounces internally, fires `onSearch` (not `onChange`), and provides a built-in clear button. Never put debounce logic on top of a plain Input.",
       "Textarea — use instead of Input for multi-line text (notes, descriptions, memo fields). Input is strictly single-line.",
       "FormField — always compose Input inside FormField when the field needs a visible label, helper hint, or validation error message; FormField handles all a11y wiring so Input stays a pure unstyled-but-styled primitive.",
@@ -5857,6 +5859,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "Async account picker whose API can fail — pass loadOptions plus errorMessage so a rejected fetch shows a clear error affordance in the panel (not a blank surface or a false 'no results'); the loading and empty states are handled automatically.",
     ],
     related: [
+      "Segmented — the same choice when the option set is small and worth showing at once. Select hides its options behind a trigger; Segmented lays them out, which reads better for 2-4 mutually exclusive options.",
       "SearchSelect — the combobox engine Select delegates to when showSearch=true or loadOptions is set. Prefer Select with showSearch instead of reaching for SearchSelect directly (SearchSelect is now deprecated as a public API).",
       "TreeSelect — use when options are hierarchical (parent/child tree). Not a drop-in for Select; has expand/collapse and a separate treeData prop.",
       "Select with showSearch — use Select (with the `showSearch` prop) for typeahead/autocomplete lookup patterns instead of the removed Autocomplete component.",
@@ -11752,7 +11755,7 @@ import { Separator } from "@godxjp/ui/layout";
       "DO give the group an accessible name (`aria-label`) — it renders a radiogroup (single) or a group of toggle buttons (multiple).",
     ],
     useCases: ["Text alignment selector", "Formatting toolbar", "View density switcher"],
-    related: ["Toggle", "RadioGroup"],
+    related: ["Segmented — the single-select sibling with a shared connected track. ToggleGroup is the generic multi/single toggle set; Segmented is the one-of-N control.", "Toggle", "RadioGroup"],
     example: `import { ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
 
 // size/variant are set ONCE on the group and reach every item.
