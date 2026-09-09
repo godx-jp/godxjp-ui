@@ -1072,7 +1072,15 @@
     box-shadow: none;
   }
 
+  /* `bar` is a CELL OF THE BAR, so it takes the cell's whole geometry contract — not two thirds of
+   * it. It already shared TopbarItem's height and --topbar-item-radius; it did NOT share the min
+   * width or the inline padding, so a locale glyph beside an account cell measured 32px wide with
+   * zero inset against its neighbour's 32px minimum and 12px padding. Two cells of one bar, two
+   * different insets: the hover surfaces stop lining up and the gap between them reads as a hole.
+   * Same knobs as TopbarItem, so re-tuning the bar moves both together. */
   .ui-app-setting-picker-icon[data-appearance="bar"] {
+    min-inline-size: var(--topbar-item-min-width);
+    padding-inline: var(--topbar-item-padding-inline);
     border-width: var(--app-setting-picker-bar-border-width);
     box-shadow: var(--app-setting-picker-bar-shadow);
   }
