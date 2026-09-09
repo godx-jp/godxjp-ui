@@ -138,8 +138,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       if (value === undefined) setText(event.target.value);
       if (growing && !composing.current) setMirror(event.target.value);
-      onValueChange?.(event.target.value);
-      if ((onChange as unknown) !== onValueChange) onChange?.(event);
+      onChange?.(event);
+      if ((onChange as unknown) !== onValueChange) onValueChange?.(event.target.value);
     };
 
     const handleCompositionStart = (event: React.CompositionEvent<HTMLTextAreaElement>) => {

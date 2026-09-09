@@ -96,8 +96,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProp>(
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       if (value === undefined) setText(event.target.value);
-      onValueChange?.(event.target.value);
-      if ((onChange as unknown) !== onValueChange) onChange?.(event);
+      onChange?.(event);
+      if ((onChange as unknown) !== onValueChange) onValueChange?.(event.target.value);
     };
 
     const clear = () => {
