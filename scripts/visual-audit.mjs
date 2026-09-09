@@ -109,16 +109,40 @@ function collectInPage() {
       accents.push({ rgb: { r: c.r, g: c.g, b: c.b }, tag: el.tagName.toLowerCase() });
   }
 
-  // Interactive targets — for the 24×24 minimum.
-  const targets = [];
+  // Interactive targets — for the 24x24 minimum of WCAG 2.2 SC 2.5.8, INCLUDING the two exceptions
+  // the criterion itself grants. Reporting the bare 24x24 rule flagged a 16px checkbox standing
+  // alone in white space and every legal link inside a consent sentence — none of which the
+  // criterion requires anyone to change. A checker that over-reports is not stricter, it is wrong,
+  // and it costs the same as under-reporting: readers learn to skip the finding.
+  const rawTargets = [];
   for (const el of document.querySelectorAll(
     "a[href], button, [role=button], input:not([type=hidden]), select, [tabindex]:not([tabindex='-1'])",
   )) {
     if (!visible(el)) continue;
     const r = el.getBoundingClientRect();
     const name = (el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 40);
-    targets.push({ width: Math.round(r.width), height: Math.round(r.height), name });
+    rawTargets.push({
+      width: Math.round(r.width),
+      height: Math.round(r.height),
+      cx: r.left + r.width / 2,
+      cy: r.top + r.height / 2,
+      // INLINE exception: "the target is in a sentence or its size is otherwise constrained by the
+      // line-height of non-target text". A box participating in a text line is exactly that; an
+      // inline-block/flex control is not, so the test is the computed display, not the tag.
+      inline: getComputedStyle(el).display === "inline",
+      name,
+    });
   }
+  const targets = rawTargets.map((t) => {
+    if (t.inline) return { ...t, exempt: "inline" };
+    // SPACING exception: undersized is allowed when a 24px-DIAMETER circle centred on the target
+    // does not intersect the circle of any other target. Two circles of radius 12 intersect when
+    // their centres are closer than 24px, so that is the whole test.
+    const crowded = rawTargets.some(
+      (o) => o !== t && Math.hypot(o.cx - t.cx, o.cy - t.cy) < 24,
+    );
+    return { ...t, exempt: crowded ? null : "spacing" };
+  });
 
   // Emoji that survived to the rendered DOM.
   const text = document.body ? document.body.innerText : "";
@@ -165,7 +189,11 @@ function collectInPage() {
   const probe = (layer, className, prop, bad) => {
     const el = document.createElement("div");
     el.className = className;
-    el.style.position = "absolute";
+    // No inline `position` here. It used to be set to "absolute" to keep the node out of flow, and
+    // that silently POISONED the one probe that read `position`: the dialog check asked whether
+    // position !== "static" on an element the probe itself had just made absolute, so it passed
+    // whether or not the layer was loaded. An empty hidden div contributes no visible layout, so
+    // the flow guard was never worth a probe that cannot fail.
     el.style.visibility = "hidden";
     document.body.appendChild(el);
     const v = getComputedStyle(el)[prop];
@@ -175,9 +203,18 @@ function collectInPage() {
   const layers = [
     probe("control", "ui-button", "borderRadius", "0px"),
     probe("navigation-layout", "ui-dropdown-menu-content", "borderTopWidth", "0px"),
-    probe("card-layout", "ui-card", "borderTopWidth", "0px"),
+    // `.ui-card` is NOT a class the library sets rules on — Card renders `cn("group/card", …)`
+    // and card-layout.css owns `.ui-card-bar` / `.ui-card-cover` / `.ui-card-inset*` /
+    // `.ui-card-header--banded`. Probing it could never pass, so every consumer page reported a
+    // permanent, meaningless `card-layout is not loaded` error. `.ui-card-inset-x` is a real rule
+    // AND resolves --card-space-inset, so it proves the layer and its token chain together.
+    probe("card-layout", "ui-card-inset-x", "paddingInline", "0px"),
     probe("layout", "ui-page-container", "display", "block"),
-    probe("dialog-layout", "ui-dialog-content", "position", "static"),
+    // `.ui-dialog-content` is not a class either — dialog-layout styles the `[data-slot=
+    // "dialog-content"]` attribute — so this probe named a class nothing declares AND read the
+    // property the probe used to set on itself. `.ui-dialog-overlay` is a real selector and
+    // z-index defaults to "auto", which nothing here writes.
+    probe("dialog-layout", "ui-dialog-overlay", "zIndex", "auto"),
     probe("form-layout", "ui-form-field", "display", "inline"),
   ];
   // Control rows — every control in a row shares the control tier height.
@@ -319,7 +356,8 @@ async function audit(targets, { chromium, AxeBuilder }) {
             );
         }
         for (const t of m.targets) {
-          if (isUndersizedTarget(t))
+          // `exempt` is set by the SC 2.5.8 Inline / Spacing carve-outs measured in the page.
+          if (!t.exempt && isUndersizedTarget(t))
             findings.push(
               buildFinding(
                 "target-size-min",

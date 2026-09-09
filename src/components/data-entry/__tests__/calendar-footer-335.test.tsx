@@ -33,7 +33,20 @@ describe("Calendar footer (gh#335)", () => {
     );
     await user.click(screen.getByRole("button", { name: TODAY_LABEL }));
     expect(sameDay(onSelect.mock.calls[0][0] as Date, TODAY)).toBe(true);
-    expect(screen.getByRole("grid").getAttribute("aria-label")).toMatch(/September 2026/);
+    /*
+     * The grid's own name, in whatever language the app is in. This used to read `/September 2026/`
+     * and passed only because the calendar ignored the app locale and always rendered en-US; it now
+     * follows the provider, whose default is `vi`, so the caption is `Tháng Chín 2026`. What the
+     * case is about is that the grid MOVED — from the January 2024 it opened on to today's month —
+     * and asserting that through an English month name was testing the library's old default.
+     *
+     * Deriving the expected name from `Intl` does not work either: it spells the Vietnamese month
+     * `tháng 9`, while react-day-picker's date-fns locale writes `Tháng Chín`. The year is the one
+     * part every locale agrees on.
+     */
+    const caption = screen.getByRole("grid").getAttribute("aria-label") ?? "";
+    expect(caption).toContain("2026");
+    expect(caption).not.toContain("2024");
   });
 
   it("range: Today fills the open end of the range", async () => {

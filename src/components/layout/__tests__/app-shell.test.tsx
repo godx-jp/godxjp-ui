@@ -378,6 +378,22 @@ describe("AppShell", () => {
     }
   });
 
+  it("builds its own drawer trigger as a BAR CELL, not a Button (the rule it states to consumers)", () => {
+    // A Button in a bar is a --control-height pill floating in a taller strip, with its own hover
+    // fill and its own focus ring — the shell was doing it on the ONE control that is the only
+    // navigation a phone has (measured 40x28 in a 48px bar, still 28 when the coarse-pointer bar
+    // grows to 56). `.ui-topbar-item` stretches to the bar instead.
+    renderWithUi(
+      <AppShell sidebar={<nav aria-label="主">ナビ</nav>}>
+        <p>本文</p>
+      </AppShell>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Mở menu điều hướng" });
+    expect(trigger).toHaveClass("ui-topbar-item");
+    expect(trigger.className).not.toMatch(/\bui-button\b/);
+  });
+
   it("mobileNav={null} opts out — no drawer trigger is rendered", () => {
     renderWithUi(
       <AppShell sidebar={<nav aria-label="主">n</nav>} mobileNav={null}>
@@ -506,15 +522,19 @@ describe("AppShell", () => {
       expect(drawerOnlyBar).toMatch(/min-height:\s*var\(--app-shell-bar-height\);/);
     });
 
-    it("brings the bar back at narrow widths WITHOUT restating the row template", () => {
+    it("brings the bar back at narrow widths without ever restating the row template as a literal", () => {
       expect(narrowCss).not.toBe("");
       expect(declarationsFor(narrowCss, '.app-root[data-topbar="none"] > .app-topbar')).toMatch(
         /display:\s*flex;/,
       );
       // The trap this file has already paid for once: the deleted 768px block re-declared
-      // grid-template-rows with a `3rem` literal and defeated --app-shell-bar-height below 768px
-      // only. The `auto` row sizes itself from the header's min-height, so nothing may restate it.
-      expect(narrowCss).not.toMatch(/grid-template-rows:/);
+      // grid-template-rows with a `3rem` LITERAL and defeated --app-shell-bar-height below 768px
+      // only. A rail on a block edge legitimately restates the rows here (its fourth row has to go
+      // with the hidden rail), so the rule is about the VALUES, not about the property appearing.
+      for (const rows of narrowCss.matchAll(/grid-template-rows:([^;]+);/g)) {
+        expect(rows[1]).not.toMatch(/\d+(\.\d+)?(px|rem|em)/);
+        expect(rows[1]).toMatch(/var\(--app-shell-bar-height\)/);
+      }
       expect(shellCss).not.toMatch(/grid-template-rows:\s*3rem/);
     });
 

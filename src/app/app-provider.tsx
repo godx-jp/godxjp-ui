@@ -14,7 +14,13 @@ import {
   enableLiveRelativeFormatting,
   syncDatetimeContext,
 } from "../lib/datetime";
-import { DEFAULT_STORAGE_KEY, readStoredPreferences, writeStoredPreferences } from "./storage";
+import {
+  DEFAULT_STORAGE_KEY,
+  pickPersistedAxes,
+  readStoredPreferences,
+  resolvePersistedAxes,
+  writeStoredPreferences,
+} from "./storage";
 import {
   applyThemeAxes,
   PREFERS_DARK_SCHEME_QUERY,
@@ -142,8 +148,30 @@ export function AppProvider({
     scaling,
   });
 
+  /*
+   * WHICH AXES THIS BROWSER OWNS. `persist` is a boolean OR a list, because the axes do not share
+   * an owner: theme/density/fontSize are the viewer's and belong here, while locale/timezone are
+   * often resolved per request by the server — and a stored copy WINS over the prop, since storage
+   * is read after it. With one flag the consumer in that position turns persistence off wholesale
+   * and silently loses the viewer's theme; the list lets each axis keep its own owner.
+   *
+   * Keyed by content, not identity: an inline `persist={["theme"]}` is a new array every render,
+   * and putting that in the init effect's deps would re-run it and reset every axis on each pass.
+   */
+  const persistKey = Array.isArray(persist) ? [...persist].sort().join(",") : String(persist);
+  const persistedAxes = React.useMemo(
+    () => resolvePersistedAxes(persist),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [persistKey],
+  );
+
+  const commitPreferences = React.useCallback(() => {
+    if (persistedAxes.size === 0) return;
+    writeStoredPreferences(storageKey, pickPersistedAxes(prefsRef.current, persistedAxes));
+  }, [persistedAxes, storageKey]);
+
   React.useEffect(() => {
-    const stored = persist ? readStoredPreferences(storageKey) : {};
+    const stored = pickPersistedAxes(readStoredPreferences(storageKey), persistedAxes);
     const nextLocale = stored.locale ?? defaultLocale;
     const nextTimezone = stored.timezone ?? resolveDefaultTimezone(defaultTimezone, systemTimezone);
     const nextTimeFormat = resolveInitialTimeFormat(
@@ -192,7 +220,7 @@ export function AppProvider({
     initialDensity,
     initialFontSize,
     initialScaling,
-    persist,
+    persistedAxes,
     storageKey,
     systemTimezone,
   ]);
@@ -238,9 +266,9 @@ export function AppProvider({
       prefsRef.current = { ...prefsRef.current, locale: next };
       setLocaleState(next);
       onLocaleChange?.(next);
-      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+      commitPreferences();
     },
-    [onLocaleChange, persist, storageKey],
+    [onLocaleChange, commitPreferences],
   );
 
   const setTimezone = React.useCallback(
@@ -248,9 +276,9 @@ export function AppProvider({
       prefsRef.current = { ...prefsRef.current, timezone: next };
       setTimezoneState(next);
       onTimezoneChange?.(next);
-      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+      commitPreferences();
     },
-    [onTimezoneChange, persist, storageKey],
+    [onTimezoneChange, commitPreferences],
   );
 
   const setTimeFormat = React.useCallback(
@@ -258,9 +286,9 @@ export function AppProvider({
       prefsRef.current = { ...prefsRef.current, timeFormat: next };
       setTimeFormatState(next);
       onTimeFormatChange?.(next);
-      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+      commitPreferences();
     },
-    [onTimeFormatChange, persist, storageKey],
+    [onTimeFormatChange, commitPreferences],
   );
 
   const setDateFormat = React.useCallback(
@@ -268,9 +296,9 @@ export function AppProvider({
       prefsRef.current = { ...prefsRef.current, dateFormat: next };
       setDateFormatState(next);
       onDateFormatChange?.(next);
-      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+      commitPreferences();
     },
-    [onDateFormatChange, persist, storageKey],
+    [onDateFormatChange, commitPreferences],
   );
 
   const setTheme = React.useCallback(
@@ -278,9 +306,9 @@ export function AppProvider({
       prefsRef.current = { ...prefsRef.current, theme: next };
       setThemeState(next);
       onThemeChange?.(next);
-      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+      commitPreferences();
     },
-    [onThemeChange, persist, storageKey],
+    [onThemeChange, commitPreferences],
   );
 
   const setBrand = React.useCallback(
@@ -288,9 +316,9 @@ export function AppProvider({
       prefsRef.current = { ...prefsRef.current, brand: next };
       setBrandState(next);
       onBrandChange?.(next);
-      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+      commitPreferences();
     },
-    [onBrandChange, persist, storageKey],
+    [onBrandChange, commitPreferences],
   );
 
   const setDensity = React.useCallback(
@@ -298,9 +326,9 @@ export function AppProvider({
       prefsRef.current = { ...prefsRef.current, density: next };
       setDensityState(next);
       onDensityChange?.(next);
-      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+      commitPreferences();
     },
-    [onDensityChange, persist, storageKey],
+    [onDensityChange, commitPreferences],
   );
 
   const setFontSize = React.useCallback(
@@ -308,9 +336,9 @@ export function AppProvider({
       prefsRef.current = { ...prefsRef.current, fontSize: next };
       setFontSizeState(next);
       onFontSizeChange?.(next);
-      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+      commitPreferences();
     },
-    [onFontSizeChange, persist, storageKey],
+    [onFontSizeChange, commitPreferences],
   );
 
   const setScaling = React.useCallback(
@@ -318,9 +346,9 @@ export function AppProvider({
       prefsRef.current = { ...prefsRef.current, scaling: next };
       setScalingState(next);
       onScalingChange?.(next);
-      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+      commitPreferences();
     },
-    [onScalingChange, persist, storageKey],
+    [onScalingChange, commitPreferences],
   );
 
   const requestHeaders = React.useMemo(

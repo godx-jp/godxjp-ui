@@ -121,6 +121,32 @@ describe("AuthShell", () => {
     },
   );
 
+  it.each([["center"], ["anchored"]] as const)(
+    'align="%s" is exposed on the shell root and composes with a preset',
+    (align) => {
+      const { container } = renderWithUi(
+        <AuthShell variant="canonical" preset="login" align={align}>
+          <div>x</div>
+        </AuthShell>,
+      );
+      const shell = container.querySelector('[data-slot="auth-shell"]');
+      // Orthogonal axes: the preset still owns the page measure, `align` only the block placement.
+      expect(shell).toHaveAttribute("data-align", align);
+      expect(shell).toHaveAttribute("data-preset", "login");
+    },
+  );
+
+  it("omits data-align entirely when align is not passed, so the preset keeps its own default", () => {
+    // Load-bearing: the align and preset rules decide --auth-shell-main-align at EQUAL specificity,
+    // and align is declared later. An always-emitted attribute would silently re-aim every preset.
+    const { container } = renderWithUi(
+      <AuthShell preset="login">
+        <div>x</div>
+      </AuthShell>,
+    );
+    expect(container.querySelector('[data-slot="auth-shell"]')).not.toHaveAttribute("data-align");
+  });
+
   it('preset="default" is a no-op that keeps the un-preset box', () => {
     const { container } = renderWithUi(
       <AuthShell preset="default">

@@ -118,9 +118,43 @@
    * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide
    * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed
    * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar
-   * collapsed. 3.5rem still clears the coarse-pointer 44px tap target. It is a token precisely so
-   * a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`. */
-  --app-shell-nav-rail-width: 3.5rem;
+   * collapsed. 3rem (48px) still clears the coarse-pointer 44px tap target, with 2px either side
+   * of a 44px control. It is a token precisely so a service that wants Slack's wider rail sets
+   * this one line — never a forked `.app-nav-rail`. */
+  --app-shell-nav-rail-width: 2.5rem;
+  /* The SIZE OF A RAIL CELL, and the reason the rail can be this narrow. The controls the rail
+   * hosts carry their own band token (`OrgSwitcher`'s collapsed trigger is a square of
+   * `--org-switcher-trigger-height`), so a narrower TRACK alone does not narrow them — it clips
+   * them, because the rail clips. The rail therefore sizes its own cells, exactly as the bar sizes
+   * a `TopbarItem` by stretching it to `--app-shell-bar-height`: chrome decides how big its cells
+   * are, the cell does not decide how big the chrome is.
+   *
+   * 2.25rem (36px) on a mouse — comfortably over the 24x24 of WCAG 2.2 SC 2.5.8 — and the coarse
+   * block below lifts it back to the 44px tap floor of rule #24, together with the track. */
+  --app-shell-nav-rail-item-size: var(--band-height-lg);
+  /* The SAME rail turned 90°: its thickness when `navRailPosition` is a block edge (top/bottom)
+   * and the column becomes a full-measure strip. A separate token rather than one "size", because
+   * a width read as a height is the kind of name that survives review and then confuses every
+   * later override.
+   *
+   * A strip is THINNER than the column, and 2.75rem is where thinner stops: `--band-height-xl` is
+   * 44px, the WCAG 2.2 AA touch floor this library states as rule #24 and enforces on every
+   * consumer, and it is also exactly `--org-switcher-trigger-height`. Below it the shell's own
+   * platform bar would be the one control on the page under the floor — and with the rail's
+   * `overflow: clip`, a control taller than the strip is clipped rather than shrunk.
+   *
+   * ONE THICKNESS, TWO AXES: it resolves to the width, so the rail is the same measure whichever
+   * edge it is docked to and a service retunes both with one line. It briefly carried a `+ 1px`
+   * for the strip's own separator — needed only while the cell was exactly as tall as the track;
+   * with `--app-shell-nav-rail-item-size` smaller than the track the border has room, and two
+   * different numbers for one rail is a worse defect than the pixel it bought. */
+  --app-shell-nav-rail-height: var(--app-shell-nav-rail-width);
+  /* Block inset of the rail's own content — the counterpart of the sidebar's
+   * `--sidebar-nav-scroll-padding`, so the two navigation columns start their content on the same
+   * line under `topbarSpan="full"`. It is deliberately NOT applied to the top edge under
+   * `topbarSpan="content"`: there the rail runs to y=0 and its first row IS the shell's top row,
+   * so it takes the bar's band instead and the three columns share one centre line. */
+  --app-shell-nav-rail-inset: var(--space-3);
   --app-shell-page-max-width: 80rem;
   /* Page ground behind `.app-main` (gh#399). Declared `initial` so the CALL SITE resolves the
    * default — `var(--app-shell-main-background, var(--surface-recessed))` — against the LIVE
@@ -217,6 +251,15 @@
    * whatever sits in `end` (a locale picker, notification bell, account menu) — rather than
    * floating as a fixed ~420px box with dead space on either side at normal desktop widths. A
    * consumer that wants a capped, centered search box (the previous look) sets this explicitly. */
+  /* The trigger's PREFERRED width, consumed as a flex BASIS — deliberately not a minimum.
+   *
+   * `.tb-search` is `width: 100%`, written for the `center` slot (flex: 1 1 0); in `start`
+   * (flex: 0 1 auto) that collapses to content width, so the trigger came out at 186px, narrower
+   * than the placeholder it holds. A hard `min-inline-size` fixed that and broke something worse:
+   * the bar's shrink contract. Measured at 1024 with a long account name, an unshrinkable trigger
+   * pushed the start cluster into the end cluster — the collision that contract exists to prevent.
+   * As a BASIS it holds this width where there is room and yields where there is not. */
+  --topbar-search-width: 16rem;
   --topbar-search-max-width: none;
   /* Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally
    * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs
@@ -506,14 +549,22 @@
    * (22.5rem card, x=15 at 390 ⇒ width=360), so a user moving sign-in → sign-up on a phone never
    * sees the surface jump. */
   --auth-shell-registration-card-max-width: 22.5rem;
-  /* Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card
-   * anchors at y=284 (1440x900) and y=274 (390x844), and the column is
-   *   card y = padding-block-start + identity slot + stack gap
-   * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical
-   * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as
-   * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor. */
-  --auth-shell-registration-main-padding-block-start: 9.5rem;
-  --auth-shell-registration-main-padding-block-start-mobile: 8.875rem;
+  /* Block-start PAGE GUTTER — the floor the column keeps against the viewport edge once the auto
+   * margins in shell-layout.css have placed it. It is deliberately NOT the artboard offset any
+   * more.
+   *
+   * It used to be 9.5rem / 8.875rem, derived from the canonical SCR-002 anchor (card y=284 at
+   * 1440x900 and y=274 at 390x844, each the offset plus the 112px identity slot plus the 20px
+   * stack gap). Held as unconditional padding, that constant manufactured a scrollbar out of
+   * nothing: at 1440x900 the column measured 152px of EMPTY SPACE + 793px of content + 48px, i.e.
+   * 993px in a 900px viewport, so the page scrolled 93px and the scrolled region was blank. A
+   * sign-up form whose first field sits below the fold because of decoration is a worse failure
+   * than a lost artboard anchor, so the anchor yields.
+   *
+   * Both values are still public knobs: a product that wants the literal artboard back sets this
+   * to 9.5rem and accepts the overflow on a short viewport. */
+  --auth-shell-registration-main-padding-block-start: 1rem;
+  --auth-shell-registration-main-padding-block-start-mobile: 0.9375rem;
   --auth-shell-registration-main-padding-inline: 1rem;
   --auth-shell-registration-main-padding-inline-mobile: 0.9375rem;
   /* Footer clearance — the gap the legal footer keeps below the end of a long form. */
@@ -558,6 +609,12 @@
   /* The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard
    * anchor at all, only the literal. GEOMETRY MOVES by 0.11px. */
   --auth-footer-text-font-size: var(--font-size-2xs);
+  /* The legal links sit at --font-size-2xs, so their line box alone is ~19px and every auth page
+   * failed WCAG 2.2 SC 2.5.8 on Terms / Privacy / the locale trigger. The floor is applied to the
+   * link BOX rather than a ::after hit area: the target a user (and an audit) measures is the
+   * element itself, and an invisible overlay that still reports 19px is not a fix. Text metrics
+   * are untouched — only the box grows. */
+  --auth-footer-target-min-size: var(--touch-target-min);
   --auth-stack-gap: var(--space-3);
   --auth-shell-field-label-gap: var(--space-1);
   /* Canonical SCR-001 field label: a LITERAL 12px (the golden-ratio --font-size-xs ≈ 12.47px would
@@ -653,6 +710,10 @@
 @media (pointer: coarse) {
   :root {
     --app-shell-bar-height: var(--band-height-3xl);
+    /* Same rule #24 companion for the second navigation track: a finger gets the 44px floor back,
+     * and the track widens with the cell so the cell is not clipped by the rail it sits in. */
+    --app-shell-nav-rail-width: 3rem;
+    --app-shell-nav-rail-item-size: var(--band-height-xl);
   }
 }
 

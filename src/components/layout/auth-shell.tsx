@@ -22,6 +22,7 @@ export function AuthShell({
   variant = "default",
   preset = "default",
   measure = "default",
+  align,
   density,
   className,
 }: AuthShellProp) {
@@ -38,6 +39,10 @@ export function AuthShell({
       // Same rule as `data-preset`: emitted only for a real measure, so the default shell keeps its
       // exact box and the `[data-measure="wide"]` rules cannot reach it.
       data-measure={measure === "default" ? undefined : measure}
+      // Emitted only when the caller states an alignment, so an unset `align` leaves the preset's
+      // own `--auth-shell-main-align` untouched — the two rules carry equal specificity and would
+      // otherwise decide the default by source order.
+      data-align={align}
       data-density={resolvedDensity}
       className={cn("ui-auth-shell", className)}
     >

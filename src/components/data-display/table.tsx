@@ -28,6 +28,36 @@ export type TableProps = React.HTMLAttributes<HTMLTableElement> & {
    * table exactly as it is.
    */
   preset?: TablePresetProp;
+  /**
+   * PER-INSTANCE column measures for `preset="action-collection"`, in place of re-pointing its
+   * `--table-action-collection-*` knobs from a consumer stylesheet.
+   *
+   * Those knobs are global by design, and that is exactly the problem: two collections on the same
+   * screen do not share a column budget. A console that widened `actions` globally so a Japanese
+   * status badge would stop breaking to one character per line — an SC 1.4.10 reflow failure —
+   * collapsed a sibling table's name column to ~15px in the same change. The only way out was a
+   * scoped class in consumer CSS, and the comment that shipped with it said so: "until the package
+   * can express a per-table measure, the retune stays on the collection needing it".
+   *
+   * Emitted as inline custom properties, the same contract `Flex width` uses for a call-site
+   * measurement: the value is a raw length the design system cannot know, so it rides in `style`
+   * and leaves `data-column-widths` on the DOM so each one stays countable.
+   */
+  columnWidths?: {
+    /** `--table-action-collection-actions-width` — the row-action column above the collapse step. */
+    actions?: string;
+    /** `--table-action-collection-actions-width-compact` — the same column below it. */
+    actionsCompact?: string;
+    /** `--table-action-collection-meta-width-compact` — a `meta`-priority column below the step. */
+    metaCompact?: string;
+    /**
+     * `--table-action-collection-min-inline-size-compact` — the legibility FLOOR the compact tier
+     * keeps before the wrapper scrolls. The preset sizes its compact tier for one column per
+     * priority; a collection carrying several of the same priority needs a wider floor or its
+     * free-text column is squeezed toward zero.
+     */
+    minInlineSizeCompact?: string;
+  };
   /** Defaults to `"sm"` (40rem). Ignored while `preset` is `"default"`. */
   collapseBelow?: BreakpointProp;
 };
@@ -40,6 +70,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
       bordered = false,
       preset = "default",
       collapseBelow = "sm",
+      columnWidths,
       ...props
     },
     ref,
@@ -58,6 +89,17 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
       )}
       data-preset={preset === "default" ? undefined : preset}
       data-collapse-below={preset === "default" ? undefined : collapseBelow}
+      data-column-widths={columnWidths ? "" : undefined}
+      style={
+        columnWidths
+          ? ({
+              "--table-action-collection-actions-width": columnWidths.actions,
+              "--table-action-collection-actions-width-compact": columnWidths.actionsCompact,
+              "--table-action-collection-meta-width-compact": columnWidths.metaCompact,
+              "--table-action-collection-min-inline-size-compact": columnWidths.minInlineSizeCompact,
+            } as React.CSSProperties)
+          : undefined
+      }
       {...(scrollable ? { tabIndex: 0 } : {})}
     >
       <table

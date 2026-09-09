@@ -1729,6 +1729,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"anchored\" | undefined",
+          "values": ["center", "anchored"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "brand",
           "origin": "owned",
           "required": false,
@@ -2379,6 +2387,14 @@
           ]
         },
         {
+          "name": "fill",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "fullWidth",
           "origin": "owned",
           "required": false,
@@ -2517,6 +2533,14 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "fill",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -14674,6 +14698,14 @@
           "required": false,
           "type": "BreakpointProp | undefined",
           "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
+          "name": "columnWidths",
+          "origin": "owned",
+          "required": false,
+          "type": "{ actions?: string; actionsCompact?: string; metaCompact?: string; minInlineSizeCompact?: string; } | undefined",
+          "values": [],
           "declaredIn": ["src/components/data-display/table.tsx"]
         },
         {

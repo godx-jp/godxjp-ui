@@ -579,7 +579,27 @@
    *   font-size   ← `text-sm`      → --text-sm → var(--font-size-sm)
    *   line-height ← `leading-none` → 1 (leading-none beats text-sm's companion line-height) */
   --control-label-font-size: var(--font-size-sm);
-  --control-label-line-height: 1;
+  /* A LABEL WRAPS, so its line box cannot be 1.
+   *
+   * This was a literal `1`, which is right for the one case it was chosen for — a single-line
+   * label beside a checkbox, where a cap-height box aligns cleanly — and wrong for every other.
+   * The moment the text takes two lines they collide: measured on the hosted sign-up consent
+   * label at 520px, font-size 14px with line-height 14px produced a 28px box of two touching
+   * lines. Long copy, a narrow column, and ja/vi wrapping all reach that case routinely.
+   *
+   * This package has already paid for this exact mistake once: `--auth-shell-divider-label-line-
+   * height` carries the note that a hardcoded `line-height: 1` rendered an 11px row and sat the
+   * lower half of the canonical Login card 8px high (gh#263). Same literal, same failure, one
+   * token over.
+   *
+   * `--line-height-normal` (1.5), not `--line-height-tight`: 1.25 clears the collision but two
+   * wrapped lines still read as one block, and a label that has wrapped IS prose at that point.
+   * 1.5 is also what this package already decided for the same job one layer up —
+   * `--auth-shell-field-label-line-height` — so the two agree instead of drifting.
+   *
+   * Alignment is unaffected: `.ui-label` is `display: flex; align-items: center`, so the control
+   * centres against the label box whatever its height. */
+  --control-label-line-height: var(--line-height-normal);
   /* Label → addon/required-marker gap. A RAW rem, deliberately NOT var(--space-2): the `gap-2` it
    * replaces reads Tailwind's own --spacing grid, which this repo does NOT density-scale, so a
    * --space-* default would silently resize every label row under a compact/comfortable density.

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 import { expectNoA11yViolations } from "@/test/a11y";
@@ -293,5 +295,33 @@ describe("Button multi-line collection actions", () => {
         A long organization role with a descriptive name
       </Button>,
     );
+  });
+});
+
+
+describe("Button fill", () => {
+  it("lets a constrained bar shrink the control instead of clipping it", () => {
+    // Button ships flex-shrink: 0. In a topbar cluster that means an account menu keeps its full
+    // width while the cluster clips it, leaving a keyboard user tabbing to a control they cannot
+    // see (SC 2.4.7). `min-w-0` is the load-bearing half — without it the label's intrinsic width
+    // still sets the floor and flex: 1 changes nothing.
+    const { container } = renderWithUi(<Button fill>a very long account name</Button>);
+    const el = container.querySelector("button");
+    expect(el).toHaveAttribute("data-fill");
+    // The measure lives in control.css, not a className: a Tailwind literal in the component
+    // would be a constant a service theme cannot reach (cardinal rules #44/#45), and the geometry
+    // gate rejects it. Flex carries the same axis the same way. Asserted through the stylesheet
+    // and the data attribute — never through a class name, which check:no-tailwind-class-assertions
+    // blocks for the same reason: a class is an implementation detail, the contract is the axis.
+    const css = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
+    expect(css).toMatch(
+      /\.ui-button\[data-fill\]\s*\{[^}]*flex:\s*1 1 auto;[^}]*min-inline-size:\s*0;/s,
+    );
+  });
+
+  it("emits nothing when not asked, so every existing button keeps flex-shrink: 0", () => {
+    const { container } = renderWithUi(<Button>save</Button>);
+    const el = container.querySelector("button");
+    expect(el).not.toHaveAttribute("data-fill");
   });
 });

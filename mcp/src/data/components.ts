@@ -969,7 +969,7 @@ import { StatCard } from "@godxjp/ui/data-display";
       {
         name: "logo",
         type: "ReactNode",
-        description: "Brand mark at the far-left of the auto-built topbar rail (e.g. an Avatar).",
+        description: "The shell's brand lockup. ALWAYS rendered — unlike topbarLeft/topbarRight it survives a custom `topbar`, because identity belongs to the frame, not to the bar's contents. WHERE it lands follows `topbarSpan`, the axis that already says who owns the top-left corner: `content` puts it at the sidebar's head, aligned to that track; `full` puts it in the bar beside the space-level chrome. Do not place it yourself in `Sidebar.brand` or a `Topbar` slot — that pins it to one arrangement while the axis moves the rest of the shell.",
       },
       {
         name: "sidebarCollapsed",
@@ -995,7 +995,20 @@ import { StatCard } from "@godxjp/ui/data-display";
         name: "navRail",
         type: "ReactNode",
         description:
-          "A SECOND navigation column, narrower than `sidebar` and placed before it — the workspace/organization switcher shape (Slack, Teams, Discord): rail → sidebar → content. THE THREE COLUMNS ARE THREE SCOPES, and that is what decides where a control goes. The rail is PLATFORM scope: what is true across every app in the organization — which organization, which app, notifications, messages, events, organization settings, cross-app shortcuts. The sidebar is APP scope: this app's own sections, channels, routes. The topbar is PAGE scope: where you are and what you can do here. App navigation never goes in the rail and a platform switch never goes in the sidebar; a destination that would fit both belongs to the rail, because it survives changing apps. A rail repeating the sidebar's own entries is a second chrome band carrying the first one's rank, just vertical. Passing a node adds the grid track and publishes `data-nav-rail` on the root; omitting it leaves the two-column shell unchanged. Width is `--app-shell-nav-rail-width` (3.5rem, deliberately not the collapsed sidebar's 4rem — at equal widths the two nav tracks fuse into one block when the sidebar collapses). Fully orthogonal to `topbarSpan` — the rail says how many navigation COLUMNS exist, `topbarSpan` says how far the BAR reaches, and all four combinations are supported. `sidebarCollapsed` folds the sidebar track only; the rail keeps its width (the Slack behaviour). Rendered as its own `complementary` landmark, and its content is added to the mobile drawer automatically.",
+          "A SECOND navigation column, narrower than `sidebar` and placed before it — the workspace/organization switcher shape (Slack, Teams, Discord): rail → sidebar → content. THE THREE COLUMNS ARE THREE SCOPES, and that is what decides where a control goes. The rail is PLATFORM scope: what is true across every app in the organization — which organization, which app, notifications, messages, events, organization settings, cross-app shortcuts. The sidebar is APP scope: this app's own sections, channels, routes. The topbar is PAGE scope: where you are and what you can do here. App navigation never goes in the rail and a platform switch never goes in the sidebar; a destination that would fit both belongs to the rail, because it survives changing apps. A rail repeating the sidebar's own entries is a second chrome band carrying the first one's rank, just vertical. Passing a node adds the grid track and publishes `data-nav-rail` on the root; omitting it leaves the two-column shell unchanged. ONE THICKNESS, BOTH AXES: `--app-shell-nav-rail-width` (2.5rem) and `--app-shell-nav-rail-height`, which resolves to it, so the rail is the same measure on every edge and a service retunes both with one line. Deliberately not the collapsed sidebar's 4rem — at equal widths the two nav tracks fuse into one block when the sidebar collapses. THE RAIL SIZES ITS OWN CELLS through `--app-shell-nav-rail-item-size` (2.25rem): a control carries its own band token, so narrowing the TRACK alone does not narrow it, it CLIPS it (the rail clips) — the same relationship the bar has with TopbarItem, which stretches to the bar rather than the other way round. `@media (pointer: coarse)` lifts the cell to the 44px tap floor of rule #24 and the track with it. Fully orthogonal to `topbarSpan` — the rail says how many navigation COLUMNS exist, `topbarSpan` says how far the BAR reaches, and all four combinations are supported. `sidebarCollapsed` folds the sidebar track only; the rail keeps its width (the Slack behaviour). Rendered as its own `complementary` landmark, and its content is added to the mobile drawer automatically.",
+      },
+      {
+        name: "navRailPosition",
+        type: '"start" | "end" | "top" | "bottom"',
+        defaultValue: '"start"',
+        description:
+          "WHICH EDGE the rail sits on. `start` (default) and `end` are the INLINE edges — logical, so an RTL document mirrors them with no `[dir]` rule, because grid columns lay out in the inline direction. `top` and `bottom` are the BLOCK edges: the rail becomes a full-measure horizontal strip and the shell grows a ROW instead of a column, which is the phone tab-bar shape at the bottom and a platform band above the app's own bar at the top. THE SCOPE CONTRACT DOES NOT MOVE WITH IT — wherever it sits, the rail is platform scope and the sidebar is app scope; the edge is a presentation choice, not a re-ranking. Thickness follows the orientation (`--app-shell-nav-rail-width` as a column, `--app-shell-nav-rail-height` as a strip), and `sidebarCollapsed` folds the sidebar track only at every position.",
+      },
+      {
+        name: "navRailEnd",
+        type: "ReactNode",
+        description:
+          "Rail content pinned to its FAR end — the counterpart of Sidebar's `footer`, and the tray end of a taskbar: appearance, settings, the account glyph. It follows the orientation, so it is the bottom of a column and the inline-end of a strip, and it stays put while `navRail` scrolls. A SLOT rather than \"whatever you put last\", because pinning needs an auto margin on whichever axis the rail currently runs — geometry that would otherwise land in consumer CSS, which this library does not accept. It reaches the mobile drawer with the rest of the rail; a control that exists on only some viewports is a trap, not a control. Ignored without `navRail`: there is no rail to pin it to.",
       },
       {
         name: "navRailLabel",
@@ -1042,7 +1055,8 @@ import { StatCard } from "@godxjp/ui/data-display";
       "DO rely on AppShell's OWNED mobile drawer at or below 900px (NOT the Tailwind `lg` 1024px step — the shipped media query is `width <= 56.25rem`): it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
       'DO set `responsiveNavigation="docked"` only when the approved product contract retains its sidebar below 900px. AppShell keeps the same sidebar/footer/active navigation in a token-sized grid track and removes the redundant drawer trigger; never reproduce this with consumer media queries.',
       "DO let the drawer nav own its own inset: AppShell renders `mobileNav` in a Sheet body whose inline padding is the `--app-shell-mobile-nav-inset` token (near-zero by default) instead of the generic 24px sheet chrome inset, so a <Sidebar> in the drawer is not double-padded (its own --sidebar-nav-scroll-padding already insets each row). If a custom `mobileNav` node needs the full chrome inset, set `--app-shell-mobile-nav-inset: var(--space-6)` in the service theme — never patch the drawer with a `[data-slot='sheet-body']` selector in app CSS.",
-      "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop only when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — when `topbar` is provided, logo/topbarLeft/topbarRight are ignored entirely.",
+      "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — `topbarLeft`/`topbarRight` are then ignored (they are slots of the DEFAULT bar layout, and a custom `topbar` IS replacing that layout; a dev-mode warning names them). `logo` is NOT one of them: it is always rendered, because brand identity belongs to the frame rather than to the bar's contents. Two repos passed both for months and got no logo at all — no error, no warning, and a bar that still looked right because it had other content.",
+      "DO pass `logo` and let the shell place it — do NOT put the lockup in `Sidebar`'s `brand` slot or hand-position it in a `Topbar` slot. THE TOP-LEFT CORNER BELONGS TO WHOEVER `topbarSpan` SAYS: under `content` the rail runs the full window height and the brand sits at the sidebar's head, aligned to that track; under `full` the bar runs edge to edge and the brand goes in the bar with the rest of the space-level chrome. Placing it yourself pins it to one of those answers, and the axis then moves the rest of the shell out from under it (measured on a shipped consumer: the logo floating in the content column at x=280, indented 24px past the rail it should have sat above).",
       "DO build a chat / mail / IDE shell by omitting ALL FOUR bar slots (`topbar`, `topbarLeft`, `topbarRight`, `logo`) — a shell whose PAGE owns the top row. AppShell then renders no `<header class='app-topbar'>` and marks its root `data-topbar='none'`, so the bar's grid row collapses to zero and the page header IS the first row of chrome. Keeping an empty bar instead costs a fixed `--app-shell-bar-height` band plus its border and card background, stacking a second row of chrome (~48px + the page header) over exactly the region a transcript or an editor needs most. The mobile drawer survives: at or below 900px the header returns carrying the hamburger alone.",
       "DO NOT fake the bar-less shell with `topbar={<></>}` (or `topbarLeft={<div />}`, `logo={null}`) — any defined slot counts as bar content, so the `<header>` is still rendered, still paints its border and background, and still eats the grid row. The trigger is the slot being UNDEFINED; pass nothing at all (a conditional slot must resolve to `undefined`, not to an empty node).",
       "DO wire a single `sidebarCollapsed` boolean between AppShell's `sidebarCollapsed` prop and Sidebar's `collapsed` prop — AppShell sets `data-collapsed='true'` on the root div (which CSS reads for width transitions) but does NOT own the collapsed state itself; lift the state and pass it down to both.",
@@ -1065,7 +1079,7 @@ import { StatCard } from "@godxjp/ui/data-display";
     related: [
       "AppShell — opinionated wrapper that composes AppShell + a frozen default Topbar in three props (menu, children, breadcrumb). Use AppShell for quick scaffolding when the default GodX product chip and no-op search/notification handlers are acceptable; switch to AppShell directly the moment you need a custom entity switcher, real onSearchOpen, user slot, or any topbar configuration.",
       "Sidebar — the canonical node to pass as AppShell's `sidebar` prop; owns activeId, collapsible submenu groups, collapsed icon-only mode, and section labels. Never hand-roll a nav list inside the sidebar slot.",
-      "Topbar — the structured topbar component to pass to AppShell's `topbar` prop when you need live product/project chip switchers, search, notifications, sidebar toggle, user avatar, or rightSlot extras. When `topbar` is provided, AppShell's logo/topbarLeft/topbarRight props are ignored.",
+      "Topbar — the structured topbar component to pass to AppShell's `topbar` prop when you need live product/project chip switchers, search, notifications, sidebar toggle, user avatar, or rightSlot extras. A custom `topbar` replaces the DEFAULT bar layout, so `topbarLeft`/`topbarRight` are ignored — but `logo` is not: the shell always renders it, and `topbarSpan` decides whether it lands in the bar or at the sidebar's head.",
       "PageContainer — the mandatory direct child inside AppShell's `children` for every page; provides title, subtitle, extra actions, breadcrumb, footer, variant (flush/narrow/ghost), and density. Never render raw content directly as AppShell's child without a PageContainer wrapper.",
     ],
     example: `import { AppShell, Sidebar } from "@godxjp/ui/layout";
@@ -1140,6 +1154,12 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
           'Inline MEASURE of the shell content slot. "default" is the single auth card (24rem, or 22.5rem under variant="canonical"). "wide" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry.',
       },
       {
+        name: "align",
+        type: '"anchored" | "center"',
+        description:
+          'Block-axis placement of the auth column — ORTHOGONAL to `preset` the way `variant` is: the preset owns the page MEASURE (card width, inline gutters, section rhythm), `align` owns where that column sits vertically. Omit it to keep the preset\'s own choice: "login" and "registration" anchor so a requester/identity line that wraps to two lines cannot move the card (gh#237), every other preset centres. Pass "center" for a vertically centred column — the block-start inset collapses to the preset\'s block-end one on desktop AND mobile, so the padding is symmetric and justify-content has nothing to fight — or "anchored" for a top-anchored one. This is what replaces re-declaring a preset\'s offset tokens from consumer CSS, the page-local-vertical-offset anti-pattern presets exist to remove. HAZARD on a tall flow: a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach — which is why "registration" anchors by default; "center" is legal there but is the caller\'s judgement.',
+      },
+      {
         name: "density",
         type: '"comfortable" | "compact"',
         description:
@@ -1161,6 +1181,7 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
       'DO combine `variant` and `preset` — they are orthogonal: `variant` owns control density + heading size, `preset` owns the page measure. `variant="canonical" preset="device-authorization"` is the canonical device screen.',
       'DO let `preset="context-selection"` space the auth column: it turns the card slot into a flex column with a tokenized `--auth-shell-card-stack-gap`, so an intro (<AuthIdentity>), the choice <Card> and a trailing "remember" row pass as three siblings with NO page-local spacing.',
       "DO NOT add a page-local width, inset or colour to hit an artboard — if a measure is missing, it is a library gap: a new preset or token, never consumer CSS (rules #44/#45).",
+      'DO state the block placement with `align` when a product wants the opposite of its preset\'s default — align="center" on preset="login" for a vertically centred SCR-001, align="anchored" to top-anchor a preset that centres. It collapses the preset\'s block-start inset to its block-end one on desktop AND mobile, so justify-content has nothing to fight. Re-declaring --auth-shell-login-flow-offset-block (or any preset offset token) from a consumer stylesheet is the anti-pattern it replaces.',
       "DO put the product/brand mark in `brand` (a <Logo> or an <Avatar>) — it renders as the top banner landmark; omit it and the banner is not rendered.",
       'DO put page-level controls in `actions` — the locale picker, the theme <ToggleGroup>, a "need help?" link. They land at the banner\'s inline end at a tokenized gap (`--auth-shell-bar-gap`), and the banner appears even with no `brand`. Do NOT hand-roll a top-right row with `ms-auto` on the `brand` content, and do NOT reach for CenteredShell just to get a topbar with actions: CenteredShell is the AUTHENTICATED shell.',
       'DO use `measure="wide"` for the SPLIT login — a brand/marketing panel beside the auth card. The content slot opens to 64rem (`--auth-shell-wide-card-max-width`) and centres with auto margins, so the tall two-column layout starts at the top instead of overflowing above the scroll origin; lay the two halves out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> and hide the panel below `lg`. It is IGNORED under a `preset` (a preset owns its flow geometry), so pick one or the other.',
@@ -1496,9 +1517,9 @@ export function HandyInbound() {
       },
       {
         name: "brand",
-        type: "ReactNode",
+        type: "ReactNode | ((collapsed: boolean) => ReactNode)",
         description:
-          "Custom brand slot rendered above the nav scroll area. When provided, the product chip is not rendered.",
+          "Custom brand slot rendered above the nav scroll area. When provided, the product chip is not rendered. PASS A FUNCTION and it is called with the EFFECTIVE collapsed value, which is what a plain node cannot see: AppShell reuses this same Sidebar for the mobile drawer and the drawer un-collapses the rows, so a lockup built from the consumer's own `collapsed` boolean renders glyph-only inside a full-width drawer. The workaround consumers reach for — a second hand-built Sidebar passed as AppShell's `mobileNav` — is exactly the override that switches off `railInDrawer`, silently dropping the `navRail` from mobile. This slot is APP scope (the product lockup); a PLATFORM switch does not go here.",
       },
       {
         name: "footer",
@@ -1541,6 +1562,8 @@ export function HandyInbound() {
       "DON'T: Change icon SIZE or row geometry through these colour knobs — icon size stays `--sidebar-nav-icon-size` (16px) and row geometry stays `--sidebar-nav-item-height` / `--sidebar-nav-item-gap` / `--sidebar-nav-item-padding-x`. The active row's fill/label keep `--sidebar-item-active-background` / `--sidebar-item-active-foreground`.",
       "DON'T: Manage collapse state inside the Sidebar — it is stateless. Hoist the boolean to your shell/page state and pass it down via both AppShell.sidebarCollapsed and Sidebar.collapsed.",
       "DON'T: Nest children more than one level deep — only top-level items can have children; grandchild items are not rendered.",
+      "DON'T: Put a PLATFORM switch in the sidebar — not an `OrgSwitcher`, not an app switcher, neither as a row nor stacked into `brand` under the product lockup. The sidebar is APP scope (this app's own sections); which organization or which app you are in survives changing app and belongs to `AppShell`'s `navRail` or to the topbar. Stacking a second lockup under the first also gives the sidebar header a different height from the topbar, which is the visible symptom people report as \"the two sides do not line up\".",
+      "DON'T: Build a second Sidebar by hand for `AppShell.mobileNav` just to un-collapse it — the drawer already un-collapses the rows on its own (`NavSurface`), and `brand` takes a function so the lockup follows too. An explicit `mobileNav` also turns off the drawer's rail strip, so a `navRail` you passed stops appearing on mobile.",
     ],
     useCases: [
       "Admin application shell nav with grouped sections (e.g. Operations / Fulfillment / Administration) where the sidebar can be collapsed to an icon rail for more content space.",
@@ -1561,7 +1584,7 @@ import { LayoutDashboard, FileText, Users, Shield, CreditCard, BookOpen } from "
 import { Link } from "react-router-dom";
 import { AppShell, createSidebarLink } from "@godxjp/ui/layout";
 import { Sidebar, type SidebarSection } from "@godxjp/ui/layout";
-import { Topbar } from "@godxjp/ui/layout";
+import { Topbar, TopbarItem } from "@godxjp/ui/layout";
 
 // The WHOLE router integration: pass the element type, the library composes every row
 // (icon · label · badge · active · collapsed rail). Inertia: inertiaSidebarLink(Link) from
@@ -1621,13 +1644,16 @@ export default function Shell() {
         <Topbar
           start={
             <>
-              <Button variant="ghost" size="icon-sm" aria-label="メニュー" onClick={() => setCollapsed((c) => !c)}>
+              {/* A bar cell is a TopbarItem, never a Button: a Button in a bar is a
+                  --control-height pill floating in a taller strip, with its own hover
+                  fill and its own focus ring. */}
+              <TopbarItem aria-label="メニュー" onClick={() => setCollapsed((c) => !c)}>
                 <PanelLeft />
-              </Button>
+              </TopbarItem>
               <Logo mark="godx" label="CoreBooks" />
             </>
           }
-          end={<Button variant="ghost" size="icon-sm" aria-label="検索" onClick={() => {}}><Search /></Button>}
+          end={<TopbarItem aria-label="検索" onClick={() => {}}><Search /></TopbarItem>}
         />
       }
     >
@@ -1688,13 +1714,13 @@ export default function Shell() {
     ],
     usage: [
       "DO compose the bar yourself: a brand mark (an `Avatar`) + sidebar toggle in `start`, a search trigger in `center`, settings pickers + notifications + user menu in `end`. The shell only positions; it never decides WHICH controls exist.",
-      'DO build the sidebar toggle as a `Button variant="ghost" size="icon-sm"` with a `PanelLeftClose`/`PanelLeftOpen` icon and your own `t()` aria-label, wired to AppShell\'s `sidebarCollapsed`. There is no baked toggle.',
+      "DO build the sidebar toggle as a `TopbarItem` with a `PanelLeftClose`/`PanelLeftOpen` icon and your own `t()` aria-label, wired to AppShell's `sidebarCollapsed`. There is no baked toggle — but there IS a bar CELL, and it is not a Button: a Button in a slot is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill instead of the cell. The same holds for the notifications bell and the account trigger.",
       "DO put a locale/theme switcher in `end` using `AppSettingPicker` (or your own control) — icon-only vs labelled, bordered vs not, is THAT component's prop, not Topbar's. Topbar does not ship or force a language picker.",
       "DON'T look for `product`/`project`/`onSearchOpen`/`onNotificationsOpen`/`collapsed` props — they were removed. A chrome control only exists if YOU put it in a slot, so there is never a dead dropdown / empty search with nothing behind it.",
       "DO render Topbar inside `AppShell`'s `topbar` slot (or any `<header>`). For a non-three-cluster layout, pass `children` and lay it out yourself.",
       "DO decide, explicitly, what happens to the `center` slot at 1100px and below. It is REMOVED there by default (`--topbar-center-compact-display: none`) so it cannot cover the start or end clusters when a 16rem sidebar is docked — which also means a global search trigger in `center` is gone on tablets AND phones. This default arrived in 18.6.0 and changed behaviour for consumers who touched nothing but their lockfile. If your center content already has a compact presentation (an icon-only search trigger), opt back in globally with `:root { --topbar-center-compact-display: flex; }`; if it does not, move the trigger into `end` for compact widths. Never re-create either behaviour with a page-local media query.",
       "DO rely on the built-in shrink contract instead of hand-tuning widths: the bar never exceeds its shell allocation, `start` shrinks first and `center` yields its whole box, each cluster CLIPS its own overflow (so a long tenant/brand string can never spill over a sibling or leak a horizontal document scroll), and `end` keeps its natural width anchored inline-end — the locale picker and user menu stay visible at 1024px with a 16rem sidebar. If a label must degrade gracefully rather than be cut, give THAT element `truncate`/`text-overflow` yourself; don't add `overflow`/`flex` overrides to the slots.",
-      'KNOW the shrink contract reaches only the LAST child of `start` — and `Button` ships `shrink-0`, so any Button you put mid-slot (the classic entity switcher, with a brand mark before it and a screen title after) keeps its full width while the cluster clips it. Clipped, but still focusable: a keyboard user tabs to a control they cannot see (SC 2.4.7). Give such a control `min-w-11 flex-1` at compact widths so it takes the leftover room without dropping under the 44px touch floor, and wrap its label in `<span className="truncate">`. Budget the `end` cluster too — it is `flex: 0 0 auto`, so an ambient status chip there is subtracted from `start` before `start` gets a say (a 93px environment Badge left `start` 25px of a 198px bar at 320). Hide ambient chips below `sm`.',
+      'KNOW the shrink contract reaches only the LAST child of `start` — and `Button` ships `shrink-0`, so any Button you put mid-slot (the classic entity switcher, with a brand mark before it and a screen title after) keeps its full width while the cluster clips it. Clipped, but still focusable: a keyboard user tabs to a control they cannot see (SC 2.4.7). Give such a control `fill` so it takes the leftover room and lets its label ellipse, and wrap that label in `<Text truncate>` — NOT `className="min-w-0 flex-1"` plus a `truncate` span, which is the utility pair ui-audit blocks and which this guidance used to recommend. Budget the `end` cluster too — it is `flex: 0 0 auto`, so an ambient status chip there is subtracted from `start` before `start` gets a say (a 93px environment Badge left `start` 25px of a 198px bar at 320). Hide ambient chips below `sm`.',
     ],
     useCases: [
       "Admin shell: `start` = sidebar toggle + brand mark (`Avatar`) + an entity switcher (`DropdownMenu` around a `Button`); `center` = a `Button` search trigger; `end` = `AppSettingPicker` (locale) + a notifications `Button` + a user `DropdownMenu`.",
@@ -1707,7 +1733,7 @@ export default function Shell() {
       "AppSettingPicker — locale/theme/timezone/currency picker; the consumer drops it into `end`. Its appearance (icon-only, labelled, bordered) is configured on IT, not on Topbar.",
       "DropdownMenu — wrap a `Button` to build an entity switcher or user menu yourself, then place it in a slot.",
     ],
-    example: `import { Topbar, AppShell } from "@godxjp/ui/layout";
+    example: `import { Topbar, TopbarItem, AppShell } from "@godxjp/ui/layout";
 import { Button } from "@godxjp/ui/general";
 import { Avatar, AvatarFallback } from "@godxjp/ui/data-display";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
@@ -1720,19 +1746,19 @@ import { PanelLeftClose, Search } from "lucide-react";
     <Topbar
       start={
         <>
-          <Button variant="ghost" size="icon-sm" aria-label={t("toggleSidebar")} onClick={toggle}>
+          <TopbarItem aria-label={t("toggleSidebar")} onClick={toggle}>
             <PanelLeftClose />
-          </Button>
+          </TopbarItem>
           <Avatar className="rounded-md">
             <AvatarFallback className="bg-primary text-primary-foreground font-bold">C</AvatarFallback>
           </Avatar>
         </>
       }
       center={
-        <Button variant="outline" size="sm" onClick={openSearch}>
+        <TopbarItem onClick={openSearch}>
           <Search />
           {t("search")}
-        </Button>
+        </TopbarItem>
       }
       end={
         <>
@@ -2477,6 +2503,13 @@ export function TermsPage() {
         description: "Span the full container width (`width:100%`) instead of sizing to content.",
       },
       {
+        name: "fill",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Take the space the siblings leave, and let a long label ELLIPSE instead of widening the row — the same axis Flex calls `fill`, for the same reason. Button ships flex-shrink: 0, which is right almost everywhere and wrong in a constrained bar: an account menu holding an avatar plus a person's name keeps its full width while the cluster clips it, so a keyboard user tabs to a control they cannot see (SC 2.4.7). Sets flex: 1 1 auto and min-inline-size: 0; pair it with a <Text truncate> label. This is what replaces className=\"min-w-0 flex-1\", which ui-audit blocks — and which this package's own Topbar guidance used to recommend.",
+      },
+      {
         name: "wrap",
         type: "boolean",
         defaultValue: "false",
@@ -2554,6 +2587,7 @@ export function TermsPage() {
       "Refetch / retry trigger when NOT using TanStack Query — for manual cache refresh inside a TanStack Query context use `ButtonRefetch` instead, which owns its own `disabled`/`onClick` lifecycle.",
     ],
     related: [
+      "TopbarItem — the same trigger INSIDE a Topbar slot. A Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring around the pill instead of the cell; TopbarItem is the bar cell itself. Anywhere that is not a bar, Button is right.",
       "DropdownMenu — when a button needs to reveal a list of actions (e.g. 'Actions ▾' in a DataTable row), wrap the Button as a `DropdownMenuTrigger` inside a `DropdownMenu` compound; don't open a Sheet/Dialog just to show a list of options.",
       "ButtonRefetch — a pre-wired Button variant from `@godxjp/ui/query` that binds directly to a TanStack Query result (shows spinner, auto-disables while fetching, retries on click). Use it instead of a raw Button whenever the action is a query refetch — do not pass `onClick`/`disabled` to it manually.",
       "AlertMutationFeedback — for surfacing mutation errors and a retry action; it renders its own retry Button internally. Do not add a separate Button alongside AlertMutationFeedback for the same mutation.",
@@ -4646,6 +4680,12 @@ import remarkGfm from "remark-gfm";
       "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables.",
     props: [
       {
+        name: "columnWidths",
+        type: "{ actions?: string; actionsCompact?: string; metaCompact?: string; minInlineSizeCompact?: string }",
+        description:
+          "PER-INSTANCE column measures for preset=\"action-collection\", in place of re-pointing its --table-action-collection-* knobs from a consumer stylesheet. Those knobs are global by design, and that is the problem: two collections on one screen do not share a column budget — a console that widened `actions` globally so a Japanese status badge would stop breaking to one character per line (an SC 1.4.10 reflow failure) collapsed a sibling table's name column to ~15px in the same change. Emitted as inline custom properties, the same contract Flex `width` uses for a call-site measurement, leaving data-column-widths on the DOM so each escape stays countable.",
+      },
+      {
         name: "align",
         type: '"start" | "center" | "end"',
         description: "On TableHead/TableCell: logical text alignment.",
@@ -5256,6 +5296,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "Numeric/currency input in accounting forms (`type='number'`, `inputMode='decimal'`) for quantities, exchange rates, or tax amounts where a free-form numeric entry is required rather than a slider or stepper.",
     ],
     related: [
+      "PasswordInput — the password field. It owns the reveal toggle, the caps-lock hint and the autocomplete contract; a raw Input with type=password re-implements all three.",
       "SearchInput — use instead of Input when the value drives a live filter or search query; SearchInput debounces internally, fires `onSearch` (not `onChange`), and provides a built-in clear button. Never put debounce logic on top of a plain Input.",
       "Textarea — use instead of Input for multi-line text (notes, descriptions, memo fields). Input is strictly single-line.",
       "FormField — always compose Input inside FormField when the field needs a visible label, helper hint, or validation error message; FormField handles all a11y wiring so Input stays a pure unstyled-but-styled primitive.",
@@ -5837,6 +5878,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "Async account picker whose API can fail — pass loadOptions plus errorMessage so a rejected fetch shows a clear error affordance in the panel (not a blank surface or a false 'no results'); the loading and empty states are handled automatically.",
     ],
     related: [
+      "Segmented — the same choice when the option set is small and worth showing at once. Select hides its options behind a trigger; Segmented lays them out, which reads better for 2-4 mutually exclusive options.",
       "SearchSelect — the combobox engine Select delegates to when showSearch=true or loadOptions is set. Prefer Select with showSearch instead of reaching for SearchSelect directly (SearchSelect is now deprecated as a public API).",
       "TreeSelect — use when options are hierarchical (parent/child tree). Not a drop-in for Select; has expand/collapse and a separate treeData prop.",
       "Select with showSearch — use Select (with the `showSearch` prop) for typeahead/autocomplete lookup patterns instead of the removed Autocomplete component.",
@@ -7913,6 +7955,13 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
           "Base type-size axis → <html data-font-size>. A preset sets --font-size-base and the whole golden scale rescales. Orthogonal to --scaling.",
       },
       {
+        name: "persist",
+        type: "boolean | readonly AppPreferenceAxis[]",
+        defaultValue: "true",
+        description:
+          'Which viewer preferences survive a reload: `true` every axis, `false` none, or a LIST — `persist={["theme", "density", "fontSize"]}`. The list exists because THE AXES DO NOT SHARE AN OWNER. theme/brand/density/fontSize/scaling are the VIEWER\'s and belong in this browser; locale/timezone/timeFormat/dateFormat are frequently the SERVER\'s, resolved per request from a cookie, an account row or a header — and a stored copy then WINS over the value the server just sent, because storage is read after the props. Given one all-or-nothing flag, that consumer sets `persist={false}` and loses the viewer\'s theme along with it (measured: a hosted Inertia app whose theme toggle reset on every full page load). Naming the axes keeps both owners.',
+      },
+      {
         name: "emitFieldNames",
         type: "boolean",
         defaultValue: "false",
@@ -7924,7 +7973,8 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
       'DO drive the four theme axes (theme / brand / density / fontSize) from AppProvider props ONLY — they are written to <html data-*> and read by every component via tokens. Never hand-set --font-size-base or .ui-density-* in app CSS; that bypasses persistence + the runtime switchers. For runtime switching mount `<AppSettingPicker kind="density" | "fontSize" | "theme" | "brand" >` or call setDensity/setFontSize/setTheme/setBrand from useAppContext().',
       "DO mount AppProvider ONCE at the application root (e.g. in app.tsx or the Inertia layout), wrapping ALL children — every godx-ui picker (LocalePicker, TimezonePicker, DateFormatPicker, TimeFormatPicker), every formatDate call, and the Toaster all rely on the single context it provides. Nesting two AppProviders creates split contexts; inner pickers silently read the wrong one.",
       "DO NOT omit AppProvider and then try to use LocalePicker, TimezonePicker, or formatDate standalone — useAppContext() throws 'useAppContext must be used within <AppProvider>' at runtime. The only exception is using those pickers in fully controlled mode (value + onChange) which reads useOptionalAppContext() and returns null safely.",
-      "DO use the `persist={false}` prop on AppProvider when writing isolated tests or standalone settings forms where localStorage should not be read or written. With the default `persist={true}` the provider reads from localStorage key `godxjp.app` on mount (after first render), so initial state may differ between SSR and client.",
+      "DO use `persist={false}` on AppProvider for isolated tests and standalone settings forms where localStorage must not be read or written. With the default `persist={true}` the provider reads localStorage key `godxjp.app` on mount (after first render), so initial state may differ between SSR and client.",
+      'DO NOT reach for `persist={false}` because the SERVER owns the locale — pass the axes the BROWSER owns instead: `persist={["theme", "brand", "density", "fontSize", "scaling"]}`. Storage is read after the props, so a stored `locale` overrides the one the server just resolved; turning persistence off wholesale fixes that and silently takes the viewer\'s theme with it, which is how a hosted app shipped a theme toggle that reset on every reload.',
       "DO set `defaultTimezone='system'` together with `systemTimezone={serverTimezone}` when your backend knows the legal entity's canonical timezone (e.g. 'Asia/Ho_Chi_Minh'). Use `defaultTimezone='browser'` (the default) only when you want the user's browser clock. Do NOT pass a raw IANA string to `defaultTimezone` if the user may be in a different zone — use the named aliases.",
       "DO wire `onLocaleChange`, `onTimezoneChange`, `onTimeFormatChange`, `onDateFormatChange` to persist changes server-side (e.g. patch user profile via Inertia router) in addition to the automatic localStorage write. These callbacks fire after state is set, so the new value is already reflected in context.",
       "DO set `emitFieldNames` on AppProvider when the app is driven by screen automation (RPA) or posts native forms \u2014 every control under a FormField then carries a real `name` taken from the field key, and legacy automation that addressed controls by `name` keeps working after a rewrite. Leave it off (the default) otherwise: it changes what a native submit sends. The `data-field` attribute is emitted either way, so e2e selectors do not depend on this flag.",
@@ -9937,6 +9987,12 @@ function FormSlider() {
       "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker or DateRangePicker instead when you need a form-submittable input.",
     props: [
       {
+        name: "locale",
+        type: "DayPickerLocale",
+        description:
+          "OVERRIDE only — omit it and the calendar follows AppProvider, like every other component here. It did not always: `locale` used to arrive solely through the react-day-picker spread, so with nothing passed the library's own en-US default won and a Japanese page rendered Su Mo Tu We Th Fr Sa inside an otherwise Japanese card, with no error and no warning. Pass it to PIN one market (a booking screen that must stay Japanese wherever it is opened); the locale also decides which weekday the grid starts on, not only the labels.",
+      },
+      {
         name: "cellRender",
         type: "(date: Date, info: { originNode: ReactNode }) => ReactNode",
         description:
@@ -11732,7 +11788,7 @@ import { Separator } from "@godxjp/ui/layout";
       "DO give the group an accessible name (`aria-label`) — it renders a radiogroup (single) or a group of toggle buttons (multiple).",
     ],
     useCases: ["Text alignment selector", "Formatting toolbar", "View density switcher"],
-    related: ["Toggle", "RadioGroup"],
+    related: ["Segmented — the single-select sibling with a shared connected track. ToggleGroup is the generic multi/single toggle set; Segmented is the one-of-N control.", "Toggle", "RadioGroup"],
     example: `import { ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
 
 // size/variant are set ONCE on the group and reach every item.
@@ -12670,7 +12726,7 @@ export default function PasswordBlock() {
     ],
     useCases: [
       'App-shell top-nav language switcher: <AppSettingPicker kind="locale" /> under AppProvider, persisting to localStorage with no extra state.',
-      'Icon-only topbar locale switcher (globe): <AppSettingPicker kind="locale" appearance="icon" /> in a Topbar `end` slot — square, value-less, keyboard + aria-label preserved.',
+      "Topbar locale switcher (globe): <AppSettingPicker kind=\"locale\" appearance=\"bar\" /> in a Topbar `end` slot — a CELL of the bar: full bar height, squared to --topbar-item-radius, so its hover surface matches the TopbarItem beside it. appearance=\"icon\" is the same structural drops shaped as a CONTROL, for a toolbar or card header; in a taller bar it leaves a --control-height pill floating mid-strip and reads as a foreign control family. This line said \"icon\" while the prop doc said \"bar\", and a consumer duly shipped the pill.",
       'Auth-footer locale switch: <AppSettingPicker kind="locale" appearance="labeled" compact /> inside an <AuthFooter locale={…}> slot — the readable language name at the small control tier, hugging its value.',
       "User settings page with all four preferences — render kind=locale, kind=timezone, kind=dateFormat, kind=timeFormat together under one AppProvider.",
       "Onboarding step that picks language/timezone before the rest of the app is configured — AppProvider persist={false} + controlled values to keep state local.",
@@ -12705,12 +12761,13 @@ export function LocaleField() {
   return <AppSettingPicker kind="locale" value={locale} onValueChange={setLocale} />;
 }
 
-// Icon-only topbar locale switcher (globe) — supported compact trigger, no CSS overrides
+// Topbar locale switcher (globe) — a cell OF the bar, no CSS overrides
 import { Topbar } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 export function TopbarLocale() {
-  return <Topbar end={<AppSettingPicker kind="locale" appearance="icon" />} />;
+  // "bar" inside a Topbar slot; "icon" everywhere else.
+  return <Topbar end={<AppSettingPicker kind="locale" appearance="bar" />} />;
 }\`}`,
     storyPath: "navigation/AppSettingPicker.stories.tsx",
     rules: [3, 5, 6, 23],
@@ -13867,6 +13924,7 @@ export function NotifyRow() {
       "Keep persistence and navigation in `onValueChange`; use loading/error props for the real query state.",
       "DO put a plan/status affordance in `organization.badge` (a <Badge>) instead of stuffing it into `meta` — the badge is end-aligned in the expanded trigger and in the menu row, and hidden in the collapsed rail. ALWAYS pair it with a localized `organization.badgeLabel`: the trigger's accessible name comes from `labels.trigger`, so the badge is announced as an aria-describedby DESCRIPTION and the raw node is marked presentational (WCAG 1.1.1). `badgeLabel` also becomes a search keyword.",
       'DON\'T wrap OrgSwitcher in your own media query to pick popover vs sheet — `responsive="auto"` already reads the shared --sheet-responsive-breakpoint-width token.',
+      "DON'T put it in the SIDEBAR — not as a row, not in `Sidebar`'s `brand` slot, not stacked under the product lockup. Which organization you are in is PLATFORM scope: it survives changing app, while everything else in the sidebar is this app's own sections. Its two legal homes are `AppShell`'s `navRail` (a permanent 3.5rem column — the Slack shape, when switching is frequent enough to deserve the width) and the topbar (a `TopbarItem`-height control, with `topbarSpan=\"full\"` so the bar outranks the section beneath it). Stacking it under the sidebar's own logo also puts two lockups of different heights in one header, which is what visibly skews the sidebar's top edge against the topbar's.",
     ],
     example: `import { OrgSwitcher } from "@godxjp/ui/layout";
 import { Badge } from "@godxjp/ui/data-display";
@@ -13886,6 +13944,11 @@ import { Badge } from "@godxjp/ui/data-display";
   labels={labels}
 />`,
     storyPath: "layout/OrgSwitcher.stories.tsx",
+    related: [
+      "AppShell (navRail) — WHERE this control goes when switching organization is constant: the rail is the docked platform-scope column, and its own prop doc is the authority on which of the three columns owns which scope. Pass the collapsed trigger; the rail is 3.5rem.",
+      "AppLauncher — the OTHER platform-scope control: which APP, not which ORGANIZATION. They compose (a launcher in the bar and a switcher in the rail is one coherent platform surface); neither replaces the other.",
+      "Sidebar — APP scope, and therefore NOT where this goes. Its `brand` slot is the app's own lockup; putting the organization switcher there mixes two scopes in one header.",
+    ],
     rules: [],
   },
   {
@@ -13942,6 +14005,13 @@ import { Badge } from "@godxjp/ui/data-display";
         description:
           'Responsive presentation contract. "auto" resolves through the SHARED Sheet hook useSheetResponsiveMode(): desktop popover above --sheet-responsive-breakpoint-width (48rem/768px), focus-trapped bottom Sheet at/below it.',
       },
+      {
+        name: "appearance",
+        type: '"bar" | "icon"',
+        defaultValue: '"bar"',
+        description:
+          "The BOX the trigger takes — the same split AppSettingToggle draws, for the same reason. `bar` (default) is a TopbarItem: a cell as tall as the bar, whose hover IS the bar's surface. `icon` is a square ghost Button, for chrome that is NOT a bar — a nav rail (GoDX Dock puts it there), a card header, a toolbar. A TopbarItem outside a bar has nothing to bleed to: it stretches to a container that never set a band height, and its squared corners and full-bleed hover read as a broken cell rather than a control. The panel, the grid, the labels and the responsive contract are identical in both.",
+      },
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
         name: "onOpenChange",
@@ -13951,7 +14021,7 @@ import { Badge } from "@godxjp/ui/data-display";
     ],
     usage: [
       "DO drop it straight into a Topbar slot. It renders NO wrapper element, so the trigger is the slot's own flex child and `.ui-topbar-item { align-self: stretch }` reaches the bar's height.",
-      'DON\'T build the trigger out of `Button variant="ghost"`. A Button in a bar is a --control-height pill floating in a taller strip, with its own hover fill and its own focus ring — the exact regression corrected in 20.0.0. The trigger is a `TopbarItem`.',
+      'DON\'T hand-roll the trigger as `Button variant="ghost"` IN A BAR. A Button in a bar is a --control-height pill floating in a taller strip, with its own hover fill and its own focus ring — the exact regression corrected in 20.0.0. In a bar the trigger is a `TopbarItem`, and that is what `appearance="bar"` (the default) renders. OUTSIDE a bar the square ghost Button is correct, and `appearance="icon"` renders it for you — still hand-roll nothing.',
       'DO mark the app the viewer is inside with `current` — it becomes `aria-current="page"`, which is what both the tint and the announcement key off.',
       "DO set `external` on a destination outside this SPA. It renders a plain anchor with target/rel and skips `linkComponent`, because a client-side router link to another origin routes nowhere.",
       'DON\'T wrap it in your own media query to pick popover vs sheet — `responsive="auto"` already reads the shared --sheet-responsive-breakpoint-width token.',

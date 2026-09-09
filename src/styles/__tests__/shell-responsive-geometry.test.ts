@@ -22,10 +22,42 @@ function declarationsFor(css: string, selector: string): string {
   const rule = /([^{}]*)\{([^{}]*)\}/g;
   let match: RegExpExecArray | null;
   while ((match = rule.exec(stripped)) !== null) {
-    const selectors = match[1].split(",").map((part) => part.trim());
-    if (selectors.includes(selector)) blocks.push(match[2]);
+    if (splitSelectorList(match[1]).includes(normalizeSelector(selector))) blocks.push(match[2]);
   }
   return blocks.join("\n");
+}
+
+/**
+ * Split a selector LIST on its top-level commas only. A plain `.split(",")` shreds any selector
+ * carrying a functional pseudo-class or an attribute value that contains one — `:is(button, a,
+ * [role="button"])` became four fragments, none of which matched, so the lookup returned "" and the
+ * assertion that followed read as a missing DECLARATION rather than a missing RULE.
+ */
+function splitSelectorList(list: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let current = "";
+  for (const char of list) {
+    if (char === "(" || char === "[") depth += 1;
+    else if (char === ")" || char === "]") depth -= 1;
+    if (char === "," && depth === 0) {
+      parts.push(normalizeSelector(current));
+      current = "";
+      continue;
+    }
+    current += char;
+  }
+  parts.push(normalizeSelector(current));
+  return parts.filter((part) => part.length > 0);
+}
+
+/**
+ * One selector, one spelling. A multi-line selector carries newlines and indentation, so an exact
+ * string match against a single-line needle silently returns "" — and the assertion that follows
+ * then reads as a missing DECLARATION rather than a missing RULE.
+ */
+function normalizeSelector(selector: string): string {
+  return selector.trim().replace(/\s+/g, " ");
 }
 
 /**
@@ -50,6 +82,67 @@ function mediaBlocksMentioning(css: string, needle: string) {
   }
   return blocks;
 }
+
+describe("the rail's top row follows topbarSpan", () => {
+  // Only a COLUMN rail has a top row to align: on a block edge the rail is a strip and there is
+  // no shell top row of its own to share a centre line with.
+  const COLUMN_RAIL =
+    '.app-root:not([data-topbar-span="full"]):is( [data-nav-rail-position="start"], [data-nav-rail-position="end"] )';
+  const BAND_SELECTOR = `${COLUMN_RAIL} > .app-nav-rail > :first-child`;
+
+  /**
+   * Under `topbarSpan="content"` the bar starts BESIDE the navigation, so the rail runs to y=0 and
+   * its first row is the shell's top row — the counterpart of `.sb-brand` and of the bar. All
+   * three are then sized by ONE token. Left alone, the row was only as tall as whatever control
+   * the consumer put in it: a 44px OrgSwitcher trigger centred its avatar at 22 against the logo's
+   * and the bar's 24.
+   */
+  it('sizes all three top rows from --app-shell-bar-height under topbarSpan="content"', () => {
+    expect(declarationsFor(shellStyles, ".sb-brand")).toMatch(
+      /min-height:\s*var\(--app-shell-bar-height\);/,
+    );
+    // The bar has no height of its own — its grid ROW carries the token.
+    expect(declarationsFor(shellStyles, ".app-root")).toMatch(
+      /grid-template-rows:\s*var\(--app-shell-bar-height\)/,
+    );
+    expect(declarationsFor(shellStyles, BAND_SELECTOR)).toMatch(
+      /min-block-size:\s*var\(--app-shell-bar-height\);/,
+    );
+  });
+
+  it("leaves that row free to grow, so the band is a floor and not a fixed height", () => {
+    const rule = declarationsFor(shellStyles, BAND_SELECTOR);
+    expect(rule).not.toMatch(/(^|[^-])\bheight:/);
+    expect(rule).not.toMatch(/max-block-size:/);
+  });
+
+  it("centres it in the band without coercing the consumer node's display", () => {
+    // The band alone is not enough: the control kept sitting at the TOP of it (measured centre 22
+    // against the logo's and the bar's 24). `align-items` centres a flex/grid row and is inert on
+    // anything else — declaring `display: flex` here would silently relay a multi-child node.
+    const rule = declarationsFor(shellStyles, BAND_SELECTOR);
+    expect(rule).toMatch(/align-items:\s*center;/);
+    expect(rule).not.toMatch(/display:/);
+  });
+
+  /**
+   * Under `full` the bar owns the top row and all three columns start beneath it, so the band has
+   * nothing left to align to — measured, it put the rail's first item 10px above the line the
+   * sidebar's nav starts on. There the rail is an ordinary column with its own inset.
+   */
+  it('gives the rail its own inset, and drops the band, under topbarSpan="full"', () => {
+    expect(shellTokens).toContain("--app-shell-nav-rail-inset: var(--space-3);");
+    expect(declarationsFor(shellStyles, ".app-nav-rail")).toMatch(
+      /padding-block:\s*var\(--app-shell-nav-rail-inset\);/,
+    );
+    // The band and the top inset are BOTH scoped away from `full` — an unscoped rule would apply
+    // to every arrangement, which is the bug this pair replaced.
+    expect(declarationsFor(shellStyles, ".app-nav-rail > :first-child")).toBe("");
+    expect(declarationsFor(shellStyles, `${COLUMN_RAIL} > .app-nav-rail`)).toMatch(
+      /padding-block-start:\s*0;/,
+    );
+  });
+});
 
 describe("responsive shell geometry", () => {
   it("keeps the app grid and sidebar scroll regions inside the viewport", () => {
@@ -142,7 +235,13 @@ describe("responsive shell geometry", () => {
       /\.ui-topbar-center\s*\{[^}]*display:\s*var\(--topbar-center-compact-display\);/s,
     );
 
-    const startTitle = declarationsFor(shellStyles, ".ui-topbar-start > :last-child");
+    // Truncation is a TEXT contract. The selector excludes interactive boxes: a control put last
+    // (a search trigger, the GitHub placement) kept losing its own min-width to this rule, because
+    // (0,1,1) here beats the control's own (0,1,0) — measured at 186px against a 16rem floor.
+    const startTitleSelector =
+      '.ui-topbar-start > :last-child:not(:is(button, a, [role="button"], .ui-button))';
+    const startTitle = declarationsFor(shellStyles, startTitleSelector);
+    expect(declarationsFor(shellStyles, ".ui-topbar-start > :last-child")).toBe("");
     expect(startTitle).toMatch(/min-width:\s*0;/);
     expect(startTitle).toMatch(/flex:\s*0 1 auto;/);
     // `clip` + the ring margin, never `hidden`: this selector hits whatever the slot's last child
@@ -256,10 +355,10 @@ describe("responsive shell geometry", () => {
     expect(railWidth).toBeDefined();
     expect(collapsedWidth).toBeDefined();
     expect(railWidth).not.toBe(collapsedWidth);
-    expect(declarationsFor(shellStyles, ".app-root[data-nav-rail]")).toMatch(
+    expect(declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]')).toMatch(
       /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-width\)\s*minmax\(0, 1fr\);/,
     );
-    expect(declarationsFor(shellStyles, ".app-root[data-nav-rail]")).toMatch(
+    expect(declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]')).toMatch(
       /grid-template-areas:\s*"navrail sidebar topbar"\s*"navrail sidebar main"\s*"navrail sidebar footer";/,
     );
   });
@@ -268,7 +367,10 @@ describe("responsive shell geometry", () => {
     // Slack's behaviour, and the one that keeps the rail's destinations reachable while collapsed.
     // If this ever read `--app-shell-sidebar-collapsed-width` twice, both columns would shrink and
     // the workspace switcher would become a second strip of anonymous icons.
-    expect(declarationsFor(shellStyles, '.app-root[data-nav-rail][data-collapsed="true"]')).toMatch(
+    expect(declarationsFor(
+      shellStyles,
+      '.app-root[data-nav-rail][data-nav-rail-position="start"][data-collapsed="true"]',
+    )).toMatch(
       /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-collapsed-width\)\s*minmax\(0, 1fr\);/,
     );
   });
@@ -277,7 +379,10 @@ describe("responsive shell geometry", () => {
     // The whole argument for a slot rather than a fourth enum value: the bar spans every column
     // while BOTH navigation columns start beneath it.
     expect(
-      declarationsFor(shellStyles, '.app-root[data-nav-rail][data-topbar-span="full"]'),
+      declarationsFor(
+        shellStyles,
+        '.app-root[data-nav-rail][data-nav-rail-position="start"][data-topbar-span="full"]',
+      ),
     ).toMatch(
       /grid-template-areas:\s*"topbar\s+topbar\s+topbar"\s*"navrail sidebar main"\s*"navrail sidebar footer";/,
     );
@@ -308,7 +413,10 @@ describe("responsive shell geometry", () => {
   it("keeps BOTH tracks under responsiveNavigation='docked' at narrow widths", () => {
     const narrow = mediaBlocksMentioning(shellStyles, ".app-root")[0].body;
     expect(
-      declarationsFor(narrow, '.app-root[data-responsive-navigation="docked"][data-nav-rail]'),
+      declarationsFor(
+        narrow,
+        '.app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="start"]',
+      ),
     ).toMatch(/grid-template-areas:\s*"navrail sidebar topbar"/);
     // The rail is re-shown explicitly; the blanket `display: none` above would otherwise win.
     expect(
@@ -323,8 +431,18 @@ describe("responsive shell geometry", () => {
     expect(restructuring).toHaveLength(1);
     expect(restructuring[0].condition).toBe("(width <= 56.25rem)");
     expect(restructuring[0].body).toContain('"footer"');
-    // The bar height stays the token at every width…
-    expect(restructuring[0].body).not.toMatch(/grid-template-rows:/);
+    // THE BAR HEIGHT STAYS THE TOKEN AT EVERY WIDTH. This used to be spelled "no
+    // `grid-template-rows` in this block at all", which was the blunt form of the real rule and
+    // became wrong once a rail on a BLOCK edge added a fourth row: that row has to go when the
+    // rail is hidden, or a phone keeps a band of dead space sized by a rail nobody can see. What
+    // must never come back is the thing that actually broke — the deleted 768px block restating
+    // the rows with a `3rem` LITERAL, which defeated the token below 768px only.
+    for (const rows of restructuring[0].body.matchAll(/grid-template-rows:([^;]+);/g)) {
+      expect(rows[1], "narrow-width row template must be token-driven").not.toMatch(
+        /\d+(\.\d+)?(px|rem|em)/,
+      );
+      expect(rows[1]).toMatch(/var\(--app-shell-bar-height\)/);
+    }
     expect(shellStyles).not.toMatch(/grid-template-rows:\s*3rem/);
     // …and nothing anywhere hides the footer landmark.
     expect(declarationsFor(shellStyles, ".app-footer")).not.toMatch(/display:\s*none/);

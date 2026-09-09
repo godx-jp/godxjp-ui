@@ -127,6 +127,19 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Corner shape — `default` (control radius) · `pill` (fully rounded) · `sharp` (square). */
   shape?: ShapeProp;
   fullWidth?: boolean;
+  /**
+   * Take the space the siblings leave, and let a long label ELLIPSE instead of widening the row —
+   * the same axis `Flex` calls `fill`, for the same reason.
+   *
+   * Button ships `flex-shrink: 0`, right almost everywhere and wrong in a constrained bar: an
+   * account menu holding an avatar plus a person's name keeps its full width while the cluster
+   * clips it, so a keyboard user tabs to a control they cannot see (SC 2.4.7). Until this axis
+   * existed the only move was `className="min-w-0 flex-1"`, which ui-audit blocks — and which this
+   * package's own Topbar guidance recommended, so the docs prescribed the utility the audit forbids.
+   *
+   * Sets `flex: 1 1 auto` and `min-inline-size: 0`; pair it with a `<Text truncate>` label.
+   */
+  fill?: boolean;
   /** Allow a text button to grow vertically for multi-line labels. */
   wrap?: boolean;
   /** Logical content alignment, especially for full-width collection actions. */

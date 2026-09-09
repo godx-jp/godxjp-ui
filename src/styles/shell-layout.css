@@ -46,7 +46,17 @@
    * dissolve into ONE flex row and both collapse to zero unless each is first wrapped in its own
    * box. Owning the track here removes that trap, and with it the reason to override
    * `--app-shell-sidebar-width` per route. */
-  .app-root[data-nav-rail] {
+  /* WHICH EDGE the rail sits on is `navRailPosition`, and it is a LOGICAL axis: `start`/`end` are
+   * the inline edges, so they follow writing direction and an RTL document mirrors them for free
+   * (grid columns are laid out in the inline direction — no `[dir]` rule needed). `top`/`bottom`
+   * are the block edges, where the rail turns into a horizontal strip spanning the full measure
+   * and the grid grows a ROW instead of a column.
+   *
+   * Its thickness is one token per orientation — `--app-shell-nav-rail-width` when it is a column,
+   * `--app-shell-nav-rail-height` when it is a strip — because a single "size" would read as a
+   * width in half the shapes it applies to. The height defaults to the width, so a service that
+   * re-tunes one measure moves both. */
+  .app-root[data-nav-rail][data-nav-rail-position="start"] {
     grid-template-areas:
       "navrail sidebar topbar"
       "navrail sidebar main"
@@ -57,21 +67,111 @@
       minmax(0, 1fr);
   }
 
-  /* Collapse folds the SIDEBAR track only; the rail keeps its width. That is the Slack behaviour
+  .app-root[data-nav-rail][data-nav-rail-position="start"][data-topbar-span="full"] {
+    grid-template-areas:
+      "topbar  topbar  topbar"
+      "navrail sidebar main"
+      "navrail sidebar footer";
+  }
+
+  .app-root[data-nav-rail][data-nav-rail-position="end"] {
+    grid-template-areas:
+      "sidebar topbar  navrail"
+      "sidebar main    navrail"
+      "sidebar footer  navrail";
+    grid-template-columns:
+      var(--app-shell-sidebar-width)
+      minmax(0, 1fr)
+      var(--app-shell-nav-rail-width);
+  }
+
+  .app-root[data-nav-rail][data-nav-rail-position="end"][data-topbar-span="full"] {
+    grid-template-areas:
+      "topbar  topbar  topbar"
+      "sidebar main    navrail"
+      "sidebar footer  navrail";
+  }
+
+  /* A strip, so it spans the whole measure and the shell grows a row for it. Under `content` the
+   * bar belongs to the content column alone, so a full-width platform strip can only sit ABOVE it;
+   * under `full` the bar already outranks everything beneath it, so the strip goes under the bar. */
+  .app-root[data-nav-rail][data-nav-rail-position="top"] {
+    grid-template-areas:
+      "navrail navrail"
+      "sidebar topbar"
+      "sidebar main"
+      "sidebar footer";
+    grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
+    grid-template-rows:
+      var(--app-shell-nav-rail-height)
+      var(--app-shell-bar-height)
+      minmax(0, 1fr)
+      auto;
+  }
+
+  /* `top` IS THE TOP — above the bar at both spans, not tucked under it. The platform strip is the
+   * outermost band of chrome: which organization you are in frames the bar, rather than the bar
+   * framing it. (`bottom` is its mirror and sits below the footer for the same reason.) */
+  .app-root[data-nav-rail][data-nav-rail-position="top"][data-topbar-span="full"] {
+    grid-template-areas:
+      "navrail navrail"
+      "topbar  topbar"
+      "sidebar main"
+      "sidebar footer";
+  }
+
+  .app-root[data-nav-rail][data-nav-rail-position="bottom"] {
+    grid-template-areas:
+      "sidebar topbar"
+      "sidebar main"
+      "sidebar footer"
+      "navrail navrail";
+    grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
+    grid-template-rows:
+      var(--app-shell-bar-height)
+      minmax(0, 1fr)
+      auto
+      var(--app-shell-nav-rail-height);
+  }
+
+  .app-root[data-nav-rail][data-nav-rail-position="bottom"][data-topbar-span="full"] {
+    grid-template-areas:
+      "topbar  topbar"
+      "sidebar main"
+      "sidebar footer"
+      "navrail navrail";
+  }
+
+  /* Collapse folds the SIDEBAR track only; the rail keeps its measure. That is the Slack behaviour
    * (the channel column hides, the workspace rail stays) and it is the one that keeps the rail's
-   * destinations reachable while collapsed. */
-  .app-root[data-nav-rail][data-collapsed="true"] {
+   * destinations reachable while collapsed.
+   *
+   * EVERY position restates it, including the strip ones. The tempting shortcut — "only the column
+   * positions carry the rail in `grid-template-columns`, so only they need a collapsed variant" —
+   * is wrong, and shipped: a strip position still restates `grid-template-columns` (with the
+   * EXPANDED sidebar width) at (0,3,0), which out-specifies the generic
+   * `.app-root[data-collapsed="true"]` at (0,2,0). Measured with the rail on top: pressing collapse
+   * set `data-collapsed="true"` and `.sb-root[data-collapsed]`, the rows went icon-only — and the
+   * track stayed 256px, so the icons sat centred in a column three times their width. */
+  .app-root[data-nav-rail][data-nav-rail-position="start"][data-collapsed="true"] {
     grid-template-columns:
       var(--app-shell-nav-rail-width)
       var(--app-shell-sidebar-collapsed-width)
       minmax(0, 1fr);
   }
 
-  .app-root[data-nav-rail][data-topbar-span="full"] {
-    grid-template-areas:
-      "topbar  topbar  topbar"
-      "navrail sidebar main"
-      "navrail sidebar footer";
+  .app-root[data-nav-rail][data-nav-rail-position="end"][data-collapsed="true"] {
+    grid-template-columns:
+      var(--app-shell-sidebar-collapsed-width)
+      minmax(0, 1fr)
+      var(--app-shell-nav-rail-width);
+  }
+
+  .app-root[data-nav-rail]:is(
+      [data-nav-rail-position="top"],
+      [data-nav-rail-position="bottom"]
+    )[data-collapsed="true"] {
+    grid-template-columns: var(--app-shell-sidebar-collapsed-width) minmax(0, 1fr);
   }
 
   /* NO TOP BAR AT ALL — `topbar`, `topbarLeft`, `topbarRight` and `logo` all undefined. */
@@ -119,6 +219,125 @@
     border-inline-end: 1px solid hsl(var(--border));
     background: hsl(var(--muted));
     color: hsl(var(--foreground));
+    padding-block: var(--app-shell-nav-rail-inset);
+  }
+
+  /* PINNED TO THE FAR END, on whichever axis the rail runs — the tray end of a taskbar, and the
+   * same job `Sidebar`'s `footer` does. `margin-*-start: auto` on the main axis is what pins it,
+   * which is exactly the geometry a consumer would otherwise have to write in its own CSS. The
+   * drawer's rail strip is a column too, so it takes the same rule. */
+  .app-nav-rail > .app-nav-rail-end,
+  .app-mobile-nav-rail > .app-nav-rail-end {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    margin-block-start: auto;
+  }
+
+  .app-root:is([data-nav-rail-position="top"], [data-nav-rail-position="bottom"])
+    > .app-nav-rail
+    > .app-nav-rail-end {
+    flex-direction: row;
+    margin-block-start: 0;
+    margin-inline-start: auto;
+  }
+
+  /* THE RAIL SIZES ITS OWN CELLS. A control brings its own band token, so narrowing the track
+   * without narrowing the cell does not shrink it — it clips it, because the rail clips. This is
+   * the same relationship the bar already has with `TopbarItem` (the cell stretches to the bar's
+   * height); the difference is only that a rail cell is square, so the track sets both axes.
+   * Retuning the hosted control's own knob here is the documented mechanism — the alternative is
+   * a consumer stylesheet, which this library does not accept. */
+  .app-nav-rail,
+  .app-mobile-nav-rail {
+    --org-switcher-trigger-height: var(--app-shell-nav-rail-item-size);
+    /* EVERY cell, not just the one that happened to be there first. Retuning a single component's
+     * knob left the rail with two sizes and two left offsets — measured at a 40px rail: the
+     * organization trigger 36x36 at x=1.5, the launcher and the tray control 28x28 at x=5.5,
+     * because a `size="icon-sm"` Button reads `--control-height-sm` and nothing had told it where
+     * it was. The small control tier IS the rail cell tier here; that is what "the chrome sizes
+     * its cells" means, and it is why the rail can be 40px at all. */
+    --control-height-sm: var(--app-shell-nav-rail-item-size);
+  }
+
+  /* The `end` edge: the same column, mirrored, so the border faces the content it separates. */
+  .app-root[data-nav-rail-position="end"] > .app-nav-rail {
+    border-inline-start: 1px solid hsl(var(--border));
+    border-inline-end: 0;
+  }
+
+  /* A BLOCK edge turns the column into a strip: it lays out along the inline axis, takes the full
+   * measure, and its inset changes axis with it. `height: auto` releases the `height: 100%` the
+   * column form needs — in a row track that would fight the track's own size. */
+  .app-root:is([data-nav-rail-position="top"], [data-nav-rail-position="bottom"])
+    > .app-nav-rail {
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    border-inline-end: 0;
+    padding-block: 0;
+    padding-inline: var(--app-shell-nav-rail-inset);
+  }
+
+  /* `.ui-org-switcher` declares `width: 100%` — the ordinary "fill the rail" that is a CROSS-size
+   * request in a column. Turned into a strip the same declaration becomes a MAIN-size claim and the
+   * switcher eats the whole bar: measured, a 44px trigger inside a 1416px wrapper, centred at x=698
+   * on a 1440px screen.
+   *
+   * Scoped to that wrapper, NOT to every child. The first version released `inline-size` on
+   * `> *` and took the square controls with it — the launcher collapsed from 36x36 to 16x36,
+   * because a `size="icon-sm"` Button's width is a real square, not a fill. A percentage fill and
+   * an explicit control width are indistinguishable to a selector, so the rule names the one node
+   * that asks to fill. */
+  .app-root:is([data-nav-rail-position="top"], [data-nav-rail-position="bottom"])
+    > .app-nav-rail
+    > .ui-org-switcher {
+    inline-size: auto;
+  }
+
+  .app-root[data-nav-rail-position="top"] > .app-nav-rail {
+    border-block-end: 1px solid hsl(var(--border));
+  }
+
+  .app-root[data-nav-rail-position="bottom"] > .app-nav-rail {
+    border-block-start: 1px solid hsl(var(--border));
+  }
+
+  /*
+   * WHERE THE RAIL'S TOP ROW BELONGS FOLLOWS `topbarSpan`, the same axis that already decides who
+   * owns the top-left corner.
+   *
+   * `full`: the bar runs edge to edge and all three columns start beneath it, so the rail is an
+   * ordinary column — its own inset, landing on the same line the sidebar's nav starts on.
+   *
+   * `content` (below): the bar starts beside the navigation, so the rail runs to y=0 and its first
+   * row IS the shell's top row — the counterpart of `.sb-brand` and of the bar itself. It takes
+   * the bar's band so the three columns share one centre line. Without it the row is only as tall
+   * as whatever control the consumer put there: measured, a 44px OrgSwitcher trigger centred its
+   * avatar at y=22 while the logo and the bar both centred at y=24.
+   */
+  .app-root:not([data-topbar-span="full"]):is(
+      [data-nav-rail-position="start"],
+      [data-nav-rail-position="end"]
+    )
+    > .app-nav-rail {
+    padding-block-start: 0;
+  }
+
+  .app-root:not([data-topbar-span="full"]):is(
+      [data-nav-rail-position="start"],
+      [data-nav-rail-position="end"]
+    )
+    > .app-nav-rail
+    > :first-child {
+    min-block-size: var(--app-shell-bar-height);
+    /* `align-items` WITHOUT forcing `display`: on a flex/grid row it centres the control in the
+     * band (measured 22 → 24, the same centre line as `.sb-brand` and the bar); on anything else
+     * it is inert. Declaring `display: flex` here would instead relay whatever multi-child node a
+     * consumer put first. */
+    align-items: center;
   }
 
   .app-topbar {
@@ -326,9 +545,22 @@
     --auth-shell-main-padding: var(--auth-shell-recovery-main-padding);
   }
 
-  /* `flex-start` is the load-bearing line: a registration card is the tallest surface in the
-   * hosted-identity set, and a vertically CENTRED tall card overflows ABOVE the scroll origin on a
-   * short viewport, putting its first field out of reach. */
+  /* A registration card is the tallest surface in the hosted-identity set, so its block placement
+   * has to satisfy two things at once, and a FIXED block-start inset satisfies only one.
+   *
+   * `flex-start` plus a 9.5rem inset held the SCR-002 anchor, but the inset is a constant: at
+   * 1440x900 the column measured 152 (empty) + 793 (content) + 48 = 993px against a 900px
+   * viewport, so the page scrolled 93px to reveal NOTHING — the scroll existed only to make room
+   * for decoration above the fold. That is worse than losing the anchor.
+   *
+   * `justify-content: center` is not the answer either: a card taller than the column overflows
+   * ABOVE the scroll origin and puts the first field out of reach.
+   *
+   * Auto margins are the one form that does both, and it is the technique `measure="wide"` in
+   * this same file already uses for the same reason. They absorb only the free space that EXISTS:
+   * a roomy viewport centres the column, and the moment content fills it they resolve to 0, so
+   * the card starts at the page gutter and every pixel scrolled is content. The inset token stays
+   * public for a product that wants the literal artboard anchor back. */
   .ui-auth-shell[data-preset="registration"] {
     --auth-shell-card-max-width: var(--auth-shell-registration-card-max-width);
     --auth-shell-main-align: flex-start;
@@ -338,11 +570,57 @@
     --auth-shell-card-stack-gap: var(--auth-shell-registration-card-stack-gap);
   }
 
+  .ui-auth-shell[data-preset="registration"] .ui-auth-shell-card {
+    margin-block: auto;
+  }
+
   /* Content aligns to the slot END, so absent / one-line / wrapped two-line identity copy changes
    * only the empty space ABOVE it and never moves the card off its canonical anchor. */
   .ui-auth-shell[data-preset="registration"] .ui-auth-shell-card > .ui-auth-identity {
     block-size: var(--auth-shell-registration-identity-slot-block-size);
     justify-content: flex-end;
+  }
+
+  /* FLOW ALIGNMENT — orthogonal to `preset`, the way `variant` is. A preset owns the page MEASURE
+   * (card width, inline gutters, section rhythm); `align` owns where that column sits on the BLOCK
+   * axis. `login` and `registration` anchor by default so a requester/identity line that wraps to
+   * two lines cannot move the card (gh#237), and every other preset centres.
+   *
+   * A product that wants the other choice states it here. Before this axis existed the only way was
+   * to re-declare the preset's own offset tokens from a consumer stylesheet — the exact
+   * page-local-vertical-offset anti-pattern the presets were introduced to replace, and one
+   * consumer really did carry it (Platform #838, centred SCR-001 over the anchored default).
+   *
+   * `center` collapses the block-START inset to the preset's block-END one, desktop and mobile, so
+   * the padding is symmetric and `justify-content: center` has nothing to fight. The offset TOKENS
+   * are retargeted rather than `--auth-shell-main-padding` itself, because the mobile media query
+   * recomposes that shorthand from the `*-mobile` tokens; overriding the shorthand here would
+   * freeze the inline gutters too.
+   *
+   * Note the standing hazard on `registration`: it is the tallest surface in the hosted-identity
+   * set, and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport,
+   * putting its first field out of reach. `align="center"` is legal there and deliberately not
+   * blocked, but it is the caller's judgement, not the preset's default. */
+  .ui-auth-shell[data-align="center"] {
+    --auth-shell-main-align: center;
+  }
+
+  .ui-auth-shell[data-align="anchored"] {
+    --auth-shell-main-align: flex-start;
+  }
+
+  .ui-auth-shell[data-preset="login"][data-align="center"] {
+    --auth-shell-login-flow-offset-block: var(--auth-shell-login-main-padding-block-end);
+    --auth-shell-login-flow-offset-block-mobile: var(--auth-shell-login-main-padding-block-end);
+  }
+
+  .ui-auth-shell[data-preset="registration"][data-align="center"] {
+    --auth-shell-registration-main-padding-block-start: var(
+      --auth-shell-registration-main-padding-block-end
+    );
+    --auth-shell-registration-main-padding-block-start-mobile: var(
+      --auth-shell-registration-main-padding-block-end-mobile
+    );
   }
 
   .ui-auth-identity {
@@ -435,6 +713,16 @@
     display: inline-flex;
     align-items: center;
     gap: var(--auth-footer-content-gap);
+  }
+
+  /* Interactive footer content meets the AA target floor. `:is(a, button)` reaches the links the
+   * CONSUMER passes into the terms/privacy slots as bare anchors — the package cannot wrap what it
+   * is handed — and any control in the locale slot. `inline-flex` is what makes min-block-size
+   * apply at all; an inline anchor ignores it. */
+  .ui-auth-legal-footer :is(a, button) {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--auth-footer-target-min-size);
   }
 
   .ui-auth-stack {
@@ -789,12 +1077,43 @@
   }
 
   /* THE ONE AppShell breakpoint — 900px (56.25rem), the DXS canonical value. */
-  .app-root:where([data-sidebar="none"])[data-nav-rail] {
+  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="start"] {
     grid-template-columns: var(--app-shell-nav-rail-width) minmax(0, 1fr);
     grid-template-areas: "navrail topbar" "navrail main" "navrail footer";
   }
-  .app-root:where([data-sidebar="none"])[data-nav-rail][data-topbar-span="full"] {
+  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="start"][data-topbar-span="full"] {
     grid-template-areas: "topbar topbar" "navrail main" "navrail footer";
+  }
+  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="end"] {
+    grid-template-columns: minmax(0, 1fr) var(--app-shell-nav-rail-width);
+    grid-template-areas: "topbar navrail" "main navrail" "footer navrail";
+  }
+  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="end"][data-topbar-span="full"] {
+    grid-template-areas: "topbar topbar" "main navrail" "footer navrail";
+  }
+  /* One column, and the strip is a row of it. */
+  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="top"] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "navrail" "topbar" "main" "footer";
+    grid-template-rows:
+      var(--app-shell-nav-rail-height)
+      var(--app-shell-bar-height)
+      minmax(0, 1fr)
+      auto;
+  }
+  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="top"][data-topbar-span="full"] {
+    grid-template-areas: "navrail" "topbar" "main" "footer";
+  }
+  .app-root:where([data-sidebar="none"])[data-nav-rail]:is(
+      [data-nav-rail-position="bottom"]
+    ) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "topbar" "main" "footer" "navrail";
+    grid-template-rows:
+      var(--app-shell-bar-height)
+      minmax(0, 1fr)
+      auto
+      var(--app-shell-nav-rail-height);
   }
 
   @media (width <= 56.25rem) {
@@ -820,6 +1139,16 @@
     .app-sidebar,
     .app-nav-rail {
       display: none;
+    }
+
+    /* The single-column template above restates areas and columns but NOT rows, and the strip
+     * positions add a fourth row. Hidden rail + surviving row = a band of dead space at the top or
+     * the bottom of a phone screen, sized by a rail nobody can see. */
+    .app-root[data-nav-rail]:is(
+        [data-nav-rail-position="top"],
+        [data-nav-rail-position="bottom"]
+      ) {
+      grid-template-rows: var(--app-shell-bar-height) minmax(0, 1fr) auto;
     }
 
     /* Bar-less shell (data-topbar="none") at narrow widths: the bar comes back for the hamburger
@@ -861,7 +1190,7 @@
     /* Docked + a rail keeps BOTH tracks, for the same reason docked keeps one: an approved product
      * contract that retains its navigation below 900px still has two columns of it. Restated in
      * full because the single-column rule above now also matches `[data-nav-rail]`. */
-    .app-root[data-responsive-navigation="docked"][data-nav-rail] {
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="start"] {
       grid-template-areas:
         "navrail sidebar topbar"
         "navrail sidebar main"
@@ -872,18 +1201,98 @@
         minmax(0, 1fr);
     }
 
-    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-collapsed="true"] {
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="start"][data-collapsed="true"] {
       grid-template-columns:
         var(--app-shell-nav-rail-width)
         var(--app-shell-sidebar-collapsed-width)
         minmax(0, 1fr);
     }
 
-    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-topbar-span="full"] {
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="start"][data-topbar-span="full"] {
       grid-template-areas:
         "topbar  topbar  topbar"
         "navrail sidebar main"
         "navrail sidebar footer";
+    }
+
+    /* Docked keeps whatever EDGE the rail was on. Restated per position for the same reason the
+     * `start` maps are restated here at all: the single-column rule above matches every
+     * `[data-nav-rail]`, so a position left unnamed silently falls back to one column and the rail
+     * lands wherever the grid auto-places it. */
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="end"] {
+      grid-template-areas:
+        "sidebar topbar  navrail"
+        "sidebar main    navrail"
+        "sidebar footer  navrail";
+      grid-template-columns:
+        var(--app-shell-sidebar-width)
+        minmax(0, 1fr)
+        var(--app-shell-nav-rail-width);
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="end"][data-collapsed="true"] {
+      grid-template-columns:
+        var(--app-shell-sidebar-collapsed-width)
+        minmax(0, 1fr)
+        var(--app-shell-nav-rail-width);
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="end"][data-topbar-span="full"] {
+      grid-template-areas:
+        "topbar  topbar  topbar"
+        "sidebar main    navrail"
+        "sidebar footer  navrail";
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="top"] {
+      grid-template-areas:
+        "navrail navrail"
+        "sidebar topbar"
+        "sidebar main"
+        "sidebar footer";
+      grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
+      grid-template-rows:
+        var(--app-shell-nav-rail-height)
+        var(--app-shell-bar-height)
+        minmax(0, 1fr)
+        auto;
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="top"][data-topbar-span="full"] {
+      grid-template-areas:
+        "navrail navrail"
+        "topbar  topbar"
+        "sidebar main"
+        "sidebar footer";
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="bottom"] {
+      grid-template-areas:
+        "sidebar topbar"
+        "sidebar main"
+        "sidebar footer"
+        "navrail navrail";
+      grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
+      grid-template-rows:
+        var(--app-shell-bar-height)
+        minmax(0, 1fr)
+        auto
+        var(--app-shell-nav-rail-height);
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-nav-rail]:is(
+        [data-nav-rail-position="top"],
+        [data-nav-rail-position="bottom"]
+      )[data-collapsed="true"] {
+      grid-template-columns: var(--app-shell-sidebar-collapsed-width) minmax(0, 1fr);
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-nav-rail][data-nav-rail-position="bottom"][data-topbar-span="full"] {
+      grid-template-areas:
+        "topbar  topbar"
+        "sidebar main"
+        "sidebar footer"
+        "navrail navrail";
     }
 
     .app-root[data-responsive-navigation="docked"] > .app-sidebar,
@@ -971,11 +1380,20 @@
   }
 
   .ui-org-switcher-name,
+  /* A TRUNCATING line box must be tall enough to contain its own ink.
+   *
+   * `overflow: hidden` is what makes the ellipsis work, and it clips anything the line box does
+   * not cover — so the line-height is not a rhythm choice here, it is the clipping boundary.
+   * 1.25 was picked against Latin, where the descender of a `g` still lands inside the box.
+   * Vietnamese does not: measured at 11.11px in a 13.88px box, the dot-below of `ị` in
+   * 「Quản trị viên」 was cut off at the baseline edge. Japanese and the other diacritic-stacking
+   * scripts sit in the same trap.
+   *
+   * `--line-height-normal` (1.5) gives 16.7px at the same step, which contains the mark. The row
+   * grows by 2.8px; a clipped glyph is not a smaller row, it is a wrong word. */
   .ui-org-switcher-meta {
     overflow: hidden;
-    /* --line-height-tight IS 1.25; the literal was the same number with no way for a theme to
-     * reach it, and `no-arbitrary-typography` bans exactly this shape in consumer code. */
-    line-height: var(--line-height-tight);
+    line-height: var(--line-height-normal);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1361,7 +1779,11 @@
     overflow: hidden;
     font-size: var(--font-size-base);
     font-weight: 700;
-    line-height: 1.2;
+    /* Truncating box: `overflow: hidden` is what makes the ellipsis work, so the line box is the
+     * CLIPPING BOUNDARY and must contain descender ink. A tight literal here cut the dot-below of
+     * Vietnamese `ị` elsewhere in this file (measured on .ui-org-switcher-meta). Ant Design never
+     * hits this because its base line-height is 1.5714; --line-height-normal is the same idea. */
+    line-height: var(--line-height-normal);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1376,7 +1798,11 @@
     font-size: var(--sidebar-product-tenant-font-size);
     font-weight: 700;
     letter-spacing: 0.08em;
-    line-height: 1.2;
+    /* Truncating box: `overflow: hidden` is what makes the ellipsis work, so the line box is the
+     * CLIPPING BOUNDARY and must contain descender ink. A tight literal here cut the dot-below of
+     * Vietnamese `ị` elsewhere in this file (measured on .ui-org-switcher-meta). Ant Design never
+     * hits this because its base line-height is 1.5714; --line-height-normal is the same idea. */
+    line-height: var(--line-height-normal);
     text-overflow: ellipsis;
     text-transform: uppercase;
     white-space: nowrap;
@@ -1699,7 +2125,11 @@
     overflow: hidden;
     font-size: var(--sidebar-user-name-font-size);
     font-weight: 500;
-    line-height: 1.3;
+    /* Truncating box: `overflow: hidden` is what makes the ellipsis work, so the line box is the
+     * CLIPPING BOUNDARY and must contain descender ink. A tight literal here cut the dot-below of
+     * Vietnamese `ị` elsewhere in this file (measured on .ui-org-switcher-meta). Ant Design never
+     * hits this because its base line-height is 1.5714; --line-height-normal is the same idea. */
+    line-height: var(--line-height-normal);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1708,7 +2138,11 @@
     overflow: hidden;
     color: hsl(var(--muted-foreground));
     font-size: var(--sidebar-user-role-font-size);
-    line-height: 1.3;
+    /* Truncating box: `overflow: hidden` is what makes the ellipsis work, so the line box is the
+     * CLIPPING BOUNDARY and must contain descender ink. A tight literal here cut the dot-below of
+     * Vietnamese `ị` elsewhere in this file (measured on .ui-org-switcher-meta). Ant Design never
+     * hits this because its base line-height is 1.5714; --line-height-normal is the same idea. */
+    line-height: var(--line-height-normal);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1815,7 +2249,15 @@
    * bottom, with no way to get the room back (`overflow-clip-margin` is ignored on `hidden`).
    * `.ui-topbar-start` itself already made this choice two rules up; this one was the gap.
    * `text-overflow: ellipsis` renders identically under `clip`, so truncation is unaffected. */
-  .ui-topbar-start > :last-child {
+  /* The start cluster's LAST child is truncated so a long tenant/brand/screen string cannot spill
+   * over a sibling — but this was written when that child was always TEXT, and it strips
+   * `min-width` from whatever sits there. Put a CONTROL last (a search trigger, the GitHub
+   * placement) and the rule flattens its own minimum: measured at 186px against a 16rem floor,
+   * because (0,1,1) here beats the control's own (0,1,0).
+   *
+   * Truncation is a TEXT contract, so it now excludes interactive boxes. A control keeps its own
+   * measure and does its own clipping; a string still ellipses. */
+  .ui-topbar-start > :last-child:not(:is(button, a, [role="button"], .ui-button)) {
     max-width: 100%;
     min-width: 0;
     flex: 0 1 auto;
@@ -2024,6 +2466,10 @@
     /* `width: 100%` + `max-width: none` is the pair that makes both cases work from ONE token: a
      * set length caps it, an unset one (`none`) doesn't. */
     width: 100%;
+    /* Preferred, not minimum. `min-inline-size: 0` is the load-bearing half: a flex item's
+     * automatic minimum is its own content, which would re-freeze the box under pressure. */
+    flex: 0 1 var(--topbar-search-width);
+    min-inline-size: 0;
     max-width: var(--topbar-search-max-width);
     height: var(--control-height-sm);
     align-items: center;
@@ -2042,6 +2488,15 @@
   .tb-icon-btn svg {
     width: var(--topbar-icon-size);
     height: var(--topbar-icon-size);
+  }
+
+  /* The shortcut cap sits at the END of the trigger. `.kbd` is (0,1,0), and so is `.ui-text` —
+   * so the moment the cap is composed as a <Text> instead of a raw span, whichever of the two the
+   * bundler emits last decides the margin, and the cap silently collapses back against the label.
+   * The scoped rule below re-states it at (0,2,0) inside the trigger, where the placement is a
+   * contract rather than a default. */
+  .tb-search .kbd {
+    margin-inline-start: auto;
   }
 
   .kbd {
@@ -2098,12 +2553,25 @@
   /* TOPBAR CHIP/SEARCH DENSITY ONLY — this is NOT a second shell breakpoint. */
   @media (max-width: 768px) {
     .tb-chip-sep,
-    .tb-search .kbd {
+    .tb-search .kbd,
+    /* The trigger's LABEL gets the same compact treatment the shortcut cap already had. Without a
+     * hook of its own the compact `.tb-search` kept a full text label inside a box that had just
+     * been told to shrink to `min-width: var(--control-height)`, so the only way to an icon-only
+     * trigger was a stack of consumer utilities — which is exactly what one consumer wrote
+     * (`hidden min-[901px]:flex min-[901px]:size-8 min-[901px]:px-0 min-[1180px]:w-full`). Opt-in:
+     * a trigger whose label should survive simply does not carry the class. */
+    .tb-search .tb-search-label {
       display: none;
     }
 
     .tb-search {
       width: auto;
+      /* Logical, so it actually beats the base rule's `min-inline-size` — `min-width` and
+       * `min-inline-size` are different properties in a horizontal writing mode only by name, and
+       * the cascade resolves the LAST one declared. Stating the same axis both ways would leave
+       * the compact icon at the 16rem floor. */
+      flex: 0 0 auto;
+      min-inline-size: var(--control-height);
       min-width: var(--control-height);
     }
 

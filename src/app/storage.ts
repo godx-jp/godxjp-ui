@@ -29,6 +29,55 @@ export type StoredAppPreferences = {
   scaling?: number | null;
 };
 
+/**
+ * The axes a viewer's preferences are made of — the keys of {@link StoredAppPreferences}.
+ *
+ * They do NOT share an owner. `theme`, `density`, `fontSize`, `scaling` and `brand` are the
+ * viewer's, and belong in this browser. `locale`, `timezone`, `timeFormat` and `dateFormat` are
+ * frequently the SERVER's — resolved per request from a cookie, an account row or an Accept-Language
+ * header — and a copy in local storage then wins over the value the server just sent, because
+ * storage is read after the props. That is why `persist` takes a LIST as well as a boolean: one
+ * flag for axes with two different owners forces an all-or-nothing choice, and the consumer that
+ * hits it turns persistence off entirely and loses the viewer's theme with it.
+ */
+export const APP_PREFERENCE_AXES = [
+  "locale",
+  "timezone",
+  "timeFormat",
+  "dateFormat",
+  "theme",
+  "brand",
+  "density",
+  "fontSize",
+  "scaling",
+] as const;
+
+export type AppPreferenceAxis = (typeof APP_PREFERENCE_AXES)[number];
+
+/** `true` → every axis, `false` → none, a list → exactly those. */
+export function resolvePersistedAxes(
+  persist: boolean | readonly AppPreferenceAxis[],
+): ReadonlySet<AppPreferenceAxis> {
+  if (persist === true) return new Set(APP_PREFERENCE_AXES);
+  if (persist === false) return new Set();
+  return new Set(persist);
+}
+
+/** The subset of `preferences` on the given axes; the rest are dropped, not set to undefined. */
+export function pickPersistedAxes(
+  preferences: StoredAppPreferences,
+  axes: ReadonlySet<AppPreferenceAxis>,
+): StoredAppPreferences {
+  const out: StoredAppPreferences = {};
+  for (const axis of APP_PREFERENCE_AXES) {
+    if (axes.has(axis) && preferences[axis] !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (out as any)[axis] = preferences[axis];
+    }
+  }
+  return out;
+}
+
 export function readStoredPreferences(storageKey: string): StoredAppPreferences {
   if (typeof window === "undefined") return {};
   try {

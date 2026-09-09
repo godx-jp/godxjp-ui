@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
@@ -16,6 +16,11 @@ import { describe, expect, it } from "vitest";
  */
 const shellStyles = readFileSync(resolve(process.cwd(), "src/styles/shell-layout.css"), "utf8");
 const shellTokens = readFileSync(resolve(process.cwd(), "src/tokens/components/shell.css"), "utf8");
+/** Every shipped layer, so a probe class is checked against the whole stylesheet set. */
+const allLayerCss = readdirSync(resolve(process.cwd(), "src/styles"))
+  .filter((f) => f.endsWith(".css"))
+  .map((f) => readFileSync(resolve(process.cwd(), "src/styles", f), "utf8"))
+  .join("\n");
 
 const authBlock = (selector: string) =>
   shellStyles.match(
@@ -145,35 +150,39 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     );
   });
 
-  it("registration anchors its card on the canonical SCR-002 y, derived not chosen (gh#256)", () => {
-    // These offsets are DERIVED from the canonical artboard quoted in the SCR-002 acceptance
-    // review — card y=284 at 1440x900, y=274 at 390x844 — through the column's own arithmetic:
-    //   card y = padding-block-start + identity slot + stack gap
-    //   284 - 112 - 20 = 152px = 9.5rem      274 - 112 - 20 = 142px = 8.875rem
-    // The registration visual script re-measures this in headless Chromium at both viewports.
-    expect(shellTokens).toContain("--auth-shell-registration-main-padding-block-start: 9.5rem;");
-    expect(shellTokens).toContain(
-      "--auth-shell-registration-main-padding-block-start-mobile: 8.875rem;",
+  it("registration places its card with auto margins, never a scroll-making inset (gh#256)", () => {
+    /*
+     * The SCR-002 anchor (card y=284 at 1440x900) used to be held by an unconditional 9.5rem
+     * block-start inset. Measured in Chromium at 1440x900 that produced 152px of EMPTY SPACE +
+     * 793px of content + 48px = 993px in a 900px viewport: the page scrolled 93px and the
+     * scrolled region was blank. Decoration above the fold is not worth a scrollbar, so the
+     * anchor yields to auto margins — the same technique `measure="wide"` uses one screen up.
+     *
+     * Auto margins absorb only free space that exists: roomy viewport ⇒ centred, full viewport ⇒
+     * they resolve to 0 and the card sits at the gutter, so every scrolled pixel is content.
+     * Verified in a consumer at 1440x{1080,900,800,720} and 390x844: card top
+     * 127 / 37 / 16 / 16 / 17 with overflow 0 / 0 / 57 / 137 / 0 — and the two overflows are
+     * content taller than the viewport, not padding.
+     */
+    expect(shellStyles).toMatch(
+      /\.ui-auth-shell\[data-preset="registration"\] \.ui-auth-shell-card\s*\{[^}]*margin-block:\s*auto/s,
     );
-    expect(shellTokens).toContain("--auth-shell-registration-identity-slot-block-size: 7rem;");
-    expect(shellTokens).toContain("--auth-shell-registration-card-stack-gap: 1.25rem;");
-
-    // The arithmetic itself, so a future edit to any ONE of the three cannot silently move the
-    // anchor while every individual assertion above still passes.
+    // The block-start is now an ordinary page gutter, matching the inline one, NOT the artboard
+    // offset. If it ever goes back to a multi-rem constant the scrollbar comes back with it.
+    expect(shellTokens).toContain("--auth-shell-registration-main-padding-block-start: 1rem;");
+    expect(shellTokens).toContain(
+      "--auth-shell-registration-main-padding-block-start-mobile: 0.9375rem;",
+    );
     const px = (token: string) => {
       const rem = shellTokens.match(new RegExp(`${token}:\\s*([\\d.]+)rem;`))?.[1];
       return rem ? parseFloat(rem) * 16 : NaN;
     };
-    expect(
-      px("--auth-shell-registration-main-padding-block-start") +
-        px("--auth-shell-registration-identity-slot-block-size") +
-        px("--auth-shell-registration-card-stack-gap"),
-    ).toBe(284);
-    expect(
-      px("--auth-shell-registration-main-padding-block-start-mobile") +
-        px("--auth-shell-registration-identity-slot-block-size") +
-        px("--auth-shell-registration-card-stack-gap"),
-    ).toBe(274);
+    expect(px("--auth-shell-registration-main-padding-block-start")).toBeLessThanOrEqual(24);
+
+    // The parts the anchor was built from stay pinned: the identity track still absorbs copy
+    // length so the card cannot ride on it, and the stack rhythm is unchanged.
+    expect(shellTokens).toContain("--auth-shell-registration-identity-slot-block-size: 7rem;");
+    expect(shellTokens).toContain("--auth-shell-registration-card-stack-gap: 1.25rem;");
   });
 
   it("registration pins the identity track so copy length cannot move the anchor (gh#256)", () => {
@@ -257,36 +266,23 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     );
   });
 
-  it("registration anchors its card on the canonical SCR-002 y, derived not chosen (gh#256)", () => {
-    // These two offsets were INVENTED in the first pass (3rem / 1.5rem) and measured wrong by
-    // 133/147px. They are now derived from the canonical artboard quoted in the SCR-002 acceptance
-    // review — card y=284 at 1440x900, y=274 at 390x844 — through the column's own arithmetic:
-    //   card y = padding-block-start + identity slot + stack gap
-    //   284 - 112 - 20 = 152px = 9.5rem      274 - 112 - 20 = 142px = 8.875rem
-    // Verified in headless Chromium at both viewports: measured card y == canonical y, delta 0.00px.
-    expect(shellTokens).toContain("--auth-shell-registration-main-padding-block-start: 9.5rem;");
-    expect(shellTokens).toContain(
-      "--auth-shell-registration-main-padding-block-start-mobile: 8.875rem;",
-    );
+  it("keeps the identity track and stack rhythm the anchor was built from (gh#256)", () => {
+    /*
+     * This case used to assert the anchor arithmetic itself —
+     *   padding-block-start + identity slot + stack gap === 284 (and 274 on mobile)
+     * — which is no longer the contract: the block-start is a page gutter and the auto margins in
+     * shell-layout.css decide the placement. See the placement case above for why the artboard
+     * anchor yielded (152px of empty space manufactured a 93px scrollbar at 1440x900).
+     *
+     * The other two terms still matter and stay pinned. The 112px identity track is what absorbs
+     * absent / one-line / two-line copy, so the card never rides on the identity block's own
+     * height; the 20px stack gap is the section rhythm shared with login.
+     */
     expect(shellTokens).toContain("--auth-shell-registration-identity-slot-block-size: 7rem;");
     expect(shellTokens).toContain("--auth-shell-registration-card-stack-gap: 1.25rem;");
-
-    // The arithmetic itself, so a future edit to any ONE of the three cannot silently move the
-    // anchor while every individual assertion above still passes.
-    const px = (token: string) => {
-      const rem = shellTokens.match(new RegExp(`${token}:\\s*([\\d.]+)rem;`))?.[1];
-      return rem ? parseFloat(rem) * 16 : NaN;
-    };
-    expect(
-      px("--auth-shell-registration-main-padding-block-start") +
-        px("--auth-shell-registration-identity-slot-block-size") +
-        px("--auth-shell-registration-card-stack-gap"),
-    ).toBe(284);
-    expect(
-      px("--auth-shell-registration-main-padding-block-start-mobile") +
-        px("--auth-shell-registration-identity-slot-block-size") +
-        px("--auth-shell-registration-card-stack-gap"),
-    ).toBe(274);
+    expect(shellStyles).toMatch(
+      /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*block-size:\s*var\(--auth-shell-registration-identity-slot-block-size\)/s,
+    );
   });
 
   it("registration pins the identity track so copy length cannot move the anchor (gh#256)", () => {
@@ -376,5 +372,180 @@ describe("AppSettingPicker compact trigger — token-owned geometry (gh#217)", (
     ]) {
       expect(navTokens).toContain(`${token}:`);
     }
+  });
+});
+
+/**
+ * `align` — the block-axis choice, orthogonal to `preset`.
+ *
+ * It exists because a preset could previously be re-aimed only by re-declaring its own offset
+ * tokens from a consumer stylesheet (Platform #838 centred SCR-001 that way for months), which is
+ * the page-local-vertical-offset anti-pattern the presets replaced. These cases pin the two halves
+ * that make the axis real: the alignment itself, and the block-start collapse WITHOUT which
+ * `justify-content: center` fights a 231px block-start inset and the card still is not centred.
+ */
+describe("AuthShell align — block-axis placement", () => {
+  const alignBlock = (value: string, preset?: string) =>
+    shellStyles.match(
+      new RegExp(
+        preset === undefined
+          ? `\\.ui-auth-shell\\[data-align="${value}"\\]\\s*\\{[^}]*\\}`
+          : `\\.ui-auth-shell\\[data-preset="${preset}"\\]\\[data-align="${value}"\\]\\s*\\{[^}]*\\}`,
+        "g",
+      ),
+    ) ?? [];
+
+  it("declares both directions, so neither is reachable only by omission", () => {
+    expect(alignBlock("center")[0]).toMatch(/--auth-shell-main-align:\s*center/);
+    expect(alignBlock("anchored")[0]).toMatch(/--auth-shell-main-align:\s*flex-start/);
+  });
+
+  it("is declared AFTER the presets, which decide the same property at equal specificity", () => {
+    // `.ui-auth-shell[data-preset="login"]` and `.ui-auth-shell[data-align="center"]` are both
+    // (0,2,0). Source order is the whole contract; earlier and the preset would win silently.
+    const preset = shellStyles.indexOf('.ui-auth-shell[data-preset="login"] {');
+    const align = shellStyles.indexOf('.ui-auth-shell[data-align="center"] {');
+    expect(preset).toBeGreaterThan(-1);
+    expect(align).toBeGreaterThan(preset);
+  });
+
+  it("collapses login's block-start inset to its block-end one, desktop AND mobile", () => {
+    // Without the mobile line the phone viewport keeps the 13.8125rem anchor and only the desktop
+    // looks centred — the asymmetry a token-level override is easy to half-fix.
+    const rule = alignBlock("center", "login")[0] ?? "";
+    expect(rule).toMatch(
+      /--auth-shell-login-flow-offset-block:\s*var\(--auth-shell-login-main-padding-block-end\)/,
+    );
+    expect(rule).toMatch(
+      /--auth-shell-login-flow-offset-block-mobile:\s*var\(--auth-shell-login-main-padding-block-end\)/,
+    );
+  });
+
+  it("retargets the offset TOKENS, never the --auth-shell-main-padding shorthand", () => {
+    // The `max-width: 30rem` block recomposes that shorthand from the `*-mobile` tokens, so
+    // re-declaring it here would freeze the inline gutters the preset owns.
+    for (const rule of [alignBlock("center", "login")[0], alignBlock("center", "registration")[0]]) {
+      expect(rule).toBeDefined();
+      expect(rule).not.toMatch(/--auth-shell-main-padding:/);
+    }
+  });
+
+  it("gives registration the same collapse, mobile token included", () => {
+    const rule = alignBlock("center", "registration")[0] ?? "";
+    expect(rule).toMatch(
+      /--auth-shell-registration-main-padding-block-start:\s*var\(\s*--auth-shell-registration-main-padding-block-end\s*\)/s,
+    );
+    expect(rule).toMatch(
+      /--auth-shell-registration-main-padding-block-start-mobile:\s*var\(\s*--auth-shell-registration-main-padding-block-end-mobile\s*\)/s,
+    );
+  });
+
+  it("leaves every preset default untouched when align is not passed", () => {
+    // The prop is opt-in: `data-align` is omitted unless stated, so these stay the defaults.
+    expect(authBlock("login")[0]).toMatch(/--auth-shell-main-align:\s*flex-start/);
+    expect(authBlock("registration")[0]).toMatch(/--auth-shell-main-align:\s*flex-start/);
+  });
+});
+
+/**
+ * Guards for three drifts found by running visual-audit against a real consumer page, each of
+ * which had gone unnoticed because nothing asserted the thing it claimed to cover.
+ */
+describe("audit + a11y drift guards", () => {
+  const dataDisplay = readFileSync(
+    resolve(process.cwd(), "src/styles/data-display-layout.css"),
+    "utf8",
+  );
+  const foundation = readFileSync(resolve(process.cwd(), "src/tokens/foundation.css"), "utf8");
+  const auditScript = readFileSync(resolve(process.cwd(), "scripts/visual-audit.mjs"), "utf8");
+
+  it("probes every layer with a class the stylesheets actually declare", () => {
+    // The card-layout probe used `.ui-card` — a class Card never renders and no rule targets — so
+    // it could not pass on any page and reported a permanent false error. A probe aimed at a class
+    // nothing styles is indistinguishable from a genuinely missing layer, which is the expensive
+    // half: it trains readers to ignore the finding.
+    const probes = [...auditScript.matchAll(/probe\("([^"]+)",\s*"([^"]+)"/g)].map(
+      ([, layer, className]) => ({ layer, className }),
+    );
+    expect(probes.length).toBeGreaterThan(0);
+    const allCss = allLayerCss;
+    for (const { layer, className } of probes) {
+      // A SELECTOR, not a substring: `.ui-card` is contained in `.ui-card-inset-x`, so a
+      // `includes()` check would have called the very bug this guard exists for "declared".
+      const declared = new RegExp(`\\.${className}(?![\\w-])`).test(allCss);
+      expect(`${layer}:${className}`, `probe class .${className} is declared somewhere`).toBe(
+        declared ? `${layer}:${className}` : `${layer}:<undeclared>`,
+      );
+    }
+  });
+
+  it("sizes a bare glyph in the ListRow leading slot from the control tier", () => {
+    // Without this the slot had no icon metric, so every caller — including this package's own
+    // docs/data-display/list-row.tsx — reached for className="size-4". A library that documents
+    // the utility it forbids is teaching the anti-pattern.
+    expect(dataDisplay).toMatch(
+      /\[data-slot="list-row-leading"\] > svg:not\(\[class\*="size-"\]\)\s*\{[^}]*width:\s*var\(--list-row-leading-icon-size,\s*var\(--control-icon-size\)\)/s,
+    );
+    // `> svg` only, and an explicit caller size still wins: an Avatar or Badge in the slot brings
+    // its own box and must not be squeezed into an icon measure.
+    expect(dataDisplay).toContain('[data-slot="list-row-leading"] > svg:not([class*="size-"])');
+  });
+
+  it("floors the auth footer's interactive targets at the WCAG 2.2 AA size", () => {
+    expect(foundation).toMatch(/--touch-target-min:\s*1\.5rem/);
+    expect(shellTokens).toMatch(
+      /--auth-footer-target-min-size:\s*var\(--touch-target-min\)/,
+    );
+    const rule = shellStyles.match(
+      /\.ui-auth-legal-footer :is\(a, button\)\s*\{[^}]*\}/,
+    )?.[0];
+    expect(rule).toBeDefined();
+    // inline-flex is load-bearing: min-block-size does nothing to an inline anchor, so dropping
+    // the display line would leave a rule that reads correct and measures 19px.
+    expect(rule).toMatch(/display:\s*inline-flex/);
+    expect(rule).toMatch(/min-block-size:\s*var\(--auth-footer-target-min-size\)/);
+  });
+
+  it("does not let the footer's inline picker rule undo that floor", () => {
+    // `[data-slot="auth-legal-footer"] .ui-app-setting-picker-inline` is (0,2,0) and the footer's
+    // own floor is (0,1,1), so a `min-height: 0` here silently won and the locale trigger stayed
+    // 19px on every auth page. Measured: 33x19 before, against a 24px AA floor.
+    const nav = readFileSync(resolve(process.cwd(), "src/styles/navigation-layout.css"), "utf8");
+    const rule = nav.match(
+      /\[data-slot="auth-legal-footer"\] \.ui-app-setting-picker-inline\s*\{[^}]*\}/,
+    )?.[0];
+    expect(rule).toBeDefined();
+    expect(rule).toMatch(/min-block-size:\s*var\(--auth-footer-target-min-size\)/);
+    expect(rule, "the zeroed floor must not come back").not.toMatch(/min-height:\s*0/);
+  });
+});
+
+
+describe("Truncating boxes contain their own ink", () => {
+  it("never pairs a clipped overflow with a tight line box", () => {
+    /*
+     * `overflow: hidden` is what makes `text-overflow: ellipsis` work, and it clips whatever the
+     * line box does not cover — so in a truncating rule the line-height is the CLIPPING BOUNDARY,
+     * not a rhythm choice. 1.25 was picked against Latin, where a `g` descender still lands inside
+     * the box. Vietnamese does not: measured on the org switcher's meta line at 11.11px in a
+     * 13.88px box, the dot-below of `ị` in 「Quản trị viên」 was cut at the baseline edge. Japanese
+     * and every other diacritic-stacking script sit in the same trap, so this is a family, not one
+     * selector — three rules carried the pair when it was first swept.
+     */
+    const offenders: string[] = [];
+    for (const file of readdirSync(resolve(process.cwd(), "src/styles")).filter((f) => f.endsWith(".css"))) {
+      const css = readFileSync(resolve(process.cwd(), "src/styles", file), "utf8");
+      for (const [, selector, body] of css.matchAll(/([.[][^{}]{0,90}?)\s*\{([^}]*)\}/g)) {
+        const clips = body.includes("text-overflow: ellipsis") || body.includes("overflow: hidden");
+        // ANY line box under 1.4, not just the named tight step. The first version of this guard
+        // matched `--line-height-tight` and literals up to 1.1, and four rules carrying 1.2 / 1.3
+        // walked straight through it — the exact values that were clipping.
+        const lh = /line-height:\s*([^;]+);/.exec(body)?.[1]?.trim();
+        const literal = lh && /^[\d.]+$/.test(lh) ? Number.parseFloat(lh) : null;
+        const tight = Boolean(lh && (lh.includes("--line-height-tight") || (literal !== null && literal < 1.4)));
+        if (clips && tight) offenders.push(`${file}: ${selector.trim().replace(/\s+/g, " ")}`);
+      }
+    }
+    expect(offenders).toEqual([]);
   });
 });

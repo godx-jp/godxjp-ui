@@ -3,9 +3,9 @@ import { Menu } from "lucide-react";
 
 import { useMediaQuery } from "../../lib/hooks";
 import { useTranslation } from "../../i18n/use-translation";
-import { Button } from "../general/button";
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTrigger } from "../feedback/sheet";
 import { NavSurfaceProvider } from "./nav-surface";
+import { TopbarItem } from "./topbar-item";
 import type { AppShellProp } from "../../props/components/layout.prop";
 
 export type {
@@ -31,6 +31,8 @@ export function AppShell({
   responsiveNavigation = "drawer",
   topbarSpan = "content",
   navRail,
+  navRailPosition = "start",
+  navRailEnd,
   navRailLabel,
   mobileNav,
   mobileNavLabel,
@@ -54,12 +56,26 @@ export function AppShell({
    * 900px — reachable on a laptop, gone on a phone. A control that exists on only some viewports
    * is not a control, it is a trap.
    */
+  /*
+   * The rail's own content, composed ONCE. It is rendered in three places — the docked track, the
+   * drawer's rail strip and the drawer's stacked fallback — and a pinned end that reached only the
+   * first of them would be a control that exists on some viewports and not others, which is the
+   * trap the comment above is about.
+   */
+  const railContent =
+    navRail === undefined ? null : (
+      <>
+        {navRail}
+        {navRailEnd !== undefined ? <div className="app-nav-rail-end">{navRailEnd}</div> : null}
+      </>
+    );
+
   const drawerNav =
     mobileNav !== undefined ? (
       mobileNav
     ) : navRail !== undefined ? (
       <>
-        {navRail}
+        {railContent}
         {sidebar}
       </>
     ) : (
@@ -198,7 +214,7 @@ export function AppShell({
         className="app-nav-rail"
         aria-label={navRailLabel ?? t("layout.appShell.navRailLabel")}
       >
-        {navRail}
+        {railContent}
       </aside>
     );
 
@@ -214,24 +230,27 @@ export function AppShell({
         {hasDrawer && (
           <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
             <SheetTrigger asChild>
-              <Button
+              {/* A BAR CELL, not a Button. This is the rule the library states to consumers —
+               * "a Button in a bar is a --control-height pill floating in a taller strip, with its
+               * own hover fill and its own focus ring" — and the shell was breaking it on the ONE
+               * control that is the only navigation a phone has: measured 40x28 inside a 48px bar,
+               * and still 28 tall when the coarse-pointer bar grows to 56. `TopbarItem` stretches
+               * to whatever the bar is and carries --topbar-item-min-width, so the target follows
+               * the bar instead of ignoring it. */}
+              <TopbarItem
                 type="button"
-                variant="ghost"
-                size="sm"
                 className="app-mobile-nav-trigger"
                 aria-label={t("layout.appShell.openNav")}
                 aria-haspopup="dialog"
               >
-                {/* The hamburger glyph is DELIBERATELY larger than this `size="sm"` Button's own
-                 * icon size (--control-icon-size-sm, 0.875rem): on a phone it is the only
-                 * navigation affordance there is. Passed as a utility reading the knob, not as a
-                 * `.app-mobile-nav-trigger svg` rule, for the same reason as
-                 * --app-shell-mobile-nav-inset below: shell-layout.css is imported BEFORE
+                {/* The hamburger glyph is DELIBERATELY larger than the cell's own --topbar-icon-size:
+                 * on a phone it is the only navigation affordance there is. Passed as a utility
+                 * reading the knob, not as a `.app-mobile-nav-trigger svg` rule, for the same reason
+                 * as --app-shell-mobile-nav-inset below: shell-layout.css is imported BEFORE
                  * control.css and both live in `@layer components`, so a rule at the identical
-                 * (0,1,1) specificity of `.ui-button--sm svg` would silently LOSE and the glyph
-                 * would shrink back to 0.875rem. */}
+                 * (0,1,1) specificity would silently LOSE and the glyph would shrink back. */}
                 <Menu className="size-[var(--app-shell-mobile-nav-icon-size)]" aria-hidden="true" />
-              </Button>
+              </TopbarItem>
             </SheetTrigger>
             <SheetContent
               side="left"
@@ -260,7 +279,7 @@ export function AppShell({
                  * desktop collapse buys no room and costs every label. */}
                 {railInDrawer ? (
                   <div className="app-mobile-nav-columns">
-                    <div className="app-mobile-nav-rail">{navRail}</div>
+                    <div className="app-mobile-nav-rail">{railContent}</div>
                     <NavSurfaceProvider surface="drawer">
                       <div className="app-mobile-nav-sections">{sidebar}</div>
                     </NavSurfaceProvider>
@@ -286,6 +305,7 @@ export function AppShell({
       data-topbar={hasTopbarContent ? undefined : "none"}
       data-topbar-span={topbarSpan === "full" ? "full" : undefined}
       data-nav-rail={navRail !== undefined ? "" : undefined}
+      data-nav-rail-position={navRail !== undefined ? navRailPosition : undefined}
     >
       {/* Grid areas place these regardless of source order, so source order is free to be the
        * ACCESSIBLE one: whichever region the eye reaches first comes first in the DOM. With a

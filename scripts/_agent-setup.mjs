@@ -74,8 +74,21 @@ or change a component, page, or form — no exceptions.
   \`rounded border\` div. Text is \`<Text tone size weight truncate>\`, never utility classes.
 
 ## Before writing UI
-1. **MCP-first.** Consult the godx-ui MCP: \`get_component <Name>\`, \`search_components\`,
-   \`list_audit_rules\`, \`list_visual_checks\`. Never guess a prop; never hand-roll what a
+1. **DISCOVERY BEFORE LOOKUP — in this order, every time.**
+   1. \`search_components "<the area you are about to build>"\` FIRST. This is the only call that
+      answers "what already exists here". Ask it before the first line of JSX, not after.
+   2. \`get_component <Name>\` second, once you know the name.
+   \`get_component\` answers "how do I use X" and is USELESS for finding X — you can only look up a
+   name you already have. Skipping step 1 is how a consumer hand-rolled an organization switcher
+   the package ships (\`OrgSwitcher\`) and built three topbar cells out of Buttons instead of
+   \`TopbarItem\`: both were one \`search_components\` call away, and neither was ever searched for.
+   **Existing code in this repo is NOT the authority.** Reading a neighbouring file and copying it
+   is the most common way this rule gets skipped — measured: of four fresh agents given a vague UI
+   task, all four answered correctly but two never called the MCP at all, saying the answer was
+   already in the code. They were only right because that code had just been fixed; a week earlier
+   the same files hand-rolled a switcher and put Buttons in topbar slots, and both agents would
+   have copied it. Search the catalog even when a local file looks like it already answers you.
+   Also \`list_audit_rules\`, \`list_visual_checks\`. Never guess a prop; never hand-roll what a
    primitive already does.
 2. **Real primitives only.** No raw \`<input>/<select>/<button>/<textarea>/<table>\`, no
    styled-div fakes. A labelled control ALWAYS goes in \`<FormField label=…>\` (it owns the
@@ -105,8 +118,21 @@ This app uses @godxjp/ui. EVERY time you build or change UI:
    \`PageContainer\`; siblings go in \`<Flex direction="col" gap>\` / \`<ResponsiveGrid>\`; no
    \`flex\`/\`grid\`/\`gap-*\`/\`p-*\`/\`m-*\` on your own elements; boxes are \`Card\`/\`Badge\`/
    \`ListRow\`/\`Descriptions\`, never a \`rounded border\` div; text is \`<Text tone size weight>\`.
-1. **MCP-first.** Consult the \`godx-ui\` MCP — \`get_component\`, \`search_components\`,
-   \`list_audit_rules\`, \`list_visual_checks\`. Never guess a prop; never hand-roll what a
+1. **DISCOVERY BEFORE LOOKUP — in this order, every time.**
+   1. \`search_components "<the area you are about to build>"\` FIRST. This is the only call that
+      answers "what already exists here". Ask it before the first line of JSX, not after.
+   2. \`get_component <Name>\` second, once you know the name.
+   \`get_component\` answers "how do I use X" and is USELESS for finding X — you can only look up a
+   name you already have. Skipping step 1 is how a consumer hand-rolled an organization switcher
+   the package ships (\`OrgSwitcher\`) and built three topbar cells out of Buttons instead of
+   \`TopbarItem\`: both were one \`search_components\` call away, and neither was ever searched for.
+   **Existing code in this repo is NOT the authority.** Reading a neighbouring file and copying it
+   is the most common way this rule gets skipped — measured: of four fresh agents given a vague UI
+   task, all four answered correctly but two never called the MCP at all, saying the answer was
+   already in the code. They were only right because that code had just been fixed; a week earlier
+   the same files hand-rolled a switcher and put Buttons in topbar slots, and both agents would
+   have copied it. Search the catalog even when a local file looks like it already answers you.
+   Also \`list_audit_rules\`, \`list_visual_checks\`. Never guess a prop; never hand-roll what a
    primitive already does.
 2. **Real primitives only.** No raw \`<input>/<select>/<button>/<textarea>/<table>\`. A labelled
    control ALWAYS goes in \`<FormField label=…>\` — never a bare \`<Label>\`+\`<Input>\`. Semantic
@@ -192,10 +218,13 @@ export function writeWorkflowMd(root) {
   const path = join(root, ".claude", "godxjp-ui-workflow.md");
   mkdirSync(dirname(path), { recursive: true });
   // This file is owned entirely by the package — the CLAUDE.md block tells the consumer to edit
-  // it, but nothing else reads from it, so a stale copy is pure loss. Rewrite when the stamp moves.
+  // it, but nothing else reads from it, so a stale copy is pure loss. It is package-owned end to
+  // end, so the comparison is the BODY: a version check froze every consumer whose stamp already
+  // matched, which meant guidance edited between releases reached nobody while still reading as
+  // current. Same defect as ensureClaudeMd carried, same fix.
   if (existsSync(path)) {
     const cur = readFileSync(path, "utf8");
-    if (stampedVersion(cur) === KIT_VERSION) return false;
+    if (cur.trim() === WORKFLOW_MD.trim()) return false;
     writeFileSync(path, WORKFLOW_MD);
     return "refreshed";
   }
@@ -207,13 +236,34 @@ export function writeWorkflowMd(root) {
  * Append the godxjp-ui mandate to the consumer's CLAUDE.md (created if absent). Idempotent via the
  * markers.
  */
+
+/**
+ * Is the managed region in `existing` already byte-identical to what we would write?
+ *
+ * Digest first (cheap, and survives whitespace-only rewrites of the surrounding file). When the
+ * stamp predates digest stamping there is nothing to compare, so fall back to the region body
+ * itself rather than assuming current — assuming current is the bug this replaced.
+ */
+function blockIsCurrent(existing, block) {
+  const wanted = stampedDigest(block);
+  const have = stampedDigest(existing);
+  if (wanted && have) return wanted === have;
+  const region = (text) => text.slice(text.indexOf("<!-- godxjp-ui:start"), text.indexOf("<!-- godxjp-ui:end -->"));
+  return region(existing).trim() === region(block).trim();
+}
+
 export function ensureClaudeMd(root) {
   const path = join(root, "CLAUDE.md");
   const existing = existsSync(path) ? readFileSync(path, "utf8") : null;
   if (existing?.includes("godxjp-ui:start")) {
     // Present — but at WHICH version? Refresh only the delimited block; anything the consumer
     // wrote around it is untouched.
-    if (stampedVersion(existing) === KIT_VERSION) return "present";
+    // Compare the DIGEST, not the version — which is what the note above already promised and
+    // what this line did not do. Guidance is edited far more often than the package version moves,
+    // so a version check freezes every consumer whose stamp already matches: a rewritten mandate
+    // reached nobody, and the block still read as current. A file written before digest stamping
+    // has no digest at all, so fall back to comparing the rendered body.
+    if (blockIsCurrent(existing, CLAUDE_MD_BLOCK)) return "present";
     writeFileSync(
       path,
       refreshBlock(existing, CLAUDE_MD_BLOCK, "<!-- godxjp-ui:start", "<!-- godxjp-ui:end -->"),

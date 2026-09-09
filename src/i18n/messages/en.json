@@ -19,7 +19,9 @@
   "dataEntry": {
     "calendar": {
       "today": "Today",
-      "close": "Close"
+      "close": "Close",
+      "nav": "{label} navigation",
+      "name": "Calendar"
     },
     "datePicker": {
       "placeholder": "Select date",

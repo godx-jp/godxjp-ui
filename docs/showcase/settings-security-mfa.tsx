@@ -78,7 +78,7 @@ export default function SecurityMfaShowcase() {
           </CardHeader>
           <CardContent flush>
             <ListRow
-              leading={<Mail aria-hidden="true" className="size-4" />}
+              leading={<Mail aria-hidden="true" />}
               title="OTP qua email"
               description="Gửi mã tới t•••@famgia.com"
               trailing={
@@ -91,7 +91,7 @@ export default function SecurityMfaShowcase() {
               }
             />
             <ListRow
-              leading={<Smartphone aria-hidden="true" className="size-4" />}
+              leading={<Smartphone aria-hidden="true" />}
               title="Ứng dụng xác thực"
               description="Chưa thiết lập"
               trailing={
@@ -101,7 +101,7 @@ export default function SecurityMfaShowcase() {
               }
             />
             <ListRow
-              leading={<KeyRound aria-hidden="true" className="size-4" />}
+              leading={<KeyRound aria-hidden="true" />}
               title="Passkey"
               description="1 thiết bị · MacBook Pro"
               trailing={

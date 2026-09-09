@@ -88,8 +88,8 @@ const CONVERTED: ReadonlyArray<[file: string, selector: string, why: string]> = 
   ],
   [
     "shell-layout.css",
-    ".ui-topbar-start > :last-child",
-    "the slot's last child is whatever the consumer passed — often a control (gh#376)",
+    '.ui-topbar-start > :last-child:not(:is(button, a, [role="button"], .ui-button))',
+    "the slot's last child is whatever the consumer passed — a STRING here, since the rule now excludes controls, which keep their own measure and their own clipping (gh#376)",
   ],
 ];
 
