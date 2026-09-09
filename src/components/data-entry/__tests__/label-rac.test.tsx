@@ -138,7 +138,7 @@ describe("Label line box", () => {
      */
     expect(controlTokens).not.toMatch(/--control-label-line-height:\s*1\s*;/);
     expect(controlTokens).toMatch(
-      /--control-label-line-height:\s*var\(--line-height-tight\)/,
+      /--control-label-line-height:\s*var\(--line-height-normal\)/,
     );
   });
 

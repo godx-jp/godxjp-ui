@@ -2167,7 +2167,14 @@
   /* TOPBAR CHIP/SEARCH DENSITY ONLY — this is NOT a second shell breakpoint. */
   @media (max-width: 768px) {
     .tb-chip-sep,
-    .tb-search .kbd {
+    .tb-search .kbd,
+    /* The trigger's LABEL gets the same compact treatment the shortcut cap already had. Without a
+     * hook of its own the compact `.tb-search` kept a full text label inside a box that had just
+     * been told to shrink to `min-width: var(--control-height)`, so the only way to an icon-only
+     * trigger was a stack of consumer utilities — which is exactly what one consumer wrote
+     * (`hidden min-[901px]:flex min-[901px]:size-8 min-[901px]:px-0 min-[1180px]:w-full`). Opt-in:
+     * a trigger whose label should survive simply does not carry the class. */
+    .tb-search .tb-search-label {
       display: none;
     }
 

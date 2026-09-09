@@ -592,11 +592,14 @@
    * lower half of the canonical Login card 8px high (gh#263). Same literal, same failure, one
    * token over.
    *
-   * `--line-height-tight` is the smallest step on the scale that separates two lines, so the
-   * single-line box grows by 3.5px at 14px and nothing else moves. Alignment is unaffected:
-   * `.ui-label` is `display: flex; align-items: center`, so the control still centres against the
-   * label box whatever its height. */
-  --control-label-line-height: var(--line-height-tight);
+   * `--line-height-normal` (1.5), not `--line-height-tight`: 1.25 clears the collision but two
+   * wrapped lines still read as one block, and a label that has wrapped IS prose at that point.
+   * 1.5 is also what this package already decided for the same job one layer up —
+   * `--auth-shell-field-label-line-height` — so the two agree instead of drifting.
+   *
+   * Alignment is unaffected: `.ui-label` is `display: flex; align-items: center`, so the control
+   * centres against the label box whatever its height. */
+  --control-label-line-height: var(--line-height-normal);
   /* Label → addon/required-marker gap. A RAW rem, deliberately NOT var(--space-2): the `gap-2` it
    * replaces reads Tailwind's own --spacing grid, which this repo does NOT density-scale, so a
    * --space-* default would silently resize every label row under a compact/comfortable density.
