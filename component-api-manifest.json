@@ -2387,6 +2387,14 @@
           ]
         },
         {
+          "name": "fill",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "fullWidth",
           "origin": "owned",
           "required": false,
@@ -2525,6 +2533,14 @@
           "required": false,
           "type": "number | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "fill",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {

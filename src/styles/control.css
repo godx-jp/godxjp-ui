@@ -92,6 +92,18 @@
     opacity: var(--disabled-opacity);
   }
 
+  /* `fill` — take the space the siblings leave and let the label ellipse, the same axis Flex
+   * carries. Button's resting `flex-shrink: 0` is right almost everywhere and wrong in a
+   * constrained bar: an account menu holding an avatar plus a person's name keeps its full width
+   * while the cluster CLIPS it, so a keyboard user tabs to a control they cannot see (SC 2.4.7).
+   * `min-inline-size: 0` is the load-bearing half — without it the label's intrinsic width still
+   * sets the floor and `flex: 1` changes nothing. Declared here rather than as a className so the
+   * measure stays inside the layer a service theme can reach (rules #44/#45). */
+  .ui-button[data-fill] {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
   .ui-button svg {
     width: var(--control-icon-size);
     height: var(--control-icon-size);
