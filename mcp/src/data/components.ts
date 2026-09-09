@@ -8769,7 +8769,7 @@ function MultiRegionPicker() {
     name: "TreeSelect",
     group: "data-entry",
     tagline:
-      "Hierarchical tree picker in a Popover (single or multi-select with checkboxes) — `onChange` receives `string` in single mode and `string[]` in multi/checkable mode; never use a raw `<select>` for tree-structured data.",
+      "Hierarchical tree picker in a Popover (single or multi-select with checkboxes) — `onValueChange` receives `string` in single mode and `string[]` in multi/checkable mode; never use a raw `<select>` for tree-structured data.",
     props: [
       {
         name: "name",
@@ -8806,7 +8806,7 @@ function MultiRegionPicker() {
         type: "boolean",
         defaultValue: "false",
         description:
-          "Enable multi-select without checkboxes. When true, `onChange` always fires with `string[]`.",
+          "Enable multi-select without checkboxes. When true, `onValueChange` always fires with `string[]`.",
       },
       {
         name: "treeCheckable",
@@ -8834,7 +8834,7 @@ function MultiRegionPicker() {
         type: "boolean",
         defaultValue: "false",
         description:
-          "Show a CommandInput search box at the top of the dropdown. Filters visible tree nodes by label text.",
+          "Show a labelled SearchInput at the top of the dropdown. Filters visible tree nodes by label text; the trigger combobox controls the tree.",
       },
       {
         name: "treeDefaultExpandAll",
@@ -8897,7 +8897,7 @@ function MultiRegionPicker() {
         name: "fieldNames",
         type: "{ label?: string; value?: string; children?: string }",
         description:
-          "Remap data object keys. Example: `{ label: 'name', value: 'id', content: 'items' }` so you don't have to transform your API response before passing it to `treeData`.",
+          "Remap data object keys. Example: `{ label: 'name', value: 'id', children: 'items' }` so you don't have to transform your API response before passing it to `treeData`.",
       },
       {
         name: "status",
@@ -8989,8 +8989,8 @@ function MultiRegionPicker() {
       "DO pair with a `<label htmlFor={id}>` and pass the matching `id` prop so screen readers announce the control correctly. The underlying trigger is a `<Button role='combobox'>` — not a native `<select>` — so an explicit label is required.",
       "DO use `treeCheckable` (+ optionally `showCheckedStrategy`) for selecting multiple nodes with parent–child cascade; use `multiple` only when you want multi-select WITHOUT the checkbox cascade behaviour.",
       "DO use the static constants `TreeSelect.SHOW_CHILD`, `TreeSelect.SHOW_PARENT`, `TreeSelect.SHOW_ALL` (or the named exports `SHOW_CHILD`/`SHOW_PARENT`/`SHOW_ALL` from the same import path) instead of raw string literals for `showCheckedStrategy`.",
-      "DON'T pass `value` and `defaultValue` simultaneously — pick controlled (`value` + `onChange`) OR uncontrolled (`defaultValue` only). Mixing them causes the component to silently prefer the controlled path.",
-      "DON'T hand-roll `onChange` type narrowing: in single mode the callback receives `string | undefined`; in multi/checkable mode it receives `string[]`. Branch on `multiple || treeCheckable` if you need to handle both shapes in the same handler.",
+      "DON'T pass `value` and `defaultValue` simultaneously — pick controlled (`value` + `onValueChange`) OR uncontrolled (`defaultValue` only). Mixing them causes the component to silently prefer the controlled path.",
+      "DON'T hand-roll `onValueChange` type narrowing: in single mode the callback receives `string | undefined`; in multi/checkable mode it receives `string[]`. Branch on `multiple || treeCheckable` if you need to handle both shapes in the same handler.",
       "DON'T use a raw `<select>` or a flat `Select` component for hierarchical/nested data — TreeSelect is the correct primitive. If hierarchy is irrelevant and data is flat, use `Select` instead.",
     ],
     useCases: [

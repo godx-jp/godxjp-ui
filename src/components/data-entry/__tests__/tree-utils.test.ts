@@ -141,6 +141,8 @@ describe("tree navigation helpers", () => {
     const matched = filterVisibleTree(tree, "france").map((r) => r.node.value);
     expect(matched).toContain("eu"); // ancestor auto-expanded
     expect(matched).toContain("fr");
+    expect(matched).not.toContain("asia");
+    expect(filterVisibleTree(tree, "no-match")).toEqual([]);
   });
 
   it("collectAllExpandableKeys lists only branch nodes", () => {

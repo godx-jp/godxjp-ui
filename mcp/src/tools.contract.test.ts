@@ -135,3 +135,11 @@ it("documents the callback Select actually invokes", async () => {
   expect(out).toContain("`onValueChange`");
   expect(out).not.toContain("`onChange`");
 });
+
+it("documents TreeSelect callback and field remapping consistently", async () => {
+  const out = await dispatchTool("get_component", { name: "TreeSelect" });
+  expect(out).toContain("`onValueChange`");
+  expect(out).not.toContain("`onChange`");
+  expect(out).toContain("children: 'items'");
+  expect(out).not.toContain("content: 'items'");
+});

@@ -178,23 +178,18 @@ export function filterVisibleTree(
   const q = query.trim().toLowerCase();
   if (!q) return flattenVisibleTree(options, new Set(collectAllExpandableKeys(options)));
 
-  const expanded = new Set<string>();
-
-  function walk(nodes: NormalizedTreeOption[], depth: number): boolean {
-    let branchMatch = false;
-    for (const node of nodes) {
-      const selfMatch = reactNodeText(node.label).toLowerCase().includes(q);
-      const childMatch = node.children?.length ? walk(node.children, depth + 1) : false;
-      if (selfMatch || childMatch) {
-        branchMatch = true;
-        if (childMatch) expanded.add(node.value);
-      }
-    }
-    return branchMatch;
+  function matches(
+    nodes: NormalizedTreeOption[],
+    depth: number,
+  ): ReturnType<typeof flattenVisibleTree> {
+    return nodes.flatMap((node) => {
+      const children = node.isLeaf ? [] : matches(node.children ?? [], depth + 1);
+      if (!reactNodeText(node.label).toLowerCase().includes(q) && children.length === 0) return [];
+      return [{ node, depth, hasChildren: children.length > 0 }, ...children];
+    });
   }
 
-  walk(options, 0);
-  return flattenVisibleTree(options, expanded);
+  return matches(options, 0);
 }
 
 export function collectAllExpandableKeys(options: NormalizedTreeOption[]): string[] {

@@ -14,7 +14,8 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { ScrollArea } from "../data-display/scroll-area";
 import { Checkbox } from "./checkbox";
-import { Command, CommandInput } from "./command";
+import { SearchInput } from "./search-input";
+import { Separator } from "../layout/separator";
 import {
   collectAllExpandableKeys,
   filterVisibleTree,
@@ -378,16 +379,17 @@ function TreeSelectRoot({
           : null}
       </div>
       <PopoverContent className="ui-tree-select-popover" align="start">
-        {/* CommandInput already draws ONE bottom separator + its own inline padding — don't
-            wrap it in another bordered/padded box (that double-borders the search row). */}
         {showSearch && (
-          <Command shouldFilter={false}>
-            <CommandInput
+          <>
+            <SearchInput
+              variant="borderless"
+              ariaLabel={t("dataEntry.treeSelect.searchPlaceholder")}
               placeholder={t("dataEntry.treeSelect.searchPlaceholder")}
               value={search}
               onValueChange={setSearch}
             />
-          </Command>
+            <Separator />
+          </>
         )}
         <ScrollArea className="ui-tree-select-list">
           <div
@@ -396,95 +398,94 @@ function TreeSelectRoot({
             aria-multiselectable={Boolean(checkable) || Boolean(multiple)}
             className="ui-tree-select-panel"
           >
-            {visible.length === 0 ? (
-              <p className="ui-tree-select-empty">
-                {notFoundContent ?? t("dataEntry.treeSelect.empty")}
-              </p>
-            ) : (
-              visible.map(({ node, depth, hasChildren }) => {
-                const expanded = expandedKeys.has(node.value);
-                const isSelected = selected.includes(node.value);
-                // A `loadData` branch has no children YET — it must still read and behave as
-                // expandable, or the only affordance that would fetch them is hidden.
-                const expandable =
-                  hasChildren ||
-                  Boolean(loadData && node.isLeaf === false && !node.children?.length);
-                return (
-                  <div
-                    key={node.value}
-                    ref={(el) => {
-                      treeItemRefs.current.set(node.value, el);
-                    }}
-                    role="treeitem"
-                    tabIndex={node.disabled ? -1 : rovingKey === node.value ? 0 : -1}
-                    aria-expanded={expandable ? expanded : undefined}
-                    aria-selected={isSelected}
-                    onFocus={() => setActiveKey(node.value)}
-                    onKeyDown={(event) => onTreeItemKeyDown(event, node, expandable, expanded)}
-                    data-selected={isSelected ? "true" : "false"}
-                    data-disabled={node.disabled ? "" : undefined}
-                    className="ui-tree-select-row ui-focus-ring"
-                    // Depth drives the indent through a token, so a service can retune the step
-                    // (or flatten it) without touching this component.
-                    style={{ "--tree-select-depth": depth } as React.CSSProperties}
+            {visible.map(({ node, depth, hasChildren }) => {
+              const expanded =
+                showSearch && search.trim() ? hasChildren : expandedKeys.has(node.value);
+              const isSelected = selected.includes(node.value);
+              // A `loadData` branch has no children YET — it must still read and behave as
+              // expandable, or the only affordance that would fetch them is hidden.
+              const expandable =
+                hasChildren || Boolean(loadData && node.isLeaf === false && !node.children?.length);
+              return (
+                <div
+                  key={node.value}
+                  ref={(el) => {
+                    treeItemRefs.current.set(node.value, el);
+                  }}
+                  role="treeitem"
+                  tabIndex={node.disabled ? -1 : rovingKey === node.value ? 0 : -1}
+                  aria-expanded={expandable ? expanded : undefined}
+                  aria-selected={isSelected}
+                  onFocus={() => setActiveKey(node.value)}
+                  onKeyDown={(event) => onTreeItemKeyDown(event, node, expandable, expanded)}
+                  data-selected={isSelected ? "true" : "false"}
+                  data-disabled={node.disabled ? "" : undefined}
+                  className="ui-tree-select-row ui-focus-ring"
+                  // Depth drives the indent through a token, so a service can retune the step
+                  // (or flatten it) without touching this component.
+                  style={{ "--tree-select-depth": depth } as React.CSSProperties}
+                >
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    aria-label={
+                      expanded
+                        ? t("dataEntry.treeSelect.collapse")
+                        : t("dataEntry.treeSelect.expand")
+                    }
+                    data-leaf={expandable ? undefined : ""}
+                    className="ui-tree-select-toggle"
+                    onClick={() => toggleExpand(node)}
                   >
+                    {expanded ? (
+                      <ChevronDown className="ui-tree-select-toggle-icon" aria-hidden="true" />
+                    ) : (
+                      <ChevronRight className="ui-tree-select-toggle-icon" aria-hidden="true" />
+                    )}
+                  </button>
+                  {checkable ? (
+                    // The row must NOT WRAP the Checkbox in a `<label>`: the Checkbox is itself a
+                    // `<label>` around a real `<input>`, and a label nested in a label is
+                    // invalid HTML — the browser resolves neither, so the box loses its
+                    // accessible name. The node text sits BESIDE the box as a `for=`-associated
+                    // label instead, which both names it and keeps the text clickable.
+                    <div className="ui-tree-select-label">
+                      <Checkbox
+                        id={`${treeId}-${node.value}-box`}
+                        checked={isSelected}
+                        tabIndex={-1}
+                        disabled={Boolean(node.disabled) || Boolean(node.disableCheckbox)}
+                        onCheckedChange={() => toggleSelect(node)}
+                        aria-labelledby={`${treeId}-${node.value}-label`}
+                      />
+                      <label
+                        className="truncate"
+                        id={`${treeId}-${node.value}-label`}
+                        htmlFor={`${treeId}-${node.value}-box`}
+                      >
+                        {treeTitleRender ? treeTitleRender(node) : node.label}
+                      </label>
+                    </div>
+                  ) : (
                     <button
                       type="button"
                       tabIndex={-1}
-                      aria-label={
-                        expanded
-                          ? t("dataEntry.treeSelect.collapse")
-                          : t("dataEntry.treeSelect.expand")
-                      }
-                      data-leaf={expandable ? undefined : ""}
-                      className="ui-tree-select-toggle"
-                      onClick={() => toggleExpand(node)}
+                      className="flex-1 truncate text-start"
+                      disabled={node.disabled}
+                      onClick={() => toggleSelect(node)}
                     >
-                      {expanded ? (
-                        <ChevronDown className="ui-tree-select-toggle-icon" aria-hidden="true" />
-                      ) : (
-                        <ChevronRight className="ui-tree-select-toggle-icon" aria-hidden="true" />
-                      )}
+                      {treeTitleRender ? treeTitleRender(node) : node.label}
                     </button>
-                    {checkable ? (
-                      // The row must NOT WRAP the Checkbox in a `<label>`: the Checkbox is itself a
-                      // `<label>` around a real `<input>`, and a label nested in a label is
-                      // invalid HTML — the browser resolves neither, so the box loses its
-                      // accessible name. The node text sits BESIDE the box as a `for=`-associated
-                      // label instead, which both names it and keeps the text clickable.
-                      <div className="ui-tree-select-label">
-                        <Checkbox
-                          id={`${treeId}-${node.value}-box`}
-                          checked={isSelected}
-                          tabIndex={-1}
-                          disabled={Boolean(node.disabled) || Boolean(node.disableCheckbox)}
-                          onCheckedChange={() => toggleSelect(node)}
-                          aria-labelledby={`${treeId}-${node.value}-label`}
-                        />
-                        <label
-                          className="truncate"
-                          id={`${treeId}-${node.value}-label`}
-                          htmlFor={`${treeId}-${node.value}-box`}
-                        >
-                          {treeTitleRender ? treeTitleRender(node) : node.label}
-                        </label>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        tabIndex={-1}
-                        className="flex-1 truncate text-start"
-                        disabled={node.disabled}
-                        onClick={() => toggleSelect(node)}
-                      >
-                        {treeTitleRender ? treeTitleRender(node) : node.label}
-                      </button>
-                    )}
-                  </div>
-                );
-              })
-            )}
+                  )}
+                </div>
+              );
+            })}
           </div>
+          {visible.length === 0 && (
+            <p role="status" className="ui-tree-select-empty">
+              {notFoundContent ?? t("dataEntry.treeSelect.empty")}
+            </p>
+          )}
         </ScrollArea>
       </PopoverContent>
     </Popover>

@@ -3,6 +3,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TreeSelect } from "../tree-select";
+import { axe } from "vitest-axe";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 const TREE = [
@@ -146,4 +147,29 @@ describe("TreeSelect", () => {
       </>,
     );
   });
+});
+
+it("uses a labelled searchbox without a dangling combobox reference through filtering and selection", async () => {
+  const user = userEvent.setup();
+  const onValueChange = vi.fn();
+  render(
+    <TreeSelect treeData={TREE} showSearch aria-label="Region" onValueChange={onValueChange} />,
+  );
+  await user.click(screen.getByRole("combobox", { name: "Region" }));
+  const search = screen.getByRole("searchbox");
+  expect(search).toHaveAccessibleName();
+  expect(screen.getByRole("combobox", { name: "Region" })).toHaveAttribute(
+    "aria-controls",
+    screen.getByRole("tree").id,
+  );
+  expect(await axe(document.body, { rules: { region: { enabled: false } } })).toHaveNoViolations();
+  await user.type(search, "unmatched");
+  expect(screen.getByRole("status")).toBeVisible();
+  expect(await axe(document.body, { rules: { region: { enabled: false } } })).toHaveNoViolations();
+  await user.clear(search);
+  await user.type(search, "日本");
+  expect(screen.getAllByRole("treeitem").length).toBeGreaterThan(0);
+  await user.click(screen.getByRole("button", { name: "日本" }));
+  expect(onValueChange).toHaveBeenCalledWith("jp");
+  expect(screen.queryByRole("tree")).not.toBeInTheDocument();
 });
