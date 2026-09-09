@@ -537,7 +537,12 @@ describe("Truncating boxes contain their own ink", () => {
       const css = readFileSync(resolve(process.cwd(), "src/styles", file), "utf8");
       for (const [, selector, body] of css.matchAll(/([.[][^{}]{0,90}?)\s*\{([^}]*)\}/g)) {
         const clips = body.includes("text-overflow: ellipsis") || body.includes("overflow: hidden");
-        const tight = /line-height:\s*(var\(--line-height-tight\)|1(\.[01]\d*)?\s*);/.test(body);
+        // ANY line box under 1.4, not just the named tight step. The first version of this guard
+        // matched `--line-height-tight` and literals up to 1.1, and four rules carrying 1.2 / 1.3
+        // walked straight through it — the exact values that were clipping.
+        const lh = /line-height:\s*([^;]+);/.exec(body)?.[1]?.trim();
+        const literal = lh && /^[\d.]+$/.test(lh) ? Number.parseFloat(lh) : null;
+        const tight = Boolean(lh && (lh.includes("--line-height-tight") || (literal !== null && literal < 1.4)));
         if (clips && tight) offenders.push(`${file}: ${selector.trim().replace(/\s+/g, " ")}`);
       }
     }

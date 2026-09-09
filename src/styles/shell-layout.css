@@ -1439,7 +1439,11 @@
     overflow: hidden;
     font-size: var(--font-size-base);
     font-weight: 700;
-    line-height: 1.2;
+    /* Truncating box: `overflow: hidden` is what makes the ellipsis work, so the line box is the
+     * CLIPPING BOUNDARY and must contain descender ink. A tight literal here cut the dot-below of
+     * Vietnamese `ị` elsewhere in this file (measured on .ui-org-switcher-meta). Ant Design never
+     * hits this because its base line-height is 1.5714; --line-height-normal is the same idea. */
+    line-height: var(--line-height-normal);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1454,7 +1458,11 @@
     font-size: var(--sidebar-product-tenant-font-size);
     font-weight: 700;
     letter-spacing: 0.08em;
-    line-height: 1.2;
+    /* Truncating box: `overflow: hidden` is what makes the ellipsis work, so the line box is the
+     * CLIPPING BOUNDARY and must contain descender ink. A tight literal here cut the dot-below of
+     * Vietnamese `ị` elsewhere in this file (measured on .ui-org-switcher-meta). Ant Design never
+     * hits this because its base line-height is 1.5714; --line-height-normal is the same idea. */
+    line-height: var(--line-height-normal);
     text-overflow: ellipsis;
     text-transform: uppercase;
     white-space: nowrap;
@@ -1777,7 +1785,11 @@
     overflow: hidden;
     font-size: var(--sidebar-user-name-font-size);
     font-weight: 500;
-    line-height: 1.3;
+    /* Truncating box: `overflow: hidden` is what makes the ellipsis work, so the line box is the
+     * CLIPPING BOUNDARY and must contain descender ink. A tight literal here cut the dot-below of
+     * Vietnamese `ị` elsewhere in this file (measured on .ui-org-switcher-meta). Ant Design never
+     * hits this because its base line-height is 1.5714; --line-height-normal is the same idea. */
+    line-height: var(--line-height-normal);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1786,7 +1798,11 @@
     overflow: hidden;
     color: hsl(var(--muted-foreground));
     font-size: var(--sidebar-user-role-font-size);
-    line-height: 1.3;
+    /* Truncating box: `overflow: hidden` is what makes the ellipsis work, so the line box is the
+     * CLIPPING BOUNDARY and must contain descender ink. A tight literal here cut the dot-below of
+     * Vietnamese `ị` elsewhere in this file (measured on .ui-org-switcher-meta). Ant Design never
+     * hits this because its base line-height is 1.5714; --line-height-normal is the same idea. */
+    line-height: var(--line-height-normal);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
