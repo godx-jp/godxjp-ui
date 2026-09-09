@@ -7,6 +7,7 @@
  * Each `it` was mutation-tested by reverting its implementation and confirming it goes red.
  */
 import { describe, expect, it, vi } from "vitest";
+import { act, fireEvent } from "@testing-library/react";
 import { renderWithUi, screen, userEvent, waitFor, within } from "@/test/render";
 
 import { Select } from "../select";
@@ -377,8 +378,16 @@ describe("antd parity — notFoundContent", () => {
       />,
     );
     await user.click(screen.getByRole("combobox"));
-    await user.type(screen.getByRole("textbox"), "zzz");
-    expect(await screen.findByText("該当する通貨はありません")).toBeInTheDocument();
+    vi.useFakeTimers();
+    try {
+      fireEvent.change(screen.getByRole("textbox"), { target: { value: "zzz" } });
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(300);
+      });
+      expect(screen.getByText("該当する通貨はありません")).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("a plain Select with no options keeps its popup operable when notFoundContent is given", async () => {

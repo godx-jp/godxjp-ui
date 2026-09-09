@@ -101,7 +101,7 @@ describe("InputOTP slot box — --otp-slot-size (gh#233)", () => {
   });
 
   it("reads the knob with the tier as the call-site fallback, never an ad-hoc size", () => {
-    const rule = controlStyles.match(/\.ui-otp-slot\s*\{[^}]*\}/)?.[0] ?? "";
+    const rule = controlStyles.match(/^\s*\.ui-otp-slot\s*\{[^}]*\}/m)?.[0] ?? "";
     // The per-axis knobs sit IN FRONT of the square shorthand, which keeps the tier as the
     // final call-site fallback — so a field that sets no axis still resolves --control-height.
     expect(rule).toMatch(
