@@ -326,9 +326,22 @@
     --auth-shell-main-padding: var(--auth-shell-recovery-main-padding);
   }
 
-  /* `flex-start` is the load-bearing line: a registration card is the tallest surface in the
-   * hosted-identity set, and a vertically CENTRED tall card overflows ABOVE the scroll origin on a
-   * short viewport, putting its first field out of reach. */
+  /* A registration card is the tallest surface in the hosted-identity set, so its block placement
+   * has to satisfy two things at once, and a FIXED block-start inset satisfies only one.
+   *
+   * `flex-start` plus a 9.5rem inset held the SCR-002 anchor, but the inset is a constant: at
+   * 1440x900 the column measured 152 (empty) + 793 (content) + 48 = 993px against a 900px
+   * viewport, so the page scrolled 93px to reveal NOTHING — the scroll existed only to make room
+   * for decoration above the fold. That is worse than losing the anchor.
+   *
+   * `justify-content: center` is not the answer either: a card taller than the column overflows
+   * ABOVE the scroll origin and puts the first field out of reach.
+   *
+   * Auto margins are the one form that does both, and it is the technique `measure="wide"` in
+   * this same file already uses for the same reason. They absorb only the free space that EXISTS:
+   * a roomy viewport centres the column, and the moment content fills it they resolve to 0, so
+   * the card starts at the page gutter and every pixel scrolled is content. The inset token stays
+   * public for a product that wants the literal artboard anchor back. */
   .ui-auth-shell[data-preset="registration"] {
     --auth-shell-card-max-width: var(--auth-shell-registration-card-max-width);
     --auth-shell-main-align: flex-start;
@@ -336,6 +349,10 @@
       var(--auth-shell-registration-main-padding-inline)
       var(--auth-shell-registration-main-padding-block-end);
     --auth-shell-card-stack-gap: var(--auth-shell-registration-card-stack-gap);
+  }
+
+  .ui-auth-shell[data-preset="registration"] .ui-auth-shell-card {
+    margin-block: auto;
   }
 
   /* Content aligns to the slot END, so absent / one-line / wrapped two-line identity copy changes

@@ -506,14 +506,22 @@
    * (22.5rem card, x=15 at 390 ⇒ width=360), so a user moving sign-in → sign-up on a phone never
    * sees the surface jump. */
   --auth-shell-registration-card-max-width: 22.5rem;
-  /* Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card
-   * anchors at y=284 (1440x900) and y=274 (390x844), and the column is
-   *   card y = padding-block-start + identity slot + stack gap
-   * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical
-   * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as
-   * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor. */
-  --auth-shell-registration-main-padding-block-start: 9.5rem;
-  --auth-shell-registration-main-padding-block-start-mobile: 8.875rem;
+  /* Block-start PAGE GUTTER — the floor the column keeps against the viewport edge once the auto
+   * margins in shell-layout.css have placed it. It is deliberately NOT the artboard offset any
+   * more.
+   *
+   * It used to be 9.5rem / 8.875rem, derived from the canonical SCR-002 anchor (card y=284 at
+   * 1440x900 and y=274 at 390x844, each the offset plus the 112px identity slot plus the 20px
+   * stack gap). Held as unconditional padding, that constant manufactured a scrollbar out of
+   * nothing: at 1440x900 the column measured 152px of EMPTY SPACE + 793px of content + 48px, i.e.
+   * 993px in a 900px viewport, so the page scrolled 93px and the scrolled region was blank. A
+   * sign-up form whose first field sits below the fold because of decoration is a worse failure
+   * than a lost artboard anchor, so the anchor yields.
+   *
+   * Both values are still public knobs: a product that wants the literal artboard back sets this
+   * to 9.5rem and accepts the overflow on a short viewport. */
+  --auth-shell-registration-main-padding-block-start: 1rem;
+  --auth-shell-registration-main-padding-block-start-mobile: 0.9375rem;
   --auth-shell-registration-main-padding-inline: 1rem;
   --auth-shell-registration-main-padding-inline-mobile: 0.9375rem;
   /* Footer clearance — the gap the legal footer keeps below the end of a long form. */

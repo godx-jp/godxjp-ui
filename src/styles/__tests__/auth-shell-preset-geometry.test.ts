@@ -150,35 +150,39 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     );
   });
 
-  it("registration anchors its card on the canonical SCR-002 y, derived not chosen (gh#256)", () => {
-    // These offsets are DERIVED from the canonical artboard quoted in the SCR-002 acceptance
-    // review — card y=284 at 1440x900, y=274 at 390x844 — through the column's own arithmetic:
-    //   card y = padding-block-start + identity slot + stack gap
-    //   284 - 112 - 20 = 152px = 9.5rem      274 - 112 - 20 = 142px = 8.875rem
-    // The registration visual script re-measures this in headless Chromium at both viewports.
-    expect(shellTokens).toContain("--auth-shell-registration-main-padding-block-start: 9.5rem;");
-    expect(shellTokens).toContain(
-      "--auth-shell-registration-main-padding-block-start-mobile: 8.875rem;",
+  it("registration places its card with auto margins, never a scroll-making inset (gh#256)", () => {
+    /*
+     * The SCR-002 anchor (card y=284 at 1440x900) used to be held by an unconditional 9.5rem
+     * block-start inset. Measured in Chromium at 1440x900 that produced 152px of EMPTY SPACE +
+     * 793px of content + 48px = 993px in a 900px viewport: the page scrolled 93px and the
+     * scrolled region was blank. Decoration above the fold is not worth a scrollbar, so the
+     * anchor yields to auto margins — the same technique `measure="wide"` uses one screen up.
+     *
+     * Auto margins absorb only free space that exists: roomy viewport ⇒ centred, full viewport ⇒
+     * they resolve to 0 and the card sits at the gutter, so every scrolled pixel is content.
+     * Verified in a consumer at 1440x{1080,900,800,720} and 390x844: card top
+     * 127 / 37 / 16 / 16 / 17 with overflow 0 / 0 / 57 / 137 / 0 — and the two overflows are
+     * content taller than the viewport, not padding.
+     */
+    expect(shellStyles).toMatch(
+      /\.ui-auth-shell\[data-preset="registration"\] \.ui-auth-shell-card\s*\{[^}]*margin-block:\s*auto/s,
     );
-    expect(shellTokens).toContain("--auth-shell-registration-identity-slot-block-size: 7rem;");
-    expect(shellTokens).toContain("--auth-shell-registration-card-stack-gap: 1.25rem;");
-
-    // The arithmetic itself, so a future edit to any ONE of the three cannot silently move the
-    // anchor while every individual assertion above still passes.
+    // The block-start is now an ordinary page gutter, matching the inline one, NOT the artboard
+    // offset. If it ever goes back to a multi-rem constant the scrollbar comes back with it.
+    expect(shellTokens).toContain("--auth-shell-registration-main-padding-block-start: 1rem;");
+    expect(shellTokens).toContain(
+      "--auth-shell-registration-main-padding-block-start-mobile: 0.9375rem;",
+    );
     const px = (token: string) => {
       const rem = shellTokens.match(new RegExp(`${token}:\\s*([\\d.]+)rem;`))?.[1];
       return rem ? parseFloat(rem) * 16 : NaN;
     };
-    expect(
-      px("--auth-shell-registration-main-padding-block-start") +
-        px("--auth-shell-registration-identity-slot-block-size") +
-        px("--auth-shell-registration-card-stack-gap"),
-    ).toBe(284);
-    expect(
-      px("--auth-shell-registration-main-padding-block-start-mobile") +
-        px("--auth-shell-registration-identity-slot-block-size") +
-        px("--auth-shell-registration-card-stack-gap"),
-    ).toBe(274);
+    expect(px("--auth-shell-registration-main-padding-block-start")).toBeLessThanOrEqual(24);
+
+    // The parts the anchor was built from stay pinned: the identity track still absorbs copy
+    // length so the card cannot ride on it, and the stack rhythm is unchanged.
+    expect(shellTokens).toContain("--auth-shell-registration-identity-slot-block-size: 7rem;");
+    expect(shellTokens).toContain("--auth-shell-registration-card-stack-gap: 1.25rem;");
   });
 
   it("registration pins the identity track so copy length cannot move the anchor (gh#256)", () => {
@@ -262,36 +266,23 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     );
   });
 
-  it("registration anchors its card on the canonical SCR-002 y, derived not chosen (gh#256)", () => {
-    // These two offsets were INVENTED in the first pass (3rem / 1.5rem) and measured wrong by
-    // 133/147px. They are now derived from the canonical artboard quoted in the SCR-002 acceptance
-    // review — card y=284 at 1440x900, y=274 at 390x844 — through the column's own arithmetic:
-    //   card y = padding-block-start + identity slot + stack gap
-    //   284 - 112 - 20 = 152px = 9.5rem      274 - 112 - 20 = 142px = 8.875rem
-    // Verified in headless Chromium at both viewports: measured card y == canonical y, delta 0.00px.
-    expect(shellTokens).toContain("--auth-shell-registration-main-padding-block-start: 9.5rem;");
-    expect(shellTokens).toContain(
-      "--auth-shell-registration-main-padding-block-start-mobile: 8.875rem;",
-    );
+  it("keeps the identity track and stack rhythm the anchor was built from (gh#256)", () => {
+    /*
+     * This case used to assert the anchor arithmetic itself —
+     *   padding-block-start + identity slot + stack gap === 284 (and 274 on mobile)
+     * — which is no longer the contract: the block-start is a page gutter and the auto margins in
+     * shell-layout.css decide the placement. See the placement case above for why the artboard
+     * anchor yielded (152px of empty space manufactured a 93px scrollbar at 1440x900).
+     *
+     * The other two terms still matter and stay pinned. The 112px identity track is what absorbs
+     * absent / one-line / two-line copy, so the card never rides on the identity block's own
+     * height; the 20px stack gap is the section rhythm shared with login.
+     */
     expect(shellTokens).toContain("--auth-shell-registration-identity-slot-block-size: 7rem;");
     expect(shellTokens).toContain("--auth-shell-registration-card-stack-gap: 1.25rem;");
-
-    // The arithmetic itself, so a future edit to any ONE of the three cannot silently move the
-    // anchor while every individual assertion above still passes.
-    const px = (token: string) => {
-      const rem = shellTokens.match(new RegExp(`${token}:\\s*([\\d.]+)rem;`))?.[1];
-      return rem ? parseFloat(rem) * 16 : NaN;
-    };
-    expect(
-      px("--auth-shell-registration-main-padding-block-start") +
-        px("--auth-shell-registration-identity-slot-block-size") +
-        px("--auth-shell-registration-card-stack-gap"),
-    ).toBe(284);
-    expect(
-      px("--auth-shell-registration-main-padding-block-start-mobile") +
-        px("--auth-shell-registration-identity-slot-block-size") +
-        px("--auth-shell-registration-card-stack-gap"),
-    ).toBe(274);
+    expect(shellStyles).toMatch(
+      /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*block-size:\s*var\(--auth-shell-registration-identity-slot-block-size\)/s,
+    );
   });
 
   it("registration pins the identity track so copy length cannot move the anchor (gh#256)", () => {
