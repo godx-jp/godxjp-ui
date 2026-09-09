@@ -12,9 +12,14 @@
     font: inherit;
   }
 
+  /* The footer strips the picker to read as text, but the target still has to be reachable:
+   * `min-height: 0` here beat the footer's own AA floor on specificity — (0,2,0) against the
+   * (0,1,1) of `.ui-auth-legal-footer :is(a, button)` — so the locale trigger stayed 19px tall on
+   * every auth page while the rule that was supposed to fix it read as if it applied. The floor
+   * belongs on the rule that removed it. Chrome is unchanged: no border, no padding, no fill. */
   [data-slot="auth-legal-footer"] .ui-app-setting-picker-inline {
     width: auto;
-    min-height: 0;
+    min-block-size: var(--auth-footer-target-min-size);
     height: auto;
     border-width: 0;
     border-radius: 0;

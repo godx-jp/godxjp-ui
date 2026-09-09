@@ -430,6 +430,14 @@
    * (--touch-target-min) are also exempt (a11y minimum). */
   --scaling: 1;
 
+  /* Minimum interactive target on the block axis — WCAG 2.2 SC 2.5.8 (24x24 AA). The --scaling
+   * comment above already named this token as the one size that must NOT ride the multiplier, but
+   * nothing ever defined it, so the exemption described a token that did not exist. It is a legal
+   * floor, not a design measure: shrinking it with a compact density would make the UI fail the
+   * success criterion at exactly the density where targets are already hardest to hit. Literal on
+   * purpose — scale-exempt, like the note says. */
+  --touch-target-min: 1.5rem; /* scale-exempt: WCAG 2.2 SC 2.5.8 AA floor, must not ride --scaling */
+
   /* Raw spacing scale — the 4px grid, scaled. Everything that derives from
    * --space-* (padding, gaps, --phi-unit, semantic spacing, chrome) inherits the
    * scaling automatically; this is the single highest-leverage scaling point. */

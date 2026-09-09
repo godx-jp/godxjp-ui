@@ -479,6 +479,16 @@
     gap: var(--auth-footer-content-gap);
   }
 
+  /* Interactive footer content meets the AA target floor. `:is(a, button)` reaches the links the
+   * CONSUMER passes into the terms/privacy slots as bare anchors — the package cannot wrap what it
+   * is handed — and any control in the locale slot. `inline-flex` is what makes min-block-size
+   * apply at all; an inline anchor ignores it. */
+  .ui-auth-legal-footer :is(a, button) {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--auth-footer-target-min-size);
+  }
+
   .ui-auth-stack {
     display: flex;
     flex-direction: column;

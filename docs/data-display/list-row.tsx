@@ -57,13 +57,13 @@ export default function Demo() {
           </CardHeader>
           <CardContent flush>
             <ListRow
-              leading={<Smartphone aria-hidden="true" className="size-4" />}
+              leading={<Smartphone aria-hidden="true" />}
               title="iPhone 15 · Tokyo"
               description="最終アクセス 2分前 · 153.240.x.x"
               trailing={<Badge status="active" />}
             />
             <ListRow
-              leading={<Laptop aria-hidden="true" className="size-4" />}
+              leading={<Laptop aria-hidden="true" />}
               title="MacBook Pro · Osaka"
               description="最終アクセス 3日前 · 126.18.x.x"
               trailing={
@@ -73,7 +73,7 @@ export default function Demo() {
               }
             />
             <ListRow
-              leading={<Laptop aria-hidden="true" className="size-4" />}
+              leading={<Laptop aria-hidden="true" />}
               title="Windows · Nagoya"
               description="最終アクセス 先月 · 49.98.x.x"
               trailing={
@@ -110,7 +110,7 @@ export default function Demo() {
               />
               <ListRow
                 as="li"
-                leading={<KeyRound aria-hidden="true" className="size-4" />}
+                leading={<KeyRound aria-hidden="true" />}
                 title="Passkey · iCloud Keychain"
                 description="2026年3月12日に追加"
                 trailing={<Badge tone="neutral">未使用</Badge>}
@@ -362,14 +362,14 @@ export default function Demo() {
           <CardContent flush>
             <ListRow
               density="default"
-              leading={<Laptop aria-hidden="true" className="size-4" />}
+              leading={<Laptop aria-hidden="true" />}
               title="MacBook Pro · Osaka"
               description={'density="default" · 最終アクセス 3日前'}
               trailing={<Badge status="active" />}
             />
             <ListRow
               density="compact"
-              leading={<Laptop aria-hidden="true" className="size-4" />}
+              leading={<Laptop aria-hidden="true" />}
               title="MacBook Pro · Osaka"
               description={'density="compact" · 最終アクセス 3日前'}
               trailing={<Badge status="active" />}

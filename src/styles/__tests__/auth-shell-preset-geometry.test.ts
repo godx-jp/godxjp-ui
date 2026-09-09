@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
@@ -16,6 +16,11 @@ import { describe, expect, it } from "vitest";
  */
 const shellStyles = readFileSync(resolve(process.cwd(), "src/styles/shell-layout.css"), "utf8");
 const shellTokens = readFileSync(resolve(process.cwd(), "src/tokens/components/shell.css"), "utf8");
+/** Every shipped layer, so a probe class is checked against the whole stylesheet set. */
+const allLayerCss = readdirSync(resolve(process.cwd(), "src/styles"))
+  .filter((f) => f.endsWith(".css"))
+  .map((f) => readFileSync(resolve(process.cwd(), "src/styles", f), "utf8"))
+  .join("\n");
 
 const authBlock = (selector: string) =>
   shellStyles.match(
@@ -448,5 +453,78 @@ describe("AuthShell align — block-axis placement", () => {
     // The prop is opt-in: `data-align` is omitted unless stated, so these stay the defaults.
     expect(authBlock("login")[0]).toMatch(/--auth-shell-main-align:\s*flex-start/);
     expect(authBlock("registration")[0]).toMatch(/--auth-shell-main-align:\s*flex-start/);
+  });
+});
+
+/**
+ * Guards for three drifts found by running visual-audit against a real consumer page, each of
+ * which had gone unnoticed because nothing asserted the thing it claimed to cover.
+ */
+describe("audit + a11y drift guards", () => {
+  const dataDisplay = readFileSync(
+    resolve(process.cwd(), "src/styles/data-display-layout.css"),
+    "utf8",
+  );
+  const foundation = readFileSync(resolve(process.cwd(), "src/tokens/foundation.css"), "utf8");
+  const auditScript = readFileSync(resolve(process.cwd(), "scripts/visual-audit.mjs"), "utf8");
+
+  it("probes every layer with a class the stylesheets actually declare", () => {
+    // The card-layout probe used `.ui-card` — a class Card never renders and no rule targets — so
+    // it could not pass on any page and reported a permanent false error. A probe aimed at a class
+    // nothing styles is indistinguishable from a genuinely missing layer, which is the expensive
+    // half: it trains readers to ignore the finding.
+    const probes = [...auditScript.matchAll(/probe\("([^"]+)",\s*"([^"]+)"/g)].map(
+      ([, layer, className]) => ({ layer, className }),
+    );
+    expect(probes.length).toBeGreaterThan(0);
+    const allCss = allLayerCss;
+    for (const { layer, className } of probes) {
+      // A SELECTOR, not a substring: `.ui-card` is contained in `.ui-card-inset-x`, so a
+      // `includes()` check would have called the very bug this guard exists for "declared".
+      const declared = new RegExp(`\\.${className}(?![\\w-])`).test(allCss);
+      expect(`${layer}:${className}`, `probe class .${className} is declared somewhere`).toBe(
+        declared ? `${layer}:${className}` : `${layer}:<undeclared>`,
+      );
+    }
+  });
+
+  it("sizes a bare glyph in the ListRow leading slot from the control tier", () => {
+    // Without this the slot had no icon metric, so every caller — including this package's own
+    // docs/data-display/list-row.tsx — reached for className="size-4". A library that documents
+    // the utility it forbids is teaching the anti-pattern.
+    expect(dataDisplay).toMatch(
+      /\[data-slot="list-row-leading"\] > svg:not\(\[class\*="size-"\]\)\s*\{[^}]*width:\s*var\(--list-row-leading-icon-size,\s*var\(--control-icon-size\)\)/s,
+    );
+    // `> svg` only, and an explicit caller size still wins: an Avatar or Badge in the slot brings
+    // its own box and must not be squeezed into an icon measure.
+    expect(dataDisplay).toContain('[data-slot="list-row-leading"] > svg:not([class*="size-"])');
+  });
+
+  it("floors the auth footer's interactive targets at the WCAG 2.2 AA size", () => {
+    expect(foundation).toMatch(/--touch-target-min:\s*1\.5rem/);
+    expect(shellTokens).toMatch(
+      /--auth-footer-target-min-size:\s*var\(--touch-target-min\)/,
+    );
+    const rule = shellStyles.match(
+      /\.ui-auth-legal-footer :is\(a, button\)\s*\{[^}]*\}/,
+    )?.[0];
+    expect(rule).toBeDefined();
+    // inline-flex is load-bearing: min-block-size does nothing to an inline anchor, so dropping
+    // the display line would leave a rule that reads correct and measures 19px.
+    expect(rule).toMatch(/display:\s*inline-flex/);
+    expect(rule).toMatch(/min-block-size:\s*var\(--auth-footer-target-min-size\)/);
+  });
+
+  it("does not let the footer's inline picker rule undo that floor", () => {
+    // `[data-slot="auth-legal-footer"] .ui-app-setting-picker-inline` is (0,2,0) and the footer's
+    // own floor is (0,1,1), so a `min-height: 0` here silently won and the locale trigger stayed
+    // 19px on every auth page. Measured: 33x19 before, against a 24px AA floor.
+    const nav = readFileSync(resolve(process.cwd(), "src/styles/navigation-layout.css"), "utf8");
+    const rule = nav.match(
+      /\[data-slot="auth-legal-footer"\] \.ui-app-setting-picker-inline\s*\{[^}]*\}/,
+    )?.[0];
+    expect(rule).toBeDefined();
+    expect(rule).toMatch(/min-block-size:\s*var\(--auth-footer-target-min-size\)/);
+    expect(rule, "the zeroed floor must not come back").not.toMatch(/min-height:\s*0/);
   });
 });

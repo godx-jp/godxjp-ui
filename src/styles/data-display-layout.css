@@ -704,6 +704,19 @@
     justify-content: center;
     color: hsl(var(--muted-foreground));
   }
+
+  /* A BARE glyph in the leading slot had no size of its own, so every caller reached for a
+   * `className="size-4"` utility to stop a Lucide icon rendering at its 24px default — including
+   * this package's own docs (docs/data-display/list-row.tsx, docs/showcase/settings-security-mfa),
+   * which is how a documented anti-pattern becomes the thing consumers copy. The slot owns the
+   * metric now, on the same --control-icon-size tier a Button's glyph takes, so a row's icon
+   * tracks the control tier instead of a literal. `> svg` only: an Avatar, a Badge or any
+   * composite in the slot brings its own box and must not be squeezed into an icon measure.
+   * `:not([class*='size-'])` keeps an explicit caller size winning, so no existing page moves. */
+  [data-slot="list-row-leading"] > svg:not([class*="size-"]) {
+    width: var(--list-row-leading-icon-size, var(--control-icon-size));
+    height: var(--list-row-leading-icon-size, var(--control-icon-size));
+  }
   [data-slot="list-row-body"] {
     display: flex;
     min-inline-size: min(var(--list-row-body-min-width, 12rem), 100%);

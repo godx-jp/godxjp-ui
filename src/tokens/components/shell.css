@@ -558,6 +558,12 @@
   /* The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard
    * anchor at all, only the literal. GEOMETRY MOVES by 0.11px. */
   --auth-footer-text-font-size: var(--font-size-2xs);
+  /* The legal links sit at --font-size-2xs, so their line box alone is ~19px and every auth page
+   * failed WCAG 2.2 SC 2.5.8 on Terms / Privacy / the locale trigger. The floor is applied to the
+   * link BOX rather than a ::after hit area: the target a user (and an audit) measures is the
+   * element itself, and an invisible overlay that still reports 19px is not a fix. Text metrics
+   * are untouched — only the box grows. */
+  --auth-footer-target-min-size: var(--touch-target-min);
   --auth-stack-gap: var(--space-3);
   --auth-shell-field-label-gap: var(--space-1);
   /* Canonical SCR-001 field label: a LITERAL 12px (the golden-ratio --font-size-xs ≈ 12.47px would

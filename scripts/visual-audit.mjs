@@ -165,7 +165,11 @@ function collectInPage() {
   const probe = (layer, className, prop, bad) => {
     const el = document.createElement("div");
     el.className = className;
-    el.style.position = "absolute";
+    // No inline `position` here. It used to be set to "absolute" to keep the node out of flow, and
+    // that silently POISONED the one probe that read `position`: the dialog check asked whether
+    // position !== "static" on an element the probe itself had just made absolute, so it passed
+    // whether or not the layer was loaded. An empty hidden div contributes no visible layout, so
+    // the flow guard was never worth a probe that cannot fail.
     el.style.visibility = "hidden";
     document.body.appendChild(el);
     const v = getComputedStyle(el)[prop];
@@ -175,9 +179,18 @@ function collectInPage() {
   const layers = [
     probe("control", "ui-button", "borderRadius", "0px"),
     probe("navigation-layout", "ui-dropdown-menu-content", "borderTopWidth", "0px"),
-    probe("card-layout", "ui-card", "borderTopWidth", "0px"),
+    // `.ui-card` is NOT a class the library sets rules on — Card renders `cn("group/card", …)`
+    // and card-layout.css owns `.ui-card-bar` / `.ui-card-cover` / `.ui-card-inset*` /
+    // `.ui-card-header--banded`. Probing it could never pass, so every consumer page reported a
+    // permanent, meaningless `card-layout is not loaded` error. `.ui-card-inset-x` is a real rule
+    // AND resolves --card-space-inset, so it proves the layer and its token chain together.
+    probe("card-layout", "ui-card-inset-x", "paddingInline", "0px"),
     probe("layout", "ui-page-container", "display", "block"),
-    probe("dialog-layout", "ui-dialog-content", "position", "static"),
+    // `.ui-dialog-content` is not a class either — dialog-layout styles the `[data-slot=
+    // "dialog-content"]` attribute — so this probe named a class nothing declares AND read the
+    // property the probe used to set on itself. `.ui-dialog-overlay` is a real selector and
+    // z-index defaults to "auto", which nothing here writes.
+    probe("dialog-layout", "ui-dialog-overlay", "zIndex", "auto"),
     probe("form-layout", "ui-form-field", "display", "inline"),
   ];
   // Control rows — every control in a row shares the control tier height.
