@@ -4660,6 +4660,12 @@ import remarkGfm from "remark-gfm";
       "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables.",
     props: [
       {
+        name: "columnWidths",
+        type: "{ actions?: string; actionsCompact?: string; metaCompact?: string; minInlineSizeCompact?: string }",
+        description:
+          "PER-INSTANCE column measures for preset=\"action-collection\", in place of re-pointing its --table-action-collection-* knobs from a consumer stylesheet. Those knobs are global by design, and that is the problem: two collections on one screen do not share a column budget — a console that widened `actions` globally so a Japanese status badge would stop breaking to one character per line (an SC 1.4.10 reflow failure) collapsed a sibling table's name column to ~15px in the same change. Emitted as inline custom properties, the same contract Flex `width` uses for a call-site measurement, leaving data-column-widths on the DOM so each escape stays countable.",
+      },
+      {
         name: "align",
         type: '"start" | "center" | "end"',
         description: "On TableHead/TableCell: logical text alignment.",
