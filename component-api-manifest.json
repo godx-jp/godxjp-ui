@@ -1729,6 +1729,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"anchored\" | undefined",
+          "values": ["center", "anchored"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "brand",
           "origin": "owned",
           "required": false,

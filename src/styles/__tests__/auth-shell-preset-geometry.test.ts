@@ -378,3 +378,75 @@ describe("AppSettingPicker compact trigger — token-owned geometry (gh#217)", (
     }
   });
 });
+
+/**
+ * `align` — the block-axis choice, orthogonal to `preset`.
+ *
+ * It exists because a preset could previously be re-aimed only by re-declaring its own offset
+ * tokens from a consumer stylesheet (Platform #838 centred SCR-001 that way for months), which is
+ * the page-local-vertical-offset anti-pattern the presets replaced. These cases pin the two halves
+ * that make the axis real: the alignment itself, and the block-start collapse WITHOUT which
+ * `justify-content: center` fights a 231px block-start inset and the card still is not centred.
+ */
+describe("AuthShell align — block-axis placement", () => {
+  const alignBlock = (value: string, preset?: string) =>
+    shellStyles.match(
+      new RegExp(
+        preset === undefined
+          ? `\\.ui-auth-shell\\[data-align="${value}"\\]\\s*\\{[^}]*\\}`
+          : `\\.ui-auth-shell\\[data-preset="${preset}"\\]\\[data-align="${value}"\\]\\s*\\{[^}]*\\}`,
+        "g",
+      ),
+    ) ?? [];
+
+  it("declares both directions, so neither is reachable only by omission", () => {
+    expect(alignBlock("center")[0]).toMatch(/--auth-shell-main-align:\s*center/);
+    expect(alignBlock("anchored")[0]).toMatch(/--auth-shell-main-align:\s*flex-start/);
+  });
+
+  it("is declared AFTER the presets, which decide the same property at equal specificity", () => {
+    // `.ui-auth-shell[data-preset="login"]` and `.ui-auth-shell[data-align="center"]` are both
+    // (0,2,0). Source order is the whole contract; earlier and the preset would win silently.
+    const preset = shellStyles.indexOf('.ui-auth-shell[data-preset="login"] {');
+    const align = shellStyles.indexOf('.ui-auth-shell[data-align="center"] {');
+    expect(preset).toBeGreaterThan(-1);
+    expect(align).toBeGreaterThan(preset);
+  });
+
+  it("collapses login's block-start inset to its block-end one, desktop AND mobile", () => {
+    // Without the mobile line the phone viewport keeps the 13.8125rem anchor and only the desktop
+    // looks centred — the asymmetry a token-level override is easy to half-fix.
+    const rule = alignBlock("center", "login")[0] ?? "";
+    expect(rule).toMatch(
+      /--auth-shell-login-flow-offset-block:\s*var\(--auth-shell-login-main-padding-block-end\)/,
+    );
+    expect(rule).toMatch(
+      /--auth-shell-login-flow-offset-block-mobile:\s*var\(--auth-shell-login-main-padding-block-end\)/,
+    );
+  });
+
+  it("retargets the offset TOKENS, never the --auth-shell-main-padding shorthand", () => {
+    // The `max-width: 30rem` block recomposes that shorthand from the `*-mobile` tokens, so
+    // re-declaring it here would freeze the inline gutters the preset owns.
+    for (const rule of [alignBlock("center", "login")[0], alignBlock("center", "registration")[0]]) {
+      expect(rule).toBeDefined();
+      expect(rule).not.toMatch(/--auth-shell-main-padding:/);
+    }
+  });
+
+  it("gives registration the same collapse, mobile token included", () => {
+    const rule = alignBlock("center", "registration")[0] ?? "";
+    expect(rule).toMatch(
+      /--auth-shell-registration-main-padding-block-start:\s*var\(\s*--auth-shell-registration-main-padding-block-end\s*\)/s,
+    );
+    expect(rule).toMatch(
+      /--auth-shell-registration-main-padding-block-start-mobile:\s*var\(\s*--auth-shell-registration-main-padding-block-end-mobile\s*\)/s,
+    );
+  });
+
+  it("leaves every preset default untouched when align is not passed", () => {
+    // The prop is opt-in: `data-align` is omitted unless stated, so these stay the defaults.
+    expect(authBlock("login")[0]).toMatch(/--auth-shell-main-align:\s*flex-start/);
+    expect(authBlock("registration")[0]).toMatch(/--auth-shell-main-align:\s*flex-start/);
+  });
+});

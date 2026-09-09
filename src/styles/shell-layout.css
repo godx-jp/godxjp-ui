@@ -345,6 +345,48 @@
     justify-content: flex-end;
   }
 
+  /* FLOW ALIGNMENT — orthogonal to `preset`, the way `variant` is. A preset owns the page MEASURE
+   * (card width, inline gutters, section rhythm); `align` owns where that column sits on the BLOCK
+   * axis. `login` and `registration` anchor by default so a requester/identity line that wraps to
+   * two lines cannot move the card (gh#237), and every other preset centres.
+   *
+   * A product that wants the other choice states it here. Before this axis existed the only way was
+   * to re-declare the preset's own offset tokens from a consumer stylesheet — the exact
+   * page-local-vertical-offset anti-pattern the presets were introduced to replace, and one
+   * consumer really did carry it (Platform #838, centred SCR-001 over the anchored default).
+   *
+   * `center` collapses the block-START inset to the preset's block-END one, desktop and mobile, so
+   * the padding is symmetric and `justify-content: center` has nothing to fight. The offset TOKENS
+   * are retargeted rather than `--auth-shell-main-padding` itself, because the mobile media query
+   * recomposes that shorthand from the `*-mobile` tokens; overriding the shorthand here would
+   * freeze the inline gutters too.
+   *
+   * Note the standing hazard on `registration`: it is the tallest surface in the hosted-identity
+   * set, and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport,
+   * putting its first field out of reach. `align="center"` is legal there and deliberately not
+   * blocked, but it is the caller's judgement, not the preset's default. */
+  .ui-auth-shell[data-align="center"] {
+    --auth-shell-main-align: center;
+  }
+
+  .ui-auth-shell[data-align="anchored"] {
+    --auth-shell-main-align: flex-start;
+  }
+
+  .ui-auth-shell[data-preset="login"][data-align="center"] {
+    --auth-shell-login-flow-offset-block: var(--auth-shell-login-main-padding-block-end);
+    --auth-shell-login-flow-offset-block-mobile: var(--auth-shell-login-main-padding-block-end);
+  }
+
+  .ui-auth-shell[data-preset="registration"][data-align="center"] {
+    --auth-shell-registration-main-padding-block-start: var(
+      --auth-shell-registration-main-padding-block-end
+    );
+    --auth-shell-registration-main-padding-block-start-mobile: var(
+      --auth-shell-registration-main-padding-block-end-mobile
+    );
+  }
+
   .ui-auth-identity {
     display: flex;
     flex-direction: column;

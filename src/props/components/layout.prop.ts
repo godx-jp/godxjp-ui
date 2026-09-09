@@ -443,6 +443,22 @@ export type AuthShellProp = {
    */
   measure?: "default" | "wide";
   /**
+   * Block-axis placement of the auth column, ORTHOGONAL to `preset` the way `variant` is: a preset
+   * owns the page MEASURE (card width, inline gutters, section rhythm), `align` owns where that
+   * column sits vertically.
+   *
+   * Omit it to keep the preset's own choice — `"login"` and `"registration"` anchor so a
+   * requester/identity line that wraps to two lines cannot move the card, every other preset
+   * centres. Pass `"center"` for a vertically centred column (the block-start inset collapses to
+   * the preset's block-end one, desktop and mobile, so the padding is symmetric) or `"anchored"`
+   * for a top-anchored one. This replaces re-declaring a preset's offset tokens from consumer CSS.
+   *
+   * HAZARD on a tall flow: a vertically centred tall card overflows ABOVE the scroll origin on a
+   * short viewport, putting its first field out of reach. That is why `"registration"` anchors by
+   * default; `"center"` is legal there but is the caller's judgement.
+   */
+  align?: "anchored" | "center";
+  /**
    * Vertical density scoped to auth-card descendants. The canonical variant defaults to
    * `"compact"`; the default variant defaults to `"comfortable"`.
    */
