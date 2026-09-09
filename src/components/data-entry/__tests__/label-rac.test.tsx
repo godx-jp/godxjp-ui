@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import * as React from "react";
 import * as RadixLabel from "@radix-ui/react-label";
 import { render, screen } from "@testing-library/react";
@@ -113,5 +115,38 @@ describe("Label — khớp từng ký tự với @radix-ui/react-label", () => {
       .map((call) => call[0] as React.MouseEvent)
       .find((event) => event.detail > 1);
     expect(second?.defaultPrevented).toBe(true);
+  });
+});
+
+
+describe("Label line box", () => {
+  const controlTokens = readFileSync(
+    resolve(process.cwd(), "src/tokens/components/control.css"),
+    "utf8",
+  );
+
+  it("never sets a line-height of 1, because a label wraps", () => {
+    /*
+     * `--control-label-line-height: 1` was chosen for a single-line label beside a checkbox, where
+     * a cap-height box aligns cleanly. It is wrong for every other case: measured on a hosted
+     * sign-up consent label at 520px, 14px text with a 14px line box gave a 28px block of two
+     * TOUCHING lines. Long copy, a narrow column and ja/vi wrapping all reach that routinely.
+     *
+     * The package had already paid for this literal once — see the note on
+     * `--auth-shell-divider-label-line-height`, where a hardcoded `line-height: 1` rendered an
+     * 11px row and sat the lower half of the canonical Login card 8px high (gh#263).
+     */
+    expect(controlTokens).not.toMatch(/--control-label-line-height:\s*1\s*;/);
+    expect(controlTokens).toMatch(
+      /--control-label-line-height:\s*var\(--line-height-tight\)/,
+    );
+  });
+
+  it("keeps reading the token from the primitive, so a theme can still retune it", () => {
+    // The Label carries `leading-[var(--control-label-line-height)]` as a UTILITY, which is the
+    // only layer that can beat the components rules; if it stopped reading the token the fix above
+    // would be silently unreachable from a service theme.
+    const label = readFileSync(resolve(process.cwd(), "src/components/data-entry/label.tsx"), "utf8");
+    expect(label).toContain("leading-[var(--control-label-line-height)]");
   });
 });
