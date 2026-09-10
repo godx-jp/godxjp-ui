@@ -1,4 +1,5 @@
 import * as React from "react";
+import { enableShadowDOM } from "react-stately/private/flags/flags";
 
 /**
  * WHERE EVERY OVERLAY IN THIS LIBRARY IS RENDERED.
@@ -31,6 +32,30 @@ export interface OverlayPortalProviderProps {
   container: Element | undefined;
   children: React.ReactNode;
 }
+
+/**
+ * REACT ARIA IS SHADOW-BLIND UNTIL IT IS TOLD OTHERWISE, and moving the portal is only half of what
+ * an embedded overlay needs.
+ *
+ * `react-aria` ships a full shadow-DOM implementation — `contains()` that climbs through hosts and
+ * slots, an `activeElement` that descends into shadow roots, an event target read off
+ * `composedPath()` — and every one of those helpers begins by asking a global flag whether shadow
+ * DOM is enabled, defaulting to the light-DOM answer. The light-DOM answers are all WRONG inside a
+ * shadow root, and they fail in the direction that looks like a bug in this library:
+ *
+ *   • `document.activeElement` stops at the shadow HOST, so a focus scope believes focus never
+ *     entered the dialog. It does not trap, and Escape reaches nothing.
+ *   • `node.contains(target)` cannot cross the boundary, so the click that OPENED the overlay reads
+ *     as a click OUTSIDE it and an `isDismissable` overlay closes itself on the way up. Measured on
+ *     the embedded bar: the launchpad opened and shut on one press.
+ *
+ * The flag is global and one-way, and this provider is the only place in the library that knows a
+ * shadow root is in play — a consumer mounts it precisely because its tree lives in one. Enabled at
+ * module scope rather than in an effect so the first render is already correct; the light-DOM paths
+ * it replaces are the same code with the boundary walk skipped, so a page with no shadow root
+ * behaves identically.
+ */
+enableShadowDOM();
 
 export function OverlayPortalProvider({ container, children }: OverlayPortalProviderProps) {
   return (
