@@ -17,7 +17,11 @@
  * Substituting the text is the point, not a shortcut: the question is whether the BOX can hold
  * diacritic ink, and asking it of a Latin fixture answers a different question.
  */
-const base = process.argv[2]?.startsWith("http") ? process.argv[2] : "http://localhost:6008";
+import { ensurePreviewServer } from "./frame-harness.mjs";
+
+const base = process.argv[2]?.startsWith("http")
+  ? process.argv[2]
+  : process.env.PREVIEW_BASE || "http://localhost:6008";
 const routeArgs = process.argv.slice(2).filter((a) => !a.startsWith("http"));
 const ROUTES = routeArgs.length
   ? routeArgs
@@ -81,6 +85,22 @@ const probe = (stress) => {
 };
 
 async function main() {
+  /*
+   * STAND THE SERVER UP, do not hope someone else did.
+   *
+   * This was the ONE browser gate that never called `ensurePreviewServer` — it simply navigated to
+   * `base` and trusted a server to be there. In `verify:browser` the gate before it (check:contrast)
+   * starts a preview, runs, and then KILLS it, so on a clean machine this one arrived at a closed
+   * port: `net::ERR_CONNECTION_REFUSED at http://localhost:6008/showcase/acme-portal`, on every
+   * merge to main.
+   *
+   * It passed locally the whole time for a reason worth writing down: a stray `vite preview` from
+   * an earlier run was still listening on `[::1]:6008`, so `reachable()` — which probes 127.0.0.1
+   * first and falls back to the NAME — found it through the IPv6 resolution of `localhost` and
+   * check:contrast never started or stopped a server at all. A gate that depends on the leftovers
+   * of the last run is not measuring anything on a fresh one.
+   */
+  const stopServer = await ensurePreviewServer(base);
   const { chromium } = await import("playwright");
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
@@ -107,6 +127,7 @@ async function main() {
     }
   }
   await browser.close();
+  stopServer();
   if (total) {
     console.error(
       `\n✗ check:text-ink-clip — ${total} box(es) clip their own text. Raise the line box to ` +

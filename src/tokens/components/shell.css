@@ -448,6 +448,7 @@
   --app-launcher-launchpad-name-font-size: var(--font-size-sm);
   --app-launcher-launchpad-title-font-size: var(--font-size-2xs);
   --app-launcher-launchpad-title-letter-spacing: 0.08em;
+  --app-launcher-launchpad-close-space-padding: var(--space-2);
 
   /* Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site
    * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override

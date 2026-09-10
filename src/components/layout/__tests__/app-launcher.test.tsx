@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import * as React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
@@ -355,6 +356,44 @@ describe("AppLauncher public contract", () => {
     await waitFor(() => {
       expect(screen.queryByRole("dialog", { name: "Switch app" })).not.toBeInTheDocument();
     });
+  });
+
+  it("pins the launchpad's dismiss to the viewport corner, not to the little panel", () => {
+    /*
+     * jsdom performs no layout, so what is pinned here is the rule that decides it.
+     *
+     * `[data-slot="dialog-close"]` is `absolute` at its dialog's top-right, which is the right
+     * corner while the dialog is a card. The launchpad's dialog is content-sized and centred, so
+     * that corner lands beside the tiles: measured with two apps, the X sat at (836, 368) — level
+     * with the title, hard against the grid, reading as a stray glyph mid-screen rather than as the
+     * way out. And it stayed there when it was made `fixed`, because the dialog's own
+     * `translate(-50%, -50%)` makes it the containing block for every fixed descendant — which is
+     * why the centring moves to the scrim and the panel's transform goes.
+     */
+    // Read from the project root: this suite runs in a vitest project whose `import.meta.url` is
+    // not a file: URL, so the relative-to-module form used elsewhere throws here.
+    const shell = readFileSync("src/styles/shell-layout.css", "utf8");
+    const rule = (selector: string) => {
+      const at = shell.indexOf(selector + " {");
+      expect(at, `missing CSS rule for ${selector}`).toBeGreaterThan(-1);
+      return shell.slice(at, shell.indexOf("}", at) + 1);
+    };
+
+    const close = rule('.ui-app-launcher-launchpad [data-slot="dialog-close"]');
+    expect(close).toMatch(/position:\s*fixed/);
+    expect(close).toMatch(/inset-block-start:\s*var\(--app-launcher-launchpad-space-inset\)/);
+    expect(close).toMatch(/inset-inline-end:\s*var\(--app-launcher-launchpad-space-inset\)/);
+    // The padding IS the target: a bare 16px glyph alone in a corner is under the SC 2.5.8 floor
+    // with nothing beside it to share a hit area with.
+    expect(close).toMatch(/padding:\s*var\(--app-launcher-launchpad-close-space-padding\)/);
+
+    // The scrim centres the panel, so the panel carries no transform to capture that `fixed`.
+    expect(rule('[data-slot="dialog-overlay"].ui-app-launcher-launchpad-overlay')).toMatch(
+      /place-items:\s*center/,
+    );
+    expect(rule('[data-slot="dialog-content"].ui-app-launcher-launchpad')).toMatch(
+      /transform:\s*none/,
+    );
   });
 
   it("has no axe violations on either surface", async () => {

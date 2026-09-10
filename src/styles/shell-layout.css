@@ -1641,6 +1641,14 @@
       )
     );
     backdrop-filter: blur(var(--app-launcher-launchpad-backdrop-blur-size));
+
+    /* THE SCRIM CENTRES THE PANEL, so the panel does not have to centre ITSELF. A dialog normally
+     * does that with `left/top: 50%` plus `translate(-50%, -50%)` — and a transform makes the
+     * element the containing block for every fixed descendant inside it, which quietly captures the
+     * close control: measured, `position: fixed` on the X resolved against the little content box
+     * and left it at (836, 368), beside the grid, instead of the viewport's corner. */
+    display: grid;
+    place-items: center;
   }
 
   /*
@@ -1654,6 +1662,8 @@
    * gesture people arrive with. Content-sized, everything around the grid is scrim again.
    */
   [data-slot="dialog-content"].ui-app-launcher-launchpad {
+    position: relative;
+    inset: auto;
     display: grid;
     width: auto;
     max-width: min(
@@ -1662,6 +1672,7 @@
     );
     max-height: calc(100dvh - 2 * var(--app-launcher-launchpad-space-inset));
     justify-items: center;
+    transform: none;
     border: 0;
     border-radius: 0;
     background: none;
@@ -1784,6 +1795,31 @@
    * grid it labels. */
   .ui-app-launcher-launchpad [data-slot="dialog-header"] {
     align-items: center;
+  }
+
+  /*
+   * THE CLOSE CONTROL BELONGS TO THE SCREEN, NOT TO THE GRID.
+   *
+   * `[data-slot="dialog-close"]` is `absolute` at its dialog's top-right, which is the right corner
+   * when the dialog is a card. Here the dialog is content-sized and centred, so that corner lands a
+   * few pixels above and beside the tiles: measured with two apps, the X sat at (860, 359) — level
+   * with the title, hard against the grid, reading as a stray glyph in the middle of the screen
+   * rather than as the way out.
+   *
+   * Fixed to the viewport's own corner, which is where a full-screen surface's dismiss lives and
+   * where a hand already reaches for it. (The scrim carries a `backdrop-filter`, so it is the
+   * containing block for its fixed descendants — and it is exactly the viewport, so the two
+   * readings agree.)
+   */
+  .ui-app-launcher-launchpad [data-slot="dialog-close"] {
+    position: fixed;
+    /* The bare glyph is a 16px box. In a card that is fine — it sits inside chrome a pointer is
+     * already resting on. Alone in the corner of a full screen, and on the surface most likely to
+     * be reached by thumb, it is under the SC 2.5.8 floor with nothing beside it to share a hit
+     * area with, so the padding IS the target. */
+    padding: var(--app-launcher-launchpad-close-space-padding);
+    inset-block-start: var(--app-launcher-launchpad-space-inset);
+    inset-inline-end: var(--app-launcher-launchpad-space-inset);
   }
 
   /* The name takes the FULL foreground, not the muted one every other panel title uses. Muted is a
