@@ -9,6 +9,7 @@ import {
   RangeTimeline,
   type TimelineItem,
 } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -51,6 +52,37 @@ const approvalItems: TimelineItem[] = [
   { title: "仕訳を作成", location: "システム", time: "10:20", status: "done" },
   { title: "承認待ち", location: "経理 田中", time: "10:24", status: "current" },
   { title: "消費税を計上", location: "経理", status: "pending" },
+];
+
+// Fourth shape: `title` is a NODE WITH A WIDTH OF ITS OWN, which is the only shape that can
+// show whether the title actually spans the row. Every case above passes a bare string, and a
+// string is already narrower than the row, so a title that shrink-wraps looks identical to one
+// that fills — the defect hides in plain sight. A Card as the title makes the width visible; the
+// truncating id is the other half, a title whose intrinsic width EXCEEDS the row, which must
+// shrink rather than push `time` off the end. Measured by check:timeline-title-fill.
+const richItems: TimelineItem[] = [
+  {
+    title: (
+      <Card>
+        <CardContent>
+          <Text weight="medium">請求書 INV-2026-0912 を承認しました</Text>
+        </CardContent>
+      </Card>
+    ),
+    time: "11:05",
+    status: "done",
+  },
+  {
+    title: (
+      <Text truncate mono>
+        INV-2026-09-0001-APPROVAL-CHAIN-SEGMENT-0007-RECONCILIATION
+      </Text>
+    ),
+    // A full CJK timestamp on purpose: it breaks between any two glyphs, so nothing floors its
+    // width and a title with an `auto` flex-basis would squeeze it onto three lines.
+    time: "2026年9月12日 11:18",
+    status: "current",
+  },
 ];
 
 export default function Demo() {
@@ -113,6 +145,20 @@ export default function Demo() {
             <Timeline variant="status" items={approvalItems} />
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>タイトルにノードを渡す</CardTitle>
+            <CardDescription>
+              title は ReactNode です。自身の幅を持つノード（Card
+              など）を渡しても行いっぱいに広がり、内容が行より広い場合は time
+              を押し出さずに切り詰められます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Timeline variant="status" items={richItems} />
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>RangeTimeline</CardTitle>
