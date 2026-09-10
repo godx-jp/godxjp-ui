@@ -1397,6 +1397,13 @@ export function MyPage() {
         description:
           'Where the shell\'s one-screen height comes from. "viewport" (default) is the real app: exactly 100dvh, so the DOCUMENT never scrolls and the tab bar cannot slide away under a collapsing URL bar. "fill" fills a BOUNDED parent instead — a device-frame preview, or a phone view embedded in a wider page — where a viewport-tall root would overflow its frame. Nothing else differs between the two.',
       },
+      {
+        name: "width",
+        type: '"fill" | "phone"',
+        defaultValue: '"fill"',
+        description:
+          'How wide the shell is allowed to get. "fill" (default) takes the whole inline size it is given — a real handheld, where that IS the phone. "phone" caps it at --mobile-shell-max-inline-size (430px, the widest current handheld logical width) and centres the column: the SAME situation height="fill" already names on the other axis, a handheld screen rendered on a viewport wider than a handheld. Measured at 1280px before this axis existed: max-inline-size none, shell 1232px wide, a four-destination tab bar spread across the whole screen.',
+      },
     ],
     usage: [
       "DO use MobileShell for a HANDHELD app screen — a warehouse/handy terminal, a driver app, a field-work PWA. It is the fourth root shell: AppShell (needs a sidebar) · AuthShell (unauthenticated card) · CenteredShell (authenticated scrolling document) · MobileShell (a phone app that does NOT scroll its document).",
@@ -3737,6 +3744,13 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         defaultValue: '"default"',
         description:
           "Corner radius from the tokens — `default` (badge radius), `pill` (fully rounded), `sharp` (square). Use the prop instead of a `rounded-*` className.",
+      },
+      {
+        name: "tabular",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Lining, fixed-width figures — for a chip whose content is a COUNT sitting in a column with other counts (a queue length per row, an unread tally per tab). Proportional figures make a `1` narrower than a `0`, so the digits do not line up and the chips jitter. The same axis Text, TableCell and StatCard already carry. Off by default: tabular figures are wider, and a chip carrying WORDS should not pay for them. Prefer it over `<Badge><Text size="xs" tabular>` — that composition works, but it asks the call site to know the chip\'s own type step.',
       },
       {
         name: "color",

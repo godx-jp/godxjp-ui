@@ -808,6 +808,11 @@
  * nothing here is reachable only through a consumer selector. */
 :root {
   --mobile-shell-block-size: 100dvh;
+  /* 430px — the widest logical width the current handheld class reports (iPhone Pro Max / Pixel
+   * Pro XL). It is a CAP, so it has to sit at or above every real device width the shell is meant
+   * to be read at; below that, `width="phone"` would squeeze the very screens it exists to serve.
+   * Only `width="phone"` reads it; the default `fill` never does. */
+  --mobile-shell-max-inline-size: 26.875rem;
   --mobile-shell-safe-inset-block-start: env(safe-area-inset-top);
   --mobile-shell-safe-inset-block-end: env(safe-area-inset-bottom);
   --mobile-shell-safe-inset-inline: max(env(safe-area-inset-left), env(safe-area-inset-right));

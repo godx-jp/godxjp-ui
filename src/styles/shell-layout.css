@@ -3041,6 +3041,16 @@
     --mobile-shell-block-size: 100%;
   }
 
+  /* `width="phone"` — the same escape on the INLINE axis, and the one the shell was missing.
+   * Measured at a 1280px viewport: `max-inline-size: none`, shell 1232px wide, a four-destination
+   * tab bar spread across the whole screen. The cap alone would leave the column pinned to the
+   * inline start, so it is centred here rather than at the call site — logical margins, so the
+   * centring is the same in both writing directions. */
+  .ui-mobile-shell[data-width="phone"] {
+    max-inline-size: var(--mobile-shell-max-inline-size);
+    margin-inline: auto;
+  }
+
   /* Landmark chrome đầu màn hình: chỉ xếp cột, mọi hình học vẫn nằm ở hai băng con. */
   .ui-mobile-shell-chrome {
     display: flex;

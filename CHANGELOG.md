@@ -6,6 +6,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`MobileShell width`** — trục mà `height` đã có còn `width` thì không. `"fill"` (mặc định, và
+  là thứ shell vẫn làm) lấy trọn bề rộng được cấp; `"phone"` chặn ở
+  `--mobile-shell-max-inline-size` (430px — bề rộng logic lớn nhất của lớp máy cầm tay hiện tại)
+  rồi căn giữa cột. Đúng cùng một tình huống mà `height="fill"` đã gọi tên ở trục kia: một màn
+  hình cầm tay được vẽ trên khung nhìn rộng hơn một cái điện thoại.
+
+  Đo ở khung nhìn 1280px trước khi có trục này: `max-inline-size: none`, shell rộng **1232px** —
+  một app cầm tay với bốn đích của tab bar trải hết màn hình. Sau: **430px**, lề trái 425px, tức
+  là căn giữa. Bất đối xứng chính là lỗi ở đây; docs frame của chính shell cũng đang đọc trên
+  desktop nên nay nó dùng `width="phone"`.
+
+- **`Badge tabular`** — chữ số đều bề rộng, cho chip mang một CON SỐ nằm trong cột cùng các con
+  số khác. Cùng trục mà `Text`, `TableCell`, `StatCard` đã có; chip là chỗ một con số hay rơi vào
+  nhất lại không có — bất đối xứng, không phải một quyết định.
+
+  **Đo trung thực: với bộ font gói này phát hành, `tabular-nums` không dời một pixel nào.**
+  `"1111"` và `"0000"` đều chiếm **31,094px** ở cỡ 12,47px của chip, có hay không có
+  `tabular-nums`, vì face được phân giải vốn đã cho chữ số một bề rộng. Thứ prop này mua là lời
+  KHAI BÁO — nó sống sót khi một service đổi `--font-family-sans` sang face có chữ số tỉ lệ, đúng
+  lý do `Text` mang trục ấy. Và nó gỡ một ràng buộc: nước đi hợp lệ đang có,
+  `<Badge><Text size="xs" tabular>`, buộc call site phải biết bậc chữ của Badge là `xs` — token
+  `--badge-font-size` của chính chip.
+
+  Nó **không** phải cách sửa cho các chip KHÁC BỀ RỘNG trong một cột: `11` và `100` là hai và ba
+  chữ số, nên là hai bề rộng dù face có làm gì. Đó là một measure tối thiểu trên chip, và nó
+  thuộc về màn hình.
+
 ### Fixed
 
 - **`Segmented size` không làm gì cả — cả ba bậc vẽ ra cùng một hộp.** Đo trên Chromium ở 1280px:
