@@ -414,9 +414,24 @@
    * The marks are TRANSLUCENT here and opaque in the popover. In a 2.5rem popover mark a
    * translucent fill is noise at that size; at 4rem, floating on a blurred page, it is the whole
    * effect. */
-  --app-launcher-launchpad-backdrop-blur-size: 28px;
-  --app-launcher-launchpad-backdrop-alpha: 42%;
+  /* Role-mirror knob: `initial` so a scoped theme's --background re-resolves at the call site
+   * (docs/TOKENS.md). Default = a veil of the theme's OWN background at the alpha below. */
+  --app-launcher-launchpad-backdrop-background: initial;
+  --app-launcher-launchpad-backdrop-blur-size: 16px;
+  --app-launcher-launchpad-backdrop-alpha: 55%;
+  /* THE INGREDIENT THAT MAKES IT GLASS RATHER THAN FOG. Blur alone averages a page towards its
+   * mean, and the mean of any real screen is a mid grey — 28px of it turned a dashboard into a
+   * featureless haze with the tiles floating in nothing. Pushing chroma back up after the blur is
+   * what a physical frosted pane does: it scatters direction, not colour. */
+  --app-launcher-launchpad-backdrop-color-saturate: 180%;
   --app-launcher-launchpad-space-inset: var(--space-8);
+  /* THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that
+   * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked
+   * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much
+   * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on
+   * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the
+   * bar. A length or a 2/3/4-value box, exactly like `padding`. */
+  --app-launcher-launchpad-space-safe-area: 0;
   --app-launcher-launchpad-panel-max-width: 60rem;
   --app-launcher-launchpad-panel-gap: var(--space-8);
   --app-launcher-launchpad-grid-gap: var(--space-6);
@@ -435,7 +450,7 @@
    * theme and stays legible on a light page and a dark one. */
   --app-launcher-launchpad-mark-background: color-mix(
     in srgb,
-    hsl(var(--card)) 62%,
+    hsl(var(--card)) 78%,
     transparent
   );
   --app-launcher-launchpad-mark-border-color: color-mix(

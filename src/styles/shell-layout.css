@@ -1628,27 +1628,46 @@
      * The scrim is the viewport, which is the thing the ladder is actually about. */
     container: app-launcher-launchpad / inline-size;
 
-    /* A SHARE of the one shared scrim, resolved here so a scoped theme override of
-     * --overlay-background still reaches the portaled overlay (docs/TOKENS.md). Lighter than a
-     * dialog's 60%: the blur is doing the separating, and a heavy scrim on top of it flattens the
-     * page into grey and leaves the glass nothing to refract. */
+    /*
+     * A VEIL OF THE THEME'S OWN GROUND, not the shared dark scrim.
+     *
+     * `--overlay-background` is `rgb(0 0 0 / .5)` — right for a dialog, which wants the page pushed
+     * back and dimmed. Frosted glass is not dim: it is the ground colour, lit, with the detail
+     * scattered out of it. Black over a light page reads as a power cut, and stacked on a blur it
+     * flattens everything to one grey. Mixing --background instead gives a light frost on a light
+     * theme and a dark one on a dark theme from a single declaration, and it keeps the tiles' own
+     * card colour legible against it. Resolved at the call site so a scoped theme's --background
+     * still reaches the portaled overlay (docs/TOKENS.md).
+     */
     background-color: var(
       --app-launcher-launchpad-backdrop-background,
       color-mix(
         in srgb,
-        var(--overlay-background) var(--app-launcher-launchpad-backdrop-alpha),
+        hsl(var(--background)) var(--app-launcher-launchpad-backdrop-alpha),
         transparent
       )
     );
-    backdrop-filter: blur(var(--app-launcher-launchpad-backdrop-blur-size));
+    backdrop-filter: blur(var(--app-launcher-launchpad-backdrop-blur-size))
+      saturate(var(--app-launcher-launchpad-backdrop-color-saturate));
 
     /* THE SCRIM CENTRES THE PANEL, so the panel does not have to centre ITSELF. A dialog normally
      * does that with `left/top: 50%` plus `translate(-50%, -50%)` — and a transform makes the
      * element the containing block for every fixed descendant inside it, which quietly captures the
      * close control: measured, `position: fixed` on the X resolved against the little content box
-     * and left it at (836, 368), beside the grid, instead of the viewport's corner. */
+     * and left it at (836, 368), beside the grid, instead of the viewport's corner.
+     *
+     * AND IT PLACES IT AT THE START, not in the middle. A grid centred on the viewport reads as a
+     * dialog that happens to hold icons: with two apps, both tiles floated dead centre with the
+     * whole screen empty around them, and adding a third moved the first two. Apps are a LIST — it
+     * begins at the top-inline-start corner and runs left to right, top to bottom, so the first app
+     * is in the same place whether the viewer has two of them or twenty. */
     display: grid;
-    place-items: center;
+    /* The host's own fixed chrome is inset here rather than inside the panel, because the CLOSE
+     * control has to clear it too: the scrim carries a `backdrop-filter`, so it is the containing
+     * block for its fixed descendants and they resolve against its PADDING box. One declaration
+     * moves the grid and the dismiss together. */
+    padding: var(--app-launcher-launchpad-space-safe-area);
+    place-items: start;
   }
 
   /*
@@ -1671,7 +1690,7 @@
       calc(100vw - 2 * var(--app-launcher-launchpad-space-inset))
     );
     max-height: calc(100dvh - 2 * var(--app-launcher-launchpad-space-inset));
-    justify-items: center;
+    justify-items: start;
     transform: none;
     border: 0;
     border-radius: 0;
@@ -1712,18 +1731,17 @@
   }
 
   /*
-   * CENTRED, AND THE COUNT IS A CAP RATHER THAN A FILL.
+   * FIXED TRACKS FROM THE START EDGE, AND THE COUNT IS A CAP RATHER THAN A FILL.
    *
    * The popover's `repeat(N, minmax(0, 1fr))` divides a known width among N tracks — right there,
-   * where the panel's width is the design and the grid always fills it. On a full viewport it puts
-   * two apps in the first two of six equal tracks: measured at 1440px, both tiles sat between x=260
-   * and x=500 with 940px of blurred page to their right, while the title centred over the middle of
-   * the panel. Nothing was wrong with either rule; they simply disagreed about where the middle is.
+   * where the panel's width is the design and the grid always fills it. On a full viewport it
+   * stretches two apps across six equal tracks and the tiles drift apart as the screen widens.
    *
-   * `auto-fit` over a fixed track collapses the tracks nothing occupies, so a row is exactly as wide
-   * as the apps in it and `justify-content: center` can then centre it. The column count keeps its
-   * meaning by capping the ROW instead of slicing it — the cap below is that many tiles plus the
-   * gaps between them, so `columns={4}` still means "never more than four across".
+   * `auto-fit` over a fixed track collapses the tracks nothing occupies, so the row is exactly as
+   * wide as the apps in it and starts where the panel starts. The column count keeps its meaning by
+   * capping the ROW instead of slicing it — the cap below is that many tiles plus the gaps between
+   * them, so `columns={4}` still means "never more than four across", and the fifth app wraps to the
+   * next line under the first.
    */
   .ui-app-launcher-launchpad .ui-app-launcher-grid {
     grid-template-columns: repeat(
@@ -1737,8 +1755,7 @@
             var(--app-launcher-launchpad-grid-gap)
         ) - var(--app-launcher-launchpad-grid-gap)
     );
-    justify-content: center;
-    justify-self: center;
+    justify-content: start;
     gap: var(--app-launcher-launchpad-grid-gap);
   }
 
@@ -1774,7 +1791,11 @@
     box-shadow: var(--app-launcher-launchpad-mark-shadow);
     color: hsl(var(--foreground));
     font-size: var(--app-launcher-launchpad-mark-font-size);
-    backdrop-filter: blur(var(--app-launcher-launchpad-backdrop-blur-size));
+    /* The mark's own pane sits on ground the scrim has already blurred, so its filter is there for
+     * the EDGE — the slight refraction along the hairline that says "another layer of glass" —
+     * not to hide anything. Half the scrim's radius is enough for that and costs less. */
+    backdrop-filter: blur(calc(var(--app-launcher-launchpad-backdrop-blur-size) / 2))
+      saturate(var(--app-launcher-launchpad-backdrop-color-saturate));
   }
 
   /* A labelled band centres with the grid it labels, instead of starting at the panel's edge while
@@ -1794,7 +1815,7 @@
   /* The dialog's name is present and quiet: it says what the surface is without competing with the
    * grid it labels. */
   .ui-app-launcher-launchpad [data-slot="dialog-header"] {
-    align-items: center;
+    align-items: start;
   }
 
   /*
