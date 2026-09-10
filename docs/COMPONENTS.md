@@ -48,8 +48,8 @@ All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640
 
 Default `direction="row"`; use `direction="col"` for vertical rhythm.
 
-| Component | Prop       | Key props                                                                                            |
-| --------- | ---------- | ---------------------------------------------------------------------------------------------------- |
+| Component | Prop       | Key props                                                                                                           |
+| --------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
 | `Flex`    | `FlexProp` | `direction: "row" \| "col"`, `gap: GapProp`, `gapRaw`, `pad`, `padRaw`, `fill`, `width`, `align`, `justify`, `wrap` |
 
 `fill` / `width` are the `fixed | elastic | fixed` row: `width` pins a column (number = px, and
@@ -82,25 +82,25 @@ and sets `min-inline-size: 0` so a truncating child ellipses instead of widening
 | `Textarea`    | `TextareaProp`    | extends native textarea                            |
 | `FormField`   | `FormFieldProp`   | `id`, `label`, `required`, `helper`, `error`       |
 | `SearchInput` | `SearchInputProp` | `onSearchChange: OnSearchChangeProp`               |
-| `Checkbox`    | `CheckboxProp`    | Radix checkbox; `Checkbox.Group` với `options`     |
+| `Checkbox`    | `CheckboxProp`    | Checkbox (RAC); `Checkbox.Group` với `options`     |
 | `Radio`       | `RadioGroupProp`  | `Radio.Group` single-select; `Radio.Root` compound |
 
 ---
 
 ## Data Display
 
-| Component      | Prop type          | Key props                                |
-| -------------- | ------------------ | ---------------------------------------- |
-| `EmptyState`   | `EmptyStateProp`   | `icon`, `title`, `description`, `action` |
-| `DataTable`    | `DataTableProp<T>` | `columns`, `density: TableDensityProp`   |
-| `Descriptions` | `DescriptionsProp` | `items[]`                                |
-| `Badge`        | `BadgeProp`        | `status`, `tone: ToneProp`               |
-| `Badge`        | `BadgeProp`        | shadcn badge variants                    |
+| Component      | Prop type          | Key props                                 |
+| -------------- | ------------------ | ----------------------------------------- |
+| `EmptyState`   | `EmptyStateProp`   | `icon`, `title`, `description`, `action`  |
+| `DataTable`    | `DataTableProp<T>` | `columns`, `density: TableDensityProp`    |
+| `Descriptions` | `DescriptionsProp` | `items[]`                                 |
+| `Badge`        | `BadgeProp`        | `status`, `tone: ToneProp`                |
+| `Badge`        | `BadgeProp`        | shadcn badge variants                     |
 | `Progress`     | `ProgressProp`     | `value` (meter) \| `segments` (breakdown) |
-| `Legend`       | `LegendProp`       | `items[]` — the key for a tone           |
-| `Popover`      | Radix primitives   | floating content panel                   |
-| `ScrollArea`   | Radix primitives   | scrollable regions                       |
-| `Collapsible`  | Radix primitives   | expand/collapse sections                 |
+| `Legend`       | `LegendProp`       | `items[]` — the key for a tone            |
+| `Popover`      | Radix primitives   | floating content panel                    |
+| `ScrollArea`   | Radix primitives   | scrollable regions                        |
+| `Collapsible`  | Radix primitives   | expand/collapse sections                  |
 
 ---
 
