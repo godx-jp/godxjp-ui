@@ -534,6 +534,146 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Share of the canvas the category axis may occupy, 0..1. At the 1102px dashboard column this * is ~440px — four times a 10-glyph 全角 name — so truncation is the exception, not the rule, * while a pathological label still cannot squeeze the bars out of their own chart."
   },
   {
+    "name": "--chat-bubble-background",
+    "value": "initial",
+    "description": "Bubble fill. `initial` so the --muted default re-resolves at the CALL SITE under a scoped * theme; a :root binding to a role var freezes at :root (docs/TOKENS.md — the :root freeze * rule). Documented default = hsl(var(--muted))."
+  },
+  {
+    "name": "--chat-bubble-foreground",
+    "value": "initial",
+    "description": "Ink on that fill — role-mirror knob, documented default = hsl(var(--foreground))."
+  },
+  {
+    "name": "--chat-bubble-border-color",
+    "value": "initial",
+    "description": "The 1px edge of an `outlined` bubble. Decorative chrome, so it mirrors --border, not --input * (docs/TOKENS.md — `--border` vs `--input`). Documented default = hsl(var(--border))."
+  },
+  {
+    "name": "--chat-bubble-radius",
+    "value": "var(--radius-lg)",
+    "description": "The 1px edge of an `outlined` bubble. Decorative chrome, so it mirrors --border, not --input * (docs/TOKENS.md — `--border` vs `--input`). Documented default = hsl(var(--border))."
+  },
+  {
+    "name": "--chat-bubble-gap",
+    "value": "var(--space-3)",
+    "description": "Gap between the avatar column and the message column."
+  },
+  {
+    "name": "--chat-bubble-max-inline-size",
+    "value": "34rem",
+    "description": "The measure a bubble never exceeds. Long-form assistant prose past ~70 characters per line * stops being readable, and a chat pane is as wide as the window (#45 — a service retunes the * measure to its own column)."
+  },
+  {
+    "name": "--chat-bubble-avatar-size",
+    "value": "initial",
+    "description": "Avatar box. Role-mirror of a RE-SCOPED tier (--control-height is re-declared per density and * by the auth shell), so it is `initial` + a call-site fallback for the same reason a colour * knob is. Documented default = var(--control-height)."
+  },
+  {
+    "name": "--chat-bubble-padding-block",
+    "value": "var(--space-2)",
+    "description": "Inner inset of the bubble body, at the default `md` step. The xs/sm/lg steps re-declare these * two on the element itself (styles/data-display-layout.css)."
+  },
+  {
+    "name": "--chat-bubble-padding-inline",
+    "value": "var(--space-3)",
+    "description": "Inner inset of the bubble body, at the default `md` step. The xs/sm/lg steps re-declare these * two on the element itself (styles/data-display-layout.css)."
+  },
+  {
+    "name": "--chat-bubble-list-gap",
+    "value": "var(--space-4)",
+    "description": "Vertical rhythm BETWEEN messages in a ChatBubbleList."
+  },
+  {
+    "name": "--chat-bubble-list-jump-inset",
+    "value": "var(--space-3)",
+    "description": "Inset the \"jump to latest\" affordance keeps from the block-end edge of the feed."
+  },
+  {
+    "name": "--chat-bubble-typing-caret-color",
+    "value": "initial",
+    "description": "The typed-so-far caret drawn while `typing` animates. Role-mirror knob, documented default = * hsl(var(--muted-foreground)). Never the only signal: the article also carries `aria-busy` * and a localized sr-only \"typing\" string."
+  },
+  {
+    "name": "--chat-bubble-typing-caret-width",
+    "value": "var(--stroke-md)",
+    "description": "The typed-so-far caret drawn while `typing` animates. Role-mirror knob, documented default = * hsl(var(--muted-foreground)). Never the only signal: the article also carries `aria-busy` * and a localized sr-only \"typing\" string."
+  },
+  {
+    "name": "--chat-bubble-typing-caret-height",
+    "value": "1em",
+    "description": "One line box tall, so the caret matches whatever type ramp the bubble is rendering at rather than a fixed pixel height a service theme could not move."
+  },
+  {
+    "name": "--chat-bubble-skeleton-short-inline-size",
+    "value": "60%",
+    "description": "The short line of the two-line loading Skeleton — a ragged second line is what makes the placeholder read as prose rather than as a bar chart. A theme can retune the raggedness."
+  },
+  {
+    "name": "--chat-bubble-tone-background-alpha",
+    "value": "0.08",
+    "description": "Status-tinted bubbles (`tone`) wash the role colour exactly like Alert does, so an error * bubble and an error banner agree. Never colour alone — the bubble also renders a localized * sr-only tone word."
+  },
+  {
+    "name": "--chat-bubble-tone-border-alpha",
+    "value": "0.35",
+    "description": "Status-tinted bubbles (`tone`) wash the role colour exactly like Alert does, so an error * bubble and an error banner agree. Never colour alone — the bubble also renders a localized * sr-only tone word."
+  },
+  {
+    "name": "--chat-bubble-end-background",
+    "value": "initial",
+    "description": "The message column of an `end`-placed (own) bubble. Role-mirror knobs so a service can tint * \"my\" messages without touching the assistant's. Documented defaults = * hsl(var(--primary) / 0.1) and hsl(var(--foreground))."
+  },
+  {
+    "name": "--chat-bubble-end-foreground",
+    "value": "initial",
+    "description": "The message column of an `end`-placed (own) bubble. Role-mirror knobs so a service can tint * \"my\" messages without touching the assistant's. Documented defaults = * hsl(var(--primary) / 0.1) and hsl(var(--foreground))."
+  },
+  {
+    "name": "--chat-composer-min-height",
+    "value": "initial",
+    "description": "Floor and ceiling of the draft box, both `initial` — and that is load-bearing, not tidiness. * * Their defaults READ `--control-height`, which is re-declared per size step on the composer * itself (`.ui-control-surface[data-size=\"sm\"]` and friends). Bound here at `:root`, each one * would resolve ONCE against the root tier and freeze: measured in Chromium, all four of * `size=\"xs|sm|md|lg\"` rendered at an identical 55px box. `initial` sends the fallback chain in * `data-entry-layout.css` back to the CALL SITE, where the step's own `--control-height` is in * scope. Same rule as ListRow's dividers and the compact-row knobs (docs/TOKENS.md — the :root * freeze rule). * * Default floor = var(--control-height) — exactly one control row. * Default ceiling = calc(var(--control-height) * 5) — past it the draft scrolls itself instead * of pushing the page. A MULTIPLIER, never `calc(var(--control-height) ± …)`, * which silently re-derives a tier (check:control-sizing)."
+  },
+  {
+    "name": "--chat-composer-max-height",
+    "value": "initial",
+    "description": "Floor and ceiling of the draft box, both `initial` — and that is load-bearing, not tidiness. * * Their defaults READ `--control-height`, which is re-declared per size step on the composer * itself (`.ui-control-surface[data-size=\"sm\"]` and friends). Bound here at `:root`, each one * would resolve ONCE against the root tier and freeze: measured in Chromium, all four of * `size=\"xs|sm|md|lg\"` rendered at an identical 55px box. `initial` sends the fallback chain in * `data-entry-layout.css` back to the CALL SITE, where the step's own `--control-height` is in * scope. Same rule as ListRow's dividers and the compact-row knobs (docs/TOKENS.md — the :root * freeze rule). * * Default floor = var(--control-height) — exactly one control row. * Default ceiling = calc(var(--control-height) * 5) — past it the draft scrolls itself instead * of pushing the page. A MULTIPLIER, never `calc(var(--control-height) ± …)`, * which silently re-derives a tier (check:control-sizing)."
+  },
+  {
+    "name": "--chat-composer-gap",
+    "value": "var(--space-2)",
+    "description": "Gap between the header / draft row / footer bands."
+  },
+  {
+    "name": "--chat-composer-padding-block",
+    "value": "var(--space-2)",
+    "description": "Inset of the composer frame. The draft box itself is borderless — the frame IS the boundary, * so two nested rounded borders never appear."
+  },
+  {
+    "name": "--chat-composer-padding-inline",
+    "value": "var(--space-2)",
+    "description": "Inset of the composer frame. The draft box itself is borderless — the frame IS the boundary, * so two nested rounded borders never appear."
+  },
+  {
+    "name": "--chat-composer-row-gap",
+    "value": "var(--space-2)",
+    "description": "Gap between the prefix slot, the draft box and the trailing actions."
+  },
+  {
+    "name": "--chat-composer-radius",
+    "value": "initial",
+    "description": "Corner shape — `initial` so the control default re-resolves at the call site under a scoped * theme (a :root binding to a role var freezes at :root). Default = var(--control-radius)."
+  },
+  {
+    "name": "--chat-composer-header-border",
+    "value": "initial",
+    "description": "Divider under the `header` slot — `initial`, documented default = 1px solid hsl(var(--border)), * so a service retunes the chrome once instead of per composer."
+  },
+  {
+    "name": "--chat-composer-footer-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Type scale of the footer hint line (a token counter, a \"Shift+Enter for a new line\" hint)."
+  },
+  {
     "name": "--control-height-compact",
     "value": "var(--band-height-sm)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
@@ -1865,8 +2005,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-label-line-height",
-    "value": "1",
-    "description": "LABEL — the Label primitive's own box and type (#319). Every one of these was a Tailwind * literal baked into label.tsx (`text-sm leading-none flex items-center gap-2`), so a service * whose form grid wanted a smaller/denser label had to hand-write font-size on every call site * (which is exactly why --form-label-font-size had to be invented as a per-instance escape). * They live under the `control` prefix because Label is a control-family primitive and * src/tokens/components/ has no `label` file of its own. * * Defaults reproduce today's rendering exactly: * font-size ← `text-sm` → --text-sm → var(--font-size-sm) * line-height ← `leading-none` → 1 (leading-none beats text-sm's companion line-height)"
+    "value": "var(--line-height-normal)",
+    "description": "A LABEL WRAPS, so its line box cannot be 1. * * This was a literal `1`, which is right for the one case it was chosen for — a single-line * label beside a checkbox, where a cap-height box aligns cleanly — and wrong for every other. * The moment the text takes two lines they collide: measured on the hosted sign-up consent * label at 520px, font-size 14px with line-height 14px produced a 28px box of two touching * lines. Long copy, a narrow column, and ja/vi wrapping all reach that case routinely. * * This package has already paid for this exact mistake once: `--auth-shell-divider-label-line- * height` carries the note that a hardcoded `line-height: 1` rendered an 11px row and sat the * lower half of the canonical Login card 8px high (gh#263). Same literal, same failure, one * token over. * * `--line-height-normal` (1.5), not `--line-height-tight`: 1.25 clears the collision but two * wrapped lines still read as one block, and a label that has wrapped IS prose at that point. * 1.5 is also what this package already decided for the same job one layer up — * `--auth-shell-field-label-line-height` — so the two agree instead of drifting. * * Alignment is unaffected: `.ui-label` is `display: flex; align-items: center`, so the control * centres against the label box whatever its height."
   },
   {
     "name": "--control-label-space-gap",
@@ -2094,21 +2234,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
   },
   {
-    "name": "--tree-item-indent-width",
-    "value": "var(--space-5)",
-    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
-  },
-  {
-    "name": "--tree-item-title-font-size",
-    "value": "var(--font-size-xs)",
-    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
-  },
-  {
-    "name": "--tree-item-description-font-size",
-    "value": "var(--font-size-xs)",
-    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
-  },
-  {
     "name": "--timeline-note-font-size",
     "value": "var(--font-size-xs)",
     "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
@@ -2282,16 +2407,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--timeline-line-completed-background",
     "value": "initial",
     "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line."
-  },
-  {
-    "name": "--tree-item-active-border",
-    "value": "initial",
-    "description": "Tree active item — border + soft bg tint over the --primary role. `initial` so the default re-resolves under a scoped theme. Defaults = hsl(var(--primary) / 0.3) border · 0.05 fill."
-  },
-  {
-    "name": "--tree-item-active-background",
-    "value": "initial",
-    "description": "Tree active item — border + soft bg tint over the --primary role. `initial` so the default re-resolves under a scoped theme. Defaults = hsl(var(--primary) / 0.3) border · 0.05 fill."
   },
   {
     "name": "--qr-code-foreground",
@@ -4714,9 +4829,14 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Brand-chrome gradient hooks — opt-in, invisible by default. A service paints * the sidebar/topbar surface by setting these to a gradient (no-op = none)."
   },
   {
+    "name": "--app-shell-viewport-inset",
+    "value": "0px",
+    "description": "HOW MUCH OF THE VIEWPORT IS NOT THIS APPLICATION'S — 0 unless something says otherwise, which * is every ordinary page. A platform bar docked to a viewport edge sets it to the band it took, * and the shell sizes itself to what is left instead of overflowing the window by that much."
+  },
+  {
     "name": "--app-shell-bar-height",
     "value": "var(--band-height-2xl)",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "HOW MUCH OF THE VIEWPORT IS NOT THIS APPLICATION'S — 0 unless something says otherwise, which * is every ordinary page. A platform bar docked to a viewport edge sets it to the band it took, * and the shell sizes itself to what is left instead of overflowing the window by that much."
   },
   {
     "name": "--app-shell-bar-inset",
@@ -4745,13 +4865,28 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-shell-nav-rail-width",
-    "value": "3.5rem",
-    "description": "3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar * collapsed. 3.5rem still clears the coarse-pointer 44px tap target. It is a token precisely so * a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`."
+    "value": "2.5rem",
+    "description": "3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar * collapsed. 3rem (48px) still clears the coarse-pointer 44px tap target, with 2px either side * of a 44px control. It is a token precisely so a service that wants Slack's wider rail sets * this one line — never a forked `.app-nav-rail`."
+  },
+  {
+    "name": "--app-shell-nav-rail-item-size",
+    "value": "var(--band-height-lg)",
+    "description": "The SIZE OF A RAIL CELL, and the reason the rail can be this narrow. The controls the rail * hosts carry their own band token (`OrgSwitcher`'s collapsed trigger is a square of * `--org-switcher-trigger-height`), so a narrower TRACK alone does not narrow them — it clips * them, because the rail clips. The rail therefore sizes its own cells, exactly as the bar sizes * a `TopbarItem` by stretching it to `--app-shell-bar-height`: chrome decides how big its cells * are, the cell does not decide how big the chrome is. * * 2.25rem (36px) on a mouse — comfortably over the 24x24 of WCAG 2.2 SC 2.5.8 — and the coarse * block below lifts it back to the 44px tap floor of rule #24, together with the track."
+  },
+  {
+    "name": "--app-shell-nav-rail-height",
+    "value": "var(--app-shell-nav-rail-width)",
+    "description": "The SAME rail turned 90°: its thickness when `navRailPosition` is a block edge (top/bottom) * and the column becomes a full-measure strip. A separate token rather than one \"size\", because * a width read as a height is the kind of name that survives review and then confuses every * later override. * * A strip is THINNER than the column, and 2.75rem is where thinner stops: `--band-height-xl` is * 44px, the WCAG 2.2 AA touch floor this library states as rule #24 and enforces on every * consumer, and it is also exactly `--org-switcher-trigger-height`. Below it the shell's own * platform bar would be the one control on the page under the floor — and with the rail's * `overflow: clip`, a control taller than the strip is clipped rather than shrunk. * * ONE THICKNESS, TWO AXES: it resolves to the width, so the rail is the same measure whichever * edge it is docked to and a service retunes both with one line. It briefly carried a `+ 1px` * for the strip's own separator — needed only while the cell was exactly as tall as the track; * with `--app-shell-nav-rail-item-size` smaller than the track the border has room, and two * different numbers for one rail is a worse defect than the pixel it bought."
+  },
+  {
+    "name": "--app-shell-nav-rail-inset",
+    "value": "var(--space-3)",
+    "description": "Block inset of the rail's own content — the counterpart of the sidebar's * `--sidebar-nav-scroll-padding`, so the two navigation columns start their content on the same * line under `topbarSpan=\"full\"`. It is deliberately NOT applied to the top edge under * `topbarSpan=\"content\"`: there the rail runs to y=0 and its first row IS the shell's top row, * so it takes the bar's band instead and the three columns share one centre line."
   },
   {
     "name": "--app-shell-page-max-width",
     "value": "80rem",
-    "description": "3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar * collapsed. 3.5rem still clears the coarse-pointer 44px tap target. It is a token precisely so * a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`."
+    "description": "Block inset of the rail's own content — the counterpart of the sidebar's * `--sidebar-nav-scroll-padding`, so the two navigation columns start their content on the same * line under `topbarSpan=\"full\"`. It is deliberately NOT applied to the top edge under * `topbarSpan=\"content\"`: there the rail runs to y=0 and its first row IS the shell's top row, * so it takes the bar's band instead and the three columns share one centre line."
   },
   {
     "name": "--app-shell-main-background",
@@ -4879,9 +5014,14 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Corner radius of a nav row. Defaults to the global rail radius, which is what an inset pill * wants — but a rail that sets --sidebar-nav-scroll-padding and --sidebar-nav-gap to 0 makes its * rows full-bleed bands flush with both edges, and a band wants square corners. Every other * geometry property of `.sb-nav-item` was already a knob; this one was pinned to a constant, so * the only way to square a band was a consumer selector against a DS internal class — the exact * coupling rule #45 exists to prevent. Set `0` for full-bleed bands."
   },
   {
+    "name": "--topbar-search-width",
+    "value": "16rem",
+    "description": "The trigger's PREFERRED width, consumed as a flex BASIS — deliberately not a minimum. * * `.tb-search` is `width: 100%`, written for the `center` slot (flex: 1 1 0); in `start` * (flex: 0 1 auto) that collapses to content width, so the trigger came out at 186px, narrower * than the placeholder it holds. A hard `min-inline-size` fixed that and broke something worse: * the bar's shrink contract. Measured at 1024 with a long account name, an unshrinkable trigger * pushed the start cluster into the end cluster — the collision that contract exists to prevent. * As a BASIS it holds this width where there is room and yields where there is not."
+  },
+  {
     "name": "--topbar-search-max-width",
     "value": "none",
-    "description": "Default `none` (gh#296): the search trigger fills its whole `Topbar` center slot — flush to * whatever sits in `end` (a locale picker, notification bell, account menu) — rather than * floating as a fixed ~420px box with dead space on either side at normal desktop widths. A * consumer that wants a capped, centered search box (the previous look) sets this explicitly."
+    "description": "The trigger's PREFERRED width, consumed as a flex BASIS — deliberately not a minimum. * * `.tb-search` is `width: 100%`, written for the `center` slot (flex: 1 1 0); in `start` * (flex: 0 1 auto) that collapses to content width, so the trigger came out at 186px, narrower * than the placeholder it holds. A hard `min-inline-size` fixed that and broke something worse: * the bar's shrink contract. Measured at 1024 with a long account name, an unshrinkable trigger * pushed the start cluster into the end cluster — the collision that contract exists to prevent. * As a BASIS it holds this width where there is room and yields where there is not."
   },
   {
     "name": "--topbar-height",
@@ -5024,6 +5164,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "What the SURROUNDING SURFACE insets the list by, which a row cancels so its fill and its rule * reach both edges. Zero by default: the popover publishes --popover-space-inset: 0, so there is * nothing to cancel there, and cancelling anyway drags the row outside the panel and puts its * text on the border. The sheet, which does inset its body, overrides this."
   },
   {
+    "name": "--org-switcher-legend-space-gap",
+    "value": "var(--space-4)",
+    "description": "The keyboard legend under a modal picker — see `.ui-org-switcher-legend`."
+  },
+  {
+    "name": "--org-switcher-legend-font-size",
+    "value": "var(--font-size-2xs)",
+    "description": "The keyboard legend under a modal picker — see `.ui-org-switcher-legend`."
+  },
+  {
+    "name": "--org-switcher-hint-space-gap",
+    "value": "var(--space-1)",
+    "description": "The keyboard legend under a modal picker — see `.ui-org-switcher-legend`."
+  },
+  {
     "name": "--org-switcher-dialog-width",
     "value": "26rem",
     "description": "The dialog surface's measure. Wider than --org-switcher-menu-width because the whole reason to * reach for the dialog is that a row carries more than a name; narrower than the generic * --dialog-width-default because it is still a list of choices, not a form."
@@ -5157,6 +5312,126 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--app-launcher-state-min-height",
     "value": "8rem",
     "description": "The app you are already in. `initial` so the role default re-resolves at the call site under a * scoped theme, the same reason `--sidebar-item-active-*` does. Default = hsl(var(--secondary))."
+  },
+  {
+    "name": "--app-launcher-launchpad-backdrop-background",
+    "value": "initial",
+    "description": "Role-mirror knob: `initial` so a scoped theme's --background re-resolves at the call site * (docs/TOKENS.md). Default = a veil of the theme's OWN background at the alpha below."
+  },
+  {
+    "name": "--app-launcher-launchpad-backdrop-blur-size",
+    "value": "16px",
+    "description": "Role-mirror knob: `initial` so a scoped theme's --background re-resolves at the call site * (docs/TOKENS.md). Default = a veil of the theme's OWN background at the alpha below."
+  },
+  {
+    "name": "--app-launcher-launchpad-backdrop-alpha",
+    "value": "55%",
+    "description": "Role-mirror knob: `initial` so a scoped theme's --background re-resolves at the call site * (docs/TOKENS.md). Default = a veil of the theme's OWN background at the alpha below."
+  },
+  {
+    "name": "--app-launcher-launchpad-backdrop-color-saturate",
+    "value": "180%",
+    "description": "THE INGREDIENT THAT MAKES IT GLASS RATHER THAN FOG. Blur alone averages a page towards its * mean, and the mean of any real screen is a mid grey — 28px of it turned a dashboard into a * featureless haze with the tiles floating in nothing. Pushing chroma back up after the blur is * what a physical frosted pane does: it scatters direction, not colour."
+  },
+  {
+    "name": "--app-launcher-launchpad-space-inset",
+    "value": "var(--space-8)",
+    "description": "THE INGREDIENT THAT MAKES IT GLASS RATHER THAN FOG. Blur alone averages a page towards its * mean, and the mean of any real screen is a mid grey — 28px of it turned a dashboard into a * featureless haze with the tiles floating in nothing. Pushing chroma back up after the blur is * what a physical frosted pane does: it scatters direction, not colour."
+  },
+  {
+    "name": "--app-launcher-launchpad-space-safe-area",
+    "value": "0",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-panel-max-width",
+    "value": "60rem",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-panel-gap",
+    "value": "var(--space-8)",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-grid-gap",
+    "value": "var(--space-6)",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-tile-inline-size",
+    "value": "7.5rem",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-tile-padding",
+    "value": "var(--space-3)",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-tile-radius",
+    "value": "var(--radius-lg)",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-tile-gap",
+    "value": "var(--space-3)",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-tile-hover-background",
+    "value": "color-mix( in srgb, hsl(var(--foreground)) 10%, transparent )",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-mark-size",
+    "value": "4rem",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-mark-radius",
+    "value": "var(--radius-lg)",
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+  },
+  {
+    "name": "--app-launcher-launchpad-mark-background",
+    "value": "color-mix( in srgb, hsl(var(--card)) 78%, transparent )",
+    "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the * theme and stays legible on a light page and a dark one."
+  },
+  {
+    "name": "--app-launcher-launchpad-mark-border-color",
+    "value": "color-mix( in srgb, hsl(var(--foreground)) 14%, transparent )",
+    "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the * theme and stays legible on a light page and a dark one."
+  },
+  {
+    "name": "--app-launcher-launchpad-mark-font-size",
+    "value": "var(--font-size-lg)",
+    "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the * theme and stays legible on a light page and a dark one."
+  },
+  {
+    "name": "--app-launcher-launchpad-mark-shadow",
+    "value": "var(--shadow-lg)",
+    "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the * theme and stays legible on a light page and a dark one."
+  },
+  {
+    "name": "--app-launcher-launchpad-name-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the * theme and stays legible on a light page and a dark one."
+  },
+  {
+    "name": "--app-launcher-launchpad-title-font-size",
+    "value": "var(--font-size-2xs)",
+    "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the * theme and stays legible on a light page and a dark one."
+  },
+  {
+    "name": "--app-launcher-launchpad-title-letter-spacing",
+    "value": "0.08em",
+    "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the * theme and stays legible on a light page and a dark one."
+  },
+  {
+    "name": "--app-launcher-launchpad-close-space-padding",
+    "value": "var(--space-2)",
+    "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the * theme and stays legible on a light page and a dark one."
   },
   {
     "name": "--sidebar-item-active-color",
@@ -5385,23 +5660,23 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--auth-shell-registration-main-padding-block-start",
-    "value": "9.5rem",
-    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+    "value": "1rem",
+    "description": "Block-start PAGE GUTTER — the floor the column keeps against the viewport edge once the auto * margins in shell-layout.css have placed it. It is deliberately NOT the artboard offset any * more. * * It used to be 9.5rem / 8.875rem, derived from the canonical SCR-002 anchor (card y=284 at * 1440x900 and y=274 at 390x844, each the offset plus the 112px identity slot plus the 20px * stack gap). Held as unconditional padding, that constant manufactured a scrollbar out of * nothing: at 1440x900 the column measured 152px of EMPTY SPACE + 793px of content + 48px, i.e. * 993px in a 900px viewport, so the page scrolled 93px and the scrolled region was blank. A * sign-up form whose first field sits below the fold because of decoration is a worse failure * than a lost artboard anchor, so the anchor yields. * * Both values are still public knobs: a product that wants the literal artboard back sets this * to 9.5rem and accepts the overflow on a short viewport."
   },
   {
     "name": "--auth-shell-registration-main-padding-block-start-mobile",
-    "value": "8.875rem",
-    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+    "value": "0.9375rem",
+    "description": "Block-start PAGE GUTTER — the floor the column keeps against the viewport edge once the auto * margins in shell-layout.css have placed it. It is deliberately NOT the artboard offset any * more. * * It used to be 9.5rem / 8.875rem, derived from the canonical SCR-002 anchor (card y=284 at * 1440x900 and y=274 at 390x844, each the offset plus the 112px identity slot plus the 20px * stack gap). Held as unconditional padding, that constant manufactured a scrollbar out of * nothing: at 1440x900 the column measured 152px of EMPTY SPACE + 793px of content + 48px, i.e. * 993px in a 900px viewport, so the page scrolled 93px and the scrolled region was blank. A * sign-up form whose first field sits below the fold because of decoration is a worse failure * than a lost artboard anchor, so the anchor yields. * * Both values are still public knobs: a product that wants the literal artboard back sets this * to 9.5rem and accepts the overflow on a short viewport."
   },
   {
     "name": "--auth-shell-registration-main-padding-inline",
     "value": "1rem",
-    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+    "description": "Block-start PAGE GUTTER — the floor the column keeps against the viewport edge once the auto * margins in shell-layout.css have placed it. It is deliberately NOT the artboard offset any * more. * * It used to be 9.5rem / 8.875rem, derived from the canonical SCR-002 anchor (card y=284 at * 1440x900 and y=274 at 390x844, each the offset plus the 112px identity slot plus the 20px * stack gap). Held as unconditional padding, that constant manufactured a scrollbar out of * nothing: at 1440x900 the column measured 152px of EMPTY SPACE + 793px of content + 48px, i.e. * 993px in a 900px viewport, so the page scrolled 93px and the scrolled region was blank. A * sign-up form whose first field sits below the fold because of decoration is a worse failure * than a lost artboard anchor, so the anchor yields. * * Both values are still public knobs: a product that wants the literal artboard back sets this * to 9.5rem and accepts the overflow on a short viewport."
   },
   {
     "name": "--auth-shell-registration-main-padding-inline-mobile",
     "value": "0.9375rem",
-    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+    "description": "Block-start PAGE GUTTER — the floor the column keeps against the viewport edge once the auto * margins in shell-layout.css have placed it. It is deliberately NOT the artboard offset any * more. * * It used to be 9.5rem / 8.875rem, derived from the canonical SCR-002 anchor (card y=284 at * 1440x900 and y=274 at 390x844, each the offset plus the 112px identity slot plus the 20px * stack gap). Held as unconditional padding, that constant manufactured a scrollbar out of * nothing: at 1440x900 the column measured 152px of EMPTY SPACE + 793px of content + 48px, i.e. * 993px in a 900px viewport, so the page scrolled 93px and the scrolled region was blank. A * sign-up form whose first field sits below the fold because of decoration is a worse failure * than a lost artboard anchor, so the anchor yields. * * Both values are still public knobs: a product that wants the literal artboard back sets this * to 9.5rem and accepts the overflow on a short viewport."
   },
   {
     "name": "--auth-shell-registration-main-padding-block-end",
@@ -5514,14 +5789,19 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard * anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
   },
   {
+    "name": "--auth-footer-target-min-size",
+    "value": "var(--touch-target-min)",
+    "description": "The legal links sit at --font-size-2xs, so their line box alone is ~19px and every auth page * failed WCAG 2.2 SC 2.5.8 on Terms / Privacy / the locale trigger. The floor is applied to the * link BOX rather than a ::after hit area: the target a user (and an audit) measures is the * element itself, and an invisible overlay that still reports 19px is not a fix. Text metrics * are untouched — only the box grows."
+  },
+  {
     "name": "--auth-stack-gap",
     "value": "var(--space-3)",
-    "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard * anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
+    "description": "The legal links sit at --font-size-2xs, so their line box alone is ~19px and every auth page * failed WCAG 2.2 SC 2.5.8 on Terms / Privacy / the locale trigger. The floor is applied to the * link BOX rather than a ::after hit area: the target a user (and an audit) measures is the * element itself, and an invisible overlay that still reports 19px is not a fix. Text metrics * are untouched — only the box grows."
   },
   {
     "name": "--auth-shell-field-label-gap",
     "value": "var(--space-1)",
-    "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard * anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
+    "description": "The legal links sit at --font-size-2xs, so their line box alone is ~19px and every auth page * failed WCAG 2.2 SC 2.5.8 on Terms / Privacy / the locale trigger. The floor is applied to the * link BOX rather than a ::after hit area: the target a user (and an audit) measures is the * element itself, and an invisible overlay that still reports 19px is not a fix. Text metrics * are untouched — only the box grows."
   },
   {
     "name": "--auth-shell-field-label-font-size",
@@ -5652,6 +5932,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--app-shell-bar-height",
     "value": "var(--band-height-3xl)",
     "description": "Rule #24 companion (gh#291): on coarse pointers --control-height grows to 2.75rem * (44px tap floor), and the shell bar sits flush with the viewport top — a 3rem bar * leaves the control's 3px focus ring painting ABOVE y=0, off-screen, which no * overflow setting can recover. 3.5rem gives 6px of breathing per side."
+  },
+  {
+    "name": "--app-shell-nav-rail-width",
+    "value": "3rem",
+    "description": "Same rule #24 companion for the second navigation track: a finger gets the 44px floor back, * and the track widens with the cell so the cell is not clipped by the rail it sits in."
+  },
+  {
+    "name": "--app-shell-nav-rail-item-size",
+    "value": "var(--band-height-xl)",
+    "description": "Same rule #24 companion for the second navigation track: a finger gets the 44px floor back, * and the track widens with the cell so the cell is not clipped by the rail it sits in."
   },
   {
     "name": "--mobile-shell-block-size",
@@ -6117,6 +6407,76 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--toggle-count-forced-outline-width",
     "value": "var(--stroke-hairline)",
     "description": "Under forced-colors every fill is flattened to a system colour, so neither inversion encodes * anything any more. This outline is the state's structural fallback there — drawn on the * PRESSED pill only, and as `outline` (not `border`) so it costs no layout."
+  },
+  {
+    "name": "--tree-node-height",
+    "value": "initial",
+    "description": "Row box height. MIRRORS THE `--control-height` TIER — the row is a control-sized hit target, * and the tier is density-aware, so the height is never a literal and never an ad-hoc * `calc(var(--control-height) ± …)` (that re-derives a tier and drifts out of step with the * controls beside it). `size` picks a NAMED step (`--control-height-{xs,sm,lg}`) at the call * site; the tier is re-scoped by the auth shells, hence `initial` here. * Documented default: --tree-node-height = var(--control-height)."
+  },
+  {
+    "name": "--tree-indent-width",
+    "value": "var(--space-5)",
+    "description": "Indent per level. Drives `padding-inline-start` on the row — a LOGICAL property, so the * outline flips under `dir=\"rtl\"` with no second rule."
+  },
+  {
+    "name": "--tree-node-padding-inline",
+    "value": "var(--space-2)",
+    "description": "Inline padding inside a row, the gap between switcher / checkbox / icon / label, and the row's * corner. Pure geometry — no role to freeze, so these bind directly."
+  },
+  {
+    "name": "--tree-node-gap",
+    "value": "var(--space-2)",
+    "description": "Inline padding inside a row, the gap between switcher / checkbox / icon / label, and the row's * corner. Pure geometry — no role to freeze, so these bind directly."
+  },
+  {
+    "name": "--tree-node-radius",
+    "value": "var(--radius-sm)",
+    "description": "Inline padding inside a row, the gap between switcher / checkbox / icon / label, and the row's * corner. Pure geometry — no role to freeze, so these bind directly."
+  },
+  {
+    "name": "--tree-node-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Inline padding inside a row, the gap between switcher / checkbox / icon / label, and the row's * corner. Pure geometry — no role to freeze, so these bind directly."
+  },
+  {
+    "name": "--tree-switcher-size",
+    "value": "1.25rem",
+    "description": "The disclosure triangle (NameThatUI: \"disclosure triangle\"; an indented tree that expands is * an \"Outline View\"). Its box is what makes the switcher a real 24px-class target inside the * row, so it is a knob, not a hardcoded icon size."
+  },
+  {
+    "name": "--tree-switcher-color",
+    "value": "initial",
+    "description": "Documented default: --tree-switcher-color = hsl(var(--muted-foreground))."
+  },
+  {
+    "name": "--tree-icon-size",
+    "value": "var(--icon-size-md)",
+    "description": "Node glyph (`showIcon`, and the folder/file pair of `variant=\"directory\"`)."
+  },
+  {
+    "name": "--tree-line-color",
+    "value": "initial",
+    "description": "Documented default: --tree-line-color = hsl(var(--border))."
+  },
+  {
+    "name": "--tree-node-hover-background",
+    "value": "initial",
+    "description": "Row states. Both mirror roles, so both are `initial` with the role read at the call site. * Documented defaults: --tree-node-hover-background = hsl(var(--accent)); * --tree-node-selected-background = hsl(var(--accent)); * --tree-node-selected-foreground = hsl(var(--accent-foreground))."
+  },
+  {
+    "name": "--tree-node-selected-background",
+    "value": "initial",
+    "description": "Row states. Both mirror roles, so both are `initial` with the role read at the call site. * Documented defaults: --tree-node-hover-background = hsl(var(--accent)); * --tree-node-selected-background = hsl(var(--accent)); * --tree-node-selected-foreground = hsl(var(--accent-foreground))."
+  },
+  {
+    "name": "--tree-node-selected-foreground",
+    "value": "initial",
+    "description": "Row states. Both mirror roles, so both are `initial` with the role read at the call site. * Documented defaults: --tree-node-hover-background = hsl(var(--accent)); * --tree-node-selected-background = hsl(var(--accent)); * --tree-node-selected-foreground = hsl(var(--accent-foreground))."
+  },
+  {
+    "name": "--tree-loading-bar-inline-size",
+    "value": "40%",
+    "description": "Width of the indeterminate bar shown while `loadData` resolves a branch. A fraction, not a length: it has to read as \"part of a row\" at every row width and every density."
   },
   {
     "name": "--upload-dropzone-space-inset",

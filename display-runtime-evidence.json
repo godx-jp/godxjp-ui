@@ -298,19 +298,6 @@
       "verdict": "pass"
     },
     {
-      "id": "data-display-tree-list",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
-      "overflow": "pass",
-      "a11y": "pass",
-      "rtl": "pass",
-      "keyboard": "not-applicable",
-      "evidence": [
-        "artifacts/display-runtime/data-display-tree-list-320.png",
-        "artifacts/display-runtime/data-display-tree-list-1920.png"
-      ],
-      "verdict": "pass"
-    },
-    {
       "id": "data-display-scroll-area",
       "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
       "overflow": "pass",

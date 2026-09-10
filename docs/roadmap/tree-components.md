@@ -114,15 +114,21 @@ Names must pass `pnpm check:token-tiers` (`--{component}-{part}-{property}`):
 `tree.expand`, `tree.collapse`, `tree.loading`, `tree.empty`, `tree.selected` (sr-only status —
 selection must never be colour-only, WCAG 1.4.1). Every `aria-label` goes through `t()`.
 
-## 7. `TreeList` — what happens to it
+## 7. `TreeList` — what happened to it
 
-`TreeList` stays exported (it has consumers) but is **superseded**. Once `Tree` lands:
+**Superseded here, then REMOVED in 21.0.0.** The plan above ("stays exported, it has consumers")
+was written while it still had them. It stopped: the last two call sites in `godx-task`
+(`pages/tests/show.tsx`, `pages/documents/index.tsx`) moved to `Tree`, and a sweep of all four
+consumer repos (godx-task, godx-chat, ql, platform) found none left. A superseded export that
+nobody calls is not a compatibility surface, it is a second answer to a question that already has
+one — and the catalog blurb it shipped with promised a "chevron + package icon" the component
+never rendered.
 
-1. Mark it deprecated in `mcp/src/data/components.ts` with a replacement claim pointing at `Tree`.
-2. The claim must be recorded on **both** sides of the catalog — see commit `8365bf05`
-   ("a replacement claim only one side knew about taught the mistake it forbids").
-3. Its docs page gains a banner: *use `Tree` when nodes expand; `TreeList` is a flat indented list.*
-4. Do **not** delete it, do **not** change its API in this work.
+So it is gone, with no deprecated shim: component, types, barrel entries, tests, frame, catalog
+entry, `--tree-item-*` tokens and `.ui-tree-item` CSS. `Tree` is the replacement, and the Tree
+catalog entry carries the migration (`id`->`value`, `title`->`label`, `depth`->nesting).
+`check-mcp-pattern-imports.mjs` now denylists an import of, or JSX for, the removed export, the
+same way it denylists `Stack`/`Inline`.
 
 ## 8. Shared code
 

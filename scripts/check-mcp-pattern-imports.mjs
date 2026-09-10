@@ -105,6 +105,16 @@ const REMOVED_API = [
     label: "removed prop type StackProp/InlineProp/StackGapProp/InlineGapProp",
     re: /\b(?:Stack|Inline)(?:Gap)?Prop\b/g,
   },
+  // TreeList was removed in 21.0.0 (a flat indented list that only LOOKED like a tree). Prose may
+  // still NAME it — the migration note in the Tree entry does — so only the API forms match.
+  {
+    label: "import of removed TreeList (use Tree)",
+    re: /import\s+(?:type\s+)?\{[^}]*\bTreeList(?:Item|Props?)?\b[^}]*\}\s+from\s+["']@godxjp\/ui[^"']*["']/g,
+  },
+  {
+    label: "removed JSX <TreeList> (use <Tree treeData>)",
+    re: /<\/?TreeList(?=[\s/>])/g,
+  },
 ];
 const UNDEFINED_CLASS = {
   label: "undefined library CSS class settings-* (no such class ships)",

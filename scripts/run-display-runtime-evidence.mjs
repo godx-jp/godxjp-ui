@@ -23,7 +23,6 @@ const allFrames = [
     "empty-state",
     "progress",
     "timeline",
-    "tree-list",
     "scroll-area",
     "popover",
     "hover-card",

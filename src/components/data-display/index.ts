@@ -50,8 +50,6 @@ export type { CodeBlockProp, CodeBlockProps } from "./code-block";
 export { Prose } from "./prose";
 export type { ProseProp, ProseProps } from "./prose";
 export type { ProgressProps, ProgressSegment, ProgressTone } from "./progress";
-export { TreeList } from "./tree-list";
-export type { TreeListItem, TreeListProps } from "./tree-list";
 export { Timeline } from "./timeline";
 export type { TimelineItem, TimelineProps } from "./timeline";
 export { TimelineGrid } from "./timeline-grid";

@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 302,
-    dimensionCells: 4228,
+    exports: 301,
+    dimensionCells: 4214,
     covered: 79,
-    untested: 2364,
-    notApplicable: 1785,
+    untested: 2357,
+    notApplicable: 1778,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -87,7 +87,7 @@ export const FRAME_COVERAGE_POLICY = {
     { id: "carousel-contract-gaps", targets: ["Carousel"], dimensions: ["ownership","contentStress","keyboard","reducedMotion","rtl"], cases: ["single slide","plugins / setApi","autoplay pause","arrow-key traversal alongside tabs","touch / swipe","RTL"] },
     { id: "data-table-contract-gaps", targets: ["DataTable"], dimensions: ["states","async","keyboard","accessibleName","density"], cases: ["error / prerequisite / background refresh","server and manual modes (manualPagination / manualSorting / manualFiltering)","zero-page and single-page pagination","accessible table and action-column labels","invalid row ids (getRowId)","keyboard behaviour","virtualization"] },
     { id: "charts-contract-gaps", targets: ["LineChart","BarChart","AreaChart","PieChart"], dimensions: ["async","reducedMotion","keyboard","contentStress","responsive","rtl"], cases: ["loading / error","reduced motion","keyboard datum navigation","invalid / null / NaN data","mobile axis collision","RTL"] },
-    { id: "locale-stress-gaps", targets: ["Timeline","TreeList","PasswordStrength"], dimensions: ["contentStress","accessibleName"], cases: ["long localized Japanese / Vietnamese content","hard-coded screen-reader strings that never reach `t()`"] },
+    { id: "locale-stress-gaps", targets: ["Timeline","PasswordStrength"], dimensions: ["contentStress","accessibleName"], cases: ["long localized Japanese / Vietnamese content","hard-coded screen-reader strings that never reach `t()`"] },
   ],
 } as const;
 
@@ -389,7 +389,6 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"TopbarItem","group":"layout","frame":"docs/layout/topbar-item.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Transfer","group":"data-entry","frame":"docs/data-entry/transfer.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"Tree","group":"data-display","frame":"docs/data-display/tree.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","states","variants"],"notApplicable":["density","shapes","tones"]},
-  {"name":"TreeList","group":"data-display","frame":"docs/data-display/tree-list.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"TreeSelect","group":"data-entry","frame":"docs/data-entry/tree-select.tsx","covered":["sizes","variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","tones"]},
   {"name":"TwoFactorSetup","group":"feedback","frame":"docs/feedback/two-factor-setup.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"Upload","group":"data-entry","frame":"docs/data-entry/upload.tsx","covered":["variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones"]},

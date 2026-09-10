@@ -2668,11 +2668,6 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
-  TreeListProp: {
-    group: "data-display",
-    file: "components/data-display/tree-list.tsx",
-    vocabulary: ["ClassNameProp"],
-  },
   ChatBubblePlacementProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",

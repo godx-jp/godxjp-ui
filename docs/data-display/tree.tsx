@@ -146,7 +146,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Tree"
-      subtitle="アクセス権限の設定 · 展開できる階層は Tree、平坦なインデントだけなら TreeList"
+      subtitle="アクセス権限の設定 · 展開・折りたたみ・キーボード操作のある階層はすべて Tree"
     >
       <Flex direction="col" gap="lg">
         <Card>
