@@ -112,6 +112,13 @@ const THEME = `
   --warning: 41 73% 53%;  --warning-foreground: 217 61% 12%;  /* = brand gold */
   --destructive: 12 83% 44%; --destructive-foreground: 0 0% 100%;
   --info: 217 69% 47%; --info-foreground: 0 0% 100%;
+  /* A TRACK IS A QUIET SURFACE, AND THIS THEME REPOINTED --secondary AT AN ACTION COLOUR.
+     Progress reads --progress-track-background, which defaults to hsl(var(--secondary)) — a pale
+     neutral in the stock palette. Here --secondary is the navy BUTTON, so the bar's track came out
+     near-black and the fill (a MARK: nothing is written on it, so SC 1.4.11 asks 3:1 against the
+     track) measured 2.50:1 success / 2.90:1 warning on it. Naming the track is the fix; the fills
+     then sit on --muted like everywhere else. Any theme that repurposes --secondary owes this line. */
+  --progress-track-background: hsl(var(--muted));
   /* Shape - base radius + exact ACME steps; re-declare the intermediates so the scope re-resolves */
   --radius: 0.875rem;                /* 14px card */
   --radius-xs: 4px; --radius-sm: 6px; --radius-md: 10px;

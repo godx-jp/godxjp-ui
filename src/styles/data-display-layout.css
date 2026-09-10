@@ -166,24 +166,29 @@
     background: var(--progress-track-background, hsl(var(--secondary)));
   }
 
+  /* THE FILL IS THE DATA, so it is a MARK, not a chip: nothing is written on it, and the only
+   * thing that says "72%" is where the colour stops. WCAG 2.2 SC 1.4.11 puts that at 3:1 against
+   * the track it is drawn in. Reading the FILL tier here measured 1.60:1 (warning) and 2.00:1
+   * (success) on the light track, and 2.42:1 (destructive) on the dark one — see `--mark-*` in
+   * `src/tokens/foundation.css` and the tier table in `docs/TOKENS.md`. */
   .ui-progress-bar {
     height: 100%;
     border-radius: inherit;
-    background: var(--progress-fill-background, hsl(var(--success)));
+    background: var(--progress-fill-background, hsl(var(--mark-success)));
   }
 
   .ui-progress[data-tone="warning"] .ui-progress-bar {
-    background: hsl(var(--warning));
+    background: hsl(var(--mark-warning));
   }
 
   .ui-progress[data-tone="destructive"] .ui-progress-bar {
-    background: hsl(var(--destructive));
+    background: hsl(var(--mark-destructive));
   }
 
   /* Over-capacity: keep the destructive fill but lay a diagonal hatch over it so an over-limit bar
    * (value > 100, width still capped at 100%) is visually distinct from a full one. */
   .ui-progress[data-over] .ui-progress-bar {
-    background-color: hsl(var(--destructive));
+    background-color: hsl(var(--mark-destructive));
     background-image: repeating-linear-gradient(
       45deg,
       hsl(var(--destructive-foreground) / 0.4) 0,
@@ -218,16 +223,19 @@
     height: 100%;
   }
 
+  /* Same tier as the meter fill above, and for the same reason: a slice of a partition carries its
+   * share of the whole with no label on it. It also has to keep matching the `Legend` swatch that
+   * names it — the key and the thing it is a key TO move together or the key stops being one. */
   .ui-progress-segment[data-tone="success"] {
-    background: hsl(var(--success));
+    background: hsl(var(--mark-success));
   }
 
   .ui-progress-segment[data-tone="warning"] {
-    background: hsl(var(--warning));
+    background: hsl(var(--mark-warning));
   }
 
   .ui-progress-segment[data-tone="destructive"] {
-    background: hsl(var(--destructive));
+    background: hsl(var(--mark-destructive));
   }
 
   .ui-progress-label {
@@ -264,24 +272,29 @@
     border-radius: var(--legend-swatch-radius);
   }
 
+  /* MARK tier, not FILL — and the swatch is the reason the two files had to change together. It is
+   * a SAMPLE of what the bar beside it paints, so it can only be as legible as the bar and it must
+   * be the same colour as the bar. On FILL it measured 1.74:1 (warning) / 2.18:1 (success) on a
+   * light card and 2.95:1 (destructive) on a dark one, all below the 3:1 non-text floor.
+   * `muted`/`neutral` already read a text-tier neutral and stay where they are. */
   .ui-legend-swatch[data-tone="default"] {
-    background: hsl(var(--primary));
+    background: hsl(var(--mark-primary));
   }
 
   .ui-legend-swatch[data-tone="success"] {
-    background: hsl(var(--success));
+    background: hsl(var(--mark-success));
   }
 
   .ui-legend-swatch[data-tone="warning"] {
-    background: hsl(var(--warning));
+    background: hsl(var(--mark-warning));
   }
 
   .ui-legend-swatch[data-tone="destructive"] {
-    background: hsl(var(--destructive));
+    background: hsl(var(--mark-destructive));
   }
 
   .ui-legend-swatch[data-tone="info"] {
-    background: hsl(var(--info));
+    background: hsl(var(--mark-info));
   }
 
   .ui-legend-swatch[data-tone="muted"],

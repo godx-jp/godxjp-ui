@@ -73,12 +73,41 @@ ratio, not just a name check); and `check:contrast` grew a **rail pass** — its
 ever measured elements ≤24px on both axes, and a rail is 6px by the full height of a card, so no
 gate had ever looked at one.
 
-**Still open, and measured:** `.ui-legend-swatch` and `.ui-progress-segment` read FILL as
-standalone graphics and fail the same floor (legend 1.74 / 2.18 light, 2.95 dark; segment 1.60 /
-2.00 light, 2.42 dark against their own track). They are not fixed here because a legend swatch is
-a SAMPLE of the bar beside it — re-toning one without the other makes the key stop matching what
-it is a key to, and whether a progress bar keeps its wa-iro hue at the cost of 1.4.11 is a palette
-decision. See the note in `scripts/check-contrast.mjs`.
+**Progress and Legend joined the tier, and the wa-iro question is settled.** `.ui-legend-swatch`,
+`.ui-progress-bar` and `.ui-progress-segment` all read FILL as standalone graphics and all failed
+the same floor. The floor applies: nothing is written on a progress fill, so *where the colour
+stops* is the entire datum, and a slice of a partition carries its share of the whole with no words
+on it — that is precisely a "graphical object required to understand the content". The hue loses.
+The two moved together because a swatch is a SAMPLE of the bar beside it; a key that is not the
+colour it is a key to is not a key.
+
+| surface | tone | ground | FILL (before) | MARK (after) |
+| --- | --- | --- | --- | --- |
+| `.ui-legend-swatch` | warning | light card | **1.74** | **5.90** |
+| `.ui-legend-swatch` | success | light card | **2.18** | **6.84** |
+| `.ui-legend-swatch` | destructive | dark card | **2.95** | **5.52** |
+| `.ui-progress-segment` | warning | light track | **1.60** | **5.41** |
+| `.ui-progress-segment` | success | light track | **2.00** | **6.28** |
+| `.ui-progress-segment` | destructive | dark track | **2.42** | **4.52** |
+
+Worst case anywhere on the two routes after the move: **4.52:1**. `.ui-progress-bar` (meter and
+over-capacity) reads the same tokens as the slice, so a `tone="warning"` meter and a `warning`
+slice on one screen stay the same colour.
+
+**A theme that repoints `--secondary` owes `--progress-track-background`.** The track defaults to
+`hsl(var(--secondary))`, which is a pale neutral in the stock palette. `docs/showcase/acme-portal`
+repurposes `--secondary` as a navy *button* colour, so its bars were drawn on a near-black track
+and the mark fills measured 2.50 (success) / 2.90 (warning) on it. Naming the track explicitly is
+the fix — 6.49 / 5.59 after — not dragging the tier back.
+
+Three guards now, and each sees something the others cannot: the ratio tests in
+`tone-mark-contrast.test.ts` (rails against card/background, progress marks against the track);
+the *same file's* CSS-alias assertions, which fail if a rule is repointed at the fill tier and
+which also pin the swatch and the slice to the **same** token per tone; and `check:contrast`'s
+**thin fill** pass — added because adding `/isolate/data-display-progress` to that gate's route
+list on its own changed nothing at all. The graphic pass wants ≤24px on both axes and the rail
+pass wants a one-sided border; a progress fill is 8px (meter) or 22px (slice) tall by whatever
+width its share makes it, so the sweep printed "AA clean" over a bar sitting at 1.60:1.
 
 #### `--border` vs `--input` — decorative chrome vs control boundary (gh#315)
 

@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`Legend` swatch và `Progress` fill đọc nhầm tầng tone — cả hai dưới sàn 1.4.11.** Một dấu
+  MARK là hình mỏng mang nghĩa mà không có chữ nào trên nó. Trên một thanh tiến độ, **chỗ màu
+  dừng lại CHÍNH LÀ số liệu**; trên một lát của dải `segments`, lát ấy chở phần của nó trong tổng
+  thể mà không mang chữ nào. Đó đúng là "graphical object required to understand the content", nên
+  sàn 3:1 áp dụng, và sắc 和色 thua.
+
+  Hai bề mặt phải đi CÙNG NHAU: ô vuông của `Legend` là MẪU của thanh bên cạnh nó — một cái chìa
+  khoá không cùng màu với thứ nó mở thì không còn là chìa khoá. Đo trên Chromium, trước → sau:
+  swatch warning **1,74 → 5,90**, success **2,18 → 6,84** (nền sáng), destructive **2,95 → 5,52**
+  (nền tối); segment warning **1,60 → 5,41**, success **2,00 → 6,28** (track sáng), destructive
+  **2,42 → 4,52** (track tối). Tệ nhất sau khi sửa: **4,52:1**. `.ui-progress-bar` (meter và
+  over-capacity) đọc cùng token với lát, nên một meter `warning` và một lát `warning` trên cùng
+  màn hình vẫn là một màu.
+
+- **`check:contrast` báo "AA sạch" trên một thanh ở 1,60:1** — và thêm route vào danh sách của nó
+  KHÔNG sửa được điều đó. Ba lượt quét non-text của cổng đòi: ≤24px trên CẢ HAI trục (chấm tròn),
+  hoặc một viền đúng MỘT phía (thanh rail). Một progress fill không thuộc kiểu nào: cao 8px
+  (meter) hay 22px (lát) nhân với bề rộng tuỳ phần của nó, vẽ bằng background, không viền, không
+  chữ. Nay có lượt **thin fill**: không con, không chữ, nền đục của riêng nó, trục ngắn trong
+  khoảng [3px, 24px] — tổng quát hoá đúng hai lượt cũ (chấm mỏng cả hai trục, rail mỏng một trục)
+  thay vì bắt theo tên class. Ngưỡng 3px giữ `Separator` ở ngoài, đúng như luật rail đã có.
+
+  Kèm theo: placeholder tải nằm trong `[aria-busy="true"]` được loại khỏi CẢ BA lượt non-text.
+  Skeleton là hình của nội dung CHƯA TỚI (đo được: 1,09:1 sáng, 1,33:1 tối, và cố ý như vậy) —
+  1.4.11 miễn trừ trang trí thuần tuý. Phép thử là một sự thật ARIA, không phải một tên class.
+
+- **`docs/showcase/acme-portal` vẽ thanh tiến độ trên một track gần đen.** Theme ấy trỏ
+  `--secondary` sang màu NÚT navy, mà `--progress-track-background` mặc định là
+  `hsl(var(--secondary))` — vốn là một sắc trung tính nhạt trong bảng gốc. Đo: 2,50 (success) /
+  2,90 (warning) trên track navy. Gọi tên track là cách sửa — 6,49 / 5,59 sau đó — không phải kéo
+  tầng token trở lại. Theme nào mượn `--secondary` cho việc khác đều nợ dòng này.
+
 ### Removed — BREAKING
 
 - **`TreeList` bị GỠ, không có shim deprecated.** Nó là một `<ul>` phẳng mà `depth` chỉ lái

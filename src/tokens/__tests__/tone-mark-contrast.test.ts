@@ -48,7 +48,7 @@ const MARK_SOURCE = Object.fromEntries(
 /** The six tones `Card accent` and `DataTable rowTone` share. */
 const TONES = ["primary", "success", "warning", "info", "attention", "destructive"] as const;
 
-/** The two grounds a rail is ever drawn against. */
+/** The two grounds a RAIL is ever drawn against. */
 const GROUNDS = ["card", "background"] as const;
 
 /**
@@ -77,5 +77,83 @@ describe("tone marks meet WCAG 1.4.11 against their own surface", () => {
   /** Every tone the two rails can be asked for must actually have a mark token behind it. */
   it("declares a mark token for all six tones", () => {
     expect(Object.keys(MARK_SOURCE).sort()).toEqual([...TONES].sort());
+  });
+});
+
+/**
+ * THE PROGRESS TRACK is the third ground, and it belongs to a different set of tones.
+ *
+ * A progress fill is a mark by the same definition as a rail — nothing is written on it, and where
+ * the colour stops IS the datum — but it is drawn inside `--progress-track-background`, which
+ * defaults to `hsl(var(--secondary))`, and only ever in the three tones `ProgressTone` allows.
+ * Measured in Chromium on the FILL tier before the move: warning **1.60:1**, success **2.00:1** on
+ * the light track, destructive **2.42:1** on the dark one.
+ *
+ * No wash here, unlike the rails: a track is never a toned DataTable row.
+ */
+describe("progress marks meet WCAG 1.4.11 against the track", () => {
+  /** `ProgressTone` — the only tones a meter fill or a breakdown slice can be asked for. */
+  const PROGRESS_TONES = ["success", "warning", "destructive"] as const;
+
+  for (const [theme, body] of Object.entries(THEMES)) {
+    for (const tone of PROGRESS_TONES) {
+      it(`${theme}: --mark-${tone} on the --secondary track is >= ${NON_TEXT}:1`, () => {
+        const mark = hslToRgb(hsl(body, MARK_SOURCE[tone]));
+        expect(contrast(mark, hslToRgb(hsl(body, "secondary")))).toBeGreaterThanOrEqual(NON_TEXT);
+      });
+    }
+  }
+});
+
+/**
+ * The ratios above are only worth anything if the surfaces actually READ this tier.
+ *
+ * `check:contrast` proves that in a browser, but it runs in the browser lane; this is the cheap
+ * half that fails in `pnpm test` the moment a rule is repointed at the fill tier — which is
+ * exactly how the legend swatch and the progress fill shipped below the floor in the first place.
+ */
+describe("the mark-tier surfaces read the mark tier", () => {
+  const LAYOUT = readFileSync(join(process.cwd(), "src/styles/data-display-layout.css"), "utf8");
+
+  function declaration(selector: string): string {
+    const start = LAYOUT.indexOf(selector);
+    expect(start, `selector not found: ${selector}`).toBeGreaterThan(-1);
+    const open = LAYOUT.indexOf("{", start);
+    return LAYOUT.slice(open + 1, LAYOUT.indexOf("\n  }", open));
+  }
+
+  const SURFACES: Array<[string, string]> = [
+    ['.ui-legend-swatch[data-tone="default"]', "mark-primary"],
+    ['.ui-legend-swatch[data-tone="success"]', "mark-success"],
+    ['.ui-legend-swatch[data-tone="warning"]', "mark-warning"],
+    ['.ui-legend-swatch[data-tone="destructive"]', "mark-destructive"],
+    ['.ui-legend-swatch[data-tone="info"]', "mark-info"],
+    ['.ui-progress-segment[data-tone="success"]', "mark-success"],
+    ['.ui-progress-segment[data-tone="warning"]', "mark-warning"],
+    ['.ui-progress-segment[data-tone="destructive"]', "mark-destructive"],
+    ['.ui-progress[data-tone="warning"] .ui-progress-bar', "mark-warning"],
+    ['.ui-progress[data-tone="destructive"] .ui-progress-bar', "mark-destructive"],
+    ["  .ui-progress-bar {", "mark-success"],
+    ["  .ui-progress[data-over] .ui-progress-bar {", "mark-destructive"],
+  ];
+
+  for (const [selector, token] of SURFACES) {
+    it(`${selector.trim()} paints --${token}`, () => {
+      const body = declaration(selector);
+      expect(body).toContain(`var(--${token})`);
+    });
+  }
+
+  /**
+   * A legend swatch is a SAMPLE of the bar beside it. If the two ever paint different tokens for
+   * the same tone the key stops being a key to anything, so they are asserted as one fact rather
+   * than two — this is the reason the two surfaces had to move together instead of one at a time.
+   */
+  it("the legend swatch and the progress slice paint the SAME token per tone", () => {
+    for (const tone of ["success", "warning", "destructive"]) {
+      const swatch = declaration(`.ui-legend-swatch[data-tone="${tone}"]`);
+      const slice = declaration(`.ui-progress-segment[data-tone="${tone}"]`);
+      expect(slice.trim()).toBe(swatch.trim());
+    }
   });
 });
