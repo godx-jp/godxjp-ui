@@ -523,9 +523,9 @@
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
     "exports": 301,
     "dimensionCells": 4214,
-    "covered": 79,
+    "covered": 80,
     "untested": 2357,
-    "notApplicable": 1778,
+    "notApplicable": 1777,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -6346,14 +6346,14 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 1,
-        "notApplicable": 5,
+        "covered": 2,
+        "notApplicable": 4,
         "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "covered:prop-evidence:tone",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",

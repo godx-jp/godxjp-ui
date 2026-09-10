@@ -44,6 +44,42 @@ src/styles/
 
 Default brand tokens use the GodX Agent Portal palette: navy primary, 朱 orange focus/accent, warm neutral surfaces. App or customer identity colors belong in the consuming app theme, not in package tokens.
 
+#### The three tone tiers — FILL, TEXT, MARK
+
+A status tone can be painted three ways, and each way is judged against a different thing. Reading
+the wrong tier is this palette's most expensive recurring bug, because nothing about it looks wrong
+in the source.
+
+| Tier     | Tokens                                      | What it paints                                                     | Contrast bar                                              |
+| -------- | ------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------- |
+| **FILL** | `--success`, `--warning`, `--info`, `--destructive` | A solid chip, band or bar with a label ON it                        | AA **4.5:1** against its own `*-foreground` label          |
+| **TEXT** | `--text-success`, `--text-warning`, `--text-info`, `--text-error` | Small coloured type — a StatCard delta, an outline badge label      | AA **4.5:1** against the surface BEHIND it                 |
+| **MARK** | `--mark-success`, `--mark-warning`, `--mark-info`, `--mark-destructive`, `--mark-primary`, `--mark-attention` | A thin shape carrying meaning with nothing written on it — a `Card accent` rail, a `DataTable rowTone` rail | SC 1.4.11 **3:1** against the surface it sits on |
+
+The MARK tier exists because both rails were reading FILL, and two of them were effectively
+invisible. Measured in Chromium on the light card: `Card accent="warning"` drew its 6px rail at
+**1.74:1**, `accent="success"` at **2.18:1**. `--warning` is a bright 山吹 tuned to carry dark text
+on top of it; on a near-white card it is barely a colour at all.
+
+`--mark-*` resolve THROUGH the TEXT tier rather than restating its numbers, so a theme retunes one
+place and both follow — and since 3:1 is looser than 4.5:1, anything legible as text is legible as
+a mark by construction. `--mark-attention` is the exception: there is no `--text-attention`, and
+the fill already clears the floor in both themes (3.32 / 6.75).
+
+Two guards, because one was not enough:
+`src/tokens/__tests__/tone-mark-contrast.test.ts` recomputes every tone × ground × theme off the
+committed tokens and reads the alias out of the CSS (so repointing a mark back at FILL fails the
+ratio, not just a name check); and `check:contrast` grew a **rail pass** — its graphic pass only
+ever measured elements ≤24px on both axes, and a rail is 6px by the full height of a card, so no
+gate had ever looked at one.
+
+**Still open, and measured:** `.ui-legend-swatch` and `.ui-progress-segment` read FILL as
+standalone graphics and fail the same floor (legend 1.74 / 2.18 light, 2.95 dark; segment 1.60 /
+2.00 light, 2.42 dark against their own track). They are not fixed here because a legend swatch is
+a SAMPLE of the bar beside it — re-toning one without the other makes the key stop matching what
+it is a key to, and whether a progress bar keeps its wa-iro hue at the cost of 1.4.11 is a palette
+decision. See the note in `scripts/check-contrast.mjs`.
+
 #### `--border` vs `--input` — decorative chrome vs control boundary (gh#315)
 
 These two look like synonyms and are not. Keep them apart:

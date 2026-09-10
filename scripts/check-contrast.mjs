@@ -53,7 +53,45 @@ const ROUTES = routeArgs.length
       "/isolate/feedback-toast?toast=error&theme=dark",
       "/isolate/feedback-toast?toast=warning&theme=dark",
       "/isolate/feedback-toast?toast=info&theme=dark",
+      // TONE MARKS AND TONE INK — two more surfaces that were never in the sample.
+      //
+      // `data-display-card-index` and `data-display-data-table-index` carry the accent/row RAILS
+      // the pass above was added for; without them that pass measures nothing. `data-display-legend`
+      // is the counterpart on the text axis: it is the one route in the repo that puts a
+      // `Text tone="warning"` numeral on a CARD, which is the pairing the tone-ink defect lived in
+      // and which no route reached. Both themes, because both tiers are retuned per theme.
+      "/isolate/data-display-card-index",
+      "/isolate/data-display-card-index?theme=dark",
+      "/isolate/data-display-data-table-index",
+      "/isolate/data-display-data-table-index?theme=dark",
     ];
+
+/*
+ * NOT IN THE SWEEP YET, AND THE REASON IS A MEASUREMENT, NOT AN OVERSIGHT.
+ *
+ * `/isolate/data-display-legend` was added to the list above during the work that introduced the
+ * rail pass, and it went straight red — on a defect that is REAL, PRE-EXISTING and OUT OF SCOPE
+ * for the change that found it. Recorded here rather than deleted, so it is not rediscovered from
+ * scratch a third time:
+ *
+ *   light  .ui-legend-swatch tone=warning      1.74:1  (need 3)
+ *   light  .ui-legend-swatch tone=success      2.18:1
+ *   dark   .ui-legend-swatch tone=destructive  2.95:1
+ *
+ * Same root cause as the rails this pass was written for — the FILL tier (`--success`/`--warning`)
+ * used as a standalone graphical object — but the fix is NOT the same. A rail is decoration on a
+ * surface, so moving it to `--mark-*` costs nothing. A legend swatch is a SAMPLE of the colour the
+ * bar beside it paints, so re-toning the swatch alone would make the key stop matching the thing
+ * it is a key TO. And the bar has the same problem measured against its own track:
+ *
+ *   light  .ui-progress-segment tone=warning     1.60:1
+ *   light  .ui-progress-segment tone=success     2.00:1
+ *   dark   .ui-progress-segment tone=destructive 2.42:1
+ *
+ * So legend + bar have to move together, and whether a progress bar keeps its wa-iro hue at the
+ * cost of 1.4.11, or clears the floor at the cost of the hue, is a palette decision — not
+ * something to settle inside a gate. Put the two routes back the moment that is decided.
+ */
 
 /**
  * Per-route setup, run after the page has loaded and before anything is measured.
@@ -217,6 +255,54 @@ function collect() {
       size: 24,
       weight: 700,
       text: `[graphic ${Math.round(r.width)}×${Math.round(r.height)}]`,
+      tag: el.tagName.toLowerCase(),
+      cls: (el.className && el.className.toString().split(/\s+/)[0]) || "",
+    });
+  }
+
+  /*
+   * RAIL pass — also SC 1.4.11, and the blind spot that let a real defect ship.
+   *
+   * The graphic pass above requires a childless, textless element no bigger than 24px on BOTH
+   * axes. A RAIL is neither: `Card accent="edge"` is a border on the card itself (which is full of
+   * children and text), 6px wide by the whole height of the card. So it was never in the sample,
+   * and `Card accent="warning"` shipped a 6px mark at **1.74:1** against its own card — the only
+   * signal that the card needed attention, at a contrast where it is barely there. Every gate was
+   * green. `accent="success"` was 2.18:1.
+   *
+   * The scope is what keeps this from drowning the signal, and it is narrower than "any border":
+   * a rail is a border on exactly ONE side, at least 3px thick, in a colour the other three sides
+   * do not share. A hairline divider (1px) is not a rail, a uniform frame is not a rail, and a
+   * surface that merely has a border is not a rail. What is left is the deliberate coloured edge
+   * that carries meaning on its own — which is exactly the thing 1.4.11 is about.
+   */
+  const SIDES = ["Top", "Right", "Bottom", "Left"];
+  for (const el of document.querySelectorAll("body *")) {
+    if (el.closest("[data-logotype]")) continue;
+    const s = getComputedStyle(el);
+    if (s.visibility === "hidden" || s.display === "none" || parseFloat(s.opacity) < 0.4) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) continue;
+
+    const widths = SIDES.map((side) => parseFloat(s[`border${side}Width`]) || 0);
+    const thick = widths.map((w, i) => [w, i]).filter(([w]) => w >= 3);
+    if (thick.length !== 1) continue;
+    const [, index] = thick[0];
+    const railColor = parse(s[`border${SIDES[index]}Color`]);
+    if (!railColor || railColor.a <= 0.5) continue;
+    // A uniform frame that merely happens to be thick on one side is not a rail: the rail has to
+    // be a colour of its own.
+    const others = SIDES.filter((_, i) => i !== index).map((side) => s[`border${side}Color`]);
+    if (others.every((c) => c === s[`border${SIDES[index]}Color`])) continue;
+
+    out.push({
+      fg: railColor.rgb,
+      // The rail sits ON its own element, so the ground is that element's own painted surface.
+      bg: effBg(el),
+      nonText: true,
+      size: 24,
+      weight: 700,
+      text: `[rail ${Math.round(widths[index])}px ${SIDES[index].toLowerCase()}]`,
       tag: el.tagName.toLowerCase(),
       cls: (el.className && el.className.toString().split(/\s+/)[0]) || "",
     });

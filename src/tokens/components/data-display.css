@@ -129,6 +129,15 @@
   --progress-breakdown-block-size: 1.375rem;
   --progress-breakdown-radius: var(--radius);
 
+  /* `size="sm"` — the SAME two forms, thinner, for a bar that annotates a row rather than being
+     the subject of the screen (an in-table capacity column). The meter step is half its default
+     hairline; the breakdown step lands exactly on the meter's default 0.5rem, which is the
+     thinnest a partition can be and still show three fills apart. Below that the ratios are gone,
+     which is why there is no `xs`. */
+  --progress-meter-block-size: 0.5rem;
+  --progress-meter-block-size-sm: 0.25rem;
+  --progress-breakdown-block-size-sm: 0.5rem;
+
   /* Legend — the key for a colour-coded surface. Small chrome, so it carries its own rhythm
      rather than the stack scale: the swatch is a MARK the size of a character, not a control, and
      the gap that reads as "these two belong together" is tighter than any named step. */

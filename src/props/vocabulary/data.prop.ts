@@ -107,6 +107,26 @@ export type OnSelectChangeProp = (next: Set<string>) => void;
 /** Table density change callback. */
 export type OnTableDensityChangeProp = (density: TableDensityProp) => void;
 
+/**
+ * A row's STATE, drawn as a leading-edge rail plus a wash — the same six tones, with the same
+ * names and the same meanings, that `Card accent` already carries. A row that needs attention and
+ * a card that needs attention should not be two vocabularies.
+ *
+ * It is a state, never a category: colour is not the only signal a row may carry (WCAG 1.4.1), so
+ * the reason still belongs in a cell — a Badge, a status column, an icon with a label. The rail
+ * is what makes that cell findable in a long table, not a replacement for it.
+ */
+export type TableRowToneProp =
+  | "primary"
+  | "success"
+  | "warning"
+  | "info"
+  | "attention"
+  | "destructive";
+
+/** Per-row tone resolver — return `undefined` for a row in the ordinary state. */
+export type RowToneProp<T> = (row: T) => TableRowToneProp | undefined;
+
 /** Sort change callback — undefined clears sort. */
 export type OnSortChangeProp = (
   sort: { key: string; direction: SortDirectionProp } | undefined,

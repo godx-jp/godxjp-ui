@@ -119,6 +119,8 @@ export type {
   SelectedIdsProp,
   OnSelectChangeProp,
   OnTableDensityChangeProp,
+  TableRowToneProp,
+  RowToneProp,
   OnSortChangeProp,
   OnSearchChangeProp,
   OnClearFiltersProp,

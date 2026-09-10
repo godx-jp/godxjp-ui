@@ -140,6 +140,24 @@ export default function Demo() {
             getRowId={(row) => row.id}
           />
         </Flex>
+        {/* Row TONE — the leading-edge rail + wash for a row in a named state. The status Badge
+            stays in its own cell: the rail makes the row findable, it does not carry the meaning
+            (WCAG 1.4.1). */}
+        <Flex direction="col" gap="sm" id="row-tone">
+          <Text weight="medium">行のトーン（要対応の行）</Text>
+          <DataTable
+            data={invoices}
+            columns={columns}
+            getRowId={(row) => row.id}
+            rowTone={(row) =>
+              row.status === "failed"
+                ? "destructive"
+                : row.status === "pending"
+                  ? "attention"
+                  : undefined
+            }
+          />
+        </Flex>
         {/* Primary: sorted (amount desc), one row preselected, clickable rows,
             controlled density (comfortable), kebab row actions, pagination footer. */}
         <DataTable

@@ -76,27 +76,27 @@
    * is RESOLVED from the card's own `data-accent`, so both placements read the same value and a
    * new tone is one line. */
   [data-slot="card"][data-accent="primary"] {
-    --card-accent-color: hsl(var(--primary));
+    --card-accent-color: hsl(var(--mark-primary));
   }
 
   [data-slot="card"][data-accent="success"] {
-    --card-accent-color: hsl(var(--success));
+    --card-accent-color: hsl(var(--mark-success));
   }
 
   [data-slot="card"][data-accent="warning"] {
-    --card-accent-color: hsl(var(--warning));
+    --card-accent-color: hsl(var(--mark-warning));
   }
 
   [data-slot="card"][data-accent="info"] {
-    --card-accent-color: hsl(var(--info));
+    --card-accent-color: hsl(var(--mark-info));
   }
 
   [data-slot="card"][data-accent="attention"] {
-    --card-accent-color: hsl(var(--attention));
+    --card-accent-color: hsl(var(--mark-attention));
   }
 
   [data-slot="card"][data-accent="destructive"] {
-    --card-accent-color: hsl(var(--destructive));
+    --card-accent-color: hsl(var(--mark-destructive));
   }
 
   /* ── Accent placement `edge` (DEFAULT) — semantic left stripe (token width), content on shell ─ */

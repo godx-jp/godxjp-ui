@@ -5587,6 +5587,14 @@
           "declaredIn": ["src/components/data-display/data-table.tsx"]
         },
         {
+          "name": "rowTone",
+          "origin": "owned",
+          "required": false,
+          "type": "RowToneProp<T> | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
           "name": "scroll",
           "origin": "owned",
           "required": false,
@@ -12071,6 +12079,14 @@
           "required": false,
           "type": "ProgressSegment[] | undefined",
           "values": [],
+          "declaredIn": ["src/components/data-display/progress.tsx"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | undefined",
+          "values": ["sm", "md"],
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
         {

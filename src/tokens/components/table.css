@@ -226,4 +226,14 @@
    * scoped [data-tenant]/.dark override of --border reaches it.
    * Default = the same hairline the table's other rules draw. */
   --table-flush-divider-width: var(--table-row-border-width);
+
+  /* Row TONE (`rowTone`) — the leading-edge rail plus the wash behind a row in a named state.
+   * The rail measure is `--card-accent-rail-width`'s own step so a toned row and a toned Card
+   * read as the same mark at the same weight; it is spelled out rather than referenced because a
+   * service that thins its card rails should not silently thin its table rails too.
+   * The wash is deliberately weak: it must stay under the selected-row fill (which is a stronger
+   * statement about the same row) and must not carry meaning on its own — that is what the rail
+   * and the row's own status cell are for. */
+  --table-row-tone-rail-width: var(--stroke-2xl);
+  --table-row-tone-wash-alpha: 0.06;
 }

@@ -995,6 +995,17 @@
           "evidence": [
             "docs/data-display/data-table/index.tsx"
           ]
+        },
+        "rowTone": {
+          "cases": [
+            "attention",
+            "destructive",
+            "absent"
+          ],
+          "evidence": [
+            "src/components/data-display/__tests__/data-table-row-tone.test.tsx",
+            "docs/data-display/data-table/index.tsx"
+          ]
         }
       }
     },
@@ -2180,6 +2191,15 @@
     },
     "Progress": {
       "props": {
+        "size": {
+          "cases": [
+            "sm",
+            "md"
+          ],
+          "evidence": [
+            "src/components/data-display/__tests__/progress-size.test.tsx"
+          ]
+        },
         "tone": {
           "cases": [
             "success",
