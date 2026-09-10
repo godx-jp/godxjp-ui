@@ -11701,6 +11701,18 @@ import { fetchInvoice } from "@/api/invoices";
           'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on.',
       },
       {
+        name: "side",
+        type: '"top" | "right" | "bottom" | "left"',
+        description:
+          "Which side of the trigger the panel opens on. Defaults from `appearance` — a bar drops the grid below, anything else opens to the inline-end. State it when the chrome can be RE-DOCKED: `appearance` says the trigger is not in a bar but cannot say which way is out, and a rail pinned to the top edge still opens downward. Ignored by responsive=\"fullscreen\" and by the Sheet surface, which are not anchored to the trigger.",
+      },
+      {
+        name: "align",
+        type: '"start" | "center" | "end"',
+        description:
+          "How the panel aligns to the trigger. Defaults from `appearance` — end in a bar, start otherwise. Same rule as `side`: state it only for chrome that knows its own orientation.",
+      },
+      {
         name: "presence",
         type: '"online" | "away" | "busy" | "offline"',
         description:
@@ -14218,10 +14230,10 @@ import { Badge } from "@godxjp/ui/data-display";
       { name: "onRetry", type: "() => void", description: "Consumer-owned retry callback." },
       {
         name: "responsive",
-        type: '"auto" | "popover" | "sheet"',
+        type: '"auto" | "popover" | "sheet" | "fullscreen"',
         defaultValue: '"auto"',
         description:
-          'Responsive presentation contract. "auto" resolves through the SHARED Sheet hook useSheetResponsiveMode(): desktop popover above --sheet-responsive-breakpoint-width (48rem/768px), focus-trapped bottom Sheet at/below it.',
+          'Presentation contract. "auto" resolves through the SHARED Sheet hook useSheetResponsiveMode(): desktop popover above --sheet-responsive-breakpoint-width (48rem/768px), focus-trapped bottom Sheet at/below it. "fullscreen" is the LAUNCHPAD — one full-viewport modal at every width, the page behind it blurred and the grid floating on that ground (macOS Launchpad / Windows Start), with the column count stepping 3·4·5·6 on the house container ladder. Reach for it in a PLATFORM start bar, where the launcher is the primary way to move between products; keep "auto" for a launcher inside one app\'s topbar, where the grid is a shortcut and the work behind it should stay visible.',
       },
       {
         name: "appearance",

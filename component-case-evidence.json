@@ -206,7 +206,8 @@
           "cases": [
             "auto",
             "popover",
-            "sheet"
+            "sheet",
+            "fullscreen"
           ],
           "evidence": [
             "docs/layout/app-launcher.tsx",
@@ -238,34 +239,41 @@
             "src/components/layout/__tests__/app-launcher.test.tsx"
           ]
         },
-        "side": {
-          "cases": [
-            "left",
-            "right",
-            "top",
-            "bottom"
-          ],
-          "evidence": [
-            "src/components/layout/__tests__/app-launcher-placement.test.tsx"
-          ]
-        },
-        "align": {
-          "cases": [
-            "center",
-            "start",
-            "end"
-          ],
-          "evidence": [
-            "src/components/layout/__tests__/app-launcher-placement.test.tsx"
-          ]
-        },
         "appearance": {
           "cases": [
             "bar",
             "icon"
           ],
           "evidence": [
-            "src/components/layout/__tests__/app-launcher-appearance.test.tsx",
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx",
+            "src/components/layout/__tests__/app-launcher-placement.test.tsx"
+          ]
+        },
+        "side": {
+          "cases": [
+            "omitted — derived from appearance (bottom in a bar, right otherwise)",
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx",
+            "src/components/layout/__tests__/app-launcher-placement.test.tsx"
+          ]
+        },
+        "align": {
+          "cases": [
+            "omitted — derived from appearance (end in a bar, start otherwise)",
+            "start",
+            "center",
+            "end"
+          ],
+          "evidence": [
+            "docs/layout/app-launcher.tsx",
+            "src/components/layout/__tests__/app-launcher.test.tsx",
             "src/components/layout/__tests__/app-launcher-placement.test.tsx"
           ]
         }

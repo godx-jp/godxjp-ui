@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import * as React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
@@ -223,6 +224,207 @@ describe("AppLauncher public contract", () => {
     expect(screen.getByRole("button", { name: "Acme apps" })).toBeEnabled();
   });
 
+  it("boxes the trigger for the chrome it sits in — bar cell vs icon button", () => {
+    /*
+     * `appearance` picks the BOX, never the glyph. `bar` is the `TopbarItem` cell asserted above;
+     * `icon` is a square ghost `Button`, for chrome that is not a bar — a nav rail, a card header,
+     * a toolbar. A `TopbarItem` there has no bar to bleed into: it stretches to a container that
+     * never declared a band height, and its squared corners read as a broken cell.
+     */
+    const { container, rerender } = renderWithUi(
+      <AppLauncher apps={apps} labels={labels} appearance="bar" />,
+    );
+    expect(container.querySelector(".ui-app-launcher-trigger")).toHaveClass("ui-topbar-item");
+
+    rerender(<AppLauncher apps={apps} labels={labels} appearance="icon" />);
+    const icon = container.querySelector<HTMLElement>(".ui-app-launcher-trigger")!;
+    // `data-slot` is not the hook here: `PopoverTrigger asChild` re-stamps it as "popover-trigger"
+    // on whatever box it borrows, so the box is identified by the class its own variant emits.
+    expect(icon).toHaveClass("ui-button");
+    expect(icon).toHaveClass("ui-button--ghost");
+    expect(icon).not.toHaveClass("ui-topbar-item");
+    // The glyph is the same either way — only the box changed.
+    expect(icon.querySelector("svg")).not.toBeNull();
+  });
+
+  it("opens away from its chrome by default, and the caller may state the direction", async () => {
+    /*
+     * Measured on an embedded bar before `side`/`align` existed: a rail trigger at (2,50) put its
+     * panel at (12,90) — 40px down the screen edge, lying over the host application's sidebar.
+     * `appearance` says the trigger is NOT in a bar; it cannot say which way is out, because a rail
+     * pinned to the TOP edge is not a bar and still opens downward. jsdom does no layout, so what
+     * is pinned here is the contract that decides it: the placement RAC is asked for.
+     */
+    renderWithUi(<AppLauncher apps={apps} labels={labels} responsive="popover" open />);
+    expect(await screen.findByRole("dialog", { name: "Switch app" })).toHaveAttribute(
+      "data-placement",
+      "bottom",
+    );
+
+    const rail = renderWithUi(
+      <AppLauncher
+        apps={apps}
+        labels={labels}
+        responsive="popover"
+        appearance="icon"
+        open
+        data-test="rail-launcher"
+      />,
+    );
+    await waitFor(() => {
+      expect(
+        rail.container.ownerDocument.querySelector('[data-placement="right"]'),
+      ).not.toBeNull();
+    });
+    rail.unmount();
+
+    const stated = renderWithUi(
+      <AppLauncher
+        apps={apps}
+        labels={labels}
+        responsive="popover"
+        appearance="icon"
+        side="bottom"
+        align="end"
+        open
+      />,
+    );
+    await waitFor(() => {
+      expect(
+        stated.container.ownerDocument.querySelector('[data-placement="bottom"]'),
+      ).not.toBeNull();
+    });
+  });
+
+  it.each([
+    ["top", "start"],
+    ["right", "center"],
+    ["bottom", "end"],
+    ["left", "start"],
+  ] as const)("places the panel where the caller states: side=%s align=%s", async (side, align) => {
+    const { container } = renderWithUi(
+      <AppLauncher
+        apps={apps}
+        labels={labels}
+        responsive="popover"
+        appearance="icon"
+        side={side}
+        align={align}
+        open
+      />,
+    );
+
+    const dialog = await screen.findByRole("dialog", { name: "Switch app" });
+    // RAC writes the RESOLVED placement, which may flip when the requested side has no room. jsdom
+    // reports zero-sized boxes for everything, so nothing can flip here and the requested side is
+    // what comes back — which is exactly the pass-through this case exists to pin.
+    expect(dialog).toHaveAttribute("data-placement", side);
+    expect(container.querySelector(".ui-app-launcher-trigger")).toHaveClass("ui-button");
+  });
+
+  it("responsive=\"fullscreen\" is the launchpad: one modal surface at every width", async () => {
+    /*
+     * Pinned at every width on purpose — a start surface that becomes a popover on a wide screen is
+     * two different products. The assertion is the SURFACE (a dialog content, not a popover and not
+     * a sheet) plus the class the stylesheet keys the blurred ground off, because jsdom performs no
+     * layout and cannot answer "does it cover the viewport".
+     */
+    setViewport(1440);
+    const user = userEvent.setup();
+    renderWithUi(<AppLauncher apps={apps} groups={groups} labels={labels} responsive="fullscreen" />);
+
+    await user.click(screen.getByRole("button", { name: "Acme apps" }));
+    const dialog = await screen.findByRole("dialog", { name: "Switch app" });
+    expect(dialog).toHaveAttribute("data-slot", "dialog-content");
+    expect(dialog).toHaveClass("ui-app-launcher-launchpad");
+    expect(dialog).toContainElement(screen.getByRole("link", { name: "Billing" }));
+
+    // The blurred ground is the OVERLAY's, never the panel's: `backdrop-filter` filters what is
+    // painted behind the element, and an element that carries one becomes the containing block for
+    // its own fixed descendants.
+    const overlay = document.querySelector('[data-slot="dialog-overlay"]');
+    expect(overlay).toHaveClass("ui-app-launcher-launchpad-overlay");
+
+    // Narrow viewports get the SAME surface — the sheet fallback does not apply to a pinned mode.
+    setViewport(390);
+    expect(await screen.findByRole("dialog", { name: "Switch app" })).toHaveAttribute(
+      "data-slot",
+      "dialog-content",
+    );
+
+    await user.keyboard("{Escape}");
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog", { name: "Switch app" })).not.toBeInTheDocument();
+    });
+  });
+
+  it("pins the launchpad's dismiss to the viewport corner, not to the little panel", () => {
+    /*
+     * jsdom performs no layout, so what is pinned here is the rule that decides it.
+     *
+     * `[data-slot="dialog-close"]` is `absolute` at its dialog's top-right, which is the right
+     * corner while the dialog is a card. The launchpad's dialog is content-sized and centred, so
+     * that corner lands beside the tiles: measured with two apps, the X sat at (836, 368) — level
+     * with the title, hard against the grid, reading as a stray glyph mid-screen rather than as the
+     * way out. And it stayed there when it was made `fixed`, because the dialog's own
+     * `translate(-50%, -50%)` makes it the containing block for every fixed descendant — which is
+     * why the centring moves to the scrim and the panel's transform goes.
+     */
+    // Read from the project root: this suite runs in a vitest project whose `import.meta.url` is
+    // not a file: URL, so the relative-to-module form used elsewhere throws here.
+    const shell = readFileSync("src/styles/shell-layout.css", "utf8");
+    const rule = (selector: string) => {
+      const at = shell.indexOf(selector + " {");
+      expect(at, `missing CSS rule for ${selector}`).toBeGreaterThan(-1);
+      return shell.slice(at, shell.indexOf("}", at) + 1);
+    };
+
+    const close = rule('.ui-app-launcher-launchpad [data-slot="dialog-close"]');
+    expect(close).toMatch(/position:\s*fixed/);
+    expect(close).toMatch(/inset-block-start:\s*var\(--app-launcher-launchpad-space-inset\)/);
+    expect(close).toMatch(/inset-inline-end:\s*var\(--app-launcher-launchpad-space-inset\)/);
+    // The padding IS the target: a bare 16px glyph alone in a corner is under the SC 2.5.8 floor
+    // with nothing beside it to share a hit area with.
+    expect(close).toMatch(/padding:\s*var\(--app-launcher-launchpad-close-space-padding\)/);
+
+    // The scrim PLACES the panel, so the panel carries no transform to capture that `fixed`.
+    const scrim = rule('[data-slot="dialog-overlay"].ui-app-launcher-launchpad-overlay');
+    expect(scrim).toMatch(/place-items:\s*start/);
+    // And it insets by whatever the host says it already owns — the close resolves against the
+    // scrim's PADDING box, so one declaration moves the grid and the dismiss together.
+    expect(scrim).toMatch(
+      /padding:\s*var\(--app-launcher-launchpad-space-safe-area\)/,
+    );
+    expect(rule('[data-slot="dialog-content"].ui-app-launcher-launchpad')).toMatch(
+      /transform:\s*none/,
+    );
+  });
+
+  it("flows the launchpad from the start corner, left to right and top to bottom", () => {
+    /*
+     * A grid centred on the viewport reads as a dialog that happens to hold icons: two apps floated
+     * dead centre with the whole screen empty around them, and a third moved the first two. Apps are
+     * a LIST — it begins at the top-inline-start corner, so the first app is in the same place
+     * whether the viewer has two of them or twenty.
+     */
+    const shell = readFileSync("src/styles/shell-layout.css", "utf8");
+    const rule = (selector: string) => {
+      const at = shell.indexOf(selector + " {");
+      expect(at, `missing CSS rule for ${selector}`).toBeGreaterThan(-1);
+      return shell.slice(at, shell.indexOf("}", at) + 1);
+    };
+
+    expect(rule('[data-slot="dialog-content"].ui-app-launcher-launchpad')).toMatch(
+      /justify-items:\s*start/,
+    );
+    const grid = rule(".ui-app-launcher-launchpad .ui-app-launcher-grid");
+    expect(grid).toMatch(/justify-content:\s*start/);
+    // Fixed tracks, not `1fr`: `auto-fit` collapses what nothing occupies, so a short row is as
+    // wide as its apps instead of stretching them apart as the screen widens.
+    expect(grid).toMatch(/repeat\(\s*auto-fit,\s*var\(--app-launcher-launchpad-tile-inline-size\)/);
+    expect(grid).not.toMatch(/minmax\(0,\s*1fr\)/);
+  });
+
   it("has no axe violations on either surface", async () => {
     const { unmount } = renderWithUi(
       <AppLauncher apps={apps} groups={groups} labels={labels} responsive="popover" open />,
@@ -232,8 +434,15 @@ describe("AppLauncher public contract", () => {
     expect(await axe(document.body)).toHaveNoViolations();
     unmount();
 
-    renderWithUi(
+    const sheet = renderWithUi(
       <AppLauncher apps={apps} groups={groups} labels={labels} responsive="sheet" open />,
+    );
+    await screen.findByRole("dialog", { name: "Switch app" });
+    expect(await axe(document.body)).toHaveNoViolations();
+    sheet.unmount();
+
+    renderWithUi(
+      <AppLauncher apps={apps} groups={groups} labels={labels} responsive="fullscreen" open />,
     );
     await screen.findByRole("dialog", { name: "Switch app" });
     expect(await axe(document.body)).toHaveNoViolations();

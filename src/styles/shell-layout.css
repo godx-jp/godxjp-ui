@@ -1464,6 +1464,17 @@
      * WHERE IT IS DECLARED — so re-declaring `--dialog-space-x` further down changes nothing the
      * padding can see. Measured: the rule shipped, the token read 12px, and the box still padded
      * 24px. This is the same class of silent no-op as a `var()` fallback that never fires. */
+    /*
+     * BOTH THE COMPOSITE AND THE PART, because different rules read different ones.
+     *
+     * `--dialog-space-inset` is what the content's `padding` reads, and it has to be re-declared
+     * whole (a composite substitutes its vars where it is DECLARED — see below). But the full-bleed
+     * header and footer bands cancel `--dialog-space-x` directly, so leaving that at the dialog
+     * default made them hang outside a panel this narrow: measured with the keyboard legend in
+     * place, the footer ran 501-939 across a dialog of 512-928, eleven pixels over each edge and
+     * only invisible because the content box clips.
+     */
+    --dialog-space-x: var(--org-switcher-sheet-inset);
     --dialog-space-inset: var(--dialog-space-y) var(--org-switcher-sheet-inset);
     --org-switcher-list-offset: var(--org-switcher-sheet-inset);
     max-inline-size: var(--org-switcher-dialog-width);
@@ -1558,14 +1569,68 @@
    *
    * So a row takes the same inner padding the field gives its glyph, and no negative margin: its
    * fill and its rule stay inside the column with everything else. */
+  /*
+   * THE RULE RUNS EDGE TO EDGE; ONLY THE TEXT IS INSET.
+   *
+   * A row that stops short of the panel's border reads as a card floating in a frame, and the frame
+   * is a second boundary nobody asked for — the panel already has one. Every command surface worth
+   * copying (VS Code, Raycast, Linear, GitHub) lets the row's fill and its rule meet both edges and
+   * insets only the content. This list is that shape.
+   *
+   * ONE VALUE CANCELS IT ON EVERY SURFACE. The distance from the panel's edge to a row is the
+   * surface's own body inset (`--org-switcher-list-offset`) plus the list's remainder
+   * (`--org-switcher-list-inset` minus that offset, which `.ui-org-switcher-command` applies) — and
+   * those sum to `--org-switcher-list-inset` whatever the surface. So the row cancels exactly that
+   * and pays it back as padding, and the popover, the sheet and the dialog need no separate
+   * arithmetic.
+   *
+   * The text lands on `inset + --command-input-padding-x`, which is where the search field puts its
+   * magnifier. That relationship is the one a reader actually sees: the two leading glyphs of this
+   * panel — the magnifier and the row's mark — sit on one start line, and they were 13px apart the
+   * last time this was tuned by measuring against the panel instead of against each other.
+   */
   .ui-org-switcher-command .ui-command-item {
     border-radius: 0;
-    margin-inline: 0;
-    padding-inline: var(--command-input-padding-x);
+    margin-inline: calc(-1 * var(--org-switcher-list-inset));
+    padding-inline: calc(var(--org-switcher-list-inset) + var(--command-input-padding-x));
   }
 
   .ui-org-switcher-command .ui-command-item + .ui-command-item {
     border-block-start: 1px solid hsl(var(--border));
+  }
+
+  /*
+   * THE LEGEND STRIP. Quiet by construction: it is a thing you read once and then stop seeing, so it
+   * takes the muted ink, the smallest step on the scale, and no border of its own — the footer band
+   * it sits in already draws one.
+   */
+  /* The footer's own rule right-aligns its children, which is right for the buttons a dialog footer
+   * usually holds and wrong for a legend: this reads left to right with the list above it. */
+  [data-slot="dialog-footer"]:has(> .ui-org-switcher-legend),
+  [data-slot="sheet-footer"]:has(> .ui-org-switcher-legend) {
+    justify-content: flex-start;
+  }
+
+  .ui-org-switcher-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--org-switcher-legend-space-gap);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--org-switcher-legend-font-size);
+  }
+
+  .ui-org-switcher-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--org-switcher-hint-space-gap);
+  }
+
+  /* `.kbd` carries `margin-inline-start: auto` for its home in a topbar search trigger, where the
+   * cap is pushed to the end of the row. Here the cap leads its own label, so the push has to go —
+   * left alone it drove every hint apart to the width of the strip. */
+  .ui-org-switcher-hint > .kbd {
+    margin-inline-start: 0;
   }
 
   .ui-org-switcher-state {
@@ -1605,6 +1670,253 @@
     max-height: var(--app-launcher-sheet-max-height);
     border-start-start-radius: var(--radius-lg);
     border-start-end-radius: var(--radius-lg);
+  }
+
+  /* ── LAUNCHPAD ────────────────────────────────────────────────────────────────────────────
+   * `AppLauncher responsive="fullscreen"`: the whole viewport, the page behind it blurred, the
+   * grid floating on that ground.
+   *
+   * BOTH HOOKS IN EVERY SELECTOR, the same idiom `.ui-org-switcher-dialog` above uses and for the
+   * same reason: `[data-slot="dialog-content"]` and `.ui-dialog-overlay` declare their defaults at
+   * (0,1,0) in dialog-layout.css, which is imported AFTER this file — a bare `.ui-app-launcher-
+   * launchpad` ties on specificity and loses on order, silently. Pairing them makes it (0,2,0) and
+   * states the relationship: this IS a dialog, re-tuned.
+   *
+   * THE BLUR IS ON THE SCRIM, NOT ON THE PANEL. `backdrop-filter` filters what is painted BEHIND
+   * the element, so the blur has to sit on the layer that covers the page — and only that layer,
+   * because an element with a backdrop-filter becomes the containing block for its fixed
+   * descendants. Putting it on the panel would blur the scrim (already flat) and pin the panel to
+   * itself. */
+  [data-slot="dialog-overlay"].ui-app-launcher-launchpad-overlay {
+    /* THE QUERY CONTAINER IS THE SCRIM, NOT THE PANEL, because the panel is sized BY the answer:
+     * ask a content-sized box how wide it is and the column count and the width define each other.
+     * The scrim is the viewport, which is the thing the ladder is actually about. */
+    container: app-launcher-launchpad / inline-size;
+
+    /*
+     * A VEIL OF THE THEME'S OWN GROUND, not the shared dark scrim.
+     *
+     * `--overlay-background` is `rgb(0 0 0 / .5)` — right for a dialog, which wants the page pushed
+     * back and dimmed. Frosted glass is not dim: it is the ground colour, lit, with the detail
+     * scattered out of it. Black over a light page reads as a power cut, and stacked on a blur it
+     * flattens everything to one grey. Mixing --background instead gives a light frost on a light
+     * theme and a dark one on a dark theme from a single declaration, and it keeps the tiles' own
+     * card colour legible against it. Resolved at the call site so a scoped theme's --background
+     * still reaches the portaled overlay (docs/TOKENS.md).
+     */
+    background-color: var(
+      --app-launcher-launchpad-backdrop-background,
+      color-mix(
+        in srgb,
+        hsl(var(--background)) var(--app-launcher-launchpad-backdrop-alpha),
+        transparent
+      )
+    );
+    backdrop-filter: blur(var(--app-launcher-launchpad-backdrop-blur-size))
+      saturate(var(--app-launcher-launchpad-backdrop-color-saturate));
+
+    /* THE SCRIM CENTRES THE PANEL, so the panel does not have to centre ITSELF. A dialog normally
+     * does that with `left/top: 50%` plus `translate(-50%, -50%)` — and a transform makes the
+     * element the containing block for every fixed descendant inside it, which quietly captures the
+     * close control: measured, `position: fixed` on the X resolved against the little content box
+     * and left it at (836, 368), beside the grid, instead of the viewport's corner.
+     *
+     * AND IT PLACES IT AT THE START, not in the middle. A grid centred on the viewport reads as a
+     * dialog that happens to hold icons: with two apps, both tiles floated dead centre with the
+     * whole screen empty around them, and adding a third moved the first two. Apps are a LIST — it
+     * begins at the top-inline-start corner and runs left to right, top to bottom, so the first app
+     * is in the same place whether the viewer has two of them or twenty. */
+    display: grid;
+    /* The host's own fixed chrome is inset here rather than inside the panel, because the CLOSE
+     * control has to clear it too: the scrim carries a `backdrop-filter`, so it is the containing
+     * block for its fixed descendants and they resolve against its PADDING box. One declaration
+     * moves the grid and the dismiss together. */
+    padding: var(--app-launcher-launchpad-space-safe-area);
+    place-items: start;
+  }
+
+  /*
+   * NO SURFACE OF ITS OWN. The blurred page IS the surface — a card here would be a second ground
+   * floating on the first, which is the one thing the effect cannot survive.
+   *
+   * AND IT IS SIZED TO ITS CONTENT, not to the viewport. A full-bleed content box would leave the
+   * scrim nothing to catch: `isDismissable` closes on a press that lands OUTSIDE the dialog, and
+   * when the dialog is the whole screen there is no outside left — measured, a click on the empty
+   * blurred area did nothing, on the one surface where clicking the background to leave is the
+   * gesture people arrive with. Content-sized, everything around the grid is scrim again.
+   */
+  [data-slot="dialog-content"].ui-app-launcher-launchpad {
+    position: relative;
+    inset: auto;
+    display: grid;
+    width: auto;
+    max-width: min(
+      var(--app-launcher-launchpad-panel-max-width),
+      calc(100vw - 2 * var(--app-launcher-launchpad-space-inset))
+    );
+    max-height: calc(100dvh - 2 * var(--app-launcher-launchpad-space-inset));
+    justify-items: start;
+    transform: none;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    padding: var(--app-launcher-launchpad-space-inset);
+    overflow: auto;
+    box-shadow: none;
+  }
+
+  /* The panel: a column, centred, capped so the grid does not stretch to 4K. */
+  .ui-app-launcher-launchpad .ui-app-launcher-panel {
+    --app-launcher-columns: 3;
+
+    max-height: none;
+    gap: var(--app-launcher-launchpad-panel-gap);
+    overflow: visible;
+  }
+
+  /* The count steps with the SURFACE, on the house container ladder (the same 40/48/64rem steps
+   * `.ui-responsive-grid` uses), because a full viewport at three columns is three columns of
+   * tiles and a screen of nothing. `columns` still wins: it is written inline on the panel. */
+  @container app-launcher-launchpad (min-width: 40rem) {
+    .ui-app-launcher-launchpad .ui-app-launcher-panel {
+      --app-launcher-columns: 4;
+    }
+  }
+
+  @container app-launcher-launchpad (min-width: 48rem) {
+    .ui-app-launcher-launchpad .ui-app-launcher-panel {
+      --app-launcher-columns: 5;
+    }
+  }
+
+  @container app-launcher-launchpad (min-width: 64rem) {
+    .ui-app-launcher-launchpad .ui-app-launcher-panel {
+      --app-launcher-columns: 6;
+    }
+  }
+
+  /*
+   * FIXED TRACKS FROM THE START EDGE, AND THE COUNT IS A CAP RATHER THAN A FILL.
+   *
+   * The popover's `repeat(N, minmax(0, 1fr))` divides a known width among N tracks — right there,
+   * where the panel's width is the design and the grid always fills it. On a full viewport it
+   * stretches two apps across six equal tracks and the tiles drift apart as the screen widens.
+   *
+   * `auto-fit` over a fixed track collapses the tracks nothing occupies, so the row is exactly as
+   * wide as the apps in it and starts where the panel starts. The column count keeps its meaning by
+   * capping the ROW instead of slicing it — the cap below is that many tiles plus the gaps between
+   * them, so `columns={4}` still means "never more than four across", and the fifth app wraps to the
+   * next line under the first.
+   */
+  .ui-app-launcher-launchpad .ui-app-launcher-grid {
+    grid-template-columns: repeat(
+      auto-fit,
+      var(--app-launcher-launchpad-tile-inline-size)
+    );
+    max-width: calc(
+      var(--app-launcher-columns) *
+        (
+          var(--app-launcher-launchpad-tile-inline-size) +
+            var(--app-launcher-launchpad-grid-gap)
+        ) - var(--app-launcher-launchpad-grid-gap)
+    );
+    justify-content: start;
+    gap: var(--app-launcher-launchpad-grid-gap);
+  }
+
+  /* TOP-ALIGNED, not centred. The tile fills its row, and a two-line app name is normal here — JA
+   * and VI product names routinely wrap at tile width. Centring the tile's contents in a row whose
+   * height the LONGEST name sets lifts every short-named tile's medallion above its neighbours':
+   * measured with two apps, one wrapping, the marks sat 9px apart on a row that is supposed to read
+   * as one line of icons. */
+  .ui-app-launcher-launchpad .ui-app-launcher-tile {
+    justify-content: flex-start;
+    gap: var(--app-launcher-launchpad-tile-gap);
+    padding: var(--app-launcher-launchpad-tile-padding);
+    border-radius: var(--app-launcher-launchpad-tile-radius);
+  }
+
+  /* The tile's own hover is a WASH of the foreground, not the `--accent` fill the popover uses: an
+   * opaque accent block on a blurred page reads as a hole cut in the glass. */
+  .ui-app-launcher-launchpad .ui-app-launcher-tile:hover,
+  .ui-app-launcher-launchpad .ui-app-launcher-tile[aria-current="page"] {
+    background: var(--app-launcher-launchpad-tile-hover-background);
+    color: hsl(var(--app-launcher-tile-color));
+  }
+
+  /* THE GLASS. A translucent wash of the card colour rather than a colour of its own, so one rule
+   * holds on a light page and a dark one; the hairline is the highlight that separates it from
+   * whatever it happens to be floating over. */
+  .ui-app-launcher-launchpad .ui-app-launcher-mark {
+    width: var(--app-launcher-launchpad-mark-size);
+    height: var(--app-launcher-launchpad-mark-size);
+    border: 1px solid var(--app-launcher-launchpad-mark-border-color);
+    border-radius: var(--app-launcher-launchpad-mark-radius);
+    background: var(--app-launcher-launchpad-mark-background);
+    box-shadow: var(--app-launcher-launchpad-mark-shadow);
+    color: hsl(var(--foreground));
+    font-size: var(--app-launcher-launchpad-mark-font-size);
+    /* The mark's own pane sits on ground the scrim has already blurred, so its filter is there for
+     * the EDGE — the slight refraction along the hairline that says "another layer of glass" —
+     * not to hide anything. Half the scrim's radius is enough for that and costs less. */
+    backdrop-filter: blur(calc(var(--app-launcher-launchpad-backdrop-blur-size) / 2))
+      saturate(var(--app-launcher-launchpad-backdrop-color-saturate));
+  }
+
+  /* A labelled band centres with the grid it labels, instead of starting at the panel's edge while
+   * its tiles sit in the middle. */
+  .ui-app-launcher-launchpad .ui-app-launcher-group {
+    justify-items: center;
+  }
+
+  .ui-app-launcher-launchpad .ui-app-launcher-group-label {
+    text-align: center;
+  }
+
+  .ui-app-launcher-launchpad .ui-app-launcher-name {
+    font-size: var(--app-launcher-launchpad-name-font-size);
+  }
+
+  /* The dialog's name is present and quiet: it says what the surface is without competing with the
+   * grid it labels. */
+  .ui-app-launcher-launchpad [data-slot="dialog-header"] {
+    align-items: start;
+  }
+
+  /*
+   * THE CLOSE CONTROL BELONGS TO THE SCREEN, NOT TO THE GRID.
+   *
+   * `[data-slot="dialog-close"]` is `absolute` at its dialog's top-right, which is the right corner
+   * when the dialog is a card. Here the dialog is content-sized and centred, so that corner lands a
+   * few pixels above and beside the tiles: measured with two apps, the X sat at (860, 359) — level
+   * with the title, hard against the grid, reading as a stray glyph in the middle of the screen
+   * rather than as the way out.
+   *
+   * Fixed to the viewport's own corner, which is where a full-screen surface's dismiss lives and
+   * where a hand already reaches for it. (The scrim carries a `backdrop-filter`, so it is the
+   * containing block for its fixed descendants — and it is exactly the viewport, so the two
+   * readings agree.)
+   */
+  .ui-app-launcher-launchpad [data-slot="dialog-close"] {
+    position: fixed;
+    /* The bare glyph is a 16px box. In a card that is fine — it sits inside chrome a pointer is
+     * already resting on. Alone in the corner of a full screen, and on the surface most likely to
+     * be reached by thumb, it is under the SC 2.5.8 floor with nothing beside it to share a hit
+     * area with, so the padding IS the target. */
+    padding: var(--app-launcher-launchpad-close-space-padding);
+    inset-block-start: var(--app-launcher-launchpad-space-inset);
+    inset-inline-end: var(--app-launcher-launchpad-space-inset);
+  }
+
+  /* The name takes the FULL foreground, not the muted one every other panel title uses. Muted is a
+   * ratio against a surface this component owns; here the surface is whatever page the viewer left,
+   * blurred — an unknown ground, so the label uses the strongest ink the theme has. */
+  .ui-app-launcher-launchpad [data-slot="dialog-title"] {
+    color: hsl(var(--foreground));
+    font-size: var(--app-launcher-launchpad-title-font-size);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--app-launcher-launchpad-title-letter-spacing);
+    text-transform: uppercase;
   }
 
   .ui-app-launcher-panel {

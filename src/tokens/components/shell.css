@@ -351,6 +351,10 @@
    * nothing to cancel there, and cancelling anyway drags the row outside the panel and puts its
    * text on the border. The sheet, which does inset its body, overrides this. */
   --org-switcher-list-offset: 0px;
+  /* The keyboard legend under a modal picker — see `.ui-org-switcher-legend`. */
+  --org-switcher-legend-space-gap: var(--space-4);
+  --org-switcher-legend-font-size: var(--font-size-2xs);
+  --org-switcher-hint-space-gap: var(--space-1);
   /* The dialog surface's measure. Wider than --org-switcher-menu-width because the whole reason to
    * reach for the dialog is that a row carries more than a name; narrower than the generic
    * --dialog-width-default because it is still a list of choices, not a form. */
@@ -402,6 +406,68 @@
   --app-launcher-group-label-font-size: var(--font-size-2xs);
   --app-launcher-group-label-color: var(--muted-foreground);
   --app-launcher-state-min-height: 8rem;
+
+  /* LAUNCHPAD — the full-viewport surface (`AppLauncher responsive="fullscreen"`).
+   *
+   * Its own knobs rather than the popover's, because it is not a bigger popover: the page behind
+   * it is the material. `--app-launcher-launchpad-backdrop-blur-size` is what turns that page into
+   * a ground the tiles can sit on — with 0 the scrim alone has to carry the separation and the
+   * host application reads straight through the grid. The alpha and the blur are one decision:
+   * more blur wants less scrim, or the ground goes flat grey and the glass has nothing to refract.
+   *
+   * The marks are TRANSLUCENT here and opaque in the popover. In a 2.5rem popover mark a
+   * translucent fill is noise at that size; at 4rem, floating on a blurred page, it is the whole
+   * effect. */
+  /* Role-mirror knob: `initial` so a scoped theme's --background re-resolves at the call site
+   * (docs/TOKENS.md). Default = a veil of the theme's OWN background at the alpha below. */
+  --app-launcher-launchpad-backdrop-background: initial;
+  --app-launcher-launchpad-backdrop-blur-size: 16px;
+  --app-launcher-launchpad-backdrop-alpha: 55%;
+  /* THE INGREDIENT THAT MAKES IT GLASS RATHER THAN FOG. Blur alone averages a page towards its
+   * mean, and the mean of any real screen is a mid grey — 28px of it turned a dashboard into a
+   * featureless haze with the tiles floating in nothing. Pushing chroma back up after the blur is
+   * what a physical frosted pane does: it scatters direction, not colour. */
+  --app-launcher-launchpad-backdrop-color-saturate: 180%;
+  --app-launcher-launchpad-space-inset: var(--space-8);
+  /* THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that
+   * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked
+   * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much
+   * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on
+   * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the
+   * bar. A length or a 2/3/4-value box, exactly like `padding`. */
+  --app-launcher-launchpad-space-safe-area: 0;
+  --app-launcher-launchpad-panel-max-width: 60rem;
+  --app-launcher-launchpad-panel-gap: var(--space-8);
+  --app-launcher-launchpad-grid-gap: var(--space-6);
+  --app-launcher-launchpad-tile-inline-size: 7.5rem;
+  --app-launcher-launchpad-tile-padding: var(--space-3);
+  --app-launcher-launchpad-tile-radius: var(--radius-lg);
+  --app-launcher-launchpad-tile-gap: var(--space-3);
+  --app-launcher-launchpad-tile-hover-background: color-mix(
+    in srgb,
+    hsl(var(--foreground)) 10%,
+    transparent
+  );
+  --app-launcher-launchpad-mark-size: 4rem;
+  --app-launcher-launchpad-mark-radius: var(--radius-lg);
+  /* The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the
+   * theme and stays legible on a light page and a dark one. */
+  --app-launcher-launchpad-mark-background: color-mix(
+    in srgb,
+    hsl(var(--card)) 78%,
+    transparent
+  );
+  --app-launcher-launchpad-mark-border-color: color-mix(
+    in srgb,
+    hsl(var(--foreground)) 14%,
+    transparent
+  );
+  --app-launcher-launchpad-mark-font-size: var(--font-size-lg);
+  --app-launcher-launchpad-mark-shadow: var(--shadow-lg);
+  --app-launcher-launchpad-name-font-size: var(--font-size-sm);
+  --app-launcher-launchpad-title-font-size: var(--font-size-2xs);
+  --app-launcher-launchpad-title-letter-spacing: 0.08em;
+  --app-launcher-launchpad-close-space-padding: var(--space-2);
 
   /* Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site
    * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override

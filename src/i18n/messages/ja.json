@@ -251,6 +251,11 @@
       "deniedDescription": "閲覧するには管理者に権限の付与を依頼してください。",
       "loading": "ロールを読み込み中…",
       "noDetail": "ロールを選択すると詳細が表示されます"
+    },
+    "orgSwitcher": {
+      "hintMove": "移動",
+      "hintSelect": "選択",
+      "hintClose": "閉じる"
     }
   },
   "dataDisplay": {

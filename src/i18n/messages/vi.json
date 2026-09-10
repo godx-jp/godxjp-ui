@@ -252,6 +252,11 @@
       "deniedDescription": "Hãy đề nghị quản trị viên cấp quyền truy cập.",
       "loading": "Đang tải vai trò…",
       "noDetail": "Chọn một vai trò để xem chi tiết"
+    },
+    "orgSwitcher": {
+      "hintMove": "Di chuyển",
+      "hintSelect": "Chọn",
+      "hintClose": "Đóng"
     }
   },
   "dataDisplay": {
