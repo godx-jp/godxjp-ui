@@ -1,3 +1,4 @@
+import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import * as React from "react";
 import { mergeRefs } from "@react-aria/utils";
 import {
@@ -193,8 +194,11 @@ export function TooltipContent({
   forceMount: _forceMount,
   ...props
 }: TooltipContentProps) {
+  const overlayPortalContainer = useOverlayPortalContainer();
+
   return (
     <AriaTooltip
+      UNSTABLE_portalContainer={overlayPortalContainer}
       placement={toPlacement(side, align)}
       offset={sideOffset}
       crossOffset={alignOffset}

@@ -39,3 +39,12 @@ export {
   type FormatDatetimeOptions,
 } from "../lib/datetime";
 export { useTranslation, usePickerLocales } from "../i18n/use-translation";
+
+/*
+ * Where every overlay in this library renders. It lives beside AppProvider because it is the same
+ * KIND of fact — one statement at the root that every component below obeys — and because the one
+ * situation that needs it, mounting into a shadow root, is a property of the whole tree rather
+ * than of any control in it.
+ */
+export { OverlayPortalProvider } from "../lib/overlay-portal";
+export type { OverlayPortalProviderProps } from "../lib/overlay-portal";
