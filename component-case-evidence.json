@@ -1757,6 +1757,16 @@
     },
     "NumberInput": {
       "props": {
+        "prefix": {
+          "cases": [
+            "alone",
+            "with-suffix"
+          ],
+          "evidence": [
+            "docs/data-entry/number-input.tsx",
+            "src/styles/__tests__/number-input-affix-edge.test.ts"
+          ]
+        },
         "size": {
           "cases": [
             "xs",
@@ -1767,6 +1777,16 @@
           "evidence": [
             "docs/data-entry/number-input.tsx",
             "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        },
+        "suffix": {
+          "cases": [
+            "alone",
+            "with-prefix"
+          ],
+          "evidence": [
+            "docs/data-entry/number-input.tsx",
+            "src/styles/__tests__/number-input-affix-edge.test.ts"
           ]
         },
         "status": {

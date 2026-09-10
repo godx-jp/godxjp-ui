@@ -223,6 +223,37 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        {/* prefix / suffix — all THREE combinations, because the two-affix case is the only one
+            that used to be exercised and the suffix-only one is where the bug lived. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>prefix · suffix · 単位つきの数値</CardTitle>
+            <CardDescription>
+              通貨記号や単位はフィールドの内側に重ねる装飾。読み上げからは外れる (aria-hidden)
+              ので、意味は必ずラベル側に置く。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md" id="number-input-affixes">
+              <FormField id="ni-prefix" label="金額（前置き）">
+                <NumberInput id="ni-prefix" prefix="¥" defaultValue={1980} aria-label="金額" />
+              </FormField>
+              <FormField id="ni-suffix" label="日数（後置き）">
+                <NumberInput id="ni-suffix" suffix="日" defaultValue={7} aria-label="日数" />
+              </FormField>
+              <FormField id="ni-both" label="率（前後）">
+                <NumberInput
+                  id="ni-both"
+                  prefix="+"
+                  suffix="%"
+                  defaultValue={12}
+                  aria-label="率"
+                />
+              </FormField>
+            </Flex>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <Heading level={2}>キーボード操作</Heading>
