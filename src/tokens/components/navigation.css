@@ -104,7 +104,7 @@
    * `--tabs-card-list-space-gap`, and the pill strip has no gutter at all by design (its triggers
    * are `flex-1` inside one padded box). This was the one strip a service could only retune by
    * forking the class list. */
-  --tabs-list-line-space-gap: 0.25rem;
+  --tabs-list-line-space-gap: 0.25rem; /* scale-exempt: it must equal what the `gap-1` it replaces painted. --space-1 is 0.25rem at the default density but calc(0.25rem * var(--scaling)) under any other, and Tailwind's own --spacing grid — which this repo does not density-scale — is what the strip was drawn against. Binding it to the step would move a gutter this commit exists not to move. */
   /* BLOCK HEADROOM FOR THE FOCUS RING (gh#376). The horizontal strip is a scroll container
    * (`overflow-x: auto` + `overflow-y: hidden`), and a block-axis clip shaves whatever a trigger
    * paints outside its own box — measured in Chromium, the `line` strip gives its triggers 0px of
