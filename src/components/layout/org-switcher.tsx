@@ -1,12 +1,14 @@
 import * as React from "react";
 import { Check, ChevronsUpDown, Loader2, RotateCcw } from "lucide-react";
 
+import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import type { OrgSwitcherOrganization, OrgSwitcherProp } from "../../props/components/layout.prop";
 import {
   Dialog,
   DialogBody,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -23,6 +25,7 @@ import {
 import {
   Sheet,
   SheetBody,
+  SheetFooter,
   SheetContent,
   SheetHeader,
   SheetTrigger,
@@ -235,6 +238,7 @@ export function OrgSwitcher({
   className,
   ...rest
 }: OrgSwitcherProp & Pick<React.ComponentPropsWithoutRef<"button">, "id"> & DataAttributes) {
+  const { t } = useTranslation();
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
   const controlled = open !== undefined;
   const resolvedOpen = controlled ? open : uncontrolledOpen;
@@ -295,6 +299,41 @@ export function OrgSwitcher({
     />
   );
 
+  /*
+   * THE KEYBOARD LEGEND — the fourth part of the command-palette anatomy this panel already builds
+   * the other three of: a search input, grouped rows, and one active row that Enter runs.
+   *
+   * It is not decoration. The list is arrow-navigable and Enter-committed, and until the legend
+   * existed the only way to learn that was to try it: a picker that looks like a menu gets clicked
+   * through, one organization at a time, by people who would rather have typed three letters and
+   * pressed Enter. Raycast, Linear and GitHub all pay for this strip for the same reason.
+   *
+   * Modal surfaces only. A popover is a small anchored panel a pointer is already inside — a legend
+   * there is a line of chrome taller than the thing it explains.
+   */
+  const keyboardLegend = (
+    <div className="ui-org-switcher-legend">
+      <span className="ui-org-switcher-hint">
+        <kbd className="kbd" aria-hidden="true">
+          ↑↓
+        </kbd>
+        {t("layout.orgSwitcher.hintMove")}
+      </span>
+      <span className="ui-org-switcher-hint">
+        <kbd className="kbd" aria-hidden="true">
+          ↵
+        </kbd>
+        {t("layout.orgSwitcher.hintSelect")}
+      </span>
+      <span className="ui-org-switcher-hint">
+        <kbd className="kbd" aria-hidden="true">
+          esc
+        </kbd>
+        {t("layout.orgSwitcher.hintClose")}
+      </span>
+    </div>
+  );
+
   if (sheet) {
     return (
       <div className={cn("ui-org-switcher", className)} data-collapsed={collapsed || undefined}>
@@ -314,6 +353,7 @@ export function OrgSwitcher({
           >
             <SheetHeader title={labels.title} />
             <SheetBody>{panel}</SheetBody>
+            <SheetFooter>{keyboardLegend}</SheetFooter>
           </SheetContent>
         </Sheet>
       </div>
@@ -337,6 +377,7 @@ export function OrgSwitcher({
               <DialogTitle>{labels.title}</DialogTitle>
             </DialogHeader>
             <DialogBody>{panel}</DialogBody>
+            <DialogFooter>{keyboardLegend}</DialogFooter>
           </DialogContent>
         </Dialog>
       </div>

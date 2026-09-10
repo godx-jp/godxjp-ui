@@ -351,6 +351,10 @@
    * nothing to cancel there, and cancelling anyway drags the row outside the panel and puts its
    * text on the border. The sheet, which does inset its body, overrides this. */
   --org-switcher-list-offset: 0px;
+  /* The keyboard legend under a modal picker — see `.ui-org-switcher-legend`. */
+  --org-switcher-legend-space-gap: var(--space-4);
+  --org-switcher-legend-font-size: var(--font-size-2xs);
+  --org-switcher-hint-space-gap: var(--space-1);
   /* The dialog surface's measure. Wider than --org-switcher-menu-width because the whole reason to
    * reach for the dialog is that a row carries more than a name; narrower than the generic
    * --dialog-width-default because it is still a list of choices, not a form. */

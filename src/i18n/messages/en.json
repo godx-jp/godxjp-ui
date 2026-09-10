@@ -242,6 +242,11 @@
       "deniedDescription": "Ask an administrator to grant you access.",
       "loading": "Loading roles…",
       "noDetail": "Select a role to see its detail"
+    },
+    "orgSwitcher": {
+      "hintMove": "Move",
+      "hintSelect": "Select",
+      "hintClose": "Close"
     }
   },
   "dataDisplay": {
