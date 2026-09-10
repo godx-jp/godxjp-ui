@@ -9,12 +9,14 @@ describe("Switch", () => {
   it("toggles checked state", async () => {
     const user = userEvent.setup();
     renderWithUi(<Switch aria-label="Notify" />);
+    // `role="switch"` is the real `<input>`; the painted track is the `<label>` around it and
+    // carries the slot/size/state attributes (same split as Checkbox since it left Radix).
     const control = screen.getByRole("switch", { name: "Notify" });
-    expect(control).toHaveAttribute("data-slot", "switch");
-    expect(control).toHaveAttribute("data-size", "md");
-    expect(control).toHaveAttribute("data-state", "unchecked");
+    const track = control.closest('[data-slot="switch"]');
+    expect(track).toHaveAttribute("data-size", "md");
+    expect(track).toHaveAttribute("data-state", "unchecked");
     await user.click(control);
-    expect(control).toHaveAttribute("data-state", "checked");
+    expect(track).toHaveAttribute("data-state", "checked");
   });
 });
 

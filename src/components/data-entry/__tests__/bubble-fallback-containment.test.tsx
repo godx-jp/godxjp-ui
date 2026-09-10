@@ -49,16 +49,15 @@ describe("hidden form-fallback is clamp-targetable (gh#105)", () => {
     expect(clampTargetable(document.querySelector('input[aria-hidden="true"]'))).toBe(true);
   });
 
-  it("Switch inside a form renders a clamp-targetable native <input> fallback", () => {
+  // Switch has NO case here any more, for the same reason as Checkbox: react-aria renders no
+  // hidden bubble. Its form value is the plain `<input type="hidden">` switch.tsx writes itself,
+  // which is in normal flow and never inflated scrollHeight.
+  it("Switch inside a form renders no un-positioned hidden bubble", () => {
     renderWithUi(
       <form>
         <Switch defaultChecked />
       </form>,
     );
-    // Radix Switch only emits the bubble when it is a form control; pick the aria-hidden one.
-    const bubble = Array.from(document.querySelectorAll('input[aria-hidden="true"]')).find(
-      (el) => el.getAttribute("tabindex") === "-1",
-    );
-    expect(clampTargetable(bubble ?? null)).toBe(true);
+    expect(document.querySelector('input[aria-hidden="true"][tabindex="-1"]')).toBeNull();
   });
 });

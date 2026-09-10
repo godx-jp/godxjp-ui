@@ -2,7 +2,6 @@
 import type * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import type * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import type * as SliderPrimitive from "@radix-ui/react-slider";
-import type * as SwitchPrimitive from "@radix-ui/react-switch";
 import type { RenderProps as InputOTPRenderProps } from "input-otp";
 import type { DayPickerProps } from "react-day-picker";
 import type { DateRange } from "react-day-picker";
@@ -532,8 +531,24 @@ export type RadioButtonStyleProp = "outline" | "solid";
 /** @see Radio.Item — Radix radio group item. */
 export type RadioProp = React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>;
 
-/** @see Switch — extends Radix switch root props. */
-export type SwitchProp = React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root> & {
+/**
+ * @see Switch
+ *
+ * The PUBLIC shape is unchanged from the @radix-ui/react-switch era — `checked` /
+ * `defaultChecked` / `onCheckedChange` / `disabled` / `required` keep their HTML spelling.
+ * react-aria-components spells the same five `isSelected` / `defaultSelected` / `onChange` /
+ * `isDisabled`, and that translation happens inside `switch.tsx`; none of those names reach a
+ * consumer. Written out here rather than derived from a primitive so the surface stops moving
+ * whenever the base does.
+ */
+export type SwitchProp = Omit<
+  React.ComponentPropsWithoutRef<"button">,
+  "checked" | "defaultChecked" | "onChange" | "value"
+> & {
+  checked?: boolean;
+  defaultChecked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
+  required?: boolean;
   size?: "sm" | "md";
   /**
    * antd `loading` — the toggle is mid-flight: a spinner replaces the thumb glyph and the control
