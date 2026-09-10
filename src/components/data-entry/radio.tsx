@@ -94,7 +94,10 @@ const RadioGroupRoot = React.forwardRef<HTMLDivElement, RadioGroupRootProps>(
 RadioGroupRoot.displayName = "RadioGroup";
 
 const RadioItem = React.forwardRef<HTMLLabelElement, RadioProp>(
-  ({ className, disabled, value, "data-field": fieldKey, ...props }, ref) => {
+  ({ className, disabled, value, ...props }, ref) => {
+    // `data-field` is INTERNAL plumbing, not published prop surface — `Radio.Group` passes it down
+    // and nothing else should. Read off the rest bag rather than declared on `RadioProp`.
+    const { "data-field": fieldKey } = props as { "data-field"?: string };
     const inputRef = useFieldKeyedInput(fieldKey);
     return (
       <AriaRadio

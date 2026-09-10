@@ -108,7 +108,4 @@ export default defineConfig({
   resolve: {
     alias: packageExportAliases(),
   },
-  optimizeDeps: {
-    include: ["@radix-ui/react-alert-dialog", "@radix-ui/react-context", "@radix-ui/react-dialog"],
-  },
 });

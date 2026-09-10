@@ -1,5 +1,4 @@
 /** Data Entry component prop types — @see docs/COMPONENTS.md#data-entry */
-import type * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import type * as SliderPrimitive from "@radix-ui/react-slider";
 import type { RenderProps as InputOTPRenderProps } from "input-otp";
 import type { DayPickerProps } from "react-day-picker";
@@ -465,8 +464,23 @@ export type SearchInputProp = FieldA11yProps & {
   variant?: ControlVariantProp;
 };
 
-/** @see Checkbox — extends Radix checkbox root props. */
-export type CheckboxProp = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {
+/**
+ * @see Checkbox
+ *
+ * Public shape unchanged from the @radix-ui/react-checkbox era — `checked` / `defaultChecked` take
+ * the tri-state `"indeterminate"`, `onCheckedChange` reports it back, and `disabled` / `required`
+ * keep their HTML spelling. checkbox.tsx translates all of it to react-aria's `isSelected` /
+ * `isIndeterminate` / `onChange` / `isDisabled`; none of those names reach a consumer. Written out
+ * here rather than derived from a primitive that the component no longer uses.
+ */
+export type CheckboxProp = Omit<
+  React.ComponentPropsWithoutRef<"button">,
+  "checked" | "defaultChecked" | "onChange"
+> & {
+  checked?: boolean | "indeterminate";
+  defaultChecked?: boolean | "indeterminate";
+  onCheckedChange?: (checked: boolean | "indeterminate") => void;
+  required?: boolean;
   /**
    * antd `indeterminate` — paint the PARTIAL mark (a dash) without changing `checked`. Radix
    * spells the same state as `checked="indeterminate"`; this is the antd spelling of it, and the
@@ -535,8 +549,6 @@ export type RadioButtonStyleProp = "outline" | "solid";
  */
 export type RadioProp = Omit<React.ComponentPropsWithoutRef<"button">, "value"> & {
   value: string;
-  /** gh#337 machine key — lands on the `<input>`, the control's semantic focus target. */
-  "data-field"?: string;
 };
 
 /**
