@@ -1129,8 +1129,8 @@
           "name": "responsive",
           "origin": "owned",
           "required": false,
-          "type": "\"popover\" | \"auto\" | \"sheet\" | undefined",
-          "values": ["popover", "auto", "sheet"],
+          "type": "\"popover\" | \"auto\" | \"sheet\" | \"fullscreen\" | undefined",
+          "values": ["popover", "auto", "sheet", "fullscreen"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
