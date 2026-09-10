@@ -83,6 +83,7 @@ export function Steps({
   percent,
   onValueChange,
   className,
+  ...props
 }: StepsProp) {
   const { t } = useTranslation();
   const base = defaultValue;
@@ -106,7 +107,10 @@ export function Steps({
       data-direction={inline ? undefined : isVertical ? "vertical" : "horizontal"}
       data-type={type}
       className={cn("flex w-full", inline ? "ui-steps-inline" : "ui-steps-list", className)}
+      // The localized name is the DEFAULT, so a caller-supplied `aria-label` still wins — the
+      // spread has to come after it, not before.
       aria-label={t("navigation.steps.ariaLabel")}
+      {...props}
     >
       {items.map((item, index) => {
         const absoluteIndex = base + index;

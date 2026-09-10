@@ -114,8 +114,15 @@
     align-items: stretch;
   }
 
+  /* `flex: 1 1 auto` is the HORIZONTAL bar's rule. A vertical bar is a column (see the rule
+   * above), so growing the strip there stretches it down the block axis and the tabs inflate with
+   * it — the same axis mistake the `w-full` on the list had. Grow only where the bar is a row. */
   .ui-tabs-bar > [data-slot="tabs-list"] {
     min-inline-size: 0;
+    flex: 0 1 auto;
+  }
+
+  [data-slot="tabs"]:not([data-orientation="vertical"]) .ui-tabs-bar > [data-slot="tabs-list"] {
     flex: 1 1 auto;
   }
 

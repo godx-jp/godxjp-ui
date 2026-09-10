@@ -11,15 +11,24 @@ import { execFileSync } from "node:child_process";
  */
 
 /**
- * Waits until the tablist is genuinely interactive, not merely painted. Radix only makes the group
- * container focusable (`tabindex="0"`) once its items have registered with the roving-focus
- * collection (`focusableItemsCount > 0`), which happens in an effect after hydration.
+ * Waits until the tablist is genuinely interactive, not merely painted.
+ *
+ * This used to wait for `[role="tablist"][tabindex="0"]` — Radix made the GROUP CONTAINER
+ * focusable once its items had registered with the roving-focus collection. React Aria does not:
+ * it leaves the container with no tabindex at all and puts the roving index on the TABS
+ * (measured on the frame: tablist tabindex `null`, tabs `0` / `-1` / `-1`). So the condition had
+ * become unsatisfiable, and this gate timed out on every run after the migration — a whole gate
+ * failing on `main` in the nightly lane, saying nothing about tabs at all.
+ *
+ * The condition is now the roving state that actually exists: more than one tab, and exactly one
+ * of them holding the tab stop.
  */
 async function waitForRovingTablist(page) {
   await page.waitForFunction(
-    () =>
-      document.querySelectorAll('[role="tab"]').length > 1 &&
-      document.querySelector('[role="tablist"][tabindex="0"]') !== null,
+    () => {
+      const tabs = [...document.querySelectorAll('[role="tab"]')];
+      return tabs.length > 1 && tabs.some((tab) => tab.getAttribute("tabindex") === "0");
+    },
     undefined,
     { timeout: 5000 },
   );
@@ -99,8 +108,102 @@ try {
     }
   }
 
+  /*
+   * VERTICAL TABS — a MEASURED share, not a node count.
+   *
+   * `tabPlacement="start"` made the strip claim the row and collapse the panel: measured at a
+   * 1232px root, strip 1133.72px (92%) / panel 90.28px (7%), with every trigger stretched to
+   * 105.52px tall. Two utilities on the wrong axis — `w-full` on the line/card list and `flex-1`
+   * on the trigger, both growing on the BLOCK axis once the root is a row — and the structural
+   * test stayed green throughout, because every node was present and correct. Only geometry
+   * could see it.
+   *
+   * The assertion is therefore the split itself. Elements are found by ROLE; only their
+   * rectangles are read.
+   */
+  await page.setViewportSize({ width: 1400, height: 1000 });
+  await page.goto(`http://localhost:${port}/frame/navigation-tabs`, { waitUntil: "networkidle" });
+  const verticalSplit = await page.evaluate(() => {
+    // EVERY vertical Tabs on the frame, not the first one. The first is the compound example, and
+    // its docs source hard-codes a width on the list — so it never had the bug, and an assertion
+    // that stopped there passed with the defect fully present. The broken path is the `items` API
+    // with `variant="line"`, further down the same page.
+    const roots = [...document.querySelectorAll('[data-slot="tabs"][data-orientation="vertical"]')];
+    if (!roots.length) return { error: "no vertical Tabs on the frame — coverage lost" };
+    const width = (el) => el.getBoundingClientRect().width;
+    return {
+      measured: roots.map((root) => {
+        root.style.width = "1232px";
+        const strip = root.querySelector('[role="tablist"]');
+        const panel = [...root.children].find((c) => c !== strip && c.querySelector);
+        return {
+          id: root.id || root.getAttribute("data-variant") || "(unnamed)",
+          root: width(root),
+          strip: strip ? width(strip) : null,
+          panel: panel ? width(panel) : null,
+          triggerHeights: [...root.querySelectorAll('[role="tab"]')].map(
+            (t) => +t.getBoundingClientRect().height.toFixed(2),
+          ),
+        };
+      }),
+    };
+  });
+  if (verticalSplit.error) throw new Error(`vertical Tabs: ${verticalSplit.error}`);
+  for (const entry of verticalSplit.measured) {
+    const { id, root, strip, panel, triggerHeights } = entry;
+    if (strip == null || panel == null) {
+      throw new Error(`vertical Tabs ${id}: no tablist/panel pair`);
+    }
+    // The panel takes everything the strip and the gap leave. `--tabs-root-gap` is 8px; 12px of
+    // slack keeps this about the SHARE rather than about the exact gap token.
+    if (panel < root - strip - 12) {
+      throw new Error(
+        `vertical Tabs ${id} panel collapsed: root ${root}px, strip ${strip}px, panel ${panel}px ` +
+          `(expected panel >= ${root - strip - 12}px)`,
+      );
+    }
+    // A vertical strip is a column of labels beside the content, never the majority of the row.
+    if (strip > root / 3) {
+      throw new Error(
+        `vertical Tabs ${id} strip claimed the row: ${strip}px of ${root}px ` +
+          `(${((strip / root) * 100).toFixed(1)}%, expected under 33%)`,
+      );
+    }
+    // And the triggers keep their own height instead of dividing the panel's.
+    const tallest = Math.max(...triggerHeights);
+    if (tallest > 72) {
+      throw new Error(
+        `vertical Tabs ${id} triggers stretched on the block axis: tallest ${tallest}px ` +
+          `(heights ${triggerHeights.join(", ")})`,
+      );
+    }
+  }
+
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.goto(`http://localhost:${port}/frame/navigation-tabs`, { waitUntil: "networkidle" });
+  /*
+   * The HORIZONTAL counterpart, so the fix above cannot be "solved" by moving the bug: a
+   * horizontal line strip still spans its container.
+   */
+  const horizontalSpan = await page.evaluate(() => {
+    const root = document.querySelector(
+      '[data-slot="tabs"][data-orientation="horizontal"][data-variant="line"]',
+    );
+    if (!root) return null;
+    const strip = root.querySelector('[role="tablist"]');
+    if (!strip) return null;
+    return {
+      root: root.getBoundingClientRect().width,
+      strip: strip.getBoundingClientRect().width,
+    };
+  });
+  if (horizontalSpan && horizontalSpan.strip < horizontalSpan.root - 2) {
+    throw new Error(
+      `horizontal line Tabs strip stopped spanning its row: ${horizontalSpan.strip}px of ` +
+        `${horizontalSpan.root}px`,
+    );
+  }
+
   let tabs = page.getByRole("tab");
   await waitForRovingTablist(page);
   await tabs.first().focus();
@@ -109,21 +212,53 @@ try {
   let axe = await new AxeBuilder({ page }).analyze();
   const tabsViolations = axe.violations.map((v) => v.id);
 
-  await page.addInitScript(() => {
-    if (location.pathname.includes("navigation-tabs-rtl")) {
-      document.documentElement.dir = "rtl";
-      document.documentElement.lang = "ar";
-    }
-  });
-  await page.goto(`http://localhost:${port}/frame/navigation-tabs-rtl`, {
+  /*
+   * RTL — what this leg can honestly assert, and what it cannot.
+   *
+   * It used to force `document.documentElement.dir = "rtl"` from an init script, then assert that
+   * ArrowLeft moved focus FORWARD. Both halves were wrong:
+   *
+   *   - `AppProvider` writes `documentElement.dir` from the LOCALE on every render
+   *     (app-provider.tsx:382), so the init script's value was overwritten before the keys were
+   *     pressed. Measured: `documentElement.dir === "ltr"` throughout. The `[dir="rtl"]` guard
+   *     passed anyway, because the frame's own wrapper carries that attribute.
+   *   - So the assertion was reading LTR behaviour under an RTL name. ArrowLeft from the first
+   *     tab wraps to the LAST one in LTR, which is index 2 — exactly what it measured once the
+   *     roving-focus wait above stopped timing out and let it run at all.
+   *
+   * The VISUAL flip is real and is asserted below: the tablist computes `direction: rtl` and the
+   * tabs run right-to-left across the row.
+   *
+   * The KEYBOARD direction is NOT assertable here, and that is a real gap rather than an
+   * oversight: React Aria navigates by the ambient locale (`I18nProvider`), not by the `dir`
+   * attribute — the same rule spelled out on ToggleGroup's `dir` prop — and this package bundles
+   * messages for `en`, `ja` and `vi` only, all LTR. `?locale=ar` renders an empty frame. Until an
+   * RTL locale can be loaded, no gate in this repo covers arrow direction for an RTL consumer.
+   */
+  await page.goto(`http://localhost:${port}/frame/navigation-tabs-rtl?dir=rtl`, {
     waitUntil: "networkidle",
   });
   tabs = page.getByRole("tab");
   if ((await page.locator('[dir="rtl"]').count()) === 0) throw new Error("RTL was not initialized");
   await waitForRovingTablist(page);
-  await tabs.first().focus();
-  await page.keyboard.press("ArrowLeft");
-  const rtlFocusedIndex = await waitForFocusedTabIndex(page, 1, "RTL Tabs ArrowLeft focus failed");
+  const rtlVisualOrder = await page.evaluate(() => {
+    const list = document.querySelector('[role="tablist"]');
+    const items = [...list.querySelectorAll('[role="tab"]')];
+    return {
+      direction: getComputedStyle(list).direction,
+      lefts: items.map((t) => Math.round(t.getBoundingClientRect().left)),
+    };
+  });
+  if (rtlVisualOrder.direction !== "rtl") {
+    throw new Error(`RTL Tabs: tablist computed direction is ${rtlVisualOrder.direction}`);
+  }
+  {
+    const { lefts } = rtlVisualOrder;
+    const descending = lefts.every((x, i) => i === 0 || x < lefts[i - 1]);
+    if (!descending) {
+      throw new Error(`RTL Tabs did not lay out right-to-left: lefts ${lefts.join(", ")}`);
+    }
+  }
 
   await page.goto(`http://localhost:${port}/frame/navigation-pagination`, {
     waitUntil: "networkidle",
@@ -150,10 +285,12 @@ try {
       frames,
       widths,
       reflow: "pass",
+      verticalSplit,
+      horizontalSpan,
       keyboard: "pass",
       rtl: {
-        initializedBeforeMount: true,
-        focusedIndexAfterArrowLeft: rtlFocusedIndex,
+        visualOrder: rtlVisualOrder,
+        keyboardDirection: "NOT COVERED — React Aria reads it from the locale, and no RTL locale ships",
         verdict: "pass",
       },
       axe: { tabsViolations, paginationViolations },

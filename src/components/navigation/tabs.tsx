@@ -259,14 +259,20 @@ export function Tabs({
         // the same block inset — so the two construction paths now agree. A service that
         // wants the active bar parked back on the hairline raises `--tabs-indicator-offset`,
         // which exists for exactly that.
+        // `w-full` is scoped to the HORIZONTAL axis. Unscoped it also applied when the root is
+        // vertical, where the strip is a COLUMN beside the panel: `width: 100%` made the strip
+        // claim the whole row and the panel collapsed to its own min-content floor. Measured at a
+        // 1232px root: strip 1133.72px (92%) / panel 90.28px (7%). And it is not a layer problem —
+        // tailwind-merge drops the base `w-fit` as a same-group conflict, so `w-fit` never reached
+        // the DOM at all. Scoping puts it back on the axis it was written for.
         variant === "line" &&
-          "my-[calc(-1_*_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))] h-auto w-full justify-start border-b px-[var(--tabs-list-line-space-inset)] py-[calc(var(--tabs-list-line-space-inset)_+_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))]",
+          "my-[calc(-1_*_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))] h-auto data-[orientation=horizontal]:w-full justify-start border-b px-[var(--tabs-list-line-space-inset)] py-[calc(var(--tabs-list-line-space-inset)_+_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))]",
         // CARD strip. The list keeps `data-variant="default"` on purpose (a hand-composed
         // <TabsList> must be unaffected), so the card face is selected from the ROOT — but the
         // three properties the base list already claims as utilities (`bg-muted`, `p-1`,
         // `rounded-lg`) have to be replaced with utilities too, or the components layer loses.
         card &&
-          "w-full items-end justify-start gap-[var(--tabs-card-list-space-gap)] rounded-[var(--tabs-card-list-radius)] p-[var(--tabs-card-list-space-inset)] data-[variant=default]:bg-transparent",
+          "data-[orientation=horizontal]:w-full items-end justify-start gap-[var(--tabs-card-list-space-gap)] rounded-[var(--tabs-card-list-radius)] p-[var(--tabs-card-list-space-inset)] data-[variant=default]:bg-transparent",
         // CENTERED. Two independent moves, because the strip has two shapes: the pill/card strip
         // is `w-fit` (auto inline margins centre the BOX) and the line strip is `w-full`
         // (`justify-content` centres its CONTENT). `safe` keeps the overflow rule the strip
@@ -579,7 +585,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
           // The line indicator lives in src/styles/navigation-layout.css so it reads --tabs-indicator-*.
           // Selected and focused stay visually distinct (WCAG 2.4.7): selected is a 1px hairline in the
           // border, focused is the 2px ring plus its halo outside it.
-          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
+          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
           className,
         )}
         // A <button>, not RAC's default <div>: Radix rendered one, `disabled:` utilities need the

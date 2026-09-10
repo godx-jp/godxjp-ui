@@ -216,7 +216,25 @@ export type StepItemProp = {
 export type StepsTypeProp = "default" | "dot" | "inline" | "navigation";
 
 /** @see Steps */
-export type StepsProp = {
+/**
+ * The rest of a native `<ol>`'s attributes ride through to the list element.
+ *
+ * Not a convenience: without them a consumer had no supported handle on the rendered list at all,
+ * so its browser test bound to `.ui-steps-list > li[data-status]` — an INTERNAL class and an
+ * internal data attribute, both of which this package is free to rename. A `data-testid` or an
+ * `id` on the component is what that test wanted, and every sibling primitive already forwards
+ * them.
+ *
+ * `aria-label` is the one exception: the list names itself from the locale, and a caller-supplied
+ * name wins — the same contract Progress and Toolbar follow.
+ */
+export type StepsProp = Omit<
+  React.OlHTMLAttributes<HTMLOListElement>,
+  // `type` collides head-on: on an `<ol>` it is the NUMBERING style ("1" | "a" | "i"), and here it
+  // is the marker appearance. Intersecting the two resolves the prop to `never`, which turns every
+  // existing `<Steps type="inline">` into a type error — so the native one steps aside.
+  "onChange" | "defaultValue" | "children" | "type"
+> & {
   items?: StepItemProp[];
   value?: number;
   defaultValue?: number;
