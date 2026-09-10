@@ -30,6 +30,28 @@ function declarationsFor(css: string, selector: string): string {
  * private literal, so a service that set the shared token got no effect at all. These tests pin the
  * wiring so it cannot rot back.
  */
+/**
+ * SURFACES THAT ARE NOT A SCRIM.
+ *
+ * `--overlay-background` is the colour of DIMMING — a modal pushes the page back and darkens it, and
+ * every overlay that does that must read the one token so a service retunes them together. One
+ * surface does something else: the launcher's launchpad is a frosted PANE. It does not dim the page,
+ * it scatters it, and the ground it leaves has to be the theme's own — black over a light page reads
+ * as a power cut, and stacked on a blur it flattens everything to one grey.
+ *
+ * An entry here is not an opt-out. It still has to paint from a SHARED semantic token, and it still
+ * has to publish a role-mirror knob declared `initial`, which the loop below checks — so the surface
+ * remains retunable both globally and on its own. What the entry buys is the right to name a
+ * different shared token, in writing, with the reason attached.
+ */
+const SCRIM_ROLE_EXCEPTIONS = [
+  {
+    selector: '[data-slot="dialog-overlay"].ui-app-launcher-launchpad-overlay',
+    sharedToken: "--background",
+    knob: "--app-launcher-launchpad-backdrop-background",
+  },
+] as const;
+
 describe("shared overlay scrim (gh#215)", () => {
   it("still declares ONE shared scrim in the semantic tier", () => {
     expect(semanticLayout).toContain("--overlay-background: rgb(0 0 0 / 0.5);");
@@ -110,11 +132,22 @@ describe("shared overlay scrim (gh#215)", () => {
     // Guard the guard: an empty list would make the loop below assert nothing.
     expect(scrims.length, "no overlay backdrop declarations found to check").toBeGreaterThan(0);
     for (const { sheet, selector, value } of scrims) {
+      const exception = SCRIM_ROLE_EXCEPTIONS.find((entry) => entry.selector === selector);
+      const sharedToken = exception ? exception.sharedToken : "--overlay-background";
       expect(
         value,
-        `${sheet}: \`${selector}\` paints its backdrop without --overlay-background — a service ` +
-          `that retunes the shared scrim token gets no effect on this overlay.`,
-      ).toMatch(/var\(\s*--overlay-background\b/);
+        `${sheet}: \`${selector}\` paints its backdrop without ${sharedToken} — a service ` +
+          `that retunes the shared token gets no effect on this overlay.`,
+      ).toMatch(new RegExp(`var\\(\\s*${sharedToken}\\b`));
+      // An exception is still a MIRROR, never a literal: the per-surface knob has to exist and be
+      // `initial`, or the fallback freezes at :root and a scoped theme cannot reach it.
+      if (exception) {
+        expect(
+          shellTokens + feedbackTokens,
+          `${exception.knob} must be declared \`initial\` for ${selector} to stay retunable.`,
+        ).toContain(`${exception.knob}: initial;`);
+        expect(value.replace(/\s+/g, " ")).toContain(`var( ${exception.knob},`);
+      }
     }
   });
 });
