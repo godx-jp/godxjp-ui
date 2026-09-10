@@ -1464,6 +1464,17 @@
      * WHERE IT IS DECLARED — so re-declaring `--dialog-space-x` further down changes nothing the
      * padding can see. Measured: the rule shipped, the token read 12px, and the box still padded
      * 24px. This is the same class of silent no-op as a `var()` fallback that never fires. */
+    /*
+     * BOTH THE COMPOSITE AND THE PART, because different rules read different ones.
+     *
+     * `--dialog-space-inset` is what the content's `padding` reads, and it has to be re-declared
+     * whole (a composite substitutes its vars where it is DECLARED — see below). But the full-bleed
+     * header and footer bands cancel `--dialog-space-x` directly, so leaving that at the dialog
+     * default made them hang outside a panel this narrow: measured with the keyboard legend in
+     * place, the footer ran 501-939 across a dialog of 512-928, eleven pixels over each edge and
+     * only invisible because the content box clips.
+     */
+    --dialog-space-x: var(--org-switcher-sheet-inset);
     --dialog-space-inset: var(--dialog-space-y) var(--org-switcher-sheet-inset);
     --org-switcher-list-offset: var(--org-switcher-sheet-inset);
     max-inline-size: var(--org-switcher-dialog-width);
@@ -1558,14 +1569,68 @@
    *
    * So a row takes the same inner padding the field gives its glyph, and no negative margin: its
    * fill and its rule stay inside the column with everything else. */
+  /*
+   * THE RULE RUNS EDGE TO EDGE; ONLY THE TEXT IS INSET.
+   *
+   * A row that stops short of the panel's border reads as a card floating in a frame, and the frame
+   * is a second boundary nobody asked for — the panel already has one. Every command surface worth
+   * copying (VS Code, Raycast, Linear, GitHub) lets the row's fill and its rule meet both edges and
+   * insets only the content. This list is that shape.
+   *
+   * ONE VALUE CANCELS IT ON EVERY SURFACE. The distance from the panel's edge to a row is the
+   * surface's own body inset (`--org-switcher-list-offset`) plus the list's remainder
+   * (`--org-switcher-list-inset` minus that offset, which `.ui-org-switcher-command` applies) — and
+   * those sum to `--org-switcher-list-inset` whatever the surface. So the row cancels exactly that
+   * and pays it back as padding, and the popover, the sheet and the dialog need no separate
+   * arithmetic.
+   *
+   * The text lands on `inset + --command-input-padding-x`, which is where the search field puts its
+   * magnifier. That relationship is the one a reader actually sees: the two leading glyphs of this
+   * panel — the magnifier and the row's mark — sit on one start line, and they were 13px apart the
+   * last time this was tuned by measuring against the panel instead of against each other.
+   */
   .ui-org-switcher-command .ui-command-item {
     border-radius: 0;
-    margin-inline: 0;
-    padding-inline: var(--command-input-padding-x);
+    margin-inline: calc(-1 * var(--org-switcher-list-inset));
+    padding-inline: calc(var(--org-switcher-list-inset) + var(--command-input-padding-x));
   }
 
   .ui-org-switcher-command .ui-command-item + .ui-command-item {
     border-block-start: 1px solid hsl(var(--border));
+  }
+
+  /*
+   * THE LEGEND STRIP. Quiet by construction: it is a thing you read once and then stop seeing, so it
+   * takes the muted ink, the smallest step on the scale, and no border of its own — the footer band
+   * it sits in already draws one.
+   */
+  /* The footer's own rule right-aligns its children, which is right for the buttons a dialog footer
+   * usually holds and wrong for a legend: this reads left to right with the list above it. */
+  [data-slot="dialog-footer"]:has(> .ui-org-switcher-legend),
+  [data-slot="sheet-footer"]:has(> .ui-org-switcher-legend) {
+    justify-content: flex-start;
+  }
+
+  .ui-org-switcher-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--org-switcher-legend-space-gap);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--org-switcher-legend-font-size);
+  }
+
+  .ui-org-switcher-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--org-switcher-hint-space-gap);
+  }
+
+  /* `.kbd` carries `margin-inline-start: auto` for its home in a topbar search trigger, where the
+   * cap is pushed to the end of the row. Here the cap leads its own label, so the push has to go —
+   * left alone it drove every hint apart to the width of the strip. */
+  .ui-org-switcher-hint > .kbd {
+    margin-inline-start: 0;
   }
 
   .ui-org-switcher-state {

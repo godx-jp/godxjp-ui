@@ -399,22 +399,32 @@ describe("OrgSwitcher responsive contract shares the Sheet breakpoint token (gh#
     expect(shellStyles).toContain('[data-slot="dialog-content"].ui-org-switcher-dialog');
   });
 
-  it("the dialog surface overrides the COMPOSITE inset, not one of its parts", () => {
+  it("the dialog surface overrides the COMPOSITE inset, and its part agrees with it", () => {
     /*
      * `--dialog-space-inset` is declared at `:root` as `var(--dialog-space-y) var(--dialog-space-x)`,
      * and a custom property substitutes its vars WHERE IT IS DECLARED — so re-declaring
-     * `--dialog-space-x` on the element changes nothing the padding can see. Measured exactly that:
-     * the rule shipped, the token read 12px, and the box still padded 24px, leaving the rows 13px
-     * short of both edges.
+     * `--dialog-space-x` alone changes nothing the padding can see. Measured exactly that: the rule
+     * shipped, the token read 12px, and the box still padded 24px, leaving the rows 13px short of
+     * both edges. The composite is therefore the fix, and this pins that it is written.
      *
-     * Pinning which property is written, because that IS the fix; the geometry it buys is measured
-     * in a browser (rows 433-847 in a panel at 432-848, against 445-835 before).
+     * BUT NOT THE COMPOSITE ALONE. This used to also assert `--dialog-space-x` was absent, which
+     * read the finding as "never write the part" when it is really "the part is not the fix".
+     * Other rules DO read the part: the full-bleed header and footer bands cancel `--dialog-space-x`
+     * directly, and with the composite narrowed and the part left at the dialog default they hung
+     * outside the panel — the footer measured 501-939 across a dialog of 512-928, eleven pixels
+     * over each edge, invisible only because the content box clips.
+     *
+     * So the assertion is now the relationship rather than a ban: the composite is declared, and the
+     * part it is built from names the same value, so the padding and every band that cancels it can
+     * never disagree.
      */
     const decls = shellStyles.slice(
       shellStyles.indexOf('[data-slot="dialog-content"].ui-org-switcher-dialog'),
     );
     const block = decls.slice(0, decls.indexOf("}"));
-    expect(block).toMatch(/--dialog-space-inset:\s*var\(--dialog-space-y\)/);
-    expect(block).not.toMatch(/--dialog-space-x:/);
+    expect(block).toMatch(
+      /--dialog-space-inset:\s*var\(--dialog-space-y\)\s*var\(--org-switcher-sheet-inset\)/,
+    );
+    expect(block).toMatch(/--dialog-space-x:\s*var\(--org-switcher-sheet-inset\)/);
   });
 });
