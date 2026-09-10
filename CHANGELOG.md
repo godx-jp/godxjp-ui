@@ -30,7 +30,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   trong `titleRender`, `active` → `defaultValue`/`value`. Luôn truyền `aria-label`. Một dàn ý
   THẬT SỰ tĩnh, không bao giờ mở, thì không phải cây — dùng `Descriptions` hoặc chồng `ListRow`.
 
+### Added
+
+- **Trục thứ ba của tone: `--mark-*`.** Một tone được tô ba kiểu và mỗi kiểu bị chấm bằng một
+  thước khác: FILL (`--success`) là nền đặc có chữ NẰM TRÊN nó; TEXT (`--text-success`) là chữ
+  màu; MARK (mới) là một hình MỎNG mang nghĩa mà không có chữ nào trên nó — thanh viền
+  `Card accent`, thanh viền `DataTable rowTone`. WCAG 1.4.11 đòi 3:1 cho loại thứ ba.
+
+  Hai thanh viền ấy đang đọc tầng FILL, và đo trên Chromium thì `Card accent="warning"` ra
+  **1,74:1** trên chính thẻ của nó, `accent="success"` ra **2,18:1** — dưới sàn. Sau khi chuyển
+  tầng: sáu tone × hai nền × hai theme, tệ nhất **3,32:1**. Xem `docs/TOKENS.md`.
+
+- **`Progress size`** — `sm` cho thanh chú thích một HÀNG thay vì là chủ đề của màn. Trước đó
+  khổ dọc của dải `segments` bị ghim ở 22px, nên một thanh trong bảng đặt luôn chiều cao mọi
+  hàng, và lối thoát duy nhất là CSS viết tay (thứ `ui-audit` cấm ở consumer).
+
+- **`DataTable rowTone`** — trạng thái của TỪNG HÀNG, vẽ thành thanh viền đầu hàng + nền nhạt,
+  dùng đúng sáu tên tone mà `Card accent` đã có. `rowClassName` không nói được điều này:
+  `ui-audit` coi mọi prop có tên kết thúc bằng `className` là biểu thức class, nên một utility
+  viền + một màu palette trong đó là hai lỗi. Không bao giờ là tín hiệu DUY NHẤT (WCAG 1.4.1).
+
+- **`Select width` trên API hướng dữ liệu** (`options` / `loadOptions`). Luật 5 của
+  `docs/CONSUMER-RULES.md` hứa `width="auto"` cho một Select ngoài form; điều đó đúng với API
+  compound và SAI với API `options`, nên hai bộ lọc trên một hàng kéo hết chiều rộng rồi xếp
+  chồng, và cách duy nhất là bọc mỗi cái trong `<Flex width={280}>`.
+
+- **`FormField helperPlacement`** — `before` đặt dòng phụ GIỮA nhãn và ô nhập, cho biểu mẫu song
+  ngữ cần người đọc thấy nó TRƯỚC khi trả lời. `labelAddon` không chở nổi (hàng inline không
+  wrap, cỡ một chip), còn nhét vào `label` thì mất các fallback tên khi `label` không phải chuỗi.
+  Chỉ đổi chỗ vẽ: helper giữ nguyên id và vẫn nằm trên `aria-describedby`.
+
+- **`Steps` chuyển tiếp phần prop còn lại xuống `<ol>`.** Trước đó nó không chuyển gì, nên
+  consumer không có tay nắm hợp lệ nào và bộ test trình duyệt của họ phải bám vào
+  `.ui-steps-list > li[data-status]` — một class nội bộ và một data attribute nội bộ mà kho này
+  đổi tên tuỳ ý. `type` cố tình KHÔNG chuyển tiếp: trên `<ol>` nó là kiểu đánh số.
+
+- **`BadgeTone` được xuất từ barrel `data-display`.** Nó vốn được khai báo mà không xuất, nên
+  import theo tên là lỗi `tsc` và consumer phải viết `NonNullable<BadgeProps["tone"]>`.
+  `ProgressTone`, `LogoTone`, `CredentialRevealTone`, `ServiceLauncherStatusTone` đều đã xuất.
+
 ### Fixed
+
+- **`<Form asChild columns={n}>` bỏ qua `columns` trong im lặng.** Nhánh không-asChild bọc
+  children trong `ResponsiveGrid`; nhánh `asChild` dựng `children` và vứt `content` đi. Một biểu
+  mẫu hai cột mượn thẻ `<form>` của app tụt xuống một cột — không lỗi, không cảnh báo, không
+  than phiền kiểu. Nay lưới nằm BÊN TRONG phần tử được mượn, quanh các trường của nó.
+
+- **`NumberInput suffix` vẽ ở vị trí của prefix.** `:first-of-type` / `:last-of-type` khớp theo
+  KIỂU phần tử, mà các span bên trong control là prefix, suffix VÀ hai nút bước. Chỉ có suffix
+  thì nó khớp `:first-of-type` và nhận inset đầu — đo ở control 1198px: `leftOffset` **12px**,
+  đúng chỗ của prefix, nên `7日` đọc thành `日 … 7`; ô nhập còn trả luôn 32px đệm đầu cho một
+  prefix không tồn tại. Có cả prefix lẫn suffix thì `:last-of-type` **không khớp gì cả** (span
+  cuối là hai nút bước) và suffix rơi về `inset-inline-start: 0`. Nay đọc theo `data-slot`.
+
+- **Tabs dọc bóp chết panel.** `tabPlacement="start"` khiến dải nút chiếm cả hàng: đo ở gốc
+  1232px, dải **1133,72px (92%)** / panel **90,28px (7%)**, mỗi nút cao **105,52px**. Hai
+  utility đặt sai trục — `w-full` trên list (khi gốc là HÀNG thì đó là cả hàng) và `flex-1` trên
+  trigger (khi list là cột thì nó nở theo trục KHỐI). Sau: dải **85,92px (7%)** / panel
+  **1138,08px (92%)**, nút **46,98px**.
 
 - **`ListRow` giữ được `<li>` khi dùng `asChild`.** Trước đây `const Comp = asChild ? Slot : as`
   nên `as` bị bỏ im lặng: một danh sách LIÊN KẾT phải chọn giữa ngữ nghĩa `<ul>/<li>` và việc cả
@@ -44,7 +101,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ngoài — `<li data-slot="list-row-item"><a data-slot="list-row">`. Item mang đường kẻ thay cho
   hàng (hàng bên trong là `:last-child` nên luật cũ tự im). Đo lại trên cùng bố cục: 2 đường kẻ,
   hàng cuối trống, không nhân đôi. `asChild` đứng một mình không đổi gì.
-
 
 ## [20.0.0] - 2026-09-08
 
@@ -119,7 +175,7 @@ Bản major. Ba thay đổi PHÁ VỠ ở dưới; đọc chúng trước khi n�
 
 - **`AppShell logo` bị `topbar` nuốt**: truyền `topbar` là logo biến mất, hai consumer không có
   thương hiệu suốt nhiều tháng. Dải logo còn tự đo sai chiều cao — `var(--topbar-height,
-  var(--control-height))` không bao giờ giải ra cái nào, vì fallback chỉ chạy khi biến KHÔNG
+var(--control-height))` không bao giờ giải ra cái nào, vì fallback chỉ chạy khi biến KHÔNG
   ĐƯỢC KHAI, mà `--topbar-height` được khai là `auto`. Dải 28px cạnh thanh 48px, không viền dưới.
 
 - **`check:mcp-prop-sync` mù với mọi prop CÓ tài liệu** — 460/1019 prop không được quét vì bộ
@@ -131,7 +187,6 @@ Bản major. Ba thay đổi PHÁ VỠ ở dưới; đọc chúng trước khi n�
 - Bộ agent-kit đi theo `npm update` chứ không dừng ở lần cài đầu, và tệp rule cho consumer nay
   so **digest nội dung** thay vì số phiên bản — sửa luật mà không phát hành thì trước đây không
   consumer nào nhận được, đo được: 1/3 kho nhận, 2/3 giữ bản cũ dưới một dấu đọc như đang mới.
-
 
 ## [19.6.0] - 2026-09-07
 
