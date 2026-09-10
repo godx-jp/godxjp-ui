@@ -1,0 +1,344 @@
+# Ant Design parity — `data-entry` group
+
+> Audit pass, read-only, 2026-09-10. Method and ledger format: `antd-parity.md` §0 / §2.
+> Skipped by instruction: `TreeSelect`, `Segmented`, `TagInput` chip rendering, everything chat-shaped
+> (`ChatComposer`, `ChatSuggestion`). 45 catalog entries carry `group: "data-entry"`.
+
+## 1. Summary
+
+**This group is the most Ant-aligned part of the library, by a wide margin.** The prop types cite antd
+by name throughout (`src/props/components/data-entry.prop.ts` — `status`, `variant`, `allowClear`,
+`count`, `maxTagCount`, `maxTagPlaceholder`, `notFoundContent`, `popupMatchSelectWidth`,
+`autoClearSearchValue`, `filterSort`, `optionRender`, `menuItemSelectedIcon`, `loadData`,
+`showCheckedStrategy`, `hideDisabledOptions`, `showNow`, `needConfirm`, `disabledTime`,
+`preserveInvalidOnBlur`, `itemRender`, `beforeUpload`, `showSelectAll`, `oneWay`, `changeOnWheel`,
+`keyboard`, `formatter`/`parser`, `precision`, `checkedChildren`, `indeterminate`, `optionType`,
+`buttonStyle`, `marks`/`dots`/`included`/`reverse`/`tooltip`, `visibilityToggle`, `iconRender`,
+`mask`, `tokenSeparators`, `tagRender` …). The Form family goes further than antd in one direction
+(a server error-bag with per-field claiming, `FormErrors`, `FormErrorsProvider`) and matches it in the
+other (`FormRoot` + `useZodForm` + `FormFieldControl` + `FormFieldArray` cover `Form`/`rules`/
+`Form.List`/`dependencies`/`normalize`/`getValueFromEvent`/`preserve`/`validateStatus`/`hasFeedback`/
+`scrollToFirstError`/`onFinish`/`onFinishFailed`). **I propose zero new components** — every gap below
+closes by extending something that already exists.
+
+The five that matter, in order:
+
+1. **`NumberInput` corrupts values by 10× in every locale whose decimal separator is `,`** — including
+   the shipped `vi` locale. `Intl.NumberFormat` formats at rest, but the parser strips every comma as
+   a thousands separator. Measured, not inferred (§2.3). **P0, and an i18n defect, not a parity one.**
+2. **`PasswordStrength` is hardcoded English end-to-end** — no `t()` anywhere in the file, including
+   the `aria-label` and the live region. **P0 i18n/a11y.**
+3. **No option-list virtualization anywhere in `src/`** (`grep -rl 'virtual\|useVirtualizer\|react-window\|@tanstack/react-virtual' src/` → nothing).
+   antd `Select virtual` is on by default; a 5 000-row `Select`/`Cascader` here renders 5 000 DOM
+   nodes. Same root cause as the missing `List` in `list-masonry.md`. **P1.**
+4. **`Slider` never exposes a formatted value to assistive tech** — `tooltip.formatter` paints an
+   `aria-hidden` bubble and no `aria-valuetext`, so a ¥/%/件 slider announces a bare number. **P1 a11y.**
+5. **`ColorPicker` is a native `<input type="color">` + hex box** and is the one control in the group
+   with no `size`/`status`/`variant`/`allowClear`/`readOnly`, and no `presets`. It cannot express a
+   brand palette, which is the ordinary enterprise use. **P1.**
+
+### Checked and fully aligned — no non-`PRESENT` rows worth a table
+
+`Input` · `Textarea` · `PasswordInput` · `InputOTP` · `Switch` · `Checkbox` · `Radio` · `Field` ·
+`Form` / `FormField` / `FormErrors` / `FormRoot` / `FormFieldControl` / `FormFieldArray` /
+`useZodForm` · `Toggle` / `ToggleGroup` (they *are* the coverage for antd `CheckableTag`) ·
+`MonthPicker` / `MonthRangePicker` · `TimeRangePicker` · `UploadCropDialog` (antd has no
+counterpart — it documents `antd-img-crop` as a third-party add-on).
+
+`Command` / `CommandPalette` / `BranchScopePicker` have **no Ant Design counterpart at all**
+(namethatui: "command palette / command menu"); there is nothing to diff. `AutoComplete` is
+`Select showSearch`, `CheckableTag` is `Toggle`, `Mentions` is chat-family — all
+`COVERED-ELSEWHERE`, none re-audited here.
+
+---
+
+## 2. Ledgers
+
+### 2.1 `Select` — `SearchSelectBaseProp` / `SearchSelectSingleProp` / `SearchSelectMultipleProp`
+
+`src/props/components/data-entry.prop.ts:941-1142`, `src/components/data-entry/search-select.tsx`.
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| `virtual` — virtualized option list (default ON in antd) | `MISSING` | `grep -rl "virtual\|useVirtualizer\|react-window\|@tanstack/react-virtual" src/` → no files | Add `virtual?: boolean` + a windowed list. Shared work with `List` (`list-masonry.md`) — do it once. |
+| `fieldNames` — map `{label,value,options}` onto foreign row shapes | `MISSING` | `grep -n fieldNames src/props/components/data-entry.prop.ts` → only `:1281` (Cascader), `:1362` (TreeSelect) | Add `fieldNames?: TreeFieldNamesProp`-shaped sibling. The spelling already exists on two neighbours; a Select that cannot eat `{id,name}` is the odd one out. |
+| `labelInValue` — report `{value,label}` instead of a bare value | `COVERED-ELSEWHERE` | `onValueChange?: (value, option?)` — `:1091`, `:1110` | The option already rides the callback. No second dialect. |
+| `optionFilterProp` / `optionLabelProp` | `COVERED-ELSEWHERE` | `filterOption` `:1012`, `labelRender` `:954`, `optionRender` `:1031` | Function form is strictly more expressive than a prop-name string. |
+| `maxTagTextLength` — truncate each chip's text | `WONT-PORT` | trigger is a `<button>` with collapsed labels, `:1096-1104` | A character-count truncation is a text contract; use `maxTagCount` + `maxTagPlaceholder`, or CSS. |
+| `listHeight` — popup max height in px | `WONT-PORT` | `search-select.tsx:534` uses `collisionPadding` + available height | Pixel height is a design knob → token (`--select-popup-*`), cardinal rule #44. |
+| `placement` (`bottomLeft`…) | `COVERED-ELSEWHERE` | Radix `PopoverContent` collision flip, `search-select.tsx:529-534` | Auto-placement beats a manual physical spelling (ground rule #4). |
+| `suffixIcon` / `removeIcon` / `loadingIcon` | `WONT-PORT` | `allowClear` object form already carries `clearIcon` — `src/props/vocabulary/shared.prop.ts:105` | Icon-per-slot props are a token/`allowClear` job, not four more props. |
+| `getPopupContainer` / `styles` / `classNames` / `popupClassName` | `WONT-PORT` | ground rule #4 | Inline-style twins and portal escape hatches. |
+| `tagRender` in `mode="multiple"` | `WONT-PORT` | `:1096-1104` states the reason verbatim (button-in-button) | Documented refusal; `TagInput` owns `tagRender` where chips are legal. |
+| `onPopupScroll` | `COVERED-ELSEWHERE` | built-in infinite scroll + `renderLoadMore` `:1062` | |
+| `defaultActiveFirstOption` | `MISSING` | `grep -n defaultActiveFirstOption src/` → nothing | P2. Add as `defaultActiveFirstOption?: boolean`; a search box that pre-highlights row 1 makes Enter a one-key pick. |
+| `onInputKeyDown` | `MISSING` | grep → nothing | P2. Real for "Enter creates a new record" flows. |
+| `maxTagCount: "responsive"` | `WONT-PORT` | `src/props/vocabulary/shared.prop.ts:109-113` documents the refusal | Container queries instead. Already recorded. |
+| `variant: "underlined"` | `WONT-PORT` | `src/props/vocabulary/interaction.prop.ts:126-130` documents the refusal | SmartHR draws full boxes. Already recorded. |
+| `onSelect` / `onDeselect` / `maxTagPlaceholder` **exist but are undocumented** | `MISSING` (catalog) | props at `:1093`, `:1112-1114`, `:1124`; `sed -n '5560,5990p' mcp/src/data/components.ts \| grep -n "onSelect\|onDeselect\|maxTagPlaceholder"` → **no match** | Catalog drift: three shipped props the MCP never tells a consumer about. Add three catalog rows (`godxjp-ui-mcp-catalog-sync`). |
+
+### 2.2 `Cascader` — `CascaderProp` `src/props/components/data-entry.prop.ts:1253-1330`
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| `showSearch` **object form** — `{filter, sort, limit, render, matchInputWidth}` | `MISSING` | `showSearch?: boolean` only, `:1263`; search runs `filterTreeOptions(options, search)` uncapped, `cascader.tsx:389-393` | Add `filterOption` + `filterSort` + a result cap, spelled as Select already spells them (`:1012`, `:1017`) — **not** a nested antd-shaped `showSearch` object. antd's own `limit` default is 50; here a 5 000-leaf tree renders every match. |
+| `expandIcon` | `WONT-PORT` | no grep hit | Token (`--cascader-expand-*`), rule #44. |
+| `Cascader.Panel` — the picker without its trigger | `MISSING` | grep `CascaderPanel` → nothing | P2. Real for a "browse the catalogue" page. Extend `Cascader`, do not add a component. |
+| `maxTagTextLength` | `WONT-PORT` | same reasoning as Select | |
+| `suffixIcon` / `removeIcon` / `prefix` / `loadingIcon` / `popupRender` / `getPopupContainer` / `styles` | `WONT-PORT` | ground rule #4 | |
+| `placement` | `COVERED-ELSEWHERE` | Radix `PopoverContent align="start"`, `cascader.tsx:555` | |
+| `tagRender` | `WONT-PORT` | button-in-button, same as Select | |
+| `virtual` | `MISSING` | no virtualization in `src/` | Same P1 row as Select. |
+
+### 2.3 `NumberInput` — `NumberInputProp` `:228-282` · `src/components/data-entry/number-input.tsx`
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| **locale round-trip** (antd `decimalSeparator` exists precisely for this) | `MISSING` — **defect** | Formats with `new Intl.NumberFormat(locale, …)` `number-input.tsx:100`; parses with `raw.normalize("NFKC").replace(/,/g, "")` `:41`; `handleBlur` re-parses the displayed draft `:220`. Measured: `Intl.NumberFormat("vi",{useGrouping:false}).format(1.5)` → `"1,5"`; `Number("1,5".normalize("NFKC").replace(/,/g,""))` → **`15`**. | **P0.** Derive the locale's decimal + group separators from `Intl.NumberFormat(locale).formatToParts()` and normalise against *those*, instead of hardcoding `,` = thousands. Keep the NFKC 全角 fold — it is correct and load-bearing for `ja`. A regression test per shipped locale (`en`, `ja`, `vi`) is the acceptance. |
+| `stringMode` — string in/out for values past `Number.MAX_SAFE_INTEGER` or exact decimals | `MISSING` | grep `stringMode` → nothing; value type is `number \| null` `:180-182` | P1. Money and 13-digit ids are the ordinary enterprise case; `roundTo` `:45-49` mitigates FP drift but cannot fix range. Add as an opt-in that widens the triad to `string`. |
+| `onStep` — fired on stepper / arrow / wheel with the direction | `MISSING` | grep `onStep` → nothing | P2. Add `onStep?: (value, info: { offset, type: "up" \| "down" }) => void`. |
+| `addonBefore` / `addonAfter` | `WONT-PORT` | deprecated in antd itself (use `Space.Compact`) | `prefix`/`suffix` present `:215-217`. |
+| `onPressEnter` | `COVERED-ELSEWHERE` | commit-on-Enter is already the behaviour, `:237` | |
+| `decimalSeparator` as an explicit prop | `WONT-PORT` | should follow the locale, not a prop | Fixing the round-trip above removes the need. |
+
+### 2.4 `Slider` — `SliderProp` `:547-568` · `src/components/data-entry/slider.tsx`
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| **`aria-valuetext` mirroring `tooltip.formatter`** (rc-slider `ariaValueTextFormatterForHandle`) | `MISSING` — **a11y** | `tooltipContent` returns the bare number `slider.tsx:33,35`; the bubble is `aria-hidden` `:152`; the `Thumb` `:138-157` sets no `aria-valuetext` | **P1.** A `¥50,000` / `3 件` slider announces "50000". Feed the resolved `tooltip.formatter` (or `Intl.NumberFormat`) into `aria-valuetext`. |
+| default tooltip / mark text is not `Intl`-formatted | `MISSING` — i18n | `tooltipContent` `:33` returns `value` verbatim; no `Intl.NumberFormat` in the file | P2 (same fix as the row above). |
+| `onChangeComplete` | `RENAMED` | Radix `onValueCommit`, inherited via `React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>` `:547` | No work. Record both names in the catalog. |
+| `vertical` | `RENAMED` | Radix `orientation="vertical"`, `slider.tsx:55,88,112` | No work. |
+| `reverse` | `PRESENT` (aliased) | `inverted ?? reverse`, `slider.tsx:115` | |
+| `keyboard: false` | `WONT-PORT` | — | Removing keyboard operation from a `role="slider"` fails WCAG 2.1.1. |
+| `range: { draggableTrack }` — drag the whole span | `MISSING` | grep `draggableTrack` → nothing; Radix has no equivalent | P2. |
+| `tooltip.placement` / `getPopupContainer` / `autoAdjustOverflow` | `WONT-PORT` | ground rule #4 | Token + collision-aware positioning. |
+
+### 2.5 `ColorPicker` — `ColorPickerProp` `:893-908` · `src/components/data-entry/color-picker.tsx` (114 lines)
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| `presets` — named swatch groups | `MISSING` | whole file read; only `<input type="color">` `color-picker.tsx:84-93` + a hex `Input` `:96-108` | **P1.** A tenant/brand palette is the ordinary case; today the consumer hand-rolls a swatch row of `Button`s beside it. |
+| `size` / `status` / `variant` | `MISSING` | prop type `:893-908` has none of the three; every other control in the group carries all three | **P1 (consistency).** A `ColorPicker` cannot line up with the `Input` next to it in a form row, and cannot paint a validation error. |
+| `allowClear` + `onClear` | `MISSING` | `AllowClearProp` not imported into `ColorPickerProp` `:893` | P2. The value can legitimately be `""` `:46` but nothing clears it back. |
+| `readOnly` | `MISSING` | `disabled` only `:902` | P2. `Select`/`Cascader`/`TagInput`/`Transfer` all state a `readOnly` contract; this one does not. |
+| `format` / `defaultFormat` / `onFormatChange` (rgb/hex/hsb) | `MISSING` | `HEX_PATTERN` `:14` is the only accepted shape | P2. |
+| `disabledAlpha` / alpha channel | `WONT-PORT` | `<input type="color">` has no alpha | Would require replacing the native panel. Not worth it unless `presets` forces a custom panel anyway — decide the two together. |
+| `mode: "gradient"` | `WONT-PORT` | — | A gradient editor is a different control. |
+| `showText` | `MISSING` | `showHexInput` `:38` shows an *editable* hex box, not a read-only label | P2 — `showHexInput` is the house spelling and covers the intent; record as `RENAMED` if the read-only variant is not wanted. |
+| `panelRender` / `trigger` / `arrow` / `placement` / `destroyOnHidden` | `WONT-PORT` | native panel; ground rule #4 | |
+
+### 2.6 `DatePicker` / `DateRangePicker` — `:653-716`, `:770-804` (+ `PickerChromeProp` `:635-647`)
+
+Present and correct: `format` (string | `Intl.DateTimeFormatOptions` incl. Japanese era | fn),
+`parseFormat`, `minDate`/`maxDate`, `showWeek`, `needConfirm`, `picker`, `order`, `showTime`,
+`presets`, `disabledDate`, `cellRender`, `allowClear`, `allowEmpty`, `showNow`/`showToday`,
+`inputReadOnly`, `preserveInvalidOnBlur`, `renderExtraFooter`, `placement` (logical `bottom-start`…),
+`open`/`defaultOpen`/`onOpenChange`, `multiple`, ISO native submission.
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| `mode` + `onPanelChange` — controlled panel level (date→month→year) | `MISSING` | `grep -rn "onPanelChange" src/` → nothing; `picker` `:663` selects the *value granularity*, not the panel level | P2. Distinct from `picker`; needed only for a picker that drives an external month/year state. |
+| `defaultPickerValue` / `pickerValue` / `onPickerValueChange` — which month the panel opens on | `MISSING` | grep → nothing | **P1.** "Open on the fiscal-year start", "open on the month of the row being edited" has no expression today; the panel always opens on the value or today. |
+| `onOk` — the confirm click | `MISSING` | grep `onOk` in `src/components/data-entry/` → nothing, although `needConfirm` `:662` renders the button | P2. `onValueChange` already fires on confirm; `onOk` is a convenience. |
+| `separator` (RangePicker) | `MISSING` | hardcoded `<ArrowRight … />`, `date-range-picker.tsx:264` | P2. RTL is handled (logical icon flip), so this is cosmetic — a token would do. |
+| `disabled: [boolean, boolean]` — lock one end of a range | `MISSING` | `disabled?: DisabledProp` (scalar) `:787` | **P1.** "The start date is fixed by the contract, only the end is editable" is a real screen and has no expression. |
+| `onCalendarChange` — fires on each end of the range | `MISSING` | grep → nothing | P2. Needed to compute a live duration while the range is half-picked. |
+| `panelRender` / `prevIcon` / `nextIcon` / `superPrevIcon` / `superNextIcon` / `suffixIcon` / `components` | `WONT-PORT` | grep → nothing; ground rule #4 | Tokens, not props. |
+| `getPopupContainer` / `styles` / `classNames` / `popupClassName` | `WONT-PORT` | ground rule #4 | |
+| `maxTagCount` for `multiple` | `MISSING` | `multiple` `:710-715` has no collapse knob, unlike `Select`/`Cascader`/`TreeSelect` which all take `MaxTagCountProp` | P2 — reuse `MaxTagCountProp` (`shared.prop.ts:113`), do not invent a spelling. |
+| `dateRender` | `RENAMED` | `cellRender` `:682` (antd renamed it too) | No work. |
+
+### 2.7 `TimePicker` — `TimePickerProp` `:822-877`
+
+Present: `hourStep`/`minuteStep`/`secondStep`, `showSeconds`, `use12Hours`, `format`, `disabledTime`,
+`hideDisabledOptions`, `showNow`, `needConfirm`, `changeOnScroll`, `inputReadOnly`, `allowClear`,
+`renderExtraFooter`, canonical 24-h storage.
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| `cellRender` | `MISSING` | `grep -n cellRender src/components/data-entry/time-picker.tsx` → nothing | P2. Marking "already booked" times is the same need `Calendar cellRender` already serves. |
+| `onSelect` — fires per column pick, before commit | `MISSING` | grep → nothing | P2. |
+| `needConfirm` default | `PRESENT` — **deliberate divergence** | `:864-871` states it: antd defaults `true`, this library `false`, with the reason | No work; already documented. Keep. |
+| `suffixIcon` / `popupClassName` / `getPopupContainer` | `WONT-PORT` | ground rule #4 | |
+
+### 2.8 `Calendar` — `CalendarProp` `:585-619`
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| `mode: "month" \| "year"` + `onPanelChange` — the 12-month year board | `MISSING` | `grep -rn "onPanelChange\|fullCellRender" src/` → nothing; `CalendarProp` is `DayPickerProps` + footer + `width`/`bordered`/`cellRender` | P2. `MonthPicker` covers *picking* a month; it does not cover a year board a consumer can decorate. |
+| `headerRender` | `COVERED-ELSEWHERE` | `CalendarProp extends DayPickerProps` `:585` → react-day-picker `captionLayout="dropdown" \| "dropdown-months" \| "dropdown-years"` + `startMonth`/`endMonth` (used at `calendar.tsx:60-61`) | Add a `related`/usage note; no code. |
+| `validRange` | `COVERED-ELSEWHERE` | DayPicker `startMonth`/`endMonth` + `disabled`, `calendar.tsx:60-61` | |
+| `fullscreen` | `RENAMED` | `width="full"` + `bordered` `:604,616`, with the measured rationale for the split | No work. |
+| `fullCellRender` — replace the whole cell | `WONT-PORT` | `CalendarCellRenderProp` `:571-583` states the refusal: `cellRender` **wraps** `originNode` so selection state, `aria-selected`, disabled handling and the roving tabindex survive | Correct call. Record it in the catalog so nobody re-adds it. |
+| `showWeek` | `COVERED-ELSEWHERE` | DayPicker `showWeekNumber` | |
+
+### 2.9 `Upload` — `UploadProp` `:1152-1234`
+
+Present and unusually complete: `action`/`method`/`headers`/`data`/`withCredentials`,
+`beforeUpload` (incl. `UPLOAD_LIST_IGNORE`), `directory`, `pastable`, `openFileDialogOnClick`,
+`maxCount`/`maxSizeBytes`, `itemRender`, `previewFile`, `onPreview`/`onDownload`/`onRemove`/`onDrop`,
+per-item progress + cancel (`upload.tsx:234-289`, `upload-request.ts:16-54`).
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| `customRequest` | `RENAMED` | `onUpload(file, item, context)` `:1206-1210` with an abort signal + `onProgress` `upload-types.ts:87,106` — strictly richer than antd's | No work; record both names. |
+| `listType` | `RENAMED` | `variant` `:1148-1149` (`dropzone`/`button`/`picture-card`/`picture`/`avatar`/`avatar-crop`) | No work. |
+| `fileList` / `defaultFileList` / `onChange` | `RENAMED` | the controlled triad `:1154-1156` | No work. |
+| `showUploadList` **object form** — `{showPreviewIcon, showRemoveIcon, showDownloadIcon, extra}` | `MISSING` | `showUploadList?: boolean` `:1196`, consumed as a boolean at `upload.tsx:461,644` | **P1.** "Files can be previewed but not removed" is a permissions case; today the only escape is `itemRender`, which hands the consumer the whole row and its a11y with it. Widen to `boolean \| { … }`. |
+| `iconRender` — per-status file icon | `MISSING` | `grep -n iconRender src/components/data-entry/upload.tsx` → nothing (only `PasswordInput` has one) | P2 — or `WONT-PORT` in favour of tokens; decide with the row above. |
+| `isImageUrl` — decide whether a thumbnail is an `<img>` | `MISSING` | grep → nothing; `createUploadItem` infers from `file.type` `upload-types.ts:43` | P2. Bites a `value` restored from the server with a `url` but no `mimeType`. |
+| `progress` — antd's Progress config | `WONT-PORT` | renders this library's own `Progress` `upload.tsx:866,979` | Token, rule #44. |
+| `capture` — mobile camera | `MISSING` | grep `capture` → nothing on the `<input type="file">` | P2. |
+| `styles` / `classNames` | `WONT-PORT` | ground rule #4 | |
+
+### 2.10 `Transfer` — `TransferProp` `:1413-1459`
+
+Present: `dataSource`, `targetKeys`/`defaultTargetKeys` + the `value`/`defaultValue` triad, `titles`,
+`showSearch`, `render`, `filterOption`, `showSelectAll`, `oneWay`, `pagination`, `selectedKeys` +
+`onSelectChange`, `readOnly`, `name`.
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| `status` | `MISSING` | no `status` in `:1413-1459`; every other data-entry control takes `ControlStatusProp` (`interaction.prop.ts:117`) | **P1.** A required Transfer inside a `FormField` cannot paint its own validation error. |
+| `rowKey` | `MISSING` | `TransferItemProp` requires a literal `key` `:1405-1410` | P2. The house spelling is `getRowId` (`GetRowIdProp`, `PROPS-VOCABULARY.md` · Data collections) — reuse it, do not add `rowKey`. |
+| `footer` | `MISSING` | grep → nothing | P2. |
+| `operations` / `actions` — relabel the ⇄ buttons | `MISSING` | grep → nothing | P2. The buttons are localized via `t()`; a per-instance override ("承認する" / "取り消す") has no expression. |
+| `selectAllLabels` | `MISSING` | grep → nothing | P2. |
+| `onSearch` | `MISSING` | `showSearch` `:1434` is a boolean; no query callback | P2 — spell it `onSearchChange` (`OnSearchChangeProp`), as Select and Cascader already do. |
+| `onScroll` | `MISSING` | grep → nothing | P2. `pagination` `:1420` covers the large-list case instead. |
+| `locale` object | `COVERED-ELSEWHERE` | `t()` + the `i18n/messages/*` bundles | |
+| `listStyle` / `styles` / `classNames` | `WONT-PORT` | ground rule #4 | |
+
+### 2.11 `SearchInput` — `SearchInputProp` `:418-437` · `src/components/data-entry/search-input.tsx`
+
+This maps to antd `Input.Search`.
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| **`onSearch` on Enter** — commit the query immediately instead of waiting out the debounce | `MISSING` — UX | no `onKeyDown` anywhere in the file (read in full, 125 lines); `onSearch` fires only from the debounced effect `search-input.tsx:59-63` | **P1.** Pressing Enter in a search box is the universal "search now" gesture; here it does nothing and the user waits `debounce` ms. The IME guard `:43-46` is correct and must be preserved — Enter that *confirms a conversion* must not submit. |
+| `enterButton` — a visible 検索 button | `MISSING` | grep → nothing | P2. Common on JP admin screens; today the consumer puts a `Button` beside it and re-wires the query. |
+| `loading` | `MISSING` | grep → nothing; `PendingProp` exists in the vocabulary | P2. Reuse `loading?: PendingProp` as `Select` `:998` does. |
+| `size` | `MISSING` | `SearchInputProp` `:418-437` has `status` and `variant` but no `size`, while the `Input` it wraps does (`:110`) | P2 (consistency) — a `SearchInput` cannot match an `sm` toolbar row. |
+| `allowClear` | `PRESENT` (always on) | hardcoded clear button `search-input.tsx:110-121` | Fine; note it is not switchable. |
+| `searchIcon` | `WONT-PORT` | ground rule #4 | Token. |
+
+### 2.12 `CheckboxGroup` / `RadioGroup` — `:457-470`, `:472-494`
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| `options` as bare `string \| number` | `MISSING` | `ChoiceOptionProp` requires `{label, value}` `:449-455` | P2. Identical to the `Segmented` row already logged in `antd-parity.md` §3.2 — fix all three together, one shared widening. |
+| `Radio.Group block` — stretch to the parent width (antd 5.21) | `MISSING` | `grep -n "block" src/props/components/data-entry.prop.ts` → no `block` on `RadioGroupProp` `:472-494` | P2. `Segmented` already has `block`; a `optionType="button"` group `:440` wants the same. Reuse the spelling. |
+| `optionType` / `buttonStyle` | `PRESENT` | `:440`, `:442` | |
+| option `title` (hover hint) | `COVERED-ELSEWHERE` | wrap in `Tooltip` — same ruling as `Segmented` in §3.2 | |
+| `size` on `Radio.Group` | `MISSING` | no `size` on `RadioGroupProp` `:472-494` | P2 — only meaningful with `optionType="button"`. Reuse `SizeProp`. |
+
+### 2.13 `Rating` (antd `Rate`) — `src/components/ui/rating.tsx:7-42`
+
+Present: `count` (+ the legacy `max`), `allowHalf`, `allowClear`, `character` (node or fn),
+`tooltips` folded into the accessible name `:32-36`, `readOnly`, `disabled`, `name`. a11y is correct:
+`role="radiogroup"` + `role="radio"` + roving tabindex `:131-155`.
+
+| Ant Design prop / behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| `onHoverChange` | `MISSING` | `hover` state is internal, `rating.tsx:70` | P2. |
+| `keyboard: false` | `WONT-PORT` | — | Disabling arrow keys on a `radiogroup` fails WCAG 2.1.1. |
+| `RatingProps` is not registered in `src/props/components/` | `MISSING` (house standard, not parity) | `grep -rn "RatingProp" src/props/` → no hit; the type lives in `src/components/ui/rating.tsx:7` | Same for `TagInputProps`, `ToggleProp`, `ToggleGroupItemProp`, `PasswordInputProps`, `UploadCropDialog`. Out of Ant-parity scope, but `STANDARDS-vocabulary-tokens.md` rules 1–2 want them in the registry. Flagged, not scheduled. |
+
+### 2.14 `PasswordStrength` — `src/components/data-entry/password-strength.tsx` (no antd counterpart)
+
+| Behaviour | Status | Evidence | Verdict |
+| --- | --- | --- | --- |
+| Every visible string is hardcoded English | `MISSING` — **i18n** | `DEFAULT_LABELS = { weak: "Weak", fair: "Fair", strong: "Strong" }` `:4-8`; `labelForRule` returns `"8+ characters"`, `"Contains uppercase letter"`, … `:119-133`; `` aria-label={`Password strength ${score}/4`} `` `:75`; `"Passed: "` / `"Failed: "` `:106`; the live region `{scoreLabel(…)} password strength` `:113`. The file never imports `useTranslation` (`grep -L useTranslation` over `src/components/data-entry/*.tsx` — this is the only non-shim file with real copy that misses it). | **P0.** Route every string through `t()` + the `en`/`ja`/`vi` bundles. `labels` `:21` overrides only 3 of the ~10 strings, so a consumer cannot even work around it. |
+| `role="img"` on the meter | `MISSING` — a11y | `:74-76` | P1. It is a value indicator, not an image: `role="meter"` (or `progressbar`) with `aria-valuenow`/`aria-valuemin`/`aria-valuemax`/`aria-valuetext`. Screen-reader users get a static label today and never hear the value change except via the separate live region `:112-114`. |
+| Rule set is closed | `MISSING` | `PasswordRule` is a fixed 5-member union `:3,10`; thresholds hardcoded `:35-39` | P2. A tenant policy of "12+ characters" has no expression. |
+
+---
+
+## 3. Priority list — every `MISSING` row, most severe first
+
+### P0 — breaks a real screen
+
+| # | Component | Gap | Cite |
+| --- | --- | --- | --- |
+| 1 | `NumberInput` | Locale round-trip corrupts the value: formatted with `Intl` for the active locale, parsed with a hardcoded `,`-is-a-thousands-separator rule. `vi` (shipped) turns `1.5` into `15` on blur. | `number-input.tsx:41,100,220` |
+| 2 | `PasswordStrength` | Entirely hardcoded English — labels, checklist, `aria-label`, live region. No `t()` in the file. | `password-strength.tsx:4-8,75,106,113,119-133` |
+
+### P1 — a workaround exists, but it is hand-rolled and a11y-risky
+
+| # | Component | Gap | Cite |
+| --- | --- | --- | --- |
+| 3 | `Slider` | No `aria-valuetext`; `tooltip.formatter` paints an `aria-hidden` bubble only. Formatted sliders announce a bare number. | `slider.tsx:33,138-157` |
+| 4 | `Select` / `Cascader` | No list virtualization anywhere in `src/` (antd `virtual` is on by default). | `grep -rl "virtual\|useVirtualizer\|react-window\|@tanstack/react-virtual" src/` → ∅ |
+| 5 | `ColorPicker` | No `presets`, and the only control in the group with no `size`/`status`/`variant`. | `data-entry.prop.ts:893-908` |
+| 6 | `PasswordStrength` | `role="img"` on a value meter instead of `role="meter"` + `aria-valuenow`. | `password-strength.tsx:74-76` |
+| 7 | `SearchInput` | Enter does not commit the query — `onSearch` fires only after the debounce; no `onKeyDown` in the file. | `search-input.tsx:59-63` (whole file read) |
+| 8 | `Upload` | `showUploadList` is boolean-only; "preview but do not remove" forces `itemRender`, which hands the consumer the row's a11y. | `data-entry.prop.ts:1196`, `upload.tsx:461,644` |
+| 9 | `DateRangePicker` | `disabled` is scalar; one end of a range cannot be locked (antd `disabled: [boolean, boolean]`). | `data-entry.prop.ts:787` |
+| 10 | `DatePicker` / `DateRangePicker` | No `defaultPickerValue`/`pickerValue` — the panel cannot be opened on a chosen month. | grep → ∅ |
+| 11 | `Transfer` | No `status`; cannot paint a validation error inside a `FormField`. | `data-entry.prop.ts:1413-1459` |
+| 12 | `Cascader` | Search is uncapped and uncustomizable (no `filterOption`/`filterSort`/result limit; antd's `limit` default is 50). | `cascader.tsx:389-393`, `data-entry.prop.ts:1263` |
+| 13 | `Select` | `fieldNames` absent although `Cascader` and `TreeSelect` both have it — a foreign row shape must be pre-mapped. | `data-entry.prop.ts:1281,1362` vs `:941-1080` |
+| 14 | `NumberInput` | No `stringMode`; money and >2^53 ids lose precision. | grep → ∅ |
+| 15 | `Select` (catalog) | `onSelect` / `onDeselect` / `maxTagPlaceholder` ship but are absent from the MCP entry — consumers cannot discover them. | props `:1093,1112-1114,1124`; catalog `mcp/src/data/components.ts:5572-5987` |
+
+### P2 — nice to have
+
+`Select`: `defaultActiveFirstOption`, `onInputKeyDown`. ·
+`Cascader`: `Cascader.Panel`. ·
+`NumberInput`: `onStep`. ·
+`Slider`: `Intl`-formatted default tooltip, `draggableTrack`. ·
+`ColorPicker`: `allowClear`+`onClear`, `readOnly`, `format`/`defaultFormat`/`onFormatChange`. ·
+`DatePicker`: `mode`+`onPanelChange`, `onOk`, `maxTagCount` for `multiple`. ·
+`DateRangePicker`: `separator` (token), `onCalendarChange`. ·
+`TimePicker`: `cellRender`, `onSelect`. ·
+`Calendar`: `mode`/`onPanelChange` (year board). ·
+`Upload`: `iconRender`, `isImageUrl`, `capture`. ·
+`Transfer`: `getRowId` (not `rowKey`), `footer`, `operations`, `selectAllLabels`, `onSearchChange`, `onScroll`. ·
+`SearchInput`: `enterButton`, `loading`, `size`. ·
+`CheckboxGroup`/`RadioGroup`/`Segmented`: bare-string options (one shared widening). ·
+`RadioGroup`: `block`, `size`. ·
+`Rating`: `onHoverChange`. ·
+`PasswordStrength`: configurable rules/thresholds.
+
+---
+
+## 4. GATE-0 — proposed new components
+
+**None.** Every gap above closes by widening a prop, fixing a parse, or adding an ARIA attribute on a
+component that already exists. Three candidates were considered and rejected before reaching a C1–C7
+ledger:
+
+| Candidate | Why it is not a new component |
+| --- | --- |
+| `ColorSwatchPicker` (for `presets`) | Fails **C3** — it is a `presets` prop on the existing `ColorPicker`, or a row of `Toggle`s in the app. Adding a second colour control would be the duplication ground rule #3 forbids. |
+| `CascaderPanel` (for antd `Cascader.Panel`) | Fails **C3/C4** — it is `Cascader` rendered without its trigger, i.e. one prop (or a `<Cascader.Panel>` sub-part on the same component), not a second component with a second API. |
+| `SearchButton` / `Input.Search` twin (for `enterButton`) | Fails **C1/C3** — `SearchInput` exists; `enterButton` is a prop on it. |
+
+The one place where a *new* thing is arguably justified is the **virtualized list engine** behind
+`Select virtual` / `Cascader virtual`. That is not a data-entry component: it is the same engine
+`list-masonry.md` needs for `List`. It should be specced once, there, and consumed here — not
+invented twice.
+
+---
+
+## 5. Cross-cutting observations (no ledger row)
+
+- **Deliberate, documented refusals already recorded in source** — keep them and make sure each has a
+  catalog `usage` line so nobody re-adds them: `variant="underlined"`
+  (`interaction.prop.ts:126-130`), `maxTagCount: "responsive"` (`shared.prop.ts:109-113`),
+  `count.exceedFormatter` (`data-entry.prop.ts:88-91` — it truncates a live IME conversion),
+  `TimePicker needConfirm` defaulting `false` against antd (`:864-871`),
+  `Calendar fullCellRender` (`:571-583`), `Select tagRender` in multiple mode (`:1096-1104`),
+  `Cascader showCheckedStrategy` excluding `SHOW_ALL` (`:1302`). This library's refusals are better
+  documented than most libraries' features.
+- **`BranchScopePicker`** (`:1486-1517`) is a domain noun — 支店 scope — living in `src/components/`.
+  It fails **C1** of the Framework-Component Test (`COMPOSITION-VS-COMPONENT.md` §2): it is
+  `RadioGroup` + `SearchInput` + `CheckboxGroup` over consumer-supplied rows. Out of scope for an
+  Ant-parity audit; raised here because the gate says the call should never be a matter of taste.
+- **Prop-type registration.** `Rating`, `TagInput`, `Toggle`, `ToggleGroup`, `PasswordInput`,
+  `PasswordStrength`, `Command`, `CommandPalette` and `UploadCropDialog` declare their prop types
+  inside `src/components/**` rather than `src/props/components/data-entry.prop.ts`
+  (`grep -rn "RatingProp\|TagInputProp\|ToggleProp\|CommandPaletteProp\|PasswordInputProp" src/props/`
+  → no hits). That is a `STANDARDS-vocabulary-tokens.md` rules 1–2 question, not an Ant-parity one,
+  but it is why those components were the hardest to audit.
