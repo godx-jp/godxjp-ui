@@ -64,33 +64,28 @@ const ROUTES = routeArgs.length
       "/isolate/data-display-card-index?theme=dark",
       "/isolate/data-display-data-table-index",
       "/isolate/data-display-data-table-index?theme=dark",
+      // THE TWO ROUTES THE NOTE BELOW USED TO HOLD OUT. The palette decision they were waiting on
+      // is made: a progress fill and the legend swatch that names it are MARKS (nothing is written
+      // on them, and where the colour stops IS the datum), so they moved to `--mark-*` together.
+      // Numbers in `docs/TOKENS.md`. Adding them back is only half of it — see the THIN FILL pass
+      // in `collect()`, without which this route reported "AA clean" while the bar sat at 1.60:1.
+      "/isolate/data-display-legend",
+      "/isolate/data-display-legend?theme=dark",
+      "/isolate/data-display-progress",
+      "/isolate/data-display-progress?theme=dark",
     ];
 
 /*
- * NOT IN THE SWEEP YET, AND THE REASON IS A MEASUREMENT, NOT AN OVERSIGHT.
+ * NOTHING IS HELD OUT OF THIS SWEEP ANY MORE.
  *
- * `/isolate/data-display-legend` was added to the list above during the work that introduced the
- * rail pass, and it went straight red — on a defect that is REAL, PRE-EXISTING and OUT OF SCOPE
- * for the change that found it. Recorded here rather than deleted, so it is not rediscovered from
- * scratch a third time:
+ * This slot used to carry `/isolate/data-display-legend` and `/isolate/data-display-progress` with
+ * their measurements and a reason: both painted the FILL tier as a standalone graphic (legend
+ * 1.74 warning / 2.18 success light, 2.95 destructive dark; segment 1.60 / 2.00 light, 2.42 dark
+ * against its own track), and the two could not move apart because a swatch is a SAMPLE of the bar
+ * beside it. They moved together, to `--mark-*`. Both routes are in the list above.
  *
- *   light  .ui-legend-swatch tone=warning      1.74:1  (need 3)
- *   light  .ui-legend-swatch tone=success      2.18:1
- *   dark   .ui-legend-swatch tone=destructive  2.95:1
- *
- * Same root cause as the rails this pass was written for — the FILL tier (`--success`/`--warning`)
- * used as a standalone graphical object — but the fix is NOT the same. A rail is decoration on a
- * surface, so moving it to `--mark-*` costs nothing. A legend swatch is a SAMPLE of the colour the
- * bar beside it paints, so re-toning the swatch alone would make the key stop matching the thing
- * it is a key TO. And the bar has the same problem measured against its own track:
- *
- *   light  .ui-progress-segment tone=warning     1.60:1
- *   light  .ui-progress-segment tone=success     2.00:1
- *   dark   .ui-progress-segment tone=destructive 2.42:1
- *
- * So legend + bar have to move together, and whether a progress bar keeps its wa-iro hue at the
- * cost of 1.4.11, or clears the floor at the cost of the hue, is a palette decision — not
- * something to settle inside a gate. Put the two routes back the moment that is decided.
+ * If a surface ever has to come out again, it belongs HERE with its number and its reason — not
+ * deleted, and not silently exempted inside the collector.
  */
 
 /**
@@ -185,6 +180,24 @@ function collect() {
     }
     return [255, 255, 255];
   };
+  /*
+   * A LOADING PLACEHOLDER IS NOT A 1.4.11 GRAPHIC, and it must not be one, in any of the three
+   * non-text passes below.
+   *
+   * SC 1.4.11 covers graphical objects "required to understand the content", and exempts pure
+   * decoration. A skeleton block is the shape of content that has NOT ARRIVED — it says nothing
+   * about the content, and a placeholder pushed to 3:1 against its own surface would shout louder
+   * than the real data it stands in for. Measured on `/isolate/data-display-data-table-index`:
+   * 1.09:1 light, 1.33:1 dark, by design.
+   *
+   * The test is an ARIA fact, not a class name: every placeholder this library draws sits inside
+   * (or is) an element the author marked `aria-busy="true"` — `Skeleton` sets it on itself,
+   * `SkeletonRows`/`SkeletonTable`/`SkeletonDetail`/`SkeletonStat` and
+   * `ServiceLauncherCardSkeleton` on their root, `DataTable` on the table while `loading`. A
+   * consumer that draws its own placeholder without saying it is busy owes that attribute
+   * anyway — screen-reader users get nothing from a silent one.
+   */
+  const isPlaceholder = (el) => el.closest('[aria-busy="true"]') !== null;
   const out = [];
   for (const el of document.querySelectorAll("body *")) {
     if (el.closest("[data-logotype]")) continue;
@@ -227,6 +240,7 @@ function collect() {
    */
   for (const el of document.querySelectorAll("body *")) {
     if (el.closest("[data-logotype]")) continue;
+    if (isPlaceholder(el)) continue;
     if (el.textContent && el.textContent.trim()) continue;
     if (el.children.length) continue;
     const s = getComputedStyle(el);
@@ -279,6 +293,7 @@ function collect() {
   const SIDES = ["Top", "Right", "Bottom", "Left"];
   for (const el of document.querySelectorAll("body *")) {
     if (el.closest("[data-logotype]")) continue;
+    if (isPlaceholder(el)) continue;
     const s = getComputedStyle(el);
     if (s.visibility === "hidden" || s.display === "none" || parseFloat(s.opacity) < 0.4) continue;
     const r = el.getBoundingClientRect();
@@ -303,6 +318,54 @@ function collect() {
       size: 24,
       weight: 700,
       text: `[rail ${Math.round(widths[index])}px ${SIDES[index].toLowerCase()}]`,
+      tag: el.tagName.toLowerCase(),
+      cls: (el.className && el.className.toString().split(/\s+/)[0]) || "",
+    });
+  }
+
+  /*
+   * THIN FILL pass — SC 1.4.11 again, and the third shape of the same blind spot.
+   *
+   * The graphic pass wants a box no bigger than 24px on BOTH axes; the rail pass wants a border on
+   * exactly one side. A PROGRESS FILL is neither: it is 8px (meter) or 22px (breakdown slice) tall
+   * by however wide its share of the total makes it, painted as a background, with no border and
+   * no text. So `/isolate/data-display-progress` could be added to the list above and the sweep
+   * would still print "AA clean" — measured: it did exactly that, on a bar sitting at 1.60:1.
+   *
+   * The rule generalises the two passes above instead of special-casing a class name: a MARK is a
+   * THIN shape that carries meaning with nothing written on it. Thin means small on at least one
+   * axis; the dot the graphic pass catches is thin on both, the rail is thin on one. So: childless,
+   * textless, an opaque fill of its own, and a short axis in [3px, 24px].
+   *
+   * The 3px floor is the same one the rail pass uses, and it is what keeps dividers out — WCAG
+   * 1.4.11 does not reach a `Separator`, and this system's dense grid depends on hairlines staying
+   * quiet (see `--border` vs `--input` in docs/TOKENS.md). Anything ≤24px on both axes is left to
+   * the graphic pass so a dot is not reported twice.
+   */
+  for (const el of document.querySelectorAll("body *")) {
+    if (el.closest("[data-logotype]")) continue;
+    if (isPlaceholder(el)) continue;
+    if (el.textContent && el.textContent.trim()) continue;
+    if (el.children.length) continue;
+    const s = getComputedStyle(el);
+    if (s.visibility === "hidden" || s.display === "none" || parseFloat(s.opacity) < 0.4) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) continue;
+    const short = Math.min(r.width, r.height);
+    const long = Math.max(r.width, r.height);
+    if (short < 3 || short > 24) continue;
+    if (long <= 24) continue; // the graphic pass owns this one
+
+    const fill = parse(s.backgroundColor);
+    if (!fill || fill.a <= 0.5) continue;
+
+    out.push({
+      fg: fill.rgb,
+      bg: el.parentElement ? effBg(el.parentElement) : [255, 255, 255],
+      nonText: true,
+      size: 24,
+      weight: 700,
+      text: `[thin fill ${Math.round(r.width)}\u00d7${Math.round(r.height)}]`,
       tag: el.tagName.toLowerCase(),
       cls: (el.className && el.className.toString().split(/\s+/)[0]) || "",
     });
