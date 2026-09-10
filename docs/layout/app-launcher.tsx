@@ -145,6 +145,50 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>バー以外の chrome — icon とパネルの向き</CardTitle>
+            <CardDescription>
+              `appearance=&quot;icon&quot;` は正方形の ghost Button。バーではない chrome（nav rail、
+              カードのヘッダ、ツールバー）のための箱で、glyph は同じです。 パネルは既定で chrome
+              から外へ開きます（bar は下＋end、それ以外は inline-end＋start）。 位置を変えられる
+              chrome だけが向きを知っているので、`side` / `align` で明示できます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" gap="md">
+              <AppLauncher apps={apps} groups={groups} labels={labels} appearance="icon" />
+              <AppLauncher
+                apps={apps}
+                groups={groups}
+                labels={labels}
+                appearance="icon"
+                side="bottom"
+                align="start"
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Launchpad — 画面いっぱい</CardTitle>
+            <CardDescription>
+              `responsive=&quot;fullscreen&quot;` は plaform の start bar のための形。背後のページを
+              ぼかし、その地の上にタイルが並びます（macOS Launchpad / Windows Start）。 幅に関係なく
+              1つの surface に固定。列数だけが surface に合わせて 3 · 4 · 5 · 6 と上がります。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AppLauncher
+              apps={apps}
+              groups={groups}
+              labels={labels}
+              appearance="icon"
+              responsive="fullscreen"
+            />
+          </CardContent>
+        </Card>
       </ResponsiveGrid>
     </PageContainer>
   );

@@ -17,7 +17,16 @@ describe("DXS hi-fi visual contract", () => {
       /grid-template-rows:\s*var\(--app-shell-bar-height\) minmax\(0, 1fr\) auto/,
     );
     expect(shell).toMatch(/\.app-topbar\s*\{[^}]*background:\s*hsl\(var\(--card\)\)/s);
-    expect(shell).not.toMatch(/backdrop-filter:\s*blur/);
+    // FLAT means the BAR is flat. This used to scan the whole stylesheet for `backdrop-filter`,
+    // which held only while nothing else in the file had one; the launcher's launchpad scrim now
+    // does, and it is not chrome — it is the surface the chrome opens on top of. Scoped to the
+    // rule the claim was always about, so the guarantee survives and the proxy does not.
+    const topbarRule = shell.slice(
+      shell.indexOf(".app-topbar {"),
+      shell.indexOf("}", shell.indexOf(".app-topbar {")) + 1,
+    );
+    expect(topbarRule).not.toBe("");
+    expect(topbarRule).not.toMatch(/backdrop-filter/);
   });
 
   it("keeps the warm main surface and 1280px left-aligned page boundary", () => {

@@ -1098,6 +1098,11 @@ export type AppLauncherProp = {
    * Grid column count. Omit it and the panel keeps the stylesheet's own `--app-launcher-columns`
    * (3, the Google-launcher shape, declared on `.ui-app-launcher-panel`): the default is where a
    * theme can reach it, and this prop is the per-instance override written inline on top.
+   *
+   * `responsive="fullscreen"` steps that DEFAULT up with the surface — 3 · 4 · 5 · 6 on the house
+   * container ladder — because a fixed three columns on a full viewport is three columns of tiles
+   * and a screen of nothing. Passing `columns` still wins everywhere: an inline custom property
+   * beats every stylesheet rule, so a stated count is a stated count on both surfaces.
    */
   columns?: number;
   /**
@@ -1118,11 +1123,21 @@ export type AppLauncherProp = {
    * responsive="auto"`, resolved through the shared `useSheetResponsiveMode()` hook, so a service
    * moves the drawer line once for every overlay instead of per component.
    *
-   * No `"dialog"` here, unlike `OrgSwitcher`: a launcher grid is a jump table, and a modal that
-   * takes over the screen to offer nine links is heavier than the errand. Switching ORGANIZATION
-   * re-scopes everything on screen and earns the interruption; opening an app does not.
+   * `"fullscreen"` is the LAUNCHPAD: one full-viewport surface, the page behind it blurred, the
+   * grid floating on that ground at tile size — the macOS Launchpad / Windows Start shape. It is
+   * pinned at every width, because a start surface that becomes a popover on a wide screen is two
+   * different products.
+   *
+   * WHEN IT IS RIGHT, AND WHEN IT IS NOT. This prop used to say a modal was always wrong here:
+   * "a launcher grid is a jump table, and a modal that takes over the screen to offer nine links
+   * is heavier than the errand." That reasoning is sound for a launcher in ONE application's
+   * topbar, where the grid is a shortcut away from the work on screen and the work should stay
+   * visible. It does not hold for a PLATFORM start bar — a strip that is present in every service,
+   * whose launcher is the primary way to move between products rather than a shortcut. There the
+   * grid IS the errand, the page behind it is the thing being left, and the interruption is the
+   * point. Keep `"auto"` for a topbar launcher; reach for `"fullscreen"` for a dock.
    */
-  responsive?: "auto" | "popover" | "sheet";
+  responsive?: "auto" | "popover" | "sheet" | "fullscreen";
   /**
    * The BOX the trigger takes — the same split `AppSettingToggle` draws, and for the same reason.
    * `bar` (default) is a `TopbarItem`: a cell as tall as the bar, whose hover is the bar's own

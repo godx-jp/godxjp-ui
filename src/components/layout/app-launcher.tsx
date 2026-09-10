@@ -9,6 +9,13 @@ import type {
 } from "../../props/components/layout.prop";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../feedback/dialog";
+import {
   Sheet,
   SheetBody,
   SheetContent,
@@ -305,6 +312,7 @@ export function AppLauncher({
   // themeable knob (--sheet-responsive-breakpoint-width) moves the drawer line for every overlay.
   const compactViewport = useSheetResponsiveMode("auto") === "bottom";
   const sheet = responsive === "sheet" || (responsive === "auto" && compactViewport);
+  const launchpad = responsive === "fullscreen";
   const close = React.useCallback(() => {
     setOpen(false);
   }, [setOpen]);
@@ -360,6 +368,34 @@ export function AppLauncher({
    * instead, and the pill-in-a-bar this component exists to avoid would come back through the box
    * around it. It also means `className`, `id` and `data-*` all land on one addressable element.
    */
+  /*
+   * THE LAUNCHPAD. A `Dialog`, not a third overlay hand-built here: the focus trap, the scroll
+   * lock, Escape, the close button and `UNSTABLE_portalContainer` (which is what lets any of this
+   * work inside an embedded shadow root) are all already its contract. What this surface changes
+   * is geometry and ground — full viewport, blurred page, tiles at tile size — and those are CSS,
+   * so they live in the stylesheet where a theme can reach them.
+   *
+   * The title RENDERS rather than hiding in an `aria-label`: `DialogContent` names itself from the
+   * `DialogTitle` element, and a dialog whose name lives only in an attribute is a dialog whose
+   * name silently disappears the first time someone reorders the children.
+   */
+  if (launchpad) {
+    return (
+      <Dialog open={resolvedOpen} onOpenChange={setOpen}>
+        <DialogTrigger asChild>{trigger}</DialogTrigger>
+        <DialogContent
+          className="ui-app-launcher-launchpad"
+          overlayClassName="ui-app-launcher-launchpad-overlay"
+        >
+          <DialogHeader>
+            <DialogTitle>{labels.title}</DialogTitle>
+          </DialogHeader>
+          {panel}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   if (sheet) {
     return (
       <Sheet open={resolvedOpen} onOpenChange={setOpen}>

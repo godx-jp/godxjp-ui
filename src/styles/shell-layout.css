@@ -1607,6 +1607,196 @@
     border-start-end-radius: var(--radius-lg);
   }
 
+  /* ── LAUNCHPAD ────────────────────────────────────────────────────────────────────────────
+   * `AppLauncher responsive="fullscreen"`: the whole viewport, the page behind it blurred, the
+   * grid floating on that ground.
+   *
+   * BOTH HOOKS IN EVERY SELECTOR, the same idiom `.ui-org-switcher-dialog` above uses and for the
+   * same reason: `[data-slot="dialog-content"]` and `.ui-dialog-overlay` declare their defaults at
+   * (0,1,0) in dialog-layout.css, which is imported AFTER this file — a bare `.ui-app-launcher-
+   * launchpad` ties on specificity and loses on order, silently. Pairing them makes it (0,2,0) and
+   * states the relationship: this IS a dialog, re-tuned.
+   *
+   * THE BLUR IS ON THE SCRIM, NOT ON THE PANEL. `backdrop-filter` filters what is painted BEHIND
+   * the element, so the blur has to sit on the layer that covers the page — and only that layer,
+   * because an element with a backdrop-filter becomes the containing block for its fixed
+   * descendants. Putting it on the panel would blur the scrim (already flat) and pin the panel to
+   * itself. */
+  [data-slot="dialog-overlay"].ui-app-launcher-launchpad-overlay {
+    /* THE QUERY CONTAINER IS THE SCRIM, NOT THE PANEL, because the panel is sized BY the answer:
+     * ask a content-sized box how wide it is and the column count and the width define each other.
+     * The scrim is the viewport, which is the thing the ladder is actually about. */
+    container: app-launcher-launchpad / inline-size;
+
+    /* A SHARE of the one shared scrim, resolved here so a scoped theme override of
+     * --overlay-background still reaches the portaled overlay (docs/TOKENS.md). Lighter than a
+     * dialog's 60%: the blur is doing the separating, and a heavy scrim on top of it flattens the
+     * page into grey and leaves the glass nothing to refract. */
+    background-color: var(
+      --app-launcher-launchpad-backdrop-background,
+      color-mix(
+        in srgb,
+        var(--overlay-background) var(--app-launcher-launchpad-backdrop-alpha),
+        transparent
+      )
+    );
+    backdrop-filter: blur(var(--app-launcher-launchpad-backdrop-blur-size));
+  }
+
+  /*
+   * NO SURFACE OF ITS OWN. The blurred page IS the surface — a card here would be a second ground
+   * floating on the first, which is the one thing the effect cannot survive.
+   *
+   * AND IT IS SIZED TO ITS CONTENT, not to the viewport. A full-bleed content box would leave the
+   * scrim nothing to catch: `isDismissable` closes on a press that lands OUTSIDE the dialog, and
+   * when the dialog is the whole screen there is no outside left — measured, a click on the empty
+   * blurred area did nothing, on the one surface where clicking the background to leave is the
+   * gesture people arrive with. Content-sized, everything around the grid is scrim again.
+   */
+  [data-slot="dialog-content"].ui-app-launcher-launchpad {
+    display: grid;
+    width: auto;
+    max-width: min(
+      var(--app-launcher-launchpad-panel-max-width),
+      calc(100vw - 2 * var(--app-launcher-launchpad-space-inset))
+    );
+    max-height: calc(100dvh - 2 * var(--app-launcher-launchpad-space-inset));
+    justify-items: center;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    padding: var(--app-launcher-launchpad-space-inset);
+    overflow: auto;
+    box-shadow: none;
+  }
+
+  /* The panel: a column, centred, capped so the grid does not stretch to 4K. */
+  .ui-app-launcher-launchpad .ui-app-launcher-panel {
+    --app-launcher-columns: 3;
+
+    max-height: none;
+    gap: var(--app-launcher-launchpad-panel-gap);
+    overflow: visible;
+  }
+
+  /* The count steps with the SURFACE, on the house container ladder (the same 40/48/64rem steps
+   * `.ui-responsive-grid` uses), because a full viewport at three columns is three columns of
+   * tiles and a screen of nothing. `columns` still wins: it is written inline on the panel. */
+  @container app-launcher-launchpad (min-width: 40rem) {
+    .ui-app-launcher-launchpad .ui-app-launcher-panel {
+      --app-launcher-columns: 4;
+    }
+  }
+
+  @container app-launcher-launchpad (min-width: 48rem) {
+    .ui-app-launcher-launchpad .ui-app-launcher-panel {
+      --app-launcher-columns: 5;
+    }
+  }
+
+  @container app-launcher-launchpad (min-width: 64rem) {
+    .ui-app-launcher-launchpad .ui-app-launcher-panel {
+      --app-launcher-columns: 6;
+    }
+  }
+
+  /*
+   * CENTRED, AND THE COUNT IS A CAP RATHER THAN A FILL.
+   *
+   * The popover's `repeat(N, minmax(0, 1fr))` divides a known width among N tracks — right there,
+   * where the panel's width is the design and the grid always fills it. On a full viewport it puts
+   * two apps in the first two of six equal tracks: measured at 1440px, both tiles sat between x=260
+   * and x=500 with 940px of blurred page to their right, while the title centred over the middle of
+   * the panel. Nothing was wrong with either rule; they simply disagreed about where the middle is.
+   *
+   * `auto-fit` over a fixed track collapses the tracks nothing occupies, so a row is exactly as wide
+   * as the apps in it and `justify-content: center` can then centre it. The column count keeps its
+   * meaning by capping the ROW instead of slicing it — the cap below is that many tiles plus the
+   * gaps between them, so `columns={4}` still means "never more than four across".
+   */
+  .ui-app-launcher-launchpad .ui-app-launcher-grid {
+    grid-template-columns: repeat(
+      auto-fit,
+      var(--app-launcher-launchpad-tile-inline-size)
+    );
+    max-width: calc(
+      var(--app-launcher-columns) *
+        (
+          var(--app-launcher-launchpad-tile-inline-size) +
+            var(--app-launcher-launchpad-grid-gap)
+        ) - var(--app-launcher-launchpad-grid-gap)
+    );
+    justify-content: center;
+    justify-self: center;
+    gap: var(--app-launcher-launchpad-grid-gap);
+  }
+
+  /* TOP-ALIGNED, not centred. The tile fills its row, and a two-line app name is normal here — JA
+   * and VI product names routinely wrap at tile width. Centring the tile's contents in a row whose
+   * height the LONGEST name sets lifts every short-named tile's medallion above its neighbours':
+   * measured with two apps, one wrapping, the marks sat 9px apart on a row that is supposed to read
+   * as one line of icons. */
+  .ui-app-launcher-launchpad .ui-app-launcher-tile {
+    justify-content: flex-start;
+    gap: var(--app-launcher-launchpad-tile-gap);
+    padding: var(--app-launcher-launchpad-tile-padding);
+    border-radius: var(--app-launcher-launchpad-tile-radius);
+  }
+
+  /* The tile's own hover is a WASH of the foreground, not the `--accent` fill the popover uses: an
+   * opaque accent block on a blurred page reads as a hole cut in the glass. */
+  .ui-app-launcher-launchpad .ui-app-launcher-tile:hover,
+  .ui-app-launcher-launchpad .ui-app-launcher-tile[aria-current="page"] {
+    background: var(--app-launcher-launchpad-tile-hover-background);
+    color: hsl(var(--app-launcher-tile-color));
+  }
+
+  /* THE GLASS. A translucent wash of the card colour rather than a colour of its own, so one rule
+   * holds on a light page and a dark one; the hairline is the highlight that separates it from
+   * whatever it happens to be floating over. */
+  .ui-app-launcher-launchpad .ui-app-launcher-mark {
+    width: var(--app-launcher-launchpad-mark-size);
+    height: var(--app-launcher-launchpad-mark-size);
+    border: 1px solid var(--app-launcher-launchpad-mark-border-color);
+    border-radius: var(--app-launcher-launchpad-mark-radius);
+    background: var(--app-launcher-launchpad-mark-background);
+    box-shadow: var(--app-launcher-launchpad-mark-shadow);
+    color: hsl(var(--foreground));
+    font-size: var(--app-launcher-launchpad-mark-font-size);
+    backdrop-filter: blur(var(--app-launcher-launchpad-backdrop-blur-size));
+  }
+
+  /* A labelled band centres with the grid it labels, instead of starting at the panel's edge while
+   * its tiles sit in the middle. */
+  .ui-app-launcher-launchpad .ui-app-launcher-group {
+    justify-items: center;
+  }
+
+  .ui-app-launcher-launchpad .ui-app-launcher-group-label {
+    text-align: center;
+  }
+
+  .ui-app-launcher-launchpad .ui-app-launcher-name {
+    font-size: var(--app-launcher-launchpad-name-font-size);
+  }
+
+  /* The dialog's name is present and quiet: it says what the surface is without competing with the
+   * grid it labels. */
+  .ui-app-launcher-launchpad [data-slot="dialog-header"] {
+    align-items: center;
+  }
+
+  /* The name takes the FULL foreground, not the muted one every other panel title uses. Muted is a
+   * ratio against a surface this component owns; here the surface is whatever page the viewer left,
+   * blurred — an unknown ground, so the label uses the strongest ink the theme has. */
+  .ui-app-launcher-launchpad [data-slot="dialog-title"] {
+    color: hsl(var(--foreground));
+    font-size: var(--app-launcher-launchpad-title-font-size);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--app-launcher-launchpad-title-letter-spacing);
+    text-transform: uppercase;
+  }
+
   .ui-app-launcher-panel {
     /* THE DEFAULT COLUMN COUNT LIVES HERE, not in the component's props and not in
      * tokens/components/shell.css. Not in the props, because a default nobody can restyle is not a
