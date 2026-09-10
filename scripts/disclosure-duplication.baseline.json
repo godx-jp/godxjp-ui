@@ -1,0 +1,17 @@
+{
+  "total": 61,
+  "components": 11,
+  "files": {
+    "src/components/data-entry/cascader.tsx": 6,
+    "src/components/data-entry/chat-suggestion.tsx": 7,
+    "src/components/data-entry/date-picker.tsx": 5,
+    "src/components/data-entry/date-range-picker.tsx": 5,
+    "src/components/data-entry/month-picker.tsx": 5,
+    "src/components/data-entry/month-range-picker.tsx": 5,
+    "src/components/data-entry/search-select.tsx": 7,
+    "src/components/data-entry/time-picker.tsx": 5,
+    "src/components/data-entry/tree-select.tsx": 7,
+    "src/components/layout/app-launcher.tsx": 4,
+    "src/components/layout/org-switcher.tsx": 5
+  }
+}
