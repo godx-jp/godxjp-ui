@@ -1386,14 +1386,33 @@
     font-size: var(--font-size-base);
     pointer-events: none;
   }
-  .ui-number-input-affix:first-of-type {
+  /*
+   * Which EDGE an affix sits on is read from its own slot, never from its position among its
+   * siblings. `:first-of-type` / `:last-of-type` match by ELEMENT TYPE, and they were wrong in
+   * both directions here:
+   *
+   *   suffix alone   — the suffix is the first (and only) affix span, so it matched
+   *                    `:first-of-type`, took the LEADING inset, and rendered at the start of the
+   *                    field. Measured at 1198px: leftOffset 12px, i.e. the prefix position, so a
+   *                    field meant to read `7日` read `日 … 7`.
+   *   prefix+suffix  — `:last-of-type` matched NOTHING at all, because the last `<span>` inside
+   *                    the control is the steppers, not an affix. The suffix fell back to
+   *                    inset-inline-start: 0 and sat hard against the leading edge.
+   *
+   * The `:has()` companion had the same fault: a suffix-only field still paid the leading padding
+   * (32px measured, against 12px with no affix), so its digits were pushed off the start edge for
+   * a prefix that was not there.
+   *
+   * `data-slot` is what the component actually emits, and it cannot be ambiguous.
+   */
+  [data-slot="number-input-prefix"] {
     inset-inline-start: var(--control-padding-x);
   }
   /* With a leading affix, pad the field's inline-start so digits don't sit under it. */
-  .ui-number-input:has(.ui-number-input-affix:first-of-type) .ui-number-input-field {
+  .ui-number-input:has([data-slot="number-input-prefix"]) .ui-number-input-field {
     padding-inline-start: calc(var(--control-padding-x) + 1.25rem);
   }
-  .ui-number-input-affix:last-of-type {
+  [data-slot="number-input-suffix"] {
     inset-inline-end: calc(var(--control-height) + var(--space-2));
   }
   .ui-number-input-steppers {

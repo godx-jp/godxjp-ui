@@ -1,5 +1,5 @@
 export { Badge, StatusBadge } from "./badge";
-export type { BadgeProps } from "./badge";
+export type { BadgeProps, BadgeTone } from "./badge";
 export { Legend } from "./legend";
 export type { LegendItemProp, LegendProp, LegendProps } from "./legend";
 export { ListRow } from "./list-row";
