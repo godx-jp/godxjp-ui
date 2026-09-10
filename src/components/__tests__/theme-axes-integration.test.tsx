@@ -161,7 +161,8 @@ describe("theme axes integration (render + class contracts)", () => {
 
     it("Switch uses centralized semantic class", () => {
       renderWithTheme(<Switch defaultChecked aria-label="notify" />);
-      expect(screen.getByRole("switch", { name: "notify" })).toHaveClass("ui-switch");
+      const track = screen.getByRole("switch", { name: "notify" }).closest('[data-slot="switch"]');
+      expect(track).toHaveClass("ui-switch");
     });
   });
 

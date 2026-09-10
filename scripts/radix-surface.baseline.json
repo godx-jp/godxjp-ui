@@ -1,0 +1,66 @@
+{
+  "files": 14,
+  "packages": 14,
+  "declared": [
+    "@radix-ui/react-accordion",
+    "@radix-ui/react-avatar",
+    "@radix-ui/react-collapsible",
+    "@radix-ui/react-context-menu",
+    "@radix-ui/react-label",
+    "@radix-ui/react-menubar",
+    "@radix-ui/react-navigation-menu",
+    "@radix-ui/react-scroll-area",
+    "@radix-ui/react-select",
+    "@radix-ui/react-separator",
+    "@radix-ui/react-slider",
+    "@radix-ui/react-slot",
+    "@radix-ui/react-toggle",
+    "@radix-ui/react-toggle-group"
+  ],
+  "sources": {
+    "src/components/data-display/scroll-area.tsx": [
+      "@radix-ui/react-scroll-area"
+    ],
+    "src/components/data-entry/__tests__/label-rac.test.tsx": [
+      "@radix-ui/react-label"
+    ],
+    "src/components/data-entry/select.tsx": [
+      "@radix-ui/react-select"
+    ],
+    "src/components/data-entry/slider.tsx": [
+      "@radix-ui/react-slider"
+    ],
+    "src/components/navigation/context-menu.tsx": [
+      "@radix-ui/react-context-menu"
+    ],
+    "src/components/navigation/menubar.tsx": [
+      "@radix-ui/react-menubar"
+    ],
+    "src/components/navigation/navigation-menu.tsx": [
+      "@radix-ui/react-navigation-menu"
+    ],
+    "src/components/ui/__tests__/avatar-aspect-ratio.test.tsx": [
+      "@radix-ui/react-avatar"
+    ],
+    "src/components/ui/__tests__/disclosure-rac.test.tsx": [
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-collapsible"
+    ],
+    "src/components/ui/__tests__/separator-rac.test.tsx": [
+      "@radix-ui/react-separator"
+    ],
+    "src/components/ui/__tests__/toggle-rac.test.tsx": [
+      "@radix-ui/react-toggle",
+      "@radix-ui/react-toggle-group"
+    ],
+    "src/lib/__tests__/slot.test.tsx": [
+      "@radix-ui/react-slot"
+    ],
+    "src/lib/__tests__/use-client-directive.test.ts": [
+      "@radix-ui/react-slot"
+    ],
+    "src/props/components/data-entry.prop.ts": [
+      "@radix-ui/react-slider"
+    ]
+  }
+}

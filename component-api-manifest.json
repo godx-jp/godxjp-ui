@@ -8999,6 +8999,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/data-entry/label.tsx"]
+        },
+        {
+          "name": "slot",
+          "origin": "owned",
+          "required": false,
+          "type": "string | null | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/label.tsx"]
         }
       ]
     },
@@ -9957,7 +9965,28 @@
     },
     "MenubarTrigger": {
       "group": "navigation",
-      "props": []
+      "props": [
+        {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "type",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
+          "values": ["button", "submit", "reset"],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        }
+      ]
     },
     "MobileShell": {
       "group": "layout",
@@ -12201,20 +12230,20 @@
       "group": "data-entry",
       "props": [
         {
-          "name": "checked",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
-        },
-        {
           "name": "defaultValue",
           "origin": "inherited-behavioral",
           "required": false,
           "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
@@ -12231,13 +12260,13 @@
           ]
         },
         {
-          "name": "required",
+          "name": "name",
           "origin": "inherited-behavioral",
           "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12252,13 +12281,11 @@
         },
         {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": true,
           "type": "string",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
@@ -12368,109 +12395,65 @@
       "props": [
         {
           "name": "defaultValue",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "(\"ltr\" | \"rtl\") | undefined",
-          "values": ["ltr", "rtl"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/radio.tsx"]
         },
         {
           "name": "disabled",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
-        },
-        {
-          "name": "loop",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/radio.tsx"]
         },
         {
           "name": "name",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/radio.tsx"]
         },
         {
           "name": "onValueChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((value: string) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/radio.tsx"]
         },
         {
           "name": "orientation",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/radio.tsx"]
         },
         {
           "name": "required",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/radio.tsx"]
         },
         {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "string | null | undefined",
+          "type": "string | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/components/data-entry/radio.tsx"]
         }
       ]
     },
     "RadioItem": {
       "group": "data-entry",
       "props": [
-        {
-          "name": "checked",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
-        },
         {
           "name": "defaultValue",
           "origin": "inherited-behavioral",
@@ -12482,6 +12465,16 @@
           ]
         },
         {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
           "name": "disabled",
           "origin": "inherited-behavioral",
           "required": false,
@@ -12492,13 +12485,13 @@
           ]
         },
         {
-          "name": "required",
+          "name": "name",
           "origin": "inherited-behavioral",
           "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12513,13 +12506,11 @@
         },
         {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": true,
           "type": "string",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-radio-group@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+_cc8e32834ad9f2701fcff7f2ba60b103/node_modules/@radix-ui/react-radio-group/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
@@ -15116,13 +15107,11 @@
       "props": [
         {
           "name": "checked",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-switch@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_db19069d08189b84c054d811090e5ae9/node_modules/@radix-ui/react-switch/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "checkedChildren",
@@ -15134,13 +15123,11 @@
         },
         {
           "name": "defaultChecked",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-switch@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_db19069d08189b84c054d811090e5ae9/node_modules/@radix-ui/react-switch/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "disabled",
@@ -15172,23 +15159,19 @@
         },
         {
           "name": "onCheckedChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((checked: boolean) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-switch@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_db19069d08189b84c054d811090e5ae9/node_modules/@radix-ui/react-switch/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "required",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-switch@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_db19069d08189b84c054d811090e5ae9/node_modules/@radix-ui/react-switch/dist/index.d.mts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "size",
@@ -15215,16 +15198,6 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
-          ]
         }
       ]
     },

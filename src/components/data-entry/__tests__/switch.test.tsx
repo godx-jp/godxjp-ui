@@ -17,14 +17,16 @@ describe("Switch", () => {
       </form>,
     );
 
+    // `role="switch"` is on the real `<input>` react-aria renders, so checkedness reads
+    // natively rather than through `aria-checked` (which Radix's `<button>` had to write itself).
     const toggle = screen.getByRole("switch", { name: "Active" });
-    expect(toggle).toHaveAttribute("aria-checked", "false");
+    expect(toggle).not.toBeChecked();
 
     const hidden = document.querySelector('input[type="hidden"][name="is_active"]');
     expect(hidden).toHaveValue("0");
 
     await user.click(toggle);
-    expect(toggle).toHaveAttribute("aria-checked", "true");
+    expect(toggle).toBeChecked();
     expect(hidden).toHaveValue("1");
   });
 

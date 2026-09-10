@@ -1,6 +1,5 @@
 import * as React from "react";
-import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { useLocale } from "react-aria-components";
+import { Radio as AriaRadio, RadioGroup as AriaRadioGroup, useLocale } from "react-aria-components";
 
 import { cn } from "../../lib/utils";
 
@@ -48,7 +47,7 @@ export type SegmentedProps = SegmentedProp;
 
 /**
  * Segmented — one-of-N from a small, closed, always-visible set. The established enterprise
- * `Segmented` control (docs/DESIGN-AUTHORITY.md) drawn on Radix's RadioGroup,
+ * `Segmented` control (docs/DESIGN-AUTHORITY.md) drawn on react-aria-components' RadioGroup,
  * which is this repo's authority for behaviour primitives.
  *
  * WHY NOT `ToggleGroup`. A ToggleGroup is a row of PRESSED buttons: `aria-pressed`, independently
@@ -72,10 +71,7 @@ export type SegmentedProps = SegmentedProp;
  * site. `orientation` still decides WHICH pair of arrows moves the focus; `direction` decides
  * which END of the row each of them means.
  */
-export const Segmented = React.forwardRef<
-  React.ComponentRef<typeof RadioGroupPrimitive.Root>,
-  SegmentedProp
->(function Segmented(
+export const Segmented = React.forwardRef<HTMLDivElement, SegmentedProp>(function Segmented(
   {
     options,
     value,
@@ -94,7 +90,7 @@ export const Segmented = React.forwardRef<
 ) {
   const { direction } = useLocale();
   return (
-    <RadioGroupPrimitive.Root
+    <AriaRadioGroup
       ref={ref}
       dir={direction}
       id={id}
@@ -102,24 +98,34 @@ export const Segmented = React.forwardRef<
       data-block={block ? "true" : undefined}
       data-size={size}
       className={cn("ui-segmented", className)}
-      // Radix reads `orientation` to decide WHICH arrow keys move the roving focus, so a vertical
-      // bar that only changed its CSS direction would still be driven by ←/→. The attribute and
-      // the layout come from the same prop for exactly that reason.
+      // The primitive reads `orientation` to decide WHICH arrow keys move the roving focus, so a
+      // vertical bar that only changed its CSS direction would still be driven by ←/→. The
+      // attribute and the layout come from the same prop for exactly that reason.
       orientation={vertical ? "vertical" : "horizontal"}
       value={value}
       defaultValue={defaultValue}
-      onValueChange={onValueChange}
-      disabled={disabled}
+      onChange={onValueChange}
+      isDisabled={disabled}
       name={name}
       {...props}
     >
       {options.map((option) => (
-        <RadioGroupPrimitive.Item
+        <AriaRadio
           key={option.value}
           value={option.value}
-          disabled={option.disabled}
+          isDisabled={option.disabled}
           data-slot="segmented-item"
           className="ui-segmented-item ui-focus-ring"
+          // react-aria spells the chosen member `data-selected`; styles/control.css paints the
+          // pill off `[data-state="checked"]`, the spelling every other control in this library
+          // uses. Translated here, from the primitive's OWN state, so the two can never drift.
+          render={(domProps, state) => (
+            <label
+              {...(domProps as React.HTMLAttributes<HTMLLabelElement> &
+                React.RefAttributes<HTMLLabelElement>)}
+              data-state={state.isSelected ? "checked" : "unchecked"}
+            />
+          )}
         >
           {option.icon == null ? null : (
             <span
@@ -133,8 +139,8 @@ export const Segmented = React.forwardRef<
           <span data-slot="segmented-item-label" className="ui-segmented-item-label">
             {option.label}
           </span>
-        </RadioGroupPrimitive.Item>
+        </AriaRadio>
       ))}
-    </RadioGroupPrimitive.Root>
+    </AriaRadioGroup>
   );
 });

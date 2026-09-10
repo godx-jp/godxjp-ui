@@ -6014,7 +6014,8 @@ export function PrioritySelect({ value, onValueChange }) {
   {
     name: "Switch",
     group: "data-entry",
-    tagline: "Radix toggle switch (bare). For a labelled row with a hidden form input use Field.",
+    tagline:
+      'Toggle switch (bare), on react-aria-components. For a labelled row use Field. `role="switch"` is the real `<input>`; the painted track is the `<label>` around it, and that is where `data-state`/`data-size` live.',
     props: [
       {
         name: "loading",
@@ -6036,6 +6037,13 @@ export function PrioritySelect({ value, onValueChange }) {
       },
       { name: "checked", type: "boolean", description: "Controlled checked state." },
       {
+        name: "defaultChecked",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Uncontrolled initial state. Switch keeps its own state from here, so an uncontrolled toggle works without Field.",
+      },
+      {
         name: "onCheckedChange",
         type: "(checked: boolean) => void",
         description: "Fires when toggled.",
@@ -6056,16 +6064,16 @@ export function PrioritySelect({ value, onValueChange }) {
     ],
     usage: [
       "DO use Switch (bare) only when you are building a custom inline toggle without a visible label — e.g., a DataTable row action column. Always pair it with a <Label htmlFor={id}> placed adjacent in the DOM; never leave it label-less for screen readers.",
-      "DO NOT pass a `name` prop to bare Switch expecting HTML form submission — Radix Switch renders no hidden input, so the value is silently dropped on submit. Use Field (which mirrors a hidden `0`/`1` input) for any field that must submit inside an HTML <form>.",
+      'DO pass `name` when the toggle must submit: Switch itself renders `<input type="hidden" name value="1|0">` beside the control, so a native <form> carries the value with no extra wiring. (The old advice here — that a bare Switch drops `name` — was never true of this component.)',
       "DO use the `size` prop ('sm' | 'md') to control thumb size. 'sm' is appropriate in dense DataTable rows or filter bars; omit it (defaults to 'md') everywhere else.",
-      "DO wire controlled state: pass both `checked` (boolean) and `onCheckedChange` together. Passing only one causes a React controlled/uncontrolled warning. For uncontrolled use, pass neither — but bare Switch has no `defaultChecked` state management built in (Field handles that internally).",
+      "DO wire controlled state: pass both `checked` and `onCheckedChange` together. For uncontrolled use pass `defaultChecked` (or neither) — Switch holds that state itself; Field is not required for it.",
       "DON'T hand-roll a <div> + <label> wrapper with bare Switch to get a labelled field — that is exactly what Field provides, including aria-describedby, aria-invalid, error/helper text, and the hidden input. Reach for Field instead.",
       "DO link the switch to its label via matching `id` on Switch and `htmlFor` on Label. Without this pairing, clicking the label text does not toggle the switch and the a11y association is broken.",
     ],
     useCases: [
       "Inline toggle in a DataTable action cell (e.g., 'Active' column) where the label is already provided by the column header and no form submission is involved.",
       "Settings panel where a React state boolean is toggled immediately via an optimistic API call — no <form> submit, so Field's hidden input is unnecessary.",
-      "Custom compound component where you compose Switch + Label yourself and need direct access to the Radix Root props (e.g., adding aria-controls or data-attributes not supported by Field).",
+      "Custom compound component where you compose Switch + Label yourself and need to put your own aria-* or data-* attributes on the control.",
       "Filter toolbar toggle (e.g., 'Show archived') rendered inline next to other filter controls, using size='sm' for density parity with adjacent inputs.",
       "Preview/demo UI where the switch controls a local display state (dark-mode preview, feature flag preview) with no server persistence.",
     ],
@@ -6250,18 +6258,25 @@ export function PrioritySelect({ value, onValueChange }) {
   {
     name: "Checkbox",
     group: "data-entry",
-    tagline: "Radix checkbox; standalone or via CheckboxGroup with an options array.",
+    tagline:
+      'Checkbox on react-aria-components; standalone or via CheckboxGroup with an options array. `role="checkbox"` is the real `<input>`; the painted box is the `<label>` around it and carries `data-state`.',
     props: [
       {
         name: "indeterminate",
         type: "boolean",
         description:
-          "antd `indeterminate` — paint the PARTIAL mark (a dash) and announce `mixed`, without changing `checked`. Radix spells the same state `checked` set to `indeterminate`; this is antd's spelling, and the box falls back to the underlying `checked` the moment the flag goes false.",
+          'antd `indeterminate` — paint the PARTIAL mark (a dash) and announce `mixed`, without changing `checked`. This component also accepts the same state as `checked="indeterminate"`; the flag is antd\'s spelling of it, and the box falls back to the underlying `checked` the moment the flag goes false.',
       },
       {
         name: "checked",
         type: "boolean | 'indeterminate'",
         description: "Controlled checked state.",
+      },
+      {
+        name: "defaultChecked",
+        type: "boolean | 'indeterminate'",
+        description:
+          "Uncontrolled initial state. It takes the tri-state too, and the box keeps the dash until the first click rather than falling back to unchecked.",
       },
       {
         name: "onCheckedChange",
@@ -6364,7 +6379,7 @@ export function PrioritySelect({ value, onValueChange }) {
       "DO use controlled mode (`value` + `onValueChange`) for any form managed by useForm or a state manager. Use `defaultValue` only for truly uncontrolled UI where you never need to read the value in code.",
       "DO NOT reach for children / manual composition unless the options list is dynamic-JSX (e.g. each item needs a custom rendered label with an icon). When you do compose children manually, wrap each Radio.Item in a Field — rendering a bare Radio.Item without Field skips the label and breaks a11y.",
       "DO NOT use RadioGroup when the user may select zero or multiple items — that is CheckboxGroup. RadioGroup enforces exactly one selection at all times (or none before first interaction when uncontrolled).",
-      "A11y: the Radix root emits `role=radiogroup`; each item gets `role=radio` and is keyboard-navigable with arrow keys. Never suppress `name` on the Root when inside a form — without it the hidden input is unnamed and won't submit.",
+      'A11y: the root emits `role=radiogroup`; each item is a real `<input type="radio">` (implicit `role=radio`) and is keyboard-navigable with arrow keys. Never suppress `name` on the Root when inside a form — without it the input is unnamed and won\'t submit. Name an item with `<Label htmlFor>` (or `Field`) BESIDE it, never by wrapping it: the control already sits inside its own `<label>`, and a second one nested outside leaves it nameless.',
     ],
     useCases: [
       "Selecting a single billing cycle (monthly / quarterly / annual) in an invoice or subscription settings form where all 2-4 options must be visible at once.",
@@ -10664,7 +10679,7 @@ export function ControlledExample() {
     name: "Radio",
     group: "data-entry",
     tagline:
-      "Radix-backed radio group with an options-array shorthand — always use Radio.Group, never a bare radio input.",
+      'Radio group on react-aria-components, with an options-array shorthand — always use Radio.Group, never a bare radio input. `role="radio"` is the real `<input>`; the painted dot is the `<label>` around it and carries `data-state`.',
     props: [
       {
         name: "optionType",
@@ -10721,7 +10736,7 @@ export function ControlledExample() {
         name: "name",
         type: "string",
         description:
-          "HTML form field name. Required for native form submission — Radix renders a hidden <input> with this name carrying the selected value.",
+          'HTML form field name. Required for native form submission — each option is a real `<input type="radio">` under this name, so the browser serialises the selected value with no extra wiring.',
       },
       {
         name: "className",
@@ -10736,9 +10751,9 @@ export function ControlledExample() {
       },
     ],
     usage: [
-      "DO use Radio.Group (not the bare Radio export) as the root — it wires up Radix context, keyboard navigation, and the hidden form input. A lone Radio.Item outside a Radio.Group has no context and will not function.",
+      "DO use Radio.Group (not the bare Radio export) as the root — it wires up the group context, keyboard navigation, and the shared input name. A lone Radio.Item outside a Radio.Group has no context and will not function.",
       "DO prefer the options array API for static/data-driven option lists: pass options={[{ label, value, description?, disabled? }]} and Radio.Group renders each as a correctly-labelled Field automatically — no manual id/label wiring needed.",
-      "DO pass name to Radio.Group when the selection must be submitted via a native HTML form. Radix injects a hidden <input name={name} value={selected}> so the value is picked up by FormData/fetch without extra wiring.",
+      'DO pass name to Radio.Group when the selection must be submitted via a native HTML form — the options ARE `<input type="radio" name={name}>`, so FormData/fetch pick the value up without extra wiring.',
       "DO use controlled mode (value + onValueChange) when the selection drives other UI (conditional fields, preview panels). Use defaultValue for fire-and-forget uncontrolled forms.",
       "DON'T hand-roll a label-plus-radio row with raw <input type='radio'> — use Radio.Group with options or compose Radio.Item inside Field for custom markup. Every option must be wrapped in Field (or equivalent) for the label htmlFor/id linkage.",
       "DON'T disable individual options inside the options array and ALSO set disabled on the group — group-level disabled wins and overrides all per-item disabled states.",
@@ -11366,7 +11381,7 @@ export function FilterSection() {
       "DO keep SELECTION and CHECKS apart: `value`/`onValueChange` is which node is open in the detail pane; `checkedValues`/`onCheckedValuesChange` is which nodes are ticked. They are two axes, exactly as in antd — never drive one from the other.",
       "DO let the keyboard work: the tree ships the full APG contract (Up/Down through visible nodes, Right expands then descends, Left collapses then climbs, Home/End, Enter/Space, `*` to expand the current level, type-ahead). Do not add your own key handling on top.",
       "DON'T nest a Button, Checkbox, Link or any focusable control inside a node label. A tree item owns exactly ONE tab stop; the disclosure triangle and the tick box are decorative glyphs for that reason. Put row actions in a sibling column outside the tree, or open a detail pane on selection.",
-      "DON'T hand-roll an indented `<ul>` (or a NavList / ListRow stack with a per-depth margin) for a hierarchy. A flat indented list only LOOKS like a tree: no expand/collapse, no `role=\"tree\"`, no keyboard model, no selection contract. `TreeList` was exactly that list and was REMOVED in 21.0.0 — Tree is what replaced it, and it is the one to reach for whenever nodes expand, collapse or are keyboard-navigated.",
+      'DON\'T hand-roll an indented `<ul>` (or a NavList / ListRow stack with a per-depth margin) for a hierarchy. A flat indented list only LOOKS like a tree: no expand/collapse, no `role="tree"`, no keyboard model, no selection contract. `TreeList` was exactly that list and was REMOVED in 21.0.0 — Tree is what replaced it, and it is the one to reach for whenever nodes expand, collapse or are keyboard-navigated.',
       "DO cap a long tree with `ScrollArea` — virtualisation is not in v1, so a 5,000-node tree renders 5,000 rows.",
       "DO push fetched children into `treeData` from `loadData`; the tree calls it once per node and shows a Skeleton row until the data lands.",
     ],
@@ -11682,7 +11697,7 @@ import { fetchInvoice } from "@/api/invoices";
         name: "side",
         type: '"top" | "right" | "bottom" | "left"',
         description:
-          "Which side of the trigger the panel opens on. Defaults from `appearance` — a bar drops the grid below, anything else opens to the inline-end. State it when the chrome can be RE-DOCKED: `appearance` says the trigger is not in a bar but cannot say which way is out, and a rail pinned to the top edge still opens downward. Ignored by responsive=\"fullscreen\" and by the Sheet surface, which are not anchored to the trigger.",
+          'Which side of the trigger the panel opens on. Defaults from `appearance` — a bar drops the grid below, anything else opens to the inline-end. State it when the chrome can be RE-DOCKED: `appearance` says the trigger is not in a bar but cannot say which way is out, and a rail pinned to the top edge still opens downward. Ignored by responsive="fullscreen" and by the Sheet surface, which are not anchored to the trigger.',
       },
       {
         name: "align",
@@ -12423,7 +12438,7 @@ export default function PasswordBlock() {
     name: "Segmented",
     group: "data-entry",
     tagline:
-      "One-of-N from a small, closed, always-visible set — the enterprise Segmented drawn on Radix RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
+      "One-of-N from a small, closed, always-visible set — the enterprise Segmented drawn on react-aria-components' RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
     props: [
       {
         name: "block",
@@ -12437,7 +12452,7 @@ export default function PasswordBlock() {
         type: "boolean",
         defaultValue: "false",
         description:
-          "antd `vertical` — stack the choices in a column. It changes the ARROW KEYS as well as the layout: Radix reads `orientation` to decide which arrows move the roving focus.",
+          "antd `vertical` — stack the choices in a column. It changes the ARROW KEYS as well as the layout: the primitive reads `orientation` to decide which arrows move the roving focus.",
       },
       {
         name: "size",
@@ -14831,7 +14846,7 @@ import { formatAppTime } from "@godxjp/ui/datetime";
         name: "id",
         type: "string",
         description:
-          "DOM id forwarded to the feed's scroll container (`role=\"log\"`). Supply one when a control outside the feed must reference it — an `aria-controls` on a \"jump to latest\" button of your own, or a skip link that moves focus into the transcript.",
+          'DOM id forwarded to the feed\'s scroll container (`role="log"`). Supply one when a control outside the feed must reference it — an `aria-controls` on a "jump to latest" button of your own, or a skip link that moves focus into the transcript.',
       },
     ],
     usage: [

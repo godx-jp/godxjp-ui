@@ -98,6 +98,34 @@ export interface FieldNameContextValue {
   label?: string;
 }
 
+/**
+ * Write attributes onto the real `<input>` react-aria hides inside a Checkbox / Radio / Switch.
+ *
+ * react-aria renders the painted control as a `<label>` and the FOCUS TARGET as a visually hidden
+ * `<input>` inside it — then strips every `data-*` off that input (`removeDataAttributes`) and
+ * forwards only the aria attributes its own props model knows about. So the two contracts this
+ * library puts on the semantic focus target — `data-field` (gh#337, the machine key automation
+ * addresses) and the aria state a control has no react-aria prop for — have to be written by hand.
+ *
+ * Deliberately NOT left on the root as well: one field must resolve to exactly one node.
+ */
+export function useMirroredInputAttributes(
+  inputRef: React.RefObject<HTMLInputElement | null>,
+  attributes: Record<string, string | undefined>,
+): void {
+  // Keyed by CONTENT, not by object identity — otherwise every render re-runs the effect.
+  const key = JSON.stringify(attributes);
+  React.useLayoutEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+    const entries = JSON.parse(key) as Record<string, string | undefined>;
+    for (const [name, value] of Object.entries(entries)) {
+      if (value === undefined) input.removeAttribute(name);
+      else input.setAttribute(name, value);
+    }
+  }, [inputRef, key]);
+}
+
 export const FieldNameContext = React.createContext<FieldNameContextValue | null>(null);
 
 /**

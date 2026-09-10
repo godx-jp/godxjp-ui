@@ -524,7 +524,10 @@
     fill: currentColor;
   }
 
-  .ui-switch[aria-invalid="true"] {
+  /* The painted box is a `<label>` (react-aria) and `aria-invalid` lives on the real `<input>`
+   * inside it, so the box reaches its own state through `:has()`. `data-invalid` is NOT available
+   * here: react-aria owns that attribute on this element and overwrites whatever is passed in. */
+  .ui-switch:has(input[aria-invalid="true"]) {
     --tw-ring-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
     box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
   }
@@ -3213,7 +3216,9 @@
     border-color: hsl(var(--choice-button-solid-background));
   }
 
-  .ui-radio-button:disabled {
+  /* `[data-disabled]` and not `:disabled`: the member is a `<label>` (react-aria) and the
+   * `disabled` attribute lives on the `<input>` inside it. */
+  .ui-radio-button[data-disabled] {
     cursor: not-allowed;
     opacity: var(--disabled-opacity);
   }

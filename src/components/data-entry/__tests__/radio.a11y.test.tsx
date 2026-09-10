@@ -19,17 +19,26 @@ describe("Radio a11y", () => {
     );
   });
 
+  /*
+   * Hand-composed items name their control with `htmlFor`, NOT by wrapping it.
+   *
+   * react-aria renders its own `<label>` around the real `<input type="radio">`. A second `<label>`
+   * wrapped around THAT is nested-label markup: invalid HTML, and axe resolves the implicit label
+   * to the inner one — which holds only the dot — so the input comes out with no name at all.
+   * `Field` (what `Radio.Group`'s `options` API uses) has always put the label BESIDE the control
+   * for the same reason.
+   */
   it("has no axe violations (composed items inside group, horizontal)", async () => {
     await expectNoA11yViolations(
       <RadioGroupRoot aria-label="支払方法" defaultValue="cash" data-orientation="horizontal">
-        <Label className="flex items-center gap-2">
-          <Radio value="cash" />
-          現金
-        </Label>
-        <Label className="flex items-center gap-2">
-          <Radio value="card" />
-          カード
-        </Label>
+        <span className="flex items-center gap-2">
+          <Radio value="cash" id="pay-cash" />
+          <Label htmlFor="pay-cash">現金</Label>
+        </span>
+        <span className="flex items-center gap-2">
+          <Radio value="card" id="pay-card" />
+          <Label htmlFor="pay-card">カード</Label>
+        </span>
       </RadioGroupRoot>,
     );
   });

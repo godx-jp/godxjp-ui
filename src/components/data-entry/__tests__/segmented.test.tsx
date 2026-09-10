@@ -156,8 +156,10 @@ describe("Segmented", () => {
   it("takes its focus mark from the ONE source, never its own", () => {
     render(<Segmented aria-label="Theme" defaultValue="light" options={THEME_OPTIONS} />);
 
+    // `role="radio"` is the real `<input>` react-aria renders; the painted member is the
+    // `<label>` around it, and that is what carries the focus-mark class.
     for (const radio of screen.getAllByRole("radio")) {
-      expect(radio).toHaveClass("ui-focus-ring");
+      expect(radio.closest('[data-slot="segmented-item"]')).toHaveClass("ui-focus-ring");
     }
     // styles/focus-ring.css owns every outline/box-shadow the mark paints; nothing here may.
     const item = declarationsFor(controlStyles, ".ui-segmented-item");

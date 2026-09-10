@@ -287,7 +287,10 @@ describe("Select / Radio / Checkbox addressability (gh#337)", () => {
       </FormField>
     );
     const first = renderWithUi(field);
-    expect(document.getElementById("tax_class-52")).toHaveAttribute("role", "radio");
+    // Implicit role, like the checkbox case below: react-aria renders a real `<input type="radio">`
+    // where Radix rendered a `<button role="radio">`. `toHaveRole` resolves both, so this still
+    // pins the claim that the id addresses the radio itself.
+    expect(document.getElementById("tax_class-52")).toHaveRole("radio");
     expect(document.getElementById("tax_class-52")).toHaveAttribute("data-field", "tax_class");
     expect(document.getElementById("tax_class-53")).not.toBeNull();
     // Its label points at it, so click-to-select keeps working off the same id.
@@ -318,7 +321,7 @@ describe("Select / Radio / Checkbox addressability (gh#337)", () => {
     renderWithUi(<Radio.Group options={OPTIONS} value="52" aria-label="税区分" />);
     // Nothing to derive from — the pre-#337 behaviour, kept so a group without an id still renders
     // unique ids rather than colliding on the bare option value.
-    expect(document.querySelector('[role="radio"][value="52"]')?.id).toMatch(/-52-0$/);
+    expect(document.querySelector('input[type="radio"][value="52"]')?.id).toMatch(/-52-0$/);
   });
 });
 
