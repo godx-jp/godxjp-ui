@@ -10120,12 +10120,6 @@ function FormSlider() {
           "Caption area layout. 'dropdown' shows month/year select dropdowns for faster large-range navigation.",
       },
       {
-        name: "locale",
-        type: "Partial<DayPickerLocale> | undefined",
-        description:
-          "date-fns locale object imported from 'react-day-picker/locale'. Defaults to enUS. Pass ja, vi, etc. for i18n.",
-      },
-      {
         name: "weekStartsOn",
         type: "0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined",
         description:
