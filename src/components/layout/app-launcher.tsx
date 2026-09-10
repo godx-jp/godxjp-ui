@@ -281,6 +281,8 @@ export function AppLauncher({
   onRetry,
   responsive = "auto",
   appearance = "bar",
+  side,
+  align,
   open,
   onOpenChange,
   className,
@@ -384,7 +386,28 @@ export function AppLauncher({
   return (
     <Popover open={resolvedOpen} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-      <PopoverContent align="end" className="ui-app-launcher-popover" aria-label={labels.title}>
+      {/*
+        * THE PANEL OPENS AWAY FROM THE CHROME IT BELONGS TO, and which chrome that is, is what
+        * `appearance` already says.
+        *
+        * In a BAR the grid drops below the trigger and aligns to the bar's end — the Workspace
+        * shape, and the only direction that does not cover the bar itself. In a RAIL that same
+        * placement opens straight down the screen edge, across whatever the rail sits beside:
+        * measured on an embedded bar, a trigger at (2,50) put its panel at (12,90), 40px down and
+        * lying over the host application's sidebar. A rail is vertical, so its panel goes beside
+        * it — `inline-end`, aligned to the trigger's own start.
+        *
+        * `appearance` says the trigger is NOT in a bar; it does not say which way is out. A rail
+        * pinned to the top edge is not a bar and still opens downward. So the default is derived
+        * and the caller may state it: chrome that can be re-docked knows its own orientation, and
+        * this component cannot.
+        */}
+      <PopoverContent
+        side={side ?? (appearance === "bar" ? "bottom" : "right")}
+        align={align ?? (appearance === "bar" ? "end" : "start")}
+        className="ui-app-launcher-popover"
+        aria-label={labels.title}
+      >
         {panel}
       </PopoverContent>
     </Popover>

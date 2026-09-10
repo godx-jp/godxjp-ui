@@ -96,19 +96,17 @@ describe("navRailPosition", () => {
   });
 
   it("turns the strip positions along the inline axis and moves their border with them", () => {
-    const strip = declarationsFor(
-      '.app-root:is([data-nav-rail-position="top"], [data-nav-rail-position="bottom"]) > .app-nav-rail',
-    );
+    const strip = declarationsFor('.app-nav-rail[data-orientation="horizontal"]');
     expect(strip).toMatch(/flex-direction: row;/);
     expect(strip).toMatch(/border-inline-end: 0;/);
     expect(
-      declarationsFor('.app-root[data-nav-rail-position="top"] > .app-nav-rail'),
+      declarationsFor('.app-nav-rail[data-edge="top"]'),
     ).toMatch(/border-block-end: 1px solid/);
     expect(
-      declarationsFor('.app-root[data-nav-rail-position="bottom"] > .app-nav-rail'),
+      declarationsFor('.app-nav-rail[data-edge="bottom"]'),
     ).toMatch(/border-block-start: 1px solid/);
     // `end` mirrors the column, so its border faces the content it separates.
-    expect(declarationsFor('.app-root[data-nav-rail-position="end"] > .app-nav-rail')).toMatch(
+    expect(declarationsFor('.app-nav-rail[data-edge="end"]')).toMatch(
       /border-inline-start: 1px solid/,
     );
   });
@@ -117,18 +115,14 @@ describe("navRailPosition", () => {
     // `width: 100%` on a rail control is a CROSS-size request in a column (fill the rail) and a
     // MAIN-size claim in a strip. Measured before this rule: a 44px OrgSwitcher trigger inside a
     // 1416px wrapper, centred at x=698 on a 1440px screen.
-    const rule = declarationsFor(
-      '.app-root:is([data-nav-rail-position="top"], [data-nav-rail-position="bottom"]) > .app-nav-rail > .ui-org-switcher',
-    );
+    const rule = declarationsFor('.app-nav-rail[data-orientation="horizontal"] > .ui-org-switcher');
     expect(rule).toMatch(/inline-size: auto;/);
     // flex-grow is deliberately untouched — that is how a child still opts INTO the leftover room.
     expect(rule).not.toMatch(/flex/);
     // And it must NOT be a blanket `> *`: that took the square cells with it — measured, the
     // launcher collapsed from 36x36 to 16x36, because an icon Button's width is a real square.
     expect(
-      declarationsFor(
-        '.app-root:is([data-nav-rail-position="top"], [data-nav-rail-position="bottom"]) > .app-nav-rail > *',
-      ),
+      declarationsFor('.app-nav-rail[data-orientation="horizontal"] > *'),
     ).toBe("");
   });
 
