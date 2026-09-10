@@ -11406,8 +11406,8 @@ export function ChartOfAccounts() {
       "Accordion — single-level disclosure with rich panel content. It is not a hierarchy and has no tree keyboard model.",
       "ScrollArea — wrap Tree in one to cap a long outline; Tree does not virtualise in v1.",
     ],
-    example: `import { Tree } from "@godxjp/ui/data-display";
-import { useTranslation } from "@godxjp/ui/providers";
+    example: `import * as React from "react";
+import { Tree } from "@godxjp/ui/data-display";
 
 const permissions = [
   {
@@ -11429,12 +11429,12 @@ const permissions = [
 ];
 
 export function PermissionTree() {
-  const { t } = useTranslation();
+  // The name is YOUR copy — run it through your app's own i18n, not the library's.
   const [granted, setGranted] = React.useState<string[]>(["billing.invoice.read"]);
 
   return (
     <Tree
-      aria-label={t("settings.permissions")}
+      aria-label="Permissions"
       treeData={permissions}
       checkable
       defaultExpandAll
