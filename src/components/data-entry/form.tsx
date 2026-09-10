@@ -28,6 +28,25 @@ export function useFormLayout(): FormLayoutContextValue | null {
 }
 
 /**
+ * `columns` under `asChild`: re-parent the borrowed element's OWN children into the grid.
+ *
+ * `Slot` merges onto exactly one child (`React.Children.only`), so the grid cannot sit outside it
+ * — it has to sit inside. `cloneElement` with a third argument replaces that child's children and
+ * leaves every prop of the caller's element untouched.
+ */
+function asChildContent(children: React.ReactNode, columns: FormProp["columns"]): React.ReactNode {
+  if (columns == null) return children;
+  const child = React.Children.only(children) as React.ReactElement<{
+    children?: React.ReactNode;
+  }>;
+  return React.cloneElement(
+    child,
+    undefined,
+    <ResponsiveGrid columns={columns}>{child.props.children}</ResponsiveGrid>,
+  );
+}
+
+/**
  * Form — Ant-style layout container. Renders a `<form>` and provides layout (vertical/horizontal),
  * label/control width, label alignment, and a responsive collapse breakpoint to every FormField
  * inside it.
@@ -71,9 +90,13 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
     // provider in between would hand Slot a context provider to merge className onto, which
     // renders nothing and drops every prop silently.
     //
-    // `columns` is not applied here — the grid would land outside the caller's form element
-    // instead of around its fields. A consumer that wants it wraps its own fields in
-    // ResponsiveGrid, which is what `columns` does anyway.
+    // `columns` goes INSIDE the borrowed element, around its fields — which is why `content`
+    // is not what gets handed to Slot. Passing `content` would give Slot a ResponsiveGrid to
+    // merge the form props onto, so the GRID would become the form element. Cloning is the only
+    // placement that means the same thing on both branches.
+    //
+    // Before this, the asChild branch rendered `children` and dropped `columns` on the floor: a
+    // two-column form collapsed to one column with no error, no warning and no type complaint.
     return (
       <FormLayoutContext.Provider value={ctx}>
         {withRegistry(
@@ -84,7 +107,7 @@ export const Form = React.forwardRef<HTMLFormElement, FormProp>(function Form(
             className={cn("ui-form", density && `ui-density-${density}`, className)}
             {...props}
           >
-            {children}
+            {asChildContent(children, columns)}
           </Slot>,
         )}
       </FormLayoutContext.Provider>

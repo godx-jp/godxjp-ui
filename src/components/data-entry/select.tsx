@@ -455,6 +455,7 @@ function DataSelect(props: SelectDataProp) {
     size,
     status,
     variant,
+    width,
     loading,
     open,
     defaultOpen,
@@ -553,6 +554,7 @@ function DataSelect(props: SelectDataProp) {
         size={size}
         variant={variant}
         status={status}
+        width={width}
         aria-busy={loading || undefined}
         className={cn(
           (showClear || loading) && "ui-control-trigger-affixed",
