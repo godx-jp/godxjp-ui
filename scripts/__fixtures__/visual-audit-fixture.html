@@ -26,13 +26,36 @@
         Deploy
       </button>
 
-      <!-- (2) target-size-min: a visible interactive target smaller than 24×24. -->
-      <button
-        aria-label="tiny"
-        style="width: 16px; height: 16px; padding: 0; border: 0; background: #ddd"
-      >
-        x
-      </button>
+      <!--
+        (2) target-size-min: a visible interactive target smaller than 24×24 AND crowded, so that
+        NEITHER SC 2.5.8 exception applies.
+
+        A single 16px button is not a violation of the criterion and the rule stopped reporting it
+        the moment the checker learned the exceptions (898a0ff3): "Spacing" allows an undersized
+        target when a 24px-diameter circle centred on it touches no other target's circle, and a
+        lone button on an otherwise empty row is exactly that. The fixture went on asserting the
+        old, over-reporting behaviour, so the smoke test failed with "rule did not fire" while both
+        the rule and the criterion were right.
+
+        A PAIR, 16px apart edge to edge, puts the centres 32px… no: they are laid out flush, so the
+        centres sit 16px apart, inside the 24px circle, and the Spacing exception is spent. They are
+        `inline-block` (the button default), so the Inline exception does not apply either — that
+        one is for a control sized by the line-height of the sentence around it.
+      -->
+      <span style="display: flex; gap: 0">
+        <button
+          aria-label="tiny"
+          style="width: 16px; height: 16px; padding: 0; border: 0; background: #ddd"
+        >
+          x
+        </button>
+        <button
+          aria-label="tiny neighbour"
+          style="width: 16px; height: 16px; padding: 0; border: 0; background: #ccc"
+        >
+          y
+        </button>
+      </span>
 
       <!-- (4) emoji-rendered: an emoji that survived into product text (UTS #51). -->
       <p>Deploy complete 🎉 all systems nominal.</p>
