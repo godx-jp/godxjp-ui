@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
+import { useLocale } from "react-aria-components";
 
 import { cn } from "../../lib/utils";
 
@@ -60,6 +61,16 @@ export type SegmentedProps = SegmentedProp;
  * The primitive gives roving tabindex, arrow-key traversal (RTL-aware), the radiogroup/radio roles
  * and the hidden input a native form submit needs. This file adds that geometry and nothing
  * else — the focus mark comes from `ui-focus-ring`, the ONE source in styles/focus-ring.css.
+ *
+ * "RTL-aware" is only true once something TELLS the primitive: Radix reads `dir` from its own
+ * `DirectionProvider` and otherwise assumes `ltr` — it does not look at `<html dir>`. Measured in
+ * jsdom before this line existed: with `document.documentElement.dir = "rtl"`, ArrowLeft on the
+ * first option went to the LAST one, i.e. straight LTR behaviour under a reversed layout, so the
+ * key that moves your eye left moved the selection right. The direction is taken from the ambient
+ * React Aria locale so this control and the 13 `react-aria-components` primitives around it have
+ * ONE source of truth — `AppProvider` feeds it, and nothing has to be threaded through the call
+ * site. `orientation` still decides WHICH pair of arrows moves the focus; `direction` decides
+ * which END of the row each of them means.
  */
 export const Segmented = React.forwardRef<
   React.ComponentRef<typeof RadioGroupPrimitive.Root>,
@@ -81,9 +92,11 @@ export const Segmented = React.forwardRef<
   },
   ref,
 ) {
+  const { direction } = useLocale();
   return (
     <RadioGroupPrimitive.Root
       ref={ref}
+      dir={direction}
       id={id}
       data-slot="segmented"
       data-block={block ? "true" : undefined}

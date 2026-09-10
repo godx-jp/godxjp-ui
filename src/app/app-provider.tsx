@@ -1,4 +1,5 @@
 import * as React from "react";
+import { I18nProvider } from "react-aria-components";
 import { resolveDefaultDateFormat } from "./date-format-labels";
 import { getDateFnsLocale, getDayPickerLocale } from "./locales";
 import { syncAppRequestHeaders } from "./request-headers";
@@ -443,7 +444,30 @@ export function AppProvider({
     ],
   );
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  /*
+   * THE DIRECTION HAS TO REACH THE KEYBOARD, NOT ONLY THE STYLESHEET.
+   *
+   * The effect above writes `dir` on `<html>`, which flips every logical property in the CSS. It
+   * flips nothing else: React Aria takes its locale AND its direction from `useLocale()`, which
+   * without an `I18nProvider` falls back to `navigator.language` and never looks at `<html dir>`.
+   * Measured in jsdom on Tabs, with `document.documentElement.dir = "rtl"` and no provider:
+   * ArrowLeft on the first tab moved to the LAST tab — plain LTR traversal under a mirrored
+   * layout, so the arrow pointing at the next tab on screen selected the previous one. With the
+   * provider it moves to the second tab, which is what an RTL reader means by "left".
+   *
+   * It is also the fix for a defect that has nothing to do with RTL: without this, every React
+   * Aria primitive in the library localises itself by the BROWSER's language. A Japanese app on an
+   * English browser got English collation and English number/date formatting inside its own
+   * controls. The app's locale is the one that is right here.
+   *
+   * `Segmented` is on Radix rather than React Aria and reads the same `useLocale()`, so it follows
+   * from here too — one source of truth for both stacks.
+   */
+  return (
+    <I18nProvider locale={locale}>
+      <AppContext.Provider value={value}>{children}</AppContext.Provider>
+    </I18nProvider>
+  );
 }
 
 export function useAppContext(): AppContextValue {

@@ -40,6 +40,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   2,90 (warning) trên track navy. Gọi tên track là cách sửa — 6,49 / 5,59 sau đó — không phải kéo
   tầng token trở lại. Theme nào mượn `--secondary` cho việc khác đều nợ dòng này.
 
+- **Hướng đọc chỉ tới được STYLESHEET, không tới được BÀN PHÍM.** `AppProvider` ghi
+  `document.documentElement.dir` theo locale, và thế là lật mọi thuộc tính logic trong CSS. Nó
+  không lật gì khác: React Aria lấy locale VÀ hướng từ `useLocale()`, thứ mà nếu không có
+  `I18nProvider` sẽ rơi về `navigator.language` và **không bao giờ đọc `<html dir>`**; Radix đọc
+  `dir` của riêng nó và mặc định `ltr`.
+
+  Đo trong jsdom, đặt `document.documentElement.dir = "rtl"` rồi không làm gì thêm: ArrowLeft trên
+  tab ĐẦU nhảy tới tab CUỐI (Tabs), và tới lựa chọn CUỐI (Segmented). Tức là duyệt LTR nguyên vẹn
+  dưới một bố cục đã soi gương — phím mũi tên chỉ về mục kế tiếp trên màn hình lại chọn mục trước
+  đó. Không cổng nào đỏ, vì không tệp nào có thêm một `margin-left`.
+
+  Nay `AppProvider` bọc children trong `I18nProvider locale={locale}`. Đó cũng là bản vá cho một
+  lỗi chẳng liên quan gì tới RTL: trước đó **mọi** primitive React Aria trong thư viện tự bản địa
+  hoá theo ngôn ngữ của TRÌNH DUYỆT, nên một app tiếng Nhật chạy trên trình duyệt tiếng Anh nhận
+  collation và định dạng số/ngày tiếng Anh ngay bên trong control của chính nó.
+
+- **`Segmented` hứa "arrow-key traversal (RTL-aware)" trong docstring của chính nó và không có
+  đường nào lấy được.** Nó dựng trên Radix RadioGroup, thứ đọc `dir` từ `DirectionProvider` của
+  Radix — mà kho này không dựng cái nào — và `dir` cũng không phải prop công khai của
+  `Segmented`. Nay nó đọc hướng từ cùng một `useLocale()` mà 13 primitive react-aria-components
+  quanh nó đang đọc: MỘT nguồn sự thật cho cả hai nền, `AppProvider` cấp, call site không phải
+  luồn gì cả.
+
 ### Removed — BREAKING
 
 - **`TreeList` bị GỠ, không có shim deprecated.** Nó là một `<ul>` phẳng mà `depth` chỉ lái
