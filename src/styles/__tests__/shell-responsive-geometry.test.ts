@@ -601,10 +601,27 @@ describe("responsive shell geometry", () => {
      */
     const row = declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-item");
     expect(row).toMatch(/border-radius:\s*0;/);
-    // The command owns the outer column once; rows and search fields do not cancel it.
-    // Row marks align with the search glyph through the shared command input padding.
-    expect(row).toMatch(/margin-inline:\s*0;/);
-    expect(row).toMatch(/padding-inline:\s*var\(--command-input-padding-x\);/);
+    /*
+     * THE ROW REACHES BOTH EDGES; ONLY ITS CONTENT IS INSET.
+     *
+     * This used to assert `margin-inline: 0` — "the command owns the outer column once; rows do not
+     * cancel it" — which kept the row's fill and its rule inside the column and left a strip of
+     * panel showing on either side. A row that stops short of the border reads as a card in a frame,
+     * and the panel is already the frame; every command surface worth copying lets the row meet both
+     * edges.
+     *
+     * The guarantee that mattered is unchanged, and it is the one asserted here: the row's mark and
+     * the search field's magnifier sit on ONE start line. The row cancels exactly what stands
+     * between it and the panel edge — `--org-switcher-list-inset`, which is the surface's own body
+     * inset plus the list's remainder however the surface splits them — and pays it back as padding
+     * along with the field's own glyph padding. Sum from the panel edge: `inset + input padding`,
+     * which is where the magnifier is. Measured in a browser at 1440px: mark 537, magnifier 538,
+     * one pixel of dialog border between them.
+     */
+    expect(row).toMatch(/margin-inline:\s*calc\(-1 \* var\(--org-switcher-list-inset\)\);/);
+    expect(row).toMatch(
+      /padding-inline:\s*calc\(\s*var\(--org-switcher-list-inset\) \+ var\(--command-input-padding-x\)\s*\);/,
+    );
     expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(
       /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\);/,
     );
