@@ -387,13 +387,42 @@ describe("AppLauncher public contract", () => {
     // with nothing beside it to share a hit area with.
     expect(close).toMatch(/padding:\s*var\(--app-launcher-launchpad-close-space-padding\)/);
 
-    // The scrim centres the panel, so the panel carries no transform to capture that `fixed`.
-    expect(rule('[data-slot="dialog-overlay"].ui-app-launcher-launchpad-overlay')).toMatch(
-      /place-items:\s*center/,
+    // The scrim PLACES the panel, so the panel carries no transform to capture that `fixed`.
+    const scrim = rule('[data-slot="dialog-overlay"].ui-app-launcher-launchpad-overlay');
+    expect(scrim).toMatch(/place-items:\s*start/);
+    // And it insets by whatever the host says it already owns — the close resolves against the
+    // scrim's PADDING box, so one declaration moves the grid and the dismiss together.
+    expect(scrim).toMatch(
+      /padding:\s*var\(--app-launcher-launchpad-space-safe-area\)/,
     );
     expect(rule('[data-slot="dialog-content"].ui-app-launcher-launchpad')).toMatch(
       /transform:\s*none/,
     );
+  });
+
+  it("flows the launchpad from the start corner, left to right and top to bottom", () => {
+    /*
+     * A grid centred on the viewport reads as a dialog that happens to hold icons: two apps floated
+     * dead centre with the whole screen empty around them, and a third moved the first two. Apps are
+     * a LIST — it begins at the top-inline-start corner, so the first app is in the same place
+     * whether the viewer has two of them or twenty.
+     */
+    const shell = readFileSync("src/styles/shell-layout.css", "utf8");
+    const rule = (selector: string) => {
+      const at = shell.indexOf(selector + " {");
+      expect(at, `missing CSS rule for ${selector}`).toBeGreaterThan(-1);
+      return shell.slice(at, shell.indexOf("}", at) + 1);
+    };
+
+    expect(rule('[data-slot="dialog-content"].ui-app-launcher-launchpad')).toMatch(
+      /justify-items:\s*start/,
+    );
+    const grid = rule(".ui-app-launcher-launchpad .ui-app-launcher-grid");
+    expect(grid).toMatch(/justify-content:\s*start/);
+    // Fixed tracks, not `1fr`: `auto-fit` collapses what nothing occupies, so a short row is as
+    // wide as its apps instead of stretching them apart as the screen widens.
+    expect(grid).toMatch(/repeat\(\s*auto-fit,\s*var\(--app-launcher-launchpad-tile-inline-size\)/);
+    expect(grid).not.toMatch(/minmax\(0,\s*1fr\)/);
   });
 
   it("has no axe violations on either surface", async () => {
