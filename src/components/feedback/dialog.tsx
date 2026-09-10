@@ -1,3 +1,4 @@
+import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import * as React from "react";
 import { chain, mergeRefs } from "@react-aria/utils";
 import { Dialog as RacDialog, Modal, ModalOverlay } from "react-aria-components";
@@ -169,8 +170,11 @@ function DialogShell({
 
   useOverlayCloseFocus(state.isOpen, onCloseAutoFocus);
 
+  const overlayPortalContainer = useOverlayPortalContainer();
+
   return (
     <ModalOverlay
+      UNSTABLE_portalContainer={overlayPortalContainer}
       isOpen={state.isOpen}
       onOpenChange={state.setOpen}
       isDismissable={isDismissable}

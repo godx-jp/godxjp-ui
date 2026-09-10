@@ -212,6 +212,15 @@ export function AppShell({
     navRail === undefined ? null : (
       <aside
         className="app-nav-rail"
+        /*
+         * The rail's OWN shape, published on the rail. Its strip rules used to be reached through
+         * the shell root, which made them unavailable to the same rail rendered anywhere else —
+         * and the Dock renders one as a fixed bar with no shell above it.
+         */
+        data-orientation={
+          navRailPosition === "top" || navRailPosition === "bottom" ? "horizontal" : "vertical"
+        }
+        data-edge={navRailPosition}
         aria-label={navRailLabel ?? t("layout.appShell.navRailLabel")}
       >
         {railContent}

@@ -1,3 +1,4 @@
+import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import * as React from "react";
 import {
   Header,
@@ -402,9 +403,12 @@ export function DropdownMenuContent({
   void forceMount;
   const { modal } = React.useContext(DropdownMenuModalContext);
   const anchor = placement ? DROPDOWN_MENU_PLACEMENT[placement] : undefined;
+  const overlayPortalContainer = useOverlayPortalContainer();
+
   return (
     <DropdownMenuPortal>
       <Popover
+        UNSTABLE_portalContainer={overlayPortalContainer}
         data-slot="dropdown-menu-content"
         isNonModal={!modal}
         placement={toPlacement(side ?? anchor?.side, align ?? anchor?.align)}
@@ -752,8 +756,11 @@ export function DropdownMenuSubContent({
   void forceMount;
   void hideWhenDetached;
   void sticky;
+  const overlayPortalContainer = useOverlayPortalContainer();
+
   return (
     <Popover
+      UNSTABLE_portalContainer={overlayPortalContainer}
       data-slot="dropdown-menu-sub-content"
       placement={align ? toPlacement("right", align) : undefined}
       offset={sideOffset}

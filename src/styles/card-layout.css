@@ -520,11 +520,25 @@
     gap: var(--card-service-launcher-space-gap);
   }
 
+  /*
+   * THE TITLE OUTRANKS THE STATUS, and the heading has to be able to wrap for that to hold.
+   *
+   * It could not: the status was `flex: none` — it never shrinks — while the title took whatever
+   * was left. A long status label then ate the row and squeezed the name into what remained.
+   * Measured on a 329px tile with a Vietnamese label: status 143px, title 132px, and a service name
+   * broken across THREE lines while the label it was competing with sat on one. The title is the
+   * thing a person is scanning for; it should not be the part that gives way.
+   *
+   * Wrapping is the fix rather than shrinking the status, because a status chip must not wrap
+   * inside itself (rule #35). When both fit they share the row exactly as before; when they do not,
+   * the status moves to its own line and the title gets the full measure.
+   */
   [data-slot="service-launcher-heading"],
   [data-slot="service-launcher-skeleton-heading"] {
     display: flex;
     min-width: 0;
     align-items: center;
+    flex-wrap: wrap;
     gap: var(--card-service-launcher-space-gap);
   }
 
@@ -552,9 +566,23 @@
     height: var(--card-service-launcher-icon-glyph-size);
   }
 
+  /*
+   * The medallion and the name, as ONE flex item. `auto` basis, not `0`: the group's own content
+   * decides whether the status still fits beside it. With a `0` basis every group is the same
+   * hypothetical size, the row never overflows, and the status simply keeps taking its width off
+   * the name instead of ever wrapping away.
+   */
+  [data-slot="service-launcher-identity"] {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--card-service-launcher-space-gap);
+  }
+
   [data-slot="service-launcher-title"] {
     min-width: 0;
-    flex: 1;
+    flex: 1 1 auto;
     overflow-wrap: anywhere;
     font-size: var(--card-title-font-size);
     font-weight: var(--card-title-font-weight);

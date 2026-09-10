@@ -1132,6 +1132,18 @@ export type AppLauncherProp = {
    * broken cell. The panel, the grid and the responsive contract are identical either way.
    */
   appearance?: "bar" | "icon";
+  /**
+   * Which side of the trigger the panel opens on, and how it aligns to it. Both default from
+   * `appearance` — a bar drops the grid below and aligns to the bar's end; anything else opens to
+   * the inline-end aligned to the trigger's start.
+   *
+   * State them when the chrome can be RE-DOCKED. `appearance` says the trigger is not in a bar; it
+   * cannot say which way is out, and a rail pinned to the top edge still opens downward. Measured
+   * without this: a launcher in a top strip opened sideways and left the panel 440px from the
+   * trigger it belonged to.
+   */
+  side?: "top" | "right" | "bottom" | "left";
+  align?: "start" | "center" | "end";
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   className?: ClassNameProp;

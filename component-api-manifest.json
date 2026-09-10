@@ -1022,6 +1022,14 @@
       "group": "layout",
       "props": [
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "\"center\" | \"start\" | \"end\" | undefined",
+          "values": ["center", "start", "end"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "appearance",
           "origin": "owned",
           "required": false,
@@ -1123,6 +1131,14 @@
           "required": false,
           "type": "\"popover\" | \"auto\" | \"sheet\" | undefined",
           "values": ["popover", "auto", "sheet"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "side",
+          "origin": "owned",
+          "required": false,
+          "type": "\"left\" | \"right\" | \"top\" | \"bottom\" | undefined",
+          "values": ["left", "right", "top", "bottom"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
@@ -11881,6 +11897,14 @@
           "origin": "owned",
           "required": false,
           "type": "((event: Event) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/popover.tsx"]
+        },
+        {
+          "name": "portalContainer",
+          "origin": "owned",
+          "required": false,
+          "type": "Element | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/popover.tsx"]
         },

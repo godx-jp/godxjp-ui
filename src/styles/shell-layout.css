@@ -236,9 +236,7 @@
     margin-block-start: auto;
   }
 
-  .app-root:is([data-nav-rail-position="top"], [data-nav-rail-position="bottom"])
-    > .app-nav-rail
-    > .app-nav-rail-end {
+  .app-nav-rail[data-orientation="horizontal"] > .app-nav-rail-end {
     flex-direction: row;
     margin-block-start: 0;
     margin-inline-start: auto;
@@ -263,7 +261,7 @@
   }
 
   /* The `end` edge: the same column, mirrored, so the border faces the content it separates. */
-  .app-root[data-nav-rail-position="end"] > .app-nav-rail {
+  .app-nav-rail[data-edge="end"] {
     border-inline-start: 1px solid hsl(var(--border));
     border-inline-end: 0;
   }
@@ -271,8 +269,17 @@
   /* A BLOCK edge turns the column into a strip: it lays out along the inline axis, takes the full
    * measure, and its inset changes axis with it. `height: auto` releases the `height: 100%` the
    * column form needs — in a row track that would fight the track's own size. */
-  .app-root:is([data-nav-rail-position="top"], [data-nav-rail-position="bottom"])
-    > .app-nav-rail {
+  /*
+   * KEYED TO THE RAIL, not to the shell around it. These rules used to start at
+   * `.app-root[data-nav-rail-position=…]`, which reads the shell's grid — correct for a rail that
+   * IS a grid track, and unreachable for the same rail rendered anywhere else. The Dock renders one
+   * as a fixed bar inside a shadow root, with no `.app-root` above it, so every strip rule below
+   * silently did not apply: measured, `.ui-org-switcher` kept `width: 100%` and took 1301px of a
+   * 1440px bar, pushing every other cell to the right edge.
+   *
+   * The rail publishes its own orientation, so the shape follows the element that has it.
+   */
+  .app-nav-rail[data-orientation="horizontal"] {
     flex-direction: row;
     width: 100%;
     height: auto;
@@ -291,17 +298,15 @@
    * because a `size="icon-sm"` Button's width is a real square, not a fill. A percentage fill and
    * an explicit control width are indistinguishable to a selector, so the rule names the one node
    * that asks to fill. */
-  .app-root:is([data-nav-rail-position="top"], [data-nav-rail-position="bottom"])
-    > .app-nav-rail
-    > .ui-org-switcher {
+  .app-nav-rail[data-orientation="horizontal"] > .ui-org-switcher {
     inline-size: auto;
   }
 
-  .app-root[data-nav-rail-position="top"] > .app-nav-rail {
+  .app-nav-rail[data-edge="top"] {
     border-block-end: 1px solid hsl(var(--border));
   }
 
-  .app-root[data-nav-rail-position="bottom"] > .app-nav-rail {
+  .app-nav-rail[data-edge="bottom"] {
     border-block-start: 1px solid hsl(var(--border));
   }
 

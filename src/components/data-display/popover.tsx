@@ -1,3 +1,4 @@
+import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import * as React from "react";
 import { chain, mergeRefs } from "@react-aria/utils";
 import { Popover as AriaPopover, type Placement } from "react-aria-components";
@@ -319,6 +320,12 @@ export function PopoverAnchor({ asChild, ref, ...props }: PopoverAnchorProps) {
 type PopoverContentFlush = { flush?: FlushProp };
 
 interface PopoverContentProps extends React.ComponentPropsWithRef<"div">, PopoverContentFlush {
+  /**
+   * Render THIS panel somewhere other than the default. Almost always unnecessary: mounting the
+   * whole tree in a shadow root is what `OverlayPortalProvider` is for, and it moves every overlay
+   * at once. Reach for this only to place one panel differently from the rest.
+   */
+  portalContainer?: Element;
   /** Cạnh của trigger mà panel bám vào. */
   side?: Side;
   /** Canh panel theo cạnh của trigger. */
@@ -370,6 +377,7 @@ export function PopoverContent({
   forceMount: _forceMount,
   onOpenAutoFocus,
   onCloseAutoFocus,
+  portalContainer,
   ...props
 }: PopoverContentProps) {
   const root = usePopoverRoot("PopoverContent");
@@ -437,8 +445,11 @@ export function PopoverContent({
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open, setOpen, triggerRef, anchorRef, anchored]);
 
+  const overlayPortalContainer = useOverlayPortalContainer(portalContainer);
+
   return (
     <AriaPopover
+      UNSTABLE_portalContainer={overlayPortalContainer}
       isOpen={root.open}
       onOpenChange={root.setOpen}
       isNonModal={root.isNonModal}

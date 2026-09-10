@@ -1,3 +1,4 @@
+import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import * as React from "react";
 import { chain, mergeRefs } from "@react-aria/utils";
 import { Popover as AriaPopover, type Placement } from "react-aria-components";
@@ -258,8 +259,11 @@ export function HoverCardContent({
 }: HoverCardContentProps) {
   const card = useHoverCard("HoverCardContent");
 
+  const overlayPortalContainer = useOverlayPortalContainer();
+
   return (
     <AriaPopover
+      UNSTABLE_portalContainer={overlayPortalContainer}
       isOpen={card.open}
       onOpenChange={card.setOpenImmediately}
       isNonModal
