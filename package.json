@@ -415,7 +415,8 @@
     "check:frame-geometry": "node scripts/frame-geometry.mjs",
     "postinstall": "node scripts/postinstall.mjs",
     "init-agent": "node scripts/init-agent-kit.mjs",
-    "check:use-client": "node scripts/check-use-client.mjs"
+    "check:use-client": "node scripts/check-use-client.mjs",
+    "audit:catalog-snippets": "node scripts/audit-catalog-snippets.mjs"
   },
   "peerDependencies": {
     "@axe-core/playwright": "*",
