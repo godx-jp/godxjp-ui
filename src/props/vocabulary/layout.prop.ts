@@ -34,6 +34,18 @@ export type CenteredShellAlignProp = "start" | "center";
 export type MobileShellHeightProp = "viewport" | "fill";
 
 /**
+ * MobileShell inline-size contract — the axis `height` had and `width` did not.
+ * `"fill"` (default, and what the shell has always done) takes the whole inline size it is given.
+ * `"phone"` caps it at the handheld measure (`--mobile-shell-max-inline-size`) and centres the
+ * column, for the case the shell's own docstring already names on the block axis: a handheld
+ * screen rendered on a viewport wider than a handheld — a device-frame preview, a desktop browser
+ * opening a mobile route, a phone view embedded in a wider page. Measured at a 1280px viewport
+ * before this existed: the shell drew 1232px wide with `max-inline-size: none`, so a 44px tab bar
+ * spread its four destinations across a metre of screen.
+ */
+export type MobileShellWidthProp = "fill" | "phone";
+
+/**
  * ErrorSurface shell contract — WHERE the exception surface lives, not how it looks.
  * `"application"` (403 / 404): the failure happened INSIDE the authenticated app, so the surface
  * is the page BODY of the `AppShell` the route already renders.

@@ -244,6 +244,13 @@ export type BadgeProp = {
   color?: string;
   status?: string;
   icon?: React.ComponentType<{ className?: string }> | null;
+  /**
+   * Lining, fixed-width figures — for a chip whose content is a COUNT sitting in a column with
+   * other counts. The same axis `Text`, `TableCell` and `StatCard` already carry; its absence here
+   * was an asymmetry, not a decision. Off by default, because tabular figures are wider and a chip
+   * carrying words should not pay for them.
+   */
+  tabular?: boolean;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };

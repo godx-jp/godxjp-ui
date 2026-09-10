@@ -130,6 +130,33 @@ export interface BadgeProps
   color?: string;
   icon?: React.ComponentType<{ className?: string }> | null;
   status?: string;
+  /**
+   * Lining, fixed-width figures — for a chip whose content is a COUNT that sits in a column with
+   * other counts (a queue length per row, an unread tally per tab, a defect count per site). With
+   * proportional figures a `1` is narrower than a `0`, so the chips jitter and the numbers do not
+   * line up down the column; it is the same axis `Text`, `TableCell` and `StatCard` already carry,
+   * and its absence here was the asymmetry rather than a decision.
+   *
+   * MEASURE IT BEFORE YOU EXPECT PIXELS TO MOVE. With the stack this library ships,
+   * `font-variant-numeric` changes nothing: measured in Chromium at the chip's own 12.47px,
+   * `"1111"` and `"0000"` both advance **31.094px** with and without `tabular-nums`, because the
+   * resolved face already gives its figures one advance. What this prop buys is the DECLARATION —
+   * it survives a service retuning `--font-family-sans` to a face whose figures are proportional,
+   * which is the same reason `Text`, `TableCell` and `StatCard` carry the axis.
+   *
+   * It is also NOT the fix for chips of DIFFERENT WIDTHS down a column: `11` and `100` are two
+   * and three figures, so they are two widths whatever the face does. That is a minimum measure on
+   * the chip, and it belongs to the screen.
+   *
+   * There WAS a legal move — `<Badge><Text size="xs" tabular>12</Text></Badge>` measures the same
+   * 12.47px as the chip's own label. It just requires the call site to know that a Badge's type
+   * step is `xs`, which is the chip's own `--badge-font-size` token and not a fact a consumer
+   * should have to carry: retune that token in a theme and every such call site silently desyncs.
+   *
+   * Off by default. Tabular figures are wider than proportional ones in a face that has both, so a
+   * chip carrying WORDS should not pay for them.
+   */
+  tabular?: boolean;
   children?: React.ReactNode;
 }
 
@@ -153,6 +180,7 @@ export function Badge({
   color,
   icon,
   status,
+  tabular,
   style,
   children,
   ...props
@@ -173,6 +201,7 @@ export function Badge({
       data-tone={tinted ? undefined : resolvedTone}
       data-tinted={tinted ? "" : undefined}
       data-shape={shape ?? "default"}
+      data-tabular={tabular ? "" : undefined}
       className={cn(
         badgeVariants({
           variant: tinted ? "tinted" : (variant ?? "default"),

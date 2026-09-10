@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { MobileShell } from "../mobile-shell";
@@ -84,6 +86,45 @@ describe("MobileShell", () => {
       </MobileShell>,
     );
     expect(container.querySelector(".ui-mobile-shell")).toHaveAttribute("data-height", "fill");
+  });
+
+  /**
+   * The inline axis, which `height` had and `width` did not.
+   *
+   * Measured in Chromium at a 1280px viewport before this prop existed: the shell drew 1232px wide
+   * with `max-inline-size: none` — a handheld app with its four tab-bar destinations spread across
+   * the whole screen. `height="fill"` already existed for the same situation on the block axis
+   * ("a phone view embedded in a wider page"), so this was an asymmetry rather than a decision.
+   */
+  it("emits NO data-width by default, and `phone` for a capped, centred column", () => {
+    const { container, rerender } = renderWithUi(
+      <MobileShell>
+        <div>x</div>
+      </MobileShell>,
+    );
+    expect(container.querySelector(".ui-mobile-shell")).not.toHaveAttribute("data-width");
+
+    rerender(
+      <MobileShell width="phone">
+        <div>x</div>
+      </MobileShell>,
+    );
+    expect(container.querySelector(".ui-mobile-shell")).toHaveAttribute("data-width", "phone");
+  });
+
+  /**
+   * jsdom paints nothing, so the CAP itself is asserted where it is written. The centring belongs
+   * with the cap and not at the call site: without it the column pins to the inline start, and
+   * `margin-inline` keeps that true in both writing directions.
+   */
+  it("caps and centres from the token, on logical axes", () => {
+    const css = readFileSync(join(process.cwd(), "src/styles/shell-layout.css"), "utf8");
+    const start = css.indexOf('.ui-mobile-shell[data-width="phone"] {');
+    expect(start, "no rule for width=phone").toBeGreaterThan(-1);
+    const rule = css.slice(css.indexOf("{", start) + 1, css.indexOf("}", start));
+    expect(rule).toContain("max-inline-size: var(--mobile-shell-max-inline-size)");
+    expect(rule).toContain("margin-inline: auto");
+    expect(rule).not.toMatch(/margin-(?:left|right)|max-width/);
   });
 
   it("puts the status band FIRST, above the header, so it owns the top safe-area inset", () => {

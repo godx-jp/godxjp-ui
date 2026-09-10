@@ -32,6 +32,7 @@ export function MobileShell({
   actions,
   tabBar,
   height = "viewport",
+  width = "fill",
   className,
 }: MobileShellProp) {
   const { t } = useTranslation();
@@ -42,6 +43,9 @@ export function MobileShell({
       // Quiet default (rule #44): `viewport` emits NO attribute, so the shell's own 100dvh box is
       // what a plain <MobileShell> gets and the `[data-height="fill"]` rule cannot reach it.
       data-height={height === "viewport" ? undefined : height}
+      // Same quiet default on the inline axis: `fill` is what the shell has always done, so it
+      // emits nothing and only `phone` reaches the cap-and-centre rule.
+      data-width={width === "fill" ? undefined : width}
       className={cn("ui-mobile-shell", className)}
     >
       {/* Băng trạng thái và app bar nằm chung trong MỘT landmark <header>. Để băng trạng thái

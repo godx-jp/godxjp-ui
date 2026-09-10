@@ -32,6 +32,11 @@ export default function Demo() {
 
   return (
     <MobileShell
+      // `width="phone"` because this frame is READ ON A DESKTOP. The shell's own docstring already
+      // named this case on the block axis (`height="fill"` for "a phone view embedded in a wider
+      // page"); the inline axis had no answer until now, so this page drew a 1232px-wide handheld
+      // app with its four tab-bar destinations spread across the screen.
+      width="phone"
       statusBar={
         <>
           <Text size="sm" weight="medium" tabular>

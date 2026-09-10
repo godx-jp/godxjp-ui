@@ -264,6 +264,43 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>tabular · 数字を桁で揃える</CardTitle>
+            <CardDescription>
+              件数のチップが縦に並ぶときは tabular を。プロポーショナル数字だと 1 が 0
+              より狭いので、列で見たときに桁がずれてチップ幅も揺れます。既定はオフ — 語を載せる
+              チップまで幅の広い数字を払う必要はありません。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" gap="lg">
+              <Flex direction="col" align="start" gap="xs">
+                <Text size="xs" tone="muted">
+                  既定（比例数字）
+                </Text>
+                <Badge tone="info">11</Badge>
+                <Badge tone="info">100</Badge>
+                <Badge tone="warning">1811</Badge>
+              </Flex>
+              <Flex direction="col" align="start" gap="xs">
+                <Text size="xs" tone="muted">
+                  tabular
+                </Text>
+                <Badge tone="info" tabular>
+                  11
+                </Badge>
+                <Badge tone="info" tabular>
+                  100
+                </Badge>
+                <Badge tone="warning" tabular>
+                  1811
+                </Badge>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Icon overrides</CardTitle>
             <CardDescription>
               icon replaces the status-mapped icon; icon=&#123;null&#125; suppresses it entirely

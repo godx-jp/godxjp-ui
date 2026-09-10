@@ -34,6 +34,13 @@
   /* The `color` prop: the entity's OWN colour, washed into the surface. No fill
    * or tone utility is emitted in this mode (badge.tsx), so this components-layer
    * rule is reachable — see the gh#260 note about utilities outranking the layer. */
+  /* `tabular` — lining, fixed-width figures for a chip whose content is a COUNT. Declared on the
+   * chip rather than the label span so it also reaches a number the caller wraps in something of
+   * its own; `font-variant-numeric` inherits. */
+  [data-slot="badge"][data-tabular] {
+    font-variant-numeric: tabular-nums;
+  }
+
   [data-slot="badge"][data-tinted] {
     /* Surface FIRST, colour second, and that order is load-bearing rather than
      * style: a build that targets a browser without color-mix synthesises a

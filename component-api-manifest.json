@@ -1992,6 +1992,14 @@
           "declaredIn": ["src/components/data-display/badge.tsx"]
         },
         {
+          "name": "tabular",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
           "name": "tone",
           "origin": "owned",
           "required": false,
@@ -10046,6 +10054,14 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "MobileShellWidthProp | undefined",
+          "values": ["fill", "phone"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
     },
@@ -14959,6 +14975,14 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
+          "name": "tabular",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/components/data-display/badge.tsx"]
         },
         {

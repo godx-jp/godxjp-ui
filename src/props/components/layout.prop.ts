@@ -17,6 +17,7 @@ import type {
   ErrorSurfaceStatusProp,
   AuthShellPresetProp,
   MobileShellHeightProp,
+  MobileShellWidthProp,
   OrientationProp,
   TextAlignProp,
   TextToneProp,
@@ -550,6 +551,17 @@ export type MobileShellProp = {
    * device-frame preview, a phone view embedded in a wider page).
    */
   height?: MobileShellHeightProp;
+  /**
+   * How wide the shell is allowed to get. `"fill"` (default) takes the whole inline size it is
+   * given — a real handheld, where that IS the phone. `"phone"` caps it at
+   * `--mobile-shell-max-inline-size` and centres the column, for the case `height="fill"` already
+   * names on the other axis: a handheld screen rendered on a viewport wider than a handheld.
+   *
+   * Measured at a 1280px viewport before this axis existed: `max-inline-size: none`, shell 1232px
+   * wide, a four-destination tab bar spread across the whole screen. `height` had two named values
+   * for exactly these two contexts and `width` had none — the asymmetry was the bug.
+   */
+  width?: MobileShellWidthProp;
   className?: ClassNameProp;
 };
 

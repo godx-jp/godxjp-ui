@@ -253,6 +253,12 @@ export const VOCABULARY_REGISTRY = {
     description:
       "MobileShell block-size contract — viewport (100dvh root, the real app) | fill (fills a bounded parent, e.g. a device-frame preview)",
   },
+  MobileShellWidthProp: {
+    file: "vocabulary/layout.prop.ts",
+    category: "layout",
+    description:
+      "MobileShell inline-size contract — fill (takes the whole inline size, the default) | phone (caps at the handheld measure and centres, for a handheld screen on a wider viewport)",
+  },
   CenteredShellPresetProp: {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
@@ -916,6 +922,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
       "ActionProp",
       "MobileShellHeightProp",
+      "MobileShellWidthProp",
       {
         field: "header",
         local: true,
