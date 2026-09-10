@@ -1,4 +1,8 @@
-node_modules/
+# NO TRAILING SLASH. `node_modules/` matches a DIRECTORY only, and a worktree that borrows the main
+# checkout's install has a SYMLINK by that name — which git happily staged on a `git add -A`, and
+# which then reached CI as a tracked file, where `pnpm install` met `ENOTDIR: not a directory,
+# mkdir '.../node_modules'` and every job died at setup.
+node_modules
 
 dist/
 preview/dist/
