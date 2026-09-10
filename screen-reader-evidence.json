@@ -165,8 +165,7 @@
           "data-display/qr-code",
           "data-display/scroll-area",
           "data-display/table",
-          "data-display/timeline",
-          "data-display/tree-list"
+          "data-display/timeline"
         ]
       },
       {
@@ -215,7 +214,6 @@
       "data-display/data-table",
       "data-display/popover",
       "data-display/table",
-      "data-display/tree-list",
       "data-entry/calendar",
       "data-entry/cascader",
       "data-entry/command",

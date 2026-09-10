@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed — BREAKING
+
+- **`TreeList` bị GỠ, không có shim deprecated.** Nó là một `<ul>` phẳng mà `depth` chỉ lái
+  `margin-inline-start`: không đóng/mở, không `role="tree"`, không bàn phím, không hợp đồng chọn.
+  Nó chỉ TRÔNG như một cái cây. Trên màn thật nó đọc ra thành một chồng thẻ, vì mỗi nút là một
+  hộp bo góc có viền riêng với tiêu đề chữ đơn cách; và blurb catalog của chính nó hứa một
+  "chevron + package icon" mà component không hề vẽ.
+
+  `Tree` (#439) đã thay nó và mạnh hơn hẳn: `treeData` lồng nhau, tam giác đóng/mở, roving
+  tabindex theo WAI-ARIA APG, checkbox ba trạng thái, `loadData` bất đồng bộ,
+  `variant="directory"`. Sau khi hai call site cuối trong godx-task chuyển sang `Tree`, quét cả
+  bốn kho consumer (godx-task, godx-chat, ql, platform) còn **0 call site** — nên đây là gỡ một
+  câu trả lời thứ hai cho câu hỏi đã có câu trả lời, không phải phá vỡ một bề mặt đang dùng.
+
+  Gỡ trọn: component, `TreeListItem`/`TreeListProps`, barrel, test, frame `docs/data-display/`,
+  entry catalog MCP, `TreeListProp` trong registry, năm token `--tree-item-*` và CSS
+  `.ui-tree-item`. `check-mcp-pattern-imports.mjs` nay chặn import/JSX của `TreeList` y như đã
+  chặn `Stack`/`Inline`.
+
+  **Chuyển đổi.** Làm phẳng thành lồng nhau, rồi đặt tên cho cây:
+  `id` → `value`, `title` → `label`, `depth` → lồng vào `children`, `badge`/`description` → gói
+  trong `titleRender`, `active` → `defaultValue`/`value`. Luôn truyền `aria-label`. Một dàn ý
+  THẬT SỰ tĩnh, không bao giờ mở, thì không phải cây — dùng `Descriptions` hoặc chồng `ListRow`.
+
 ### Fixed
 
 - **`ListRow` giữ được `<li>` khi dùng `asChild`.** Trước đây `const Comp = asChild ? Slot : as`

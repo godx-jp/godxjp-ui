@@ -254,7 +254,6 @@ export const EMBEDDABLE_EXPORTS = [
   "Tabs",
   "Timeline",
   "Toolbar",
-  "TreeList",
 ];
 
 /**
@@ -358,7 +357,7 @@ export const KNOWN_GAPS = [
   },
   {
     id: "locale-stress-gaps",
-    targets: ["Timeline", "TreeList", "PasswordStrength"],
+    targets: ["Timeline", "PasswordStrength"],
     dimensions: ["contentStress", "accessibleName"],
     cases: [
       "long localized Japanese / Vietnamese content",

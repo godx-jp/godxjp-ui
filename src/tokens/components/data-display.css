@@ -38,9 +38,6 @@
   --prose-code-space-inline: var(--space-1);
   --prose-code-radius: var(--radius-sm);
   --prose-image-radius: var(--radius-md);
-  --tree-item-indent-width: var(--space-5);
-  --tree-item-title-font-size: var(--font-size-xs);
-  --tree-item-description-font-size: var(--font-size-xs);
   --timeline-note-font-size: var(--font-size-xs);
 
   /* Avatar surface — `initial` so the --muted default re-resolves at the call site under a scoped
@@ -149,11 +146,6 @@
   --timeline-dot-done-background: initial;
   --timeline-dot-current-background: initial;
   --timeline-line-completed-background: initial;
-
-  /* Tree active item — border + soft bg tint over the --primary role. `initial` so the default
-     re-resolves under a scoped theme. Defaults = hsl(var(--primary) / 0.3) border · 0.05 fill. */
-  --tree-item-active-border: initial;
-  --tree-item-active-background: initial;
 
   /* QR codes stay scanner-safe in light and dark application themes. Consumers may override these
      component tokens only when the resulting pair retains strong contrast. */

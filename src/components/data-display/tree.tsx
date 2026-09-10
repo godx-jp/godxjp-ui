@@ -83,9 +83,10 @@ function isRtl(element: HTMLElement): boolean {
 /**
  * Tree — the WAI-ARIA APG "Tree View", on a page.
  *
- * `TreeSelect` is this hierarchy inside a Popover and `TreeList` is a flat indented list that only
- * LOOKS like one; `Tree` is the outline view itself — expandable, roving-tabindex focusable,
- * arrow-navigable, optionally checkable. The traversal model is shared with `TreeSelect`
+ * `TreeSelect` is this hierarchy inside a Popover; `Tree` is the outline view itself — expandable,
+ * roving-tabindex focusable, arrow-navigable, optionally checkable. An indented list that only
+ * LOOKS like a tree is not one (that was `TreeList`, removed in 21.0.0): reach for `Tree` whenever
+ * nodes expand, collapse, or are navigated by keyboard. The traversal model is shared with `TreeSelect`
  * (`src/lib/tree.ts`), so a page tree and a dropdown tree can never disagree about what "expanded",
  * "a leaf" or "every descendant" means.
  */
