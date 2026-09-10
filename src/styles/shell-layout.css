@@ -12,7 +12,19 @@
       "sidebar footer";
     grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
     grid-template-rows: var(--app-shell-bar-height) minmax(0, 1fr) auto;
-    height: 100vh;
+    /*
+     * THE VIEWPORT THIS SHELL ACTUALLY OWNS, which is not always the whole one.
+     *
+     * A bare `100vh` says "the window is mine", and chrome that lives OUTSIDE the application then
+     * has nowhere to be: a platform bar docked to an edge reserves its band by padding the root
+     * element, the shell keeps claiming the full viewport regardless, and the document grows taller
+     * than the window. Measured with the bar at the bottom edge: the page gained 40px of scroll and
+     * the topbar — the shell's first grid row — left the screen at the end of it.
+     *
+     * Zero by default, so a page that owns its window is unchanged. Whatever sets it is the thing
+     * that took the space, and it sets the same number it reserved.
+     */
+    height: calc(100vh - var(--app-shell-viewport-inset, 0px));
     background: hsl(var(--background));
   }
 

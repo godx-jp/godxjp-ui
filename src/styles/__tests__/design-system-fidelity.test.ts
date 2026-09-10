@@ -16,6 +16,22 @@ describe("DXS hi-fi visual contract", () => {
     expect(shell).toMatch(
       /grid-template-rows:\s*var\(--app-shell-bar-height\) minmax\(0, 1fr\) auto/,
     );
+    /*
+     * THE SHELL SIZES ITSELF TO THE VIEWPORT IT OWNS, which is not always the whole one.
+     *
+     * A bare `100vh` says "the window is mine", and chrome outside the application then has nowhere
+     * to be: a platform bar docked to an edge reserves its band by padding the root element, the
+     * shell keeps claiming the full viewport regardless, and the document ends up taller than the
+     * window. Measured with the bar on the bottom edge, before the knob existed: 40px of document
+     * scroll, `.app-root` still 900px in a 900px window, and the topbar at y = -40 — off the screen
+     * — once the page was scrolled to the end. With it: no scroll, root 860, topbar at 0.
+     *
+     * The default is `0px`, so a page that owns its window is byte-for-byte unchanged.
+     */
+    expect(shell).toMatch(
+      /height:\s*calc\(100vh - var\(--app-shell-viewport-inset, 0px\)\)/,
+    );
+    expect(tokens).toMatch(/--app-shell-viewport-inset:\s*0px;/);
     expect(shell).toMatch(/\.app-topbar\s*\{[^}]*background:\s*hsl\(var\(--card\)\)/s);
     // FLAT means the BAR is flat. This used to scan the whole stylesheet for `backdrop-filter`,
     // which held only while nothing else in the file had one; the launcher's launchpad scrim now

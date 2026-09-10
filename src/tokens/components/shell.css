@@ -66,6 +66,10 @@
 
   /* DXS application-shell geometry. These defaults mirror the checked-in
    * Admin/Console hi-fi source while remaining themeable by consumers. */
+  /* HOW MUCH OF THE VIEWPORT IS NOT THIS APPLICATION'S — 0 unless something says otherwise, which
+   * is every ordinary page. A platform bar docked to a viewport edge sets it to the band it took,
+   * and the shell sizes itself to what is left instead of overflowing the window by that much. */
+  --app-shell-viewport-inset: 0px;
   --app-shell-bar-height: var(--band-height-2xl);
   /* (the coarse-pointer override lives at the end of this file — Rule #24 grows
    * controls to 44px, and a 48px bar cannot hold a 44px control plus its 3px
