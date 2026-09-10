@@ -601,10 +601,27 @@ describe("responsive shell geometry", () => {
      */
     const row = declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-item");
     expect(row).toMatch(/border-radius:\s*0;/);
-    // The command owns the outer column once; rows and search fields do not cancel it.
-    // Row marks align with the search glyph through the shared command input padding.
-    expect(row).toMatch(/margin-inline:\s*0;/);
-    expect(row).toMatch(/padding-inline:\s*var\(--command-input-padding-x\);/);
+    /*
+     * THE RULE RUNS EDGE TO EDGE; ONLY THE TEXT IS INSET.
+     *
+     * This assertion used to read `margin-inline: 0` — "the command owns the outer column once and
+     * rows do not cancel it". That is no longer the contract: a row that stops short of the panel's
+     * border reads as a card floating in a frame, and the panel already has a border, so the frame
+     * is a second boundary nobody asked for.
+     *
+     * The row now cancels the list inset and pays it straight back as padding. What that buys is
+     * ONE value working on every surface: the distance from a panel edge to a row is the surface's
+     * own body inset plus the list's remainder, and those always sum to `--org-switcher-list-inset`
+     * — so the popover, the sheet and the dialog need no separate arithmetic.
+     *
+     * The relationship the reader actually sees is unchanged and is still what this guards: the
+     * text lands on `inset + --command-input-padding-x`, which is exactly where the search field
+     * puts its magnifier, so the panel's two leading glyphs sit on one start line.
+     */
+    expect(row).toMatch(/margin-inline:\s*calc\(-1 \* var\(--org-switcher-list-inset\)\);/);
+    expect(row).toMatch(
+      /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) \+ var\(--command-input-padding-x\)\);/,
+    );
     expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(
       /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\);/,
     );
