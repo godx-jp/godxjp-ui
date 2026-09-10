@@ -90,6 +90,21 @@
    * a flat underlined rail, so its default is the quietest value — none (rule #44). Raise it to
    * give the rail breathing room above its hairline. */
   --tabs-list-line-space-inset: 0px;
+  /* GUTTER BETWEEN TRIGGERS on the `line` strip — Ant Design's `tabBarGutter`, which is declined
+   * as a PROP and lives here instead (cardinal rules #44/#45): a number of pixels handed straight
+   * to the caller is not a semantic axis, it is a constant, and a constant belongs to the theme.
+   *
+   * A RAW rem, not `var(--space-1)` — the same rule the block above states and for the same
+   * reason: `gap-1` reads Tailwind's own --spacing grid, which this repo does NOT density-scale,
+   * so a --space-* default would silently widen the gutter under a comfortable density. 0.25rem
+   * is byte for byte what `gap-1` resolved to, so no strip moves. A service that wants the gutter
+   * to follow density points this at var(--space-1) itself.
+   *
+   * The other two strips already had their knob: the card strip reads
+   * `--tabs-card-list-space-gap`, and the pill strip has no gutter at all by design (its triggers
+   * are `flex-1` inside one padded box). This was the one strip a service could only retune by
+   * forking the class list. */
+  --tabs-list-line-space-gap: 0.25rem;
   /* BLOCK HEADROOM FOR THE FOCUS RING (gh#376). The horizontal strip is a scroll container
    * (`overflow-x: auto` + `overflow-y: hidden`), and a block-axis clip shaves whatever a trigger
    * paints outside its own box — measured in Chromium, the `line` strip gives its triggers 0px of
