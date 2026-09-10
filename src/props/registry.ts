@@ -2405,6 +2405,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/navigation.prop.ts",
     vocabulary: ["HandlerProp"],
   },
+  TabsOnTabClickProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["HandlerProp"],
+  },
   TabItemProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",

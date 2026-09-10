@@ -15414,6 +15414,14 @@
           ]
         },
         {
+          "name": "closeIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "contentClassName",
           "origin": "owned",
           "required": false,
@@ -15482,6 +15490,14 @@
           "origin": "owned",
           "required": false,
           "type": "TabsOnEditProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "onTabClick",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsOnTabClickProp | undefined",
           "values": [],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },

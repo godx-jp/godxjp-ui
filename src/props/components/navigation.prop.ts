@@ -281,6 +281,17 @@ export type TabItemProp = {
   closable?: boolean;
   /** Ant Design `Tab.closeIcon` — replaces the default × on this item's remove button. */
   closeIcon?: React.ReactNode;
+  /**
+   * Ant Design `Tab.forceRender`. Mounts THIS panel up front and keeps it mounted while another
+   * tab is selected, without turning that on for the whole strip the way `destroyOnHidden={false}`
+   * does — so the one panel holding a live chart, a scroll position or an unsent draft survives a
+   * tab switch while the rest are still destroyed.
+   *
+   * antd 5.25 also grew a per-item `destroyOnHidden`. It is NOT offered here: on this component
+   * "kept mounted" is a single state, so an item-level `destroyOnHidden: false` would be a second
+   * prop spelling exactly what `forceRender: true` already says (cardinal rule #32).
+   */
+  forceRender?: boolean;
 };
 
 /**
@@ -315,6 +326,16 @@ export type TabsOnEditProp = (
   action: "add" | "remove",
 ) => void;
 
+/**
+ * @see Tabs — Ant Design `onTabClick`. A NAMED alias rather than an inline signature for the same
+ * reason as `TabsOnEditProp`: the catalog-sync guard splits an object type on top-level commas,
+ * so an inline `(value, event) => void` leaks its second PARAMETER as a phantom prop.
+ */
+export type TabsOnTabClickProp = (
+  value: string,
+  event: React.MouseEvent<HTMLButtonElement>,
+) => void;
+
 /** @see Tabs — high-level tabs with optional `items` array. */
 export type TabsProp = {
   items?: TabItemProp[];
@@ -343,6 +364,23 @@ export type TabsProp = {
   addIcon?: React.ReactNode;
   /** Ant Design `hideAdd` — keep `editable-card`'s remove buttons but drop the add button. */
   hideAdd?: boolean;
+  /**
+   * Ant Design `removeIcon` — the strip-wide default glyph on `editable-card`'s remove shortcut.
+   * A `TabItemProp.closeIcon` on one item still wins over it, which is antd's own precedence.
+   */
+  closeIcon?: React.ReactNode;
+  /**
+   * Ant Design `onTabClick`. Fires on EVERY pointer activation of a trigger — including a click on
+   * the tab that is already selected, where `onValueChange` is silent by design. That is the whole
+   * reason it is a separate prop and not a re-spelling of `onValueChange` (cardinal rule #32):
+   * "the user asked for this tab again" (re-fetch, close a drawer, scroll a panel back to the top)
+   * is a different event from "the selection changed".
+   *
+   * Keyboard activation is NOT routed here, and that is the APG winning over antd: under
+   * `activationMode="manual"` the arrow keys move focus without activating, so a key-driven
+   * "click" would be a fiction. Use `onValueChange` for selection, whatever moved it.
+   */
+  onTabClick?: TabsOnTabClickProp;
   className?: ClassNameProp;
   listClassName?: ClassNameProp;
   contentClassName?: ClassNameProp;

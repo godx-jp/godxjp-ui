@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { Trash2 } from "lucide-react";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -46,6 +48,7 @@ const journalItems = [
 
 export default function Demo() {
   const [activeTab, setActiveTab] = useState("pending");
+  const [reopened, setReopened] = useState(0);
   const [editableTabs, setEditableTabs] = useState([
     { value: "je-0042", label: "JE-0042", content: <Text as="p">売上計上 ¥480,000</Text> },
     { value: "je-0043", label: "JE-0043", content: <Text as="p">仕入計上 ¥120,000</Text> },
@@ -364,6 +367,75 @@ export default function Demo() {
               }}
               items={editableTabs}
             />
+          </CardContent>
+        </Card>
+
+        {/* antd onTabClick / removeIcon / Tab.forceRender */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>onTabClick · closeIcon · forceRender</CardTitle>
+            <CardDescription>
+              onTabClick は antd の onTabClick で、ポインタで押されたときだけ発火し DOM の
+              MouseEvent を渡す(キーボードは activationMode=&quot;manual&quot;
+              でフォーカス移動と選択が分かれるため発火しない · 選択は onValueChange
+              が担当)。closeIcon は antd の removeIcon で、タブ全体の既定グリフを差し替える(item
+              側の closeIcon が優先)。item の forceRender は antd の Tab.forceRender
+              で、そのパネルだけを先にマウントし、他のタブに 切り替えても保持する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Text as="p" size="sm" tone="muted">
+                同じタブを押し直した回数: {reopened}
+              </Text>
+              <Tabs
+                id="antd-tab-click"
+                defaultValue="pending"
+                variant="line"
+                onTabClick={(value) => {
+                  if (value === activeTab) setReopened((count) => count + 1);
+                  setActiveTab(value);
+                }}
+                items={[
+                  {
+                    value: "pending",
+                    label: "未承認",
+                    content: <Text as="p">未承認の仕訳が 2 件あります。</Text>,
+                  },
+                  {
+                    value: "chart",
+                    label: "推移グラフ",
+                    // The one panel that must survive a tab switch — antd Tab.forceRender.
+                    forceRender: true,
+                    content: <Text as="p">月次推移: 4 月 ¥3,120,000 · 5 月 ¥4,820,000</Text>,
+                  },
+                  {
+                    value: "posted",
+                    label: "承認済",
+                    content: <Text as="p">当期承認済: 48 件</Text>,
+                  },
+                ]}
+              />
+              <Tabs
+                id="antd-remove-icon"
+                variant="editable-card"
+                defaultValue="je-0042"
+                closeIcon={<Trash2 aria-hidden="true" />}
+                onEdit={() => undefined}
+                items={[
+                  {
+                    value: "je-0042",
+                    label: "JE-0042",
+                    content: <Text as="p">売上計上 ¥480,000</Text>,
+                  },
+                  {
+                    value: "je-0043",
+                    label: "JE-0043",
+                    content: <Text as="p">仕入計上 ¥120,000</Text>,
+                  },
+                ]}
+              />
+            </Flex>
           </CardContent>
         </Card>
 

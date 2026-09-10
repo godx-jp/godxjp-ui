@@ -7393,9 +7393,9 @@ toast.error("保存に失敗しました");`,
     props: [
       {
         name: "items",
-        type: "{ value: string; label: React.ReactNode; content: React.ReactNode; disabled?: boolean; icon?: React.ReactNode; closable?: boolean; closeIcon?: React.ReactNode }[]",
+        type: "{ value: string; label: React.ReactNode; content: React.ReactNode; disabled?: boolean; icon?: React.ReactNode; closable?: boolean; closeIcon?: React.ReactNode; forceRender?: boolean }[]",
         description:
-          'Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled. `icon` is a leading glyph in the trigger (Ant Design `Tab.icon`). `closable` / `closeIcon` only apply under `variant="editable-card"`; `closable: false` opts one tab out of removal (Ant Design `getRemovable`).',
+          'Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled. `icon` is a leading glyph in the trigger (Ant Design `Tab.icon`). `closable` / `closeIcon` only apply under `variant="editable-card"`; `closable: false` opts one tab out of removal (Ant Design `getRemovable`). `forceRender` (Ant Design `Tab.forceRender`) mounts THAT panel up front and keeps it mounted while another tab is selected, without switching the whole strip over with `destroyOnHidden={false}` — antd\'s per-item `destroyOnHidden` is deliberately not offered, because on this component "kept mounted" is one state and it would be a second spelling of `forceRender`.',
       },
       { name: "value", type: "string", description: "Controlled active tab key." },
       {
@@ -7466,6 +7466,18 @@ toast.error("保存に失敗しました");`,
         type: "boolean",
         description:
           "Ant Design `hideAdd` — keep editable-card's remove shortcuts but drop the add button.",
+      },
+      {
+        name: "closeIcon",
+        type: "React.ReactNode",
+        description:
+          "Ant Design `removeIcon` — the strip-wide default glyph on `editable-card`'s remove shortcut. An item's own `closeIcon` still wins over it, which is antd's precedence. It replaces the glyph only: the × stays an `aria-hidden` pointer shortcut inside the tab and the announced route stays Delete/Backspace, so a custom icon never becomes a second focusable control inside a `role=\"tab\"`.",
+      },
+      {
+        name: "onTabClick",
+        type: "(value: string, event: React.MouseEvent<HTMLButtonElement>) => void",
+        description:
+          'Ant Design `onTabClick`. POINTER activation of a trigger, carrying the DOM event — that is what makes it a different prop from `onValueChange` rather than a second spelling of it. Keyboard activation is NOT routed here: under `activationMode="manual"` the arrow keys move focus without activating, so a key-driven "click" would be a fiction. Use `onValueChange` for the selection, whatever moved it. Note that `onValueChange` also fires when the ALREADY SELECTED tab is clicked, so `onTabClick` is not the way to detect a re-click.',
       },
     ],
     usage: [
