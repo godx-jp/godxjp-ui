@@ -1111,6 +1111,12 @@
    * styles/focus-ring.css resolves — including nothing at all, which is what the shipped
    * `--focus-outline: 0` switch resolves to — is what paints. */
   .ui-segmented {
+    /* Composed HERE so it re-resolves at every scope that moves `--control-height` — the
+     * `data-size` rules below, and any shell or region that scopes the control tier (a
+     * `MobileShell` sets 2.75rem). Declared at `:root` it was substituted once against the root's
+     * 32px and inherited as a frozen length: `size` was a silent no-op and the touch tier never
+     * arrived. See the note in `tokens/components/segmented.css`. */
+    --segmented-item-height: calc(var(--control-height) - var(--segmented-track-padding) * 2);
     display: inline-flex;
     max-width: 100%;
     align-items: stretch;
@@ -3227,7 +3233,13 @@
     inline-size: 100%;
   }
 
-  .ui-segmented[data-block="true"] > .ui-segmented-item {
+  /* `block` shares the width EQUALLY — which is a MAIN-AXIS claim, and the main axis of a vertical
+   * bar is the block axis. Unscoped, `flex: 1 1 0` therefore zeroed each row's flex-basis against
+   * the item `height` and let the rows collapse to their line box: measured 23.8px per row against
+   * the 28px the control asks for, and a track that shrank from 88px to 75.39px. A column already
+   * gets equal widths from the track's `align-items: stretch`, so `block` there means full width
+   * and nothing more. */
+  .ui-segmented[data-block="true"]:not([data-orientation="vertical"]) > .ui-segmented-item {
     flex: 1 1 0;
     min-inline-size: 0;
     justify-content: center;
@@ -3237,7 +3249,13 @@
     flex-direction: column;
   }
 
+  /* A ROW IN A COLUMN IS A CONTROL, so it is a whole control tall — not a control minus the
+   * track's padding. That subtraction exists to make a one-row horizontal bar measure exactly
+   * `--control-height` overall, so it sits level with an Input beside it; stacked, it just shaves
+   * every target. Measured inside a `MobileShell` (`--control-height: 2.75rem`): 40px rows before,
+   * 44px after — rule #24's touch floor, which is the reason to stack in the first place. */
   .ui-segmented[data-orientation="vertical"] > .ui-segmented-item {
+    block-size: var(--control-height);
     justify-content: flex-start;
   }
 

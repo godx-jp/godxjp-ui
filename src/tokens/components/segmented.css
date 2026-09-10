@@ -50,8 +50,19 @@
   --segmented-track-radius: var(--radius);
   --segmented-item-radius: var(--radius-md);
   /* label height = control height − track padding × 2. The track therefore measures exactly
-   * --control-height, so a Segmented sits level with an Input and a Button on the same row. */
-  --segmented-item-height: calc(var(--control-height) - var(--segmented-track-padding) * 2);
+   * --control-height, so a Segmented sits level with an Input and a Button on the same row.
+   *
+   * COMPOSED ON `.ui-segmented`, NOT HERE, and the difference is the whole of gh-issue "size does
+   * nothing". A `calc()` over two custom properties is substituted where it is DECLARED, and the
+   * substituted value is what inherits — so a `--segmented-item-height` computed at `:root` froze
+   * `--control-height` at the root's 32px and every scope below it was ignored. Measured in
+   * Chromium at 1280px: `size="sm"`, `size="md"` and `size="lg"` all drew a 65.72×32px track with
+   * 28px items — byte-identical, three tiers of a documented prop doing nothing at all — and a
+   * Segmented inside a `MobileShell` (which scopes `--control-height: 2.75rem`) still drew 28px
+   * items, i.e. under rule #24's 44px touch floor on the one shell where it matters most.
+   *
+   * The remedy is the one `.ui-mobile-shell` already uses for `--mobile-shell-padding-inline`:
+   * the INPUTS live here, the sum is composed on the element that owns the scope. */
   /* item padding-inline = control padding-x − one border width. */
   --segmented-item-padding-inline: calc(var(--control-padding-x) - 1px);
   /* icon gap = the small margin step / 2. */

@@ -8,6 +8,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Segmented size` không làm gì cả — cả ba bậc vẽ ra cùng một hộp.** Đo trên Chromium ở 1280px:
+  `size="sm"`, `size="md"` và `size="lg"` đều ra track **65,72×32px** với item **28px**, giống
+  nhau từng byte. Nguyên nhân không nằm ở `data-size` (nó CÓ đặt `--control-height` đúng: 28 / 32
+  / 36px) mà ở chỗ `--segmented-item-height` được khai ở `:root` như một `calc()` trên
+  `--control-height`. Một `calc()` trên biến tuỳ biến được THAY THẾ tại nơi nó ĐƯỢC KHAI, rồi giá
+  trị đã thay thế mới đi xuống — nên nó bị đóng băng ở 32px của gốc và không scope nào bên dưới
+  chạm tới được. Nay phép cộng ấy được soạn trên chính `.ui-segmented`, đúng cách
+  `.ui-mobile-shell` đã làm với `--mobile-shell-padding-inline`.
+
+  Hệ quả thứ hai, và là cái đắt hơn: một `Segmented` đặt trong `MobileShell` — nơi
+  `--control-height` được scope thành `2,75rem` — vẫn vẽ item **28px**, tức là dưới sàn chạm 44px
+  của luật #24, ngay trên đúng cái shell mà sàn ấy quan trọng nhất. Sau khi sửa: **44px**.
+
+  `check:control-sizing` xanh suốt và nó đúng với phạm vi của nó: nó canh chiều cao control có
+  DẪN XUẤT từ `--control-height` hay không, và ở đây thì có. Thứ nó không thấy được là chỗ phép
+  dẫn xuất ấy được khai.
+
+- **`Segmented vertical` + `block` bóp mỗi hàng xuống còn hộp dòng chữ.** `flex: 1 1 0` là một
+  tuyên bố chia đều trên trục CHÍNH, mà trục chính của một dải dọc là trục khối — đúng chỗ
+  `height` của item sống. Đo: **23,8px** mỗi hàng thay vì 28px, track tụt từ 88px xuống 75,39px.
+  Nay luật ấy loại trừ hướng dọc; một cột vốn đã có bề rộng bằng nhau từ `align-items: stretch`
+  của track.
+
+- **Một hàng trong cột LÀ một control, nên nó cao trọn một control.** Phép trừ
+  `− track padding × 2` tồn tại để một dải NGANG một hàng đo đúng bằng `--control-height` tổng
+  thể, tức là ngang hàng với một `Input` bên cạnh; xếp chồng thì nó chỉ gọt mất mỗi mục tiêu chạm.
+  Trong `MobileShell`: 40px → **44px** mỗi hàng.
+
+- **`check:data-entry-touch-aria` ném lỗi ngay ở case ĐẦU TIÊN, nên 31 case sau nó chưa từng được
+  đo.** Hai mục checkbox dùng `[role="checkbox"]` — một phép khớp thuộc tính CSS, chỉ tìm được
+  phần tử VIẾT RA thuộc tính ấy. Checkbox của Radix có viết; bản `react-aria-components` mà thư
+  viện chuyển sang ở v20 vẽ một `<input type="checkbox">` thật, vai trò checkbox là NGẦM ĐỊNH. Đo
+  trên frame sau đợt chuyển: **0** phần tử khớp `[role="checkbox"]`, **26** khớp
+  `input[type="checkbox"]`. Đích đúng là nhãn `[data-slot="checkbox"]` chứ không phải cái input
+  (input là vật mang trạng thái bị ẩn, và chỉ báo nằm đè lên nó chặn con trỏ — chạm vào input thì
+  timeout). Nay cổng chạy đủ **32** frame.
+
+- **`data-entry-segmented` không có trong `check:data-entry-touch-aria`**, và ba prop được ghi tài
+  liệu của chính nó (`size`, `vertical`, `block`) không có ví dụ render ở bất kỳ đâu. Đó là lý do
+  `size` chết im lặng lâu đến thế. Frame nay có cả ba, và route đã vào danh sách của cổng.
+
+- **Không cần prop mới cho "hiện ký hiệu ngắn, đọc tên dài".** `label` là `ReactNode`, và mục lấy
+  tên khả truy cập từ NỘI DUNG của nó — nên `<span aria-hidden>○</span>` cộng
+  `<VisuallyHidden>実施</VisuallyHidden>` cho ra một dải ○/△/× đọc lên thành "実施 / 要改善 /
+  未実施". Kiểm bằng aria snapshot: `radio "実施" [checked]`. Đã ghi vào catalog và docs frame,
+  vì thứ không ai tra được thì coi như không tồn tại.
+
 - **`Legend` swatch và `Progress` fill đọc nhầm tầng tone — cả hai dưới sàn 1.4.11.** Một dấu
   MARK là hình mỏng mang nghĩa mà không có chữ nào trên nó. Trên một thanh tiến độ, **chỗ màu
   dừng lại CHÍNH LÀ số liệu**; trên một lát của dải `segments`, lát ấy chở phần của nó trong tổng

@@ -12472,6 +12472,9 @@ export default function PasswordBlock() {
       "DO give it an aria-label (or aria-labelledby) — the group needs a name, and each item takes its own from its label.",
       "DON'T use ToggleGroup for a one-of-N choice: its items are aria-pressed toggle buttons and even at type=single the group can end up with nothing selected, which a setting can never be.",
       "DON'T use it past ~4 options or with long labels — the track has no overflow behaviour. That is a Select.",
+      "DO show a short mark and speak a long name by putting BOTH in `label`: an aria-hidden span for the glyph and a VisuallyHidden for the words. `label` is a ReactNode, the item takes its accessible name from its content, and the glyph drops out of that name once it is aria-hidden — so a bar of circle/triangle/cross marks still announces the state in words. There is no separate accessible-name prop and there does not need to be.",
+      "DO stack with `vertical` when the labels are too long to sit side by side: a stacked row is a WHOLE `--control-height` tall, where a horizontal bar spends part of that height on the track padding so the bar as a whole lines up with an Input beside it. Inside a MobileShell, which scopes the control tier to the touch step, that is what makes each row a 44px target.",
+      "DO remember that `size` and any scoped `--control-height` both reach the track: the item height is composed on the Segmented root, not frozen at :root.",
     ],
     useCases: [
       "Theme switch (light / dark / system)",

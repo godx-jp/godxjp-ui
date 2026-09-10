@@ -167,10 +167,18 @@ describe("Segmented", () => {
 
   it("measures exactly one --control-height, so it sits level with an Input", () => {
     // label height = control height − track padding × 2, and the track adds that padding back.
-    expect(segmentedTokens).toContain(
+    //
+    // COMPOSED ON THE ROOT RULE, not in the token file — and this assertion used to say the
+    // opposite, which is how `size` stayed a silent no-op. A `calc()` over two custom properties
+    // is substituted where it is DECLARED and inherits already-substituted, so the sum computed at
+    // `:root` froze `--control-height` at 32px: measured in Chromium, `size="sm"`, `"md"` and
+    // `"lg"` all drew a 65.72x32px track with 28px items, and a Segmented inside a MobileShell
+    // (which scopes the tier to 2.75rem) still drew 28px. See segmented-sizing.test.ts.
+    const track = declarationsFor(controlStyles, ".ui-segmented");
+    expect(track).toContain(
       "--segmented-item-height: calc(var(--control-height) - var(--segmented-track-padding) * 2);",
     );
-    const track = declarationsFor(controlStyles, ".ui-segmented");
+    expect(segmentedTokens).toContain("--segmented-track-padding:");
     expect(track).toMatch(/padding:\s*var\(--segmented-track-padding\);/);
     expect(declarationsFor(controlStyles, ".ui-segmented-item")).toMatch(
       /height:\s*var\(--segmented-item-height\);/,
