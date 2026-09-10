@@ -523,11 +523,11 @@
   "baseline": {
     "recordedAt": "2026-07-30",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 297,
-    "dimensionCells": 4158,
+    "exports": 302,
+    "dimensionCells": 4228,
     "covered": 79,
-    "untested": 2317,
-    "notApplicable": 1762,
+    "untested": 2364,
+    "notApplicable": 1785,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -2349,6 +2349,118 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "ChatBubble": {
+      "group": "data-display",
+      "owner": "data-display/chat-bubble",
+      "frames": [
+        "docs/data-display/chat-bubble.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 3,
+        "untested": 11
+      },
+      "dimensions": {
+        "variants": "untested",
+        "tones": "untested",
+        "sizes": "untested",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "ChatBubbleList": {
+      "group": "data-display",
+      "owner": "data-display/chat-bubble",
+      "frames": [
+        "docs/data-display/chat-bubble.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "ChatComposer": {
+      "group": "data-entry",
+      "owner": "data-entry/chat-composer",
+      "frames": [
+        "docs/data-entry/chat-composer.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 4,
+        "untested": 10
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "untested",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "ChatSuggestion": {
+      "group": "data-entry",
+      "owner": "data-entry/chat-suggestion",
+      "frames": [
+        "docs/data-entry/chat-suggestion.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
@@ -8712,6 +8824,34 @@
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "Tree": {
+      "group": "data-display",
+      "owner": "data-display/tree",
+      "frames": [
+        "docs/data-display/tree.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 3,
+        "untested": 11
+      },
+      "dimensions": {
+        "variants": "untested",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "untested",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",

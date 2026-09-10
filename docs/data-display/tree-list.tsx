@@ -8,6 +8,7 @@ import {
   EmptyState,
   TreeList,
 } from "@godxjp/ui/data-display";
+import { Banner } from "@godxjp/ui/feedback";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { FolderTree } from "lucide-react";
 
@@ -58,6 +59,18 @@ export default function Demo() {
       subtitle="Hierarchical list · depth lives in the data, not the DOM"
     >
       <Flex direction="col" gap="lg">
+        <Banner tone="warning">
+          <Banner.Content>
+            <Banner.Title>TreeList は Tree に置き換わりました</Banner.Title>
+            <Banner.Description>
+              ノードが開閉するなら Tree を使ってください。Tree は本物のツリーで、入れ子の treeData、
+              開閉のディスクロージャ、role=&quot;tree&quot; の ARIA セマンティクス、矢印キーの操作、
+              選択と三状態チェックボックスを持ちます。TreeList
+              はインデントするだけの平坦なリストで、
+              開かない静的な一覧のためだけに残されています。API は変わりません。
+            </Banner.Description>
+          </Banner.Content>
+        </Banner>
         <Card>
           <CardHeader>
             <CardTitle level={2}>勘定科目ツリー</CardTitle>

@@ -1515,3 +1515,139 @@ export type BranchScopePickerProp = FieldA11yProps & {
   id?: IdProp;
   className?: ClassNameProp;
 };
+
+/**
+ * Which keystroke SENDS and which one breaks the line — Ant Design X `Sender.submitType`.
+ *
+ * `enter` (default) is the chat convention: `Enter` sends, `Shift+Enter` inserts a newline.
+ * `shiftEnter` is the inverse, for composers that hold long, deliberately multi-line drafts.
+ * Neither ever fires while an IME conversion is in flight.
+ * @see ChatComposer
+ */
+export type ChatComposerSubmitTypeProp = "enter" | "shiftEnter";
+
+/**
+ * @see ChatComposer — the message input of a conversation (Ant Design X `Sender`; the industry
+ * calls the control a *composer*, so that is what it is named).
+ *
+ * Built on the real `Textarea` (auto-growing between `--chat-composer-min-height` and
+ * `--chat-composer-max-height`, both derived from the `--control-height` tier) plus real
+ * `Button`s. The `<textarea>` is the semantic focus target: `ref`, `id`, `name` and the whole
+ * `FormField` label/helper/error contract land on it, so a ChatComposer inside a `FormField`
+ * behaves exactly like an `Input` does.
+ */
+export type ChatComposerProp = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onSubmit" | "defaultValue" | "prefix" | "onChange" | "onKeyDown"
+> &
+  FieldA11yProps & {
+    /** Controlled draft text. Pair with `onValueChange` or the box freezes. */
+    value?: ValueProp<string>;
+    /** Uncontrolled initial draft text. */
+    defaultValue?: DefaultValueProp<string>;
+    /** Draft-text change handler — fires on every keystroke, including during an IME conversion. */
+    onValueChange?: OnValueChangeProp<string>;
+    /**
+     * Send the draft. Receives the text as typed; never fires for an empty or whitespace-only
+     * draft, and never while `loading`, `disabled` or `readOnly`.
+     */
+    onSubmit?: (value: string) => void;
+    /** Stop the in-flight response. Only reachable while `loading`. */
+    onCancel?: () => void;
+    /**
+     * A response is streaming. The trailing action becomes CANCEL — exactly one trailing action
+     * exists at a time, the same discipline as the picker trailing-action rule.
+     */
+    loading?: PendingProp;
+    /** Which keystroke sends and which breaks the line. Default `enter`. */
+    submitType?: ChatComposerSubmitTypeProp;
+    /** Empty-state text of the draft box; pass it through `t()` at the call site. */
+    placeholder?: PlaceholderProp;
+    /** Disable the whole composer (draft box and every action). */
+    disabled?: DisabledProp;
+    /** Show the draft without allowing an edit; still focusable and selectable. */
+    readOnly?: boolean;
+    /** Slot ABOVE the draft row — attachments, a reply-to banner, a model picker. */
+    header?: React.ReactNode;
+    /** Slot at the inline START of the draft row — an attach button, an avatar. */
+    prefix?: React.ReactNode;
+    /** Slot BELOW the draft row — a hint line, a token counter. */
+    footer?: React.ReactNode;
+    /** Extra trailing actions, rendered BEFORE the send/cancel action. */
+    actions?: React.ReactNode;
+    /** Control height tier on the shared `--control-height` ladder. Default `md`. */
+    size?: SizeProp;
+    /** Hard ceiling on the draft length, forwarded to the textarea. */
+    maxLength?: number;
+    /** Validation state the composer paints. `error` also reports `aria-invalid`. */
+    status?: ControlStatusProp;
+    /** Accessible name override for the send action (localized default otherwise). */
+    submitLabel?: string;
+    /** Accessible name override for the cancel action (localized default otherwise). */
+    cancelLabel?: string;
+    /** Keydown on the draft box — how `ChatSuggestion` drives its list from the composer. */
+    onKeyDown?: React.KeyboardEventHandler<HTMLTextAreaElement>;
+    name?: NameProp;
+    id?: IdProp;
+    className?: ClassNameProp;
+  };
+
+/** @see ChatSuggestion — one row of the trigger-character list. One level of `children` is honoured. */
+export type ChatSuggestionItemProp = {
+  /** Stable value handed to `onValueChange`, and the search haystack when there is no `label`. */
+  value: string;
+  /** Human row label. Falls back to `value`. */
+  label?: string;
+  /** Secondary line under the label. */
+  description?: string;
+  /** Decorative leading node (an icon). */
+  icon?: React.ReactNode;
+  /** Keep the row visible but unselectable. */
+  disabled?: DisabledProp;
+  /** One level of sub-rows; picking the parent drills into them instead of emitting a value. */
+  children?: readonly ChatSuggestionItemProp[];
+};
+
+/** The render-prop bag `ChatSuggestion` hands to the composer it wraps. */
+export type ChatSuggestionRenderProp = {
+  /**
+   * Re-read the caret and decide whether the list belongs open — call it from the composer's
+   * `onValueChange`. `false` force-closes; no argument force-opens with an empty query.
+   */
+  onTrigger: (value?: string | false) => void;
+  /** Forward to the composer's `onKeyDown`: arrows move, Enter/Tab pick, Escape closes. */
+  onKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement>;
+};
+
+/**
+ * @see ChatSuggestion — trigger-character autocomplete over a `ChatComposer` (Ant Design X
+ * `Suggestion`).
+ *
+ * The list itself is the existing `Command` (cmdk) inside a `Popover`, so the listbox ARIA comes
+ * from a primitive that already ships it. What this component owns is the part `Command` does not:
+ * spotting the trigger character at the caret in a textarea, tracking the query as the caret
+ * moves, and closing on `Escape` / blur / a word break — `Escape` returns focus to the textarea
+ * and leaves the typed text exactly as it was.
+ */
+export type ChatSuggestionProp = {
+  /** The rows to offer. One level of `children` is honoured. */
+  items: readonly ChatSuggestionItemProp[];
+  /** Fires with the picked row's `value`. The caller owns what that does to the draft text. */
+  onValueChange?: OnValueChangeProp<string>;
+  /** The character that opens the list when typed at a word boundary. Default `/`. */
+  triggerCharacter?: string;
+  /** Controlled open state. */
+  open?: OpenProp;
+  /** Uncontrolled initial open state. */
+  defaultOpen?: DefaultOpenProp;
+  /** Open-state change handler. */
+  onOpenChange?: OnOpenChangeProp;
+  /** The composer to wrap — receives `{ onTrigger, onKeyDown }`. */
+  children: (props: ChatSuggestionRenderProp) => React.ReactNode;
+  /** Text shown when the query matches nothing (localized default otherwise). */
+  emptyMessage?: EmptyMessageProp;
+  /** Accessible name of the suggestion listbox — a plain string (localized default otherwise). */
+  listLabel?: string;
+  id?: IdProp;
+  className?: ClassNameProp;
+};

@@ -246,7 +246,8 @@
           ],
           "evidence": [
             "docs/layout/app-launcher.tsx",
-            "src/components/layout/__tests__/app-launcher.test.tsx"
+            "src/components/layout/__tests__/app-launcher.test.tsx",
+            "src/components/layout/__tests__/app-launcher-placement.test.tsx"
           ]
         },
         "side": {
@@ -259,7 +260,8 @@
           ],
           "evidence": [
             "docs/layout/app-launcher.tsx",
-            "src/components/layout/__tests__/app-launcher.test.tsx"
+            "src/components/layout/__tests__/app-launcher.test.tsx",
+            "src/components/layout/__tests__/app-launcher-placement.test.tsx"
           ]
         },
         "align": {
@@ -271,7 +273,8 @@
           ],
           "evidence": [
             "docs/layout/app-launcher.tsx",
-            "src/components/layout/__tests__/app-launcher.test.tsx"
+            "src/components/layout/__tests__/app-launcher.test.tsx",
+            "src/components/layout/__tests__/app-launcher-placement.test.tsx"
           ]
         }
       }

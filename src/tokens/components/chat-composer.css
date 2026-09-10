@@ -1,0 +1,42 @@
+/* ChatComposer component tokens — the message input of a conversation (Ant Design X `Sender`).
+ *
+ * The composer is a CONTROL, so its box height is not its own decision: both bounds below are
+ * expressed in the `--control-height` tier, which is density-aware. A resting one-line composer
+ * therefore lines up with the Button beside it, and every size step (`data-size`) moves both
+ * bounds together. Never restate either as a literal length — see docs/TOKENS.md and
+ * `pnpm check:control-sizing`.
+ */
+:root {
+  /* Floor and ceiling of the draft box, both `initial` — and that is load-bearing, not tidiness.
+   *
+   * Their defaults READ `--control-height`, which is re-declared per size step on the composer
+   * itself (`.ui-control-surface[data-size="sm"]` and friends). Bound here at `:root`, each one
+   * would resolve ONCE against the root tier and freeze: measured in Chromium, all four of
+   * `size="xs|sm|md|lg"` rendered at an identical 55px box. `initial` sends the fallback chain in
+   * `data-entry-layout.css` back to the CALL SITE, where the step's own `--control-height` is in
+   * scope. Same rule as ListRow's dividers and the compact-row knobs (docs/TOKENS.md — the :root
+   * freeze rule).
+   *
+   * Default floor   = var(--control-height) — exactly one control row.
+   * Default ceiling = calc(var(--control-height) * 5) — past it the draft scrolls itself instead
+   *                   of pushing the page. A MULTIPLIER, never `calc(var(--control-height) ± …)`,
+   *                   which silently re-derives a tier (check:control-sizing). */
+  --chat-composer-min-height: initial;
+  --chat-composer-max-height: initial;
+  /* Gap between the header / draft row / footer bands. */
+  --chat-composer-gap: var(--space-2);
+  /* Inset of the composer frame. The draft box itself is borderless — the frame IS the boundary,
+   * so two nested rounded borders never appear. */
+  --chat-composer-padding-block: var(--space-2);
+  --chat-composer-padding-inline: var(--space-2);
+  /* Gap between the prefix slot, the draft box and the trailing actions. */
+  --chat-composer-row-gap: var(--space-2);
+  /* Corner shape — `initial` so the control default re-resolves at the call site under a scoped
+   * theme (a :root binding to a role var freezes at :root). Default = var(--control-radius). */
+  --chat-composer-radius: initial;
+  /* Divider under the `header` slot — `initial`, documented default = 1px solid hsl(var(--border)),
+   * so a service retunes the chrome once instead of per composer. */
+  --chat-composer-header-border: initial;
+  /* Type scale of the footer hint line (a token counter, a "Shift+Enter for a new line" hint). */
+  --chat-composer-footer-font-size: var(--font-size-xs);
+}

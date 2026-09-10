@@ -159,6 +159,22 @@
       "error": "Không hợp lệ",
       "validating": "Đang kiểm tra",
       "submitFailed": "Không thể gửi biểu mẫu. Vui lòng thử lại."
+    },
+    "chatComposer": {
+      "label": "Tin nhắn",
+      "placeholder": "Nhập tin nhắn",
+      "send": "Gửi tin nhắn",
+      "cancel": "Dừng tạo câu trả lời",
+      "hintEnter": "Enter để gửi · Shift + Enter để xuống dòng",
+      "hintShiftEnter": "Shift + Enter để gửi · Enter để xuống dòng"
+    },
+    "chatSuggestion": {
+      "label": "Gợi ý",
+      "empty": "Không có gợi ý phù hợp",
+      "count": {
+        "one": "{count} gợi ý",
+        "other": "{count} gợi ý"
+      }
     }
   },
   "feedback": {
@@ -283,6 +299,13 @@
     "progress": {
       "ariaLabel": "Tiến độ",
       "breakdownSeparator": ", "
+    },
+    "tree": {
+      "expand": "Mở rộng",
+      "collapse": "Thu gọn",
+      "loading": "Đang tải nút con…",
+      "empty": "Không có gì để hiển thị",
+      "selected": "Đã chọn"
     }
   },
   "ui": {
@@ -524,5 +547,26 @@
   "textExamples": {
     "preservedText": "Văn bản thuần",
     "sampleText": "Dòng đầu\n  Dòng thụt vào\n\nDòng cuối"
+  },
+  "chat": {
+    "bubble": {
+      "typing": "Đang nhập…",
+      "loading": "Đang tải tin nhắn",
+      "you": "Bạn",
+      "assistant": "Trợ lý",
+      "tone": {
+        "info": "Thông tin",
+        "success": "Thành công",
+        "warning": "Cảnh báo",
+        "destructive": "Lỗi"
+      }
+    },
+    "list": {
+      "label": "Cuộc trò chuyện",
+      "jumpToLatest": "Đến tin mới nhất",
+      "newMessages": {
+        "other": "{count} tin nhắn mới"
+      }
+    }
   }
 }

@@ -867,6 +867,21 @@
 @layer components {
   /* There was no `.ui-scroll*` rule anywhere: the rail's whole geometry lived on the component as
    * Tailwind literals, so a service could not retune it. */
+  /* Radix wraps the viewport's children in a `display: table; min-width: 100%` div so a
+   * HORIZONTALLY scrolling area can grow past the viewport. On a VERTICAL-only area that wrapper
+   * can only do harm: mounting just the vertical ScrollBar leaves `overflow-x: hidden`, so the
+   * table takes its children's max-content width and anything wider is silently cut off — long
+   * prose loses the end of every line at narrow widths (measured: a 612px wrapper inside a 322px
+   * viewport at 390px). `max-inline-size: 100%` does not help, because a table's used width is
+   * floored by its min-content contribution; `display: block` does, because the wrapper is then
+   * exactly one viewport wide and the text has somewhere to wrap.
+   *
+   * `!important` is load-bearing and is a statement about the DOM, not about specificity: Radix
+   * writes `display: table` as an INLINE style on an element no prop of ours can reach. */
+  [data-slot="scroll-area-viewport"][data-orientation="vertical"] > * {
+    display: block !important;
+  }
+
   .ui-scroll-area-bar {
     padding: var(--scroll-area-bar-padding);
   }
@@ -1512,5 +1527,383 @@
     border-radius: var(--prose-code-radius);
     padding-inline: var(--prose-code-space-inline);
     font-size: var(--prose-code-font-size);
+  }
+}
+
+@layer components {
+  /* CHAT BUBBLE — one message in a conversation (docs/roadmap/ai-chat-components.md §2).
+   * Every axis is LOGICAL: `placement` is start/end of the reading direction, so the same markup
+   * puts "my" messages on the right in `ltr` and on the left in `rtl` with no per-locale branch. */
+  /* The article always spans the FEED, and the side it reads from is the row's own direction.
+   *
+   * The obvious spelling — a fit-content bubble pushed over with `margin-inline-start: auto` — is
+   * the one that breaks. A cross-axis auto margin switches flexbox out of `align-items: stretch`
+   * and sizes the item to FIT-CONTENT, capped only by the measure; the row then widens the feed,
+   * which widens Radix's `display: table` content wrapper, and `min(…, 100%)` cannot save it
+   * because that 100% now resolves against the very box the content just widened. MEASURED at
+   * 390px: a 544px bubble inside a 322px viewport whose `overflow-x` is `hidden` — the message was
+   * cut off mid-sentence with no way to reach the rest of it. Stretch the article instead and put
+   * the measure on the column. */
+  .ui-chat-bubble {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--chat-bubble-gap);
+    min-inline-size: 0;
+  }
+
+  /* `row-reverse` IS the flip. The flex main axis is writing-mode relative, so reversing it both
+   * moves the avatar to the other column and packs the row against the inline END — which is the
+   * right edge in `ltr` and the left edge in `rtl`, with no physical property anywhere. */
+  .ui-chat-bubble[data-placement="end"] {
+    flex-direction: row-reverse;
+  }
+
+  .ui-chat-bubble-avatar {
+    display: inline-flex;
+    flex: none;
+    inline-size: var(--chat-bubble-avatar-size, var(--control-height));
+    block-size: var(--chat-bubble-avatar-size, var(--control-height));
+  }
+
+  /* The mark fills the slot the bubble reserved, so `--chat-bubble-avatar-size` is the ONE knob a
+   * service moves — it never has to reach past this component into `.ui-avatar`. */
+  .ui-chat-bubble-avatar > .ui-avatar {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* The MEASURE lives here, on the box that holds the words — clamped to the row so a feed
+   * narrower than the knob shrinks instead of overflowing. */
+  .ui-chat-bubble-column {
+    display: flex;
+    min-inline-size: 0;
+    max-inline-size: min(var(--chat-bubble-max-inline-size), 100%);
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .ui-chat-bubble[data-placement="end"] .ui-chat-bubble-column {
+    align-items: flex-end;
+  }
+
+  .ui-chat-bubble-body {
+    min-inline-size: 0;
+    border-radius: var(--chat-bubble-radius);
+    padding-block: var(--chat-bubble-padding-block);
+    padding-inline: var(--chat-bubble-padding-inline);
+    background: var(--chat-bubble-background, hsl(var(--muted)));
+    color: var(--chat-bubble-foreground, hsl(var(--foreground)));
+    /* A pasted URL or an id is one unbroken token; without this it widens the feed past the page. */
+    overflow-wrap: anywhere;
+  }
+
+  .ui-chat-bubble[data-variant="outlined"] .ui-chat-bubble-body {
+    border: var(--stroke-hairline) solid var(--chat-bubble-border-color, hsl(var(--border)));
+    background: transparent;
+  }
+
+  /* Long assistant prose that should read as page copy, not as a chat chip. The inline inset is
+   * dropped only when there is NO tone: a toned bubble still paints a wash, and a wash with zero
+   * inline padding reads as a text selection rather than as a message. */
+  .ui-chat-bubble[data-variant="borderless"] .ui-chat-bubble-body {
+    background: transparent;
+  }
+
+  .ui-chat-bubble[data-variant="borderless"][data-tone="default"] .ui-chat-bubble-body {
+    padding-inline: 0;
+  }
+
+  /* The reader's OWN messages take their own wash, so the two sides of a conversation are told
+   * apart by more than position when the feed is narrow enough to stack. */
+  .ui-chat-bubble[data-placement="end"][data-variant="filled"] .ui-chat-bubble-body {
+    background: var(--chat-bubble-end-background, hsl(var(--primary) / 0.1));
+    color: var(--chat-bubble-end-foreground, hsl(var(--foreground)));
+  }
+
+  .ui-chat-bubble[data-size="xs"] {
+    --chat-bubble-padding-block: var(--space-1);
+    --chat-bubble-padding-inline: var(--space-2);
+  }
+
+  .ui-chat-bubble[data-size="sm"] {
+    --chat-bubble-padding-block: var(--space-1);
+    --chat-bubble-padding-inline: var(--space-3);
+  }
+
+  .ui-chat-bubble[data-size="lg"] {
+    --chat-bubble-padding-block: var(--space-3);
+    --chat-bubble-padding-inline: var(--space-4);
+  }
+
+  /* Status tones wash the role colour exactly like Alert does, so an error bubble and an error
+   * banner agree. The colour is never alone: the bubble also renders a localized sr-only word. */
+  .ui-chat-bubble[data-tone="info"] .ui-chat-bubble-body {
+    border: var(--stroke-hairline) solid hsl(var(--info) / var(--chat-bubble-tone-border-alpha));
+    background: hsl(var(--info) / var(--chat-bubble-tone-background-alpha));
+  }
+
+  .ui-chat-bubble[data-tone="success"] .ui-chat-bubble-body {
+    border: var(--stroke-hairline) solid hsl(var(--success) / var(--chat-bubble-tone-border-alpha));
+    background: hsl(var(--success) / var(--chat-bubble-tone-background-alpha));
+  }
+
+  .ui-chat-bubble[data-tone="warning"] .ui-chat-bubble-body {
+    border: var(--stroke-hairline) solid hsl(var(--warning) / var(--chat-bubble-tone-border-alpha));
+    background: hsl(var(--warning) / var(--chat-bubble-tone-background-alpha));
+  }
+
+  .ui-chat-bubble[data-tone="destructive"] .ui-chat-bubble-body {
+    border: var(--stroke-hairline) solid
+      hsl(var(--destructive) / var(--chat-bubble-tone-border-alpha));
+    background: hsl(var(--destructive) / var(--chat-bubble-tone-background-alpha));
+  }
+
+  /* The typed-so-far caret. DELIBERATELY not animated: this is a low-motion system, and a caret
+   * that never blinks is one less thing to switch off under prefers-reduced-motion. */
+  .ui-chat-bubble-caret {
+    display: inline-block;
+    inline-size: var(--chat-bubble-typing-caret-width);
+    block-size: var(--chat-bubble-typing-caret-height);
+    margin-inline-start: var(--space-1);
+    background: var(--chat-bubble-typing-caret-color, hsl(var(--muted-foreground)));
+    vertical-align: text-bottom;
+  }
+
+  .ui-chat-bubble-skeleton {
+    display: grid;
+    gap: var(--skeleton-row-gap);
+  }
+
+  .ui-chat-bubble-skeleton-line {
+    block-size: var(--skeleton-block-height);
+    inline-size: var(--chat-bubble-max-inline-size);
+    max-inline-size: 100%;
+  }
+
+  .ui-chat-bubble-skeleton-line--short {
+    inline-size: var(--chat-bubble-skeleton-short-inline-size);
+  }
+
+  /* CHAT BUBBLE LIST — the feed (docs/roadmap/ai-chat-components.md §3).
+   *
+   * THE FEED NEEDS A DEFINITE HEIGHT, and it is the caller who has to give it one — a height on
+   * the list itself (`className="h-96"`), or a flex/grid parent that hands it a definite track.
+   * Measured, at 1280px: without one the list grew to its content (1,952px) inside a 256px Card,
+   * `scrollHeight === clientHeight`, nothing ever overflowed, and stick-to-bottom — the whole
+   * reason this component exists — had nothing to anchor. `min-block-size: 0` is what lets it
+   * SHRINK once it is given a track; a flex child's default `min-block-size: auto` would push it
+   * back out to content height and reproduce the same bug one level up. */
+  .ui-chat-bubble-list {
+    position: relative;
+    display: flex;
+    min-block-size: 0;
+    flex-direction: column;
+    /* Resolves to `auto` under an indefinite parent (so an unbounded feed still just grows), and
+     * fills the track when the parent HAS one. */
+    block-size: 100%;
+  }
+
+  .ui-chat-bubble-list-scroller {
+    min-block-size: 0;
+    flex: 1 1 auto;
+  }
+
+  /* Radix wraps the viewport's children in a `display: table; min-width: 100%` div so a
+   * HORIZONTALLY scrolling area can grow past the viewport. A conversation needs the opposite:
+   * this viewport's `overflow-x` is `hidden`, so anything wider than it is simply lost.
+   *
+   * MEASURED at 390px: the wrapper took the longest message's max-content width (612px) inside a
+   * 322px viewport and every long line was cut off mid-sentence with no way to reach the rest.
+   * `max-inline-size: 100%` does NOT fix it (measured: still 612 — a table's used width is floored
+   * by its min-content contribution); `display: block` does, because the wrapper is then exactly
+   * one viewport wide and the text finally has somewhere to wrap.
+   *
+   * `!important` is the ONLY thing that can win here, and that is a statement about the DOM rather
+   * than about specificity: Radix writes `display: table` as an INLINE style on an element no prop
+   * of ours can reach, and an inline declaration outranks every layer.
+   *
+   * The real fix lives on ScrollArea itself (`.ui-scroll-area-bar` block below), keyed on
+   * `data-orientation="vertical"`: that is precisely the case whose `overflow-x` is `hidden`,
+   * so a wrapper wider than the viewport can only ever clip. A horizontal or both-axis area
+   * still gets Radix's table. */
+
+  .ui-chat-bubble-list-feed {
+    display: flex;
+    flex-direction: column;
+    gap: var(--chat-bubble-list-gap);
+  }
+
+  /* The way back to the newest message once the pin has been revoked. It floats over the feed, so
+   * the wrapper must not swallow pointer events the messages under it want. */
+  .ui-chat-bubble-list-jump {
+    position: absolute;
+    display: flex;
+    inset-inline: 0;
+    inset-block-end: var(--chat-bubble-list-jump-inset);
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .ui-chat-bubble-list-jump > * {
+    pointer-events: auto;
+  }
+}
+
+/* TREE — the on-page WAI-ARIA "Tree View" (src/components/data-display/tree.tsx).
+ *
+ * Indentation is LOGICAL (`padding-inline-start`), so the outline flips under `dir="rtl"` with no
+ * second rule and no physical `padding-left` anywhere. Every colour, step and box below reads a
+ * `--tree-*` knob; the role defaults sit at the CALL SITE so a scoped `[data-tenant]` / `.dark`
+ * retint still reaches them (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). */
+@layer components {
+  .ui-tree {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--tree-node-font-size);
+  }
+
+  .ui-tree-node {
+    display: flex;
+    align-items: center;
+    gap: var(--tree-node-gap);
+    /* Row height comes from the --control-height TIER, never a literal and never an ad-hoc
+     * calc() offset: the row is a control-sized target and must stay in step with the controls
+     * beside it under every density. */
+    min-block-size: var(--tree-node-height, var(--control-height));
+    border-radius: var(--tree-node-radius);
+    padding-inline: var(--tree-node-padding-inline);
+    /* level × step, then the row's own padding — the ONE place indentation is expressed. */
+    padding-inline-start: calc(
+      var(--tree-node-padding-inline) + var(--tree-node-level, 0) * var(--tree-indent-width)
+    );
+    cursor: pointer;
+  }
+
+  .ui-tree-node:hover {
+    background: var(--tree-node-hover-background, hsl(var(--accent)));
+  }
+
+  .ui-tree-node[data-selected="true"] {
+    background: var(--tree-node-selected-background, hsl(var(--accent)));
+    color: var(--tree-node-selected-foreground, hsl(var(--accent-foreground)));
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-tree-node[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  /* The ring is NOT written here. `.ui-tree-node` carries `ui-focus-ring`, and styles/focus-ring.css
+   * is the one place the keyboard-focus affordance is drawn (its single-source test enforces it). */
+
+  /* Disclosure triangle. A decorative span, never a nested `<button>`: a treeitem owns exactly one
+   * tab stop, and the open/closed state is carried by `aria-expanded` on the item itself. */
+  .ui-tree-switcher {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--tree-switcher-size);
+    block-size: var(--tree-switcher-size);
+    color: var(--tree-switcher-color, hsl(var(--muted-foreground)));
+  }
+
+  .ui-tree-switcher > svg {
+    inline-size: var(--tree-icon-size);
+    block-size: var(--tree-icon-size);
+  }
+
+  .ui-tree-switcher[data-leaf] {
+    cursor: default;
+  }
+
+  .ui-tree-check {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+  }
+
+  .ui-tree-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-tree-icon > svg {
+    inline-size: var(--tree-icon-size);
+    block-size: var(--tree-icon-size);
+  }
+
+  .ui-tree-label {
+    overflow: hidden;
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-tree-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Connector rails (`showLine`) — chrome, therefore OFF unless asked for (cardinal rule #44).
+   * The rail hangs off the group and is inline-start positioned, so it flips with the indentation. */
+  .ui-tree[data-show-line="true"] .ui-tree-group {
+    position: relative;
+  }
+
+  .ui-tree[data-show-line="true"] .ui-tree-group::before {
+    position: absolute;
+    inset-block: 0;
+    /* The rail hangs under the PARENT's disclosure triangle, so it reads from the group's own
+     * level minus one — the level the group is indented TO belongs to its children. */
+    inset-inline-start: calc(
+      var(--tree-node-padding-inline) + (var(--tree-node-level, 1) - 1) * var(--tree-indent-width) +
+        var(--tree-switcher-size) / 2
+    );
+    border-inline-start: 1px solid var(--tree-line-color, hsl(var(--border)));
+    content: "";
+  }
+
+  .ui-tree-loading {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--tree-node-height, var(--control-height));
+    padding-inline-start: calc(
+      var(--tree-node-padding-inline) + var(--tree-node-level, 0) * var(--tree-indent-width) +
+        var(--tree-switcher-size)
+    );
+  }
+
+  .ui-tree-loading-bar {
+    block-size: var(--tree-icon-size);
+    inline-size: var(--tree-loading-bar-inline-size);
+  }
+
+  .ui-tree-empty {
+    padding-block: var(--space-4);
+    padding-inline: var(--tree-node-padding-inline);
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Size steps pick a NAMED tier — never a calc() offset off --control-height. */
+  .ui-tree[data-size="xs"] {
+    --tree-node-height: var(--control-height-xs);
+    --tree-node-font-size: var(--font-size-xs);
+  }
+
+  .ui-tree[data-size="sm"] {
+    --tree-node-height: var(--control-height-sm);
+  }
+
+  .ui-tree[data-size="lg"] {
+    --tree-node-height: var(--control-height-lg);
+  }
+
+  /* DirectoryTree: the selected band spans the whole row and reads as a file-manager selection. */
+  .ui-tree[data-variant="directory"] .ui-tree-node[data-selected="true"] {
+    background: var(--tree-node-selected-background, hsl(var(--primary) / 0.12));
   }
 }

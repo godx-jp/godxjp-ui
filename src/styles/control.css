@@ -2053,6 +2053,20 @@
 }
 
 @layer components {
+  /* CHAT SUGGESTION — the trigger-character completion panel over a ChatComposer.
+   *
+   * It lives HERE, not in data-entry-layout.css, and it sets the KNOB rather than `inline-size`,
+   * for the reason popover-surface-knob-cascade.test.ts documents: `.ui-popover-content` and a
+   * one-class modifier have identical specificity in the same `@layer`, so cascade ORDER decides.
+   * A raw `inline-size` in a sheet that happens to be imported later works today and silently
+   * stops working the moment the import order changes. The knob has no ordering problem — the
+   * base rule is its only reader, the modifier its only writer. */
+  .ui-chat-suggestion-panel {
+    --popover-surface-inline-size: var(--radix-popover-trigger-width);
+  }
+}
+
+@layer components {
   /* TREE SELECT — a Select whose panel holds a tree. */
   .ui-tree-select-popover {
     --popover-surface-inline-size: var(--radix-popover-trigger-width);

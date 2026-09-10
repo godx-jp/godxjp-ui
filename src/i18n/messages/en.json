@@ -162,6 +162,22 @@
       "error": "Invalid",
       "validating": "Validating",
       "submitFailed": "Could not submit the form. Please try again."
+    },
+    "chatComposer": {
+      "label": "Message",
+      "placeholder": "Write a message",
+      "send": "Send message",
+      "cancel": "Stop generating",
+      "hintEnter": "Enter to send · Shift + Enter for a new line",
+      "hintShiftEnter": "Shift + Enter to send · Enter for a new line"
+    },
+    "chatSuggestion": {
+      "label": "Suggestions",
+      "empty": "No suggestions match",
+      "count": {
+        "one": "{count} suggestion",
+        "other": "{count} suggestions"
+      }
     }
   },
   "feedback": {
@@ -289,6 +305,13 @@
     "progress": {
       "ariaLabel": "Progress",
       "breakdownSeparator": ", "
+    },
+    "tree": {
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "loading": "Loading child nodes…",
+      "empty": "Nothing to show",
+      "selected": "Selected"
     }
   },
   "ui": {
@@ -536,5 +559,27 @@
   "textExamples": {
     "preservedText": "Plain text",
     "sampleText": "First line\n  Indented line\n\nLast line"
+  },
+  "chat": {
+    "bubble": {
+      "typing": "Typing…",
+      "loading": "Loading the message",
+      "you": "You",
+      "assistant": "Assistant",
+      "tone": {
+        "info": "Information",
+        "success": "Success",
+        "warning": "Warning",
+        "destructive": "Error"
+      }
+    },
+    "list": {
+      "label": "Conversation",
+      "jumpToLatest": "Jump to latest",
+      "newMessages": {
+        "one": "{count} new message",
+        "other": "{count} new messages"
+      }
+    }
   }
 }

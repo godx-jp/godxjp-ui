@@ -1,0 +1,60 @@
+/*
+ * TREE — the standalone, on-page WAI-ARIA "Tree View" (`src/components/data-display/tree.tsx`).
+ *
+ * Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST
+ * reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than
+ * inverts. A service retunes the whole outline in one place instead of forking a row.
+ *
+ * ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a
+ * role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it
+ * is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a
+ * shell that re-scopes `--control-height` would never reach it.
+ * @see docs/TOKENS.md · "Role-mirror knobs MUST be `initial`".
+ */
+
+:root {
+  /* Row box height. MIRRORS THE `--control-height` TIER — the row is a control-sized hit target,
+   * and the tier is density-aware, so the height is never a literal and never an ad-hoc
+   * `calc(var(--control-height) ± …)` (that re-derives a tier and drifts out of step with the
+   * controls beside it). `size` picks a NAMED step (`--control-height-{xs,sm,lg}`) at the call
+   * site; the tier is re-scoped by the auth shells, hence `initial` here.
+   * Documented default: --tree-node-height = var(--control-height). */
+  --tree-node-height: initial;
+
+  /* Indent per level. Drives `padding-inline-start` on the row — a LOGICAL property, so the
+   * outline flips under `dir="rtl"` with no second rule. */
+  --tree-indent-width: var(--space-5);
+
+  /* Inline padding inside a row, the gap between switcher / checkbox / icon / label, and the row's
+   * corner. Pure geometry — no role to freeze, so these bind directly. */
+  --tree-node-padding-inline: var(--space-2);
+  --tree-node-gap: var(--space-2);
+  --tree-node-radius: var(--radius-sm);
+  --tree-node-font-size: var(--font-size-sm);
+
+  /* The disclosure triangle (NameThatUI: "disclosure triangle"; an indented tree that expands is
+   * an "Outline View"). Its box is what makes the switcher a real 24px-class target inside the
+   * row, so it is a knob, not a hardcoded icon size. */
+  --tree-switcher-size: 1.25rem;
+  /* Documented default: --tree-switcher-color = hsl(var(--muted-foreground)). */
+  --tree-switcher-color: initial;
+
+  /* Node glyph (`showIcon`, and the folder/file pair of `variant="directory"`). */
+  --tree-icon-size: var(--icon-size-md);
+
+  /* Connector rails (`showLine`). Off by default — a rail is chrome, and chrome defaults quiet. */
+  /* Documented default: --tree-line-color = hsl(var(--border)). */
+  --tree-line-color: initial;
+
+  /* Row states. Both mirror roles, so both are `initial` with the role read at the call site.
+   * Documented defaults: --tree-node-hover-background = hsl(var(--accent));
+   * --tree-node-selected-background = hsl(var(--accent));
+   * --tree-node-selected-foreground = hsl(var(--accent-foreground)). */
+  --tree-node-hover-background: initial;
+  --tree-node-selected-background: initial;
+  --tree-node-selected-foreground: initial;
+
+  /* Width of the indeterminate bar shown while `loadData` resolves a branch. A fraction, not a
+     length: it has to read as "part of a row" at every row width and every density. */
+  --tree-loading-bar-inline-size: 40%;
+}

@@ -159,6 +159,21 @@
       "error": "入力エラー",
       "validating": "確認中",
       "submitFailed": "フォームを送信できませんでした。再試行してください。"
+    },
+    "chatComposer": {
+      "label": "メッセージ",
+      "placeholder": "メッセージを入力",
+      "send": "メッセージを送信",
+      "cancel": "生成を停止",
+      "hintEnter": "Enter で送信 · Shift + Enter で改行",
+      "hintShiftEnter": "Shift + Enter で送信 · Enter で改行"
+    },
+    "chatSuggestion": {
+      "label": "候補",
+      "empty": "一致する候補がありません",
+      "count": {
+        "other": "候補 {count} 件"
+      }
     }
   },
   "feedback": {
@@ -283,6 +298,13 @@
     "progress": {
       "ariaLabel": "進捗",
       "breakdownSeparator": "、"
+    },
+    "tree": {
+      "expand": "展開",
+      "collapse": "折りたたむ",
+      "loading": "子ノードを読み込み中…",
+      "empty": "表示する項目がありません",
+      "selected": "選択中"
     }
   },
   "ui": {
@@ -524,5 +546,26 @@
   "textExamples": {
     "preservedText": "プレーンテキスト",
     "sampleText": "最初の行\n  字下げした行\n\n最後の行"
+  },
+  "chat": {
+    "bubble": {
+      "typing": "入力中",
+      "loading": "メッセージを読み込み中",
+      "you": "自分",
+      "assistant": "アシスタント",
+      "tone": {
+        "info": "情報",
+        "success": "成功",
+        "warning": "警告",
+        "destructive": "エラー"
+      }
+    },
+    "list": {
+      "label": "会話",
+      "jumpToLatest": "最新へ移動",
+      "newMessages": {
+        "other": "新着 {count} 件"
+      }
+    }
   }
 }

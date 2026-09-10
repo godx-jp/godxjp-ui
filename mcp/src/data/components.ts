@@ -969,7 +969,8 @@ import { StatCard } from "@godxjp/ui/data-display";
       {
         name: "logo",
         type: "ReactNode",
-        description: "The shell's brand lockup. ALWAYS rendered — unlike topbarLeft/topbarRight it survives a custom `topbar`, because identity belongs to the frame, not to the bar's contents. WHERE it lands follows `topbarSpan`, the axis that already says who owns the top-left corner: `content` puts it at the sidebar's head, aligned to that track; `full` puts it in the bar beside the space-level chrome. Do not place it yourself in `Sidebar.brand` or a `Topbar` slot — that pins it to one arrangement while the axis moves the rest of the shell.",
+        description:
+          "The shell's brand lockup. ALWAYS rendered — unlike topbarLeft/topbarRight it survives a custom `topbar`, because identity belongs to the frame, not to the bar's contents. WHERE it lands follows `topbarSpan`, the axis that already says who owns the top-left corner: `content` puts it at the sidebar's head, aligned to that track; `full` puts it in the bar beside the space-level chrome. Do not place it yourself in `Sidebar.brand` or a `Topbar` slot — that pins it to one arrangement while the axis moves the rest of the shell.",
       },
       {
         name: "sidebarCollapsed",
@@ -1008,7 +1009,7 @@ import { StatCard } from "@godxjp/ui/data-display";
         name: "navRailEnd",
         type: "ReactNode",
         description:
-          "Rail content pinned to its FAR end — the counterpart of Sidebar's `footer`, and the tray end of a taskbar: appearance, settings, the account glyph. It follows the orientation, so it is the bottom of a column and the inline-end of a strip, and it stays put while `navRail` scrolls. A SLOT rather than \"whatever you put last\", because pinning needs an auto margin on whichever axis the rail currently runs — geometry that would otherwise land in consumer CSS, which this library does not accept. It reaches the mobile drawer with the rest of the rail; a control that exists on only some viewports is a trap, not a control. Ignored without `navRail`: there is no rail to pin it to.",
+          'Rail content pinned to its FAR end — the counterpart of Sidebar\'s `footer`, and the tray end of a taskbar: appearance, settings, the account glyph. It follows the orientation, so it is the bottom of a column and the inline-end of a strip, and it stays put while `navRail` scrolls. A SLOT rather than "whatever you put last", because pinning needs an auto margin on whichever axis the rail currently runs — geometry that would otherwise land in consumer CSS, which this library does not accept. It reaches the mobile drawer with the rest of the rail; a control that exists on only some viewports is a trap, not a control. Ignored without `navRail`: there is no rail to pin it to.',
       },
       {
         name: "navRailLabel",
@@ -4683,7 +4684,7 @@ import remarkGfm from "remark-gfm";
         name: "columnWidths",
         type: "{ actions?: string; actionsCompact?: string; metaCompact?: string; minInlineSizeCompact?: string }",
         description:
-          "PER-INSTANCE column measures for preset=\"action-collection\", in place of re-pointing its --table-action-collection-* knobs from a consumer stylesheet. Those knobs are global by design, and that is the problem: two collections on one screen do not share a column budget — a console that widened `actions` globally so a Japanese status badge would stop breaking to one character per line (an SC 1.4.10 reflow failure) collapsed a sibling table's name column to ~15px in the same change. Emitted as inline custom properties, the same contract Flex `width` uses for a call-site measurement, leaving data-column-widths on the DOM so each escape stays countable.",
+          'PER-INSTANCE column measures for preset="action-collection", in place of re-pointing its --table-action-collection-* knobs from a consumer stylesheet. Those knobs are global by design, and that is the problem: two collections on one screen do not share a column budget — a console that widened `actions` globally so a Japanese status badge would stop breaking to one character per line (an SC 1.4.10 reflow failure) collapsed a sibling table\'s name column to ~15px in the same change. Emitted as inline custom properties, the same contract Flex `width` uses for a call-site measurement, leaving data-column-widths on the DOM so each escape stays countable.',
       },
       {
         name: "align",
@@ -11229,6 +11230,224 @@ export function ChartOfAccounts() {
     rules: [3, 6, 23, 31],
   },
   {
+    name: "Tree",
+    group: "data-display",
+    tagline:
+      "The standalone WAI-ARIA tree view on a page (antd `Tree` / `DirectoryTree`) — nested `treeData`, a disclosure triangle per branch, roving-tabindex arrow navigation, optional tri-state checkboxes and async `loadData`. Use it INSTEAD OF TreeList whenever nodes expand; TreeSelect is the same hierarchy inside a Popover.",
+    props: [
+      {
+        name: "treeData",
+        type: "TreeNodeProp[]",
+        required: true,
+        description:
+          "The hierarchy. Each node: `{ value: string; label: ReactNode; disabled?: boolean; disableCheckbox?: boolean; isLeaf?: boolean; icon?: ReactNode; children?: TreeNodeProp[] }`. Same node shape as TreeSelect/Cascader; use `fieldNames` to remap an API response instead of transforming it.",
+      },
+      {
+        name: "fieldNames",
+        type: "{ label?: string; value?: string; children?: string }",
+        description:
+          "Remap the data's own key names, e.g. `{ label: 'name', value: 'id', children: 'items' }`.",
+      },
+      {
+        name: "value",
+        type: "string | string[]",
+        description:
+          "Controlled SELECTION (antd `selectedKeys`). `string` while single, `string[]` once `multiple` is on. Selection and checks are separate axes — do not use this for checkboxes.",
+      },
+      {
+        name: "defaultValue",
+        type: "string | string[]",
+        description: "Initial selection for an uncontrolled tree. Ignored once `value` is passed.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string | string[] | undefined) => void",
+        description:
+          "Selection change (antd `onSelect`). Emits `string | undefined` while single, `string[]` once `multiple` is on.",
+      },
+      {
+        name: "multiple",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Allow more than one selected node. Also sets `aria-multiselectable` on the tree.",
+      },
+      {
+        name: "checkable",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Draw a checkbox on every node (antd `checkable`). Checking cascades to descendants and a parent shows `indeterminate` while only some are checked. With `checkable`, Enter/Space toggles the checkbox rather than selecting.",
+      },
+      {
+        name: "checkStrictly",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Parent and child checks are independent (antd `checkStrictly`) — no cascade and no indeterminate state.",
+      },
+      {
+        name: "checkedValues",
+        type: "string[]",
+        description: "Controlled checked nodes (antd `checkedKeys`).",
+      },
+      {
+        name: "defaultCheckedValues",
+        type: "string[]",
+        description: "Initial checked nodes for an uncontrolled tree (antd `defaultCheckedKeys`).",
+      },
+      {
+        name: "onCheckedValuesChange",
+        type: "(values: string[]) => void",
+        description:
+          "Checked-set change (antd `onCheck`). The array is normalised: a branch appears only when every tickable child is checked, so it can never claim a partial selection is complete.",
+      },
+      {
+        name: "expandedValues",
+        type: "string[]",
+        description: "Controlled expanded branches (antd `expandedKeys`).",
+      },
+      {
+        name: "defaultExpandedValues",
+        type: "string[]",
+        description: "Initial expanded branches (antd `defaultExpandedKeys`).",
+      },
+      {
+        name: "onExpandedValuesChange",
+        type: "(values: string[]) => void",
+        description:
+          "Expansion change (antd `onExpand`). Fires for controlled and uncontrolled trees.",
+      },
+      {
+        name: "defaultExpandAll",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Start with every branch open. Seeded once on mount, never re-applied.",
+      },
+      {
+        name: "loadData",
+        type: "(node: TreeNodeProp) => void | Promise<void>",
+        description:
+          "Lazy children (antd `loadData`). Called ONCE per node the first time a branch with no `children` and `isLeaf !== true` is expanded; a Skeleton row and `aria-busy` cover the wait. Push the fetched children into `treeData`.",
+      },
+      {
+        name: "titleRender",
+        type: "(node: TreeNodeProp) => ReactNode",
+        description: "Render a node's title yourself (antd `titleRender`).",
+      },
+      {
+        name: "showLine",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Draw the connector rails between a parent and its children (antd `showLine`). Off by default — a rail is chrome, and chrome defaults quiet.",
+      },
+      {
+        name: "showIcon",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Draw each node\'s `icon` (antd `showIcon`). `variant="directory"` supplies folder/file glyphs when a node has no `icon` of its own.',
+      },
+      {
+        name: "variant",
+        type: '"default" | "directory"',
+        defaultValue: '"default"',
+        description:
+          "`directory` is antd's `<DirectoryTree>`: folder/file glyphs and a full-row selected band.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          "Row height tier — the shared `--control-height` ladder, so rows stay in step with the controls beside them under every density.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Disable the whole tree: nothing selects, checks or expands, and the nodes stay readable.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: 'Classes applied to the `role="tree"` container.',
+      },
+      { name: "id", type: "string", description: 'HTML id on the `role="tree"` container.' },
+      {
+        name: "aria-label",
+        type: "string",
+        description:
+          "Accessible name of the tree. Required unless `aria-labelledby` names it from a visible heading.",
+      },
+    ],
+    usage: [
+      "DO name the tree — pass `aria-label` (through your own `t()`) or `aria-labelledby`. A tree with no name is an unlabelled landmark for every screen reader user.",
+      "DO keep SELECTION and CHECKS apart: `value`/`onValueChange` is which node is open in the detail pane; `checkedValues`/`onCheckedValuesChange` is which nodes are ticked. They are two axes, exactly as in antd — never drive one from the other.",
+      "DO let the keyboard work: the tree ships the full APG contract (Up/Down through visible nodes, Right expands then descends, Left collapses then climbs, Home/End, Enter/Space, `*` to expand the current level, type-ahead). Do not add your own key handling on top.",
+      "DON'T nest a Button, Checkbox, Link or any focusable control inside a node label. A tree item owns exactly ONE tab stop; the disclosure triangle and the tick box are decorative glyphs for that reason. Put row actions in a sibling column outside the tree, or open a detail pane on selection.",
+      "DON'T reach for `TreeList` when nodes expand — it is a flat indented list with no ARIA tree semantics, no keyboard and no selection contract. Tree replaces it for every hierarchy the user navigates.",
+      "DO cap a long tree with `ScrollArea` — virtualisation is not in v1, so a 5,000-node tree renders 5,000 rows.",
+      "DO push fetched children into `treeData` from `loadData`; the tree calls it once per node and shows a Skeleton row until the data lands.",
+    ],
+    useCases: [
+      "A permission tree: modules → resources → actions with tri-state checkboxes, where ticking a module ticks everything under it and a partly-granted module shows the dash.",
+      "A category browser beside a detail pane — selecting a category loads its products, and the whole hierarchy stays navigable by keyboard.",
+      "An organisation chart / department picker on a settings page, where a branch's children are fetched on demand with `loadData`.",
+      'A file explorer (`variant="directory"`, `showIcon`, `showLine`) where folders and files read differently and the selected row spans the width.',
+      "A chart-of-accounts outline that must expand and collapse — the case TreeList only ever looked like it handled.",
+    ],
+    related: [
+      'TreeList — SUPERSEDED by Tree. It is a flat `<ul>` whose `depth` only drives indentation: no expand/collapse, no `role="tree"`, no keyboard, no selection contract. Keep it only for a static indented list that never opens.',
+      "TreeSelect — the same hierarchy INSIDE a Popover, as a form field. Use TreeSelect when the answer is a value in a form; use Tree when the hierarchy itself is the page.",
+      "Cascader — a path picker across columns. Use it when the user walks one path to a leaf; use Tree when several branches are open at once.",
+      "Accordion — single-level disclosure with rich panel content. It is not a hierarchy and has no tree keyboard model.",
+      "ScrollArea — wrap Tree in one to cap a long outline; Tree does not virtualise in v1.",
+    ],
+    example: `import { Tree } from "@godxjp/ui/data-display";
+import { useTranslation } from "@godxjp/ui/providers";
+
+const permissions = [
+  {
+    value: "billing",
+    label: "Billing",
+    children: [
+      { value: "billing.invoice.read", label: "Read invoices" },
+      { value: "billing.invoice.write", label: "Issue invoices" },
+    ],
+  },
+  {
+    value: "people",
+    label: "People",
+    children: [
+      { value: "people.read", label: "Read profiles" },
+      { value: "people.write", label: "Edit profiles", disabled: true },
+    ],
+  },
+];
+
+export function PermissionTree() {
+  const { t } = useTranslation();
+  const [granted, setGranted] = React.useState<string[]>(["billing.invoice.read"]);
+
+  return (
+    <Tree
+      aria-label={t("settings.permissions")}
+      treeData={permissions}
+      checkable
+      defaultExpandAll
+      checkedValues={granted}
+      onCheckedValuesChange={setGranted}
+    />
+  );
+}`,
+    docPath: "docs/data-display/tree.tsx",
+    storyPath: "data-display/Tree.stories.tsx",
+    rules: [2, 6, 23, 31, 44, 45],
+  },
+  {
     name: "Tooltip",
     group: "feedback",
     tagline:
@@ -11795,7 +12014,11 @@ import { Separator } from "@godxjp/ui/layout";
       "DO give the group an accessible name (`aria-label`) — it renders a radiogroup (single) or a group of toggle buttons (multiple).",
     ],
     useCases: ["Text alignment selector", "Formatting toolbar", "View density switcher"],
-    related: ["Segmented — the single-select sibling with a shared connected track. ToggleGroup is the generic multi/single toggle set; Segmented is the one-of-N control.", "Toggle", "RadioGroup"],
+    related: [
+      "Segmented — the single-select sibling with a shared connected track. ToggleGroup is the generic multi/single toggle set; Segmented is the one-of-N control.",
+      "Toggle",
+      "RadioGroup",
+    ],
     example: `import { ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
 
 // size/variant are set ONCE on the group and reach every item.
@@ -12733,7 +12956,7 @@ export default function PasswordBlock() {
     ],
     useCases: [
       'App-shell top-nav language switcher: <AppSettingPicker kind="locale" /> under AppProvider, persisting to localStorage with no extra state.',
-      "Topbar locale switcher (globe): <AppSettingPicker kind=\"locale\" appearance=\"bar\" /> in a Topbar `end` slot — a CELL of the bar: full bar height, squared to --topbar-item-radius, so its hover surface matches the TopbarItem beside it. appearance=\"icon\" is the same structural drops shaped as a CONTROL, for a toolbar or card header; in a taller bar it leaves a --control-height pill floating mid-strip and reads as a foreign control family. This line said \"icon\" while the prop doc said \"bar\", and a consumer duly shipped the pill.",
+      'Topbar locale switcher (globe): <AppSettingPicker kind="locale" appearance="bar" /> in a Topbar `end` slot — a CELL of the bar: full bar height, squared to --topbar-item-radius, so its hover surface matches the TopbarItem beside it. appearance="icon" is the same structural drops shaped as a CONTROL, for a toolbar or card header; in a taller bar it leaves a --control-height pill floating mid-strip and reads as a foreign control family. This line said "icon" while the prop doc said "bar", and a consumer duly shipped the pill.',
       'Auth-footer locale switch: <AppSettingPicker kind="locale" appearance="labeled" compact /> inside an <AuthFooter locale={…}> slot — the readable language name at the small control tier, hugging its value.',
       "User settings page with all four preferences — render kind=locale, kind=timezone, kind=dateFormat, kind=timeFormat together under one AppProvider.",
       "Onboarding step that picks language/timezone before the rest of the app is configured — AppProvider persist={false} + controlled values to keep state local.",
@@ -14468,6 +14691,476 @@ import { ServiceRolePanel } from "@godxjp/ui/layout";
     docPath: "layout/service-role-panel.tsx",
     storyPath: "layout/ServiceRolePanel.stories.tsx",
     rules: [24, 40],
+  },
+  {
+    name: "ChatBubble",
+    group: "data-display",
+    tagline:
+      "One message in a conversation: an author mark, a header naming the turn, the body, and a footer. Renders as an <article> inside ChatBubbleList's log; `loading` shows Skeleton and `typing` streams a string in, dropping the animation entirely under prefers-reduced-motion.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        description:
+          "The message. Pass a plain STRING to make `typing` animatable — a ReactNode has no character count to reveal, so it always renders whole.",
+      },
+      {
+        name: "placement",
+        type: '"start" | "end"',
+        defaultValue: '"start"',
+        description:
+          'Side of the conversation, on the LOGICAL inline axis: "start" is the other party, "end" is the reader\'s own message. It flips automatically under dir="rtl" — never branch on locale.',
+      },
+      {
+        name: "variant",
+        type: '"filled" | "borderless" | "outlined"',
+        defaultValue: '"filled"',
+        description:
+          "Structural treatment of the body. Ant Design X's `shadow` is absent on purpose: this is a 1px-border system with no drop shadows. Status colour is `tone`, never `variant`.",
+      },
+      {
+        name: "avatar",
+        type: "ReactNode",
+        description:
+          "The author's mark — a real <Avatar>, never a styled div. Mark it aria-hidden when `header` already names the author.",
+      },
+      {
+        name: "header",
+        type: "ReactNode",
+        description:
+          "Line above the body naming the turn. When present it becomes the bubble's ACCESSIBLE NAME (aria-labelledby), so keep it text.",
+      },
+      {
+        name: "footer",
+        type: "ReactNode",
+        description:
+          "Line below the body — a timestamp (format it with formatAppTime from @godxjp/ui/datetime), per-message actions, a token count.",
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "The reply was requested and has not arrived: renders Skeleton bars (aria-hidden, they are decorative) plus a localized sr-only line, and sets aria-busy on the article.",
+      },
+      {
+        name: "typing",
+        type: "boolean | { step?: number; interval?: number }",
+        defaultValue: "false",
+        description:
+          "Stream the text in. `true` = 1 character every 50ms; the object form retunes it. While streaming the half-typed text is aria-hidden and the article is aria-busy, so the log announces the finished message ONCE. Under prefers-reduced-motion: reduce the full text renders immediately and no timer starts.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: 'Type step and inner inset. Never "default".',
+      },
+      {
+        name: "tone",
+        type: '"default" | "info" | "success" | "warning" | "destructive"',
+        defaultValue: '"default"',
+        description:
+          "Status intent for a message that is not ordinary conversation (a failed send, a rate-limit warning). Washes the role colour like Alert AND renders a localized sr-only tone word — never colour alone.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description:
+          "DOM id forwarded to the bubble's `<article>`. Supply one when something outside the bubble has to point at it (an `aria-describedby` from a retry button, a deep link to a single message); otherwise leave it off and let React generate the ids the header/label wiring needs.",
+      },
+    ],
+    usage: [
+      "DO let ChatBubbleList own the feed. A lone ChatBubble is for a single quoted message; a conversation is `items` + `roles` on the list, which is where stick-to-bottom and the one aria-live region live.",
+      "DO pass a real <Avatar> to `avatar` and a plain string to `header`. The header is the accessible name of the bubble, so a decorative avatar next to it should be aria-hidden.",
+      "DO pass `typing` on the streaming message only, and only when its body is a string. Do not re-mount the bubble on every token — change `children` and let the component reveal it.",
+      "DO format timestamps for `footer` with formatAppTime / formatAppDate from @godxjp/ui/datetime (Intl.DateTimeFormat + the AppProvider timezone). Never hand-build a date string.",
+      "DO NOT put an aria-live region inside a bubble. The feed owns exactly one; one per bubble floods a screen reader on every token.",
+      "DO NOT reach for `variant` to signal an error — that is `tone`. `variant` is structural (filled/borderless/outlined) and has no status values.",
+      "DO NOT hand-roll the bubble as a rounded div with a background: placement, the RTL flip, the max measure and the tone wash are all tokens on this component (--chat-bubble-*).",
+    ],
+    useCases: [
+      "An AI assistant panel — assistant turns on the start side, the operator's own prompts on the end side, with the in-flight reply streaming via `typing`.",
+      'A support-inbox thread where an agent reads the customer\'s history: the same feed renders both parties and marks a failed send with tone="destructive".',
+      'A tool/agent transcript where a system note (tone="info", variant="outlined") sits between conversational turns.',
+      "A quoted single message inside a Card — a reported message in a moderation screen, rendered as one ChatBubble with a footer carrying the report time.",
+    ],
+    related: [
+      "ChatBubbleList — the feed. Use it whenever there is more than one message: it owns stick-to-bottom, the jump-to-latest affordance and the single aria-live region.",
+      "ListRow — a single-line entity row for short lists (sessions, tokens). Use ListRow for records, ChatBubble for conversation turns.",
+      "Alert — a page-level status banner. A toned ChatBubble is a status INSIDE a conversation; an Alert is a status about the screen.",
+      "Prose — use it inside `children` when the assistant returns rendered Markdown; ChatBubble owns the container, Prose owns the typography of the body.",
+      "Skeleton — what `loading` renders. Do not compose it yourself around a bubble; the prop also sets aria-busy and the localized status line.",
+    ],
+    example: `import { Avatar, AvatarFallback, ChatBubble } from "@godxjp/ui/data-display";
+import { formatAppTime } from "@godxjp/ui/datetime";
+
+<ChatBubble
+  placement="start"
+  variant="filled"
+  avatar={<Avatar aria-hidden="true"><AvatarFallback>AI</AvatarFallback></Avatar>}
+  header={t("chat.bubble.assistant")}
+  footer={formatAppTime(message.sentAt)}
+  typing={{ step: 2, interval: 24 }}
+>
+  {message.text}
+</ChatBubble>
+
+// The reply has been requested and has not arrived yet.
+<ChatBubble placement="start" header={t("chat.bubble.assistant")} loading />
+
+// A failed send: colour AND a localized sr-only word, never colour alone.
+<ChatBubble placement="end" tone="destructive" header={t("chat.bubble.you")}>
+  {draft}
+</ChatBubble>`,
+    docPath: "data-display/chat-bubble.tsx",
+    storyPath: "data-display/ChatBubble.stories.tsx",
+    rules: [6, 23, 44, 45],
+  },
+  {
+    name: "ChatBubbleList",
+    group: "data-display",
+    tagline:
+      'The message feed. It owns STICK-TO-BOTTOM (auto-scroll only while the reader is already at the bottom; the moment they scroll up the pin is revoked and a focusable jump-to-latest button appears), one aria-live="polite" role="log" region for the whole conversation, and per-role bubble defaults.',
+    props: [
+      {
+        name: "items",
+        type: "ChatMessageProp[]",
+        required: true,
+        description:
+          "`{ id, role?, content?, ...ChatBubbleProp }` in conversation order, oldest first. `id` is the React key AND the rendered <article>'s DOM id.",
+      },
+      {
+        name: "roles",
+        type: "Record<string, Partial<ChatBubbleProp>>",
+        description:
+          'Per-role bubble defaults, merged UNDER each message\'s own props: `{ assistant: { placement: "start" }, user: { placement: "end", variant: "outlined" } }`. Written once instead of on every message.',
+      },
+      {
+        name: "autoScroll",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          'Keep the newest message in view WHILE the reader is at the bottom. It is not "scroll to the bottom when content arrives": scrolling up revokes the pin until the reader asks for it back, because yanking them down mid-sentence is a change of context they did not request (WCAG 3.2.5).',
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          'Accessible name of the feed; lands on aria-label. Defaults to the localized t("chat.list.label").',
+      },
+      {
+        name: "id",
+        type: "string",
+        description:
+          "DOM id forwarded to the feed's scroll container (`role=\"log\"`). Supply one when a control outside the feed must reference it — an `aria-controls` on a \"jump to latest\" button of your own, or a skip link that moves focus into the transcript.",
+      },
+    ],
+    usage: [
+      "DO drive the feed from `items` and shape it with `roles`. Mapping ChatBubbles yourself inside a ScrollArea loses stick-to-bottom, the jump affordance and the single live region — the three reasons this component exists.",
+      'DO give the list a DEFINITE height — `className="h-96"`, or a flex/grid parent that hands it a track. It scrolls inside itself; measured at 1280px, a list with no height grew to its content (1,952px) inside a 256px Card, scrollHeight === clientHeight, and stick-to-bottom had nothing to anchor.',
+      "DO keep `id` stable per message. It is the React key, so a regenerated id re-mounts the bubble and restarts any typing animation.",
+      "DO leave autoScroll on for a live conversation and turn it off for an archived transcript, where landing on the newest message is not what the reader wants.",
+      'DO NOT add your own aria-live region inside the feed, and do not put one on a bubble. This list already declares role="log" with aria-live="polite"; a second region double-announces every message.',
+      "DO NOT scroll the viewport yourself on every append. That is the defect stick-to-bottom exists to prevent; the reader's scroll position is the only thing that grants the pin.",
+    ],
+    useCases: [
+      "The transcript pane of an AI assistant screen, above a ChatComposer, streaming the assistant's reply into the last bubble.",
+      "A support conversation in an admin detail page, where an operator scrolls up to re-read an earlier message while new ones keep arriving.",
+      "An agent/tool run log rendered as a conversation, with system notes as toned bubbles between turns.",
+      "An archived thread opened read-only from a report (autoScroll={false}), so the reader lands where the citation is rather than at the end.",
+    ],
+    related: [
+      "ChatBubble — one message; this list renders them and supplies per-role defaults.",
+      'ScrollArea — the scrolling primitive underneath. Use ScrollArea anchor="bottom" directly for a non-conversational live stream (an audit log); use ChatBubbleList when the rows are conversation turns.',
+      "Timeline — an ordered event rail with no scale and no live region. Use Timeline for a record's history, ChatBubbleList for a dialogue.",
+      "DataTable — for many rows that need sorting, filtering and pagination. A conversation is neither sorted nor paged.",
+    ],
+    example: `import { ChatBubbleList, type ChatMessageProp } from "@godxjp/ui/data-display";
+
+const messages: ChatMessageProp[] = [
+  { id: "m1", role: "assistant", content: "How can I help?" },
+  { id: "m2", role: "user", content: "Summarise yesterday's invoices." },
+  { id: "m3", role: "assistant", content: reply, typing: true },
+];
+
+<ChatBubbleList
+  label={t("chat.list.label")}
+  items={messages}
+  roles={{
+    assistant: { placement: "start", variant: "filled", avatar: assistantAvatar },
+    user: { placement: "end", variant: "outlined" },
+    system: { placement: "start", variant: "borderless", tone: "info", size: "sm" },
+  }}
+/>`,
+    docPath: "data-display/chat-bubble.tsx",
+    storyPath: "data-display/ChatBubbleList.stories.tsx",
+    rules: [6, 23, 44, 45],
+  },
+  {
+    name: "ChatComposer",
+    group: "data-entry",
+    tagline:
+      "The message input of a conversation (Ant Design X Sender): an auto-growing Textarea plus exactly ONE trailing action — send, or cancel while a response streams. Enter/Shift+Enter is configurable and never fires during an IME conversion.",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        description: "Controlled draft text. Pair with onValueChange or the box freezes.",
+      },
+      { name: "defaultValue", type: "string", description: "Uncontrolled initial draft text." },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description:
+          "Draft-text change handler; fires on every keystroke, including during an IME conversion.",
+      },
+      {
+        name: "onSubmit",
+        type: "(value: string) => void",
+        description:
+          "Send the draft. Never fires for empty or whitespace-only text, nor while loading/disabled/readOnly.",
+      },
+      {
+        name: "onCancel",
+        type: "() => void",
+        description: "Stop the in-flight response. Only reachable while loading.",
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "A response is streaming: the trailing action BECOMES cancel. Send and cancel never render together.",
+      },
+      {
+        name: "submitType",
+        type: '"enter" | "shiftEnter"',
+        defaultValue: '"enter"',
+        description:
+          '"enter": Enter sends, Shift+Enter breaks the line. "shiftEnter": the inverse, for long deliberate drafts.',
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        description: "Empty-state text of the draft box — pass it through t() at the call site.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Disable the composer and every action.",
+      },
+      {
+        name: "readOnly",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Show the draft without allowing an edit; still focusable.",
+      },
+      {
+        name: "header",
+        type: "React.ReactNode",
+        description: "Slot ABOVE the draft row — attachments, a reply-to banner, a model picker.",
+      },
+      {
+        name: "prefix",
+        type: "React.ReactNode",
+        description: "Slot at the inline START of the draft row — an attach Button, an Avatar.",
+      },
+      {
+        name: "footer",
+        type: "React.ReactNode",
+        description: "Slot BELOW the draft row — a hint line, a token counter.",
+      },
+      {
+        name: "actions",
+        type: "React.ReactNode",
+        description: "Extra trailing actions, rendered BEFORE the send/cancel action.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          "Height tier on the shared --control-height ladder; moves both auto-grow bounds together.",
+      },
+      {
+        name: "maxLength",
+        type: "number",
+        description: "Hard ceiling on the draft length, forwarded to the textarea.",
+      },
+      {
+        name: "status",
+        type: '"error" | "warning"',
+        description:
+          "Validation state the frame paints. error also reports aria-invalid (colour alone fails WCAG 1.4.1).",
+      },
+      {
+        name: "submitLabel",
+        type: "string",
+        description: "Accessible name override for the send action (localized default otherwise).",
+      },
+      {
+        name: "cancelLabel",
+        type: "string",
+        description:
+          "Accessible name override for the cancel action (localized default otherwise).",
+      },
+      {
+        name: "onKeyDown",
+        type: "React.KeyboardEventHandler<HTMLTextAreaElement>",
+        description:
+          "Keydown on the draft box — how ChatSuggestion drives its list. A handler that calls preventDefault() owns the key, and the composer will not treat it as a send.",
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "Native form name, forwarded to the textarea.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "DOM id of the textarea (the semantic focus target FormField labels).",
+      },
+    ],
+    usage: [
+      "DO pair a controlled `value` with `onValueChange` — a controlled value with no synchronised handler is the classic frozen-input bug, and it freezes the whole conversation.",
+      "DO wrap it in FormField when the composer is a labelled field; the label/helper/error contract lands on the <textarea>, which is the semantic focus target (ref goes there too).",
+      "DON'T hand-roll Enter-to-send. An IME conversion (ja/vi) fires a real Enter to ACCEPT a candidate; ChatComposer already guards compositionstart/compositionend, and skipping that guard makes Japanese and Vietnamese input impossible.",
+      "DON'T render your own stop button beside the send button — set `loading` and the trailing action becomes cancel. Exactly one trailing action exists at a time (the picker trailing-action discipline).",
+      "DO put a hint in `footer` (t('dataEntry.chatComposer.hintEnter')) when you flip `submitType` — the keystroke contract is invisible otherwise.",
+      "DON'T size it with a className height: the box grows between --chat-composer-min-height and --chat-composer-max-height, both derived from the --control-height tier. Use `size`, or re-tune the two tokens in your theme.",
+    ],
+    useCases: [
+      "The message box of an AI assistant or support chat, under a ChatBubbleList feed.",
+      "A comment composer on a record detail screen (prefix = attach Button, footer = character counter).",
+      'A long-form reply box where Enter must break the line: submitType="shiftEnter".',
+      "A streaming answer the user can stop: loading + onCancel.",
+    ],
+    related: [
+      "Textarea — the primitive underneath. Use it directly for an ordinary multi-line form field with no send action.",
+      "ChatSuggestion — wraps ChatComposer to add trigger-character (/) autocomplete.",
+      "ChatBubbleList — the feed the composer sends into.",
+      "SearchInput — a single-line query field; a composer is multi-line and holds a draft.",
+    ],
+    example: [
+      'import { ChatComposer } from "@godxjp/ui/data-entry";',
+      "",
+      'const [draft, setDraft] = useState("");',
+      "const [streaming, setStreaming] = useState(false);",
+      "",
+      "<ChatComposer",
+      "  value={draft}",
+      "  onValueChange={setDraft}",
+      '  onSubmit={(text) => { send(text); setDraft(""); }}',
+      "  loading={streaming}",
+      "  onCancel={() => setStreaming(false)}",
+      '  placeholder={t("chat.placeholder")}',
+      '  footer={t("dataEntry.chatComposer.hintEnter")}',
+      "/>",
+    ].join("\n"),
+    docPath: "data-entry/chat-composer.tsx",
+    storyPath: "data-entry/ChatComposer.stories.tsx",
+    rules: [2, 6, 43, 45],
+  },
+  {
+    name: "ChatSuggestion",
+    group: "data-entry",
+    tagline:
+      "Trigger-character autocomplete over a ChatComposer (Ant Design X Suggestion): type / at a word boundary and a Command list opens against the composer, driven from the textarea without ever taking focus off it.",
+    props: [
+      {
+        name: "items",
+        type: "ChatSuggestionItemProp[]",
+        required: true,
+        description:
+          "The rows to offer: { value, label?, description?, icon?, disabled?, children? }. One level of children is honoured — picking a parent drills into it instead of emitting.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description:
+          "Fires with the picked row's value. The CALLER owns what that does to the draft text — the component never rewrites the textarea behind your back.",
+      },
+      {
+        name: "triggerCharacter",
+        type: "string",
+        defaultValue: '"/"',
+        description:
+          'The character that opens the list when typed at a word boundary (use "@" for a mention list).',
+      },
+      { name: "open", type: "boolean", description: "Controlled open state of the list." },
+      { name: "defaultOpen", type: "boolean", description: "Uncontrolled initial open state." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Open-state change handler.",
+      },
+      {
+        name: "children",
+        type: "(props: { onTrigger: (value?: string | false) => void; onKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> }) => React.ReactNode",
+        required: true,
+        description:
+          "Render prop wrapping the composer. Call onTrigger from the composer's onValueChange and forward onKeyDown to its onKeyDown.",
+      },
+      {
+        name: "emptyMessage",
+        type: "string",
+        description: "Shown when the query matches nothing (localized default otherwise).",
+      },
+      {
+        name: "listLabel",
+        type: "string",
+        description: "Accessible name of the listbox (localized default otherwise).",
+      },
+      {
+        name: "id",
+        type: "string",
+        description: "DOM id of the anchor wrapping the composer.",
+      },
+    ],
+    usage: [
+      "DO wire BOTH halves of the render prop: `onTrigger` from the composer's onValueChange and `onKeyDown` from its onKeyDown. With only one wired the list either never opens or cannot be driven.",
+      "DO decide yourself what a pick does to the draft — onValueChange hands you the value; the typed /query is still in the box, so replace it or append to it as your screen needs.",
+      "DON'T hand-roll a listbox next to a textarea. This composes the real Command (cmdk) inside a Popover, which already ships the listbox/option roles, active-row bookkeeping and scroll-into-view.",
+      "DO rely on Escape: it closes the list, returns focus to the textarea and leaves the typed text intact. It also stops propagating, so a composer inside a Dialog does not close the Dialog too.",
+      "DON'T expect it to filter server-side — filtering is a plain substring match over label/value/description. For a remote list, filter `items` yourself as the query changes.",
+    ],
+    useCases: [
+      "Slash commands over an assistant composer (/summarize, /translate, /explain).",
+      'Mention picker in a comment composer (triggerCharacter="@").',
+      "Prompt-template inserter grouped one level deep (a category row that drills into its templates).",
+    ],
+    related: [
+      "ChatComposer — the control it wraps; use it alone when there is nothing to suggest.",
+      "Command / CommandPalette — a full-screen command surface opened by a shortcut, not by a character in a draft.",
+      "Select (showSearch) — the searchable single-select; a suggestion list edits free text, it does not hold a value.",
+    ],
+    example: [
+      'import { ChatComposer, ChatSuggestion } from "@godxjp/ui/data-entry";',
+      "",
+      'const [draft, setDraft] = useState("");',
+      "",
+      "<ChatSuggestion",
+      "  items={[",
+      '    { value: "summarize", label: "要約する", description: "Summarize the thread" },',
+      '    { value: "translate", label: "翻訳する" },',
+      "  ]}",
+      '  onValueChange={(value) => setDraft("/" + value + " ")}',
+      ">",
+      "  {({ onTrigger, onKeyDown }) => (",
+      "    <ChatComposer",
+      "      value={draft}",
+      "      onValueChange={(next) => { setDraft(next); onTrigger(next); }}",
+      "      onKeyDown={onKeyDown}",
+      "      onSubmit={(text) => send(text)}",
+      "    />",
+      "  )}",
+      "</ChatSuggestion>",
+    ].join("\n"),
+    docPath: "data-entry/chat-composer.tsx",
+    storyPath: "data-entry/ChatSuggestion.stories.tsx",
+    rules: [2, 3, 6],
   },
 ];
 

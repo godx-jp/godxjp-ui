@@ -490,4 +490,89 @@
     max-block-size: var(--branch-scope-picker-list-max-height);
     overflow-y: auto;
   }
+
+  /* ── ChatComposer (Ant Design X `Sender`) ──────────────────────────────────────────────────
+   * The FRAME is the boundary and the `Textarea` inside is `variant="borderless"`, so the two
+   * nested rounded borders that give a hand-rolled composer away never appear. Height is not the
+   * composer's own decision: the frame wears `.ui-control-surface`, so `data-size` moves
+   * `--control-height` onto its official tier step through the SHARED rung rules, and both
+   * auto-grow bounds are expressed from it (tokens/components/chat-composer.css). */
+  .ui-chat-composer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--chat-composer-gap);
+    inline-size: 100%;
+    padding-block: var(--chat-composer-padding-block);
+    padding-inline: var(--chat-composer-padding-inline);
+    border-width: var(--control-border-width);
+    border-style: solid;
+    border-radius: var(--chat-composer-radius, var(--control-radius));
+  }
+
+  .ui-chat-composer[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-chat-composer-header {
+    padding-block-end: var(--chat-composer-gap);
+    border-block-end: var(
+      --chat-composer-header-border,
+      var(--control-border-width) solid hsl(var(--border))
+    );
+  }
+
+  /* `flex-end`: the send action stays pinned to the LAST line as the draft grows upward, which is
+   * where every chat client puts it and where the eye already is after typing. */
+  .ui-chat-composer-row {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--chat-composer-row-gap);
+  }
+
+  .ui-chat-composer-prefix,
+  .ui-chat-composer-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--chat-composer-row-gap);
+  }
+
+  /* `min-inline-size: 0` is what lets an unbroken 2,000-character token wrap instead of widening
+   * the composer past its container — a flex item's default `min-width: auto` would not. */
+  .ui-chat-composer-field {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  /* BOTH bounds live on the auto-grow MIRROR, never on the textarea: a pseudo-element is out of
+   * reach of the `min-h-0` utility the borderless variant carries (utilities outrank components),
+   * which is exactly why the shared auto-grow rule puts them there. Restated here so a service
+   * retunes a composer through its own two documented tokens rather than the textarea's row
+   * knobs. */
+  .ui-chat-composer .ui-textarea-autogrow::after {
+    min-block-size: var(--chat-composer-min-height, var(--control-height));
+    max-block-size: var(--chat-composer-max-height, calc(var(--control-height) * 5));
+  }
+
+  .ui-chat-composer-footer {
+    font-size: var(--chat-composer-footer-font-size);
+  }
+
+  /* ── ChatSuggestion ────────────────────────────────────────────────────────────────────────
+   * The panel follows the ANCHOR's width (the composer), the same contract every other anchored
+   * list in this library uses, so the list never floats narrower than the box it belongs to. */
+}
+
+@layer components {
+  /* The label column of a ChatSuggestion row. `min-inline-size: 0` is the load-bearing half —
+     without it the flex item takes its label's intrinsic width and `truncate` never engages.
+     It lives here, logical and in CSS, because a Tailwind `min-w-0` in the JSX is both physical
+     and a hard-coded geometry literal (cardinal rules #44/#45). */
+  .ui-chat-suggestion-item-text {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    text-align: start;
+  }
 }

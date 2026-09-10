@@ -94,3 +94,17 @@ export type {
 } from "./permission-matrix";
 export { RangeTimeline } from "./range-timeline";
 export type { RangeTimelineProps, RangeTimelineRow } from "./range-timeline";
+export { ChatBubble, ChatBubbleList } from "./chat-bubble";
+export type {
+  ChatBubbleListProp,
+  ChatBubbleListProps,
+  ChatBubblePlacementProp,
+  ChatBubbleProp,
+  ChatBubbleProps,
+  ChatBubbleToneProp,
+  ChatBubbleTypingProp,
+  ChatBubbleVariantProp,
+  ChatMessageProp,
+} from "./chat-bubble";
+export { Tree } from "./tree";
+export type { TreeNodeProp, TreeProp, TreeProps } from "./tree";

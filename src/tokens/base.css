@@ -27,9 +27,11 @@
 @import "./components/data-display.css";
 @import "./components/scroll-area.css";
 @import "./components/list-row.css";
+@import "./components/chat-bubble.css";
 @import "./components/logo.css";
 @import "./components/email.css";
 @import "./components/data-entry.css";
+@import "./components/chat-composer.css";
 @import "./components/upload.css";
 @import "./components/shell.css";
 @import "./components/separator.css";
@@ -38,3 +40,4 @@
 @import "./components/error-surface.css";
 @import "./components/activity.css";
 @import "./components/text.css";
+@import "./components/tree.css";
