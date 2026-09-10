@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-
-import { DateRangePicker } from "../date-range-picker";
+import { DatePicker } from "../date-picker";
 
 const iso = (d: Date | undefined) =>
   d
@@ -14,7 +13,7 @@ describe("DateRangePicker — typing", () => {
   it("commits complete from + to dates through onValueChange", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
-    renderWithUi(<DateRangePicker onValueChange={onValueChange} />);
+    renderWithUi(<DatePicker range onValueChange={onValueChange} />);
     const [from, to] = inputs();
     await user.type(from, "2026-03-10");
     expect(iso(onValueChange.mock.calls.at(-1)![0]?.from)).toBe("2026-03-10");
@@ -27,7 +26,7 @@ describe("DateRangePicker — typing", () => {
   it("does not commit a partial edge", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
-    renderWithUi(<DateRangePicker onValueChange={onValueChange} />);
+    renderWithUi(<DatePicker range onValueChange={onValueChange} />);
     await user.type(inputs()[0], "2026-03");
     expect(onValueChange).not.toHaveBeenCalled();
   });
@@ -36,7 +35,8 @@ describe("DateRangePicker — typing", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     renderWithUi(
-      <DateRangePicker
+      <DatePicker
+        range
         defaultValue={{ from: new Date(2026, 2, 10), to: new Date(2026, 2, 20) }}
         onValueChange={onValueChange}
       />,
@@ -51,7 +51,7 @@ describe("DateRangePicker — typing", () => {
 describe("DateRangePicker — calendar popover", () => {
   it("ArrowDown opens the calendar and Escape closes it", async () => {
     const user = userEvent.setup();
-    renderWithUi(<DateRangePicker defaultValue={{ from: new Date(2026, 5, 1) }} />);
+    renderWithUi(<DatePicker range defaultValue={{ from: new Date(2026, 5, 1) }} />);
     const from = inputs()[0];
     await user.type(from, "{ArrowDown}");
     expect(calendarOpen()).toBe(true);
@@ -63,7 +63,8 @@ describe("DateRangePicker — calendar popover", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     renderWithUi(
-      <DateRangePicker
+      <DatePicker
+        range
         defaultValue={{ from: new Date(2026, 5, 1) }}
         onValueChange={onValueChange}
       />,
@@ -80,7 +81,7 @@ describe("DateRangePicker — calendar popover", () => {
 describe("DateRangePicker — disabled", () => {
   it("disabled inputs cannot open the calendar", async () => {
     const user = userEvent.setup();
-    renderWithUi(<DateRangePicker disabled defaultValue={{ from: new Date(2026, 5, 1) }} />);
+    renderWithUi(<DatePicker range disabled defaultValue={{ from: new Date(2026, 5, 1) }} />);
     const [from] = inputs();
     expect(from).toBeDisabled();
     await user.click(from);

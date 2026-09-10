@@ -99,11 +99,11 @@ jobs:
             command: pnpm check:data-entry-frame-runtime
           - name: data-entry-pickers
             port: 6021
-            stories: data-entry-date-picker,data-entry-time-picker,data-entry-month-picker,data-entry-cascader,data-entry-tree-select,data-entry-transfer,data-entry-color-picker,data-entry-number-input,data-entry-upload
+            stories: data-entry-date-picker,data-entry-time-picker,data-entry-cascader,data-entry-tree-select,data-entry-transfer,data-entry-color-picker,data-entry-number-input,data-entry-upload
             command: pnpm check:data-entry-frame-runtime
           - name: data-entry-specialized
             port: 6031
-            stories: data-entry-search-input,data-entry-password-input,data-entry-input-otp,data-entry-rating,data-entry-tag-input,data-entry-calendar,data-entry-date-range-picker,data-entry-month-range-picker,data-entry-command
+            stories: data-entry-search-input,data-entry-password-input,data-entry-input-otp,data-entry-rating,data-entry-tag-input,data-entry-calendar,data-entry-command
             command: pnpm check:data-entry-frame-runtime
           - name: interaction-semantics
             port: 6041

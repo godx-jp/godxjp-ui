@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-
-import { DateRangePicker } from "../date-range-picker";
+import { DatePicker } from "../date-picker";
 
 const fromInput = () => screen.getAllByRole("textbox")[0];
 
@@ -9,7 +8,8 @@ describe("DateRangePicker — fromDate/toDate bounds", () => {
   it("disables days before fromDate and after toDate", async () => {
     const user = userEvent.setup();
     renderWithUi(
-      <DateRangePicker
+      <DatePicker
+        range
         defaultValue={{ from: new Date(2026, 5, 10) }}
         fromDate={new Date(2026, 5, 5)}
         toDate={new Date(2026, 5, 25)}

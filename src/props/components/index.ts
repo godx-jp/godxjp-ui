@@ -32,7 +32,6 @@ export type {
   SliderProp,
   CalendarProp,
   DatePickerProp,
-  DateRangePickerProp,
   TimePickerProp,
   ColorPickerProp,
   UploadProp,

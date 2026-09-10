@@ -450,7 +450,7 @@ export const COMPONENTS: ComponentEntry[] = [
       "Each endpoint follows the one-trailing-icon rule; allowEmpty=false suppresses its clear action.",
     ],
     useCases: ["Shift scheduling and reception hours."],
-    related: ["TimePicker", "DateRangePicker"],
+    related: ["TimePicker", "DatePicker"],
     example:
       'import { TimeRangePicker } from "@godxjp/ui/data-entry";\n<TimeRangePicker aria-label="Shift" defaultValue={["09:00", "18:00"]} />',
     storyPath: "data-entry/time-range-picker.tsx",
@@ -5143,7 +5143,7 @@ import remarkGfm from "remark-gfm";
       "DO use `labelAddon` (a ReactNode rendered inline after the label text) for supplementary controls such as a tooltip trigger or a 'copy' icon button — never insert such controls as siblings outside FormField, which breaks layout.",
       "DON'T wrap `Switch` in FormField — use `Field` instead, which already handles the label, hidden `<input name>` for HTML form submission, error, and helper internally.",
       "DON'T use FormField for checkbox-beside-label or radio-beside-label patterns — use `Field` (single checkbox/radio with description) or `CheckboxGroup` / `RadioGroup` (multiple options), which have their own integrated labelling.",
-      "CONTRACT (which element owns each ARIA relationship): every data-entry control accepts and FORWARDS the injected props to its real semantic focus target, not a wrapper div — Input/Textarea/NumberInput → the `<input>/<textarea>`; Select/SearchSelect/Cascader/TreeSelect → the `role=combobox` trigger (with aria-expanded + aria-haspopup + aria-controls per the WAI-ARIA APG combobox pattern); DatePicker/MonthPicker/TimePicker → the typeable `role=combobox` input (aria-haspopup=dialog); ColorPicker → the `<input type=color>` swatch; SearchInput → the `role=searchbox` input. GROUP controls own the relationship on their container: RadioGroup → `role=radiogroup` (full validation incl. aria-invalid/-errormessage/-required); CheckboxGroup, DateRangePicker/MonthRangePicker (two inputs), and Transfer → `role=group` — per ARIA 1.2 a group is not a widget, so the error id is folded into aria-describedby instead of aria-invalid/-errormessage. Upload forwards the label/description onto its native `<input type=file>`; its visible dropzone/button keeps its own action label. This forwarding is implemented once in `src/lib/field-a11y.ts` (`pickFieldA11y` / `pickGroupFieldA11y` / `resolveFieldA11y`) — do not reinvent it per control.",
+      "CONTRACT (which element owns each ARIA relationship): every data-entry control accepts and FORWARDS the injected props to its real semantic focus target, not a wrapper div — Input/Textarea/NumberInput → the `<input>/<textarea>`; Select/SearchSelect/Cascader/TreeSelect → the `role=combobox` trigger (with aria-expanded + aria-haspopup + aria-controls per the WAI-ARIA APG combobox pattern); DatePicker/TimePicker → the typeable `role=combobox` input (aria-haspopup=dialog); ColorPicker → the `<input type=color>` swatch; SearchInput → the `role=searchbox` input. GROUP controls own the relationship on their container: RadioGroup → `role=radiogroup` (full validation incl. aria-invalid/-errormessage/-required); CheckboxGroup, `DatePicker range` (two inputs), and Transfer → `role=group` — per ARIA 1.2 a group is not a widget, so the error id is folded into aria-describedby instead of aria-invalid/-errormessage. Upload forwards the label/description onto its native `<input type=file>`; its visible dropzone/button keeps its own action label. This forwarding is implemented once in `src/lib/field-a11y.ts` (`pickFieldA11y` / `pickGroupFieldA11y` / `resolveFieldA11y`) — do not reinvent it per control.",
       "FIELD IDENTITY / AUTOMATION: FormField also injects a `data-field` — the field's stable MACHINE key, resolved as `field` → `name` → `id` — onto the same semantic focus target the ARIA relationships land on, and onto every option of a RadioGroup/CheckboxGroup. Use it (not a generated id, and never the visible Japanese label) as the selector in e2e tests and screen automation. It reaches NESTED controls too: when the direct child is a layout wrapper (a Flex holding a from/to pair, a 年/月 combo, a value beside a 「不明」 checkbox) cloneElement stops on that wrapper, so FormField also publishes the field through context and each control inside resolves its own key from its OWN `id` \u2014 which is what keeps `search_billing_date_from` and `..._to` distinct instead of collapsing onto one shared key. A nested control with NO id of its own deliberately gets nothing: a fabricated key is worse than a missing one, because automation binds to it and breaks silently. Two companion pieces: a `Select`'s trigger also carries `data-value` = the selected CODE (the trigger shows the option LABEL, and Radix keeps the value in an aria-hidden 1x1px native `<select>`), and each RadioGroup/CheckboxGroup option gets a deterministic `{groupId}-{optionValue}` id instead of a per-mount `React.useId()` token. Nothing here is opt-in and no DOM structure changed. A `data-field` written on the control itself always wins.",
       "NATIVE `name` IS OPT-IN: FormField emits the same key as a real `name` attribute ONLY when the app set `<AppProvider emitFieldNames>`. It is off by default because `name` decides what a native `<form>` submit sends — turning it on globally in a shared package would make every consumer start posting new keys to its backend on an upgrade. Turn it on in apps that need native form posts or a screen-automation contract; a `name` written on the control itself always wins.",
       "NATIVE FORM PARTICIPATION: pass `name` to a control for HTML form submission — Input/Textarea/NumberInput/Select submit natively; SearchSelect submits via a hidden input; DatePicker/TimePicker emit ISO strings (`yyyy-MM-dd` / 24h `HH:mm`); the range pickers emit `${name}_from` / `${name}_to`. `required`/`readOnly`/`disabled` map to the underlying control. Cascader/TreeSelect/Transfer submit named values via hidden inputs; Upload appends staged local files to FormData when named. Disabled controls are excluded.",
@@ -5153,7 +5153,7 @@ import remarkGfm from "remark-gfm";
       "Labelling a text `Input` or `Textarea` in an invoice-entry form, showing a red asterisk for required fields and surfacing server validation errors returned from a Laravel FormRequest.",
       "Wrapping a `Select` or `DatePicker` inside a multi-field filter panel where each control needs a visible label, helper hint (e.g. 'YYYY/MM/DD'), and inline error state.",
       "Adding a `labelAddon` tooltip button next to a 'Tax rate' label in an accounting form to explain when different rates apply, without breaking the label–control association.",
-      "Enclosing a `DateRangePicker` or `TimePicker` in an admin settings page where the field needs a label, a muted hint ('Inclusive of start and end date'), and conditional error display.",
+      "Enclosing a `DatePicker range` or `TimePicker` in an admin settings page where the field needs a label, a muted hint ('Inclusive of start and end date'), and conditional error display.",
       "Wrapping a `SearchSelect` or `Select` (with `showSearch`) control for vendor/account lookup in a journal-entry form where the `id` must be kept consistent for programmatic focus management.",
       "Providing structured error feedback for a `Cascader` or `TreeSelect` in a multi-level category assignment screen, replacing ad-hoc error rendering with the standardised `role='alert'` pattern.",
     ],
@@ -6419,229 +6419,10 @@ export function PrioritySelect({ value, onValueChange }) {
     rules: [23],
   },
   {
-    name: "MonthPicker",
-    group: "data-entry",
-    tagline:
-      "Year/month (yyyy/MM) input with a month-grid popover — a year chevron header over a 3x4 grid of the twelve months. The input stays typeable; the grid is the visual affordance.",
-    props: [
-      { name: "size", type: '"xs" | "sm" | "md" | "lg"', description: "Shared control tier." },
-      { name: "status", type: '"error" | "warning"', description: "Validation appearance." },
-      {
-        name: "variant",
-        type: '"outlined" | "filled" | "borderless" | "underlined"',
-        description: "Field chrome.",
-      },
-      {
-        name: "inputReadOnly",
-        type: "boolean",
-        description: "Disable typing while keeping panel selection.",
-      },
-      {
-        name: "renderExtraFooter",
-        type: "() => ReactNode",
-        description: "Additional month-panel content.",
-      },
-      {
-        name: "value",
-        type: "Date | undefined",
-        description: "Controlled value — first day of the selected month. Pass undefined to clear.",
-      },
-      {
-        name: "defaultValue",
-        type: "Date | undefined",
-        description: "Uncontrolled initial value.",
-      },
-      {
-        name: "onValueChange",
-        type: "(value: Date | undefined) => void",
-        description: "Fires on a grid pick, on a complete typed yyyy/MM, and on clear.",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        defaultValue: '"yyyy/mm"',
-        description: "Placeholder shown while empty.",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Disables the input, the clear button and the grid trigger.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description: "Extra classes on the control shell (width/margin overrides).",
-      },
-      {
-        name: "id",
-        type: "string",
-        description:
-          "Wired to the inner input; auto-generated when omitted so the field always has an id.",
-      },
-      {
-        name: "name",
-        type: "string",
-        description: "Form field name — submits the display text (yyyy/MM).",
-      },
-      {
-        name: "fromYear",
-        type: "number",
-        description: "Inclusive lower bound for the year navigation.",
-      },
-      {
-        name: "toYear",
-        type: "number",
-        description: "Inclusive upper bound for the year navigation.",
-      },
-      {
-        name: "allowClear",
-        type: "boolean",
-        defaultValue: "true",
-        description: "Inline clear button while a value is set.",
-      },
-    ],
-    usage: [
-      "DO use MonthPicker for every yyyy/MM (year-month) field — never a bare Input with a YYYY/MM helper text.",
-      "DO wrap it in FormField like every other labelled control; FormField injects id/aria wiring.",
-      "DO NOT compose two MonthPickers to fake a from~to range — that is MonthRangePicker (one control shell, like DateRangePicker).",
-    ],
-    related: [
-      "DatePicker — full date (yyyy-MM-dd); MonthPicker when the day is meaningless (締め年月, 集計年月, 商談発生年月).",
-      "MonthRangePicker — use for a yyyy/MM from~to pair; one input-styled control, never two MonthPickers side-by-side.",
-    ],
-    example: `import { useState } from "react";
-import { MonthPicker, FormField } from "@godxjp/ui/data-entry";
-
-export function OrderMonthField() {
-  const [ym, setYm] = useState<Date | undefined>(undefined);
-
-  return (
-    <FormField label="受注日年月">
-      <MonthPicker name="search_order_date_ym" value={ym} onValueChange={setYm} />
-    </FormField>
-  );
-}`,
-    storyPath: "data-entry/MonthPicker.stories.tsx",
-    rules: [3, 6, 13, 31, 43],
-  },
-  {
-    name: "MonthRangePicker",
-    group: "data-entry",
-    tagline:
-      "Year/month (yyyy/MM) RANGE rendered as ONE input-styled control `[ from → to  ✕ 📅 ]` (Ant RangePicker convention, same shell as DateRangePicker) with an Ant-style month-grid popover. Both inputs stay typeable; picks are two-step with from ≤ to always enforced.",
-    props: [
-      { name: "size", type: '"xs" | "sm" | "md" | "lg"', description: "Shared control tier." },
-      { name: "status", type: '"error" | "warning"', description: "Validation appearance." },
-      {
-        name: "variant",
-        type: '"outlined" | "filled" | "borderless" | "underlined"',
-        description: "Field chrome.",
-      },
-      {
-        name: "inputReadOnly",
-        type: "boolean",
-        description: "Disable typing while keeping panel selection.",
-      },
-      {
-        name: "renderExtraFooter",
-        type: "() => ReactNode",
-        description: "Additional month-panel content.",
-      },
-      {
-        name: "value",
-        type: "DateRange | undefined",
-        description:
-          "Controlled range — both edges normalized to the first day of their month. Pass undefined to clear.",
-      },
-      {
-        name: "defaultValue",
-        type: "DateRange | undefined",
-        description: "Uncontrolled initial range.",
-      },
-      {
-        name: "onValueChange",
-        type: "(value: DateRange | undefined) => void",
-        description:
-          "Fires on each grid step ({from, to: undefined} then the complete pair), on a complete typed yyyy/MM at either edge, and on clear. Never emits an inverted range — a backwards pick/typing is swapped so from ≤ to.",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        defaultValue: '"yyyy/mm"',
-        description: "Placeholder shown in both inputs while empty.",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Disables both inputs, the clear button and the grid trigger.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description: "Extra classes on the control shell (width/margin overrides).",
-      },
-      {
-        name: "id",
-        type: "string",
-        description:
-          "Wired to the from input; the to input gets `${id}-to`. Auto-generated when omitted.",
-      },
-      {
-        name: "name",
-        type: "string",
-        description:
-          "Form field name — emits the range as `${name}_from` / `${name}_to` yyyy/MM fields.",
-      },
-      {
-        name: "fromYear",
-        type: "number",
-        description: "Inclusive lower bound for the year navigation.",
-      },
-      {
-        name: "toYear",
-        type: "number",
-        description: "Inclusive upper bound for the year navigation.",
-      },
-      {
-        name: "allowClear",
-        type: "boolean",
-        defaultValue: "true",
-        description: "Inline clear button (clears the WHOLE range) while a value is set.",
-      },
-    ],
-    usage: [
-      "DO use MonthRangePicker for every yyyy/MM from~to pair — never two MonthPickers (or bare Inputs) separated by ~; a range is ONE control, exactly like DateRangePicker.",
-      "DO rely on its built-in range validation: a backwards grid pick or typed pair is swap-normalized so the emitted range always satisfies from ≤ to — do not re-validate order in the app.",
-      "DO wrap it in FormField like every other labelled control; FormField injects id/aria wiring.",
-      "Grid picks are two-step (from, then to) and reset-on-complete: picking while a complete range is held STARTS a new range, so the start month is never stuck.",
-    ],
-    related: [
-      "MonthPicker — single yyyy/MM value; MonthRangePicker when the field is a from~to pair (商談発生年月の範囲検索, 集計期間).",
-      "DateRangePicker — full-date (yyyy-MM-dd) range with the same one-control shell; MonthRangePicker when the day is meaningless.",
-    ],
-    example: `import { useState } from "react";
-import type { DateRange } from "react-day-picker";
-import { MonthRangePicker, FormField } from "@godxjp/ui/data-entry";
-
-export function NegotiationYmField() {
-  const [range, setRange] = useState<DateRange | undefined>(undefined);
-
-  return (
-    <FormField label="商談発生年月">
-      <MonthRangePicker name="search_negotiation_ym" value={range} onValueChange={setRange} />
-    </FormField>
-  );
-}`,
-    storyPath: "data-entry/MonthRangePicker.stories.tsx",
-    rules: [3, 6, 13, 31, 43],
-  },
-  {
     name: "DatePicker",
     group: "data-entry",
     tagline:
-      "WAI-ARIA date combobox with a real typeable ISO-8601 input — give it a `name` for form submission and fill the input in e2e tests; the calendar is the visual-only affordance.",
+      "ONE date control: `picker` sets the granularity (day · week · month · quarter · year), `range` makes it a two-endpoint field, `multiple` a set. A real typeable input holds the value and submits ISO-8601 at the picker's own precision; the panel is the visual-only affordance.",
     props: [
       { name: "open", type: "boolean", description: "Controlled panel visibility." },
       { name: "defaultOpen", type: "boolean", description: "Initial panel visibility." },
@@ -6657,14 +6438,15 @@ export function NegotiationYmField() {
       },
       {
         name: "variant",
-        type: '"outlined" | "filled" | "borderless"',
+        type: '"outlined" | "filled" | "borderless" | "underlined"',
         description: "Shared control surface.",
       },
       { name: "size", type: '"sm" | "md" | "lg"', description: "Shared control sizing." },
       {
         name: "inputReadOnly",
         type: "boolean",
-        description: "Disable typing while preserving panel selection.",
+        description:
+          "antd `inputReadOnly` — sets the readonly attribute on the input so the mobile virtual keyboard stays down. The PANEL STILL OPENS: this is 'pick from the panel, do not type', not a second `disabled`. Use `disabled` to make the control inert.",
       },
       {
         name: "preserveInvalidOnBlur",
@@ -6684,7 +6466,7 @@ export function NegotiationYmField() {
       {
         name: "ref",
         type: "Ref<HTMLInputElement>",
-        description: "Ref to the editable input (range start).",
+        description: "Ref to the editable input (with `range`, the start edge).",
       },
       {
         name: "format",
@@ -6700,12 +6482,14 @@ export function NegotiationYmField() {
       {
         name: "minDate",
         type: "Date",
-        description: "Earliest date, including typed entry and navigation. Alias of fromDate.",
+        description:
+          "Earliest selectable date, inclusive, enforced on BOTH routes into the value — the panel greys the cell out and a typed date is rejected. The ONLY lower bound: the removed MonthPicker's `fromYear` is `minDate={new Date(year, 0, 1)}`. Alias of fromDate.",
       },
       {
         name: "maxDate",
         type: "Date",
-        description: "Latest date, including typed entry and navigation. Alias of toDate.",
+        description:
+          "Latest selectable date, inclusive, enforced on both routes. `toYear={y}` becomes `maxDate={new Date(y, 11, 31)}`. Alias of toDate.",
       },
       { name: "showWeek", type: "boolean", description: "Show week numbers." },
       {
@@ -6716,26 +6500,46 @@ export function NegotiationYmField() {
       {
         name: "showTime",
         type: "boolean | object",
-        description: "Include time editing; object takes TimePicker steps/hour-cycle/disabledTime.",
+        description:
+          "Include time editing; object takes TimePicker steps/hour-cycle/disabledTime. Not available with `range` or `multiple`.",
       },
       {
         name: "presets",
-        type: "{ label: ReactNode; value: Date | (() => Date) }[]",
-        description: "Quick choices resolved on click, checked against constraints.",
+        type: "{ label: ReactNode; value: T | (() => T) }[]",
+        description:
+          "Quick choices resolved on click and checked against the constraints. `T` follows the cardinality: `Date` normally, `DateRange` with `range`.",
       },
       {
         name: "picker",
         type: '"date" | "week" | "month" | "quarter" | "year"',
-        description: "Select a day or period; periods normalize to their start.",
+        description:
+          "GRANULARITY of one selection (antd `picker`). `date`/`week` show the day grid; `month`/`quarter`/`year` show a period grid. The value is always the START of the chosen period, and `name` submits the matching reduced ISO form.",
+      },
+      {
+        name: "range",
+        type: "boolean",
+        description:
+          'CARDINALITY: two endpoints in one control (antd `DatePicker.RangePicker`). value/defaultValue and the callback become `DateRange`; the pair submits as `${name}_from` / `${name}_to`. Composes with `picker`, so a month range is `<DatePicker range picker="month" />`. Never place two DatePickers side by side to fake this.',
       },
       {
         name: "multiple",
         type: "boolean",
         description:
-          "Select several dates; value/defaultValue and callback use Date[]. Incompatible with showTime.",
+          "Select several dates; value/defaultValue and the callback use Date[]. Incompatible with showTime and with range.",
       },
-      { name: "order", type: "boolean", description: "Sort multiple dates, default true." },
-
+      {
+        name: "allowEmpty",
+        type: "[boolean, boolean]",
+        description:
+          "With `range`: which of the two endpoints may stay empty (antd `allowEmpty`). Default `[true, true]`.",
+      },
+      {
+        name: "order",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Normalise the selection into ascending order (antd `order`). ONE rule seen through two value shapes: a `range` picked backwards is SWAPPED, a `multiple` selection is SORTED. Pass false to keep pick order.",
+      },
       {
         name: "cellRender",
         type: "(date: Date, info: { originNode: ReactNode }) => ReactNode",
@@ -6746,14 +6550,14 @@ export function NegotiationYmField() {
         name: "disabledDate",
         type: "(date: Date) => boolean",
         description:
-          "Forbid individual dates by predicate — a business rule the `fromDate`/`toDate` window cannot express (holidays, blackout days, a 開始 date already chosen). A forbidden day is refused on BOTH routes into the value: it cannot be clicked and it is rejected when typed.",
+          "Forbid individual dates by predicate — a business rule the `minDate`/`maxDate` window cannot express (holidays, blackout days, a 開始 date already chosen). A forbidden day is refused on BOTH routes into the value: it cannot be clicked and it is rejected when typed.",
       },
       {
         name: "showToday",
         type: "boolean",
         defaultValue: "false",
         description:
-          "Footer action that jumps to the current month and selects today (single), fills the open end of the range (range) or adds today (multiple). Disabled when today is outside startMonth / endMonth or matches `disabled`.",
+          "Footer action that jumps to the current month and selects today (single), fills the open end of the range (range) or adds today (multiple). Disabled when today is outside minDate / maxDate or matches `disabledDate`.",
       },
       {
         name: "showClose",
@@ -6762,124 +6566,141 @@ export function NegotiationYmField() {
         description: "Footer action that calls `onClose`.",
       },
       {
-        name: "value",
-        type: "Date | undefined",
-        description:
-          "Controlled selected date. When provided the input text and the calendar selection stay in sync with this value.",
+        name: "onClose",
+        type: "() => void",
+        description: "Invoked by the showClose footer action.",
       },
       {
-        name: "onChange",
-        type: "(date: Date | undefined) => void",
+        name: "value",
+        type: "Date | Date[] | DateRange | undefined",
         description:
-          "Called when the user commits a date — either by typing a valid ISO string into the input or clicking a day in the calendar popover. Called with `undefined` when the input is cleared.",
+          "Controlled selection. `Date` by default, `Date[]` with `multiple`, `DateRange` with `range`. The input text and the panel stay in sync with it.",
+      },
+      {
+        name: "defaultValue",
+        type: "Date | Date[] | DateRange | undefined",
+        description: "Uncontrolled initial selection, same shape as `value`.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: Date | Date[] | DateRange | undefined) => void",
+        description:
+          "Fires when the user commits — a panel pick, a complete typed entry, Enter, or a clear (undefined). The argument type follows the cardinality, so no narrowing is needed at the call site.",
       },
       {
         name: "name",
         type: "string",
         description:
-          "HTML `name` attribute placed on the underlying `<input>`. The input emits the value as an ISO-8601 `yyyy-MM-dd` string so the field is natively form-submittable without a hidden input.",
+          "Form field name. Submits ISO-8601 at the precision `picker` selects: `2026-03-01` for date/week, `2026-03` for month and quarter, `2026` for year. With `range` the pair submits as `${name}_from` / `${name}_to`.",
       },
       {
         name: "id",
         type: "string",
-        description: "HTML `id` placed on the underlying `<input>`, used to associate a `<label>`.",
+        description:
+          "HTML `id` for the input (the group, with `range`). Auto-generated when omitted, so the field always has one.",
       },
       {
         name: "placeholder",
         type: "string",
-        defaultValue: '"yyyy-mm-dd" (or locale-translated equivalent)',
         description:
-          "Placeholder text shown in the input when no date is selected. Defaults to the i18n key `dataEntry.datePicker.placeholder` then falls back to the literal hint `yyyy-mm-dd`.",
+          "Placeholder shown while empty. Defaults to the i18n string for the cardinality and granularity in play.",
       },
       {
         name: "disabled",
         type: "boolean",
         defaultValue: "false",
-        description: "Disables both the text input and the calendar icon button.",
+        description:
+          "Makes the control inert: the input, the clear button and the panel trigger all go dead, and a controlled `open` cannot force the panel up.",
       },
       {
         name: "className",
         type: "string",
-        description:
-          "Extra CSS classes applied to the outermost wrapper `<div>`. Use for width/margin overrides.",
+        description: "Extra CSS classes on the outermost wrapper. Use for width/margin overrides.",
       },
       {
         name: "locale",
         type: 'DayPickerProps["locale"]',
         description:
-          "Locale object (from `date-fns/locale`) forwarded to the calendar popover. Controls month/day names shown in the grid. The input always accepts `yyyy-MM-dd` regardless of locale.",
+          "Locale object (from `date-fns/locale`) forwarded to the panel. Controls month/day names and the week start. The input always accepts the ISO form regardless of locale.",
       },
       {
         name: "fromDate",
         type: "Date",
-        description: "Earliest selectable date in the calendar.",
+        description: "Alias of minDate, kept for the antd v4 spelling.",
       },
       {
         name: "toDate",
         type: "Date",
-        description:
-          "Latest selectable date in the calendar. Days after this date are disabled in the grid, and the calendar navigation ends at this month.",
+        description: "Alias of maxDate, kept for the antd v4 spelling.",
       },
       {
         name: "allowClear",
-        type: "boolean",
+        type: "boolean | { clearIcon?: ReactNode; label?: string }",
         defaultValue: "true",
         description:
-          "Inline ✕ on the trigger that resets the value when one is set (Ant-style). Pass `false` to hide it (e.g. a required field).",
-      },
-      {
-        name: "defaultValue",
-        type: "Date",
-        description: "Uncontrolled initial date.",
-      },
-      {
-        name: "onValueChange",
-        type: "(value: Date | undefined) => void",
-        description: "Fires with the selected date (undefined when cleared).",
+          "Inline ✕ that resets the value when one is set (antd `allowClear`). The object form replaces the icon and/or the accessible label. Pass `false` on a required field.",
       },
     ],
     usage: [
-      "One trailing icon: empty shows calendar/clock; filled and clearable shows only ×; allowClear=false retains the picker icon. Click the input or ArrowDown to open a filled picker.",
-      "DO use `name` to make the field form-submittable — the underlying `<input>` emits the value as an ISO-8601 `yyyy-MM-dd` string. No hidden input is needed.",
-      "DO test by filling the input directly: `await user.type(screen.getByRole('combobox'), '2024-04-15')` or with Playwright `page.fill('[role=combobox]', '2024-04-15')`. The calendar popover is secondary and not required for testing.",
-      "DO use `fromDate` / `toDate` to restrict selectable dates (e.g. ETD must be after today, period end must be after period start).",
-      "DON'T wrap DatePicker in an extra `<div>` for a form field — use `name` directly and pair it with a `<label htmlFor={id}>` for a11y.",
+      'ONE component covers every date-shaped field. `picker` is the granularity axis, `range` and `multiple` are the cardinality axis, and they compose: `<DatePicker range picker="month" />` is a month range.',
+      "DO use `name` to make the field form-submittable — it emits ISO-8601 at the picker's own precision (`2026-03` for a month, `2026` for a year, `2026-03-01` for a day). No hidden input of your own is needed.",
+      "DO wrap it in FormField like every other labelled control; FormField injects the id/aria wiring onto the input.",
+      "DO test by filling the input directly: `await user.type(screen.getByRole('combobox'), '2026-04-15')`. With `range`, the two edges are named textboxes (From / To). The panel is secondary and not required for testing.",
+      "DO use `minDate` / `maxDate` to restrict what is selectable — they are enforced on the panel AND on typed entry, so the keyboard is not a way around the rule the mouse obeys.",
+      "DON'T place two DatePickers side by side to fake a from~to pair — that is `range`, which is one control, one shell and one value.",
+      "DON'T reach for `inputReadOnly` to switch the control off; it only sets the input's readonly attribute (the panel still opens). `disabled` is the inert one.",
       "DON'T hand-roll a date text input + calendar popover — this component IS that pattern at WAI-ARIA combobox spec level.",
-      "DON'T use DatePicker for a date range — use `DateRangePicker` instead (it exposes two ISO inputs named `${name}_from` and `${name}_to`).",
     ],
     useCases: [
       "Invoice due-date field in an accounting form — attach `name='due_date'` and submit natively.",
-      "ETD / ETA date entry on a shipment create/edit form where the field must be form-submittable and e2e-fillable.",
-      "Filter bar date input (e.g. 'From date' in a report filter) where the user typically types the date rather than clicking through a calendar.",
-      "Restricting a 'closing date' to only future dates by passing `fromDate={new Date()}` to block past selection.",
-      "Locale-aware date picker in a multi-language admin panel — pass a `date-fns` locale object to show the calendar grid in the user's language while keeping the ISO input format consistent.",
+      'A 対象月 / 締め年月 field where the day is meaningless — `picker="month"`, which submits `2026-03`.',
+      "A 会計期間 from~to pair — `range`, submitting `period_from` / `period_to`.",
+      'A quarterly or fiscal-year reporting filter — `picker="quarter"` or `picker="year"`.',
+      "Restricting a closing date to future days with `minDate={new Date()}`.",
+      "Locale-aware picker in a multi-language admin panel — pass a `date-fns` locale for the panel while the input keeps its ISO form.",
     ],
     related: [
-      "DateRangePicker — use instead of DatePicker when you need a from/to date pair; exposes two ISO inputs named `${name}_from` / `${name}_to`.",
       "TimePicker — companion for HH:mm time selection; same form-submittable-input pattern with a `name` prop.",
-      "Calendar — the bare calendar grid used inside DatePicker; use it only when you need a always-visible month grid with no input.",
+      "Calendar — the bare calendar grid used inside DatePicker; reach for it only when you need an always-visible month grid with no input.",
+      'MonthPicker / MonthRangePicker / DateRangePicker were separate components until 22.0.0. They are now `picker="month"`, `range picker="month"` and `range` on this component.',
     ],
     example: `import { useState } from "react";
-import { DatePicker } from "@godxjp/ui/data-entry";
+import { DatePicker, FormField } from "@godxjp/ui/data-entry";
+import { Flex } from "@godxjp/ui/layout";
+import type { DateRange } from "react-day-picker";
 
-// Controlled — single date field with form name
-export function InvoiceDueDateField() {
+// One component, three shapes: a day, a month, and a range.
+export function BillingFields() {
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
+  const [month, setMonth] = useState<Date | undefined>(undefined);
+  const [period, setPeriod] = useState<DateRange | undefined>(undefined);
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor="due-date" className="text-sm font-medium">
-        Due Date
-      </label>
-      <DatePicker
-        id="due-date"
-        name="due_date"
-        value={dueDate}
-        onValueChange={setDueDate}
-        fromDate={new Date()}
-        placeholder="yyyy-mm-dd"
-      />
-    </div>
+    <Flex direction="col" gap="md">
+      <FormField id="due-date" label="支払期日" required>
+        <DatePicker
+          id="due-date"
+          name="due_date"
+          value={dueDate}
+          onValueChange={setDueDate}
+          minDate={new Date()}
+        />
+      </FormField>
+
+      <FormField id="billing-month" label="請求年月">
+        <DatePicker
+          id="billing-month"
+          name="billing_month"
+          picker="month"
+          value={month}
+          onValueChange={setMonth}
+        />
+      </FormField>
+
+      <FormField id="period" label="会計期間">
+        <DatePicker id="period" name="period" range value={period} onValueChange={setPeriod} />
+      </FormField>
+    </Flex>
   );
 }`,
     storyPath: "data-entry/DatePicker.stories.tsx",
@@ -7163,7 +6984,7 @@ function ConfirmSettlement() {
       "DON'T put a Sheet inside a Dialog (nested Radix portals conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",
     ],
     useCases: [
-      "Filter/search panel: slide in from the right with filter FormFields (Select, DateRangePicker, CheckboxGroup) that affect a DataTable — preferred over a Dialog because filters do not require confirmation and benefit from seeing the table behind the overlay.",
+      "Filter/search panel: slide in from the right with filter FormFields (Select, `DatePicker range`, CheckboxGroup) that affect a DataTable — preferred over a Dialog because filters do not require confirmation and benefit from seeing the table behind the overlay.",
       "Quick-edit drawer: open an entity's editable fields (e.g. invoice line items, account settings) without navigating away, with Save/Cancel in SheetFooter — use side='right' and keep the main page visible as context.",
       "Detail peek panel: show read-only Descriptions / Timeline of a selected record (e.g. a journal entry or invoice) from a DataTable row click, using side='right' with showCloseButton={true}. Add responsive='auto' so the same panel becomes a bottom sheet on a phone instead of a 100%-wide slab.",
       "Mobile-first navigation drawer: side='left' sheet acting as a slide-in nav menu on small viewports when the AppShell Sidebar is hidden — triggered by a hamburger Button.",
@@ -8353,245 +8174,6 @@ export function CutoffTimeForm() {
 }`,
     storyPath: "data-entry/TimePicker.stories.tsx",
     rules: [3, 6, 13, 23],
-  },
-  {
-    name: "DateRangePicker",
-    group: "data-entry",
-    tagline:
-      "WAI-ARIA date-range control with two typeable ISO inputs + popover calendar — form-submits as `${name}_from` / `${name}_to`, never hand-roll two DatePickers side-by-side.",
-    props: [
-      { name: "open", type: "boolean", description: "Controlled panel visibility." },
-      { name: "defaultOpen", type: "boolean", description: "Initial panel visibility." },
-      {
-        name: "onOpenChange",
-        type: "(open: boolean) => void",
-        description: "Panel visibility changes.",
-      },
-      {
-        name: "status",
-        type: '"error" | "warning"',
-        description: "Validation appearance; error announces invalid state.",
-      },
-      {
-        name: "variant",
-        type: '"outlined" | "filled" | "borderless"',
-        description: "Shared control surface.",
-      },
-      { name: "size", type: '"sm" | "md" | "lg"', description: "Shared control sizing." },
-      {
-        name: "inputReadOnly",
-        type: "boolean",
-        description: "Disable typing while preserving panel selection.",
-      },
-      {
-        name: "preserveInvalidOnBlur",
-        type: "boolean",
-        description: "Keep invalid draft text on blur; never submit it as a committed value.",
-      },
-      {
-        name: "placement",
-        type: '"bottom-start" | "bottom-end" | "top-start" | "top-end"',
-        description: "Logical popup placement.",
-      },
-      {
-        name: "renderExtraFooter",
-        type: "() => ReactNode",
-        description: "Additional panel footer content.",
-      },
-      {
-        name: "ref",
-        type: "Ref<HTMLInputElement>",
-        description: "Ref to the editable input (range start).",
-      },
-      {
-        name: "format",
-        type: "string | Intl.DateTimeFormatOptions | ((date: Date) => string)",
-        description:
-          "Display using date-fns patterns, Intl options (Japanese era supported), or a callback. Submission stays ISO.",
-      },
-      {
-        name: "parseFormat",
-        type: "(text: string) => Date | undefined",
-        description: "Parser for custom or era display. Complete ISO input always works.",
-      },
-      {
-        name: "minDate",
-        type: "Date",
-        description: "Earliest date, including typed entry and navigation. Alias of fromDate.",
-      },
-      {
-        name: "maxDate",
-        type: "Date",
-        description: "Latest date, including typed entry and navigation. Alias of toDate.",
-      },
-      { name: "showWeek", type: "boolean", description: "Show week numbers." },
-      {
-        name: "needConfirm",
-        type: "boolean",
-        description: "Stage choices until confirmed; defaults on with showTime.",
-      },
-      {
-        name: "presets",
-        type: "{ label: ReactNode; value: DateRange | (() => DateRange) }[]",
-        description: "Quick range choices, checked against constraints.",
-      },
-      {
-        name: "allowEmpty",
-        type: "[boolean, boolean]",
-        description: "Which endpoints may be empty, default [true,true] for compatibility.",
-      },
-      { name: "order", type: "boolean", description: "Sort reversed endpoints, default true." },
-
-      {
-        name: "cellRender",
-        type: "(date: Date, info: { originNode: ReactNode }) => ReactNode",
-        description:
-          "Decorate a day cell — 祝日, a booked day, a deadline. It WRAPS the library's own day button rather than replacing it: `originNode` already carries the selection state, `aria-selected`, the disabled handling and its place in the grid's roving tabindex. Write `<>{originNode}<Badge …/></>` — decorate, never rebuild, or every marker re-derives all of that and most get it wrong.",
-      },
-      {
-        name: "disabledDate",
-        type: "(date: Date) => boolean",
-        description:
-          "Forbid individual dates by predicate — a business rule the `fromDate`/`toDate` window cannot express (holidays, blackout days, a 開始 date already chosen). A forbidden day is refused on BOTH routes into the value: it cannot be clicked and it is rejected when typed.",
-      },
-      {
-        name: "showToday",
-        type: "boolean",
-        defaultValue: "false",
-        description:
-          "Footer action that jumps to the current month and selects today (single), fills the open end of the range (range) or adds today (multiple). Disabled when today is outside startMonth / endMonth or matches `disabled`.",
-      },
-      {
-        name: "showClose",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Footer action that calls `onClose`.",
-      },
-      {
-        name: "value",
-        type: "DateRange | undefined",
-        description:
-          "Controlled value — object with optional `from: Date` and `to: Date` from react-day-picker. Pass undefined to clear.",
-      },
-      {
-        name: "onChange",
-        type: "(range: DateRange | undefined) => void",
-        description:
-          "Called whenever either text input commits or the calendar selects a range. Receives undefined when both edges are cleared.",
-      },
-      {
-        name: "name",
-        type: "string",
-        description:
-          "HTML form field name prefix. Emits two native hidden-compatible inputs: `${name}_from` and `${name}_to`, each as an ISO yyyy-MM-dd string. Required for native form submission.",
-      },
-      {
-        name: "id",
-        type: "string",
-        description:
-          "DOM id wired to the FROM input. Used by FormField's htmlFor to attach the label to the first focusable control.",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        defaultValue: "i18n key dataEntry.dateRangePicker.placeholder or 'yyyy-mm-dd'",
-        description:
-          "Placeholder shown in both inputs when empty. Defaults to the project i18n translation or the literal ISO hint 'yyyy-mm-dd'.",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        description: "Disables both text inputs and the calendar trigger button.",
-      },
-      {
-        name: "locale",
-        type: 'DayPickerProps["locale"]',
-        description:
-          "react-day-picker locale object forwarded to the Calendar popover. Overrides the project-level locale resolved from usePickerLocales.",
-      },
-      {
-        name: "fromDate",
-        type: "Date",
-        description: "Earliest selectable date.",
-      },
-      {
-        name: "toDate",
-        type: "Date",
-        description:
-          "Latest selectable date. Disables calendar days after this date and pins the calendar's endMonth.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description:
-          "Extra CSS classes applied to the root flex container (flex items-center gap-1). Use to constrain width or adjust layout; avoid overriding token colors.",
-      },
-      {
-        name: "allowClear",
-        type: "boolean",
-        defaultValue: "true",
-        description:
-          "Inline ✕ on the trigger that resets the range when one is set (Ant-style). Pass `false` to hide it.",
-      },
-      {
-        name: "defaultValue",
-        type: "DateRange",
-        description: "Uncontrolled initial range.",
-      },
-      {
-        name: "onValueChange",
-        type: "(value: DateRange | undefined) => void",
-        description: "Fires with the selected range (undefined when cleared).",
-      },
-    ],
-    usage: [
-      "One trailing icon: empty shows calendar/clock; filled and clearable shows only ×; allowClear=false retains the picker icon. Click the input or ArrowDown to open a filled picker.",
-      "DO use controlled mode (`value` + `onChange`) in all form contexts — this component has no `defaultValue` prop; initialize state with `useState<DateRange | undefined>()`.",
-      "DO set `name` when the form is submitted natively or via Inertia useForm: the component emits `${name}_from` and `${name}_to` as ISO yyyy-MM-dd strings — read them as separate fields on the server.",
-      'DO wrap in `<FormField id="..." label="...">` to attach the label; pass the same string to both `FormField`\'s `id` and `DateRangePicker`\'s `id` so the label targets the FROM input.',
-      "DON'T compose two `<DatePicker>` components side-by-side to achieve a range — `DateRangePicker` handles range state, calendar highlight, and dual form submission in one atomic control.",
-      "DON'T rely on the calendar popover alone for e2e testing — both inputs are real typeable `<input>` elements; fill them directly with ISO strings (e.g. `fill('#from-id', '2026-01-01')`) in Playwright/Pest browser tests.",
-      "Use `fromDate` / `toDate` to constrain the selectable window (e.g. fiscal year bounds, invoice cutoff), not just visual decoration — they also disable out-of-range keyboard navigation in the calendar.",
-    ],
-    useCases: [
-      "Invoice period filter on an accounting list page: let the user pick a start/end date; submit as `period_from` + `period_to` query params.",
-      "Manifest / shipment date range in a logistics form: wrap in FormField with label 'Kỳ lô hàng', constrain with `fromDate`/`toDate` to the valid manifest window.",
-      "Report generation wizard where users define a custom reporting period (e.g. fiscal quarter start to end).",
-      "Dashboard date-range filter in a toolbar: controlled state drives a TanStack Query `queryKey` to refetch charts when the range changes.",
-      "Booking or reservation form that requires both an arrival and departure date in a single field, with `fromDate={today}` to block past dates.",
-      "Admin audit log search where start and end timestamps are captured as ISO date strings for a backend query.",
-    ],
-    related: [
-      "DatePicker — single-date variant; use DateRangePicker when TWO boundary dates are required. Never place two DatePickers side-by-side to fake a range.",
-      "Calendar — the headless month grid used internally by DateRangePicker; use directly only for custom embedded calendar UI, not as a form control.",
-      "TimePicker — companion for HH:mm selection; combine with DateRangePicker when datetime ranges are needed (store separately).",
-    ],
-    example: `import { useState } from "react";
-import type { DateRange } from "react-day-picker";
-import { DateRangePicker, FormField } from "@godxjp/ui/data-entry";
-
-export function InvoicePeriodFilter() {
-  const [range, setRange] = useState<DateRange | undefined>({
-    from: new Date(2026, 0, 1),
-    to: new Date(2026, 11, 31),
-  });
-
-  return (
-    <FormField id="invoice-period" label="Invoice period" className="max-w-sm">
-      <DateRangePicker
-        id="invoice-period"
-        name="period"
-        value={range}
-        onValueChange={setRange}
-        fromDate={new Date(2020, 0, 1)}
-        toDate={new Date(2030, 11, 31)}
-      />
-    </FormField>
-    // Submits: period_from=2026-01-01, period_to=2026-12-31
-  );
-}`,
-    storyPath: "data-entry/DateRangePicker.stories.tsx",
-    rules: [3, 6, 23, 31],
   },
   {
     name: "Cascader",
@@ -10063,7 +9645,7 @@ function FormSlider() {
     name: "Calendar",
     group: "data-entry",
     tagline:
-      "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker or DateRangePicker instead when you need a form-submittable input.",
+      "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker (add `range` for a from/to pair) instead when you need a form-submittable input.",
     props: [
       {
         name: "locale",
@@ -10315,7 +9897,7 @@ function FormSlider() {
     ],
     usage: [
       "DO set mode explicitly ('single', 'multiple', 'range') — omitting it renders a display-only grid with no selection. The value passed to selected and the argument shape of onSelect both depend on mode.",
-      "DO embed Calendar inside a Popover + PopoverContent when building a date-picker UI (set PopoverContent className='w-auto p-0'). For form-submittable single-date or range inputs prefer the higher-level DatePicker / DateRangePicker components — they own the input, icon, locale wiring, and ISO form submission natively.",
+      "DO embed Calendar inside a Popover + PopoverContent when building a date-picker UI (set PopoverContent className='w-auto p-0'). For form-submittable single-date or range inputs prefer the higher-level DatePicker (with `range` for a from/to pair) — it owns the input, icon, locale wiring, and ISO form submission natively.",
       "DO pass a locale object imported from 'react-day-picker/locale' (e.g. import { ja } from 'react-day-picker/locale') for i18n — weekday names, month names, and first-day-of-week all come from the locale.",
       "DO use the disabled prop with Matcher objects ({ before: minDate }, { after: maxDate }, { dayOfWeek: [0, 6] }) to restrict selectable days — never render your own disabled overlay on top.",
       "DON'T add inner padding on the wrapping PopoverContent — Calendar already has p-3 via its className. Use PopoverContent className='w-auto p-0' to avoid double padding.",
@@ -10331,7 +9913,7 @@ function FormSlider() {
     ],
     related: [
       "DatePicker — the complete single-date form control (typeable ISO input + calendar icon + Popover). Use DatePicker instead of Calendar when you need a form-submittable field with an input box.",
-      "DateRangePicker — the complete date-range form control (two ISO inputs + calendar icon + Popover). Use DateRangePicker instead of Calendar when you need from/to form fields.",
+      "DatePicker — the complete date form control (typeable ISO input + calendar icon + Popover); add `range` for the two-input from/to pair. Use it instead of Calendar when you need form fields.",
       "Popover / PopoverContent — the shell you must provide when you want Calendar inside a trigger. Set PopoverContent className='w-auto p-0' to avoid double padding.",
     ],
     example: `import { useState } from "react";
@@ -10355,7 +9937,7 @@ export function InvoiceDateCalendar() {
   );
 }
 
-// --- Range example inside a Popover (mirrors DateRangePicker internals) ---
+// --- Range example inside a Popover (mirrors DatePicker range internals) ---
 import { Popover, PopoverContent, PopoverTrigger } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import type { DateRange } from "react-day-picker";

@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import { fireEvent, renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { Calendar } from "../calendar";
 import { DatePicker } from "../date-picker";
-import { DateRangePicker } from "../date-range-picker";
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "../command";
 
 describe("Calendar", () => {
@@ -88,7 +87,8 @@ describe("DatePicker", () => {
 describe("DateRangePicker", () => {
   it("renders editable ISO inputs for the range edges and submits as form fields", () => {
     renderWithUi(
-      <DateRangePicker
+      <DatePicker
+        range
         value={{ from: new Date(2026, 4, 1), to: new Date(2026, 4, 10) }}
         onValueChange={() => undefined}
         name="period"
@@ -104,7 +104,7 @@ describe("DateRangePicker", () => {
 
   it("opens the calendar when a range field is clicked, showing two months", async () => {
     const user = userEvent.setup();
-    renderWithUi(<DateRangePicker onValueChange={() => undefined} />);
+    renderWithUi(<DatePicker range onValueChange={() => undefined} />);
     await user.click(screen.getByRole("textbox", { name: /from|từ|開始/i }));
     // A range picker shows two month grids so a cross-month range needs no navigation.
     const grids = await screen.findAllByRole("grid");

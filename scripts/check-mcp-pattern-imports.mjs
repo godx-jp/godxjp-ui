@@ -115,6 +115,25 @@ const REMOVED_API = [
     label: "removed JSX <TreeList> (use <Tree treeData>)",
     re: /<\/?TreeList(?=[\s/>])/g,
   },
+  // The date cluster was merged into ONE DatePicker in 22.0.0: DateRangePicker -> `range`,
+  // MonthPicker -> `picker="month"`, MonthRangePicker -> `range picker="month"`. Prose may still
+  // NAME them (the migration note in the DatePicker entry does), so only the API forms match.
+  {
+    label: "import of removed DateRangePicker (use <DatePicker range>)",
+    re: /import\s+(?:type\s+)?\{[^}]*\bDateRangePicker(?:Prop|Props)?\b[^}]*\}\s+from\s+["']@godxjp\/ui[^"']*["']/g,
+  },
+  {
+    label: "removed JSX <DateRangePicker> (use <DatePicker range>)",
+    re: /<\/?DateRangePicker(?=[\s/>])/g,
+  },
+  {
+    label: 'import of removed MonthPicker/MonthRangePicker (use <DatePicker picker="month">)',
+    re: /import\s+(?:type\s+)?\{[^}]*\bMonth(?:Range)?Picker(?:Prop|Props)?\b[^}]*\}\s+from\s+["']@godxjp\/ui[^"']*["']/g,
+  },
+  {
+    label: 'removed JSX <MonthPicker>/<MonthRangePicker> (use <DatePicker picker="month">)',
+    re: /<\/?Month(?:Range)?Picker(?=[\s/>])/g,
+  },
 ];
 const UNDEFINED_CLASS = {
   label: "undefined library CSS class settings-* (no such class ships)",

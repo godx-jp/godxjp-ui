@@ -141,6 +141,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed — BREAKING
 
+- **Bốn picker ngày gộp thành MỘT `DatePicker`. `DateRangePicker`, `MonthPicker` và
+  `MonthRangePicker` bị GỠ, không có shim deprecated.**
+
+  `DatePicker` vốn ĐÃ chở `picker?: "date"|"week"|"month"|"quarter"|"year"` và tự dựng lưới tháng
+  bằng ĐÚNG những class CSS mà `MonthPicker` dùng — tức `<DatePicker picker="month"/>` và
+  `<MonthPicker/>` là hai bản cài đặt của cùng một control trong cùng một gói. Vỏ của
+  `MonthRangePicker`, `sharedKeyHandlers` và `innerInputClass` là bản chép từ `date-range-picker`,
+  chép cả một lỗi chính tả trong chú thích.
+
+  Cái giá của việc chép ấy đo được: **bốn hợp đồng mà `DatePicker` đã làm đúng và bản sao của nó
+  thì không.** (1) `<MonthPicker disabled open>` mở popover trên một field đã chết — `DatePicker`
+  chặn từ đầu bằng `!disabled && (openProp ?? internalOpen)`. (2) `fromYear`/`toYear` chỉ làm xám
+  hai chevron; mọi ô trong lưới và mọi chuỗi gõ tay vẫn commit được giá trị ngoài biên. (3) Enter
+  không được xử lý ở BA trong bốn file: gõ xong nhấn Enter thì không có gì xảy ra, panel vẫn mở, và
+  trong `<form>` phím ấy rơi xuống submit. (4) `MonthPicker` submit `2026/03` — `/` không phải dấu
+  phân cách ISO. Một sửa cho vòng open/close/commit phải làm bốn lần, và đo được là chưa lần nào làm đủ.
+
+  Gỡ trọn: ba component, `src/components/ui/date-range-picker.tsx`, subpath export
+  `@godxjp/ui/ui/date-range-picker`, ba `*Prop` trong registry, ba frame `docs/data-entry/`, ba
+  entry catalog MCP, các dòng frame-id trong `check-data-entry-*` và `ci-browser-full.yml`.
+  `check-mcp-pattern-imports.mjs` nay chặn import/JSX của cả ba y như đã chặn `TreeList`.
+  Baseline `check:disclosure-duplication` hạ **61 → 46 machine part, 11 → 8 component** — cụm
+  picker không thể tách lại mà không đỏ CI.
+
+  **Chuyển đổi.** Hai trục, đều là tên của antd: `picker` là ĐỘ MỊN, `range` là LỰC LƯỢNG.
+
+  | Cũ                      | Mới                                    |
+  | ----------------------- | -------------------------------------- |
+  | `<DateRangePicker …/>`  | `<DatePicker range …/>`                |
+  | `<MonthPicker …/>`      | `<DatePicker picker="month" …/>`       |
+  | `<MonthRangePicker …/>` | `<DatePicker range picker="month" …/>` |
+  | `fromYear={2024}`       | `minDate={new Date(2024, 0, 1)}`       |
+  | `toYear={2027}`         | `maxDate={new Date(2027, 11, 31)}`     |
+  | `DateRangePickerProp`   | `DatePickerProp` (nhánh `range: true`) |
+
+  **Ba va chạm tên prop được quyết định dứt khoát, lý do viết TRONG mã.**
+  · `fromYear`/`toYear` biến mất: `minDate`/`maxDate` diễn đạt được nhiều hơn (biên ở mức ngày) và
+  là tên antd; quan trọng hơn, chúng được thi hành ở CẢ HAI lối vào giá trị.
+  · `order` giờ có MỘT nghĩa — "chuẩn hoá về thứ tự tăng dần" — hoán vị hai đầu của một `range` và
+  sắp xếp một mảng `multiple`; đó là một bất biến nhìn qua hai hình dạng giá trị, không phải hai
+  nghĩa. `MonthRangePicker` trước đây hoán vị vô điều kiện, không tắt được.
+  · `inputReadOnly` theo nghĩa antd: chỉ đặt thuộc tính `readonly` lên input (giữ bàn phím ảo di
+  động không bật lên) — **panel VẪN mở**. Hai month picker bắt nó từ chối mở, biến nó thành một
+  `disabled` thứ hai và làm "chỉ chọn bằng lưới" không diễn đạt được nữa.
+
+  **Giá trị submit nay là ISO-8601 đúng độ chính xác mà `picker` chọn**: `2026-03-01` cho
+  `date`/`week`, `2026-03` cho `month` và `quarter`, `2026` cho `year`; `range` submit
+  `${name}_from` / `${name}_to`. Ô hiển thị đọc cùng chuỗi ấy.
+
+### Fixed
+
+- **Lưới `month`/`quarter`/`year` nay là một ARIA grid THẬT.** `role="grid"` đòi con `row` và một
+  `row` đòi con `gridcell`; `MonthPicker` đặt role lên một div đầy button trần, mà axe gắn cờ
+  `aria-required-children`. Test a11y của chính nó chưa bao giờ MỞ panel nên không ai thấy — lỗi
+  thứ năm, lộ ra vì test a11y của `DatePicker` có mở. Hai lớp bọc dùng `display: contents` nên hình
+  dạng 3 cột không đổi một pixel nào.
+
+### Removed — BREAKING
+
 - **`TreeList` bị GỠ, không có shim deprecated.** Nó là một `<ul>` phẳng mà `depth` chỉ lái
   `margin-inline-start`: không đóng/mở, không `role="tree"`, không bàn phím, không hợp đồng chọn.
   Nó chỉ TRÔNG như một cái cây. Trên màn thật nó đọc ra thành một chồng thẻ, vì mỗi nút là một

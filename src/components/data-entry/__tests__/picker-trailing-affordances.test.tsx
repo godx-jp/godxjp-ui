@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 import { DatePicker } from "../date-picker";
-import { DateRangePicker } from "../date-range-picker";
-import { MonthPicker } from "../month-picker";
-import { MonthRangePicker } from "../month-range-picker";
 import { TimePicker } from "../time-picker";
 
 const date = new Date(2026, 5, 15);
@@ -25,14 +22,15 @@ const cases = [
   {
     name: "MonthPicker",
     render: (filled: boolean, allowClear = true) => (
-      <MonthPicker defaultValue={filled ? date : undefined} allowClear={allowClear} />
+      <DatePicker picker="month" defaultValue={filled ? date : undefined} allowClear={allowClear} />
     ),
     icon: "Mở chọn tháng",
   },
   {
     name: "DateRangePicker",
     render: (filled: boolean, allowClear = true) => (
-      <DateRangePicker
+      <DatePicker
+        range
         defaultValue={filled ? { from: date, to: date } : undefined}
         allowClear={allowClear}
       />
@@ -42,7 +40,9 @@ const cases = [
   {
     name: "MonthRangePicker",
     render: (filled: boolean, allowClear = true) => (
-      <MonthRangePicker
+      <DatePicker
+        range
+        picker="month"
         defaultValue={filled ? { from: date, to: date } : undefined}
         allowClear={allowClear}
       />

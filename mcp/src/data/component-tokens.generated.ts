@@ -1836,27 +1836,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--month-picker-panel-space-inset",
     "value": "var(--space-3)",
-    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+    "description": "PERIOD GRID — the year-nav header over a 3-column grid that DatePicker shows for a coarse * `picker` (month / quarter / year), single or `range`. The `--month-picker-*` names date from * when this panel lived in a separate MonthPicker; one set of knobs has always driven every * copy of it, which is why merging the four pickers changed no measurement here."
   },
   {
     "name": "--month-picker-grid-space-block-start",
     "value": "var(--space-3)",
-    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+    "description": "PERIOD GRID — the year-nav header over a 3-column grid that DatePicker shows for a coarse * `picker` (month / quarter / year), single or `range`. The `--month-picker-*` names date from * when this panel lived in a separate MonthPicker; one set of knobs has always driven every * copy of it, which is why merging the four pickers changed no measurement here."
   },
   {
     "name": "--month-picker-grid-space-gap",
     "value": "var(--space-1)",
-    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+    "description": "PERIOD GRID — the year-nav header over a 3-column grid that DatePicker shows for a coarse * `picker` (month / quarter / year), single or `range`. The `--month-picker-*` names date from * when this panel lived in a separate MonthPicker; one set of knobs has always driven every * copy of it, which is why merging the four pickers changed no measurement here."
   },
   {
     "name": "--month-picker-cell-space-inline",
     "value": "var(--space-4)",
-    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+    "description": "PERIOD GRID — the year-nav header over a 3-column grid that DatePicker shows for a coarse * `picker` (month / quarter / year), single or `range`. The `--month-picker-*` names date from * when this panel lived in a separate MonthPicker; one set of knobs has always driven every * copy of it, which is why merging the four pickers changed no measurement here."
   },
   {
     "name": "--month-picker-nav-font-size",
     "value": "var(--font-size-sm)",
-    "description": "MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav + * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs * now drives both, so they cannot drift apart the way Select and DropdownMenu once did."
+    "description": "PERIOD GRID — the year-nav header over a 3-column grid that DatePicker shows for a coarse * `picker` (month / quarter / year), single or `range`. The `--month-picker-*` names date from * when this panel lived in a separate MonthPicker; one set of knobs has always driven every * copy of it, which is why merging the four pickers changed no measurement here."
   },
   {
     "name": "--month-picker-nav-rest-alpha",
@@ -2362,6 +2362,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--progress-breakdown-radius",
     "value": "var(--radius)",
     "description": "BREAKDOWN geometry (`segments`) — its own block size and corner, not the meter's. A 0.5rem pill carries ONE fill legibly; three abutting fills at that height read as a coloured hairline and the ratios stop being comparable, which is the only thing a breakdown is for. The corner follows --radius rather than --radius-pill: pill ends would round the first and last slice only, so the partition would look like it starts and stops somewhere other than where it does."
+  },
+  {
+    "name": "--progress-meter-block-size",
+    "value": "0.5rem",
+    "description": "`size=\"sm\"` — the SAME two forms, thinner, for a bar that annotates a row rather than being the subject of the screen (an in-table capacity column). The meter step is half its default hairline; the breakdown step lands exactly on the meter's default 0.5rem, which is the thinnest a partition can be and still show three fills apart. Below that the ratios are gone, which is why there is no `xs`."
+  },
+  {
+    "name": "--progress-meter-block-size-sm",
+    "value": "0.25rem",
+    "description": "`size=\"sm\"` — the SAME two forms, thinner, for a bar that annotates a row rather than being the subject of the screen (an in-table capacity column). The meter step is half its default hairline; the breakdown step lands exactly on the meter's default 0.5rem, which is the thinnest a partition can be and still show three fills apart. Below that the ratios are gone, which is why there is no `xs`."
+  },
+  {
+    "name": "--progress-breakdown-block-size-sm",
+    "value": "0.5rem",
+    "description": "`size=\"sm\"` — the SAME two forms, thinner, for a bar that annotates a row rather than being the subject of the screen (an in-table capacity column). The meter step is half its default hairline; the breakdown step lands exactly on the meter's default 0.5rem, which is the thinnest a partition can be and still show three fills apart. Below that the ratios are gone, which is why there is no `xs`."
   },
   {
     "name": "--legend-gap",
@@ -6352,6 +6367,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-flush-divider-width",
     "value": "var(--table-row-border-width)",
     "description": "Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside * `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three * edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind * it, so without it the header band floats (gh#306). Scoped by construction to the case that * needs it — a BANDED header, a CardBar or a headerless card already draw their own line there * and never reach this token — so a service tunes only the plain-header divider: `0` for a * borderless full-bleed table, heavier for a stronger band. Colour and style are NOT set here: * only the width is restored, so the surface's own border declaration still owns them and a * scoped [data-tenant]/.dark override of --border reaches it. * Default = the same hairline the table's other rules draw."
+  },
+  {
+    "name": "--table-row-tone-rail-width",
+    "value": "var(--stroke-2xl)",
+    "description": "Row TONE (`rowTone`) — the leading-edge rail plus the wash behind a row in a named state. * The rail measure is `--card-accent-rail-width`'s own step so a toned row and a toned Card * read as the same mark at the same weight; it is spelled out rather than referenced because a * service that thins its card rails should not silently thin its table rails too. * The wash is deliberately weak: it must stay under the selected-row fill (which is a stronger * statement about the same row) and must not carry meaning on its own — that is what the rail * and the row's own status cell are for."
+  },
+  {
+    "name": "--table-row-tone-wash-alpha",
+    "value": "0.06",
+    "description": "Row TONE (`rowTone`) — the leading-edge rail plus the wash behind a row in a named state. * The rail measure is `--card-accent-rail-width`'s own step so a toned row and a toned Card * read as the same mark at the same weight; it is spelled out rather than referenced because a * service that thins its card rails should not silently thin its table rails too. * The wash is deliberately weak: it must stay under the selected-row fill (which is a stronger * statement about the same row) and must not carry meaning on its own — that is what the rail * and the row's own status cell are for."
   },
   {
     "name": "--text-link-underline-offset",

@@ -2,9 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen } from "@/test/render";
 
 import { DatePicker } from "../date-picker";
-import { DateRangePicker } from "../date-range-picker";
-import { MonthPicker } from "../month-picker";
-import { MonthRangePicker } from "../month-range-picker";
 
 /**
  * Controlled-ness LATCH (useControlledLatch): a picker mounted with
@@ -29,17 +26,18 @@ describe("pickers — value arriving after an undefined mount is honored", () =>
     expect(screen.getByRole("combobox")).toHaveValue("");
   });
 
-  it("DateRangePicker", () => {
+  it("DatePicker range", () => {
     const onValueChange = vi.fn();
     const { rerender } = renderWithUi(
-      <DateRangePicker value={undefined} onValueChange={onValueChange} />,
+      <DatePicker range value={undefined} onValueChange={onValueChange} />,
     );
     const empty = screen.getAllByRole("textbox");
     expect(empty[0]).toHaveValue("");
     expect(empty[1]).toHaveValue("");
 
     rerender(
-      <DateRangePicker
+      <DatePicker
+        range
         value={{ from: new Date(2026, 3, 1), to: new Date(2026, 8, 30) }}
         onValueChange={onValueChange}
       />,
@@ -48,46 +46,50 @@ describe("pickers — value arriving after an undefined mount is honored", () =>
     expect(filled[0]).toHaveValue("2026-04-01");
     expect(filled[1]).toHaveValue("2026-09-30");
 
-    rerender(<DateRangePicker value={undefined} onValueChange={onValueChange} />);
+    rerender(<DatePicker range value={undefined} onValueChange={onValueChange} />);
     const cleared = screen.getAllByRole("textbox");
     expect(cleared[0]).toHaveValue("");
     expect(cleared[1]).toHaveValue("");
   });
 
-  it("MonthPicker", () => {
+  it("DatePicker picker=month", () => {
     const onValueChange = vi.fn();
     const { rerender } = renderWithUi(
-      <MonthPicker value={undefined} onValueChange={onValueChange} />,
+      <DatePicker picker="month" value={undefined} onValueChange={onValueChange} />,
     );
     expect(screen.getByRole("combobox")).toHaveValue("");
 
-    rerender(<MonthPicker value={new Date(2026, 4, 1)} onValueChange={onValueChange} />);
-    expect(screen.getByRole("combobox")).toHaveValue("2026/05");
+    rerender(
+      <DatePicker picker="month" value={new Date(2026, 4, 1)} onValueChange={onValueChange} />,
+    );
+    expect(screen.getByRole("combobox")).toHaveValue("2026-05");
 
-    rerender(<MonthPicker value={undefined} onValueChange={onValueChange} />);
+    rerender(<DatePicker picker="month" value={undefined} onValueChange={onValueChange} />);
     expect(screen.getByRole("combobox")).toHaveValue("");
   });
 
-  it("MonthRangePicker", () => {
+  it("DatePicker range picker=month", () => {
     const onValueChange = vi.fn();
     const { rerender } = renderWithUi(
-      <MonthRangePicker value={undefined} onValueChange={onValueChange} />,
+      <DatePicker range picker="month" value={undefined} onValueChange={onValueChange} />,
     );
     const empty = screen.getAllByRole("textbox");
     expect(empty[0]).toHaveValue("");
     expect(empty[1]).toHaveValue("");
 
     rerender(
-      <MonthRangePicker
+      <DatePicker
+        range
+        picker="month"
         value={{ from: new Date(2026, 0, 1), to: new Date(2026, 5, 1) }}
         onValueChange={onValueChange}
       />,
     );
     const filled = screen.getAllByRole("textbox");
-    expect(filled[0]).toHaveValue("2026/01");
-    expect(filled[1]).toHaveValue("2026/06");
+    expect(filled[0]).toHaveValue("2026-01");
+    expect(filled[1]).toHaveValue("2026-06");
 
-    rerender(<MonthRangePicker value={undefined} onValueChange={onValueChange} />);
+    rerender(<DatePicker range picker="month" value={undefined} onValueChange={onValueChange} />);
     const cleared = screen.getAllByRole("textbox");
     expect(cleared[0]).toHaveValue("");
     expect(cleared[1]).toHaveValue("");

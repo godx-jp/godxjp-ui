@@ -3,7 +3,6 @@ import * as React from "react";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 
 import { DatePicker } from "../date-picker";
-import { DateRangePicker } from "../date-range-picker";
 
 /** Regression: typing a date CHAR-BY-CHAR must not get mangled. */
 describe("date inputs — char-by-char typing not mangled (regression)", () => {
@@ -21,7 +20,7 @@ describe("date inputs — char-by-char typing not mangled (regression)", () => {
 
   it("DateRangePicker: typing into the From input key-by-key sticks", async () => {
     const user = userEvent.setup();
-    renderWithUi(<DateRangePicker />);
+    renderWithUi(<DatePicker range />);
     const from = screen.getAllByRole("textbox")[0];
     await user.type(from, "2026-06-01");
     expect(from).toHaveValue("2026-06-01");

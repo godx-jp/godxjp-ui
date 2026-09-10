@@ -4,11 +4,14 @@ import { ja } from "date-fns/locale";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { DatePicker, FormField } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import type { DateRange } from "react-day-picker";
 
 /**
- * DatePicker — WAI-ARIA date combobox with a real typeable ISO-8601 input.
- * Always give it a `name` for form submission. Use `fromDate`/`toDate` to
- * constrain the selectable range. Never hand-roll a date input + calendar.
+ * DatePicker — ONE date control. `picker` sets the granularity (day · week · month · quarter ·
+ * year), `range` turns it into a two-endpoint field, `multiple` into a set. Always give it a
+ * `name` for form submission; it emits ISO-8601 at the picker's own precision. Use
+ * `minDate`/`maxDate` to constrain what is selectable. Never hand-roll a date input + calendar,
+ * and never compose two DatePickers side-by-side to fake a range — that is `range`.
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
@@ -17,6 +20,11 @@ export default function Demo() {
   const [closingDate, setClosingDate] = useState<Date | undefined>(undefined);
   const [meetingDate, setMeetingDate] = useState<Date | undefined>(new Date(2026, 5, 25));
   const [settlementDate, setSettlementDate] = useState<Date | undefined>(undefined);
+  const [period, setPeriod] = useState<DateRange | undefined>({
+    from: new Date(2026, 3, 1),
+    to: new Date(2027, 2, 31),
+  });
+  const [term, setTerm] = useState<DateRange | undefined>(undefined);
 
   return (
     <PageContainer
@@ -267,6 +275,98 @@ export default function Demo() {
                 multiple
                 needConfirm
                 defaultValue={[new Date(2026, 8, 9), new Date(2026, 8, 11)]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>期間 (range)</CardTitle>
+            <CardDescription>
+              range を付けると値は DateRange になり、開始/終了の 2 入力を 1
+              つのコントロールにまとめる。 name=&#34;period&#34; は period_from / period_to として
+              ISO 送信される。 開始 &gt; 終了で入力しても order (既定 true) が昇順に正規化する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent data-axe-open>
+            <FormField id="period" label="会計期間" required>
+              <DatePicker
+                range
+                id="period"
+                name="period"
+                value={period}
+                onValueChange={setPeriod}
+                minDate={new Date(2020, 0, 1)}
+                maxDate={new Date(2030, 11, 31)}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>月次の期間 (range × picker)</CardTitle>
+            <CardDescription>
+              range と picker は直交する。picker=&#34;month&#34; の期間は月グリッドで選び、
+              term_from / term_to を ISO yyyy-MM で送信する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="term" label="対象期間">
+              <DatePicker
+                range
+                picker="month"
+                id="term"
+                name="term"
+                value={term}
+                onValueChange={setTerm}
+                minDate={new Date(2024, 0, 1)}
+                maxDate={new Date(2027, 11, 31)}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>期間プリセットと確定</CardTitle>
+            <CardDescription>
+              presets · needConfirm · allowEmpty は range でも同じ綴りで効く。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="preset-range" label="集計期間">
+              <DatePicker
+                range
+                id="preset-range"
+                name="report"
+                format="yyyy/MM/dd"
+                needConfirm
+                allowEmpty={[false, true]}
+                showWeek
+                minDate={new Date(2026, 0, 1)}
+                maxDate={new Date(2026, 11, 31)}
+                presets={[
+                  {
+                    label: "9月",
+                    value: () => ({ from: new Date(2026, 8, 1), to: new Date(2026, 8, 30) }),
+                  },
+                ]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>disabled な期間</CardTitle>
+            <CardDescription>確定済み期間や読み取り専用フィールドに使用。</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="locked-period" label="確定期間">
+              <DatePicker
+                range
+                id="locked-period"
+                name="locked_period"
+                value={{ from: new Date(2025, 3, 1), to: new Date(2026, 2, 31) }}
+                disabled
               />
             </FormField>
           </CardContent>

@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from "vitest";
 import { within, fireEvent } from "@testing-library/react";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 import { DatePicker } from "../date-picker";
-import { DateRangePicker } from "../date-range-picker";
 import { TimePicker } from "../time-picker";
 import { TimeRangePicker } from "../time-range-picker";
 
@@ -41,7 +40,8 @@ describe("Picker precision and display", () => {
       <form>
         <DatePicker disabled name="date" format="yyyy/MM/dd" defaultValue={new Date(2026, 8, 9)} />
         <TimePicker disabled name="time" format="h:mm A" defaultValue="13:00" />
-        <DateRangePicker
+        <DatePicker
+          range
           disabled
           name="range"
           format="yyyy/MM/dd"
@@ -232,7 +232,8 @@ describe("Picker precision and display", () => {
     const user = userEvent.setup(),
       change = vi.fn();
     renderWithUi(
-      <DateRangePicker
+      <DatePicker
+        range
         needConfirm
         allowEmpty={[false, true]}
         minDate={new Date(2026, 8, 1)}

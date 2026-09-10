@@ -1,7 +1,6 @@
 import { it } from "vitest";
 import { expectNoA11yViolations } from "@/test/a11y";
 import { DatePicker } from "../date-picker";
-import { DateRangePicker } from "../date-range-picker";
 import { TimePicker } from "../time-picker";
 import { TimeRangePicker } from "../time-range-picker";
 
@@ -37,5 +36,5 @@ it("range endpoints retain distinct accessible names", async () => {
   );
 });
 it("date range validation does not put invalid ARIA on a group", async () => {
-  await expectNoA11yViolations(<DateRangePicker aria-label="Period" status="error" />);
+  await expectNoA11yViolations(<DatePicker range aria-label="Period" status="error" />);
 });

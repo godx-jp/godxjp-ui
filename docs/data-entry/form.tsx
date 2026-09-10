@@ -5,7 +5,6 @@ import {
   Checkbox,
   CheckboxGroup,
   DatePicker,
-  DateRangePicker,
   Field,
   Form,
   FormErrors,
@@ -425,7 +424,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>日時系 · DatePicker / DateRangePicker / TimePicker</CardTitle>
+            <CardTitle level={2}>日時系 · DatePicker / DatePicker range / TimePicker</CardTitle>
             <CardDescription>
               単一日付・期間・時刻。ISO-8601 / IANA タイムゾーンに準拠し locale
               連動でフォーマットする。
@@ -483,12 +482,13 @@ export default function Demo() {
                 />
               </FormField>
               <FormField id="f-period" label="会計期間" colSpan={2}>
-                <DateRangePicker
+                <DatePicker
+                  range
                   id="f-period"
                   name="period"
                   value={period}
                   onValueChange={setPeriod}
-                  // 土日は選べない。fromDate/toDate では表せない規則。
+                  // 土日は選べない。minDate/maxDate では表せない規則。
                   disabledDate={(date) => date.getDay() === 0 || date.getDay() === 6}
                 />
               </FormField>

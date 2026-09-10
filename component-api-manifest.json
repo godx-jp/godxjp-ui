@@ -73,7 +73,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -83,7 +83,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -106,7 +106,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -116,7 +116,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -155,7 +155,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -165,7 +165,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -175,7 +175,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -185,7 +185,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -195,7 +195,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -287,7 +287,7 @@
           "type": "ReactNode",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/general.prop.ts"
           ]
         },
@@ -298,7 +298,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/general.prop.ts"
           ]
         },
@@ -346,7 +346,7 @@
           "type": "ReactNode",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         },
@@ -357,7 +357,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         },
@@ -405,7 +405,7 @@
           "type": "ReactNode",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         },
@@ -416,7 +416,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         }
@@ -432,7 +432,7 @@
           "type": "ReactNode",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         },
@@ -443,7 +443,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         }
@@ -459,7 +459,7 @@
           "type": "ReactNode",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         },
@@ -470,7 +470,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         }
@@ -603,7 +603,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -613,7 +613,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -623,7 +623,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -633,7 +633,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -656,7 +656,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -666,7 +666,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -676,7 +676,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -686,7 +686,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -866,7 +866,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -876,7 +876,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -886,7 +886,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -896,7 +896,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -1001,7 +1001,7 @@
           "type": "ReactNode",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         },
@@ -1012,7 +1012,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         }
@@ -2036,7 +2036,7 @@
           "type": "ReactNode",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         },
@@ -2047,7 +2047,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/feedback.prop.ts"
           ]
         },
@@ -2430,7 +2430,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/general.prop.ts"
           ]
         },
@@ -2473,7 +2473,7 @@
           "type": "(MouseEventHandler<HTMLButtonElement> & import(\"@/props\").OnClickProp) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/general.prop.ts"
           ]
         },
@@ -2516,7 +2516,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -2526,7 +2526,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -2670,7 +2670,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -2726,7 +2726,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/react-day-picker@10.0.1_@types+react@19.2.18_react@19.2.8/node_modules/react-day-picker/dist/esm/types/props.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/react-day-picker@10.0.1_@types+react@19.2.18_react@19.2.8/node_modules/react-day-picker/dist/esm/types/props.d.ts"
           ]
         },
         {
@@ -2736,7 +2736,7 @@
           "type": "Matcher | Matcher[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/react-day-picker@10.0.1_@types+react@19.2.18_react@19.2.8/node_modules/react-day-picker/dist/esm/types/props.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/react-day-picker@10.0.1_@types+react@19.2.18_react@19.2.8/node_modules/react-day-picker/dist/esm/types/props.d.ts"
           ]
         },
         {
@@ -2746,7 +2746,7 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/react-day-picker@10.0.1_@types+react@19.2.18_react@19.2.8/node_modules/react-day-picker/dist/esm/types/props.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/react-day-picker@10.0.1_@types+react@19.2.18_react@19.2.8/node_modules/react-day-picker/dist/esm/types/props.d.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -2765,7 +2765,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/react-day-picker@10.0.1_@types+react@19.2.18_react@19.2.8/node_modules/react-day-picker/dist/esm/types/props.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/react-day-picker@10.0.1_@types+react@19.2.18_react@19.2.8/node_modules/react-day-picker/dist/esm/types/props.d.ts"
           ]
         },
         {
@@ -2987,7 +2987,7 @@
           "name": "opts",
           "origin": "owned",
           "required": false,
-          "type": "Partial<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
+          "type": "Partial<import(\"../../../../godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -2995,7 +2995,7 @@
           "name": "plugins",
           "origin": "owned",
           "required": false,
-          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
+          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../../godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -3031,7 +3031,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -3041,7 +3041,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -3051,7 +3051,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -3061,7 +3061,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -3076,7 +3076,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -3086,7 +3086,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -3096,7 +3096,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -3106,7 +3106,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -3669,7 +3669,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -3712,7 +3712,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -3957,7 +3957,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -3967,7 +3967,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -3993,7 +3993,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -4204,7 +4204,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -4214,7 +4214,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -4298,8 +4298,8 @@
           "type": "string | (readonly string[] & string) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         },
         {
@@ -4309,7 +4309,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         },
         {
@@ -4319,7 +4319,7 @@
           "type": "((value: string) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         },
         {
@@ -4329,7 +4329,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         }
       ]
@@ -4348,7 +4348,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         },
         {
@@ -4358,7 +4358,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         }
       ]
@@ -4373,7 +4373,7 @@
           "type": "((search: string) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         },
         {
@@ -4383,7 +4383,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         }
       ]
@@ -4398,7 +4398,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         },
         {
@@ -4408,7 +4408,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         },
         {
@@ -4418,7 +4418,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/cmdk@1.1.1_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@19.2.18_react-dom_eac68ab0adf9793d8073f3724ff2eeeb/node_modules/cmdk/dist/index.d.ts"
           ]
         }
       ]
@@ -4679,7 +4679,7 @@
           "type": "Direction | undefined",
           "values": ["ltr", "rtl"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4689,7 +4689,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4699,7 +4699,7 @@
           "type": "((open: boolean) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4709,7 +4709,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -4724,7 +4724,7 @@
           "type": "CheckedState | undefined",
           "values": [false, true, "indeterminate"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4734,7 +4734,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4744,7 +4744,7 @@
           "type": "((checked: boolean) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -4759,7 +4759,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -4769,7 +4769,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -4779,7 +4779,7 @@
           "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -4789,7 +4789,7 @@
           "type": "true | undefined",
           "values": [true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4799,7 +4799,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -4809,7 +4809,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4819,7 +4819,7 @@
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         }
       ]
@@ -4834,7 +4834,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4878,7 +4878,7 @@
           "type": "true | undefined",
           "values": [true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -4893,7 +4893,7 @@
           "type": "((value: string) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4903,7 +4903,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -4918,7 +4918,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4928,7 +4928,7 @@
           "type": "string",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -4951,7 +4951,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4961,7 +4961,7 @@
           "type": "((open: boolean) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4971,7 +4971,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -4986,7 +4986,7 @@
           "type": "AlignSubContent | undefined",
           "values": ["start", "end"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -4996,7 +4996,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -5006,7 +5006,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -5016,7 +5016,7 @@
           "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -5026,7 +5026,7 @@
           "type": "true | undefined",
           "values": [true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -5036,7 +5036,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -5046,7 +5046,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -5056,7 +5056,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -5066,7 +5066,7 @@
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         }
       ]
@@ -5081,7 +5081,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -5096,7 +5096,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-context-menu@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types_64c3bb2b21f1631e608c956a11db4119/node_modules/@radix-ui/react-context-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -5723,7 +5723,7 @@
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
-          "type": "Date | Date[] | undefined",
+          "type": "Date | Date[] | DateRange | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -5835,7 +5835,7 @@
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
-          "type": "((value: Date | undefined) => void) | ((value: Date[] | undefined) => void) | undefined",
+          "type": "((value: Date | undefined) => void) | ((value: Date[] | undefined) => void) | ((value: DateRange | undefined) => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -5899,8 +5899,16 @@
           "name": "presets",
           "origin": "owned",
           "required": false,
-          "type": "{ label: React.ReactNode; value: Date | (() => Date); }[] | undefined",
+          "type": "{ label: React.ReactNode; value: Date | (() => Date); }[] | { label: React.ReactNode; value: Date | (() => Date); }[] | { label: React.ReactNode; value: DateRange | (() => DateRange); }[] | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "range",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -5979,300 +5987,7 @@
           "name": "value",
           "origin": "owned",
           "required": false,
-          "type": "Date | Date[] | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "variant",
-          "origin": "owned",
-          "required": false,
-          "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        }
-      ]
-    },
-    "DateRangePicker": {
-      "group": "data-entry",
-      "props": [
-        {
-          "name": "allowClear",
-          "origin": "owned",
-          "required": false,
-          "type": "AllowClearProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "allowEmpty",
-          "origin": "owned",
-          "required": false,
-          "type": "[boolean, boolean] | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "cellRender",
-          "origin": "owned",
-          "required": false,
-          "type": "CalendarCellRenderProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "defaultOpen",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "owned",
-          "required": false,
-          "type": "DateRange | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "disabledDate",
-          "origin": "owned",
-          "required": false,
-          "type": "((date: Date) => boolean) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "format",
-          "origin": "owned",
-          "required": false,
-          "type": "PickerDateFormatProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "fromDate",
-          "origin": "owned",
-          "required": false,
-          "type": "Date | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "inputReadOnly",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "locale",
-          "origin": "owned",
-          "required": false,
-          "type": "Partial<import(\"react-day-picker\").DayPickerLocale> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "maxDate",
-          "origin": "owned",
-          "required": false,
-          "type": "Date | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "minDate",
-          "origin": "owned",
-          "required": false,
-          "type": "Date | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "needConfirm",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onOpenChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((open: boolean) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onValueChange",
-          "origin": "owned",
-          "required": false,
-          "type": "OnValueChangeProp<DateRange | undefined> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "open",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "order",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "parseFormat",
-          "origin": "owned",
-          "required": false,
-          "type": "((text: string) => Date | undefined) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "placeholder",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "placement",
-          "origin": "owned",
-          "required": false,
-          "type": "\"bottom-start\" | \"bottom-end\" | \"top-start\" | \"top-end\" | undefined",
-          "values": ["bottom-start", "bottom-end", "top-start", "top-end"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "preserveInvalidOnBlur",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "presets",
-          "origin": "owned",
-          "required": false,
-          "type": "{ label: React.ReactNode; value: DateRange | (() => DateRange); }[] | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "ref",
-          "origin": "owned",
-          "required": false,
-          "type": "React.Ref<HTMLInputElement> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "renderExtraFooter",
-          "origin": "owned",
-          "required": false,
-          "type": "(() => React.ReactNode) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "showClose",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "showToday",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "showWeek",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
-          "values": ["sm", "md", "lg"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "status",
-          "origin": "owned",
-          "required": false,
-          "type": "ControlStatusProp | undefined",
-          "values": ["warning", "error"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "toDate",
-          "origin": "owned",
-          "required": false,
-          "type": "Date | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "owned",
-          "required": false,
-          "type": "DateRange | undefined",
+          "type": "Date | Date[] | DateRange | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -6410,7 +6125,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6420,7 +6135,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6430,7 +6145,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6440,7 +6155,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -6467,7 +6182,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6477,7 +6192,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6487,7 +6202,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6497,7 +6212,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -6520,7 +6235,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6530,7 +6245,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6540,7 +6255,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6550,7 +6265,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -6701,7 +6416,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6711,7 +6426,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6721,7 +6436,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -6731,7 +6446,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -7164,7 +6879,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -7346,7 +7061,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -7356,7 +7071,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -7366,7 +7081,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -7376,7 +7091,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -7386,7 +7101,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -7983,7 +7698,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -8469,7 +8184,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -8625,7 +8340,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -8635,7 +8350,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -8653,7 +8368,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -8719,7 +8434,7 @@
           "type": "HTMLInputTypeAttribute | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -8729,7 +8444,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -8784,7 +8499,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -8810,7 +8525,7 @@
           "type": "number",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -8821,7 +8536,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -8872,7 +8587,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -8915,7 +8630,7 @@
           "type": "HTMLInputTypeAttribute | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -8954,7 +8669,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -8969,7 +8684,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -8984,7 +8699,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -9137,7 +8852,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/data-display.prop.ts"
           ]
         },
@@ -9533,7 +9248,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
           ]
         },
         {
@@ -9543,7 +9258,7 @@
           "type": "(\"ltr\" | \"rtl\") | undefined",
           "values": ["ltr", "rtl"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
           ]
         },
         {
@@ -9553,7 +9268,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
           ]
         },
         {
@@ -9563,7 +9278,7 @@
           "type": "((value: string) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
           ]
         },
         {
@@ -9573,7 +9288,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
           ]
         }
       ]
@@ -9588,7 +9303,7 @@
           "type": "CheckedState | undefined",
           "values": [false, true, "indeterminate"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -9598,7 +9313,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -9608,7 +9323,7 @@
           "type": "((checked: boolean) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -9623,7 +9338,7 @@
           "type": "\"center\" | \"start\" | \"end\" | undefined",
           "values": ["center", "start", "end"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9633,7 +9348,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9643,7 +9358,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9653,7 +9368,7 @@
           "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9663,7 +9378,7 @@
           "type": "true | undefined",
           "values": [true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -9673,7 +9388,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9683,7 +9398,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -9693,7 +9408,7 @@
           "type": "\"left\" | \"right\" | \"top\" | \"bottom\" | undefined",
           "values": ["left", "right", "top", "bottom"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9703,7 +9418,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9713,7 +9428,7 @@
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         }
       ]
@@ -9728,7 +9443,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -9763,7 +9478,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
           ]
         }
       ]
@@ -9778,7 +9493,7 @@
           "type": "((value: string) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -9788,7 +9503,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -9803,7 +9518,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -9813,7 +9528,7 @@
           "type": "string",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -9836,7 +9551,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
           ]
         },
         {
@@ -9846,7 +9561,7 @@
           "type": "((open: boolean) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
           ]
         },
         {
@@ -9856,7 +9571,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menubar@1.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+rea_6b4f8b3d561ab67cee519b8d25761012/node_modules/@radix-ui/react-menubar/dist/index.d.mts"
           ]
         }
       ]
@@ -9871,7 +9586,7 @@
           "type": "AlignSubContent | undefined",
           "values": ["start", "end"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -9881,7 +9596,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9891,7 +9606,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9901,7 +9616,7 @@
           "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9911,7 +9626,7 @@
           "type": "true | undefined",
           "values": [true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -9921,7 +9636,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9931,7 +9646,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         },
         {
@@ -9941,7 +9656,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -9951,7 +9666,7 @@
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         }
       ]
@@ -9966,7 +9681,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-menu@2.1.24_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react@_eca1ef41f9ffcd34b3ceacead6223f55/node_modules/@radix-ui/react-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -9981,7 +9696,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -9991,7 +9706,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -10065,368 +9780,6 @@
         }
       ]
     },
-    "MonthPicker": {
-      "group": "data-entry",
-      "props": [
-        {
-          "name": "allowClear",
-          "origin": "owned",
-          "required": false,
-          "type": "AllowClearProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "defaultOpen",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "owned",
-          "required": false,
-          "type": "Date | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "fromYear",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "inputReadOnly",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onOpenChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((open: boolean) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onValueChange",
-          "origin": "owned",
-          "required": false,
-          "type": "OnValueChangeProp<Date | undefined> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "open",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "placeholder",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "placement",
-          "origin": "owned",
-          "required": false,
-          "type": "\"bottom-start\" | \"bottom-end\" | \"top-start\" | \"top-end\" | undefined",
-          "values": ["bottom-start", "bottom-end", "top-start", "top-end"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "preserveInvalidOnBlur",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "ref",
-          "origin": "owned",
-          "required": false,
-          "type": "React.Ref<HTMLInputElement> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "renderExtraFooter",
-          "origin": "owned",
-          "required": false,
-          "type": "((() => React.ReactNode) & (() => React.ReactNode)) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
-          "values": ["sm", "md", "lg"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "status",
-          "origin": "owned",
-          "required": false,
-          "type": "ControlStatusProp | undefined",
-          "values": ["warning", "error"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "toYear",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "owned",
-          "required": false,
-          "type": "Date | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "variant",
-          "origin": "owned",
-          "required": false,
-          "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        }
-      ]
-    },
-    "MonthRangePicker": {
-      "group": "data-entry",
-      "props": [
-        {
-          "name": "allowClear",
-          "origin": "owned",
-          "required": false,
-          "type": "AllowClearProp | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "defaultOpen",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "owned",
-          "required": false,
-          "type": "DateRange | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "fromYear",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "id",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "inputReadOnly",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onOpenChange",
-          "origin": "owned",
-          "required": false,
-          "type": "((open: boolean) => void) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "onValueChange",
-          "origin": "owned",
-          "required": false,
-          "type": "OnValueChangeProp<DateRange | undefined> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "open",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "placeholder",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "placement",
-          "origin": "owned",
-          "required": false,
-          "type": "\"bottom-start\" | \"bottom-end\" | \"top-start\" | \"top-end\" | undefined",
-          "values": ["bottom-start", "bottom-end", "top-start", "top-end"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "preserveInvalidOnBlur",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "ref",
-          "origin": "owned",
-          "required": false,
-          "type": "React.Ref<HTMLInputElement> | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "renderExtraFooter",
-          "origin": "owned",
-          "required": false,
-          "type": "((() => React.ReactNode) & (() => React.ReactNode)) | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "size",
-          "origin": "owned",
-          "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
-          "values": ["sm", "md", "lg"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "status",
-          "origin": "owned",
-          "required": false,
-          "type": "ControlStatusProp | undefined",
-          "values": ["warning", "error"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "toYear",
-          "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "owned",
-          "required": false,
-          "type": "DateRange | undefined",
-          "values": [],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "variant",
-          "origin": "owned",
-          "required": false,
-          "type": "ControlVariantProp | undefined",
-          "values": ["outlined", "filled", "borderless"],
-          "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        }
-      ]
-    },
     "NavigationMenu": {
       "group": "navigation",
       "props": [
@@ -10437,7 +9790,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         },
         {
@@ -10447,7 +9800,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         },
         {
@@ -10457,7 +9810,7 @@
           "type": "Direction | undefined",
           "values": ["ltr", "rtl"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         },
         {
@@ -10467,7 +9820,7 @@
           "type": "((value: string) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         },
         {
@@ -10477,7 +9830,7 @@
           "type": "Orientation | undefined",
           "values": ["vertical", "horizontal"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         },
         {
@@ -10487,7 +9840,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         },
         {
@@ -10497,7 +9850,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -10512,7 +9865,7 @@
           "type": "true | undefined",
           "values": [true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -10527,7 +9880,7 @@
           "type": "true | undefined",
           "values": [true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -10542,7 +9895,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -10569,7 +9922,7 @@
           "type": "true | undefined",
           "values": [true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-navigation-menu@1.2.22_@types+react-dom@19.2.5_@types+react@19.2.18__@t_b342a9ff929ca293efca2075f4df4159/node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"
           ]
         }
       ]
@@ -11273,7 +10626,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -11288,7 +10641,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/components/navigation/pagination.tsx"
           ]
         },
@@ -11315,7 +10668,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -11330,7 +10683,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/components/navigation/pagination.tsx"
           ]
         },
@@ -11357,7 +10710,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -11372,7 +10725,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/components/navigation/pagination.tsx"
           ]
         },
@@ -11399,7 +10752,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -11446,7 +10799,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -11528,7 +10881,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12025,7 +11378,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12035,7 +11388,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12045,7 +11398,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12055,7 +11408,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -12102,7 +11455,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -12252,7 +11605,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12262,7 +11615,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12272,7 +11625,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12282,7 +11635,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12292,7 +11645,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12477,7 +11830,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12487,7 +11840,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12497,7 +11850,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12507,7 +11860,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12517,7 +11870,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12710,7 +12063,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/react-resizable-panels@4.12.3_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/react-resizable-panels/dist/react-resizable-panels.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/react-resizable-panels@4.12.3_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/react-resizable-panels/dist/react-resizable-panels.d.ts"
           ]
         }
       ]
@@ -12725,7 +12078,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/react-resizable-panels@4.12.3_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/react-resizable-panels/dist/react-resizable-panels.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/react-resizable-panels@4.12.3_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/react-resizable-panels/dist/react-resizable-panels.d.ts"
           ]
         }
       ]
@@ -12740,7 +12093,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/react-resizable-panels@4.12.3_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/react-resizable-panels/dist/react-resizable-panels.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/react-resizable-panels@4.12.3_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/react-resizable-panels/dist/react-resizable-panels.d.ts"
           ]
         },
         {
@@ -12750,7 +12103,7 @@
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
           "declaredIn": [
-            "node_modules/.pnpm/react-resizable-panels@4.12.3_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/react-resizable-panels/dist/react-resizable-panels.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/react-resizable-panels@4.12.3_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/react-resizable-panels/dist/react-resizable-panels.d.ts"
           ]
         }
       ]
@@ -12842,7 +12195,7 @@
           "type": "ReactNode",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/general.prop.ts"
           ]
         },
@@ -12853,7 +12206,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/general.prop.ts"
           ]
         },
@@ -12893,7 +12246,7 @@
           "type": "Direction | undefined",
           "values": ["ltr", "rtl"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-scroll-area@1.2.18_@types+react-dom@19.2.5_@types+react@19.2.18__@types_279dcd4b898c40e4a06e3a1dcec97e78/node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-scroll-area@1.2.18_@types+react-dom@19.2.5_@types+react@19.2.18__@types_279dcd4b898c40e4a06e3a1dcec97e78/node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"
           ]
         },
         {
@@ -12919,7 +12272,7 @@
           "type": "\"always\" | \"hover\" | \"scroll\" | \"auto\" | undefined",
           "values": ["always", "hover", "scroll", "auto"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-scroll-area@1.2.18_@types+react-dom@19.2.5_@types+react@19.2.18__@types_279dcd4b898c40e4a06e3a1dcec97e78/node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-scroll-area@1.2.18_@types+react-dom@19.2.5_@types+react@19.2.18__@types_279dcd4b898c40e4a06e3a1dcec97e78/node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"
           ]
         },
         {
@@ -12942,7 +12295,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -12952,7 +12305,7 @@
           "type": "true | undefined",
           "values": [true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-scroll-area@1.2.18_@types+react-dom@19.2.5_@types+react@19.2.18__@types_279dcd4b898c40e4a06e3a1dcec97e78/node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-scroll-area@1.2.18_@types+react-dom@19.2.5_@types+react@19.2.18__@types_279dcd4b898c40e4a06e3a1dcec97e78/node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"
           ]
         },
         {
@@ -12962,7 +12315,7 @@
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-scroll-area@1.2.18_@types+react-dom@19.2.5_@types+react@19.2.18__@types_279dcd4b898c40e4a06e3a1dcec97e78/node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-scroll-area@1.2.18_@types+react-dom@19.2.5_@types+react@19.2.18__@types_279dcd4b898c40e4a06e3a1dcec97e78/node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"
           ]
         }
       ]
@@ -13259,7 +12612,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -13270,7 +12623,7 @@
           "type": "string | string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -13281,7 +12634,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -13303,7 +12656,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -13314,7 +12667,7 @@
           "type": "OnOpenChangeProp | ((open: boolean) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -13325,7 +12678,7 @@
           "type": "((value: string, option?: SearchSelectOptionProp) => void) | ((value: string[], options?: SearchSelectOptionProp[]) => void) | ((value: string) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -13336,7 +12689,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -13347,7 +12700,7 @@
           "type": "string | string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts",
             "src/props/components/data-entry.prop.ts"
           ]
         }
@@ -13363,7 +12716,7 @@
           "type": "\"center\" | \"start\" | \"end\" | undefined",
           "values": ["center", "start", "end"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -13373,7 +12726,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -13383,7 +12736,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -13393,7 +12746,7 @@
           "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -13411,7 +12764,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -13421,7 +12774,7 @@
           "type": "true | undefined",
           "values": [true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts"
           ]
         },
         {
@@ -13431,7 +12784,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -13441,7 +12794,7 @@
           "type": "\"left\" | \"right\" | \"top\" | \"bottom\" | undefined",
           "values": ["left", "right", "top", "bottom"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -13451,7 +12804,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         },
         {
@@ -13461,7 +12814,7 @@
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-popper@1.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_958f149fb609a7e4eb97c6c154c262c6/node_modules/@radix-ui/react-popper/dist/index.d.mts"
           ]
         }
       ]
@@ -13476,7 +12829,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -13491,7 +12844,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -13501,7 +12854,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts"
           ]
         },
         {
@@ -13519,7 +12872,7 @@
           "type": "string",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-select@2.3.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_d22897cd7335bb05b3fe6befe8e86b29/node_modules/@radix-ui/react-select/dist/index.d.mts"
           ]
         }
       ]
@@ -13534,7 +12887,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -13549,7 +12902,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -13564,7 +12917,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -13579,7 +12932,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -13610,7 +12963,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -13620,7 +12973,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -13630,7 +12983,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -13664,7 +13017,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -13674,7 +13027,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -13705,7 +13058,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -13720,7 +13073,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/layout.prop.ts"
           ]
         },
@@ -14141,7 +13494,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -14151,7 +13504,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -14161,7 +13514,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -14171,7 +13524,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -14330,7 +13683,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -14340,7 +13693,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -14350,7 +13703,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -14360,7 +13713,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -14504,7 +13857,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -14530,7 +13883,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -14564,7 +13917,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -14574,7 +13927,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -14589,7 +13942,7 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/components/layout/sidebar.tsx"
           ]
         },
@@ -14683,7 +14036,7 @@
           "type": "number[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
           ]
         },
         {
@@ -14693,7 +14046,7 @@
           "type": "Direction | undefined",
           "values": ["ltr", "rtl"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
           ]
         },
         {
@@ -14703,7 +14056,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
           ]
         },
         {
@@ -14737,7 +14090,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
           ]
         },
         {
@@ -14747,7 +14100,7 @@
           "type": "((value: number[]) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
           ]
         },
         {
@@ -14757,7 +14110,7 @@
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
           ]
         },
         {
@@ -14791,7 +14144,7 @@
           "type": "number[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/@radix-ui+react-slider@1.4.7_@types+react-dom@19.2.5_@types+react@19.2.18__@types+react_59f7fda31838ac95a57bc4d7dbe91ed2/node_modules/@radix-ui/react-slider/dist/index.d.mts"
           ]
         }
       ]
@@ -15022,7 +14375,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/navigation.prop.ts"
           ]
         },
@@ -15041,7 +14394,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15160,7 +14513,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15178,7 +14531,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15212,7 +14565,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15332,7 +14685,7 @@
           "type": "string | number | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/components/data-display/table.tsx"
           ]
         },
@@ -15433,7 +14786,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/navigation.prop.ts"
           ]
         },
@@ -15593,7 +14946,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15603,7 +14956,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15634,7 +14987,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15644,7 +14997,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15675,7 +15028,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15685,7 +15038,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15695,7 +15048,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/components/navigation/tabs.tsx"
           ]
         },
@@ -15706,7 +15059,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -15716,7 +15069,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -16007,7 +15360,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/general.prop.ts"
           ]
         },
@@ -16111,7 +15464,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -16121,7 +15474,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -16147,7 +15500,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -16205,7 +15558,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -16856,7 +16209,7 @@
           "type": "\"ltr\" | \"rtl\" | \"auto\" | undefined",
           "values": ["ltr", "rtl", "auto"],
           "declaredIn": [
-            "node_modules/.pnpm/sonner@2.0.8_@types+react@19.2.18_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/sonner/dist/index.d.mts"
+            "../godxjp-ui/node_modules/.pnpm/sonner@2.0.8_@types+react@19.2.18_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/sonner/dist/index.d.mts"
           ]
         }
       ]
@@ -16895,7 +16248,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -16905,7 +16258,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -16955,7 +16308,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -17079,7 +16432,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -17089,7 +16442,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -17099,7 +16452,7 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -17133,7 +16486,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -17485,7 +16838,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         },
         {
@@ -17495,7 +16848,7 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]
@@ -17595,7 +16948,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
             "src/props/components/layout.prop.ts"
           ]
         },
@@ -17614,7 +16967,7 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "values": ["button", "submit", "reset"],
           "declaredIn": [
-            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+            "../godxjp-ui/node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
           ]
         }
       ]

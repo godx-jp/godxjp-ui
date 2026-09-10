@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   Cascader,
   DatePicker,
-  DateRangePicker,
   Field,
   Form,
   FormField,
@@ -294,7 +293,8 @@ export default function Demo() {
                     />
                   </FormField>
                   <FormField id="iv-period" label="対象期間">
-                    <DateRangePicker
+                    <DatePicker
+                      range
                       id="iv-period"
                       name="period"
                       value={v.period}

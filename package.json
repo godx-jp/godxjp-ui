@@ -213,10 +213,6 @@
       "types": "./dist/components/data-entry/date-picker.d.ts",
       "import": "./dist/components/data-entry/date-picker.js"
     },
-    "./ui/date-range-picker": {
-      "types": "./dist/components/data-entry/date-range-picker.d.ts",
-      "import": "./dist/components/data-entry/date-range-picker.js"
-    },
     "./ui/time-picker": {
       "types": "./dist/components/data-entry/time-picker.d.ts",
       "import": "./dist/components/data-entry/time-picker.js"

@@ -2783,6 +2783,14 @@
     gap: var(--month-picker-grid-space-gap);
   }
 
+  /* A period grid is a real ARIA grid, so the cells sit inside role="row" / role="gridcell"
+   * wrappers. Both are `display: contents` — the wrappers exist for assistive tech only and the
+   * buttons stay direct grid items, so the 3-column shape above is untouched. */
+  .ui-month-picker-row,
+  .ui-month-picker-gridcell {
+    display: contents;
+  }
+
   .ui-month-picker-cell {
     padding-inline: var(--month-picker-cell-space-inline);
     font-weight: var(--font-weight-normal);

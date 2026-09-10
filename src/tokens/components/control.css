@@ -465,9 +465,10 @@
   --transfer-actions-space-gap: var(--space-2);
   --transfer-action-icon-size: var(--icon-size-md);
 
-  /* MONTH PICKER — shared by MonthPicker and MonthRangePicker, which render the same year-nav +
-   * 3-column month grid. Both carried an identical copy of every literal (#319); one set of knobs
-   * now drives both, so they cannot drift apart the way Select and DropdownMenu once did. */
+  /* PERIOD GRID — the year-nav header over a 3-column grid that DatePicker shows for a coarse
+   * `picker` (month / quarter / year), single or `range`. The `--month-picker-*` names date from
+   * when this panel lived in a separate MonthPicker; one set of knobs has always driven every
+   * copy of it, which is why merging the four pickers changed no measurement here. */
   --month-picker-panel-space-inset: var(--space-3);
   --month-picker-grid-space-block-start: var(--space-3);
   --month-picker-grid-space-gap: var(--space-1);

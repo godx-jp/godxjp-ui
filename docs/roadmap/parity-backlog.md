@@ -23,19 +23,19 @@ compared against, or successive waves will silently measure against different ta
 
 ## P0 — fix first, regardless of which strategy wins
 
-| # | Defect | Evidence | Why P0 |
-| --- | --- | --- | --- |
-| 1 | **`NumberInput` corrupts values 10× in comma-decimal locales, including shipped `vi`** | formats via `Intl.NumberFormat` (`number-input.tsx:100`), parses via hardcoded `replace(/,/g,"")` (`:41`), `handleBlur` re-parses the displayed draft (`:220`). `Intl.NumberFormat("vi",{useGrouping:false}).format(1.5)` → `"1,5"` → parses back as `15` | Silent money/quantity corruption. Focus-then-blur is enough. Keep the NFKC 全角 fold — it is correct. |
-| 2 | **`Timeline` hardcodes English screen-reader status text** | `SR_PREFIX = {done:"Completed: ",…}` `timeline.tsx:31-35`, injected `:107`; `grep timeline src/i18n/messages/en.json` → 0 hits | A ja/vi product announces English. Violates the mandatory i18n gate. |
-| 3 | **`PasswordStrength` is hardcoded English end-to-end** | `password-strength.tsx:4-8,75,106,113,119-133`; never imports `useTranslation`; `labels` overrides only 3 of ~10 strings | Same gate; and consumers cannot work around it. |
+| #   | Defect                                                                                 | Evidence                                                                                                                                                                                                                                                  | Why P0                                                                                                |
+| --- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 1   | **`NumberInput` corrupts values 10× in comma-decimal locales, including shipped `vi`** | formats via `Intl.NumberFormat` (`number-input.tsx:100`), parses via hardcoded `replace(/,/g,"")` (`:41`), `handleBlur` re-parses the displayed draft (`:220`). `Intl.NumberFormat("vi",{useGrouping:false}).format(1.5)` → `"1,5"` → parses back as `15` | Silent money/quantity corruption. Focus-then-blur is enough. Keep the NFKC 全角 fold — it is correct. |
+| 2   | **`Timeline` hardcodes English screen-reader status text**                             | `SR_PREFIX = {done:"Completed: ",…}` `timeline.tsx:31-35`, injected `:107`; `grep timeline src/i18n/messages/en.json` → 0 hits                                                                                                                            | A ja/vi product announces English. Violates the mandatory i18n gate.                                  |
+| 3   | **`PasswordStrength` is hardcoded English end-to-end**                                 | `password-strength.tsx:4-8,75,106,113,119-133`; never imports `useTranslation`; `labels` overrides only 3 of ~10 strings                                                                                                                                  | Same gate; and consumers cannot work around it.                                                       |
 
 ## P1 — grouped by owning file, so one agent owns one group
 
 **`data-entry`** — `Slider` missing `aria-valuetext` (`slider.tsx:138-157`) · `SearchInput` Enter does
 not commit (no `onKeyDown` in the file; `:59-63`) · `ColorPicker` has no `size`/`status`/`variant`
 and no `presets` (`data-entry.prop.ts:893-908`) · `PasswordStrength` uses `role="img"` instead of
-`role="meter"` (`:74-76`) · `Upload showUploadList` boolean-only (`:1196`) · `DateRangePicker
-disabled` scalar, cannot lock one end (`:787`) · no `defaultPickerValue` on either date picker ·
+`role="meter"` (`:74-76`) · `Upload showUploadList` boolean-only (`:1196`) · `DatePicker range
+disabled` scalar, cannot lock one end · `DatePicker` has no `defaultPickerValue` ·
 `Transfer` has no `status` (`:1413-1459`) · `Cascader` search uncapped (`cascader.tsx:389-393`) ·
 `Select` lacks `fieldNames` although `Cascader` and `TreeSelect` both have it · `NumberInput` has
 no `stringMode`.

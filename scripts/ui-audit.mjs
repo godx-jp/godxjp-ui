@@ -169,7 +169,7 @@ const RULES = [
     spansElement: true,
     test: new RegExp(
       "<(?:Checkbox\\.Group|Upload|Cascader|TreeSelect|Transfer|Select|SearchSelect|DatePicker|" +
-        `DateRangePicker|TimePicker|ColorPicker|LocalePicker|TimezonePicker|DateFormatPicker|TimeFormatPicker)\\b${ATTRS}\\bonChange=`,
+        `TimePicker|ColorPicker|LocalePicker|TimezonePicker|DateFormatPicker|TimeFormatPicker)\\b${ATTRS}\\bonChange=`,
       "g",
     ),
     message:
@@ -729,8 +729,8 @@ const CARD_FLUSH = new RegExp(
 // legitimately, so they are NOT matched. Whole-file pass (the pair spans lines).
 const BARE_FIELD = new RegExp(
   `<(?:label|Label)\\b${ATTRS}>[\\s\\S]{0,240}?</(?:label|Label)>\\s*` +
-    "<(?:Input|Select|Textarea|NumberInput|SearchInput|SearchSelect|DatePicker|DateRangePicker|" +
-    "TimePicker|MonthPicker|MonthRangePicker|Cascader|TreeSelect|input)\\b",
+    "<(?:Input|Select|Textarea|NumberInput|SearchInput|SearchSelect|DatePicker|" +
+    "TimePicker|Cascader|TreeSelect|input)\\b",
   "g",
 );
 

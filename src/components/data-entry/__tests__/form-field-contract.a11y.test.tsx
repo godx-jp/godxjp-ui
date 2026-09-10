@@ -9,10 +9,7 @@ import { Select } from "../select";
 import { SearchSelect } from "../search-select";
 import { SearchInput } from "../search-input";
 import { DatePicker } from "../date-picker";
-import { MonthPicker } from "../month-picker";
 import { TimePicker } from "../time-picker";
-import { DateRangePicker } from "../date-range-picker";
-import { MonthRangePicker } from "../month-range-picker";
 import { Cascader } from "../cascader";
 import { TreeSelect } from "../tree-select";
 import { ColorPicker } from "../color-picker";
@@ -81,7 +78,7 @@ const WIDGET_CASES: Array<{
     render: (id) => <SearchSelect id={id} options={OPTIONS} onValueChange={() => {}} />,
   },
   { name: "DatePicker", role: "combobox", render: (id) => <DatePicker id={id} /> },
-  { name: "MonthPicker", role: "combobox", render: (id) => <MonthPicker id={id} /> },
+  { name: "MonthPicker", role: "combobox", render: (id) => <DatePicker picker="month" id={id} /> },
   { name: "TimePicker", role: "combobox", render: (id) => <TimePicker id={id} /> },
   {
     name: "Cascader",
@@ -180,11 +177,11 @@ const GROUP_CASES: Array<{ name: string; render: (id: string) => React.ReactElem
   },
   {
     name: "DateRangePicker",
-    render: (id) => <DateRangePicker id={id} onValueChange={() => {}} />,
+    render: (id) => <DatePicker range id={id} onValueChange={() => {}} />,
   },
   {
     name: "MonthRangePicker",
-    render: (id) => <MonthRangePicker id={id} onValueChange={() => {}} />,
+    render: (id) => <DatePicker range picker="month" id={id} onValueChange={() => {}} />,
   },
   {
     name: "Transfer",

@@ -49,7 +49,6 @@ const SPACING_UTILITY_ALLOWLIST = new Set([
   "radio.tsx",
   "color-picker.tsx",
   "autocomplete.tsx",
-  "date-range-picker.tsx",
   "locale-picker.tsx",
   "timezone-picker.tsx",
   "date-format-picker.tsx",

@@ -224,7 +224,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 43,
     title: "Every form control goes through FormField",
-    body: "Consumers MUST wrap every labelled form control (Input, Select, DatePicker, DateRangePicker, NumberInput, Radio.Group, Checkbox groups, range pairs, ...) in FormField — it owns the label (aria-labelledby, never a dangling <label for>), auto-generates/injects the control id, and wires aria-describedby/aria-errormessage/aria-invalid. Bare controls are the rare exception (e.g. a toolbar quick-filter with its own aria-label) and must carry id/name + aria-label themselves. Never hand-roll a label+control stack with Text/Label.",
+    body: "Consumers MUST wrap every labelled form control (Input, Select, DatePicker, NumberInput, Radio.Group, Checkbox groups, range pairs, ...) in FormField — it owns the label (aria-labelledby, never a dangling <label for>), auto-generates/injects the control id, and wires aria-describedby/aria-errormessage/aria-invalid. Bare controls are the rare exception (e.g. a toolbar quick-filter with its own aria-label) and must carry id/name + aria-label themselves. Never hand-roll a label+control stack with Text/Label.",
   },
   {
     number: 44,
