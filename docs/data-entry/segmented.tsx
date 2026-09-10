@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, Segmented } from "@godxjp/ui/data-entry";
-import { Text } from "@godxjp/ui/general";
+import { Text, VisuallyHidden } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { CalendarDays, Columns3, LayoutList, Monitor, Moon, Sun } from "lucide-react";
 
@@ -81,6 +81,108 @@ export default function Demo() {
                 ]}
               />
             </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>size · vertical · block</CardTitle>
+            <CardDescription>
+              size は 3 段（sm / md / lg）。トラックの高さは --control-height そのもので、
+              MobileShell のようにその変数をスコープする領域では自動的にタッチ段（44px）になります。
+              vertical では 1 行ぶんが 1 コントロールの高さになります — 横 1 行のときだけトラック
+              内側の余白を引くので、積んだときは引きません。block は幅いっぱいに広げます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md" align="start">
+              <Segmented
+                aria-label="サイズ sm"
+                size="sm"
+                defaultValue="a"
+                options={[
+                  { value: "a", label: "小" },
+                  { value: "b", label: "中" },
+                  { value: "c", label: "大" },
+                ]}
+              />
+              <Segmented
+                aria-label="サイズ md"
+                defaultValue="b"
+                options={[
+                  { value: "a", label: "小" },
+                  { value: "b", label: "中" },
+                  { value: "c", label: "大" },
+                ]}
+              />
+              <Segmented
+                aria-label="サイズ lg"
+                size="lg"
+                defaultValue="c"
+                options={[
+                  { value: "a", label: "小" },
+                  { value: "b", label: "中" },
+                  { value: "c", label: "大" },
+                ]}
+              />
+              <Segmented
+                aria-label="縦積み"
+                vertical
+                block
+                defaultValue="ok"
+                options={[
+                  { value: "ok", label: "実施" },
+                  { value: "warn", label: "要改善" },
+                  { value: "none", label: "未実施" },
+                ]}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>短い記号を出して、長い名前を読ませる</CardTitle>
+            <CardDescription>
+              `label` は ReactNode なので、見える記号を aria-hidden にして VisuallyHidden に
+              読み上げ名を置けます。専用の prop は要りません。○ と読み上げられても意味が伝わらない
+              ため、色や記号だけに意味を持たせないという WCAG 1.4.1 の要求そのものです。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Segmented
+              aria-label="監査結果"
+              defaultValue="ok"
+              options={[
+                {
+                  value: "ok",
+                  label: (
+                    <>
+                      <span aria-hidden="true">○</span>
+                      <VisuallyHidden>実施</VisuallyHidden>
+                    </>
+                  ),
+                },
+                {
+                  value: "warn",
+                  label: (
+                    <>
+                      <span aria-hidden="true">△</span>
+                      <VisuallyHidden>要改善</VisuallyHidden>
+                    </>
+                  ),
+                },
+                {
+                  value: "none",
+                  label: (
+                    <>
+                      <span aria-hidden="true">×</span>
+                      <VisuallyHidden>未実施</VisuallyHidden>
+                    </>
+                  ),
+                },
+              ]}
+            />
           </CardContent>
         </Card>
 

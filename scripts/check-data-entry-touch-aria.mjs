@@ -4,12 +4,27 @@ import { chromium } from "playwright";
 
 const port = 6012;
 const base = `http://localhost:${port}`;
+/*
+ * SELECTORS ARE PLAYWRIGHT SELECTORS, and `role=` is not the same thing as `[role=]`.
+ *
+ * The two checkbox entries read `[role="checkbox"]` — a CSS attribute match, which only ever finds
+ * an element that SPELLS the attribute out. Radix's Checkbox did; the react-aria-components
+ * Checkbox this library moved to in v20 renders a real `<input type="checkbox">`, whose checkbox
+ * role is IMPLICIT. Measured on the frame after the migration: 0 elements matching
+ * `[role="checkbox"]`, 26 matching `input[type="checkbox"]` — so this gate threw on its very first
+ * case and stopped, and every case after it went unmeasured. `role=checkbox` is Playwright's role
+ * engine and resolves the implicit role, which is what the gate meant all along.
+ */
 const cases = [
-  ["data-entry-checkbox", '[role="checkbox"]'],
+  ["data-entry-checkbox", '[data-slot="checkbox"]'],
   ["data-entry-radio-group", '[role="radio"]'],
   // Radix ToggleGroup emits role="radiogroup" for type="single" (and "toolbar" for
   // type="multiple") — never role="group".
   ["data-entry-toggle-group", '[role="radiogroup"]'],
+  // Segmented is a radiogroup too, and it was missing from this list while three of its own
+  // documented props (`size`, `vertical`, `block`) had no rendered example anywhere — which is
+  // how `size` came to be a silent no-op for as long as it did. The frame now carries all three.
+  ["data-entry-segmented", '[role="radio"]'],
   ["data-entry-command", "[cmdk-input]"],
   ["data-entry-input-otp", 'input[data-input-otp="true"]'],
   ["data-entry-label", "textarea"],
@@ -34,7 +49,7 @@ const cases = [
   ["data-entry-upload", "button"],
   ["data-entry-cascader", '[role="combobox"]'],
   ["data-entry-tree-select", '[role="combobox"]'],
-  ["data-entry-transfer", '[role="checkbox"]'],
+  ["data-entry-transfer", '[data-slot="checkbox"]'],
   ["data-entry-password-input", 'input[type="password"]'],
   ["data-entry-rating", "button"],
   ["data-entry-tag-input", "input"],
