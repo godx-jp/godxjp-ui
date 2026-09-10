@@ -82,6 +82,8 @@ export function DatePicker(props: DatePickerProp) {
     maxDate,
     showWeek,
     showTime,
+    defaultPickerValue,
+    pickerValue,
     presets,
     multiple = false,
     range = false,
@@ -115,13 +117,22 @@ export function DatePicker(props: DatePickerProp) {
   const { t } = useTranslation();
   const { dayPickerLocale, locale } = usePickerLocales(localeProp);
   const isPeriod = PERIOD_PICKERS.has(picker);
+  // `disabled` is scalar everywhere except a range, where antd lets it lock ONE endpoint:
+  // "the start is fixed by the contract, only the end is negotiable". Everything below reads the
+  // pair, so the scalar case is just the pair with both halves equal — no second code path.
+  const disabledEdges: [boolean, boolean] = Array.isArray(disabled)
+    ? disabled
+    : [Boolean(disabled), Boolean(disabled)];
+  const allDisabled = disabledEdges[0] && disabledEdges[1];
+  const anyDisabled = disabledEdges[0] || disabledEdges[1];
+  const edgeDisabled = (edge: "from" | "to") => disabledEdges[edge === "from" ? 0 : 1];
 
   // ── ONE open machine ────────────────────────────────────────────────────────────────────────
   const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
   // A disabled control is inert, controlled `open` or not. `MonthPicker` and `MonthRangePicker`
   // read the controlled prop straight through, so `<MonthPicker disabled open />` rendered a live
   // grid over a dead field; only this guard has ever been correct.
-  const open = !disabled && (openProp ?? internalOpen);
+  const open = !allDisabled && (openProp ?? internalOpen);
   const [pending, setPending] = React.useState<Date | Date[] | DateRange | undefined>();
   const [hasPending, setHasPending] = React.useState(false);
   const setOpen = (next: boolean) => {
@@ -130,7 +141,7 @@ export function DatePicker(props: DatePickerProp) {
     // the way you pick. The two month pickers had it refuse to open at all, which made it a
     // synonym for the `disabled` this component already has, and left "pick by grid only" —
     // the one thing it is for — inexpressible. antd's meaning wins.
-    if (disabled && next) return;
+    if (allDisabled && next) return;
     if (openProp === undefined) setInternalOpen(next);
     onOpenChange?.(next);
     if (!next) {
@@ -224,20 +235,30 @@ export function DatePicker(props: DatePickerProp) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [range, value, committedFrom, committedTo, format, locale, showTime]);
 
-  // The grid follows the value at rest: a `<DatePicker picker="month" value={2020-01} />` opens on
-  // 2020, not on this year. (Only `MonthPicker` used to do this; the period grid inside the old
-  // `DatePicker` seeded `viewYear` once and never re-synced.)
-  const [viewYear, setViewYear] = React.useState((selectedDate ?? new Date()).getFullYear());
-  const anchorYear = (
-    range
-      ? committedRange?.from
-      : Array.isArray(committedSingle)
-        ? committedSingle[0]
-        : committedSingle
-  )?.getFullYear();
+  // ── ONE panel-view anchor, for both panels ───────────────────────────────────────────────────
+  // The panel follows the value at rest — a `<DatePicker picker="month" value={2020-01} />` opens
+  // on 2020, not on this year — unless the caller says otherwise. `pickerValue` is the controlled
+  // form and always wins; `defaultPickerValue` is re-applied on every OPEN, which is antd's own
+  // wording ("will be reset when panel open") and the reason it needs no reconciliation with the
+  // value: opening is the only moment either of them speaks.
+  const valueAnchor = range
+    ? committedRange?.from
+    : Array.isArray(committedSingle)
+      ? committedSingle[0]
+      : committedSingle;
+  const [internalView, setInternalView] = React.useState<Date | undefined>(
+    () => defaultPickerValue ?? valueAnchor,
+  );
+  const viewAnchor = pickerValue ?? internalView ?? new Date();
+  const viewYear = viewAnchor.getFullYear();
+  const setViewAnchor = (next: Date) => {
+    if (pickerValue === undefined) setInternalView(next);
+  };
+  const setViewYear = (year: number) => setViewAnchor(new Date(year, viewAnchor.getMonth(), 1));
   React.useEffect(() => {
-    if (anchorYear !== undefined) setViewYear(anchorYear);
-  }, [anchorYear]);
+    if (open) setInternalView(defaultPickerValue ?? valueAnchor);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const resolvedPlaceholder =
     placeholder ??
@@ -254,7 +275,7 @@ export function DatePicker(props: DatePickerProp) {
   const clearControl = resolveAllowClear(allowClear, true, t("common.clear") ?? "Clear");
   const showClear =
     clearControl.enabled &&
-    !disabled &&
+    !anyDisabled &&
     (range
       ? allowEmpty.every(Boolean) && Boolean(committedRange?.from || committedRange?.to)
       : text !== "");
@@ -276,6 +297,11 @@ export function DatePicker(props: DatePickerProp) {
   const choose = (input: Date | Date[] | DateRange | undefined) => {
     if (range) {
       let next = input as DateRange | undefined;
+      if (anyDisabled && next)
+        next = {
+          from: disabledEdges[0] ? committedRange?.from : next.from,
+          to: disabledEdges[1] ? committedRange?.to : next.to,
+        };
       if ((next?.from && !allowed(next.from)) || (next?.to && !allowed(next.to))) return;
       // `order` — ONE rule for every value shape: normalise into ascending order. On a range that
       // means SWAP the endpoints; on a `multiple` array it means SORT. The split components spelled
@@ -324,6 +350,7 @@ export function DatePicker(props: DatePickerProp) {
   };
 
   const commitEdge = (edge: "from" | "to", raw: string) => {
+    if (edgeDisabled(edge)) return;
     const trimmed = raw.trim();
     const parsed = parse(trimmed);
     if (trimmed && (!parsed || !allowed(parsed))) return;
@@ -384,13 +411,13 @@ export function DatePicker(props: DatePickerProp) {
     <>
       <input
         type="hidden"
-        disabled={disabled}
+        disabled={allDisabled}
         name={`${resolvedName}_from`}
         value={isoValue(committedRange?.from)}
       />
       <input
         type="hidden"
-        disabled={disabled}
+        disabled={allDisabled}
         name={`${resolvedName}_to`}
         value={isoValue(committedRange?.to)}
       />
@@ -398,7 +425,7 @@ export function DatePicker(props: DatePickerProp) {
   ) : (
     <input
       type="hidden"
-      disabled={disabled}
+      disabled={allDisabled}
       name={resolvedName}
       value={
         Array.isArray(committedSingle)
@@ -537,6 +564,10 @@ export function DatePicker(props: DatePickerProp) {
     ...(disabledDate ? [disabledDate] : []),
   ];
   const calendarShared = {
+    // The day grid takes its month from the SAME anchor the period grid uses, so `pickerValue` and
+    // `defaultPickerValue` mean one thing at every granularity.
+    month: viewAnchor,
+    onMonthChange: setViewAnchor,
     locale: dayPickerLocale,
     cellRender,
     showWeekNumber: showWeek,
@@ -551,7 +582,6 @@ export function DatePicker(props: DatePickerProp) {
     <Calendar
       mode="range"
       selected={rangeValue}
-      defaultMonth={rangeValue?.from}
       // A range picker shows two months so a cross-month range can be picked without navigating.
       numberOfMonths={2}
       onSelect={(next) => {
@@ -566,7 +596,6 @@ export function DatePicker(props: DatePickerProp) {
     <Calendar
       mode="multiple"
       selected={Array.isArray(working) ? (working as Date[]) : []}
-      defaultMonth={selectedDate}
       onSelect={choose}
       disabled={(day) => !allowed(day)}
       {...calendarShared}
@@ -575,7 +604,6 @@ export function DatePicker(props: DatePickerProp) {
     <Calendar
       mode="single"
       selected={selectedDate}
-      defaultMonth={selectedDate}
       onSelect={(date) => {
         if (date && showTime && selectedDate)
           date.setHours(
@@ -621,7 +649,7 @@ export function DatePicker(props: DatePickerProp) {
     <PopoverTrigger asChild>
       <button
         type="button"
-        disabled={disabled}
+        disabled={allDisabled}
         tabIndex={-1}
         aria-label={
           (isPeriod
@@ -758,7 +786,7 @@ export function DatePicker(props: DatePickerProp) {
         readOnly={inputReadOnly}
         aria-readonly={inputReadOnly || undefined}
         value={edge === "from" ? fromText : toText}
-        disabled={disabled}
+        disabled={edgeDisabled(edge)}
         placeholder={resolvedPlaceholder}
         inputMode="numeric"
         autoComplete="off"
@@ -804,8 +832,8 @@ export function DatePicker(props: DatePickerProp) {
             data-size={size}
             data-status={status}
             data-variant={variant}
-            aria-disabled={disabled ? true : undefined}
-            data-disabled={disabled ? "" : undefined}
+            aria-disabled={allDisabled ? true : undefined}
+            data-disabled={allDisabled ? "" : undefined}
             data-state={open ? "open" : "closed"}
             className={cn(
               "ui-control ui-control-composite-field",
@@ -815,7 +843,7 @@ export function DatePicker(props: DatePickerProp) {
               className,
             )}
             onClick={() => {
-              if (!disabled) setOpen(true);
+              if (!allDisabled) setOpen(true);
             }}
           >
             {edgeInput("from")}
@@ -849,7 +877,7 @@ export function DatePicker(props: DatePickerProp) {
             readOnly={inputReadOnly || multiple}
             data-field={resolvedField}
             value={text}
-            disabled={disabled}
+            disabled={allDisabled}
             placeholder={resolvedPlaceholder}
             inputMode="numeric"
             autoComplete="off"
@@ -863,7 +891,7 @@ export function DatePicker(props: DatePickerProp) {
             // the input declares aria-haspopup="dialog", so it controls the popup, not only the
             // icon. Focus stays on the input (PopoverContent.onOpenAutoFocus prevented).
             onClick={() => {
-              if (!disabled) setOpen(true);
+              if (!allDisabled) setOpen(true);
             }}
             {...keyHandlers(enterSingle)}
             onChange={(event) => {

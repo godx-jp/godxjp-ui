@@ -34,8 +34,7 @@ compared against, or successive waves will silently measure against different ta
 **`data-entry`** — `Slider` missing `aria-valuetext` (`slider.tsx:138-157`) · `SearchInput` Enter does
 not commit (no `onKeyDown` in the file; `:59-63`) · `ColorPicker` has no `size`/`status`/`variant`
 and no `presets` (`data-entry.prop.ts:893-908`) · `PasswordStrength` uses `role="img"` instead of
-`role="meter"` (`:74-76`) · `Upload showUploadList` boolean-only (`:1196`) · `DatePicker range
-disabled` scalar, cannot lock one end · `DatePicker` has no `defaultPickerValue` ·
+`role="meter"` (`:74-76`) · `Upload showUploadList` boolean-only (`:1196`) ·
 `Transfer` has no `status` (`:1413-1459`) · `Cascader` search uncapped (`cascader.tsx:389-393`) ·
 `Select` lacks `fieldNames` although `Cascader` and `TreeSelect` both have it · `NumberInput` has
 no `stringMode`.

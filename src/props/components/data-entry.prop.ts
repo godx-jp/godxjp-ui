@@ -756,6 +756,17 @@ export type DatePickerBaseProp = FieldA11yProps &
     showWeek?: boolean;
     needConfirm?: boolean;
     /**
+     * Which period the PANEL opens on, independently of the value (antd `defaultPickerValue`, and
+     * like antd's it is RE-APPLIED every time the panel opens rather than only at mount).
+     *
+     * Without it a panel can only open on the value or on today, so "open on the fiscal year's
+     * start month" and "open on the month of the row being edited" have no expression — the two
+     * cases the parity audit files as P1. Only the period matters; the day is ignored.
+     */
+    defaultPickerValue?: Date;
+    /** Controlled panel period (antd `pickerValue`) — wins over `defaultPickerValue` and over the value. */
+    pickerValue?: Date;
+    /**
      * GRANULARITY of one selection (antd `picker`). `date` picks a day from a month grid; `week`
      * picks a day and normalises it to the locale's week start; `month`, `quarter` and `year` swap
      * the day grid for a period grid and normalise to the period's first day.
@@ -781,7 +792,13 @@ export type DatePickerBaseProp = FieldA11yProps &
           "hourStep" | "minuteStep" | "secondStep" | "showSeconds" | "use12Hours" | "disabledTime"
         >;
     placeholder?: PlaceholderProp;
-    disabled?: DisabledProp;
+    /**
+     * Inert control. With `range`, the TUPLE form `[from, to]` locks one endpoint and leaves the
+     * other editable (antd's RangePicker `disabled`) — "the start date is fixed by the contract,
+     * only the end is negotiable" is a real screen that a scalar cannot say. The tuple is
+     * meaningless without `range` and is ignored there.
+     */
+    disabled?: DisabledProp | [boolean, boolean];
     className?: ClassNameProp;
     id?: IdProp;
     /**

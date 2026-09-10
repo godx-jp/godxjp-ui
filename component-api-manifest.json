@@ -5720,6 +5720,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "defaultPickerValue",
+          "origin": "owned",
+          "required": false,
+          "type": "Date | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
@@ -5731,8 +5739,8 @@
           "name": "disabled",
           "origin": "owned",
           "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
+          "type": "boolean | [boolean, boolean] | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -5869,6 +5877,14 @@
           "required": false,
           "type": "\"date\" | \"month\" | \"week\" | \"quarter\" | \"year\" | undefined",
           "values": ["date", "month", "week", "quarter", "year"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "pickerValue",
+          "origin": "owned",
+          "required": false,
+          "type": "Date | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {

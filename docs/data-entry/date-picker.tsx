@@ -356,6 +356,46 @@ export default function Demo() {
         </Card>
         <Card>
           <CardHeader>
+            <CardTitle level={2}>パネルの初期表示 (defaultPickerValue)</CardTitle>
+            <CardDescription>
+              値とは独立に「パネルがどの期間を開くか」を指定する。会計年度の開始月で開く、
+              編集中の行の月で開く、といった要求はこれでしか表現できない。antd と同じく
+              開くたびに再適用される。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="fiscal-open" label="会計年度開始月">
+              <DatePicker
+                id="fiscal-open"
+                name="fiscal_open"
+                picker="month"
+                defaultPickerValue={new Date(2027, 3, 1)}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>片側だけ固定した期間</CardTitle>
+            <CardDescription>
+              range のとき disabled は [from, to] のタプルを取り、片方だけロックできる。
+              「開始日は契約で確定、終了日だけ交渉中」がこれで表現できる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="contract-period" label="契約期間">
+              <DatePicker
+                range
+                id="contract-period"
+                name="contract_period"
+                defaultValue={{ from: new Date(2026, 3, 1), to: new Date(2027, 2, 31) }}
+                disabled={[true, false]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>disabled な期間</CardTitle>
             <CardDescription>確定済み期間や読み取り専用フィールドに使用。</CardDescription>
           </CardHeader>

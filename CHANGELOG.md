@@ -190,6 +190,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `date`/`week`, `2026-03` cho `month` và `quarter`, `2026` cho `year`; `range` submit
   `${name}_from` / `${name}_to`. Ô hiển thị đọc cùng chuỗi ấy.
 
+### Added
+
+- **Hai khoảng trống P1 với Ant Design của `DatePicker` được lấp** — chính hai dòng mà
+  `docs/roadmap/parity-audit-data-entry.md` §2.6 xếp P1, và đối chiếu lại với tài liệu THẬT của
+  antd (ant.design/components/date-picker) chứ không dựa vào trí nhớ.
+
+  · `defaultPickerValue` / `pickerValue` — panel mở ở kỳ nào, ĐỘC LẬP với giá trị. Không có nó thì
+  "mở ở tháng đầu năm tài chính" hay "mở ở tháng của dòng đang sửa" không diễn đạt được: panel chỉ
+  mở ở giá trị hoặc ở hôm nay. `defaultPickerValue` được ÁP LẠI mỗi lần mở — đúng câu chữ của antd
+  ("will be reset when panel open") — nên nó không phải hoà giải gì với giá trị. Một anchor lái cả
+  hai panel, nên `picker` mịn hay thô đều một nghĩa. antd KHÔNG tài liệu hoá `onPickerValueChange`
+  nên không bịa ra.
+
+  · `disabled` nhận thêm dạng tuple `[from, to]` khi có `range`, khoá MỘT đầu và để đầu kia sửa
+  được (antd RangePicker `disabled`). "Ngày bắt đầu chốt theo hợp đồng, chỉ ngày kết thúc còn thương
+  lượng" là một màn thật. Dạng scalar chỉ là tuple hai nửa bằng nhau nên không có nhánh mã thứ hai;
+  đầu bị khoá giữ nguyên giá trị đã commit dù gõ hay chọn gì, và ✕ rút đi khi còn một đầu bị khoá
+  vì xoá sẽ cuốn theo cả đầu ấy.
+
+  Đối chiếu với antd cũng xác nhận hai quyết định va chạm ở trên bằng NGUỒN GỐC chứ không phải suy
+  luận: `order` được antd định nghĩa là "auto order date when **multiple or range** selection" —
+  đúng một nghĩa cho cả hai hình dạng giá trị; và `inputReadOnly` là "set readonly attribute of
+  input tag (avoids virtual keyboard)" — không hề nói gì đến việc chặn panel.
+
 ### Fixed
 
 - **Lưới `month`/`quarter`/`year` nay là một ARIA grid THẬT.** `role="grid"` đòi con `row` và một

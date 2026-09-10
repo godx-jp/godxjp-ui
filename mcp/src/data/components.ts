@@ -6493,6 +6493,18 @@ export function PrioritySelect({ value, onValueChange }) {
       },
       { name: "showWeek", type: "boolean", description: "Show week numbers." },
       {
+        name: "defaultPickerValue",
+        type: "Date",
+        description:
+          "Which period the PANEL opens on, independently of the value (antd `defaultPickerValue`), and — as in antd — RE-APPLIED every time the panel opens, not only at mount. Use it for 'open on the fiscal year's start month' or 'open on the month of the row being edited'.",
+      },
+      {
+        name: "pickerValue",
+        type: "Date",
+        description:
+          "Controlled panel period (antd `pickerValue`). Wins over `defaultPickerValue` and over the value, and freezes the panel's own navigation — the parent owns which period is shown.",
+      },
+      {
         name: "needConfirm",
         type: "boolean",
         description: "Stage choices until confirmed; defaults on with showTime.",
@@ -6607,10 +6619,10 @@ export function PrioritySelect({ value, onValueChange }) {
       },
       {
         name: "disabled",
-        type: "boolean",
+        type: "boolean | [boolean, boolean]",
         defaultValue: "false",
         description:
-          "Makes the control inert: the input, the clear button and the panel trigger all go dead, and a controlled `open` cannot force the panel up.",
+          "Makes the control inert: the input, the clear button and the panel trigger all go dead, and a controlled `open` cannot force the panel up. With `range`, the TUPLE form `[from, to]` locks ONE endpoint and leaves the other editable (antd's RangePicker `disabled`) — the locked edge keeps its committed value whatever is typed or picked, and the ✕ is withdrawn because clearing would wipe it.",
       },
       {
         name: "className",
@@ -6648,6 +6660,7 @@ export function PrioritySelect({ value, onValueChange }) {
       "DO test by filling the input directly: `await user.type(screen.getByRole('combobox'), '2026-04-15')`. With `range`, the two edges are named textboxes (From / To). The panel is secondary and not required for testing.",
       "DO use `minDate` / `maxDate` to restrict what is selectable — they are enforced on the panel AND on typed entry, so the keyboard is not a way around the rule the mouse obeys.",
       "DON'T place two DatePickers side by side to fake a from~to pair — that is `range`, which is one control, one shell and one value.",
+      "DO use `defaultPickerValue` when the panel should open somewhere other than the value — it is the only way to say it, and it re-applies on every open.",
       "DON'T reach for `inputReadOnly` to switch the control off; it only sets the input's readonly attribute (the panel still opens). `disabled` is the inert one.",
       "DON'T hand-roll a date text input + calendar popover — this component IS that pattern at WAI-ARIA combobox spec level.",
     ],
