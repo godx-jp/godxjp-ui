@@ -18,6 +18,19 @@ export {
 export { Checkbox } from "./checkbox";
 export { CheckboxGroup } from "./checkbox-group";
 export { Radio, RadioGroup, RadioItem, RadioGroupRoot } from "./radio";
+export { ChatComposer } from "./chat-composer";
+export type {
+  ChatComposerProp,
+  ChatComposerProps,
+  ChatComposerSubmitTypeProp,
+} from "./chat-composer";
+export { ChatSuggestion } from "./chat-suggestion";
+export type {
+  ChatSuggestionProp,
+  ChatSuggestionProps,
+  ChatSuggestionItemProp,
+  ChatSuggestionRenderProp,
+} from "./chat-suggestion";
 export { Textarea } from "./textarea";
 export type { TextareaProps } from "./textarea";
 export { Form, useFormLayout, type FormLayoutContextValue } from "./form";

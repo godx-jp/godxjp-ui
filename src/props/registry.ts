@@ -2673,6 +2673,163 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display/tree-list.tsx",
     vocabulary: ["ClassNameProp"],
   },
+  ChatBubblePlacementProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "placement",
+        local: true,
+        reason:
+          'Side of the conversation a message sits on ("start" | "end"), spelled on the LOGICAL inline axis so a feed flips under dir="rtl" with no per-locale branch.',
+      },
+    ],
+  },
+  ChatBubbleVariantProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "variant",
+        local: true,
+        reason:
+          "Structural treatment of the message body (filled | borderless | outlined). Status colour stays on `tone`; Ant Design X's `shadow` is absent because this system has no drop shadows.",
+      },
+    ],
+  },
+  ChatBubbleToneProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ToneProp"],
+  },
+  ChatBubbleTypingProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "typing",
+        local: true,
+        reason:
+          "Stream-in animation: `true` or `{ step, interval }`. Dropped entirely under prefers-reduced-motion, which renders the full text at once (WCAG 2.3.3).",
+      },
+    ],
+  },
+  ChatBubbleProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "SizeProp",
+      "ToneProp",
+      "PendingProp",
+      "ClassNameProp",
+      "IdProp",
+      {
+        field: "placement",
+        local: true,
+        reason: "See ChatBubblePlacementProp, the conversation-side vocabulary.",
+      },
+      {
+        field: "variant",
+        local: true,
+        reason: "See ChatBubbleVariantProp, the message-body treatment vocabulary.",
+      },
+      {
+        field: "avatar",
+        local: true,
+        reason:
+          "The author's mark — a real <Avatar> node. A slot, not a label: the accessible name comes from `header`, so a decorative avatar is aria-hidden at the call site.",
+      },
+      {
+        field: "header",
+        local: true,
+        reason:
+          "Line above the body naming the turn's author. Distinct from TitleProp: it is the bubble's ACCESSIBLE NAME, not a heading in the document outline.",
+      },
+      {
+        field: "footer",
+        local: true,
+        reason:
+          "Line below the body (timestamp, per-message actions). Not FooterProp, which is a page-level action bar.",
+      },
+      {
+        field: "typing",
+        local: true,
+        reason: "See ChatBubbleTypingProp, the stream-in animation vocabulary.",
+      },
+    ],
+  },
+  ChatMessageProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "IdProp",
+      "ChildrenProp",
+      {
+        field: "role",
+        local: true,
+        reason:
+          'Key into ChatBubbleList\'s `roles` map ("user" | "assistant" | "system" | a product\'s own). A data field, not the ARIA `role` attribute.',
+      },
+      {
+        field: "content",
+        local: true,
+        reason:
+          "The message body. Spelled `content` rather than `children` because a data item in an array is not a JSX child.",
+      },
+    ],
+  },
+  ChatBubbleListProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "ClassNameProp",
+      "IdProp",
+      {
+        field: "items",
+        local: true,
+        reason: "Consumer-supplied messages in conversation order (see ChatMessageProp).",
+      },
+      {
+        field: "roles",
+        local: true,
+        reason:
+          "Per-role bubble defaults merged UNDER each message's own props, so a feed's shape is declared once instead of on every message.",
+      },
+      {
+        field: "autoScroll",
+        local: true,
+        reason:
+          'Stick-to-bottom while the reader is already at the bottom. Not a generic boolean flag: revoking the pin the moment they scroll up is the behaviour, and it drives the "jump to latest" affordance.',
+      },
+    ],
+  },
+  TreeNodeProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      { field: "icon", local: true, reason: "Per-node glyph drawn when Tree's showIcon is on." },
+      {
+        field: "children",
+        local: true,
+        reason: "The node's own child nodes — the hierarchy itself, not a slot.",
+      },
+    ],
+  },
+  TreeProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "SizeProp",
+      "ClassNameProp",
+      "IdProp",
+    ],
+  },
   CardProp: {
     group: "data-display",
     file: "components/data-display/card.tsx",
@@ -3114,6 +3271,63 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Forwarded MasterDetail stacking threshold override.",
       },
+    ],
+  },
+  ChatComposerSubmitTypeProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  ChatComposerProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "PlaceholderProp",
+      "DisabledProp",
+      "PendingProp",
+      "SizeProp",
+      "ControlStatusProp",
+      "NameProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
+  },
+  ChatSuggestionItemProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ValueProp", "LabelProp", "DisabledProp"],
+  },
+  ChatSuggestionRenderProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      {
+        field: "onTrigger",
+        local: true,
+        reason: "Render-prop callback the composer calls to re-read the caret; not a value change.",
+      },
+      {
+        field: "onKeyDown",
+        local: true,
+        reason: "Render-prop keydown forwarder — the composer's own DOM handler, not a state axis.",
+      },
+    ],
+  },
+  ChatSuggestionProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "OnValueChangeProp",
+      "OpenProp",
+      "DefaultOpenProp",
+      "OnOpenChangeProp",
+      "ChildrenProp",
+      "EmptyMessageProp",
+      "IdProp",
+      "ClassNameProp",
     ],
   },
 } as const;

@@ -1,0 +1,60 @@
+/* ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it
+ * lives in (docs/roadmap/ai-chat-components.md §2/§3).
+ *
+ * NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one
+ * of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}`
+ * shape, so the knob ships as `--chat-bubble-background` — the same word every other component
+ * tier uses for the same role (`--card-background`, `--list-row-unread-background`).
+ */
+:root {
+  /* Bubble fill. `initial` so the --muted default re-resolves at the CALL SITE under a scoped
+   * theme; a :root binding to a role var freezes at :root (docs/TOKENS.md — the :root freeze
+   * rule). Documented default = hsl(var(--muted)). */
+  --chat-bubble-background: initial;
+  /* Ink on that fill — role-mirror knob, documented default = hsl(var(--foreground)). */
+  --chat-bubble-foreground: initial;
+  /* The 1px edge of an `outlined` bubble. Decorative chrome, so it mirrors --border, not --input
+   * (docs/TOKENS.md — `--border` vs `--input`). Documented default = hsl(var(--border)). */
+  --chat-bubble-border-color: initial;
+  --chat-bubble-radius: var(--radius-lg);
+  /* Gap between the avatar column and the message column. */
+  --chat-bubble-gap: var(--space-3);
+  /* The measure a bubble never exceeds. Long-form assistant prose past ~70 characters per line
+   * stops being readable, and a chat pane is as wide as the window (#45 — a service retunes the
+   * measure to its own column). */
+  --chat-bubble-max-inline-size: 34rem;
+  /* Avatar box. Role-mirror of a RE-SCOPED tier (--control-height is re-declared per density and
+   * by the auth shell), so it is `initial` + a call-site fallback for the same reason a colour
+   * knob is. Documented default = var(--control-height). */
+  --chat-bubble-avatar-size: initial;
+  /* Inner inset of the bubble body, at the default `md` step. The xs/sm/lg steps re-declare these
+   * two on the element itself (styles/data-display-layout.css). */
+  --chat-bubble-padding-block: var(--space-2);
+  --chat-bubble-padding-inline: var(--space-3);
+  /* Vertical rhythm BETWEEN messages in a ChatBubbleList. */
+  --chat-bubble-list-gap: var(--space-4);
+  /* Inset the "jump to latest" affordance keeps from the block-end edge of the feed. */
+  --chat-bubble-list-jump-inset: var(--space-3);
+  /* The typed-so-far caret drawn while `typing` animates. Role-mirror knob, documented default =
+   * hsl(var(--muted-foreground)). Never the only signal: the article also carries `aria-busy`
+   * and a localized sr-only "typing" string. */
+  --chat-bubble-typing-caret-color: initial;
+  --chat-bubble-typing-caret-width: var(--stroke-md);
+  /* One line box tall, so the caret matches whatever type ramp the bubble is rendering at
+     rather than a fixed pixel height a service theme could not move. */
+  --chat-bubble-typing-caret-height: 1em;
+
+  /* The short line of the two-line loading Skeleton — a ragged second line is what makes the
+     placeholder read as prose rather than as a bar chart. A theme can retune the raggedness. */
+  --chat-bubble-skeleton-short-inline-size: 60%;
+  /* Status-tinted bubbles (`tone`) wash the role colour exactly like Alert does, so an error
+   * bubble and an error banner agree. Never colour alone — the bubble also renders a localized
+   * sr-only tone word. */
+  --chat-bubble-tone-background-alpha: 0.08;
+  --chat-bubble-tone-border-alpha: 0.35;
+  /* The message column of an `end`-placed (own) bubble. Role-mirror knobs so a service can tint
+   * "my" messages without touching the assistant's. Documented defaults =
+   * hsl(var(--primary) / 0.1) and hsl(var(--foreground)). */
+  --chat-bubble-end-background: initial;
+  --chat-bubble-end-foreground: initial;
+}

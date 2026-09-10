@@ -47,6 +47,7 @@ import type {
   BreakpointProp,
   DensityProp,
   ChildrenProp,
+  PendingProp,
   ToneProp,
   AvatarShapeProp,
   HeadingLevelProp,
@@ -66,7 +67,15 @@ import type {
   TableScrollProp,
   TableStickyProp,
   TableSummaryProp,
+  DisabledProp,
+  ValueProp,
+  DefaultValueProp,
+  OnValueChangeProp,
 } from "../vocabulary";
+// One tree model, two surfaces: `Tree` (on a page) and `TreeSelect` (in a Popover) take the SAME
+// node and the SAME field remap. Re-declaring them here would be the fork the model exists to
+// prevent. @see docs/roadmap/tree-components.md §8
+import type { TreeFieldNamesProp, TreeOptionProp } from "./data-entry.prop";
 
 /**
  * One key in a `Legend`: a tone, and the words that tone stands for.
@@ -554,6 +563,199 @@ export type TimelineGridProp = {
   now?: string;
   /** Block click handler. Its PRESENCE turns every block into a real `button`. */
   onEventSelect?: (event: TimelineGridEventProp) => void;
+  className?: ClassNameProp;
+  id?: IdProp;
+};
+
+/**
+ * @see Tree — one node of the standalone, on-page tree view.
+ *
+ * Structurally the same node `TreeSelect`/`Cascader` take (one tree model, two surfaces — the
+ * normalizer lives in `src/lib/tree.ts`), plus the per-node glyph the ON-PAGE surface needs and a
+ * dropdown does not.
+ */
+export type TreeNodeProp = TreeOptionProp & {
+  /** Glyph drawn before the label when `showIcon` is on. Decorative — the label carries the name. */
+  icon?: React.ReactNode;
+  children?: TreeNodeProp[];
+};
+
+/**
+ * @see Tree — the WAI-ARIA APG "Tree View" on a page (Ant's `Tree` / `DirectoryTree`).
+ *
+ * `TreeSelect` is the same hierarchy inside a Popover; `TreeList` is a flat indented list that only
+ * LOOKS like one. Reach for `Tree` whenever nodes expand, collapse, or are navigated by keyboard.
+ *
+ * Ant's key-shaped names are mapped onto this package's controlled vocabulary and NOT re-spelled:
+ * selection is `value`/`defaultValue`/`onValueChange`, expansion is
+ * `expandedValues`/`defaultExpandedValues`/`onExpandedValuesChange`, checks are
+ * `checkedValues`/`defaultCheckedValues`/`onCheckedValuesChange`.
+ * @see docs/roadmap/tree-components.md §3
+ */
+export type TreeProp = {
+  /** The hierarchy (antd `treeData`). Use `fieldNames` to remap keys off an API response. */
+  treeData: readonly TreeNodeProp[];
+  /** Remap the data's own key names (antd `fieldNames`). */
+  fieldNames?: TreeFieldNamesProp;
+  /** Controlled selection. `string` while single, `string[]` once `multiple` is on. */
+  value?: ValueProp<string | string[]>;
+  /** Uncontrolled initial selection (controlled-triad rule). */
+  defaultValue?: DefaultValueProp<string | string[]>;
+  /** Selection change. Emits `string | undefined` while single, `string[]` once `multiple` is on. */
+  onValueChange?: OnValueChangeProp<string | string[] | undefined>;
+  /** Allow more than one selected node (antd `multiple`). Also sets `aria-multiselectable`. */
+  multiple?: boolean;
+  /** Draw a checkbox on every node (antd `checkable`). Checks are a SEPARATE axis from selection. */
+  checkable?: boolean;
+  /** Parent and child checks are independent (antd `checkStrictly`) — no cascade, no `mixed`. */
+  checkStrictly?: boolean;
+  /** Controlled checked nodes (antd `checkedKeys`). */
+  checkedValues?: readonly string[];
+  /** Uncontrolled initial checked nodes (antd `defaultCheckedKeys`). */
+  defaultCheckedValues?: readonly string[];
+  /** Checked-set change (antd `onCheck`). Fires for controlled and uncontrolled trees alike. */
+  onCheckedValuesChange?: (values: string[]) => void;
+  /** Controlled expanded branches (antd `expandedKeys`). */
+  expandedValues?: readonly string[];
+  /** Uncontrolled initial expanded branches (antd `defaultExpandedKeys`). */
+  defaultExpandedValues?: readonly string[];
+  /** Expansion change (antd `onExpand`). Fires for controlled and uncontrolled trees alike. */
+  onExpandedValuesChange?: (values: string[]) => void;
+  /** Start with every branch open (antd `defaultExpandAll`). Seeded once, never re-applied. */
+  defaultExpandAll?: boolean;
+  /**
+   * Lazy children (antd `loadData`). Called ONCE per node the first time a branch with no
+   * `children` and `isLeaf !== true` is expanded; push the fetched children into `treeData`.
+   */
+  loadData?: (node: TreeNodeProp) => void | Promise<void>;
+  /** Render a node's title (antd `titleRender`). */
+  titleRender?: (node: TreeNodeProp) => React.ReactNode;
+  /** Draw the connector rails between a parent and its children (antd `showLine`). */
+  showLine?: boolean;
+  /** Draw each node's `icon` (antd `showIcon`). `variant="directory"` supplies folder/file glyphs. */
+  showIcon?: boolean;
+  /** `directory` is antd's `<DirectoryTree>`: folder/file glyphs and a full-row selected band. */
+  variant?: "default" | "directory";
+  /** Row height tier — the shared `--control-height` ladder. Default `md`. */
+  size?: SizeProp;
+  /** Disable the whole tree: nothing selects, checks or expands; nodes stay readable. */
+  disabled?: DisabledProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+  /** Accessible name of the `role="tree"` container. Required unless `aria-labelledby` is given. */
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+};
+
+/**
+ * @see ChatBubble — which side of the conversation the message sits on. LOGICAL, not physical:
+ * `start` is the inline start of the reading direction (left in `ltr`, right in `rtl`), so a feed
+ * flips correctly under `dir="rtl"` with no per-locale branch. `start` = the other party,
+ * `end` = the reader's own messages, which is the convention every chat client shares.
+ */
+export type ChatBubblePlacementProp = "start" | "end";
+
+/**
+ * @see ChatBubble — STRUCTURAL treatment of the message body, orthogonal to `tone` (which owns
+ * colour). Ant Design X's `shadow` is deliberately absent: this design system is a 1px-border
+ * system with no drop shadows (docs/TOKENS.md).
+ *
+ * - `filled` (default) — the quiet `--chat-bubble-background` wash.
+ * - `outlined` — transparent body inside a 1px `--chat-bubble-border-color` edge.
+ * - `borderless` — no fill and no edge; long assistant prose that should read as page copy.
+ */
+export type ChatBubbleVariantProp = "filled" | "borderless" | "outlined";
+
+/**
+ * @see ChatBubble — status intent for a message that is not ordinary conversation (a failed send,
+ * a rate-limit warning, a tool result). A subset of `ToneProp`: `muted` and `neutral` are not
+ * offered because a bubble is already the quiet surface, so they would name no distinct state.
+ *
+ * Never colour alone (WCAG 1.4.1): a toned bubble also renders a localized `sr-only` tone word.
+ */
+export type ChatBubbleToneProp = Extract<
+  ToneProp,
+  "default" | "info" | "success" | "warning" | "destructive"
+>;
+
+/**
+ * @see ChatBubble — the streaming type-on animation. `true` takes the defaults (1 character every
+ * 50ms); the object form retunes them per instance.
+ *
+ * It animates only when `children` is a plain string — a `ReactNode` has no character count to
+ * reveal — and it is DROPPED ENTIRELY under `prefers-reduced-motion: reduce`, which renders the
+ * full text immediately (WCAG 2.2 SC 2.3.3).
+ */
+export type ChatBubbleTypingProp = boolean | { step?: number; interval?: number };
+
+/** @see ChatBubble — one message in a conversation. */
+export type ChatBubbleProp = {
+  /** The message. A `ReactNode`; pass a plain string to make `typing` animatable. */
+  children?: ChildrenProp;
+  /** Which side of the feed the message sits on. Default `start`. */
+  placement?: ChatBubblePlacementProp;
+  /** Structural treatment of the body. Default `filled`. */
+  variant?: ChatBubbleVariantProp;
+  /**
+   * The author's mark — a real `<Avatar>` node, never a styled div. It is decorative when the
+   * `header` already names the author, so mark it `aria-hidden` at the call site.
+   */
+  avatar?: ChildrenProp;
+  /**
+   * Line above the body — the author, and anything that identifies the turn. When it is present
+   * the bubble takes its ACCESSIBLE NAME from it, so keep it text.
+   */
+  header?: ChildrenProp;
+  /** Line below the body — timestamps, per-message actions, token counts. */
+  footer?: ChildrenProp;
+  /** The reply has been requested and has not arrived: renders `Skeleton`, sets `aria-busy`. */
+  loading?: PendingProp;
+  /** Stream the text in character by character. Honours `prefers-reduced-motion`. */
+  typing?: ChatBubbleTypingProp;
+  /** Type step and inner inset. Default `md`. */
+  size?: SizeProp;
+  /** Status intent. Default `default`. */
+  tone?: ChatBubbleToneProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+};
+
+/** @see ChatBubbleList — one entry of the feed: a `ChatBubble`'s own props plus its identity. */
+export type ChatMessageProp = Omit<ChatBubbleProp, "children" | "id"> & {
+  /** Stable message id. Also the React key and the rendered `<article>`'s DOM id. */
+  id: IdProp;
+  /** Key into the list's `roles` map — `"user"`, `"assistant"`, `"system"`, or your own. */
+  role?: string;
+  /** The message body. Named `content` here because `children` is not a data field. */
+  content?: ChildrenProp;
+};
+
+/**
+ * @see ChatBubbleList — the message feed.
+ *
+ * It scrolls inside itself, so it needs a DEFINITE height from the caller (`className="h-96"`, or
+ * a flex/grid parent that gives it a track). Without one it grows to its content and nothing ever
+ * overflows, which silently disables `autoScroll` and the jump-to-latest affordance.
+ */
+export type ChatBubbleListProp = {
+  /** Messages in conversation order, oldest first. */
+  items: readonly ChatMessageProp[];
+  /**
+   * Per-role bubble defaults, merged UNDER each message's own props. This is what keeps a feed
+   * consistent: `{ assistant: { placement: "start", variant: "filled" }, user: { placement:
+   * "end" } }` is written once instead of on every message.
+   */
+  roles?: Record<string, Partial<ChatBubbleProp>>;
+  /**
+   * Keep the newest message in view while the reader is already at the bottom. Default `true`.
+   *
+   * It is NOT "scroll to the bottom when content arrives": the moment the reader scrolls up the
+   * pin is revoked and a focusable "jump to latest" affordance appears instead, because yanking a
+   * reader back mid-sentence is a change of context they did not request (WCAG 3.2.5).
+   */
+  autoScroll?: boolean;
+  /** Accessible name of the feed. A plain string — it lands on `aria-label`. Defaults via `t()`. */
+  label?: Extract<LabelProp, string>;
   className?: ClassNameProp;
   id?: IdProp;
 };
