@@ -602,25 +602,25 @@ describe("responsive shell geometry", () => {
     const row = declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-item");
     expect(row).toMatch(/border-radius:\s*0;/);
     /*
-     * THE RULE RUNS EDGE TO EDGE; ONLY THE TEXT IS INSET.
+     * THE ROW REACHES BOTH EDGES; ONLY ITS CONTENT IS INSET.
      *
-     * This assertion used to read `margin-inline: 0` — "the command owns the outer column once and
-     * rows do not cancel it". That is no longer the contract: a row that stops short of the panel's
-     * border reads as a card floating in a frame, and the panel already has a border, so the frame
-     * is a second boundary nobody asked for.
+     * This used to assert `margin-inline: 0` — "the command owns the outer column once; rows do not
+     * cancel it" — which kept the row's fill and its rule inside the column and left a strip of
+     * panel showing on either side. A row that stops short of the border reads as a card in a frame,
+     * and the panel is already the frame; every command surface worth copying lets the row meet both
+     * edges.
      *
-     * The row now cancels the list inset and pays it straight back as padding. What that buys is
-     * ONE value working on every surface: the distance from a panel edge to a row is the surface's
-     * own body inset plus the list's remainder, and those always sum to `--org-switcher-list-inset`
-     * — so the popover, the sheet and the dialog need no separate arithmetic.
-     *
-     * The relationship the reader actually sees is unchanged and is still what this guards: the
-     * text lands on `inset + --command-input-padding-x`, which is exactly where the search field
-     * puts its magnifier, so the panel's two leading glyphs sit on one start line.
+     * The guarantee that mattered is unchanged, and it is the one asserted here: the row's mark and
+     * the search field's magnifier sit on ONE start line. The row cancels exactly what stands
+     * between it and the panel edge — `--org-switcher-list-inset`, which is the surface's own body
+     * inset plus the list's remainder however the surface splits them — and pays it back as padding
+     * along with the field's own glyph padding. Sum from the panel edge: `inset + input padding`,
+     * which is where the magnifier is. Measured in a browser at 1440px: mark 537, magnifier 538,
+     * one pixel of dialog border between them.
      */
     expect(row).toMatch(/margin-inline:\s*calc\(-1 \* var\(--org-switcher-list-inset\)\);/);
     expect(row).toMatch(
-      /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) \+ var\(--command-input-padding-x\)\);/,
+      /padding-inline:\s*calc\(\s*var\(--org-switcher-list-inset\) \+ var\(--command-input-padding-x\)\s*\);/,
     );
     expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(
       /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\);/,
