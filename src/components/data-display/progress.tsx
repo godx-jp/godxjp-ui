@@ -24,6 +24,20 @@ type ProgressBase = Omit<
   "role" | "children" | "aria-valuenow" | "aria-valuemin" | "aria-valuemax" | "aria-valuetext"
 > & {
   /**
+   * Bar thickness — `md` (default) or `sm`.
+   *
+   * `md` is the size each form was designed at, and it stays the default for the reason spelled
+   * out on the breakdown below: three abutting fills need height before their ratios are
+   * comparable. `sm` is for a bar that is not the subject of the screen but a column of one — an
+   * in-table capacity bar next to a row of numbers, where a 22px partition outweighs the row it
+   * annotates and sets the row height for the whole table.
+   *
+   * Both steps come from the same token pair (`--progress-*-block-size`,
+   * `--progress-*-block-size-sm`), so a theme retunes the scale rather than one call site. Nothing
+   * about the ARIA changes: `sm` is thickness, not meaning.
+   */
+  size?: "sm" | "md";
+  /**
    * Visible caption under the bar; it also becomes the bar's accessible name. Omit it and the bar
    * falls back to the catalogue name — or to whatever `aria-label`/`aria-labelledby` the caller
    * passes, which is how a bar gets its name from a heading that is already on screen.
@@ -94,6 +108,7 @@ export function Progress(props: ProgressProps) {
     segments,
     value,
     tone,
+    size,
     over = false,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
@@ -126,6 +141,7 @@ export function Progress(props: ProgressProps) {
       <div
         className={cn("ui-progress", className)}
         data-breakdown=""
+        data-size={size === "sm" ? "sm" : undefined}
         role="img"
         aria-labelledby={ariaLabelledBy}
         aria-label={
@@ -166,6 +182,7 @@ export function Progress(props: ProgressProps) {
     <div
       className={cn("ui-progress", className)}
       data-tone={effectiveTone}
+      data-size={size === "sm" ? "sm" : undefined}
       data-over={isOver ? "" : undefined}
       role="progressbar"
       aria-valuenow={boundedValue}

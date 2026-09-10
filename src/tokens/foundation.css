@@ -101,6 +101,34 @@
   --text-info: 221 70% 38%; /* deep 群青 — AA blue text on white */
   --text-error: 357 75% 38%; /* deep 茜 — AA red text on white */
 
+  /* Status MARK colours — the third tier, and the one whose absence shipped a defect.
+   *
+   * A tone can be painted three ways and each has its own contrast contract:
+   *   FILL (--success/--warning/…)  a solid chip or bar, judged against the label ON it.
+   *   TEXT (--text-success/…)       small coloured type, 4.5:1 against the surface behind it.
+   *   MARK (these)                  a thin shape that CARRIES MEANING with nothing written on
+   *                                 it — a Card accent rail, a DataTable row rail. WCAG 1.4.11
+   *                                 puts those at 3:1 against their own surface.
+   *
+   * The rails were reading the FILL tier, and two of them were effectively invisible. Measured in
+   * Chromium on the light card, before this tier existed:
+   *   warning 1.74:1 · success 2.18:1   (both below the 3:1 non-text floor)
+   *   primary 5.04 · info 4.97 · attention 3.32 · destructive 6.10
+   * `check:contrast` was green throughout: its non-text pass only measures elements 24×24px or
+   * smaller, and a rail is 6px wide by the full height of a card, so it never qualified.
+   *
+   * These resolve THROUGH the text tier rather than restating its numbers, so a theme retunes one
+   * place and both tiers follow — and because a mark's floor (3:1) is looser than text's (4.5:1),
+   * anything legible as text is legible as a mark by construction. `attention` has no text-tier
+   * entry and its fill already clears the floor in both themes (3.32 / 6.75), so it stays on the
+   * fill. Raw HSL components, not a finished colour: callers wash them at an alpha. */
+  --mark-primary: var(--text-primary);
+  --mark-success: var(--text-success);
+  --mark-warning: var(--text-warning);
+  --mark-info: var(--text-info);
+  --mark-destructive: var(--text-error);
+  --mark-attention: var(--attention);
+
   /* Interaction ramp — hover / active steps.
    *
    * The BRAND steps (--primary-* and --destructive-*) live in the DERIVED tier: they hang off the

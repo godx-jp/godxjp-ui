@@ -114,6 +114,7 @@ import type {
   DensityProp,
   OnColumnFilterChangeProp,
   OnRowProp,
+  RowToneProp,
   SortDirectionProp,
   SortStateProp,
   TableExpandableProp,
@@ -351,6 +352,7 @@ interface DataTableContextValue<T = unknown> {
   preset: TablePresetProp;
   collapseBelow: BreakpointProp;
   rowClassName?: (row: T) => string | undefined;
+  rowTone?: RowToneProp<T>;
   // ── antd 6.6.2 parity surface ────────────────────────────────────────
   bordered: boolean;
   scroll?: TableScrollProp;
@@ -459,6 +461,22 @@ interface DataTableProps<T> {
    * classes are appended last, so they win over the built-in hover/selected fills.
    */
   rowClassName?: (row: T) => string | undefined;
+  /**
+   * Per-row STATE, drawn as a leading-edge rail plus a wash — the same six tone names `Card accent`
+   * carries, so a row that needs attention and a card that needs attention read as one vocabulary.
+   * Return `undefined` for an ordinary row.
+   *
+   * This is the token-driven answer to what `rowClassName` could only do with utilities, and
+   * `ui-audit` blocks those in a consumer: `rowClassName` matches the gate's `class`-name suffix
+   * rule, so every colour and spacing rule scans the arrow body — a leading-edge border utility
+   * plus a raw palette fill in there is two errors, not zero. Consumers fell back to a badge in a
+   * cell instead.
+   *
+   * It is never the ONLY signal: colour alone cannot carry meaning (WCAG 1.4.1), so keep the
+   * reason in a cell — a Badge, a status column — and let the rail make that cell findable in a
+   * long table.
+   */
+  rowTone?: RowToneProp<T>;
   // ── antd 6.6.2 parity surface ────────────────────────────────────────
   /**
    * Full row-selection configuration (antd `rowSelection`). Supersedes — and can be mixed with —
@@ -542,6 +560,7 @@ export function DataTable<T>({
   preset = "default",
   collapseBelow = "sm",
   rowClassName,
+  rowTone,
   rowSelection,
   expandable,
   summary,
@@ -839,6 +858,7 @@ export function DataTable<T>({
     preset,
     collapseBelow,
     rowClassName,
+    rowTone,
     bordered,
     scroll,
     sticky,
@@ -1283,6 +1303,7 @@ DataTable.Content = function DataTableContent() {
     preset,
     collapseBelow,
     rowClassName,
+    rowTone,
     bordered,
     scroll,
     sticky,
@@ -1775,6 +1796,10 @@ DataTable.Content = function DataTableContent() {
                     <TableRow
                       {...rowProps}
                       data-state={isSelected ? "selected" : undefined}
+                      // The tone rides a data attribute, not a class: the paint is a components-layer
+                      // rule keyed on `[data-tone]`, so a theme retunes the rail from
+                      // `--table-row-tone-*` instead of every call site shipping its own utility.
+                      data-tone={rowTone?.(original as never)}
                       tabIndex={onRowClick ? 0 : rowProps.tabIndex}
                       onClick={(e) => {
                         rowProps.onClick?.(e);

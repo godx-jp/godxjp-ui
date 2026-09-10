@@ -3068,6 +3068,12 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
           "Controlled set of selected row IDs. Pair with onSelectChange. Omit for uncontrolled.",
       },
       {
+        name: "rowTone",
+        type: '(row: T) => "primary" | "success" | "warning" | "info" | "attention" | "destructive" | undefined',
+        description:
+          "Per-row STATE — a leading-edge rail plus a weak wash, in the same six tone names Card `accent` uses, so a row needing attention and a card needing attention are one vocabulary. Return undefined for an ordinary row. This is the supported alternative to painting rows through rowClassName: ui-audit treats any prop whose name ends in `className` as a class expression, so a `border-l-4 bg-amber-50` inside that arrow is an error in a consumer. NEVER the only signal — colour alone cannot carry meaning (WCAG 1.4.1), so keep the reason in a cell (a Badge, a status column) and let the rail make that cell findable in a long table. The rail reads the --mark-* tier, which is held at 3:1 against its own row by src/tokens/__tests__/tone-mark-contrast.test.ts.",
+      },
+      {
         name: "onSelectChange",
         type: "(next: Set<string>) => void",
         description: "Called with the full new selection set after any checkbox interaction.",
@@ -4338,6 +4344,13 @@ import { Flex } from "@godxjp/ui/layout";
         defaultValue: "false",
         description:
           "Allow value > 100 to render an over-capacity fill: bar caps at 100% width but gets a diagonal hatch + destructive tone (e.g. 252%). aria-valuetext reports the real ratio. Off by default (clamps to 100).",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md"',
+        defaultValue: '"md"',
+        description:
+          "Bar THICKNESS, on both modes. `md` is what each mode was designed at and stays the default. `sm` is for a bar that annotates a row rather than being the subject of the screen — an in-table capacity column, where a 1.375rem breakdown outweighs the row and sets the height of the whole table. Thickness only: the ARIA, the spoken breakdown and the corner are untouched. Never hand-write CSS to thin a bar — ui-audit blocks that in a consumer, and the two steps come from --progress-meter-block-size(-sm) / --progress-breakdown-block-size(-sm) so a theme retunes the scale instead of one call site.",
       },
     ],
     usage: [

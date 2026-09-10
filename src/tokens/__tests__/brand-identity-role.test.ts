@@ -188,11 +188,23 @@ describe("status surfaces still read --success", () => {
    * measured on a real card, `Text tone="warning"` came out at 1.74:1 and `tone="success"` at
    * 2.18:1 — both far under AA — while `Badge` with the identical `tone` cleared 5.52:1 because it
    * already read the ink tier. A green test was holding the unreadable half still.
+   *
+   * `card-layout.css` moved for THE SAME REASON, one axis over, and the numbers came out
+   * identical. Its `--card-accent-color` is not a fill and not text: it is a MARK — a 6px rail
+   * that says "this card needs attention" with nothing written on it, which SC 1.4.11 puts at
+   * 3:1 against the card. On the FILL tier it measured 1.74:1 for `warning` and 2.18:1 for
+   * `success` in Chromium. It reads `--mark-*` now (see docs/TOKENS.md, "The three tone tiers"),
+   * and this row moved with it rather than holding the invisible half still a second time.
+   *
+   * `data-display-layout.css` still reads the FILL tier, and that is deliberate rather than
+   * missed: a `.ui-legend-swatch` is a SAMPLE of the colour the bar beside it paints, so it
+   * cannot move to a different tier alone. Both it and `.ui-progress-segment` fail the same
+   * floor today — the numbers and the reason are recorded in scripts/check-contrast.mjs.
    */
   const statusOwners = {
     "src/styles/alert-layout.css": /hsl\(var\(--success\)/,
     "src/styles/text-layout.css": /color: hsl\(var\(--text-success\)\)/,
-    "src/styles/card-layout.css": /hsl\(var\(--success\)\)/,
+    "src/styles/card-layout.css": /hsl\(var\(--mark-success\)\)/,
     "src/styles/data-display-layout.css": /hsl\(var\(--success\)\)/,
     "src/styles/data-entry-layout.css": /hsl\(var\(--success\)\)/,
   } as const;

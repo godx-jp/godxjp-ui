@@ -32,9 +32,15 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
   it("resolves ONE accent colour per tone, shared by both placements", () => {
     // Six tones x two placements would be twelve rules; the resolved custom property keeps it at
     // six, and guarantees the perimeter can never drift from the rail it replaces.
+    //
+    // The source is the MARK tier, not the fill tier this row used to name. An accent is a thin
+    // shape carrying meaning with nothing written on it, which SC 1.4.11 puts at 3:1 against the
+    // card — and on the fill tier `warning` measured 1.74:1 and `success` 2.18:1 in Chromium,
+    // with every gate green (check:contrast only measured graphics ≤24px on both axes, and a rail
+    // is 6px by the full height of the card). See docs/TOKENS.md, "The three tone tiers".
     for (const tone of ["primary", "success", "warning", "info", "attention", "destructive"]) {
       expect(rule(cardStyles, `[data-slot="card"][data-accent="${tone}"]`)).toMatch(
-        new RegExp(`--card-accent-color:\\s*hsl\\(var\\(--${tone}\\)\\)`),
+        new RegExp(`--card-accent-color:\\s*hsl\\(var\\(--mark-${tone}\\)\\)`),
       );
     }
     expect(rule(cardStyles, '[data-slot="card"][data-accent]')).toMatch(

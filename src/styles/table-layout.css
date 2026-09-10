@@ -16,6 +16,53 @@
     border-block-end-width: 0;
   }
 
+  /* ── Row TONE (`rowTone`) ────────────────────────────────────────────────────────────────────
+   * A row in a named state gets a leading-edge rail and a weak wash. Six tones, the same names
+   * and the same meanings `Card accent` uses.
+   *
+   * The rail is drawn on the row's FIRST CELL, not on the `<tr>`: a table row is not a box that
+   * paints its own border reliably across collapse modes, and every rule that DID try to paint a
+   * `<tr>` border here ended up either invisible or doubled. The cell is the element that owns
+   * the surface, so the rail goes on the cell — and its inline padding is reduced by exactly the
+   * rail measure so the first column's text stays on the same optical axis as an untoned row's.
+   *
+   * The wash sits on the ROW, so it reaches every cell. It is intentionally under the
+   * selected-row fill in specificity terms as well as in weight: selection is a stronger claim
+   * about the same row, and the two must not fight. */
+  .ui-table-row[data-tone="primary"] {
+    --table-row-tone-color: var(--mark-primary);
+  }
+
+  .ui-table-row[data-tone="success"] {
+    --table-row-tone-color: var(--mark-success);
+  }
+
+  .ui-table-row[data-tone="warning"] {
+    --table-row-tone-color: var(--mark-warning);
+  }
+
+  .ui-table-row[data-tone="info"] {
+    --table-row-tone-color: var(--mark-info);
+  }
+
+  .ui-table-row[data-tone="attention"] {
+    --table-row-tone-color: var(--mark-attention);
+  }
+
+  .ui-table-row[data-tone="destructive"] {
+    --table-row-tone-color: var(--mark-destructive);
+  }
+
+  .ui-table-row[data-tone] {
+    background: hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha));
+  }
+
+  .ui-table-row[data-tone] > [data-slot="table-cell"]:first-child {
+    border-inline-start: var(--table-row-tone-rail-width) solid
+      hsl(var(--table-row-tone-color));
+    padding-inline-start: calc(var(--table-cell-space-x) - var(--table-row-tone-rail-width));
+  }
+
   [data-slot="table-head"] {
     height: var(--table-row-height);
     padding: var(--table-cell-padding-y) var(--table-cell-space-x);

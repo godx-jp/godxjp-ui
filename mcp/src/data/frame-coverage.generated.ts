@@ -57,9 +57,9 @@ export const FRAME_COVERAGE_POLICY = {
   totals: {
     exports: 301,
     dimensionCells: 4214,
-    covered: 79,
+    covered: 80,
     untested: 2357,
-    notApplicable: 1778,
+    notApplicable: 1777,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -299,7 +299,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"PopoverTitle","group":"data-display","frame":"docs/data-display/popover.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"PopoverTrigger","group":"data-display","frame":"docs/data-display/popover.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"PrefetchLink","group":"query","frame":"docs/query/prefetch-link.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
-  {"name":"Progress","group":"data-display","frame":"docs/data-display/progress.tsx","covered":["tones"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","variants"]},
+  {"name":"Progress","group":"data-display","frame":"docs/data-display/progress.tsx","covered":["sizes","tones"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","states","variants"]},
   {"name":"Prose","group":"data-display","frame":"docs/data-display/prose.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","sizes"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
   {"name":"QrCode","group":"data-display","frame":"docs/data-display/qr-code.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","states","tones","variants"]},
   {"name":"Radio","group":"data-entry","frame":"docs/data-entry/radio-group.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
