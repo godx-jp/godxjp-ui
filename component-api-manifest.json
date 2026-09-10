@@ -7750,7 +7750,7 @@
           "origin": "owned",
           "required": false,
           "type": "FilterBarOverflowProp | undefined",
-          "values": ["wrap", "scroll"],
+          "values": ["scroll", "wrap"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
@@ -15438,6 +15438,14 @@
           ]
         },
         {
+          "name": "closeIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "contentClassName",
           "origin": "owned",
           "required": false,
@@ -15510,6 +15518,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "onTabClick",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsOnTabClickProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
@@ -15524,6 +15540,14 @@
           "type": "TabsOrientation | undefined",
           "values": ["vertical", "horizontal"],
           "declaredIn": ["src/components/navigation/tabs.tsx"]
+        },
+        {
+          "name": "overflow",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsOverflowProp | undefined",
+          "values": ["menu", "scroll"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
           "name": "size",
@@ -17226,7 +17250,7 @@
           "origin": "owned",
           "required": false,
           "type": "FilterBarOverflowProp | undefined",
-          "values": ["wrap", "scroll"],
+          "values": ["scroll", "wrap"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {

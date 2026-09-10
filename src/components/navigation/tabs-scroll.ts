@@ -129,3 +129,86 @@ export function useKeepActiveTabVisible(listRef: React.RefObject<HTMLElement | n
     };
   }, [listRef]);
 }
+
+/**
+ * The values of the triggers that are NOT fully inside the strip's scrollport, in document order.
+ *
+ * Pure apart from the two rect reads — `values` is the `items` array's own order, and the triggers
+ * are matched to it by INDEX rather than by DOM id: `TabsTrigger` hands its `value` to React Aria
+ * as the collection KEY, and the rendered `id` attribute is RAC-generated, so the element carries
+ * no readable handle back to the item it came from.
+ *
+ * This is the measurement behind `overflow="menu"`. It is separated from the hook below so it can
+ * be exercised on plain numbers — jsdom lays nothing out, so the only honest unit assertions about
+ * it are the ones that hand it real geometry.
+ */
+export function resolveHiddenTabValues(list: HTMLElement, values: readonly string[]): string[] {
+  const scrollport = list.getBoundingClientRect();
+  const triggers = [...list.querySelectorAll<HTMLElement>('[role="tab"]')];
+  const hidden: string[] = [];
+  triggers.forEach((trigger, index) => {
+    const value = values[index];
+    if (value === undefined) return;
+    if (!isTabFullyVisible(scrollport, trigger.getBoundingClientRect())) hidden.push(value);
+  });
+  return hidden;
+}
+
+/**
+ * Keeps `onChange` fed with the values currently out of the scrollport, recomputing on the two
+ * things that can move them: the strip resizing (a viewport change, a font swap, a tab added or
+ * removed) and the strip scrolling (the user swiping, or `useKeepActiveTabVisible` re-pinning a
+ * trigger).
+ *
+ * `values` is joined into the effect key rather than passed as a dependency, so a consumer that
+ * rebuilds its `items` array on every render does not re-arm the observers on every render.
+ *
+ * The first measurement ALWAYS reports, even when nothing is hidden. Suppressing it looks harmless
+ * and is not: on a remount the local `last` resets while the caller's state does not, so a strip
+ * that had overflowed and then stopped would keep a stale menu forever.
+ */
+export function useTabsOverflowValues(
+  listRef: React.RefObject<HTMLElement | null>,
+  values: readonly string[] | undefined,
+  onChange: (hidden: string[]) => void,
+): void {
+  const onChangeRef = React.useRef(onChange);
+  React.useEffect(() => {
+    onChangeRef.current = onChange;
+  });
+
+  const key = values === undefined ? null : values.join(" ");
+  React.useEffect(() => {
+    if (key === null) return undefined;
+    const list = listRef.current;
+    if (!list) return undefined;
+    const all = key === "" ? [] : key.split(" ");
+
+    let last: string | null = null;
+    const measure = () => {
+      const hidden = resolveHiddenTabValues(list, all);
+      const next = hidden.join(" ");
+      if (next === last) return;
+      last = next;
+      onChangeRef.current(hidden);
+    };
+
+    measure();
+    list.addEventListener("scroll", measure, { passive: true });
+    const cleanups: (() => void)[] = [
+      () => {
+        list.removeEventListener("scroll", measure);
+      },
+    ];
+    if (typeof ResizeObserver !== "undefined") {
+      const resizeObserver = new ResizeObserver(measure);
+      resizeObserver.observe(list);
+      cleanups.push(() => {
+        resizeObserver.disconnect();
+      });
+    }
+    return () => {
+      for (const cleanup of cleanups) cleanup();
+    };
+  }, [key, listRef]);
+}

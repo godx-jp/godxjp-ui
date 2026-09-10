@@ -347,7 +347,8 @@
   "navigation": {
     "tabs": {
       "addTab": "Add tab",
-      "removeTab": "Close tab"
+      "removeTab": "Close tab",
+      "moreTabs": "More tabs"
     },
     "steps": {
       "ariaLabel": "Progress",

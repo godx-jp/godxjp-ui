@@ -191,6 +191,30 @@
     block-size: var(--tabs-tab-remove-icon-size);
   }
 
+  /* The overflow trigger sits in the bar row beside the strip — OUTSIDE the tablist, exactly
+   * where the add button sits, and for the same reason: a tablist may own nothing but tabs
+   * (axe `aria-required-children`), so a real button can only live next to it. */
+  .ui-tabs-overflow {
+    display: inline-flex;
+    flex: 0 0 auto;
+    inline-size: var(--tabs-overflow-size);
+    block-size: var(--tabs-overflow-size);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--tabs-overflow-radius);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-tabs-overflow:hover {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-tabs-overflow-icon {
+    inline-size: var(--tabs-overflow-icon-size);
+    block-size: var(--tabs-overflow-icon-size);
+  }
+
   .ui-tabs-add {
     display: inline-flex;
     flex: 0 0 auto;

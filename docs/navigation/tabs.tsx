@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { Trash2 } from "lucide-react";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -44,8 +46,45 @@ const journalItems = [
   },
 ];
 
+/**
+ * 20 saved views with real Japanese labels — a strip that is wider than 1920px, so it overflows at
+ * EVERY width the browser gates sweep. `scripts/check-tabs-overflow-menu.mjs` measures this frame;
+ * it fails if the strip ever stops overflowing, because a gate over a bar that fits proves nothing.
+ */
+const savedViewItems = [
+  { value: "all", label: "すべての仕訳", content: <Text as="p">全 1,284 件</Text> },
+  { value: "pending", label: "未承認の仕訳", content: <Text as="p">未承認 2 件</Text> },
+  { value: "posted", label: "承認済の仕訳", content: <Text as="p">承認済 48 件</Text> },
+  { value: "voided", label: "取消済の仕訳", content: <Text as="p">取消済 3 件</Text> },
+  { value: "returned", label: "差戻しの仕訳", content: <Text as="p">差戻し 5 件</Text> },
+  { value: "draft", label: "下書きの仕訳", content: <Text as="p">下書き 12 件</Text> },
+  { value: "recurring", label: "定期仕訳のひな形", content: <Text as="p">ひな形 7 件</Text> },
+  { value: "accrual", label: "未払費用の計上", content: <Text as="p">未払費用 9 件</Text> },
+  { value: "prepaid", label: "前払費用の振替", content: <Text as="p">前払費用 4 件</Text> },
+  { value: "payroll", label: "給与支払の仕訳", content: <Text as="p">給与 3 件</Text> },
+  { value: "tax", label: "消費税の集計", content: <Text as="p">消費税 6 件</Text> },
+  { value: "closing", label: "決算整理の仕訳", content: <Text as="p">決算整理 11 件</Text> },
+  { value: "audit", label: "監査対象の仕訳", content: <Text as="p">監査対象 8 件</Text> },
+  {
+    value: "archived",
+    label: "アーカイブ済の仕訳",
+    content: <Text as="p">アーカイブ 214 件</Text>,
+  },
+  { value: "fx", label: "外貨建の換算差額", content: <Text as="p">換算差額 2 件</Text> },
+  { value: "intercompany", label: "関係会社間の取引", content: <Text as="p">関係会社 15 件</Text> },
+  {
+    value: "fixed-asset",
+    label: "固定資産の減価償却",
+    content: <Text as="p">減価償却 22 件</Text>,
+  },
+  { value: "inventory", label: "棚卸資産の評価替", content: <Text as="p">評価替 6 件</Text> },
+  { value: "bank", label: "銀行勘定の照合", content: <Text as="p">未照合 4 件</Text> },
+  { value: "reversal", label: "翌期首の振戻し", content: <Text as="p">振戻し 9 件</Text> },
+];
+
 export default function Demo() {
   const [activeTab, setActiveTab] = useState("pending");
+  const [reopened, setReopened] = useState(0);
   const [editableTabs, setEditableTabs] = useState([
     { value: "je-0042", label: "JE-0042", content: <Text as="p">売上計上 ¥480,000</Text> },
     { value: "je-0043", label: "JE-0043", content: <Text as="p">仕入計上 ¥120,000</Text> },
@@ -364,6 +403,116 @@ export default function Demo() {
               }}
               items={editableTabs}
             />
+          </CardContent>
+        </Card>
+
+        {/* antd `more` — overflow="menu" beside the default overflow="scroll" */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>overflow · scroll(既定) / menu</CardTitle>
+            <CardDescription>
+              antd の more をこのライブラリの overflow 語彙に写したもの。既定の scroll
+              は今までどおり、帯が自分の水平オーバーフローをスクロールする。menu
+              はそれに加えて、帯の外に「他のタブ」ボタンを出し、いま見えていないタブだけを並べる ·
+              antd と違いタブは帯から取り除かれない(tablist はタブ以外を持てず、display:none
+              のタブはロービングフォーカスを受け取れないため · WAI-ARIA APG)。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  overflow=&quot;scroll&quot;(既定)
+                </Text>
+                <Tabs
+                  id="antd-overflow-scroll"
+                  defaultValue="all"
+                  variant="line"
+                  items={savedViewItems}
+                />
+              </Flex>
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  overflow=&quot;menu&quot;
+                </Text>
+                <Tabs
+                  id="antd-overflow-menu"
+                  defaultValue="all"
+                  variant="line"
+                  overflow="menu"
+                  items={savedViewItems}
+                />
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* antd onTabClick / removeIcon / Tab.forceRender */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>onTabClick · closeIcon · forceRender</CardTitle>
+            <CardDescription>
+              onTabClick は antd の onTabClick で、ポインタで押されたときだけ発火し DOM の
+              MouseEvent を渡す(キーボードは activationMode=&quot;manual&quot;
+              でフォーカス移動と選択が分かれるため発火しない · 選択は onValueChange
+              が担当)。closeIcon は antd の removeIcon で、タブ全体の既定グリフを差し替える(item
+              側の closeIcon が優先)。item の forceRender は antd の Tab.forceRender
+              で、そのパネルだけを先にマウントし、他のタブに 切り替えても保持する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Text as="p" size="sm" tone="muted">
+                同じタブを押し直した回数: {reopened}
+              </Text>
+              <Tabs
+                id="antd-tab-click"
+                defaultValue="pending"
+                variant="line"
+                onTabClick={(value) => {
+                  if (value === activeTab) setReopened((count) => count + 1);
+                  setActiveTab(value);
+                }}
+                items={[
+                  {
+                    value: "pending",
+                    label: "未承認",
+                    content: <Text as="p">未承認の仕訳が 2 件あります。</Text>,
+                  },
+                  {
+                    value: "chart",
+                    label: "推移グラフ",
+                    // The one panel that must survive a tab switch — antd Tab.forceRender.
+                    forceRender: true,
+                    content: <Text as="p">月次推移: 4 月 ¥3,120,000 · 5 月 ¥4,820,000</Text>,
+                  },
+                  {
+                    value: "posted",
+                    label: "承認済",
+                    content: <Text as="p">当期承認済: 48 件</Text>,
+                  },
+                ]}
+              />
+              <Tabs
+                id="antd-remove-icon"
+                variant="editable-card"
+                defaultValue="je-0042"
+                closeIcon={<Trash2 aria-hidden="true" />}
+                onEdit={() => undefined}
+                items={[
+                  {
+                    value: "je-0042",
+                    label: "JE-0042",
+                    content: <Text as="p">売上計上 ¥480,000</Text>,
+                  },
+                  {
+                    value: "je-0043",
+                    label: "JE-0043",
+                    content: <Text as="p">仕入計上 ¥120,000</Text>,
+                  },
+                ]}
+              />
+            </Flex>
           </CardContent>
         </Card>
 

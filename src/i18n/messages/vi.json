@@ -341,7 +341,8 @@
   "navigation": {
     "tabs": {
       "addTab": "Thêm tab",
-      "removeTab": "Đóng tab"
+      "removeTab": "Đóng tab",
+      "moreTabs": "Tab khác"
     },
     "steps": {
       "ariaLabel": "Tiến trình",

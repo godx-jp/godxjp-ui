@@ -5,10 +5,16 @@ import {
   TabPanel as AriaTabPanel,
   Tabs as AriaTabs,
 } from "react-aria-components";
-import { Plus, X } from "lucide-react";
+import { MoreHorizontal, Plus, X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
-import { useKeepActiveTabVisible } from "./tabs-scroll";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./dropdown-menu";
+import { useKeepActiveTabVisible, useTabsOverflowValues } from "./tabs-scroll";
 import type {
   TabItemProp,
   TabsExtraProp,
@@ -22,6 +28,7 @@ export type {
   TabsVariantProp,
   TabsPlacementProp,
   TabsExtraProp,
+  TabsOverflowProp,
 } from "../../props/components/navigation.prop";
 
 export type TabsOrientation = "vertical" | "horizontal";
@@ -170,6 +177,9 @@ export function Tabs({
   onEdit,
   addIcon,
   hideAdd,
+  closeIcon,
+  onTabClick,
+  overflow = "scroll",
   listClassName,
   contentClassName,
   children,
@@ -188,6 +198,29 @@ export function Tabs({
     [resolvedOrientation, selectionSuppressed],
   );
   const editable = variant === "editable-card";
+
+  /*
+   * OVERFLOW MENU (antd `more`). The strip still holds and still scrolls to every tab — see the
+   * note on `TabsOverflowProp` for why the tabs are NOT re-homed into the dropdown the way antd
+   * re-homes them. The menu is an additional POINTER route to the ones a mouse user cannot
+   * currently see, so it is driven purely by measurement.
+   */
+  const collapsible = items != null && overflow === "menu";
+  const listRef = React.useRef<HTMLDivElement | null>(null);
+  const [hiddenValues, setHiddenValues] = React.useState<readonly string[]>([]);
+  const itemValues = React.useMemo(
+    () => (collapsible ? items.map((item) => item.value) : undefined),
+    [collapsible, items],
+  );
+  const handleHiddenChange = React.useCallback((next: string[]) => {
+    // Same contents = the same array, so a measurement that changed nothing cannot re-render.
+    setHiddenValues((prev) =>
+      prev.length === next.length && prev.every((value, index) => value === next[index])
+        ? prev
+        : next,
+    );
+  }, []);
+  useTabsOverflowValues(listRef, itemValues, handleHiddenChange);
 
   // The selection MIRROR. Radix still owns the state; this only reflects it, so that the panels
   // can be told which of them is active from OUTSIDE a Trigger. `destroyOnHidden={false}` needs
@@ -210,8 +243,14 @@ export function Tabs({
   );
 
   const { start: extraStart, end: extraEnd } = resolveTabsExtra(extra);
+  const overflowItems = collapsible
+    ? items.filter((item) => hiddenValues.includes(item.value))
+    : [];
   const showAdd = editable && !hideAdd && Boolean(onEdit);
-  const needsBar = Boolean(extraStart || extraEnd || showAdd);
+  // `collapsible` counts even while NOTHING overflows. If the bar row appeared only once a tab
+  // went out of view, the strip would be re-parented mid-scroll — remounting the list and losing
+  // both its scroll offset and the observers watching it.
+  const needsBar = Boolean(extraStart || extraEnd || showAdd || collapsible);
   const card = variant === "card" || variant === "editable-card";
 
   // EVERY knob below is written as an arbitrary-value UTILITY reading a token, never as a rule in
@@ -231,6 +270,7 @@ export function Tabs({
 
   const list = items ? (
     <TabsList
+      ref={listRef}
       data-slot="tabs-list"
       // The list variant MUST be forwarded, not just styled through `className` — every
       // line-variant rule on TabsTrigger keys off `group-data-[variant=line]/tabs-list`.
@@ -266,13 +306,13 @@ export function Tabs({
         // tailwind-merge drops the base `w-fit` as a same-group conflict, so `w-fit` never reached
         // the DOM at all. Scoping puts it back on the axis it was written for.
         variant === "line" &&
-          "my-[calc(-1_*_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))] h-auto data-[orientation=horizontal]:w-full justify-start border-b px-[var(--tabs-list-line-space-inset)] py-[calc(var(--tabs-list-line-space-inset)_+_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))]",
+          "my-[calc(-1_*_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))] h-auto justify-start border-b px-[var(--tabs-list-line-space-inset)] py-[calc(var(--tabs-list-line-space-inset)_+_var(--tabs-list-focus-ring-space-inset,calc(var(--focus-ring-width)_+_var(--focus-ring-glow-width))))] data-[orientation=horizontal]:w-full",
         // CARD strip. The list keeps `data-variant="default"` on purpose (a hand-composed
         // <TabsList> must be unaffected), so the card face is selected from the ROOT — but the
         // three properties the base list already claims as utilities (`bg-muted`, `p-1`,
         // `rounded-lg`) have to be replaced with utilities too, or the components layer loses.
         card &&
-          "data-[orientation=horizontal]:w-full items-end justify-start gap-[var(--tabs-card-list-space-gap)] rounded-[var(--tabs-card-list-radius)] p-[var(--tabs-card-list-space-inset)] data-[variant=default]:bg-transparent",
+          "items-end justify-start gap-[var(--tabs-card-list-space-gap)] rounded-[var(--tabs-card-list-radius)] p-[var(--tabs-card-list-space-inset)] data-[orientation=horizontal]:w-full data-[variant=default]:bg-transparent",
         // CENTERED. Two independent moves, because the strip has two shapes: the pill/card strip
         // is `w-fit` (auto inline margins centre the BOX) and the line strip is `w-full`
         // (`justify-content` centres its CONTENT). `safe` keeps the overflow rule the strip
@@ -295,6 +335,14 @@ export function Tabs({
             // and `aria-keyshortcuts` is how a screen-reader user is told so — without padding the
             // tab's accessible name with a sentence.
             aria-keyshortcuts={removable ? "Delete" : undefined}
+            // antd `onTabClick`. POINTER only, by design: under `activationMode="manual"` the
+            // arrow keys move focus without activating, so routing a keypress here would report a
+            // click nobody made. Selection — however it moved — is `onValueChange`'s job.
+            onClick={
+              onTabClick
+                ? (event: React.MouseEvent<HTMLButtonElement>) => onTabClick(item.value, event)
+                : undefined
+            }
             onKeyDown={
               removable
                 ? (event: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -365,7 +413,11 @@ export function Tabs({
                   onEdit?.(item.value, "remove");
                 }}
               >
-                {item.closeIcon ?? <X className="ui-tabs-tab-remove-icon" aria-hidden="true" />}
+                {/* antd's own precedence: the ITEM's icon wins over the strip-wide
+                    `closeIcon` (antd `removeIcon`), which wins over the default ×. */}
+                {item.closeIcon ?? closeIcon ?? (
+                  <X className="ui-tabs-tab-remove-icon" aria-hidden="true" />
+                )}
               </span>
             ) : null}
           </TabsTrigger>
@@ -387,8 +439,15 @@ export function Tabs({
         data-centered={centered ? "true" : undefined}
         orientation={resolvedOrientation}
         keyboardActivation={activationMode}
-        selectedKey={value}
-        defaultSelectedKey={value === undefined ? resolvedDefault : undefined}
+        // CONTROLLED FROM THE MIRROR while the overflow menu exists, and only then. A menu item
+        // is not a tab, so choosing one cannot go through React Aria's own press path — the
+        // selection has to be pushed in. `mirroredValue` already tracks every selection change
+        // (that is what it is for), so feeding it back as `selectedKey` makes the root controlled
+        // without inventing a second source of truth. Left uncontrolled otherwise: RAC's
+        // `useTabListState` re-selects a key whenever nothing is selected, and the gh#175
+        // all-disabled case depends on not fighting it.
+        selectedKey={value ?? (collapsible ? mirroredValue : undefined)}
+        defaultSelectedKey={value === undefined && !collapsible ? resolvedDefault : undefined}
         onSelectionChange={(key) => handleValueChange(String(key))}
         className={cn(
           // Structure only. The paint (and the placement flip, which is `order`/`flex-direction`)
@@ -435,6 +494,32 @@ export function Tabs({
                     {addIcon ?? <Plus className="ui-tabs-add-icon" aria-hidden="true" />}
                   </button>
                 ) : null}
+                {overflowItems.length > 0 ? (
+                  <DropdownMenu>
+                    {/* NO `data-slot` here, on purpose: DropdownMenuTrigger stamps
+                        `data-slot="dropdown-menu-trigger"` AFTER spreading the caller's props, so
+                        one passed in would be silently dropped — a hook that reads correctly and
+                        never reaches the DOM. `.ui-tabs-overflow` is the handle instead, which is
+                        the design system's own name and what tests and gates select on. */}
+                    <DropdownMenuTrigger
+                      className="ui-tabs-overflow"
+                      aria-label={t("navigation.tabs.moreTabs")}
+                    >
+                      <MoreHorizontal className="ui-tabs-overflow-icon" aria-hidden="true" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent placement="bottomEnd">
+                      {overflowItems.map((item) => (
+                        <DropdownMenuItem
+                          key={item.value}
+                          disabled={item.disabled}
+                          onSelect={() => handleValueChange(item.value)}
+                        >
+                          {item.label}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : null}
                 {extraEnd ? (
                   <div data-slot="tabs-extra" data-side="end" className="ui-tabs-extra">
                     {extraEnd}
@@ -444,24 +529,30 @@ export function Tabs({
             ) : (
               list
             )}
-            {items.map((item) => (
-              <TabsContent
-                key={item.value}
-                value={item.value}
-                data-slot="tabs-panel"
-                // `destroyOnHidden={false}` keeps every panel mounted. `forceMount` alone is not
-                // enough: Radix writes `hidden: !present` and `present` is `forceMount || isSelected`,
-                // so a force-mounted panel would paint on top of the active one. The attribute is
-                // therefore driven from the selection mirror.
-                forceMount={destroyOnHidden ? undefined : true}
-                hidden={destroyOnHidden ? undefined : item.value !== activeValue}
-                // No variant geometry: the panel has never carried a top margin (the root is a flex
-                // column with --tabs-root-gap).
-                className={contentClassName}
-              >
-                {item.content}
-              </TabsContent>
-            ))}
+            {items.map((item) => {
+              // `destroyOnHidden={false}` keeps EVERY panel mounted; antd's per-item
+              // `forceRender` keeps exactly THIS one mounted while the rest are still destroyed.
+              // Both land on the same two attributes, so they are resolved to one flag here.
+              //
+              // `forceMount` alone is not enough: Radix writes `hidden: !present` and `present` is
+              // `forceMount || isSelected`, so a force-mounted panel would paint on top of the
+              // active one. The attribute is therefore driven from the selection mirror.
+              const keepMounted = !destroyOnHidden || item.forceRender === true;
+              return (
+                <TabsContent
+                  key={item.value}
+                  value={item.value}
+                  data-slot="tabs-panel"
+                  forceMount={keepMounted ? true : undefined}
+                  hidden={keepMounted ? item.value !== activeValue : undefined}
+                  // No variant geometry: the panel has never carried a top margin (the root is a flex
+                  // column with --tabs-root-gap).
+                  className={contentClassName}
+                >
+                  {item.content}
+                </TabsContent>
+              );
+            })}
           </>
         ) : (
           children
@@ -531,7 +622,7 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
           // — so the leading tab sat permanently outside the scrollport (an unreachable control at
           // 320px, WCAG 2.2 SC 2.1.1). `safe` falls back to start alignment exactly when it
           // overflows, and still centres whenever the tabs fit.
-          "group/tabs-list text-muted-foreground data-[variant=default]:bg-muted inline-flex w-fit max-w-full min-w-0 items-center justify-center-safe rounded-lg p-1 group-data-[orientation=vertical]/tabs:flex-col data-[orientation=horizontal]:[scrollbar-width:none] data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden data-[variant=line]:gap-1 data-[variant=line]:rounded-none data-[variant=line]:bg-transparent [&[data-orientation=horizontal]::-webkit-scrollbar]:hidden",
+          "group/tabs-list text-muted-foreground data-[variant=default]:bg-muted inline-flex w-fit max-w-full min-w-0 items-center justify-center-safe rounded-lg p-1 group-data-[orientation=vertical]/tabs:flex-col data-[orientation=horizontal]:[scrollbar-width:none] data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden data-[variant=line]:gap-[var(--tabs-list-line-space-gap)] data-[variant=line]:rounded-none data-[variant=line]:bg-transparent [&[data-orientation=horizontal]::-webkit-scrollbar]:hidden",
           className,
         )}
         render={(domProps) =>
@@ -553,7 +644,7 @@ type TabsTriggerProps = Omit<React.ComponentPropsWithoutRef<"button">, "value"> 
 };
 
 export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
-  ({ className, value, disabled, children, onKeyDown, ...props }, ref) => {
+  ({ className, value, disabled, children, onKeyDown, onClick, ...props }, ref) => {
     const { orientation, selectionSuppressed } = React.useContext(TabsFrameContext);
     return (
       <AriaTab
@@ -585,7 +676,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
           // The line indicator lives in src/styles/navigation-layout.css so it reads --tabs-indicator-*.
           // Selected and focused stay visually distinct (WCAG 2.4.7): selected is a 1px hairline in the
           // border, focused is the 2px ring plus its halo outside it.
-          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
+          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
           className,
         )}
         // A <button>, not RAC's default <div>: Radix rendered one, `disabled:` utilities need the
@@ -599,6 +690,18 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
             "aria-selected": renderProps.isSelected && !selectionSuppressed,
             "data-orientation": orientation,
             disabled,
+            // CHAINED, not spread — the same reason `onKeyDown` below is. `withDomProps` lays the
+            // caller's raw props down FIRST and RAC's merged ones second, so any handler RAC owns
+            // for this event would silently swallow the caller's. Caller first, then RAC's, and
+            // only while the caller has not called `preventDefault()`.
+            onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+              onClick?.(event);
+              if (!event.defaultPrevented) {
+                (domProps.onClick as React.MouseEventHandler<HTMLButtonElement> | undefined)?.(
+                  event,
+                );
+              }
+            },
             onKeyDown: (event: React.KeyboardEvent<HTMLButtonElement>) => {
               onKeyDown?.(event);
               if (!event.defaultPrevented) {

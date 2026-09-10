@@ -165,6 +165,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Tabs` — Ant Design 6 parity, read off ant.design and not off memory.** Four entries in
+  antd's table had no spelling here at all, and one of them mattered on a real screen.
+
+  - **`overflow`** (antd `more`) — `scroll` (default, today's behaviour) | `menu`. A tab strip
+    that cannot handle more tabs than fit is broken on a real screen, and this library's
+    consumers run Japanese labels wider than the English ones its own examples use. The strip
+    already scrolled; what it had no affordance for was DISCOVERY. `menu` puts a named button
+    beside the strip listing the tabs currently outside the scrollport.
+
+    **It diverges from antd on purpose.** antd REMOVES the overflowing tabs from the bar; the
+    WAI-ARIA APG tab pattern requires the tablist to own every tab, and a `display: none` tab
+    cannot take roving focus — so re-homing them would delete the keyboard route along with the
+    pixels. Here every tab stays in the strip and the menu is an ADDITIONAL pointer route. The
+    name comes from the `overflow` vocabulary Toolbar already uses, not from antd's spelling.
+
+  - **`onTabClick`** (antd `onTabClick`) — pointer activation carrying the DOM MouseEvent. NOT
+    fired by the keyboard: under `activationMode="manual"` the arrow keys move focus without
+    activating, so a key-driven "click" would be a fiction. Selection stays `onValueChange`.
+
+  - **`closeIcon`** (antd `removeIcon`) — the strip-wide default glyph on `editable-card`'s
+    remove shortcut. An item's own `closeIcon` still wins, which is antd's precedence.
+
+  - **`items[].forceRender`** (antd `Tab.forceRender`) — mounts ONE panel up front and keeps it
+    mounted, without switching the whole strip over with `destroyOnHidden={false}`.
+
+  **Declined, with the reason, because that list is the argument for why this library is not a
+  re-skin of antd:** `tabBarStyle` / `styles` (raw CSS at the call site — rule #45),
+  `renderTabBar` (raw markup replacing the component — rule #46), `classNames` /
+  `popupClassName` (open-ended class escape hatches; `className`/`listClassName`/
+  `contentClassName` are the named ones this library offers), `more.popupRender` and `more`'s
+  Dropdown passthrough (same), `animated` (motion is `--duration-*`/`--ease-*` plus
+  `prefers-reduced-motion`, not a boolean), `indicator` (geometry — thickness, offset and colour
+  are already `--tabs-indicator-*`), `onTabScroll` (hands back a PHYSICAL direction, which the
+  logical-axis convention rules out), `items[].destroyOnHidden` (a second spelling of
+  `forceRender` — rule #32), and the deprecated `tabPosition` /
+  `destroyInactiveTabPane` pair.
+
+- **`--tabs-list-line-space-gap`** — antd's `tabBarGutter`, as a token rather than a prop. The
+  `line` strip's gutter was the Tailwind literal `gap-1` inside the base class list, so a
+  service could only retune it by forking that list. The card strip already had
+  `--tabs-card-list-space-gap`; the pill strip has no gutter by design. Default is a raw
+  `0.25rem`, byte for byte what `gap-1` painted.
+
 - **Trục thứ ba của tone: `--mark-*`.** Một tone được tô ba kiểu và mỗi kiểu bị chấm bằng một
   thước khác: FILL (`--success`) là nền đặc có chữ NẰM TRÊN nó; TEXT (`--text-success`) là chữ
   màu; MARK (mới) là một hình MỎNG mang nghĩa mà không có chữ nào trên nó — thanh viền

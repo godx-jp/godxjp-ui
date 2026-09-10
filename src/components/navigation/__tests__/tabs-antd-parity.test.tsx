@@ -240,3 +240,160 @@ describe("Tabs — antd `tabPlacement` / `size` / `centered` / item `icon`", () 
     expect(screen.getByRole("tab", { name: "概要" })).toContainElement(icon);
   });
 });
+
+describe("Tabs — antd `onTabClick`", () => {
+  it("fires with the item's own value and the pointer event", async () => {
+    const user = userEvent.setup();
+    const onTabClick = vi.fn();
+    render(<Tabs items={ITEMS} onTabClick={onTabClick} />);
+
+    await user.click(screen.getByRole("tab", { name: "詳細" }));
+    expect(onTabClick).toHaveBeenCalledTimes(1);
+    expect(onTabClick.mock.calls[0][0]).toBe("b");
+    expect(onTabClick.mock.calls[0][1]).toMatchObject({ type: "click" });
+  });
+
+  it("fires on the ALREADY SELECTED tab", async () => {
+    const user = userEvent.setup();
+    const onTabClick = vi.fn();
+    render(<Tabs items={ITEMS} onTabClick={onTabClick} />);
+
+    await user.click(screen.getByRole("tab", { name: "概要" }));
+    expect(onTabClick).toHaveBeenCalledWith("a", expect.anything());
+  });
+
+  /**
+   * RECORDED, NOT FIXED — and recorded here because it is the claim `onTabClick` would otherwise
+   * be justified by. `onValueChange` fires on a re-click of the ALREADY SELECTED tab, i.e. when
+   * no value changed: React Aria's selection manager runs `replaceSelection` on every activation
+   * and reports it, and the component mirrors that straight through. It predates this prop — the
+   * assertion below deliberately renders NO `onTabClick` at all, so nothing in this change can be
+   * what produces it.
+   *
+   * So `onTabClick` is not "the one that fires on a re-click". What makes it a separate prop is
+   * the two things `onValueChange` structurally cannot carry: the DOM MouseEvent, and the promise
+   * that it is POINTER activation (the next test).
+   */
+  it("does not own the re-click: onValueChange already fires there, with no onTabClick present", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<Tabs items={ITEMS} onValueChange={onValueChange} />);
+
+    await user.click(screen.getByRole("tab", { name: "概要" }));
+    expect(onValueChange).toHaveBeenCalledWith("a");
+  });
+
+  it("does not swallow the selection it sits in front of", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<Tabs items={ITEMS} onTabClick={vi.fn()} onValueChange={onValueChange} />);
+
+    await user.click(screen.getByRole("tab", { name: "詳細" }));
+    expect(onValueChange).toHaveBeenCalledWith("b");
+    expect(screen.getByRole("tab", { name: "詳細" })).toHaveAttribute("aria-selected", "true");
+  });
+
+  it("is NOT fired by keyboard activation (manual activation has no click to report)", async () => {
+    const user = userEvent.setup();
+    const onTabClick = vi.fn();
+    const onValueChange = vi.fn();
+    render(
+      <Tabs
+        items={ITEMS}
+        activationMode="automatic"
+        onTabClick={onTabClick}
+        onValueChange={onValueChange}
+      />,
+    );
+
+    screen.getByRole("tab", { name: "概要" }).focus();
+    await user.keyboard("{ArrowRight}");
+    expect(onValueChange).toHaveBeenCalledWith("b");
+    expect(onTabClick).not.toHaveBeenCalled();
+  });
+});
+
+describe("Tabs — antd `removeIcon` (shipped as the strip-wide `closeIcon`)", () => {
+  it("replaces the default × on EVERY removable tab", () => {
+    const { container } = render(
+      <Tabs
+        items={ITEMS}
+        variant="editable-card"
+        onEdit={vi.fn()}
+        closeIcon={<span data-testid="strip-x">✕</span>}
+      />,
+    );
+    expect(container.querySelectorAll('[data-testid="strip-x"]')).toHaveLength(2);
+  });
+
+  it("loses to an item's own `closeIcon` (antd's precedence)", () => {
+    const { container } = render(
+      <Tabs
+        items={[{ ...ITEMS[0], closeIcon: <span data-testid="item-x">×</span> }, ITEMS[1]]}
+        variant="editable-card"
+        onEdit={vi.fn()}
+        closeIcon={<span data-testid="strip-x">✕</span>}
+      />,
+    );
+    const removes = removeShortcuts(container);
+    expect(removes[0].querySelector('[data-testid="item-x"]')).not.toBeNull();
+    expect(removes[1].querySelector('[data-testid="strip-x"]')).not.toBeNull();
+  });
+
+  it("stays inside the aria-hidden pointer shortcut — a custom glyph is not a new control", () => {
+    const { container } = render(
+      <Tabs
+        items={ITEMS}
+        variant="editable-card"
+        onEdit={vi.fn()}
+        closeIcon={<span data-testid="strip-x">✕</span>}
+      />,
+    );
+    expect(
+      container.querySelector('[data-testid="strip-x"]')?.closest("[aria-hidden]"),
+    ).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByRole("tab", { name: "概要" }).querySelector("button")).toBeNull();
+  });
+});
+
+describe("Tabs — antd `Tab.forceRender`", () => {
+  const ITEMS_3 = [...ITEMS, { value: "c", label: "履歴", content: "パネルC" }];
+
+  it("mounts JUST that panel while the other inactive ones stay destroyed", () => {
+    render(<Tabs items={[ITEMS_3[0], { ...ITEMS_3[1], forceRender: true }, ITEMS_3[2]]} />);
+    expect(screen.getByText("パネルB")).toBeInTheDocument();
+    expect(screen.queryByText("パネルC")).toBeNull();
+  });
+
+  it("hides the force-rendered panel while its tab is not selected", () => {
+    render(<Tabs items={[ITEMS_3[0], { ...ITEMS_3[1], forceRender: true }, ITEMS_3[2]]} />);
+    // Mounted is not enough: `present` is `forceMount || isSelected`, so without the explicit
+    // attribute the eager panel would paint on top of the active one.
+    expect(screen.getByText("パネルB").closest('[data-slot="tabs-panel"]')).toHaveAttribute(
+      "hidden",
+    );
+    expect(screen.getByText("パネルA").closest('[data-slot="tabs-panel"]')).not.toHaveAttribute(
+      "hidden",
+    );
+  });
+
+  it("survives a round trip through another tab (the state it exists to keep)", async () => {
+    const user = userEvent.setup();
+    render(<Tabs items={[ITEMS_3[0], { ...ITEMS_3[1], forceRender: true }, ITEMS_3[2]]} />);
+    await user.click(screen.getByRole("tab", { name: "履歴" }));
+    expect(screen.getByText("パネルB")).toBeInTheDocument();
+    expect(screen.queryByText("パネルA")).toBeNull();
+  });
+
+  it("leaves the default alone — no item asks for it, nothing extra is mounted", () => {
+    render(<Tabs items={ITEMS_3} />);
+    expect(screen.queryByText("パネルB")).toBeNull();
+    expect(screen.queryByText("パネルC")).toBeNull();
+  });
+
+  it("has no axe violations with an eagerly mounted hidden panel", async () => {
+    await expectNoA11yViolations(
+      <Tabs items={[ITEMS_3[0], { ...ITEMS_3[1], forceRender: true }, ITEMS_3[2]]} />,
+    );
+  });
+});
