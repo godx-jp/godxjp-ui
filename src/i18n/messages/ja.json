@@ -340,7 +340,8 @@
   "navigation": {
     "tabs": {
       "addTab": "タブを追加",
-      "removeTab": "タブを閉じる"
+      "removeTab": "タブを閉じる",
+      "moreTabs": "他のタブ"
     },
     "steps": {
       "ariaLabel": "進行状況",

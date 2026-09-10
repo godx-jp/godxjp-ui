@@ -7742,7 +7742,7 @@
           "origin": "owned",
           "required": false,
           "type": "FilterBarOverflowProp | undefined",
-          "values": ["wrap", "scroll"],
+          "values": ["scroll", "wrap"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
@@ -15518,6 +15518,14 @@
           "declaredIn": ["src/components/navigation/tabs.tsx"]
         },
         {
+          "name": "overflow",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsOverflowProp | undefined",
+          "values": ["menu", "scroll"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "size",
           "origin": "owned",
           "required": false,
@@ -17218,7 +17226,7 @@
           "origin": "owned",
           "required": false,
           "type": "FilterBarOverflowProp | undefined",
-          "values": ["wrap", "scroll"],
+          "values": ["scroll", "wrap"],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {

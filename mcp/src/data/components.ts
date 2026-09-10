@@ -7474,6 +7474,13 @@ toast.error("保存に失敗しました");`,
           "Ant Design `removeIcon` — the strip-wide default glyph on `editable-card`'s remove shortcut. An item's own `closeIcon` still wins over it, which is antd's precedence. It replaces the glyph only: the × stays an `aria-hidden` pointer shortcut inside the tab and the announced route stays Delete/Backspace, so a custom icon never becomes a second focusable control inside a `role=\"tab\"`.",
       },
       {
+        name: "overflow",
+        type: '"scroll" | "menu"',
+        defaultValue: '"scroll"',
+        description:
+          "What the trigger strip does when there are more tabs than fit — Ant Design's `more`, mapped onto the `overflow` vocabulary Toolbar already uses for the same question rather than re-spelled. `scroll` (default, and what every strip does today) keeps one bounded row that scrolls its own inline overflow, with the active (or, under manual activation, focused) trigger re-pinned into view. `menu` keeps all of that AND puts a real named button beside the strip listing the tabs currently outside the scrollport; choosing one selects it. DIVERGES FROM ANTD DELIBERATELY: antd REMOVES the overflowing tabs from the bar, but the WAI-ARIA APG tab pattern requires the tablist to own every tab and a `display: none` tab cannot take roving focus — so here every tab stays in the strip and the menu is an ADDITIONAL pointer route, not a relocation. The default is not `menu` because switching it would change the rendered bar for every existing consumer at once.",
+      },
+      {
         name: "onTabClick",
         type: "(value: string, event: React.MouseEvent<HTMLButtonElement>) => void",
         description:

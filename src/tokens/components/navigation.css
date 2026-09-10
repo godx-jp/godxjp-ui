@@ -160,6 +160,12 @@
    * `extra` (antd `tabBarExtraContent`) slots. */
   --tabs-bar-gap: var(--space-2);
   --tabs-extra-gap: var(--space-2);
+  /* OVERFLOW MENU TRIGGER (`overflow="menu"`, antd `more`). Sized off the same control band as
+   * the add button so the two affordances that flank the strip land on one rhythm; unlike the add
+   * button it draws no card face, because it is bar chrome rather than a tab. */
+  --tabs-overflow-size: var(--band-height-md);
+  --tabs-overflow-radius: var(--radius-md);
+  --tabs-overflow-icon-size: var(--control-icon-size);
   --tabs-add-size: var(--band-height-md);
   --tabs-add-radius: var(--radius-md);
   --tabs-add-icon-size: var(--control-icon-size);

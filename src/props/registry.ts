@@ -2410,6 +2410,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/navigation.prop.ts",
     vocabulary: ["HandlerProp"],
   },
+  TabsOverflowProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
   TabItemProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",

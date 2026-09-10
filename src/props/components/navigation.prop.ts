@@ -327,6 +327,27 @@ export type TabsOnEditProp = (
 ) => void;
 
 /**
+ * @see Tabs — what the trigger strip does when there are more tabs than fit its container.
+ *
+ * This is Ant Design's `more`, mapped onto the `overflow` vocabulary this package already uses
+ * for the same question (`FilterBarOverflowProp` on Toolbar) rather than re-spelled: antd names
+ * the AFFORDANCE it happens to draw, this library names the BEHAVIOUR and owns the affordance.
+ *
+ * `scroll` (the default, and what every strip does today) keeps one bounded row that scrolls its
+ * own inline overflow, with `TabsList` re-pinning the active — or, under manual activation, the
+ * focused — trigger. `menu` keeps all of that AND puts a real button beside the strip listing the
+ * tabs currently outside the scrollport.
+ *
+ * WHERE THIS DELIBERATELY DIVERGES FROM ANTD, and why: antd REMOVES the overflowing tabs from the
+ * bar and re-homes them in the dropdown. The WAI-ARIA APG tab pattern requires the tablist to own
+ * every tab, and a tab hidden with `display: none` cannot take roving focus — so removing them
+ * would make the keyboard route to those tabs disappear along with the pixels. Here the strip
+ * still holds and still scrolls to every tab; the menu is an ADDITIONAL pointer route to the ones
+ * a mouse user cannot currently see. The APG wins; the affordance is kept.
+ */
+export type TabsOverflowProp = "scroll" | "menu";
+
+/**
  * @see Tabs — Ant Design `onTabClick`. A NAMED alias rather than an inline signature for the same
  * reason as `TabsOnEditProp`: the catalog-sync guard splits an object type on top-level commas,
  * so an inline `(value, event) => void` leaks its second PARAMETER as a phantom prop.
@@ -369,6 +390,15 @@ export type TabsProp = {
    * A `TabItemProp.closeIcon` on one item still wins over it, which is antd's own precedence.
    */
   closeIcon?: React.ReactNode;
+  /**
+   * Ant Design `more`. Default `scroll` — the behaviour every strip has today, unchanged.
+   * @see TabsOverflowProp for what `menu` adds and where it parts company with antd.
+   *
+   * The default is deliberately NOT `menu`: switching it would change the rendered bar for every
+   * existing consumer at once, and which of the two a dense strip wants is a service decision, not
+   * a library one.
+   */
+  overflow?: TabsOverflowProp;
   /**
    * Ant Design `onTabClick`. Fires on EVERY pointer activation of a trigger — including a click on
    * the tab that is already selected, where `onValueChange` is silent by design. That is the whole
