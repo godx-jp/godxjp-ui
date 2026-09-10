@@ -5046,6 +5046,13 @@ import remarkGfm from "remark-gfm";
       },
       { name: "helper", type: "string", description: "Muted hint shown when there is no error." },
       {
+        name: "helperPlacement",
+        type: '"before" | "after"',
+        defaultValue: '"after"',
+        description:
+          "Which side of the control the helper sits on. `before` puts it between the label and the input, for a hint the reader needs before answering (a bilingual form's second line, a unit or format note). Paint only — the helper keeps its id and stays on aria-describedby. Prefer it over stuffing a second line into `labelAddon` (inline, no wrap) or into a ReactNode `label` (which loses the string-label aria fallbacks).",
+      },
+      {
         name: "error",
         type: "string",
         description: "Destructive error message (role=alert); overrides helper.",
@@ -5698,6 +5705,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         type: '"xs" | "sm" | "md" | "lg"',
         description:
           "Searchable mode only. Height tier forwarded to the SearchSelect trigger Button. For the compound API use SelectTrigger's own size prop instead (below).",
+      },
+      {
+        name: "width",
+        type: '"full" | "auto" | "bounded"',
+        defaultValue: '"full"',
+        description:
+          "Trigger width on the data-driven API (options / loadOptions), searchable or not — the same axis SelectTrigger carries on the compound API. `full` is what a form field wants; `auto` is what a filter bar wants, so two Selects share one row instead of stacking (CONSUMER-RULES rule 5); `bounded` holds one width from --control-bounded-width for a trigger whose value varies in length. Never wrap a Select in a fixed-width Flex to get this.",
       },
       {
         name: "open",

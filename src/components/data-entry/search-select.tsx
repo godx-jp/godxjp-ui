@@ -59,6 +59,7 @@ export function SearchSelect(props: SearchSelectProp) {
     size,
     status,
     variant,
+    width = "full",
     loading: loadingProp = false,
     open: openProp,
     defaultOpen = false,
@@ -452,9 +453,15 @@ export function SearchSelect(props: SearchSelectProp) {
             // label. `""` (nothing selected) is omitted rather than rendered as an empty attribute.
             data-value={(multiple ? values.join(",") : value) || undefined}
             data-mode={multiple ? "multiple" : undefined}
+            data-width={width}
             className={cn(
               controlSurfaceTriggerClass,
-              "w-full justify-start",
+              "justify-start",
+              // `bounded` deliberately emits NO width utility — its width is owned by the
+              // `[data-width="bounded"]` rule in control.css, and a utility here would win the
+              // layer order and make that token dead. Same reasoning as SelectTrigger.
+              width === "auto" && "w-auto",
+              width === "full" && "w-full",
               // Reserve trailing room for the single clear-or-chevron overlay rendered below.
               "ui-control-trigger-affixed",
             )}

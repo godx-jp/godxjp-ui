@@ -329,6 +329,22 @@ export type FormFieldProp =
       label: LabelProp;
       required?: RequiredProp;
       helper?: HelperProp;
+      /**
+       * Which side of the control the helper line sits on — `after` (default, under the input) or
+       * `before` (between the label and the input).
+       *
+       * `before` is for a helper the reader needs BEFORE they answer rather than after: the
+       * secondary language of a bilingual form, a unit or format note, a pick-one-of-these
+       * preamble. `labelAddon` cannot carry that — it is an inline row beside the label with no
+       * wrap, sized for a chip or a help button, so a full sentence squeezes the label instead of
+       * taking its own line. Putting the second line inside `label` does work, but costs the
+       * string-label fallbacks (`aria-label`, `FieldNameContext`), which fire only when `label` is
+       * a plain string.
+       *
+       * Paint only: the helper keeps its id and stays on the control's `aria-describedby`, so this
+       * never changes what a screen reader reads or the order it reads it in.
+       */
+      helperPlacement?: "before" | "after";
       error?: ErrorProp;
       validateStatus?: "success" | "warning" | "error" | "validating";
       hasFeedback?: boolean;
@@ -361,6 +377,22 @@ export type FormFieldProp =
       label: LabelProp;
       required?: RequiredProp;
       helper?: HelperProp;
+      /**
+       * Which side of the control the helper line sits on — `after` (default, under the input) or
+       * `before` (between the label and the input).
+       *
+       * `before` is for a helper the reader needs BEFORE they answer rather than after: the
+       * secondary language of a bilingual form, a unit or format note, a pick-one-of-these
+       * preamble. `labelAddon` cannot carry that — it is an inline row beside the label with no
+       * wrap, sized for a chip or a help button, so a full sentence squeezes the label instead of
+       * taking its own line. Putting the second line inside `label` does work, but costs the
+       * string-label fallbacks (`aria-label`, `FieldNameContext`), which fire only when `label` is
+       * a plain string.
+       *
+       * Paint only: the helper keeps its id and stays on the control's `aria-describedby`, so this
+       * never changes what a screen reader reads or the order it reads it in.
+       */
+      helperPlacement?: "before" | "after";
       error?: ErrorProp;
       validateStatus?: "success" | "warning" | "error" | "validating";
       hasFeedback?: boolean;
@@ -982,6 +1014,18 @@ export type SearchSelectBaseProp = {
   readOnly?: boolean;
   /** Trigger height tier — forwarded to the underlying Button. Default matches Button's own default. */
   size?: SizeProp;
+  /**
+   * Trigger width, the SAME axis `SelectTrigger` carries on the compound API — `full` (default,
+   * the width a field wants), `auto` (the width the current label wants), `bounded` (one width
+   * from `--control-bounded-width`, for a trigger whose value varies in length).
+   *
+   * It exists here because the two APIs are one component to a caller: `docs/CONSUMER-RULES.md`
+   * rule 5 tells everyone that "a Select outside a form takes `width=\"auto\"`", and until this
+   * prop existed that sentence was false for the `options` form — a filter bar with two of them
+   * stretched each to full width and stacked them, and the only way out was to wrap each in a
+   * `<Flex width={280}>`.
+   */
+  width?: ControlWidthProp;
   /**
    * Validation status (antd `status`). `error` recolours the trigger AND sets `aria-invalid`;
    * `warning` recolours only. A `status` set here never overrides an `aria-invalid` arriving from

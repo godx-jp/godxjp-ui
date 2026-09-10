@@ -1347,6 +1347,15 @@
             "docs/data-entry/form-field/index.tsx"
           ]
         },
+        "helperPlacement": {
+          "cases": [
+            "before",
+            "after"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/form-field-helper-placement.test.tsx"
+          ]
+        },
         "id": {
           "cases": [
             "explicit",

@@ -8179,6 +8179,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "helperPlacement",
+          "origin": "owned",
+          "required": false,
+          "type": "\"before\" | \"after\" | undefined",
+          "values": ["before", "after"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "id",
           "origin": "owned",
           "required": false,

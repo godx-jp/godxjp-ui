@@ -30,6 +30,7 @@ export function FormField({
   label,
   required,
   helper,
+  helperPlacement = "after",
   error: errorProp,
   validateStatus,
   hasFeedback,
@@ -69,6 +70,17 @@ export function FormField({
   const resolvedId = id ?? autoId;
   const labelId = `${resolvedId}-label`;
   const helperId = helper ? `${resolvedId}-helper` : undefined;
+  /*
+   * ONE helper node, rendered at one of two positions. It is built here rather than inline twice
+   * so `helperId` — the id `aria-describedby` points at — cannot drift between the branches: two
+   * copies of the same `<p id>` would be a duplicate-id a11y violation the moment one branch was
+   * edited and the other was not.
+   */
+  const helperNode = helper ? (
+    <p id={helperId} className="text-muted-foreground text-xs">
+      {helper}
+    </p>
+  ) : null;
   const validationStatus = error ? "error" : validateStatus;
   const feedbackId = hasFeedback && validationStatus ? `${resolvedId}-feedback` : undefined;
   const FeedbackIcon =
@@ -247,6 +259,7 @@ export function FormField({
         {labelAddon}
       </div>
       <div data-slot="form-field-control" className="ui-form-field-control">
+        {helperPlacement === "before" ? helperNode : null}
         {isStatic ? (
           childWithA11y
         ) : (
@@ -277,11 +290,7 @@ export function FormField({
             {t(`dataEntry.form.${validationStatus}`)}
           </span>
         ) : null}
-        {helper ? (
-          <p id={helperId} className="text-muted-foreground text-xs">
-            {helper}
-          </p>
-        ) : null}
+        {helperPlacement === "after" ? helperNode : null}
         {error ? (
           <p id={errorId} role="alert" className="text-destructive text-xs">
             {error}
