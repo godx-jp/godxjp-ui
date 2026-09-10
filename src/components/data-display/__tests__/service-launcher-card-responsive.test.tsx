@@ -130,6 +130,47 @@ describe("ServiceLauncherCard overflow CSS contract (gh#219)", () => {
     expect(rule(cardCss, '[data-slot="service-launcher-status"]')).toMatch(/flex:\s*none/);
   });
 
+  it("keeps the medallion and the name together so only the status can wrap away", () => {
+    // A row of THREE flex items cannot say "keep the first two together, break before the third" —
+    // the browser breaks wherever the items stop fitting, which put the medallion alone above the
+    // name for a long VI service title. The grouping is the structural form of that rule.
+    const { container } = renderWithUi(
+      <ServiceLauncherCard
+        icon={ShieldCheck}
+        title={LONG_TITLE.vi}
+        statusLabel="Chưa được cấp quyền"
+        action={<Button>go</Button>}
+      />,
+    );
+
+    const identity = container.querySelector(
+      '[data-slot="service-launcher-identity"]',
+    ) as HTMLElement;
+    const icon = container.querySelector('[data-slot="service-launcher-icon"]') as HTMLElement;
+    const title = container.querySelector('[data-slot="service-launcher-title"]') as HTMLElement;
+    const status = container.querySelector('[data-slot="service-launcher-status"]') as HTMLElement;
+
+    expect(identity).not.toBeNull();
+    expect(icon.parentElement).toBe(identity);
+    expect(title.parentElement).toBe(identity);
+    // The status stays OUTSIDE the group — it is the only item the heading row can wrap.
+    expect(status.parentElement).toBe(identity.parentElement);
+
+    const identityCss = rule(cardCss, '[data-slot="service-launcher-identity"]');
+    expect(identityCss).toMatch(/min-width:\s*0/);
+    // `auto` basis, never `0`: with a zero basis every group is the same hypothetical size, the row
+    // never overflows, and the status keeps taking width off the name instead of wrapping away.
+    expect(identityCss).toMatch(/flex:\s*1\s+1\s+auto/);
+  });
+
+  it("wraps the heading row rather than squeezing the name to make room for the status", () => {
+    // The heading shares its rule with the skeleton heading, so read the block by its second key.
+    const heading = rule(cardCss, '[data-slot="service-launcher-skeleton-heading"]');
+    expect(heading).toMatch(/flex-wrap:\s*wrap/);
+    // The name grows into the measure the status gave up when it wrapped.
+    expect(rule(cardCss, '[data-slot="service-launcher-title"]')).toMatch(/flex:\s*1\s+1\s+auto/);
+  });
+
   it("uses logical properties only, so a launcher tile flips under dir=rtl", () => {
     const block = cardCss.slice(
       cardCss.indexOf("/* ── Service launcher"),
