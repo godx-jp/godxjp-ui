@@ -18,7 +18,6 @@ const coveredOwners = new Set([
   "data-display/data-table",
   "data-display/empty-state",
   "data-display/progress",
-  "data-display/tree-list",
   "data-display/timeline",
   "data-display/range-timeline",
   "data-display/popover",

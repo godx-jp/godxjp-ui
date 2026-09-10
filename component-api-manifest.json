@@ -17939,19 +17939,6 @@
         }
       ]
     },
-    "TreeList": {
-      "group": "data-display",
-      "props": [
-        {
-          "name": "items",
-          "origin": "owned",
-          "required": true,
-          "type": "TreeListItem[]",
-          "values": [],
-          "declaredIn": ["src/components/data-display/tree-list.tsx"]
-        }
-      ]
-    },
     "TreeSelect": {
       "group": "data-entry",
       "props": [

@@ -2337,20 +2337,6 @@
         "reason": "Rendered axe passed; keyboard is not applicable to static timelines."
       }
     },
-    "data-display/tree-list": {
-      "responsive": {
-        "status": "pass",
-        "reason": "Eight-width Chromium geometry passed."
-      },
-      "rtl": {
-        "status": "pass",
-        "reason": "Rendered RTL geometry passed."
-      },
-      "a11y": {
-        "status": "pass",
-        "reason": "Rendered axe passed; keyboard is not applicable to the static frame."
-      }
-    },
     "data-display/scroll-area": {
       "responsive": {
         "status": "pass",
@@ -2866,7 +2852,6 @@
         "data-display/descriptions",
         "data-display/empty-state",
         "data-display/progress",
-        "data-display/tree-list",
         "data-display/timeline",
         "data-display/scroll-area",
         "general/typography",

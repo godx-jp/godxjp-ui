@@ -11126,7 +11126,7 @@ const [atNewest, setAtNewest] = React.useState(true);
       "Accordion (from @godxjp/ui/data-entry or Radix) — use Accordion when only ONE section can be open at a time across a group; use Collapsible when each section is independent and can be open simultaneously.",
       "Popover — use Popover when the revealed content should float above the layout in a portal overlay; use Collapsible when the content should push surrounding content down inline.",
       "Dialog/Sheet — use Dialog or Sheet for modal or slide-over panels that demand full user attention; Collapsible stays in-flow and non-modal.",
-      "TreeList (@godxjp/ui/data-display) — use TreeList for hierarchical data that needs recursive nesting with built-in indentation and expand/collapse; use Collapsible for ad-hoc single-level toggle regions.",
+      "Tree (@godxjp/ui/data-display) — use Tree for hierarchical data that expands, collapses and is navigated by keyboard; use Collapsible for ad-hoc single-level toggle regions.",
     ],
     example: `{\`import { useState } from "react";
 import { ChevronDown } from "lucide-react";
@@ -11179,61 +11179,10 @@ export function FilterSection() {
     rules: [3, 6, 23],
   },
   {
-    name: "TreeList",
-    group: "data-display",
-    tagline:
-      "Renders a flat array of items as an indented tree-style list with chevron + package icon; depth indentation is data-driven — never nest DOM manually.",
-    props: [
-      {
-        name: "items",
-        type: "TreeListItem[]",
-        required: true,
-        description:
-          "Ordered flat array of items to render. Each item carries its own depth so the tree structure is expressed in data, not DOM nesting.",
-      },
-    ],
-    usage: [
-      "DO pass a flat array ordered top-to-bottom with each item's `depth` set to the correct nesting level (0 = root, 1 = first child, etc.). TreeList does NOT accept nested children — the tree shape is encoded in data.",
-      "DO set `item.active = true` on the currently selected row; the component applies `data-active` for styling — never manually add an active class.",
-      "DO use `item.badge` (ReactNode) to surface a secondary label (count, status chip) — it is rendered as a `Badge variant='secondary'` automatically; do NOT wrap the value in a Badge yourself.",
-      "DON'T hand-roll padding or indentation — depth-based indentation is applied via `data-depth` CSS; adding manual padding breaks the visual rhythm.",
-      "DON'T use TreeList for interactive selection (click handlers, routing) — it has no `onItemClick` prop. Wrap items in a navigation list or add a Link inside `item.title` when interactivity is needed.",
-      "DO provide a unique string `item.id` for every item; it is used as the React key and must be stable across renders.",
-    ],
-    useCases: [
-      "Displaying a chart-of-accounts hierarchy (root accounts at depth 0, sub-accounts at depth 1+) in an accounting admin panel.",
-      "Showing a package/module dependency tree where each node has a name, optional description, and an item-count badge.",
-      "Rendering a category tree (e.g., product categories, tax codes) in a read-only reference list alongside a detail panel.",
-      "Listing a filtered/searched subset of a hierarchy — because the flat-array model lets you pre-filter server-side and still show correct depth context.",
-      "Sidebar or drawer content showing a tree of navigation nodes where the active branch item is highlighted via `active: true`.",
-    ],
-    related: [
-      "Timeline — use Timeline for chronological event sequences with timestamps; use TreeList for hierarchical parent-child structures.",
-      "Descriptions — use Descriptions for label/value pairs; use TreeList when items have a parent-child depth relationship.",
-      "DataTable — use DataTable for tabular data with columns, sorting, and selection; use TreeList for a single-column hierarchical list without those features.",
-      "EmptyState — pair with EmptyState when the items array may be empty; TreeList renders nothing (no empty row) when given an empty array.",
-    ],
-    example: `import { TreeList } from "@godxjp/ui/data-display";
-
-const accounts = [
-  { id: "1000", title: "Assets", depth: 0 },
-  { id: "1100", title: "Current Assets", depth: 1, active: true },
-  { id: "1110", title: "Cash & Equivalents", description: "Bank + petty cash", depth: 2, badge: "3 accounts" },
-  { id: "1120", title: "Accounts Receivable", depth: 2 },
-  { id: "2000", title: "Liabilities", depth: 0 },
-];
-
-export function ChartOfAccounts() {
-  return <TreeList items={accounts} />;
-}`,
-    storyPath: "data-display/TreeList.stories.tsx",
-    rules: [3, 6, 23, 31],
-  },
-  {
     name: "Tree",
     group: "data-display",
     tagline:
-      "The standalone WAI-ARIA tree view on a page (antd `Tree` / `DirectoryTree`) — nested `treeData`, a disclosure triangle per branch, roving-tabindex arrow navigation, optional tri-state checkboxes and async `loadData`. Use it INSTEAD OF TreeList whenever nodes expand; TreeSelect is the same hierarchy inside a Popover.",
+      "The standalone WAI-ARIA tree view on a page (antd `Tree` / `DirectoryTree`) — nested `treeData`, a disclosure triangle per branch, roving-tabindex arrow navigation, optional tri-state checkboxes and async `loadData`. Reach for it whenever nodes expand, collapse or are navigated by keyboard; TreeSelect is the same hierarchy inside a Popover.",
     props: [
       {
         name: "treeData",
@@ -11388,7 +11337,7 @@ export function ChartOfAccounts() {
       "DO keep SELECTION and CHECKS apart: `value`/`onValueChange` is which node is open in the detail pane; `checkedValues`/`onCheckedValuesChange` is which nodes are ticked. They are two axes, exactly as in antd — never drive one from the other.",
       "DO let the keyboard work: the tree ships the full APG contract (Up/Down through visible nodes, Right expands then descends, Left collapses then climbs, Home/End, Enter/Space, `*` to expand the current level, type-ahead). Do not add your own key handling on top.",
       "DON'T nest a Button, Checkbox, Link or any focusable control inside a node label. A tree item owns exactly ONE tab stop; the disclosure triangle and the tick box are decorative glyphs for that reason. Put row actions in a sibling column outside the tree, or open a detail pane on selection.",
-      "DON'T reach for `TreeList` when nodes expand — it is a flat indented list with no ARIA tree semantics, no keyboard and no selection contract. Tree replaces it for every hierarchy the user navigates.",
+      "DON'T hand-roll an indented `<ul>` (or a NavList / ListRow stack with a per-depth margin) for a hierarchy. A flat indented list only LOOKS like a tree: no expand/collapse, no `role=\"tree\"`, no keyboard model, no selection contract. `TreeList` was exactly that list and was REMOVED in 21.0.0 — Tree is what replaced it, and it is the one to reach for whenever nodes expand, collapse or are keyboard-navigated.",
       "DO cap a long tree with `ScrollArea` — virtualisation is not in v1, so a 5,000-node tree renders 5,000 rows.",
       "DO push fetched children into `treeData` from `loadData`; the tree calls it once per node and shows a Skeleton row until the data lands.",
     ],
@@ -11397,10 +11346,10 @@ export function ChartOfAccounts() {
       "A category browser beside a detail pane — selecting a category loads its products, and the whole hierarchy stays navigable by keyboard.",
       "An organisation chart / department picker on a settings page, where a branch's children are fetched on demand with `loadData`.",
       'A file explorer (`variant="directory"`, `showIcon`, `showLine`) where folders and files read differently and the selected row spans the width.',
-      "A chart-of-accounts outline that must expand and collapse — the case TreeList only ever looked like it handled.",
+      "A chart-of-accounts outline that must expand and collapse — the case a flat indented list only ever looked like it handled.",
     ],
     related: [
-      'TreeList — SUPERSEDED by Tree. It is a flat `<ul>` whose `depth` only drives indentation: no expand/collapse, no `role="tree"`, no keyboard, no selection contract. Keep it only for a static indented list that never opens.',
+      'TreeList — REMOVED in 21.0.0, replaced by Tree. It was a flat `<ul>` whose `depth` only drove `margin-inline-start`: it LOOKED like a tree and had no expand/collapse, no `role="tree"`, no keyboard and no selection contract. Migration: nest the flat `items` into `treeData` (`id`→`value`, `title`→`label`, `depth`→nesting) and pass `aria-label`. A genuinely static indented outline that never opens is a `Descriptions` or a `ListRow` stack, not a tree.',
       "TreeSelect — the same hierarchy INSIDE a Popover, as a form field. Use TreeSelect when the answer is a value in a form; use Tree when the hierarchy itself is the page.",
       "Cascader — a path picker across columns. Use it when the user walks one path to a leaf; use Tree when several branches are open at once.",
       "Accordion — single-level disclosure with rich panel content. It is not a hierarchy and has no tree keyboard model.",

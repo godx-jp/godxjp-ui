@@ -6,8 +6,6 @@ import { renderWithUi } from "@/test/render";
 import { ruleSelector } from "@/test/css-selector";
 import { ListRow } from "../list-row";
 import { Timeline } from "../timeline";
-import { TreeList } from "../tree-list";
-import type { TreeListItem } from "../tree-list";
 
 /** Structural selectors in data-display-layout.css against really rendered DOM. */
 const css = readFileSync(
@@ -16,22 +14,6 @@ const css = readFileSync(
 );
 
 describe("data-display-layout.css structural selectors select the rendered DOM", () => {
-  it("tree depth and current-item selectors match real rows without decorative controls", () => {
-    const selector = ruleSelector(css, '.ui-tree-item[data-active="true"]');
-    const items: TreeListItem[] = [
-      { id: "a", title: "勘定科目", active: true },
-      { id: "b", title: "売上", depth: 6, badge: 0 },
-    ];
-    const { container } = renderWithUi(<TreeList items={items} />);
-    const rows = [...container.querySelectorAll(".ui-tree-item")];
-    expect(rows).toHaveLength(2);
-    expect(rows[0].matches(selector)).toBe(true);
-    expect(rows[1].matches(selector)).toBe(false);
-    expect(rows[1].getAttribute("data-depth")).toBe("6");
-    expect(rows[1].textContent).toContain("0");
-    expect(container.querySelectorAll(".ui-tree-item > svg, button")).toHaveLength(0);
-  });
-
   it("the last timeline item drops its trailing body padding", () => {
     const selector = ruleSelector(css, ".ui-timeline-item:last-child .ui-timeline-body");
     const { container } = renderWithUi(

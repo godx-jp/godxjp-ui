@@ -3,10 +3,10 @@
  *
  * Tree / hierarchical rows inside the real @godxjp/ui DataTable.
  *
- * The lib's `TreeList` is a flat presentational list (fixed icons, no twirl, no
- * tabular columns) — it cannot express a *tabular* hierarchy with per-row metrics,
- * a parent-only disclosure twirl, and DataTable chrome (sticky header, density,
- * sortable columns). So this composes the behaviour from real primitives:
+ * The lib's `Tree` owns the standalone tree view, but it is single-column — it
+ * cannot express a *tabular* hierarchy with per-row metrics, a parent-only
+ * disclosure twirl, and DataTable chrome (sticky header, density, sortable
+ * columns). So this composes the behaviour from real primitives:
  *
  *   row model ........ flatten an org tree to rows carrying { depth, hasChildren,
  *                      expanded }, then derive `visibleRows` from the open set.

@@ -583,8 +583,9 @@ export type TreeNodeProp = TreeOptionProp & {
 /**
  * @see Tree — the WAI-ARIA APG "Tree View" on a page (Ant's `Tree` / `DirectoryTree`).
  *
- * `TreeSelect` is the same hierarchy inside a Popover; `TreeList` is a flat indented list that only
- * LOOKS like one. Reach for `Tree` whenever nodes expand, collapse, or are navigated by keyboard.
+ * `TreeSelect` is the same hierarchy inside a Popover. A flat indented list only LOOKS like a tree
+ * (that was `TreeList`, removed in 21.0.0 with `Tree` as its replacement), so reach for `Tree`
+ * whenever nodes expand, collapse, or are navigated by keyboard.
  *
  * Ant's key-shaped names are mapped onto this package's controlled vocabulary and NOT re-spelled:
  * selection is `value`/`defaultValue`/`onValueChange`, expansion is

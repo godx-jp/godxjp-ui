@@ -37,8 +37,8 @@
   "QrCode": {
     "value/label/size/className/id/local encoding/quiet zone": "docs/data-display/qr-code.tsx plus QrCode secrecy, SSR, sizing, ref and axe tests"
   },
-  "TreeList/Timeline": {
-    "items/nesting/current/status/time/content stress": "docs/data-display/tree-list.tsx and timeline.tsx cases"
+  "Timeline": {
+    "items/nesting/current/status/time/content stress": "docs/data-display/timeline.tsx cases"
   },
   "Popover and parts": {
     "open/defaultOpen/onOpenChange/modal/trigger/anchor/content/side/align/header/title/description": "docs/data-display/popover.tsx and popover-touch.tsx controlled, placement, named dialog and touch cases"

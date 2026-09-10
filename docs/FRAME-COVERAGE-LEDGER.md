@@ -112,7 +112,7 @@ The executed geometry sweep (`pnpm check:frame-geometry`, `scripts/frame-geometr
 
 ## Known gaps
 
-The issue's "Initial known gaps to encode" are locked in code (`KNOWN_GAPS` in `scripts/frame-coverage-contract.mjs`) and mirrored into `policy.knownGaps`: Button, Card, Card subcomponents, EmptyState, Progress, Carousel, DataTable, Charts and the Timeline/TreeList/PasswordStrength locale stress. They cannot be deleted, and they cannot be waived through `policy.notApplicable` — they must be **covered** or stay **UNTESTED**.
+The issue's "Initial known gaps to encode" are locked in code (`KNOWN_GAPS` in `scripts/frame-coverage-contract.mjs`) and mirrored into `policy.knownGaps`: Button, Card, Card subcomponents, EmptyState, Progress, Carousel, DataTable, Charts and the Timeline/PasswordStrength locale stress. They cannot be deleted, and they cannot be waived through `policy.notApplicable` — they must be **covered** or stay **UNTESTED**.
 
 ## Current state — read this before quoting coverage
 

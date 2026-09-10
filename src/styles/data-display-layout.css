@@ -279,61 +279,6 @@
     background: hsl(var(--muted-foreground));
   }
 
-  .ui-tree-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-
-  .ui-tree-item {
-    display: flex;
-    min-height: 2.25rem;
-    align-items: center;
-    gap: var(--space-2);
-    padding-inline: var(--space-3);
-    border: 1px solid hsl(var(--border));
-    border-radius: var(--radius);
-  }
-
-  .ui-tree-item[data-active="true"] {
-    border-color: var(--tree-item-active-border, hsl(var(--primary) / 0.3));
-    background: var(--tree-item-active-background, hsl(var(--primary) / 0.05));
-  }
-
-  .ui-tree-item {
-    margin-inline-start: calc(var(--tree-item-depth, 0) * var(--tree-item-indent-width));
-  }
-
-  .ui-tree-item > svg {
-    width: 1rem;
-    height: 1rem;
-    color: hsl(var(--primary));
-  }
-
-  .ui-tree-item > svg:first-child {
-    width: 0.75rem;
-    height: 0.75rem;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .ui-tree-item-body {
-    min-width: 0;
-    flex: 1;
-  }
-
-  .ui-tree-item-title {
-    font-family: var(--font-family-mono);
-    font-size: var(--tree-item-title-font-size);
-  }
-
-  .ui-tree-item-description {
-    overflow: hidden;
-    color: hsl(var(--muted-foreground));
-    font-size: var(--tree-item-description-font-size);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
   .ui-timeline {
     display: flex;
     flex-direction: column;
