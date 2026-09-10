@@ -1,6 +1,5 @@
 /** Data Entry component prop types — @see docs/COMPONENTS.md#data-entry */
 import type * as CheckboxPrimitive from "@radix-ui/react-checkbox";
-import type * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import type * as SliderPrimitive from "@radix-ui/react-slider";
 import type { RenderProps as InputOTPRenderProps } from "input-otp";
 import type { DayPickerProps } from "react-day-picker";
@@ -528,8 +527,17 @@ export type RadioOptionTypeProp = "default" | "button";
 /** antd `RadioGroupButtonStyle` — the selected button is outlined, or filled with the brand. */
 export type RadioButtonStyleProp = "outline" | "solid";
 
-/** @see Radio.Item — Radix radio group item. */
-export type RadioProp = React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>;
+/**
+ * @see Radio.Item
+ *
+ * Public shape unchanged from the @radix-ui/react-radio-group era — `value` / `disabled` keep
+ * their HTML spelling; react-aria's `isDisabled` never reaches a consumer.
+ */
+export type RadioProp = Omit<React.ComponentPropsWithoutRef<"button">, "value"> & {
+  value: string;
+  /** gh#337 machine key — lands on the `<input>`, the control's semantic focus target. */
+  "data-field"?: string;
+};
 
 /**
  * @see Switch

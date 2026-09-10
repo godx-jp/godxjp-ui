@@ -2,7 +2,7 @@ import * as React from "react";
 import { Switch as AriaSwitch } from "react-aria-components";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { useFieldIdentity } from "../../lib/field-a11y";
+import { useFieldIdentity, useMirroredInputAttributes } from "../../lib/field-a11y";
 import type { SwitchProp } from "../../props/components/data-entry.prop";
 
 export type { SwitchProp, SwitchProp as SwitchProps } from "../../props/components/data-entry.prop";
@@ -21,24 +21,6 @@ export type { SwitchProp, SwitchProp as SwitchProps } from "../../props/componen
  * RAC lọc sạch `aria-*` lạ và mọi `data-*` khỏi `<input>` (`removeDataAttributes`), nên ba thuộc
  * tính ấy được ghi tay qua `inputRef`, y như `data-field` ở checkbox.tsx.
  */
-
-/** Thuộc tính a11y phải nằm trên `<input>` chứ không trên hộp được tô. RAC không chuyển tiếp. */
-function useMirroredInputAttributes(
-  ref: React.RefObject<HTMLInputElement | null>,
-  attributes: Record<string, string | undefined>,
-) {
-  // Khoá theo NỘI DUNG, không theo danh tính object — nếu không, mỗi lượt render lại chạy lại.
-  const key = JSON.stringify(attributes);
-  React.useLayoutEffect(() => {
-    const input = ref.current;
-    if (!input) return;
-    const entries = JSON.parse(key) as Record<string, string | undefined>;
-    for (const [name, value] of Object.entries(entries)) {
-      if (value === undefined) input.removeAttribute(name);
-      else input.setAttribute(name, value);
-    }
-  }, [ref, key]);
-}
 
 export const Switch = React.forwardRef<HTMLLabelElement, SwitchProp>(
   (

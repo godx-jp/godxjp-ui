@@ -15,10 +15,30 @@ const labelVariants = cva(
 
 export const Label = React.forwardRef<
   HTMLLabelElement,
-  React.ComponentPropsWithoutRef<"label"> &
-    VariantProps<typeof labelVariants> & { asChild?: boolean }
->(({ className, onMouseDown, asChild = false, ...props }, ref) => {
+  Omit<React.ComponentPropsWithoutRef<"label">, "slot"> &
+    VariantProps<typeof labelVariants> & {
+      asChild?: boolean;
+      /**
+       * react-aria's slot channel, DEFAULTED OFF.
+       *
+       * A `Label` rendered inside a react-aria collection (a `RadioGroup`, say) is otherwise
+       * claimed by that collection as the GROUP's label: it comes out as a `<span>`, the `htmlFor`
+       * this library passed is dropped on the floor, and the control it was meant to name ends up
+       * with no accessible name at all — a silent failure, measured on `Radio.Group` the moment
+       * that group moved to react-aria. `<Label htmlFor="x">` means one thing in this library and
+       * a surrounding primitive does not get to redefine it, so the default is react-aria's own
+       * opt-out: "an explicit `null` value indicates that the local props completely override all
+       * props received from a parent". Pass a slot name to opt back in.
+       */
+      slot?: string | null;
+    }
+>(({ className, onMouseDown, asChild = false, slot = null, ...props }, ref) => {
   const shared = {
+    // `string | null`, cast because react-aria's own `LabelProps` extends `LabelHTMLAttributes`
+    // and so re-types `slot` as `string | undefined` — narrower than the `SlotProps` contract the
+    // rest of the library publishes, and narrower than `useSlottedContext`, which branches on
+    // `slot === null` explicitly. React drops a `null` attribute, so nothing reaches the DOM.
+    slot: slot as string | undefined,
     // `...props` đứng TRƯỚC, không phải sau: giữ đúng thứ tự thuộc tính mà
     // @radix-ui/react-label phát ra (`for` → `data-slot` → `class`), nên phép so
     // `outerHTML` trong __tests__/label-checkbox-rac.test.tsx khớp từng ký tự.

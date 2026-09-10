@@ -3216,7 +3216,9 @@
     border-color: hsl(var(--choice-button-solid-background));
   }
 
-  .ui-radio-button:disabled {
+  /* `[data-disabled]` and not `:disabled`: the member is a `<label>` (react-aria) and the
+   * `disabled` attribute lives on the `<input>` inside it. */
+  .ui-radio-button[data-disabled] {
     cursor: not-allowed;
     opacity: var(--disabled-opacity);
   }

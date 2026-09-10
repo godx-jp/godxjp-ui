@@ -37,16 +37,18 @@ describe("hidden form-fallback is clamp-targetable (gh#105)", () => {
   // a 1×1 clipped `<span>` that is in normal flow, not the un-positioned `position:absolute` node
   // gh#105 was about — so there is nothing left for the clamp to target.
 
-  it("RadioGroup renders a clamp-targetable native <input> fallback", () => {
+  // RadioGroup, like Checkbox, no longer emits a bubble at all: react-aria's `<input type="radio">`
+  // IS the form control, visually hidden by a 1x1 clipped `<span>` that sits in normal flow.
+  it("RadioGroup renders no un-positioned hidden bubble", () => {
     renderWithUi(
       <form>
         <Radio.Root name="plan" defaultValue="x">
-          <Radio.Item value="x" />
-          <Radio.Item value="y" />
+          <Radio.Item value="x" aria-label="X" />
+          <Radio.Item value="y" aria-label="Y" />
         </Radio.Root>
       </form>,
     );
-    expect(clampTargetable(document.querySelector('input[aria-hidden="true"]'))).toBe(true);
+    expect(document.querySelector('input[aria-hidden="true"][tabindex="-1"]')).toBeNull();
   });
 
   // Switch has NO case here any more, for the same reason as Checkbox: react-aria renders no

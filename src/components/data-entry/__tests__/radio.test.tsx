@@ -12,10 +12,11 @@ describe("Radio.Group", () => {
   it("renders radiogroup from options", () => {
     renderWithUi(<Radio.Group options={shipMethods} defaultValue="air" aria-label="Ship method" />);
     expect(screen.getByRole("radiogroup")).toHaveAttribute("data-slot", "radio-group");
-    expect(screen.getByRole("radio", { name: /Air/ })).toHaveAttribute(
-      "data-slot",
-      "radio-group-item",
-    );
+    // `role="radio"` is the real `<input>` react-aria renders; the painted dot is the `<label>`
+    // around it and carries the slot (same split as Checkbox and Switch).
+    expect(
+      screen.getByRole("radio", { name: /Air/ }).closest('[data-slot="radio-group-item"]'),
+    ).not.toBeNull();
     expect(screen.getByRole("radio", { name: /Air/ })).toBeChecked();
   });
 
