@@ -375,6 +375,32 @@
   }
 
   .ui-timeline-title {
+    /*
+     * THE TITLE OWNS THE ROW; `time` sits at its end.
+     *
+     * The head is `justify-content: space-between`, and a flex item that cannot grow shrink-wraps
+     * to its content. That is invisible while a title is a short string — it is already narrower
+     * than the row — and wrong the moment it is anything with a width of its own. Measured with a
+     * Card as the title: the surface stopped at its own text, roughly a third of the body column,
+     * while the bare text rows above it spanned the whole width.
+     *
+     * `min-inline-size: 0` because a grow-able flex item still refuses to shrink below its
+     * content's intrinsic width without it. Measured at 320px with a truncating id as the title:
+     * without this line the title box is 497.3px inside a 214px row and `time` lands 322.4px past
+     * the head's own right edge.
+     *
+     * The basis is `0%`, not `auto`, and it is the same idiom `[data-slot="alert-content"]`
+     * already uses for the same shape. With an `auto` basis the two items shrink in PROPORTION to
+     * their bases, so a long title drags `time` down with it — measured at 375px with `time` =
+     * "2026年9月12日 11:18" (CJK breaks between any two glyphs, so no min-content floor saves it):
+     * `auto` crushed the time slot to 50.6px over THREE lines while the title kept 210.4px, while
+     * `0%` leaves it at its natural 119.7px on one line and hands the title the remainder.
+     *
+     * check:timeline-title-fill measures all three claims against docs/data-display/timeline.tsx.
+     */
+    min-inline-size: 0;
+    flex: 1 1 0%;
+
     font-weight: var(--font-weight-medium);
   }
 

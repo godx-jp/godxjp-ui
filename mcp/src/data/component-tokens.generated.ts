@@ -2659,6 +2659,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Companion to --descriptions-value-font-size (the gh#260 bug). The `text-sm` utility this * replaces ALSO set a line-height, via Tailwind's default `--text-sm--line-height` * (= calc(1.25 / 0.875)); the theme remaps --text-sm but never that companion. Without this the * value would silently inherit ambient leading instead of its own 20px line box."
   },
   {
+    "name": "--descriptions-label-font-size",
+    "value": "var(--descriptions-value-font-size)",
+    "description": "LABEL TYPOGRAPHY. The label was a hard-coded `text-xs` utility while the value beside it read a * token, so the pair sat ONE TYPE STEP APART (`--font-size-xs` ≈12.5px against `--font-size-sm`, * which IS `--font-size-base` at 14px) and every row rendered its value BIGGER than its own * label. What separates a label from its value is COLOUR, not size. The LABEL is raised to the * value's step rather than the value shrunk to the label's: the value is the DATA, and shrinking * it would move every consumer's field panel and `FormField staticText` with it. Defaulting to * the value token locks the pair together by construction while leaving each side reachable. * Measured by check:descriptions-label-value-step."
+  },
+  {
+    "name": "--descriptions-label-line-height",
+    "value": "var(--descriptions-value-line-height)",
+    "description": "Companion, for the same reason the value has one (gh#260): the `text-xs` utility this replaces * ALSO carried a line-height, so dropping it without a replacement would leave the label * inheriting ambient leading instead of its own line box."
+  },
+  {
     "name": "--descriptions-row-border",
     "value": "none",
     "description": "ROW CHROME (gh#414) — the ruled property panel. Both knobs are QUIET by default (rule #44), so * an existing Descriptions is byte-identical: no rule, no band height. * * Same shape as --page-header-divider / --page-toolbar-divider / --page-footer-divider on * PageContainer: a `border` shorthand a service opts into with ONE declaration * (`--descriptions-row-border: 1px solid hsl(var(--border))`), read at the call site. Bound at * :root rather than `initial` because the default is a plain CSS keyword, not another role * token — there is nothing for a scoped [data-tenant]/.dark override to re-resolve, and the * keyword is worth reading here (the same reasoning --page-toolbar-background records). * * The rule is drawn only on an UNBORDERED grid: `bordered` already draws a rule between every * cell, and a second block-end border would double every line it owns. * * --descriptions-row-min-height gives the ruled variant its band height — a ruled row whose * value is one short line otherwise reads as a hairline sandwich. `auto` = today. * * A continuously ruled panel sets --descriptions-row-gap to `0` in the same declaration block: * the row gap is the space BETWEEN rules, so leaving it at the default 12px draws a ladder of * detached hairlines rather than a ruled list."

@@ -199,7 +199,10 @@ function DescriptionsItem({ label, mono, span, className, children }: Descriptio
         data-slot="descriptions-label"
         data-label-align={endAlignedLabel ? "end" : undefined}
         className={cn(
-          "text-muted-foreground text-xs",
+          // Size comes from the token pair, NOT from `text-xs`: a hard-coded utility here left the
+          // label one type step below the value beside it, and out of reach of a service theme.
+          // The muted colour is what distinguishes a label from its value.
+          "text-muted-foreground text-[length:var(--descriptions-label-font-size)] leading-[var(--descriptions-label-line-height)]",
           // `end`-align only ever applies in horizontal layout — same guard `Form` uses, so a
           endAlignedLabel && "text-end",
         )}
