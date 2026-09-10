@@ -37,8 +37,18 @@ function Rtl({ children }: { children: React.ReactNode }) {
 
 /** The name of whatever holds DOM focus — assertions bind to the accessible label, never a class. */
 function focusedName(): string | null {
-  const active = document.activeElement;
-  return active ? (active.textContent?.trim() ?? "") : null;
+  const active = document.activeElement as HTMLElement | null;
+
+  if (active === null) {
+    return null;
+  }
+
+  // The focused control is the real `<input type="radio">`, and react-aria wraps
+  // it in the `<label>` that names it — so `textContent` on the input itself is
+  // empty. Reading through the label is what this helper always MEANT (see the
+  // line above); with Radix's `<button role="radio">` holding its own text it
+  // was only accidentally right.
+  return (active.closest("label") ?? active).textContent?.trim() ?? "";
 }
 
 afterEach(() => {
