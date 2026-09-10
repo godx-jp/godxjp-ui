@@ -58,6 +58,11 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--otp-separator-icon-size": ["1rem", "1rem", "1rem"],
   "--accordion-chevron-size": ["1rem", "1rem", "1rem"],
   "--carousel-arrow-icon-size": ["1rem", "1rem", "1rem"],
+  // The Tree's node glyph (`showIcon`, and the folder/file pair of `variant="directory"`), minted
+  // with the primitive in #439 and reading `--icon-size-md` — the default step, so this is a
+  // no-move row. The scanner found it before this table did, which is the whole point of the
+  // scanner: a frozen table nobody updates is a table that stops describing the tier.
+  "--tree-icon-size": ["1rem", "1rem", "1rem"],
   "--sidebar-product-caret-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
   "--topbar-icon-size": ["1rem", "1rem", "1rem"],
   "--topbar-caret-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
