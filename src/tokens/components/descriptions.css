@@ -33,6 +33,19 @@
    * (= calc(1.25 / 0.875)); the theme remaps --text-sm but never that companion. Without this the
    * value would silently inherit ambient leading instead of its own 20px line box. */
   --descriptions-value-line-height: calc(1.25 / 0.875);
+  /* LABEL TYPOGRAPHY. The label was a hard-coded `text-xs` utility while the value beside it read a
+   * token, so the pair sat ONE TYPE STEP APART (`--font-size-xs` ≈12.5px against `--font-size-sm`,
+   * which IS `--font-size-base` at 14px) and every row rendered its value BIGGER than its own
+   * label. What separates a label from its value is COLOUR, not size. The LABEL is raised to the
+   * value's step rather than the value shrunk to the label's: the value is the DATA, and shrinking
+   * it would move every consumer's field panel and `FormField staticText` with it. Defaulting to
+   * the value token locks the pair together by construction while leaving each side reachable.
+   * Measured by check:descriptions-label-value-step. */
+  --descriptions-label-font-size: var(--descriptions-value-font-size);
+  /* Companion, for the same reason the value has one (gh#260): the `text-xs` utility this replaces
+   * ALSO carried a line-height, so dropping it without a replacement would leave the label
+   * inheriting ambient leading instead of its own line box. */
+  --descriptions-label-line-height: var(--descriptions-value-line-height);
   /* ROW CHROME (gh#414) — the ruled property panel. Both knobs are QUIET by default (rule #44), so
    * an existing Descriptions is byte-identical: no rule, no band height.
    *
