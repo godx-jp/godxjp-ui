@@ -6,7 +6,18 @@ import { cn } from "../../lib/utils";
 
 export const Menubar = MenubarPrimitive.Root;
 
-export const MenubarMenu = MenubarPrimitive.Menu;
+/**
+ * Annotated rather than inferred, and that is load-bearing.
+ *
+ * Radix types this one through `createContextScope`, so its INFERRED type reaches into
+ * `@radix-ui/react-context` for a `Scope` — and TypeScript then refuses to emit a declaration it
+ * cannot name portably (TS2883) unless that package is a DIRECT dependency. It was one, purely to
+ * satisfy this line: nothing in the tree ever imported it. Naming the props here severs that,
+ * which is what let the dependency go.
+ */
+export const MenubarMenu: (
+  props: React.ComponentProps<typeof MenubarPrimitive.Menu>,
+) => React.ReactNode = MenubarPrimitive.Menu;
 
 export function MenubarTrigger(props: React.ComponentProps<typeof MenubarPrimitive.Trigger>) {
   return <MenubarPrimitive.Trigger data-slot="menubar-trigger" {...props} />;
