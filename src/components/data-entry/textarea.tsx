@@ -230,10 +230,23 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
 
     if (!needsWrapper) return field;
 
+    /*
+     * What the mirror replicates. While the box is EMPTY that is the placeholder, not the empty
+     * string: the placeholder is painted inside the same content box, so a mirror of "" leaves a
+     * one-row box and a placeholder that needs two rows is clipped with no way to read the rest.
+     * A textarea's own placeholder wraps exactly like its value, so the replica is faithful.
+     *
+     * Only while empty — once there is a value the placeholder is not painted, and mirroring it
+     * would hold the box open at the wrong height.
+     */
+    const placeholderText =
+      typeof props.placeholder === "string" ? props.placeholder : undefined;
+    const mirrorText = mirror.length > 0 ? mirror : (placeholderText ?? "");
+
     return (
       <span
         data-slot="textarea-affix-wrapper"
-        data-autogrow-value={growing ? mirror : undefined}
+        data-autogrow-value={growing ? mirrorText : undefined}
         style={{ ...autoGrowVars, ...mirrorInset } as React.CSSProperties}
         className={cn(
           "relative w-full",

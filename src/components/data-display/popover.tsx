@@ -416,7 +416,7 @@ export function PopoverContent({
    * Bấm ra ngoài thì đóng — `usePopover` đặt `isDismissable: !isNonModal`, nên panel non-modal của
    * RAC KHÔNG tự đóng. Trigger được loại trừ vì `onClick` của nó đã tự lật trạng thái.
    */
-  const { open, setOpen, triggerRef } = root;
+  const { open, setOpen, triggerRef, anchorRef, anchored } = root;
   React.useEffect(() => {
     if (!open) return;
     const onPointerDown = (event: PointerEvent) => {
@@ -424,11 +424,18 @@ export function PopoverContent({
       if (!target) return;
       if (contentRef.current?.contains(target)) return;
       if (triggerRef.current?.contains(target)) return;
+      // An ANCHORED popover positions itself against `PopoverAnchor` instead of the trigger, and
+      // that anchor is part of the widget, not the outside world: in ChatSuggestion the anchor IS
+      // the textarea the panel is completing. Without this, a click into the draft box closed the
+      // panel here and the owner's own caret read reopened it a frame later — the list visibly
+      // flickered. The owner decides what a click inside its own input means; this handler only
+      // covers the genuine outside.
+      if (anchored && anchorRef.current?.contains(target)) return;
       setOpen(false);
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
-  }, [open, setOpen, triggerRef]);
+  }, [open, setOpen, triggerRef, anchorRef, anchored]);
 
   return (
     <AriaPopover

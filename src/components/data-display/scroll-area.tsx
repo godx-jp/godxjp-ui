@@ -1,3 +1,4 @@
+import { useLayoutEffect } from "@react-aria/utils";
 import * as React from "react";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 
@@ -184,6 +185,43 @@ function useBottomAnchor(
   }, [viewport, enabled, offset]);
 }
 
+/**
+ * The direction the scroll area's CONTENT should be laid out in.
+ *
+ * Radix's `ScrollArea.Root` calls `useDirection(dir)`, which falls back to the literal `"ltr"`
+ * when there is neither a `dir` prop nor a `DirectionProvider` — and then STAMPS that on the root
+ * element. A `dir` attribute is not advisory: it resets the inline axis for the whole subtree, so
+ * every `margin-inline-*`, `inset-inline-*`, `text-align: start` and `align-items: flex-end`
+ * inside the viewport resolves in the LTR direction no matter what the page says.
+ *
+ * MEASURED (Chromium, 1280px, a chat feed inside `<div dir="rtl">`): the list computed
+ * `direction: rtl`, the Radix root under it computed `ltr`, and the "my message" bubble — whose
+ * only positioning is `margin-inline-start: auto` — stayed on the right instead of flipping to
+ * the left. Nothing in the stylesheet was physical; the axis had simply been reset one element up.
+ *
+ * So the ambient direction is read off the mounted element's PARENT (the first honest answer,
+ * since the root itself already carries Radix's stamp) and handed back to Radix as an explicit
+ * `dir`. An explicit `dir` prop from the caller always wins, and a `DirectionProvider` still
+ * works because Radix consults it before the value we pass.
+ */
+function useAmbientDirection(
+  root: HTMLElement | null,
+  provided: "ltr" | "rtl" | undefined,
+): "ltr" | "rtl" | undefined {
+  const [ambient, setAmbient] = React.useState<"ltr" | "rtl" | undefined>(undefined);
+
+  useLayoutEffect(() => {
+    if (provided !== undefined) return;
+    const parent = root?.parentElement;
+    if (!parent || typeof window === "undefined" || typeof window.getComputedStyle !== "function") {
+      return;
+    }
+    setAmbient(window.getComputedStyle(parent).direction === "rtl" ? "rtl" : "ltr");
+  }, [root, provided]);
+
+  return provided ?? ambient;
+}
+
 export const ScrollArea = React.forwardRef<
   React.ComponentRef<typeof ScrollAreaPrimitive.Root>,
   ScrollAreaProps
@@ -197,12 +235,24 @@ export const ScrollArea = React.forwardRef<
       anchorOffset,
       onAnchoredChange,
       orientation = "vertical",
+      dir,
       ...props
     },
     ref,
   ) => {
     // State, not a ref, so the anchoring effect re-runs the moment the viewport mounts.
     const [viewport, setViewport] = React.useState<HTMLDivElement | null>(null);
+    // Same reason: the direction can only be read once the root is in the document.
+    const [root, setRoot] = React.useState<HTMLDivElement | null>(null);
+    const attachRoot = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        setRoot(node);
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as React.RefObject<HTMLDivElement | null>).current = node;
+      },
+      [ref],
+    );
+    const direction = useAmbientDirection(root, dir);
     const attachViewport = React.useCallback(
       (node: HTMLDivElement | null) => {
         setViewport(node);
@@ -217,7 +267,8 @@ export const ScrollArea = React.forwardRef<
 
     return (
       <ScrollAreaPrimitive.Root
-        ref={ref}
+        ref={attachRoot}
+        dir={direction}
         className={cn("relative overflow-hidden", className)}
         {...props}
       >
