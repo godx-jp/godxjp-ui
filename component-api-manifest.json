@@ -15006,7 +15006,10 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/props/components/navigation.prop.ts"]
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts",
+            "src/props/components/navigation.prop.ts"
+          ]
         },
         {
           "name": "defaultValue",
@@ -15015,6 +15018,16 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.18/node_modules/@types/react/index.d.ts"
+          ]
         },
         {
           "name": "items",
