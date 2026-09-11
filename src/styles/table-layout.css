@@ -58,8 +58,7 @@
   }
 
   .ui-table-row[data-tone] > [data-slot="table-cell"]:first-child {
-    border-inline-start: var(--table-row-tone-rail-width) solid
-      hsl(var(--table-row-tone-color));
+    border-inline-start: var(--table-row-tone-rail-width) solid hsl(var(--table-row-tone-color));
     padding-inline-start: calc(var(--table-cell-space-x) - var(--table-row-tone-rail-width));
   }
 
@@ -260,8 +259,25 @@
     background-color: var(--table-row-striped-background, hsl(var(--muted) / 0.4));
   }
 
-  /* Empty-state cell hosts the built-in EmptyState (which brings its own padding). */
+  /* THE LIFECYCLE CELL OWNS ITS INSET — `empty`, `denied` and `error` alike.
+   *
+   * It used to be `padding: 0`, on the reasoning that the built-in `EmptyState` brings its own.
+   * True, and exactly half the cases: all three props also take a CONSUMER node, and `empty` takes
+   * a bare string. Whatever the consumer passes then sits flush against the table's edge —
+   * measured in Chromium on /isolate/data-display-data-table-index, where the story's own custom
+   * error node reported its first text at **0.00px** from the cell's inline edge while the
+   * built-in EmptyState beside it sat at 24px. A consumer hit the same thing with
+   * `empty="まだ登録がありません"`.
+   *
+   * So the inset moves onto the CELL, where it applies to every shape, and the built-in
+   * `EmptyState` drops its own inside this cell so the two cannot add up. The measures are
+   * EmptyState's own, not new numbers: the built-in state must land on exactly the pixel it landed
+   * on before (verified — 24px inline / 40px block, unchanged). */
   .ui-data-table-empty {
+    padding: var(--empty-state-space-y) var(--empty-state-space-x);
+  }
+
+  .ui-data-table-empty .ui-empty-state {
     padding: 0;
   }
 

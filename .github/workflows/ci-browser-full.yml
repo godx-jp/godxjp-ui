@@ -45,7 +45,7 @@ name: CI · browser (full sweep)
 # filter that the trigger has not already decided.
 on:
   schedule:
-    - cron: '0 17 * * *'
+    - cron: "0 17 * * *"
   workflow_dispatch:
   pull_request:
     types: [labeled]
@@ -108,7 +108,7 @@ jobs:
           - name: interaction-semantics
             port: 6041
             stories: ""
-            command: pnpm check:data-entry-touch-aria && pnpm check:layout-nav-frames && pnpm check:provider-feedback-query-runtime && pnpm check:data-table-pagination-wrap && pnpm check:data-table-overflow && pnpm check:segmented-wrap && pnpm check:tabs-overflow-menu && pnpm check:button-icon-xs && pnpm check:timeline-title-fill && pnpm check:descriptions-label-value-step
+            command: pnpm check:data-entry-touch-aria && pnpm check:layout-nav-frames && pnpm check:provider-feedback-query-runtime && pnpm check:data-table-pagination-wrap && pnpm check:data-table-overflow && pnpm check:data-table-empty-inset && pnpm check:segmented-wrap && pnpm check:tabs-overflow-menu && pnpm check:button-icon-xs && pnpm check:timeline-title-fill && pnpm check:descriptions-label-value-step
           - name: layout-touch-rtl
             port: 6051
             stories: ""

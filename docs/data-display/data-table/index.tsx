@@ -290,11 +290,26 @@ export default function Demo() {
           </AppProvider>
         </Flex>
 
-        <Flex direction="col" gap="sm">
+        <Flex direction="col" gap="sm" id="empty-builtin">
           <Text as="div" weight="medium">
             空の状態（data が空のとき自動表示）
           </Text>
           <DataTable data={[]} columns={columns} getRowId={(row) => row.id} />
+        </Flex>
+
+        {/* The SAME cell with consumer content in it. `empty` takes a ReactNode, so a plain string
+            is a legal call — and the lifecycle cell used to be `padding: 0`, which put that string
+            flush against the table's edge. Measured here; see check:data-table-empty-inset. */}
+        <Flex direction="col" gap="sm" id="empty-plain-string">
+          <Text as="div" weight="medium">
+            空の状態（empty に文字列を渡す）
+          </Text>
+          <DataTable
+            data={[]}
+            columns={columns}
+            getRowId={(row) => row.id}
+            empty="まだ登録がありません"
+          />
         </Flex>
 
         {/* — the two failure states, in the same table grid as empty/loading. */}
@@ -318,7 +333,7 @@ export default function Demo() {
           <DataTable data={[]} columns={columns} getRowId={(row) => row.id} error />
         </Flex>
 
-        <Flex direction="col" gap="sm">
+        <Flex direction="col" gap="sm" id="error-custom-node">
           <Text as="div" weight="medium">
             エラー（error にノードを渡して文言を差し替え）
           </Text>

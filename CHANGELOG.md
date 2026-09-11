@@ -33,6 +33,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Ô vòng đời của `DataTable` để nội dung của consumer dính sát mép bảng.** Ô chứa `empty` /
+  `denied` / `error` có `padding: 0`, với lý do "`EmptyState` dựng sẵn đã tự mang đệm" — đúng với
+  bản dựng sẵn, và sai với mọi hình dạng khác mà ba prop ấy nhận: cả ba đều nhận `ReactNode`, và
+  `empty` thường được truyền thẳng một chuỗi. Đo trên Chromium ở
+  `/isolate/data-display-data-table-index`: nút văn bản đầu tiên của một node lỗi do story tự
+  truyền nằm cách mép trong của ô **0,00px**, trong khi `EmptyState` dựng sẵn ngay bên cạnh nằm ở
+  **24px**; `empty="まだ登録がありません"` đo được **0/4,97px**. Consumer báo đúng hiện tượng này.
+
+  Đệm nay nằm trên chính Ô — nơi nó áp cho MỌI hình dạng — và `EmptyState` dựng sẵn bỏ đệm riêng
+  bên trong ô ấy để hai cái không cộng dồn. Số đo là số đo cũ của `EmptyState`, không phải con số
+  mới: trạng thái dựng sẵn phải rơi đúng pixel cũ, và nó rơi đúng (**552,2/40,5px** trước và sau).
+  Sau khi sửa, chuỗi trần và node của consumer cùng ở **24/40,5px**.
+
+  Cổng mới `check:data-table-empty-inset` (Chromium, trong shard `interaction-semantics` của
+  `ci-browser-full`) đo cả ba hình dạng và bắt chúng phải cùng một đệm — jsdom không có bố cục nên
+  một test render thấy DOM y hệt ở cả hai phía. Story `#empty-plain-string` được thêm để cổng có
+  đúng hình dạng consumer báo. Đột biến: trả `padding: 0` về ô → đỏ 3 (và in ra chính số 0/4,97px);
+  bỏ luật khử trùng lặp → bản dựng sẵn nhảy xuống **80,5px** → đỏ 1.
+
 - **Hai nút bước của `NumberInput` tên là 「増やす」/「減らす」, không nói chúng đổi ô nào.** Đếm trên
   Chromium ở `/isolate/data-entry-number-input`: **16 nút tên 「増やす」 và 16 nút tên 「減らす」** trên
   một trang mà mỗi ô đều có tên riêng (数量, 評価, 目標金額, 重量, 価格…). Hai nút này là
