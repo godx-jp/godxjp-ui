@@ -2198,6 +2198,32 @@
     transition: opacity 150ms ease;
   }
 
+  /* The PAINT stays at `--control-inline-affix-size` — it is an affix inside a 32px field, and
+   * growing it would move the field's own geometry. The HIT AREA need not agree with the paint:
+   * a centred pseudo-element carries it to the WCAG 2.2 SC 2.5.8 floor without moving a pixel.
+   *
+   * Measured on a real touch profile (Pixel 5, 393px) before this rule: 20×20 — the calendar
+   * button of every DatePicker, and the one control on that screen a consumer could neither
+   * reach nor fix, since its size is neither a prop nor a token and overriding it is what
+   * `ui-audit` rightly forbids (godx-jp/id#507). On the same profile, NumberInput's steppers
+   * already answer the floor at 24×24 and a calendar day at 44×44; this affix did not.
+   */
+  .ui-control-inline-affix-action {
+    position: relative;
+  }
+
+  .ui-control-inline-affix-action::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
+    min-inline-size: var(--touch-target-min);
+    min-block-size: var(--touch-target-min);
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
   .ui-control-inline-affix-action:hover,
   .ui-control-inline-affix-action:focus-visible {
     color: hsl(var(--foreground));
