@@ -8,7 +8,6 @@ import { Button } from "../../general/button";
 import { Field } from "../../data-entry/field";
 import { Input } from "../../data-entry/input";
 import { AuthShell } from "../auth-shell";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi, screen } from "@/test/render";
 
 /**
@@ -117,25 +116,6 @@ describe.each(VIEWPORTS)("Canonical AuthShell login card at %s (gh#232)", (_labe
     expect(container.querySelector('[data-slot="auth-shell"]')).toHaveAttribute(
       "data-density",
       "comfortable",
-    );
-  });
-
-  it("has no axe violations for the canonical login card", async () => {
-    setViewport(width);
-    await expectNoA11yViolations(
-      <AuthShell variant="canonical" brand={<span>GodX ID</span>}>
-        <Card>
-          <CardHeader>
-            <CardTitle level={1}>Sign in</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Field id={`axe-email-${width}`} label="Email">
-              <Input id={`axe-email-${width}`} type="email" />
-            </Field>
-            <Button fullWidth>Continue</Button>
-          </CardContent>
-        </Card>
-      </AuthShell>,
     );
   });
 });

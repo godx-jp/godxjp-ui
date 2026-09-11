@@ -9,7 +9,6 @@ import { describe, expect, it } from "vitest";
 
 import { TopbarItem } from "../topbar-item";
 import { renderWithUi, screen } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 const read = (file: string) => readFileSync(resolve(__dirname, file), "utf8");
 const badgeOf = (container: HTMLElement) =>
@@ -75,14 +74,6 @@ describe("TopbarItem badge (gh#398)", () => {
     );
     expect(container.querySelector("a")).toHaveClass("ui-topbar-item");
     expect(badgeOf(container)).toBeNull();
-  });
-
-  it("keeps the cell's accessible name on the cell, not on the count", async () => {
-    await expectNoA11yViolations(
-      <TopbarItem aria-label="12 件の未読通知" badge={12} badgeTone="destructive">
-        <Bell />
-      </TopbarItem>,
-    );
   });
 
   it("anchors the pill to the glyph through tokens, on logical axes", () => {

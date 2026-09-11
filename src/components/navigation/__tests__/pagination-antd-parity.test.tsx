@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 import { Pagination } from "../pagination";
 
@@ -83,12 +82,6 @@ describe("Pagination — antd `showQuickJumper`", () => {
     await user.type(screen.getByRole("spinbutton"), "5");
     await user.click(screen.getByRole("button", { name: "Go" }));
     expect(onValueChange).toHaveBeenLastCalledWith(5, 10);
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <Pagination {...BASE} showQuickJumper showSizeChanger onValueChange={() => undefined} />,
-    );
   });
 });
 

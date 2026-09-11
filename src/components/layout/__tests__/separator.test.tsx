@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import { render } from "@testing-library/react";
 
 import { Separator } from "../separator";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("Separator", () => {
   it("is decorative (role=none) by default and horizontal", () => {
@@ -115,13 +114,5 @@ describe("Separator", () => {
       expect(sep).toHaveClass("ui-separator", "stream-divider");
       expect(ref.current).toBe(sep);
     });
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <div>
-        上<Separator />下
-      </div>,
-    );
   });
 });

@@ -97,7 +97,10 @@ const CASES: OverlayCase[] = [
   },
   {
     name: "select",
-    assertOpen: () => screen.findByText("Hà Nội"),
+    // By ROLE, not by text: a Select now also renders a hidden native <select> for form
+    // submission, so its label appears twice in the DOM — once as an <option>, once as the
+    // listbox row this case is about.
+    assertOpen: () => screen.findByRole("option", { name: "Hà Nội" }),
     hidesBackground: true,
     render: () => (
       <Select>
@@ -114,7 +117,10 @@ const CASES: OverlayCase[] = [
   },
   {
     name: "search-select",
-    assertOpen: () => screen.findByText("Hà Nội"),
+    // By ROLE, not by text: a Select now also renders a hidden native <select> for form
+    // submission, so its label appears twice in the DOM — once as an <option>, once as the
+    // listbox row this case is about.
+    assertOpen: () => screen.findByRole("option", { name: "Hà Nội" }),
     hidesBackground: false,
     render: () => (
       <SearchSelect

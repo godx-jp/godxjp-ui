@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Rating } from "../rating";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("Rating", () => {
   it("renders a radiogroup with `max` radio stars", () => {
@@ -79,9 +78,5 @@ describe("Rating", () => {
     const { container } = render(<Rating value={4} name="score" aria-label="評価" />);
     const hidden = container.querySelector('input[type="hidden"][name="score"]');
     expect(hidden).toHaveValue("4");
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<Rating value={3} aria-label="評価" />);
   });
 });

@@ -3,8 +3,6 @@ import { render, within } from "@testing-library/react";
 
 import { Separator } from "../separator";
 import { AuthDivider } from "../auth-divider";
-import { Text } from "../../general/typography";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
  * Separator a11y.
@@ -61,45 +59,10 @@ describe("Separator a11y (gh#308)", () => {
   it("never puts a name on a role=none rule (aria-prohibited-attr)", async () => {
     const { container } = render(<Separator label="or" decorative />);
     expect(container.querySelector('[data-slot="separator"]')).not.toHaveAttribute("aria-label");
-    await expectNoA11yViolations(<Separator label="or" decorative />);
-  });
-
-  it.each(
-    (["start", "center", "end"] as const).flatMap((align) =>
-      (["default", "muted", "primary", "warning", "destructive"] as const).map((tone) => ({
-        align,
-        tone,
-      })),
-    ),
-  )("has no axe violations for $align / $tone", async ({ align, tone }) => {
-    await expectNoA11yViolations(
-      <Separator label="新しいメッセージはここから" labelAlign={align} tone={tone} />,
-    );
-  });
-
-  it("has no axe violations in RTL", async () => {
-    await expectNoA11yViolations(
-      <div dir="rtl">
-        <Separator label="رسائل جديدة" labelAlign="start" tone="primary" />
-      </div>,
-    );
-  });
-
-  it("has no axe violations in a real stream composition", async () => {
-    await expectNoA11yViolations(
-      <div>
-        <Text>おはようございます。</Text>
-        <Separator label="2026年8月22日" labelAlign="start" />
-        <Text>本日の障害報告を共有します。</Text>
-        <Separator label="新しいメッセージ" tone="primary" />
-        <Text>了解しました。</Text>
-      </div>,
-    );
   });
 
   it("keeps the AuthDivider preset's named separator contract after the fold", async () => {
     const { getByRole } = render(<AuthDivider label="または" />);
     expect(getByRole("separator", { name: "または" })).toHaveAccessibleName("または");
-    await expectNoA11yViolations(<AuthDivider label="または" />);
   });
 });

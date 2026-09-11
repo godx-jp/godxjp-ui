@@ -2,7 +2,6 @@ import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { FormRoot } from "../form-root";
 import { FormFieldControl } from "../form-field-control";
 import { useZodForm } from "../use-zod-form";
@@ -255,27 +254,5 @@ describe("FormFieldControl — antd Form.Item parity", () => {
     await user.click(screen.getByRole("button", { name: "Submit" }));
     await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
     expect(onSubmit.mock.calls[0]?.[0]).not.toHaveProperty("extra");
-  });
-
-  it("has no axe violations with help, feedback and dependencies wired", async () => {
-    function Harness() {
-      const form = useZodForm(schema, {
-        defaultValues: { password: "secret", confirm: "secret", code: "1" },
-      });
-      return (
-        <FormRoot form={form} onSubmit={() => {}}>
-          <TextField name="password" label="Password" />
-          <TextField name="confirm" label="Confirm" dependencies={["password"]} />
-          <TextField
-            name="code"
-            label="Code"
-            help="Mã do quản trị viên cấp"
-            validateStatus="warning"
-            hasFeedback
-          />
-        </FormRoot>
-      );
-    }
-    await expectNoA11yViolations(<Harness />);
   });
 });

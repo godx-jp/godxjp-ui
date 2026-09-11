@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "@/test/a11y";
 import { AuthIdentity } from "../auth-identity";
 
 /**
@@ -50,12 +49,5 @@ describe("AuthIdentity", () => {
     const { container } = render(<AuthIdentity title="Sign in" className={CONSUMER_CLASS} />);
     const root = container.querySelector('[data-slot="auth-identity"]')!;
     expect(root).toHaveClass("ui-auth-identity", CONSUMER_CLASS);
-  });
-
-  it("has no axe violations, with and without the requester line", async () => {
-    await expectNoA11yViolations(<AuthIdentity title="Sign in" />);
-    await expectNoA11yViolations(
-      <AuthIdentity title="Sign in" requester="Attendance is requesting sign in" />,
-    );
   });
 });

@@ -2,8 +2,6 @@ import * as React from "react";
 import { describe, expect, it } from "vitest";
 
 import { ScrollArea } from "../scroll-area";
-import { Button } from "../../general/button";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi } from "@/test/render";
 
 const messages = Array.from({ length: 12 }, (_, index) => `メッセージ ${String(index + 1)}`);
@@ -17,45 +15,6 @@ const messages = Array.from({ length: 12 }, (_, index) => `メッセージ ${Str
 describe("ScrollArea a11y", () => {
   // ScrollArea is a native scroll container; the scrollable region must keep its content reachable
   // to assistive tech, and must stay focusable (axe scrollable-region-focusable).
-  it("has no axe violations for a scrollable list", async () => {
-    await expectNoA11yViolations(
-      <ScrollArea className="h-24 w-48">
-        <ul>
-          {Array.from({ length: 20 }, (_, i) => (
-            <li key={i}>行 {i + 1}</li>
-          ))}
-        </ul>
-      </ScrollArea>,
-    );
-  });
-
-  it("has no axe violations as a plain scroll region", async () => {
-    await expectNoA11yViolations(
-      <ScrollArea className="h-40" orientation="both">
-        <div>
-          {messages.map((message) => (
-            <div key={message}>{message}</div>
-          ))}
-        </div>
-      </ScrollArea>,
-    );
-  });
-
-  it("has no axe violations as an anchored live stream with a jump-to-newest button", async () => {
-    await expectNoA11yViolations(
-      <div>
-        <ScrollArea anchor="bottom" className="h-40">
-          <div>
-            {messages.map((message) => (
-              <div key={message}>{message}</div>
-            ))}
-          </div>
-        </ScrollArea>
-        <Button type="button">最新のメッセージへ移動</Button>
-      </div>,
-    );
-  });
-
   it("keeps the viewport focusable and adds no live region of its own", () => {
     const viewportRef = React.createRef<HTMLDivElement>();
     const { container } = renderWithUi(

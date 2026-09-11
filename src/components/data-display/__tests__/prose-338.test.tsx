@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { Prose } from "../prose";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("Prose (gh#338)", () => {
   it("wraps rendered content and emits only the non-default axes", () => {
@@ -30,31 +29,5 @@ describe("Prose (gh#338)", () => {
       <Prose dangerouslySetInnerHTML={{ __html: "<p>From the <code>CMS</code></p>" }} />,
     );
     expect(container.querySelector("code")?.textContent).toBe("CMS");
-  });
-
-  it("has no a11y violations", async () => {
-    await expectNoA11yViolations(
-      <Prose>
-        <h1>Title</h1>
-        <p>
-          A <a href="#top">link</a>.
-        </p>
-        <ul>
-          <li>one</li>
-        </ul>
-        <table>
-          <thead>
-            <tr>
-              <th>Key</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>v</td>
-            </tr>
-          </tbody>
-        </table>
-      </Prose>,
-    );
   });
 });

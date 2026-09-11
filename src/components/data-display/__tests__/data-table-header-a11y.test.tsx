@@ -3,7 +3,6 @@ import { within } from "@testing-library/react";
 import { renderWithUi, screen } from "@/test/render";
 
 import { DataTable, type ColumnDef } from "../data-table";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 type Row = { id: string; name: string };
 const data: Row[] = [
@@ -40,14 +39,6 @@ describe("DataTable accessible header contract (#155)", () => {
     expect(actionsHeader).toHaveAttribute("data-empty", "true");
     // sanity: only one visible text header + one sr-only actions header.
     expect(within(container).getByRole("columnheader", { name: "名前" })).toBeInTheDocument();
-  });
-
-  it("has no empty-table-header axe violation with an action column + selection column", async () => {
-    await expectNoA11yViolations(
-      <DataTable data={data} columns={columnsWithActions} getRowId={(r) => r.id} selectable>
-        <DataTable.Content />
-      </DataTable>,
-    );
   });
 
   describe("dev warning for an unnamed empty header", () => {

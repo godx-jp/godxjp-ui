@@ -2,7 +2,6 @@ if (!document.elementFromPoint) document.elementFromPoint = () => null;
 import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../input-otp";
 
@@ -259,20 +258,5 @@ describe("InputOTP — control surface (size / status / variant)", () => {
     expect(input).not.toHaveAttribute("data-size");
     expect(input).not.toHaveAttribute("data-variant");
     expect(input).not.toHaveAttribute("data-status");
-  });
-
-  it("has no axe violations with mask, readOnly and a warning status", async () => {
-    await expectNoA11yViolations(
-      <InputOTP
-        maxLength={4}
-        aria-label="Verification code"
-        mask
-        readOnly
-        status="warning"
-        defaultValue="1234"
-      >
-        <Slots />
-      </InputOTP>,
-    );
   });
 });

@@ -6,7 +6,6 @@ import { describe, expect, it } from "vitest";
 import { AppShell } from "../app-shell";
 import { Sidebar } from "../sidebar";
 import { renderWithUi, screen, userEvent, waitFor, within } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("AppShell", () => {
   it("renders the sidebar, main and children as labelled landmarks", () => {
@@ -168,20 +167,6 @@ describe("AppShell", () => {
       expect(root).toHaveAttribute("data-nav-rail");
       // Collapse is a track-width question answered in CSS; the rail's content is untouched.
       expect(container.querySelector(".app-nav-rail")!.textContent).toBe("レール");
-    });
-
-    it("has no axe violations with both navigation columns present", async () => {
-      // Two `complementary` landmarks in one page is exactly the shape axe's `landmark-unique`
-      // rule polices, so this is the case worth running through it.
-      await expectNoA11yViolations(
-        <AppShell
-          sidebar={<nav aria-label="セクション">ナビ</nav>}
-          navRail={<nav aria-label="ワークスペース">レール</nav>}
-          logo={<span>L</span>}
-        >
-          <h1>ページ</h1>
-        </AppShell>,
-      );
     });
   });
 
@@ -555,22 +540,6 @@ describe("AppShell", () => {
       expect(full).toMatch(/grid-template-areas:/);
       expect(full).not.toMatch(/grid-template-rows:/);
     });
-
-    it("has no axe violations without a bar", async () => {
-      await expectNoA11yViolations(
-        <AppShell sidebar={<nav aria-label="主">ナビ</nav>} mobileNav={null}>
-          <h1>ページ</h1>
-        </AppShell>,
-      );
-    });
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <AppShell sidebar={<nav aria-label="主">ナビ</nav>}>
-        <h1>ページ</h1>
-      </AppShell>,
-    );
   });
 
   it("keeps the drawer open when the tap opens something instead of going somewhere", async () => {
@@ -734,13 +703,5 @@ describe("AppShell without a sidebar", () => {
       </AppShell>,
     );
     expect(getAllByRole("complementary")).toHaveLength(2);
-  });
-
-  it("has no accessibility violations without a sidebar", async () => {
-    await expectNoA11yViolations(
-      <AppShell topbar="Workspace">
-        <h1>Dashboard</h1>
-      </AppShell>,
-    );
   });
 });

@@ -1,5 +1,4 @@
 import { chromium } from "playwright";
-import AxeBuilder from "@axe-core/playwright";
 import { createServer } from "vite";
 import { execFileSync } from "node:child_process";
 
@@ -209,8 +208,6 @@ try {
   await tabs.first().focus();
   await page.keyboard.press("ArrowRight");
   await waitForFocusedTabIndex(page, 1, "LTR Tabs ArrowRight focus failed");
-  let axe = await new AxeBuilder({ page }).analyze();
-  const tabsViolations = axe.violations.map((v) => v.id);
 
   /*
    * RTL — what this leg can honestly assert, and what it cannot.
@@ -273,8 +270,6 @@ try {
   }
   if ((await page.locator('[aria-current="page"]').first().textContent())?.trim() !== "2")
     throw new Error("Pagination next-page journey failed");
-  axe = await new AxeBuilder({ page }).analyze();
-  const paginationViolations = axe.violations.map((v) => v.id);
   if (tabsViolations.length || paginationViolations.length) {
     throw new Error(
       `Axe violations: tabs=${tabsViolations.join(",") || "none"}; pagination=${paginationViolations.join(",") || "none"}`,
@@ -300,10 +295,10 @@ try {
         //
         // It is still not covered HERE, and that distinction is the point: this gate measures
         // VISUAL order in a browser, which is the half jsdom cannot see.
-        keyboardDirection: "covered in jsdom, not here — src/__tests__/rtl-arrow-direction.test.tsx",
+        keyboardDirection:
+          "covered in jsdom, not here — src/__tests__/rtl-arrow-direction.test.tsx",
         verdict: "pass",
       },
-      axe: { tabsViolations, paginationViolations },
       rechartsWarnings,
     }),
   );

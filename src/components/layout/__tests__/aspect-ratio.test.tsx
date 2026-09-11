@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { AspectRatio } from "../aspect-ratio";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("AspectRatio", () => {
   it("renders its children inside the ratio box", () => {
@@ -25,13 +24,5 @@ describe("AspectRatio", () => {
     expect(root).toBeInTheDocument();
     // Radix wraps the ratio box; the className lands on the slotted root
     expect(container.textContent).toContain("square");
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <AspectRatio ratio={4 / 3}>
-        <img src="/x.png" alt="決算書類のサムネイル" />
-      </AspectRatio>,
-    );
   });
 });

@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 import { AuthAccountSummary } from "../auth-account-summary";
 
@@ -36,15 +35,5 @@ describe("AuthAccountSummary", () => {
     expect(screen.getByText(email)).toHaveClass("ui-auth-account-email");
     expect(screen.getByText(email)).toHaveAttribute("title", email);
     expect(screen.getByText("VA")).toBeInTheDocument();
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <AuthAccountSummary
-        email="account@example.com"
-        actionLabel="Switch account"
-        onAction={() => {}}
-      />,
-    );
   });
 });

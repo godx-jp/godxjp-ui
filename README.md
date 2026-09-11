@@ -155,9 +155,9 @@ pnpm release --ui <patch|minor|major> --mcp <…|skip>   # publish lib + MCP in 
 | `check:mcp-orphans`     | every public component HAS a catalog entry (catalog can't rot)       |
 | `check:core-isolation`  | the root export pulls no foreign runtime (adapters stay on subpaths) |
 
-### Runtime visual audit (Playwright + axe-core)
+### Runtime visual audit (Playwright)
 
-`scripts/visual-audit.mjs` drives a **real browser** over a running app and runs axe-core plus computed-style heuristics (target size, OKLCH accent chroma, rendered emoji, mis-laid-out alerts) — catching what the static `pnpm audit` (source regexes) can't see. Playwright + `@axe-core/playwright` are **optional peers**, installed only by apps that run the audit.
+`scripts/visual-audit.mjs` drives a **real browser** over a running app and runs computed-style heuristics (target size, OKLCH accent chroma, rendered emoji, mis-laid-out alerts) — catching what the static `pnpm audit` (source regexes) can't see. Playwright + `@axe-core/playwright` are **optional peers**, installed only by apps that run the audit.
 
 ```bash
 # from a consumer, against its running dev/preview server:
@@ -166,7 +166,7 @@ node node_modules/@godxjp/ui/scripts/visual-audit.mjs http://localhost:5173 --fo
 node node_modules/@godxjp/ui/scripts/visual-audit.mjs --strict http://localhost:5173       # CI gate
 ```
 
-**Tested peer range** (pin one of these): `playwright >=1.55 <2` (tested 1.61.1) · `@axe-core/playwright >=4.10 <5` (tested 4.12.1) · `axe-core >=4.10 <5` (tested 4.12.1). Playwright 1.55+ is required for the `browser.newContext()` → `context.newPage()` flow axe expects; older `browser.newPage()` throws _"Please use browser.newContext()"_.
+**Tested peer range** (pin one of these): `playwright >=1.55 <2` (tested 1.61.1)
 
 `--format json` **always** emits valid JSON — even on bootstrap failure — with a `status` (`ok` · `partial` · `error`) that separates **infrastructure errors** (missing peers, page won't load, axe won't inject → `errors[]`, `summary: null`/flagged) from **product findings** (`findings[]`). A tool failure can therefore never be misread as "zero violations". `pnpm check:visual-audit` is the CI smoke test: it serves a fixture page tripping all five rule families and asserts each one fires.
 

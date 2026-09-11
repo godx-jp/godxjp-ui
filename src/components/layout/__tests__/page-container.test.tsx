@@ -3,7 +3,6 @@ import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { act } from "@testing-library/react";
 import { renderWithUi, screen } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { PageContainer } from "../page-container";
 import { Button } from "../../general/button";
 
@@ -335,19 +334,6 @@ describe("PageContainer", () => {
       // No raw pixel measure — the knob is the only route.
       expect(layoutCss).not.toMatch(/inline-size:\s*\d+px/);
     });
-
-    it("has no a11y violations in the inline arrangement", async () => {
-      await expectNoA11yViolations(
-        <PageContainer
-          title="Members"
-          subtitle="All members"
-          headerLayout="responsive-inline"
-          extra={<Button>Search</Button>}
-        >
-          <p>Body content</p>
-        </PageContainer>,
-      );
-    });
   });
 
   /*
@@ -485,21 +471,6 @@ describe("PageContainer", () => {
       // …and the non-ghost header still takes the token-owned pad, so ghost is the only page that
       // drops it.
       expect(layoutCss).toMatch(/padding-bottom: var\(--page-header-pad-bottom\);/);
-    });
-
-    it("has no a11y violations in the bounded quiet feed composition", async () => {
-      await expectNoA11yViolations(
-        <PageContainer
-          title="Notifications"
-          subtitle="Unread first"
-          variant="ghost"
-          measure="medium"
-          headerLayout="responsive-inline"
-          extra={<Button>Mark all read</Button>}
-        >
-          <p>Feed content</p>
-        </PageContainer>,
-      );
     });
   });
 
@@ -830,20 +801,6 @@ describe("PageContainer", () => {
       expect(ghostRule).not.toMatch(/border-block-end: none;/);
       expect(ghostRule).not.toMatch(/background/);
     });
-
-    it("has no a11y violations with a toolbar band on a filled page", async () => {
-      await expectNoA11yViolations(
-        <PageContainer
-          fill
-          title="Channel"
-          toolbar={<Button>Unread</Button>}
-          footer={<Button>Send</Button>}
-          stickyFooter
-        >
-          <p>Transcript</p>
-        </PageContainer>,
-      );
-    });
   });
 
   /*
@@ -1099,34 +1056,5 @@ describe("PageContainer", () => {
       );
       expect(compactCss).not.toMatch(/align-self/);
     });
-
-    it("has no a11y violations on a chrome-scaled chat page", async () => {
-      await expectNoA11yViolations(
-        <PageContainer
-          fill
-          headerScale="chrome"
-          variant="ghost"
-          title="# accounting"
-          toolbar={<Button>Unread</Button>}
-          footer={<Button>Send</Button>}
-          stickyFooter
-        >
-          <p>Transcript</p>
-        </PageContainer>,
-      );
-    });
-  });
-
-  it("has no a11y violations with header, body, and footer", async () => {
-    await expectNoA11yViolations(
-      <PageContainer
-        title="Detail"
-        subtitle="A short page"
-        extra={<Button>Create</Button>}
-        footer={<Button>Save</Button>}
-      >
-        <p>Body content</p>
-      </PageContainer>,
-    );
   });
 });

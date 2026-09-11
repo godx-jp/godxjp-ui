@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../accordion";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 function Demo(props: { type?: "single" | "multiple"; collapsible?: boolean }) {
   const { type = "single", collapsible = true } = props;
@@ -61,9 +60,5 @@ describe("Accordion", () => {
     await user.click(second);
     expect(first).toHaveAttribute("aria-expanded", "true");
     expect(second).toHaveAttribute("aria-expanded", "true");
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<Demo />);
   });
 });

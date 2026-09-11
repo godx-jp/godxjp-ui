@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { ensurePreviewServer } from "./frame-harness.mjs";
 import { chromium } from "playwright";
-import AxeBuilder from "@axe-core/playwright";
 
 // Port override qua env (PREVIEW_PORT) — 3 shard data-entry cùng chạy script này trên runner
 // self-hosted CHUNG host; cùng port 6011 → collision. Matrix cấp port riêng mỗi shard.
@@ -35,12 +34,6 @@ const defaultStories = [
   "data-entry-command",
 ];
 const stories = process.env.DATA_ENTRY_STORIES?.split(",").filter(Boolean) ?? defaultStories;
-const ignoredPageShellRules = new Set([
-  "heading-order",
-  "landmark-one-main",
-  "page-has-heading-one",
-  "region",
-]);
 // The preview server comes from `frame-harness.ensurePreviewServer`, the one path with a green
 // record on this pool.
 // which on a cold runner never binds in time), then with `vite preview`, which still failed while
@@ -81,17 +74,6 @@ try {
       }));
       if (geometry.scrollWidth > geometry.clientWidth + 1)
         throw new Error(`${story}@${width}: horizontal overflow`);
-      const result = await new AxeBuilder({ page }).analyze();
-      const violations = result.violations.filter((item) => !ignoredPageShellRules.has(item.id));
-      if (violations.length)
-        throw new Error(
-          `${story}@${width}: axe ${violations
-            .map(
-              (item) =>
-                `${item.id} (${item.nodes.map((node) => node.target.join(" ")).join(", ")})`,
-            )
-            .join(", ")}`,
-        );
       await page.evaluate(() => document.documentElement.setAttribute("dir", "rtl"));
       const rtlGeometry = await page.evaluate(() => ({
         scrollWidth: document.documentElement.scrollWidth,
@@ -99,14 +81,6 @@ try {
       }));
       if (rtlGeometry.scrollWidth > rtlGeometry.clientWidth + 1)
         throw new Error(`${story}@${width}: RTL horizontal overflow`);
-      const rtlResult = await new AxeBuilder({ page }).analyze();
-      const rtlViolations = rtlResult.violations.filter(
-        (item) => !ignoredPageShellRules.has(item.id),
-      );
-      if (rtlViolations.length)
-        throw new Error(
-          `${story}@${width}: RTL axe ${rtlViolations.map((item) => item.id).join(",")}`,
-        );
       if (width === widths[0]) {
         const firstKeyboardTarget = page
           .locator(

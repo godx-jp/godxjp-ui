@@ -100,7 +100,6 @@ jobs:
       # IT DELIBERATELY DOES NOT AUDIT `verify:ci`. No workflow runs `verify:ci` — this job runs
       # verify:ci:static + check:frame-contracts, the suite runs below, and the Chromium gates run
       # in ci-browser.yml. An audit keyed on `verify:ci` membership reports gates that run on every
-      # merge as "not run" (check:contrast, check:frame-axe, all seven inside check:frame-contracts)
       # and gates that no runner executes as "wired". That mistaken audit is written down in an
       # earlier revision of scripts/guinea-pig-skill.md §5b; the corrected §5b explains why.
       #
@@ -108,7 +107,6 @@ jobs:
       #   this job              35  28 via verify:ci:static, 6 via check:frame-contracts,
       #                             plus check:frame-contracts itself as its own step
       #   ci-browser.yml         3  check:contrast + check:visual-audit (via verify:browser),
-      #                             check:frame-axe
       #   ci-browser-full.yml    9  nightly / dispatch / `run-browser` label — the geometry sweep
       #                             and the rendered-runtime shards
       #   release-integrity.yml  1  check:release-plan (invoked as `node scripts/…`, not `pnpm`)
@@ -120,7 +118,6 @@ jobs:
         run: pnpm verify:ci:static
 
       # A HARD gate, and one of the release's own: `verify:release` is verify:static +
-      # check:frame-contracts + check:frame-coverage + check:frame-axe, and the first two are
       # delegated to THIS job's check run by scripts/release-core.mjs · CI_PROOF_FOR_RELEASE_GATE.
       # The step chains seven real checks (check:component-api-manifest, audit:component-cases,
       # check:frame-coverage, check:frame-coverage-ledger, check:screen-reader-evidence,

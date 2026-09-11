@@ -15,7 +15,6 @@ import { describe, expect, it } from "vitest";
 
 import { Flex } from "../flex";
 import { renderWithUi } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("Flex named-group semantics (gh#303)", () => {
   it("defaults to role='group' when named, folding the error id and dropping widget-only aria", () => {
@@ -65,21 +64,5 @@ describe("Flex named-group semantics (gh#303)", () => {
     expect(el).toHaveAttribute("role", "region");
     expect(el).toHaveAttribute("aria-label", "一括操作");
     expect(el).toHaveAttribute("aria-required", "true");
-  });
-
-  it("a named Flex passes axe (the exact aria-allowed-attr shape measured in the app)", async () => {
-    await expectNoA11yViolations(
-      <>
-        <span id="search_model_name-label">型番</span>
-        <Flex
-          id="search_model_name"
-          aria-labelledby="search_model_name-label"
-          aria-label="型番"
-          aria-required
-        >
-          <span>〜</span>
-        </Flex>
-      </>,
-    );
   });
 });

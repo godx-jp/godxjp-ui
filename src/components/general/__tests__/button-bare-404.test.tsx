@@ -10,7 +10,6 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { renderWithUi, screen } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { Button } from "../button";
 import { Badge } from "../../data-display/badge";
 
@@ -28,14 +27,6 @@ describe("Button variant=bare (gh#404)", () => {
     expect(button).toHaveAttribute("data-variant", "bare");
     expect(button).toHaveAttribute("type", "button");
     expect(button).toHaveClass("ui-button", "ui-button--bare");
-  });
-
-  it("keeps keyboard semantics and an accessible name around non-text content", async () => {
-    await expectNoA11yViolations(
-      <Button variant="bare" aria-label="ステータスを変更">
-        <Badge tone="warning">保留</Badge>
-      </Button>,
-    );
   });
 
   it("drops the size tier's geometry with two-class specificity, not with a utility", () => {

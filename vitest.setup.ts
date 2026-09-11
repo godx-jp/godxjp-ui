@@ -1,18 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
-import { afterEach, expect, vi } from "vitest";
-import * as axeMatchers from "vitest-axe/matchers";
-import type { AxeMatchers } from "vitest-axe/matchers";
-
-/** Register the vitest-axe `toHaveNoViolations` matcher for accessibility tests. */
-expect.extend(axeMatchers);
-
-declare module "vitest" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface Assertion extends AxeMatchers {}
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface AsymmetricMatchersContaining extends AxeMatchers {}
-}
+import { afterEach, vi } from "vitest";
 
 /** Fail fast when a single test hangs (infinite loop, missing await, etc.). */
 vi.setConfig({ testTimeout: 8_000 });

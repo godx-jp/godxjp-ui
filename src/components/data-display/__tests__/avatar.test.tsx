@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
  * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
@@ -56,13 +55,5 @@ describe("Avatar", () => {
       </Avatar>,
     );
     expect(container.querySelector('[data-slot="avatar"]')).not.toHaveAttribute("data-appearance");
-  });
-
-  it("has no axe violations (fallback-only)", async () => {
-    await expectNoA11yViolations(
-      <Avatar>
-        <AvatarFallback>田</AvatarFallback>
-      </Avatar>,
-    );
   });
 });

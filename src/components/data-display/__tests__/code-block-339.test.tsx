@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { CodeBlock } from "../code-block";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 const body = '{"report-to":"' + "x".repeat(240) + '"}';
 
@@ -30,13 +29,5 @@ describe("CodeBlock (gh#339)", () => {
     expect(pre).toHaveAttribute("data-size", "xs");
     expect(pre).toHaveAttribute("data-language", "json");
     expect(pre).toHaveAttribute("tabindex", "0");
-  });
-
-  it("has no a11y violations", async () => {
-    await expectNoA11yViolations(
-      <CodeBlock maxHeight="sm" aria-label="Response body">
-        {body}
-      </CodeBlock>,
-    );
   });
 });

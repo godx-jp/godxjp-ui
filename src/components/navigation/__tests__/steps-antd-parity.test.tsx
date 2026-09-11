@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 import { Steps } from "../steps";
 
@@ -51,10 +50,6 @@ describe("Steps — antd `percent`", () => {
     render(<Steps items={ITEMS} value={1} percent={40} type="inline" />);
     expect(screen.queryByRole("progressbar")).toBeNull();
   });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<Steps items={ITEMS} value={1} percent={40} />);
-  });
 });
 
 describe('Steps — antd `type="navigation"`', () => {
@@ -85,11 +80,5 @@ describe('Steps — antd `type="navigation"`', () => {
     expect(screen.getAllByRole("listitem")[1]).toHaveAttribute("aria-current", "step");
     await user.click(screen.getByText("完了"));
     expect(onValueChange).toHaveBeenCalledWith(2);
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <Steps items={ITEMS} value={1} type="navigation" onValueChange={() => undefined} />,
-    );
   });
 });

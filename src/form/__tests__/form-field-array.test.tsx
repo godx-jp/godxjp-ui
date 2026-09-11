@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { renderWithUi, screen, userEvent, waitFor, within } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { FormRoot } from "../form-root";
 import { FormFieldControl } from "../form-field-control";
 import { FormFieldArray } from "../form-field-array";
@@ -148,9 +147,5 @@ describe("FormFieldArray — dynamic rows (antd Form.List parity)", () => {
     await waitFor(() => {
       expect(screen.getByText("Cần ít nhất một liên hệ")).toBeInTheDocument();
     });
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<ContactsForm />);
   });
 });

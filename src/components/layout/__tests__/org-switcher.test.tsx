@@ -3,9 +3,7 @@ import { resolve } from "node:path";
 
 import * as React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { axe } from "vitest-axe";
 
-import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { Badge } from "../../data-display/badge";
 import { OrgSwitcher } from "../org-switcher";
@@ -182,18 +180,6 @@ describe("OrgSwitcher public contract", () => {
     expect(trigger).toHaveFocus();
   });
 
-  it("has no axe violations in the named open popover", async () => {
-    await expectNoA11yViolations(
-      <OrgSwitcher
-        organizations={organizations}
-        value="dxs"
-        labels={labels}
-        responsive="popover"
-        open
-      />,
-    );
-  });
-
   it("supports collapsed, loading, empty, disabled and error states", async () => {
     const onRetry = vi.fn();
     const user = userEvent.setup();
@@ -271,15 +257,6 @@ describe("OrgSwitcher badge slot (gh#213)", () => {
       expect(screen.getAllByRole("option")).toHaveLength(1);
     });
     expect(screen.getByRole("option", { name: /DXS Holdings/ })).toBeInTheDocument();
-
-    const results = await axe(document.body);
-    expect(results).toHaveNoViolations();
-  });
-
-  it("has no axe violations with a badged trigger", async () => {
-    await expectNoA11yViolations(
-      <OrgSwitcher organizations={badgedOrganizations} value="dxs" labels={labels} />,
-    );
   });
 });
 

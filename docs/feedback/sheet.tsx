@@ -213,8 +213,7 @@ export default function Demo() {
           <CardContent>
             <Sheet open={editOpen} onOpenChange={setEditOpen}>
               <SheetTrigger asChild>
-                {/* data-axe-open: opened by check-frame-axe before its overlay scan. */}
-                <Button data-axe-open variant="ghost" size="sm">
+                <Button variant="ghost" size="sm">
                   取引先を編集
                 </Button>
               </SheetTrigger>

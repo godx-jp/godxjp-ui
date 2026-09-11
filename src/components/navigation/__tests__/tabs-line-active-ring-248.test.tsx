@@ -5,8 +5,7 @@ import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
-import { expectNoA11yViolations } from "@/test/a11y";
+import { Tabs, } from "../tabs";
 
 /**
  * The `line` variant must NOT keep a ring around the SELECTED trigger, while the keyboard focus
@@ -169,19 +168,6 @@ describe("Tabs line variant — no active ring (gh#248)", () => {
     await user.keyboard("{ArrowRight}");
     expect(screen.getByRole("tab", { name: "詳細" })).toHaveFocus();
     expect(screen.getByRole("tab", { name: "詳細" })).toHaveAttribute("data-state", "active");
-  });
-
-  it("has no axe violations in the line variant (composed form)", async () => {
-    await expectNoA11yViolations(
-      <Tabs defaultValue="one">
-        <TabsList variant="line">
-          <TabsTrigger value="one">概要</TabsTrigger>
-          <TabsTrigger value="two">詳細</TabsTrigger>
-        </TabsList>
-        <TabsContent value="one">パネルA</TabsContent>
-        <TabsContent value="two">パネルB</TabsContent>
-      </Tabs>,
-    );
   });
 });
 

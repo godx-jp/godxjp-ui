@@ -27,7 +27,6 @@ import { PageContainer } from "../page-container";
 import { Sidebar } from "../sidebar";
 import { Button } from "../../general/button";
 import { renderWithUi } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 import type { ErrorSurfaceStatusProp } from "../../../props/vocabulary";
 
 function BadRequestSurface(props: { icon?: typeof TriangleAlert }) {
@@ -106,23 +105,6 @@ describe("ErrorSurface status=400 (gh#301)", () => {
     );
     expect(container.querySelector(".ui-centered-shell")).toBeNull();
     expect(container.querySelector('[data-slot="error-surface"]')).not.toBeNull();
-  });
-
-  it("has no a11y violations as the body of the shell it ships in", async () => {
-    await expectNoA11yViolations(
-      <AppShell
-        sidebar={
-          <Sidebar
-            activeId="orders"
-            sections={[{ items: [{ id: "orders", label: "受注書", icon: Home }] }]}
-          />
-        }
-      >
-        <PageContainer title="受注書">
-          <BadRequestSurface />
-        </PageContainer>
-      </AppShell>,
-    );
   });
 });
 

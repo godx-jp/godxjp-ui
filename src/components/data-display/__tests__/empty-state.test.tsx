@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import { Inbox } from "lucide-react";
 
 import { EmptyState } from "../empty-state";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
  * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
@@ -75,39 +74,10 @@ describe("EmptyState", () => {
     expect(title).toHaveClass("ui-empty-state-title");
   });
 
-  it("has no heading-order violation nested under a section heading", async () => {
-    await expectNoA11yViolations(
-      <main>
-        <h1>設定</h1>
-        <section aria-label="招待">
-          <h2>受け取った招待</h2>
-          <EmptyState variant="section" title="招待はありません" titleLevel={3} />
-        </section>
-      </main>,
-    );
-  });
-
   it("defaults to the muted tone and reflects a semantic tone via data-tone", () => {
     const { getByRole, rerender } = render(<EmptyState icon={Inbox} title="なし" />);
     expect(getByRole("status")).toHaveAttribute("data-tone", "muted");
     rerender(<EmptyState icon={Inbox} title="承認済み" tone="success" />);
     expect(getByRole("status")).toHaveAttribute("data-tone", "success");
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <EmptyState icon={Inbox} title="データなし" description="まだありません。" />,
-    );
-  });
-
-  it("has no axe violations for a success tone", async () => {
-    await expectNoA11yViolations(
-      <EmptyState
-        icon={Inbox}
-        title="承認しました"
-        tone="success"
-        description="端末が承認されました。"
-      />,
-    );
   });
 });

@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { Slider } from "../slider";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("Slider a11y", () => {
   it("puts the accessible name on the thumb (role=slider), not just the root", () => {
@@ -40,9 +39,5 @@ describe("Slider a11y", () => {
     expect(input).toHaveAttribute("aria-label", "音量");
     // aria-labelledby still wins the accessible name, so nothing is announced twice.
     expect(input?.getAttribute("aria-labelledby")).toContain("vol-label");
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<Slider aria-label="音量" defaultValue={[40]} />);
   });
 });

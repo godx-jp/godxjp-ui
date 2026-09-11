@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 
-import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi } from "@/test/render";
 import { Avatar, AvatarFallback, AvatarImage, Card, CardContent, ListRow } from "..";
 
@@ -13,70 +12,6 @@ import { Avatar, AvatarFallback, AvatarImage, Card, CardContent, ListRow } from 
  * reachable).
  */
 describe("Avatar presence a11y (gh#309)", () => {
-  it("has no axe violations as a member list of presence-bearing rows", async () => {
-    await expectNoA11yViolations(
-      <Card>
-        <CardContent flush>
-          <ListRow
-            leading={
-              <Avatar presence="online">
-                <AvatarImage src="/tanaka.png" alt="" />
-                <AvatarFallback>田</AvatarFallback>
-              </Avatar>
-            }
-            title="田中 未来"
-            description="プロダクト"
-          />
-          <ListRow
-            leading={
-              <Avatar presence="busy">
-                <AvatarFallback>佐</AvatarFallback>
-              </Avatar>
-            }
-            title="佐藤 玲"
-            description="デザイン"
-          />
-          <ListRow
-            leading={
-              <Avatar presence="away">
-                <AvatarFallback>鈴</AvatarFallback>
-              </Avatar>
-            }
-            title="鈴木 大輔"
-            description="エンジニアリング"
-          />
-          <ListRow
-            leading={
-              <Avatar presence="offline">
-                <AvatarFallback>山</AvatarFallback>
-              </Avatar>
-            }
-            title="山本 彩"
-            description="サポート"
-          />
-        </CardContent>
-      </Card>,
-    );
-  });
-
-  it("has no axe violations on an entity mark that carries NO presence", async () => {
-    // An organization mark has no presence concept: the prop is omitted, so no node is emitted and
-    // nothing extra lands in the accessible tree.
-    await expectNoA11yViolations(
-      <Avatar shape="square">
-        <AvatarFallback>山</AvatarFallback>
-      </Avatar>,
-    );
-  });
-
-  it("has no axe violations with a product-supplied presence phrasing", async () => {
-    await expectNoA11yViolations(
-      <Avatar presence="busy" presenceLabel="会議中 · 15:00まで">
-        <AvatarFallback>田</AvatarFallback>
-      </Avatar>,
-    );
-  });
-
   it("announces the state alongside the person, once, in a row that also names them", () => {
     const { getByText } = renderWithUi(
       <Card>

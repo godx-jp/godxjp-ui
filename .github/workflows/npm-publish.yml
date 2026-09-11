@@ -84,7 +84,6 @@ jobs:
         run: git fetch --no-tags --force origin +refs/heads/main:refs/remotes/origin/main
       # Node 22 and pnpm come from the runner image via the shared action (no setup-node — see
       # .github/actions/setup/action.yml). Only `full_verify` re-runs check:contrast /
-      # check:visual-audit / check:frame-axe here, and only those need a browser, so Chromium is
       # prepared only on that path; the default path reads CI's verdict instead.
       - uses: ./.github/actions/setup
         with:

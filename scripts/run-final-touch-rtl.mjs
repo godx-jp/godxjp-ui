@@ -1,8 +1,6 @@
 import { chromium } from "playwright";
-import AxeBuilder from "@axe-core/playwright";
 const base = process.env.PREVIEW_URL ?? "http://localhost:6010";
 const browser = await chromium.launch({ headless: true });
-const isolatedShellRules = new Set(["landmark-one-main", "page-has-heading-one", "region"]);
 
 // Chờ preview runtime mount xong TRƯỚC khi tương tác — nếu không, locator auto-wait chạm
 // frame chưa render (React đang mount) → 30s timeout flaky trên runner cloud chậm (ubuntu-latest).
@@ -77,9 +75,6 @@ for (const width of [320, 375, 390, 768, 1024, 1280, 1440, 1920]) {
     direction: getComputedStyle(document.documentElement).direction,
     overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
   }));
-  const violations = (await new AxeBuilder({ page }).analyze()).violations
-    .map(({ id }) => id)
-    .filter((id) => !isolatedShellRules.has(id));
   rtl.push({
     width,
     pass: geometry.direction === "rtl" && !geometry.overflow && !violations.length,

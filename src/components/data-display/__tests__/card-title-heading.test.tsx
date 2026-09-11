@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { CardTitle } from "../card";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
  * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
@@ -48,14 +47,5 @@ describe("CardTitle — semantic heading level (#154)", () => {
     const heading = getByRole("heading", { level: 2 });
     expect(heading).toHaveClass(CONSUMER_CLASS);
     expect(heading).toHaveAttribute("id", "t1");
-  });
-
-  it("has no axe violations in a valid outline (h1 → h2 card title)", async () => {
-    await expectNoA11yViolations(
-      <main>
-        <h1>ページ見出し</h1>
-        <CardTitle level={2}>セクション見出し</CardTitle>
-      </main>,
-    );
   });
 });

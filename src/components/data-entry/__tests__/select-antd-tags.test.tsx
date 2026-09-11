@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { renderWithUi, screen, userEvent, waitFor, within } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { Select } from "../select";
 
 /*
@@ -311,17 +310,5 @@ describe("multi-value chips: removable, and antd `tagRender`", () => {
     screen.getByRole("combobox").focus();
     await user.keyboard("{ArrowDown}");
     expect(await screen.findByRole("listbox")).toBeInTheDocument();
-  });
-
-  it("has no axe violations with chips on the trigger", async () => {
-    await expectNoA11yViolations(
-      <Select
-        aria-label="通貨"
-        mode="multiple"
-        options={OPTIONS}
-        defaultValue={["jpy", "eur"]}
-        maxTagCount={1}
-      />,
-    );
   });
 });

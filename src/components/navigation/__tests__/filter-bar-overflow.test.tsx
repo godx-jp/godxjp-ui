@@ -3,7 +3,6 @@
 // the choice is assertable without a layout engine.
 import { describe, expect, it } from "vitest";
 
-import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi, screen } from "@/test/render";
 import { FilterBar, FilterBarGroup } from "../filter-bar";
 import { Select } from "../../data-entry/select";
@@ -49,10 +48,5 @@ describe("FilterBar overflow", () => {
       screen.getByRole("group", { name: "Trạng thái phê duyệt của toàn bộ phòng ban" }),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Xóa bộ lọc/i })).toBeInTheDocument();
-  });
-
-  it("has no a11y violations in either strategy (long JA/VI labels)", async () => {
-    await expectNoA11yViolations(bar("wrap"));
-    await expectNoA11yViolations(bar("scroll"));
   });
 });

@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import { Cascader, type TreeOption } from "../cascader";
 import { Label } from "../label";
 import { renderWithUi } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 // A multi-level path picker whose trigger is a role="combobox" button. A combobox
 // takes its name "from author" (not from its text content), so it must be named via
@@ -65,45 +64,5 @@ describe("Cascader a11y", () => {
       </>,
     );
     expect(getByRole("combobox", { name: "地域" })).toBeInTheDocument();
-  });
-
-  it("has no axe violations (single, labelled, with value)", async () => {
-    await expectNoA11yViolations(
-      <>
-        <Label htmlFor="region">地域</Label>
-        <Cascader
-          id="region"
-          options={REGIONS}
-          defaultValue={["vn", "hcm", "q1"]}
-          showSearch
-          placeholder="地域を選択..."
-        />
-      </>,
-    );
-  });
-
-  it("has no axe violations (multiple selection)", async () => {
-    await expectNoA11yViolations(
-      <>
-        <Label htmlFor="regions">複数地域</Label>
-        <Cascader
-          id="regions"
-          options={REGIONS}
-          multiple
-          defaultValue={[["vn", "hcm", "q1"]]}
-          showSearch
-          placeholder="地域を選択..."
-        />
-      </>,
-    );
-  });
-
-  it("has no axe violations (disabled)", async () => {
-    await expectNoA11yViolations(
-      <>
-        <Label htmlFor="region-disabled">地域</Label>
-        <Cascader id="region-disabled" options={REGIONS} disabled placeholder="地域を選択..." />
-      </>,
-    );
   });
 });

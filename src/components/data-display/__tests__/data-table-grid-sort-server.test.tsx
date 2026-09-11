@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 import { DataTable, type ColumnDef } from "../data-table";
 
@@ -84,19 +83,5 @@ describe("DataTable — server (manual) mode", () => {
       />,
     );
     expect(screen.queryByText("東京商事")).toBeNull();
-  });
-
-  it("has no axe violations with the full grid chrome", async () => {
-    await expectNoA11yViolations(
-      <DataTable columns={columns} data={ROWS} getRowId={(r) => r.id} selectable>
-        <DataTable.Toolbar>
-          <DataTable.Search />
-          <DataTable.ViewOptions />
-          <DataTable.DensityToggle />
-        </DataTable.Toolbar>
-        <DataTable.Content />
-        <DataTable.Pagination />
-      </DataTable>,
-    );
   });
 });

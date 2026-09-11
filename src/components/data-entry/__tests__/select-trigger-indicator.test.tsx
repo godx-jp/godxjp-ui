@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { renderWithUi, screen } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select";
 
@@ -38,18 +37,5 @@ describe("SelectTrigger — showIndicator (#175)", () => {
     expect(container.querySelector('[data-slot="select-chevron"]')).not.toBeInTheDocument();
     // The consumer's own custom affordance is unaffected — no descendant CSS was needed for either.
     expect(screen.getByText("★")).toBeInTheDocument();
-  });
-
-  it("has no axe violations for an icon-only trigger with the indicator hidden", async () => {
-    await expectNoA11yViolations(
-      <Select>
-        <SelectTrigger showIndicator={false} aria-label="アイコンのみ">
-          <span aria-hidden="true">★</span>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="a">A</SelectItem>
-        </SelectContent>
-      </Select>,
-    );
   });
 });

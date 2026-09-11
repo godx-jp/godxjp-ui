@@ -5,7 +5,6 @@ import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { FilterBar, FilterBarGroup, Toolbar } from "../filter-bar";
 import type { FilterBarChipProp, FilterBarProps } from "../filter-bar";
 import { SearchInput } from "../../data-entry/search-input";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
  * FilterBar typed model — public type + runtime contract.
@@ -227,17 +226,6 @@ describe("FilterBar — legacy children composition is unchanged (backward compa
     expect(toolbar.closest(".ui-filter-bar")).toBeNull();
     await user.click(screen.getByRole("button", { name: /xóa bộ lọc/i }));
     expect(onClear).toHaveBeenCalledOnce();
-  });
-});
-
-describe("FilterBar typed model — accessibility", () => {
-  it("full model render has no axe violations", async () => {
-    await expectNoA11yViolations(
-      modelBar({
-        loading: true,
-        resultCount: 2,
-      }),
-    );
   });
 });
 

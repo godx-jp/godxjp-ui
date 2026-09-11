@@ -74,8 +74,7 @@ export default function Demo() {
               <Text>JE-0042 · 売上計上 ¥480,000</Text>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  {/* data-axe-open: opened by check-frame-axe before its overlay scan. */}
-                  <Button data-axe-open variant="ghost" size="icon-sm" aria-label="行アクション">
+                  <Button variant="ghost" size="icon-sm" aria-label="行アクション">
                     <MoreHorizontal />
                   </Button>
                 </DropdownMenuTrigger>

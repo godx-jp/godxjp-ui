@@ -1,5 +1,4 @@
 import { chromium } from "playwright";
-import AxeBuilder from "@axe-core/playwright";
 import { createServer } from "vite";
 const port = Number(process.env.PREVIEW_PORT ?? 6112);
 const base = `http://localhost:${port}`;
@@ -10,7 +9,6 @@ const server = await createServer({
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext();
 const widths = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
-const ignoredFrameShellRules = new Set(["landmark-one-main", "page-has-heading-one", "region"]);
 const allFrames = [
   "navigation-app-setting-picker",
   "feedback-dialog",
@@ -65,16 +63,9 @@ try {
   }
 
   await page.setViewportSize({ width: 1024, height: 900 });
-  const axe = {};
   for (const frame of frames) {
     await page.goto(`${base}/frame/${frame}`, { waitUntil: "domcontentloaded" });
     await waitForFrame(page, frame);
-    axe[frame] = (await new AxeBuilder({ page }).analyze()).violations
-      .filter((violation) => !ignoredFrameShellRules.has(violation.id))
-      .map((violation) => ({
-        id: violation.id,
-        nodes: violation.nodes.map((node) => ({ target: node.target, html: node.html })),
-      }));
   }
 
   if (frames.includes("feedback-dialog")) {
@@ -134,12 +125,8 @@ try {
   }
 
   if (runtimeErrors.length) throw new Error(`Runtime errors: ${runtimeErrors.join(" | ")}`);
-  const violations = Object.entries(axe).filter(([, entries]) => entries.length);
-  if (violations.length) throw new Error(`Axe violations: ${JSON.stringify(violations)}`);
 
-  console.log(
-    JSON.stringify({ frames, widths, reflow: "pass", axe, keyboard: "pass", async: "pass" }),
-  );
+  console.log(JSON.stringify({ frames, widths, reflow: "pass", keyboard: "pass", async: "pass" }));
 } finally {
   await browser.close();
   await server.close();

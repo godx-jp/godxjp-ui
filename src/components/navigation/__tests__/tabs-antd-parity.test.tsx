@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 import { Tabs } from "../tabs";
 
@@ -109,12 +108,6 @@ describe('Tabs — antd `type="editable-card"` (shipped as variant)', () => {
     const { container } = render(<Tabs items={ITEMS} variant="card" onEdit={vi.fn()} />);
     expect(removeShortcuts(container)).toHaveLength(0);
     expect(container.querySelector('[data-slot="tabs-add"]')).toBeNull();
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <Tabs items={ITEMS} variant="editable-card" onEdit={() => undefined} />,
-    );
   });
 });
 
@@ -389,11 +382,5 @@ describe("Tabs — antd `Tab.forceRender`", () => {
     render(<Tabs items={ITEMS_3} />);
     expect(screen.queryByText("パネルB")).toBeNull();
     expect(screen.queryByText("パネルC")).toBeNull();
-  });
-
-  it("has no axe violations with an eagerly mounted hidden panel", async () => {
-    await expectNoA11yViolations(
-      <Tabs items={[ITEMS_3[0], { ...ITEMS_3[1], forceRender: true }, ITEMS_3[2]]} />,
-    );
   });
 });

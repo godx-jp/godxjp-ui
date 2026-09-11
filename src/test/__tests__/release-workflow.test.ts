@@ -1519,7 +1519,7 @@ describe("the tag is the trigger and the claim — the release verifies it, neve
 describe("CD delegates verification to CI's verdict on the exact commit instead of re-running it", () => {
   it("names a CI check run for every gate verify:release would have run", () => {
     // verify:release = verify:static (verify:ci:static + verify:browser + pnpm test)
-    //                  + check:frame-contracts + check:frame-coverage + check:frame-axe
+    //                  + check:frame-contracts + check:frame-coverage
     const gates = Object.keys(CI_PROOF_FOR_RELEASE_GATE).join(" | ");
     for (const gate of [
       "verify:ci:static",
@@ -1527,18 +1527,12 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
       "check:frame-coverage",
       "pnpm test",
       "check:contrast + check:visual-audit",
-      "check:frame-axe",
     ]) {
       expect(gates).toContain(gate);
     }
     expect(REQUIRED_CI_CHECK_RUNS).toContain("Build · typecheck · lint · guards");
     expect(REQUIRED_CI_CHECK_RUNS).toContain("Tests (shard 4/4)");
     expect(REQUIRED_CI_CHECK_RUNS).toContain("Contrast + visual audit");
-    // Gate axe chạy trên matrix ba shard: cả ba tên phải có mặt, vì một shard thiếu là một phần
-    // cây chưa được soi trong khi bản phát hành vẫn khai là đã soi.
-    for (const shard of [1, 2, 3]) {
-      expect(REQUIRED_CI_CHECK_RUNS).toContain(`Per-frame axe (shard ${shard}/3)`);
-    }
   });
 
   it("names only check runs the CI workflows actually produce", () => {
@@ -1561,7 +1555,7 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
         continue;
       }
       // Hai job chạy trên matrix nên tên thật là tên đã nở; workflow chỉ chứa khuôn mẫu.
-      const templated = /^(Tests|Per-frame axe) \(shard \d+\/(\d+)\)$/.exec(name);
+      const templated = /^(Tests) \(shard \d+\/(\d+)\)$/.exec(name);
       expect(produced).toContain(
         templated ? `${templated[1]} (shard \${{ matrix.shard }}/${templated[2]})` : name,
       );

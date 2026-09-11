@@ -23,8 +23,6 @@ import {
  */
 export const TESTED_VERSIONS = {
   playwright: { range: ">=1.55 <2", tested: "1.61.1" },
-  "@axe-core/playwright": { range: ">=4.10 <5", tested: "4.12.1" },
-  "axe-core": { range: ">=4.10 <5", tested: "4.12.1" },
 };
 
 /** Shape one product finding from a rule id (pure — unit-tested without a browser). */
@@ -138,9 +136,7 @@ function collectInPage() {
     // SPACING exception: undersized is allowed when a 24px-DIAMETER circle centred on the target
     // does not intersect the circle of any other target. Two circles of radius 12 intersect when
     // their centres are closer than 24px, so that is the whole test.
-    const crowded = rawTargets.some(
-      (o) => o !== t && Math.hypot(o.cx - t.cx, o.cy - t.cy) < 24,
-    );
+    const crowded = rawTargets.some((o) => o !== t && Math.hypot(o.cx - t.cx, o.cy - t.cy) < 24);
     return { ...t, exempt: crowded ? null : "spacing" };
   });
 
@@ -278,18 +274,13 @@ function collectInPage() {
 /** Optional-peer loader — throws a tagged bootstrap error instead of a raw stack. */
 async function loadDeps() {
   try {
-    const [{ chromium }, axe] = await Promise.all([
-      import("playwright"),
-      import("@axe-core/playwright"),
-    ]);
-    return { chromium, AxeBuilder: axe.default ?? axe.AxeBuilder };
+    const { chromium } = await import("playwright");
+    return { chromium };
   } catch (cause) {
-    const err = new Error(
-      "visual-audit needs the optional peers `playwright` and `@axe-core/playwright`",
-    );
+    const err = new Error("visual-audit needs the optional peer `playwright`");
     err.bootstrap = true;
     err.hint =
-      "pnpm add -D playwright @axe-core/playwright && pnpm exec playwright install chromium " +
+      "pnpm add -D playwright && pnpm exec playwright install chromium " +
       "(or set PLAYWRIGHT_CHROMIUM_EXECUTABLE to a system Chromium).";
     err.cause = cause;
     throw err;
@@ -301,7 +292,7 @@ async function loadDeps() {
  * (page/context/browser) is guaranteed via finally on BOTH success and failure.
  */
 /* c8 ignore start — the browser-driving glue; exercised by scripts/visual-audit-smoke.mjs in CI. */
-async function audit(targets, { chromium, AxeBuilder }) {
+async function audit(targets, { chromium }) {
   const findings = [];
   const errors = [];
   let browser;
@@ -331,18 +322,6 @@ async function audit(targets, { chromium, AxeBuilder }) {
       }
 
       try {
-        // 1) axe-core — real WCAG/ARIA engine.
-        const { violations } = await new AxeBuilder({ page }).analyze();
-        for (const v of violations) {
-          findings.push(
-            buildFinding(
-              "axe-violations",
-              url,
-              `${v.id} (${v.impact}) — ${v.help} [${v.nodes.length} node(s)] ${v.helpUrl}`,
-            ),
-          );
-        }
-
         // 2) computed-style / layout heuristics via the PURE rules.
         const m = await page.evaluate(collectInPage);
         for (const a of m.accents) {

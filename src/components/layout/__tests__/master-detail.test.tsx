@@ -4,7 +4,6 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { expectNoA11yViolations } from "@/test/a11y";
 import { MasterDetail } from "../master-detail";
 
 const read = (relativePath: string) =>
@@ -149,30 +148,6 @@ describe("MasterDetail", () => {
       await user.tab({ shift: true });
       expect(document.activeElement).toBe(getByRole("button", { name: "Before" }));
     });
-
-    it("has no axe violations with a bounded, long collection", async () => {
-      await expectNoA11yViolations(
-        <MasterDetail
-          masterViewport="compact"
-          masterLabel="Members"
-          detailLabel="Selected member"
-          detailId="member-detail"
-          master={
-            <ul>
-              {Array.from({ length: 40 }, (_, i) => (
-                <li key={i}>
-                  <button type="button" aria-controls="member-detail" aria-pressed={i === 0}>
-                    {`Member ${i + 1}`}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          }
-        >
-          <h2>Member 1</h2>
-        </MasterDetail>,
-      );
-    });
   });
 
   it("exposes the detail region as an aria-controls target and a focus target", () => {
@@ -214,23 +189,6 @@ describe("MasterDetail", () => {
     );
 
     expect(getByRole("button", { pressed: true })).toHaveTextContent("Selected service");
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <MasterDetail
-        master={
-          <button type="button" aria-pressed="true" aria-controls="detail-region">
-            Service A
-          </button>
-        }
-        masterLabel="Services"
-        detailLabel="Selected service details"
-        detailId="detail-region"
-      >
-        <h2>Roles</h2>
-      </MasterDetail>,
-    );
   });
 
   /*

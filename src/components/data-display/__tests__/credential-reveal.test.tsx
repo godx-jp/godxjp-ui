@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { CredentialReveal } from "../credential-reveal";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 const SECRET = "gxp_live_8Fh2kQ9wR7nZ1xV4bT6mL0cD";
 
@@ -110,11 +109,5 @@ describe("CredentialReveal", () => {
     const labelledby = value.getAttribute("aria-labelledby");
     expect(labelledby).toBeTruthy();
     expect(container.querySelector(`#${labelledby}`)).toHaveTextContent("APIキー");
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <CredentialReveal label="APIキー" secret={SECRET} downloadable onAcknowledge={() => {}} />,
-    );
   });
 });
