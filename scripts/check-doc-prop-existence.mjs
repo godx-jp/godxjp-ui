@@ -27,7 +27,16 @@ const manifest = JSON.parse(readFileSync(join(ROOT, "component-api-manifest.json
 // manifest lists a LOWER BOUND for it, not the full API. `<Slider minStepsBetweenThumbs>` and
 // `<Calendar mode="range">` are both real and both absent from the manifest. Checking those
 // components would produce confident nonsense, so they are skipped and counted out loud.
-const THIRD_PARTY = /node_modules\/\.pnpm\/(?!@types\+react@)/;
+//
+// THE SHAPE OF THE PATH IS NOT THE TEST — the fact that it leaves the package is.
+// This read `node_modules/.pnpm/(?!@types\+react@)`, which was a pnpm store layout and nothing
+// more. The moment the manifest started recording package-relative paths (so a worktree and CI
+// agree on what it says), `.pnpm/` vanished from every entry, every third-party wrapper counted as
+// FULLY RESOLVED, and the gate turned its own lower bound into a complete API: 21 findings on
+// `<Select options>`, `<Calendar mode>`, `<Slider minStepsBetweenThumbs>` and friends — all real
+// props, all absent from the manifest by construction. Matching `node_modules/` itself survives any
+// rewrite of the prefix; React's own types are the one exception, because those ARE expanded.
+const THIRD_PARTY = /(?:^|\/)node_modules\/(?!@types\/react\/)(?!\.pnpm\/@types\+react@)/;
 const API = new Map();
 const SKIPPED = [];
 for (const [name, entry] of Object.entries(manifest.components)) {
