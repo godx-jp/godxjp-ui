@@ -41,8 +41,7 @@ export default function Demo() {
               形式に整形され、 解釈できない入力は元の値へ復帰する。
             </CardDescription>
           </CardHeader>
-          {/* data-axe-open: check-frame-axe opens the calendar before scanning. */}
-          <CardContent data-axe-open>
+          <CardContent>
             <FormField id="issue-date" label="発行日" required>
               <DatePicker
                 id="issue-date"
@@ -288,7 +287,7 @@ export default function Demo() {
               ISO 送信される。 開始 &gt; 終了で入力しても order (既定 true) が昇順に正規化する。
             </CardDescription>
           </CardHeader>
-          <CardContent data-axe-open>
+          <CardContent>
             <FormField id="period" label="会計期間" required>
               <DatePicker
                 range

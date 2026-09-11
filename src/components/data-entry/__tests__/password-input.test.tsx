@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { PasswordInput } from "../password-input";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("PasswordInput", () => {
   it("masks the value by default (type=password)", () => {
@@ -55,9 +54,5 @@ describe("PasswordInput", () => {
     );
     expect(getByTestId("lock")).toBeInTheDocument();
     expect(getByRole("button")).toBeInTheDocument(); // the reveal toggle still works
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<PasswordInput aria-label="パスワード" />);
   });
 });

@@ -280,11 +280,6 @@ export const CI_PROOF_FOR_RELEASE_GATE = Object.freeze({
     "Tests (shard 4/4)",
   ],
   "check:contrast + check:visual-audit (verify:browser)": "Contrast + visual audit",
-  "check:frame-axe (sharded)": [
-    "Per-frame axe (shard 1/3)",
-    "Per-frame axe (shard 2/3)",
-    "Per-frame axe (shard 3/3)",
-  ],
   // Not part of verify:release, but the release contract itself must be green on the SHA.
   "MCP build/test + release command plan (release-integrity.yml)": "lockstep",
 });

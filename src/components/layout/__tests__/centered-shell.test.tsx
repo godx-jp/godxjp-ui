@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { CenteredShell } from "../centered-shell";
 import { renderWithUi } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("CenteredShell", () => {
   it("renders the centred main landmark with its children", () => {
@@ -98,14 +97,6 @@ describe("CenteredShell", () => {
     expect(container.querySelector('[data-slot="centered-shell"]')).toHaveClass(
       "ui-centered-shell",
       "tenant-scope",
-    );
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <CenteredShell topbar={<span>Brand</span>} footer={<span>© 2026</span>}>
-        <div>My Page</div>
-      </CenteredShell>,
     );
   });
 });

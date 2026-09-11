@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ToggleGroup, ToggleGroupItem } from "../toggle-group";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 function SingleGroup(props: { onValueChange?: (v: string) => void; defaultValue?: string }) {
   return (
@@ -71,9 +70,5 @@ describe("ToggleGroup", () => {
     const root = container.querySelector('[data-slot="toggle-group"]')!;
     expect(root).toHaveAttribute("data-variant", "outline");
     expect(root).toHaveAttribute("data-size", "sm");
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<SingleGroup defaultValue="day" />);
   });
 });

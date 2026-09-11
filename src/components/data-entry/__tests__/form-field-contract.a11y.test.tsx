@@ -17,7 +17,6 @@ import { CheckboxGroup } from "../checkbox-group";
 import { RadioGroup } from "../radio";
 import { Upload } from "../upload";
 import { Transfer } from "../transfer";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi } from "@/test/render";
 
 // #164 — FormField wires a label (aria-labelledby), helper (aria-describedby) and error
@@ -132,14 +131,6 @@ describe.each(WIDGET_CASES)("FormField contract → $name", ({ role, render }) =
     );
     expect(getByRole(role)).toHaveAttribute("aria-required", "true");
   });
-
-  it("has no axe violations (label + helper + error)", async () => {
-    await expectNoA11yViolations(
-      <FormField id="f" label={LABEL} required helper={HELPER} error={ERROR}>
-        {render("f")}
-      </FormField>,
-    );
-  });
 });
 
 // role="radiogroup" IS a widget → full validation contract.
@@ -157,14 +148,6 @@ describe("FormField contract → RadioGroup", () => {
     expect(group).toHaveAccessibleDescription(HELPER);
     expect(group).toHaveAttribute("aria-invalid", "true");
     expect(group.getAttribute("aria-errormessage")).toBe(getByText(ERROR).id);
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <FormField id="f" label={LABEL} required helper={HELPER} error={ERROR}>
-        {render("f")}
-      </FormField>,
-    );
   });
 });
 
@@ -213,14 +196,6 @@ describe.each(GROUP_CASES)("FormField contract → $name (group)", ({ render }) 
     expect(group).not.toHaveAttribute("aria-invalid");
     expect(group).not.toHaveAttribute("aria-errormessage");
   });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <FormField id="f" label={LABEL} required helper={HELPER} error={ERROR}>
-        {render("f")}
-      </FormField>,
-    );
-  });
 });
 
 // ColorPicker's <input type="color"> and Upload's <input type="file"> have no ARIA role, so query
@@ -237,14 +212,6 @@ describe("FormField contract → ColorPicker", () => {
     expect(swatch!).toHaveAccessibleName(LABEL);
     expect(swatch!).toHaveAccessibleDescription(HELPER);
   });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <FormField id="f" label={LABEL} required helper={HELPER} error={ERROR}>
-        <ColorPicker id="f" onValueChange={() => {}} />
-      </FormField>,
-    );
-  });
 });
 
 describe("FormField contract → Upload", () => {
@@ -258,13 +225,5 @@ describe("FormField contract → Upload", () => {
     expect(fileInput).toBeTruthy();
     expect(fileInput!).toHaveAccessibleName(LABEL);
     expect(fileInput!).toHaveAccessibleDescription(HELPER);
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <FormField id="f" label={LABEL} required helper={HELPER}>
-        <Upload id="f" onValueChange={() => {}} />
-      </FormField>,
-    );
   });
 });

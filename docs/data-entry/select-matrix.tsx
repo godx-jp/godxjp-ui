@@ -142,8 +142,7 @@ export default function Demo() {
               references. The internal search textbox has its own visible-purpose accessible name.
             </CardDescription>
           </CardHeader>
-          {/* data-axe-open: check-frame-axe opens the searchable panel before scanning. */}
-          <CardContent data-axe-open>
+          <CardContent>
             <FormField
               id="searchable-invalid"
               label="担当拠点"

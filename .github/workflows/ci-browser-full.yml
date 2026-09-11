@@ -119,7 +119,6 @@ jobs:
         with:
           chromium: "true"
       # No `preview:build` step: `frame-harness.ensurePreviewServer`, which these gates use,
-      # builds and serves the preview itself — the same way frame-axe / frame-geometry / contrast
       # have always done it. Building here too would just build twice.
       - run: ${{ matrix.command }}
         env:

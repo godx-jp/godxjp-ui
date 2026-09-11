@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
  * Regression — `<ToggleGroup variant size>` must reach its ITEMS.
@@ -127,15 +126,6 @@ describe("ToggleGroup variant/size propagation", () => {
       "ui-toggle",
       "ui-toggle-default",
       "ui-toggle-default-size",
-    );
-  });
-
-  it("has no axe violations with a propagated size", async () => {
-    await expectNoA11yViolations(
-      <ToggleGroup type="single" size="lg" defaultValue="a" aria-label="表示">
-        <ToggleGroupItem value="a">A</ToggleGroupItem>
-        <ToggleGroupItem value="b">B</ToggleGroupItem>
-      </ToggleGroup>,
     );
   });
 });

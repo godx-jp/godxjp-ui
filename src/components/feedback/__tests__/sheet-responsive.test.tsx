@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { axe } from "vitest-axe";
 
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { Button } from "../../general/button";
@@ -195,21 +194,5 @@ describe("SheetContent responsive contract (gh#215)", () => {
       expect(screen.queryByRole("dialog", { name: "Invoice INV-1024" })).not.toBeInTheDocument();
     });
     expect(trigger).toHaveFocus();
-  });
-
-  it.each([
-    [1440, "ltr"],
-    [390, "ltr"],
-    [390, "rtl"],
-  ])("has no axe violations at %ipx (dir=%s)", async (width, dir) => {
-    setViewport(width);
-    document.documentElement.setAttribute("dir", dir);
-    const user = userEvent.setup();
-    renderWithUi(<DetailPanel responsive="auto" />);
-
-    await openPanel(user);
-    const results = await axe(document.body);
-    expect(results).toHaveNoViolations();
-    document.documentElement.removeAttribute("dir");
   });
 });

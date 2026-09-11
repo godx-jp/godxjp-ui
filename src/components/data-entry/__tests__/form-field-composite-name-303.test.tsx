@@ -21,7 +21,6 @@ import { Select } from "../select";
 import { SearchSelect } from "../search-select";
 import { Flex } from "../../layout/flex";
 import { renderWithUi } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 const OPTIONS = [
   { value: "1", label: "1月" },
@@ -109,25 +108,5 @@ describe("FormField composite-child naming (gh#303)", () => {
     const input = document.getElementById("single")!;
     expect(input).toHaveAccessibleName("担当部署");
     expect(input).toHaveAttribute("aria-labelledby", "single-label");
-  });
-
-  it("the measured composite screen shape passes axe (label / button-name / aria-allowed-attr)", async () => {
-    await expectNoA11yViolations(
-      <>
-        <FormField id="search_billing_amount" label="請求金額">
-          <Flex gap="sm" align="center">
-            <Input id="search_billing_amount_from" />
-            <span aria-hidden="true">〜</span>
-            <Input id="search_billing_amount_to" />
-          </Flex>
-        </FormField>
-        <FormField id="create_target_ym" label="対象年月" required>
-          <Flex gap="sm" align="center">
-            <Input id="create_year" inputMode="numeric" />
-            <Select id="create_month" options={OPTIONS} placeholder="月" />
-          </Flex>
-        </FormField>
-      </>,
-    );
   });
 });

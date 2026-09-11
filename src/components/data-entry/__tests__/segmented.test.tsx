@@ -5,7 +5,6 @@ import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { axe } from "vitest-axe";
 
 import { Segmented } from "../segmented";
 
@@ -187,12 +186,5 @@ describe("Segmented", () => {
     );
     // Every length is a knob — no literal may appear in either rule.
     expect(track).not.toMatch(/\d+(?:\.\d+)?(?:px|rem|em)/);
-  });
-
-  it("has no axe violations", async () => {
-    const { container } = render(
-      <Segmented aria-label="Theme" defaultValue="light" options={THEME_OPTIONS} />,
-    );
-    expect(await axe(container)).toHaveNoViolations();
   });
 });

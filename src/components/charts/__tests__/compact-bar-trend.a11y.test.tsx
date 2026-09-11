@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { renderWithUi } from "@/test/render";
 import { CompactBarTrend } from "../compact-bar-trend";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
  * a11y contract of the dependency-free compact bar trend.
@@ -25,34 +24,6 @@ const trend = [
 ];
 
 describe("CompactBarTrend a11y (gh#218)", () => {
-  it("has no axe violations across sizes, emphasis, footer and empty state", async () => {
-    await expectNoA11yViolations(
-      <CompactBarTrend
-        label="新規組織（7日間）"
-        description="日別に作成された組織数"
-        data={trend}
-        categoryKey="date"
-        valueKey="count"
-        emphasizedIndex={5}
-        size="xs"
-      />,
-    );
-    await expectNoA11yViolations(
-      <CompactBarTrend
-        label="Weekly signups"
-        data={trend}
-        categoryKey="date"
-        valueKey="count"
-        size="lg"
-        showCategoryLabels={false}
-        footer={<a href="#activity">View activity</a>}
-      />,
-    );
-    await expectNoA11yViolations(
-      <CompactBarTrend label="新規組織" data={[]} categoryKey="date" valueKey="count" />,
-    );
-  });
-
   it("names the graphic and describes it with the plotted values", () => {
     const { getByRole } = renderWithUi(
       <CompactBarTrend

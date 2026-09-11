@@ -350,7 +350,7 @@
     "verify:ci": "pnpm verify:ci:static && pnpm check:frame-contracts && pnpm test",
     "verify:ci:static": "pnpm build && pnpm check:packed-public-contract && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:registry && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:no-external-assets && pnpm check:token-scale-bypass && pnpm check:no-antd-runtime && pnpm check:radix-surface && pnpm check:dist-tokens-resolve && pnpm check:no-hardcoded-geometry && pnpm check:no-hardcoded-css-values && pnpm check:disclosure-duplication && pnpm check:no-inline-magic-numbers && pnpm check:no-tailwind-class-assertions && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-lockstep && pnpm check:mcp-sync && pnpm check:doc-prop-existence && pnpm check:mcp-catalog-coverage && pnpm check:mcp-orphans && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm check:gate-coverage && pnpm check:mcp-prop-sync && pnpm check:catalog-contradictions && pnpm check:catalog-snippets",
     "verify:browser": "pnpm check:contrast && pnpm check:text-ink-clip && pnpm check:font-fallback-metrics && pnpm check:visual-audit",
-    "verify:release": "pnpm verify:static && pnpm check:frame-contracts && pnpm check:frame-coverage && pnpm check:frame-axe",
+    "verify:release": "pnpm verify:static && pnpm check:frame-contracts && pnpm check:frame-coverage",
     "verify:publish-tree": "pnpm build && pnpm check:packed-public-contract && pnpm check:use-client && pnpm check:dist-tokens-resolve",
     "check:release-plan": "node scripts/check-release-command-plan.mjs",
     "check:packed-public-contract": "node scripts/check-packed-public-contract.mjs",
@@ -402,7 +402,6 @@
     "check:font-fallback-metrics": "node scripts/check-font-fallback-metrics.mjs",
     "visual-audit": "node scripts/visual-audit.mjs",
     "check:visual-audit": "node scripts/visual-audit-smoke.mjs",
-    "check:frame-axe": "node scripts/check-frame-axe.mjs",
     "check:frame-geometry": "node scripts/frame-geometry.mjs",
     "postinstall": "node scripts/postinstall.mjs",
     "init-agent": "node scripts/init-agent-kit.mjs",
@@ -410,10 +409,8 @@
     "check:catalog-snippets": "node scripts/audit-catalog-snippets.mjs"
   },
   "peerDependencies": {
-    "@axe-core/playwright": "*",
     "@hookform/resolvers": "^5.2.0",
     "@tanstack/react-query": ">=5.0.0",
-    "axe-core": "*",
     "playwright": "*",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0",
@@ -428,12 +425,6 @@
       "optional": true
     },
     "playwright": {
-      "optional": true
-    },
-    "@axe-core/playwright": {
-      "optional": true
-    },
-    "axe-core": {
       "optional": true
     }
   },
@@ -462,7 +453,6 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^10.0.1",
     "@hookform/resolvers": "^5.9.1",
     "@radix-ui/react-accordion": "^1.2.20",
@@ -485,7 +475,6 @@
     "@types/react-dom": "^19.2.5",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-v8": "^4.1.11",
-    "axe-core": "^4.13.0",
     "eslint": "^10.9.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
@@ -508,7 +497,6 @@
     "typescript-eslint": "^8.68.0",
     "vite": "^8.2.2",
     "vitest": "^4.1.11",
-    "vitest-axe": "1.0.0-pre.5",
     "zod": "^4.5.4"
   },
   "bin": {

@@ -109,8 +109,7 @@ export default function Demo() {
           <CardContent>
             <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
               <DialogTrigger asChild>
-                {/* data-axe-open: opened by check-frame-axe before its overlay scan. */}
-                <Button data-axe-open variant="outline" size="sm">
+                <Button variant="outline" size="sm">
                   取引詳細を見る
                 </Button>
               </DialogTrigger>

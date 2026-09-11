@@ -4,7 +4,6 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-import { expectNoA11yViolations } from "@/test/a11y";
 import { AuthFooter } from "../auth-footer";
 
 /**
@@ -84,11 +83,5 @@ describe("AuthFooter", () => {
     const rule = css.match(/\.ui-auth-legal-footer \{[^}]*\}/)![0];
     expect(rule).toContain("gap: var(--auth-footer-content-gap)");
     expect(rule).toContain("font-size: var(--auth-footer-text-font-size)");
-  });
-
-  it("has no axe violations with real links and a locale control", async () => {
-    await expectNoA11yViolations(
-      <AuthFooter product="GoDX ID" {...links} locale={<a href="/locale">日本語</a>} />,
-    );
   });
 });

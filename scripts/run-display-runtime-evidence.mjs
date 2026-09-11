@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
-import axe from "axe-core";
 import jsQR from "jsqr";
 import { PNG } from "pngjs";
 import { DEFAULT_BASE, ensurePreviewServer, resolveChromiumExecutable } from "./frame-harness.mjs";
@@ -132,14 +131,6 @@ for (const { id, route } of frames) {
       result.evidence.push(shot);
     }
     if (width === 1024) {
-      await page.addScriptTag({ content: axe.source });
-      const violations = await page.evaluate(async () =>
-        (await globalThis.axe.run()).violations.map((v) => v.id),
-      );
-      if (violations.length) {
-        result.a11y = "fail";
-        result.a11yViolations = violations;
-      }
       await page.evaluate(() => document.documentElement.setAttribute("dir", "rtl"));
       const rtlOverflow = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,

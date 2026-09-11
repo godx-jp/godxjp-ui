@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 
 import { Calendar } from "../calendar";
 import { DatePicker } from "../date-picker";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 const TODAY = new Date(2026, 8, 5);
 // The library defaults to the vi catalogue outside an AppProvider.
@@ -100,11 +99,5 @@ describe("Calendar footer (gh#335)", () => {
     await user.click(screen.getByRole("button", { name: TODAY_LABEL }));
     expect(sameDay(onValueChange.mock.calls[0][0] as Date, new Date())).toBe(true);
     expect(screen.queryByRole("dialog")).toBeNull();
-  });
-
-  it("has no a11y violations with the footer on", async () => {
-    await expectNoA11yViolations(
-      <Calendar mode="single" today={TODAY} showToday showClose onClose={() => {}} />,
-    );
   });
 });

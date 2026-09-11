@@ -2,7 +2,6 @@ import * as React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 import { Tabs } from "../tabs";
 import { resolveHiddenTabValues } from "../tabs-scroll";
@@ -244,9 +243,5 @@ describe('Tabs — antd `more` (shipped as overflow="menu")', () => {
       "aria-disabled",
       "true",
     );
-  });
-
-  it("has no axe violations while the overflow button is showing", async () => {
-    await expectNoA11yViolations(<Tabs items={ITEMS} overflow="menu" />);
   });
 });

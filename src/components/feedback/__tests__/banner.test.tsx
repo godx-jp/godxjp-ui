@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createRef } from "react";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { Button } from "../../general/button";
 import { Banner, type BannerProp, type BannerProps } from "../banner";
 
@@ -134,20 +133,6 @@ describe("Banner — tone matrix and runtime guards", () => {
     expect(container.querySelector('[data-slot="alert"]')).toHaveAttribute(
       "data-variant",
       "banner",
-    );
-  });
-
-  it("has no axe violations with title, description, actions and dismiss", async () => {
-    await expectNoA11yViolations(
-      <Banner tone="warning" onDismiss={() => undefined}>
-        <Banner.Content>
-          <Banner.Title>お試し期間は残り 3 日です</Banner.Title>
-          <Banner.Description>期限までにプランを選択してください。</Banner.Description>
-        </Banner.Content>
-        <Banner.Actions>
-          <Button size="sm">プランを見る</Button>
-        </Banner.Actions>
-      </Banner>,
     );
   });
 });

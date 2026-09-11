@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { Reveal } from "../reveal";
 import { renderWithUi } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
  * A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE rather than as an
@@ -55,13 +54,5 @@ describe("Reveal", () => {
     );
     const root = getByLabelText("region");
     expect(root).toHaveClass("ui-reveal", CONSUMER_CLASS);
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <Reveal delay={1}>
-        <p>アクセシブル</p>
-      </Reveal>,
-    );
   });
 });

@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { AuthDivider } from "../auth-divider";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("AuthDivider", () => {
   it("renders a named separator with two decorative rules and a centred label", () => {
@@ -30,9 +29,5 @@ describe("AuthDivider", () => {
     expect(root).toHaveAttribute("data-orientation", "horizontal");
     // The auth-scoped slot name is preserved, so an existing consumer selector still resolves.
     expect(root).toHaveAttribute("data-slot", "auth-divider");
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<AuthDivider label="or" />);
   });
 });

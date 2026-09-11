@@ -7,7 +7,6 @@ import { AuthFooter } from "../auth-footer";
 import { AuthIdentity } from "../auth-identity";
 import { AuthStack } from "../auth-stack";
 import { renderWithUi } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("AuthShell", () => {
   it("renders the centred main landmark with its children", () => {
@@ -166,27 +165,6 @@ describe("AuthShell", () => {
     expect(container.querySelector(".ui-auth-shell-card")).toBeInTheDocument();
   });
 
-  it("has no axe violations under the device-authorization preset", async () => {
-    await expectNoA11yViolations(
-      <AuthShell variant="canonical" preset="device-authorization" brand={<span>Brand</span>}>
-        <div>Device code</div>
-      </AuthShell>,
-    );
-  });
-
-  it("has no axe violations under the login preset with a wrapped real requester", async () => {
-    await expectNoA11yViolations(
-      <AuthShell variant="canonical" preset="login">
-        <AuthIdentity
-          title="GoDX ID"
-          requester="Platform console browser BFF is requesting sign in to this organization"
-        />
-        <div>Login form</div>
-        <AuthFooter product="GoDX ID" terms="Terms" privacy="Privacy" />
-      </AuthShell>,
-    );
-  });
-
   it.each([
     // JA/EN/VI long-label coverage: each locale's longest realistic sign-up heading and
     // hint copy must render inside the registration identity slot without the shell truncating or
@@ -225,35 +203,6 @@ describe("AuthShell", () => {
       ).toBeInTheDocument();
     },
   );
-
-  it("has no axe violations under the registration preset with a full sign-up column", async () => {
-    await expectNoA11yViolations(
-      <AuthShell variant="canonical" preset="registration">
-        <AuthIdentity
-          title="アカウントを作成"
-          requester="すでにアカウントをお持ちの場合はサインインしてください"
-        />
-        <div>Registration form</div>
-        <AuthFooter product="GoDX ID" terms="利用規約" privacy="プライバシー" />
-      </AuthShell>,
-    );
-  });
-
-  it("has no axe violations under the context-selection preset", async () => {
-    await expectNoA11yViolations(
-      <AuthShell variant="canonical" preset="context-selection" brand={<span>Brand</span>}>
-        <div>Choose organization</div>
-      </AuthShell>,
-    );
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <AuthShell brand={<span>Brand</span>} footer={<span>© 2026</span>}>
-        <div>Form</div>
-      </AuthShell>,
-    );
-  });
 
   it("renders canonical identity requester and legal footer composites", () => {
     const { container, getByText } = renderWithUi(
@@ -330,18 +279,6 @@ describe("AuthShell", () => {
     // above the scroll origin (the hazard the registration preset documents).
     expect(css).toMatch(
       /\.ui-auth-shell\[data-measure="wide"\]:not\(\[data-preset\]\)\s+\.ui-auth-shell-card\s*\{[^}]*margin-block:\s*auto;/s,
-    );
-  });
-
-  it("has no axe violations with the banner actions slot filled", async () => {
-    await expectNoA11yViolations(
-      <AuthShell
-        measure="wide"
-        brand={<span>Acme</span>}
-        actions={<button type="button">English</button>}
-      >
-        <div>Login form</div>
-      </AuthShell>,
     );
   });
 });

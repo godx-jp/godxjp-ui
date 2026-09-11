@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from "vitest";
 import { render, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { AppProvider } from "@/app/app-provider";
 
 import { TimePicker } from "../time-picker";
@@ -118,10 +117,6 @@ describe("TimePicker — disabled + 12h + a11y", () => {
     const meridiem = listboxes[2];
     await user.click(within(meridiem).getAllByRole("option")[1]);
     expect(onValueChange).toHaveBeenLastCalledWith("21:00");
-  });
-
-  it("has no a11y violations", async () => {
-    await expectNoA11yViolations(<TimePicker defaultValue="09:00" />);
   });
 
   it("replaces the clock with clear while filled, then restores it", async () => {

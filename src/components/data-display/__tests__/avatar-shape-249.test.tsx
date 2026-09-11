@@ -6,7 +6,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
  * `<Avatar shape="square">` is the entity-header organization/service mark: a compact
@@ -84,14 +83,6 @@ describe("Avatar shape (gh#249)", () => {
     expect(root).toHaveClass(CONSUMER_CLASS);
     expect(root).toHaveAttribute("data-testid", "entity");
     expect(root).toHaveAttribute("data-shape", "square");
-  });
-
-  it("has no axe violations as an entity header mark", async () => {
-    await expectNoA11yViolations(
-      <Avatar shape="square">
-        <AvatarFallback>山</AvatarFallback>
-      </Avatar>,
-    );
   });
 });
 

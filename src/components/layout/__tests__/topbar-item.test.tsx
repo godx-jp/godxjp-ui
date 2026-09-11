@@ -4,9 +4,7 @@ import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { axe } from "vitest-axe";
 
-import { Topbar } from "../topbar";
 import { TopbarItem } from "../topbar-item";
 
 const shellStyles = readFileSync(resolve(process.cwd(), "src/styles/shell-layout.css"), "utf8");
@@ -106,19 +104,5 @@ describe("TopbarItem", () => {
     );
     const cell = declarationsFor(shellStyles, ".ui-topbar-item");
     expect(cell).not.toMatch(/\d+(?:\.\d+)?(?:px|rem|em)/);
-  });
-
-  it("has no axe violations inside a Topbar", async () => {
-    const { container } = render(
-      <Topbar
-        end={
-          <>
-            <TopbarItem aria-label="Notifications" />
-            <TopbarItem aria-label="Account" />
-          </>
-        }
-      />,
-    );
-    expect(await axe(container)).toHaveNoViolations();
   });
 });

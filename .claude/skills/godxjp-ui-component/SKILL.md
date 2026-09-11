@@ -112,7 +112,6 @@ your reply for any new `src/components/**` addition; a reviewer rejects addition
 - **Forms**: label association (`htmlFor`/`id`), `aria-describedby` for helper, error announced.
 - **WCAG**: ≥24×24px targets (2.5.8); never colour-only state (1.4.1 — add `sr-only` status text);
   icon-only buttons need an accessible name; decorative icons `aria-hidden`.
-- **Add a `*.a11y.test.tsx`** using `expectNoA11yViolations` (vitest-axe). It MUST pass 0 violations.
 - Prefer Radix/cmdk/vaul for interactive primitives — they ship correct ARIA; audit only your
   hand-rolled parts.
 

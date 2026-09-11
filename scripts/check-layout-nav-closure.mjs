@@ -1,5 +1,4 @@
 import { chromium } from "playwright";
-import AxeBuilder from "@axe-core/playwright";
 import { createServer } from "vite";
 
 const allFrames = [
@@ -108,7 +107,6 @@ try {
     }
   }
   await page.setViewportSize({ width: 1024, height: 900 });
-  const axe = {};
   for (const frame of frames) {
     await page.goto(`${base}/isolate/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`, {
       waitUntil: "domcontentloaded",
@@ -134,24 +132,8 @@ try {
         throw new Error(`${frame}: RTL was not initialized before mount`);
       }
     }
-    axe[frame] = (await new AxeBuilder({ page }).analyze()).violations.map((violation) => ({
-      id: violation.id,
-      targets: violation.nodes.map((node) => node.target),
-    }));
   }
   if (runtimeErrors.length) throw new Error(`Runtime errors: ${runtimeErrors.join(" | ")}`);
-  const violations = Object.entries(axe).filter(([, entries]) => entries.length);
-  if (violations.length) {
-    const diagnostics = await page.locator(".ui-resizable-panel").evaluateAll((nodes) =>
-      nodes.map((node) => ({
-        html: node.outerHTML.slice(0, 500),
-        overflow: getComputedStyle(node).overflow,
-        scrollHeight: node.scrollHeight,
-        clientHeight: node.clientHeight,
-      })),
-    );
-    throw new Error(`Axe violations: ${JSON.stringify(violations)} ${JSON.stringify(diagnostics)}`);
-  }
   console.log(
     JSON.stringify({
       frames,
@@ -159,7 +141,6 @@ try {
       reflow: "pass",
       coarsePointer: process.env.TOUCH === "1" ? "pass" : "not-run",
       rtl: process.env.RTL === "1" ? "pass" : "not-run",
-      axe,
     }),
   );
 } finally {

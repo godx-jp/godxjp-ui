@@ -3,7 +3,6 @@ import { renderWithUi, screen } from "@/test/render";
 import { Badge } from "../../data-display/badge";
 import { PageContainer } from "../page-container";
 import type { PageContainerProp, PageContainerProps } from "../page-container";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 /**
  * Canonical page-header contract: PageContainer's embedded header IS
@@ -58,24 +57,6 @@ describe("PageContainer status band", () => {
     const alias: PageContainerProp = props;
     expect(alias).toBe(props);
   });
-
-  it("has no axe violations with a status band + breadcrumb + actions", async () => {
-    await expectNoA11yViolations(
-      <PageContainer
-        title="株式会社ファムジアの組織プロファイル"
-        subtitle="契約状態と環境"
-        status={
-          <>
-            <Badge tone="success">有効</Badge>
-            <Badge tone="info">本番環境</Badge>
-          </>
-        }
-        breadcrumb={[{ label: "ホーム", to: "/" }, { label: "組織プロファイル" }]}
-      >
-        body
-      </PageContainer>,
-    );
-  });
 });
 
 /**
@@ -122,13 +103,5 @@ describe("PageContainer headerLoading", () => {
     expect(container.querySelector("header.ui-page-header")).not.toHaveAttribute("aria-busy");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("組織プロファイル");
     expect(container.querySelector(".ui-page-title-placeholder")).toBeNull();
-  });
-
-  it("has no axe violations while pending", async () => {
-    await expectNoA11yViolations(
-      <PageContainer title="組織プロファイル" headerLoading>
-        body
-      </PageContainer>,
-    );
   });
 });

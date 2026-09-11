@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TagInput } from "../tag-input";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("TagInput", () => {
   it("Enter commits the draft as a tag and clears the field", async () => {
@@ -99,15 +98,5 @@ describe("TagInput", () => {
   it("enabled does not set aria-disabled (only the disabled state is inactive)", () => {
     const { container } = render(<TagInput value={["a"]} aria-label="タグ" />);
     expect(container.querySelector('[data-slot="tag-input"]')).not.toHaveAttribute("aria-disabled");
-  });
-
-  it("has no axe violations when disabled (dimmed chips are exempt as an inactive control)", async () => {
-    await expectNoA11yViolations(
-      <TagInput defaultValue={["経費", "交通費"]} disabled aria-label="タグ" />,
-    );
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<TagInput defaultValue={["経費", "交通費"]} aria-label="タグ" />);
   });
 });

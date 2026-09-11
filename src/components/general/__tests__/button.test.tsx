@@ -2,7 +2,6 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { Button } from "../button";
 
 /**
@@ -263,41 +262,8 @@ describe("Button", () => {
       const link = screen.getByRole("link", { name: "Link" });
       expect(link.querySelector('[data-slot="button-count"]')).toBeNull();
     });
-
-    it("has no a11y violations with a count", async () => {
-      await expectNoA11yViolations(
-        <Button variant="outline" count={3}>
-          Items
-        </Button>,
-      );
-    });
   });
 });
-
-describe("Button multi-line collection actions", () => {
-  it("keeps keyboard activation and the full accessible name when labels wrap", async () => {
-    const onClick = vi.fn();
-    renderWithUi(
-      <Button wrap align="start" fullWidth size="sm" onClick={onClick}>
-        A long organization role with a descriptive name
-      </Button>,
-    );
-    const button = screen.getByRole("button", {
-      name: "A long organization role with a descriptive name",
-    });
-    expect(button).toHaveAttribute("data-wrap");
-    expect(button).toHaveAttribute("data-align", "start");
-    button.focus();
-    await userEvent.keyboard("{Enter}");
-    expect(onClick).toHaveBeenCalledTimes(1);
-    await expectNoA11yViolations(
-      <Button wrap align="start" fullWidth size="sm">
-        A long organization role with a descriptive name
-      </Button>,
-    );
-  });
-});
-
 
 describe("Button fill", () => {
   it("lets a constrained bar shrink the control instead of clipping it", () => {

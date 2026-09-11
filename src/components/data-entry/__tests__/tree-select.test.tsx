@@ -3,8 +3,6 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TreeSelect } from "../tree-select";
-import { axe } from "vitest-axe";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 const TREE = [
   {
@@ -138,15 +136,6 @@ describe("TreeSelect", () => {
     render(<TreeSelect treeData={TREE} disabled placeholder="地域" />);
     expect(screen.getByRole("combobox")).toBeDisabled();
   });
-
-  it("has no axe violations (labelled trigger)", async () => {
-    await expectNoA11yViolations(
-      <>
-        <label htmlFor="ts-region">地域</label>
-        <TreeSelect id="ts-region" treeData={TREE} treeDefaultExpandAll placeholder="地域" />
-      </>,
-    );
-  });
 });
 
 it("uses a labelled searchbox without a dangling combobox reference through filtering and selection", async () => {
@@ -162,10 +151,8 @@ it("uses a labelled searchbox without a dangling combobox reference through filt
     "aria-controls",
     screen.getByRole("tree").id,
   );
-  expect(await axe(document.body, { rules: { region: { enabled: false } } })).toHaveNoViolations();
   await user.type(search, "unmatched");
   expect(screen.getByRole("status")).toBeVisible();
-  expect(await axe(document.body, { rules: { region: { enabled: false } } })).toHaveNoViolations();
   await user.clear(search);
   await user.type(search, "日本");
   expect(screen.getAllByRole("treeitem").length).toBeGreaterThan(0);

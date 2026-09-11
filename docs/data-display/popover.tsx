@@ -135,10 +135,7 @@ export default function Demo() {
             <Flex direction="row" wrap gap="sm">
               <Popover>
                 <PopoverTrigger asChild>
-                  {/* data-axe-open: opened by check-frame-axe before its overlay scan. */}
-                  <Button data-axe-open variant="outline">
-                    side=top
-                  </Button>
+                  <Button variant="outline">side=top</Button>
                 </PopoverTrigger>
                 <PopoverContent side="top" aria-label="上側の配置例">
                   <PopoverDescription>上に開きます。</PopoverDescription>
@@ -215,8 +212,9 @@ export default function Demo() {
             <CardDescription>
               既定の panel は --popover-width（18rem）。auto は中身に測らせます — 自前の幅を持つもの
               （Calendar、チャート、固定幅のプレビュー）はこれ以外に正解がありません。trigger
-              はアンカーに合わせます。className に w-* を書くのは呼び出し側の定数で、どのテーマからも
-              retune できません。flush が padding 側で避けているのと同じ話です。
+              はアンカーに合わせます。className に w-*
+              を書くのは呼び出し側の定数で、どのテーマからも retune できません。flush が padding
+              側で避けているのと同じ話です。
             </CardDescription>
           </CardHeader>
           <CardContent>

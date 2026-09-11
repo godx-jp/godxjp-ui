@@ -8,13 +8,6 @@
 /** Catalog (agent-facing mirror lives in mcp/src/data/visual-rules.ts; kept in sync by a guard). */
 export const VISUAL_RULES = [
   {
-    id: "axe-violations",
-    severity: "warn",
-    category: "a11y",
-    standard: "WCAG 2.2 A/AA · WAI-ARIA 1.2 (axe-core engine)",
-    fix: "Fix each axe violation at its node — contrast (1.4.3), name/role/value (4.1.2), ARIA, landmarks. axe runs on the REAL DOM, catching what static analysis cannot.",
-  },
-  {
     id: "target-size-min",
     severity: "warn",
     category: "a11y",

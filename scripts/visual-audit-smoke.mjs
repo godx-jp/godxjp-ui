@@ -17,7 +17,6 @@ const FIXTURE = readFileSync(join(HERE, "__fixtures__", "visual-audit-fixture.ht
 const SCRIPT = join(HERE, "visual-audit.mjs");
 const TIMEOUT_MS = 120_000;
 const EXPECTED = [
-  "axe-violations",
   "target-size-min",
   "oversaturated-accent",
   "emoji-rendered",
@@ -31,7 +30,6 @@ const EXPECTED = [
 async function peersAvailable() {
   try {
     await import("playwright");
-    await import("@axe-core/playwright");
     return true;
   } catch {
     return false;
@@ -46,11 +44,11 @@ async function main() {
     // aside is still the right call. Same rule as check-contrast.mjs.
     if (process.env.CI) {
       throw new Error(
-        "check:visual-audit requires playwright + @axe-core/playwright; on CI a missing peer is a broken gate, not a skip.",
+        "check:visual-audit requires playwright; on CI a missing peer is a broken gate, not a skip.",
       );
     }
     console.warn(
-      "⚠ check:visual-audit skipped — playwright/@axe-core/playwright not installed (browser-only gate).",
+      "⚠ check:visual-audit skipped — playwright not installed (browser-only gate).",
     );
     return;
   }
@@ -143,7 +141,7 @@ async function main() {
     }
 
     console.log(
-      `✓ check:visual-audit — Chromium launch + context + axe injection OK; ` +
+      `✓ check:visual-audit — Chromium launch + context OK; ` +
         `all ${EXPECTED.length} rule families fired (${result.findings.length} finding(s)).`,
     );
   } finally {

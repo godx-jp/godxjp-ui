@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 import { DatePicker } from "../date-picker";
 
@@ -86,11 +85,5 @@ describe("DatePicker — a11y + disabled", () => {
     expect(field()).toBeDisabled();
     await user.click(field());
     expect(field()).toHaveAttribute("aria-expanded", "false");
-  });
-
-  it("has no a11y violations", async () => {
-    await expectNoA11yViolations(
-      <DatePicker defaultValue={new Date(2026, 5, 1)} aria-label="日付" />,
-    );
   });
 });

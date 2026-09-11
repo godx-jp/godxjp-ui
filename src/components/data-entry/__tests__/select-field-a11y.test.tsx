@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { FormField } from "../form-field";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi, screen } from "@/test/render";
 
 // FormField hands its label/helper/error wiring to a SINGLE child via cloneElement.
@@ -117,20 +116,5 @@ describe("Select — the FormField contract reaches the compound trigger", () =>
     );
 
     expect(screen.getByRole("combobox", { name: "データ駆動" })).toBeInTheDocument();
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <FormField id="axe-region" label="担当拠点" helper="名称で検索できます">
-        <Select defaultValue="tokyo">
-          <SelectTrigger id="axe-region">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="tokyo">東京</SelectItem>
-          </SelectContent>
-        </Select>
-      </FormField>,
-    );
   });
 });

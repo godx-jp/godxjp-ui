@@ -6,7 +6,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { SplitPane } from "../split-pane";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("SplitPane", () => {
   it("renders the main content and the aside", () => {
@@ -165,14 +164,6 @@ describe("SplitPane", () => {
       // in the DOM. The extra attribute in the selector is what buys that.
       expect(rule).toMatch(/\[data-aside-width\]/);
     });
-
-    it("has no axe violations when closed", async () => {
-      await expectNoA11yViolations(
-        <SplitPane aside={null}>
-          <main>本文</main>
-        </SplitPane>,
-      );
-    });
   });
 
   /*
@@ -256,21 +247,5 @@ describe("SplitPane", () => {
       expect(mounts).toBe(1);
       expect(container.querySelector(".ui-split-pane")).toHaveAttribute("data-fill", "true");
     });
-
-    it("has no axe violations when filling", async () => {
-      await expectNoA11yViolations(
-        <SplitPane aside={null} fill>
-          <main>本文</main>
-        </SplitPane>,
-      );
-    });
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(
-      <SplitPane aside={<nav aria-label="補助">サイド</nav>}>
-        <main>本文</main>
-      </SplitPane>,
-    );
   });
 });

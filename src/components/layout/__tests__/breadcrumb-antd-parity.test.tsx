@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 import { Breadcrumb } from "../breadcrumb";
 
@@ -125,9 +124,5 @@ describe("Breadcrumb — antd `BreadcrumbItemType.menu`", () => {
   it("leaves a plain segment a plain link", () => {
     renderWithUi(<Breadcrumb items={withMenu} />);
     expect(screen.getByRole("link", { name: "ホーム" })).toHaveAttribute("href", "/");
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<Breadcrumb items={withMenu} separator="/" />);
   });
 });

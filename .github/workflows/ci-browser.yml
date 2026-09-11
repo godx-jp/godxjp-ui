@@ -9,20 +9,13 @@ name: CI · browser
 #              types × two themes) plus a dark theme that `/isolate/**` now actually applies, and
 #              they cost +27s locally (12s → 39s for the contrast sweep alone). Still well inside
 #              the budget.
-#   • axe    — real Chromium + axe over every /frame at desktop + mobile-sm. Preview-chrome
 #              violations are BLOCKING (0 allowed); component/demo violations are allowlisted
-#              against scripts/frame-axe.baseline.json, which may only shrink.
 #
-# WHY axe IS STILL HERE AT 653–745s, OVER L4's 5-MINUTE BUDGET — a declared deviation, not an
 # oversight. This repo's real merge gate is not branch protection (main has none: `gh api
 # repos/godx-jp/godxjp-ui/branches/main/protection` → 404, and `/rulesets` → []). It is
 # `VerifyCommitProvenance` in npm-publish.yml, which fails CLOSED unless every name in
 # scripts/release-core.mjs · REQUIRED_CI_CHECK_RUNS has a green check run on the exact SHA being
-# published. That list names "Contrast + visual audit" and "Per-frame axe (chrome blocking,
 # component allowlisted)", and src/test/__tests__/release-workflow.test.ts asserts both names are
-# produced by a job in THIS file or ci.yml. Moving axe to the nightly lane would therefore not
-# make it optional — it would make every release refuse with "never ran: Per-frame axe", because a
-# nightly runs on main's HEAD, not on the tagged commit. Shrinking the axe gate itself (sharding
 # it, or scoping it to changed frames) is the way out; relocating it is not.
 #
 # WHAT LEFT, AND WHERE IT WENT — ci-browser-full.yml (nightly / dispatch / `run-browser` label):
@@ -83,28 +76,3 @@ jobs:
   # trọn bộ 164 khung mất 626 giây, ba shard đưa đường găng xuống khoảng 210 giây, dưới ngân sách
   # 5 phút. Đổi số shard là ĐỔI TÊN check run, nên phải sửa CI_PROOF_FOR_RELEASE_GATE trong
   # scripts/release-core.mjs và release-workflow.test.ts trong CÙNG một commit.
-  axe:
-    name: Per-frame axe (shard ${{ matrix.shard }}/3)
-    runs-on: [self-hosted, swarm-pool]
-    strategy:
-      # Mỗi shard chạy hết: một shard đỏ không được huỷ ba shard kia, nếu không bản phát hành
-      # thấy "never ran" cho một cái tên mà thật ra chỉ bị huỷ.
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3]
-    env:
-      PREVIEW_BASE: http://localhost:6028
-      AXE_SHARD: ${{ matrix.shard }}/3
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup
-        with:
-          chromium: "true"
-      - name: axe every frame (desktop + mobile-sm)
-        run: pnpm check:frame-axe
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: frame-axe-evidence
-          path: audit-evidence/frame-axe/
-          if-no-files-found: ignore

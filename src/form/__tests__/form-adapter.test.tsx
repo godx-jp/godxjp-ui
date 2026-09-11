@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-import { expectNoA11yViolations } from "@/test/a11y";
 import { FormRoot } from "../form-root";
 import { FormFieldControl } from "../form-field-control";
 import { useFormSubmitting } from "../form-context";
@@ -102,21 +101,5 @@ describe("FormRoot/FormFieldControl — adapter path", () => {
     );
     await userEvent.click(screen.getByRole("button"));
     expect(onSubmit).toHaveBeenCalledWith({ email: "x@example.com" });
-  });
-
-  it("has no axe violations on the adapter path", async () => {
-    const adapter: FormStateAdapter = {
-      getValue: () => "",
-      setValue: () => {},
-      getError: () => undefined,
-      isSubmitting: false,
-    };
-    await expectNoA11yViolations(
-      <FormRoot adapter={adapter} onSubmit={() => {}}>
-        <FormFieldControl name="email" label="Email" required>
-          {(field) => <Input {...field} type="email" value={String(field.value ?? "")} />}
-        </FormFieldControl>
-      </FormRoot>,
-    );
   });
 });

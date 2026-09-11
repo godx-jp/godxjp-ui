@@ -13,8 +13,8 @@ import {
 } from "../../../scripts/visual-audit.mjs";
 
 describe("TESTED_VERSIONS (documented peer range)", () => {
-  it("declares a tested range for both required peers + axe-core", () => {
-    for (const key of ["playwright", "@axe-core/playwright", "axe-core"]) {
+  it("declares a tested range for the required peer", () => {
+    for (const key of ["playwright"]) {
       expect(TESTED_VERSIONS[key].range).toMatch(/>=/);
       expect(TESTED_VERSIONS[key].tested).toMatch(/^\d+\.\d+\.\d+$/);
     }
@@ -23,8 +23,8 @@ describe("TESTED_VERSIONS (documented peer range)", () => {
 
 describe("buildFinding", () => {
   it("resolves severity + standard from the rule catalog", () => {
-    const f = buildFinding("axe-violations", "http://x/", "boom");
-    expect(f).toMatchObject({ url: "http://x/", rule: "axe-violations", severity: "warn" });
+    const f = buildFinding("target-size-min", "http://x/", "boom");
+    expect(f).toMatchObject({ url: "http://x/", rule: "target-size-min", severity: "warn" });
     expect(f.standard).toContain("WCAG");
   });
   it("falls back to warn for an unknown rule id", () => {
@@ -34,7 +34,7 @@ describe("buildFinding", () => {
 
 describe("buildResult — status distinguishes infra from product findings", () => {
   it('is "ok" when every page audited with zero infra errors', () => {
-    const r = buildResult({ findings: [buildFinding("axe-violations", "u", "m")], pages: 2 });
+    const r = buildResult({ findings: [buildFinding("target-size-min", "u", "m")], pages: 2 });
     expect(r.status).toBe("ok");
     expect(r.summary).toEqual({ errors: 0, warnings: 1, pages: 2, infrastructureErrors: 0 });
     expect(r.errors).toEqual([]);

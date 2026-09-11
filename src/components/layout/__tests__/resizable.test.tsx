@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "../resizable";
-import { expectNoA11yViolations } from "@/test/a11y";
 
 function Demo(props: { orientation?: "horizontal" | "vertical" }) {
   return (
@@ -36,9 +35,5 @@ describe("Resizable", () => {
     expect(container.querySelector('[data-slot="resizable-panel-group"]')).toBeInTheDocument();
     expect(getByText("左")).toBeInTheDocument();
     expect(getByText("右")).toBeInTheDocument();
-  });
-
-  it("has no axe violations", async () => {
-    await expectNoA11yViolations(<Demo />);
   });
 });

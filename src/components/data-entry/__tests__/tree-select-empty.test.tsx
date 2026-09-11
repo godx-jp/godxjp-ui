@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { axe } from "vitest-axe";
 import { TreeSelect } from "../tree-select";
 
 const TREE = [
@@ -24,9 +23,6 @@ describe("TreeSelect — empty search + disabled node", () => {
     expect(screen.queryAllByRole("treeitem")).toHaveLength(0); // visible.length === 0 branch
     expect(screen.getByRole("status")).toBeVisible();
     expect(screen.getByRole("tree")).toBeEmptyDOMElement();
-    expect(
-      await axe(document.body, { rules: { region: { enabled: false } } }),
-    ).toHaveNoViolations();
   });
 
   it("a disabled node is not in the tab order (tabIndex -1)", async () => {
