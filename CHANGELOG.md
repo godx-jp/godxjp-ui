@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Tám gói `@radix-ui` không còn nằm trong `dependencies`.** `accordion`, `avatar`, `collapsible`,
+  `label`, `separator`, `slot`, `toggle`, `toggle-group` — không component nào đang phát hành import
+  chúng nữa; thứ duy nhất còn import là các test đối chiếu, dựng cây Radix cũ cạnh cây
+  react-aria mới rồi đòi hai cây giống nhau. Chúng vẫn ở đó, trong `devDependencies`. Consumer nay
+  cài **6** gói Radix thay vì 14, đúng bằng số component còn chạy trên Radix: `Select`, `Slider`,
+  `ScrollArea`, `ContextMenu`, `Menubar`, `NavigationMenu`.
+
+  `check:radix-surface` đã để lọt chuyện này vì nó coi mọi import là "đang dùng", kể cả import
+  trong test. Nay nó chỉ tính file PHÁT HÀNH khi phán một gói trong `dependencies`, và đỏ với
+  `TEST-ONLY DEPENDENCY` khi chỉ test còn giữ gói đó. Chạy bản gate mới trên `main` trước bản sửa:
+  đỏ đúng 8 dòng.
+
 - **`Segmented` không còn in `dir="ltr"` lên mọi call site.** Dòng `dir={direction}` là bản vá của
   thời RADIX: hồi ấy primitive đọc `dir` từ `DirectionProvider` của Radix, kho này không dựng cái
   nào, và nó không bao giờ nhìn `<html dir>` — nên phải trao hướng cho nó bằng tay. Sau khi
