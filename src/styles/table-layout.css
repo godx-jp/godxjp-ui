@@ -227,15 +227,32 @@
   .ui-data-table-surface {
     /* `clip` is not a scroll container, so sticky binds to the real scroll region and works. */
     overflow: clip;
-    /* Cleared at the `sm` step below, and opted out of entirely by the collection preset, which
-     * owns its width through the column-priority measures. */
-    min-inline-size: var(--table-surface-min-inline-size);
+    /* NEVER NARROWER THAN ITS TABLE. `clip` also means a table wider than this box is CUT, not
+     * scrolled: the overflow never reaches `.ui-data-table-scroll`, so the region reports
+     * scrollWidth === clientWidth and there is nothing to reach. Measured in Chromium, a selectable
+     * table in a flush Card: at 1280px the surface was 938px and the table 1196px — 258px of
+     * columns gone with no scrollbar, no fade and no error; at 393px, 556px gone. `min-content` is
+     * the table's own "cannot get narrower without breaking a cell" width, so a table that CAN wrap
+     * still fills the frame and wraps, and one that cannot turns this box — border and all — into
+     * the wide thing the region scrolls. WCAG 1.4.10: the table scrolls in its own box, never the
+     * page. */
+    min-inline-size: min-content;
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius-md);
   }
 
   .ui-data-table-surface[data-preset="action-collection"] {
     min-inline-size: 0;
+  }
+
+  /* The narrow-viewport FLOOR lives on the TABLE, because the surface's one `min-inline-size` is
+   * spent on `min-content` above. It still reaches the surface: a table's `min-inline-size` is
+   * part of its min-content contribution. Cleared at the `sm` step below, and never taken by the
+   * collection preset, which owns its width through the column-priority measures. `*` rather than
+   * `div` keeps this rule level in specificity with the `scroll.x` rule further down, which must
+   * win — and does, by source order. */
+  .ui-data-table-surface:not([data-preset]) > * > [data-slot="table"] {
+    min-inline-size: var(--table-surface-min-inline-size);
   }
 
   /* Zebra striping (opt-in via the `striped` prop). */
@@ -335,7 +352,7 @@
       inset-inline-end: 0;
     }
 
-    .ui-data-table-surface {
+    .ui-data-table-surface:not([data-preset]) > * > [data-slot="table"] {
       min-inline-size: 0;
     }
   }
@@ -428,13 +445,14 @@
     max-block-size: var(--table-scroll-block-size, none);
   }
 
-  /* BOTH boxes take the floor, and that is the whole point: the surface is `overflow: clip`, so a
-   * table wider than the surface is CLIPPED, not scrolled — measured at 1280px, the table painted
-   * 1450px inside an 848px surface and `.ui-data-table-scroll` reported scrollWidth === clientWidth
-   * === 848, i.e. `scroll.x` produced a table nobody could reach. Giving the surface the same floor
-   * makes the surface itself the wide box, so the scroll region overflows and scrolls, and the
-   * frozen columns stick against a container that actually moves. */
-  .ui-data-table-scroll[data-scroll-x] :is(.ui-data-table-surface, [data-slot="table"]) {
+  /* Only the TABLE takes the floor; the surface follows through its own `min-content`. This rule
+   * used to set both boxes, because the surface is `overflow: clip` and a table wider than it was
+   * CLIPPED, not scrolled — measured at 1280px, the table painted 1450px inside an 848px surface
+   * and `.ui-data-table-scroll` reported scrollWidth === clientWidth === 848, i.e. `scroll.x`
+   * produced a table nobody could reach. That was the same defect every table without `scroll.x`
+   * still had; the surface rule now answers it for all of them, so the frozen columns stick against
+   * a container that actually moves whether or not `scroll.x` is set. */
+  .ui-data-table-scroll[data-scroll-x] [data-slot="table"] {
     min-inline-size: var(--table-scroll-inline-size, auto);
   }
 

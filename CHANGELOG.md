@@ -20,6 +20,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `TEST-ONLY DEPENDENCY` khi chỉ test còn giữ gói đó. Chạy bản gate mới trên `main` trước bản sửa:
   đỏ đúng 8 dòng.
 
+- **`DataTable` rộng hơn khung của nó bị CẮT, không cuộn.** `.ui-data-table-surface` là
+  `overflow: clip` (để `sticky` bám vào vùng cuộn thật), mà một hộp `clip` hẹp hơn bảng thì cắt
+  bảng — phần tràn không bao giờ tới `.ui-data-table-scroll`, nên vùng ấy báo
+  `scrollWidth === clientWidth`: không thanh cuộn, không vệt mờ, không lỗi. Đo trên Chromium, một
+  bảng `selectable` trong `CardContent flush`: ở 1280px surface **938px**, bảng **1196px** — mất
+  **258px** cột bên phải; ở 393px mất **556px**. Consumer (gino-cloud) phát hiện, không cổng nào.
+  Trước đây chỉ `scroll.x` thoát được, vì nó ép cả surface lẫn bảng cùng một bề rộng.
+
+  Nay surface là `min-inline-size: min-content`: không bao giờ hẹp hơn bảng. Bảng CÒN co được thì
+  vẫn lấp khung và xuống dòng như cũ; bảng không co được nữa biến chính surface — viền và bo góc
+  đi theo — thành thứ vùng cuộn cuộn, kèm vệt mờ ở mép cuối đã có sẵn. Sau khi sửa, cùng bảng ấy:
+  surface = bảng = **1196px**, cắt **0**, cuộn được 258px (1280) / 837px (393). Sàn 640px ở màn
+  hẹp chuyển xuống chính `<table>` (một `min-inline-size` chỉ giữ một giá trị) và vẫn tới được
+  surface qua min-content của bảng; `scroll.x` nay chỉ đặt lên bảng vì cùng lý do.
+
+  Cổng mới `check:data-table-overflow` (lane `ci-browser-full`, shard `interaction-semantics`) đo
+  MỌI DataTable mặc định của frame index ở 320→1920px, LTR và RTL: bảng không bao giờ rộng hơn hộp
+  nội dung của surface, trang không bao giờ cuộn ngang, và mục `#wide-overflow` mới (năm cột 240px
+  trong khung 48rem) cuộn tới cột cuối được, vệt mờ bật lúc đầu và tắt ở cuối. Đột biến: trả CSS
+  về bản cũ → đỏ ngay ở `ltr@320: cut 600px`.
+
 - **`Segmented` không còn in `dir="ltr"` lên mọi call site.** Dòng `dir={direction}` là bản vá của
   thời RADIX: hồi ấy primitive đọc `dir` từ `DirectionProvider` của Radix, kho này không dựng cái
   nào, và nó không bao giờ nhìn `<html dir>` — nên phải trao hướng cho nó bằng tay. Sau khi
