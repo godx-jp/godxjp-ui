@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
   ScrollArea,
+  ScrollBar,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
@@ -230,6 +231,33 @@ export default function Demo() {
                 ))}
               </ResponsiveGrid>
             </ScrollArea>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>ScrollBar は何も描画しない（非推奨）</CardTitle>
+            <CardDescription>
+              v22 まではこの要素を置くことが軸を開く方法だったが、スクロールがブラウザ本来のものに
+              なったので ScrollBar は何も描画しない。下のカードには ScrollBar
+              が置いてあるが、横に動くのは orientation=&quot;both&quot;
+              のおかげで、ScrollBar のおかげではない。残っている
+              &lt;ScrollBar&gt; は消して、軸は orientation で宣言する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Card variant="outline" className="h-24 w-full">
+              <CardContent flush>
+                <ScrollArea orientation="both">
+                  <ResponsiveGrid flow="columns">
+                    {columns.map((column) => (
+                      <Text key={column}>{column}</Text>
+                    ))}
+                  </ResponsiveGrid>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
 
