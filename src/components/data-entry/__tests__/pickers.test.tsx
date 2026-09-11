@@ -24,7 +24,9 @@ describe("Slider", () => {
   it("renders thumb control", () => {
     const { container } = renderWithUi(<Slider defaultValue={[40]} aria-label="Percent" />);
     expect(container.querySelector('[data-slot="slider"]')).toBeInTheDocument();
-    expect(screen.getAllByRole("slider")[0]).toHaveAttribute("data-slot", "slider-thumb");
+    // The focusable slider is the thumb's own control: under Radix the thumb span itself, under
+    // react-aria the range input inside the painted thumb.
+    expect(screen.getAllByRole("slider")[0].closest('[data-slot="slider-thumb"]')).not.toBeNull();
   });
 });
 

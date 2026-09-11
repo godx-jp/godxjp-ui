@@ -1,5 +1,4 @@
 /** Data Entry component prop types — @see docs/COMPONENTS.md#data-entry */
-import type * as SliderPrimitive from "@radix-ui/react-slider";
 import type { RenderProps as InputOTPRenderProps } from "input-otp";
 import type { DayPickerProps } from "react-day-picker";
 import type { DateRange } from "react-day-picker";
@@ -592,47 +591,172 @@ export type FieldProp = {
 };
 
 /**
- * Tick marks on a slider rail — antd `SliderMarks`. Keyed by the value the mark sits on; the
- * value is the label. `null` renders the tick with no label.
+ * One tick on a slider rail — antd's two spellings: the label itself, or `{ label, style }` where
+ * the object also carries a per-mark inline style. `null` renders the tick with no label.
  */
-export type SliderMarksProp = Record<number, React.ReactNode>;
+export type SliderMarkProp =
+  | React.ReactNode
+  | {
+      label?: React.ReactNode;
+      /** antd's per-mark style. Prefer styling the `label` node — it is already a ReactNode. */
+      style?: React.CSSProperties;
+    };
 
 /**
- * antd `tooltip` — the value bubble over a dragging thumb. `false` switches it off, `true` uses
- * the raw value, and the object form formats it (a unit, a currency, a 全角 label).
+ * Tick marks on a slider rail — antd `SliderMarks`. Keyed by the value the mark sits on. With
+ * `step={null}` the marks (plus `min` and `max`) are the ONLY values the slider can take.
+ */
+export type SliderMarksProp = Record<number, SliderMarkProp>;
+
+/**
+ * antd `tooltip` — the value bubble over a thumb. `false` switches it off, `true` uses the raw
+ * value, and the object form formats and places it.
  */
 export type SliderTooltipProp =
   | boolean
   | {
-      /** Force the bubble on/off instead of following hover/drag. */
+      /**
+       * `true` keeps the bubble visible; `false` keeps it hidden even while dragging or hovering —
+       * both exactly as antd. Unset, it follows hover, keyboard focus and drag.
+       */
       open?: boolean;
-      /** Render the bubble's content. `null` switches the bubble off, exactly as antd's does. */
+      /**
+       * Which side of the thumb. `left` / `right` are the INLINE sides and mirror under RTL like
+       * the rest of the slider. Defaults to `top`, or `right` on a vertical slider (antd's default).
+       */
+      placement?: "top" | "bottom" | "left" | "right";
+      /** Flip to the opposite side when the bubble would leave the viewport. Default `true`. */
+      autoAdjustOverflow?: boolean;
+      /**
+       * Render the bubble's content. `null` switches the bubble off, exactly as antd's does. A
+       * string or number result is ALSO the thumb's `aria-valuetext`, so a `¥50,000` slider is
+       * announced as ¥50,000 and not as a bare 50000.
+       */
       formatter?: ((value: number) => React.ReactNode) | null;
     };
 
-/** @see Slider — numeric range (Radix Slider). */
-export type SliderProp = React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> & {
+/**
+ * antd's range object — `range={{ editable, minCount, maxCount, draggableTrack }}`. Any object is
+ * a range, exactly like `range={true}`.
+ */
+export type SliderRangeConfigProp = {
   /**
-   * antd `range` — two thumbs bounding a span rather than one thumb over a point. It is a
-   * DECLARATION, not an inference: a single-thumb slider whose `defaultValue` happens to be a
-   * two-element array used to become a range by accident, and a range whose value arrived
-   * asynchronously used to render as a point.
+   * Thumbs can be added and removed: a press on the rail ADDS one there, and Delete / Backspace on
+   * a focused thumb removes it. Ignored while any thumb is disabled, and wins over `draggableTrack`
+   * — both exactly as antd.
    */
-  range?: boolean;
+  editable?: boolean;
+  /** Fewest thumbs `editable` may leave. Default 0. */
+  minCount?: number;
+  /** Most thumbs `editable` may create. Default unlimited. */
+  maxCount?: number;
+  /** Drag the painted span to move every thumb at once, keeping their distance. */
+  draggableTrack?: boolean;
+};
+
+/**
+ * @see Slider — numeric slider on react-aria-components, antd 6 `Slider` API.
+ *
+ * Written out rather than derived from the primitive, so what is public is exactly what is listed
+ * here: the Radix-era spelling (`number[]` values, `onValueChange`, `onValueCommit`, `inverted`,
+ * `dir`, `minStepsBetweenThumbs`) keeps compiling beside antd's (`number` values, `onChange`,
+ * `onChangeComplete`, `reverse`, `vertical`, `range` objects, `step={null}`).
+ *
+ * The union is on `range`, as in antd: without it `onChange` reports a `number`, with a literal
+ * `range` (or a range object) it reports `number[]`. A `range` held in a boolean variable cannot
+ * say which, so that spelling takes `onValueChange` — which always reports every thumb.
+ */
+export type SliderProp = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "onChange" | "dir" | "children"
+> & {
+  /** The low end of the scale. Default 0. */
+  min?: number;
+  /** The high end of the scale. Default 100. */
+  max?: number;
+  /**
+   * Granularity. `null` is antd's marks-only mode: the thumbs can only rest on a mark, `min` or
+   * `max`. Default 1.
+   */
+  step?: number | null;
+  /**
+   * Disable the whole slider, or — antd's array form — one thumb each: `[true, false]` locks the
+   * first thumb of a range. A disabled thumb leaves the tab order and does not submit.
+   */
+  disabled?: boolean | boolean[];
+  /** Layout axis. Default `horizontal`. Wins over `vertical`, as in antd 6. */
+  orientation?: "horizontal" | "vertical";
+  /** antd's boolean spelling of `orientation="vertical"`. */
+  vertical?: boolean;
+  /**
+   * Reading direction of a horizontal slider — which end is `min` and which arrow increases.
+   * Defaults to the locale's direction (the `I18nProvider` that `AppProvider` sets).
+   */
+  dir?: "ltr" | "rtl";
+  /** antd `reverse` — run the scale the other way (`min` at the inline end, or at the top). */
+  reverse?: boolean;
+  /** The Radix-era name for `reverse`. When both are given, `inverted` wins. */
+  inverted?: boolean;
+  /** Radix-era: the fewest steps two neighbouring thumbs may be apart. Default 0. */
+  minStepsBetweenThumbs?: number;
+  /** Every change, with EVERY thumb — the Radix-era callback, valid in every spelling. */
+  onValueChange?: (value: number[]) => void;
+  /** Once per finished gesture (pointer release, key press), with every thumb. */
+  onValueCommit?: (value: number[]) => void;
+  /**
+   * Native form field name. One thumb submits `name`; several submit `name[]`, once each.
+   */
+  name?: string;
+  /** Associate the thumbs' inputs with a form elsewhere in the document, by id. */
+  form?: string;
   /** antd `marks` — labelled ticks along the rail. */
   marks?: SliderMarksProp;
-  /** antd `dots` — a tick at every `step`. Requires a `step`. */
+  /** antd `dots` — a tick at every `step` (at every mark when `step={null}`). */
   dots?: boolean;
   /**
-   * antd `included` — whether the painted range is the span from the start to the thumb
-   * (`true`, the default) or nothing at all (`false`, for a rail that only holds marks).
+   * antd `included` — whether the painted span runs from the start to the thumb (`true`, the
+   * default) or nothing is painted at all (`false`, for a rail that only holds marks).
    */
   included?: boolean;
-  /** antd `reverse` — run the scale the other way. Radix spells the same thing `inverted`. */
-  reverse?: boolean;
-  /** antd `tooltip` — the value bubble over a dragging thumb. Off by default. */
+  /** antd `tooltip` — the value bubble over a thumb. Off by default. */
   tooltip?: SliderTooltipProp;
-};
+} & (
+    | {
+        /**
+         * One thumb. An array `value` with no `range` still draws a thumb per entry — the
+         * Radix-era inference — but `onChange` then reports only the first; use `onValueChange`
+         * for all of them, or declare `range`.
+         */
+        range?: false;
+        /** Controlled value — a number, or the Radix-era `number[]`. */
+        value?: number | number[];
+        /** Uncontrolled initial value. With nothing given the thumb starts at `min`. */
+        defaultValue?: number | number[];
+        /** antd `onChange` — every change, as a number. */
+        onChange?: (value: number) => void;
+        /** antd `onChangeComplete` — pointer release / key press, as a number. */
+        onChangeComplete?: (value: number) => void;
+      }
+    | {
+        /**
+         * antd `range` — two or more thumbs bounding spans. A DECLARATION: a range whose value is
+         * still loading does not render as a point, and without a value it spans `[min, max]`.
+         */
+        range: true | SliderRangeConfigProp;
+        value?: number[];
+        defaultValue?: number[];
+        onChange?: (value: number[]) => void;
+        onChangeComplete?: (value: number[]) => void;
+      }
+    | {
+        /** A `range` known only at run time (a boolean variable) — report through `onValueChange`. */
+        range: boolean;
+        value?: number | number[];
+        defaultValue?: number | number[];
+        onChange?: never;
+        onChangeComplete?: never;
+      }
+  );
 
 /** @see Calendar — react-day-picker DayPicker plus an opt-in footer. */
 /**

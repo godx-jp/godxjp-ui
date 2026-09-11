@@ -1099,6 +1099,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
+    "name": "--slider-vertical-min-block-size",
+    "value": "10rem",
+    "description": "A vertical slider fills its container's block size; this keeps one visible in a container * that has none (antd leaves it at 0 and relies on the page to size it)."
+  },
+  {
     "name": "--otp-slot-size",
     "value": "initial",
     "description": "InputOTP slot box (gh#233). Its own knob so an auth surface can widen the 6-slot challenge row * to fill a wide panel WITHOUT re-scoping --control-height (which would resize every other * control in the same card). Declared `initial` — the tier-mirror form of the role-mirror rule in * docs/TOKENS.md: the default must resolve at the CALL SITE (`var(--otp-slot-size, * var(--control-height))`), because `--otp-slot-size: var(--control-height)` here would FREEZE at * the :root tier (32px) and an OTP row inside `.ui-auth-shell[data-variant=\"canonical\"]`, which * re-scopes --control-height to 36px, would silently shrink. Verified in Chromium: 36px before * and after. A service opts in with a NAMED tier (`var(--control-height-lg)`), never a calc."
@@ -2377,6 +2382,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--progress-breakdown-block-size-sm",
     "value": "0.5rem",
     "description": "`size=\"sm\"` — the SAME two forms, thinner, for a bar that annotates a row rather than being the subject of the screen (an in-table capacity column). The meter step is half its default hairline; the breakdown step lands exactly on the meter's default 0.5rem, which is the thinnest a partition can be and still show three fills apart. Below that the ratios are gone, which is why there is no `xs`."
+  },
+  {
+    "name": "--progress-ring-size",
+    "value": "2.75rem",
+    "description": "RING geometry (`shape=\"ring\"`) — the SAME meter, drawn as an arc. The diameter is a control tier rather than a new scale: a ring lives beside a title in an app bar, so it has to sit level with the controls around it the way the bar does. The stroke is the emphasis stroke (`--stroke-lg`), thick enough that the arc reads as a quantity at 2.75rem rather than as a hairline outline; `sm` keeps the same stroke on a smaller circle, because a thinner arc at a smaller diameter stops being readable as a proportion at all."
+  },
+  {
+    "name": "--progress-ring-size-sm",
+    "value": "2rem",
+    "description": "RING geometry (`shape=\"ring\"`) — the SAME meter, drawn as an arc. The diameter is a control tier rather than a new scale: a ring lives beside a title in an app bar, so it has to sit level with the controls around it the way the bar does. The stroke is the emphasis stroke (`--stroke-lg`), thick enough that the arc reads as a quantity at 2.75rem rather than as a hairline outline; `sm` keeps the same stroke on a smaller circle, because a thinner arc at a smaller diameter stops being readable as a proportion at all."
+  },
+  {
+    "name": "--progress-ring-border-width",
+    "value": "var(--stroke-lg)",
+    "description": "RING geometry (`shape=\"ring\"`) — the SAME meter, drawn as an arc. The diameter is a control tier rather than a new scale: a ring lives beside a title in an app bar, so it has to sit level with the controls around it the way the bar does. The stroke is the emphasis stroke (`--stroke-lg`), thick enough that the arc reads as a quantity at 2.75rem rather than as a hairline outline; `sm` keeps the same stroke on a smaller circle, because a thinner arc at a smaller diameter stops being readable as a proportion at all."
+  },
+  {
+    "name": "--progress-ring-label-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "RING geometry (`shape=\"ring\"`) — the SAME meter, drawn as an arc. The diameter is a control tier rather than a new scale: a ring lives beside a title in an app bar, so it has to sit level with the controls around it the way the bar does. The stroke is the emphasis stroke (`--stroke-lg`), thick enough that the arc reads as a quantity at 2.75rem rather than as a hairline outline; `sm` keeps the same stroke on a smaller circle, because a thinner arc at a smaller diameter stops being readable as a proportion at all."
   },
   {
     "name": "--legend-gap",
@@ -4069,6 +4094,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Inset of the `line` strip. The default/pill strip keeps its own padding box; the line strip is * a flat underlined rail, so its default is the quietest value — none (rule #44). Raise it to * give the rail breathing room above its hairline."
   },
   {
+    "name": "--tabs-list-line-space-gap",
+    "value": "0.25rem",
+    "description": "GUTTER BETWEEN TRIGGERS on the `line` strip — Ant Design's `tabBarGutter`, which is declined * as a PROP and lives here instead (cardinal rules #44/#45): a number of pixels handed straight * to the caller is not a semantic axis, it is a constant, and a constant belongs to the theme. * * A RAW rem, not `var(--space-1)` — the same rule the block above states and for the same * reason: `gap-1` reads Tailwind's own --spacing grid, which this repo does NOT density-scale, * so a --space-* default would silently widen the gutter under a comfortable density. 0.25rem * is byte for byte what `gap-1` resolved to, so no strip moves. A service that wants the gutter * to follow density points this at var(--space-1) itself. * * The other two strips already had their knob: the card strip reads * `--tabs-card-list-space-gap`, and the pill strip has no gutter at all by design (its triggers * are `flex-1` inside one padded box). This was the one strip a service could only retune by * forking the class list."
+  },
+  {
     "name": "--tabs-list-focus-ring-space-inset",
     "value": "initial",
     "description": "BLOCK HEADROOM FOR THE FOCUS RING (gh#376). The horizontal strip is a scroll container * (`overflow-x: auto` + `overflow-y: hidden`), and a block-axis clip shaves whatever a trigger * paints outside its own box — measured in Chromium, the `line` strip gives its triggers 0px of * block headroom, so the entire focus ring was cut off top and bottom. The headroom has to come * from LAYOUT, not from relaxing the clip: `overflow-y: visible` beside `overflow-x: auto` * computes back to `auto` per spec (a second scroll container, not a ring), and Chromium honours * `overflow-clip-margin` only when BOTH axes are `clip`, so a single-axis clip silently drops it. * The strip therefore pads its block axis by the ring's outer reach and pulls the same amount * back with a negative block margin, so the ring paints INSIDE the scrollport while the strip * occupies exactly the space it did before. * * `initial` (the role-mirror rule in docs/TOKENS.md, not a :root binding) because the default is * derived from `--focus-ring-*`, which components and tenants DO re-scope; binding it at :root * would freeze the headroom while the ring it is sized from moved. Documented default = * `calc(var(--focus-ring-width) + var(--focus-ring-glow-width))` — the ring's outer reach, read * at the call site so the two can never disagree."
@@ -4174,44 +4204,59 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."
   },
   {
+    "name": "--tabs-overflow-size",
+    "value": "var(--band-height-md)",
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
+  },
+  {
+    "name": "--tabs-overflow-radius",
+    "value": "var(--radius-md)",
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
+  },
+  {
+    "name": "--tabs-overflow-icon-size",
+    "value": "var(--control-icon-size)",
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
+  },
+  {
     "name": "--tabs-add-size",
     "value": "var(--band-height-md)",
-    "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
   },
   {
     "name": "--tabs-add-radius",
     "value": "var(--radius-md)",
-    "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
   },
   {
     "name": "--tabs-add-icon-size",
     "value": "var(--control-icon-size)",
-    "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
   },
   {
     "name": "--tabs-trigger-icon-size",
     "value": "var(--control-icon-size)",
-    "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
   },
   {
     "name": "--tabs-tab-remove-size",
     "value": "var(--band-height-xs)",
-    "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
   },
   {
     "name": "--tabs-tab-remove-radius",
     "value": "var(--radius-sm)",
-    "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
   },
   {
     "name": "--tabs-tab-remove-icon-size",
     "value": "var(--icon-size-xs)",
-    "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
   },
   {
     "name": "--tabs-tab-remove-space-inline-end",
     "value": "var(--space-1)",
-    "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
   },
   {
     "name": "--menubar-item-hover-background",
@@ -4567,11 +4612,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--segmented-item-radius",
     "value": "var(--radius-md)",
     "description": "track radius = the base radius; item radius = one step DOWN the radius scale, not * `radius − trackPadding` (the two coincide only because the source scale happens to step by 2). * This scale is φ-spaced, so \"one step down\" from --radius is --radius-md (6px → 3.71px, against * the source's 6 → 4); --radius-sm is two steps and reads visibly squarer. The same pair is * already what TabsList (`rounded-lg`) and TabsTrigger (`rounded-md`) use — this library's other * track-and-slab control."
-  },
-  {
-    "name": "--segmented-item-height",
-    "value": "calc(var(--control-height) - var(--segmented-track-padding) * 2)",
-    "description": "label height = control height − track padding × 2. The track therefore measures exactly * --control-height, so a Segmented sits level with an Input and a Button on the same row."
   },
   {
     "name": "--segmented-item-padding-inline",
@@ -5974,19 +6014,24 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region, * a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which * is why they belong to the shell and not to the page: * * 1. The shell is the only scroll container. The root is exactly one viewport tall * (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands * never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a * real phone, where the URL bar collapses under the page. * 2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the * home indicator never covers the primary verb. * * The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets * (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes * `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding * it to the inline START would be wrong under `dir=\"rtl\"`. A symmetric inset is correct in both * writing directions and costs at most a few px on the non-notch side in landscape. * * A service retunes the page gutter, the three band heights and the block padding from its theme; * nothing here is reachable only through a consumer selector."
   },
   {
+    "name": "--mobile-shell-max-inline-size",
+    "value": "26.875rem",
+    "description": "430px — the widest logical width the current handheld class reports (iPhone Pro Max / Pixel * Pro XL). It is a CAP, so it has to sit at or above every real device width the shell is meant * to be read at; below that, `width=\"phone\"` would squeeze the very screens it exists to serve. * Only `width=\"phone\"` reads it; the default `fill` never does."
+  },
+  {
     "name": "--mobile-shell-safe-inset-block-start",
     "value": "env(safe-area-inset-top)",
-    "description": "MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region, * a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which * is why they belong to the shell and not to the page: * * 1. The shell is the only scroll container. The root is exactly one viewport tall * (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands * never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a * real phone, where the URL bar collapses under the page. * 2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the * home indicator never covers the primary verb. * * The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets * (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes * `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding * it to the inline START would be wrong under `dir=\"rtl\"`. A symmetric inset is correct in both * writing directions and costs at most a few px on the non-notch side in landscape. * * A service retunes the page gutter, the three band heights and the block padding from its theme; * nothing here is reachable only through a consumer selector."
+    "description": "430px — the widest logical width the current handheld class reports (iPhone Pro Max / Pixel * Pro XL). It is a CAP, so it has to sit at or above every real device width the shell is meant * to be read at; below that, `width=\"phone\"` would squeeze the very screens it exists to serve. * Only `width=\"phone\"` reads it; the default `fill` never does."
   },
   {
     "name": "--mobile-shell-safe-inset-block-end",
     "value": "env(safe-area-inset-bottom)",
-    "description": "MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region, * a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which * is why they belong to the shell and not to the page: * * 1. The shell is the only scroll container. The root is exactly one viewport tall * (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands * never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a * real phone, where the URL bar collapses under the page. * 2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the * home indicator never covers the primary verb. * * The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets * (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes * `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding * it to the inline START would be wrong under `dir=\"rtl\"`. A symmetric inset is correct in both * writing directions and costs at most a few px on the non-notch side in landscape. * * A service retunes the page gutter, the three band heights and the block padding from its theme; * nothing here is reachable only through a consumer selector."
+    "description": "430px — the widest logical width the current handheld class reports (iPhone Pro Max / Pixel * Pro XL). It is a CAP, so it has to sit at or above every real device width the shell is meant * to be read at; below that, `width=\"phone\"` would squeeze the very screens it exists to serve. * Only `width=\"phone\"` reads it; the default `fill` never does."
   },
   {
     "name": "--mobile-shell-safe-inset-inline",
     "value": "max(env(safe-area-inset-left), env(safe-area-inset-right))",
-    "description": "MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region, * a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which * is why they belong to the shell and not to the page: * * 1. The shell is the only scroll container. The root is exactly one viewport tall * (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands * never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a * real phone, where the URL bar collapses under the page. * 2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the * home indicator never covers the primary verb. * * The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets * (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes * `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding * it to the inline START would be wrong under `dir=\"rtl\"`. A symmetric inset is correct in both * writing directions and costs at most a few px on the non-notch side in landscape. * * A service retunes the page gutter, the three band heights and the block padding from its theme; * nothing here is reachable only through a consumer selector."
+    "description": "430px — the widest logical width the current handheld class reports (iPhone Pro Max / Pixel * Pro XL). It is a CAP, so it has to sit at or above every real device width the shell is meant * to be read at; below that, `width=\"phone\"` would squeeze the very screens it exists to serve. * Only `width=\"phone\"` reads it; the default `fill` never does."
   },
   {
     "name": "--mobile-shell-inset-inline",

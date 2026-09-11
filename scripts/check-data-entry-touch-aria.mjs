@@ -38,7 +38,11 @@ const cases = [
   ["data-entry-search-input", "input"],
   ["data-entry-switch", '[role="switch"]'],
   ["data-entry-toggle", "button[aria-pressed]"],
-  ["data-entry-slider", '[role="slider"]'],
+  // Same trap as the checkbox entries above, one migration later: the react-aria Slider's
+  // role=slider is an `<input type="range">` inside the painted thumb, and that input is
+  // visually hidden — `[role="slider"]` matches nothing and nothing is tappable. The thumb is
+  // what a finger lands on, and its snapshot carries the slider node underneath it.
+  ["data-entry-slider", '[data-slot="slider-thumb"]'],
   ["data-entry-calendar", "button"],
   ["data-entry-date-picker", "button"],
   ["data-entry-time-picker", "button"],

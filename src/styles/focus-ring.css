@@ -50,7 +50,6 @@
     .ui-toggle,
     .ui-checkbox,
     .ui-radio,
-    .ui-slider-thumb,
     .ui-steps-inline-control,
     .ui-pagination-link,
     .ui-legal-document-toc-link,
@@ -71,6 +70,7 @@
    * is the hook that keeps the mark on the element that actually has the border. */
   .ui-checkbox[data-focus-visible],
   .ui-switch[data-focus-visible],
+  .ui-slider-thumb[data-focus-visible],
   .ui-focus-ring[data-focus-visible],
   .ui-control-trigger[data-state="open"],
   .ui-tag-input:focus-within,
@@ -115,7 +115,6 @@
       .ui-toggle,
       .ui-checkbox,
       .ui-radio,
-      .ui-slider-thumb,
       .ui-steps-inline-control,
       .ui-pagination-link,
       .ui-legal-document-toc-link,
@@ -133,6 +132,7 @@
    * painted box. */
   :root[data-focus-outline="on"] .ui-checkbox[data-focus-visible],
   :root[data-focus-outline="on"] .ui-switch[data-focus-visible],
+  :root[data-focus-outline="on"] .ui-slider-thumb[data-focus-visible],
   :root[data-focus-outline="on"] .ui-focus-ring[data-focus-visible],
   :root[data-focus-outline="on"] .ui-control-trigger[data-state="open"],
   :root[data-focus-outline="on"] .ui-tag-input:focus-within,

@@ -3530,30 +3530,37 @@
         "range": {
           "cases": [
             false,
-            true
+            true,
+            "editable",
+            "draggableTrack"
           ],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
-            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
           ]
         },
         "marks": {
           "cases": [
-            "labelled"
+            "labelled",
+            "object-form"
           ],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
-            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
           ]
         },
         "dots": {
           "cases": [
             false,
-            true
+            true,
+            "marks-only"
           ],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
-            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
           ]
         },
         "included": {
@@ -3562,7 +3569,8 @@
             true
           ],
           "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx"
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
           ]
         },
         "reverse": {
@@ -3571,17 +3579,176 @@
             true
           ],
           "evidence": [
-            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx"
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
           ]
         },
         "tooltip": {
           "cases": [
             false,
-            "formatter"
+            "formatter",
+            "open",
+            "placement",
+            "autoAdjustOverflow"
           ],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
-            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx"
+            "src/components/data-entry/__tests__/antd-parity.a11y.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
+          ]
+        },
+        "value": {
+          "cases": [
+            "number",
+            "number[]"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-antd.test.tsx",
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx"
+          ]
+        },
+        "defaultValue": {
+          "cases": [
+            "number",
+            "number[]",
+            "omitted"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-antd.test.tsx",
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx",
+            "src/components/data-entry/__tests__/slider-default-range.test.tsx"
+          ]
+        },
+        "onChange": {
+          "cases": [
+            "number",
+            "number[]"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
+          ]
+        },
+        "onChangeComplete": {
+          "cases": [
+            "keyboard",
+            "pointer-release"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
+          ]
+        },
+        "onValueChange": {
+          "cases": [
+            "controlled",
+            "uncontrolled"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx",
+            "src/components/data-entry/__tests__/slider-interaction.test.tsx"
+          ]
+        },
+        "onValueCommit": {
+          "cases": [
+            "keyboard"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
+          ]
+        },
+        "min": {
+          "cases": [
+            "custom"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx",
+            "src/components/data-entry/__tests__/slider-interaction.test.tsx"
+          ]
+        },
+        "max": {
+          "cases": [
+            "custom"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx",
+            "src/components/data-entry/__tests__/slider-interaction.test.tsx"
+          ]
+        },
+        "step": {
+          "cases": [
+            "number",
+            null
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
+          ]
+        },
+        "minStepsBetweenThumbs": {
+          "cases": [
+            "gap"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx"
+          ]
+        },
+        "disabled": {
+          "cases": [
+            false,
+            true,
+            "per-thumb"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-interaction.test.tsx",
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
+          ]
+        },
+        "orientation": {
+          "cases": [
+            "horizontal",
+            "vertical"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
+          ]
+        },
+        "vertical": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
+          ]
+        },
+        "dir": {
+          "cases": [
+            "ltr",
+            "rtl"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx",
+            "src/components/data-entry/__tests__/slider-antd.test.tsx"
+          ]
+        },
+        "inverted": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx"
+          ]
+        },
+        "name": {
+          "cases": [
+            "single",
+            "range"
+          ],
+          "evidence": [
+            "src/components/data-entry/__tests__/slider-legacy-contract.test.tsx"
           ]
         }
       }

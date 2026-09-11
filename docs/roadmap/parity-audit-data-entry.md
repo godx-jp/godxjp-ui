@@ -31,8 +31,9 @@ The five that matter, in order:
 3. **No option-list virtualization anywhere in `src/`** (`grep -rl 'virtual\|useVirtualizer\|react-window\|@tanstack/react-virtual' src/` → nothing).
    antd `Select virtual` is on by default; a 5 000-row `Select`/`Cascader` here renders 5 000 DOM
    nodes. Same root cause as the missing `List` in `list-masonry.md`. **P1.**
-4. **`Slider` never exposes a formatted value to assistive tech** — `tooltip.formatter` paints an
-   `aria-hidden` bubble and no `aria-valuetext`, so a ¥/%/件 slider announces a bare number. **P1 a11y.**
+4. ~~**`Slider` never exposes a formatted value to assistive tech.**~~ CLOSED — `tooltip.formatter`
+   is now also the thumb's `aria-valuetext` (`slider.tsx`, `slider-antd.test.tsx`), landed with the
+   move to react-aria-components.
 5. **`ColorPicker` is a native `<input type="color">` + hex box** and is the one control in the group
    with no `size`/`status`/`variant`/`allowClear`/`readOnly`, and no `presets`. It cannot express a
    brand palette, which is the ordinary enterprise use. **P1.**
@@ -108,18 +109,23 @@ divergence was from the component beside them. They were merged into `DatePicker
 | `onPressEnter`                                                                           | `COVERED-ELSEWHERE`    | commit-on-Enter is already the behaviour, `:237`                                                                                                                                                                                                                                                                                      |                                                                                                                                                                                                                                                                                                                             |
 | `decimalSeparator` as an explicit prop                                                   | `WONT-PORT`            | should follow the locale, not a prop                                                                                                                                                                                                                                                                                                  | Fixing the round-trip above removes the need.                                                                                                                                                                                                                                                                               |
 
-### 2.4 `Slider` — `SliderProp` `:547-568` · `src/components/data-entry/slider.tsx`
+### 2.4 `Slider` — `SliderProp` · `src/components/data-entry/slider.tsx`
 
-| Ant Design prop / behaviour                                                                      | Status               | Evidence                                                                                                                                         | Verdict                                                                                                                                      |
-| ------------------------------------------------------------------------------------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`aria-valuetext` mirroring `tooltip.formatter`** (rc-slider `ariaValueTextFormatterForHandle`) | `MISSING` — **a11y** | `tooltipContent` returns the bare number `slider.tsx:33,35`; the bubble is `aria-hidden` `:152`; the `Thumb` `:138-157` sets no `aria-valuetext` | **P1.** A `¥50,000` / `3 件` slider announces "50000". Feed the resolved `tooltip.formatter` (or `Intl.NumberFormat`) into `aria-valuetext`. |
-| default tooltip / mark text is not `Intl`-formatted                                              | `MISSING` — i18n     | `tooltipContent` `:33` returns `value` verbatim; no `Intl.NumberFormat` in the file                                                              | P2 (same fix as the row above).                                                                                                              |
-| `onChangeComplete`                                                                               | `RENAMED`            | Radix `onValueCommit`, inherited via `React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>` `:547`                                        | No work. Record both names in the catalog.                                                                                                   |
-| `vertical`                                                                                       | `RENAMED`            | Radix `orientation="vertical"`, `slider.tsx:55,88,112`                                                                                           | No work.                                                                                                                                     |
-| `reverse`                                                                                        | `PRESENT` (aliased)  | `inverted ?? reverse`, `slider.tsx:115`                                                                                                          |                                                                                                                                              |
-| `keyboard: false`                                                                                | `WONT-PORT`          | —                                                                                                                                                | Removing keyboard operation from a `role="slider"` fails WCAG 2.1.1.                                                                         |
-| `range: { draggableTrack }` — drag the whole span                                                | `MISSING`            | grep `draggableTrack` → nothing; Radix has no equivalent                                                                                         | P2.                                                                                                                                          |
-| `tooltip.placement` / `getPopupContainer` / `autoAdjustOverflow`                                 | `WONT-PORT`          | ground rule #4                                                                                                                                   | Token + collision-aware positioning.                                                                                                         |
+CLOSED. `Slider` moved to `react-aria-components` and took the antd 6 API with it, so every row
+this table used to hold is now either `PRESENT` or a recorded non-port:
+
+| Ant Design prop / behaviour                                              | Status                                                                                                    |
+| ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `aria-valuetext` mirroring `tooltip.formatter`                           | `PRESENT` — a string/number `formatter` result is written onto the thumb's input                          |
+| `value`/`defaultValue`/`onChange`/`onChangeComplete` as antd spells them | `PRESENT` — the Radix-era `number[]` + `onValueChange`/`onValueCommit` spelling still compiles            |
+| `step={null}`, `marks` object form, `dots`, `included`, `vertical`       | `PRESENT`                                                                                                 |
+| `range: { editable, minCount, maxCount, draggableTrack }`                | `PRESENT`                                                                                                 |
+| `disabled` as `boolean[]`                                                | `PRESENT`                                                                                                 |
+| `tooltip.placement` / `autoAdjustOverflow`                               | `PRESENT` — logical sides, flip measured against the thumb's rect                                         |
+| `tooltip.getPopupContainer`                                              | `WONT-PORT` — the bubble lives inside the thumb; nothing is portalled, so there is no container to choose |
+| `keyboard: false`                                                        | `WONT-PORT` — removing keyboard operation from a `role="slider"` fails WCAG 2.1.1                         |
+| `classNames` / `styles` semantic slots                                   | `WONT-PORT` — docs/WHAT-BELONGS-HERE.md, "lỗ kiểu dáng tự do"                                             |
+| default tooltip text is not `Intl`-formatted                             | `MISSING` — P2, unchanged: pass `tooltip.formatter` for ¥/%/件                                            |
 
 ### 2.5 `ColorPicker` — `ColorPickerProp` `:893-908` · `src/components/data-entry/color-picker.tsx` (114 lines)
 
@@ -281,7 +287,6 @@ Present: `count` (+ the legacy `max`), `allowHalf`, `allowClear`, `character` (n
 
 | #   | Component             | Gap                                                                                                                         | Cite                                                                                 |
 | --- | --------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| 3   | `Slider`              | No `aria-valuetext`; `tooltip.formatter` paints an `aria-hidden` bubble only. Formatted sliders announce a bare number.     | `slider.tsx:33,138-157`                                                              |
 | 4   | `Select` / `Cascader` | No list virtualization anywhere in `src/` (antd `virtual` is on by default).                                                | `grep -rl "virtual\|useVirtualizer\|react-window\|@tanstack/react-virtual" src/` → ∅ |
 | 5   | `ColorPicker`         | No `presets`, and the only control in the group with no `size`/`status`/`variant`.                                          | `data-entry.prop.ts:893-908`                                                         |
 | 6   | `PasswordStrength`    | `role="img"` on a value meter instead of `role="meter"` + `aria-valuenow`.                                                  | `password-strength.tsx:74-76`                                                        |
@@ -300,7 +305,7 @@ Present: `count` (+ the legacy `max`), `allowHalf`, `allowClear`, `character` (n
 `Select`: `defaultActiveFirstOption`, `onInputKeyDown`. ·
 `Cascader`: `Cascader.Panel`. ·
 `NumberInput`: `onStep`. ·
-`Slider`: `Intl`-formatted default tooltip, `draggableTrack`. ·
+`Slider`: `Intl`-formatted default tooltip (`draggableTrack` has landed). ·
 `ColorPicker`: `allowClear`+`onClear`, `readOnly`, `format`/`defaultFormat`/`onFormatChange`. ·
 `DatePicker`: `mode`+`onPanelChange`, `onOk`, `maxTagCount` for `multiple`, `format` as an
 array of accepted inputs, and — with `range` — `separator` (token) and `onCalendarChange`. ·

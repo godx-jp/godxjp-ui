@@ -9460,25 +9460,82 @@ export function DisabledColor() {
     name: "Slider",
     group: "data-entry",
     tagline:
-      "Numeric range slider (Radix Slider) — value/defaultValue must be number[], not a plain number.",
+      "Numeric slider on react-aria-components with the antd 6 API — one thumb over a point, or `range` for a span. `value` takes a plain number (antd) or a number[] (the Radix-era spelling); both still work.",
     props: [
       {
-        name: "range",
-        type: "boolean",
+        name: "value / defaultValue",
+        type: "number | number[]",
         description:
-          "antd `range` — two thumbs bounding a span rather than one thumb over a point. It is a DECLARATION where the array length is only a guess: a range whose value is still loading used to render as a point, and a single-thumb slider handed a two-element array grew one it never wanted. Omitting it keeps the historical inference.",
+          "A plain number for one thumb (antd), or an array. An array with no `range` still draws a thumb per entry — the Radix-era inference — and with nothing given the slider is ONE thumb at `min`.",
+      },
+      {
+        name: "onChange",
+        type: "(value: number) => void | (value: number[]) => void",
+        description:
+          "antd `onChange` — every change. The payload follows `range`: a number without it, an array with it. A `range` held in a boolean variable cannot say which at compile time, so that spelling takes `onValueChange` instead.",
+      },
+      {
+        name: "onChangeComplete",
+        type: "(value: number) => void | (value: number[]) => void",
+        description:
+          "antd `onChangeComplete` — once per finished gesture (pointer release, key press), and only when the value actually changed. Use it for the expensive work: a refetch, a save.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: number[]) => void",
+        description:
+          "The Radix-era callback, valid in every spelling: every change, always as the full array of thumbs.",
+      },
+      {
+        name: "onValueCommit",
+        type: "(value: number[]) => void",
+        description: "`onChangeComplete`'s array form. Fires exactly once per gesture.",
+      },
+      {
+        name: "range",
+        type: "boolean | { editable?: boolean; minCount?: number; maxCount?: number; draggableTrack?: boolean }",
+        defaultValue: "false",
+        description:
+          "Two or more thumbs bounding a span. A DECLARATION, not an inference: a range whose value is still loading spans [min, max] instead of rendering as a point. The object form is antd's — `editable` lets a press on the rail ADD a thumb and Delete/Backspace remove one (between `minCount` and `maxCount`), `draggableTrack` drags the painted span and every thumb with it. `editable` wins over `draggableTrack` and switches off while any thumb is disabled, exactly as antd.",
+      },
+      {
+        name: "min",
+        type: "number",
+        defaultValue: "0",
+        description: "The low end of the scale.",
+      },
+      {
+        name: "max",
+        type: "number",
+        defaultValue: "100",
+        description: "The high end of the scale.",
+      },
+      {
+        name: "step",
+        type: "number | null",
+        defaultValue: "1",
+        description:
+          "Granularity. `null` is antd's marks-only mode: a thumb may then rest only on a mark, on `min` or on `max` — by pointer (nearest) and by arrow key (the next mark along).",
+      },
+      {
+        name: "minStepsBetweenThumbs",
+        type: "number",
+        defaultValue: "0",
+        description:
+          "The fewest steps two neighbouring thumbs may be apart. The Radix-era prop; it has no antd equivalent.",
       },
       {
         name: "marks",
-        type: "Record<number, React.ReactNode>",
+        type: "Record<number, ReactNode | { label?: ReactNode; style?: CSSProperties }>",
         description:
-          "antd `marks` — labelled ticks along the rail, keyed by the value each sits on. Positioned as a fraction of the rail, so they survive a resize, `reverse` and a vertical rail.",
+          "antd `marks` — labelled ticks along the rail, keyed by the value each sits on. A press on a mark's label moves the thumb to exactly that value. Prefer styling the label node (it is a ReactNode) over the object form's `style`.",
       },
       {
         name: "dots",
         type: "boolean",
         defaultValue: "false",
-        description: "antd `dots` — a tick at every `step`.",
+        description:
+          "antd `dots` — a tick at every `step`, or at every mark when `step={null}`. Ticks inside the painted span read as active.",
       },
       {
         name: "included",
@@ -9488,167 +9545,121 @@ export function DisabledColor() {
           "antd `included` — whether the painted span runs from the start to the thumb. `false` for a rail that only holds marks, where a filled span would assert a magnitude that is not there.",
       },
       {
-        name: "reverse",
-        type: "boolean",
-        defaultValue: "false",
-        description:
-          "antd `reverse` — run the scale the other way. Radix spells the same axis `inverted`; an explicit `inverted` still wins, so the two can never disagree in the DOM.",
-      },
-      {
         name: "tooltip",
-        type: "boolean | { open?: boolean; formatter?: ((value: number) => React.ReactNode) | null }",
+        type: "boolean | { open?: boolean; placement?: 'top' | 'bottom' | 'left' | 'right'; autoAdjustOverflow?: boolean; formatter?: ((value: number) => ReactNode) | null }",
         defaultValue: "false",
         description:
-          "antd `tooltip` — the value bubble over a dragging thumb. Rendered aria-hidden: the thumb already announces its value through `role=slider` + `aria-valuenow`.",
+          "antd `tooltip` — the value bubble, rendered INSIDE the thumb so it rides every drag with no repositioning code. `open` forces it on or off, `formatter: null` removes it, `autoAdjustOverflow` (default true) flips it to the opposite side when the viewport leaves no room. A string/number `formatter` result is ALSO the thumb's `aria-valuetext`, so a ¥ or % slider is announced the way it is painted. `placement` `left`/`right` are the INLINE sides and mirror under RTL. antd's `getPopupContainer` has no counterpart: nothing is portalled.",
       },
       {
-        name: "value",
-        type: "number[]",
+        name: "disabled",
+        type: "boolean | boolean[]",
+        defaultValue: "false",
         description:
-          "Controlled value. Must be an array — single-thumb: [50], dual-thumb (range): [20,80]. Drives thumb count.",
-      },
-      {
-        name: "defaultValue",
-        type: "number[]",
-        description:
-          "Uncontrolled initial value. Must be an array. Defaults to [min, max] (dual-thumb) when neither value nor defaultValue is provided.",
-      },
-      {
-        name: "min",
-        type: "number",
-        defaultValue: "0",
-        description: "Minimum value of the range.",
-      },
-      {
-        name: "max",
-        type: "number",
-        defaultValue: "100",
-        description: "Maximum value of the range.",
-      },
-      {
-        name: "step",
-        type: "number",
-        defaultValue: "1",
-        description: "Step increment between values.",
-      },
-      {
-        name: "minStepsBetweenThumbs",
-        type: "number",
-        defaultValue: "0",
-        description: "Minimum number of steps between two thumbs when using a range slider.",
-      },
-      {
-        name: "onValueChange",
-        type: "(value: number[]) => void",
-        description:
-          "Fires on every drag move. Receives the full number[] of current thumb values.",
-      },
-      {
-        name: "onValueCommit",
-        type: "(value: number[]) => void",
-        description:
-          "Fires only when the user releases the thumb (pointer-up or key-up). Prefer for expensive operations.",
+          "The whole slider, or one thumb each (antd's array form): `[true, false]` locks the first thumb of a range. A disabled thumb leaves the tab order and does not submit.",
       },
       {
         name: "orientation",
         type: "'horizontal' | 'vertical'",
         defaultValue: "'horizontal'",
-        description: "Layout direction of the slider track.",
+        description:
+          "Layout axis. Wins over `vertical` when both are given, as in antd 6. A vertical slider fills its container's height (and never collapses below --slider-vertical-min-block-size).",
       },
       {
-        name: "dir",
-        type: "'ltr' | 'rtr'",
-        description: "Text direction. Affects which end is the minimum.",
+        name: "vertical",
+        type: "boolean",
+        defaultValue: "false",
+        description: 'antd\'s boolean spelling of `orientation="vertical"`.',
+      },
+      {
+        name: "reverse",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd `reverse` — run the scale the other way: `min` at the inline end of a horizontal rail, at the top of a vertical one. The arrow keys turn over with it.",
       },
       {
         name: "inverted",
         type: "boolean",
-        defaultValue: "false",
-        description: "Invert the track so the filled range is on the opposite side.",
+        description: "The Radix-era name for `reverse`. When both are given, `inverted` wins.",
       },
       {
-        name: "disabled",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Disables all thumb interaction.",
+        name: "dir",
+        type: "'ltr' | 'rtl'",
+        description:
+          "Reading direction of a horizontal slider — which end is `min`, and which arrow increases. Defaults to the locale's direction (the I18nProvider AppProvider sets), so pass it only to pin one slider against its page.",
       },
       {
         name: "name",
         type: "string",
         description:
-          "HTML form field name. Radix submits one hidden input per thumb when this is set — use for native form submission.",
+          "Native form field name. One thumb submits `name`, several submit `name[]` — one entry per thumb, no extra wiring.",
       },
       {
         name: "form",
         type: "string",
-        description: "Associates the slider with a form by id, same as the HTML form attribute.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description: "Extra classes applied to the root element.",
+        description: "Associate the thumbs' inputs with a form elsewhere in the document, by id.",
       },
     ],
     usage: [
-      "DO: Pass value/defaultValue as a number array — single thumb: `value={[50]}`, range: `value={[20, 80]}`. Passing a plain number will break rendering.",
-      "DO: Use `onValueChange` for live UI feedback and `onValueCommit` for expensive side-effects (API calls, heavy computations) — commit fires only on pointer/key release.",
-      "DO: Set `name` when inside a native `<form>` — Radix emits one hidden `<input>` per thumb automatically, no extra wiring needed.",
-      "DON'T: Omit both value and defaultValue if you want a single-thumb slider — the component defaults to dual-thumb (renders [min, max]) when neither is provided. Always pass `defaultValue={[0]}` or `value={[val]}` for single-thumb.",
-      "DON'T: Hand-roll Track/Range/Thumb sub-parts — the godxjp-ui Slider composes them internally. Just use `<Slider />` as a single leaf element.",
-      "DO: For a11y supply `aria-label` or `aria-labelledby` on the Slider root when there is no visible `<label>` — Radix forwards it to each thumb span.",
+      "DO: Use `onChange` for live UI and `onChangeComplete` for the expensive work — a refetch, a save. Commit fires once per gesture, and only when the value moved.",
+      "DO: Declare `range` when you want two thumbs. Leaving it to an array's length makes a range that is still loading render as a single point, and `onChange` then reports a number rather than a pair.",
+      "DO: Give `tooltip.formatter` to a slider whose number is not a bare count (¥, %, 件) — it formats the bubble AND becomes the spoken value, so a screen reader stops reading `50000`.",
+      "DO: Set `name` inside a native `<form>`; the slider submits without a form library.",
+      "DON'T: Reach for `step={null}` without `marks` — it leaves `min` and `max` as the only values a thumb can take.",
+      "DON'T: Hand-roll Track/Range/Thumb sub-parts — `<Slider />` is one leaf element and composes them itself.",
+      "DO: For a11y supply `aria-label` (or `aria-labelledby`, or a FormField label) — it names every thumb, with an index suffix once there is more than one.",
     ],
     useCases: [
-      "Budget / price-range filter: dual-thumb range slider (`value={[minPrice, maxPrice]}`) for accounting invoice list filtering by amount.",
-      "Single numeric setting: audio volume, zoom level, or confidence threshold — single-thumb (`defaultValue={[50]}`) with a live readout next to it.",
-      "Percentage allocation: splitting a budget across categories with `step={5}` and `min={0}` `max={100}`.",
-      "Date-range scrubber over a fixed window (e.g. fiscal quarters) — map quarter index to thumb values, display labels above the track.",
-      "Risk / priority dial in a form (`name='priority'`) submitted natively without JavaScript form libraries.",
-      "Read-only visual indicator — pass `disabled` with a controlled `value` to show a progress-style bar that cannot be interacted with.",
+      "Budget / price-range filter: `range` with `onChangeComplete` so the list refetches on release, not on every pixel.",
+      "Single numeric setting: volume, zoom, a threshold — `defaultValue={50}` with a live readout beside it.",
+      "A scale whose valid points are named rather than regular: `marks` + `step={null}` (料金プラン, 温度帯, 段階評価).",
+      "Percentage allocation with `step={5}`, `dots` and `marks` at the decision points.",
+      "A tiered picker a user can shape: `range={{ editable: true, minCount: 1, maxCount: 4 }}` for splitting a scale into bands.",
+      "Read-only visual indicator — `disabled` with a controlled value; prefer Progress when nothing is ever adjustable.",
     ],
     related: [
       "Progress — use Progress (not a disabled Slider) to show read-only progress; Slider with disabled is semantically a control, not a status indicator.",
-      "Input (type number) — use Input for free-form numeric entry; use Slider when the range is bounded and dragging is the expected UX.",
+      "Input (type number) / NumberInput — free-form numeric entry; Slider is for a bounded range where dragging is the expected gesture.",
       "Switch — for boolean on/off; Slider is for continuous or stepped numeric ranges.",
-      "RangeField (if present) — check the MCP first; if a composed range-input field exists, prefer it over wiring two Slider thumbs manually.",
+      "Rating — for a small ordinal scale with symbols (1–5 stars) instead of a rail.",
     ],
     example: `{\`import { FormField, Slider } from "@godxjp/ui/data-entry";
-import { Button } from "@godxjp/ui/general";
 import { useState } from "react";
 
 // Money in a label goes through Intl, never a hand-written symbol: the symbol, the grouping and
 // the number of minor units all change with the locale and the currency.
 const money = new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" });
 
-// Single-thumb controlled slider
+// Single thumb, antd spelling: a plain number in, a plain number out.
 function VolumeSlider() {
-  const [volume, setVolume] = useState([70]);
+  const [volume, setVolume] = useState(70);
   return (
-    <FormField id="volume" label={\`Volume: \${volume[0]}%\`}>
+    <FormField id="volume" label={\`音量: \${volume}%\`}>
       <Slider
         id="volume"
         value={volume}
-        onValueChange={setVolume}
-        min={0}
-        max={100}
-        step={1}
+        onChange={setVolume}
+        tooltip={{ formatter: (value) => \`\${value}%\` }}
       />
     </FormField>
   );
 }
 
-// Dual-thumb range slider (e.g. price filter)
-function PriceRangeSlider() {
-  const [range, setRange] = useState([2000, 8000]);
+// Range: onChange carries both thumbs, onChangeComplete fires once on release.
+function PriceRangeSlider({ onApply }: { onApply: (range: number[]) => void }) {
+  const [price, setPrice] = useState([2000, 8000]);
   return (
     <FormField
       id="price-range"
-      label={\`Price: \${money.format(range[0])} – \${money.format(range[1])}\`}
+      label={\`価格: \${money.format(price[0])} 〜 \${money.format(price[1])}\`}
     >
       <Slider
         id="price-range"
-        value={range}
-        onValueChange={setRange}
-        onValueCommit={(v) => console.log("committed", v)}
+        range
+        value={price}
+        onChange={setPrice}
+        onChangeComplete={onApply}
         min={0}
         max={10000}
         step={500}
@@ -9658,13 +9669,18 @@ function PriceRangeSlider() {
   );
 }
 
-// Native form submission (no JS form library needed)
-function FormSlider() {
+// Marks-only: the thumb can rest on a named point and nowhere else.
+function PlanSlider() {
   return (
-    <form method="post" action="/settings">
-      <Slider name="priority" aria-label="Priority" defaultValue={[50]} min={0} max={100} step={10} />
-      <Button type="submit">Save</Button>
-    </form>
+    <FormField id="plan" label="料金プラン">
+      <Slider
+        id="plan"
+        step={null}
+        marks={{ 0: "無料", 30: "標準", 70: "上位", 100: "特別" }}
+        defaultValue={30}
+        dots
+      />
+    </FormField>
   );
 }\`}`,
     storyPath: "data-entry/Slider.stories.tsx",

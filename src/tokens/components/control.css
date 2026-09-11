@@ -161,6 +161,9 @@
 
   --slider-track-height: 0.375rem;
   --slider-thumb-size: 1rem;
+  /* A vertical slider fills its container's block size; this keeps one visible in a container
+   * that has none (antd leaves it at 0 and relies on the page to size it). */
+  --slider-vertical-min-block-size: 10rem;
 
   /* InputOTP slot box (gh#233). Its own knob so an auth surface can widen the 6-slot challenge row
    * to fill a wide panel WITHOUT re-scoping --control-height (which would resize every other

@@ -13597,27 +13597,27 @@
       "props": [
         {
           "name": "defaultValue",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "number[] | undefined",
+          "type": "number | number[] | undefined",
           "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-slider/dist/index.d.mts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "dir",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "Direction | undefined",
+          "type": "\"ltr\" | \"rtl\" | undefined",
           "values": ["ltr", "rtl"],
-          "declaredIn": ["node_modules/@radix-ui/react-slider/dist/index.d.mts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "disabled",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-slider/dist/index.d.mts"]
+          "type": "boolean | boolean[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "dots",
@@ -13628,7 +13628,23 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "form",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "included",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "inverted",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
@@ -13644,35 +13660,83 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "max",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "min",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "minStepsBetweenThumbs",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "name",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-slider/dist/index.d.mts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: number) => void) | ((value: number[]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onChangeComplete",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: number) => void) | ((value: number[]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "onValueChange",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "((value: number[]) => void) | undefined",
           "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-slider/dist/index.d.mts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onValueCommit",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: number[]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "orientation",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
-          "declaredIn": ["node_modules/@radix-ui/react-slider/dist/index.d.mts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "range",
           "origin": "owned",
           "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
+          "type": "boolean | SliderRangeConfigProp | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -13681,6 +13745,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "step",
+          "origin": "owned",
+          "required": false,
+          "type": "number | null | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -13693,11 +13765,19 @@
         },
         {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "number[] | undefined",
+          "type": "number | number[] | undefined",
           "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-slider/dist/index.d.mts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "vertical",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
