@@ -268,6 +268,8 @@ describe.each([
     await waitFor(() => expect(screen.queryByRole("listbox")).not.toBeInTheDocument());
     expect(onValueChange).not.toHaveBeenCalled();
     expect(trigger).toHaveTextContent("計画");
+    // Opened with the MOUSE, closed with Escape: focus still comes back to the trigger.
+    await waitFor(() => expect(trigger).toHaveFocus());
   });
 
   it("`disabled` on the TRIGGER (members.tsx) makes the control inert", async () => {
@@ -383,6 +385,36 @@ describe.each([
       "true",
     );
     expect(listbox.querySelector('[data-slot="select-separator"]')).not.toBeNull();
+  });
+
+  it("ql GinoTraineeRegistrationTest: a hand-built pointer chain on the first option of the panel named by aria-controls picks it", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    renderWithUi(
+      <form>
+        <label htmlFor="gender">性別</label>
+        <P.Select name="gender" onValueChange={onValueChange}>
+          <P.SelectTrigger id="gender">
+            <P.SelectValue placeholder="—" />
+          </P.SelectTrigger>
+          <P.SelectContent>
+            <Items P={P} />
+          </P.SelectContent>
+        </P.Select>
+      </form>,
+    );
+    // `$page->click("#gender")`, then the script ql runs verbatim.
+    await user.click(screen.getByRole("combobox", { name: "性別" }));
+    await screen.findByRole("listbox");
+    const trigger = document.getElementById("gender")!;
+    const panelId = trigger.getAttribute("aria-controls");
+    const panel = panelId === null ? null : document.getElementById(panelId);
+    const item = (panel ?? document).querySelector('[role="option"], [data-slot="select-item"]')!;
+    const PointerCtor = window.PointerEvent ?? window.MouseEvent;
+    for (const type of ["pointerover", "pointerdown", "mousedown", "pointerup", "mouseup", "click"]) {
+      item.dispatchEvent(new PointerCtor(type, { bubbles: true, cancelable: true }));
+    }
+    await waitFor(() => expect(onValueChange).toHaveBeenCalledWith("plan"));
   });
 
   it("controlled `open` + `onOpenChange` on the root", async () => {
@@ -508,6 +540,14 @@ describe("Select — the trigger contract matches the Radix base attribute for a
     ],
   ])("%s", (_, build) => {
     const { radix, current } = renderBoth(build, "比較");
+    // An id the CONSUMER passed must match exactly (case 1). With none, Radix emitted no id and
+    // react-aria emits a generated one (`react-aria-…`) that nothing can reference by name — the
+    // exclusion the note above promises, and nothing wider.
+    if (radix.contract.id === null) {
+      expect(current.contract.id ?? "react-aria-").toMatch(/^react-aria-/);
+      delete (radix.contract as Record<string, unknown>).id;
+      delete (current.contract as Record<string, unknown>).id;
+    }
     expect(current.contract).toEqual(radix.contract);
     expect(current.text).toBe(radix.text);
   });

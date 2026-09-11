@@ -5,21 +5,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Radio } from "../radio";
 import { Switch } from "../switch";
 
-// Radix renders a hidden native form-fallback (BubbleSelect/BubbleInput) for these controls. It is
-// `position:absolute` with no top/left, so without a positioned ancestor it inflates
-// `document.scrollHeight` → phantom empty scroll space. jsdom does no layout, so we can't
-// measure scrollHeight here; instead we assert each fallback carries the attributes our base-layer
-// clamp targets (`[aria-hidden="true"][tabindex="-1"]`) so the CSS pins it to top-left. If Radix
-// ever changes these attributes, this fails and tells us the clamp selector needs updating.
-const clampTargetable = (el: Element | null) =>
-  !!el && el.getAttribute("aria-hidden") === "true" && el.getAttribute("tabindex") === "-1";
+// gh#105: Radix rendered a hidden native form-fallback (BubbleSelect/BubbleInput) that was
+// `position:absolute` with no top/left, so without a positioned ancestor it inflated
+// `document.scrollHeight` → phantom empty scroll space. base.css still clamps
+// `[aria-hidden="true"][tabindex="-1"]` to the top-left for any such node. None of the controls
+// below emits one any more — each case says what it renders instead and why that cannot inflate
+// the page. jsdom does no layout, so the cases assert the structure, not a scrollHeight.
 
 describe("hidden form-fallback is clamp-targetable (gh#105)", () => {
-  it("Select renders a clamp-targetable native <select> fallback", () => {
+  // react-aria DOES keep a native <select> as the form fallback (it is what browser autofill and
+  // a native submit read), but it sits inside an aria-hidden container that is `position: fixed`
+  // at the viewport origin and clipped to 1px. A fixed box never contributes to the document's
+  // scroll size, which is the whole of gh#105 — so there is nothing for the clamp to catch. The
+  // assertion is on the container's own inline style, the thing actually doing the containing.
+  it("Select's native <select> fallback is fixed-position and clipped, not an un-positioned bubble", () => {
     renderWithUi(
       <form>
         <Select name="status" defaultValue="a">
-          <SelectTrigger>
+          <SelectTrigger aria-label="状態">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -29,7 +32,13 @@ describe("hidden form-fallback is clamp-targetable (gh#105)", () => {
         </Select>
       </form>,
     );
-    expect(clampTargetable(document.querySelector('select[aria-hidden="true"]'))).toBe(true);
+    const native = document.querySelector<HTMLSelectElement>('select[name="status"]');
+    expect(native?.value).toBe("a");
+    expect(native).toHaveAttribute("tabindex", "-1");
+    const container = native?.closest<HTMLElement>('[aria-hidden="true"]');
+    expect(container?.style.position).toBe("fixed");
+    expect(container?.style.overflow).toBe("hidden");
+    expect(document.querySelector('select[aria-hidden="true"][tabindex="-1"]')).toBeNull();
   });
 
   // Checkbox has NO case here any more, and needs none: react-aria renders no hidden bubble at
