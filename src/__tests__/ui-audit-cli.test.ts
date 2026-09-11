@@ -301,3 +301,37 @@ it("names the replacement primitive in the finding (godx-jp/id#497)", () => {
   expect(out).toContain('"replacement": "CardContent flush"');
   expect(audit('<button type="button">save</button>').output).toContain('"replacement": "Button"');
 });
+
+describe("owned rule file drift (godx-jp/id#513)", () => {
+  /** A consumer tree whose `.ai/rules/godxjp-ui.md` claims `stamped` while the package is 23.0.0. */
+  function consumerWithStamp(stamped: string) {
+    const cwd = mkdtempSync(join(tmpdir(), "godx-ui-stale-"));
+    writeFileSync(join(cwd, "package.json"), JSON.stringify({ name: "consumer" }));
+    mkdirSync(join(cwd, ".ai", "rules"), { recursive: true });
+    mkdirSync(join(cwd, "node_modules", "@godxjp", "ui"), { recursive: true });
+    mkdirSync(join(cwd, "resources", "js", "pages"), { recursive: true });
+    writeFileSync(
+      join(cwd, "node_modules", "@godxjp", "ui", "package.json"),
+      JSON.stringify({ name: "@godxjp/ui", version: "23.0.0" }),
+    );
+    writeFileSync(join(cwd, ".ai", "rules", "godxjp-ui.md"), `<!-- godxjp-ui:version ${stamped} -->\n`);
+    writeFileSync(join(cwd, "resources", "js", "pages", "a.tsx"), "export const A = () => <Text>a</Text>;\n");
+    const result = spawnSync(process.execPath, [script, "--format", "json"], { cwd, encoding: "utf8" });
+    rmSync(cwd, { recursive: true, force: true });
+    return result.stdout;
+  }
+
+  it("reports a rule file three majors behind the package it documents", () => {
+    // `ignore-scripts=true` blocks our postinstall, so the file that promises to be rewritten on
+    // every upgrade silently is not. An agent then follows rules for components that were deleted.
+    const out = consumerWithStamp("19.6.0");
+
+    expect(out).toContain('"owned-rules-stale"');
+    expect(out).toContain("19.6.0");
+    expect(out).toContain("postinstall.mjs");
+  });
+
+  it("says nothing when the file matches the installed package", () => {
+    expect(consumerWithStamp("23.0.0")).not.toContain('"owned-rules-stale"');
+  });
+});
