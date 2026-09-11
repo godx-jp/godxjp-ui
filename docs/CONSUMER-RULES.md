@@ -16,7 +16,7 @@ Read this once; the audit enforces it. Everything else in `docs/` is for contrib
     the table reads as a second box inside the card, and a wide one runs past the card entirely.
     (`flush` alone is enough: it drops the border, the radius and the inline padding. `tight` is a
     different knob — it governs the header band, not the body's edges.)
-11. Run `node node_modules/@godxjp/ui/scripts/ui-audit.mjs <dir>` before every review; then `visual-audit.mjs <url>` on the running app. Zero errors is the bar.
+11. Run `node node_modules/@godxjp/ui/scripts/ui-audit.mjs --changed` before every review; a browser sweep with `visual-audit.mjs` is a separate, heavier run — do it when the work is a visual review, not on every change; `visual-audit.mjs <url>` on the running app. Zero errors is the bar.
 
 **Opting a deliberate exception out.** Name the rule; the block form also has to say why.
 
