@@ -36,6 +36,16 @@
    * reachable on purpose (axe `scrollable-region-focusable`), and a reachable region with no mark
    * is worse than either end state.
    *
+   * AFFIXES AND ADORNMENTS ARE ON THE LIST TOO — the ✕ inside a Select, a chip's remove, the tab
+   * strip's ✛, an Upload's add tile and dropzone. Each is a separate tab stop a user operates, so
+   * leaving them off did not make them unmarked: it made them fall back to Chrome's own
+   * `outline: auto 1px`, a mark this switch cannot turn off and no theme can retune. Measured on
+   * /isolate/data-entry-select with a real Tab press: three such stops on one screen, and the
+   * consumer that reported it counted three on one of its own. `.ui-steps-control`,
+   * `.ui-carousel-previous` and `.ui-carousel-next` came with them as the missing halves of
+   * families already here — `.ui-steps-inline-control` and `.ui-carousel-dot` were on the list and
+   * their siblings were not, which is a gap nobody chose.
+   *
    * TWO shadow declarations, one halo — because a control may also carry a Tailwind ring/shadow
    * utility, and `--tw-ring-shadow` is the slot that composes with it. */
   :is(
@@ -51,6 +61,18 @@
     .ui-checkbox,
     .ui-radio,
     .ui-slider-thumb,
+    .ui-control-affix-action,
+    .ui-control-inline-affix-action,
+    .ui-search-input-clear,
+    .ui-tag-input-remove,
+    .ui-color-picker-input,
+    .ui-upload-tile-add,
+    .ui-upload-picture-empty,
+    .ui-upload-dropzone,
+    .ui-tabs-add,
+    .ui-steps-control,
+    .ui-carousel-previous,
+    .ui-carousel-next,
     .ui-steps-inline-control,
     .ui-pagination-link,
     .ui-legal-document-toc-link,
@@ -64,12 +86,13 @@
     .sb-user,
     .tb-icon-btn
   ):focus-visible,
-  /* `.ui-checkbox`, `.ui-switch` and every `.ui-focus-ring` carrier that react-aria draws as a
+  /* `.ui-checkbox`, `.ui-radio`, `.ui-switch` and every `.ui-focus-ring` carrier that react-aria draws as a
    * `<label>` around a visually hidden real `<input>` (a Segmented member is one) put keyboard
    * focus on the INPUT, so `:focus-visible` never matches the painted box.
    * react-aria mirrors its own focus-visible state onto the root as `data-focus-visible`, which
    * is the hook that keeps the mark on the element that actually has the border. */
   .ui-checkbox[data-focus-visible],
+  .ui-radio[data-focus-visible],
   .ui-switch[data-focus-visible],
   .ui-focus-ring[data-focus-visible],
   .ui-control-trigger[data-state="open"],
@@ -116,6 +139,18 @@
       .ui-checkbox,
       .ui-radio,
       .ui-slider-thumb,
+      .ui-control-affix-action,
+      .ui-control-inline-affix-action,
+      .ui-search-input-clear,
+      .ui-tag-input-remove,
+      .ui-color-picker-input,
+      .ui-upload-tile-add,
+      .ui-upload-picture-empty,
+      .ui-upload-dropzone,
+      .ui-tabs-add,
+      .ui-steps-control,
+      .ui-carousel-previous,
+      .ui-carousel-next,
       .ui-steps-inline-control,
       .ui-pagination-link,
       .ui-legal-document-toc-link,
@@ -132,6 +167,7 @@
   /* Same reason as the mark above: focus lands on the hidden `<input>`, the halo belongs on the
    * painted box. */
   :root[data-focus-outline="on"] .ui-checkbox[data-focus-visible],
+  :root[data-focus-outline="on"] .ui-radio[data-focus-visible],
   :root[data-focus-outline="on"] .ui-switch[data-focus-visible],
   :root[data-focus-outline="on"] .ui-focus-ring[data-focus-visible],
   :root[data-focus-outline="on"] .ui-control-trigger[data-state="open"],

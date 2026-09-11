@@ -156,7 +156,7 @@ const CheckboxRoot = React.forwardRef<HTMLLabelElement, CheckboxRootProps>((prop
         // itself). react-aria's root is a `<label>`, which is `display:inline` — without this the
         // 16px box collapses to nothing. CheckboxVisual already carries the same three for the
         // same reason.
-        "peer ui-checkbox data-[invalid]:border-destructive data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground inline-flex shrink-0 items-center justify-center shadow-xs transition-shadow outline-none",
+        "peer ui-checkbox data-[invalid]:border-destructive data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground inline-flex shrink-0 items-center justify-center shadow-xs transition-shadow",
         className,
       )}
       onChange={(next) => {

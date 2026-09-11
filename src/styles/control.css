@@ -2943,8 +2943,8 @@
    * `[aria-invalid]` rule at the foot of focus-ring.css was written to fix. */
   .ui-control[data-status="warning"],
   .ui-control-multiline[data-status="warning"] {
-    --focus-ring-color: var(--control-status-warning-border-color);
-    --focus-outline-color: var(--control-status-warning-border-color);
+    --focus-ring-color: var(--control-status-warning-outline-color);
+    --focus-outline-color: var(--control-status-warning-outline-color);
     --focus-ring-glow-color: var(--control-status-warning-glow-color);
     --focus-ring-glow-alpha: var(--control-status-warning-glow-alpha);
   }

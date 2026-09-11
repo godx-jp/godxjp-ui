@@ -319,7 +319,7 @@ function DialogContent({
           // four --focus-ring-* tokens, so a service retunes this ring with every other one.
           // The hand-written `focus:ring-2 focus:ring-offset-2` it replaces was un-themeable
           // AND fired on plain `:focus` (i.e. on a mouse click), unlike every other control.
-          className="ui-focus-ring transition-opacity focus:outline-hidden disabled:pointer-events-none"
+          className="ui-focus-ring transition-opacity disabled:pointer-events-none"
         >
           <X className="ui-dialog-close-icon" aria-hidden="true" />
           <span className="sr-only">{t("feedback.alert.dismiss")}</span>
@@ -489,7 +489,7 @@ function AlertDialogContent({
           // opacity. Without it this button rendered inline, in flow, under the footer.
           data-slot="dialog-close"
           // Same single-source ring as DialogContent's close (styles/focus-ring.css).
-          className="ui-focus-ring transition-opacity focus:outline-hidden disabled:pointer-events-none"
+          className="ui-focus-ring transition-opacity disabled:pointer-events-none"
           aria-label={t("feedback.alert.dismiss")}
           onClick={() => {
             state.setOpen(false);

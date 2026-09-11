@@ -80,7 +80,14 @@ describe("focus ring — single source", () => {
     expect(FOCUS_RING_CSS).toContain("var(--focus-ring-opacity, 1)");
 
     // No literal px thickness inside a mark declaration.
-    const ringDeclarations = [...FOCUS_RING_CSS.matchAll(/(box-shadow|outline):\s*([^;]+);/g)]
+    //
+    // COMMENTS ARE STRIPPED FIRST, and that is not tidiness. This file's prose QUOTES CSS — it has
+    // to, because the reason a rule exists is usually another rule that beat it (`outline: auto
+    // 1px`, the browser default an unlisted control falls back to). Scanning the raw text read
+    // those quotations as declarations and failed on a stylesheet that hardcodes nothing, which
+    // is the same class of false positive the `box-shadow: none` note above records.
+    const withoutComments = FOCUS_RING_CSS.replace(/\/\*[\s\S]*?\*\//g, "");
+    const ringDeclarations = [...withoutComments.matchAll(/(box-shadow|outline):\s*([^;]+);/g)]
       .map((m) => m[2])
       .filter((value) => value !== "none");
     for (const value of ringDeclarations) {

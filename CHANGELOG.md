@@ -8,6 +8,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Input` chưa bao giờ vẽ vòng tiêu điểm — một utility của Tailwind thắng cả tầng components.**
+  `.ui-input` CÓ trong danh sách selector của `focus-ring.css`, nhưng `Input` tự mang theo
+  `outline-none`; `@layer utilities` đứng sau `@layer components` nên thắng mọi độ đặc hiệu, và
+  dấu tiêu điểm của chính gói này thua im lặng — không lỗi biên dịch, không test đỏ, không finding
+  của audit. Đo trên Chromium, `/isolate/data-entry-input`, `<html data-focus-outline="on">` với
+  `--focus-ring-weight: 2px`, bằng một phím **Tab thật** (đọc lại `document.activeElement` để
+  chứng minh phím có tới trang): Button báo `outline: 2px solid rgb(0,113,189)`, Input cùng trang
+  cùng công tắc báo `outline-style: none`. Consumer gino-cloud (20.2.1) chỉ còn cái viền 1px đổi
+  màu và quầng α.11 ở **1,09:1** — dưới xa sàn 3:1 của SC 1.4.11 / 2.4.11.
+
+  Cùng một thất bại có trên `Checkbox`, `Radio`, `Switch` (`outline-none`), panel của `Tabs`
+  (`outline-none`), và nút đóng của `Dialog`/`Sheet` (`focus:outline-hidden`, thứ vẽ ra
+  `outline: 2px solid transparent` — tệ hơn, vì `outline-width` khi ấy đọc ra `2px` và một phép đo
+  chỉ lấy bề rộng sẽ báo "có vòng"). Gỡ hết; không phải thay bằng gì, vì `focus-ring.css` đã khai
+  `outline` vô điều kiện trên chính những phần tử ấy và công tắc TẮT cho ra `0px`.
+
+  `Radio` còn thiếu một nửa nữa: react-aria đặt tiêu điểm lên `<input>` ẩn nên `:focus-visible`
+  không bao giờ khớp cái hộp được vẽ, và `.ui-radio[data-focus-visible]` — cái móc đã có sẵn cho
+  `.ui-checkbox` / `.ui-switch` — chưa từng được thêm. Sau khi sửa, Radio có dấu như hai anh em.
+
+  Đo lại, sáng / tối, công tắc BẬT / TẮT (`scripts/check-focus-ring-paint.mjs`, Tab thật):
+  BẬT → `outline 2px solid`, offset `0px`, **5,04:1** (sáng) / **6,48:1** (tối) so với mặt nền
+  vòng được vẽ lên — y hệt Button, control tham chiếu. TẮT → `outline-width: 0px` và `box-shadow`
+  lúc có tiêu điểm **y nguyên** như lúc nghỉ (không cướp mất độ nổi của control).
+
+  Hai cổng mới. `src/styles/__tests__/focus-ring-utility-defeat.test.ts` (chạy trong `pnpm test`):
+  không class nào trong danh sách selector được đi kèm một utility tắt outline, ở mọi cách viết
+  variant. `check:focus-ring-paint` (Chromium, trong `verify:browser`): nhấn Tab thật tới từng
+  control, đo CẢ `outline` lẫn `box-shadow`, và bắt control phải dùng CÙNG DẠNG với control tham
+  chiếu trên cùng bản build — nên nếu dấu tiêu điểm có ngày quay lại dạng box-shadow (như v19.4.2),
+  cổng vẫn đúng thay vì báo nhầm "mất vòng". Đột biến: trả `outline-none` vào `Input` → cả hai đỏ.
+
+- **`.ui-control-affix-action` và chín tab stop khác rơi về `outline: auto 1px` của Chrome.** Nút
+  「選択をクリア」 của `Select` không có trong danh sách selector của `focus-ring.css`, nên nó không
+  phải là "không có dấu" — nó mang dấu MẶC ĐỊNH CỦA TRÌNH DUYỆT, thứ công tắc `data-focus-outline`
+  không tắt được và không theme nào chỉnh được. Đo trên `/isolate/data-entry-select`: ba tab stop
+  như vậy trên một màn; consumer đếm được ba trên màn của họ.
+
+  Một lượt quét bằng Tab thật qua cả 175 story tìm hết họ hàng còn thiếu. Thêm vào danh sách:
+  `.ui-control-affix-action`, `.ui-control-inline-affix-action`, `.ui-search-input-clear`,
+  `.ui-tag-input-remove`, `.ui-color-picker-input`, `.ui-upload-tile-add`,
+  `.ui-upload-picture-empty`, `.ui-upload-dropzone`, `.ui-tabs-add`, `.ui-steps-control`,
+  `.ui-carousel-previous`, `.ui-carousel-next`. Ba cái cuối là nửa còn thiếu của những họ đã có
+  sẵn trong danh sách (`.ui-steps-inline-control`, `.ui-carousel-dot`) — một sự bất đối xứng,
+  không phải một quyết định. Sau khi sửa: nút clear của Select báo `outline 2px solid`, **5,04:1**
+  (sáng) / **6,48:1** (tối), và `0px` khi công tắc tắt.
+
+  KHÔNG đưa vào, và lý do: hàng menu (`.ui-navigation-menu-link`, `.ui-menubar-item`,
+  `.ui-dropdown-menu-item`) cố ý `outline: none` vì chúng dùng highlight `data-highlighted` — một
+  affordance khác; các vùng cuộn và container (`.ui-data-table-scroll`, `.ui-master-detail-master`,
+  `.ui-branch-scope-picker-list`, `.sb-product`, `.ui-breadcrumb-link`) không thuộc họ control và
+  được báo lại cho chủ kho thay vì sửa lén trong một lượt vá vòng tiêu điểm.
+
+- **Một field `status="warning"` không có dấu tiêu điểm nào cả.**
+  `.ui-control[data-status="warning"]` gán `--focus-outline-color: var(--control-status-warning-border-color)`,
+  mà token ấy đã là `hsl(var(--text-warning))` — tức một MÀU, không phải bộ ba. Dấu tiêu điểm được
+  ghép bằng `hsl(var(--focus-outline-color) / …)`, nên nó lồng `hsl()` trong `hsl()`: khai báo
+  không hợp lệ tại thời điểm tính giá trị và TOÀN BỘ shorthand `outline` rơi về giá trị khởi
+  thuỷ. Đo trên Chromium ở `/isolate/data-entry-textarea`, ô 「警告状態」, công tắc BẬT:
+  `outline-style: none`, `outline-width: 3px` (`medium`) — không một pixel nào. Nay
+  `--control-status-warning-outline-color` mang đúng bộ ba (`var(--text-warning)`, không phải
+  `--warning` ở 1,85:1 mà chính ghi chú token đã bác) và hai biến focus đọc nó: ô cảnh báo có
+  `outline 1px solid`, **5,90:1** (sáng) / **11,41:1** (tối).
+
 - **Tài liệu và catalog kê đúng cái núm mà chính kho này cấm: `--focus-ring-width`.** Từ khi vòng
   tiêu điểm có công tắc, `--focus-ring-width` là GIÁ TRỊ DẪN XUẤT —
   `calc(var(--focus-ring-weight) * var(--focus-outline))` — và `focus-ring-contrast.test.ts` làm đỏ
@@ -57,7 +121,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   bị con trỏ thô đã nhận từ `:root`.
 
   Cùng lỗi ấy lặp lại một tầng sâu hơn, và phép đo mới lộ ra: `--button-xs-height:
-  var(--control-height-xs)` là một alias khai ở `:root`, nên nó đông cứng ở 24px và `size="xs"` KHÔNG
+var(--control-height-xs)` là một alias khai ở `:root`, nên nó đông cứng ở 24px và `size="xs"` KHÔNG
   nhúc nhích dù mọi cỡ khác đã đổi. Nay token là `initial` và `.ui-button--xs` đọc
   `var(--button-xs-height, var(--control-height-xs))` — giá trị mặc định tính lại ngay tại nút, override
   vẫn thắng; đo lại: **36px**. Hệ quả phụ, đúng ý đồ đã ghim: trong một scope `density="compact"`,
@@ -235,7 +299,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   riêng nên số dòng của phát hiện trỏ đúng vào dòng trong công thức. Mọi trường còn lại là VĂN
   XUÔI viết cho người đọc, và văn xuôi trong catalog trích mã vì đúng một lý do: đối chiếu hình
   sai với hình đúng. Soi nó là soi các LỜI CẢNH BÁO. Văn xuôi nay bị hỏi một câu hẹp hơn và đúng
-  hơn: *câu này có khuyên dùng một class mà consumer không được phép viết không?* — hai điều kiện
+  hơn: _câu này có khuyên dùng một class mà consumer không được phép viết không?_ — hai điều kiện
   đều máy móc: class được trích phải TỰ NÓ trượt `ui-audit`, và câu không đánh dấu nó là hình
   không nên viết. Nhờ vậy `className="h-9 w-full"` trên một Skeleton (số đo của MỘT MÀN HÌNH) đi
   qua, còn `className='w-auto p-0'` trong một bullet DO của Calendar thì không — và đó là một lời
