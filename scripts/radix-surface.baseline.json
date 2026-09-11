@@ -1,23 +1,35 @@
 {
-  "files": 10,
-  "packages": 10,
-  "declared": ["@radix-ui/react-select", "@radix-ui/react-slider"],
+  "files": 8,
+  "packages": 9,
+  "declared": [
+    "@radix-ui/react-select"
+  ],
   "sources": {
-    "src/components/data-entry/__tests__/label-rac.test.tsx": ["@radix-ui/react-label"],
-    "src/components/data-entry/select.tsx": ["@radix-ui/react-select"],
-    "src/components/data-entry/slider.tsx": ["@radix-ui/react-slider"],
-    "src/components/ui/__tests__/avatar-aspect-ratio.test.tsx": ["@radix-ui/react-avatar"],
+    "src/components/data-entry/__tests__/label-rac.test.tsx": [
+      "@radix-ui/react-label"
+    ],
+    "src/components/data-entry/select.tsx": [
+      "@radix-ui/react-select"
+    ],
+    "src/components/ui/__tests__/avatar-aspect-ratio.test.tsx": [
+      "@radix-ui/react-avatar"
+    ],
     "src/components/ui/__tests__/disclosure-rac.test.tsx": [
       "@radix-ui/react-accordion",
       "@radix-ui/react-collapsible"
     ],
-    "src/components/ui/__tests__/separator-rac.test.tsx": ["@radix-ui/react-separator"],
+    "src/components/ui/__tests__/separator-rac.test.tsx": [
+      "@radix-ui/react-separator"
+    ],
     "src/components/ui/__tests__/toggle-rac.test.tsx": [
       "@radix-ui/react-toggle",
       "@radix-ui/react-toggle-group"
     ],
-    "src/lib/__tests__/slot.test.tsx": ["@radix-ui/react-slot"],
-    "src/lib/__tests__/use-client-directive.test.ts": ["@radix-ui/react-slot"],
-    "src/props/components/data-entry.prop.ts": ["@radix-ui/react-slider"]
+    "src/lib/__tests__/slot.test.tsx": [
+      "@radix-ui/react-slot"
+    ],
+    "src/lib/__tests__/use-client-directive.test.ts": [
+      "@radix-ui/react-slot"
+    ]
   }
 }
