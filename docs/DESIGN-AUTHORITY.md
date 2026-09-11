@@ -253,7 +253,8 @@ a weaker one.** An algorithm guarantees a value is _consistent_; this repo had t
 times (below) precisely because consistent is not the same as _accessible_. A threshold guarantees
 the property actually being sold.
 
-**To change a derived value:** change it, run `pnpm test`, and if a threshold breaks the value is
+**To change a derived value:** change it, run the test file that owns the threshold (never the full
+suite — that is CI's job on the PR), and if a threshold breaks the value is
 wrong. Do not relax the threshold.
 
 **The four overrides that existed even while a generator did** — the clearest evidence the
