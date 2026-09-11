@@ -254,3 +254,62 @@ describe("FilterBar typed model — public type contract", () => {
     expect([pureModel, legacy, badChip, badCount].length).toBe(4);
   });
 });
+
+/**
+ * EVERY FILTER'S ✕ IS NAMED AFTER ITS FILTER.
+ *
+ * A `Select` ships a clear affix, and its default name is the generic "clear selection". A bar
+ * with three filters therefore put three buttons with ONE name on a screen, and nothing in any of
+ * them said which filter it emptied — reported from a consumer, then reproduced in Chromium on
+ * /isolate/navigation-filter-bar after giving two filters a value: two buttons, both
+ * 「選択をクリア」. The chip row beside them has always named itself after its chip
+ * (`removeFilter`), so the bar disagreed with itself.
+ *
+ * `Select` has always had `clearLabel`; the bar simply never passed one. Locale here is vi
+ * (renderWithUi), so the composed name is the vi string.
+ */
+describe("FilterBar — a filter's clear button names its filter", () => {
+  /** The clear affixes, read off the class Select paints them with — no locale string retyped. */
+  const clearNames = (container: HTMLElement) =>
+    [...container.querySelectorAll(".ui-control-affix-action")].map((b) =>
+      b.getAttribute("aria-label"),
+    );
+
+  it("gives two filters two different clear-button names", () => {
+    const { container } = renderWithUi(
+      <FilterBar
+        filters={[
+          { value: "status", label: "Trạng thái", options: STATUS_OPTIONS, selected: "active" },
+          { value: "role", label: "Vai trò", options: STATUS_OPTIONS, selected: "invited" },
+        ]}
+      />,
+    );
+    const names = clearNames(container);
+
+    expect(names).toHaveLength(2);
+    expect(new Set(names).size, `two filters must not share one name: ${names.join(" / ")}`).toBe(
+      2,
+    );
+    expect(names[0]).toContain("Trạng thái");
+    expect(names[1]).toContain("Vai trò");
+  });
+
+  it("falls back to the generic name when the filter's label is not a string", () => {
+    // The bar cannot compose a name out of a node, and a wrong name is worse than a generic one.
+    const { container } = renderWithUi(
+      <FilterBar
+        filters={[
+          {
+            value: "status",
+            label: <span>Trạng thái</span>,
+            options: STATUS_OPTIONS,
+            selected: "active",
+          },
+        ]}
+      />,
+    );
+    const names = clearNames(container);
+    expect(names).toHaveLength(1);
+    expect(names[0]).not.toContain("Trạng thái");
+  });
+});

@@ -335,7 +335,9 @@
     },
     "numberInput": {
       "increment": "Tăng",
-      "decrement": "Giảm"
+      "decrement": "Giảm",
+      "incrementField": "Tăng {label}",
+      "decrementField": "Giảm {label}"
     }
   },
   "navigation": {
@@ -362,6 +364,7 @@
     },
     "filterBar": {
       "appliedFilters": "Bộ lọc đang áp dụng",
+      "clearFilter": "Xóa lựa chọn {label}",
       "removeFilter": "Bỏ bộ lọc: {label}",
       "resultCount": "{count} kết quả"
     },

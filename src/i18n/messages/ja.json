@@ -334,7 +334,9 @@
     },
     "numberInput": {
       "increment": "増やす",
-      "decrement": "減らす"
+      "decrement": "減らす",
+      "incrementField": "{label}を増やす",
+      "decrementField": "{label}を減らす"
     }
   },
   "navigation": {
@@ -361,6 +363,7 @@
     },
     "filterBar": {
       "appliedFilters": "適用中のフィルター",
+      "clearFilter": "{label}の選択をクリア",
       "removeFilter": "フィルターを解除: {label}",
       "resultCount": "{count} 件の結果"
     },

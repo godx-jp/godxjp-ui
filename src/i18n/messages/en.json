@@ -341,7 +341,9 @@
     },
     "numberInput": {
       "increment": "Increase",
-      "decrement": "Decrease"
+      "decrement": "Decrease",
+      "incrementField": "Increase {label}",
+      "decrementField": "Decrease {label}"
     }
   },
   "navigation": {
@@ -368,6 +370,7 @@
     },
     "filterBar": {
       "appliedFilters": "Applied filters",
+      "clearFilter": "Clear {label} selection",
       "removeFilter": "Remove filter: {label}",
       "resultCount": {
         "one": "{count} result",

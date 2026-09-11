@@ -8,6 +8,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Hai nút bước của `NumberInput` tên là 「増やす」/「減らす」, không nói chúng đổi ô nào.** Đếm trên
+  Chromium ở `/isolate/data-entry-number-input`: **16 nút tên 「増やす」 và 16 nút tên 「減らす」** trên
+  một trang mà mỗi ô đều có tên riêng (数量, 評価, 目標金額, 重量, 価格…). Hai nút này là
+  `tabIndex={-1}` nên đây không phải chuyện thứ tự Tab: đó là thứ người dùng trình đọc màn hình
+  nhận được khi liệt kê các nút — đúng nhóm người không nhìn thấy nút ấy nằm cạnh ô nào (WCAG
+  2.4.6).
+
+  Tên nay được ghép từ cái ĐÃ đặt tên cho Ô, nên không consumer nào phải truyền gì và không có prop
+  mới: `aria-labelledby` khi một phần tử đặt tên (đúng thứ tự ưu tiên của chính ARIA — ô mang cả
+  hai thì được đặt tên bởi phần tử), `aria-label` khi một chuỗi đặt tên, và giữ nguyên động từ trần
+  khi không có gì cả. Đo lại cùng trang: **0 tên trùng**; 「数量 増やす」, 「評価 (1–5) 増やす」, …
+
+  Thêm khoá `ui.numberInput.incrementField` / `decrementField` cho ja/en/vi. Test mới
+  `number-input-stepper-name.test.tsx` phủ cả ba nhánh + thứ tự ưu tiên. Đột biến: trả về động từ
+  trần → đỏ 4 test.
+
+- **Ba bộ lọc của `FilterBar` đều xưng 「選択をクリア」.** Mỗi `Select` đều có nút ✕ và tên mặc định
+  của nó là câu chung ấy. Tái hiện trên Chromium ở `/isolate/navigation-filter-bar` sau khi cho hai
+  bộ lọc một giá trị: **hai nút, một tên**, không nút nào nói nó xoá bộ lọc nào (consumer báo ba nút
+  trên màn của họ). Hàng chip ngay bên cạnh thì đã tự đặt tên theo chip của nó (`removeFilter`) —
+  tức thanh lọc mâu thuẫn với chính nó.
+
+  `Select` vốn ĐÃ có `clearLabel`; chỉ là thanh lọc chưa bao giờ truyền. Nay nó ghép từ nhãn của
+  chính bộ lọc (khoá mới `navigation.filterBar.clearFilter`), và lùi về tên chung khi nhãn là một
+  node chứ không phải chuỗi — vì tên sai còn tệ hơn tên chung. Đo lại:
+  「ステータスの選択をクリア」/「Vai tròの選択をクリア」, **0 tên trùng**. Đột biến: bỏ `clearLabel` khỏi
+  thanh lọc → đỏ.
+
 - **Vùng chạm của `Button variant="bare"` là số đo DUY NHẤT không đi theo `MobileShell`.**
   `--button-bare-target-size: var(--control-height-xs)` khai ở `:root`, mà một alias của bậc thang
   viết ở đó thì được thay thế NGAY TẠI ĐÓ rồi kế thừa dưới dạng chiều dài đã đóng băng — đúng cái

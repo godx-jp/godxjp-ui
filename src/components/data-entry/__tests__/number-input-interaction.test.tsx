@@ -12,6 +12,12 @@ import { NumberInput } from "../number-input";
  * onValueChange(number | null). The stacked Buttons step by `step`; ArrowUp/ArrowDown step from the
  * keyboard (Shift = ×10). Value commits clamped to min/max and rounded to precision on blur/Enter.
  */
+/*
+ * NAME MATCHING IS A PREFIX HERE, NOT AN EQUALITY, AND THAT IS THE POINT OF THE CHANGE ABOVE IT.
+ * A stepper's accessible name now carries the field it steps ("Tăng qty"), because sixteen buttons
+ * called "Tăng" on one page named nothing at all — see number-input-stepper-name.test.tsx. The verb
+ * is still the head of the name, so it is still the thing to match on.
+ */
 describe("NumberInput — interaction", () => {
   it("renders the spinbutton with the ARIA value range", () => {
     renderWithUi(<NumberInput defaultValue={5} min={0} max={10} aria-label="qty" />);
@@ -37,7 +43,7 @@ describe("NumberInput — interaction", () => {
     renderWithUi(
       <NumberInput defaultValue={10} step={5} onValueChange={onValueChange} aria-label="qty" />,
     );
-    await user.click(screen.getByRole("button", { name: "Tăng" }));
+    await user.click(screen.getByRole("button", { name: /^Tăng\b/ }));
     expect(onValueChange).toHaveBeenLastCalledWith(15);
     expect(screen.getByRole("spinbutton")).toHaveAttribute("aria-valuenow", "15");
   });
@@ -45,7 +51,7 @@ describe("NumberInput — interaction", () => {
   it("decrement Button steps down by `step`", async () => {
     const user = userEvent.setup();
     renderWithUi(<NumberInput defaultValue={10} step={5} aria-label="qty" />);
-    await user.click(screen.getByRole("button", { name: "Giảm" }));
+    await user.click(screen.getByRole("button", { name: /^Giảm\b/ }));
     expect(screen.getByRole("spinbutton")).toHaveAttribute("aria-valuenow", "5");
   });
 
@@ -73,7 +79,7 @@ describe("NumberInput — interaction", () => {
     const user = userEvent.setup();
     renderWithUi(<NumberInput defaultValue={9} step={5} min={0} max={10} aria-label="qty" />);
     const spin = screen.getByRole("spinbutton");
-    const up = screen.getByRole("button", { name: "Tăng" });
+    const up = screen.getByRole("button", { name: /^Tăng\b/ });
     await user.click(up);
     expect(spin).toHaveAttribute("aria-valuenow", "10");
     expect(up).toBeDisabled();
@@ -83,7 +89,7 @@ describe("NumberInput — interaction", () => {
     const user = userEvent.setup();
     renderWithUi(<NumberInput defaultValue={2} step={5} min={0} max={10} aria-label="qty" />);
     const spin = screen.getByRole("spinbutton");
-    const down = screen.getByRole("button", { name: "Giảm" });
+    const down = screen.getByRole("button", { name: /^Giảm\b/ });
     await user.click(down);
     expect(spin).toHaveAttribute("aria-valuenow", "0");
     expect(down).toBeDisabled();
@@ -131,7 +137,7 @@ describe("NumberInput — interaction", () => {
       return <NumberInput value={v} onValueChange={setV} step={1} aria-label="qty" />;
     }
     renderWithUi(<Controlled />);
-    const up = screen.getByRole("button", { name: "Tăng" });
+    const up = screen.getByRole("button", { name: /^Tăng\b/ });
     await user.click(up);
     await user.click(up);
     await user.click(up);
@@ -144,7 +150,7 @@ describe("NumberInput — interaction", () => {
     renderWithUi(<NumberInput value={5} disabled onValueChange={onValueChange} aria-label="qty" />);
     const spin = screen.getByRole("spinbutton");
     expect(spin).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Tăng" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /^Tăng\b/ })).toBeDisabled();
     expect(onValueChange).not.toHaveBeenCalled();
   });
 
