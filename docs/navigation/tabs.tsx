@@ -612,7 +612,7 @@ export default function Demo() {
               が画面の大半を占めると列が 0px
               まで潰れ、開いているタブ以外へ行く手段が消える(gh#502)。
               --tabs-placement-responsive-breakpoint-width(48rem)以下では start / end を top /
-              bottom へ折り返す。矢印キーの軸も一緒に折り返る。
+              bottom へ折り返す。ロービングフォーカスの軸も一緒に切り替わる。
             </CardDescription>
           </CardHeader>
           <CardContent>
