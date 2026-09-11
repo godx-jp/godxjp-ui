@@ -8,6 +8,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Mô tả token trong catalog MCP bị "chú thích gần nhất phía trên" cướp mất.** Generator gán cho
+  mỗi token chú thích CSS gần nhất ở trên nó, và luật ấy KHÔNG CÓ ĐIỂM DỪNG — nên một chú thích đặt
+  giữa nhóm trở thành mô tả của MỌI token phía sau, vượt cả dòng trống lẫn khối rule. Cái đã phát
+  hành ra vì thế: ba token `--mobile-shell-safe-inset-*` mang ghi chú "430px — bề ngang logic lớn
+  nhất mà máy cầm tay báo" vốn thuộc về `--mobile-shell-max-inline-size`; `--tabs-overflow-radius`
+  và `--tabs-overflow-icon-size` mang ghi chú về KÍCH THƯỚC của nút overflow; `--button-count-min-width`
+  được mô tả là "con trỏ nhấp nháy của OTP"; `--topbar-chip-icon-font-size` là một ghi chú về alpha
+  của vòng tiêu điểm; `--control-height-compact`, `--control-height-default` và bốn
+  `--textarea-padding-*` mang đoạn văn về viền cảnh báo màu hổ phách, cách đó hai khối rule. Agent
+  đọc `get_component` được bảo rằng một núm padding là một quyết định tương phản WCAG — tệ hơn là
+  không nói gì, vì nó đọc ra như một câu cụ thể.
+
+  Luật mới, và cố ý là luật đơn giản nhất không thể sai: **một chú thích mô tả ĐÚNG khai báo ngay
+  dưới nó**. Chú thích cuối dòng (`--x: initial; /* default = … */`) thuộc về dòng CỦA NÓ, không
+  phải dòng sau — `legal-document.css` viết liền năm cái như vậy, đẩy xuống một dòng là sai ba.
+  Token không có chú thích riêng nhận dòng tiêu đề của CHÍNH TỆP nó (`Badge component tokens.`),
+  nên không mô tả nào rỗng.
+
+  Hai luật "mềm hơn" đã được ĐO rồi bỏ. Cho chú thích làm tiêu đề nhóm và dừng ở dòng trống: giữ
+  thêm 525 mô tả cụ thể, nhưng để lại đúng những lỗi cần sửa — `--mobile-shell-max-inline-size`
+  đứng liền ba token safe-inset không có dòng trống, `--card-space-gap` liền năm token
+  card-title/description. Phép thử "anh em" (cùng tên trừ đoạn cuối): chặn được phần lớn rò rỉ
+  nhưng cắt mất các thang thật và vẫn để 485 token rơi về tiêu đề tệp — một luật khôn hơn cho gần
+  đúng ngần ấy độ phủ.
+
+  GIÁ PHẢI TRẢ, nói thẳng: 525/1364 token (38%) nay mang tiêu đề một dòng của tệp thay vì một tiêu
+  đề nhóm. Một số tiêu đề nhóm ấy vốn đúng cho cả nhóm. Đường lấy lại nằm trong tay tác giả và hiện
+  rõ trong diff: đưa chú thích xuống ngay trên token nó nói về. Diff của lần sinh lại: **867 mô tả
+  đổi, 0 token thêm/bớt, 0 giá trị đổi, thứ tự y nguyên**.
+
+  Luật tách ra `scripts/component-token-rules.mjs` (cùng kiểu với `token-scale-bypass-rules.mjs`)
+  để test được bằng fixture: `component-token-description-scope.test.ts` ghim đúng những hình dạng
+  đã sinh ra lỗi. Đột biến: trả về luật "chú thích gần nhất, mãi mãi" → đỏ 4 test; giao chú thích
+  cuối dòng cho token kế tiếp → đỏ 1 test.
+
 - **Catalog token của MCP không có cổng nào canh độ tươi — và cổng ấy đã nằm sẵn trong kho, không
   ai chạy được.** `scripts/gen-component-tokens.mjs` có chế độ `--check` từ lần sinh catalog đầu
   tiên, và MỌI tệp nó ghi ra đều in sẵn dòng ``Run `pnpm check:mcp-token-sync` `` ở đầu — nhưng

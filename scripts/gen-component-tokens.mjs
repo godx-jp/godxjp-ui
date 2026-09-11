@@ -2,8 +2,8 @@
 /**
  * Generates mcp/src/data/component-tokens.generated.ts from the component token tier
  * (src/tokens/components/*.css). Every component token becomes catalog data (name + default value
- * + the comment that heads its group as its description) so the MCP `get_component` tool can tell
- * an agent EXACTLY which theme knobs a component exposes.
+ * + a description, scoped by scripts/component-token-rules.mjs) so the MCP `get_component` tool
+ * can tell an agent EXACTLY which theme knobs a component exposes.
  *
  * `--check` IS THE POINT OF THIS FILE, NOT AN EXTRA. This generator has had a `--check` mode, and
  * has printed `Run \`pnpm check:mcp-token-sync\`` into the header of every file it writes, since
@@ -22,21 +22,12 @@
  */
 import { readFileSync, writeFileSync, globSync } from "node:fs";
 
+import { parseComponentTokens } from "./component-token-rules.mjs";
+
 const OUT = "mcp/src/data/component-tokens.generated.ts";
 
 function parse(file) {
-  const text = readFileSync(file, "utf8");
-  const re = /\/\*([\s\S]*?)\*\/|(--[a-z0-9-]+)\s*:\s*([^;]+);/g;
-  const items = [];
-  let comment = "";
-  for (const m of text.matchAll(re)) {
-    if (m[1] !== undefined) {
-      comment = m[1].replace(/\s+/g, " ").trim();
-    } else {
-      items.push({ name: m[2], value: m[3].replace(/\s+/g, " ").trim(), description: comment });
-    }
-  }
-  return items;
+  return parseComponentTokens(readFileSync(file, "utf8"));
 }
 
 const files = globSync("src/tokens/components/*.css").sort();
