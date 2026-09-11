@@ -30,7 +30,7 @@ MCP-first / no-duplication_; the others point here for that.
 | Consult the `godxjp-ui` MCP first (`get_component`, `search_components`, `get_rule`, `get_vocab`, `get_tokens`) | Guess a prop name/shape, or re-create what a primitive already does (`Select` = searchable/async) |
 | Compose real installable primitives fully (`CardContent` for padding)                                           | Invent/hand-roll/fake a component, or use raw `<input>/<select>/<button>/<textarea>/<table>`      |
 | Route every string + `aria-label` through `t()`; format via `Intl`/CLDR                                         | Hardcode EN/JA, hand-build number/currency/date, ship emoji flags                                 |
-| Implement the WAI-ARIA APG pattern + add a `*.a11y.test.tsx` (0 axe)                                            | Colour-only state, missing accessible name, positive tabindex, keyboard traps                     |
+| Implement the WAI-ARIA APG pattern, and assert role / name / keyboard by test                                            | Colour-only state, missing accessible name, positive tabindex, keyboard traps                     |
 | Logical CSS only (`ms-/me-/ps-/pe-`, `start-/end-`)                                                             | Physical `ml-/mr-/pl-/pr-/left-/right-`                                                           |
 | Controlled triad `value`/`defaultValue`/`onValueChange`; `size ∈ xs\|sm\|md\|lg`; `tone` for status             | `size="default"`, bespoke `current`/`onChange`, missing `defaultValue`                            |
 | Size from the `--control-height` tier                                                                           | Literal `height`/`width` or `calc(var(--control-height) ± …)`                                     |
@@ -196,7 +196,7 @@ pnpm typecheck && pnpm lint && pnpm run audit \
   && pnpm check:prop-vocabulary && pnpm check:mcp-sync && pnpm check:mcp-orphans \
   && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports
 
-# then ONLY your own component's tests, incl. your *.a11y.test.tsx (0 axe violations):
+# then ONLY your own component's tests:
 pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2
 ```
 
@@ -229,7 +229,7 @@ Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
 - [ ] **MCP-first**: checked `get_component`/`search_components`/`get_rule`/`get_vocab`/`get_tokens`; confirmed it doesn't already exist (no duplication)
 - [ ] **Real primitives only** — no invented/hand-rolled/faked component, no raw HTML control; composed fully (`CardContent`, `DataTable`, `EmptyState`)
 - [ ] **i18n** — every string + `aria-label` via `t()`; numbers/currency/dates/lists/names/plurals via `Intl`/CLDR; no emoji flags
-- [ ] **a11y** — APG roles/aria/keyboard/focus; ≥24px targets; never colour-only; **`*.a11y.test.tsx` passes 0 axe violations**
+- [ ] **a11y** — APG roles/aria/keyboard/focus; ≥24px targets; never colour-only; assert the accessible NAME and the keyboard path by test (`getByRole`, real key presses) — axe was removed from this repo, so nothing catches this for you
 - [ ] **RTL** — logical CSS only; flips correctly under `dir="rtl"`
 - [ ] **Vocabulary API** — `value`/`defaultValue`/`onValueChange` (+ uncontrolled); `size ∈ xs\|sm\|md\|lg`; positive booleans; `tone` for status; `ref` forwarded; `XProp` exported + **registered in `src/props/registry.ts`**
 - [ ] **Tokens** — semantic only; control box from the `--control-height` tier (no literal height/`calc`)

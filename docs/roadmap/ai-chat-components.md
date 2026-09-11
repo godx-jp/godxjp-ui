@@ -4,7 +4,7 @@
 > **Naming:** when a component's identity is unclear, look it up at
 > <https://namethatui.com/?platform=web> before inventing a name.
 > **Contract:** `.claude/skills/godxjp-ui-component/SKILL.md` is the hard gate — MCP-first, real
-> primitives only, `t()` + `Intl`, WAI-ARIA APG + WCAG 2.2 AA + vitest-axe, logical CSS, controlled
+> primitives only, `t()` + `Intl`, WAI-ARIA APG + WCAG 2.2 AA, logical CSS, controlled
 > vocabulary, semantic tokens, MCP catalog entry, real-screen docs page.
 
 The library has **zero** chat/AI components today (verified against `mcp/src/data/components.ts` —
@@ -187,7 +187,6 @@ Every component in the build set ships **all** of:
    `check:token-tiers`; control boxes come from the `--control-height` tier.
 4. Keys in `src/i18n/messages/en.json`, `vi.json`, `ja.json` — all three, no exceptions.
 5. Tests in `src/components/<group>/__tests__/`: a behavior test using `@testing-library/user-event`
-   **and** a `<name>.a11y.test.tsx` with `expectNoA11yViolations` at **0 violations**.
 6. An `mcp/src/data/components.ts` entry (props / usage / useCases / related / example / rules) —
    `check:mcp-sync` and `check:mcp-orphans` must pass.
 7. A real-screen docs page under `docs/<group>/` (AppShell + PageContainer + real primitives), not

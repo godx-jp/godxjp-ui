@@ -100,7 +100,6 @@ Plus the house rules: forward `ref`, spread `...props`, accept `className` + `id
   (`margin-inline-start`, `padding-inline-start`), never `ml-`/`pl-`/`left-`.
 - Tri-state parent checkbox: checked / unchecked / **indeterminate** when only some descendants
   are checked (skip propagation entirely when `checkStrictly`).
-- Ships `tree.a11y.test.tsx` with `expectNoA11yViolations` — 0 violations.
 
 ## 5. Tokens (tier: `src/tokens/components/tree.css`, `@import`ed from `src/tokens/base.css`)
 
