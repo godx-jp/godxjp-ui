@@ -204,7 +204,8 @@ pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2
 3700+ tests; run from an agent loop, and multiplied by parallel agents, it has put 70
 vitest workers on one machine at load 90 and burnt a monthly API budget. The full suite
 is CI's job on the PR — `tal --help` says it outright: _FULL SUITE KHÔNG THUỘC VỀ VÒNG
-LẶP._ `pnpm preview:build` / `pnpm verify:ci:static` run AT MOST ONCE, immediately
+LẶP._ `pnpm preview:build` / `pnpm verify:ci:static` are NOT yours to run at all unless the
+project owner asks in that message — pushing the branch is what runs CI. If asked, AT MOST ONCE, immediately
 before opening the PR, never inside the loop.
 
 Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
