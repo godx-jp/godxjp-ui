@@ -794,6 +794,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--number-input-touch-height",
+    "value": "var(--band-height-2xl)",
+    "description": "THE BAND A NumberInput TAKES ON A COARSE POINTER, and the one control in this package that * needs a taller one than rule #24's 44px floor. * * Its two steppers are STACKED inside the field, so each can only ever be half the band. Measured * in Chromium (Playwright touch emulation, `(pointer: coarse)` matching) before this token: the * default NumberInput was 44px and each stepper **24×19px**, with their centres 20px apart. WCAG * 2.2 SC 2.5.8 wants 24×24, and the Spacing exception does not rescue it either — that needs * 24px-diameter circles centred on each box NOT to intersect, and at 20px apart they do. * * 44px cannot be made to work: half of it is 22px whatever the inset and gap. 48px can, exactly — * two 24px halves, no inset, no gap — so the band moves up one step for this control alone, and * only where a coarse pointer says it matters. `size=\"lg\"` already lands on 48px there, so it * gains the same 24×24 for free; `xs` and `sm` stay where the consumer put them (a deliberately * smaller control is the consumer's trade, the same way rule #24 already treats them). * * A service that wants the 44px row back sets this to `var(--band-height-xl)` and takes 22px * targets with it."
+  },
+  {
     "name": "--control-variant-filled-background",
     "value": "var(--muted)",
     "description": "CHROME VARIANT — antd's `variant` axis. `outlined` needs no token: it is what a field already * draws. `filled` swaps the boundary for a tinted surface; `borderless` drops both. Kept as * knobs so a service theme can retune the dense-form treatment once, globally."

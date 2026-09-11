@@ -77,7 +77,7 @@ export function FormField({
    * edited and the other was not.
    */
   const helperNode = helper ? (
-    <p id={helperId} className="text-muted-foreground text-xs">
+    <p id={helperId} className="ui-form-field-note text-muted-foreground text-xs">
       {helper}
     </p>
   ) : null;
@@ -292,7 +292,7 @@ export function FormField({
         ) : null}
         {helperPlacement === "after" ? helperNode : null}
         {error ? (
-          <p id={errorId} role="alert" className="text-destructive text-xs">
+          <p id={errorId} role="alert" className="ui-form-field-note text-destructive text-xs">
             {error}
           </p>
         ) : null}

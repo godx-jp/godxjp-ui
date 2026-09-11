@@ -33,6 +33,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Hai nút bước của `NumberInput` chỉ cao 13px — dưới sàn 24×24 của WCAG 2.2 SC 2.5.8.** Đo trên
+  Chromium (Playwright, `(pointer: coarse)` khớp): chuột — mặc định **24×13**, `lg` 24×15, `sm`
+  24×11, `xs` 24×9; CẢM ỨNG — mặc định **24×19**, `lg` 24×21, tâm cách nhau 20/22px. Không cái nào
+  đạt 24×24, và ngoại lệ Spacing của SC 2.5.8 cũng không cứu được: nó đòi hai đường tròn đường kính
+  24px đặt tâm ở mỗi hộp KHÔNG giao nhau, mà cách 20px thì giao.
+
+  Hai nút xếp CHỒNG trong ô, nên mỗi nút chỉ bằng nửa dải cao của control — 44px thì nửa là 22px,
+  sửa kiểu gì cũng không tới 24. 48px thì tới đúng: bỏ khoảng thụt trang trí và khe 1px, nửa của 48
+  là 24. Nên trên con trỏ thô, NumberInput lấy dải cao hơn một bậc qua token mới
+  `--number-input-touch-height` (`--band-height-2xl`). Đo lại: cảm ứng, mặc định **24×19 → 24×24**
+  (ô 44 → 48px), `lg` 24×21 → **24×24** (ô vốn đã 48px). `xs`/`sm` giữ nguyên dải người dùng chọn
+  (15→18, 17→20): một consumer cố ý chọn control nhỏ trên màn cảm ứng là quyết định của họ, DS
+  không lật.
+
+  KHÔNG áp trên con trỏ tinh, và lý do được ghi lại chứ không mặc định: 24×13 trên desktop cũng
+  dưới chuẩn, nhưng CÙNG chức năng có trên một control thừa sức đạt chuẩn — chính cái ô (cao 32px,
+  rộng hết hàng) nhận ArrowUp/ArrowDown và nhận giá trị gõ vào. Kéo mọi NumberInput desktop lên
+  48px để nhân đôi một affordance đã có đường đạt chuẩn là thay đổi lớn hơn thứ nó sửa.
+
+  Cổng mới `check:number-input-step-target` (Chromium, shard `interaction-semantics`) đo cả hai loại
+  con trỏ, xác nhận `(pointer: coarse)` thực sự khớp trước khi đo, và canh CẢ chiều ngược lại — hình
+  học desktop không được nhúc nhích. Đột biến: hạ token về `--band-height-xl` → đỏ 2 (24×22); bỏ
+  `@media (pointer: coarse)` → desktop nhảy lên 24×24 → đỏ 1.
+
+- **Chữ phụ trợ của `FormField` ngắt dòng giữa từ tiếng Nhật.** Ngắt dòng CJK mặc định cho phép
+  ngắt giữa gần như hai ký tự bất kỳ, nên một dòng helper tiếng Nhật bị cắt giữa từ ở gần như mọi
+  bề rộng. Đo trên Chromium ở `/isolate/data-entry-form-field-index`, một helper ở bề rộng cột
+  biểu mẫu, so từng ký tự:
+
+  - 180px: mặc định 「監査報告は省令様式第8号で提｜出してください」 → `auto-phrase` 「…第8号で｜提出してください」
+  - 220px: mặc định 「…第8号で提出してく｜ださい」 → `auto-phrase` 「…第8号で｜提出してください」
+  - 120px: mặc định 「監査報告は省令様式｜第8号で提出してくだ｜さい」 → `auto-phrase` 「監査報告は｜省令様式第8号で｜提出してください」
+
+  Helper và error nay mang class `ui-form-field-note` với `word-break: auto-phrase`. Chữ Latin không
+  đổi (vẫn ngắt ở dấu cách — đo: "Attach the ministerial form before ｜ submitting the audit
+  report."), và trình duyệt không biết giá trị này thì bỏ qua, giữ nguyên cách ngắt hôm nay.
+
+  NÓI RÕ CÁI NÓ KHÔNG LÀM, vì số đo nói vậy chứ không phải tài liệu mong vậy: nó KHÔNG bảo đảm một
+  thuật ngữ nghiệp vụ còn nguyên. Ở 140px `auto-phrase` vẫn tách 「省令様式第｜8号」, và ở 120px nó
+  tách 「特定技能｜1号評価試験」 trong khi mặc định lại giữ nguyên. Một từ ghép là sự thật của NỘI
+  DUNG; không thuộc tính nào đặt trên cả đoạn văn biết nó bắt đầu ở đâu. Cái thu được là: trường
+  hợp THÔNG THƯỜNG thôi ngắt giữa từ, ở mọi bề rộng, cho mọi consumer.
+
+  Test `form-field-note-breaking.test.tsx` ghim khai báo và ghim class có trên CẢ hai `<p>` (chúng
+  dựng ở hai nhánh khác nhau của cùng một component — đúng chỗ một cái được style còn cái kia
+  không). Cố ý KHÔNG ghim vị trí dòng: đó là bộ tách 文節 của trình duyệt, đổi theo phiên bản
+  Chrome, và một cổng canh nó là cổng canh tệp dữ liệu của người khác. Đột biến: đổi khai báo về
+  `normal` → đỏ 1; bỏ class khỏi node lỗi → đỏ 2.
+
 - **Ô vòng đời của `DataTable` để nội dung của consumer dính sát mép bảng.** Ô chứa `empty` /
   `denied` / `error` có `padding: 0`, với lý do "`EmptyState` dựng sẵn đã tự mang đệm" — đúng với
   bản dựng sẵn, và sai với mọi hình dạng khác mà ba prop ấy nhận: cả ba đều nhận `ReactNode`, và

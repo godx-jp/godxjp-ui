@@ -1,6 +1,31 @@
 /* FORM — Ant-style layout. */
 
 @layer components {
+  /* THE TWO PROSE LINES A FIELD RENDERS — helper and error — BREAK AT JAPANESE PHRASE BOUNDARIES.
+   *
+   * Default CJK line breaking may break between almost any two characters, so a Japanese helper is
+   * cut mid-word at nearly every measure. Measured in Chromium on
+   * /isolate/data-entry-form-field-index, one helper at a form-column measure, comparing the
+   * default with `auto-phrase` character by character:
+   *
+   *   180px  default 「監査報告は省令様式第8号で提｜出してください」   auto-phrase 「…第8号で｜提出してください」
+   *   220px  default 「…第8号で提出してく｜ださい」                 auto-phrase 「…第8号で｜提出してください」
+   *   120px  default 「監査報告は省令様式｜第8号で提出してくだ｜さい」 auto-phrase 「監査報告は｜省令様式第8号で｜提出してください」
+   *
+   * WHAT IT IS NOT. It is not a promise that a domain term survives whole, and the measurements say
+   * so rather than the docs hoping so: at 140px `auto-phrase` still splits 「省令様式第｜8号」, and
+   * at 120px it splits 「特定技能｜1号評価試験」 where the default happened to keep it together. A
+   * compound term is a CONTENT fact, and no property applied to a paragraph can know where one
+   * starts — a consumer who must keep one whole marks it in the text. What this buys is that the
+   * ORDINARY case stops breaking mid-word, at every width, for every consumer.
+   *
+   * SAFE OUTSIDE JAPANESE, and safe on a browser that has never heard of it: the value applies
+   * phrase segmentation to text the browser segments as Japanese and behaves as `normal`
+   * elsewhere, and an unknown value is simply dropped, leaving today's breaking. */
+  .ui-form-field-note {
+    word-break: auto-phrase;
+  }
+
   /* Dấu bắt buộc nằm trong dòng chữ của nhãn nên không còn nhận `gap` của flex; khoảng cách
    * trước nó do chính nó khai, vẫn đọc token chứ không phải một con số cứng. */
   .ui-form-field-required {
