@@ -33,6 +33,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Segmented` 4 择 tràn ở 393px: KHÔNG tái hiện được trên `dev` — đã sửa từ #480, consumer phải
+  nâng phiên bản.** Dựng lại đúng bố cục consumer báo (gino-cloud, màn 書類 · tab 書類様式 · bộ lọc
+  制度): 4 lựa chọn, mỗi nhãn kèm `Badge as="span"` đếm số, nhãn 「すべて 133」「技能実習 82」
+  「特定技能 51」「育成就労 0」, nằm trong `Flex gap="sm" align="center" wrap` → `CardContent` →
+  `Card`, không có `ScrollArea`. Đo trên Chromium ở 320 / 360 / 393 / 412 / 768px, LTR và RTL: **0
+  tràn, 0 cắt chữ, 0 cắt badge, trang không cuộn ngang** — trên `dev` track xuống 2 hàng và vừa khít.
+
+  Bằng chứng cho chiều ngược lại, để "đã sửa rồi" không phải lời nói suông: gỡ đúng một dòng
+  `flex-wrap: wrap` mà #480 thêm (tức trạng thái 20.2.1) rồi đo lại CÙNG bố cục ấy — ở **393px cả
+  bốn nhãn bị cắt** và badge cuối **tràn 11,61px** khỏi track (consumer báo 11,8px và 2,6px; hai
+  luật họ nêu, `label-truncated` và `text-edge-inset`, khớp cả hai). Ở 320px là 29,16px, 360px là
+  19,55px.
+
+  Điều đáng làm còn lại: giả thuyết "hàng `Flex wrap` mới là nguyên nhân" hợp lý đủ để đáng ĐO chứ
+  không đáng suy luận, nên bố cục ấy nay là một frame thật —
+  `docs/data-entry/segmented-in-filter-row.tsx` — và `check:segmented-wrap` chạy cả hai frame ở bốn
+  bề rộng × hai chiều. (Nó KHÔNG phải nguyên nhân: bỏ `flex-wrap`, hộp khối và flex item hỏng y hệt
+  nhau.) Đột biến: bỏ `flex-wrap: wrap`, chạy riêng frame mới → đỏ với đúng bốn nhãn bị cắt.
+
 - **Hai nút bước của `NumberInput` chỉ cao 13px — dưới sàn 24×24 của WCAG 2.2 SC 2.5.8.** Đo trên
   Chromium (Playwright, `(pointer: coarse)` khớp): chuột — mặc định **24×13**, `lg` 24×15, `sm`
   24×11, `xs` 24×9; CẢM ỨNG — mặc định **24×19**, `lg` 24×21, tâm cách nhau 20/22px. Không cái nào
