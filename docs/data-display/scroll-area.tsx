@@ -96,7 +96,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="ScrollArea"
-      subtitle="Custom scrollbar container · needs an explicit height"
+      subtitle="Native scrolling, token-styled scrollbar · needs an explicit height"
     >
       <Flex direction="col" gap="lg">
         <Card>
