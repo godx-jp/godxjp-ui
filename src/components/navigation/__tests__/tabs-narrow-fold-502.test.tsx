@@ -147,6 +147,29 @@ describe("Tabs — a vertical strip folds to a horizontal one on a phone (gh#502
     expect(screen.getByRole("tablist")).toHaveAttribute("aria-orientation", "horizontal");
   });
 
+  /**
+   * The fold asks about the ORIENTATION, because that is what makes the root a flex ROW. This pair
+   * is odd to pass and perfectly legal, and it puts the strip beside the panel exactly like
+   * `start` does — keyed on the placement alone the fold would have walked past it.
+   */
+  it('folds `tabPlacement="top"` when the caller also asked for a vertical tablist', () => {
+    setViewport(393);
+    render(<Tabs items={ITEMS} tabPlacement="top" orientation="vertical" />);
+    expect(screen.getByRole("tablist")).toHaveAttribute("aria-orientation", "horizontal");
+  });
+
+  it('folds `tabPlacement="bottom" orientation="vertical"` to `bottom`, not to `top`', () => {
+    setViewport(393);
+    const { container } = render(
+      <Tabs items={ITEMS} tabPlacement="bottom" orientation="vertical" />,
+    );
+    expect(container.querySelector('[data-slot="tabs"]')).toHaveAttribute(
+      "data-placement",
+      "bottom",
+    );
+    expect(screen.getByRole("tablist")).toHaveAttribute("aria-orientation", "horizontal");
+  });
+
   it("leaves `top` and `bottom` alone at every width", () => {
     setViewport(393);
     const { container } = render(<Tabs items={ITEMS} tabPlacement="bottom" />);

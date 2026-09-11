@@ -181,22 +181,28 @@ const TABS_PLACEMENT_BREAKPOINT_FALLBACK_QUERY = "(max-width: 768px)";
  * literal so a service whose vertical tabs live in a wide scroll region can move it (or set it to
  * `0px`, which no viewport matches, to keep the strip vertical at every width).
  *
- * `end` folds to `bottom`, not to `top`: the caller asked for the strip on the trailing edge, and
- * on the block axis that edge is the bottom. Keeping the pairing means the fold moves the strip
- * around ONE corner instead of across the box.
+ * A TRAILING placement folds to `bottom`, a leading one to `top`: the caller asked for the strip on
+ * the trailing edge, and on the block axis that edge is the bottom. Keeping the pairing means the
+ * fold moves the strip around ONE corner instead of across the box.
+ *
+ * IT KEYS ON THE ORIENTATION, NOT ON THE PLACEMENT, because the orientation is what decides the
+ * ROOT's flex direction — `data-[orientation=horizontal]:flex-col`, so a vertical one is a ROW.
+ * `tabPlacement="top" orientation="vertical"` is an odd pair to pass and a perfectly legal one,
+ * and it puts the strip beside the panel exactly like `start` does; keyed on the placement alone
+ * the fold would have walked straight past it.
  *
  * The fold is resolved in JS, not in a media query, because it is not a paint: `orientation` is
- * what decides whether ←/→ or ↑/↓ move the roving focus and what `aria-orientation` announces. A
- * CSS-only flip would leave a horizontal strip driven by the vertical arrow keys.
+ * what `aria-orientation` announces, what react-aria reads for the roving focus, and what those
+ * `[data-orientation]` selectors key on. A CSS-only flip would paint a row while telling a screen
+ * reader it is a column.
  */
 function foldVerticalPlacement(
   axis: { placement: TabsPlacementProp; orientation: "horizontal" | "vertical" },
   narrow: boolean,
 ): { placement: TabsPlacementProp; orientation: "horizontal" | "vertical" } {
-  if (!narrow) return axis;
-  if (axis.placement === "start") return { placement: "top", orientation: "horizontal" };
-  if (axis.placement === "end") return { placement: "bottom", orientation: "horizontal" };
-  return axis;
+  if (!narrow || axis.orientation !== "vertical") return axis;
+  const trailing = axis.placement === "end" || axis.placement === "bottom";
+  return { placement: trailing ? "bottom" : "top", orientation: "horizontal" };
 }
 
 export function Tabs({
