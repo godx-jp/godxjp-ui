@@ -367,7 +367,7 @@ export function SelectGroup({ className, children, ...props }: React.HTMLAttribu
   );
 }
 
-export type SelectValueProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> & {
+type SelectValueProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> & {
   /** Shown while nothing is selected. */
   placeholder?: React.ReactNode;
   /** Replaces the selected option's label on the trigger while a value is selected. */
