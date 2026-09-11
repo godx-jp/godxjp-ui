@@ -524,8 +524,8 @@
     "exports": 262,
     "dimensionCells": 3668,
     "covered": 78,
-    "untested": 2052,
-    "notApplicable": 1538,
+    "untested": 2054,
+    "notApplicable": 1536,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -5759,13 +5759,13 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 5,
-        "untested": 9
+        "notApplicable": 3,
+        "untested": 11
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "untested",
         "tones": "not-applicable:api-manifest",
-        "sizes": "not-applicable:api-manifest",
+        "sizes": "untested",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",

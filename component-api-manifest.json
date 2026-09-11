@@ -13424,7 +13424,7 @@
           "name": "onChange",
           "origin": "owned",
           "required": false,
-          "type": "((value: number) => void) | ((value: number[]) => void) | undefined",
+          "type": "((value: number) => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -13432,7 +13432,7 @@
           "name": "onChangeComplete",
           "origin": "owned",
           "required": false,
-          "type": "((value: number) => void) | ((value: number[]) => void) | undefined",
+          "type": "((value: number) => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -13464,8 +13464,8 @@
           "name": "range",
           "origin": "owned",
           "required": false,
-          "type": "boolean | SliderRangeConfigProp | undefined",
-          "values": [],
+          "type": "false | undefined",
+          "values": [false],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
