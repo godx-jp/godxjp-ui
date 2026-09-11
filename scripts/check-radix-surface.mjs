@@ -32,6 +32,7 @@
  *   • a file importing FEWER, or gone entirely          -> red, "lock the win in" — re-baseline in
  *     the same commit that earns it, so a win cannot be quietly spent later
  *   • a declared @radix-ui dependency no file imports   -> red (dead dependency)
+ *   • a declared @radix-ui dependency only TESTS import -> red (belongs in devDependencies)
  *   • a declared package with no baseline entry         -> red (a package came back)
  *
  * NO EXEMPT LIST, deliberately. Every remaining Radix file is IN the baseline with its packages
@@ -106,6 +107,20 @@ const declared = Object.keys(pkg.dependencies ?? {})
   .sort();
 
 const imported = new Set(Object.values(found).flat());
+
+/**
+ * A file that ships, as opposed to one that only proves something about what ships. `dependencies`
+ * is what every consumer installs, so it answers to the shipped files alone. The parity tests that
+ * render the old Radix tree beside the new react-aria one DO import Radix, and counting them kept
+ * eight packages in `dependencies` after every component that used them had moved.
+ */
+const isShipped = (file) =>
+  file.startsWith("src/") && !file.includes("/__tests__/") && !/\.test\.[cm]?[jt]sx?$/.test(file);
+const shippedImports = new Set(
+  Object.entries(found)
+    .filter(([file]) => isShipped(file))
+    .flatMap(([, packages]) => packages),
+);
 const fileCount = Object.keys(found).length;
 
 if (REPORT) {
@@ -172,6 +187,11 @@ for (const name of declared) {
     regressions.push(
       `DEAD DEPENDENCY: ${name} is declared in package.json and imported by no file.\n` +
         "      Consumers install it for nothing. Delete it from dependencies.",
+    );
+  } else if (!shippedImports.has(name)) {
+    regressions.push(
+      `TEST-ONLY DEPENDENCY: ${name} is in dependencies, but only tests import it.\n` +
+        "      Every consumer installs it for a test they never run. Move it to devDependencies.",
     );
   }
 }
