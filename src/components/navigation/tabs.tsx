@@ -7,6 +7,7 @@ import {
 } from "react-aria-components";
 import { MoreHorizontal, Plus, X } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
+import { useMaxWidthBreakpoint } from "../../lib/breakpoint-token";
 import { cn } from "../../lib/utils";
 import {
   DropdownMenu,
@@ -159,6 +160,51 @@ function resolveTabsAxis(
   };
 }
 
+/** Theme knob holding the width at which a vertical strip folds (src/tokens/components/navigation.css). */
+const TABS_PLACEMENT_BREAKPOINT_TOKEN = "--tabs-placement-responsive-breakpoint-width";
+/** Mirrors the token default (48rem @ a 16px root) so SSR and a token-less test env agree. */
+const TABS_PLACEMENT_BREAKPOINT_FALLBACK_QUERY = "(max-width: 768px)";
+
+/**
+ * NARROW FOLD (gh#502) — an inline-axis strip becomes a block-axis strip on a phone.
+ *
+ * A vertical strip and its panel are two flex items on ONE inline axis, and the panel's content
+ * sets its min-content width. As soon as that min-content is most of a phone screen the strip has
+ * nothing left to occupy: measured at 393px against a panel holding a 676px-wide block, the strip
+ * came out 8px wide with 0px of tab in it — not "hard to hit", but NO WAY AT ALL to reach any tab
+ * but the open one (WCAG 2.2 SC 2.1.1), plus the panel's own inline overflow on top (SC 1.4.10).
+ *
+ * Ant Design folds the same way and that is the precedent followed here: `components/tabs/index.tsx`
+ * drops `left`/`right` to `top` once it decides the device is mobile. The one thing NOT copied is
+ * HOW it decides — antd sniffs the user agent, which says nothing about how much room this
+ * particular strip has. A width query is the honest question, and it is a THEME knob rather than a
+ * literal so a service whose vertical tabs live in a wide scroll region can move it (or set it to
+ * `0px`, which no viewport matches, to keep the strip vertical at every width).
+ *
+ * A TRAILING placement folds to `bottom`, a leading one to `top`: the caller asked for the strip on
+ * the trailing edge, and on the block axis that edge is the bottom. Keeping the pairing means the
+ * fold moves the strip around ONE corner instead of across the box.
+ *
+ * IT KEYS ON THE ORIENTATION, NOT ON THE PLACEMENT, because the orientation is what decides the
+ * ROOT's flex direction — `data-[orientation=horizontal]:flex-col`, so a vertical one is a ROW.
+ * `tabPlacement="top" orientation="vertical"` is an odd pair to pass and a perfectly legal one,
+ * and it puts the strip beside the panel exactly like `start` does; keyed on the placement alone
+ * the fold would have walked straight past it.
+ *
+ * The fold is resolved in JS, not in a media query, because it is not a paint: `orientation` is
+ * what `aria-orientation` announces, what react-aria reads for the roving focus, and what those
+ * `[data-orientation]` selectors key on. A CSS-only flip would paint a row while telling a screen
+ * reader it is a column.
+ */
+function foldVerticalPlacement(
+  axis: { placement: TabsPlacementProp; orientation: "horizontal" | "vertical" },
+  narrow: boolean,
+): { placement: TabsPlacementProp; orientation: "horizontal" | "vertical" } {
+  if (!narrow || axis.orientation !== "vertical") return axis;
+  const trailing = axis.placement === "end" || axis.placement === "bottom";
+  return { placement: trailing ? "bottom" : "top", orientation: "horizontal" };
+}
+
 export function Tabs({
   className,
   orientation,
@@ -187,9 +233,13 @@ export function Tabs({
 }: TabsProps) {
   const { t } = useTranslation();
   const resolvedDefault = resolveFallbackTabValue(items, defaultValue);
-  const { placement, orientation: resolvedOrientation } = resolveTabsAxis(
-    tabPlacement,
-    orientation,
+  const narrow = useMaxWidthBreakpoint(
+    TABS_PLACEMENT_BREAKPOINT_TOKEN,
+    TABS_PLACEMENT_BREAKPOINT_FALLBACK_QUERY,
+  );
+  const { placement, orientation: resolvedOrientation } = foldVerticalPlacement(
+    resolveTabsAxis(tabPlacement, orientation),
+    narrow,
   );
   const selectionSuppressed =
     value === undefined && items != null && items.length > 0 && resolvedDefault === undefined;

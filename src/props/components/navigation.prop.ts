@@ -382,7 +382,14 @@ export type TabsProp = {
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   variant?: TabsVariantProp;
-  /** Ant Design `tabPlacement`. Default `top`. */
+  /**
+   * Ant Design `tabPlacement`. Default `top`.
+   *
+   * `start`/`end` FOLD to `top`/`bottom` at or below
+   * `--tabs-placement-responsive-breakpoint-width` (48rem), arrow keys included — a vertical strip
+   * shares one inline axis with its panel and a phone has no room for both. Ant Design folds the
+   * same pair the same way. Set the token to `0px` to keep the strip vertical at every width.
+   */
   tabPlacement?: TabsPlacementProp;
   /** Control tier of the triggers. Default `md`. Ant Design `size` (`small`/`middle`/`large`). */
   size?: "sm" | "md" | "lg";

@@ -7380,7 +7380,7 @@ toast.error("保存に失敗しました");`,
         type: '"top" | "bottom" | "start" | "end"',
         defaultValue: '"top"',
         description:
-          'Which edge the trigger strip parks on — Ant Design 6.6.2\'s `tabPlacement` (its `tabPosition` is deprecated there), so the inline values are already RTL-logical. `start`/`end` also flip the tablist to vertical roving focus, which is what `orientation="vertical"` did on its own before; either prop still works and the other is derived from it. The strip stays FIRST in the DOM at every placement — `bottom`/`end` are a flex reversal, not a re-ordered tree.',
+          'Which edge the trigger strip parks on — Ant Design 6.6.2\'s `tabPlacement` (its `tabPosition` is deprecated there), so the inline values are already RTL-logical. `start`/`end` also flip the tablist to vertical roving focus, which is what `orientation="vertical"` did on its own before; either prop still works and the other is derived from it. The strip stays FIRST in the DOM at every placement — `bottom`/`end` are a flex reversal, not a re-ordered tree. NARROW FOLD: `start`/`end` become `top`/`bottom` (arrow keys included) at or below `--tabs-placement-responsive-breakpoint-width` (48rem) — a vertical strip and its panel share one inline axis and a phone has room for one of them; Ant Design folds the same pair the same way. Set that token to `0px` to keep the strip vertical at every width.',
       },
       {
         name: "size",

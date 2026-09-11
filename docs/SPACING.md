@@ -64,6 +64,36 @@ Pick by AXIS, and note that the three do **not** share one value: each reads a d
 
 Because `ui-card-inset-x` reads `--card-space-inset`, it follows the card it sits in: a `Card density="tight"` or `"cozy"` moves those cells with the shell. The other two read fixed steps (band and body) and do not.
 
+## Control interiors are NOT on this scale
+
+Everything above is the space **between** things — page sections, siblings in a stack, a card's
+shell against its content. A control's **inside** is a different measurement and it is derived from
+the control band (`--control-height`, `--control-padding-x`), never from `--space-*`. The two do not
+meet, and reading a step off the table above as a minimum for a control's interior gives the wrong
+answer.
+
+The case that keeps coming up is `Segmented`'s track (gh#503). Its padding is **2px**, and the
+label inside it therefore sits ~5px from the track's outer edge — under `--space-2` (8px), which is
+NOT a floor this document sets for anything.
+
+2px is the whole geometry of the control:
+
+```
+label height = --control-height − track padding × 2     →  32 − 4 = 28
+```
+
+so the track measures **exactly** `--control-height` and a `Segmented` sits level with the `Input`
+and the `Button` beside it on the same row. Raise the padding to 8px and one of two things has to
+give: either the label band drops to 16px — a 14px type size in a 16px box, under every hit target
+this library holds — or the track grows to 44px (28 + 8 × 2) and stops lining up with every other
+control. The same derivation is why a `Button`'s own label sits ~5px inside its border. A control
+is sized by its band; the band is what a dense enterprise UI is for.
+
+**The knob, if a service wants a roomier control.** `--segmented-track-padding` is a published
+component token (`src/tokens/components/segmented.css`); raising it re-derives the item height from
+the same formula, so the track stays exactly one control tall. Do not reach for a Tailwind `p-*` on
+the control — the audit rejects it, and it would break the identity above.
+
 ## MCP
 
 `get_pattern page-sections` (a page of Cards, spaced by the page) · `get_rule 40` (mobile-first spacing) · `list_audit_rules` (the spacing rules the CLI enforces).

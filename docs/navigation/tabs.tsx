@@ -47,6 +47,56 @@ const journalItems = [
 ];
 
 /**
+ * A 設定 screen shaped like the one gh#502 was filed from: a vertical strip beside a panel whose
+ * content does NOT collapse below about 200px (an action row of two buttons). That min-content is
+ * what starved the strip — measured at 393px before the fold, the strip was 8px wide with 0px of
+ * tab in it. `pnpm check:frame-geometry` sweeps this frame at 320/375/390 and fails on the inline
+ * overflow it produced; a demo whose panel holds one short paragraph proves nothing, because a
+ * paragraph's min-content is one character wide.
+ */
+const settingItems = [
+  {
+    value: "general",
+    label: "基本設定",
+    content: (
+      <Flex direction="col" gap="sm">
+        <Text as="p">表示名・タイムゾーン・言語。</Text>
+        <Flex gap="sm">
+          <Button variant="outline">変更を破棄</Button>
+          <Button>保存する</Button>
+        </Flex>
+      </Flex>
+    ),
+  },
+  {
+    value: "members",
+    label: "メンバー",
+    content: (
+      <Flex direction="col" gap="sm">
+        <Text as="p">招待済 8 名 · 管理者 2 名。</Text>
+        <Flex gap="sm">
+          <Button variant="outline">権限を見る</Button>
+          <Button>招待する</Button>
+        </Flex>
+      </Flex>
+    ),
+  },
+  {
+    value: "billing",
+    label: "請求",
+    content: (
+      <Flex direction="col" gap="sm">
+        <Text as="p">次回請求日 2026年10月1日。</Text>
+        <Flex gap="sm">
+          <Button variant="outline">履歴を見る</Button>
+          <Button>支払方法</Button>
+        </Flex>
+      </Flex>
+    ),
+  },
+];
+
+/**
  * 20 saved views with real Japanese labels — a strip that is wider than 1920px, so it overflows at
  * EVERY width the browser gates sweep. `scripts/check-tabs-overflow-menu.mjs` measures this frame;
  * it fails if the strip ever stops overflowing, because a gate over a bar that fits proves nothing.
@@ -551,6 +601,28 @@ export default function Demo() {
                 items={journalItems}
               />
             </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>tabPlacement=&quot;start&quot; · 狭い画面での折り返し</CardTitle>
+            <CardDescription>
+              縦のタブ列はパネルと同じインライン軸を共有するので、パネルの min-content
+              が画面の大半を占めると列が 0px
+              まで潰れ、開いているタブ以外へ行く手段が消える(gh#502)。
+              --tabs-placement-responsive-breakpoint-width(48rem)以下では start / end を top /
+              bottom へ折り返す。ロービングフォーカスの軸も一緒に切り替わる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs
+              id="antd-start-narrow"
+              defaultValue="general"
+              variant="line"
+              tabPlacement="start"
+              items={settingItems}
+            />
           </CardContent>
         </Card>
       </Flex>

@@ -64,6 +64,13 @@
   --tabs-list-max-inline-size: 100%;
   --tabs-list-overflow: auto;
 
+  /* Width at or below which `tabPlacement="start"`/`"end"` folds to `top`/`bottom` (gh#502) — a
+   * vertical strip and its panel share one inline axis and a phone has room for one of them. Same
+   * line `--sheet-responsive-breakpoint-width` draws; `0px` (which no viewport matches) turns the
+   * fold off. Read in JS (src/lib/breakpoint-token.ts) because the fold also swaps which arrow keys
+   * move the roving focus — see the note on `foldVerticalPlacement` in navigation/tabs.tsx. */
+  --tabs-placement-responsive-breakpoint-width: 48rem;
+
   /* Tabs `line` active indicator (gh#248) — the ONLY selected-state decoration the line variant
    * paints. The surrounding active ring belongs to the default/card lists, so `:focus-visible`
    * keeps its own distinct keyboard ring here (WCAG 2.4.7). `--tabs-indicator-background` is a
