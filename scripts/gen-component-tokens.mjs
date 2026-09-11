@@ -2,8 +2,23 @@
 /**
  * Generates mcp/src/data/component-tokens.generated.ts from the component token tier
  * (src/tokens/components/*.css). Every component token becomes catalog data (name + default value
- * + the nearest CSS comment as its description) so the MCP `get_component` tool can tell an agent
- * EXACTLY which theme knobs a component exposes.
+ * + the comment that heads its group as its description) so the MCP `get_component` tool can tell
+ * an agent EXACTLY which theme knobs a component exposes.
+ *
+ * `--check` IS THE POINT OF THIS FILE, NOT AN EXTRA. This generator has had a `--check` mode, and
+ * has printed `Run \`pnpm check:mcp-token-sync\`` into the header of every file it writes, since
+ * the catalog was first generated — while no such script existed in package.json and no workflow
+ * ran the mode. So the catalog was regenerated when somebody remembered, and otherwise drifted:
+ * found stale on `main` missing `--progress-ring-*`, `--tabs-overflow-*`,
+ * `--tabs-list-line-space-gap` and `--mobile-shell-max-inline-size`, and still listing
+ * `--segmented-item-height`, a token that had been removed. An agent asking the MCP which knobs
+ * Tabs exposes got an answer from a file nothing checked.
+ *
+ * A stale catalog fails the same way a missing prop does, and this repo has the measurement:
+ * `pad`/`padRaw` existed in the package but not in the shipped catalog, so an agent following the
+ * documented MCP-first process concluded "Flex only has gap" and gave up in front of 21 findings
+ * it could have fixed (docs/WHAT-BELONGS-HERE.md). A token nobody can look up is a token nobody
+ * has.
  */
 import { readFileSync, writeFileSync, globSync } from "node:fs";
 
@@ -35,6 +50,42 @@ const body =
   JSON.stringify(tokens, null, 2) +
   ";\n";
 
+/**
+ * Name what changed between the committed catalog and the tokens just parsed: added, removed, and
+ * (when neither) how many entries differ only in value or description.
+ *
+ * @param {string} committed raw text of the checked-in file
+ * @param {{name: string, value: string, description: string}[]} fresh
+ * @returns {string[]}
+ */
+function describeDrift(committed, fresh) {
+  const previous = new Map();
+  // The file is this generator's own output, so the shape is known: read the entries back out of
+  // it rather than importing TypeScript from a plain node script.
+  for (const m of committed.matchAll(
+    /"name":\s*("(?:[^"\\]|\\.)*")[\s\S]{0,40}?"value":\s*("(?:[^"\\]|\\.)*")/g,
+  )) {
+    previous.set(JSON.parse(m[1]), JSON.parse(m[2]));
+  }
+  if (previous.size === 0)
+    return ["the committed file has no entries to compare (missing or empty)"];
+
+  const current = new Map(fresh.map((t) => [t.name, t.value]));
+  const added = [...current.keys()].filter((n) => !previous.has(n));
+  const removed = [...previous.keys()].filter((n) => !current.has(n));
+  const retuned = [...current.keys()].filter(
+    (n) => previous.has(n) && previous.get(n) !== current.get(n),
+  );
+
+  const lines = [];
+  if (added.length) lines.push(`+ ${added.length} new token(s): ${added.join(", ")}`);
+  if (removed.length) lines.push(`- ${removed.length} removed token(s): ${removed.join(", ")}`);
+  if (retuned.length) lines.push(`~ ${retuned.length} retuned default(s): ${retuned.join(", ")}`);
+  if (!lines.length)
+    lines.push("names and values match — the DESCRIPTIONS drifted (a comment moved)");
+  return lines;
+}
+
 if (process.argv.includes("--check")) {
   let current = "";
   try {
@@ -46,6 +97,10 @@ if (process.argv.includes("--check")) {
     console.error(
       `✗ check:mcp-token-sync — ${OUT} is stale. Run \`node scripts/gen-component-tokens.mjs\`.`,
     );
+    // SAY WHAT DRIFTED. "The file is stale" sends a reader to a 1300-entry JSON diff; the four
+    // names below are the whole story in most cases, and they are exactly what the stale catalog
+    // on `main` was hiding.
+    for (const line of describeDrift(current, tokens)) console.error(`    ${line}`);
     process.exit(1);
   }
   console.log(

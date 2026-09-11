@@ -8,6 +8,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Catalog token của MCP không có cổng nào canh độ tươi — và cổng ấy đã nằm sẵn trong kho, không
+  ai chạy được.** `scripts/gen-component-tokens.mjs` có chế độ `--check` từ lần sinh catalog đầu
+  tiên, và MỌI tệp nó ghi ra đều in sẵn dòng ``Run `pnpm check:mcp-token-sync` `` ở đầu — nhưng
+  script ấy chưa bao giờ tồn tại trong `package.json`, nên không workflow nào gọi được. Kết quả:
+  `mcp/src/data/component-tokens.generated.ts` bị phát hiện ÔI trên `main` — thiếu
+  `--progress-ring-*`, `--tabs-overflow-*`, `--tabs-list-line-space-gap`,
+  `--mobile-shell-max-inline-size`, và vẫn kê `--segmented-item-height`, một token đã bị gỡ. Agent
+  tra MCP xem Tabs có núm gì nhận câu trả lời từ một tệp không ai canh — đúng lớp lỗi đã đo được
+  với `pad`/`padRaw` (agent theo đúng quy trình MCP-first kết luận "Flex chỉ có gap" rồi bỏ cuộc
+  trước 21 finding).
+
+  `scripts/gen-email-tokens.mjs` ở đúng tình trạng ấy (`check:email-token-sync`, được in ra trong
+  chính output của nó, không có trong `package.json`) — nên đây là một LỚP chứ không phải một lần
+  quên. Cả hai nay là `check:mcp-token-sync` / `check:email-token-sync`, nằm trong `verify`,
+  `verify:static` và `verify:ci:static` cạnh các cổng catalog MCP khác; `check:gate-coverage` xác
+  nhận 61/63 cổng có workflow chạy.
+
+  `--check` nay còn NÓI RA cái gì lệch thay vì chỉ "stale": thêm / gỡ / đổi mặc định, kèm tên
+  token. Đột biến: thêm một token vào tier → `+ 1 new token(s): --control-mutation-probe`; gỡ một
+  token → `- 1 removed token(s)`; đổi giá trị → `~ 1 retuned default(s)`; cả ba exit 1.
+
+  Cổng cho chính lớp lỗi này: `src/test/__tests__/generator-check-mode-wired.test.ts` — mọi
+  `scripts/gen-*.mjs` có `--check` phải có một script `check:*` chạy nó, và mọi `pnpm check:…`
+  mà generator in ra phải là script có thật. `check:gate-coverage` không thấy được lỗ này (nó soi
+  các `check:*` ĐÃ CÓ so với workflow; một cổng chưa ai khai thì nó vô hình). Đột biến: xoá
+  `check:mcp-token-sync` khỏi `package.json` — tức đúng trạng thái trên `main` — → đỏ hai test.
+
 - **`Input` chưa bao giờ vẽ vòng tiêu điểm — một utility của Tailwind thắng cả tầng components.**
   `.ui-input` CÓ trong danh sách selector của `focus-ring.css`, nhưng `Input` tự mang theo
   `outline-none`; `@layer utilities` đứng sau `@layer components` nên thắng mọi độ đặc hiệu, và
