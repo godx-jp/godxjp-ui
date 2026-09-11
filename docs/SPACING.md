@@ -85,9 +85,9 @@ label height = --control-height − track padding × 2     →  32 − 4 = 28
 so the track measures **exactly** `--control-height` and a `Segmented` sits level with the `Input`
 and the `Button` beside it on the same row. Raise the padding to 8px and one of two things has to
 give: either the label band drops to 16px — a 14px type size in a 16px box, under every hit target
-this library holds — or the track grows to 48px and stops lining up with every other control. The
-same derivation is why a `Button`'s own label sits ~5px inside its border. A control is sized by
-its band; the band is what a dense enterprise UI is for.
+this library holds — or the track grows to 44px (28 + 8 × 2) and stops lining up with every other
+control. The same derivation is why a `Button`'s own label sits ~5px inside its border. A control
+is sized by its band; the band is what a dense enterprise UI is for.
 
 **The knob, if a service wants a roomier control.** `--segmented-track-padding` is a published
 component token (`src/tokens/components/segmented.css`); raising it re-derives the item height from
