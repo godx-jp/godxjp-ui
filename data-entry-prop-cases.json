@@ -54,17 +54,8 @@
   "Calendar": {
     "mode/selected/onSelect/month/bounds/disabled/locale/labels": "docs/data-entry/calendar.tsx single/range/multiple cases"
   },
-  "MonthPicker": {
-    "value/defaultValue/onValueChange/min/max/disabled/locale": "docs/data-entry/month-picker.tsx cases"
-  },
-  "MonthRangePicker": {
-    "value/defaultValue/onValueChange/min/max/disabled/locale": "docs/data-entry/month-range-picker.tsx cases"
-  },
   "DatePicker": {
-    "value/defaultValue/onValueChange/min/max/disabled/clearable/locale": "docs/data-entry/date-picker.tsx cases"
-  },
-  "DateRangePicker": {
-    "value/defaultValue/onValueChange/min/max/disabled/clearable/locale": "docs/data-entry/date-range-picker.tsx cases"
+    "value/defaultValue/onValueChange/picker/range/multiple/minDate/maxDate/disabled/locale": "docs/data-entry/date-picker.tsx cases"
   },
   "TimePicker": {
     "value/defaultValue/onValueChange/format/step/disabled/clearable": "docs/data-entry/time-picker.tsx cases"

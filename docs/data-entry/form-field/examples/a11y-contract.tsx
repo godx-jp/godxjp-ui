@@ -5,11 +5,9 @@ import {
   CheckboxGroup,
   ColorPicker,
   DatePicker,
-  DateRangePicker,
   Form,
   FormField,
   Input,
-  MonthPicker,
   RadioGroup,
   SearchInput,
   Select,
@@ -129,14 +127,14 @@ export default function Demo() {
               <FormField id="ac-date" label="取引日" helper="yyyy-MM-dd">
                 <DatePicker id="ac-date" name="date" />
               </FormField>
-              <FormField id="ac-month" label="対象月" helper="yyyy/MM">
-                <MonthPicker id="ac-month" name="month" />
+              <FormField id="ac-month" label="対象月" helper="yyyy-MM">
+                <DatePicker picker="month" id="ac-month" name="month" />
               </FormField>
               <FormField id="ac-time" label="締め時刻" helper="24時間表記">
                 <TimePicker id="ac-time" name="time" />
               </FormField>
               <FormField id="ac-period" label="対象期間" helper="開始日と終了日">
-                <DateRangePicker id="ac-period" name="period" />
+                <DatePicker range id="ac-period" name="period" />
               </FormField>
               <FormField id="ac-color" label="タグ色" helper="16進カラー">
                 <ColorPicker id="ac-color" onValueChange={() => {}} />

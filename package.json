@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "21.0.0",
-  "godxUiMcp": "21.0.0",
+  "version": "22.0.0",
+  "godxUiMcp": "22.0.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -212,10 +212,6 @@
     "./ui/date-picker": {
       "types": "./dist/components/data-entry/date-picker.d.ts",
       "import": "./dist/components/data-entry/date-picker.js"
-    },
-    "./ui/date-range-picker": {
-      "types": "./dist/components/data-entry/date-range-picker.d.ts",
-      "import": "./dist/components/data-entry/date-range-picker.js"
     },
     "./ui/time-picker": {
       "types": "./dist/components/data-entry/time-picker.d.ts",

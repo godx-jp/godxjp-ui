@@ -368,7 +368,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--control-composite-field-*",
     category: "component",
     tier: "component",
-    role: "The bordered two-input shell (`.ui-control-composite-field`) shared by DateRangePicker, MonthPicker and MonthRangePicker: one field box wrapping two inputs plus a separator so the pair reads as a SINGLE control instead of two adjacent ones. `--control-composite-field-space-gap` (`--space-2`) is the rhythm between the halves and the separator. Shared deliberately — before #319 each picker carried its own literal and the range fields drifted into slightly different boxes, the tell that a design system is not actually one system. The box's height, border, disabled state and focus chrome still come from `--control-*` / `.ui-control`, so retune this only for the internal gap; anything else belongs on the control family.",
+    role: "The bordered two-input shell (`.ui-control-composite-field`) used by `DatePicker range` (at every `picker` granularity): one field box wrapping two inputs plus a separator so the pair reads as a SINGLE control instead of two adjacent ones. `--control-composite-field-space-gap` (`--space-2`) is the rhythm between the halves and the separator. Shared deliberately — before #319 each picker carried its own literal and the range fields drifted into slightly different boxes, the tell that a design system is not actually one system. The box's height, border, disabled state and focus chrome still come from `--control-*` / `.ui-control`, so retune this only for the internal gap; anything else belongs on the control family.",
   },
   {
     name: "--menu-item-{height,radius,space-inline,space-gap,font-size,inset-space-inline-start} / --menu-content-{space-inset,min-width}",

@@ -1559,21 +1559,6 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["ValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "IdProp"],
   },
-  MonthPickerProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "IdProp"],
-  },
-  MonthRangePickerProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "IdProp"],
-  },
-  DateRangePickerProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "IdProp"],
-  },
   CalendarCellRenderProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

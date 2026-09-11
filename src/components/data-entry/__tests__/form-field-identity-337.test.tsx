@@ -31,7 +31,6 @@ import { Checkbox } from "../checkbox";
 import { Switch } from "../switch";
 import { DatePicker } from "../date-picker";
 import { Cascader } from "../cascader";
-import { MonthPicker } from "../month-picker";
 import { TimePicker } from "../time-picker";
 import { Flex } from "../../layout/flex";
 import { AppProvider } from "../../../app/app-provider";
@@ -375,7 +374,7 @@ describe("Nested controls under a layout wrapper (gh#337)", () => {
           <Radio.Group id="tax_class" options={OPTIONS} value="52" />
           <Checkbox.Group id="flags" options={OPTIONS} value={["52"]} />
           <DatePicker id="order_date" />
-          <MonthPicker id="target_ym" />
+          <DatePicker picker="month" id="target_ym" />
           <TimePicker id="start_time" />
           <Cascader id="area_cd" options={[{ value: "a", label: "A" }]} />
           <Switch id="is_active" />

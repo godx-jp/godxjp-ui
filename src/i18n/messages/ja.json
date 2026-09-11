@@ -132,7 +132,7 @@
       "openGrid": "月選択を開く",
       "previousYear": "前年へ",
       "nextYear": "翌年へ",
-      "placeholder": "yyyy/mm"
+      "placeholder": "年月を選択"
     },
     "branchScope": {
       "label": "ブランチ範囲",

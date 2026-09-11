@@ -20,7 +20,7 @@ import type { DateRange } from "react-day-picker";
 /**
  * Calendar — styled react-day-picker grid for single, multiple, or range
  * selection. Embed inside a Popover for picker UX; use DatePicker /
- * DateRangePicker for form-submittable inputs instead. Composed only from
+ * `DatePicker range` for form-submittable inputs instead. Composed only from
  * real @godxjp/ui components.
  */
 export default function Demo() {
@@ -71,7 +71,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>範囲選択 · Popover 内</CardTitle>
             <CardDescription>
-              mode="range" でポップオーバー内に配置。DateRangePicker
+              mode="range" でポップオーバー内に配置。DatePicker range
               はこのパターンにフォーム送信を加えた上位コンポーネント。
             </CardDescription>
           </CardHeader>

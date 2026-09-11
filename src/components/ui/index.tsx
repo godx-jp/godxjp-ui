@@ -15,7 +15,6 @@ export * from "./menubar";
 export * from "./navigation-menu";
 export * from "./resizable";
 export * from "./date-picker";
-export * from "./date-range-picker";
 export * from "./dialog";
 export { Separator } from "./separator";
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../feedback/tooltip";

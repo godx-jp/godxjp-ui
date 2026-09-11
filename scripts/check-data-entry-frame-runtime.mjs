@@ -19,7 +19,6 @@ const defaultStories = [
   "data-entry-slider",
   "data-entry-toggle",
   "data-entry-date-picker",
-  "data-entry-month-picker",
   "data-entry-time-picker",
   "data-entry-color-picker",
   "data-entry-upload",
@@ -33,8 +32,6 @@ const defaultStories = [
   "data-entry-rating",
   "data-entry-tag-input",
   "data-entry-calendar",
-  "data-entry-date-range-picker",
-  "data-entry-month-range-picker",
   "data-entry-command",
 ];
 const stories = process.env.DATA_ENTRY_STORIES?.split(",").filter(Boolean) ?? defaultStories;

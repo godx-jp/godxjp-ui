@@ -359,24 +359,6 @@
         "reason": "Owner frame passed Axe and keyboard-entry checks."
       }
     },
-    "MonthPicker": {
-      "isolated": {
-        "status": "pass",
-        "reason": "Rendered in docs/data-entry/month-picker.tsx."
-      },
-      "responsive": {
-        "status": "pass",
-        "reason": "Owner frame passed geometry at all eight widths."
-      },
-      "rtl": {
-        "status": "pass",
-        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
-      },
-      "a11y": {
-        "status": "pass",
-        "reason": "Owner frame passed Axe and keyboard-entry checks."
-      }
-    },
     "TimePicker": {
       "isolated": {
         "status": "pass",
@@ -577,42 +559,6 @@
       "a11y": {
         "status": "pass",
         "reason": "Axe passed after contrast and nav-label fixes."
-      }
-    },
-    "DateRangePicker": {
-      "isolated": {
-        "status": "pass",
-        "reason": "Rendered in docs/data-entry/date-range-picker.tsx."
-      },
-      "responsive": {
-        "status": "pass",
-        "reason": "Eight-width geometry passed."
-      },
-      "rtl": {
-        "status": "pass",
-        "reason": "Eight-width RTL geometry and Axe passed."
-      },
-      "a11y": {
-        "status": "pass",
-        "reason": "Axe and keyboard smoke passed."
-      }
-    },
-    "MonthRangePicker": {
-      "isolated": {
-        "status": "pass",
-        "reason": "Rendered in docs/data-entry/month-range-picker.tsx."
-      },
-      "responsive": {
-        "status": "pass",
-        "reason": "Eight-width geometry passed."
-      },
-      "rtl": {
-        "status": "pass",
-        "reason": "Eight-width RTL geometry and Axe passed."
-      },
-      "a11y": {
-        "status": "pass",
-        "reason": "Axe and keyboard smoke passed."
       }
     },
     "Command": {
@@ -3009,10 +2955,7 @@
         "ToggleGroupItem",
         "Slider",
         "Calendar",
-        "MonthPicker",
-        "MonthRangePicker",
         "DatePicker",
-        "DateRangePicker",
         "TimePicker",
         "ColorPicker",
         "Upload",
@@ -3061,10 +3004,7 @@
         "ToggleGroupItem",
         "Slider",
         "Calendar",
-        "MonthPicker",
-        "MonthRangePicker",
         "DatePicker",
-        "DateRangePicker",
         "TimePicker",
         "ColorPicker",
         "Cascader",
@@ -3092,10 +3032,7 @@
       }
     },
     {
-      "exports": [
-        "Upload",
-        "Command"
-      ],
+      "exports": ["Upload", "Command"],
       "dimensions": {
         "journey": {
           "status": "pass",
@@ -3119,10 +3056,7 @@
         "Toggle",
         "Slider",
         "Calendar",
-        "MonthPicker",
-        "MonthRangePicker",
         "DatePicker",
-        "DateRangePicker",
         "TimePicker",
         "ColorPicker",
         "Upload",
@@ -3183,10 +3117,7 @@
         "ToggleGroupItem",
         "Slider",
         "Calendar",
-        "MonthPicker",
-        "MonthRangePicker",
         "DatePicker",
-        "DateRangePicker",
         "TimePicker",
         "ColorPicker",
         "Cascader",
@@ -3236,10 +3167,7 @@
         "Toggle",
         "Slider",
         "Calendar",
-        "MonthPicker",
-        "MonthRangePicker",
         "DatePicker",
-        "DateRangePicker",
         "TimePicker",
         "ColorPicker",
         "Upload",

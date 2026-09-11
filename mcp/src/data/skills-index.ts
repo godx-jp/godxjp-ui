@@ -369,7 +369,7 @@ box (logical inset-inline-end).`,
         tagline:
           "No ad-hoc labels/inputs; date ranges use the range pickers; no hard-coded text sizes.",
         body: `Build the search conditions with <Form>/<FormField> (label +
-a11y wiring), real DatePicker/DateRangePicker/MonthPicker/NumberInput/
+a11y wiring), real DatePicker/NumberInput/
 Select for each field — never bare <input> or hand-rolled labels. Group
 advanced conditions behind a 詳細条件 toggle. Submit copies the live
 condition state into the query params (a new object → new queryKey →
@@ -1287,7 +1287,7 @@ behind ONE <Suspense fallback={<PageContainer title={<Skeleton …/>}><Skeleton 
 Reference app: initial 929KB → 675KB; the orders screen (day-picker + table stack, 122KB) and
 login (react-hook-form + zod, 93KB) load only when visited.
 Per-import minified budget of @godxjp/ui ≥13.10.0 (preserved-module dist — imports tree-shake
-for real): StatCard 30KB · Input 52 · Button 56 · DataTable 79 · Select 165 · DateRangePicker 207
+for real): StatCard 30KB · Input 52 · Button 56 · DataTable 79 · Select 165 · DatePicker 207
 (genuinely needs react-day-picker + date-fns). A shared ~50KB floor is intrinsic (tailwind-merge
 + bundled 3-locale i18n) and amortizes across one vendor chunk. Virtualize lists only >100 rows —
 DataTable at 50/page does not need it. The dist is bundler-oriented ESM (extensionless + JSON

@@ -716,18 +716,74 @@ export type PickerChromeProp = {
 /** date-fns pattern, Intl options (including Japanese era), or a display function. */
 export type PickerDateFormatProp = string | Intl.DateTimeFormatOptions | ((date: Date) => string);
 
-/** @see DatePicker */
+/**
+ * @see DatePicker — ONE date control for every date-shaped question this library used to ask with
+ * four components (`DatePicker`, `DateRangePicker`, `MonthPicker`, `MonthRangePicker`).
+ *
+ * Two axes, both antd's: `picker` chooses the GRANULARITY of a selection, `range` chooses its
+ * CARDINALITY. Everything else — bounds, disabling, formatting, clearing, the open triad, the
+ * chrome ladder — is written once and therefore behaves the same on all eight combinations.
+ *
+ * ON THE NAME `picker`. It is antd's own prop name for this axis, and it already shipped here with
+ * exactly this union, so keeping it renames nothing and breaks no call site. (`granularity` is
+ * react-aria's spelling; this cluster is not on react-aria.) The house rule stated on `TreeProp` —
+ * map Ant's KEY-SHAPED names onto this package's controlled vocabulary and do not re-spell the
+ * rest — is what the surrounding props already do: `showTime`, `needConfirm`, `allowClear`,
+ * `cellRender`, `disabledDate`, `inputReadOnly`, `preserveInvalidOnBlur`, `renderExtraFooter`,
+ * `presets`, `order`, `minDate`/`maxDate` are all spelled antd's way, while selection is spelled
+ * `value`/`defaultValue`/`onValueChange` rather than antd's `onChange`.
+ */
 export type DatePickerBaseProp = FieldA11yProps &
   PickerChromeProp & {
     /** Display format; native submission remains ISO. */
     format?: PickerDateFormatProp;
     /** Parser for a custom display function or Intl era display; ISO always remains accepted. */
     parseFormat?: (text: string) => Date | undefined;
+    /**
+     * Selectable bounds, inclusive, at day precision (antd `minDate`/`maxDate`).
+     *
+     * These are the ONLY bounds props. `MonthPicker`/`MonthRangePicker` used to take
+     * `fromYear`/`toYear` numbers instead, which expressed strictly less (a whole year is the
+     * smallest thing they could say) and — measurably — clamped nothing: they only greyed the
+     * grid's year chevrons, while both routes into the value, the grid cells and the typed text,
+     * ignored them. `minDate`/`maxDate` are enforced on BOTH routes for every `picker`, so the
+     * keyboard is not a way around the rule the mouse obeys. Migration is mechanical:
+     * `fromYear={2024}` → `minDate={new Date(2024, 0, 1)}`, `toYear={2027}` →
+     * `maxDate={new Date(2027, 11, 31)}`.
+     */
     minDate?: Date;
     maxDate?: Date;
     showWeek?: boolean;
     needConfirm?: boolean;
+    /**
+     * Which period the PANEL opens on, independently of the value (antd `defaultPickerValue`, and
+     * like antd's it is RE-APPLIED every time the panel opens rather than only at mount).
+     *
+     * Without it a panel can only open on the value or on today, so "open on the fiscal year's
+     * start month" and "open on the month of the row being edited" have no expression — the two
+     * cases the parity audit files as P1. Only the period matters; the day is ignored.
+     */
+    defaultPickerValue?: Date;
+    /** Controlled panel period (antd `pickerValue`) — wins over `defaultPickerValue` and over the value. */
+    pickerValue?: Date;
+    /**
+     * GRANULARITY of one selection (antd `picker`). `date` picks a day from a month grid; `week`
+     * picks a day and normalises it to the locale's week start; `month`, `quarter` and `year` swap
+     * the day grid for a period grid and normalise to the period's first day.
+     *
+     * The emitted value is always a `Date` at the START of the chosen period, so a coarse
+     * selection interoperates with a fine one and with `DateRange`.
+     */
     picker?: "date" | "week" | "month" | "quarter" | "year";
+    /**
+     * Normalise the selection into ascending order (antd `order`; default `true`).
+     *
+     * ONE rule, applied to whichever value shape is in play: a `range` whose endpoints were picked
+     * backwards is SWAPPED, and a `multiple` selection is SORTED. The four split components spelled
+     * this two ways — `DatePicker.order` sorted an array, `DateRangePicker.order` swapped a pair,
+     * `MonthRangePicker` swapped unconditionally with no prop at all — which read as a collision
+     * but is one invariant seen through three value shapes. Set `false` to keep pick order.
+     */
     order?: boolean;
     showTime?:
       | boolean
@@ -735,12 +791,21 @@ export type DatePickerBaseProp = FieldA11yProps &
           TimePickerProp,
           "hourStep" | "minuteStep" | "secondStep" | "showSeconds" | "use12Hours" | "disabledTime"
         >;
-    presets?: { label: React.ReactNode; value: Date | (() => Date) }[];
     placeholder?: PlaceholderProp;
-    disabled?: DisabledProp;
+    /**
+     * Inert control. With `range`, the TUPLE form `[from, to]` locks one endpoint and leaves the
+     * other editable (antd's RangePicker `disabled`) — "the start date is fixed by the contract,
+     * only the end is negotiable" is a real screen that a scalar cannot say. The tuple is
+     * meaningless without `range` and is ignored there.
+     */
+    disabled?: DisabledProp | [boolean, boolean];
     className?: ClassNameProp;
     id?: IdProp;
-    /** Form field name — emits the value as an ISO-8601 `yyyy-MM-dd` string for native submission. */
+    /**
+     * Form field name. Submits ISO-8601 at the precision `picker` selects — `2026-03-01` for
+     * `date`/`week`, `2026-03` for `month` and `quarter` (the period's first month), `2026` for
+     * `year`. With `range`, the pair submits as `${name}_from` / `${name}_to`.
+     */
     name?: NameProp;
     locale?: DayPickerProps["locale"];
     fromDate?: Date;
@@ -748,11 +813,11 @@ export type DatePickerBaseProp = FieldA11yProps &
     /** Decorate a day cell — 祝日, a booked day, a deadline. @see CalendarCellRenderProp */
     cellRender?: CalendarCellRenderProp;
     /**
-     * Forbid individual dates by predicate — the rule `fromDate`/`toDate` cannot express, because a
+     * Forbid individual dates by predicate — the rule `minDate`/`maxDate` cannot express, because a
      * business calendar is rarely one contiguous range: 土日, a closed accounting period, a 祝日, a
      * day already fully booked.
      *
-     * Applies to BOTH routes into the value. The calendar greys the cell out, and a date typed into
+     * Applies to BOTH routes into the value. The grid greys the cell out, and a date typed into
      * the field is rejected the same way an unparseable one is — otherwise the keyboard becomes a
      * way around the rule the mouse obeys.
      */
@@ -764,111 +829,46 @@ export type DatePickerBaseProp = FieldA11yProps &
     allowClear?: AllowClearProp;
   } & Pick<CalendarFooterProp, "showToday" | "showClose">;
 
-/** Single and multiple selections keep their callback types distinct. */
+/**
+ * CARDINALITY. One `Date`, an array of them, or a `DateRange` — each keeps its own callback type,
+ * so a consumer never has to narrow what it gets back.
+ */
 export type DatePickerProp = DatePickerBaseProp &
   (
     | {
+        range?: false;
         multiple?: false;
         value?: Date;
         defaultValue?: Date;
         onValueChange?: (value: Date | undefined) => void;
+        presets?: { label: React.ReactNode; value: Date | (() => Date) }[];
       }
     | {
+        range?: false;
         multiple: true;
         value?: Date[];
         defaultValue?: Date[];
         onValueChange?: (value: Date[] | undefined) => void;
         showTime?: false;
+        presets?: { label: React.ReactNode; value: Date | (() => Date) }[];
+      }
+    | {
+        /**
+         * Two endpoints in one field — antd's `DatePicker.RangePicker`, which this library used to
+         * ship as two separate components (`DateRangePicker`, `MonthRangePicker`). It composes with
+         * `picker`, so a month range is `<DatePicker range picker="month" />`.
+         */
+        range: true;
+        multiple?: false;
+        value?: DateRange;
+        defaultValue?: DateRange;
+        onValueChange?: (value: DateRange | undefined) => void;
+        showTime?: false;
+        /** Which endpoints may stay empty (antd `allowEmpty`), as `[from, to]`. */
+        allowEmpty?: [boolean, boolean];
+        presets?: { label: React.ReactNode; value: DateRange | (() => DateRange) }[];
       }
   );
-
-/** @see MonthPicker */
-export type MonthPickerProp = FieldA11yProps &
-  PickerChromeProp & {
-    value?: ValueProp<Date>;
-    defaultValue?: DefaultValueProp<Date | undefined>;
-    onValueChange?: OnValueChangeProp<Date | undefined>;
-    placeholder?: PlaceholderProp;
-    disabled?: DisabledProp;
-    className?: ClassNameProp;
-    id?: IdProp;
-    /** Form field name — submits the display text (`yyyy/MM`). */
-    name?: NameProp;
-    /** Clamp the year navigation (inclusive). */
-    fromYear?: number;
-    toYear?: number;
-    /**
-     * Show an inline ✕ to clear the value when one is set (default true). The OBJECT form
-     * additionally replaces the icon and/or the accessible label (antd `allowClear`).
-     */
-    allowClear?: AllowClearProp;
-    /** Node appended below the month grid (antd `renderExtraFooter`). */
-    renderExtraFooter?: () => React.ReactNode;
-  };
-
-/**
- * @see MonthRangePicker — both edges are normalized to the FIRST day of their month
- * (the `DateRange` shape is shared with DateRangePicker so ranges interop).
- */
-export type MonthRangePickerProp = FieldA11yProps &
-  PickerChromeProp & {
-    value?: ValueProp<DateRange>;
-    defaultValue?: DefaultValueProp<DateRange | undefined>;
-    onValueChange?: OnValueChangeProp<DateRange | undefined>;
-    placeholder?: PlaceholderProp;
-    disabled?: DisabledProp;
-    className?: ClassNameProp;
-    id?: IdProp;
-    /** Form field name — emits the range as `${name}_from` / `${name}_to` `yyyy/MM` fields. */
-    name?: NameProp;
-    /** Clamp the year navigation (inclusive). */
-    fromYear?: number;
-    toYear?: number;
-    /**
-     * Show an inline ✕ to clear the range when one is set (default true). The OBJECT form
-     * additionally replaces the icon and/or the accessible label (antd `allowClear`).
-     */
-    allowClear?: AllowClearProp;
-    /** Node appended below the month grid (antd `renderExtraFooter`). */
-    renderExtraFooter?: () => React.ReactNode;
-  };
-
-/** @see DateRangePicker */
-export type DateRangePickerProp = FieldA11yProps &
-  PickerChromeProp & {
-    /** Display format; native submission remains ISO. */
-    format?: PickerDateFormatProp;
-    /** Parser for a custom display function or Intl era display; ISO always remains accepted. */
-    parseFormat?: (text: string) => Date | undefined;
-    minDate?: Date;
-    maxDate?: Date;
-    showWeek?: boolean;
-    needConfirm?: boolean;
-    presets?: { label: React.ReactNode; value: DateRange | (() => DateRange) }[];
-    allowEmpty?: [boolean, boolean];
-    order?: boolean;
-    value?: ValueProp<DateRange>;
-    defaultValue?: DefaultValueProp<DateRange | undefined>;
-    onValueChange?: OnValueChangeProp<DateRange | undefined>;
-    placeholder?: PlaceholderProp;
-    disabled?: DisabledProp;
-    className?: ClassNameProp;
-    id?: IdProp;
-    /** Form field name — emits the range as `${name}_from` / `${name}_to` ISO `yyyy-MM-dd` fields. */
-    name?: NameProp;
-    locale?: DayPickerProps["locale"];
-    fromDate?: Date;
-    toDate?: Date;
-    /** Decorate a day cell — see `CalendarCellRenderProp`. */
-    cellRender?: CalendarCellRenderProp;
-    /** Forbid individual dates by predicate — see `DatePickerProp.disabledDate`. */
-    disabledDate?: (date: Date) => boolean;
-    /**
-     * antd `allowClear` — an inline ✕ that clears the range when one is set (default true). The
-     * OBJECT form additionally replaces the icon and/or the accessible label.
-     */
-    allowClear?: AllowClearProp;
-  } & Pick<CalendarFooterProp, "showToday" | "showClose">;
 
 /**
  * Which times a TimePicker refuses, in antd's shape: one call returns the two predicates, so a

@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
-import { MonthRangePicker } from "../month-range-picker";
 import { expectNoA11yViolations } from "@/test/a11y";
+import { DatePicker } from "../date-picker";
 
 // One input-styled shell holding two labelled yyyy/MM inputs plus icon-only
 // clear/grid buttons — every control must carry an accessible name and the
@@ -8,7 +8,9 @@ import { expectNoA11yViolations } from "@/test/a11y";
 describe("MonthRangePicker a11y", () => {
   it("has no axe violations at rest with a value", async () => {
     await expectNoA11yViolations(
-      <MonthRangePicker
+      <DatePicker
+        range
+        picker="month"
         value={{ from: new Date(2026, 0, 1), to: new Date(2026, 5, 1) }}
         onValueChange={() => {}}
       />,
@@ -16,6 +18,8 @@ describe("MonthRangePicker a11y", () => {
   });
 
   it("has no axe violations while empty and disabled", async () => {
-    await expectNoA11yViolations(<MonthRangePicker disabled onValueChange={() => {}} />);
+    await expectNoA11yViolations(
+      <DatePicker range picker="month" disabled onValueChange={() => {}} />,
+    );
   });
 });

@@ -15,6 +15,9 @@ import type {
 } from "../../props/components/data-entry.prop";
 import { parseDateInput, toIsoDate } from "./parse";
 
+/** The granularity axis a picker selects at — `DatePickerProp["picker"]`, resolved. */
+export type DatePickerPicker = NonNullable<DatePickerBaseProp["picker"]>;
+
 /** Display is independent from the canonical value submitted by the field. */
 export function formatPickerDate(
   date: Date | undefined,
@@ -80,4 +83,52 @@ export function pickerPeriodStart(
     default:
       return date;
   }
+}
+
+/**
+ * ISO-8601 at the precision the picker actually selects.
+ *
+ * The standard defines reduced forms, and a month picker that submits `2026/03` is simply using
+ * none of them: `/` is not an ISO separator and a server parsing an ISO date will reject it. Each
+ * granularity gets the shortest ISO form that loses nothing:
+ *   year → `2026` · month → `2026-03` · quarter → `2026-01` (the quarter's first month, which is
+ *   what the value IS) · week → `2026-W07` (ISO week-numbering year + week) · date → `2026-03-01`.
+ */
+export function toIsoPeriod(date: Date | undefined, picker: DatePickerPicker): string {
+  if (!date || Number.isNaN(date.getTime())) return "";
+  switch (picker) {
+    case "year":
+      return String(date.getFullYear()).padStart(4, "0");
+    case "quarter":
+    case "month":
+      return toIsoDate(date).slice(0, 7);
+    case "week":
+      return formatDate(date, "RRRR-'W'II");
+    default:
+      return toIsoDate(date);
+  }
+}
+
+/**
+ * The inverse of `toIsoPeriod`: read back the reduced ISO form the field displays for this
+ * granularity. `date` is left to `parsePickerDate`, which already owns the full `yyyy-MM-dd` path
+ * (custom parser, `format` pattern, era display).
+ */
+export function parseIsoPeriod(raw: string, picker: DatePickerPicker): Date | undefined {
+  const text = raw.trim();
+  if (picker === "year") {
+    const m = /^(\d{4})$/.exec(text);
+    return m ? new Date(Number(m[1]), 0, 1) : undefined;
+  }
+  if (picker === "month" || picker === "quarter") {
+    const m = /^(\d{4})-(\d{1,2})$/.exec(text);
+    if (!m) return undefined;
+    const month = Number(m[2]);
+    return month >= 1 && month <= 12 ? new Date(Number(m[1]), month - 1, 1) : undefined;
+  }
+  if (picker === "week") {
+    const parsed = parse(text, "RRRR-'W'II", new Date(2000, 0, 1));
+    return isValid(parsed) ? parsed : undefined;
+  }
+  return undefined;
 }

@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-
-import { DateRangePicker } from "../date-range-picker";
+import { DatePicker } from "../date-picker";
 
 const inputs = () => screen.getAllByRole("textbox"); // [from, to]
 const iso = (d: Date | undefined) =>
@@ -18,7 +17,8 @@ describe("DateRangePicker — controlled value", () => {
     const user = userEvent.setup({ delay: null });
     const onValueChange = vi.fn();
     const { rerender } = renderWithUi(
-      <DateRangePicker
+      <DatePicker
+        range
         value={{ from: new Date(2026, 2, 10), to: new Date(2026, 2, 20) }}
         onValueChange={onValueChange}
       />,
@@ -35,7 +35,8 @@ describe("DateRangePicker — controlled value", () => {
 
     // the inputs follow the prop when the parent commits a new range
     rerender(
-      <DateRangePicker
+      <DatePicker
+        range
         value={{ from: new Date(2026, 6, 1), to: new Date(2026, 6, 8) }}
         onValueChange={onValueChange}
       />,

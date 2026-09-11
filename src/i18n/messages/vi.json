@@ -132,7 +132,7 @@
       "openGrid": "Mở chọn tháng",
       "previousYear": "Năm trước",
       "nextYear": "Năm sau",
-      "placeholder": "yyyy/mm"
+      "placeholder": "Chọn tháng"
     },
     "branchScope": {
       "label": "Phạm vi chi nhánh",

@@ -132,7 +132,7 @@
       "openGrid": "Open month grid",
       "previousYear": "Previous year",
       "nextYear": "Next year",
-      "placeholder": "yyyy/mm"
+      "placeholder": "Select month"
     },
     "branchScope": {
       "label": "Branch scope",
