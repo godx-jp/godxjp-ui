@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
+import { renderWithUi, screen, userEvent, waitFor, within } from "@/test/render";
+import { expectNoA11yViolations } from "@/test/a11y";
 import { Select } from "../select";
 
 /*
@@ -166,5 +167,161 @@ describe("antd `maxTagTextLength`", () => {
     await user.click(trigger);
     await user.click(await screen.findByRole("option", { name: /日本円/ }));
     expect(onValueChange).toHaveBeenCalledWith(["vnd", "jpy"], expect.anything());
+  });
+});
+
+/*
+ * The chips on a multi-value trigger.
+ *
+ * They carry a REAL ✕ button, which is why the trigger is a `<div role="combobox">` and not a
+ * `<button>`: a button inside a button is invalid HTML, and that — not taste — is why `tagRender`
+ * used to be refused here. `combobox` is not a children-presentational role (ARIA 1.2), so a
+ * button inside it is allowed, and every ✕ is its own tab stop.
+ */
+describe("multi-value chips: removable, and antd `tagRender`", () => {
+  const removers = () =>
+    screen.getByRole("combobox").querySelectorAll('[data-slot="search-select-value-remove"]');
+
+  it("each chip carries a ✕ that takes just that value off", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    renderWithUi(
+      <Select
+        aria-label="通貨"
+        mode="multiple"
+        options={OPTIONS}
+        defaultValue={["jpy", "eur"]}
+        onValueChange={onValueChange}
+      />,
+    );
+    expect(removers()).toHaveLength(2);
+    await user.click(removers()[0] as HTMLElement);
+    expect(onValueChange).toHaveBeenCalledWith(
+      ["eur"],
+      [expect.objectContaining({ value: "eur" })],
+    );
+  });
+
+  it("the ✕ does not open the panel", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <Select aria-label="通貨" mode="multiple" options={OPTIONS} defaultValue={["jpy"]} />,
+    );
+    await user.click(removers()[0] as HTMLElement);
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  it("Backspace on the trigger drops the last chip", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    renderWithUi(
+      <Select
+        aria-label="通貨"
+        mode="multiple"
+        options={OPTIONS}
+        defaultValue={["jpy", "eur"]}
+        onValueChange={onValueChange}
+      />,
+    );
+    screen.getByRole("combobox").focus();
+    await user.keyboard("{Backspace}");
+    expect(onValueChange).toHaveBeenCalledWith(
+      ["jpy"],
+      [expect.objectContaining({ value: "jpy" })],
+    );
+  });
+
+  it("`tagRender` replaces the chip, and its `onClose` is the same remover", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    renderWithUi(
+      <Select
+        aria-label="通貨"
+        mode="multiple"
+        options={OPTIONS}
+        defaultValue={["jpy"]}
+        onValueChange={onValueChange}
+        tagRender={({ label, onClose }) => (
+          <span data-testid="own-chip">
+            {label}
+            <button type="button" onClick={onClose}>
+              取り消し
+            </button>
+          </span>
+        )}
+      />,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(within(trigger).getByTestId("own-chip")).toHaveTextContent("日本円");
+    // the built-in ✕ stands down — the custom chip owns removal now
+    expect(removers()).toHaveLength(0);
+
+    await user.click(within(trigger).getByRole("button", { name: "取り消し" }));
+    expect(onValueChange).toHaveBeenCalledWith([], []);
+  });
+
+  it("`tagRender` leaves NO chip surface of its own behind the custom chip", () => {
+    // Reported from the docs frame: the custom chip painted its own background INSIDE the
+    // wrapper's `--secondary` one — a box in a box in the field. antd's tagRender replaces the
+    // whole tag, so the wrapper must stop painting. (`ui-*` is the design system's own name, which
+    // check:no-tailwind-class-assertions exists to let tests assert.)
+    const { rerender } = renderWithUi(
+      <Select aria-label="通貨" mode="multiple" options={OPTIONS} defaultValue={["jpy"]} />,
+    );
+    const wrapper = () =>
+      screen.getByRole("combobox").querySelector('[data-slot="search-select-value"]');
+    expect(wrapper()).toHaveClass("ui-search-select-value");
+
+    rerender(
+      <Select
+        aria-label="通貨"
+        mode="multiple"
+        options={OPTIONS}
+        defaultValue={["jpy"]}
+        tagRender={({ label }) => <span data-testid="own-chip">{label}</span>}
+      />,
+    );
+    expect(wrapper()).not.toHaveClass("ui-search-select-value");
+    expect(wrapper()?.getAttribute("class")).toBeNull();
+  });
+
+  it("a disabled multi Select neither opens nor offers a remover", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <Select
+        aria-label="通貨"
+        mode="multiple"
+        options={OPTIONS}
+        defaultValue={["jpy"]}
+        disabled
+      />,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).toHaveAttribute("aria-disabled", "true");
+    expect(removers()).toHaveLength(0);
+    await user.click(trigger);
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  it("opens from the keyboard like the button trigger did", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <Select aria-label="通貨" mode="multiple" options={OPTIONS} defaultValue={["jpy"]} />,
+    );
+    screen.getByRole("combobox").focus();
+    await user.keyboard("{ArrowDown}");
+    expect(await screen.findByRole("listbox")).toBeInTheDocument();
+  });
+
+  it("has no axe violations with chips on the trigger", async () => {
+    await expectNoA11yViolations(
+      <Select
+        aria-label="通貨"
+        mode="multiple"
+        options={OPTIONS}
+        defaultValue={["jpy", "eur"]}
+        maxTagCount={1}
+      />,
+    );
   });
 });

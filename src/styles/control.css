@@ -1348,7 +1348,8 @@
     background: hsl(var(--secondary));
     color: hsl(var(--secondary-foreground));
   }
-  .ui-tag-input-remove {
+  .ui-tag-input-remove,
+  .ui-search-select-value-remove {
     /* ≥24px hit area (WCAG 2.5.8) around the 12px glyph; negative inline margin keeps the chip tight */
     display: inline-flex;
     align-items: center;
@@ -1363,10 +1364,12 @@
     color: inherit;
     opacity: 0.7;
   }
-  .ui-tag-input-remove:hover {
+  .ui-tag-input-remove:hover,
+  .ui-search-select-value-remove:hover {
     opacity: 1;
   }
-  .ui-tag-input-remove svg {
+  .ui-tag-input-remove svg,
+  .ui-search-select-value-remove svg {
     width: 0.75rem;
     height: 0.75rem;
   }
@@ -2020,10 +2023,11 @@
     color: hsl(var(--muted-foreground));
   }
 
-  .ui-select-trigger-prefixed {
-    justify-content: flex-start;
-  }
-
+  /* With a prefix the trigger holds THREE children, and its `justify-between` utility would push
+   * the value to the middle. Growing the VALUE is what packs the row instead — measured in
+   * Chromium: prefix at 46px, value starting at 79px and filling the rest. A
+   * `justify-content: flex-start` rule was tried here first and is DEAD on arrival (the utilities
+   * layer outranks components), so it is not left behind pretending to work. */
   .ui-select-trigger-prefixed > [data-slot="select-value"] {
     flex: 1 1 auto;
     text-align: start;

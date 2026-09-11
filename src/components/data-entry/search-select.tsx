@@ -128,6 +128,7 @@ export function SearchSelect(props: SearchSelectProp) {
   const tagsMode = props.mode === "tags";
   const maxTagTextLength = props.mode !== undefined ? props.maxTagTextLength : undefined;
   const tokenSeparators = props.mode !== undefined ? props.tokenSeparators : undefined;
+  const tagRender = props.mode !== undefined ? props.tagRender : undefined;
   const { t } = useTranslation();
   // under a layout wrapper that the cloneElement contract cannot reach. `{}` when already named.
   const nameFallback = useFieldNameFallback({
@@ -447,6 +448,11 @@ export function SearchSelect(props: SearchSelectProp) {
     for (const option of picked) props.onSelect?.(option.value, option);
   };
 
+  /** Take one value off — what a chip's ✕, Backspace and a second click on its row all do. */
+  const deselect = (chipValue: string) => {
+    select(optionFor(chipValue) ?? { value: chipValue, label: chipValue });
+  };
+
   const clear = () => {
     if (props.mode !== undefined) {
       if (!isControlled) setInternalValue([]);
@@ -524,79 +530,82 @@ export function SearchSelect(props: SearchSelectProp) {
   const showClear = clearControl.enabled && hasSelection && !disabled && !readOnly && !loadingProp;
   const surface = controlSurfaceAttrs({ variant, status, size });
 
-  return (
-    <div className={cn("relative", className)}>
-      <Popover
-        open={open}
-        onOpenChange={(next) => {
-          // Read-only never opens (no pick surface) — closing (next=false) still passes through so
-          // an externally-forced close (e.g. Escape) is honored.
-          if (readOnly && next) return;
-          setOpen(next);
-          if (!next && autoClearSearchValue) setQuery("");
-        }}
+  const triggerProps = {
+    id,
+    role: "combobox" as const,
+    ...surface,
+    "aria-expanded": open,
+    "aria-controls": open ? listId : undefined,
+    "aria-label": triggerAriaLabel,
+    "aria-labelledby": triggerAriaLabelledby,
+    "aria-describedby": ariaDescribedby,
+    "aria-errormessage": ariaErrorMessage,
+    "aria-invalid": resolveAriaInvalid(ariaInvalid, status),
+    "aria-required": ariaRequired,
+    "aria-readonly": readOnly || undefined,
+    "aria-busy": loadingProp || undefined,
+    "data-testid": dataTestId,
+    "data-field": resolvedField,
+    // label. `""` (nothing selected) is omitted rather than rendered as an empty attribute.
+    "data-value": (multiple ? values.join(",") : value) || undefined,
+    "data-mode": multiple ? "multiple" : undefined,
+    "data-width": width,
+    className: cn(
+      controlSurfaceTriggerClass,
+      "justify-start",
+      // `bounded` deliberately emits NO width utility — its width is owned by the
+      // `[data-width="bounded"]` rule in control.css, and a utility here would win the layer
+      // order and make that token dead. Same reasoning as SelectTrigger.
+      width === "auto" && "w-auto",
+      width === "full" && "w-full",
+      // Reserve trailing room for the single clear-or-chevron overlay rendered below.
+      "ui-control-trigger-affixed",
+    ),
+  };
+
+  const chipsRemovable = !disabled && !readOnly;
+  const triggerContent = (
+    <>
+      {/* antd `prefix` — see the note in select.tsx: part of the value a combobox announces, so
+          deliberately not aria-hidden. */}
+      {prefix === undefined || prefix === null ? null : (
+        <span data-slot="select-prefix" className="ui-select-prefix">
+          {prefix}
+        </span>
+      )}
+      <span
+        className={cn(
+          "ui-search-select-option-body text-start",
+          !hasSelection && "text-muted-foreground",
+        )}
       >
-        <PopoverTrigger asChild>
-          {/* Nút gốc chứ không phải <Button>: trigger đọc token của .ui-control. */}
-          <button
-            id={id}
-            type="button"
-            role="combobox"
-            {...surface}
-            aria-expanded={open}
-            aria-controls={open ? listId : undefined}
-            aria-label={triggerAriaLabel}
-            aria-labelledby={triggerAriaLabelledby}
-            aria-describedby={ariaDescribedby}
-            aria-errormessage={ariaErrorMessage}
-            aria-invalid={resolveAriaInvalid(ariaInvalid, status)}
-            aria-required={ariaRequired}
-            aria-readonly={readOnly || undefined}
-            aria-busy={loadingProp || undefined}
-            disabled={disabled}
-            data-testid={dataTestId}
-            data-field={resolvedField}
-            // label. `""` (nothing selected) is omitted rather than rendered as an empty attribute.
-            data-value={(multiple ? values.join(",") : value) || undefined}
-            data-mode={multiple ? "multiple" : undefined}
-            data-width={width}
-            className={cn(
-              controlSurfaceTriggerClass,
-              "justify-start",
-              // `bounded` deliberately emits NO width utility — its width is owned by the
-              // `[data-width="bounded"]` rule in control.css, and a utility here would win the
-              // layer order and make that token dead. Same reasoning as SelectTrigger.
-              width === "auto" && "w-auto",
-              width === "full" && "w-full",
-              // Reserve trailing room for the single clear-or-chevron overlay rendered below.
-              "ui-control-trigger-affixed",
-            )}
-          >
-            {/* antd `prefix` — see the note in select.tsx: part of the value a combobox announces,
-                so deliberately not aria-hidden. */}
-            {prefix === undefined || prefix === null ? null : (
-              <span data-slot="select-prefix" className="ui-select-prefix">
-                {prefix}
-              </span>
-            )}
-            <span
-              className={cn(
-                "ui-search-select-option-body text-start",
-                !hasSelection && "text-muted-foreground",
-              )}
-            >
-              {multiple ? (
-                hasSelection ? (
-                  // Labels, not removable chips: the trigger IS a <button>, and a per-label remove
-                  // button inside it would be a button nested in a button (invalid HTML →
-                  // hydration error). Removal is a second click on the row, or the clear ✕.
-                  <span className="ui-search-select-values" data-slot="search-select-values">
-                    {visibleChips.map((chip) => (
-                      <span
-                        key={chip.value}
-                        className="ui-search-select-value"
-                        data-slot="search-select-value"
-                      >
+        {multiple ? (
+          hasSelection ? (
+            <span className="ui-search-select-values" data-slot="search-select-values">
+              {visibleChips.map((chip, index) => {
+                const close = () => deselect(chip.value);
+                return (
+                  <span
+                    key={chip.value}
+                    // `tagRender` replaces the WHOLE tag, so the wrapper must stop painting: its
+                    // own `--secondary` surface behind a chip that paints its own is a box inside a
+                    // box (reported from the docs frame — a grey rounded box around every tag).
+                    // antd's tagRender replaces the tag element too, not just its text.
+                    className={tagRender ? undefined : "ui-search-select-value"}
+                    data-slot="search-select-value"
+                  >
+                    {/* antd `tagRender` replaces the chip BODY — and with it the ✕, because the
+                        remover it was handed is the same one the built-in ✕ calls. */}
+                    {tagRender ? (
+                      tagRender({
+                        value: chip.value,
+                        label: chip.label,
+                        index,
+                        disabled: Boolean(disabled) || Boolean(readOnly),
+                        onClose: close,
+                      })
+                    ) : (
+                      <>
                         {labelRender
                           ? labelRender({
                               value: chip.value,
@@ -604,35 +613,97 @@ export function SearchSelect(props: SearchSelectProp) {
                               option: optionFor(chip.value) ?? undefined,
                             })
                           : chip.label}
-                      </span>
-                    ))}
-                    {omittedChips.length > 0 ? (
-                      <span
-                        className="ui-search-select-value"
-                        data-slot="search-select-value-overflow"
-                      >
-                        {chipOverflow ??
-                          t("dataEntry.selection.overflow", { count: omittedChips.length })}
-                      </span>
-                    ) : null}
+                        {chipsRemovable ? (
+                          <button
+                            type="button"
+                            className="ui-search-select-value-remove"
+                            data-slot="search-select-value-remove"
+                            aria-label={t("ui.tagInput.removeTag", { tag: chip.label })}
+                            onClick={(event) => {
+                              // Stop the press reaching the trigger, which would open the panel.
+                              event.stopPropagation();
+                              close();
+                            }}
+                          >
+                            <X aria-hidden="true" />
+                          </button>
+                        ) : null}
+                      </>
+                    )}
                   </span>
-                ) : (
-                  <span className="truncate">{resolvedPlaceholder}</span>
-                )
-              ) : value && labelRender ? (
-                labelRender({ value, label: currentLabel, option: selectedOption ?? undefined })
-              ) : (
-                <>
-                  {currentIcon ? (
-                    <span className="flex shrink-0 items-center" aria-hidden="true">
-                      {currentIcon}
-                    </span>
-                  ) : null}
-                  <span className="truncate">{currentLabel}</span>
-                </>
-              )}
+                );
+              })}
+              {omittedChips.length > 0 ? (
+                <span className="ui-search-select-value" data-slot="search-select-value-overflow">
+                  {chipOverflow ??
+                    t("dataEntry.selection.overflow", { count: omittedChips.length })}
+                </span>
+              ) : null}
             </span>
-          </button>
+          ) : (
+            <span className="truncate">{resolvedPlaceholder}</span>
+          )
+        ) : value && labelRender ? (
+          labelRender({ value, label: currentLabel, option: selectedOption ?? undefined })
+        ) : (
+          <>
+            {currentIcon ? (
+              <span className="flex shrink-0 items-center" aria-hidden="true">
+                {currentIcon}
+              </span>
+            ) : null}
+            <span className="truncate">{currentLabel}</span>
+          </>
+        )}
+      </span>
+    </>
+  );
+
+  return (
+    <div className={cn("relative", className)}>
+      <Popover
+        open={open}
+        onOpenChange={(next) => {
+          // Read-only never opens (no pick surface) — closing (next=false) still passes through so
+          // an externally-forced close (e.g. Escape) is honored.
+          if ((readOnly || disabled) && next) return;
+          setOpen(next);
+          if (!next && autoClearSearchValue) setQuery("");
+        }}
+      >
+        <PopoverTrigger asChild>
+          {/* Nút gốc chứ không phải <Button>: trigger đọc token của .ui-control.
+              MULTI/TAGS là một <div role="combobox">, không phải <button>. Chip mang nút ✕ THẬT, mà
+              một <button> lồng trong <button> là HTML không hợp lệ (lỗi hydrate) — đúng lý do
+              `tagRender` từng bị từ chối. `combobox` KHÔNG phải vai trò "children presentational"
+              (ARIA 1.2), nên nút bên trong là hợp lệ và người dùng bàn phím Tab tới được từng ✕. */}
+          {multiple ? (
+            <div
+              {...triggerProps}
+              tabIndex={disabled ? -1 : 0}
+              aria-disabled={disabled || undefined}
+              data-disabled={disabled ? "" : undefined}
+              onKeyDown={(event) => {
+                if (disabled || readOnly) return;
+                if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown") {
+                  event.preventDefault();
+                  setOpen(true);
+                  return;
+                }
+                // Backspace drops the last chip — the gesture TagInput already answers to.
+                if (event.key === "Backspace" && values.length > 0) {
+                  event.preventDefault();
+                  deselect(values[values.length - 1]);
+                }
+              }}
+            >
+              {triggerContent}
+            </div>
+          ) : (
+            <button {...triggerProps} type="button" disabled={disabled}>
+              {triggerContent}
+            </button>
+          )}
         </PopoverTrigger>
         {/* Hidden field(s) so the selection submits with a native form. `mode="multiple"` emits ONE
             field per value under the same name — the native `<select multiple>` contract, which is
@@ -853,7 +924,7 @@ export function SearchSelect(props: SearchSelectProp) {
                       {errorMessage ?? t("dataEntry.searchSelect.error")}
                     </div>
                   )
-                ) : loaded.length === 0 ? (
+                ) : displayOptions.length === 0 ? (
                   <div
                     role="option"
                     aria-disabled="true"

@@ -149,6 +149,86 @@ transparent` — đúng `hsl(var(--border))` trên nền trong suốt.
   OVERLAY nên nó không chiếm chỗ trong bố cục và chỉ hiện lúc cuộn — thanh ray tự vẽ ngày trước
   hiện khi rê chuột trên mọi hệ điều hành.
 
+- **`Select` rời `@radix-ui/react-select`, sang `react-aria-components`.** API công khai giữ NGUYÊN
+  VĂN — `value` / `defaultValue` / `onValueChange`, `open`, `name`, `<SelectTrigger id>`,
+  `<SelectValue placeholder>` — và component tự dịch sang cách viết của react-aria. Bộ kiểm đối
+  chiếu chạy MỌI hình dạng đo được ở consumer (godx-task 17 tệp, ql 5) trên CẢ HAI nền: bản Radix
+  chép nguyên văn ở `__tests__/radix-select.fixture.tsx` và bản đang phát hành. Nó được viết và chạy
+  xanh TRƯỚC khi đổi nền, nên một ca đỏ sau đó nghĩa là consumer vỡ, không phải phép kiểm viết theo
+  cách làm mới.
+
+  Ba mặc định của react-aria bị ghi đè để giữ đúng hành vi Radix, mỗi cái đều có số đo:
+
+  1. **Tên của trigger.** `useSelect` luôn ghi `aria-labelledby="<id ô giá trị> …"`, tức trigger bị
+     đặt tên theo GIÁ TRỊ của nó, và một `<label htmlFor>` bên ngoài bị chôn mất — đúng cách 17 tệp
+     godx-task và 283 truy vấn `getByRole("combobox", { name })` trong kho đang đặt tên. `ButtonContext`
+     được cấp lại KHÔNG có `aria-labelledby`.
+  2. **Vai trò.** react-aria dựng `<button aria-haspopup="listbox">`; Radix dựng `role="combobox"`,
+     thứ mà test trình duyệt của ql đếm. Đặt qua `render`, nên nó có sẵn trong HTML SSR chứ không
+     phải `setAttribute` sau hydrate.
+  3. **Hộp thoại.** Popover modal của react-aria tự nhận `role="dialog"`; một listbox không phải một
+     hộp thoại — cùng cách gỡ, cùng lý do như `dropdown-menu.tsx`.
+
+  **Tiêu điểm lúc đóng** phải sửa tay: react-aria cố ý KHÔNG lấy tiêu điểm cho trigger bị bấm bằng
+  CHUỘT, nên vùng tiêu điểm của nó ghi nhớ `<body>` và Escape ném người dùng lên đầu tài liệu. Nay
+  trigger nhận tiêu điểm ở `pointerdown` (đúng việc Radix làm), kèm một phép kiểm hoãn một nhịp chỉ
+  khôi phục khi tiêu điểm thật sự rơi về `<body>`. Cách thử đầu tiên — lật `preventFocusOnPress` —
+  là SAI và đã bị bỏ: nó làm popup không mở được nữa (đo được: 34 test đỏ).
+
+  Những chỗ DOM của react-aria khác thật sự, và test đã đổi theo (không phải đổi cho vừa nền mới):
+  text của option nay còn nằm trong `<select>` native ẩn mà react-aria dựng cho autofill, nên bốn
+  truy vấn `getByText` chuyển sang `getByRole("option")`; cái kẹp của gh#105 không còn gì để bắt vì
+  fallback ấy là `position: fixed` và bị cắt còn 1px; sàn bề rộng popup chuyển từ một class utility
+  của Radix sang `.ui-select-content` đọc `--trigger-width` của react-aria.
+
+  `SelectScrollUpButton` / `SelectScrollDownButton` vẫn được export nhưng **không vẽ gì** (`@deprecated`):
+  listbox của react-aria là vùng cuộn native, không có hai nút ấy. Cổng trình duyệt
+  `check:data-entry-frame-runtime` nay đo đúng tính chất mà hai nút kia từng đại diện — danh sách có
+  tràn thật và cuộn được thật — thay vì đòi hai khe DOM đã biến mất.
+
+  `@radix-ui/react-select` chuyển sang `devDependencies` (chỉ test đối chiếu còn import), và
+  `check:radix-surface` được chốt lại trong cùng commit: consumer cài **5** gói Radix thay vì 6.
+
+### Added
+
+- **`Select` bám sát Ant Design 6.** Một danh sách duy nhất dù call site viết kiểu nào: hàng phẳng,
+  GROUP lồng của antd (`{ label, options }`), hay payload lạ đọc qua `fieldNames` — tất cả chuẩn hoá
+  ở `src/lib/select-options.ts`, nên nhánh listbox thường và nhánh có tìm kiếm không thể hiểu khác
+  nhau về "một option là gì".
+
+  Thêm mới, mỗi prop một phép kiểm, và có mặt ở CẢ HAI nhánh khi prop ấy có nghĩa ở đó: `fieldNames`
+  · group lồng trong `options` · `labelInValue` · `prefix` · `suffixIcon` (`null` gỡ hẳn chỉ báo) ·
+  `placement` · `popupRender` · `listHeight` · `onPopupScroll` · `optionFilterProp` · `labelRender`
+  cho listbox thường · dạng OBJECT của `showSearch` (`filterOption` — cả `false` lẫn thứ tự tham số
+  `(input, option)` của antd — `optionFilterProp`, `filterSort`, `searchValue`, `onSearch`,
+  `autoClearSearchValue`) · `mode="tags"` · `tokenSeparators` · `maxTagTextLength` · `tagRender`.
+
+  **Chip trên trigger nhiều giá trị nay gỡ được từng cái.** Trigger của `mode="multiple"` /
+  `"tags"` đổi từ `<button>` sang `<div role="combobox">`, vì nút ✕ trên chip là một `<button>` thật
+  và `<button>` lồng trong `<button>` là HTML không hợp lệ — đó mới là lý do `tagRender` từng bị từ
+  chối, không phải khẩu vị. `combobox` không phải vai trò "children presentational" (ARIA 1.2), nên
+  nút bên trong hợp lệ và người dùng bàn phím Tab tới được từng ✕; Backspace trên trigger bỏ chip
+  cuối. Trigger một giá trị vẫn là `<button>` như cũ.
+
+  Một chỗ đáng nhớ: một run được DÁN vào thì đọc từ CLIPBOARD chứ không đọc từ ô nhập —
+  `<input>` một dòng cắt CR/LF theo đúng thuật toán "value sanitization" của HTML, nên dấu tách
+  `"\n"` không bao giờ sống sót để mà tách (đo được: `"a,b\nc"` tới nơi thành `"a,b"` + `"c"` dính
+  liền). `TagInput` đọc clipboard vì đúng lý do đó, và nay cả hai tách bằng chung một
+  `splitByTokenSeparators`.
+
+  `placement` viết theo trục LOGIC (`bottomStart` / `topEnd`) — đúng ngoại lệ mà
+  `docs/DESIGN-AUTHORITY.md` cho phép trước cách viết vật lý của antd. **`onChange` KHÔNG được thêm**:
+  `onValueChange(value, option)` đã đúng chữ ký của antd, và một cách viết thứ hai cho cùng một trục
+  chính là thứ `check:prop-vocabulary` sinh ra để chặn.
+
+- **Manifest API nay nhìn thấy component có props kiểu HỢP (union).** `getPropertiesOfType` trên một
+  union chỉ trả về phần GIAO, nên toàn bộ nửa data-driven của `Select` — `options`, `loadOptions`,
+  `showSearch` và mọi prop antd treo trên đó — vắng mặt khỏi `component-api-manifest.json`, mà vắng
+  mặt thì agent đọc thành "không tồn tại" (đúng lớp lỗi `pad`/`padRaw` trong `WHAT-BELONGS-HERE.md`).
+  Generator nay duyệt từng nhánh của union rồi gộp: `Select` từ 16 prop lên **74**, và
+  `check:doc-prop-existence` từ đây CHẤM được `Select` thay vì bỏ qua nó như một component bọc thư
+  viện ngoài.
+
 ### Fixed
 
 - **Ô chọn nay NHẬN được con trỏ ở đúng chỗ nó được vẽ.** `react-aria-components` vẽ control lên

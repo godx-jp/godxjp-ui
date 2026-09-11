@@ -1455,6 +1455,18 @@ export type SearchSelectMultipleProp = {
    */
   maxTagTextLength?: number;
   /**
+   * antd `tagRender` — render one chip yourself. Exactly the shape `TagInput`'s `tagRender` takes,
+   * so the two chip surfaces in this library are configured the same way. The `onClose` handed in
+   * is the same remover the built-in ✕ calls, so a custom chip cannot end up unremovable.
+   */
+  tagRender?: (props: {
+    value: string;
+    label: React.ReactNode;
+    onClose: () => void;
+    index: number;
+    disabled: boolean;
+  }) => React.ReactNode;
+  /**
    * antd `tokenSeparators` — characters that commit what has been typed. Typing or PASTING
    * "a,b,c" with `[","]` commits three values in one change, which is the point: a run pasted out
    * of a spreadsheet becomes a selection instead of one long nonsense token. In `mode="multiple"`
@@ -1493,6 +1505,13 @@ export type SelectLabelInValueMultipleProp = {
   maxTagPlaceholder?: MaxTagPlaceholderProp;
   maxTagTextLength?: number;
   tokenSeparators?: string[];
+  tagRender?: (props: {
+    value: string;
+    label: React.ReactNode;
+    onClose: () => void;
+    index: number;
+    disabled: boolean;
+  }) => React.ReactNode;
 };
 
 /** @see Select — the searchable engine. Single by default; `mode="multiple"` switches the shape. */

@@ -144,6 +144,17 @@ function itemTextValue(node: React.ReactNode): string {
 
 type SelectRootProp = Omit<SelectCompoundProp, keyof FieldA11yProps> & {
   isDisabled?: boolean;
+  /**
+   * The control's NAME, handed to react-aria as well as to the trigger.
+   *
+   * The trigger is named by {@link SelectTrigger} — react-aria's own labelling is deliberately
+   * stripped there (see the file note). But `useLabel` WARNS once per render when the root has
+   * neither a label slot nor `aria-label`/`aria-labelledby` ("If you do not provide a visible
+   * label…"), which would print on every page carrying a Select. Handing it the same name is the
+   * honest way to quiet it: nothing about the trigger changes, and the listbox gains a name too.
+   */
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
   /** Let the popup open with no options — the data API's `notFoundContent` opt-in. */
   allowsEmptyCollection?: boolean;
 };
@@ -165,6 +176,8 @@ function SelectRoot({
   required,
   form,
   allowsEmptyCollection,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
   children,
 }: SelectRootProp) {
   void dir;
@@ -187,6 +200,8 @@ function SelectRoot({
       form={form}
       autoComplete={autoComplete}
       allowsEmptyCollection={allowsEmptyCollection}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby}
     >
       {children}
     </AriaSelect>
@@ -329,7 +344,13 @@ function CompoundSelect({ id, name, ...props }: SelectCompoundProp) {
         id,
       }}
     >
-      <SelectRoot {...props} id={id} name={name ?? identity.name} />
+      <SelectRoot
+        {...props}
+        id={id}
+        name={name ?? identity.name}
+        aria-label={fieldA11y["aria-label"]}
+        aria-labelledby={fieldA11y["aria-labelledby"]}
+      />
     </SelectFieldA11yContext.Provider>
   );
 }
@@ -1075,6 +1096,8 @@ function DataSelect(props: PlainDataSelectProp) {
       }}
       disabled={disabled || (!hasOptions && !showEmptyPopup)}
       allowsEmptyCollection={showEmptyPopup}
+      aria-label={ariaProps["aria-label"] as string | undefined}
+      aria-labelledby={ariaProps["aria-labelledby"] as string | undefined}
       name={resolvedName}
       open={open}
       defaultOpen={defaultOpen}

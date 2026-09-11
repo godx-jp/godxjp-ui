@@ -6,10 +6,18 @@
       "group": "data-display",
       "props": [
         {
+          "name": "collapsible",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/accordion.tsx"]
+        },
+        {
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
-          "type": "string | string[] | undefined",
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/components/ui/accordion.tsx"]
         },
@@ -33,7 +41,7 @@
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
-          "type": "((value: string) => void) | ((value: string[]) => void) | undefined",
+          "type": "((value: string) => void) | undefined",
           "values": [],
           "declaredIn": ["src/components/ui/accordion.tsx"]
         },
@@ -49,15 +57,15 @@
           "name": "type",
           "origin": "owned",
           "required": true,
-          "type": "\"single\" | \"multiple\"",
-          "values": ["single", "multiple"],
+          "type": "\"single\"",
+          "values": ["single"],
           "declaredIn": ["src/components/ui/accordion.tsx"]
         },
         {
           "name": "value",
           "origin": "owned",
           "required": false,
-          "type": "string | string[] | undefined",
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/components/ui/accordion.tsx"]
         }
@@ -2710,8 +2718,8 @@
           "name": "required",
           "origin": "inherited-behavioral",
           "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
+          "type": "false | undefined",
+          "values": [false],
           "declaredIn": ["node_modules/react-day-picker/dist/esm/types/props.d.ts"]
         },
         {
@@ -5164,6 +5172,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "allowEmpty",
+          "origin": "owned",
+          "required": false,
+          "type": "[boolean, boolean] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "cellRender",
           "origin": "owned",
           "required": false,
@@ -5199,7 +5215,7 @@
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
-          "type": "Date | Date[] | DateRange | undefined",
+          "type": "Date | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -5279,8 +5295,8 @@
           "name": "multiple",
           "origin": "owned",
           "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
+          "type": "false | undefined",
+          "values": [false],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -5311,7 +5327,7 @@
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
-          "type": "((value: Date | undefined) => void) | ((value: Date[] | undefined) => void) | ((value: DateRange | undefined) => void) | undefined",
+          "type": "((value: Date | undefined) => void) | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -5383,7 +5399,7 @@
           "name": "presets",
           "origin": "owned",
           "required": false,
-          "type": "{ label: React.ReactNode; value: Date | (() => Date); }[] | { label: React.ReactNode; value: Date | (() => Date); }[] | { label: React.ReactNode; value: DateRange | (() => DateRange); }[] | undefined",
+          "type": "{ label: React.ReactNode; value: Date | (() => Date); }[] | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -5391,8 +5407,8 @@
           "name": "range",
           "origin": "owned",
           "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
+          "type": "false | undefined",
+          "values": [false],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
@@ -5423,7 +5439,7 @@
           "name": "showTime",
           "origin": "owned",
           "required": false,
-          "type": "boolean | Pick<TimePickerProp, \"hourStep\" | \"minuteStep\" | \"secondStep\" | \"showSeconds\" | \"use12Hours\" | \"disabledTime\"> | (Pick<TimePickerProp, \"hourStep\" | \"minuteStep\" | \"secondStep\" | \"showSeconds\" | \"use12Hours\" | \"disabledTime\"> & false) | undefined",
+          "type": "boolean | Pick<TimePickerProp, \"hourStep\" | \"minuteStep\" | \"secondStep\" | \"showSeconds\" | \"use12Hours\" | \"disabledTime\"> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -5471,7 +5487,7 @@
           "name": "value",
           "origin": "owned",
           "required": false,
-          "type": "Date | Date[] | DateRange | undefined",
+          "type": "Date | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -6113,7 +6129,7 @@
           "origin": "owned",
           "required": false,
           "type": "DropdownMenuPlacementProp | undefined",
-          "values": ["top", "bottom", "topStart", "topEnd", "bottomStart", "bottomEnd"],
+          "values": ["top", "bottom", "bottomStart", "bottomEnd", "topStart", "topEnd"],
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
@@ -7312,7 +7328,7 @@
         {
           "name": "children",
           "origin": "owned",
-          "required": false,
+          "required": true,
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
@@ -7449,7 +7465,7 @@
           "name": "staticText",
           "origin": "owned",
           "required": false,
-          "type": "React.ReactNode",
+          "type": "undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
@@ -10299,7 +10315,7 @@
           "name": "segments",
           "origin": "owned",
           "required": false,
-          "type": "ProgressSegment[] | undefined",
+          "type": "undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
@@ -10330,8 +10346,8 @@
         {
           "name": "value",
           "origin": "owned",
-          "required": false,
-          "type": "number | undefined",
+          "required": true,
+          "type": "number",
           "values": [],
           "declaredIn": ["src/components/data-display/progress.tsx"]
         }
@@ -11320,12 +11336,20 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "allowClear",
+          "origin": "owned",
+          "required": false,
+          "type": "AllowClearProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "aria-describedby",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/lib/field-a11y.ts", "src/props/components/data-entry.prop.ts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "aria-errormessage",
@@ -11333,15 +11357,15 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/lib/field-a11y.ts", "src/props/components/data-entry.prop.ts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "aria-invalid",
           "origin": "owned",
           "required": false,
-          "type": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined",
-          "values": [false, true, "true", "false", "grammar", "spelling"],
-          "declaredIn": ["src/lib/field-a11y.ts", "src/props/components/data-entry.prop.ts"]
+          "type": "boolean | \"true\" | \"false\" | undefined",
+          "values": [false, true, "true", "false"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "aria-label",
@@ -11349,7 +11373,7 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/lib/field-a11y.ts", "src/props/components/data-entry.prop.ts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "aria-labelledby",
@@ -11357,15 +11381,63 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/lib/field-a11y.ts", "src/props/components/data-entry.prop.ts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "aria-required",
           "origin": "owned",
           "required": false,
-          "type": "(boolean | \"true\" | \"false\") | undefined",
+          "type": "boolean | \"true\" | \"false\" | undefined",
           "values": [false, true, "true", "false"],
-          "declaredIn": ["src/lib/field-a11y.ts", "src/props/components/data-entry.prop.ts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "autoClearSearchValue",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "autoComplete",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "clearable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "clearLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "data-field",
@@ -11373,7 +11445,15 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["src/lib/field-a11y.ts", "src/props/components/data-entry.prop.ts"]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "data-testid",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "defaultOpen",
@@ -11381,21 +11461,23 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/@radix-ui/react-select/dist/index.d.mts",
-            "src/props/components/data-entry.prop.ts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
-          "type": "string | string[] | undefined",
+          "type": "string | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/@radix-ui/react-select/dist/index.d.mts",
-            "src/props/components/data-entry.prop.ts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "dir",
+          "origin": "owned",
+          "required": false,
+          "type": "\"ltr\" | \"rtl\" | undefined",
+          "values": ["ltr", "rtl"],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "disabled",
@@ -11403,10 +11485,55 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/@radix-ui/react-select/dist/index.d.mts",
-            "src/props/components/data-entry.prop.ts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "emptyMessage",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "errorMessage",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "fieldNames",
+          "origin": "owned",
+          "required": false,
+          "type": "SelectFieldNamesProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "filterOption",
+          "origin": "owned",
+          "required": false,
+          "type": "((option: SearchSelectOptionProp, query: string) => boolean) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "filterSort",
+          "origin": "owned",
+          "required": false,
+          "type": "((a: SearchSelectOptionProp, b: SearchSelectOptionProp, info: { searchValue: string; }) => number) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "form",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "id",
@@ -11414,10 +11541,103 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": [
-            "src/components/data-entry/select.tsx",
-            "src/props/components/data-entry.prop.ts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "labelInValue",
+          "origin": "owned",
+          "required": false,
+          "type": "false | undefined",
+          "values": [false],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "labelRender",
+          "origin": "owned",
+          "required": false,
+          "type": "((selected: { value: string; label: React.ReactNode; option?: SearchSelectOptionProp; }) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "listHeight",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "loadingMessage",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "loadOptions",
+          "origin": "owned",
+          "required": false,
+          "type": "((params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "maxCount",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "maxTagCount",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "maxTagPlaceholder",
+          "origin": "owned",
+          "required": false,
+          "type": "MaxTagPlaceholderProp",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "maxTagTextLength",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "menuItemSelectedIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "mode",
+          "origin": "owned",
+          "required": false,
+          "type": "undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "name",
@@ -11425,32 +11645,71 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/@radix-ui/react-select/dist/index.d.mts",
-            "src/props/components/data-entry.prop.ts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "notFoundContent",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onClear",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onDeselect",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: string, option: SearchSelectOptionProp) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "onOpenChange",
           "origin": "owned",
           "required": false,
-          "type": "OnOpenChangeProp | ((open: boolean) => void) | undefined",
+          "type": "OnOpenChangeProp | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/@radix-ui/react-select/dist/index.d.mts",
-            "src/props/components/data-entry.prop.ts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onPopupScroll",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: React.UIEvent<HTMLElement>) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onSearchChange",
+          "origin": "owned",
+          "required": false,
+          "type": "OnSearchChangeProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onSelect",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: string, option: SearchSelectOptionProp) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
-          "type": "((value: string, option?: SearchSelectOptionProp) => void) | ((value: string[], options?: SearchSelectOptionProp[]) => void) | ((value: string) => void) | undefined",
+          "type": "((value: string, option?: SearchSelectOptionProp) => void) | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/@radix-ui/react-select/dist/index.d.mts",
-            "src/props/components/data-entry.prop.ts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "open",
@@ -11458,21 +11717,215 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": [
-            "node_modules/@radix-ui/react-select/dist/index.d.mts",
-            "src/props/components/data-entry.prop.ts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "optionFilterProp",
+          "origin": "owned",
+          "required": false,
+          "type": "\"label\" | \"value\" | \"sublabel\" | undefined",
+          "values": ["label", "value", "sublabel"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "optionRender",
+          "origin": "owned",
+          "required": false,
+          "type": "((option: SearchSelectOptionProp, info: { index: number; }) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "options",
+          "origin": "owned",
+          "required": false,
+          "type": "(SearchSelectOptionProp | SelectOptionGroupProp)[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "placeholder",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "placement",
+          "origin": "owned",
+          "required": false,
+          "type": "SelectPlacementProp | undefined",
+          "values": ["bottomStart", "bottomEnd", "topStart", "topEnd"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "popupMatchSelectWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "PopupMatchWidthProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "popupRender",
+          "origin": "owned",
+          "required": false,
+          "type": "((originNode: React.ReactNode) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "prefix",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "readOnly",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "renderError",
+          "origin": "owned",
+          "required": false,
+          "type": "((params: { message: string; retry: () => void; }) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "renderLoadMore",
+          "origin": "owned",
+          "required": false,
+          "type": "((params: { hasMore: boolean; loading: boolean; loadMore: () => void; }) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "renderOption",
+          "origin": "owned",
+          "required": false,
+          "type": "((option: SearchSelectOptionProp) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "required",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
+        {
+          "name": "search",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "searchPlaceholder",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "selectedIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "selectedLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "showSearch",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | SelectShowSearchProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlStatusProp | undefined",
+          "values": ["warning", "error"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "suffixIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "tagRender",
+          "origin": "owned",
+          "required": false,
+          "type": "((props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean; }) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "tokenSeparators",
+          "origin": "owned",
+          "required": false,
+          "type": "string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "value",
           "origin": "owned",
           "required": false,
-          "type": "string | string[] | undefined",
+          "type": "string | undefined",
           "values": [],
-          "declaredIn": [
-            "node_modules/@radix-ui/react-select/dist/index.d.mts",
-            "src/props/components/data-entry.prop.ts"
-          ]
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlWidthProp | undefined",
+          "values": ["auto", "full", "bounded"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
@@ -11481,35 +11934,35 @@
       "props": [
         {
           "name": "align",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"center\" | \"start\" | \"end\" | undefined",
           "values": ["center", "start", "end"],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "alignOffset",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "avoidCollisions",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "collisionPadding",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
+          "type": "number | undefined",
           "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "data-popup-match",
@@ -11529,43 +11982,75 @@
         },
         {
           "name": "forceMount",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "true | undefined",
           "values": [true],
-          "declaredIn": ["node_modules/@radix-ui/react-select/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "hideWhenDetached",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
+        {
+          "name": "onCloseAutoFocus",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: Event) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
+        {
+          "name": "onEscapeKeyDown",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: KeyboardEvent) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
+        {
+          "name": "onPointerDownOutside",
+          "origin": "owned",
+          "required": false,
+          "type": "((event: Event) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
+        {
+          "name": "position",
+          "origin": "owned",
+          "required": false,
+          "type": "\"popper\" | \"item-aligned\" | undefined",
+          "values": ["popper", "item-aligned"],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "side",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
-          "type": "\"left\" | \"right\" | \"top\" | \"bottom\" | undefined",
+          "type": "RadixSide | undefined",
           "values": ["left", "right", "top", "bottom"],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "sideOffset",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "number | undefined",
           "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "sticky",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         }
       ]
     },
@@ -11579,12 +12064,28 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
     "SelectItem": {
       "group": "data-entry",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
         {
           "name": "defaultValue",
           "origin": "inherited-behavioral",
@@ -11594,12 +12095,20 @@
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
-          "name": "disabled",
+          "name": "dir",
           "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-select/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
           "name": "selectedIcon",
@@ -11610,12 +12119,20 @@
           "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
+          "name": "textValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
+        {
           "name": "value",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": true,
           "type": "string",
           "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-select/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         }
       ]
     },
@@ -11627,6 +12144,14 @@
           "origin": "inherited-behavioral",
           "required": false,
           "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
@@ -11642,6 +12167,14 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -11653,6 +12186,14 @@
           "origin": "inherited-behavioral",
           "required": false,
           "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
@@ -11668,12 +12209,28 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
     "SelectTrigger": {
       "group": "data-entry",
       "props": [
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
         {
           "name": "data-field",
           "origin": "owned",
@@ -11695,6 +12252,14 @@
           "origin": "inherited-behavioral",
           "required": false,
           "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
@@ -11776,12 +12341,44 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
+        },
+        {
           "name": "defaultValue",
           "origin": "inherited-behavioral",
           "required": false,
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "dir",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "placeholder",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/select.tsx"]
         }
       ]
     },
@@ -15052,7 +15649,7 @@
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
-          "type": "string | string[] | undefined",
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
@@ -15084,7 +15681,7 @@
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
-          "type": "((value: string) => void) | ((value: string[]) => void) | undefined",
+          "type": "((value: string) => void) | undefined",
           "values": [],
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
@@ -15108,15 +15705,15 @@
           "name": "type",
           "origin": "owned",
           "required": true,
-          "type": "\"single\" | \"multiple\"",
-          "values": ["single", "multiple"],
+          "type": "\"single\"",
+          "values": ["single"],
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
           "name": "value",
           "origin": "owned",
           "required": false,
-          "type": "string | string[] | undefined",
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
