@@ -56,8 +56,7 @@ function readState() {
   return {
     topbarSpan: params.get("topbarSpan") === "content" ? ("content" as const) : ("full" as const),
     navRail: (["start", "end", "top", "bottom"] as const).find((p) => p === rail) as
-      | RailPosition
-      | undefined,
+      RailPosition | undefined,
     collapsed: params.get("collapsed") === "1",
     hasSidebar: params.get("sidebar") !== "none",
     responsiveNavigation:
@@ -66,7 +65,8 @@ function readState() {
 }
 
 export default function Demo() {
-  const [{ topbarSpan, navRail, collapsed, hasSidebar, responsiveNavigation }] = useState(readState);
+  const [{ topbarSpan, navRail, collapsed, hasSidebar, responsiveNavigation }] =
+    useState(readState);
   const [activeId, setActiveId] = useState("dashboard");
   const strip = navRail === "top" || navRail === "bottom";
 
@@ -127,7 +127,7 @@ export default function Demo() {
       >
         <Card>
           <CardHeader>
-            <CardTitle>今月の請求</CardTitle>
+            <CardTitle level={2}>今月の請求</CardTitle>
             <CardDescription>未送信 3 件 · 入金待ち 12 件</CardDescription>
           </CardHeader>
           <CardContent>
