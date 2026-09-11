@@ -76,10 +76,17 @@ export type InputOTPMaskProp = boolean | string;
  * The value is ALWAYS driven from here (`value` controlled, or `defaultValue` + internal state), so
  * `formatter` and `readOnly` hold for typing AND for paste — `input-otp` writes its own internal
  * state on paste, which a wrapper that only intercepted `onChange` could not undo.
+ *
+ * `style` is OMITTED because it cannot be honoured: `input-otp` owns both elements it could land
+ * on and writes their geometry itself — the field's own style object replaces anything passed in
+ * (measured: `style={{ color: "red" }}` left the input at the library's `color: transparent`) and
+ * the container's is hard-coded too. A type that accepts a prop the render can never deliver is
+ * the defect gh#477 reported for `id`; `id` is real and forwarded, this one was not. The paint of
+ * the field is reached through `className` / `containerClassName` and the `--otp-*` tokens.
  */
 export type InputOTPProp = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "value" | "defaultValue" | "onChange" | "size" | "children"
+  "value" | "defaultValue" | "onChange" | "size" | "children" | "style"
 > & {
   /** Number of slots — antd `length`. Required by `input-otp`. */
   maxLength: number;

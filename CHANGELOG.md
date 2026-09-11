@@ -180,6 +180,35 @@ transparent` — đúng `hsl(var(--border))` trên nền trong suốt.
   LTR và RTL. Đột biến: gỡ bản sửa → đỏ với **552 lỗi**, mở đầu bằng `input is off-centre by 6,6`.
   Kèm một test jsdom ghim CẤU TRÚC mà bản sửa dựa vào (input nằm trong `.ui-choice-input`, không
   mang style nội tuyến), để một bản nâng cấp react-aria đổi cây DOM sẽ đỏ chứ không im lặng.
+
+- **Nhãn của `FormField` nay trỏ vào ĐÚNG cái id mà control đang mang.** Bản sao `cloneElement`
+  luôn ưu tiên `id` của chính control — ghi đè nó sẽ làm hỏng một control tự đặt tên cho mình —
+  nhưng handler click của nhãn lại tra `id` CỦA FIELD. Hai bên chỉ cần khác nhau một lần là nhãn
+  không còn trỏ vào đâu nữa: với `<FormField label="認証コード"><InputOTP id="email-otp" …/></FormField>`
+  — đúng hình dạng gh#477 mô tả — bấm vào nhãn xong `document.activeElement` vẫn là `<body>` (đo
+  trên Chromium, frame `data-entry-input-otp`). Nay chỉ còn MỘT id, đọc một lần
+  (`childProps.id ?? resolvedId`); cùng phép đo sau bản sửa trả về **`INPUT#email-otp`**. Đây là
+  lỗi TIẾP CẬN độc lập với mọi test: nhãn không đưa được tiêu điểm, và nó không nằm ở riêng
+  `InputOTP` — mọi control tự mang `id` đều dính.
+
+- **`InputOTP` bỏ `style` khỏi kiểu, vì đó là prop DUY NHẤT nó không thể chuyển tiếp.** `input-otp`
+  tự viết style của ô nhập và THAY THẾ hẳn thứ được truyền vào (đo: `style={{ color: "red" }}` để
+  lại đúng `color: transparent` của thư viện), còn style của container thì hard-code — nên kiểu dữ
+  liệu đang hứa một điều bản render không bao giờ giao. Nay trình biên dịch nói "không" thay vì
+  render im lặng nuốt mất; phần tô của field vẫn tới được qua `className` / `containerClassName`
+  và các token `--otp-*`.
+
+  Còn `id` — thứ issue báo là "nhận trong kiểu rồi không render" — thì **vẫn luôn tới DOM**:
+  `...props` đi thẳng vào `OTPInput`, và `input-otp` trải phần rest lên chính `<input>`. Đo lại
+  trên `main` (và đọc lại bản dựng `20.2.1` mà consumer đang chạy, cùng một đường):
+  `document.querySelector("#code")` trả về đúng ô nhập, `getByLabelText` tìm ra nó, tên khả truy
+  cập đọc lên là `textbox "認証コード"`. Việc catalog MCP không liệt kê `id` cũng không nói lên điều
+  gì: manifest chỉ chở prop kế thừa mang HÀNH VI (`inheritedBehavioralProps`), nên không một
+  component nào trong 296 export có `id` trong danh sách. Một test mới đi qua từng prop còn lại —
+  `id`, `name`, `title`, `dir`, `autoComplete`, `data-*`, `aria-describedby` — và đòi chúng có mặt
+  trên `<input>`. Đột biến: gỡ bản sửa → 2 test đỏ, và `typecheck` đỏ với
+  `TS2578: Unused '@ts-expect-error' directive`.
+
 - **Dưới 900px, mọi trạng thái của `AppShell` mới thật sự về MỘT cột.** Bản reset một cột trong
   `@media (width <= 56.25rem)` liệt kê NĂM selector cho một ma trận BA MƯƠI trạng thái, và nó thua
   về độ đặc hiệu ngay ở trạng thái đầu tiên nó bỏ sót: `.app-root[data-topbar-span="full"]` không

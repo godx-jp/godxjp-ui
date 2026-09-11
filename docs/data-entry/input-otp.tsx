@@ -38,8 +38,11 @@ export default function Demo() {
             <CardDescription>6スロット 1グループ · ペースト・矢印キー操作に対応。</CardDescription>
           </CardHeader>
           <CardContent>
-            <FormField id="email-otp" label="認証コード" required>
-              <InputOTP maxLength={6} value={emailCode} onChange={setEmailCode}>
+            {/* この行の id は FIELD ではなく CONTROL 側にある。FormField はその id をそのまま
+                使い、ラベルのクリックもその id を見る（gh#477：以前は FormField 自身の id を
+                見ていたので、両者が食い違った瞬間にラベルがどこも指さなくなった）。 */}
+            <FormField label="認証コード" required>
+              <InputOTP id="email-otp" maxLength={6} value={emailCode} onChange={setEmailCode}>
                 <InputOTPGroup>
                   <InputOTPSlot index={0} />
                   <InputOTPSlot index={1} />
