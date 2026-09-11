@@ -1662,6 +1662,7 @@
   }
 
   .ui-search-select-list {
+    max-block-size: var(--search-select-list-max-height);
     max-block-size: none;
     min-block-size: 0;
     flex: 1 1 0%;
@@ -1886,7 +1887,10 @@
     max-height: var(--select-content-max-height);
     /* antd `popupMatchSelectWidth` default: the trigger width is the floor. react-aria publishes
      * the trigger width as --trigger-width on this element. */
-    min-width: max(var(--menu-content-min-width), var(--trigger-width, var(--menu-content-min-width)));
+    min-width: max(
+      var(--menu-content-min-width),
+      var(--trigger-width, var(--menu-content-min-width))
+    );
     overflow: hidden;
     border-radius: var(--radius-md);
     border: 1px solid hsl(var(--border));
@@ -2003,6 +2007,26 @@
   .ui-select-chevron {
     flex-shrink: 0;
     opacity: var(--control-affix-rest-alpha);
+  }
+
+  /* antd `prefix` / `suffixIcon` on the trigger. The trigger is `justify-between`, which is right
+   * for [value][chevron] and wrong the moment a third child arrives: the value would float to the
+   * centre. With a prefix the row packs from the start and the VALUE takes the slack instead. */
+  .ui-select-prefix,
+  .ui-select-suffix {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-select-trigger-prefixed {
+    justify-content: flex-start;
+  }
+
+  .ui-select-trigger-prefixed > [data-slot="select-value"] {
+    flex: 1 1 auto;
+    text-align: start;
   }
 }
 

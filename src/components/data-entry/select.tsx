@@ -33,9 +33,17 @@ import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import { radixSurfaceState, toPlacement } from "../navigation/dropdown-menu";
 import { SearchSelect } from "./search-select";
 import { useTranslation } from "../../i18n/use-translation";
+import { normalizeSelectOptions } from "../../lib/select-options";
 import type {
+  SearchSelectBaseProp,
+  SearchSelectMultipleProp,
   SearchSelectOptionProp,
+  SearchSelectProp,
+  SearchSelectSingleProp,
+  SelectShowSearchProp,
   SelectDataProp,
+  SelectLabeledValueProp,
+  SelectPlacementProp,
 } from "../../props/components/data-entry.prop";
 
 /*
@@ -100,9 +108,7 @@ function isDataSelect(props: SelectProp): props is SelectDataProp {
  * injects `id` / `aria-labelledby` / `aria-describedby` / … onto its single child with
  * `cloneElement`.
  */
-const SelectFieldA11yContext = React.createContext<(FieldA11yProps & { id?: string }) | null>(
-  null,
-);
+const SelectFieldA11yContext = React.createContext<(FieldA11yProps & { id?: string }) | null>(null);
 
 /** `""` is "nothing selected" in this API; react-aria spells that `null`. */
 function toKey(value: string | undefined): string | null | undefined {
@@ -196,9 +202,117 @@ function SelectRoot({
  */
 export function Select(props: SelectProp) {
   if (isDataSelect(props)) {
-    return <DataSelect {...props} />;
+    // antd `labelInValue` is a DIALECT of the value, not a second component: it is translated here
+    // and everything below this line only ever sees plain string values.
+    if (props.labelInValue) return <LabelInValueSelect {...props} />;
+    return <DataSelect {...(props as PlainDataSelectProp)} />;
   }
   return <CompoundSelect {...props} />;
+}
+
+type LabelInValueProp = SelectDataProp & { labelInValue: true };
+
+/**
+ * antd `labelInValue` — `{ value, label }` in and out.
+ *
+ * It earns its place on the async edit form: a screen loads a record holding `{ value: "52",
+ * label: "東京本社" }` and can render the pick immediately, with no options page fetched and no
+ * flash of the raw id. So the labels that arrive on the VALUE are also folded into the option list
+ * (deduped), which is the only way the trigger can show them before the list loads.
+ */
+function LabelInValueSelect({
+  labelInValue,
+  value,
+  defaultValue,
+  onValueChange,
+  onSelect,
+  ...rest
+}: LabelInValueProp) {
+  void labelInValue;
+  const multiple = rest.mode === "multiple" || rest.mode === "tags";
+  const onDeselect = (
+    rest as { onDeselect?: (value: unknown, option: SearchSelectOptionProp) => void }
+  ).onDeselect;
+  const entries = React.useMemo(() => {
+    const current = (value ?? defaultValue) as
+      SelectLabeledValueProp | SelectLabeledValueProp[] | null | undefined;
+    if (current == null) return [] as SelectLabeledValueProp[];
+    return Array.isArray(current) ? current : [current];
+  }, [value, defaultValue]);
+
+  const options = React.useMemo(() => {
+    const base = normalizeSelectOptions(rest.options, rest.fieldNames);
+    const known = new Set(base.map((option) => option.value));
+    const carried = entries
+      .filter((entry) => entry && !known.has(entry.value))
+      .map((entry) => ({ value: entry.value, label: itemTextValue(entry.label) || entry.value }));
+    return carried.length ? [...base, ...carried] : base;
+  }, [rest.options, rest.fieldNames, entries]);
+
+  const toLabeled = (picked: string, option?: SearchSelectOptionProp): SelectLabeledValueProp => ({
+    value: picked,
+    // The OPTION's label wins when the row is known; the label that rode in on the value is the
+    // fallback for the row that has not loaded.
+    label: option?.label ?? entries.find((entry) => entry.value === picked)?.label ?? picked,
+  });
+
+  // ONE cast, at the boundary: below this object every value is a plain string again, which is the
+  // whole point of the adapter. Spreading it into the union-typed DataSelect otherwise asks
+  // TypeScript to pick a branch of a union that `mode` decides at runtime.
+  const shared = {
+    ...rest,
+    options,
+    fieldNames: undefined,
+    onSelect: onSelect
+      ? (picked: string, option: SearchSelectOptionProp) =>
+          (onSelect as (v: SelectLabeledValueProp, o: SearchSelectOptionProp) => void)(
+            toLabeled(picked, option),
+            option,
+          )
+      : undefined,
+  } as Record<string, unknown>;
+
+  if (multiple) {
+    const labeledValues = value as SelectLabeledValueProp[] | undefined;
+    const labeledDefaults = defaultValue as SelectLabeledValueProp[] | undefined;
+    const adapted = {
+      ...shared,
+      value: labeledValues?.map((entry) => entry.value),
+      defaultValue: labeledDefaults?.map((entry) => entry.value),
+      onValueChange: (picked: string[], pickedOptions?: SearchSelectOptionProp[]) =>
+        (
+          onValueChange as
+            ((v: SelectLabeledValueProp[], o?: SearchSelectOptionProp[]) => void) | undefined
+        )?.(
+          picked.map((entry) =>
+            toLabeled(
+              entry,
+              pickedOptions?.find((option) => option.value === entry),
+            ),
+          ),
+          pickedOptions,
+        ),
+      onDeselect: onDeselect
+        ? (picked: string, option: SearchSelectOptionProp) =>
+            onDeselect(toLabeled(picked, option), option)
+        : undefined,
+    } as unknown as PlainDataSelectProp;
+    return <DataSelect {...adapted} />;
+  }
+
+  const labeledValue = value as SelectLabeledValueProp | null | undefined;
+  const labeledDefault = defaultValue as SelectLabeledValueProp | null | undefined;
+  const adapted = {
+    ...shared,
+    value: value === undefined ? undefined : (labeledValue?.value ?? ""),
+    defaultValue: labeledDefault?.value,
+    onValueChange: (picked: string, option?: SearchSelectOptionProp) =>
+      (
+        onValueChange as
+          ((v: SelectLabeledValueProp | undefined, o?: SearchSelectOptionProp) => void) | undefined
+      )?.(picked ? toLabeled(picked, option) : undefined, option),
+  } as unknown as PlainDataSelectProp;
+  return <DataSelect {...adapted} />;
 }
 
 function CompoundSelect({ id, name, ...props }: SelectCompoundProp) {
@@ -241,24 +355,25 @@ export type SelectValueProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "child
   asChild?: boolean;
 };
 
-export const SelectValue = React.forwardRef<HTMLSpanElement, SelectValueProp>(
-  function SelectValue({ placeholder, children, asChild, className, style, ...props }, ref) {
-    void asChild;
-    return (
-      <AriaSelectValue
-        ref={ref}
-        data-slot="select-value"
-        className={className ?? ""}
-        style={style}
-        {...(props as object)}
-      >
-        {({ isPlaceholder, defaultChildren }) =>
-          isPlaceholder ? (placeholder ?? null) : (children ?? defaultChildren)
-        }
-      </AriaSelectValue>
-    );
-  },
-);
+export const SelectValue = React.forwardRef<HTMLSpanElement, SelectValueProp>(function SelectValue(
+  { placeholder, children, asChild, className, style, ...props },
+  ref,
+) {
+  void asChild;
+  return (
+    <AriaSelectValue
+      ref={ref}
+      data-slot="select-value"
+      className={className ?? ""}
+      style={style}
+      {...(props as object)}
+    >
+      {({ isPlaceholder, defaultChildren }) =>
+        isPlaceholder ? (placeholder ?? null) : (children ?? defaultChildren)
+      }
+    </AriaSelectValue>
+  );
+});
 
 type SelectTriggerProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Control height tier — the shared `--control-height` ladder (antd `size`). */
@@ -346,7 +461,10 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
             field?.["aria-errormessage"],
           ),
           "aria-required": props["aria-required"] ?? field?.["aria-required"],
-          "aria-invalid": resolveAriaInvalid(props["aria-invalid"] ?? field?.["aria-invalid"], status),
+          "aria-invalid": resolveAriaInvalid(
+            props["aria-invalid"] ?? field?.["aria-invalid"],
+            status,
+          ),
           "data-field": props["data-field"] ?? field?.["data-field"],
         }
       : { "aria-invalid": resolveAriaInvalid(props["aria-invalid"], status) };
@@ -388,7 +506,8 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
     const hasValue = selected != null && selected !== "";
     // The trigger shows "東京本社" where the row's real value is "52". Publishing the value here is
     // the one thing no consumer can do for itself — hence a library-level attribute.
-    const dataValue = (props["data-value"] ?? (hasValue ? String(selected) : undefined)) || undefined;
+    const dataValue =
+      (props["data-value"] ?? (hasValue ? String(selected) : undefined)) || undefined;
     const { events, attributes } = splitDomProps(props);
     delete attributes.id;
     // See the file note (1): react-aria's `aria-labelledby` would name the trigger after its VALUE
@@ -520,6 +639,25 @@ type SelectContentProp = Omit<React.HTMLAttributes<HTMLDivElement>, "dir"> & {
 type SelectPopupProp = SelectContentProp & {
   /** Rendered by the listbox when it has no options (antd `notFoundContent`). */
   renderEmpty?: React.ReactNode;
+  /** antd `placement`, logical. Overrides `side`/`align`. */
+  placement?: SelectPlacementProp;
+  /** antd `popupRender` — wraps the list, which it must still render. */
+  popupRender?: (originNode: React.ReactNode) => React.ReactNode;
+  /** antd `listHeight` — per-instance override of `--select-content-max-height`. */
+  listHeight?: number;
+  /** antd `onPopupScroll`. */
+  onPopupScroll?: (event: React.UIEvent<HTMLElement>) => void;
+};
+
+/** antd's four block-axis placements, on the logical inline axis (see SelectPlacementProp). */
+const SELECT_PLACEMENT: Record<
+  SelectPlacementProp,
+  { side: "top" | "bottom"; align: "start" | "end" }
+> = {
+  bottomStart: { side: "bottom", align: "start" },
+  bottomEnd: { side: "bottom", align: "end" },
+  topStart: { side: "top", align: "start" },
+  topEnd: { side: "top", align: "end" },
 };
 
 const SelectPopup = React.forwardRef<HTMLDivElement, SelectPopupProp>(function SelectPopup(
@@ -541,6 +679,10 @@ const SelectPopup = React.forwardRef<HTMLDivElement, SelectPopupProp>(function S
     onPointerDownOutside,
     forceMount,
     renderEmpty,
+    placement,
+    popupRender,
+    listHeight,
+    onPopupScroll,
     "data-popup-match": popupMatch,
     ...props
   },
@@ -555,16 +697,43 @@ const SelectPopup = React.forwardRef<HTMLDivElement, SelectPopupProp>(function S
   void forceMount;
   const portalContainer = useOverlayPortalContainer();
   const { events, attributes } = splitDomProps(props);
+  const anchor = placement ? SELECT_PLACEMENT[placement] : undefined;
+  const list = (
+    <ListBox
+      data-slot="select-viewport"
+      className="ui-select-viewport"
+      {...(events as object)}
+      onScroll={onPopupScroll}
+      renderEmptyState={
+        renderEmpty === undefined
+          ? undefined
+          : () => (
+              <div data-slot="select-empty" className="ui-select-empty">
+                {renderEmpty}
+              </div>
+            )
+      }
+    >
+      {children}
+    </ListBox>
+  );
   return (
     <AriaPopover
       ref={ref}
       UNSTABLE_portalContainer={portalContainer}
-      placement={toPlacement(side, align)}
+      placement={toPlacement(side ?? anchor?.side, align ?? anchor?.align)}
       offset={sideOffset}
       crossOffset={alignOffset}
       shouldFlip={avoidCollisions}
       containerPadding={collisionPadding}
-      style={style}
+      // antd `listHeight` — a per-instance override of the token the CSS cap reads, not a
+      // hand-written height: `.ui-select-viewport` still says `max-block-size:
+      // var(--select-content-max-height)`, and this only changes what that resolves to here.
+      style={
+        listHeight === undefined
+          ? style
+          : ({ ...style, "--select-content-max-height": `${listHeight}px` } as React.CSSProperties)
+      }
       className={cn(
         "ui-select-content data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         className,
@@ -581,22 +750,9 @@ const SelectPopup = React.forwardRef<HTMLDivElement, SelectPopupProp>(function S
         />
       )}
     >
-      <ListBox
-        data-slot="select-viewport"
-        className="ui-select-viewport"
-        {...(events as object)}
-        renderEmptyState={
-          renderEmpty === undefined
-            ? undefined
-            : () => (
-                <div data-slot="select-empty" className="ui-select-empty">
-                  {renderEmpty}
-                </div>
-              )
-        }
-      >
-        {children}
-      </ListBox>
+      {/* antd `popupRender` wraps the list and must render it: react-aria reads the listbox out of
+          the tree below this popover, so a renderer that drops `originNode` leaves an empty popup. */}
+      {popupRender ? popupRender(list) : list}
     </AriaPopover>
   );
 });
@@ -647,7 +803,10 @@ export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProp>(funct
       textValue={textValue ?? (itemTextValue(children) || value)}
       isDisabled={disabled}
       {...(events as object)}
-      className={cn("ui-select-item [&_svg:not([class*='text-'])]:text-muted-foreground", className)}
+      className={cn(
+        "ui-select-item [&_svg:not([class*='text-'])]:text-muted-foreground",
+        className,
+      )}
       render={(itemProps, itemState) => (
         // The Radix `data-*` vocabulary control.css reads (`[data-state="checked"]`,
         // `[data-highlighted]`), translated from react-aria's state.
@@ -713,7 +872,36 @@ function groupDataOptions(options: SearchSelectOptionProp[]) {
   return order.map((key) => ({ heading: key || undefined, items: buckets.get(key) ?? [] }));
 }
 
-function DataSelect(props: SelectDataProp) {
+/**
+ * antd `labelRender` on the plain listbox. It reads the picked key out of react-aria's state
+ * rather than off a prop, so an UNCONTROLLED Select renders a custom label too — the branch a
+ * `value`-only implementation silently skips.
+ */
+function DataSelectLabel({
+  labelRender,
+  options,
+}: {
+  labelRender: NonNullable<SelectDataProp["labelRender"]>;
+  options: SearchSelectOptionProp[];
+}) {
+  const state = React.useContext(SelectStateContext);
+  const selected = state ? (state.value as string | number | null) : null;
+  if (selected == null || selected === "") return null;
+  const value = String(selected);
+  const option = options.find((entry) => entry.value === value);
+  return <>{labelRender({ value, label: option?.label ?? value, option })}</>;
+}
+
+/**
+ * What DataSelect actually receives: `SelectDataProp` minus the `labelInValue` dialect, which
+ * {@link LabelInValueSelect} has already translated into plain strings. Spelled out rather than
+ * derived, because `Exclude` does not reach into an intersection with a union.
+ */
+type PlainDataSelectProp = SearchSelectBaseProp & {
+  showSearch?: boolean | SelectShowSearchProp;
+} & (SearchSelectSingleProp | SearchSelectMultipleProp);
+
+function DataSelect(props: PlainDataSelectProp) {
   const { t } = useTranslation();
   // Resolved here rather than on the trigger: `name` belongs on the root / SearchSelect's hidden
   // input (what a native submit reads), and only `data-field` travels on to the visible trigger.
@@ -724,18 +912,62 @@ function DataSelect(props: SelectDataProp) {
   });
   const resolvedName = props.name ?? identity.name;
   const resolvedField = props["data-field"] ?? identity["data-field"];
-  const options = props.options ?? [];
+  // One list, whatever the call site wrote: flat rows, antd's nested groups, or foreign rows read
+  // through `fieldNames`. Both branches below (and SearchSelect) see the same normalised array.
+  const options = React.useMemo(
+    () => normalizeSelectOptions(props.options, props.fieldNames),
+    [props.options, props.fieldNames],
+  );
   const hasOptions = options.length > 0;
-  // antd defaults `showSearch` to true for a multiple select, and the plain listbox here is
-  // single-value, so `mode="multiple"` always routes to the searchable panel (a
+  // antd's `showSearch` OBJECT form configures the search in one place — and, by existing at all,
+  // turns it on.
+  const showSearchConfig =
+    typeof props.showSearch === "object" && props.showSearch !== null
+      ? props.showSearch
+      : undefined;
+  const showSearch = showSearchConfig ? true : (props.showSearch as boolean | undefined);
+  // antd defaults `showSearch` to true for a multi-value select, and the plain listbox here is
+  // single-value, so a multi-value `mode` always routes to the searchable panel (a
   // `showSearch={false}` beside it is ignored, and says so in the prop docs).
-  const searchable = props.showSearch ?? (Boolean(props.loadOptions) || props.mode === "multiple");
+  const searchable = showSearch ?? (Boolean(props.loadOptions) || props.mode !== undefined);
 
-  if (props.mode === "multiple" || searchable) {
+  // `mode !== undefined` rather than naming both multi modes: it is the discriminant that narrows
+  // `props` to the single-value member below, which is what makes `value` a plain string there.
+  if (props.mode !== undefined || searchable) {
+    // antd's `filterOption(input, option)` takes its arguments the other way round from this
+    // library's long-standing `filterOption(option, query)`, and `false` means "the server already
+    // filtered — keep every row". Both are translated into the one shape the engine takes.
+    const antdFilter = showSearchConfig?.filterOption;
+    const filterOption =
+      antdFilter === undefined
+        ? props.filterOption
+        : antdFilter === false
+          ? () => true
+          : antdFilter === true
+            ? undefined
+            : (option: SearchSelectOptionProp, query: string) => antdFilter(query, option);
+    const onSearch = showSearchConfig?.onSearch;
     return (
       <SearchSelect
-        {...props}
+        // `labelInValue` was translated away before this point, so every value here is a string —
+        // which is exactly the difference between SelectDataProp's union and SearchSelectProp's.
+        {...(props as SearchSelectProp)}
         options={options}
+        // Already applied above — passing it on would map the normalised rows a second time.
+        fieldNames={undefined}
+        filterOption={filterOption}
+        filterSort={showSearchConfig?.filterSort ?? props.filterSort}
+        optionFilterProp={showSearchConfig?.optionFilterProp ?? props.optionFilterProp}
+        search={showSearchConfig?.searchValue ?? props.search}
+        onSearchChange={
+          onSearch || props.onSearchChange
+            ? (query: string) => {
+                onSearch?.(query);
+                props.onSearchChange?.(query);
+              }
+            : undefined
+        }
+        autoClearSearchValue={showSearchConfig?.autoClearSearchValue ?? props.autoClearSearchValue}
         disabled={props.disabled || (!props.loadOptions && !hasOptions)}
         name={resolvedName}
         data-field={resolvedField}
@@ -768,6 +1000,13 @@ function DataSelect(props: SelectDataProp) {
     value,
     defaultValue,
     onValueChange,
+    labelRender,
+    prefix,
+    suffixIcon,
+    placement,
+    popupRender,
+    listHeight,
+    onPopupScroll,
     id,
     className,
     "data-testid": dataTestId,
@@ -851,16 +1090,40 @@ function DataSelect(props: SelectDataProp) {
         width={width}
         aria-busy={loading || undefined}
         className={cn(
+          prefix === undefined || prefix === null ? undefined : "ui-select-trigger-prefixed",
           (showClear || loading) && "ui-control-trigger-affixed",
           canClear || loading ? undefined : className,
         )}
-        showIndicator={!showClear && !loading}
+        // antd `suffixIcon`: a node replaces the chevron, `null` removes the indicator entirely
+        // (antd's own replacement for the `showArrow` it deprecated).
+        showIndicator={suffixIcon === undefined && !showClear && !loading}
         {...ariaProps}
       >
-        <SelectValue placeholder={placeholder} />
+        {/* antd `prefix` — NOT aria-hidden: for a `role="combobox"` the trigger's text is the
+            VALUE a screen reader announces, and a prefix that is part of the value ("To:", a
+            currency mark) belongs in it. The control's NAME still comes from its label. */}
+        {prefix === undefined || prefix === null ? null : (
+          <span data-slot="select-prefix" className="ui-select-prefix">
+            {prefix}
+          </span>
+        )}
+        <SelectValue placeholder={placeholder}>
+          {labelRender ? (
+            <DataSelectLabel labelRender={labelRender} options={options} />
+          ) : undefined}
+        </SelectValue>
+        {suffixIcon === undefined || suffixIcon === null || showClear || loading ? null : (
+          <span data-slot="select-suffix" className="ui-select-suffix" aria-hidden="true">
+            {suffixIcon}
+          </span>
+        )}
       </SelectTrigger>
       <SelectPopup
         renderEmpty={showEmptyPopup ? notFoundContent : undefined}
+        placement={placement}
+        popupRender={popupRender}
+        listHeight={listHeight}
+        onPopupScroll={onPopupScroll}
         data-popup-match={
           popupMatchSelectWidth === undefined || popupMatchSelectWidth === true
             ? undefined

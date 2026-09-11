@@ -371,10 +371,11 @@ describe.each([
     await user.click(screen.getByRole("combobox", { name: "拠点" }));
     const listbox = await screen.findByRole("listbox");
     const japan = within(listbox).getByRole("group", { name: "日本" });
-    expect(within(japan).getAllByRole("option").map((o) => o.textContent)).toEqual([
-      "東京",
-      "大阪",
-    ]);
+    expect(
+      within(japan)
+        .getAllByRole("option")
+        .map((o) => o.textContent),
+    ).toEqual(["東京", "大阪"]);
     const vietnam = within(listbox).getByRole("group", { name: "Việt Nam" });
     expect(within(vietnam).getByRole("option", { name: "Hà Nội" })).toHaveAttribute(
       "aria-disabled",
@@ -411,7 +412,14 @@ describe.each([
     const panel = panelId === null ? null : document.getElementById(panelId);
     const item = (panel ?? document).querySelector('[role="option"], [data-slot="select-item"]')!;
     const PointerCtor = window.PointerEvent ?? window.MouseEvent;
-    for (const type of ["pointerover", "pointerdown", "mousedown", "pointerup", "mouseup", "click"]) {
+    for (const type of [
+      "pointerover",
+      "pointerdown",
+      "mousedown",
+      "pointerup",
+      "mouseup",
+      "click",
+    ]) {
       item.dispatchEvent(new PointerCtor(type, { bubbles: true, cancelable: true }));
     }
     await waitFor(() => expect(onValueChange).toHaveBeenCalledWith("plan"));

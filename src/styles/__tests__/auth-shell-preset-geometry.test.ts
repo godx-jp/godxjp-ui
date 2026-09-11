@@ -424,7 +424,10 @@ describe("AuthShell align — block-axis placement", () => {
   it("retargets the offset TOKENS, never the --auth-shell-main-padding shorthand", () => {
     // The `max-width: 30rem` block recomposes that shorthand from the `*-mobile` tokens, so
     // re-declaring it here would freeze the inline gutters the preset owns.
-    for (const rule of [alignBlock("center", "login")[0], alignBlock("center", "registration")[0]]) {
+    for (const rule of [
+      alignBlock("center", "login")[0],
+      alignBlock("center", "registration")[0],
+    ]) {
       expect(rule).toBeDefined();
       expect(rule).not.toMatch(/--auth-shell-main-padding:/);
     }
@@ -493,12 +496,8 @@ describe("audit + a11y drift guards", () => {
 
   it("floors the auth footer's interactive targets at the WCAG 2.2 AA size", () => {
     expect(foundation).toMatch(/--touch-target-min:\s*1\.5rem/);
-    expect(shellTokens).toMatch(
-      /--auth-footer-target-min-size:\s*var\(--touch-target-min\)/,
-    );
-    const rule = shellStyles.match(
-      /\.ui-auth-legal-footer :is\(a, button\)\s*\{[^}]*\}/,
-    )?.[0];
+    expect(shellTokens).toMatch(/--auth-footer-target-min-size:\s*var\(--touch-target-min\)/);
+    const rule = shellStyles.match(/\.ui-auth-legal-footer :is\(a, button\)\s*\{[^}]*\}/)?.[0];
     expect(rule).toBeDefined();
     // inline-flex is load-bearing: min-block-size does nothing to an inline anchor, so dropping
     // the display line would leave a rule that reads correct and measures 19px.
@@ -520,7 +519,6 @@ describe("audit + a11y drift guards", () => {
   });
 });
 
-
 describe("Truncating boxes contain their own ink", () => {
   it("never pairs a clipped overflow with a tight line box", () => {
     /*
@@ -533,7 +531,9 @@ describe("Truncating boxes contain their own ink", () => {
      * selector — three rules carried the pair when it was first swept.
      */
     const offenders: string[] = [];
-    for (const file of readdirSync(resolve(process.cwd(), "src/styles")).filter((f) => f.endsWith(".css"))) {
+    for (const file of readdirSync(resolve(process.cwd(), "src/styles")).filter((f) =>
+      f.endsWith(".css"),
+    )) {
       const css = readFileSync(resolve(process.cwd(), "src/styles", file), "utf8");
       for (const [, selector, body] of css.matchAll(/([.[][^{}]{0,90}?)\s*\{([^}]*)\}/g)) {
         const clips = body.includes("text-overflow: ellipsis") || body.includes("overflow: hidden");
@@ -542,7 +542,9 @@ describe("Truncating boxes contain their own ink", () => {
         // walked straight through it — the exact values that were clipping.
         const lh = /line-height:\s*([^;]+);/.exec(body)?.[1]?.trim();
         const literal = lh && /^[\d.]+$/.test(lh) ? Number.parseFloat(lh) : null;
-        const tight = Boolean(lh && (lh.includes("--line-height-tight") || (literal !== null && literal < 1.4)));
+        const tight = Boolean(
+          lh && (lh.includes("--line-height-tight") || (literal !== null && literal < 1.4)),
+        );
         if (clips && tight) offenders.push(`${file}: ${selector.trim().replace(/\s+/g, " ")}`);
       }
     }

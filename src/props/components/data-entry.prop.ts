@@ -1133,12 +1133,82 @@ export type SearchSelectLoadResultProp = {
 };
 
 /**
+ * antd `fieldNames` — read rows in a FOREIGN shape (`{id, name}`, `{code, title}`) without mapping
+ * them first. The spelling matches the `fieldNames` Cascader and TreeSelect already take.
+ */
+export type SelectFieldNamesProp = {
+  label?: string;
+  value?: string;
+  /** Key holding a group's child rows — antd nests a group's options under the group. */
+  options?: string;
+  /** Key holding a group's heading; defaults to `label`, as in antd. */
+  groupLabel?: string;
+  disabled?: string;
+};
+
+/**
+ * A GROUP in antd's nested `options` shape — a heading plus its own rows. The flat
+ * `option.group` spelling this library already had keeps working; both arrive at the same list.
+ */
+export type SelectOptionGroupProp = {
+  label: string;
+  options: SearchSelectOptionProp[];
+  disabled?: boolean;
+};
+
+/** What `<Select options>` accepts: a row, a group of rows, or (with `fieldNames`) a foreign row. */
+export type SelectOptionInputProp =
+  SearchSelectOptionProp | SelectOptionGroupProp | Record<string, unknown>;
+
+/**
+ * antd `labelInValue` — the value carries its own label, so a screen that only ever sees
+ * `{ value, label }` never has to keep the option list around to render what was picked (an async
+ * edit form whose page has not loaded yet is the case that needs it).
+ */
+export type SelectLabeledValueProp = { value: string; label: React.ReactNode };
+
+/**
+ * antd `placement`, spelled on the LOGICAL inline axis — the same vocabulary
+ * `DropdownMenuPlacementProp` publishes, and for the same reason: antd's `bottomLeft` / `topRight`
+ * cannot mirror for an Arabic or Hebrew layout.
+ */
+export type SelectPlacementProp = "bottomStart" | "bottomEnd" | "topStart" | "topEnd";
+
+/**
+ * antd `showSearch`'s OBJECT form. Every field is the antd one, including
+ * `filterOption(input, option)` — note the argument order is antd's here, while the long-standing
+ * top-level `filterOption(option, query)` keeps this library's. Pass whichever you prefer; the
+ * object form wins when both are given.
+ */
+export type SelectShowSearchProp = {
+  /** `false` keeps every row (a server-filtered list); a function decides per row. */
+  filterOption?: boolean | ((input: string, option: SearchSelectOptionProp) => boolean);
+  /** Which field the default filter matches. antd's default is `value`; `label` is the common one. */
+  optionFilterProp?: "label" | "value" | "sublabel";
+  filterSort?: (
+    a: SearchSelectOptionProp,
+    b: SearchSelectOptionProp,
+    info: { searchValue: string },
+  ) => number;
+  searchValue?: string;
+  onSearch?: (value: string) => void;
+  autoClearSearchValue?: boolean;
+};
+
+/**
  * @see Select — the data-driven entry point (`<Select options|loadOptions showSearch …/>`).
  * This is the shape of its internal engine (`SelectDataProp` extends it); use `Select` directly.
  */
 export type SearchSelectBaseProp = {
-  /** Static option list (client-side filtered). Provide this OR `loadOptions`, not both. */
-  options?: SearchSelectOptionProp[];
+  /**
+   * Static option list (client-side filtered). Provide this OR `loadOptions`, not both.
+   *
+   * A row, or one of antd's nested GROUPS (`{ label, options }`) — both land in the same list, the
+   * group's heading becoming the `group` this library's flat rows already carry. Rows in a foreign
+   * shape go through `fieldNames` and need a cast at the call site, exactly as Cascader's and
+   * TreeSelect's do.
+   */
+  options?: (SearchSelectOptionProp | SelectOptionGroupProp)[];
   /** Remote fetcher — debounced search + infinite-scroll pagination call into this. Provide this
    *  OR `options`. */
   loadOptions?: (params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>;
@@ -1287,6 +1357,45 @@ export type SearchSelectBaseProp = {
   "data-testid"?: string;
   /** Normally injected by `FormField`. */
   "data-field"?: string;
+  /**
+   * antd `fieldNames` — map `{label, value, options, groupLabel, disabled}` onto foreign rows, so a
+   * server payload can be passed straight through instead of being copied into a second array.
+   */
+  fieldNames?: SelectFieldNamesProp;
+  /**
+   * antd `prefix` — a node pinned BEFORE the value on the trigger (a currency mark, an icon, a
+   * "To:" label). Decorative: it is not part of the control's accessible name.
+   */
+  prefix?: React.ReactNode;
+  /**
+   * antd `suffixIcon` — replaces the trailing chevron. `null` removes the indicator entirely (antd
+   * spells that `showArrow={false}`, which it deprecated in favour of exactly this).
+   */
+  suffixIcon?: React.ReactNode;
+  /**
+   * antd `placement`, on the logical inline axis. Absent = `bottomStart` with collision flipping,
+   * which is what a picker wants; set it only when the popup must open a specific way.
+   */
+  placement?: SelectPlacementProp;
+  /**
+   * antd `popupRender` — wrap the popup's own node (add a footer, a "create" action, a hint line).
+   * Receives the list and must render it: dropping `originNode` leaves a popup with no options.
+   */
+  popupRender?: (originNode: React.ReactNode) => React.ReactNode;
+  /**
+   * antd `listHeight` — the option list's maximum height in px. It overrides
+   * `--select-content-max-height` for this one control; the token stays the default everywhere
+   * else, so this is a per-instance override of a knob, not a new hard-coded height.
+   */
+  listHeight?: number;
+  /** antd `onPopupScroll` — fires on the option list's own scroll (an infinite-scroll hook). */
+  onPopupScroll?: (event: React.UIEvent<HTMLElement>) => void;
+  /**
+   * antd `optionFilterProp` — which field the default filter matches while searching. antd's
+   * default is `value`; this library keeps matching BOTH label and value when it is unset, because
+   * every call site that has ever relied on the default expects a label search.
+   */
+  optionFilterProp?: "label" | "value" | "sublabel";
 };
 
 /**
@@ -1295,6 +1404,8 @@ export type SearchSelectBaseProp = {
  */
 export type SearchSelectSingleProp = {
   mode?: undefined;
+  /** @see SelectLabelInValueSingleProp for the `{value,label}` dialect. */
+  labelInValue?: false;
   value?: ValueProp;
   /** Uncontrolled initial value — the trigger shows its option's label at rest (controlled-triad). */
   defaultValue?: DefaultValueProp;
@@ -1313,7 +1424,13 @@ export type SearchSelectSingleProp = {
  * per-chip remove button inside it would be a button nested in a button.
  */
 export type SearchSelectMultipleProp = {
-  mode: "multiple";
+  /**
+   * `multiple` picks from the list; `tags` also ACCEPTS what was typed, so a value that is not in
+   * the list can still be committed (antd's own distinction between the two).
+   */
+  mode: "multiple" | "tags";
+  /** @see SelectLabelInValueMultipleProp for the `{value,label}` dialect. */
+  labelInValue?: false;
   value?: ValueProp<string[]>;
   /** Uncontrolled initial selection (controlled-triad). */
   defaultValue?: DefaultValueProp<string[]>;
@@ -1332,6 +1449,50 @@ export type SearchSelectMultipleProp = {
   maxTagCount?: MaxTagCountProp;
   /** The node standing in for what `maxTagCount` hid (antd `maxTagPlaceholder`). */
   maxTagPlaceholder?: MaxTagPlaceholderProp;
+  /**
+   * antd `maxTagTextLength` — cut each chip's text to this many characters (an ellipsis marks the
+   * cut). It trims what the TRIGGER shows only; the value keeps its whole label.
+   */
+  maxTagTextLength?: number;
+  /**
+   * antd `tokenSeparators` — characters that commit what has been typed. Typing or PASTING
+   * "a,b,c" with `[","]` commits three values in one change, which is the point: a run pasted out
+   * of a spreadsheet becomes a selection instead of one long nonsense token. In `mode="multiple"`
+   * a token only counts when it matches a row; in `mode="tags"` it is accepted as it stands.
+   */
+  tokenSeparators?: string[];
+};
+
+/**
+ * antd `labelInValue`, single. The value carries its own label, so a screen that never sees the
+ * option list can still render what was picked.
+ */
+export type SelectLabelInValueSingleProp = {
+  labelInValue: true;
+  mode?: undefined;
+  value?: SelectLabeledValueProp | null;
+  defaultValue?: SelectLabeledValueProp | null;
+  onValueChange?: (
+    value: SelectLabeledValueProp | undefined,
+    option?: SearchSelectOptionProp,
+  ) => void;
+  onSelect?: (value: SelectLabeledValueProp, option: SearchSelectOptionProp) => void;
+};
+
+/** antd `labelInValue`, multiple/tags. */
+export type SelectLabelInValueMultipleProp = {
+  labelInValue: true;
+  mode: "multiple" | "tags";
+  value?: SelectLabeledValueProp[];
+  defaultValue?: SelectLabeledValueProp[];
+  onValueChange?: (value: SelectLabeledValueProp[], options?: SearchSelectOptionProp[]) => void;
+  onSelect?: (value: SelectLabeledValueProp, option: SearchSelectOptionProp) => void;
+  onDeselect?: (value: SelectLabeledValueProp, option: SearchSelectOptionProp) => void;
+  maxCount?: number;
+  maxTagCount?: MaxTagCountProp;
+  maxTagPlaceholder?: MaxTagPlaceholderProp;
+  maxTagTextLength?: number;
+  tokenSeparators?: string[];
 };
 
 /** @see Select — the searchable engine. Single by default; `mode="multiple"` switches the shape. */
@@ -1345,11 +1506,20 @@ export type SearchSelectProp = SearchSelectBaseProp &
  */
 export type SelectDataProp = SearchSelectBaseProp & {
   /**
-   * Show the search box (combobox). Defaults to true when `loadOptions` is set or
-   * `mode="multiple"` is in force (antd's own defaults), otherwise false.
+   * Show the search box (combobox). Defaults to true when `loadOptions` is set or a multi-value
+   * `mode` is in force (antd's own defaults), otherwise false.
+   *
+   * The OBJECT form is antd's, and configures the search in one place —
+   * `{ filterOption, optionFilterProp, filterSort, searchValue, onSearch, autoClearSearchValue }`.
+   * Passing it also turns the search on.
    */
-  showSearch?: boolean;
-} & (SearchSelectSingleProp | SearchSelectMultipleProp);
+  showSearch?: boolean | SelectShowSearchProp;
+} & (
+    | SearchSelectSingleProp
+    | SearchSelectMultipleProp
+    | SelectLabelInValueSingleProp
+    | SelectLabelInValueMultipleProp
+  );
 
 /** @see UploadFileItem */
 export type UploadFileItemProp = UploadFileItem;

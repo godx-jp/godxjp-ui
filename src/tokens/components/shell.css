@@ -456,11 +456,7 @@
   --app-launcher-launchpad-mark-radius: var(--radius-lg);
   /* The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the
    * theme and stays legible on a light page and a dark one. */
-  --app-launcher-launchpad-mark-background: color-mix(
-    in srgb,
-    hsl(var(--card)) 78%,
-    transparent
-  );
+  --app-launcher-launchpad-mark-background: color-mix(in srgb, hsl(var(--card)) 78%, transparent);
   --app-launcher-launchpad-mark-border-color: color-mix(
     in srgb,
     hsl(var(--foreground)) 14%,

@@ -20,9 +20,7 @@ import { join } from "node:path";
  */
 describe("Calendar — outside days", () => {
   const css = readFileSync(join(process.cwd(), "src/styles/control.css"), "utf8");
-  const rule = css.match(
-    /(\.ui-calendar[^{}]*day-outside[^{}]*)\{([^}]*color:[^}]*)\}/,
-  );
+  const rule = css.match(/(\.ui-calendar[^{}]*day-outside[^{}]*)\{([^}]*color:[^}]*)\}/);
 
   it("paints the muted ink on the BUTTON, not on the cell that carries the class", () => {
     expect(rule, "no `day-outside` colour rule found in control.css").not.toBeNull();

@@ -62,14 +62,14 @@ export const ServiceLauncherCard = React.forwardRef<HTMLDivElement, ServiceLaunc
       >
         <CardContent solo>
           {/*
-            * THE MEDALLION AND THE NAME ARE ONE THING; the status is the part that may move.
-            *
-            * They were three siblings in one wrapping row, and a row of three cannot express "keep
-            * the first two together, break before the third" — the browser breaks wherever the
-            * items stop fitting, which put the medallion alone on its own line above the name.
-            * Grouping them says it structurally: the group is one flex item, so the status is the
-            * only thing that can wrap away.
-            */}
+           * THE MEDALLION AND THE NAME ARE ONE THING; the status is the part that may move.
+           *
+           * They were three siblings in one wrapping row, and a row of three cannot express "keep
+           * the first two together, break before the third" — the browser breaks wherever the
+           * items stop fitting, which put the medallion alone on its own line above the name.
+           * Grouping them says it structurally: the group is one flex item, so the status is the
+           * only thing that can wrap away.
+           */}
           <div data-slot="service-launcher-heading">
             <div data-slot="service-launcher-identity">
               <span data-slot="service-launcher-icon" aria-hidden="true">

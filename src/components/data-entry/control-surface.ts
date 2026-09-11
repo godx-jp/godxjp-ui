@@ -106,3 +106,21 @@ export function applyMaxTagCount<T extends { value: string; label: React.ReactNo
       : maxTagPlaceholder;
   return { visible, omitted, overflow };
 }
+
+/** Escape a separator so it is a literal inside the `[...]` character class built from the list. */
+function escapeForCharClass(character: string): string {
+  return character.replace(/[\\\]^-]/g, "\\$&");
+}
+
+/**
+ * Split a run of text on antd's `tokenSeparators` — the contract behind "paste a column out of a
+ * spreadsheet and get one value per line".
+ *
+ * Shared by `TagInput` and the tags/multiple `Select`: they are the two controls that turn typing
+ * into several values, and two copies of this would be two answers to "what is a separator".
+ */
+export function splitByTokenSeparators(text: string, separators: string[]): string[] {
+  if (!separators.length) return [text];
+  const pattern = new RegExp(`[${separators.map(escapeForCharClass).join("")}]`);
+  return text.split(pattern);
+}

@@ -145,8 +145,7 @@ describe("Progress breakdown", () => {
    */
   it("turns the track into the partition only under data-breakdown", () => {
     const css = readFileSync(join(process.cwd(), "src/styles/data-display-layout.css"), "utf8");
-    const scoped =
-      css.match(/\.ui-progress\[data-breakdown\][^{]*\{[^}]*\}/g)?.join("\n") ?? "";
+    const scoped = css.match(/\.ui-progress\[data-breakdown\][^{]*\{[^}]*\}/g)?.join("\n") ?? "";
 
     expect(scoped).toMatch(/display:\s*flex/);
     expect(scoped).toMatch(/height:\s*var\(--progress-breakdown-block-size\)/);

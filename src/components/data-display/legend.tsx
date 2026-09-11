@@ -1,7 +1,11 @@
 import { cn } from "../../lib/utils";
 import type { LegendProp } from "../../props/components/data-display.prop";
 
-export type { LegendItemProp, LegendProp, LegendProp as LegendProps } from "../../props/components/data-display.prop";
+export type {
+  LegendItemProp,
+  LegendProp,
+  LegendProp as LegendProps,
+} from "../../props/components/data-display.prop";
 
 /**
  * Legend — the KEY for a set of tones: which colour means what.

@@ -16,9 +16,7 @@ const OPTIONS = [
  */
 describe("Select (data-driven) — width", () => {
   it("takes width=auto so two filters share one row", () => {
-    renderWithUi(
-      <Select options={OPTIONS} width="auto" aria-label="状態" defaultValue="all" />,
-    );
+    renderWithUi(<Select options={OPTIONS} width="auto" aria-label="状態" defaultValue="all" />);
     const trigger = screen.getByRole("combobox", { name: "状態" });
     expect(trigger).toHaveAttribute("data-width", "auto");
   });
@@ -36,12 +34,7 @@ describe("Select (data-driven) — width", () => {
   });
 
   it("takes width=bounded and leaves the width to the token rule", () => {
-    renderWithUi(
-      <Select options={OPTIONS} width="bounded" aria-label="状態" defaultValue="all" />,
-    );
-    expect(screen.getByRole("combobox", { name: "状態" })).toHaveAttribute(
-      "data-width",
-      "bounded",
-    );
+    renderWithUi(<Select options={OPTIONS} width="bounded" aria-label="状態" defaultValue="all" />);
+    expect(screen.getByRole("combobox", { name: "状態" })).toHaveAttribute("data-width", "bounded");
   });
 });
