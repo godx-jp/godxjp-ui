@@ -15,7 +15,7 @@ import { useMediaQuery } from "./hooks";
  */
 
 /** CSS length → px. Supports the units a breakpoint knob is realistically written in. */
-export function cssLengthToPx(value: string, rootFontSize: number): number | undefined {
+function cssLengthToPx(value: string, rootFontSize: number): number | undefined {
   const match = /^(-?\d*\.?\d+)(px|rem|em)?$/.exec(value.trim());
   if (match == null) return undefined;
   const amount = Number(match[1]);
@@ -28,7 +28,7 @@ export function cssLengthToPx(value: string, rootFontSize: number): number | und
  * falling back to `fallbackQuery` wherever the token cannot be read (SSR, a token-less test env,
  * a theme that wrote something unparseable).
  */
-export function readMaxWidthQuery(token: string, fallbackQuery: string): string {
+function readMaxWidthQuery(token: string, fallbackQuery: string): string {
   if (typeof document === "undefined" || typeof window.getComputedStyle !== "function") {
     return fallbackQuery;
   }
