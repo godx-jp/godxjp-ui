@@ -65,7 +65,18 @@ export function measure() {
   const isControl = (el) => {
     if (el.closest('[aria-hidden="true"]')) return false;
     const cs = getComputedStyle(el);
-    return cs.visibility !== "hidden" && cs.opacity !== "0";
+    if (cs.visibility === "hidden" || cs.opacity === "0") return false;
+    // react-aria hides the same kind of form mirror a DIFFERENT way: `VisuallyHidden` clips the
+    // box (`clip-path: inset(50%)` / `clip: rect(0,0,0,0)`) and leaves `aria-hidden` off, because
+    // the input still has to be reachable for autofill and form submission. The Radix-shaped test
+    // above never matched it, so after Slider and Select moved bases their hidden `<input>` and
+    // `<select>` were counted as clipped CONTROLS — 27 findings across five frames, none of them
+    // anything a user can see or reach.
+    for (let e = el; e && e !== frame; e = e.parentElement) {
+      const s = getComputedStyle(e);
+      if (s.clipPath === "inset(50%)" || /rect\(0px,? 0px,? 0px,? 0px\)/.test(s.clip)) return false;
+    }
+    return true;
   };
 
   let clipped = 0;

@@ -1152,7 +1152,11 @@
     flex-wrap: nowrap;
     min-width: 0;
     align-items: center;
-    justify-content: flex-end;
+    /* `safe` matters the moment the row is wider than its box: a plain `flex-end` (or `center`)
+     * pushes the overflow past the INLINE-START edge, where scrolling cannot reach it — the
+     * browser only scrolls toward the end. `safe` falls back to start-alignment exactly in that
+     * case, so an oversized pager stays reachable and an ordinary one still sits at the end. */
+    justify-content: safe flex-end;
     gap: var(--pagination-gap);
   }
 

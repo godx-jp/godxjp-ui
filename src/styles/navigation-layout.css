@@ -244,6 +244,16 @@
    * pager đầy đủ dựng chúng bằng PaginationLink nên chỉ mang .ui-pagination-link. Luật cũ chỉ
    * bắt dạng thứ nhất, nên chevron của pager đầy đủ rơi về cỡ mặc định của lucide và hai dạng
    * lệch nhau ngay trên cùng một màn hình. */
+  /* A pager that does not fit stays REACHABLE. `responsive` exists for narrow viewports, but a
+   * consumer who keeps the full pager at 320px used to get a row cut off at both edges — the
+   * frame-geometry gate counts exactly that: a control the user cannot bring into view. Scrolling
+   * the row is the browser's own answer, and the gate treats scroll-reachable as fine. */
+  .ui-pagination {
+    max-inline-size: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
   .ui-pagination .ui-button svg,
   .ui-pagination .ui-pagination-link svg {
     inline-size: var(--pagination-icon-size);
@@ -255,16 +265,19 @@
    * It is declared HERE rather than beside the base `.ui-pagination` in layout.css because that
    * file is imported EARLIER: at equal specificity the later import wins, and `justify-content:
    * flex-end` over there would otherwise silently beat this. */
+  /* `safe` on every one of these, for the reason layout.css records on the base rule: a centred or
+   * end-aligned row that is WIDER than its box pushes its first controls past the inline-start
+   * edge, and scrolling cannot reach them. `safe` falls back to start-alignment exactly then. */
   .ui-pagination[data-align="start"] {
     justify-content: flex-start;
   }
 
   .ui-pagination[data-align="center"] {
-    justify-content: center;
+    justify-content: safe center;
   }
 
   .ui-pagination[data-align="end"] {
-    justify-content: flex-end;
+    justify-content: safe flex-end;
   }
 
   /* SIZE: one local control band for the whole bar. Every control inside already sizes from

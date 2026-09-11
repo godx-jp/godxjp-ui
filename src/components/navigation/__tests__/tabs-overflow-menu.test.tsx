@@ -24,7 +24,7 @@ import { resolveHiddenTabValues } from "../tabs-scroll";
  * NOT proved here, and deliberately not attempted: that a strip of Japanese labels actually
  * overflows at a real width, that the chosen tab is then scrolled into view, or that the button is
  * visible at all. Those are geometry, and geometry is measured in a browser —
- * `scripts/check-tabs-overflow-menu.mjs`, wired into check:frame-runtime.
+ * `the browser gate (removed 2026-09-12)`, wired into check:frame-runtime.
  */
 
 const ITEMS = [
