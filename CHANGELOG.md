@@ -23,6 +23,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `internal:role=radio[name=…]` của Playwright) cho chính control. `Switch` không ảnh hưởng —
   react-aria khai `role="switch"` tường minh.
 
+### Fixed
+
+- **Nút mở lịch của `DatePicker` nay đủ sàn vùng bấm 24×24 mà KHÔNG to thêm một pixel nào.** Đo
+  trên hồ sơ thiết bị cảm ứng thật (Pixel 5, 393px): phần vẽ 20×20, dưới sàn WCAG 2.2 SC 2.5.8, và
+  consumer không có đường nào chữa — kích thước ấy không phải prop, không phải token, còn viết đè
+  CSS thì `ui-audit` cấm, và cấm đúng. Nay một `::after` căn giữa mang vùng bấm lên
+  `--touch-target-min`; phần vẽ vẫn đúng 20×20, đo lại sau bản sửa: vùng bấm **24×24**.
+
+  Đo thêm hai thứ cùng báo cáo ấy, và cả hai đều KHÔNG phải lỗi: nút bước của `NumberInput` là
+  **24×24** và ô ngày của lịch là **44×44** trên thiết bị cảm ứng — con số 24×13 và 32×32 trong báo
+  cáo đến từ trình duyệt desktop thu hẹp còn 393px, nơi `@media (pointer: coarse)` không khớp.
+
 ### Added
 
 - **`ui-audit --changed`** — quét đúng những gì nhánh này đụng vào, bất kể sửa bằng công cụ nào.
