@@ -104,29 +104,31 @@ describe("Tabs — a vertical strip folds to a horizontal one on a phone (gh#502
   });
 
   /**
-   * THE AXIS IS NOT PAINT. A CSS-only flip would leave a strip that LOOKS horizontal being driven
-   * by ↑/↓, so the keys are the real assertion: on the folded strip ←/→ must move the roving
-   * focus, which is exactly what they do not do on a vertical tablist.
+   * THE AXIS IS NOT PAINT, and this is the case that proves it: a CSS-only flip would leave a
+   * strip that LOOKS horizontal still driven on the block axis.
+   *
+   * The two orientations are NOT symmetric in react-aria, measured here: a VERTICAL tablist takes
+   * ↑/↓ and ←/→ both, a HORIZONTAL one takes ←/→ only and ignores ↑/↓ outright. So the assertion
+   * that discriminates is the negative one — once folded, ↓ must stop moving the roving focus,
+   * because the strip is no longer a column.
    */
-  it("moves the roving focus with ←/→ once folded", async () => {
-    setViewport(393);
+  it("swaps the axis the roving focus is driven on", async () => {
     const user = userEvent.setup();
-    render(<Tabs items={ITEMS} tabPlacement="start" />);
 
-    await user.tab();
-    expect(screen.getByRole("tab", { name: "基本設定" })).toHaveFocus();
-    await user.keyboard("{ArrowRight}");
-    expect(screen.getByRole("tab", { name: "メンバー" })).toHaveFocus();
-  });
-
-  it("still moves it with ↑/↓ while the strip is vertical", async () => {
     setViewport(1280);
-    const user = userEvent.setup();
-    render(<Tabs items={ITEMS} tabPlacement="start" />);
+    const desk = render(<Tabs items={ITEMS} tabPlacement="start" />);
+    await user.tab();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByRole("tab", { name: "メンバー" })).toHaveFocus();
+    desk.unmount();
 
+    setViewport(393);
+    render(<Tabs items={ITEMS} tabPlacement="start" />);
     await user.tab();
     expect(screen.getByRole("tab", { name: "基本設定" })).toHaveFocus();
     await user.keyboard("{ArrowDown}");
+    expect(screen.getByRole("tab", { name: "基本設定" })).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
     expect(screen.getByRole("tab", { name: "メンバー" })).toHaveFocus();
   });
 
