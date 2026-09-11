@@ -196,6 +196,8 @@ type SliderModel = {
   name?: string;
   form?: string;
   labelledBy?: string;
+  /** Plain-text name, mirrored onto each thumb input — see SliderThumbView. */
+  label?: string;
   isInvalid: boolean;
   isRequired: boolean;
   errorMessage?: string;
@@ -377,6 +379,23 @@ function SliderThumbView({
   React.useLayoutEffect(() => {
     if (spoken !== undefined) inputRef.current?.setAttribute("aria-valuetext", spoken);
   }, [inputRef, spoken, value]);
+
+  // The plain-text name, ON THE INPUT, next to the `aria-labelledby` react-aria already wrote.
+  // `aria-labelledby` still wins the accessible name (AccName reads it first), so nothing is
+  // announced twice — but a tool that looks only for a `<label>` or an `aria-label` now sees a
+  // named control. axe's `label-title-only` is that tool, and a Slider in a `FormField` hit it:
+  // the input carries `aria-describedby` (the helper) and has no `<label for>`, because
+  // FormField labels through a span on purpose — a `for` at a composite child dangles. Written
+  // as an attribute rather than passed to `SliderThumb`, which takes `aria-label` for the THUMB
+  // and, given one, stops naming the input at all (two tests caught that).
+  React.useLayoutEffect(() => {
+    const input = inputRef.current;
+
+    if (!input) return;
+
+    if (model.label) input.setAttribute("aria-label", model.label);
+    else input.removeAttribute("aria-label");
+  }, [inputRef, model.label]);
 
   const labelledBy = [model.labelledBy, multiple ? indexId : undefined].filter(Boolean).join(" ");
 
@@ -838,6 +857,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProp>((props, ref) 
     name,
     form,
     labelledBy: ariaLabelledby,
+    label: ariaLabel,
     isInvalid,
     isRequired,
     errorMessage: ariaErrormessage,
