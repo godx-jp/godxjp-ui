@@ -512,9 +512,19 @@
    * ladder step as fallback, so the default re-resolves at the button and an override still wins. */
   --button-xs-height: initial;
   /* Minimum TARGET of `variant="bare"` (gh#404) — the pseudo-element hit area, not a box height,
-   * so it never shows up as geometry. Points at the same xs tier the note above settled on as this
-   * package's WCAG 2.2 SC 2.5.8 floor (1.5rem = 24px), and moves with it and with density. */
-  --button-bare-target-size: var(--control-height-xs);
+   * so it never shows up as geometry. The measure is the same xs tier the note above settled on as
+   * this package's WCAG 2.2 SC 2.5.8 floor (1.5rem = 24px), and it moves with that tier and with
+   * density.
+   *
+   * `initial`, NOT `var(--control-height-xs)`, for the reason `--button-xs-height` above carries:
+   * an alias of a ladder step written HERE is substituted against :root's value and inherits
+   * frozen, so a scope that moves the ladder never reaches it. Measured in Chromium at 393px
+   * inside `MobileShell`, which scopes `--control-height` to 2.75rem: `--control-height-xs`
+   * correctly re-resolved to 36px while the bare button's `::after` stayed **24×24** — the one
+   * touch target in a touch-first shell that did not move. `.ui-button--bare::after` reads the
+   * live step as its fallback, so the default re-resolves at the button and a service override
+   * still wins. */
+  --button-bare-target-size: initial;
   --button-xs-space-inline: var(--space-2);
   --button-xs-space-gap: var(--space-1);
   --button-xs-font-size: var(--font-size-xs);

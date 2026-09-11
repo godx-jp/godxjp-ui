@@ -206,8 +206,8 @@
     content: "";
     position: absolute;
     inset: 0;
-    min-inline-size: var(--button-bare-target-size);
-    min-block-size: var(--button-bare-target-size);
+    min-inline-size: var(--button-bare-target-size, var(--control-height-xs));
+    min-block-size: var(--button-bare-target-size, var(--control-height-xs));
     margin: auto;
   }
 

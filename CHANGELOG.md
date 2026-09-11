@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Vùng chạm của `Button variant="bare"` là số đo DUY NHẤT không đi theo `MobileShell`.**
+  `--button-bare-target-size: var(--control-height-xs)` khai ở `:root`, mà một alias của bậc thang
+  viết ở đó thì được thay thế NGAY TẠI ĐÓ rồi kế thừa dưới dạng chiều dài đã đóng băng — đúng cái
+  bẫy `--button-xs-height` mắc phải một lượt trước. Đo trên Chromium ở 393px,
+  `/isolate/layout-mobile-shell`, đọc `getComputedStyle(button, "::after")` của một
+  `.ui-button.ui-button--bare` THẬT trong shell thật: shell đưa `--control-height` lên 2.75rem và
+  `--control-height-xs` tính lại đúng thành 36px, nhưng vùng chạm vẫn là `calc(calc(2rem * 1) -
+calc(0.5rem * 1))` = **24×24**. 24px không phạm WCAG 2.2 SC 2.5.8 — nó LÀ cái sàn; vấn đề là
+  trong một shell lấy cảm ứng làm tiền đề, vùng chạm lại là thứ duy nhất đứng yên.
+
+  Nay token khai `initial` và `.ui-button--bare::after` đọc bậc thang sống làm giá trị dự phòng.
+  Đo lại: trong shell **24×24 → 36×36**; ngoài shell **24×24 y nguyên**. Núm vẫn là núm ở cả hai
+  tầng: đặt `--button-bare-target-size: 44px` trên shell → 44×44; đặt `40px` trên `:root` → 40×40.
+
+  Ghim trong `mobile-shell-control-ladder.test.ts` cạnh trường hợp `--button-xs-height`. Đột biến:
+  trả `var(--control-height-xs)` về `:root` → đỏ 2 test, và số đo trong shell tụt lại 24×24.
+
 - **Mô tả token trong catalog MCP bị "chú thích gần nhất phía trên" cướp mất.** Generator gán cho
   mỗi token chú thích CSS gần nhất ở trên nó, và luật ấy KHÔNG CÓ ĐIỂM DỪNG — nên một chú thích đặt
   giữa nhóm trở thành mô tả của MỌI token phía sau, vượt cả dòng trống lẫn khối rule. Cái đã phát

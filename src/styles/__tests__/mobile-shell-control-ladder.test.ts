@@ -81,4 +81,27 @@ describe("MobileShell — the control ladder follows the shell's tier", () => {
     );
     expect(declared(allRootBodies(controlTokens), "--button-xs-height")).toBe("initial");
   });
+
+  /**
+   * AND THE SAME FREEZE ON THE ONE TOKEN THAT IS A TOUCH TARGET. `--button-bare-target-size:
+   * var(--control-height-xs)` at :root was substituted there, so a bare Button's hit area stayed
+   * 24×24 inside a shell whose whole premise is the touch tier. Measured in Chromium at 393px on
+   * /isolate/layout-mobile-shell, reading `getComputedStyle(button, "::after")` on a real
+   * `.ui-button.ui-button--bare` in the real shell: 24×24 before, 36×36 after, while a button
+   * outside the shell stayed 24×24 in both. A service override still wins at either scope — 44px
+   * set on the shell and 40px set on `:root` both reached the pseudo-element.
+   *
+   * 24px is not a WCAG 2.5.8 failure; it is the floor. The defect is that the one hit area in a
+   * touch-first shell was the one measurement that did not follow the shell.
+   */
+  it("reads the bare Button's TARGET from the live ladder step, not a :root alias", () => {
+    const bare = ruleBody(controlStyles, ".ui-button.ui-button--bare::after");
+    expect(bare).toMatch(
+      /min-inline-size:\s*var\(--button-bare-target-size,\s*var\(--control-height-xs\)\);/,
+    );
+    expect(bare).toMatch(
+      /min-block-size:\s*var\(--button-bare-target-size,\s*var\(--control-height-xs\)\);/,
+    );
+    expect(declared(allRootBodies(controlTokens), "--button-bare-target-size")).toBe("initial");
+  });
 });
