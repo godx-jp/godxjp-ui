@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`check:doc-prop-existence` biến chính cận dưới của nó thành một API đầy đủ.** Nó nhận diện
+  "component bọc primitive bên thứ ba" bằng `node_modules/.pnpm/` trong `declaredIn` — tức là bằng
+  hình dạng thư mục của pnpm, chứ không phải bằng sự thật "khai báo này nằm NGOÀI gói". Ngay khi
+  manifest chuyển sang ghi đường dẫn tương đối theo GÓI (để một worktree và CI nói cùng một điều),
+  `.pnpm/` biến mất khỏi mọi mục, mọi wrapper thành "đã phân giải đầy đủ", và cổng đỏ với **21**
+  phát hiện trên `<Select options>`, `<Calendar mode>`, `<Slider minStepsBetweenThumbs>` — toàn
+  prop CÓ THẬT, và vắng mặt trong manifest theo đúng thiết kế. Nay nó khớp chính `node_modules/`,
+  thứ sống sót qua mọi lần viết lại tiền tố; types của React là ngoại lệ duy nhất vì chúng CÓ được
+  mở rộng. Số bỏ qua trở lại đúng **80**.
+
 ### Added
 
 - **`MobileShell width`** — trục mà `height` đã có còn `width` thì không. `"fill"` (mặc định, và
