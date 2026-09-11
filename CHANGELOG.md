@@ -6,6 +6,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.0.0] - 2026-09-11
+
+### Removed — BREAKING
+
+- **Radix is gone.** `Select` và `Slider` chuyển sang `react-aria-components`; `ContextMenu`,
+  `Menubar` và `NavigationMenu` bị XOÁ (không repo consumer nào dùng — đã đo trên 9 kho); `ScrollArea`
+  cuộn bằng chính trình duyệt. Menu chuột phải nay là `DropdownMenu trigger={['contextMenu']}`, đúng
+  cách antd làm với `Dropdown`. Consumer cài **0** gói `@radix-ui`, trước là 14.
+- **axe bị gỡ khỏi kho.** 523 assertion, gate `check:frame-axe`, ba job "Per-frame axe" mỗi lần
+  merge, ba gói axe, và nhóm luật axe trong `check:visual-audit` (tám nhóm còn lại giữ nguyên).
+- Ba token `--menubar-*` đổi tên thành `--menu-*`; `ScrollBar` thành export rỗng; kiểu của
+  `Slider range` theo antd nên `range={biếnBool}` đi cùng `onChange` không còn hợp lệ.
+
+### Added
+
+- **API của Ant Design 6** cho `Select` (options lồng nhau, `fieldNames`, `showSearch` dạng object,
+  `mode="tags"`, `tokenSeparators`, `tagRender`, `labelInValue`, `popupRender`, `optionRender`…) và
+  `Slider` (`range` dạng object, `marks`, `dots`, `included`, `reverse`, `step={null}`,
+  `onChangeComplete`, `tooltip.formatter` cũng là `aria-valuetext`).
+- `DropdownMenu trigger` — `click` / `hover` / `contextMenu`, kèm Shift+F10 cho bàn phím.
+- Font dự phòng có chỉnh metric: CLS trang docs trên Linux **0,0389 → 0,0020**, macOS **0,2198 → 0,0004**.
+
+### Fixed
+
+- Ô chọn nhận được con trỏ ở đúng chỗ nó được vẽ (552 lỗi → 0).
+- Dưới 900px, cả 30 trạng thái của AppShell về một cột (178 lỗi → 0).
+- Nhãn `FormField` trỏ đúng id mà control đang mang.
+
 ### Changed
 
 - **`Slider` rời `@radix-ui/react-slider`, sang `react-aria-components`, và mang API của antd 6.**
@@ -330,6 +358,7 @@ parity-audit-data-entry.md`: một slider ¥/%/件 trước đây đọc lên đ
   Generator nay duyệt từng nhánh của union rồi gộp: `Select` từ 16 prop lên **74**, và
   `check:doc-prop-existence` từ đây CHẤM được `Select` thay vì bỏ qua nó như một component bọc thư
   viện ngoài.
+
 ### Fixed
 
 - **Ô chọn nay NHẬN được con trỏ ở đúng chỗ nó được vẽ.** `react-aria-components` vẽ control lên
