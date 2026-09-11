@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.1.0] - 2026-09-12
+
+Bản này gần như toàn bộ đến từ báo cáo của consumer `gino-cloud` sau khi họ nâng 20.2.1 → 23.0.0 —
+mười issue trong một ngày, mỗi cái kèm số đo. Và nó mang theo **sáu bản sửa mà 23.0.0 bỏ sót**, vì
+23.0.0 được cắt từ `main` trong khi việc nằm ở `dev`.
+
+### Sáu bản sửa 23.0.0 đã bỏ lại
+
+`DataTable getRowLabel` (ô chọn từng hàng đọc lên là uuid), `FormField word-break: auto-phrase`
+(「第8号」 ngắt giữa từ), vùng bấm và tên hai nút bước của `NumberInput`, đệm ô rỗng của
+`DataTable`, và `AppDateFormat ymd`.
+
+### Added
+
+- `ui-audit --changed` — quét theo diff, nên thấy cả file sửa bằng shell, thứ hook không thấy.
+- Mỗi phát hiện của `ui-audit` nói luôn primitive thay thế (21 luật đã khai).
+- Luật `card-table-needs-flush`, và luật 10 trong `CONSUMER-RULES`.
+- `Tabs` gập dải tab dọc thành ngang dưới 48rem — trước đó ở 393px dải tab rộng **0px**, không còn
+  cách đổi tab trên điện thoại.
+
+### Fixed
+
+- Vòng tiêu điểm ở `Input`/`Checkbox`/`Radio`/`Switch` và panel `Tabs` không còn phụ thuộc thứ tự
+  tầng CSS của consumer.
+- `card-needs-content` hết báo sai với `<Card><Form><CardContent>`.
+- Vùng bấm nút mở lịch `DatePicker`: 20×20 → **24×24**, phần vẽ không đổi.
+- `Segmented` khi xuống hàng giữ đúng khoảng hở giữa hai hàng.
+- Tệp luật do gói sở hữu hết mục ruỗng khi consumer đặt `ignore-scripts=true`.
+
+### Changed — BREAKING đã ghi muộn
+
+- `Radio` và mục `Segmented` không còn thuộc tính `role` (từ 23.0.0). Selector thay thế nằm trong
+  mục `[Unreleased]` phía trên đã chuyển xuống đây.
+
 ### Fixed
 
 - **Tệp luật do gói sở hữu không còn mục ruỗng trong im lặng.** `.ai/rules/godxjp-ui.md` mở đầu bằng
