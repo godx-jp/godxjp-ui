@@ -4,6 +4,26 @@ import path from "node:path";
 import ts from "typescript";
 
 const root = process.cwd();
+
+/**
+ * Where a declaration lives, described by the PACKAGE rather than by the machine.
+ *
+ * `path.relative(root, …)` alone is not reproducible: in a git worktree whose
+ * `node_modules` is a symlink into the main checkout, TypeScript resolves the REAL
+ * path, which escapes the root, and the manifest came out carrying
+ * `../godxjp-ui/node_modules/…`. CI regenerates in the repo root, sees
+ * `node_modules/…`, and fails with "manifest is stale" naming no cause — it happened
+ * on main the moment three worktree-built branches merged.
+ *
+ * Anything under a `node_modules` is addressed from that segment on, so the output is
+ * the same whether the directory is real, symlinked or hoisted.
+ */
+function declaredPath(fileName) {
+  const relative = path.relative(root, fileName);
+  const marker = relative.lastIndexOf(`node_modules${path.sep}`);
+
+  return marker === -1 ? relative : relative.slice(marker);
+}
 const output = path.join(root, "component-api-manifest.json");
 const inheritedBehavioralProps = new Set([
   "value",
@@ -122,9 +142,7 @@ for (const directory of fs
         type: checker.typeToString(propType, declaration, ts.TypeFormatFlags.NoTruncation),
         values: literalValues(propType),
         declaredIn: [
-          ...new Set(
-            declarations.map((item) => path.relative(root, item.getSourceFile().fileName)),
-          ),
+          ...new Set(declarations.map((item) => declaredPath(item.getSourceFile().fileName))),
         ].sort(),
       });
     }
