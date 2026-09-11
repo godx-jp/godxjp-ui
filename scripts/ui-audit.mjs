@@ -5,7 +5,8 @@
  * .claude/skills/frontend-design/rules/ui-standardization.md): use the design system, never
  * hand-roll.
  */
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { isAbsolute, join, relative } from "node:path";
 
 const CWD = process.cwd();
@@ -20,11 +21,45 @@ const args = process.argv.slice(2);
 const asJson = args.includes("--format") && args[args.indexOf("--format") + 1] === "json";
 const quiet = args.includes("--quiet");
 const dirArgs = args.filter((a) => !a.startsWith("--") && a !== "json");
-const SCAN_DIRS = dirArgs.length
-  ? dirArgs
-  : SELF
-    ? ["src", "docs"]
-    : ["resources/js/components", "resources/js/pages", "resources/js/layouts"];
+
+/**
+ * `--changed` — audit what this branch touched, whatever tool touched it.
+ *
+ * The PostToolUse hook fires on `Write|Edit|MultiEdit`, so an agent editing through a shell
+ * (`sed -i`, a heredoc, `cat >`) never triggers it. A consumer measured exactly that: across a
+ * long session EVERY `.tsx` edit went through Bash and the audit fired not once (godx-jp/id#497).
+ * The hook cannot close it — a Bash call carries no `file_path`. A diff can, and one line in a
+ * local gate or in CI then covers every edit path, including the ones nobody thought of.
+ */
+function changedFiles() {
+  const base =
+    spawnSync("git", ["merge-base", "HEAD", "origin/main"], { encoding: "utf8" }).stdout.trim() ||
+    "HEAD";
+  const run = (a) => spawnSync("git", a, { encoding: "utf8" }).stdout ?? "";
+
+  return [
+    ...new Set(
+      [
+        run(["diff", "--name-only", "--diff-filter=ACMR", base, "--"]),
+        run(["diff", "--name-only", "--diff-filter=ACMR", "--cached"]),
+        run(["ls-files", "--others", "--exclude-standard"]),
+      ]
+        .join("\n")
+        .split("\n")
+        .map((f) => f.trim())
+        .filter((f) => /\.(tsx|jsx)$/.test(f) && existsSync(join(CWD, f))),
+    ),
+  ];
+}
+
+const CHANGED = args.includes("--changed");
+const SCAN_DIRS = CHANGED
+  ? changedFiles()
+  : dirArgs.length
+    ? dirArgs
+    : SELF
+      ? ["src", "docs"]
+      : ["resources/js/components", "resources/js/pages", "resources/js/layouts"];
 
 const PALETTE =
   "red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|gray|grey|slate|zinc|neutral|stone";
@@ -89,6 +124,7 @@ const ATTRS = String.raw`(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|=>|[^>"'])*`;
 const RULES = [
   {
     id: "no-utility-spacing",
+    replacement: "Flex gap / ResponsiveGrid / PageContainer",
     classOnly: true,
     scope: "consumer",
     severity: "error",
@@ -101,6 +137,7 @@ const RULES = [
   },
   {
     id: "no-utility-layout",
+    replacement: "Flex (row), Flex direction col (stack), ResponsiveGrid",
     scope: "consumer",
     severity: "error",
     // A hand-rolled flex/grid container. The primitives exist precisely so a row is <Flex>, a
@@ -111,6 +148,7 @@ const RULES = [
   },
   {
     id: "no-hand-rolled-surface",
+    replacement: "Card / Badge / Avatar / ListRow / Descriptions / EmptyState / Progress",
     scope: "consumer",
     severity: "warn",
     // rounded + border/bg on the consumer's own element = a fake Card / Badge / Avatar / ListRow
@@ -139,6 +177,7 @@ const RULES = [
   },
   {
     id: "no-space-xy",
+    replacement: "Flex gap",
     classOnly: true,
     severity: "error",
     test: /\bspace-[xy]-\d/,
@@ -146,6 +185,7 @@ const RULES = [
   },
   {
     id: "no-raw-palette-color",
+    replacement: "a semantic token (--primary, --muted-foreground, --border)",
     classOnly: true,
     severity: "error",
     test: new RegExp(
@@ -156,6 +196,7 @@ const RULES = [
   },
   {
     id: "status-tone-not-variant",
+    replacement: "tone=",
     severity: "error",
     spansElement: true,
     // Only the tone-driven status components (Badge/Tag/StatCard) are wrong here — they expose a
@@ -178,6 +219,7 @@ const RULES = [
   },
   {
     id: "value-callback-on-value-change",
+    replacement: "onValueChange",
     severity: "error",
     spansElement: true,
     test: new RegExp(
@@ -190,6 +232,7 @@ const RULES = [
   },
   {
     id: "no-arbitrary-hex",
+    replacement: "a semantic token",
     classOnly: true,
     severity: "error",
     test: /(bg|text|border|ring|fill|stroke|from|to|via)-\[#[0-9a-fA-F]{3,8}\]/,
@@ -200,6 +243,7 @@ const RULES = [
   // (they start with a letter), so token-driven values stay legal (rules §4–§5).
   {
     id: "no-arbitrary-spacing",
+    replacement: "Flex gap / the spacing scale",
     classOnly: true,
     severity: "error",
     test: /\b(p|px|py|pt|pb|pl|pr|pe|ps|m|mx|my|mt|mb|ml|mr|me|ms|gap|gap-x|gap-y|inset|inset-x|inset-y|top|right|bottom|left)-\[-?\.?\d/,
@@ -208,6 +252,7 @@ const RULES = [
   },
   {
     id: "no-arbitrary-size",
+    replacement: "a size token or the component's size prop",
     classOnly: true,
     severity: "error",
     // `min-w-[…]` / `min-h-[…]` are allowed: a MINIMUM dimension is the legit responsive
@@ -220,6 +265,7 @@ const RULES = [
   },
   {
     id: "no-arbitrary-typography",
+    replacement: "Text size / weight / tone",
     classOnly: true,
     severity: "error",
     test: /\b(text|leading|tracking|font)-\[-?\.?\d/,
@@ -228,6 +274,7 @@ const RULES = [
   },
   {
     id: "no-arbitrary-radius",
+    replacement: "a radius token",
     classOnly: true,
     severity: "error",
     test: /\brounded(?:-[a-z]+)?-\[-?\.?\d/,
@@ -267,6 +314,7 @@ const RULES = [
   },
   {
     id: "no-raw-select",
+    replacement: "Select",
     scope: "consumer-control",
     severity: "error",
     test: /<select[\s>]/,
@@ -274,12 +322,14 @@ const RULES = [
   },
   {
     id: "no-raw-table",
+    replacement: "DataTable / Table",
     severity: "error",
     test: /<table[\s>]/,
     message: "Use the <Table> family from @godxjp/ui, not a raw <table> (rules §3).",
   },
   {
     id: "no-raw-textarea",
+    replacement: "Textarea",
     scope: "consumer-control",
     severity: "warn",
     test: /<textarea[\s>]/,
@@ -287,6 +337,7 @@ const RULES = [
   },
   {
     id: "no-raw-input",
+    replacement: "Input (Upload for a file picker)",
     scope: "consumer-control",
     severity: "error",
     spansElement: true,
@@ -295,6 +346,7 @@ const RULES = [
   },
   {
     id: "no-raw-button",
+    replacement: "Button",
     scope: "consumer-control",
     severity: "error",
     test: /<button[\s>]/,
@@ -302,6 +354,7 @@ const RULES = [
   },
   {
     id: "card-manual-padding",
+    replacement: "CardContent (or CardContent flush)",
     severity: "error",
     spansElement: true,
     test: new RegExp(`<Card\\b${ATTRS}\\bp-[1-9]`, "g"),
@@ -310,6 +363,7 @@ const RULES = [
   },
   {
     id: "no-dark-color-override",
+    replacement: "a semantic token, which already answers to the theme",
     classOnly: true,
     severity: "warn",
     test: /\bdark:(bg|text|border|ring|fill|stroke)-/,
@@ -342,6 +396,7 @@ const RULES = [
   // ─── International-standard a11y / i18n / RTL rules (WARN — guide the agent, never block) ───
   {
     id: "no-emoji-in-ui",
+    replacement: "a lucide icon",
     severity: "warn",
     test: EMOJI,
     standard: "Unicode UTS #51 (emoji) · WCAG 2.2 SC 1.1.1",
@@ -358,6 +413,7 @@ const RULES = [
   },
   {
     id: "no-physical-direction",
+    replacement: "the logical property (ms-/me-, inline-start/inline-end)",
     classOnly: true,
     severity: "warn",
     // Physical-edge utilities break RTL. Logical equivalents: ms-/me-/ps-/pe-, start-/end-,
@@ -465,6 +521,7 @@ if (args.includes("--rules")) {
           severity: r.severity,
           standard: r.standard ?? null,
           message: r.message,
+          replacement: r.replacement,
         })),
         null,
         2,
@@ -730,6 +787,22 @@ function jsxOpeningEnd(source, start) {
 // Structural: a <Card> (without p-0) whose first child is body content rather than a Card
 // sub-component sits FLUSH (no padding). Per-line regexes can't see across lines, so this is a
 // whole-file pass. The body must be wrapped in <CardContent> (titles in <CardHeader>).
+/**
+ * A `Card` whose entire body is a table. `CardContent` pads 16px inline while
+ * `.ui-data-table-surface` draws its own 1px border, so the default composition renders a box
+ * inside a box — and a wide table runs PAST the card's edge instead of stopping at it (measured in
+ * a consumer at −85px and −519px, godx-jp/id#498). `<CardContent flush>` already solves it. What
+ * was missing was the rule that says so.
+ *
+ * Deliberately narrow: the table must be the DIRECT child. A `<Flex direction="col">` holding
+ * filters AND a table is a mixed body, where the padding is correct — the reporter hit that trap
+ * with a `childElementCount === 1` test.
+ */
+const CARD_TABLE_FLUSH = new RegExp(
+  `<CardContent(?![^>]*\\bflush\\b)(?:\\s${ATTRS})?>\\s*<(?:DataTable|Table)\\b`,
+  "g",
+);
+
 const CARD_FLUSH = new RegExp(
   `<Card(?!${ATTRS}\\bp-0\\b)(?:\\s${ATTRS})?>\\s*<(?!CardContent|CardHeader|CardCover|CardFooter|CardBar|\\/Card)`,
   "g",
@@ -809,6 +882,7 @@ for (const dir of SCAN_DIRS) {
             severity: rule.severity,
             standard: rule.standard,
             message: rule.message,
+            replacement: rule.replacement,
             snippet: (origLines[i] ?? line).trim().slice(0, 120),
           });
         }
@@ -844,7 +918,38 @@ for (const dir of SCAN_DIRS) {
       }
     }
     if (!isJsx) continue;
+    /**
+     * `CARD_FLUSH` wants a Card slot as the IMMEDIATE next element, so any legitimate wrapper
+     * trips it. The one that matters is `<Form>`: a submit button in `<CardFooter>` only submits
+     * when the `<form>` wraps BOTH the content and the footer, so `<Card><Form><CardContent>` is
+     * the only correct shape for that card — and it was reported as an error three times in one
+     * consumer file (godx-jp/id#496), on its newest code. A confident error against correct code
+     * teaches the reader that the audit is noise.
+     *
+     * The rule's intent is "the body must not sit flush against the card edges", so ask that:
+     * is there a `<CardContent>` before this Card's own `</Card>`? Depth is counted, because a
+     * Card can hold a Card.
+     */
+    const hasBodyBeforeClose = (from) => {
+      let depth = 0;
+      const tag = /<(\/?)Card(Content|Header|Cover|Footer|Bar)?\b/g;
+      tag.lastIndex = from;
+      for (let m; (m = tag.exec(scanContent)); ) {
+        const [, closing, slot] = m;
+        if (!slot) {
+          if (closing) {
+            if (depth === 0) return false;
+            depth -= 1;
+          } else depth += 1;
+          continue;
+        }
+        if (!closing && slot === "Content" && depth <= 1) return true;
+      }
+      return false;
+    };
+
     for (const match of scanContent.matchAll(CARD_FLUSH)) {
+      if (hasBodyBeforeClose(match.index)) continue;
       const lineNo = scanContent.slice(0, match.index).split("\n").length;
       if (suppressed("card-needs-content", lineNo - 1)) continue;
       findings.push({
@@ -854,6 +959,24 @@ for (const dir of SCAN_DIRS) {
         severity: "error",
         message:
           "<Card> body content must be wrapped in <CardContent> (it has NO padding otherwise) — use <CardContent flush> only for a full-bleed table.",
+        snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
+      });
+    }
+    for (const match of scanContent.matchAll(CARD_TABLE_FLUSH)) {
+      const lineNo = scanContent.slice(0, match.index).split("\n").length + 1;
+
+      if (suppressed("card-table-needs-flush", lineNo - 1)) continue;
+
+      findings.push({
+        file: rel,
+        line: lineNo,
+        rule: "card-table-needs-flush",
+        severity: "error",
+        message:
+          "A Card whose whole body is a table must let the table touch the card's inner edge — " +
+          "use <CardContent flush>. A default CardContent pads 16px while the table draws its own " +
+          "border, so the table reads as a second box inside the card and a wide one overflows it.",
+        replacement: "CardContent flush",
         snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
       });
     }
@@ -899,6 +1022,12 @@ const warnings = findings.filter((f) => f.severity === "warn");
 // `resources/js/{components,pages,layouts}`; `walk()` swallows ENOENT and returns [], so in any
 // tree without that layout — this repo included — `pnpm audit` printed
 // "✓ No UI-standardization violations found." and exited 0 having read nothing at all.
+// …except under `--changed`, where "this branch touched no .tsx" is a clean run, not a
+// misconfigured path. Failing there would make the gate unusable on every backend-only commit.
+if (filesScanned === 0 && CHANGED) {
+  if (!quiet && !asJson) console.log("✓ ui-audit --changed: no .tsx/.jsx changed on this branch.");
+  process.exit(0);
+}
 if (filesScanned === 0) {
   const message =
     `ui-audit scanned 0 files — none of [${SCAN_DIRS.join(", ")}] exists (or all were filtered). ` +
@@ -937,6 +1066,9 @@ if (filesScanned === 0) {
     const tag = f.severity === "error" ? `${C.red}error${C.reset}` : `${C.yellow}warn ${C.reset}`;
     console.log(`${tag} ${C.bold}${f.file}:${f.line}${C.reset}  ${C.dim}[${f.rule}]${C.reset}`);
     console.log(`      ${f.message}`);
+    // Name the primitive HERE: without it every finding costs a round-trip to the catalog plus a
+    // guess about what to look up (godx-jp/id#497). The audit already knows the answer.
+    if (f.replacement) console.log(`      ${C.bold}use: ${f.replacement}${C.reset}`);
     if (f.standard) console.log(`      ${C.dim}standard: ${f.standard}${C.reset}`);
     console.log(`      ${C.dim}${f.snippet}${C.reset}`);
   }

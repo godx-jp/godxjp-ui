@@ -6,6 +6,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`ui-audit --changed`** — quét đúng những gì nhánh này đụng vào, bất kể sửa bằng công cụ nào.
+  Hook `PostToolUse` chỉ khớp `Write|Edit|MultiEdit`, nên agent sửa file qua shell (`sed -i`,
+  heredoc, `cat >`) không bao giờ kích hoạt nó. Consumer đo thẳng: suốt một phiên dài, **mọi** lần
+  sửa `.tsx` đều đi qua Bash và audit **không chạy lần nào**. Hook không vá được chuyện đó — lời
+  gọi Bash không mang `file_path`. Một cái diff thì được.
+- **Mỗi phát hiện nói luôn primitive thay thế** (`replacement`, in ra dòng `use: …`). 21 luật đã
+  khai; trước đây người đọc phải hỏi catalog xem cái vừa viết nên thay bằng gì — một vòng hỏi đáp
+  cho mỗi phát hiện, cộng một lần đoán xem phải tra cái gì.
+- **Luật `card-table-needs-flush`** — `Card` mà toàn bộ thân là bảng thì bảng phải chạm mép trong
+  của thẻ. `CardContent` mặc định đệm 16px trong khi mặt bảng tự vẽ viền, nên bảng thành hộp lồng
+  trong hộp, và bảng rộng thì tràn hẳn ra ngoài thẻ (đo ở consumer: **−85px** và **−519px**). Luật
+  cố ý hẹp: bảng phải là con TRỰC TIẾP, vì `<Flex>` bọc bộ lọc cùng bảng là thân hỗn hợp và ở đó
+  đệm là đúng. Nó bắt được ngay một chỗ trong docs của chính thư viện.
+- **Luật 10 trong `CONSUMER-RULES.md`** nói điều trên, và `SPACING.md` nay ghi rõ `flush` một mình
+  là đủ — `tight` là núm khác, chỉnh dải header chứ không chỉnh mép thân.
+
+### Fixed
+
+- **`card-needs-content` không còn báo sai khi `<Card><Form><CardContent>`.** Đó là cách ghép DUY
+  NHẤT đúng cho thẻ có nút submit ở `CardFooter`: thẻ `<form>` phải bọc cả thân lẫn footer, nếu
+  không nút không submit được. Luật cũ đòi slot của Card phải là phần tử NGAY SAU, nên mọi lớp bọc
+  hợp lệ đều bị tính là lỗi — 3 trên 5 phát hiện ở một consumer là sai, và đều nằm trên mã mới
+  nhất của họ. Nay nó hỏi đúng ý định của luật: có `<CardContent>` nào trước `</Card>` của chính
+  thẻ này không (đếm theo độ sâu, vì Card lồng được trong Card).
+
 ## [23.0.0] - 2026-09-11
 
 ### Removed — BREAKING
