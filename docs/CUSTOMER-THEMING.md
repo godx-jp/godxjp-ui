@@ -56,7 +56,13 @@ overwrites `--font-sans-base` (and `--font-sans-vi`) with the bundled stack —
 Noto Sans JP + Montserrat; v18.12.0–18.12.19 bundled M PLUS 2 + Noto Sans JP;
 v18.12.20+ bundles Noto Sans JP + M PLUS 2 (product override, direct
 instruction). If your design spec named an earlier bundle's faces, set the
-tokens yourself rather than relying on the bundle.) Headings read
+tokens yourself rather than relying on the bundle.) Second in that stack is
+`"Noto Sans JP Fallback"`: local faces (Arial / Liberation Sans for Latin, the
+platform's gothic face for Japanese) with `size-adjust` and ascent/descent
+overrides tuned to Noto Sans JP. The bundled faces are `font-display: swap`, so
+a cold visit paints in this fallback first; because it occupies the same line
+boxes and nearly the same advances, the swap does not reflow the page (#475).
+If you restate the stack yourself, keep it directly after "Noto Sans JP". Headings read
 `--font-family-display` and body reads `--font-family-body`, both defaulting to
 `--font-family-sans` — override them for a dual-font (display + body) brand.
 

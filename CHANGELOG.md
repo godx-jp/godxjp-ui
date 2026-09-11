@@ -30,6 +30,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   mục `#four-with-counts` mới đúng một hàng ở 1280 / ít nhất hai ở màn điện thoại. Đột biến: xoá
   riêng dòng `flex-wrap` → cả cổng lẫn test đơn vị đều đỏ.
 
+- **`font-display: swap` trên 729 `@font-face` không còn là toàn bộ ngân sách CLS của consumer.** Mọi
+  face trong `@fontsource/noto-sans-jp` và `@fontsource/m-plus-2` đều là `swap`, và CSS **không**
+  sửa được `font-display` của một face đã khai báo — nên consumer không có nước đi nào ngoài fork
+  hoặc regex bản CSS đã build, đúng hai thứ luật consumer cấm. Đo tại `godx-jp/id`: font chỉ bắt đầu
+  tải ở ~890ms, về ~1.1s, tức là SAU khi chữ đã vẽ bằng face dự phòng của hệ điều hành; cú swap sau
+  đó dời bố cục **0,093–0,141** trên macOS và **0,4134** trên Linux runner. Chặn hẳn font: 0,000.
+  Cache nóng: 0,000.
+
+  Nay `styles/fonts.css` khai báo `"Noto Sans JP Fallback"` và đặt nó **ngay sau** face thương hiệu
+  trong `--font-sans-base` / `--font-sans-vi`. Nó không tải gì cả: `src` toàn `local()`, và các
+  descriptor ghi đè metric bẻ font máy sẵn có về đúng metric của Noto Sans JP. Một family, cắt theo
+  `unicode-range`, vì hai hệ chữ cần hai cách đối xử ngược nhau:
+
+  - **Latin/Việt → Arial, hoặc Liberation Sans** (trùng metric tuyệt đối: cùng advance, cùng metric
+    dọc), nên MỘT bộ số đúng cho cả macOS, Windows lẫn Linux. `size-adjust` là advance của Noto Sans
+    JP chia advance của Arial, đo bằng fontkit (bật kerning) trên đúng 402 chuỗi của
+    `src/i18n/messages/en.json`: **103,02%** ở 400, **105,50%** ở 500 (Arial không có Medium nên 500
+    đọc Regular), **101,50%** ở 700 so với Arial Bold.
+  - **Nhật → face gothic của nền tảng**: Hiragino Sans (macOS), Yu Gothic / Meiryo (Windows), Noto
+    Sans CJK JP (Linux desktop), IPAGothic (ảnh Playwright mà CI chạy trên đó). Kana, kanji và dấu
+    câu toàn rộng đều là 1em ở mọi face vừa kể **và** ở Noto Sans JP, nên **không** `size-adjust` —
+    co lại 3% là dời từng dòng tiếng Nhật.
+
+  Metric dọc: Noto Sans JP là 1,16 / 0,288 / 0 em ở cả `hhea` lẫn OS/2 `win` (bit USE_TYPO_METRICS
+  tắt, nên Chromium, Firefox và DirectWrite đều đọc đúng bộ ấy). Các `*-override` chép lại đúng bộ
+  đó, chia cho `size-adjust` vì trình duyệt nhân ngược lại — nên hộp dòng cao y hệt trước và sau cú
+  swap, kể cả với `line-height: normal`.
+
+  Đo sau khi sửa, 486 hộp mỗi nền (3 weight × 3 cỡ của thang chữ × `line-height` 1.5 và `normal` ×
+  Latin/Việt/Nhật/hỗn hợp), face dự phòng so với chính face thương hiệu: **0** đoạn văn xuống dòng
+  khác, **0** hộp dòng lệch, tổng advance Latin **99,86–100,38%** trên macOS và **99,89–100,44%**
+  trên Linux. Bản cũ: hộp dòng `line-height: normal` lệch **2px** ở **27/27** trường hợp trên Linux,
+  đoạn văn lệch tới **35px**, nhãn sai trung bình **7,49%**. CLS đo trên preview đã build (cold
+  cache, CPU throttle 4×, font trả chậm), trang `/` của docs trên Linux: **0,0389 → 0,0020**.
+
+  Cổng mới `check:font-fallback-metrics` (lane `ci-browser` → `verify:browser`) đo chính phần
+  RENDER: nó dựng cả hai ngăn xếp trong Chromium thật và đòi đoạn văn xuống dòng y hệt, hộp dòng cao
+  y hệt, tiếng Nhật lệch dưới 1% và tổng advance Latin lệch dưới 1,5%. Nó chạy với
+  `--font-render-hinting=none`, vì Chromium trên Linux làm tròn advance từng glyph về số nguyên CSS
+  pixel (subpixel positioning tắt, và `deviceScaleFactor` không đổi được điều đó) — đo được: cùng
+  một từ lệch tới 12% theo hướng này ở cỡ chữ này rồi lệch ngược lại ở cỡ kế tiếp. Đó là phần của
+  bộ raster, không `size-adjust` nào chỉnh được, và tắt hinting tách đúng phần metric mà cổng này
+  sở hữu. Đột biến: gỡ `size-adjust` → đỏ (hộp dòng lệch 1px, đoạn văn 3px); gỡ các `*-override` →
+  đỏ (3px / 9px); gỡ chính family khỏi ngăn xếp → đỏ (đoạn văn lệch 18,7px, một chuỗi rộng 8,56%).
+
 - **Tám gói `@radix-ui` không còn nằm trong `dependencies`.** `accordion`, `avatar`, `collapsible`,
   `label`, `separator`, `slot`, `toggle`, `toggle-group` — không component nào đang phát hành import
   chúng nữa; thứ duy nhất còn import là các test đối chiếu, dựng cây Radix cũ cạnh cây
@@ -146,7 +191,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   riêng nên số dòng của phát hiện trỏ đúng vào dòng trong công thức. Mọi trường còn lại là VĂN
   XUÔI viết cho người đọc, và văn xuôi trong catalog trích mã vì đúng một lý do: đối chiếu hình
   sai với hình đúng. Soi nó là soi các LỜI CẢNH BÁO. Văn xuôi nay bị hỏi một câu hẹp hơn và đúng
-  hơn: *câu này có khuyên dùng một class mà consumer không được phép viết không?* — hai điều kiện
+  hơn: _câu này có khuyên dùng một class mà consumer không được phép viết không?_ — hai điều kiện
   đều máy móc: class được trích phải TỰ NÓ trượt `ui-audit`, và câu không đánh dấu nó là hình
   không nên viết. Nhờ vậy `className="h-9 w-full"` trên một Skeleton (số đo của MỘT MÀN HÌNH) đi
   qua, còn `className='w-auto p-0'` trong một bullet DO của Calendar thì không — và đó là một lời

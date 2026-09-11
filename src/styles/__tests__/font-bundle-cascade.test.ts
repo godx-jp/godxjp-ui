@@ -124,3 +124,71 @@ describe("bundled-font cascade order (issue #210)", () => {
     },
   );
 });
+
+/**
+ * Issue #475: every bundled face is `font-display: swap`, so a cold visit paints in whatever comes
+ * after "Noto Sans JP" and reflows when the subsets land (CLS 0.093–0.141 on macOS, 0.4134 on a
+ * Linux runner). "Noto Sans JP Fallback" is that next font, bent to Noto Sans JP's metrics. These
+ * are the static halves of the contract; `check:font-fallback-metrics` measures the rendered half.
+ */
+describe("metric-matched fallback for the swap window (issue #475)", () => {
+  const fonts = stripComments(readFileSync(resolve(STYLES_DIR, "fonts.css"), "utf8"));
+  const faces = [...fonts.matchAll(/@font-face\s*\{([^}]*)\}/g)]
+    .map((m) => m[1])
+    .filter((body) => body.includes('"Noto Sans JP Fallback"'));
+  const descriptor = (body: string, name: string) =>
+    body
+      .match(new RegExp(`${name}:\\s*([^;]+);`))?.[1]
+      .replace(/\s+/g, " ")
+      .trim();
+  const percent = (body: string, name: string) => {
+    const value = descriptor(body, name);
+    return value === undefined ? undefined : Number.parseFloat(value);
+  };
+  /** Japanese faces are the ones whose range carries the CJK Unified Ideographs block. */
+  const isJapanese = (body: string) => /U\+4E00-9FFF/.test(descriptor(body, "unicode-range") ?? "");
+
+  it("names the fallback directly after the brand face in both bundled stacks", () => {
+    // Anywhere later and a platform face (Hiragino, WenQuanYi Zen Hei) paints the swap window.
+    for (const token of ["--font-sans-base", "--font-sans-vi"]) {
+      expect(winningDeclaration(fonts, token), token).toMatch(
+        /^"Noto Sans JP", "Noto Sans JP Fallback",/,
+      );
+    }
+  });
+
+  it("declares a Latin and a Japanese face for each bundled weight, from local fonts only", () => {
+    const weights = (japanese: boolean) =>
+      faces
+        .filter((body) => isJapanese(body) === japanese)
+        .map((body) => descriptor(body, "font-weight"))
+        .sort();
+    // Mirrors the @fontsource imports above, so a requested weight resolves the same way.
+    expect(weights(false)).toEqual(["400", "500", "700"]);
+    expect(weights(true)).toEqual(["400", "500", "700"]);
+    for (const body of faces) {
+      expect(descriptor(body, "src")).toMatch(/^local\(/);
+      expect(body).not.toMatch(/url\(/);
+    }
+  });
+
+  it("restates Noto Sans JP's vertical metrics on every face", () => {
+    // Noto Sans JP: hhea = OS/2 win = 1160 / 288 / 0 per 1000 upm, USE_TYPO_METRICS off. The
+    // browser scales the overrides by size-adjust as well, so the product is what must hold.
+    for (const body of faces) {
+      const scale = (percent(body, "size-adjust") ?? 100) / 100;
+      expect((percent(body, "ascent-override") ?? Number.NaN) * scale).toBeCloseTo(116, 1);
+      expect((percent(body, "descent-override") ?? Number.NaN) * scale).toBeCloseTo(28.8, 1);
+      expect(percent(body, "line-gap-override")).toBe(0);
+    }
+  });
+
+  it("scales the Latin faces and never the Japanese ones", () => {
+    // Kana, kanji and full-width punctuation are 1em in Noto Sans JP and in every local gothic
+    // face named here — any size-adjust on them would move every line of Japanese.
+    for (const body of faces) {
+      if (isJapanese(body)) expect(descriptor(body, "size-adjust")).toBeUndefined();
+      else expect(percent(body, "size-adjust")).toBeGreaterThan(100);
+    }
+  });
+});
