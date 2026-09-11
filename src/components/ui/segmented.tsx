@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Radio as AriaRadio, RadioGroup as AriaRadioGroup, useLocale } from "react-aria-components";
+import { Radio as AriaRadio, RadioGroup as AriaRadioGroup } from "react-aria-components";
 
 import { cn } from "../../lib/utils";
 
@@ -61,15 +61,19 @@ export type SegmentedProps = SegmentedProp;
  * and the hidden input a native form submit needs. This file adds that geometry and nothing
  * else — the focus mark comes from `ui-focus-ring`, the ONE source in styles/focus-ring.css.
  *
- * "RTL-aware" is only true once something TELLS the primitive: Radix reads `dir` from its own
- * `DirectionProvider` and otherwise assumes `ltr` — it does not look at `<html dir>`. Measured in
- * jsdom before this line existed: with `document.documentElement.dir = "rtl"`, ArrowLeft on the
- * first option went to the LAST one, i.e. straight LTR behaviour under a reversed layout, so the
- * key that moves your eye left moved the selection right. The direction is taken from the ambient
- * React Aria locale so this control and the 13 `react-aria-components` primitives around it have
- * ONE source of truth — `AppProvider` feeds it, and nothing has to be threaded through the call
- * site. `orientation` still decides WHICH pair of arrows moves the focus; `direction` decides
- * which END of the row each of them means.
+ * "RTL-aware" IS true now, and it used not to be. On Radix it was: Radix read `dir` from its own
+ * `DirectionProvider`, this repo rendered none, and it never looked at `<html dir>` — measured in
+ * jsdom, with `document.documentElement.dir = "rtl"` ArrowLeft on the first option went to the
+ * LAST one, i.e. straight LTR traversal under a reversed layout, so the key that moves your eye
+ * left moved the selection right. The repair then was to hand Radix the ambient React Aria
+ * direction explicitly.
+ *
+ * On `react-aria-components` that hand-off is gone, because the primitive reads the SAME
+ * `useLocale()` itself. One source of truth, fed by `AppProvider`, nothing threaded through the
+ * call site — and `src/__tests__/rtl-arrow-direction.test.tsx` holds it: under an `ar-AE` locale
+ * ArrowLeft advances and ArrowRight retreats, and `<html dir="rtl">` alone still does not.
+ * `orientation` decides WHICH pair of arrows moves the focus; the locale decides which END of the
+ * row each of them means.
  */
 export const Segmented = React.forwardRef<HTMLDivElement, SegmentedProp>(function Segmented(
   {
@@ -88,11 +92,9 @@ export const Segmented = React.forwardRef<HTMLDivElement, SegmentedProp>(functio
   },
   ref,
 ) {
-  const { direction } = useLocale();
   return (
     <AriaRadioGroup
       ref={ref}
-      dir={direction}
       id={id}
       data-slot="segmented"
       data-block={block ? "true" : undefined}
