@@ -240,9 +240,8 @@ export default function Demo() {
             <CardDescription>
               v22 まではこの要素を置くことが軸を開く方法だったが、スクロールがブラウザ本来のものに
               なったので ScrollBar は何も描画しない。下のカードには ScrollBar
-              が置いてあるが、横に動くのは orientation=&quot;both&quot;
-              のおかげで、ScrollBar のおかげではない。残っている
-              &lt;ScrollBar&gt; は消して、軸は orientation で宣言する。
+              が置いてあるが、横に動くのは orientation=&quot;both&quot; のおかげで、ScrollBar
+              のおかげではない。残っている &lt;ScrollBar&gt; は消して、軸は orientation で宣言する。
             </CardDescription>
           </CardHeader>
           <CardContent>
