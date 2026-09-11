@@ -3065,7 +3065,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         name: "getRowLabel",
         type: "(row: T) => string",
         description:
-          "Human name of a row — what its selection checkbox (or radio) is announced as: `Select row {label}`. Default: the text of the `priority: \"primary\"` column, else of the first column, when that value is a string or number; the row id only as a last resort, because an id is a KEY and announced it reads a UUID aloud. Set it when the first column is not the row's name (an avatar, a status badge, an id). `rowSelection.getCheckboxProps` `aria-label` still overrides a single row.",
+          'Human name of a row — what its selection checkbox (or radio) is announced as: `Select row {label}`. Default: the text of the `priority: "primary"` column, else of the first column, when that value is a string or number; the row id only as a last resort, because an id is a KEY and announced it reads a UUID aloud. Set it when the first column is not the row\'s name (an avatar, a status badge, an id). `rowSelection.getCheckboxProps` `aria-label` still overrides a single row.',
       },
       {
         name: "selectable",
@@ -7847,7 +7847,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
       },
       {
         name: "defaultDateFormat",
-        type: '"iso" | "dmy" | "mdy" | "locale"',
+        type: '"iso" | "ymd" | "dmy" | "mdy" | "locale"',
         defaultValue: '"locale"',
         description: "Initial date display format.",
       },

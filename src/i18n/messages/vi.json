@@ -433,6 +433,7 @@
   },
   "dateFormat": {
     "iso": "ISO (yyyy-MM-dd)",
+    "ymd": "Năm / Tháng / Ngày (yyyy/MM/dd)",
     "dmy": "Ngày / Tháng / Năm",
     "mdy": "Tháng / Ngày / Năm"
   },

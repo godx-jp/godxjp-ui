@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`AppDateFormat` có `ymd` (`yyyy/MM/dd`), và `ja` mặc định là nó.** Trục này xưa nay có ba giá
+  trị và KHÔNG giá trị nào viết ra `2026/05/01`: `iso` dùng gạch ngang, hai dạng gạch chéo còn lại
+  đặt ngày hoặc tháng lên trước. Một chứng từ nghiệp vụ Nhật (請求書, 申請書) viết `YYYY/MM/DD`,
+  không bao giờ `YYYY-MM-DD`. Hệ quả đo được ở consumer: gino-cloud phải tự viết formatter ngày và
+  ghi rõ đó là VÁ TẠM — tức chính luật số 1 của `docs/DATETIME.md` ("không bao giờ dùng
+  `date-fns/format`, `toLocaleString`, hay cắt chuỗi ISO cho UI") bị phá bởi chính mặc định của gói
+  này. Đây là dấu hiệu một TRỤC CÓ TÊN thiếu một giá trị, không phải consumer đòi thứ kỳ lạ: mọi
+  nước đi còn lại đều bị chính tài liệu của gói cấm.
+
+  CHỈ MẶC ĐỊNH DỊCH CHUYỂN. Lựa chọn đã lưu vẫn thắng (một người đã chọn `iso` giữ nguyên `iso` qua
+  bản nâng cấp), `defaultDateFormat` vẫn ghim được bất kỳ giá trị nào, và `iso` vẫn nằm ngay trong
+  `<DateFormatPicker />`. `ymd` xếp cạnh `iso` vì nó là dạng năm-trước còn lại.
+
+  LƯU Ý CHO BACKEND: lựa chọn được gửi lên bằng header `x-date-format`, nên một backend đang
+  whitelist `iso|dmy|mdy` sẽ thấy giá trị mới `ymd`.
+
+  Nhãn cho ja/en/vi, cập nhật `docs/DATETIME.md` và catalog MCP (`defaultDateFormat`). `isAppDateFormat`
+  nay đọc `APP_DATE_FORMATS` thay vì lặp lại union — một giá trị thêm vào danh sách mà quên guard sẽ
+  bị loại khỏi storage rồi âm thầm reset. Test mới `date-format-ja-business.test.tsx` đi đầu-đến-cuối
+  (bảng pattern + mặc định theo locale + `formatDate`), vì cả ba đều xanh riêng lẻ trong khi app vẫn
+  in ra gạch ngang. Đột biến: trả `ja → iso` → đỏ 2; bỏ nhánh `ymd` khỏi bảng pattern (nó rơi vào
+  `default:` nên KHÔNG ném lỗi, chỉ lặng lẽ in ra ISO) → đỏ 5.
+
 ### Fixed
 
 - **Hai nút bước của `NumberInput` tên là 「増やす」/「減らす」, không nói chúng đổi ô nào.** Đếm trên

@@ -432,6 +432,7 @@
   },
   "dateFormat": {
     "iso": "YYYY-MM-DD（年-月-日）",
+    "ymd": "YYYY/MM/DD（年/月/日）",
     "dmy": "日/月/年",
     "mdy": "月/日/年"
   },

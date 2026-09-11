@@ -10,6 +10,9 @@ describe("date-formats", () => {
   describe("getDatePattern", () => {
     it.each([
       ["iso", "yyyy-MM-dd"],
+      // The Japanese business form. It is a SEPARATE value from `iso` because the separator is the
+      // whole difference: a 請求書 is written 2026/05/01, never 2026-05-01.
+      ["ymd", "yyyy/MM/dd"],
       ["dmy", "dd/MM/yyyy"],
       ["mdy", "MM/dd/yyyy"],
     ] as const)("maps %s → %s", (format, pattern) => {
@@ -25,6 +28,7 @@ describe("date-formats", () => {
 
     it("combines date pattern + 12h time", () => {
       expect(getDateTimePattern("12h", "mdy")).toBe("MM/dd/yyyy h:mm a");
+      expect(getDateTimePattern("24h", "ymd")).toBe("yyyy/MM/dd HH:mm");
     });
   });
 
@@ -36,7 +40,10 @@ describe("date-formats", () => {
     });
 
     it("rejects unknown values", () => {
-      expect(isAppDateFormat("ymd")).toBe(false);
+      // `ymd` used to be the example of an unknown value here. It is a preset now, which is why
+      // the guard reads APP_DATE_FORMATS instead of repeating the union: a value added to the list
+      // and forgotten in the guard would be rejected out of storage and silently reset.
+      expect(isAppDateFormat("ydm")).toBe(false);
       expect(isAppDateFormat(null)).toBe(false);
       expect(isAppDateFormat("")).toBe(false);
     });
