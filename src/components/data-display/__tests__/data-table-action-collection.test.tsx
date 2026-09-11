@@ -192,8 +192,14 @@ describe("DataTable action-collection preset (gh#253)", () => {
     // `hidden` makes the surface a SCROLL CONTAINER and silently captures the
     // sticky context of stickyHeader/pinned columns — measured: the header then
     // scrolls away 1:1 with the body. Keep this pinned so it cannot regress.
+    // The surface is never narrower than its table: `clip` with a narrower box CUT the table
+    // (measured 258px of columns gone at 1280px, 556px at 393px, and nothing to scroll). The floor
+    // moved to the table, where it still reaches the surface through the table's min-content.
     expect(tableCssBare).toContain(
-      ".ui-data-table-surface{overflow:clip;min-inline-size:var(--table-surface-min-inline-size);",
+      ".ui-data-table-surface{overflow:clip;min-inline-size:min-content;",
+    );
+    expect(tableCssBare).toContain(
+      '.ui-data-table-surface:not([data-preset])>*>[data-slot="table"]{min-inline-size:var(--table-surface-min-inline-size);}',
     );
     // Logical property only (RTL) — never `min-width`.
     expect(tableCssBare).not.toMatch(/\.ui-data-table-surface[^{]*\{[^}]*min-width:/);
@@ -205,8 +211,17 @@ describe("DataTable action-collection preset (gh#253)", () => {
     );
     expect(tableCssBare).toContain("@media(min-width:640px){");
     expect(tableCssBare).toMatch(
+      /@media\(min-width:640px\)\{[^@]*\.ui-data-table-surface:not\(\[data-preset\]\)>\*>\[data-slot="table"\]\{min-inline-size:0;\}/,
+    );
+    // Releasing the SURFACE would undo `min-content` above and cut the table again.
+    expect(tableCssBare).not.toMatch(
       /@media\(min-width:640px\)\{[^@]*\.ui-data-table-surface\{min-inline-size:0;\}/,
     );
+  });
+
+  it("gives `scroll.x` to the table only — the surface follows it through min-content", () => {
+    expect(tableCssBare).toContain('.ui-data-table-scroll[data-scroll-x][data-slot="table"]{');
+    expect(tableCssBare).not.toContain("[data-scroll-x]:is(.ui-data-table-surface,");
   });
 
   it("never styles a DataTable that did not opt in — the inert-default contract (gh#231)", () => {

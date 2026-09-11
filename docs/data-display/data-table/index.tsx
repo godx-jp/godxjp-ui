@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { AppProvider } from "@godxjp/ui/app";
-import { Badge, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
+import { Badge, Card, CardContent, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
@@ -93,6 +93,16 @@ const columns: ColumnDef<Invoice>[] = [
   },
 ];
 
+/* Five 240px columns: wider than the frame at every viewport the gates sweep, and wide for a
+ * reason no font can change — the width is declared, so the overflow is deterministic in CI. */
+const wideColumns: ColumnDef<Invoice>[] = [
+  { key: "id", header: "請求書番号", width: "240px" },
+  { key: "partner", header: "取引先", width: "240px" },
+  { key: "amount", header: "金額", align: "right", width: "240px" },
+  { key: "status", header: "状態", width: "240px" },
+  { key: "date", header: "期限日", width: "240px" },
+];
+
 export default function Demo() {
   const [selected, setSelected] = useState<Set<string>>(new Set(["INV-0311"]));
   const [sort, setSort] = useState<SortStateProp | undefined>({
@@ -117,6 +127,22 @@ export default function Demo() {
       subtitle="sortable · selectable · bulk actions · row actions · loading · clickable rows · empty state"
     >
       <Flex direction="col" gap="lg">
+        {/* A table WIDER than its frame, inside a flush Card — the shape a list page uses. It must
+            scroll inside its own box with the fade at the inline end, never cut its last columns
+            (WCAG 1.4.10). `check:data-table-overflow` measures this section. */}
+        <Flex direction="col" gap="sm" id="wide-overflow" className="max-w-3xl">
+          <Text weight="medium">枠より広い表（横スクロール · 列を切らない）</Text>
+          <Card>
+            <CardContent flush>
+              <DataTable
+                data={invoices}
+                columns={wideColumns}
+                getRowId={(row) => row.id}
+                selectable
+              />
+            </CardContent>
+          </Card>
+        </Flex>
         <Flex direction="col" gap="sm" id="text-action-width">
           <Text weight="medium">日本語の行アクション</Text>
           <DataTable

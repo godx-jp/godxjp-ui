@@ -71,10 +71,13 @@ describe("DataTable — antd `scroll`", () => {
     );
   });
 
-  it("puts the x floor on the SURFACE as well as the table, or the region never scrolls", () => {
-    // Measured, not assumed: the surface is `overflow: clip`, so with the floor on the table alone
-    // the table painted 1450px inside an 848px surface and `.ui-data-table-scroll` reported
-    // scrollWidth === clientWidth === 848 — `scroll.x` produced a table nobody could reach.
+  it("puts the x floor on the TABLE, and the surface follows it through min-content", () => {
+    // Measured, not assumed: the surface is `overflow: clip`, so a surface narrower than its table
+    // CUTS the table — 1450px painted inside an 848px surface, `.ui-data-table-scroll` reporting
+    // scrollWidth === clientWidth === 848, i.e. `scroll.x` produced a table nobody could reach.
+    // The surface used to be handed the same floor. It is now `min-inline-size: min-content`,
+    // which is the table's floor by construction AND covers every table without `scroll.x` —
+    // the same cut hit those (258px at 1280px). `check:data-table-overflow` measures it in Chromium.
     const selectors = ruleSelectors(tableCss, ".ui-data-table-scroll[data-scroll-x]");
     const { container } = render(<DataTable data={data} columns={columns} scroll={{ x: 900 }} />);
     const region = container.querySelector(".ui-data-table-scroll") as HTMLElement;
@@ -88,8 +91,12 @@ describe("DataTable — antd `scroll`", () => {
         return el.matches(trimmed);
       });
     expect(region).toHaveAttribute("data-scroll-x", "");
-    expect(matches(surface)).toBe(true);
     expect(matches(table)).toBe(true);
+    expect(matches(surface)).toBe(false);
+    // …which is only safe while the surface can never be narrower than that table.
+    expect(tableCss.replace(/\/\*[\s\S]*?\*\//g, "")).toMatch(
+      /\.ui-data-table-surface\s*\{[^}]*min-inline-size:\s*min-content;/,
+    );
   });
 
   it("flags neither axis when nothing asked for one", () => {
