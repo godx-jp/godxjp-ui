@@ -338,6 +338,24 @@ describe('appearance="icon" giữ được ô vuông (gh#366)', () => {
     expect(trigger.className).not.toContain("shrink-0");
   });
 
+  it("forwards className to the trigger, next to its own classes", () => {
+    // The only proof this prop had was an a11y test, deleted with axe. The claim is in
+    // component-case-evidence.json, so it needs a live test or the claim is a lie.
+    const { container } = renderWithUi(
+      <AppSettingPicker
+        kind="theme"
+        appearance="bar"
+        className="consumer-class"
+        value="light"
+        onValueChange={vi.fn()}
+      />,
+    );
+    const owner = container.querySelector<HTMLElement>(".consumer-class")!;
+
+    expect(owner).not.toBeNull();
+    expect(owner.className).toContain("consumer-class");
+  });
+
   it("luật CSS vẫn khai bề ngang theo token, để service retune một chỗ", () => {
     const css = readFileSync(resolve(process.cwd(), "src/styles/navigation-layout.css"), "utf8");
     const rule = css.match(/\.ui-app-setting-picker-icon\s*\{[^}]*\}/)?.[0] ?? "";
