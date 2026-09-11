@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Segmented` không còn in `dir="ltr"` lên mọi call site.** Dòng `dir={direction}` là bản vá của
+  thời RADIX: hồi ấy primitive đọc `dir` từ `DirectionProvider` của Radix, kho này không dựng cái
+  nào, và nó không bao giờ nhìn `<html dir>` — nên phải trao hướng cho nó bằng tay. Sau khi
+  `Segmented` chuyển sang `react-aria-components`, primitive đọc CHÍNH `useLocale()` ấy, nên phép
+  trao tay thành thừa và thứ duy nhất nó còn làm là đóng băng một thuộc tính `dir` lên gốc của mọi
+  Segmented. Gỡ đi: 19 test (10 hướng phím RTL + 9 của Segmented) vẫn xanh, và DOM sạch thuộc tính.
+
 - **`check:doc-prop-existence` biến chính cận dưới của nó thành một API đầy đủ.** Nó nhận diện
   "component bọc primitive bên thứ ba" bằng `node_modules/.pnpm/` trong `declaredIn` — tức là bằng
   hình dạng thư mục của pnpm, chứ không phải bằng sự thật "khai báo này nằm NGOÀI gói". Ngay khi
