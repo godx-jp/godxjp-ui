@@ -1,6 +1,13 @@
 import { useState } from "react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@godxjp/ui/data-display";
 import { FormField, Segmented } from "@godxjp/ui/data-entry";
 import { Text, VisuallyHidden } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -81,6 +88,38 @@ export default function Demo() {
                 ]}
               />
             </Flex>
+          </CardContent>
+        </Card>
+
+        <Card id="four-with-counts">
+          <CardHeader>
+            <CardTitle level={2}>4 択 + 件数（スマホ幅では折り返す）</CardTitle>
+            <CardDescription>
+              一覧の上の状態フィルター。4 つが 1 行に収まらない幅では、トラックが 2 行目に折り返し
+              ます — ラベルも件数も切り詰めません。`check:segmented-wrap` がこのカードを測ります。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Segmented
+              aria-label="状態"
+              defaultValue="all"
+              options={[
+                { value: "all", label: "すべて", count: 128 },
+                { value: "active", label: "実習中", count: 96 },
+                { value: "pending", label: "申請中", count: 12 },
+                { value: "gone", label: "失踪・帰国", count: 0 },
+              ].map(({ value, label, count }) => ({
+                value,
+                label: (
+                  <>
+                    {label}
+                    <Badge as="span" variant="secondary">
+                      {count}
+                    </Badge>
+                  </>
+                ),
+              }))}
+            />
           </CardContent>
         </Card>
 

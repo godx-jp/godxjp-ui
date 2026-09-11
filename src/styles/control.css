@@ -1122,6 +1122,15 @@
     --segmented-item-height: calc(var(--control-height) - var(--segmented-track-padding) * 2);
     display: inline-flex;
     max-width: 100%;
+    /* WRAP, NEVER TRUNCATE. A multi-line flex container places its items by their natural width
+     * BEFORE it shrinks any, so options that cannot share one row move to the next row whole — a
+     * count badge included — while a bar that fits stays exactly one row. Measured at 393px before
+     * this line, four options with counts in a 361px track: every label truncated, and
+     * 「失踪・帰国 0」 showed 9.1px of its 25.1px count. The catalog promises 2-4 options, so four
+     * must survive a phone. An item wider than the WHOLE track still shrinks and ellipsizes: that
+     * is the last resort, not the default. A vertical bar never wraps (its block size is auto),
+     * and `block` keeps its equal shares (`flex: 1 1 0`), so it still truncates — by contract. */
+    flex-wrap: wrap;
     align-items: stretch;
     padding: var(--segmented-track-padding);
     border-radius: var(--segmented-track-radius);

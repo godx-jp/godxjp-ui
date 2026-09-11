@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Segmented` bốn lựa chọn bị cắt chữ ở màn điện thoại — nay track XUỐNG DÒNG.** Catalog hứa
+  Segmented dành cho 2–4 lựa chọn, nhưng track là `inline-flex` một hàng và item co lại kèm dấu
+  lược, nên bốn lựa chọn có số đếm không sống nổi ở 393px. Đo trên Chromium (gino-cloud phát hiện):
+  track **361px**, **cả bốn** nhãn bị cắt, và 「失踪・帰国 0」 chỉ còn thấy **9,1px** trong **25,1px**
+  của badge số đếm — tức con số biến mất.
+
+  Nay `.ui-segmented` là `flex-wrap: wrap`. Một flex container nhiều dòng xếp item theo bề rộng tự
+  nhiên TRƯỚC khi co bất kỳ item nào, nên lựa chọn nào không chung hàng được thì xuống hàng sau
+  NGUYÊN VẸN, còn một thanh vừa một hàng thì vẫn đúng một hàng. Sau khi sửa, cùng thanh ấy ở 393px:
+  hai hàng (track cao 60px), **0** nhãn bị cắt, mọi badge hiện đủ **25,1 / 25,1px**; ở 1280px vẫn
+  một hàng. Không cho item giãn ra lấp hàng, có lý do đo được: `<Flex direction="col">` mặc định
+  kéo track rộng bằng cha (1198px ở 1280), nên `flex-grow` sẽ nới item của mọi Segmented trên
+  desktop. `block` giữ nguyên phần chia ĐỀU (`flex: 1 1 0`) nên vẫn cắt — theo hợp đồng, và catalog
+  nay nói thẳng điều đó.
+
+  Catalog: dòng "track không có hành vi tràn" đã sai với mã, nay sửa; thêm use case "lọc trạng thái
+  kèm số đếm" để truy vấn theo ý định ("filter … counts") tìm ra Segmented. Cổng mới
+  `check:segmented-wrap` (lane `ci-browser-full`) đo frame ở 320/393/1280px, LTR và RTL: không nhãn
+  nào bị cắt, không badge nào lọt khỏi item, không track nào tràn cha, trang không cuộn ngang, và
+  mục `#four-with-counts` mới đúng một hàng ở 1280 / ít nhất hai ở màn điện thoại. Đột biến: xoá
+  riêng dòng `flex-wrap` → cả cổng lẫn test đơn vị đều đỏ.
+
 - **Tám gói `@radix-ui` không còn nằm trong `dependencies`.** `accordion`, `avatar`, `collapsible`,
   `label`, `separator`, `slot`, `toggle`, `toggle-group` — không component nào đang phát hành import
   chúng nữa; thứ duy nhất còn import là các test đối chiếu, dựng cây Radix cũ cạnh cây
