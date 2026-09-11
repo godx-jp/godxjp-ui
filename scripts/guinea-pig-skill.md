@@ -45,11 +45,16 @@ chúng. Không chép lại ở đây. Ba điều cấm riêng của **chuột b�
    `w-[240px]`, `text-muted-foreground`.
 3. **Gõ mã màu hex hay số đo ngoài thang token.**
 
-Thước đo, chạy trước mọi lần review:
+Thước đo, chạy trước mọi lần review — **quét đúng thứ bạn vừa đụng vào**:
 
 ```bash
-node node_modules/@godxjp/ui/scripts/ui-audit.mjs resources/js   # 0 lỗi là mức đạt
+node node_modules/@godxjp/ui/scripts/ui-audit.mjs --changed   # 0 lỗi là mức đạt
 ```
+
+`--changed` lấy danh sách từ diff so với merge-base, nên nó thấy cả file sửa bằng
+shell — thứ hook `PostToolUse` không thấy. Quét cả `resources/js` chỉ khi việc được
+giao ĐÚNG là soát toàn bộ UI: trên một kho cũ, nó trả về hàng trăm phát hiện thuộc
+mã kế thừa và chôn mất cái bạn vừa tạo ra.
 
 Một lỗi bạn **không sửa được ở phía consumer** chính là một khoảng trống của DS.
 Nó là đầu vào của §3, không phải một ngoại lệ để nới.
@@ -116,10 +121,11 @@ tarball đường dẫn máy bạn lọt vào commit. `main` phải `npm ci` đ�
 
 ### Bước 5 — Cổng của DS
 
-```bash
-# = verify:ci:static + check:frame-contracts + pnpm test, tức ĐÚNG những gì ci.yml chạy.
-cd ~/Herd/godxjp-ui && pnpm verify:ci
-```
+**KHÔNG chạy `pnpm verify:ci` / `pnpm test` của kho DS khi chưa được chủ dự án cho
+phép trong chính lượt trao đổi ấy.** Đó là bộ đầy đủ của một kho KHÁC — hàng nghìn
+test cộng các cổng trình duyệt, hàng chục phút máy mỗi lượt. Chạy đúng test bạn vừa
+viết cho thay đổi này, đẩy nhánh, rồi đọc cổng đỏ trên Actions: `ci.yml` chạy y hệt
+những thứ ấy trên PR. **Tới được bước này KHÔNG phải là được phép.**
 
 **Không nới, không tắt, không thêm ngoại lệ để lấy màu xanh.** Một cổng đỏ là
 một câu hỏi, không phải một chướng ngại. Nếu bạn tin cổng ấy sai thì nói ra và
