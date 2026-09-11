@@ -50,6 +50,15 @@ describe("Segmented sizes from the scope it is IN, not from :root", () => {
   });
 
   /**
+   * Four options must survive a phone. Measured at 393px without this: four options with counts in
+   * a 361px track, every label truncated and 「失踪・帰国 0」 showing 9.1px of its 25.1px count.
+   * `check:segmented-wrap` measures the rendered rows; this pins the one declaration it rests on.
+   */
+  it("lets the track wrap to a second row instead of truncating its members", () => {
+    expect(rule(CONTROL_CSS, "  .ui-segmented")).toMatch(/flex-wrap:\s*wrap;/);
+  });
+
+  /**
    * The counterpart, and the assertion that actually fails if someone moves the composition back:
    * the token file must hold the INPUTS and not the sum. `--segmented-track-padding` stays there
    * (it is a constant); `--segmented-item-height` must not, because it reads a scopable token.

@@ -12170,7 +12170,7 @@ export default function PasswordBlock() {
       "DO use it for a closed set of 2-4 peer choices that are cheap to show — theme, view mode, a date range preset.",
       "DO give it an aria-label (or aria-labelledby) — the group needs a name, and each item takes its own from its label.",
       "DON'T use ToggleGroup for a one-of-N choice: its items are aria-pressed toggle buttons and even at type=single the group can end up with nothing selected, which a setting can never be.",
-      "DON'T use it past ~4 options or with long labels — the track has no overflow behaviour. That is a Select.",
+      "DON'T use it past ~4 options — that is a Select. Up to four, a horizontal track WRAPS to a second row when its options cannot share one (a phone-width status filter with counts), so no label or count is truncated while its item fits on a row. `block` is the exception: it promises EQUAL widths, so it still truncates — don't use `block` for four labelled options at phone width.",
       "DO show a short mark and speak a long name by putting BOTH in `label`: an aria-hidden span for the glyph and a VisuallyHidden for the words. `label` is a ReactNode, the item takes its accessible name from its content, and the glyph drops out of that name once it is aria-hidden — so a bar of circle/triangle/cross marks still announces the state in words. There is no separate accessible-name prop and there does not need to be.",
       "DO stack with `vertical` when the labels are too long to sit side by side: a stacked row is a WHOLE `--control-height` tall, where a horizontal bar spends part of that height on the track padding so the bar as a whole lines up with an Input beside it. Inside a MobileShell, which scopes the control tier to the touch step, that is what makes each row a 44px target.",
       "DO remember that `size` and any scoped `--control-height` both reach the track: the item height is composed on the Segmented root, not frozen at :root.",
@@ -12179,6 +12179,7 @@ export default function PasswordBlock() {
       "Theme switch (light / dark / system)",
       "List vs board vs calendar view mode",
       "Chart range: day / week / month",
+      "Status filter above a list, each option carrying its count (All 128 / Active 96 / Pending 12 / Archived 0)",
     ],
     related: [
       "ToggleGroup (independently pressed buttons, or a multi-select toolbar)",
