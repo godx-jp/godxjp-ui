@@ -3043,6 +3043,17 @@
 @layer components {
   .ui-mobile-shell {
     --control-height: var(--mobile-shell-control-height);
+    /* THE LADDER FOLLOWS THE TIER. `--control-height-sm/-lg/-xs` are `calc()`s over
+     * `--control-height`, and a `calc()` over a custom property is substituted where it is DECLARED
+     * — at `:root`, against the desktop 32px — and inherits as a frozen length. Rebinding only the
+     * tier here therefore left every SIZED control on the desktop ladder inside a touch-first shell:
+     * measured at 393px, `size="sm"` 28px, `size="lg"` 36px (smaller than the 44px default beside
+     * it), `size="xs"` 24px, `icon-sm` 28px. Re-declared on the element that rebinds the tier —
+     * the formulas are the :root ones, byte for byte — the ladder becomes 40 / 48 / 36px, exactly
+     * what a coarse-pointer device already gets from :root. */
+    --control-height-sm: calc(var(--control-height) - calc(0.25rem * var(--scaling)));
+    --control-height-lg: calc(var(--control-height) + calc(0.25rem * var(--scaling)));
+    --control-height-xs: calc(var(--control-height) - calc(0.5rem * var(--scaling)));
     /* The page gutter is COMPOSED HERE, on the shell root, and deliberately not at `:root`. A
      * `calc()` over two custom properties resolves where it is DECLARED, so a `:root` binding
      * would freeze the sum: a service scoping `--mobile-shell-inset-inline` under

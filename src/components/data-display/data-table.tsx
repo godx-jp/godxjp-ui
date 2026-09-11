@@ -364,6 +364,7 @@ interface DataTableContextValue<T = unknown> {
   toggleExpanded: (key: string) => void;
   rowSelection?: TableRowSelectionProp<T>;
   getRowId: (row: T) => string;
+  getRowLabel?: (row: T) => string;
   showSorterTooltip: boolean;
   sortDirections?: readonly SortDirectionProp[];
   /** Sort priorities keyed by column — the `sorter.multiple` map used for multi-column sort. */
@@ -392,6 +393,13 @@ interface DataTableProps<T> {
   columns: ColumnDef<T>[];
   /** Required when `selectable` is true. Default: assume row.id (typed as any). */
   getRowId?: (row: T) => string;
+  /**
+   * Human name of a row, announced by its selection checkbox or radio as "Select row {label}".
+   * Default: the text of the `priority: "primary"` column, else of the first column, when that
+   * value is a string or number; the row id only as a last resort — an id is a KEY, and announced
+   * it reads a UUID aloud. `rowSelection.getCheckboxProps` `aria-label` still overrides a row.
+   */
+  getRowLabel?: (row: T) => string;
   selectable?: boolean;
   selected?: Set<string>;
   onSelectChange?: (next: Set<string>) => void;
@@ -531,6 +539,7 @@ export function DataTable<T>({
   data,
   columns,
   getRowId = noopGetRowId,
+  getRowLabel,
   selectable = false,
   selected: controlledSelected,
   onSelectChange,
@@ -869,6 +878,7 @@ export function DataTable<T>({
     toggleExpanded,
     rowSelection,
     getRowId,
+    getRowLabel,
     showSorterTooltip,
     sortDirections,
     sortPriorities,
@@ -1314,6 +1324,7 @@ DataTable.Content = function DataTableContent() {
     toggleExpanded,
     rowSelection,
     getRowId,
+    getRowLabel,
     showSorterTooltip,
     sortDirections,
     sortPriorities,
@@ -1371,6 +1382,10 @@ DataTable.Content = function DataTableContent() {
       );
     }
   }, [missingHeaderNames]);
+
+  // The column that NAMES a row for its selection control: the primary one, else the first.
+  const selectLabelColumn =
+    visibleColumns.find((col) => col.priority === "primary") ?? visibleColumns[0];
 
   // while the region actually overflows AND is not scrolled to the inline-end.
   // CSS alone cannot know (there is no :overflowing selector), so measure the
@@ -1782,6 +1797,19 @@ DataTable.Content = function DataTableContent() {
                 const rowKey = getRowId(original as never);
                 const isSelected = row.getIsSelected();
                 const checkboxProps = rowSelection?.getCheckboxProps?.(original as never) ?? {};
+                // The row's NAME, not its key: the consumer's accessor, else the label column's own
+                // text, else the row id — the last resort, because announced it reads a UUID aloud.
+                const labelValue = selectLabelColumn
+                  ? (original as Record<string, unknown>)[selectLabelColumn.key]
+                  : undefined;
+                const rowLabel =
+                  getRowLabel?.(original as never) ??
+                  ((typeof labelValue === "string" && labelValue.trim() !== "") ||
+                  typeof labelValue === "number"
+                    ? String(labelValue)
+                    : row.id);
+                const selectRowLabel =
+                  checkboxProps["aria-label"] ?? t("dataTable.selectRow", { id: rowLabel });
                 const canExpand =
                   expandColumnShown && (expandable?.rowExpandable?.(original as never) ?? true);
                 const isExpanded = canExpand && expandedKeys.includes(rowKey);
@@ -1899,10 +1927,7 @@ DataTable.Content = function DataTableContent() {
                             >
                               <RadioItem
                                 value={rowKey}
-                                aria-label={
-                                  checkboxProps["aria-label"] ??
-                                  t("dataTable.selectRow", { id: row.id })
-                                }
+                                aria-label={selectRowLabel}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                 }}
@@ -1915,10 +1940,7 @@ DataTable.Content = function DataTableContent() {
                               onCheckedChange={(v) => {
                                 row.toggleSelected(!!v);
                               }}
-                              aria-label={
-                                checkboxProps["aria-label"] ??
-                                t("dataTable.selectRow", { id: row.id })
-                              }
+                              aria-label={selectRowLabel}
                               onClick={(e) => {
                                 e.stopPropagation();
                               }}

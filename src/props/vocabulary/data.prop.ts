@@ -9,6 +9,12 @@ import type { TableDensityProp } from "./layout.prop";
 /** Generic row identifier extractor for tables with selection. */
 export type GetRowIdProp<T> = (row: T) => string;
 
+/**
+ * Human-readable row name — what a row's selection control is announced as. The row id is a KEY,
+ * not a name: announced, it reads a UUID aloud.
+ */
+export type GetRowLabelProp<T> = (row: T) => string;
+
 /** Row click navigation handler. */
 export type OnRowClickProp<T> = (row: T) => void;
 

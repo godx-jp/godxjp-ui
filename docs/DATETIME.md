@@ -23,9 +23,17 @@ Omit `locale`, `timezone`, `timeFormat`, `dateFormat` → synced from AppProvide
 
 | value | Pattern      | Default locale |
 | ----- | ------------ | -------------- |
-| `iso` | `yyyy-MM-dd` | ja             |
+| `iso` | `yyyy-MM-dd` | —              |
+| `ymd` | `yyyy/MM/dd` | ja             |
 | `dmy` | `dd/MM/yyyy` | vi             |
 | `mdy` | `MM/dd/yyyy` | en             |
+
+`ymd` and `iso` are both year-first and are NOT interchangeable: a Japanese business document
+(請求書, 申請書) is written `2026/05/01`, never `2026-05-01`. `ja` defaulted to `iso` until a
+Japanese-first consumer shipped its own date formatter as an explicit stopgap purely to get the
+slashes — rule 1 above broken by this package's own default. Only the DEFAULT moved: a stored
+preference still wins, `defaultDateFormat` still pins any value, and `iso` is one option away in
+`<DateFormatPicker />`.
 
 Sent to backend as `x-date-format`. Pick with `<DateFormatPicker />`.
 
@@ -43,9 +51,10 @@ Sent to backend as `x-date-format`. Pick with `<DateFormatPicker />`.
 
 ## ISO 8601 patterns
 
-Date order follows `dateFormat` from AppProvider (`iso` | `dmy` | `mdy`):
+Date order follows `dateFormat` from AppProvider (`iso` | `ymd` | `dmy` | `mdy`):
 
 - `iso`: `yyyy-MM-dd` + `yyyy-MM-dd HH:mm`
+- `ymd`: `yyyy/MM/dd` + `yyyy/MM/dd HH:mm`
 - `dmy`: `dd/MM/yyyy` + `dd/MM/yyyy HH:mm`
 - `mdy`: `MM/dd/yyyy` + `MM/dd/yyyy HH:mm`
 

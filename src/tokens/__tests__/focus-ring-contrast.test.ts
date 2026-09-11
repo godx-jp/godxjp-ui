@@ -15,9 +15,9 @@ import { contrast, hsl, hslToRgb, NON_TEXT, over } from "./wcag-contrast";
  *   OUTLINE `outline: ${--focus-outline-weight} solid ${--primary-border}; outline-offset: 1`.
  *
  * That default is AA on a field and, measured rather than assumed, is NOT AA on the outline form:
- * `--primary-border` for this seed is #6dc0e3, which reaches 2.00:1 against the page. The
- * stricter indicator lives behind the `data-focus-appearance="aaa"` axis in tokens/axes.css, and
- * the second half of this file is the gate on that axis.
+ * `--primary-border` for this seed is #6dc0e3, which reaches 2.00:1 against the page. The stricter
+ * indicator is reached by raising ONE knob — `--focus-ring-weight` — with the mark taking the focus
+ * hue rather than `--primary-border`; the second half of this file is the gate on that.
  *
  * THE TRAP THIS FILE STILL EXISTS TO CLOSE. A halo that soft is decoration. Measured against this
  * palette, a primary tint composited over the page reaches only 1.18:1 at alpha 0.11 and still
@@ -295,6 +295,34 @@ describe("the switch is OFF by default, and nothing can paint around it", () => 
       }
     }
     expect(offenders, "rebind --focus-ring-weight, never --focus-ring-width").toEqual([]);
+  });
+
+  /**
+   * THE SAME INVARIANT, IN WHAT WE TELL CONSUMERS. The rule above keeps a stylesheet from rebinding
+   * `--focus-ring-width`; it cannot see a DOC that prescribes it. Both did: CUSTOMER-THEMING called
+   * it the thickness knob with a 2px default and said "`width: 0` turns every ring OFF", TOKENS.md
+   * called it a member of the stroke scale, and the MCP token catalog — what an agent reads —
+   * repeated the 2px claim. Measured in Chromium: with the switch OFF, `--focus-ring-width: 2px`
+   * paints a 2px ring on a focused Button, i.e. the documented knob routes around the very switch
+   * this file exists to protect, and an agent following the catalog writes that bypass.
+   *
+   * A doc may still SHOW the derived definition; it may not assign anything else to it.
+   */
+  it("no doc or catalog prescribes --focus-ring-width — the derived token", () => {
+    const DERIVED = "calc(var(--focus-ring-weight) * var(--focus-outline))";
+    const offenders: string[] = [];
+    for (const file of [
+      "docs/CUSTOMER-THEMING.md",
+      "docs/TOKENS.md",
+      "docs/DESIGN-AUTHORITY.md",
+      "mcp/src/data/tokens.ts",
+    ]) {
+      const text = readFileSync(join(process.cwd(), file), "utf8");
+      for (const [line] of text.matchAll(/--focus-ring-width:[^\n;]*/g)) {
+        if (!line.includes(DERIVED)) offenders.push(`${file}: ${line.trim()}`);
+      }
+    }
+    expect(offenders, "document --focus-ring-weight; --focus-ring-width is derived").toEqual([]);
   });
 
   it("the field BOUNDARY recolour is gated on the same attribute", () => {

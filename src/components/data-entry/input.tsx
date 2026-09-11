@@ -20,9 +20,20 @@ export type { InputProp, InputProp as InputProps } from "../../props/components/
  * outlined surface into the base list would silently defeat `variant="filled"` and
  * `variant="borderless"`. The outlined variant appends exactly those two utilities and nothing
  * else changed for it — see CONTROL_VARIANT_CHROME_CLASS.
+ *
+ * `outline-none` IS NOT IN HERE EITHER, AND THAT IS THE SAME RULE READ IN THE OTHER DIRECTION.
+ * It used to be, to suppress Chrome's default ring. But a utility outranks `@layer components`,
+ * so it also suppressed the ring THIS package paints: measured in Chromium with the switch on and
+ * `--focus-ring-weight: 2px`, a focused Button reported `outline: 2px solid rgb(0,113,189)` while
+ * a focused Input on the same page reported `outline-style: none` — the field kept only its
+ * recoloured 1px boundary, and every control that composes Input (NumberInput, SearchInput,
+ * DatePicker, TimePicker) inherited the hole. Nothing has to replace it: focus-ring.css declares
+ * `outline` on `.ui-input:focus-visible` unconditionally, and with the switch off that resolves to
+ * `0px`, so the browser default can never come back. The gate is
+ * src/styles/__tests__/focus-ring-utility-defeat.test.ts.
  */
 const inputBaseClass = [
-  "ui-control ui-input w-full rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
+  "ui-control ui-input w-full rounded-[var(--control-radius)] transition-[color,box-shadow]",
   "selection:bg-primary selection:text-primary-foreground",
   "placeholder:text-muted-foreground",
   "aria-invalid:border-destructive",

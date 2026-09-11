@@ -98,7 +98,11 @@ const FROZEN: Record<string, [string, string, string, string]> = {
   "--control-height-sm": ["1.75rem", "1.61rem", "1.89rem", "1.75rem"],
   "--control-height-lg": ["2.25rem", "2.07rem", "2.43rem", "2.25rem"],
   "--control-height-xs": ["1.5rem", "1.38rem", "1.62rem", "1.5rem"],
-  "--button-xs-height": ["1.5rem", "1.38rem", "1.62rem", "1.5rem"],
+  // `--button-xs-height` is no longer pinned HERE because it no longer carries these values: it is
+  // `initial` at :root and `.ui-button--xs` renders `var(--button-xs-height, var(--control-height-xs))`,
+  // so the four numbers the xs Button renders are exactly the `--control-height-xs` row above. The
+  // :root alias it replaced froze at :root's 24px in a real browser, so neither a density scope nor
+  // a MobileShell ever reached it; mobile-shell-control-ladder.test.ts pins the fallback.
   "--input-file-button-height": ["1.75rem", "1.75rem", "1.75rem", "1.75rem"],
   "--table-row-height-compact": ["1.75rem", "1.75rem", "1.75rem", "1.75rem"],
   "--table-row-height-default": ["2rem", "2rem", "2rem", "2rem"],

@@ -471,6 +471,377 @@ parity-audit-data-entry.md`: một slider ¥/%/件 trước đây đọc lên đ
   bề ngang, trang không cuộn ngang và không phần tử nào nằm ngoài hai mép; ở 1280px số track của
   từng trạng thái phải giữ nguyên. Đột biến: trả CSS về bản cũ → đỏ ngay ở
   `ltr topbarSpan=full @720: 2 columns (156.609px 563.391px); main 563px at x=157`.
+- **`AppDateFormat` có `ymd` (`yyyy/MM/dd`), và `ja` mặc định là nó.** Trục này xưa nay có ba giá
+  trị và KHÔNG giá trị nào viết ra `2026/05/01`: `iso` dùng gạch ngang, hai dạng gạch chéo còn lại
+  đặt ngày hoặc tháng lên trước. Một chứng từ nghiệp vụ Nhật (請求書, 申請書) viết `YYYY/MM/DD`,
+  không bao giờ `YYYY-MM-DD`. Hệ quả đo được ở consumer: gino-cloud phải tự viết formatter ngày và
+  ghi rõ đó là VÁ TẠM — tức chính luật số 1 của `docs/DATETIME.md` ("không bao giờ dùng
+  `date-fns/format`, `toLocaleString`, hay cắt chuỗi ISO cho UI") bị phá bởi chính mặc định của gói
+  này. Đây là dấu hiệu một TRỤC CÓ TÊN thiếu một giá trị, không phải consumer đòi thứ kỳ lạ: mọi
+  nước đi còn lại đều bị chính tài liệu của gói cấm.
+
+  CHỈ MẶC ĐỊNH DỊCH CHUYỂN. Lựa chọn đã lưu vẫn thắng (một người đã chọn `iso` giữ nguyên `iso` qua
+  bản nâng cấp), `defaultDateFormat` vẫn ghim được bất kỳ giá trị nào, và `iso` vẫn nằm ngay trong
+  `<DateFormatPicker />`. `ymd` xếp cạnh `iso` vì nó là dạng năm-trước còn lại.
+
+  LƯU Ý CHO BACKEND: lựa chọn được gửi lên bằng header `x-date-format`, nên một backend đang
+  whitelist `iso|dmy|mdy` sẽ thấy giá trị mới `ymd`.
+
+  Nhãn cho ja/en/vi, cập nhật `docs/DATETIME.md` và catalog MCP (`defaultDateFormat`). `isAppDateFormat`
+  nay đọc `APP_DATE_FORMATS` thay vì lặp lại union — một giá trị thêm vào danh sách mà quên guard sẽ
+  bị loại khỏi storage rồi âm thầm reset. Test mới `date-format-ja-business.test.tsx` đi đầu-đến-cuối
+  (bảng pattern + mặc định theo locale + `formatDate`), vì cả ba đều xanh riêng lẻ trong khi app vẫn
+  in ra gạch ngang. Đột biến: trả `ja → iso` → đỏ 2; bỏ nhánh `ymd` khỏi bảng pattern (nó rơi vào
+  `default:` nên KHÔNG ném lỗi, chỉ lặng lẽ in ra ISO) → đỏ 5.
+
+### Fixed
+
+- **`Segmented` 4 择 tràn ở 393px: KHÔNG tái hiện được trên `dev` — đã sửa từ #480, consumer phải
+  nâng phiên bản.** Dựng lại đúng bố cục consumer báo (gino-cloud, màn 書類 · tab 書類様式 · bộ lọc
+  制度): 4 lựa chọn, mỗi nhãn kèm `Badge as="span"` đếm số, nhãn 「すべて 133」「技能実習 82」
+  「特定技能 51」「育成就労 0」, nằm trong `Flex gap="sm" align="center" wrap` → `CardContent` →
+  `Card`, không có `ScrollArea`. Đo trên Chromium ở 320 / 360 / 393 / 412 / 768px, LTR và RTL: **0
+  tràn, 0 cắt chữ, 0 cắt badge, trang không cuộn ngang** — trên `dev` track xuống 2 hàng và vừa khít.
+
+  Bằng chứng cho chiều ngược lại, để "đã sửa rồi" không phải lời nói suông: gỡ đúng một dòng
+  `flex-wrap: wrap` mà #480 thêm (tức trạng thái 20.2.1) rồi đo lại CÙNG bố cục ấy — ở **393px cả
+  bốn nhãn bị cắt** và badge cuối **tràn 11,61px** khỏi track (consumer báo 11,8px và 2,6px; hai
+  luật họ nêu, `label-truncated` và `text-edge-inset`, khớp cả hai). Ở 320px là 29,16px, 360px là
+  19,55px.
+
+  Điều đáng làm còn lại: giả thuyết "hàng `Flex wrap` mới là nguyên nhân" hợp lý đủ để đáng ĐO chứ
+  không đáng suy luận, nên bố cục ấy nay là một frame thật —
+  `docs/data-entry/segmented-in-filter-row.tsx` — và `check:segmented-wrap` chạy cả hai frame ở bốn
+  bề rộng × hai chiều. (Nó KHÔNG phải nguyên nhân: bỏ `flex-wrap`, hộp khối và flex item hỏng y hệt
+  nhau.) Đột biến: bỏ `flex-wrap: wrap`, chạy riêng frame mới → đỏ với đúng bốn nhãn bị cắt.
+
+- **Hai nút bước của `NumberInput` chỉ cao 13px — dưới sàn 24×24 của WCAG 2.2 SC 2.5.8.** Đo trên
+  Chromium (Playwright, `(pointer: coarse)` khớp): chuột — mặc định **24×13**, `lg` 24×15, `sm`
+  24×11, `xs` 24×9; CẢM ỨNG — mặc định **24×19**, `lg` 24×21, tâm cách nhau 20/22px. Không cái nào
+  đạt 24×24, và ngoại lệ Spacing của SC 2.5.8 cũng không cứu được: nó đòi hai đường tròn đường kính
+  24px đặt tâm ở mỗi hộp KHÔNG giao nhau, mà cách 20px thì giao.
+
+  Hai nút xếp CHỒNG trong ô, nên mỗi nút chỉ bằng nửa dải cao của control — 44px thì nửa là 22px,
+  sửa kiểu gì cũng không tới 24. 48px thì tới đúng: bỏ khoảng thụt trang trí và khe 1px, nửa của 48
+  là 24. Nên trên con trỏ thô, NumberInput lấy dải cao hơn một bậc qua token mới
+  `--number-input-touch-height` (`--band-height-2xl`). Đo lại: cảm ứng, mặc định **24×19 → 24×24**
+  (ô 44 → 48px), `lg` 24×21 → **24×24** (ô vốn đã 48px). `xs`/`sm` giữ nguyên dải người dùng chọn
+  (15→18, 17→20): một consumer cố ý chọn control nhỏ trên màn cảm ứng là quyết định của họ, DS
+  không lật.
+
+  KHÔNG áp trên con trỏ tinh, và lý do được ghi lại chứ không mặc định: 24×13 trên desktop cũng
+  dưới chuẩn, nhưng CÙNG chức năng có trên một control thừa sức đạt chuẩn — chính cái ô (cao 32px,
+  rộng hết hàng) nhận ArrowUp/ArrowDown và nhận giá trị gõ vào. Kéo mọi NumberInput desktop lên
+  48px để nhân đôi một affordance đã có đường đạt chuẩn là thay đổi lớn hơn thứ nó sửa.
+
+  Cổng mới `check:number-input-step-target` (Chromium, shard `interaction-semantics`) đo cả hai loại
+  con trỏ, xác nhận `(pointer: coarse)` thực sự khớp trước khi đo, và canh CẢ chiều ngược lại — hình
+  học desktop không được nhúc nhích. Đột biến: hạ token về `--band-height-xl` → đỏ 2 (24×22); bỏ
+  `@media (pointer: coarse)` → desktop nhảy lên 24×24 → đỏ 1.
+
+- **Chữ phụ trợ của `FormField` ngắt dòng giữa từ tiếng Nhật.** Ngắt dòng CJK mặc định cho phép
+  ngắt giữa gần như hai ký tự bất kỳ, nên một dòng helper tiếng Nhật bị cắt giữa từ ở gần như mọi
+  bề rộng. Đo trên Chromium ở `/isolate/data-entry-form-field-index`, một helper ở bề rộng cột
+  biểu mẫu, so từng ký tự:
+
+  - 180px: mặc định 「監査報告は省令様式第8号で提｜出してください」 → `auto-phrase` 「…第8号で｜提出してください」
+  - 220px: mặc định 「…第8号で提出してく｜ださい」 → `auto-phrase` 「…第8号で｜提出してください」
+  - 120px: mặc định 「監査報告は省令様式｜第8号で提出してくだ｜さい」 → `auto-phrase` 「監査報告は｜省令様式第8号で｜提出してください」
+
+  Helper và error nay mang class `ui-form-field-note` với `word-break: auto-phrase`. Chữ Latin không
+  đổi (vẫn ngắt ở dấu cách — đo: "Attach the ministerial form before ｜ submitting the audit
+  report."), và trình duyệt không biết giá trị này thì bỏ qua, giữ nguyên cách ngắt hôm nay.
+
+  NÓI RÕ CÁI NÓ KHÔNG LÀM, vì số đo nói vậy chứ không phải tài liệu mong vậy: nó KHÔNG bảo đảm một
+  thuật ngữ nghiệp vụ còn nguyên. Ở 140px `auto-phrase` vẫn tách 「省令様式第｜8号」, và ở 120px nó
+  tách 「特定技能｜1号評価試験」 trong khi mặc định lại giữ nguyên. Một từ ghép là sự thật của NỘI
+  DUNG; không thuộc tính nào đặt trên cả đoạn văn biết nó bắt đầu ở đâu. Cái thu được là: trường
+  hợp THÔNG THƯỜNG thôi ngắt giữa từ, ở mọi bề rộng, cho mọi consumer.
+
+  Test `form-field-note-breaking.test.tsx` ghim khai báo và ghim class có trên CẢ hai `<p>` (chúng
+  dựng ở hai nhánh khác nhau của cùng một component — đúng chỗ một cái được style còn cái kia
+  không). Cố ý KHÔNG ghim vị trí dòng: đó là bộ tách 文節 của trình duyệt, đổi theo phiên bản
+  Chrome, và một cổng canh nó là cổng canh tệp dữ liệu của người khác. Đột biến: đổi khai báo về
+  `normal` → đỏ 1; bỏ class khỏi node lỗi → đỏ 2.
+
+- **Ô vòng đời của `DataTable` để nội dung của consumer dính sát mép bảng.** Ô chứa `empty` /
+  `denied` / `error` có `padding: 0`, với lý do "`EmptyState` dựng sẵn đã tự mang đệm" — đúng với
+  bản dựng sẵn, và sai với mọi hình dạng khác mà ba prop ấy nhận: cả ba đều nhận `ReactNode`, và
+  `empty` thường được truyền thẳng một chuỗi. Đo trên Chromium ở
+  `/isolate/data-display-data-table-index`: nút văn bản đầu tiên của một node lỗi do story tự
+  truyền nằm cách mép trong của ô **0,00px**, trong khi `EmptyState` dựng sẵn ngay bên cạnh nằm ở
+  **24px**; `empty="まだ登録がありません"` đo được **0/4,97px**. Consumer báo đúng hiện tượng này.
+
+  Đệm nay nằm trên chính Ô — nơi nó áp cho MỌI hình dạng — và `EmptyState` dựng sẵn bỏ đệm riêng
+  bên trong ô ấy để hai cái không cộng dồn. Số đo là số đo cũ của `EmptyState`, không phải con số
+  mới: trạng thái dựng sẵn phải rơi đúng pixel cũ, và nó rơi đúng (**552,2/40,5px** trước và sau).
+  Sau khi sửa, chuỗi trần và node của consumer cùng ở **24/40,5px**.
+
+  Cổng mới `check:data-table-empty-inset` (Chromium, trong shard `interaction-semantics` của
+  `ci-browser-full`) đo cả ba hình dạng và bắt chúng phải cùng một đệm — jsdom không có bố cục nên
+  một test render thấy DOM y hệt ở cả hai phía. Story `#empty-plain-string` được thêm để cổng có
+  đúng hình dạng consumer báo. Đột biến: trả `padding: 0` về ô → đỏ 3 (và in ra chính số 0/4,97px);
+  bỏ luật khử trùng lặp → bản dựng sẵn nhảy xuống **80,5px** → đỏ 1.
+
+- **Hai nút bước của `NumberInput` tên là 「増やす」/「減らす」, không nói chúng đổi ô nào.** Đếm trên
+  Chromium ở `/isolate/data-entry-number-input`: **16 nút tên 「増やす」 và 16 nút tên 「減らす」** trên
+  một trang mà mỗi ô đều có tên riêng (数量, 評価, 目標金額, 重量, 価格…). Hai nút này là
+  `tabIndex={-1}` nên đây không phải chuyện thứ tự Tab: đó là thứ người dùng trình đọc màn hình
+  nhận được khi liệt kê các nút — đúng nhóm người không nhìn thấy nút ấy nằm cạnh ô nào (WCAG
+  2.4.6).
+
+  Tên nay được ghép từ cái ĐÃ đặt tên cho Ô, nên không consumer nào phải truyền gì và không có prop
+  mới: `aria-labelledby` khi một phần tử đặt tên (đúng thứ tự ưu tiên của chính ARIA — ô mang cả
+  hai thì được đặt tên bởi phần tử), `aria-label` khi một chuỗi đặt tên, và giữ nguyên động từ trần
+  khi không có gì cả. Đo lại cùng trang: **0 tên trùng**; 「数量 増やす」, 「評価 (1–5) 増やす」, …
+
+  Thêm khoá `ui.numberInput.incrementField` / `decrementField` cho ja/en/vi. Test mới
+  `number-input-stepper-name.test.tsx` phủ cả ba nhánh + thứ tự ưu tiên. Đột biến: trả về động từ
+  trần → đỏ 4 test.
+
+- **Ba bộ lọc của `FilterBar` đều xưng 「選択をクリア」.** Mỗi `Select` đều có nút ✕ và tên mặc định
+  của nó là câu chung ấy. Tái hiện trên Chromium ở `/isolate/navigation-filter-bar` sau khi cho hai
+  bộ lọc một giá trị: **hai nút, một tên**, không nút nào nói nó xoá bộ lọc nào (consumer báo ba nút
+  trên màn của họ). Hàng chip ngay bên cạnh thì đã tự đặt tên theo chip của nó (`removeFilter`) —
+  tức thanh lọc mâu thuẫn với chính nó.
+
+  `Select` vốn ĐÃ có `clearLabel`; chỉ là thanh lọc chưa bao giờ truyền. Nay nó ghép từ nhãn của
+  chính bộ lọc (khoá mới `navigation.filterBar.clearFilter`), và lùi về tên chung khi nhãn là một
+  node chứ không phải chuỗi — vì tên sai còn tệ hơn tên chung. Đo lại:
+  「ステータスの選択をクリア」/「Vai tròの選択をクリア」, **0 tên trùng**. Đột biến: bỏ `clearLabel` khỏi
+  thanh lọc → đỏ.
+
+- **Vùng chạm của `Button variant="bare"` là số đo DUY NHẤT không đi theo `MobileShell`.**
+  `--button-bare-target-size: var(--control-height-xs)` khai ở `:root`, mà một alias của bậc thang
+  viết ở đó thì được thay thế NGAY TẠI ĐÓ rồi kế thừa dưới dạng chiều dài đã đóng băng — đúng cái
+  bẫy `--button-xs-height` mắc phải một lượt trước. Đo trên Chromium ở 393px,
+  `/isolate/layout-mobile-shell`, đọc `getComputedStyle(button, "::after")` của một
+  `.ui-button.ui-button--bare` THẬT trong shell thật: shell đưa `--control-height` lên 2.75rem và
+  `--control-height-xs` tính lại đúng thành 36px, nhưng vùng chạm vẫn là `calc(calc(2rem * 1) -
+calc(0.5rem * 1))` = **24×24**. 24px không phạm WCAG 2.2 SC 2.5.8 — nó LÀ cái sàn; vấn đề là
+  trong một shell lấy cảm ứng làm tiền đề, vùng chạm lại là thứ duy nhất đứng yên.
+
+  Nay token khai `initial` và `.ui-button--bare::after` đọc bậc thang sống làm giá trị dự phòng.
+  Đo lại: trong shell **24×24 → 36×36**; ngoài shell **24×24 y nguyên**. Núm vẫn là núm ở cả hai
+  tầng: đặt `--button-bare-target-size: 44px` trên shell → 44×44; đặt `40px` trên `:root` → 40×40.
+
+  Ghim trong `mobile-shell-control-ladder.test.ts` cạnh trường hợp `--button-xs-height`. Đột biến:
+  trả `var(--control-height-xs)` về `:root` → đỏ 2 test, và số đo trong shell tụt lại 24×24.
+
+- **Mô tả token trong catalog MCP bị "chú thích gần nhất phía trên" cướp mất.** Generator gán cho
+  mỗi token chú thích CSS gần nhất ở trên nó, và luật ấy KHÔNG CÓ ĐIỂM DỪNG — nên một chú thích đặt
+  giữa nhóm trở thành mô tả của MỌI token phía sau, vượt cả dòng trống lẫn khối rule. Cái đã phát
+  hành ra vì thế: ba token `--mobile-shell-safe-inset-*` mang ghi chú "430px — bề ngang logic lớn
+  nhất mà máy cầm tay báo" vốn thuộc về `--mobile-shell-max-inline-size`; `--tabs-overflow-radius`
+  và `--tabs-overflow-icon-size` mang ghi chú về KÍCH THƯỚC của nút overflow; `--button-count-min-width`
+  được mô tả là "con trỏ nhấp nháy của OTP"; `--topbar-chip-icon-font-size` là một ghi chú về alpha
+  của vòng tiêu điểm; `--control-height-compact`, `--control-height-default` và bốn
+  `--textarea-padding-*` mang đoạn văn về viền cảnh báo màu hổ phách, cách đó hai khối rule. Agent
+  đọc `get_component` được bảo rằng một núm padding là một quyết định tương phản WCAG — tệ hơn là
+  không nói gì, vì nó đọc ra như một câu cụ thể.
+
+  Luật mới, và cố ý là luật đơn giản nhất không thể sai: **một chú thích mô tả ĐÚNG khai báo ngay
+  dưới nó**. Chú thích cuối dòng (`--x: initial; /* default = … */`) thuộc về dòng CỦA NÓ, không
+  phải dòng sau — `legal-document.css` viết liền năm cái như vậy, đẩy xuống một dòng là sai ba.
+  Token không có chú thích riêng nhận dòng tiêu đề của CHÍNH TỆP nó (`Badge component tokens.`),
+  nên không mô tả nào rỗng.
+
+  Hai luật "mềm hơn" đã được ĐO rồi bỏ. Cho chú thích làm tiêu đề nhóm và dừng ở dòng trống: giữ
+  thêm 525 mô tả cụ thể, nhưng để lại đúng những lỗi cần sửa — `--mobile-shell-max-inline-size`
+  đứng liền ba token safe-inset không có dòng trống, `--card-space-gap` liền năm token
+  card-title/description. Phép thử "anh em" (cùng tên trừ đoạn cuối): chặn được phần lớn rò rỉ
+  nhưng cắt mất các thang thật và vẫn để 485 token rơi về tiêu đề tệp — một luật khôn hơn cho gần
+  đúng ngần ấy độ phủ.
+
+  GIÁ PHẢI TRẢ, nói thẳng: 525/1364 token (38%) nay mang tiêu đề một dòng của tệp thay vì một tiêu
+  đề nhóm. Một số tiêu đề nhóm ấy vốn đúng cho cả nhóm. Đường lấy lại nằm trong tay tác giả và hiện
+  rõ trong diff: đưa chú thích xuống ngay trên token nó nói về. Diff của lần sinh lại: **867 mô tả
+  đổi, 0 token thêm/bớt, 0 giá trị đổi, thứ tự y nguyên**.
+
+  Luật tách ra `scripts/component-token-rules.mjs` (cùng kiểu với `token-scale-bypass-rules.mjs`)
+  để test được bằng fixture: `component-token-description-scope.test.ts` ghim đúng những hình dạng
+  đã sinh ra lỗi. Đột biến: trả về luật "chú thích gần nhất, mãi mãi" → đỏ 4 test; giao chú thích
+  cuối dòng cho token kế tiếp → đỏ 1 test.
+
+- **Catalog token của MCP không có cổng nào canh độ tươi — và cổng ấy đã nằm sẵn trong kho, không
+  ai chạy được.** `scripts/gen-component-tokens.mjs` có chế độ `--check` từ lần sinh catalog đầu
+  tiên, và MỌI tệp nó ghi ra đều in sẵn dòng ``Run `pnpm check:mcp-token-sync` `` ở đầu — nhưng
+  script ấy chưa bao giờ tồn tại trong `package.json`, nên không workflow nào gọi được. Kết quả:
+  `mcp/src/data/component-tokens.generated.ts` bị phát hiện ÔI trên `main` — thiếu
+  `--progress-ring-*`, `--tabs-overflow-*`, `--tabs-list-line-space-gap`,
+  `--mobile-shell-max-inline-size`, và vẫn kê `--segmented-item-height`, một token đã bị gỡ. Agent
+  tra MCP xem Tabs có núm gì nhận câu trả lời từ một tệp không ai canh — đúng lớp lỗi đã đo được
+  với `pad`/`padRaw` (agent theo đúng quy trình MCP-first kết luận "Flex chỉ có gap" rồi bỏ cuộc
+  trước 21 finding).
+
+  `scripts/gen-email-tokens.mjs` ở đúng tình trạng ấy (`check:email-token-sync`, được in ra trong
+  chính output của nó, không có trong `package.json`) — nên đây là một LỚP chứ không phải một lần
+  quên. Cả hai nay là `check:mcp-token-sync` / `check:email-token-sync`, nằm trong `verify`,
+  `verify:static` và `verify:ci:static` cạnh các cổng catalog MCP khác; `check:gate-coverage` xác
+  nhận 61/63 cổng có workflow chạy.
+
+  `--check` nay còn NÓI RA cái gì lệch thay vì chỉ "stale": thêm / gỡ / đổi mặc định, kèm tên
+  token. Đột biến: thêm một token vào tier → `+ 1 new token(s): --control-mutation-probe`; gỡ một
+  token → `- 1 removed token(s)`; đổi giá trị → `~ 1 retuned default(s)`; cả ba exit 1.
+
+  Cổng cho chính lớp lỗi này: `src/test/__tests__/generator-check-mode-wired.test.ts` — mọi
+  `scripts/gen-*.mjs` có `--check` phải có một script `check:*` chạy nó, và mọi `pnpm check:…`
+  mà generator in ra phải là script có thật. `check:gate-coverage` không thấy được lỗ này (nó soi
+  các `check:*` ĐÃ CÓ so với workflow; một cổng chưa ai khai thì nó vô hình). Đột biến: xoá
+  `check:mcp-token-sync` khỏi `package.json` — tức đúng trạng thái trên `main` — → đỏ hai test.
+
+- **`Input` chưa bao giờ vẽ vòng tiêu điểm — một utility của Tailwind thắng cả tầng components.**
+  `.ui-input` CÓ trong danh sách selector của `focus-ring.css`, nhưng `Input` tự mang theo
+  `outline-none`; `@layer utilities` đứng sau `@layer components` nên thắng mọi độ đặc hiệu, và
+  dấu tiêu điểm của chính gói này thua im lặng — không lỗi biên dịch, không test đỏ, không finding
+  của audit. Đo trên Chromium, `/isolate/data-entry-input`, `<html data-focus-outline="on">` với
+  `--focus-ring-weight: 2px`, bằng một phím **Tab thật** (đọc lại `document.activeElement` để
+  chứng minh phím có tới trang): Button báo `outline: 2px solid rgb(0,113,189)`, Input cùng trang
+  cùng công tắc báo `outline-style: none`. Consumer gino-cloud (20.2.1) chỉ còn cái viền 1px đổi
+  màu và quầng α.11 ở **1,09:1** — dưới xa sàn 3:1 của SC 1.4.11 / 2.4.11.
+
+  Cùng một thất bại có trên `Checkbox`, `Radio`, `Switch` (`outline-none`), panel của `Tabs`
+  (`outline-none`), và nút đóng của `Dialog`/`Sheet` (`focus:outline-hidden`, thứ vẽ ra
+  `outline: 2px solid transparent` — tệ hơn, vì `outline-width` khi ấy đọc ra `2px` và một phép đo
+  chỉ lấy bề rộng sẽ báo "có vòng"). Gỡ hết; không phải thay bằng gì, vì `focus-ring.css` đã khai
+  `outline` vô điều kiện trên chính những phần tử ấy và công tắc TẮT cho ra `0px`.
+
+  `Radio` còn thiếu một nửa nữa: react-aria đặt tiêu điểm lên `<input>` ẩn nên `:focus-visible`
+  không bao giờ khớp cái hộp được vẽ, và `.ui-radio[data-focus-visible]` — cái móc đã có sẵn cho
+  `.ui-checkbox` / `.ui-switch` — chưa từng được thêm. Sau khi sửa, Radio có dấu như hai anh em.
+
+  Đo lại, sáng / tối, công tắc BẬT / TẮT (`scripts/check-focus-ring-paint.mjs`, Tab thật):
+  BẬT → `outline 2px solid`, offset `0px`, **5,04:1** (sáng) / **6,48:1** (tối) so với mặt nền
+  vòng được vẽ lên — y hệt Button, control tham chiếu. TẮT → `outline-width: 0px` và `box-shadow`
+  lúc có tiêu điểm **y nguyên** như lúc nghỉ (không cướp mất độ nổi của control).
+
+  Hai cổng mới. `src/styles/__tests__/focus-ring-utility-defeat.test.ts` (chạy trong `pnpm test`):
+  không class nào trong danh sách selector được đi kèm một utility tắt outline, ở mọi cách viết
+  variant. `check:focus-ring-paint` (Chromium, trong `verify:browser`): nhấn Tab thật tới từng
+  control, đo CẢ `outline` lẫn `box-shadow`, và bắt control phải dùng CÙNG DẠNG với control tham
+  chiếu trên cùng bản build — nên nếu dấu tiêu điểm có ngày quay lại dạng box-shadow (như v19.4.2),
+  cổng vẫn đúng thay vì báo nhầm "mất vòng". Đột biến: trả `outline-none` vào `Input` → cả hai đỏ.
+
+- **`.ui-control-affix-action` và chín tab stop khác rơi về `outline: auto 1px` của Chrome.** Nút
+  「選択をクリア」 của `Select` không có trong danh sách selector của `focus-ring.css`, nên nó không
+  phải là "không có dấu" — nó mang dấu MẶC ĐỊNH CỦA TRÌNH DUYỆT, thứ công tắc `data-focus-outline`
+  không tắt được và không theme nào chỉnh được. Đo trên `/isolate/data-entry-select`: ba tab stop
+  như vậy trên một màn; consumer đếm được ba trên màn của họ.
+
+  Một lượt quét bằng Tab thật qua cả 175 story tìm hết họ hàng còn thiếu. Thêm vào danh sách:
+  `.ui-control-affix-action`, `.ui-control-inline-affix-action`, `.ui-search-input-clear`,
+  `.ui-tag-input-remove`, `.ui-color-picker-input`, `.ui-upload-tile-add`,
+  `.ui-upload-picture-empty`, `.ui-upload-dropzone`, `.ui-tabs-add`, `.ui-steps-control`,
+  `.ui-carousel-previous`, `.ui-carousel-next`. Ba cái cuối là nửa còn thiếu của những họ đã có
+  sẵn trong danh sách (`.ui-steps-inline-control`, `.ui-carousel-dot`) — một sự bất đối xứng,
+  không phải một quyết định. Sau khi sửa: nút clear của Select báo `outline 2px solid`, **5,04:1**
+  (sáng) / **6,48:1** (tối), và `0px` khi công tắc tắt.
+
+  KHÔNG đưa vào, và lý do: hàng menu (`.ui-navigation-menu-link`, `.ui-menubar-item`,
+  `.ui-dropdown-menu-item`) cố ý `outline: none` vì chúng dùng highlight `data-highlighted` — một
+  affordance khác; các vùng cuộn và container (`.ui-data-table-scroll`, `.ui-master-detail-master`,
+  `.ui-branch-scope-picker-list`, `.sb-product`, `.ui-breadcrumb-link`) không thuộc họ control và
+  được báo lại cho chủ kho thay vì sửa lén trong một lượt vá vòng tiêu điểm.
+
+- **Một field `status="warning"` không có dấu tiêu điểm nào cả.**
+  `.ui-control[data-status="warning"]` gán `--focus-outline-color: var(--control-status-warning-border-color)`,
+  mà token ấy đã là `hsl(var(--text-warning))` — tức một MÀU, không phải bộ ba. Dấu tiêu điểm được
+  ghép bằng `hsl(var(--focus-outline-color) / …)`, nên nó lồng `hsl()` trong `hsl()`: khai báo
+  không hợp lệ tại thời điểm tính giá trị và TOÀN BỘ shorthand `outline` rơi về giá trị khởi
+  thuỷ. Đo trên Chromium ở `/isolate/data-entry-textarea`, ô 「警告状態」, công tắc BẬT:
+  `outline-style: none`, `outline-width: 3px` (`medium`) — không một pixel nào. Nay
+  `--control-status-warning-outline-color` mang đúng bộ ba (`var(--text-warning)`, không phải
+  `--warning` ở 1,85:1 mà chính ghi chú token đã bác) và hai biến focus đọc nó: ô cảnh báo có
+  `outline 1px solid`, **5,90:1** (sáng) / **11,41:1** (tối).
+
+- **Tài liệu và catalog kê đúng cái núm mà chính kho này cấm: `--focus-ring-width`.** Từ khi vòng
+  tiêu điểm có công tắc, `--focus-ring-width` là GIÁ TRỊ DẪN XUẤT —
+  `calc(var(--focus-ring-weight) * var(--focus-outline))` — và `focus-ring-contrast.test.ts` làm đỏ
+  build nếu một stylesheet nào gán thẳng vào nó. Nhưng `CUSTOMER-THEMING.md` vẫn gọi nó là núm độ
+  dày, mặc định "2px", "ships on", và "`width: 0` tắt mọi vòng"; khối `:root` để DÁN NGUYÊN VĂN ở
+  đầu tài liệu còn phát thẳng `--focus-ring-width: 2px`; `TOKENS.md` gọi nó là một bậc của thang
+  `--stroke`; và catalog token của MCP — thứ agent đọc — lặp lại con số 2px. Đo trên Chromium: với
+  công tắc TẮT, `--focus-ring-width: 2px` vẫn vẽ ra vòng 2px trên một Button có tiêu điểm — tức lời
+  kê trong tài liệu đi vòng qua đúng cái công tắc mà test kia tồn tại để bảo vệ.
+
+  Không thêm token nào, vì đã đủ: `data-focus-outline="on"` (công tắc), `--focus-ring-weight` (độ
+  dày), `--focus-ring-offset` (khe), `--focus-ring-color` (màu). Đo lại cả bốn: bật công tắc →
+  **1px** `rgb(0,113,189)`; `--focus-ring-weight: 2px` → **2px**; `--focus-ring-offset: 2px` →
+  offset **2px**. Vòng MẢNH mà vẫn đạt chuẩn chính là `--focus-ring-weight: var(--stroke-md)`: 2px ở
+  **5,05:1** (sáng) / **7,07:1** (tối) — qua cả sàn 3:1 của SC 1.4.11 lẫn vành 2px của SC 2.4.13.
+
+  Cổng mới nằm ngay trong `focus-ring-contrast.test.ts`, cùng bất biến nhưng soi cái mà luật cũ
+  không thấy: MỌI `--focus-ring-width:` trong `CUSTOMER-THEMING.md`, `TOKENS.md`,
+  `DESIGN-AUTHORITY.md` và `mcp/src/data/tokens.ts` phải là chính định nghĩa dẫn xuất, không được là
+  một phép gán. Nó bắt được ngay khối dán-nguyên-văn mà lượt sửa tay đã bỏ sót. Đột biến: trả
+  `--focus-ring-width: 3px` vào ví dụ retune → đỏ.
+
+- **Ô chọn hàng của `DataTable` bị đọc lên bằng UUID.** Tên truy cập của checkbox (và radio) chọn
+  hàng là `selectRow: "行 {id} を選択"` điền bằng `row.id` — trên một bảng khoá theo UUID, trình đọc màn
+  hình nói "行 3f2a9c1e-7b4d-4e8a-9c21-000000000000 を選択" cho MỌI hàng (gino-cloud phát hiện, tái hiện
+  trên Chromium). Id là KHOÁ, không phải TÊN. Nay tên được lấy theo thứ tự: `aria-label` từ
+  `rowSelection.getCheckboxProps` (vẫn thắng như cũ) → prop mới **`getRowLabel(row)`** → chữ của cột
+  `priority: "primary"`, nếu không có thì của cột đầu tiên, khi giá trị ấy là chuỗi hay số → id, chỉ
+  khi không còn gì khác gọi tên được hàng. Cùng bảng ấy sau khi sửa: "行 NGUYEN VAN AN0 を選択". Một
+  consumer có cột đầu là tên (như gino-cloud) nhận tên người mà không phải sửa dòng nào; bảng nào có
+  cột đầu là avatar, badge trạng thái hay id thì truyền `getRowLabel`.
+
+  `getRowLabel` là một trục vocabulary (`GetRowLabelProp`, cạnh `GetRowIdProp`), có trong catalog MCP
+  và manifest API. Test mới `data-table-row-label.test.tsx` bám role và tên truy cập: cột đầu, cột
+  primary, accessor, fallback id, `getCheckboxProps` vẫn thắng, và radio.
+
+- **Trong `MobileShell`, mọi control có `size` vẫn đứng trên thang DESKTOP.** Shell đặt
+  `--control-height` thành 44px (bậc chạm), nhưng `--control-height-sm/-lg/-xs` là `calc()` trên
+  `--control-height` khai ở `:root` — một `calc()` trên biến tuỳ biến được thay thế tại nơi nó ĐƯỢC
+  KHAI rồi mới kế thừa, nên cả thang đóng băng theo 32px của gốc. Đo trên Chromium ở 393px, bên
+  cạnh một Button mặc định 44px: `size="sm"` **28px**, `size="lg"` **36px** (nhỏ hơn cả mặc định),
+  `size="xs"` **24px**, `icon-sm` **28px**, `icon-lg` **36px**, Input/Select `sm` **28px**, item
+  Segmented `sm`/`lg` **24/32px** (gino-cloud phát hiện). Nay `.ui-mobile-shell` khai lại ba bậc
+  ngay trên chính phần tử đổi tầng, đúng từng byte công thức của `:root` — cách `.ui-segmented` và
+  `--mobile-shell-padding-inline` đã làm. Sau khi sửa: **40 / 48 / 36px**, icon-xs/sm/lg
+  **36/40/48**, Input/Select `sm` **40**, Segmented `sm`/`lg` **36/44** — đúng thang mà một thiết
+  bị con trỏ thô đã nhận từ `:root`.
+
+  Cùng lỗi ấy lặp lại một tầng sâu hơn, và phép đo mới lộ ra: `--button-xs-height:
+var(--control-height-xs)` là một alias khai ở `:root`, nên nó đông cứng ở 24px và `size="xs"` KHÔNG
+  nhúc nhích dù mọi cỡ khác đã đổi. Nay token là `initial` và `.ui-button--xs` đọc
+  `var(--button-xs-height, var(--control-height-xs))` — giá trị mặc định tính lại ngay tại nút, override
+  vẫn thắng; đo lại: **36px**. Hệ quả phụ, đúng ý đồ đã ghim: trong một scope `density="compact"`,
+  nút xs giờ ra đúng 22,08px mà bảng gh#324 vẫn khẳng định — trước đây trình duyệt thật cho 24px.
+  Dòng `--button-xs-height` trong bảng "migration moved nothing" (`geometry-axis-scales.test.ts`) được
+  chuyển sang đường mà nút thật sự vẽ: bốn con số giữ nguyên, nay nằm ở dòng `--control-height-xs`.
+
+  Còn lại cùng hình dạng, CHƯA sửa vì không phải control có `size`: `--button-bare-target-size`,
+  `--app-setting-picker-compact-control-height`, cỡ avatar của OrgSwitcher / AuthAccountSummary,
+  `--range-timeline-*`, `--card-service-launcher-cta-min-height`, `--topbar-item-min-width`,
+  `--avatar-square-size`.
+
+  Test mới `mobile-shell-control-ladder.test.ts` ghim CHỖ KHAI chứ không ghim giá trị — một resolver
+  thay thế lười ở lá sẽ ra 40px dù có sửa hay không. Đột biến: bỏ dòng `-lg`, lệch công thức `-sm`,
+  trả nút xs về token trần — mỗi lần đỏ đúng khẳng định của nó.
+
+- **Catalog token của MCP (`component-tokens.generated.ts`) được sinh lại — nó đã cũ từ trước.**
+  Không cổng nào kiểm nó còn khớp nguồn không (`gen:component-tokens` không có `--check`), nên ba PR
+  gần đây để lại: thiếu `--progress-ring-*` (4), `--tabs-overflow-*` (3), `--tabs-list-line-space-gap`,
+  `--mobile-shell-max-inline-size`, và còn liệt kê `--segmented-item-height` đã bị gỡ. Mục Calendar ở
+  trên cũng thêm một token mà chưa sinh lại. Kèm theo, một cái bẫy của generator đáng biết: nó gán
+  cho MỖI token "chú thích gần nhất phía trên", nên một chú thích chèn giữa nhóm trở thành mô tả của
+  mọi token sau nó — chú thích của token Calendar mới đã ghi đè mô tả của sáu token calendar khác
+  cho tới khi nó được dời xuống cuối nhóm. Mô tả của các token Tabs và safe-inset của MobileShell
+  đang bị ghi đè đúng kiểu ấy bởi các PR trước; chưa sửa ở đây.
+
+- **`Calendar bordered`: chữ tiêu đề thứ dính sát đường kẻ.** Khi lưới được kẻ ô, ô tiêu đề thứ
+  không có đệm theo trục khối, nên hộp dòng bắt đầu ngay dưới đường kẻ 1px phía trên — đo trên
+  Chromium: chữ cách đường kẻ trên **1px**, cách đường kẻ dưới **2,19px**, tức một khoảng đệm nhỏ
+  hơn cả bậc nhỏ nhất của thang khoảng cách (gino-cloud phát hiện). Nay ô tiêu đề của lưới CÓ KẺ lấy
+  `padding-block: var(--calendar-bordered-weekday-padding-block)`, token mới mặc định
+  `var(--space-1)` — một bậc có tên, nên service chỉnh thang khoảng cách thì nó đi theo. Sau khi
+  sửa: **5px / 6,19px**, ô cao 22,19 → 30,19px. Lưới KHÔNG kẻ giữ nguyên: không có mép nào để chữ
+  tựa vào, nên nó không cần đệm.
+
+  Test mới `calendar-bordered-weekday-inset.test.ts` ghim quy tắc nào mang đệm, đệm đọc token nào,
+  token là một bậc có tên, và tiêu đề không kẻ không bị đụng tới. Đột biến từng khẳng định một: bỏ
+  dòng `padding-block`, đổi token thành `4px`, thêm đệm cho tiêu đề không kẻ — mỗi lần đúng một test đỏ.
 
 - **`Segmented` bốn lựa chọn bị cắt chữ ở màn điện thoại — nay track XUỐNG DÒNG.** Catalog hứa
   Segmented dành cho 2–4 lựa chọn, nhưng track là `inline-flex` một hàng và item co lại kèm dấu
