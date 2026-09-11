@@ -50,6 +50,25 @@
   --control-status-warning-glow-color: var(--warning);
   --control-status-warning-glow-alpha: var(--control-outline-error-alpha);
 
+  /* THE BAND A NumberInput TAKES ON A COARSE POINTER, and the one control in this package that
+   * needs a taller one than rule #24's 44px floor.
+   *
+   * Its two steppers are STACKED inside the field, so each can only ever be half the band. Measured
+   * in Chromium (Playwright touch emulation, `(pointer: coarse)` matching) before this token: the
+   * default NumberInput was 44px and each stepper **24×19px**, with their centres 20px apart. WCAG
+   * 2.2 SC 2.5.8 wants 24×24, and the Spacing exception does not rescue it either — that needs
+   * 24px-diameter circles centred on each box NOT to intersect, and at 20px apart they do.
+   *
+   * 44px cannot be made to work: half of it is 22px whatever the inset and gap. 48px can, exactly —
+   * two 24px halves, no inset, no gap — so the band moves up one step for this control alone, and
+   * only where a coarse pointer says it matters. `size="lg"` already lands on 48px there, so it
+   * gains the same 24×24 for free; `xs` and `sm` stay where the consumer put them (a deliberately
+   * smaller control is the consumer's trade, the same way rule #24 already treats them).
+   *
+   * A service that wants the 44px row back sets this to `var(--band-height-xl)` and takes 22px
+   * targets with it. */
+  --number-input-touch-height: var(--band-height-2xl);
+
   /* CHROME VARIANT — antd's `variant` axis. `outlined` needs no token: it is what a field already
    * draws. `filled` swaps the boundary for a tinted surface; `borderless` drops both. Kept as
    * knobs so a service theme can retune the dense-form treatment once, globally. */
@@ -444,6 +463,14 @@
   --calendar-footer-space-gap: var(--space-2);
   --calendar-footer-space-block-start: var(--space-2);
   --calendar-footer-border-width: var(--stroke-hairline);
+  /* Placed LAST in the calendar group on purpose: gen-component-tokens gives every token the
+   * nearest comment above it, so a comment in the middle of the group became the description of
+   * every calendar token after it. */
+  /* Block inset of a header cell once the grid is RULED. Unruled, the header row has no edge for
+   * its text to sit against, so it needs none; ruled, the line box started right at the 1px rule —
+   * measured 1px from the top border and 2.19px from the bottom, an inset below the smallest named
+   * step. The smallest step, not a literal, so a service retuning the spacing grid moves it too. */
+  --calendar-bordered-weekday-padding-block: var(--space-1);
 
   /* TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal
    * on the component (#319), so a service could not fit the panes to its own page grid or
@@ -502,11 +529,26 @@
    * inconsistency, not a visual preference. It is a real visual change on the most-used component
    * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets
    * --button-xs-height back. */
-  --button-xs-height: var(--control-height-xs);
+  /* `initial`, NOT `var(--control-height-xs)`: an alias of a ladder step declared here is
+   * substituted against :root's 24px and inherits frozen, so a scope that moves the ladder (a
+   * `MobileShell` scopes it to 44 / 40 / 48 / 36px) never reached it — measured, `size="xs"` stayed
+   * 24px inside the shell while every other size moved. `.ui-button--xs` reads it with the live
+   * ladder step as fallback, so the default re-resolves at the button and an override still wins. */
+  --button-xs-height: initial;
   /* Minimum TARGET of `variant="bare"` (gh#404) — the pseudo-element hit area, not a box height,
-   * so it never shows up as geometry. Points at the same xs tier the note above settled on as this
-   * package's WCAG 2.2 SC 2.5.8 floor (1.5rem = 24px), and moves with it and with density. */
-  --button-bare-target-size: var(--control-height-xs);
+   * so it never shows up as geometry. The measure is the same xs tier the note above settled on as
+   * this package's WCAG 2.2 SC 2.5.8 floor (1.5rem = 24px), and it moves with that tier and with
+   * density.
+   *
+   * `initial`, NOT `var(--control-height-xs)`, for the reason `--button-xs-height` above carries:
+   * an alias of a ladder step written HERE is substituted against :root's value and inherits
+   * frozen, so a scope that moves the ladder never reaches it. Measured in Chromium at 393px
+   * inside `MobileShell`, which scopes `--control-height` to 2.75rem: `--control-height-xs`
+   * correctly re-resolved to 36px while the bare button's `::after` stayed **24×24** — the one
+   * touch target in a touch-first shell that did not move. `.ui-button--bare::after` reads the
+   * live step as its fallback, so the default re-resolves at the button and a service override
+   * still wins. */
+  --button-bare-target-size: initial;
   --button-xs-space-inline: var(--space-2);
   --button-xs-space-gap: var(--space-1);
   --button-xs-font-size: var(--font-size-xs);
@@ -654,7 +696,18 @@
    * A service that wants antd's yellow back retunes the knob and owns that trade. */
   --control-status-error-border-color: hsl(var(--destructive));
   --control-status-warning-border-color: hsl(var(--text-warning));
-  --control-status-warning-outline-color: var(--warning);
+  /* THE SAME AMBER, AS A TRIPLET — and it has to be a triplet, not a colour.
+   *
+   * The focus mark is composed as `hsl(var(--focus-outline-color) / var(--focus-ring-opacity))`,
+   * so a token that already resolves to `hsl(...)` nests one `hsl()` inside another: the
+   * declaration is then invalid at computed-value time and the WHOLE `outline` shorthand falls
+   * back to its initial value. Measured in Chromium on a focused `status="warning"` Textarea
+   * before this line existed: `outline-style: none`, `outline-width: 3px` (`medium`, the initial)
+   * — i.e. a warned field had no focus mark at all while the switch was on. It carried `--warning`
+   * (山吹 #f8b500) before, which is the hue the note above rejects for a state edge at 1.85:1;
+   * `--text-warning` is the darkened amber that measures 5.4:1 and is what the boundary already
+   * paints, so the edge and the mark cannot drift apart. */
+  --control-status-warning-outline-color: var(--text-warning);
 }
 
 @media (pointer: coarse) {

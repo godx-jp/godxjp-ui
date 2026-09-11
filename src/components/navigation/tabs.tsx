@@ -746,7 +746,7 @@ export const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
         shouldForceMount={forceMount}
         // `ui-focus-ring` = the single focus source, replacing a hand-rolled
         // `focus-visible:ring-2 focus-visible:ring-ring` that no --focus-ring-* knob could reach.
-        className={cn("ui-focus-ring flex-1 outline-none", className)}
+        className={cn("ui-focus-ring flex-1", className)}
         render={(domProps, renderProps) =>
           withDomProps("div", "tabs-content", props, domProps, {
             // A force-mounted panel whose tab is not selected: Radix marked it `data-state="inactive"`

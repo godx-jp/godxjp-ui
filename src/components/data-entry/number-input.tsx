@@ -87,6 +87,50 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
     // Forward the full FormField label/helper/error/required/invalid contract onto the
     const fieldA11y = pickFieldA11y(ariaProps);
 
+    /*
+     * THE TWO STEPPERS ARE NAMED AFTER THE FIELD THEY STEP, NOT AFTER THE VERB.
+     *
+     * They used to be a bare 「増やす」 / 「減らす」, which is unique on a page with ONE numeric
+     * field and useless on a page with several. Counted on /isolate/data-entry-number-input:
+     * 16 buttons called 「増やす」 and 16 called 「減らす」, on a page where every field has a
+     * distinct name (数量, 評価, 目標金額, 重量, 価格…). A screen-reader user listing the buttons
+     * gets thirty-two rows that all read the same and none of which says what they change
+     * (WCAG 2.4.6; the steppers are `tabIndex={-1}` so this is a rotor/virtual-cursor problem
+     * rather than a tab-order one, which is exactly the audience that cannot see which field the
+     * button sits beside).
+     *
+     * The name is composed from whatever already names the FIELD, so no consumer has to pass
+     * anything and no new prop exists:
+     *   · `aria-label` (a string we hold) → one composed label, in the locale's own word order;
+     *   · `aria-labelledby` (an element we do not hold) → `aria-labelledby` on the stepper listing
+     *     the field's label source first and the stepper's own hidden verb second, which is how
+     *     ARIA concatenates a name out of parts;
+     *   · neither → the bare verb, exactly as before.
+     */
+    const stepperVerbId = React.useId();
+    const fieldLabel =
+      typeof fieldA11y["aria-label"] === "string" ? fieldA11y["aria-label"] : undefined;
+    const fieldLabelledBy =
+      typeof fieldA11y["aria-labelledby"] === "string" ? fieldA11y["aria-labelledby"] : undefined;
+
+    const stepperName = (direction: "increment" | "decrement") => {
+      const verb = t(`ui.numberInput.${direction}`);
+      // `aria-labelledby` FIRST, because that is the order ARIA itself resolves a name in: a field
+      // carrying both is named by the element, and composing from the `aria-label` instead would
+      // announce a stepper for a field name the user never hears. Measured on
+      // /isolate/data-entry-number-input, where the stories pass both: the field reads
+      // 「評価 (1–5)」 and the stepper was composing from 「評価」.
+      if (fieldLabelledBy) {
+        return { "aria-labelledby": `${fieldLabelledBy} ${stepperVerbId}-${direction}` };
+      }
+      if (fieldLabel) {
+        return {
+          "aria-label": t(`ui.numberInput.${direction}Field`, { label: fieldLabel }) || verb,
+        };
+      }
+      return { "aria-label": verb };
+    };
+
     const isControlled = controlledValue !== undefined;
     const [internal, setInternal] = React.useState<number | null>(defaultValue);
     const numericValue = isControlled ? (controlledValue ?? null) : internal;
@@ -318,10 +362,16 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
               className="ui-number-input-step ui-number-input-step-up"
               tabIndex={-1}
               disabled={!interactive || atMax}
-              aria-label={t("ui.numberInput.increment")}
+              {...stepperName("increment")}
               onClick={() => stepBy(1)}
             >
               <ChevronUp aria-hidden="true" />
+              {/* The verb half of the composed name. Only referenced in the `aria-labelledby`
+                  branch, but rendered unconditionally so the id is stable across a field that
+                  gains or loses its label source. */}
+              <span id={`${stepperVerbId}-increment`} className="sr-only">
+                {t("ui.numberInput.increment")}
+              </span>
             </Button>
             <Button
               type="button"
@@ -330,10 +380,13 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
               className="ui-number-input-step ui-number-input-step-down"
               tabIndex={-1}
               disabled={!interactive || atMin}
-              aria-label={t("ui.numberInput.decrement")}
+              {...stepperName("decrement")}
               onClick={() => stepBy(-1)}
             >
               <ChevronDown aria-hidden="true" />
+              <span id={`${stepperVerbId}-decrement`} className="sr-only">
+                {t("ui.numberInput.decrement")}
+              </span>
             </Button>
           </span>
         ) : null}

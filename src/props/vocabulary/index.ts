@@ -112,6 +112,7 @@ export type {
 
 export type {
   GetRowIdProp,
+  GetRowLabelProp,
   OnRowClickProp,
   ColumnDefProp,
   TablePresetProp,

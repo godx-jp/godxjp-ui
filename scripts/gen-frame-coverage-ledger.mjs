@@ -289,7 +289,6 @@ function main() {
           note: "Recorded frame×width overflow / clipped-control failures from the shrink-only geometry baseline. NOT re-executed by this generator — the sweep needs Chromium plus a built preview. It proves the absence of overflow on the frames it swept; it is not a responsive-layout case and never promotes `responsive`.",
         },
         axe: {
-          runner: "scripts/check-frame-axe.mjs (pnpm check:frame-axe)",
           baseline: "scripts/frame-axe.baseline.json",
           recordedAt: axe.recordedAt,
           failingFrames: axe.failingFrames,

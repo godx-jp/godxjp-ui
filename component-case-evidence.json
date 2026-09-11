@@ -329,8 +329,7 @@
             "fontSize"
           ],
           "evidence": [
-            "docs/navigation/app-setting-picker.tsx",
-            "scripts/check-layout-nav-frames.mjs"
+            "docs/navigation/app-setting-picker.tsx"
           ]
         },
         "name": {
@@ -1887,8 +1886,7 @@
             "page size"
           ],
           "evidence": [
-            "src/components/navigation/__tests__/pagination-full.test.tsx",
-            "scripts/check-layout-nav-frames.mjs"
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
           ]
         },
         "pageSize": {
@@ -1963,8 +1961,7 @@
           ],
           "evidence": [
             "docs/navigation/pagination.tsx",
-            "src/components/navigation/__tests__/pagination-full.test.tsx",
-            "scripts/check-layout-nav-frames.mjs"
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
           ]
         }
       }
@@ -2889,8 +2886,7 @@
             "automatic"
           ],
           "evidence": [
-            "src/components/navigation/__tests__/tabs-variants.test.tsx",
-            "scripts/check-layout-nav-frames.mjs"
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
           ]
         },
         "contentClassName": {
@@ -2917,8 +2913,7 @@
           ],
           "evidence": [
             "docs/navigation/tabs-rtl.tsx",
-            "src/components/navigation/__tests__/tabs-variants.test.tsx",
-            "scripts/check-layout-nav-frames.mjs"
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
           ]
         },
         "items": {
@@ -2944,8 +2939,7 @@
             "controlled callback"
           ],
           "evidence": [
-            "docs/navigation/tabs.tsx",
-            "scripts/check-layout-nav-frames.mjs"
+            "docs/navigation/tabs.tsx"
           ]
         },
         "orientation": {

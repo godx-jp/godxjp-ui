@@ -220,7 +220,7 @@ The census confirmed the number and rejected the diagnosis: **`width` is not one
 
 **Px, never rem.** A stroke is a _device_ line: its job is to read as one crisp rule at any type size, so it must not grow when the root font-size does. Every token that moved onto this scale was already `px` for that reason; a `rem` thickness (`--slider-track-height: 0.375rem`) is a different decision and stayed where it was. **Not `--scaling`-multiplied** either — `--scaling` is a density knob, and a 1px divider at 0.92px would blur rather than tighten.
 
-`--focus-ring-width` is now a member (`var(--stroke-md)`) rather than a parallel authority, so a high-contrast theme that wants every emphasis stroke at 3px sets one token.
+The focus mark reads this scale too, through `--focus-ring-weight` — `var(--focus-outline-weight)`, which is `var(--stroke-hairline)` (the light 1px mark the ON state ships). `--focus-ring-width` is DERIVED from it (`weight × --focus-outline`, the on/off switch) and must never be set directly; a theme that wants a 2px focus perimeter (WCAG 2.2 SC 2.4.13) sets `--focus-ring-weight: var(--stroke-md)`. See docs/CUSTOMER-THEMING.md.
 
 #### `--band-height-*` — the vertical extent of a horizontal band
 

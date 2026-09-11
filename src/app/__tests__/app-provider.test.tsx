@@ -210,7 +210,23 @@ describe("AppProvider", () => {
         </AppProvider>
       ),
     });
-    expect(jaResult.current.dateFormat).toBe("iso");
+    // `ymd` (yyyy/MM/dd), not `iso`: a Japanese business document writes 2026/05/01, and the old
+    // default is what made a Japanese-first consumer ship its own formatter as a stopgap.
+    expect(jaResult.current.dateFormat).toBe("ymd");
+  });
+
+  it("a stored preference still beats the locale default, including the old ja one", () => {
+    // Only the DEFAULT moved. Anyone who chose `iso` keeps `iso` across the upgrade.
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ dateFormat: "iso" }));
+    const { result } = renderHook(() => useAppContext(), {
+      wrapper: ({ children }) => (
+        <AppProvider storageKey={STORAGE_KEY} defaultLocale="ja">
+          {children}
+        </AppProvider>
+      ),
+    });
+    expect(result.current.dateFormat).toBe("iso");
+    window.localStorage.removeItem(STORAGE_KEY);
   });
 
   it("throws outside AppProvider", () => {

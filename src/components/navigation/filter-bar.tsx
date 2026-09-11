@@ -134,6 +134,20 @@ export function Toolbar({
                 onValueChange={(selected: string) => filter.onSelectedChange?.(selected)}
                 placeholder={filter.placeholder}
                 disabled={disabled || filter.disabled}
+                /* THE ✕ IS NAMED AFTER THE FILTER IT CLEARS. Every Select ships a clear affix,
+                 * and its default name is the generic 「選択をクリア」 — measured on
+                 * /isolate/navigation-filter-bar after giving two filters a value: two buttons,
+                 * one name, and nothing in either that says WHICH filter it empties. A consumer
+                 * screen reported three on one screen. The chip row beside it already names
+                 * itself this way (`removeFilter`), so the bar was inconsistent with itself.
+                 * `Select` has always had `clearLabel`; only the bar never passed one — a
+                 * component that renders a control on the consumer's behalf owes it the context
+                 * the consumer cannot reach. */
+                clearLabel={
+                  typeof filter.label === "string"
+                    ? t("navigation.filterBar.clearFilter", { label: filter.label })
+                    : undefined
+                }
               />
             </ToolbarGroup>
           );

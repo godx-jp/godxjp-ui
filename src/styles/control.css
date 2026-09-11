@@ -206,8 +206,8 @@
     content: "";
     position: absolute;
     inset: 0;
-    min-inline-size: var(--button-bare-target-size);
-    min-block-size: var(--button-bare-target-size);
+    min-inline-size: var(--button-bare-target-size, var(--control-height-xs));
+    min-block-size: var(--button-bare-target-size, var(--control-height-xs));
     margin: auto;
   }
 
@@ -1560,6 +1560,38 @@
     inline-size: 0.75rem;
     block-size: 0.75rem;
   }
+
+  /* TOUCH: EACH STEPPER IS A REAL TARGET, NOT HALF OF ONE.
+   *
+   * Measured in Chromium with `(pointer: coarse)` matching, before this block: the default
+   * NumberInput was 44px and each stepper **24×19px** with centres 20px apart — under SC 2.5.8's
+   * 24×24, and not saved by its Spacing exception either (24px circles centred 20px apart
+   * intersect). The two steppers are stacked inside the field, so the only way both reach 24px is
+   * a 48px band: the inset and the hairline gap come off, and half of 48 is exactly 24.
+   *
+   * `xs` and `sm` are excluded on purpose. A consumer who asks for a smaller control on a touch
+   * screen has made that trade explicitly; silently growing it back would be the DS overruling the
+   * call site. They keep the band they asked for, and their steppers grow to half of it.
+   *
+   * NOT APPLIED ON A FINE POINTER, and the reason is recorded rather than assumed: at the desktop
+   * 32px band each stepper is 24×13, which is under 24×24 too — but the same function is available
+   * on a control that comfortably clears the bar, the field itself (32px tall, full width), which
+   * takes ArrowUp/ArrowDown and a typed value. Growing every desktop NumberInput to 48px to
+   * duplicate a mouse affordance that already has a conforming path is a bigger change than the
+   * one it fixes. */
+  @media (pointer: coarse) {
+    .ui-number-input:not([data-size="xs"]):not([data-size="sm"]) {
+      --control-height: var(--number-input-touch-height);
+    }
+
+    .ui-number-input-steppers {
+      gap: 0;
+    }
+
+    .ui-number-input-step {
+      block-size: calc(var(--control-height) / 2);
+    }
+  }
 }
 
 @layer components {
@@ -2437,6 +2469,9 @@
     /* The header cell keeps a radius when unruled, which reads as seven small tabs the moment the
      * grid is ruled — the corners cut the lines that are supposed to run the width of the row. */
     border-radius: 0;
+    /* Ruled, the header cell's text needs an inset from the rule above it: with none, the line box
+     * sat 1px under the top border (2.19px over the bottom one). */
+    padding-block: var(--calendar-bordered-weekday-padding-block);
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-grid {
@@ -2961,7 +2996,7 @@
   }
 
   .ui-button--xs {
-    height: var(--button-xs-height);
+    height: var(--button-xs-height, var(--control-height-xs));
     gap: var(--button-xs-space-gap);
     padding-inline: var(--button-xs-space-inline);
     font-size: var(--button-xs-font-size);
@@ -3095,8 +3130,8 @@
    * `[aria-invalid]` rule at the foot of focus-ring.css was written to fix. */
   .ui-control[data-status="warning"],
   .ui-control-multiline[data-status="warning"] {
-    --focus-ring-color: var(--control-status-warning-border-color);
-    --focus-outline-color: var(--control-status-warning-border-color);
+    --focus-ring-color: var(--control-status-warning-outline-color);
+    --focus-outline-color: var(--control-status-warning-outline-color);
     --focus-ring-glow-color: var(--control-status-warning-glow-color);
     --focus-ring-glow-alpha: var(--control-status-warning-glow-alpha);
   }

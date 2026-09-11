@@ -123,7 +123,7 @@ export const Switch = React.forwardRef<HTMLLabelElement, SwitchProp>(
             // components, so it silently outranked that token. Byte-identical: the token
             // defaults to 0.5. (`shadow-xs` STAYS — .ui-switch declares --shadow-sm, so this
             // utility is the switch's real resting elevation, not a duplicate.)
-            "peer ui-switch shadow-xs transition-all outline-none",
+            "peer ui-switch shadow-xs transition-all",
             className,
           )}
         >
