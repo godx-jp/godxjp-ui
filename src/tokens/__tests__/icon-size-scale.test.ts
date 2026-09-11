@@ -90,10 +90,6 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--menu-icon-size": ["1rem", "1rem", "1rem"],
   "--month-picker-icon-size": ["1rem", "1rem", "1rem"],
   "--month-picker-separator-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
-  // The ONE row in this table whose value MOVED. `.ui-navigation-menu-trigger-icon`
-  // baked `0.9rem` = 14.4px: off the scale and off the pixel grid, so the chevron's stroke landed
-  // on half pixels. Snapped to the nearest step, --icon-size-sm / 14px, a −0.4px change.
-  "--navigation-menu-trigger-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
   "--pagination-icon-size": ["1rem", "0.92rem", "1.08rem"],
   "--permission-matrix-cell-icon-size": ["1rem", "0.92rem", "1.08rem"],
   "--sidebar-nav-icon-size": ["1rem", "1rem", "1rem"],
@@ -266,12 +262,10 @@ describe("icon size — tier 2, the per-instance escape hatch (gh#326)", () => {
    * only routes left are `!important` or forking the stylesheet — precisely the two things
    * tier 2 exists to make unnecessary.
    *
-   * Four have been closed: the Alert tone glyph and the Badge glyph
-   * got tokens of their own (--alert-icon-size, --badge-icon-size), the ContextMenu/Menubar
-   * sub-trigger chevrons were pointed at --menu-icon-size — the knob DropdownMenu's chevron
-   * already read, so all three menu surfaces now retune together — and the NavigationMenu trigger
-   * chevron SNAPPED from `0.9rem` (14.4px, off the scale and off the pixel grid) to
-   * --navigation-menu-trigger-icon-size = --icon-size-sm, 14px.
+   * Two have been closed: the Alert tone glyph and the Badge glyph got tokens of their own
+   * (--alert-icon-size, --badge-icon-size). The other two closures belonged to the ContextMenu /
+   * Menubar / NavigationMenu chevrons, and those components have since been deleted (v23) — the
+   * knob they were pointed at, --menu-icon-size, is still what DropdownMenu's chevron reads.
    *
    * The three left are blocked on token files outside that pass:
    *   • `.ui-otp-separator-icon` needs --otp-separator-icon-size in components/control.css

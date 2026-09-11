@@ -12,7 +12,7 @@ import {
   resolveAriaInvalid,
 } from "./control-surface";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
-import { ScrollArea, ScrollBar } from "../data-display/scroll-area";
+import { ScrollArea } from "../data-display/scroll-area";
 import { Command, CommandInput } from "./command";
 import {
   filterTreeOptions,
@@ -416,7 +416,10 @@ export function Cascader({
   };
 
   const renderCascadeColumns = () => (
-    <ScrollArea className="w-full">
+    // `both`: the columns strip overflows sideways, and a tall column scrolls down. Under Radix
+    // this was a vertical area plus a mounted `<ScrollBar orientation="horizontal" />`, which was
+    // how Radix was told to open the second axis at all.
+    <ScrollArea className="w-full" orientation="both">
       <div className="ui-cascader-columns">
         {columns.map((col, colIndex) => (
           <ul
@@ -496,7 +499,6 @@ export function Cascader({
           </ul>
         ))}
       </div>
-      <ScrollBar orientation="horizontal" />
     </ScrollArea>
   );
 

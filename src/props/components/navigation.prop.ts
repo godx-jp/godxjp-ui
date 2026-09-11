@@ -195,6 +195,24 @@ export type PaginationAlignProp = "start" | "center" | "end";
 export type DropdownMenuPlacementProp =
   "top" | "topStart" | "topEnd" | "bottom" | "bottomStart" | "bottomEnd";
 
+/**
+ * @see DropdownMenu — Ant Design `trigger`: the gestures that open the menu, as an array because
+ * more than one may be live at once (`['click', 'contextMenu']` is a row that opens from its kebab
+ * AND from a right click anywhere on it).
+ *
+ * Default `['click']`, NOT antd's `['hover']`: a menu button that opens on hover is a pointer-only
+ * affordance by default, and every consumer of this library today opens on click.
+ *
+ * `contextMenu` opens at the pointer and suppresses the browser's own menu. It is what replaced the
+ * deleted `ContextMenu` component (v23) — antd has no such component either, and expresses the
+ * whole idea as this value.
+ *
+ * Whatever the array says, the KEYBOARD opener stays wired: Enter / Space / ArrowDown on the
+ * trigger for `click` and `hover`, and Shift+F10 / the ContextMenu key for `contextMenu`. A gesture
+ * list can therefore never produce a menu that only a mouse can reach (WCAG 2.1.1).
+ */
+export type DropdownMenuTriggerActionProp = "click" | "hover" | "contextMenu";
+
 export type StepStatusProp = "wait" | "process" | "finish" | "error";
 
 /** @see StepItem */

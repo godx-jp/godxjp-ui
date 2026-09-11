@@ -80,6 +80,7 @@ export type {
 } from "./query.prop";
 export type {
   DropdownMenuPlacementProp,
+  DropdownMenuTriggerActionProp,
   PaginationProp,
   PaginationSizeProp,
   PaginationAlignProp,

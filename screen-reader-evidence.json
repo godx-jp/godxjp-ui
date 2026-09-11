@@ -124,7 +124,6 @@
           "feedback/dialog",
           "feedback/sheet",
           "feedback/tooltip",
-          "navigation/context-menu",
           "navigation/dropdown-menu"
         ]
       },
@@ -136,8 +135,6 @@
           "layout/auth-account-summary",
           "layout/breadcrumb",
           "navigation/filter-bar",
-          "navigation/menubar",
-          "navigation/navigation-menu",
           "navigation/pagination",
           "navigation/steps",
           "navigation/tabs",
@@ -225,11 +222,8 @@
       "feedback/dialog",
       "feedback/sheet",
       "feedback/sonner",
-      "navigation/context-menu",
       "navigation/dropdown-menu",
       "navigation/filter-bar",
-      "navigation/menubar",
-      "navigation/navigation-menu",
       "navigation/tabs",
       "query/data-state",
       "query/infinite-query-state",

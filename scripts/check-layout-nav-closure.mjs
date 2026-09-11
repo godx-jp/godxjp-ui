@@ -15,10 +15,7 @@ const allFrames = [
   "layout-topbar",
   "navigation-breadcrumb",
   "navigation-app-setting-picker",
-  "navigation-context-menu",
   "navigation-dropdown-menu",
-  "navigation-menubar",
-  "navigation-navigation-menu",
   "navigation-steps",
   "navigation-toolbar",
   "navigation-tabs",
@@ -135,13 +132,6 @@ try {
     if (process.env.RTL === "1") {
       if ((await page.locator("[data-rtl-root]").getAttribute("dir")) !== "rtl") {
         throw new Error(`${frame}: RTL was not initialized before mount`);
-      }
-      if (frame === "navigation-menubar") {
-        const menus = page.getByRole("menuitem");
-        await menus.first().focus();
-        await page.keyboard.press("ArrowLeft");
-        const focused = await menus.evaluateAll((nodes) => nodes.indexOf(document.activeElement));
-        if (focused <= 0) throw new Error("RTL Menubar ArrowLeft did not move focus");
       }
     }
     axe[frame] = (await new AxeBuilder({ page }).analyze()).violations.map((violation) => ({

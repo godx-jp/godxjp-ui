@@ -471,9 +471,10 @@ export type ScrollAreaAnchorProp = "none" | "bottom";
 
 /** @see ScrollArea */
 /**
- * @see ScrollArea — which AXES scroll. This is not decoration: Radix sets the viewport's
- * `overflowX`/`overflowY` inline from which scrollbars are mounted, so an axis with no `ScrollBar`
- * is `overflow: hidden` and its content is CLIPPED, not merely un-barred.
+ * @see ScrollArea — which AXES scroll. This is not decoration: it IS the `overflow` the element
+ * carries, so an axis this does not name is `hidden` and its content is CLIPPED, not merely
+ * un-barred. It is also the whole replacement for mounting a `<ScrollBar>`, which was how the
+ * Radix-era component was told to open a second axis.
  *
  * `both` is a third value rather than an array or a pair of booleans because the axes are one
  * decision — a pane scrolls down, across, or freely — and a closed union is what `check:prop-vocabulary`
@@ -488,12 +489,14 @@ export type ScrollAreaProp = {
    *
    * Reach for `horizontal` for a strip of non-shrinking columns (a board, a lane of cards): the
    * viewport keeps its tab stop, so the strip is scrollable from the keyboard, and the consumer
-   * writes no overflow styling of its own.
+   * writes no overflow styling of its own. `both` is what replaces a vertical area that also
+   * mounted `<ScrollBar orientation="horizontal" />`.
    */
   orientation?: ScrollAreaOrientationProp;
   /**
-   * Ref to the element that actually SCROLLS — the Radix viewport — not the root. The root is
-   * `overflow: hidden` and never scrolls, so the component's own `ref` cannot serve.
+   * Ref to the element that actually SCROLLS. Since v23 that is the component's own element, so
+   * this and `ref` hand back the SAME node — it is kept because it names the thing precisely, and
+   * because the Radix-era shape (a root wrapping a separate viewport) made `ref` the wrong handle.
    */
   viewportRef?: React.Ref<HTMLDivElement>;
   /** Edge the viewport sticks to as content grows. Default `none` (inert). */

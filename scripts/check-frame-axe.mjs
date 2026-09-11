@@ -94,7 +94,8 @@ function loadBaseline() {
  * — or, when the component owns its own trigger DOM and forwards no `data-*` to it (DatePicker,
  * the data-driven Select, SearchSelect), on the nearest element that DOES forward, with the gate
  * resolving the real control inside it. `data-axe-open="contextmenu"` right-clicks the declaring
- * element instead (ContextMenu opens on no other gesture).
+ * element instead — for a menu that opens on no other gesture
+ * (`DropdownMenu trigger={["contextMenu"]}`).
  */
 const OPEN_DECLARATION = "[data-axe-open]";
 /** Controls a press can open an overlay from. Deliberately narrow — see the resolution above. */

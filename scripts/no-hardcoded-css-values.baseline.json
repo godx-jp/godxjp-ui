@@ -1,5 +1,5 @@
 {
-  "total": 83,
+  "total": 75,
   "files": {
     "src/styles/alert-layout.css": 2,
     "src/styles/card-layout.css": 2,
@@ -8,7 +8,7 @@
     "src/styles/data-entry-layout.css": 6,
     "src/styles/dialog-layout.css": 5,
     "src/styles/layout.css": 4,
-    "src/styles/navigation-layout.css": 10,
+    "src/styles/navigation-layout.css": 2,
     "src/styles/shell-layout.css": 25,
     "src/styles/table-layout.css": 1
   }

@@ -45,8 +45,9 @@ A frame opts in **declaratively**, from the demo itself:
   <FormField id="status" label="状態"><Select … /></FormField>
 </CardContent>
 
-// right-click, for the one overlay that opens on no other gesture
-<ContextMenuTrigger data-axe-open="contextmenu" …>
+// right-click, for a menu that opens on no other gesture
+//   (<DropdownMenu trigger={["contextMenu"]}> — the declaring element is right-clicked)
+<div data-axe-open="contextmenu" …>
 ```
 
 What the gate does with it, per frame/viewport, **after** the two default-state scans (opening an overlay is destructive to the state those measure):
@@ -59,7 +60,7 @@ What the gate does with it, per frame/viewport, **after** the two default-state 
 
 A declaration whose overlay never opens is an **infrastructure error** (blocking), not a silent skip: a broken declaration must not read as a clean frame.
 
-**Frames declaring an open step today** (the overlay families named in #355): `data-entry-select`, `data-entry-select-matrix` (SearchSelect), `data-entry-date-picker`, `data-display-popover`, `navigation-dropdown-menu`, `navigation-context-menu`, `feedback-dialog`, `feedback-sheet`.
+**Frames declaring an open step today** (the overlay families named in #355): `data-entry-select`, `data-entry-select-matrix` (SearchSelect), `data-entry-date-picker`, `data-display-popover`, `navigation-dropdown-menu`, `feedback-dialog`, `feedback-sheet`.
 
 **Cost**: the overlay pass only runs on declaring frames, so it is ~8 frames × 2 viewports, measured at **+~55 s on a ~9.5 min local sweep (~10 %)**. Both viewports are kept for now; if the declaring set grows, narrow `OVERLAY_VIEWPORTS` in the script to `["desktop"]` — an overlay is portalled to `<body>` and its aria-hidden background is the same tree at either width.
 

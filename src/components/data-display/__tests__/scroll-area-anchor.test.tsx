@@ -29,8 +29,8 @@ const VIEWPORT_HEIGHT = 100;
 const VIEWPORT_SELECTOR = '[data-slot="scroll-area-viewport"]';
 
 /**
- * Radix wraps the children in one content div; descend past single-child wrappers exactly the way
- * the component does, so the modelled height counts the same rows it anchors to.
+ * The children live in one content wrapper; descend past single-child wrappers exactly the way the
+ * component does, so the modelled height counts the same rows it anchors to.
  */
 function rowCount(viewport: Element): number {
   let container: Element = viewport;
@@ -368,7 +368,7 @@ describe("ScrollArea anchor='none' (the default)", () => {
 });
 
 describe("ScrollArea viewportRef", () => {
-  it("hands back the element that actually scrolls, not the root", () => {
+  it("hands back the element that actually scrolls — now the component's own element", () => {
     const rootRef = React.createRef<HTMLDivElement>();
     const viewportRef = React.createRef<HTMLDivElement>();
     const { container } = render(
@@ -378,11 +378,10 @@ describe("ScrollArea viewportRef", () => {
     );
 
     expect(viewportRef.current).toBe(viewportOf(container));
-    expect(viewportRef.current).not.toBe(rootRef.current);
-    // The public handle replaces reaching for the Radix-internal attribute — but it is the same
-    // node, so a consumer that already had that selector keeps identical behaviour.
-    expect(viewportRef.current).toHaveAttribute("data-radix-scroll-area-viewport");
-    expect(rootRef.current).toContainElement(viewportRef.current);
+    // v23: the Radix root/viewport split is gone, so both handles name the SAME scrolling box.
+    // Under Radix `ref` pointed at an `overflow: hidden` root that never scrolled, which is the
+    // trap `viewportRef` was added to route around.
+    expect(rootRef.current).toBe(viewportRef.current);
   });
 
   it("accepts a callback ref and clears it on unmount", () => {

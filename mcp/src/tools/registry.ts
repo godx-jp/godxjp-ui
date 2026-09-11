@@ -781,7 +781,6 @@ const TOKEN_PREFIXES: Record<string, string[]> = {
   Pagination: ["pagination"],
   Toolbar: ["filter"],
   Breadcrumb: ["breadcrumb"],
-  Menubar: ["menubar"],
   Progress: ["progress"],
   TreeSelect: ["tree"],
   Timeline: ["timeline"],

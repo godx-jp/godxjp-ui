@@ -21,8 +21,9 @@ import {
 import { MoreHorizontal } from "lucide-react";
 
 /**
- * DropdownMenu — Radix dropdown. Compose root/Trigger(asChild)/Content/Item/Separator.
+ * DropdownMenu — react-aria dropdown. Compose root/Trigger(asChild)/Content/Item/Separator.
  * Use asChild on Trigger so a godx-ui Button is the real trigger (no double-button).
+ * `trigger` picks the gestures (click / hover / contextMenu) — antd's own prop.
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
@@ -34,7 +35,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="DropdownMenu"
-      subtitle="Radix dropdown · Trigger asChild + Content + Item/Separator/Sub"
+      subtitle="trigger: click / hover / contextMenu · Trigger asChild + Content + Item/Separator/Sub"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -84,6 +85,77 @@ export default function Demo() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem variant="default">アーカイブに移動</DropdownMenuItem>
                   <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* antd `trigger` — which gestures open the menu */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>trigger · 右クリック（コンテキストメニュー）</CardTitle>
+            <CardDescription>
+              trigger={"{"}[&quot;contextMenu&quot;]{"}"} は右クリックの位置にメニューを開き、
+              ブラウザ標準のメニューを抑止する。左クリックでは開かない。キーボードからは Shift+F10
+              または ContextMenu キーで開く（トリガーにフォーカスしてから）。専用の ContextMenu
+              コンポーネントは v23 で廃止され、これがその置き換え。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" align="center" gap="md">
+              <DropdownMenu trigger={["contextMenu"]}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">仕訳 JE-0042 を右クリック</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>編集</DropdownMenuItem>
+                  <DropdownMenuItem>複製</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>trigger · ホバーで開く</CardTitle>
+            <CardDescription>
+              trigger={"{"}[&quot;hover&quot;]{"}"} はポインタが乗ると mouseEnterDelay（既定 0.15
+              秒）後に開き、離れると mouseLeaveDelay（既定 0.1
+              秒）後に閉じる。トリガーとメニューの間の隙間を渡れるよう、閉じるのは取り消せる予約。
+              ホバーでフォーカスは移動せず、キーボードでは Enter / Space / ↓
+              で開くので、ポインタ専用にはならない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" align="center" gap="md">
+              <DropdownMenu trigger={["hover"]}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">エクスポート</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>CSV</DropdownMenuItem>
+                  <DropdownMenuItem>PDF</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DropdownMenu trigger={["click", "contextMenu"]}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">クリックでも右クリックでも</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>編集</DropdownMenuItem>
+                  <DropdownMenuItem>複製</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DropdownMenu disabled>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">無効（disabled）</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>編集</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </Flex>

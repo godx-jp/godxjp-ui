@@ -7518,7 +7518,7 @@ toast.error("保存に失敗しました");`,
     name: "DropdownMenu",
     group: "navigation",
     tagline:
-      "Radix dropdown menu. Compose DropdownMenu/DropdownMenuTrigger/DropdownMenuContent/DropdownMenuItem/DropdownMenuSeparator.",
+      "Dropdown menu (react-aria). Compose DropdownMenu/DropdownMenuTrigger/DropdownMenuContent/DropdownMenuItem/DropdownMenuSeparator. `trigger` picks the gestures — click (default), hover, or contextMenu, which is what replaced the deleted ContextMenu component.",
     props: [
       {
         name: "width",
@@ -7527,6 +7527,33 @@ toast.error("保存に失敗しました");`,
           "On DropdownMenuContent: match the trigger, fit content, or use a token width. Omit to keep the default minimum.",
       },
       { name: "open", type: "boolean", description: "Controlled open state (Ant Design `open`)." },
+      {
+        name: "trigger",
+        type: '("click" | "hover" | "contextMenu")[]',
+        defaultValue: '["click"]',
+        description:
+          'On the ROOT. Ant Design `trigger` — the gestures that open the menu, and more than one may be live at once. `contextMenu` opens AT the pointer and suppresses the browser\'s own menu; it is the replacement for the ContextMenu component deleted in v23, and antd expresses right-click menus the same way. The default is `["click"]`, not antd\'s `["hover"]`. The keyboard opener survives every mode: Enter/Space/ArrowDown for click and hover, Shift+F10 or the ContextMenu key for contextMenu — so a gesture list can never produce a pointer-only menu (WCAG 2.1.1).',
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description:
+          "On the ROOT. Ant Design `disabled` — no gesture opens the menu (antd implements it by emptying the trigger list). The trigger's own `disabled` still works for the button case.",
+      },
+      {
+        name: "mouseEnterDelay",
+        type: "number",
+        defaultValue: "0.15",
+        description:
+          'On the ROOT, in SECONDS (antd\'s unit). Hover dwell before a `trigger={["hover"]}` menu opens.',
+      },
+      {
+        name: "mouseLeaveDelay",
+        type: "number",
+        defaultValue: "0.1",
+        description:
+          "On the ROOT, in SECONDS. Grace period after the pointer leaves before a hover menu closes — it is what lets the reader cross the gap from the trigger onto the menu, so do not set it to 0.",
+      },
       {
         name: "onOpenChange",
         type: "(open: boolean) => void",
@@ -7552,6 +7579,9 @@ toast.error("保存に失敗しました");`,
       "DO use DropdownMenuSub + DropdownMenuSubTrigger + DropdownMenuSubContent for nested sub-menus (e.g. 'Export' → 'CSV', 'PDF'). The ChevronRight icon is rendered automatically by DropdownMenuSubTrigger — do not add your own.",
       "DO use DropdownMenuCheckboxItem (with checked + onCheckedChange) or DropdownMenuRadioGroup + DropdownMenuRadioItem for toggle/selection menus such as column visibility or active view. These items manage their own checked indicator — do not layer a Checkbox or RadioGroup inside a plain DropdownMenuItem.",
       "DON'T use DropdownMenu for form submission — items fire onSelect callbacks, not form field values. There is no name prop for native form submission. If a menu selection must feed a form field, lift state into a controlled value and wire a hidden Input or use Select instead.",
+      'DO use `trigger={["contextMenu"]}` for a right-click menu on a row, card or tile — there is no ContextMenu component any more (deleted in v23). Give that target something focusable and an interactive role: the menu must be reachable with Shift+F10, and react-aria warns in dev when an `asChild` trigger has neither.',
+      "DON'T put actions ONLY behind `contextMenu`. Right-click is undiscoverable for new users and absent on touch (it falls back to long-press), so mirror anything critical in a visible click trigger.",
+      'DO keep `mouseLeaveDelay` non-zero on `trigger={["hover"]}`: closing the instant the pointer leaves the trigger makes the menu impossible to reach, because the pointer has to cross the gap to get there.',
     ],
     useCases: [
       "Row action menu in a DataTable: a '...' icon Button opens a DropdownMenu with Edit, Duplicate, DropdownMenuSeparator, then Delete (variant='destructive') — keeps the row compact and avoids inline button clutter.",
@@ -7559,7 +7589,8 @@ toast.error("保存に失敗しました");`,
       "Bulk-action toolbar: after selecting rows, an 'Actions' Button opens a DropdownMenu with Approve, Reject, Export — prevents the toolbar from overflowing with individual buttons.",
       "Column visibility toggle in a report table: a 'Columns' Button opens a DropdownMenu whose items are DropdownMenuCheckboxItem entries, letting users show/hide columns without a Dialog.",
       "Quick status change on an accounting entry: a Badge-like trigger opens a DropdownMenu with DropdownMenuRadioGroup items (Draft, Posted, Voided) so the user can transition status without navigating away.",
-      "Context menu for a sidebar nav item: right-click or kebab on a project entry opens a DropdownMenu with Rename, Duplicate, Archive actions scoped to that item.",
+      'Right-click actions on a DataTable row or a file tile: `trigger={["click", "contextMenu"]}` puts the same menu behind the row\'s kebab AND a right-click anywhere on the row, so the accelerator and the discoverable affordance stay one menu.',
+      'Hover-opened menu on a toolbar entry (`trigger={["hover"]}`) where the pointer is already travelling — the keyboard still opens it with Enter.',
     ],
     related: [
       "Popover — use Popover when the floating panel needs arbitrary layout (filter forms, date pickers, rich content grids). Use DropdownMenu only for a list of discrete clickable actions or toggle items; DropdownMenu has no layout flexibility beyond label/separator/group.",
@@ -7575,6 +7606,16 @@ import { Button } from "@godxjp/ui/general";
   <DropdownMenuContent>
     <DropdownMenuItem>編集</DropdownMenuItem>
     <DropdownMenuSeparator />
+    <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+
+// Right-click menu — what replaced the ContextMenu component (v23). Opens at the pointer,
+// suppresses the browser menu, and opens from Shift+F10 for keyboard users.
+<DropdownMenu trigger={["contextMenu"]}>
+  <DropdownMenuTrigger>行 JE-0042</DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>編集</DropdownMenuItem>
     <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>`,
@@ -10629,7 +10670,7 @@ export function ControlledPopover() {
     name: "ScrollArea",
     group: "data-display",
     tagline:
-      "Radix-backed custom scrollbar container — always set an explicit height/max-height on the wrapper or the scrollbar never appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
+      "A native scrolling box (no Radix since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
     props: [
       {
         name: "className",
@@ -10648,34 +10689,20 @@ export function ControlledPopover() {
         name: "dir",
         type: '"ltr" | "rtl"',
         description:
-          "Text direction forwarded to the Radix Root. Defaults to the document direction.",
-      },
-      {
-        name: "scrollHideDelay",
-        type: "number",
-        defaultValue: "600",
-        description:
-          "Milliseconds before the scrollbar auto-hides after the pointer leaves. Applies to both axes.",
-      },
-      {
-        name: "type",
-        type: '"auto" | "always" | "scroll" | "hover"',
-        defaultValue: '"hover"',
-        description:
-          "Scrollbar visibility strategy. 'auto' mirrors browser overflow; 'always' keeps it visible; 'scroll' shows while scrolling; 'hover' shows while hovering the scroll area.",
+          "Rides through to the element as a plain attribute. Rarely needed: the element inherits the page's direction, and the component stamps NO direction of its own (the Radix root used to stamp `ltr`, which reset the inline axis for everything inside it on an RTL page).",
       },
       {
         name: "orientation",
         type: '"vertical" | "horizontal" | "both"',
         defaultValue: '"vertical"',
         description:
-          "Axes that scroll, and therefore which scrollbars render. This is NOT decoration: Radix derives the viewport's inline overflowX/overflowY from which scrollbars are mounted, so an axis you do not ask for is `overflow: hidden` and its content is CLIPPED, not merely missing a bar. Use 'horizontal' for a strip of non-shrinking columns (a board, a lane of cards) — the viewport keeps its tab stop so the strip stays keyboard-scrollable, and the consumer writes no overflow class of its own. Pair it with a width constraint on the root, exactly as the vertical case needs a height one.",
+          "Axes that scroll — this IS the element's `overflow`, so an axis you do not ask for is `hidden` and its content is CLIPPED, not merely missing a bar. Use 'horizontal' for a strip of non-shrinking columns (a board, a lane of cards) — the element keeps its tab stop so the strip stays keyboard-scrollable, and the consumer writes no overflow class of its own. Pair it with a width constraint, exactly as the vertical case needs a height one. 'both' is the replacement for the pre-v23 shape of a vertical area that also mounted <ScrollBar orientation=\"horizontal\" />.",
       },
       {
         name: "viewportRef",
         type: "React.Ref<HTMLDivElement>",
         description:
-          "Ref to the element that actually SCROLLS (the internal Radix viewport) — NOT the root, which is overflow:hidden and never scrolls, which is why the component's own `ref` cannot serve. Use it to read scrollTop/scrollHeight, call scrollTo(), restore a saved position or drive a 'jump to newest' button. This is the supported replacement for querying `[data-radix-scroll-area-viewport]`, which is a Radix internal and is ambiguous as soon as two ScrollAreas nest.",
+          "Ref to the element that actually SCROLLS. Since v23 that is the component's own element, so `ref` and `viewportRef` hand back the SAME node (before v23 `ref` pointed at an overflow:hidden root that never scrolled). Use it to read scrollTop/scrollHeight, call scrollTo(), restore a saved position or drive a 'jump to newest' button. `[data-radix-scroll-area-viewport]` no longer exists anywhere — query `[data-slot=\"scroll-area-viewport\"]` only if you truly cannot hold a ref.",
       },
       {
         name: "anchor",
@@ -10701,11 +10728,11 @@ export function ControlledPopover() {
     usage: [
       'DO set an explicit height or max-height on ScrollArea via className (e.g. `className="h-64"` or `className="max-h-[min(300px,50vh)]"`). Without a height constraint the viewport grows to fit content and the scrollbar is never rendered.',
       "DO wrap content in a single child element inside ScrollArea — the Viewport observes its single child's size to decide whether overflow exists.",
-      'DO add `<ScrollBar orientation="horizontal" />` explicitly (after the children, before closing ScrollArea) when you need horizontal scrolling. The default ScrollBar rendered by ScrollArea is vertical-only.',
-      "DON'T use a native browser `overflow-auto` div as an alternative — ScrollArea provides the design-system-styled thumb/track and respects the semantic token palette.",
+      'DO open a second axis with `orientation="both"`. `ScrollBar` still exports but RENDERS NOTHING — before v23 mounting it was what enabled an axis; now `orientation` is the only thing that does, so a leftover `<ScrollBar orientation="horizontal" />` silently leaves that axis `hidden`.',
+      "DO reach for ScrollArea rather than your own `overflow-auto` div: it is the same native scrolling, plus the token-styled scrollbar, the keyboard tab stop the axe rule wants, and bottom anchoring. A bare overflow div gets none of that and each call site re-decides the scrollbar's look.",
       "DON'T put ScrollArea inside a flex parent without giving it a `flex-1` or fixed size — it will collapse to zero height and appear broken.",
-      'For horizontal-only scrolling, still wrap in ScrollArea with `className="w-full"`, put the wide content inside, and place `<ScrollBar orientation="horizontal" />` explicitly after the content.',
-      'DO use `viewportRef` when you need the scrolling element. DON\'T reach for `container.querySelector("[data-radix-scroll-area-viewport]")` — that attribute is a Radix internal with no public contract (a major bump renames it and breaks the app at runtime with no type error), and it matches the wrong node the moment two ScrollAreas nest.',
+      'For horizontal-only scrolling use `orientation="horizontal"` with a width constraint; the content is allowed to grow past the box on that axis, so a row of non-shrinking columns overflows instead of squashing.',
+      "DO use `viewportRef` (or plain `ref`) when you need the scrolling element, never a `querySelector` for an internal attribute — `[data-radix-scroll-area-viewport]` is gone with Radix, and any selector matches the wrong node the moment two ScrollAreas nest.",
       'DO build a live stream (chat, log tail, streaming response, activity feed) with `anchor="bottom"` instead of writing `viewport.scrollTop = viewport.scrollHeight` in an effect. That naive version is the BUG, not the feature: it yanks a reader who has scrolled up back to the bottom on every arriving message (WCAG 3.2.5).',
       'DO pair `anchor="bottom"` with `onAnchoredChange` and a real Button ("jump to newest"). A keyboard user who has scrolled up needs a focusable route back to new content — the anchor alone is a pointer affordance.',
       "DON'T remove the viewport's `tabIndex={0}`, and don't wrap the scrolling content in something that swallows arrow keys: the region must stay keyboard-scrollable (WCAG 2.1.1 / axe scrollable-region-focusable).",
@@ -10716,7 +10743,7 @@ export function ControlledPopover() {
       "Long dropdown lists inside Popovers or Selects where the list height must be capped (e.g. TreeSelect, Cascader columns, Combobox options).",
       "Sidebar navigation panels or filter drawers whose content can exceed viewport height.",
       "Transfer-list panels with a fixed height that must scroll through a large item list.",
-      "Cascader multi-column layouts where the horizontal axis may overflow (use ScrollBar orientation=horizontal).",
+      'Cascader multi-column layouts where both axes may overflow (orientation="both").',
       "Detail panels or audit-log timelines inside a fixed-height Card that should not stretch the page.",
       "Code or JSON viewers with a fixed max-height needing both axes scrollable.",
       'Live message streams and log tails: `anchor="bottom"` pins to the newest item while the reader is at the bottom, freezes when they scroll up to read history, and preserves their position when a page of older history is prepended.',
@@ -10726,7 +10753,7 @@ export function ControlledPopover() {
       "Collapsible — use Collapsible to show/hide a section; pair with ScrollArea when the revealed content can itself overflow.",
       "Card/CardContent — when the card body should scroll, put ScrollArea inside CardContent rather than applying overflow directly to CardContent.",
     ],
-    example: `import { Card, CardContent, ScrollArea, ScrollBar } from "@godxjp/ui/data-display";
+    example: `import { Card, CardContent, ScrollArea } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import { Flex } from "@godxjp/ui/layout";
 
@@ -10748,7 +10775,7 @@ import { Flex } from "@godxjp/ui/layout";
 
 // Horizontal + vertical (e.g. wide Cascader columns). Use border-e, never border-r: a physical
 // edge puts the rule on the wrong side under RTL.
-<ScrollArea className="w-full">
+<ScrollArea className="w-full" orientation="both">
   <Flex className="max-h-[min(280px,50vh)]">
     {columns.map((col, i) => (
       <ul key={i} className="min-w-36 border-e last:border-e-0">
@@ -10756,7 +10783,6 @@ import { Flex } from "@godxjp/ui/layout";
       </ul>
     ))}
   </Flex>
-  <ScrollBar orientation="horizontal" />
 </ScrollArea>
 
 // Live stream — pinned to the newest post, never yanked while reading history
@@ -12306,167 +12332,6 @@ export default function PasswordBlock() {
 <TagInput name="labels" placeholder="ラベルを追加…" onValueChange={(tags) => setTags(tags)} />`,
     storyPath: "data-entry/TagInput.stories.tsx",
     rules: [3, 6, 23],
-  },
-  {
-    name: "ContextMenu",
-    group: "navigation",
-    tagline:
-      "Context menu primitives with keyboard support and compound parts for command-style action surfaces.",
-    props: [
-      {
-        name: "onOpenChange",
-        type: "(open: boolean) => void",
-        description: "Open-state callback.",
-      },
-      {
-        name: "modal",
-        type: "boolean",
-        defaultValue: "true",
-        description:
-          "Modal mode — locks scroll + outside interaction while open. Set false to keep the rest of the page interactive.",
-      },
-      {
-        name: "dir",
-        type: '"ltr" | "rtl"',
-        description:
-          "Reading direction for arrow-key navigation (inherits from the document if omitted).",
-      },
-    ],
-    usage: [
-      "DO trigger this on `onContextMenu` (right-click / long-press), NOT on left-click — for a button that opens a list of actions on left-click use `DropdownMenu` instead. The two are not interchangeable.",
-      "DO wrap exactly the right-clickable surface in `<ContextMenuTrigger>` (a table row, a card, a file tile) — the menu anchors to the pointer position, so the trigger should be the whole interactive region the menu acts on.",
-      "DON'T put primary, always-visible actions only behind a context menu — right-click is a discoverability dead-end on touch and for new users. Mirror critical actions in a visible `Button`/`DropdownMenu` and use ContextMenu as an accelerator.",
-      'DO mark irreversible items with `variant="destructive"` (削除 / 取り消し) and group them under a `<ContextMenuSeparator>`; use `<ContextMenuShortcut>` to show the keyboard accelerator, `<ContextMenuSub>`/`<ContextMenuSubTrigger>` for nested submenus, and `<ContextMenuCheckboxItem>`/`<ContextMenuRadioItem>` for stateful toggles.',
-      "DON'T hand-roll a positioned `<div>` + `onContextMenu={e => e.preventDefault()}` — the primitive already gives you keyboard navigation, focus trapping, typeahead, and WAI-ARIA menu semantics for free.",
-    ],
-    useCases: [
-      "Right-click actions on a DataTable row (詳細 / 複製 / 削除) as a power-user accelerator alongside the visible row action button.",
-      "Contextual menu on a file or document tile in an upload/asset manager (ダウンロード / 名前変更 / 削除).",
-      "Nested action menu with submenus and shortcuts (e.g. 'エクスポート ▸ CSV / PDF') on a report card.",
-      "Stateful toggles on a board/kanban card via ContextMenuCheckboxItem (e.g. ピン留め, 完了としてマーク).",
-    ],
-    storyPath: "navigation/ContextMenu.stories.tsx",
-    rules: [3, 6],
-    example: `import {
-  ContextMenu,
-  ContextMenuTrigger,
-  ContextMenuContent,
-  ContextMenuItem,
-} from "@godxjp/ui/navigation";
-
-<ContextMenu>
-  <ContextMenuTrigger>open</ContextMenuTrigger>
-  <ContextMenuContent>
-    <ContextMenuItem>Edit</ContextMenuItem>
-    <ContextMenuItem>Delete</ContextMenuItem>
-  </ContextMenuContent>
-</ContextMenu>`,
-  },
-  {
-    name: "Menubar",
-    group: "navigation",
-    tagline: "Application menubar primitives (menus, sub-menus, and check/radio items).",
-    props: [
-      {
-        name: "value",
-        type: "string",
-        description: "Controlled value of the currently-open menu (pair with onValueChange).",
-      },
-      {
-        name: "defaultValue",
-        type: "string",
-        description: "Uncontrolled initial open menu.",
-      },
-      {
-        name: "onValueChange",
-        type: "(value: string) => void",
-        description: "Fires with the id of the menu that opened (or '' when all close).",
-      },
-    ],
-    usage: [
-      "DO reserve Menubar for a persistent, desktop-app-style command bar (ファイル / 編集 / 表示 …) where multiple top-level menus sit side by side — moving the pointer across triggers opens the adjacent menu without an extra click.",
-      "DON'T use Menubar for primary site/page navigation (links between pages) — that is `NavigationMenu`. Menubar items run *commands*; NavigationMenu items *navigate*.",
-      "DON'T use Menubar when there is only one menu button — a single trigger that drops a list of actions is a `DropdownMenu`. Menubar earns its weight only with several coordinated menus.",
-      "DO compose the full structure: `<Menubar>` › `<MenubarMenu>` › `<MenubarTrigger>` + `<MenubarContent>` with `<MenubarItem>`; use `<MenubarSeparator>` to group, `<MenubarShortcut>` for accelerators, `<MenubarSub>` for nested menus, and `<MenubarCheckboxItem>`/`<MenubarRadioItem>` for view toggles.",
-      'DO mark destructive commands with `variant="destructive"` and give every item an `onSelect` handler — items are commands, so they should *do* something, not just close.',
-    ],
-    useCases: [
-      "Top-bar command menu for a back-office editor (ファイル / 編集 / 表示 / ヘルプ) with shortcuts and submenus.",
-      "Workspace tool menus in an admin console where each menu groups a category of actions (データ / レポート / 設定).",
-      "Desktop-like application shell (e.g. an internal POS or accounting workstation) that mirrors native menubar conventions.",
-      "View-state toggles via MenubarCheckboxItem/MenubarRadioItem (e.g. 表示 › グリッド線を表示, 通貨表示 ▸ ¥ / $).",
-    ],
-    storyPath: "navigation/Menubar.stories.tsx",
-    rules: [3, 6],
-    example: `import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem } from "@godxjp/ui/navigation";
-
-<Menubar>
-  <MenubarMenu>
-    <MenubarTrigger>ファイル</MenubarTrigger>
-    <MenubarContent>
-      <MenubarItem>新規作成</MenubarItem>
-    </MenubarContent>
-  </MenubarMenu>
-</Menubar>`,
-  },
-  {
-    name: "NavigationMenu",
-    group: "navigation",
-    tagline:
-      "Horizontal navigation menu with trigger/content/link primitives and viewport support.",
-    props: [
-      {
-        name: "orientation",
-        type: '"horizontal" | "vertical"',
-        defaultValue: '"horizontal"',
-        description: "Main-axis arrangement for the nav menu.",
-      },
-      {
-        name: "value",
-        type: "string",
-        description: "Controlled value of the currently-open item (pair with onValueChange).",
-      },
-      {
-        name: "defaultValue",
-        type: "string",
-        description: "Uncontrolled initial open item.",
-      },
-      {
-        name: "onValueChange",
-        type: "(value: string) => void",
-        description: "Fires with the id of the item whose dropdown opened (or '' when all close).",
-      },
-      {
-        name: "delayDuration",
-        type: "number",
-        defaultValue: "200",
-        description: "Hover delay (ms) before a trigger's content opens.",
-      },
-    ],
-    usage: [
-      "DO use NavigationMenu for primary *navigation* between pages/sections — items wrap `<NavigationMenuLink>` (an `<a>`), not command buttons. For command bars (ファイル/編集 …) use `Menubar`; for a single action drop-down use `DropdownMenu`.",
-      "DO render real links inside `<NavigationMenuLink asChild>` so SPA routers work: `<NavigationMenuLink asChild><Link href={route('reports.index')}>レポート</Link></NavigationMenuLink>` — never nest a raw `<a>` directly with its own onClick navigation.",
-      "DO use `<NavigationMenuTrigger>` + `<NavigationMenuContent>` only when an item needs a rich dropdown panel (link groups, featured cards). Top-level items that go straight to a page should be a bare `<NavigationMenuLink>` with NO trigger.",
-      "DON'T use it as the app's left sidebar — for a persistent vertical app sidebar use `Sidebar`/`AppShell`. Set `orientation=\"vertical\"` only for an in-content vertical link menu, not the global shell.",
-      "DON'T hand-roll the hover/focus dropdown timing — the primitive manages open-on-hover with `delayDuration`, keyboard navigation, and the animated viewport for you.",
-    ],
-    useCases: [
-      "Primary top navigation for an admin/portal app with dropdown panels grouping related pages (e.g. レポート ▾ → 売上 / 経費 / 入金).",
-      "Sectioned marketing or docs navigation with featured link cards inside NavigationMenuContent.",
-      "Nested link groups where one trigger reveals a multi-column panel of related destinations.",
-      "Vertical in-content navigation (orientation='vertical') for a settings or documentation area — distinct from the global Sidebar shell.",
-    ],
-    storyPath: "navigation/NavigationMenu.stories.tsx",
-    rules: [3, 6],
-    example: `import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger } from "@godxjp/ui/navigation";
-
-<NavigationMenu>
-  <NavigationMenuList>
-    <NavigationMenuItem>
-      <NavigationMenuTrigger>ページ</NavigationMenuTrigger>
-    </NavigationMenuItem>
-  </NavigationMenuList>
-</NavigationMenu>`,
   },
   {
     name: "ResizablePanel",

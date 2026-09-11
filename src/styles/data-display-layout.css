@@ -929,37 +929,57 @@
 }
 
 @layer components {
-  /* There was no `.ui-scroll*` rule anywhere: the rail's whole geometry lived on the component as
-   * Tailwind literals, so a service could not retune it. */
-  /* Radix wraps the viewport's children in a `display: table; min-width: 100%` div so a
-   * HORIZONTALLY scrolling area can grow past the viewport. On a VERTICAL-only area that wrapper
-   * can only do harm: mounting just the vertical ScrollBar leaves `overflow-x: hidden`, so the
-   * table takes its children's max-content width and anything wider is silently cut off — long
-   * prose loses the end of every line at narrow widths (measured: a 612px wrapper inside a 322px
-   * viewport at 390px). `max-inline-size: 100%` does not help, because a table's used width is
-   * floored by its min-content contribution; `display: block` does, because the wrapper is then
-   * exactly one viewport wide and the text has somewhere to wrap.
+  /* SCROLL AREA — the browser's own scrolling, styled.
    *
-   * `!important` is load-bearing and is a statement about the DOM, not about specificity: Radix
-   * writes `display: table` as an INLINE style on an element no prop of ours can reach. */
-  [data-slot="scroll-area-viewport"][data-orientation="vertical"] > * {
-    display: block !important;
+   * Ant Design ships no ScrollArea: it lets the platform scroll. So does this, since v23 — the
+   * hand-drawn Radix rail (`.ui-scroll-area-bar` / `-thumb`, a `<div>` pretending to be a
+   * scrollbar) is gone, and what is left is one `overflow: auto` element wearing the three
+   * standard scrollbar properties. Every knob below is a token (rule #45): a touch console widens
+   * the bar with `--scroll-area-scrollbar-width: auto`, a sharp-cornered theme retints the thumb,
+   * and a layout that must not reflow when content starts overflowing sets
+   * `--scroll-area-scrollbar-space: stable`.
+   *
+   * `scrollbar-color` needs BOTH halves to be valid, so each reads its role default at the CALL
+   * SITE via the var() fallback (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`") — that is
+   * what keeps a scoped `[data-tenant]` / `.dark` retint reaching the thumb. */
+  .ui-scroll-area {
+    position: relative;
+    scrollbar-width: var(--scroll-area-scrollbar-width);
+    scrollbar-color: var(--scroll-area-thumb-color, hsl(var(--border)))
+      var(--scroll-area-track-color, transparent);
+    scrollbar-gutter: var(--scroll-area-scrollbar-space);
   }
 
-  .ui-scroll-area-bar {
-    padding: var(--scroll-area-bar-padding);
+  /* WHICH AXES MAY OVERFLOW is the `orientation` prop, and nothing else. An axis the caller did
+   * not ask for stays `hidden`, so a vertical list can never grow a stray horizontal bar. */
+  .ui-scroll-area[data-orientation="vertical"] {
+    overflow-x: hidden; /* rtl-ignore — an axis, not a side: `x` does not flip under RTL */
+    overflow-y: auto;
   }
 
-  .ui-scroll-area-bar--vertical {
-    inline-size: var(--scroll-area-bar-size);
+  .ui-scroll-area[data-orientation="horizontal"] {
+    overflow-x: auto; /* rtl-ignore — an axis, not a side */
+    overflow-y: hidden;
   }
 
-  .ui-scroll-area-bar--horizontal {
-    block-size: var(--scroll-area-bar-size);
+  .ui-scroll-area[data-orientation="both"] {
+    overflow: auto;
   }
 
-  .ui-scroll-area-thumb {
-    border-radius: var(--scroll-area-thumb-radius);
+  /* The content wrapper only has a job on an axis that SCROLLS: it must be allowed to grow past
+   * the viewport, or a grid/flex row inside it would take the viewport's width and squash its
+   * columns instead of overflowing them. `min-inline-size: 100%` keeps a short strip full-bleed.
+   *
+   * On a VERTICAL-only area it deliberately stays a plain block. Radix used to force
+   * `display: table; min-width: 100%` here with an inline style, and on the vertical axis that
+   * could only do harm: the table took its children's max-content width while `overflow-x` was
+   * `hidden`, so long prose lost the end of every line (measured at 390px: a 612px wrapper inside
+   * a 322px viewport). That is why a `display: block !important` patch used to sit in this file —
+   * with the inline style gone, the patch went with it. */
+  .ui-scroll-area:is([data-orientation="horizontal"], [data-orientation="both"])
+    > .ui-scroll-area-content {
+    inline-size: max-content;
+    min-inline-size: 100%;
   }
 }
 
@@ -1772,24 +1792,11 @@
     flex: 1 1 auto;
   }
 
-  /* Radix wraps the viewport's children in a `display: table; min-width: 100%` div so a
-   * HORIZONTALLY scrolling area can grow past the viewport. A conversation needs the opposite:
-   * this viewport's `overflow-x` is `hidden`, so anything wider than it is simply lost.
-   *
-   * MEASURED at 390px: the wrapper took the longest message's max-content width (612px) inside a
-   * 322px viewport and every long line was cut off mid-sentence with no way to reach the rest.
-   * `max-inline-size: 100%` does NOT fix it (measured: still 612 — a table's used width is floored
-   * by its min-content contribution); `display: block` does, because the wrapper is then exactly
-   * one viewport wide and the text finally has somewhere to wrap.
-   *
-   * `!important` is the ONLY thing that can win here, and that is a statement about the DOM rather
-   * than about specificity: Radix writes `display: table` as an INLINE style on an element no prop
-   * of ours can reach, and an inline declaration outranks every layer.
-   *
-   * The real fix lives on ScrollArea itself (`.ui-scroll-area-bar` block below), keyed on
-   * `data-orientation="vertical"`: that is precisely the case whose `overflow-x` is `hidden`,
-   * so a wrapper wider than the viewport can only ever clip. A horizontal or both-axis area
-   * still gets Radix's table. */
+  /* The feed is a VERTICAL ScrollArea, so its content wrapper is a plain block and long messages
+   * wrap inside the viewport. This used to need a rule: Radix forced `display: table` on that
+   * wrapper with an inline style, and at 390px the table took the longest message's max-content
+   * width (612px) inside a 322px viewport, cutting every long line off mid-sentence with no way
+   * to reach the rest. Native scrolling has no such wrapper — see the ScrollArea block above. */
 
   .ui-chat-bubble-list-feed {
     display: flex;

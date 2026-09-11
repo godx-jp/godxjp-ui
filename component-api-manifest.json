@@ -4569,370 +4569,6 @@
         }
       ]
     },
-    "ContextMenu": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "Direction | undefined",
-          "values": ["ltr", "rtl"],
-          "declaredIn": ["node_modules/@radix-ui/react-context-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "modal",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-context-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "onOpenChange",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "((open: boolean) => void) | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-context-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "open",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-context-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "ContextMenuCheckboxItem": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "checked",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "CheckedState | undefined",
-          "values": [false, true, "indeterminate"],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "onCheckedChange",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "((checked: boolean) => void) | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "ContextMenuContent": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "alignOffset",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "avoidCollisions",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "collisionPadding",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "hideWhenDetached",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "loop",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "sticky",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"always\" | \"partial\" | undefined",
-          "values": ["always", "partial"],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        }
-      ]
-    },
-    "ContextMenuItem": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "inset",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/navigation/context-menu.tsx"]
-        },
-        {
-          "name": "variant",
-          "origin": "owned",
-          "required": false,
-          "type": "\"default\" | \"destructive\" | undefined",
-          "values": ["default", "destructive"],
-          "declaredIn": ["src/components/navigation/context-menu.tsx"]
-        }
-      ]
-    },
-    "ContextMenuLabel": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "inset",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/navigation/context-menu.tsx"]
-        }
-      ]
-    },
-    "ContextMenuPortal": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "ContextMenuRadioGroup": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "onValueChange",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "((value: string) => void) | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "ContextMenuRadioItem": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": true,
-          "type": "string",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "ContextMenuSeparator": {
-      "group": "navigation",
-      "props": []
-    },
-    "ContextMenuShortcut": {
-      "group": "navigation",
-      "props": []
-    },
-    "ContextMenuSub": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "defaultOpen",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-context-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "onOpenChange",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "((open: boolean) => void) | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-context-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "open",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-context-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "ContextMenuSubContent": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "align",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "AlignSubContent | undefined",
-          "values": ["start", "end"],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "alignOffset",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "avoidCollisions",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "collisionPadding",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "hideWhenDetached",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "loop",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "sideOffset",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "sticky",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"always\" | \"partial\" | undefined",
-          "values": ["always", "partial"],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        }
-      ]
-    },
-    "ContextMenuSubTrigger": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "ContextMenuTrigger": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-context-menu/dist/index.d.mts"]
-        }
-      ]
-    },
     "CredentialReveal": {
       "group": "data-display",
       "props": [
@@ -6287,11 +5923,35 @@
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
           "name": "modal",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "mouseEnterDelay",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "mouseLeaveDelay",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
@@ -6308,6 +5968,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
+        },
+        {
+          "name": "trigger",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly DropdownMenuTriggerActionProp[] | undefined",
+          "values": [],
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         }
       ]
@@ -9020,401 +8688,6 @@
         }
       ]
     },
-    "Menubar": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menubar/dist/index.d.mts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "(\"ltr\" | \"rtl\") | undefined",
-          "values": ["ltr", "rtl"],
-          "declaredIn": ["node_modules/@radix-ui/react-menubar/dist/index.d.mts"]
-        },
-        {
-          "name": "loop",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menubar/dist/index.d.mts"]
-        },
-        {
-          "name": "onValueChange",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "((value: string) => void) | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menubar/dist/index.d.mts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menubar/dist/index.d.mts"]
-        }
-      ]
-    },
-    "MenubarCheckboxItem": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "checked",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "CheckedState | undefined",
-          "values": [false, true, "indeterminate"],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "onCheckedChange",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "((checked: boolean) => void) | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "MenubarContent": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "align",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"center\" | \"start\" | \"end\" | undefined",
-          "values": ["center", "start", "end"],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "alignOffset",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "avoidCollisions",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "collisionPadding",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "hideWhenDetached",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "loop",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "side",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"left\" | \"right\" | \"top\" | \"bottom\" | undefined",
-          "values": ["left", "right", "top", "bottom"],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "sideOffset",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "sticky",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"always\" | \"partial\" | undefined",
-          "values": ["always", "partial"],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        }
-      ]
-    },
-    "MenubarItem": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "inset",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["src/components/navigation/menubar.tsx"]
-        },
-        {
-          "name": "variant",
-          "origin": "owned",
-          "required": false,
-          "type": "\"default\" | \"destructive\" | undefined",
-          "values": ["default", "destructive"],
-          "declaredIn": ["src/components/navigation/menubar.tsx"]
-        }
-      ]
-    },
-    "MenubarLabel": {
-      "group": "navigation",
-      "props": []
-    },
-    "MenubarMenu": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menubar/dist/index.d.mts"]
-        }
-      ]
-    },
-    "MenubarRadioGroup": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "onValueChange",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "((value: string) => void) | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "MenubarRadioItem": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": true,
-          "type": "string",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "MenubarSeparator": {
-      "group": "navigation",
-      "props": []
-    },
-    "MenubarShortcut": {
-      "group": "navigation",
-      "props": []
-    },
-    "MenubarSub": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "defaultOpen",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menubar/dist/index.d.mts"]
-        },
-        {
-          "name": "onOpenChange",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "((open: boolean) => void) | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-menubar/dist/index.d.mts"]
-        },
-        {
-          "name": "open",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menubar/dist/index.d.mts"]
-        }
-      ]
-    },
-    "MenubarSubContent": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "align",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "AlignSubContent | undefined",
-          "values": ["start", "end"],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "alignOffset",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "avoidCollisions",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "collisionPadding",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | Partial<Record<\"left\" | \"right\" | \"top\" | \"bottom\", number>> | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "hideWhenDetached",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "loop",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "sideOffset",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        },
-        {
-          "name": "sticky",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"always\" | \"partial\" | undefined",
-          "values": ["always", "partial"],
-          "declaredIn": ["node_modules/@radix-ui/react-popper/dist/index.d.mts"]
-        }
-      ]
-    },
-    "MenubarSubTrigger": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@radix-ui/react-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "MenubarTrigger": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
-    },
     "MobileShell": {
       "group": "layout",
       "props": [
@@ -9481,131 +8754,6 @@
           "type": "MobileShellWidthProp | undefined",
           "values": ["fill", "phone"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
-        }
-      ]
-    },
-    "NavigationMenu": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "delayDuration",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "Direction | undefined",
-          "values": ["ltr", "rtl"],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "onValueChange",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "((value: string) => void) | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "orientation",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "Orientation | undefined",
-          "values": ["vertical", "horizontal"],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "skipDelayDuration",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "number | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "NavigationMenuContent": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "NavigationMenuIndicator": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "NavigationMenuItem": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
-        }
-      ]
-    },
-    "NavigationMenuLink": {
-      "group": "navigation",
-      "props": []
-    },
-    "NavigationMenuList": {
-      "group": "navigation",
-      "props": []
-    },
-    "NavigationMenuTrigger": {
-      "group": "navigation",
-      "props": []
-    },
-    "NavigationMenuViewport": {
-      "group": "navigation",
-      "props": [
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": ["node_modules/@radix-ui/react-navigation-menu/dist/index.d.mts"]
         }
       ]
     },
@@ -11891,9 +11039,9 @@
           "name": "dir",
           "origin": "inherited-behavioral",
           "required": false,
-          "type": "Direction | undefined",
-          "values": ["ltr", "rtl"],
-          "declaredIn": ["node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"]
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "onAnchoredChange",
@@ -11912,14 +11060,6 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"always\" | \"hover\" | \"scroll\" | \"auto\" | undefined",
-          "values": ["always", "hover", "scroll", "auto"],
-          "declaredIn": ["node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"]
-        },
-        {
           "name": "viewportRef",
           "origin": "owned",
           "required": false,
@@ -11933,28 +11073,20 @@
       "group": "data-display",
       "props": [
         {
-          "name": "dir",
-          "origin": "inherited-behavioral",
+          "name": "className",
+          "origin": "owned",
           "required": false,
           "type": "string | undefined",
           "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "forceMount",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "true | undefined",
-          "values": [true],
-          "declaredIn": ["node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-display/scroll-area.tsx"]
         },
         {
           "name": "orientation",
-          "origin": "inherited-behavioral",
+          "origin": "owned",
           "required": false,
           "type": "\"vertical\" | \"horizontal\" | undefined",
           "values": ["vertical", "horizontal"],
-          "declaredIn": ["node_modules/@radix-ui/react-scroll-area/dist/index.d.mts"]
+          "declaredIn": ["src/components/data-display/scroll-area.tsx"]
         }
       ]
     },

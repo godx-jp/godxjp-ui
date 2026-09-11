@@ -70,6 +70,85 @@ parity-audit-data-entry.md`: một slider ¥/%/件 trước đây đọc lên đ
     khe DOM (docs/WHAT-BELONGS-HERE.md xếp lỗ kiểu dáng tự do vào mục "không đáng"), và
     `focus()` / `blur()` trên ref.
 
+### Removed
+
+- **BREAKING — `ContextMenu`, `Menubar` và `NavigationMenu` bị xoá hẳn.** Ba component này là
+  wrapper Radix mỏng và KHÔNG AI DÙNG: quét cả 9 kho đang phụ thuộc `@godxjp/ui`
+  (admin-web-plan-047, godx-chat, godx-chat-sdk, godx-task, jovy-crm, mf, ql, tempo-admin,
+  platform) — **0 tệp** import bất kỳ cái nào; trong chính kho này, thứ duy nhất import chúng là
+  dòng re-export của `src/components/ui/index.tsx`. Đi theo chúng: 3 subpath export
+  (`./ui/context-menu`, `./ui/menubar`, `./ui/navigation-menu`), **36 export** compound, 20 luật
+  CSS trong `navigation-layout.css`, token `--navigation-menu-trigger-icon-size`, 3 entry catalog
+  MCP, 3 trang docs, 5 tệp test và 3 gói `@radix-ui`.
+
+  **Thay bằng gì.** Menu chuột phải: `DropdownMenu trigger={['contextMenu']}` — antd cũng không có
+  component ContextMenu, nó diễn đạt đúng bằng giá trị này. Menubar: không có gì thay thế, và antd
+  cũng không có thứ tương đương. Thanh menu NGANG: **chưa có gì** — nếu sau này cần, hình dạng để
+  dựng là `Menu mode="horizontal"` của antd, và `overflowedIndicator` phải đi kèm ngay từ commit
+  đầu (thiếu nó là lỗi WCAG 2.4.3 / 1.4.10, đúng thứ `NavigationMenu` đang thiếu khi bị xoá).
+
+- **BREAKING — ba token `--menubar-*` đổi tên thành `--menu-*`**:
+  `--menubar-item-hover-background` / `-foreground` → `--menu-item-hover-*`, và
+  `--menubar-shortcut-font-size` → `--menu-shortcut-font-size`. Chúng chưa bao giờ là knob của
+  riêng Menubar — `DropdownMenu` đọc đúng những token ấy cho hàng hover và cho phím tắt — tên cũ
+  chỉ là di sản của component vừa bị xoá. Theme nào đang đặt tên cũ phải đổi; không kho consumer
+  nào đang đặt chúng (đã quét).
+
+- **BREAKING — `ScrollArea` bỏ `type` và `scrollHideDelay`, và `ScrollBar` không còn vẽ gì.**
+  Cả hai prop là lịch trình HIỆN/ẨN của một thanh cuộn tự vẽ; thanh cuộn nay là của trình duyệt,
+  nên không còn gì để lên lịch. `ScrollBar` vẫn export (không gãy biên dịch) nhưng trả `null`:
+  trước đây GẮN nó là cách mở một trục, nay `orientation` là thứ duy nhất mở trục — một
+  `<ScrollBar orientation="horizontal" />` còn sót lại sẽ IM LẶNG để trục ngang ở `hidden`, nên
+  hãy đổi sang `orientation="both"`. Kèm theo: `ref` nay trỏ vào CHÍNH phần tử cuộn (trước nó trỏ
+  vào gốc `overflow: hidden` không bao giờ cuộn — đó là lý do `viewportRef` ra đời; `viewportRef`
+  vẫn còn và trỏ cùng một nút), thuộc tính nội bộ `[data-radix-scroll-area-viewport]` biến mất,
+  và ba token thanh ray `--scroll-area-bar-size` / `-bar-padding` / `--scroll-area-thumb-radius`
+  bị xoá — thay bằng `--scroll-area-scrollbar-width` (`thin`), `--scroll-area-thumb-color`,
+  `--scroll-area-track-color`, `--scroll-area-scrollbar-space` (`scrollbar-gutter`).
+
+### Added
+
+- **`DropdownMenu` nhận `trigger` của Ant Design: `('click' | 'hover' | 'contextMenu')[]`**, mặc
+  định `['click']` (antd mặc định `['hover']`; đổi mặc định sẽ biến mọi menu đang có thành thứ chỉ
+  chuột mở được). `contextMenu` mở NGAY TẠI con trỏ và chặn menu của trình duyệt — đo trên
+  Chromium: góc menu trùng con trỏ **0px theo cả hai trục** sau khi animation vào chỗ (đo giữa
+  chừng animation sẽ thấy lệch đúng 8px của `slide-in-from-top-2`). Kèm theo là `disabled` (antd
+  làm rỗng danh sách gesture), `mouseEnterDelay` (0.15) và `mouseLeaveDelay` (0.1) — tính bằng
+  GIÂY như antd.
+
+  **Bàn phím không bao giờ là nạn nhân của danh sách gesture.** `click`/`hover` giữ Enter / Space /
+  ArrowDown; `contextMenu` được nối Shift+F10 và phím ContextMenu ngay trong component, vì
+  react-aria trông chờ trình duyệt tự phát sự kiện `contextmenu` cho hai phím ấy — Windows/Linux
+  có, macOS KHÔNG, nên nếu không nối thì trên Mac lối vào bằng bàn phím đơn giản là không tồn tại.
+  Đây cũng là lý do ghi chú `trigger: ['hover'] = WONT-PORT` trong `docs/roadmap` (lập luận "hover
+  là bẫy bàn phím") không còn đúng và đã được cập nhật.
+
+  Một cái bẫy đã được đo và bịt: react-stately KHÔNG BAO GIỜ xoá `state.point`, nên sau một lần
+  chuột phải, mọi lần mở bằng CLICK sau đó vẫn neo vào toạ độ con trỏ cũ. Nay điểm neo bị xoá ở
+  pha CAPTURE của trigger, tức trước khi react-aria kịp mở menu ở pha bubble.
+
+### Changed
+
+- **`ScrollArea` viết lại trên nền cuộn NGUYÊN BẢN của trình duyệt, không còn Radix.** Ant Design
+  không có ScrollArea vì antd để nền tảng cuộn; giờ đây cũng vậy: một phần tử `overflow: auto`,
+  thanh cuộn tạo kiểu bằng `scrollbar-width` / `scrollbar-color` / `scrollbar-gutter` đọc từ
+  token. Đo trên Chromium: `scrollbar-width: thin`, `scrollbar-color: rgb(215 212 209) /
+transparent` — đúng `hsl(var(--border))` trên nền trong suốt.
+
+  Gốc và viewport NHẬP LÀM MỘT, và chỗ tách đôi cũ là một lỗi thật: `.ui-cascader-list` /
+  `.ui-tree-select-list` đặt `max-block-size` lên GỐC còn viewport đọc `height: 100%` — phần trăm
+  trên chiều cao không xác định thì hoá `auto`, nên ruột tràn khỏi cái gốc `overflow: hidden` và bị
+  CẮT thay vì cuộn. Luật `display: block !important` (bản vá cho `display: table` mà Radix ghi
+  inline) cũng biến mất cùng Radix.
+
+  Bốn chỗ dùng nội bộ đều đã đo lại trong trình duyệt thật: `ChatBubbleList` bám đáy lúc mở
+  (scrollTop 244 = đáy 244) và KHÔNG kéo người đọc về khi có tin mới trong lúc họ đang đọc lịch sử
+  (scrollTop giữ nguyên 0, nút "về tin mới nhất" hiện ra); `Transfer` cuộn dọc (hộp 120px / nội
+  dung 618px); `TreeSelect` cuộn dọc (300px / 1010px); `Cascader` đổi sang `orientation="both"` và
+  cuộn ngang được (dải cột 288px trong hộp 200px). Lưu ý nền tảng: macOS vẽ thanh cuộn dạng
+  OVERLAY nên nó không chiếm chỗ trong bố cục và chỉ hiện lúc cuộn — thanh ray tự vẽ ngày trước
+  hiện khi rê chuột trên mọi hệ điều hành.
+
 ### Fixed
 
 - **Dưới 900px, mọi trạng thái của `AppShell` mới thật sự về MỘT cột.** Bản reset một cột trong

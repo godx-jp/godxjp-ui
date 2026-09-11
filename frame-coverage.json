@@ -1263,16 +1263,6 @@
         "reason": "Multi-breadcrumb frame passed Axe with unique landmark names."
       }
     },
-    "ContextMenu": {
-      "responsive": {
-        "status": "pass",
-        "reason": "ContextMenu frame passed all eight widths."
-      },
-      "a11y": {
-        "status": "pass",
-        "reason": "ContextMenu owner frame passed Axe."
-      }
-    },
     "DropdownMenu": {
       "responsive": {
         "status": "pass",
@@ -1281,26 +1271,6 @@
       "a11y": {
         "status": "pass",
         "reason": "DropdownMenu owner frame passed Axe."
-      }
-    },
-    "Menubar": {
-      "responsive": {
-        "status": "pass",
-        "reason": "Menubar frame passed all eight widths."
-      },
-      "a11y": {
-        "status": "pass",
-        "reason": "Menubar owner frame passed Axe."
-      }
-    },
-    "NavigationMenu": {
-      "responsive": {
-        "status": "pass",
-        "reason": "NavigationMenu frame passed all eight widths."
-      },
-      "a11y": {
-        "status": "pass",
-        "reason": "NavigationMenu owner frame passed Axe."
       }
     },
     "Steps": {
@@ -1843,28 +1813,6 @@
         "reason": "Sidebar state and selection are synchronous consumer-controlled interactions."
       }
     },
-    "navigation/context-menu": {
-      "props": {
-        "status": "pass",
-        "reason": "Owner source assertions map the compound trigger, content and item contract."
-      },
-      "responsive": {
-        "status": "pass",
-        "reason": "Owner frame passed the executed eight-width Chromium matrix."
-      },
-      "a11y": {
-        "status": "pass",
-        "reason": "Isolated owner frame passed Axe."
-      },
-      "touch": {
-        "status": "pass",
-        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
-      },
-      "async": {
-        "status": "not-applicable",
-        "reason": "ContextMenu primitives forward synchronous Radix interaction state; data loading belongs to consumers."
-      }
-    },
     "navigation/dropdown-menu": {
       "props": {
         "status": "pass",
@@ -1885,50 +1833,6 @@
       "async": {
         "status": "not-applicable",
         "reason": "DropdownMenu primitives forward synchronous Radix interaction state; data loading belongs to consumers."
-      }
-    },
-    "navigation/menubar": {
-      "props": {
-        "status": "pass",
-        "reason": "Owner source assertions map menu, trigger, content and item cases."
-      },
-      "responsive": {
-        "status": "pass",
-        "reason": "Owner frame passed the executed eight-width Chromium matrix."
-      },
-      "a11y": {
-        "status": "pass",
-        "reason": "Isolated owner frame passed Axe."
-      },
-      "touch": {
-        "status": "pass",
-        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
-      },
-      "async": {
-        "status": "not-applicable",
-        "reason": "Menubar primitives expose synchronous menu interaction; data loading belongs to consumers."
-      }
-    },
-    "navigation/navigation-menu": {
-      "props": {
-        "status": "pass",
-        "reason": "Owner source assertions map list, item, trigger, content and link cases."
-      },
-      "responsive": {
-        "status": "pass",
-        "reason": "Owner frame passed the executed eight-width Chromium matrix."
-      },
-      "a11y": {
-        "status": "pass",
-        "reason": "Isolated owner frame passed Axe."
-      },
-      "touch": {
-        "status": "pass",
-        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
-      },
-      "async": {
-        "status": "not-applicable",
-        "reason": "NavigationMenu is synchronous navigation composition; route/data loading belongs to consumers."
       }
     },
     "navigation/pagination": {
@@ -2723,11 +2627,8 @@
         "layout/resizable",
         "layout/sidebar",
         "navigation/app-setting-picker",
-        "navigation/context-menu",
         "navigation/dropdown-menu",
         "navigation/filter-bar",
-        "navigation/menubar",
-        "navigation/navigation-menu",
         "navigation/pagination",
         "navigation/steps",
         "navigation/tabs"
@@ -2756,11 +2657,8 @@
         "layout/responsive-grid",
         "layout/separator",
         "navigation/app-setting-picker",
-        "navigation/context-menu",
         "navigation/dropdown-menu",
         "navigation/filter-bar",
-        "navigation/menubar",
-        "navigation/navigation-menu",
         "navigation/pagination",
         "navigation/steps",
         "navigation/tabs"
@@ -2776,7 +2674,7 @@
         },
         "rtl": {
           "status": "pass",
-          "reason": "Every grouped owner passed pre-render RTL subtree direction, eight-width geometry and isolated Axe; Menubar directional focus and the dedicated Tabs RTL frame passed arrow-key assertions."
+          "reason": "Every grouped owner passed pre-render RTL subtree direction, eight-width geometry and isolated Axe; the dedicated Tabs RTL frame passed arrow-key assertions."
         },
         "screenReader": {
           "status": "untested",

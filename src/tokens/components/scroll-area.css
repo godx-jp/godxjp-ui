@@ -1,11 +1,25 @@
-/* SCROLL AREA — the bottom-anchoring contract (gh#311).
+/* SCROLL AREA — the scrollbar, and the bottom-anchoring contract (gh#311).
  *
- * The rail geometry (--scroll-area-bar-size / --scroll-area-bar-padding / --scroll-area-thumb-radius)
- * lives with the other data-display knobs in ./data-display.css, because it is styled from
- * styles/data-display-layout.css. What lives HERE is the one constant that is read by JavaScript
- * rather than by CSS, so it needs no layout rule to hang off.
+ * The hand-drawn rail knobs (--scroll-area-bar-size / -bar-padding / --scroll-area-thumb-radius)
+ * are GONE with the Radix rail they sized (v23): the browser draws the scrollbar now, and what a
+ * service can retune about it is the three standard scrollbar properties below. They live here,
+ * beside the anchoring constant, so every ScrollArea knob is in one file.
  */
 :root {
+  /* `thin` reproduces the old 10px rail closely on the platforms that draw a classic scrollbar;
+   * `auto` gives the full-width platform bar, which is what a touch/coarse-pointer console wants.
+   * Only `auto | thin | none` are valid — a length is not (that is the standard property's whole
+   * bargain, and the reason `--scroll-area-bar-size` could not survive as a rem). */
+  --scroll-area-scrollbar-width: thin;
+  /* Role-mirror knobs: `initial` so the defaults re-resolve at the CALL SITE under a scoped
+   * [data-tenant] / .dark theme. Defaults = hsl(var(--border)) thumb on a transparent track. */
+  --scroll-area-thumb-color: initial;
+  --scroll-area-track-color: initial;
+  /* `scrollbar-gutter`: `auto` (reflow when a bar appears) | `stable` | `stable both-edges`.
+   * Reach for `stable` where content starting to overflow must not shift the layout under the
+   * reader. */
+  --scroll-area-scrollbar-space: auto;
+
   /* How close to the bottom edge the reader still counts as "following the stream" for
    * `<ScrollArea anchor="bottom">`. Inside this band new content keeps the viewport pinned to the
    * newest item; one pixel beyond it the reader is reading history and anchoring NEVER moves them

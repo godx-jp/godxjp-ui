@@ -2479,21 +2479,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."
   },
   {
-    "name": "--scroll-area-bar-size",
-    "value": "0.625rem",
-    "description": "SCROLL AREA — the custom scrollbar rail. `.ui-scroll-area-*` did not exist at all: the whole * rail shipped as Tailwind literals on the component (`w-2.5 p-px` / `h-2.5 p-px`, * `rounded-full`), so a service could not widen the bar for a touch/coarse-pointer console or * square the thumb to match a sharp-cornered theme without forking ScrollArea (rule #45). * --scroll-area-bar-size is a RAW rem on purpose: it replaces a FLAT Tailwind step (2.5 = 10px), * not a --space-* step, so binding it to the density-scaled scale would silently change today's * rendering under a non-default --scaling. Defaults reproduce the previous rail exactly."
-  },
-  {
-    "name": "--scroll-area-bar-padding",
-    "value": "1px",
-    "description": "Hairline inset that keeps the thumb off the rail edge — a service running a thicker bar * usually wants a proportionally larger gutter here."
-  },
-  {
-    "name": "--scroll-area-thumb-radius",
-    "value": "var(--radius-pill)",
-    "description": "Hairline inset that keeps the thumb off the rail edge — a service running a thicker bar * usually wants a proportionally larger gutter here."
-  },
-  {
     "name": "--timeline-grid-hour-height",
     "value": "2.5rem",
     "description": "TIMELINE GRID — the time-axis half of the Timeline family (#354 item 7). Every measure the * hand-rolled week grids in docs/showcase baked as a literal is a knob here: the height of one * hour is what a service tunes when a 24-hour axis has to fit one screen, and the column floor * is what decides when the grid scrolls instead of collapsing into slivers. * --timeline-grid-hour-height is a RAW rem on the unenforced height axis: it is a rhythm the * consumer picks per surface (a 6-hour shift board wants a taller hour than a 24-hour one), * not a step of the spacing scale."
@@ -4054,7 +4039,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Ant Design `BreadcrumbItemType.menu` — the sibling picker hung off a segment. The trigger is * the segment's own text plus a disclosure chevron, so it only needs the gap between them."
   },
   {
-    "name": "--menubar-shortcut-font-size",
+    "name": "--menu-shortcut-font-size",
     "value": "var(--font-size-xs)",
     "description": "Ant Design `BreadcrumbItemType.menu` — the sibling picker hung off a segment. The trigger is * the segment's own text plus a disclosure chevron, so it only needs the gap between them."
   },
@@ -4259,12 +4244,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
   },
   {
-    "name": "--menubar-item-hover-background",
+    "name": "--menu-item-hover-background",
     "value": "initial",
     "description": "Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text."
   },
   {
-    "name": "--menubar-item-hover-foreground",
+    "name": "--menu-item-hover-foreground",
     "value": "initial",
     "description": "Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text."
   },
@@ -4306,27 +4291,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--menu-item-height",
     "value": "var(--band-height-md)",
-    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+    "description": "MENU SURFACES — one row rhythm shared by DropdownMenu and Select's listbox. The row height was * a literal `2rem` in the CSS and DropdownMenu had not been converted at all, so it carried the * whole box as Tailwind literals on the component (#319). A service tunes the menu rhythm once * here instead of once per surface."
   },
   {
     "name": "--menu-item-radius",
     "value": "var(--radius-sm)",
-    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+    "description": "MENU SURFACES — one row rhythm shared by DropdownMenu and Select's listbox. The row height was * a literal `2rem` in the CSS and DropdownMenu had not been converted at all, so it carried the * whole box as Tailwind literals on the component (#319). A service tunes the menu rhythm once * here instead of once per surface."
   },
   {
     "name": "--menu-item-space-inline",
     "value": "var(--space-2)",
-    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+    "description": "MENU SURFACES — one row rhythm shared by DropdownMenu and Select's listbox. The row height was * a literal `2rem` in the CSS and DropdownMenu had not been converted at all, so it carried the * whole box as Tailwind literals on the component (#319). A service tunes the menu rhythm once * here instead of once per surface."
   },
   {
     "name": "--menu-item-space-gap",
     "value": "var(--space-2)",
-    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+    "description": "MENU SURFACES — one row rhythm shared by DropdownMenu and Select's listbox. The row height was * a literal `2rem` in the CSS and DropdownMenu had not been converted at all, so it carried the * whole box as Tailwind literals on the component (#319). A service tunes the menu rhythm once * here instead of once per surface."
   },
   {
     "name": "--menu-item-font-size",
     "value": "var(--font-size-base)",
-    "description": "MENU SURFACES — one row rhythm shared by ContextMenu, Menubar and DropdownMenu. All three are * the same Radix popup surface; the row height was a literal `2rem` in the CSS and DropdownMenu * had not been converted at all, so it carried the whole box as Tailwind literals on the * component (#319). A service tunes the menu rhythm once here instead of three times."
+    "description": "MENU SURFACES — one row rhythm shared by DropdownMenu and Select's listbox. The row height was * a literal `2rem` in the CSS and DropdownMenu had not been converted at all, so it carried the * whole box as Tailwind literals on the component (#319). A service tunes the menu rhythm once * here instead of once per surface."
   },
   {
     "name": "--menu-item-inset-space-inline-start",
@@ -4402,11 +4387,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--menu-separator-space-inline",
     "value": "calc(var(--space-1) * -1)",
     "description": "default = var(--popover) at the call site"
-  },
-  {
-    "name": "--navigation-menu-trigger-icon-size",
-    "value": "var(--icon-size-sm)",
-    "description": "NAVIGATION MENU — the disclosure chevron on a top-level trigger. It was a bare `0.9rem` in * navigation-layout.css: no token, so unreachable from an app (gh#326), and 14.4px, so off the * icon scale AND off the pixel grid. A stroked chevron drawn into a 14.4px box lands its path * on half pixels at 1x, which is a rendering defect rather than a rounding preference, so this * SNAPS to the nearest step — --icon-size-sm, 14px, −0.4px. The nearest step upward is 16px * (+1.6px) and would also fight the `opacity: 0.7` that makes this chevron deliberately quiet. * `sm` rather than `md` is the same call the other quiet chevrons in the system already made * (--month-picker-separator-icon-size, --steps-inline-separator-size). NOT * --scaling-multiplied: the literal it replaces did not track density."
   },
   {
     "name": "--steps-dot-size",
@@ -4587,6 +4567,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--app-setting-picker-icon-rest-alpha",
     "value": "0.7",
     "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."
+  },
+  {
+    "name": "--scroll-area-scrollbar-width",
+    "value": "thin",
+    "description": "`thin` reproduces the old 10px rail closely on the platforms that draw a classic scrollbar; * `auto` gives the full-width platform bar, which is what a touch/coarse-pointer console wants. * Only `auto | thin | none` are valid — a length is not (that is the standard property's whole * bargain, and the reason `--scroll-area-bar-size` could not survive as a rem)."
+  },
+  {
+    "name": "--scroll-area-thumb-color",
+    "value": "initial",
+    "description": "Role-mirror knobs: `initial` so the defaults re-resolve at the CALL SITE under a scoped * [data-tenant] / .dark theme. Defaults = hsl(var(--border)) thumb on a transparent track."
+  },
+  {
+    "name": "--scroll-area-track-color",
+    "value": "initial",
+    "description": "Role-mirror knobs: `initial` so the defaults re-resolve at the CALL SITE under a scoped * [data-tenant] / .dark theme. Defaults = hsl(var(--border)) thumb on a transparent track."
+  },
+  {
+    "name": "--scroll-area-scrollbar-space",
+    "value": "auto",
+    "description": "`scrollbar-gutter`: `auto` (reflow when a bar appears) | `stable` | `stable both-edges`. * Reach for `stable` where content starting to overflow must not shift the layout under the * reader."
   },
   {
     "name": "--scroll-area-anchor-offset",

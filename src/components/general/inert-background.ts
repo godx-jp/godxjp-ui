@@ -15,7 +15,7 @@ import * as React from "react";
  * modal is open — but its modal probe only recognises `dialog` / `[role=dialog]` /
  * `[aria-modal=true]`, or a positioned element covering ≥75% of the viewport. A Dialog or Sheet
  * qualifies (`role="dialog"` + a full-bleed overlay); `role="listbox"` (Select) and `role="menu"`
- * (DropdownMenu, ContextMenu) do not, so those are the overlays that actually fail. Measured on
+ * (DropdownMenu) do not, so those are the overlays that actually fail. Measured on
  * real Chromium at /frame: `data-entry-select` and `navigation-dropdown-menu` each report
  * `aria-hidden-focus` on the background the moment the overlay opens.
  *

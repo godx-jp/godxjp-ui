@@ -56,8 +56,7 @@ derives delta tone from a regex on a stringified node (`card.tsx:233-246`) · `Q
 `isDismissable`) · `Pagination` is controlled-only, breaking the full-triad rule · `AppShell` has no
 `onSidebarCollapsedChange` and no built-in trigger (`app-shell.tsx:30`) · shell collapse breakpoint
 hardcoded (`shell-layout.css:1119`) while the overlay family's equivalent is a token · `Sidebar`
-submenu open state is unreachable local state (`sidebar.tsx:271`) · `NavigationMenu` has no overflow
-affordance (WCAG 2.4.3 / 1.4.10) · no `copyable` anywhere despite `ErrorSurface` rendering a
+submenu open state is unreachable local state (`sidebar.tsx:271`) · no `copyable` anywhere despite `ErrorSurface` rendering a
 `requestId` "so it can be read out or copied accurately" (`layout.prop.ts:787`) · clamped text
 cannot expand.
 
