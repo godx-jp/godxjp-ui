@@ -143,6 +143,15 @@ export function FormField({
   const childProps = React.isValidElement(children)
     ? (children.props as Record<string, unknown>)
     : undefined;
+  /**
+   * THE ID THE CONTROL ACTUALLY CARRIES — the child's own when it brought one, this field's
+   * otherwise. The clone has always preferred the child's `id` (overwriting it would break a
+   * control that addresses itself), but the label's click handler looked up `resolvedId`, so the
+   * two disagreed the moment they differed: `<FormField label="…"><InputOTP id="code" /></…>`
+   * generates a field id, the input keeps `code`, and clicking the visible label focused NOTHING
+   * (gh#477 — measured in Chromium, `document.activeElement` stayed `<body>`). One id, read once.
+   */
+  const controlId = (childProps?.id as string | undefined) ?? resolvedId;
   const mergeIds = mergeAriaIds;
   const childWithA11y = isStatic ? (
     // read-only FormField row and a Descriptions value are indistinguishable when mixed. That
@@ -155,7 +164,7 @@ export function FormField({
       // The label is associated via aria-labelledby (not <label for>): composite
       // controls (Radio.Group, checkbox lists, range pairs) have no labelable root,
       // and a dangling `for` triggers Chrome's "Incorrect use of <label>" issue.
-      id: (childProps?.id as string | undefined) ?? resolvedId,
+      id: controlId,
       ...(form?.disabled && childProps?.disabled !== false ? { disabled: true } : {}),
       ...(validationStatus === "validating" ? { "aria-busy": true } : {}),
       // Read the child's own value first in BOTH cases: cloneElement
@@ -229,7 +238,7 @@ export function FormField({
         >
           <span
             onClick={() => {
-              const el = document.getElementById(resolvedId);
+              const el = document.getElementById(controlId);
               if (!(el instanceof HTMLElement)) return;
               // Composite children put the field id on a plain wrapper —
               // focus the first real control inside it instead.

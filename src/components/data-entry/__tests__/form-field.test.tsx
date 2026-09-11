@@ -78,16 +78,31 @@ describe("FormField", () => {
     expect(screen.getByLabelText("inner")).toHaveFocus();
   });
 
-  it("clicking the label is a no-op when the field id resolves to nothing", async () => {
+  it("clicking the label focuses the id the CONTROL carries, not the field's own", async () => {
     const user = userEvent.setup();
-    // id given but no child carries it → getElementById returns null → early return.
+    // The clone has always preferred the child's own `id` — overwriting it would break a control
+    // that addresses itself — but the handler looked up the FIELD's id, so the two disagreed the
+    // moment they differed and the label focused nothing at all (gh#477, measured in Chromium:
+    // `document.activeElement` stayed `<body>`). This test used to pin that as "a no-op".
     renderWithUi(
       <FormField id="orphan" label="Orphan">
         <Input id="different" />
       </FormField>,
     );
     await user.click(screen.getByText("Orphan"));
-    expect(screen.getByRole("textbox")).not.toHaveFocus();
+    expect(screen.getByRole("textbox")).toHaveFocus();
+  });
+
+  it("clicking the label is a no-op when nothing focusable carries the id", async () => {
+    const user = userEvent.setup();
+    // Still an early return where there is genuinely nothing to focus.
+    renderWithUi(
+      <FormField id="static" label="Static">
+        <span id="static">just a value</span>
+      </FormField>,
+    );
+    await user.click(screen.getByText("Static"));
+    expect(document.activeElement).toBe(document.body);
   });
 
   it("warns in development when given a non-element child", () => {
