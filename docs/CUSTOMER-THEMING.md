@@ -83,7 +83,7 @@ Import the styles, then set anchor tokens in your app's `theme.css` (loaded afte
 
 /* ── Shadow tint — ONE knob ─────────────────────────────────────── */ --shadow-color: 12 26 49; /* RGB channels (default 0 0 0). Tints the WHOLE shadow ramp. */
 
-/* ── Brand depth — all opt-in, all quiet by default ─────────────── */ --shadow-glow: 0 8px 20px hsl(var(--primary) / 0.32); /* glow halo on the primary CTA */ --card-shadow: 0 1px 2px rgb(12 26 49 / 0.06), 0 10px 28px -14px rgb(12 26 49 / 0.2); /* lift every Card */ --focus-ring-color: var(--ring); /* hue of every focus ring */ --focus-ring-width: 2px; /* thickness of every focus ring — 0 turns it OFF */ --focus-ring-opacity: 1; /* alpha of every focus ring */ --focus-ring-offset: 0px; /* gap, outline-form rings only (star, dot, anchor) */ --gradient-hero: linear-gradient( 180deg, hsl(var(--accent)), transparent ); /* PageContainer header banner */ --gradient-glow: radial-gradient( 60% 70% at 90% -8%, hsl(var(--primary) / 0.1), transparent 70% ); /* AppShell ambient wash */ --overlay-background: rgb(12 26 49 / 0.55); /* modal scrim (Dialog / Sheet / Drawer) */ } ```
+/* ── Brand depth — all opt-in, all quiet by default ─────────────── */ --shadow-glow: 0 8px 20px hsl(var(--primary) / 0.32); /* glow halo on the primary CTA */ --card-shadow: 0 1px 2px rgb(12 26 49 / 0.06), 0 10px 28px -14px rgb(12 26 49 / 0.2); /* lift every Card */ --focus-ring-color: var(--ring); /* hue of every focus ring */ --focus-ring-weight: var(--stroke-md); /* thickness of every focus ring — 2px; nothing paints until <html data-focus-outline="on"> */ --focus-ring-opacity: 1; /* alpha of every focus ring */ --focus-ring-offset: 0px; /* gap, outline-form rings only (star, dot, anchor) */ --gradient-hero: linear-gradient( 180deg, hsl(var(--accent)), transparent ); /* PageContainer header banner */ --gradient-glow: radial-gradient( 60% 70% at 90% -8%, hsl(var(--primary) / 0.1), transparent 70% ); /* AppShell ambient wash */ --overlay-background: rgb(12 26 49 / 0.55); /* modal scrim (Dialog / Sheet / Drawer) */ } ```
 
 ### The anchor tokens (single knobs that propagate)
 
@@ -95,23 +95,33 @@ Import the styles, then set anchor tokens in your app's `theme.css` (loaded afte
 | `--shadow-color`                                                           | `0 0 0`                 | every shadow step `--shadow-{xs…2xl}` (`rgb(color / α)`)                                |
 | `--shadow-glow`                                                            | invisible               | brand glow halo on the primary CTA (set the full shadow value)                          |
 | `--card-shadow`                                                            | `none`                  | resting elevation of every Card                                                         |
-| `--focus-ring-color` / `--focus-ring-width`                                | `var(--ring)` / `2px`   | hue & thickness of every keyboard-focus ring (`width: 0` turns every ring OFF)          |
+| `--focus-ring-color` / `--focus-ring-weight`                               | `var(--ring)` / `1px`   | hue & thickness of every keyboard-focus ring — but nothing paints until the switch below is on |
 | `--focus-ring-opacity` / `--focus-ring-offset`                             | `1` / `0px`             | alpha of every ring · gap for outline-form rings (star, carousel dot, heading anchor)   |
 | `--gradient-{hero,glow,brand}`                                             | `none`                  | hero header banner / AppShell ambient wash / spare (set the full gradient)              |
 | `--overlay-background`                                                     | `rgb(0 0 0 / .5)`       | the scrim of every overlay (Dialog / AlertDialog / Sheet / Drawer)                      |
 
-### Focus ring — one definition, three levels of override
+### Focus ring — THE SWITCH FIRST, then three levels of override
 
-Every keyboard-focus ring in the system is drawn by a single rule (`src/styles/focus-ring.css`) reading the four tokens above. Nothing else paints one; a test fails the build if a stylesheet tries.
+**The indicator ships OFF.** `--focus-outline` is `0`, and every painted focus length multiplies by it, so by default nothing paints a focus mark. That is a product decision with a stated cost — it forfeits WCAG 2.2 SC 2.4.7 (AA) and a JIS X 8341-3 AA claim — recorded in `docs/DESIGN-AUTHORITY.md`. Turning it on is ONE attribute on the root element, no CSS:
 
-That means retuning is a one-liner and it reaches everything:
+```html
+<html data-focus-outline="on"></html>
+```
+
+(`AppProvider` has the equivalent.) Every `:focus-visible` selector is present either way; only the paint is switched.
+
+Every ring is then drawn by a single rule (`src/styles/focus-ring.css`) reading the tokens above. Nothing else paints one; a test fails the build if a stylesheet tries.
+
+**Thickness is `--focus-ring-weight`, never `--focus-ring-width`.** The width is DERIVED — `calc(var(--focus-ring-weight) * var(--focus-outline))` — so assigning it directly paints a ring even while the indicator is switched off, and that is exactly what the build-failing test forbids a stylesheet to do.
 
 ```css
 :root {
   --focus-ring-color: 24 99% 46%; /* every ring, brand orange */
-  --focus-ring-width: 3px; /* every ring, thicker */
+  --focus-ring-weight: var(--stroke-md); /* every ring, 2px */
 }
-````
+```
+
+**A slim ring that still satisfies the criteria.** Switched on, the shipped weight is one hairline (1px) in the focus hue, measured in Chromium at **5.05:1** light and **7.07:1** dark on every surface a control sits on — so SC 1.4.11 (3:1, non-text contrast) is met on colour, independent of thickness. SC 2.4.13 Focus Appearance (AAA) additionally wants a perimeter of at least 2 CSS px: set `--focus-ring-weight: var(--stroke-md)` (measured: a 2px ring, same hue, same ratio). `var(--stroke-lg)` is the heavy 3px mark.
 
 **Per component.** A component that genuinely needs a different ring publishes its own knob and the rule picks it up locally — Toggle and TimeInput ship a heavier, softer ring because they are filled surfaces where a hard 2px reads as a second border:
 
@@ -130,7 +140,7 @@ That means retuning is a one-liner and it reaches everything:
 <div style={{ "--focus-ring-color": "0 84% 60%" } as React.CSSProperties}>…</div>
 ```
 
-**Turning it off** — `--focus-ring-width: 0`, at any of the three levels. It ships **on** (WCAG 2.4.7 / 2.4.11); switching it off is a deliberate act on your side, never a default of this package. Removing the visible focus indicator fails WCAG 2.4.7 — do it only where another indicator takes over.
+**Turning it back off** — drop the `data-focus-outline` attribute (or set `--focus-outline: 0`), which is the shipped state. Do NOT reach for `--focus-ring-width`: it is derived from the weight and the switch, and pinning it to any value is the same mistake in the other direction. Note the cost either way — with no visible focus indicator the package does not meet WCAG 2.2 SC 2.4.7.
 
 **Adding your own component to the system**: put `ui-focus-ring` (or `ui-focus-ring-outline` when the mark needs a gap) on the focusable element.
 

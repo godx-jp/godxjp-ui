@@ -171,13 +171,25 @@ export const TOKENS: TokenEntry[] = [
     name: "--focus-ring-color",
     category: "primitive",
     tier: "primitive",
-    role: "Themeable hue of EVERY keyboard-focus ring (HSL components, default var(--ring)). A leaf token, so it re-resolves at the element that paints the ring — override it once, even scoped under [data-tenant], to retint all focus rings. Pair with --focus-ring-width.",
+    role: "Themeable hue of EVERY keyboard-focus ring (HSL components, default var(--ring)). A leaf token, so it re-resolves at the element that paints the ring — override it once, even scoped under [data-tenant], to retint all focus rings. Pair with --focus-ring-weight (thickness) — NOT --focus-ring-width, which is derived; see its entry.",
   },
   {
     name: "--focus-ring-width",
     category: "primitive",
     tier: "primitive",
-    role: "Thickness (2px) of the solid keyboard-focus ring. Leaf token — :focus-visible rules read it directly as `0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color))`, never via an intermediate composite (which would freeze at :root). Propagates scoped.",
+    role: "DERIVED, do not set: `calc(var(--focus-ring-weight) * var(--focus-outline))` — the painted thickness, weight times the on/off switch. Setting it directly paints a ring even while the indicator is switched OFF, which is why src/tokens/__tests__/focus-ring-contrast.test.ts fails the build when any stylesheet rebinds it. Retune --focus-ring-weight instead.",
+  },
+  {
+    name: "--focus-ring-weight",
+    category: "primitive",
+    tier: "primitive",
+    role: "THE thickness knob for every keyboard-focus ring; default var(--focus-outline-weight) = var(--stroke-hairline) = 1px, the light mark the ON state ships. Measured in Chromium: switched on it paints a 1px ring in the focus hue at 5.05:1 light / 7.07:1 dark, so WCAG 2.2 SC 1.4.11 (3:1) is met on thickness-independent grounds. For SC 2.4.13 Focus Appearance (AAA), which wants a >=2px perimeter, set --focus-ring-weight: var(--stroke-md) (2px, measured 2px painted, same hue and ratio); var(--stroke-lg) is the heavy 3px mark. Pair with --focus-ring-offset (gap, outline form only) and --focus-ring-color (hue).",
+  },
+  {
+    name: "--focus-outline (axis: <html data-focus-outline=\"on\">)",
+    category: "primitive",
+    tier: "primitive",
+    role: "The one 0/1 switch for the whole keyboard-focus indicator, and it SHIPS OFF (0): nothing paints a focus mark by default, which forfeits WCAG 2.2 SC 2.4.7 (AA) and a JIS X 8341-3 AA claim — a product decision recorded with its cost in docs/DESIGN-AUTHORITY.md. A consumer turns it on with ONE attribute on the root element: <html data-focus-outline=\"on\"> (AppProvider has the equivalent). Every painted focus length multiplies by it, so no per-component rebind can bring the mark back while it is off.",
   },
   {
     name: "--gradient-{brand,hero,glow}",

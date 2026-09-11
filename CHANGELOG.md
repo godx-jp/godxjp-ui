@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Tài liệu và catalog kê đúng cái núm mà chính kho này cấm: `--focus-ring-width`.** Từ khi vòng
+  tiêu điểm có công tắc, `--focus-ring-width` là GIÁ TRỊ DẪN XUẤT —
+  `calc(var(--focus-ring-weight) * var(--focus-outline))` — và `focus-ring-contrast.test.ts` làm đỏ
+  build nếu một stylesheet nào gán thẳng vào nó. Nhưng `CUSTOMER-THEMING.md` vẫn gọi nó là núm độ
+  dày, mặc định "2px", "ships on", và "`width: 0` tắt mọi vòng"; khối `:root` để DÁN NGUYÊN VĂN ở
+  đầu tài liệu còn phát thẳng `--focus-ring-width: 2px`; `TOKENS.md` gọi nó là một bậc của thang
+  `--stroke`; và catalog token của MCP — thứ agent đọc — lặp lại con số 2px. Đo trên Chromium: với
+  công tắc TẮT, `--focus-ring-width: 2px` vẫn vẽ ra vòng 2px trên một Button có tiêu điểm — tức lời
+  kê trong tài liệu đi vòng qua đúng cái công tắc mà test kia tồn tại để bảo vệ.
+
+  Không thêm token nào, vì đã đủ: `data-focus-outline="on"` (công tắc), `--focus-ring-weight` (độ
+  dày), `--focus-ring-offset` (khe), `--focus-ring-color` (màu). Đo lại cả bốn: bật công tắc →
+  **1px** `rgb(0,113,189)`; `--focus-ring-weight: 2px` → **2px**; `--focus-ring-offset: 2px` →
+  offset **2px**. Vòng MẢNH mà vẫn đạt chuẩn chính là `--focus-ring-weight: var(--stroke-md)`: 2px ở
+  **5,05:1** (sáng) / **7,07:1** (tối) — qua cả sàn 3:1 của SC 1.4.11 lẫn vành 2px của SC 2.4.13.
+
+  Cổng mới nằm ngay trong `focus-ring-contrast.test.ts`, cùng bất biến nhưng soi cái mà luật cũ
+  không thấy: MỌI `--focus-ring-width:` trong `CUSTOMER-THEMING.md`, `TOKENS.md`,
+  `DESIGN-AUTHORITY.md` và `mcp/src/data/tokens.ts` phải là chính định nghĩa dẫn xuất, không được là
+  một phép gán. Nó bắt được ngay khối dán-nguyên-văn mà lượt sửa tay đã bỏ sót. Đột biến: trả
+  `--focus-ring-width: 3px` vào ví dụ retune → đỏ.
+
 - **Ô chọn hàng của `DataTable` bị đọc lên bằng UUID.** Tên truy cập của checkbox (và radio) chọn
   hàng là `selectRow: "行 {id} を選択"` điền bằng `row.id` — trên một bảng khoá theo UUID, trình đọc màn
   hình nói "行 3f2a9c1e-7b4d-4e8a-9c21-000000000000 を選択" cho MỌI hàng (gino-cloud phát hiện, tái hiện
