@@ -6,6 +6,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Vòng tiêu điểm không còn phụ thuộc vào thứ tự tầng CSS của consumer.** `Input`, `Checkbox`,
+  `Radio`, `Switch` — và cả panel của `Tabs` — in utility `outline-none` ngay cạnh chính những class
+  mà `styles/focus-ring.css` vẽ vòng. Utility nằm ở tầng SAU components, nên nó quyết định kết quả.
+  Trong preview của kho này cascade vẫn nghiêng về phía vòng tiêu điểm và nó vẫn vẽ 2–3px, **nên
+  không ai thấy gì**; trong app của consumer, nơi bản build Tailwind của họ tự xếp tầng, utility
+  thắng: `.ui-input` khi có tiêu điểm bàn phím đo được `outline-width: 0px` và tương phản **1,09**
+  so với nền, tức trượt WCAG 2.2 SC 2.4.7 và 2.4.13.
+
+  Phép đối chứng nằm sẵn trong gói: bốn component in utility ấy đúng là bốn selector `focus-ring.css`
+  không vẽ được, còn `Segmented` — cái duy nhất không in — vẽ 4,86. Nay không component nào in nữa,
+  và cổng mới `check:no-outline-none` (trong `verify:ci:static`) chặn nó quay lại. Cổng bắt được
+  ngay một chỗ thứ năm mà báo cáo chưa nêu: panel của `Tabs`.
+
+### Changed — BREAKING, và lẽ ra phải có trong 23.0.0
+
+- **`Radio` và mục `Segmented` không còn thuộc tính `role` trên phần tử được vẽ.** Đây là hệ quả
+  của việc rời Radix ở 23.0.0 cộng với bản sửa vùng bấm (#487): vai trò nay là vai trò NGẦM của một
+  `<input>` thật nằm bên trong. Cây accessibility không đổi và `getByRole` vẫn tìm thấy — nhưng mọi
+  selector viết theo thuộc tính thì im lặng trả về **0**.
+
+  Đây là dạng hồi quy tệ nhất vì nó làm cổng XANH HƠN: một consumer đo được test a11y chuyển từ đỏ
+  sang xanh ngay sau khi nâng, trong khi khiếm khuyết vẫn còn nguyên — luật chỉ đơn giản là hết
+  nhìn thấy nó. 23.0.0 không ghi điều này ở đâu cả; đây là chỗ ghi.
+
+  Selector thay thế: `[data-slot="radio-group-item"]`, `[data-slot="segmented-item"]`,
+  `[data-slot="checkbox"]` cho hộp được vẽ; hoặc locator theo vai trò tính được
+  (`getByRole` / `internal:role=radio[name=…]` của Playwright) cho chính control. `Switch` không
+  ảnh hưởng — react-aria khai `role="switch"` tường minh.
+
 ### Added
 
 - **`ui-audit --changed`** — quét đúng những gì nhánh này đụng vào, bất kể sửa bằng công cụ nào.

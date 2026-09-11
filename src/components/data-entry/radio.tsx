@@ -117,7 +117,7 @@ const RadioItem = React.forwardRef<HTMLLabelElement, RadioProp>(
           // records: react-aria's root is a `<label>`, which is `display:inline`, so without it the
           // 16px dot collapses to nothing. `data-[invalid]` replaces `aria-invalid:` because
           // react-aria puts `aria-invalid` on the `<input>` and `data-invalid` on this box.
-          "ui-radio data-[invalid]:border-destructive inline-flex shrink-0 items-center justify-center shadow-xs transition-shadow outline-none",
+          "ui-radio data-[invalid]:border-destructive inline-flex shrink-0 items-center justify-center shadow-xs transition-shadow",
           className,
         )}
         {...(props as unknown as Record<string, never>)}

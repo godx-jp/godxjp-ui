@@ -22,7 +22,7 @@ export type { InputProp, InputProp as InputProps } from "../../props/components/
  * else changed for it — see CONTROL_VARIANT_CHROME_CLASS.
  */
 const inputBaseClass = [
-  "ui-control ui-input w-full rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
+  "ui-control ui-input w-full rounded-[var(--control-radius)] transition-[color,box-shadow]",
   "selection:bg-primary selection:text-primary-foreground",
   "placeholder:text-muted-foreground",
   "aria-invalid:border-destructive",
