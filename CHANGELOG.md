@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Calendar bordered`: chữ tiêu đề thứ dính sát đường kẻ.** Khi lưới được kẻ ô, ô tiêu đề thứ
+  không có đệm theo trục khối, nên hộp dòng bắt đầu ngay dưới đường kẻ 1px phía trên — đo trên
+  Chromium: chữ cách đường kẻ trên **1px**, cách đường kẻ dưới **2,19px**, tức một khoảng đệm nhỏ
+  hơn cả bậc nhỏ nhất của thang khoảng cách (gino-cloud phát hiện). Nay ô tiêu đề của lưới CÓ KẺ lấy
+  `padding-block: var(--calendar-bordered-weekday-padding-block)`, token mới mặc định
+  `var(--space-1)` — một bậc có tên, nên service chỉnh thang khoảng cách thì nó đi theo. Sau khi
+  sửa: **5px / 6,19px**, ô cao 22,19 → 30,19px. Lưới KHÔNG kẻ giữ nguyên: không có mép nào để chữ
+  tựa vào, nên nó không cần đệm.
+
+  Test mới `calendar-bordered-weekday-inset.test.ts` ghim quy tắc nào mang đệm, đệm đọc token nào,
+  token là một bậc có tên, và tiêu đề không kẻ không bị đụng tới. Đột biến từng khẳng định một: bỏ
+  dòng `padding-block`, đổi token thành `4px`, thêm đệm cho tiêu đề không kẻ — mỗi lần đúng một test đỏ.
+
 - **`Segmented` bốn lựa chọn bị cắt chữ ở màn điện thoại — nay track XUỐNG DÒNG.** Catalog hứa
   Segmented dành cho 2–4 lựa chọn, nhưng track là `inline-flex` một hàng và item co lại kèm dấu
   lược, nên bốn lựa chọn có số đếm không sống nổi ở 393px. Đo trên Chromium (gino-cloud phát hiện):

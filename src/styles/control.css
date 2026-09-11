@@ -2282,6 +2282,9 @@
     /* The header cell keeps a radius when unruled, which reads as seven small tabs the moment the
      * grid is ruled — the corners cut the lines that are supposed to run the width of the row. */
     border-radius: 0;
+    /* Ruled, the header cell's text needs an inset from the rule above it: with none, the line box
+     * sat 1px under the top border (2.19px over the bottom one). */
+    padding-block: var(--calendar-bordered-weekday-padding-block);
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-grid {

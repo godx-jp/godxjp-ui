@@ -433,6 +433,11 @@
   --calendar-week-space-block-start: var(--space-2);
   --calendar-weekday-font-size: var(--font-size-xs);
   --calendar-weekday-radius: var(--radius-md);
+  /* Block inset of a header cell once the grid is RULED. Unruled, the header row has no edge for
+   * its text to sit against, so it needs none; ruled, the line box started right at the 1px rule —
+   * measured 1px from the top border and 2.19px from the bottom, an inset below the smallest named
+   * step. The smallest step, not a literal, so a service retuning the spacing grid moves it too. */
+  --calendar-bordered-weekday-padding-block: var(--space-1);
   --calendar-day-font-size: var(--font-size-sm);
   --calendar-day-radius: var(--radius-md);
   --calendar-chevron-size: var(--icon-size-md);
