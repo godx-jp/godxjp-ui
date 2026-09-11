@@ -4330,7 +4330,7 @@ import { Flex } from "@godxjp/ui/layout";
     name: "Progress",
     group: "data-display",
     tagline:
-      "Horizontal bar in two modes: a METER (`value` 0–100, optional tone, over-capacity striped state) and a BREAKDOWN (`segments` — one total split into tone-coloured slices on a taller track).",
+      "Progress in two modes: a METER (`value` 0–100, optional tone, over-capacity striped state, drawn as a bar or — with `shape='ring'` — as an arc with the readout inside it) and a BREAKDOWN (`segments` — one total split into tone-coloured slices on a taller track).",
     props: [
       {
         name: "value",
@@ -4362,7 +4362,14 @@ import { Flex } from "@godxjp/ui/layout";
         type: "boolean",
         defaultValue: "false",
         description:
-          "Allow value > 100 to render an over-capacity fill: bar caps at 100% width but gets a diagonal hatch + destructive tone (e.g. 252%). aria-valuetext reports the real ratio. Off by default (clamps to 100).",
+          "Allow value > 100 to render an over-capacity fill: bar caps at 100% width but gets a diagonal hatch + destructive tone (e.g. 252%). aria-valuetext reports the real ratio. Off by default (clamps to 100). On shape='ring' there is no hatch — diagonal stripes are a rectangle drawing — so the destructive tone and aria-valuetext carry it.",
+      },
+      {
+        name: "shape",
+        type: '"bar" | "ring"',
+        defaultValue: '"bar"',
+        description:
+          "METER geometry — the SAME measurement drawn as a full-width bar or as an arc. Same value, tone, size and ARIA either way; `label` moves INSIDE the ring, which is the point of it: a phone app bar showing '18 of 42 done' beside a title has one square of space, and a bar plus its caption needs two stacked rows. Reach for it when the SPACE is square, not when the number is important. It is meter-only: a ring around a `segments` breakdown is a pie chart, which is `PieChart donut` in the charts entry point — a part-to-whole across CATEGORIES with a legend, announced as an image rather than as a progressbar. The arc reads the MARK token tier, exactly as the bar does, so a warning ring and a warning bar on one screen are one colour.",
       },
       {
         name: "size",

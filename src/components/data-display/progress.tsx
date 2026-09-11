@@ -45,10 +45,47 @@ type ProgressBase = Omit<
   label?: string;
 };
 
+/**
+ * Geometry of the METER — the same measurement, drawn two ways.
+ *
+ * `bar` is the default and what every existing call site gets. `ring` draws the identical ratio as
+ * an arc, for a header with no room for a full-width bar: a phone app bar that has to show
+ * "18 of 42 done" beside a title has one square of space, and a bar plus its caption needs two
+ * stacked rows. Reach for it when the SPACE is square, not when the number is important — the two
+ * shapes say exactly the same thing and carry the same ARIA.
+ *
+ * It is a meter shape only. A ring around a `segments` breakdown is a pie chart, which is
+ * `PieChart donut` and belongs to the charts entry point; that one is a part-to-whole across
+ * CATEGORIES with a legend and tooltips, and a screen reader should hear it as an image, not as a
+ * progressbar.
+ */
+export type ProgressShape = "bar" | "ring";
+
+/**
+ * The SVG's own coordinate space, and the trick that keeps a circumference out of the component.
+ *
+ * `pathLength="100"` tells the renderer the circle measures 100 units whatever its real radius is,
+ * so `stroke-dasharray: <value> 100` IS the percentage and nothing here ever computes 2πr. The
+ * viewBox is a drawing grid, not a layout measurement: the painted size comes from
+ * `--progress-ring-size` on the element, and this box just has to be big enough to hold the stroke
+ * without clipping it.
+ */
+const RING_BOX = 40;
+const RING_CENTRE = RING_BOX / 2;
+const RING_RADIUS = 16;
+/** Start the arc at 12 o'clock. An attribute, not a CSS transform, so no stylesheet can reorder it. */
+const RING_ROTATION = `rotate(-90 ${RING_CENTRE} ${RING_CENTRE})`;
+
 /** A METER: one ratio of one whole. */
 type ProgressMeterProps = ProgressBase & {
   value: number;
   tone?: ProgressTone;
+  /**
+   * `bar` (default) or `ring` — the same measurement drawn as a full-width bar or as an arc.
+   * `label` moves INSIDE the ring, which is the point of it: the readout and its proportion take
+   * one square instead of two stacked rows.
+   */
+  shape?: ProgressShape;
   /**
    * Allow `value` to exceed 100 and render an OVER-CAPACITY fill: the bar caps at 100% width but
    * gets a diagonal striped overlay + destructive tone, so an over-limit meter (e.g. 252% of a
@@ -82,6 +119,8 @@ type ProgressBreakdownProps = ProgressBase & {
   value?: never;
   tone?: never;
   over?: never;
+  /** A ring around a partition is a pie chart — that is `PieChart donut`, not this. */
+  shape?: never;
 };
 
 export type ProgressProps = ProgressMeterProps | ProgressBreakdownProps;
@@ -97,6 +136,7 @@ type ProgressInternalProps = ProgressBase & {
   value?: number;
   tone?: ProgressTone;
   over?: boolean;
+  shape?: ProgressShape;
 };
 
 export function Progress(props: ProgressProps) {
@@ -109,6 +149,7 @@ export function Progress(props: ProgressProps) {
     value,
     tone,
     size,
+    shape,
     over = false,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
@@ -183,7 +224,10 @@ export function Progress(props: ProgressProps) {
       className={cn("ui-progress", className)}
       data-tone={effectiveTone}
       data-size={size === "sm" ? "sm" : undefined}
-      data-over={isOver ? "" : undefined}
+      // Quiet default (rule #44): `bar` emits nothing, so every existing call site keeps the box it
+      // already had and the ring rules cannot reach it.
+      data-shape={shape === "ring" ? "ring" : undefined}
+      data-over={isOver && shape !== "ring" ? "" : undefined}
       role="progressbar"
       aria-valuenow={boundedValue}
       aria-valuemin={0}
@@ -199,10 +243,53 @@ export function Progress(props: ProgressProps) {
       }
       {...domProps}
     >
-      <div className="ui-progress-track">
-        <div className="ui-progress-bar" style={{ width: `${boundedValue}%` }} />
-      </div>
-      {caption}
+      {shape === "ring" ? (
+        /*
+         * The ARC is aria-hidden and the ring carries no text of its own for a screen reader: the
+         * element above is already `role="progressbar"` with `aria-valuenow`/`aria-valuetext`, so
+         * announcing the drawing as well would say the same number twice. `focusable="false"`
+         * because IE-era SVG semantics still reach some AT through the tab order.
+         */
+        <div className="ui-progress-ring">
+          <svg
+            className="ui-progress-ring-svg"
+            viewBox={`0 0 ${RING_BOX} ${RING_BOX}`}
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle
+              className="ui-progress-ring-track"
+              cx={RING_CENTRE}
+              cy={RING_CENTRE}
+              r={RING_RADIUS}
+              pathLength={100}
+            />
+            <circle
+              className="ui-progress-ring-indicator"
+              cx={RING_CENTRE}
+              cy={RING_CENTRE}
+              r={RING_RADIUS}
+              pathLength={100}
+              transform={RING_ROTATION}
+              // `pathLength="100"` above makes the path measure 100 units whatever its radius is,
+              // so the dash length IS the percentage and no circumference is computed anywhere.
+              strokeDasharray={`${boundedValue} 100`}
+            />
+          </svg>
+          {label !== undefined ? (
+            <div className="ui-progress-ring-label" id={labelId}>
+              {label}
+            </div>
+          ) : null}
+        </div>
+      ) : (
+        <>
+          <div className="ui-progress-track">
+            <div className="ui-progress-bar" style={{ width: `${boundedValue}%` }} />
+          </div>
+          {caption}
+        </>
+      )}
     </div>
   );
 }

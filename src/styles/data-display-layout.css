@@ -243,6 +243,76 @@
     font-size: var(--progress-label-font-size);
   }
 
+  /* RING (`shape="ring"`) — the same METER, drawn as an arc instead of a bar.
+   *
+   * It is the same datum and therefore the same tier: the arc reads `--mark-*`, exactly as the bar
+   * and the breakdown slices do, so a `tone="warning"` ring and a `tone="warning"` bar on one
+   * screen are one colour. Nothing is written ON the arc, and where it stops IS the number, so
+   * WCAG 2.2 SC 1.4.11 asks 3:1 of it against the track — see the tier table in docs/TOKENS.md.
+   *
+   * The arc itself is `stroke-dasharray` over `pathLength="100"`, which is why no circumference is
+   * computed anywhere: the SVG is told its own path measures 100 units, so the dash length IS the
+   * percentage. Rotation lives on the element as an attribute rather than a CSS transform so the
+   * start of the arc is 12 o'clock without a `transform` any stylesheet could reorder. */
+  .ui-progress[data-shape="ring"] {
+    display: inline-flex;
+  }
+
+  .ui-progress-ring {
+    position: relative;
+    display: inline-grid;
+    inline-size: var(--progress-ring-size);
+    block-size: var(--progress-ring-size);
+    place-items: center;
+  }
+
+  .ui-progress[data-size="sm"] .ui-progress-ring {
+    --progress-ring-size: var(--progress-ring-size-sm);
+  }
+
+  .ui-progress-ring-svg {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .ui-progress-ring-track,
+  .ui-progress-ring-indicator {
+    fill: none;
+    stroke-width: var(--progress-ring-border-width);
+  }
+
+  .ui-progress-ring-track {
+    stroke: var(--progress-track-background, hsl(var(--secondary)));
+  }
+
+  .ui-progress-ring-indicator {
+    stroke: var(--progress-fill-background, hsl(var(--mark-success)));
+    /* A zero-length arc still paints a dot with a round cap, which reads as "a little" when the
+     * answer is "none". Butt caps make 0% genuinely empty. */
+    stroke-linecap: butt;
+  }
+
+  .ui-progress[data-tone="warning"] .ui-progress-ring-indicator {
+    stroke: hsl(var(--mark-warning));
+  }
+
+  .ui-progress[data-tone="destructive"] .ui-progress-ring-indicator {
+    stroke: hsl(var(--mark-destructive));
+  }
+
+  /* The readout sits INSIDE the ring rather than under it, which is the whole reason a ring beats
+   * a bar in a cramped app bar: the count and its proportion occupy one square instead of two
+   * stacked rows. */
+  .ui-progress-ring-label {
+    position: relative;
+    color: hsl(var(--foreground));
+    font-size: var(--progress-ring-label-font-size);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
   /* Legend — a wrapping row of keys. It wraps rather than scrolls: a key that scrolled out of
    * sight would take the meaning of a colour with it. */
   .ui-legend {

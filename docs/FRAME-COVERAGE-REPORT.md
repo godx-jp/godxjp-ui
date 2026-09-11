@@ -60,7 +60,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | QrCode | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
 | Descriptions | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | EmptyState | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
-| Progress | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
+| Progress | ✓ | · | N/A | · | · | · | · | · | · | · |
 | CodeBlock | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | Prose | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | Timeline | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
