@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Tệp luật do gói sở hữu không còn mục ruỗng trong im lặng.** `.ai/rules/godxjp-ui.md` mở đầu bằng
+  lời hứa "bị GHI ĐÈ mỗi lần nâng cấp", nhưng consumer đặt `ignore-scripts=true` — một mặc định bảo
+  mật hợp lý — thì postinstall không chạy và lời hứa ấy vỡ mà không ai biết: đo được ở một kho,
+  tệp ghi **19.6.0** trong khi gói đã cài là **23.0.0**, lệch ba bản major. Agent đọc tệp ấy như
+  luật hiện hành sẽ dựng theo component đã bị xoá, prop đã biến mất và thuộc tính `role` không còn.
+
+  postinstall không tự chữa được — nó chính là thứ đã không chạy. `ui-audit` thì chạy, nên nay nó so
+  dấu phiên bản trong tệp với phiên bản gói đang cài và báo `owned-rules-stale` kèm đúng một dòng
+  lệnh để làm mới.
+
+- **Gói thôi giành tệp với Prettier.** Thân tệp có bảng markdown căn cột; Prettier định dạng lại,
+  digest đổi, lượt cài kế tiếp ghi đè ngược, `format:check` lại đỏ — vòng lặp không ai thắng. Nay
+  postinstall tự thêm hai tệp ấy vào `.prettierignore` (idempotent), vì chúng là của gói.
+
 ### Changed — BREAKING, và lẽ ra phải có trong 23.0.0
 
 - **`Radio` và mục `Segmented` không còn thuộc tính `role` trên phần tử được vẽ.** Hệ quả của việc

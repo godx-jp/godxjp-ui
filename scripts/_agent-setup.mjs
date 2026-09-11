@@ -372,6 +372,24 @@ export function ensureConsumerRules(root) {
   mkdirSync(dir, { recursive: true });
   writeFileSync(target, next);
 
+  // Prettier and this writer were fighting over the same file: the body holds aligned markdown
+  // tables, Prettier reformats them, the digest changes, the next install writes it back, and
+  // `format:check` goes red again — a loop with no winner, and the consumer is who is stuck in it
+  // (godx-jp/id#513). The file is OURS; say so to Prettier once, idempotently.
+  const ignoreFile = join(root, ".prettierignore");
+  if (existsSync(ignoreFile)) {
+    const cur = readFileSync(ignoreFile, "utf8");
+    const owned = [".ai/rules/godxjp-ui.md", ".claude/godxjp-ui-workflow.md"].filter(
+      (line) => !cur.includes(line),
+    );
+    if (owned.length) {
+      writeFileSync(
+        ignoreFile,
+        `${cur.replace(/\s*$/, "")}\n\n# Owned by @godxjp/ui — rewritten on every install, never hand-formatted.\n${owned.join("\n")}\n`,
+      );
+    }
+  }
+
   // Only touch the index when the repo keeps one; a missing index means the repo reads rule files
   // directly, and inventing one would change how it loads everything else.
   const index = join(dir, "index.md");

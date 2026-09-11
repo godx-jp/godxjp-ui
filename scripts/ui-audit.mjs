@@ -833,7 +833,53 @@ const SIBLING_CARDS = /^([ \t]*)<\/Card>\s*\n\1<Card\b/gm;
 const ACTIVE_RULES =
   SELF && !args.includes("--consumer") ? RULES.filter((r) => r.scope !== "consumer") : RULES;
 
+/**
+ * The rule file this package OWNS, and whether the consumer's copy is the one this package writes.
+ *
+ * `.ai/rules/godxjp-ui.md` opens by promising it is rewritten on every upgrade. A consumer with
+ * `ignore-scripts=true` — a sane, increasingly common default — never runs our postinstall, so the
+ * promise silently fails: measured in a consumer at `godxjp-ui:version 19.6.0` while the installed
+ * package was **23.0.0**, three majors apart (godx-jp/id#513). An agent then follows a rule file
+ * describing components that were removed, props that no longer exist and a `role` attribute that
+ * is gone — and nothing anywhere says the ground moved.
+ *
+ * postinstall cannot fix this: it is the thing that did not run. This can, because a consumer runs
+ * the audit.
+ */
+function staleOwnedRules() {
+  if (SELF) return null;
+  const target = join(CWD, ".ai", "rules", "godxjp-ui.md");
+  if (!existsSync(target)) return null;
+
+  const stamped = /<!-- godxjp-ui:version ([^\s]+) -->/.exec(readFileSync(target, "utf8"))?.[1];
+  let installed;
+  try {
+    installed = JSON.parse(
+      readFileSync(join(CWD, "node_modules", "@godxjp", "ui", "package.json"), "utf8"),
+    ).version;
+  } catch {
+    return null;
+  }
+  if (!stamped || !installed || stamped === installed) return null;
+
+  return {
+    file: ".ai/rules/godxjp-ui.md",
+    line: 1,
+    rule: "owned-rules-stale",
+    severity: "error",
+    message:
+      `This file is written by @godxjp/ui and says version ${stamped}, but the installed package ` +
+      `is ${installed}. Its rules describe a different library than the one you are building ` +
+      "against — most likely because `ignore-scripts=true` kept our postinstall from running.",
+    replacement:
+      "INIT_CWD=\"$PWD\" node node_modules/@godxjp/ui/scripts/postinstall.mjs",
+    snippet: `<!-- godxjp-ui:version ${stamped} --> vs installed ${installed}`,
+  };
+}
+
 const findings = [];
+const stale = staleOwnedRules();
+if (stale) findings.push(stale);
 let filesScanned = 0;
 for (const dir of SCAN_DIRS) {
   for (const file of walk(isAbsolute(dir) ? dir : join(CWD, dir))) {
