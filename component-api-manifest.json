@@ -313,7 +313,7 @@
           "origin": "owned",
           "required": false,
           "type": "ActivityVariantProp | undefined",
-          "values": ["dots", "pulse", "bar"],
+          "values": ["bar", "dots", "pulse"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
@@ -11153,6 +11153,14 @@
           "required": false,
           "type": "ProgressSegment[] | undefined",
           "values": [],
+          "declaredIn": ["src/components/data-display/progress.tsx"]
+        },
+        {
+          "name": "shape",
+          "origin": "owned",
+          "required": false,
+          "type": "ProgressShape | undefined",
+          "values": ["bar", "ring"],
           "declaredIn": ["src/components/data-display/progress.tsx"]
         },
         {

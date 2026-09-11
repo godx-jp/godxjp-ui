@@ -35,6 +35,34 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>shape=&quot;ring&quot;</CardTitle>
+            <CardDescription>
+              同じメーターを弧で描きます。バーと同じ value / tone / size / ARIA
+              のまま、label がリングの内側に入ります。狭いアプリバーで「18 / 42
+              件」を見出しの横に出したいとき、バー＋キャプションの 2
+              段ではなく 1 マスで済むのが理由です。数値が重要なときではなく、
+              場所が正方形のときに選びます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap align="center" gap="lg">
+              {/* label はリング内の表示であり、同時に読み上げ名でもあります。「何の 18/42 か」を
+                  名前にしたいときは、画面にすでにある見出しを aria-labelledby で指します
+                  — bar と同じ規約です。 */}
+              <Progress shape="ring" value={43} label="18/42" />
+              <Progress shape="ring" value={43} size="sm" label="18/42" />
+              <Progress shape="ring" value={0} label="0/42" />
+              <Progress shape="ring" value={100} label="42/42" />
+              <Progress shape="ring" value={62} tone="warning" label="26/42" />
+              <Progress shape="ring" value={88} tone="destructive" label="37/42" />
+              {/* label なし＝読み出しのないリング。名前は aria-label から。 */}
+              <Progress shape="ring" value={43} aria-label="実施済みの点検" />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Breakdown（segments）</CardTitle>
             <CardDescription>
               1 つの合計を状態ごとに分割します。割合ではなく実数を渡すと、各スライスの比率は

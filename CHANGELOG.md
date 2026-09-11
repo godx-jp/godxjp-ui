@@ -20,6 +20,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Progress shape="ring"`** — CÙNG một meter, vẽ thành cung thay vì thanh. Cùng `value`, `tone`,
+  `size` và cùng ARIA (`role="progressbar"` với `aria-valuenow` / `aria-valuetext`), vì nó là cùng
+  một phép đo; chỉ `label` chuyển vào GIỮA vòng — và đó chính là lý do tồn tại của nó: một app bar
+  điện thoại phải hiện "18 / 42 đã thực hiện" cạnh tiêu đề chỉ có một ô vuông, còn thanh cộng
+  caption thì cần hai hàng chồng. Chọn nó khi CHỖ TRỐNG vuông, không phải khi con số quan trọng.
+
+  Nó chỉ thuộc nhánh meter. Một vòng quanh `segments` là biểu đồ tròn — thứ đó là `PieChart donut`
+  ở entry point charts: một part-to-whole theo DANH MỤC, có legend và tooltip, và trình đọc màn
+  hình phải nghe nó là một hình ảnh chứ không phải một progressbar.
+
+  Cung dùng `stroke-dasharray` trên `pathLength="100"`, nên **không chỗ nào trong component tính
+  chu vi**: SVG được bảo rằng đường của nó dài đúng 100 đơn vị, nên độ dài nét CHÍNH LÀ phần trăm.
+  Đo trên Chromium: hộp 44×44 (md) / 32×32 (sm), nét 3px, `getTotalLength()` ra đúng 100,
+  `dash="43 100"` ở value=43.
+
+  Cung đọc tầng **MARK**, đúng như thanh và các lát breakdown — không có chữ nào trên nó và chỗ
+  màu dừng lại chính là con số, nên sàn 3:1 của WCAG 1.4.11 áp dụng. Đo cung so với track:
+  **5,41–6,62** (sáng) và **4,52–8,59** (tối), trùng khít với số của thanh vì chúng đọc cùng token.
+  Một giới hạn được ghi thẳng ra: `check:contrast` KHÔNG nhìn thấy nét SVG (ba lượt non-text của nó
+  đọc `backgroundColor`), nên bề mặt này được ghim bằng test đọc token cộng với phép đo ở trên,
+  không phải bằng cổng trình duyệt.
+
+  `over` trên vòng không kẻ sọc — sọc chéo là cách vẽ của hình chữ nhật — nên tone destructive và
+  `aria-valuetext` mang giá trị thật.
+
 - **`PopoverContent width`** — `panel` (mặc định, `--popover-width` = 18rem) · `auto` (nội dung
   quyết định) · `trigger` (bằng neo). Đây là vế còn thiếu của `flush`. `flush` tồn tại vì zero
   padding bằng một utility trên `className` là hằng số tại chỗ gọi mà không theme nào retune được

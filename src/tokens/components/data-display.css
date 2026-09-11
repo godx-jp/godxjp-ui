@@ -138,6 +138,17 @@
   --progress-meter-block-size-sm: 0.25rem;
   --progress-breakdown-block-size-sm: 0.5rem;
 
+  /* RING geometry (`shape="ring"`) — the SAME meter, drawn as an arc.
+     The diameter is a control tier rather than a new scale: a ring lives beside a title in an app
+     bar, so it has to sit level with the controls around it the way the bar does. The stroke is
+     the emphasis stroke (`--stroke-lg`), thick enough that the arc reads as a quantity at 2.75rem
+     rather than as a hairline outline; `sm` keeps the same stroke on a smaller circle, because a
+     thinner arc at a smaller diameter stops being readable as a proportion at all. */
+  --progress-ring-size: 2.75rem;
+  --progress-ring-size-sm: 2rem;
+  --progress-ring-border-width: var(--stroke-lg);
+  --progress-ring-label-font-size: var(--font-size-xs);
+
   /* Legend — the key for a colour-coded surface. Small chrome, so it carries its own rhythm
      rather than the stack scale: the swatch is a MARK the size of a character, not a control, and
      the gap that reads as "these two belong together" is tighter than any named step. */
