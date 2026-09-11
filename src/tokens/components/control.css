@@ -433,17 +433,20 @@
   --calendar-week-space-block-start: var(--space-2);
   --calendar-weekday-font-size: var(--font-size-xs);
   --calendar-weekday-radius: var(--radius-md);
-  /* Block inset of a header cell once the grid is RULED. Unruled, the header row has no edge for
-   * its text to sit against, so it needs none; ruled, the line box started right at the 1px rule —
-   * measured 1px from the top border and 2.19px from the bottom, an inset below the smallest named
-   * step. The smallest step, not a literal, so a service retuning the spacing grid moves it too. */
-  --calendar-bordered-weekday-padding-block: var(--space-1);
   --calendar-day-font-size: var(--font-size-sm);
   --calendar-day-radius: var(--radius-md);
   --calendar-chevron-size: var(--icon-size-md);
   --calendar-footer-space-gap: var(--space-2);
   --calendar-footer-space-block-start: var(--space-2);
   --calendar-footer-border-width: var(--stroke-hairline);
+  /* Placed LAST in the calendar group on purpose: gen-component-tokens gives every token the
+   * nearest comment above it, so a comment in the middle of the group became the description of
+   * every calendar token after it. */
+  /* Block inset of a header cell once the grid is RULED. Unruled, the header row has no edge for
+   * its text to sit against, so it needs none; ruled, the line box started right at the 1px rule —
+   * measured 1px from the top border and 2.19px from the bottom, an inset below the smallest named
+   * step. The smallest step, not a literal, so a service retuning the spacing grid moves it too. */
+  --calendar-bordered-weekday-padding-block: var(--space-1);
 
   /* TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal
    * on the component (#319), so a service could not fit the panes to its own page grid or
@@ -502,7 +505,12 @@
    * inconsistency, not a visual preference. It is a real visual change on the most-used component
    * in the library (20px -> 24px), and it stays a knob: a service that wants the old box sets
    * --button-xs-height back. */
-  --button-xs-height: var(--control-height-xs);
+  /* `initial`, NOT `var(--control-height-xs)`: an alias of a ladder step declared here is
+   * substituted against :root's 24px and inherits frozen, so a scope that moves the ladder (a
+   * `MobileShell` scopes it to 44 / 40 / 48 / 36px) never reached it — measured, `size="xs"` stayed
+   * 24px inside the shell while every other size moved. `.ui-button--xs` reads it with the live
+   * ladder step as fallback, so the default re-resolves at the button and an override still wins. */
+  --button-xs-height: initial;
   /* Minimum TARGET of `variant="bare"` (gh#404) — the pseudo-element hit area, not a box height,
    * so it never shows up as geometry. Points at the same xs tier the note above settled on as this
    * package's WCAG 2.2 SC 2.5.8 floor (1.5rem = 24px), and moves with it and with density. */

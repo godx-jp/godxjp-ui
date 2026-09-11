@@ -8,6 +8,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Trong `MobileShell`, mọi control có `size` vẫn đứng trên thang DESKTOP.** Shell đặt
+  `--control-height` thành 44px (bậc chạm), nhưng `--control-height-sm/-lg/-xs` là `calc()` trên
+  `--control-height` khai ở `:root` — một `calc()` trên biến tuỳ biến được thay thế tại nơi nó ĐƯỢC
+  KHAI rồi mới kế thừa, nên cả thang đóng băng theo 32px của gốc. Đo trên Chromium ở 393px, bên
+  cạnh một Button mặc định 44px: `size="sm"` **28px**, `size="lg"` **36px** (nhỏ hơn cả mặc định),
+  `size="xs"` **24px**, `icon-sm` **28px**, `icon-lg` **36px**, Input/Select `sm` **28px**, item
+  Segmented `sm`/`lg` **24/32px** (gino-cloud phát hiện). Nay `.ui-mobile-shell` khai lại ba bậc
+  ngay trên chính phần tử đổi tầng, đúng từng byte công thức của `:root` — cách `.ui-segmented` và
+  `--mobile-shell-padding-inline` đã làm. Sau khi sửa: **40 / 48 / 36px**, icon-xs/sm/lg
+  **36/40/48**, Input/Select `sm` **40**, Segmented `sm`/`lg` **36/44** — đúng thang mà một thiết
+  bị con trỏ thô đã nhận từ `:root`.
+
+  Cùng lỗi ấy lặp lại một tầng sâu hơn, và phép đo mới lộ ra: `--button-xs-height:
+  var(--control-height-xs)` là một alias khai ở `:root`, nên nó đông cứng ở 24px và `size="xs"` KHÔNG
+  nhúc nhích dù mọi cỡ khác đã đổi. Nay token là `initial` và `.ui-button--xs` đọc
+  `var(--button-xs-height, var(--control-height-xs))` — giá trị mặc định tính lại ngay tại nút, override
+  vẫn thắng; đo lại: **36px**. Hệ quả phụ, đúng ý đồ đã ghim: trong một scope `density="compact"`,
+  nút xs giờ ra đúng 22,08px mà bảng gh#324 vẫn khẳng định — trước đây trình duyệt thật cho 24px.
+  Dòng `--button-xs-height` trong bảng "migration moved nothing" (`geometry-axis-scales.test.ts`) được
+  chuyển sang đường mà nút thật sự vẽ: bốn con số giữ nguyên, nay nằm ở dòng `--control-height-xs`.
+
+  Còn lại cùng hình dạng, CHƯA sửa vì không phải control có `size`: `--button-bare-target-size`,
+  `--app-setting-picker-compact-control-height`, cỡ avatar của OrgSwitcher / AuthAccountSummary,
+  `--range-timeline-*`, `--card-service-launcher-cta-min-height`, `--topbar-item-min-width`,
+  `--avatar-square-size`.
+
+  Test mới `mobile-shell-control-ladder.test.ts` ghim CHỖ KHAI chứ không ghim giá trị — một resolver
+  thay thế lười ở lá sẽ ra 40px dù có sửa hay không. Đột biến: bỏ dòng `-lg`, lệch công thức `-sm`,
+  trả nút xs về token trần — mỗi lần đỏ đúng khẳng định của nó.
+
+- **Catalog token của MCP (`component-tokens.generated.ts`) được sinh lại — nó đã cũ từ trước.**
+  Không cổng nào kiểm nó còn khớp nguồn không (`gen:component-tokens` không có `--check`), nên ba PR
+  gần đây để lại: thiếu `--progress-ring-*` (4), `--tabs-overflow-*` (3), `--tabs-list-line-space-gap`,
+  `--mobile-shell-max-inline-size`, và còn liệt kê `--segmented-item-height` đã bị gỡ. Mục Calendar ở
+  trên cũng thêm một token mà chưa sinh lại. Kèm theo, một cái bẫy của generator đáng biết: nó gán
+  cho MỖI token "chú thích gần nhất phía trên", nên một chú thích chèn giữa nhóm trở thành mô tả của
+  mọi token sau nó — chú thích của token Calendar mới đã ghi đè mô tả của sáu token calendar khác
+  cho tới khi nó được dời xuống cuối nhóm. Mô tả của các token Tabs và safe-inset của MobileShell
+  đang bị ghi đè đúng kiểu ấy bởi các PR trước; chưa sửa ở đây.
+
 - **`Calendar bordered`: chữ tiêu đề thứ dính sát đường kẻ.** Khi lưới được kẻ ô, ô tiêu đề thứ
   không có đệm theo trục khối, nên hộp dòng bắt đầu ngay dưới đường kẻ 1px phía trên — đo trên
   Chromium: chữ cách đường kẻ trên **1px**, cách đường kẻ dưới **2,19px**, tức một khoảng đệm nhỏ

@@ -2809,7 +2809,7 @@
   }
 
   .ui-button--xs {
-    height: var(--button-xs-height);
+    height: var(--button-xs-height, var(--control-height-xs));
     gap: var(--button-xs-space-gap);
     padding-inline: var(--button-xs-space-inline);
     font-size: var(--button-xs-font-size);
