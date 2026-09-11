@@ -590,7 +590,10 @@
   }
 
   .ui-slider[data-orientation="vertical"] {
-    inline-size: auto;
+    /* Shrink to the rail's own width (measured: `auto` made a vertical slider 434px wide inside a
+     * FormField and parked the rail in the middle of the field). Marks overflow to the inline end,
+     * exactly as antd's do. */
+    inline-size: fit-content;
     block-size: 100%;
     min-block-size: var(--slider-vertical-min-block-size);
     flex-direction: column;

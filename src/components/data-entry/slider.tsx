@@ -308,6 +308,11 @@ function SliderTooltip({
   const ref = React.useRef<HTMLSpanElement>(null);
   const [flipped, setFlipped] = React.useState(false);
 
+  // Deliberately dependency-free: the room depends on where the THUMB is, which moves on every
+  // value change and on any scroll of an ancestor, and neither is a prop this component can list.
+  // `setFlipped` with the same answer is a no-op, and the answer is measured against the bubble's
+  // own size — which does not change with the side — so it cannot oscillate.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useLayoutEffect(() => {
     const anchor = ref.current;
     const thumb = anchor?.parentElement;
@@ -336,8 +341,8 @@ function SliderTooltip({
       data-placement={flipped ? OPPOSITE[placement] : placement}
       data-open={open === undefined ? undefined : String(open)}
       className="ui-slider-tooltip"
-      // The thumb already announces its value through the range input's `aria-valuenow` (and
-      // `aria-valuetext` below) — a duplicate would be read twice.
+      // The thumb already announces its value through its range input (native `value`, plus the
+      // `aria-valuetext` written above) — a bubble in the tree would be read twice.
       aria-hidden="true"
     >
       <span className="ui-slider-tooltip-content">{children}</span>
