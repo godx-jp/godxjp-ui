@@ -74,7 +74,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Input | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | NumberInput | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | SearchInput | ✓ | ✓ | · | · | · | · | · | · | · | · |
-| Select | ✓ | N/A | · | · | · | · | · | · | · | · |
+| Select | ✓ | · | · | · | · | · | · | · | · | · |
 | Switch | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Textarea | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Label | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
