@@ -4,6 +4,7 @@ import { Check, Minus } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useFieldIdentity } from "../../lib/field-a11y";
 import { CheckboxGroup } from "./checkbox-group";
+import { withOwnHitTarget } from "./choice-hit-target";
 
 /**
  * The glyph a checkbox paints for a given `data-state`. A dash for "indeterminate" (a PARTIAL
@@ -159,6 +160,11 @@ const CheckboxRoot = React.forwardRef<HTMLLabelElement, CheckboxRootProps>((prop
         "peer ui-checkbox data-[invalid]:border-destructive data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground inline-flex shrink-0 items-center justify-center shadow-xs transition-shadow outline-none",
         className,
       )}
+      // gh#476: react-aria hides the real input in a 1px clipped span at the label's top-left,
+      // so the box a user aims at belongs to the LABEL and the input cannot be clicked — by a
+      // pointer or by an automated click. `withOwnHitTarget` swaps that wrapper for one the
+      // stylesheet sizes to the painted box; nothing about the input itself changes.
+      render={(domProps) => <label {...domProps}>{withOwnHitTarget(domProps.children)}</label>}
       onChange={(next) => {
         setUncontrolled(next);
         onCheckedChange?.(next);

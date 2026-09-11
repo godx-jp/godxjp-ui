@@ -6,6 +6,7 @@ import { cn } from "../../lib/utils";
 import { pickFieldA11y, useFieldIdentity, useMirroredInputAttributes } from "../../lib/field-a11y";
 import { Field } from "./field";
 import { choiceGroupClassName, type ChoiceOption } from "./choice-option";
+import { withOwnHitTarget } from "./choice-hit-target";
 import type { RadioGroupProp, RadioProp } from "../../props/components/data-entry.prop";
 
 export type {
@@ -120,8 +121,12 @@ const RadioItem = React.forwardRef<HTMLLabelElement, RadioProp>(
           className,
         )}
         {...(props as unknown as Record<string, never>)}
+        // `withOwnHitTarget` replaces react-aria's 1px clipped input wrapper with one the
+        // stylesheet sizes to the painted dot — see gh#476 and choice-hit-target.tsx.
         render={(domProps, state) => (
-          <label {...(domProps as RadioLabelProps)} data-state={checkedState(state.isSelected)} />
+          <label {...(domProps as RadioLabelProps)} data-state={checkedState(state.isSelected)}>
+            {withOwnHitTarget(domProps.children)}
+          </label>
         )}
       >
         <span data-slot="radio-group-indicator" className="ui-choice-indicator">
@@ -156,7 +161,9 @@ function RadioBarButton({
       // painted a selection at all. Reading the primitive's own state fixes that and removes the
       // second source of truth in one move.
       render={(domProps, state) => (
-        <label {...(domProps as RadioLabelProps)} data-state={checkedState(state.isSelected)} />
+        <label {...(domProps as RadioLabelProps)} data-state={checkedState(state.isSelected)}>
+          {withOwnHitTarget(domProps.children)}
+        </label>
       )}
     >
       <span className="ui-radio-button-label">{option.label}</span>

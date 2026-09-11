@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Radio as AriaRadio, RadioGroup as AriaRadioGroup } from "react-aria-components";
+import { withOwnHitTarget } from "../data-entry/choice-hit-target";
 
 import { cn } from "../../lib/utils";
 
@@ -126,7 +127,12 @@ export const Segmented = React.forwardRef<HTMLDivElement, SegmentedProp>(functio
               {...(domProps as React.HTMLAttributes<HTMLLabelElement> &
                 React.RefAttributes<HTMLLabelElement>)}
               data-state={state.isSelected ? "checked" : "unchecked"}
-            />
+            >
+              {/* A segment is built from the same react-aria parts as Radio, so it carried the
+                  same defect: the input was a 1px clipped box in the corner of a 100px segment.
+                  See gh#476 / choice-hit-target.tsx. */}
+              {withOwnHitTarget(domProps.children)}
+            </label>
           )}
         >
           {option.icon == null ? null : (

@@ -3,6 +3,7 @@ import { Switch as AriaSwitch } from "react-aria-components";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useFieldIdentity, useMirroredInputAttributes } from "../../lib/field-a11y";
+import { withOwnHitTarget } from "./choice-hit-target";
 import type { SwitchProp } from "../../props/components/data-entry.prop";
 
 export type { SwitchProp, SwitchProp as SwitchProps } from "../../props/components/data-entry.prop";
@@ -113,6 +114,9 @@ export const Switch = React.forwardRef<HTMLLabelElement, SwitchProp>(
             event.preventDefault();
             handleCheckedChange(!isChecked);
           }}
+          // Same hit-target swap as Checkbox and Radio (gh#476): the track a user aims at is
+          // the label, and react-aria's real input is a 1px clipped box in its top-left corner.
+          render={(domProps) => <label {...domProps}>{withOwnHitTarget(domProps.children)}</label>}
           className={cn(
             // `.ui-switch:disabled, .ui-switch[data-disabled]` in styles/control.css already
             // declares both and reads --disabled-opacity. The utility was layered after
