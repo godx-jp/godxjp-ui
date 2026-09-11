@@ -3062,6 +3062,12 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
           "Extracts a stable unique string key per row. Required when selectable is true or rows lack an 'id' field. Falls back to row.id cast to string.",
       },
       {
+        name: "getRowLabel",
+        type: "(row: T) => string",
+        description:
+          "Human name of a row — what its selection checkbox (or radio) is announced as: `Select row {label}`. Default: the text of the `priority: \"primary\"` column, else of the first column, when that value is a string or number; the row id only as a last resort, because an id is a KEY and announced it reads a UUID aloud. Set it when the first column is not the row's name (an avatar, a status badge, an id). `rowSelection.getCheckboxProps` `aria-label` still overrides a single row.",
+      },
+      {
         name: "selectable",
         type: "boolean",
         defaultValue: "false",

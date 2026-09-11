@@ -36,6 +36,7 @@ import type {
   TitleProp,
   ColumnDefProp,
   GetRowIdProp,
+  GetRowLabelProp,
   OnRowClickProp,
   OnSelectChangeProp,
   OnSortChangeProp,
@@ -316,6 +317,13 @@ export type DataTableProp<T> = {
   data: T[];
   columns: ColumnDefProp<T>[];
   getRowId?: GetRowIdProp<T>;
+  /**
+   * Human name of a row, announced by its selection checkbox or radio as "Select row {label}".
+   * Default: the text of the `priority: "primary"` column, else of the first column, when that
+   * value is a string or number; the row id only as a last resort. `rowSelection.getCheckboxProps`
+   * `aria-label` still overrides a single row.
+   */
+  getRowLabel?: GetRowLabelProp<T>;
   selectable?: boolean;
   selected?: SelectedIdsProp;
   onSelectChange?: OnSelectChangeProp;

@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Ô chọn hàng của `DataTable` bị đọc lên bằng UUID.** Tên truy cập của checkbox (và radio) chọn
+  hàng là `selectRow: "行 {id} を選択"` điền bằng `row.id` — trên một bảng khoá theo UUID, trình đọc màn
+  hình nói "行 3f2a9c1e-7b4d-4e8a-9c21-000000000000 を選択" cho MỌI hàng (gino-cloud phát hiện, tái hiện
+  trên Chromium). Id là KHOÁ, không phải TÊN. Nay tên được lấy theo thứ tự: `aria-label` từ
+  `rowSelection.getCheckboxProps` (vẫn thắng như cũ) → prop mới **`getRowLabel(row)`** → chữ của cột
+  `priority: "primary"`, nếu không có thì của cột đầu tiên, khi giá trị ấy là chuỗi hay số → id, chỉ
+  khi không còn gì khác gọi tên được hàng. Cùng bảng ấy sau khi sửa: "行 NGUYEN VAN AN0 を選択". Một
+  consumer có cột đầu là tên (như gino-cloud) nhận tên người mà không phải sửa dòng nào; bảng nào có
+  cột đầu là avatar, badge trạng thái hay id thì truyền `getRowLabel`.
+
+  `getRowLabel` là một trục vocabulary (`GetRowLabelProp`, cạnh `GetRowIdProp`), có trong catalog MCP
+  và manifest API. Test mới `data-table-row-label.test.tsx` bám role và tên truy cập: cột đầu, cột
+  primary, accessor, fallback id, `getCheckboxProps` vẫn thắng, và radio.
+
 - **Trong `MobileShell`, mọi control có `size` vẫn đứng trên thang DESKTOP.** Shell đặt
   `--control-height` thành 44px (bậc chạm), nhưng `--control-height-sm/-lg/-xs` là `calc()` trên
   `--control-height` khai ở `:root` — một `calc()` trên biến tuỳ biến được thay thế tại nơi nó ĐƯỢC

@@ -5259,6 +5259,14 @@
           "declaredIn": ["src/components/data-display/data-table.tsx"]
         },
         {
+          "name": "getRowLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "((row: T) => string) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/data-table.tsx"]
+        },
+        {
           "name": "globalFilter",
           "origin": "owned",
           "required": false,

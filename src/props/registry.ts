@@ -628,6 +628,11 @@ export const VOCABULARY_REGISTRY = {
     category: "data",
     description: "Row ID extractor generic",
   },
+  GetRowLabelProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description: "Row label extractor generic — the accessible name of a row's selection control",
+  },
   OnRowClickProp: {
     file: "vocabulary/data.prop.ts",
     category: "data",
@@ -1852,6 +1857,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "DensityProp",
       "SortStateProp",
       "SelectedIdsProp",
+      "GetRowLabelProp",
       "HandlerProp",
       "TablePresetProp",
       "TableColumnPriorityProp",
