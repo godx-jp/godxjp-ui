@@ -10,9 +10,11 @@ import {
   OverlayTriggerStateContext,
   Popover,
   Pressable,
+  RootMenuTriggerStateContext,
   Separator,
   OverlayArrow,
   SubmenuTrigger,
+  useLocale,
   type MenuItemRenderProps,
   type PopoverProps,
   type PopoverRenderProps,
@@ -20,9 +22,15 @@ import {
 import { Check, ChevronRight } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { Slot } from "../../lib/slot";
-import type { DropdownMenuPlacementProp } from "../../props/components/navigation.prop";
+import type {
+  DropdownMenuPlacementProp,
+  DropdownMenuTriggerActionProp,
+} from "../../props/components/navigation.prop";
 
-export type { DropdownMenuPlacementProp } from "../../props/components/navigation.prop";
+export type {
+  DropdownMenuPlacementProp,
+  DropdownMenuTriggerActionProp,
+} from "../../props/components/navigation.prop";
 
 /**
  * Ant Design `placement` → the two Radix anchors it is made of. `align` is LOGICAL in Radix
@@ -167,8 +175,115 @@ export function selectEvent(name: string): Event {
     : ({ defaultPrevented: false, preventDefault() {} } as unknown as Event);
 }
 
-type ModalOptions = { modal: boolean };
-const DropdownMenuModalContext = React.createContext<ModalOptions>({ modal: true });
+/*
+ * ANT DESIGN `trigger` — the gestures that open the menu.
+ *
+ * antd: `trigger: ('click' | 'hover' | 'contextMenu')[]`, and `disabled` simply empties that list
+ * (`triggerActions = disabled ? [] : trigger`). Same shape here, with one deliberate difference:
+ * the default is `['click']`, not antd's `['hover']`, because that is what every call site in this
+ * ecosystem already does and a hover-only default would silently make existing menus pointer-only.
+ *
+ * HOW EACH ONE IS SERVED. React Aria's `MenuTrigger` takes ONE `trigger` mode, so the three antd
+ * gestures map onto it like this:
+ *
+ *   • `contextMenu` ALONE → RAC's own `trigger="contextMenu"`. That mode is worth using verbatim:
+ *     it drops the press handlers (so a left click does nothing), records the pointer with
+ *     `state.setPoint` so the menu opens AT the cursor, calls `preventDefault()` on the native
+ *     menu, maps a touch LONG-PRESS onto the same gesture (iOS fires no `contextmenu` event at
+ *     all), and closes when the reader right clicks outside. It also strips `aria-haspopup` /
+ *     `aria-expanded`, which is correct: those announce "activating me opens a menu", and
+ *     activating a context-menu target does not.
+ *   • anything containing `click` (or `hover`) → RAC's `trigger="press"`, which carries the press
+ *     AND keyboard openers. When `contextMenu` rides along with them, the right click half is
+ *     added here by hand, because RAC cannot run both modes at once.
+ *   • `hover` → not a RAC mode at all; it is timers over the controlled open state, below.
+ *
+ * THE KEYBOARD OPENER IS NEVER A CASUALTY OF THE GESTURE LIST. `press` mode keeps Enter / Space /
+ * ArrowDown. `contextMenu` mode gets Shift+F10 and the ContextMenu key wired here — RAC leans on
+ * the browser emitting a `contextmenu` event for those, which Windows/Linux do and macOS never
+ * does, so on a Mac the keyboard route would otherwise not exist. This is also why the earlier
+ * "hover-only is a keyboard trap" objection (docs/roadmap) no longer holds.
+ */
+const DROPDOWN_MENU_DEFAULT_TRIGGER: readonly DropdownMenuTriggerActionProp[] = ["click"];
+/** antd's own defaults, and antd counts these in SECONDS. */
+const DROPDOWN_MENU_MOUSE_ENTER_DELAY = 0.15;
+const DROPDOWN_MENU_MOUSE_LEAVE_DELAY = 0.1;
+const SECOND_IN_MS = 1000;
+
+type HoverIntent = { enter: () => void; leave: () => void };
+
+type DropdownMenuOptions = {
+  modal: boolean;
+  /** Whether right click is one of the gestures. A boolean, so the context value stays stable. */
+  contextMenuGesture: boolean;
+  disabled: boolean;
+  /** Null unless `hover` is in the gesture list. */
+  hover: HoverIntent | null;
+  /** True when RAC itself is running the right click gesture, so it must not be added twice. */
+  racOwnsContextMenu: boolean;
+  /** Menu autofocus is suppressed for a hover-opened menu — see DropdownMenuContent. */
+  openedByHover: React.RefObject<boolean>;
+};
+
+const DropdownMenuModalContext = React.createContext<DropdownMenuOptions>({
+  modal: true,
+  contextMenuGesture: false,
+  disabled: false,
+  hover: null,
+  racOwnsContextMenu: false,
+  openedByHover: { current: false },
+});
+
+/** The state RAC's MenuTrigger publishes: `point` is the context-menu anchor, in viewport coords. */
+type MenuTriggerLikeState = {
+  isOpen: boolean;
+  open: (focusStrategy?: "first" | "last" | null) => void;
+  point: { x: number; y: number } | null;
+  setPoint: (point: { x: number; y: number } | null) => void;
+};
+
+/**
+ * `state.setPoint(null)` is what react-stately's own state starts as and what `usePopover` checks
+ * for (`state.point ? () => new DOMRect(...) : undefined`), but its TYPE says `setPoint(point: Point)`
+ * — null is unspellable through it. The cast is that gap and nothing more.
+ *
+ * It has to be cleared at all, because react-stately NEVER resets `point`: once a right click sets
+ * it, a later click- or hover-open would anchor the menu at the stale cursor position instead of at
+ * the trigger. Clearing runs in a CAPTURE handler so it lands before RAC's own press/keyboard
+ * openers, which sit in the bubble phase on the same element.
+ */
+function clearContextMenuPoint(state: MenuTriggerLikeState | null): void {
+  state?.setPoint(null as unknown as { x: number; y: number });
+}
+
+/**
+ * Chain our gesture handlers BEHIND whatever the caller already put on the element. Both paths
+ * below hand these props to an element that may carry handlers of its own — a plain override would
+ * silently swallow a consumer's `onKeyDown` the moment they turned on `trigger={["contextMenu"]}`.
+ * The caller's handler runs first and may `preventDefault()` to opt out of the gesture entirely.
+ */
+function chainGestureProps(
+  own: Record<string, unknown>,
+  incoming: Record<string, unknown>,
+): Record<string, unknown> {
+  const merged: Record<string, unknown> = { ...own };
+  for (const [key, handler] of Object.entries(incoming)) {
+    const existing = own[key];
+    merged[key] =
+      typeof existing === "function" && typeof handler === "function"
+        ? (event: React.SyntheticEvent) => {
+            (existing as (e: React.SyntheticEvent) => void)(event);
+            if (!event.defaultPrevented) (handler as (e: React.SyntheticEvent) => void)(event);
+          }
+        : handler;
+  }
+  return merged;
+}
+
+/** Shift+F10 and the ContextMenu key — the two keyboard gestures for "open this thing's menu". */
+function isContextMenuKey(event: React.KeyboardEvent): boolean {
+  return event.key === "ContextMenu" || (event.key === "F10" && event.shiftKey);
+}
 
 /*
  * Prop types below are DELIBERATELY not exported.
@@ -196,6 +311,14 @@ interface DropdownMenuPropsOwn {
    * `useLocale`), nên prop này còn trong API vì hợp đồng, nhưng không tự đảo hướng.
    */
   dir?: "ltr" | "rtl";
+  /** Ant Design `trigger`. @see DropdownMenuTriggerActionProp. Default `['click']`. */
+  trigger?: readonly DropdownMenuTriggerActionProp[];
+  /** Ant Design `disabled` — no gesture opens the menu (antd empties the trigger list). */
+  disabled?: boolean;
+  /** Ant Design `mouseEnterDelay`, in SECONDS, for `trigger={['hover']}`. Default 0.15. */
+  mouseEnterDelay?: number;
+  /** Ant Design `mouseLeaveDelay`, in SECONDS. Default 0.1 — long enough to cross the gap. */
+  mouseLeaveDelay?: number;
 }
 
 type DropdownMenuProps = React.PropsWithChildren<DropdownMenuPropsOwn>;
@@ -207,12 +330,95 @@ export function DropdownMenu({
   onOpenChange,
   modal = true,
   dir,
+  trigger = DROPDOWN_MENU_DEFAULT_TRIGGER,
+  disabled = false,
+  mouseEnterDelay = DROPDOWN_MENU_MOUSE_ENTER_DELAY,
+  mouseLeaveDelay = DROPDOWN_MENU_MOUSE_LEAVE_DELAY,
 }: DropdownMenuProps) {
   void dir;
-  const options = React.useMemo<ModalOptions>(() => ({ modal }), [modal]);
+  // antd: `triggerActions = disabled ? [] : trigger`. Disabling is the absence of every gesture,
+  // not a separate state to keep in sync. Read as three booleans rather than kept as an array, so
+  // a caller writing `trigger={["click"]}` inline does not hand a new identity down the context on
+  // every render.
+  const wantsHover = !disabled && trigger.includes("hover");
+  const wantsClick = !disabled && trigger.includes("click");
+  const wantsContextMenu = !disabled && trigger.includes("contextMenu");
+  const racOwnsContextMenu = wantsContextMenu && !wantsClick && !wantsHover;
+
+  // The open state is held here in every mode, because hover has to drive it from the outside.
+  const [uncontrolled, setUncontrolled] = React.useState(defaultOpen ?? false);
+  const isOpen = open ?? uncontrolled;
+  const isOpenRef = React.useRef(isOpen);
+  isOpenRef.current = isOpen;
+  const openedByHover = React.useRef(false);
+
+  const setOpen = React.useCallback(
+    (next: boolean) => {
+      if (next === isOpenRef.current) return;
+      if (next && disabled) return;
+      if (!next) openedByHover.current = false;
+      if (open === undefined) setUncontrolled(next);
+      onOpenChange?.(next);
+    },
+    [disabled, open, onOpenChange],
+  );
+
+  const enterTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const leaveTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  React.useEffect(
+    () => () => {
+      if (enterTimer.current) clearTimeout(enterTimer.current);
+      if (leaveTimer.current) clearTimeout(leaveTimer.current);
+    },
+    [],
+  );
+
+  /**
+   * Hover, the way antd means it: a delay in each direction, and the menu counts as hovered while
+   * the pointer is over EITHER the trigger or the menu surface — otherwise crossing the gap between
+   * them would close it. `leave` is therefore a cancellable intent, not an immediate close.
+   */
+  const hover = React.useMemo<HoverIntent | null>(() => {
+    if (!wantsHover) return null;
+    return {
+      enter: () => {
+        if (leaveTimer.current) clearTimeout(leaveTimer.current);
+        if (isOpenRef.current) return;
+        enterTimer.current = setTimeout(() => {
+          openedByHover.current = true;
+          setOpen(true);
+        }, mouseEnterDelay * SECOND_IN_MS);
+      },
+      leave: () => {
+        if (enterTimer.current) clearTimeout(enterTimer.current);
+        leaveTimer.current = setTimeout(() => setOpen(false), mouseLeaveDelay * SECOND_IN_MS);
+      },
+    };
+  }, [wantsHover, mouseEnterDelay, mouseLeaveDelay, setOpen]);
+
+  const options = React.useMemo<DropdownMenuOptions>(
+    () => ({
+      // A HOVER MENU CANNOT BE MODAL. A modal RAC popover paints a full-bleed underlay the instant
+      // it opens; that underlay lands under the pointer, the trigger gets `pointerleave`, and the
+      // menu closes before the reader can move onto it. antd's hover dropdown is non-modal for the
+      // same reason. Every other mode keeps the caller's `modal`.
+      modal: wantsHover ? false : modal,
+      contextMenuGesture: wantsContextMenu,
+      disabled,
+      hover,
+      racOwnsContextMenu,
+      openedByHover,
+    }),
+    [modal, wantsContextMenu, disabled, hover, racOwnsContextMenu, wantsHover],
+  );
+
   return (
     <DropdownMenuModalContext.Provider value={options}>
-      <MenuTrigger isOpen={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+      <MenuTrigger
+        isOpen={isOpen}
+        onOpenChange={setOpen}
+        trigger={racOwnsContextMenu ? "contextMenu" : "press"}
+      >
         {children}
       </MenuTrigger>
     </DropdownMenuModalContext.Provider>
@@ -232,14 +438,97 @@ interface DropdownMenuTriggerProps extends React.ComponentPropsWithoutRef<"butto
  */
 export function DropdownMenuTrigger({ asChild, children, ...props }: DropdownMenuTriggerProps) {
   const state = React.useContext(OverlayTriggerStateContext);
+  const menuState = React.useContext(
+    RootMenuTriggerStateContext,
+  ) as unknown as MenuTriggerLikeState | null;
+  const { contextMenuGesture, disabled, hover, racOwnsContextMenu } =
+    React.useContext(DropdownMenuModalContext);
   const dataState = state?.isOpen ? "open" : "closed";
+
+  const wantsContextMenu = contextMenuGesture;
+  const isDisabled = disabled || props.disabled;
+
+  /**
+   * Open anchored at the trigger's own box — the keyboard has no cursor to anchor to.
+   *
+   * The edge is chosen from the LOCALE direction, not the element's computed `direction`, because
+   * that is what decides which way the menu then GROWS: react-aria resolves the logical
+   * `bottom start` placement through `useLocale()`, never through CSS. Measured with the two
+   * disagreeing (an RTL `dir` attribute over this package's LTR-only locales): anchoring on the
+   * element's right edge while the menu still grew rightwards left it lying across its own trigger
+   * and jammed against the viewport edge. Reading the same source RAC reads keeps the corner and
+   * the growth on the same side in either direction.
+   */
+  const { direction } = useLocale();
+  const openAtTriggerBox = (element: Element) => {
+    const rect = element.getBoundingClientRect();
+    menuState?.setPoint({ x: direction === "rtl" ? rect.right : rect.left, y: rect.bottom });
+    // `first`: a keyboard open lands on the first item, the same as Enter on a menu button.
+    menuState?.open("first");
+  };
+
+  const gestureProps: React.DOMAttributes<Element> & {
+    onPointerDownCapture?: React.PointerEventHandler<Element>;
+    onKeyDownCapture?: React.KeyboardEventHandler<Element>;
+  } = {};
+
+  if (wantsContextMenu && !isDisabled) {
+    gestureProps.onKeyDown = (event: React.KeyboardEvent<Element>) => {
+      if (!isContextMenuKey(event)) return;
+      // Also stops the browser opening ITS menu: the native one is the default action of this very
+      // keydown on the platforms that have the gesture.
+      event.preventDefault();
+      openAtTriggerBox(event.currentTarget);
+    };
+    if (!racOwnsContextMenu) {
+      // RAC runs only one trigger mode, so when right click shares the trigger with click/hover the
+      // gesture is wired by hand. Mirrors what RAC's own `useContextMenu` does.
+      gestureProps.onContextMenu = (event: React.MouseEvent<Element>) => {
+        event.preventDefault();
+        menuState?.setPoint({ x: event.clientX, y: event.clientY });
+        // `null`: a pointer-opened menu focuses the surface, not an item.
+        menuState?.open(null);
+      };
+    }
+  }
+
+  if (!racOwnsContextMenu) {
+    // CAPTURE phase, so the stale point is gone before RAC's press/keyboard opener runs in the
+    // bubble phase on this same element. @see clearContextMenuPoint.
+    gestureProps.onPointerDownCapture = () => clearContextMenuPoint(menuState);
+    gestureProps.onKeyDownCapture = (event: React.KeyboardEvent<Element>) => {
+      if (!isContextMenuKey(event)) clearContextMenuPoint(menuState);
+    };
+  }
+
+  if (hover && !isDisabled) {
+    gestureProps.onPointerEnter = (event: React.PointerEvent<Element>) => {
+      // Mouse only. A touch tap emits a compatibility `pointerenter` too, and honouring it would
+      // open the menu on the way to somewhere else.
+      if (event.pointerType === "mouse") hover.enter();
+    };
+    gestureProps.onPointerLeave = (event: React.PointerEvent<Element>) => {
+      if (event.pointerType === "mouse") hover.leave();
+    };
+  }
+
   if (asChild && React.isValidElement(children)) {
     return (
-      <Pressable>
+      <Pressable isDisabled={isDisabled}>
         {
           React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
             "data-slot": "dropdown-menu-trigger",
             "data-state": dataState,
+            // A right click target is usually a region rather than a button, and Shift+F10 needs it
+            // focusable — so it is given a tab stop unless the consumer already placed one.
+            ...(wantsContextMenu &&
+            (children.props as Record<string, unknown>).tabIndex === undefined
+              ? { tabIndex: 0 }
+              : {}),
+            ...chainGestureProps(
+              children.props as Record<string, unknown>,
+              gestureProps as Record<string, unknown>,
+            ),
           }) as React.ReactElement<React.DOMAttributes<Element>, string>
         }
       </Pressable>
@@ -247,14 +536,34 @@ export function DropdownMenuTrigger({ asChild, children, ...props }: DropdownMen
   }
   return (
     <AriaButton
-      {...(props as unknown as React.ComponentProps<typeof AriaButton>)}
-      isDisabled={props.disabled}
+      {...(chainGestureProps(
+        props as Record<string, unknown>,
+        gestureProps as Record<string, unknown>,
+      ) as React.ComponentProps<typeof AriaButton>)}
+      isDisabled={isDisabled}
       data-slot="dropdown-menu-trigger"
       data-state={dataState}
     >
       {children}
     </AriaButton>
   );
+}
+
+/**
+ * Keep a hover-opened menu open while the pointer is on the SURFACE, and let leaving it close the
+ * menu after `mouseLeaveDelay`. Shared by the menu and its submenus, which are separate popovers.
+ */
+function useHoverSurfaceProps(): React.DOMAttributes<Element> {
+  const { hover } = React.useContext(DropdownMenuModalContext);
+  if (!hover) return {};
+  return {
+    onPointerEnter: (event: React.PointerEvent<Element>) => {
+      if (event.pointerType === "mouse") hover.enter();
+    },
+    onPointerLeave: (event: React.PointerEvent<Element>) => {
+      if (event.pointerType === "mouse") hover.leave();
+    },
+  };
 }
 
 interface DropdownMenuPortalPropsOwn {
@@ -386,7 +695,7 @@ export function DropdownMenuContent({
   className,
   side,
   align,
-  sideOffset = 4,
+  sideOffset,
   placement,
   arrow,
   width,
@@ -401,9 +710,29 @@ export function DropdownMenuContent({
   void hideWhenDetached;
   void sticky;
   void forceMount;
-  const { modal } = React.useContext(DropdownMenuModalContext);
+  const { modal, openedByHover } = React.useContext(DropdownMenuModalContext);
+  const hoverSurfaceProps = useHoverSurfaceProps();
+  const menuState = React.useContext(
+    RootMenuTriggerStateContext,
+  ) as unknown as MenuTriggerLikeState | null;
   const anchor = placement ? DROPDOWN_MENU_PLACEMENT[placement] : undefined;
   const overlayPortalContainer = useOverlayPortalContainer();
+
+  /*
+   * A menu opened at the POINTER is anchored to a 0×0 rect at the cursor (react-aria turns
+   * `state.point` into exactly that), so the two defaults written for a trigger-anchored menu are
+   * both wrong for it: `bottom` would centre the menu ON the cursor, and the 4px gap would push it
+   * off the thing that was clicked. `bottom start` + 0 puts the menu's corner at the cursor, which
+   * is what every platform's context menu does — and it is what RAC's own MenuTrigger asks for.
+   * An explicit `placement` / `side` / `align` / `sideOffset` from the caller still wins.
+   */
+  const pointAnchored = menuState?.point != null;
+  const hasExplicitAnchor = placement !== undefined || side !== undefined || align !== undefined;
+  const resolvedPlacement =
+    hasExplicitAnchor || !pointAnchored
+      ? toPlacement(side ?? anchor?.side, align ?? anchor?.align)
+      : "bottom start";
+  const resolvedOffset = sideOffset ?? (pointAnchored && !hasExplicitAnchor ? 0 : 4);
 
   return (
     <DropdownMenuPortal>
@@ -411,8 +740,8 @@ export function DropdownMenuContent({
         UNSTABLE_portalContainer={overlayPortalContainer}
         data-slot="dropdown-menu-content"
         isNonModal={!modal}
-        placement={toPlacement(side ?? anchor?.side, align ?? anchor?.align)}
-        offset={sideOffset}
+        placement={resolvedPlacement}
+        offset={resolvedOffset}
         crossOffset={alignOffset}
         shouldFlip={avoidCollisions}
         containerPadding={collisionPadding}
@@ -424,16 +753,25 @@ export function DropdownMenuContent({
           // `role={undefined}`: một menu không phải một dialog — xem radixSurfaceState.
           <div
             {...props}
+            {...hoverSurfaceProps}
             role={undefined}
             {...radixSurfaceState(state)}
-            data-align={align ?? anchor?.align ?? "center"}
+            data-align={
+              align ?? anchor?.align ?? (pointAnchored && !hasExplicitAnchor ? "start" : "center")
+            }
             // Absent when the prop is unset (the `data-priority` rule), so an untouched menu
             // matches none of the width rules and keeps --dropdown-content-min-width.
             data-width={width}
           />
         )}
       >
-        <Menu shouldFocusWrap={loop}>{children}</Menu>
+        {/* A HOVER-OPENED MENU MUST NOT TAKE FOCUS. RAC's MenuTrigger hands the Menu
+            `autoFocus: state.focusStrategy || true`, which is right for a click or a key — but on
+            hover it would yank focus out of whatever the reader was typing in, just because the
+            pointer crossed the trigger. Pointer hover moves no focus; every other route keeps it. */}
+        <Menu shouldFocusWrap={loop} autoFocus={openedByHover.current ? false : undefined}>
+          {children}
+        </Menu>
         {arrow ? (
           <OverlayArrow>
             <svg
@@ -757,6 +1095,7 @@ export function DropdownMenuSubContent({
   void hideWhenDetached;
   void sticky;
   const overlayPortalContainer = useOverlayPortalContainer();
+  const hoverSurfaceProps = useHoverSurfaceProps();
 
   return (
     <Popover
@@ -775,6 +1114,7 @@ export function DropdownMenuSubContent({
         // `role={undefined}`: một menu không phải một dialog — xem radixSurfaceState.
         <div
           {...props}
+          {...hoverSurfaceProps}
           role={undefined}
           {...radixSurfaceState(state)}
           data-align={align ?? "center"}

@@ -31,7 +31,7 @@ import { Button } from "../general/button";
  * `ariaHideOutside` to an effect keyed on `state.isOpen` — so the release fires on CLOSE INTENT,
  * the same synchronous turn as the item's action, and cannot drift to unmount. That is the
  * upstream version of what `components/general/inert-background.ts` still hand-rolls for the
- * overlays that are still Radix (Select, ContextMenu). This file is what proves the guarantee is
+ * overlays that are still Radix (Select). This file is what proves the guarantee is
  * really there, whichever backing the menu has.
  *
  * WHY jsdom NEEDS A NUDGE. The window this bug lives in is the exit ANIMATION, and jsdom has no

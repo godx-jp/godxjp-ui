@@ -160,7 +160,7 @@ const RULES = [
     spansElement: true,
     // Only the tone-driven status components (Badge/Tag/StatCard) are wrong here — they expose a
     // `tone` prop and reserve `variant` for STRUCTURE (default|secondary|outline). Button, Alert,
-    // DropdownMenuItem, ContextMenuItem, AlertDialog etc. legitimately use `variant` for emphasis,
+    // DropdownMenuItem, AlertDialog etc. legitimately use `variant` for emphasis,
     // so they must NOT be flagged.
     test: new RegExp(
       `<(?:Badge|Tag|StatCard)\\b${ATTRS}\\bvariant=["'](?:success|warning|destructive|info|neutral)["']`,

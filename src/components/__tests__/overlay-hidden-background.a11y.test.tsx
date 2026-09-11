@@ -1,7 +1,7 @@
 import * as React from "react";
 import { describe, it, expect } from "vitest";
 
-import { renderWithUi, screen, userEvent, fireEvent } from "@/test/render";
+import { renderWithUi, screen, userEvent } from "@/test/render";
 import {
   OverlayBackground,
   expectHiddenBackgroundNotTabbable,
@@ -20,19 +20,6 @@ import {
 import { SearchSelect } from "../data-entry/search-select";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../feedback/dialog";
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTrigger } from "../feedback/sheet";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "../navigation/context-menu";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarTrigger,
-} from "../navigation/menubar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -64,8 +51,6 @@ import { Button } from "../general/button";
  *   • Select ......... always modal — `hideOthers` unconditionally. role="listbox" → NOT exempt,
  *                      so the `inert` mirror is what keeps axe quiet. This is the row that goes
  *                      red first if that mirror regresses.
- *   • ContextMenu .... `modal` defaults TRUE. role="menu" → NOT exempt. Same.
- *   • Menubar ........ Radix hard-codes `modal: false` → nothing is hidden.
  *
  *   REACT-ARIA-BACKED (`ariaHideOutside(…, { shouldUseInert: true })` → `inert` in a browser, a
  *   bare `aria-hidden="true"` in jsdom, which has no `inert` at all):
@@ -201,40 +186,6 @@ const CASES: OverlayCase[] = [
       </DropdownMenu>
     ),
     open: async () => userEvent.click(screen.getByRole("button", { name: "Thao tác" })),
-  },
-  {
-    name: "menubar",
-    assertOpen: () => screen.findByText("Lưu"),
-    // Radix hard-codes `modal: false` for menubar menus, so nothing is hidden and no guard is
-    // needed. The row stays so a Radix change is caught rather than discovered in a consumer.
-    hidesBackground: false,
-    render: () => (
-      <Menubar>
-        <MenubarMenu>
-          <MenubarTrigger>Tệp</MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem>Lưu</MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-      </Menubar>
-    ),
-    open: async () => userEvent.click(screen.getByRole("menuitem", { name: "Tệp" })),
-  },
-  {
-    name: "context-menu",
-    assertOpen: () => screen.findByText("Sao chép"),
-    hidesBackground: true,
-    render: () => (
-      <ContextMenu>
-        <ContextMenuTrigger>Vùng nội dung</ContextMenuTrigger>
-        <ContextMenuContent>
-          <ContextMenuItem>Sao chép</ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
-    ),
-    open: async () => {
-      fireEvent.contextMenu(screen.getByText("Vùng nội dung"));
-    },
   },
 ];
 

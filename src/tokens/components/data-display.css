@@ -176,19 +176,6 @@
   --qr-code-size-md: 10rem;
   --qr-code-size-lg: 12.5rem;
 
-  /* SCROLL AREA — the custom scrollbar rail. `.ui-scroll-area-*` did not exist at all: the whole
-   * rail shipped as Tailwind literals on the component (`w-2.5 p-px` / `h-2.5 p-px`,
-   * `rounded-full`), so a service could not widen the bar for a touch/coarse-pointer console or
-   * square the thumb to match a sharp-cornered theme without forking ScrollArea (rule #45).
-   * --scroll-area-bar-size is a RAW rem on purpose: it replaces a FLAT Tailwind step (2.5 = 10px),
-   * not a --space-* step, so binding it to the density-scaled scale would silently change today's
-   * rendering under a non-default --scaling. Defaults reproduce the previous rail exactly. */
-  --scroll-area-bar-size: 0.625rem;
-  /* Hairline inset that keeps the thumb off the rail edge — a service running a thicker bar
-   * usually wants a proportionally larger gutter here. */
-  --scroll-area-bar-padding: 1px;
-  --scroll-area-thumb-radius: var(--radius-pill);
-
   /* TIMELINE GRID — the time-axis half of the Timeline family (#354 item 7). Every measure the
    * hand-rolled week grids in docs/showcase baked as a literal is a knob here: the height of one
    * hour is what a service tunes when a 24-hour axis has to fit one screen, and the column floor

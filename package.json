@@ -245,18 +245,6 @@
       "types": "./dist/components/data-entry/command.d.ts",
       "import": "./dist/components/data-entry/command.js"
     },
-    "./ui/context-menu": {
-      "types": "./dist/components/navigation/context-menu.d.ts",
-      "import": "./dist/components/navigation/context-menu.js"
-    },
-    "./ui/menubar": {
-      "types": "./dist/components/navigation/menubar.d.ts",
-      "import": "./dist/components/navigation/menubar.js"
-    },
-    "./ui/navigation-menu": {
-      "types": "./dist/components/navigation/navigation-menu.d.ts",
-      "import": "./dist/components/navigation/navigation-menu.js"
-    },
     "./ui/resizable": {
       "types": "./dist/components/layout/resizable.d.ts",
       "import": "./dist/components/layout/resizable.js"
@@ -343,7 +331,7 @@
     "check:data-entry-touch-aria": "node scripts/check-data-entry-touch-aria.mjs",
     "check:layout-nav-frames": "node scripts/check-layout-nav-frames.mjs",
     "check:provider-feedback-query-runtime": "for frames in navigation-app-setting-picker,feedback-dialog,feedback-sheet,feedback-alert-dialog feedback-tooltip,feedback-toast,feedback-skeleton,query-data-state query-infinite-query-state,query-mutation-feedback,query-prefetch-link; do FRAMES=$frames node scripts/check-provider-feedback-query-runtime.mjs || exit 1; done",
-    "check:layout-nav-closure": "for frames in layout-flex,layout-app-shell,layout-aspect-ratio,layout-auth-shell layout-page-container,layout-resizable-panel,layout-separator,layout-sidebar layout-split-pane,layout-topbar,navigation-breadcrumb,navigation-app-setting-picker navigation-context-menu,navigation-dropdown-menu,navigation-menubar,navigation-navigation-menu navigation-steps,navigation-toolbar,navigation-tabs,navigation-pagination; do FRAMES=$frames node scripts/check-layout-nav-closure.mjs || exit 1; done",
+    "check:layout-nav-closure": "for frames in layout-flex,layout-app-shell,layout-aspect-ratio,layout-auth-shell layout-page-container,layout-resizable-panel,layout-separator,layout-sidebar layout-split-pane,layout-topbar,navigation-breadcrumb,navigation-app-setting-picker navigation-dropdown-menu navigation-steps,navigation-toolbar,navigation-tabs,navigation-pagination; do FRAMES=$frames node scripts/check-layout-nav-closure.mjs || exit 1; done",
     "check:display-runtime-evidence": "node scripts/check-display-runtime-evidence.mjs",
     "check:data-table-pagination-wrap": "node scripts/check-data-table-pagination-wrap.mjs",
     "check:data-table-overflow": "node scripts/check-data-table-overflow.mjs",
@@ -452,10 +440,6 @@
     "@date-fns/tz": "^1.5.0",
     "@fontsource/m-plus-2": "^5.3.0",
     "@fontsource/noto-sans-jp": "^5.3.0",
-    "@radix-ui/react-context-menu": "^2.3.7",
-    "@radix-ui/react-menubar": "^1.1.24",
-    "@radix-ui/react-navigation-menu": "^1.2.22",
-    "@radix-ui/react-scroll-area": "^1.2.18",
     "@radix-ui/react-select": "^2.3.7",
     "@react-aria/utils": "^3.34.1",
     "@tanstack/react-table": "^9.2.4",

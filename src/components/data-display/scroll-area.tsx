@@ -1,12 +1,30 @@
-import { useLayoutEffect } from "@react-aria/utils";
 import * as React from "react";
-import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 
 import { cn } from "../../lib/utils";
 import type { ScrollAreaProp } from "../../props/components/data-display.prop";
 
 export type ScrollAreaProps = ScrollAreaProp &
-  Omit<React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>, keyof ScrollAreaProp>;
+  Omit<React.ComponentPropsWithoutRef<"div">, keyof ScrollAreaProp>;
+
+/*
+ * NỀN: cuộn NGUYÊN BẢN của trình duyệt, không còn @radix-ui/react-scroll-area.
+ *
+ * Ant Design không có ScrollArea — antd để trình duyệt cuộn, và đó chính là hình dạng ở đây: một
+ * phần tử `overflow: auto` duy nhất, thanh cuộn vẽ bằng `scrollbar-width` / `scrollbar-color` /
+ * `scrollbar-gutter` đọc từ token (styles/data-display-layout.css). Cái mất đi là một thanh cuộn
+ * TỰ VẼ; cái được lại là thanh cuộn thật của nền tảng: cuộn quán tính, kéo bằng chuột giữa, bánh xe
+ * ngang, con trỏ thô, và trình đọc màn hình nhận đúng một vùng cuộn.
+ *
+ * GỐC VÀ VIEWPORT NAY LÀ MỘT PHẦN TỬ. Với Radix chúng phải tách đôi (gốc `overflow: hidden`,
+ * viewport `height: 100%` bên trong), và chỗ tách ấy làm hỏng đúng những chỗ gọi bằng chiều cao
+ * TỐI ĐA: `.ui-cascader-list` / `.ui-tree-select-list` đặt `max-block-size` lên GỐC, còn viewport
+ * đọc `height: 100%` — một phần trăm trên chiều cao không xác định thì hoá `auto`, nên ruột tràn ra
+ * khỏi cái gốc đang `overflow: hidden` và bị CẮT thay vì cuộn. Một phần tử mang cả `max-block-size`
+ * lẫn `overflow: auto` thì cuộn đúng, không cần luật nào bù.
+ *
+ * Hệ quả với API: `ref` và `viewportRef` nay trỏ vào CÙNG một nút — chính phần tử cuộn. `viewportRef`
+ * được giữ vì hợp đồng (và vì ChatBubbleList đang dùng), không phải vì nó còn trỏ chỗ khác.
+ */
 
 /** The knob a service moves to retune "close enough to the bottom to keep following". */
 const ANCHOR_OFFSET_TOKEN = "--scroll-area-anchor-offset";
@@ -42,10 +60,10 @@ function readAnchorOffset(element: HTMLElement): number {
 }
 
 /**
- * Find the element whose children are the ROWS. Radix wraps the children in one content div, and
- * consumers are told to wrap their own content in a single element (that is how the viewport
- * measures overflow), so the rows typically sit two levels down: `viewport > content > Flex >
- * row…`.
+ * Find the element whose children are the ROWS. The children are wrapped in one content element
+ * (that wrapper is what a ResizeObserver can watch grow), and consumers are told to wrap their own
+ * content in a single element, so the rows typically sit two levels down: `viewport > content >
+ * Flex > row…`.
  */
 function resolveRowContainer(root: Element): Element {
   let container = root;
@@ -109,8 +127,8 @@ function useBottomAnchor(
   React.useEffect(() => {
     if (!viewport || !enabled) return;
 
-    // Radix wraps the children in one content div; that wrapper is what grows, and its children
-    // are the rows we anchor to.
+    // The children live in one content wrapper; that wrapper is what grows, and its children are
+    // the rows we anchor to.
     const content = viewport.firstElementChild ?? viewport;
     const band = offset ?? readAnchorOffset(viewport);
 
@@ -185,47 +203,7 @@ function useBottomAnchor(
   }, [viewport, enabled, offset]);
 }
 
-/**
- * The direction the scroll area's CONTENT should be laid out in.
- *
- * Radix's `ScrollArea.Root` calls `useDirection(dir)`, which falls back to the literal `"ltr"`
- * when there is neither a `dir` prop nor a `DirectionProvider` — and then STAMPS that on the root
- * element. A `dir` attribute is not advisory: it resets the inline axis for the whole subtree, so
- * every `margin-inline-*`, `inset-inline-*`, `text-align: start` and `align-items: flex-end`
- * inside the viewport resolves in the LTR direction no matter what the page says.
- *
- * MEASURED (Chromium, 1280px, a chat feed inside `<div dir="rtl">`): the list computed
- * `direction: rtl`, the Radix root under it computed `ltr`, and the "my message" bubble — whose
- * only positioning is `margin-inline-start: auto` — stayed on the right instead of flipping to
- * the left. Nothing in the stylesheet was physical; the axis had simply been reset one element up.
- *
- * So the ambient direction is read off the mounted element's PARENT (the first honest answer,
- * since the root itself already carries Radix's stamp) and handed back to Radix as an explicit
- * `dir`. An explicit `dir` prop from the caller always wins, and a `DirectionProvider` still
- * works because Radix consults it before the value we pass.
- */
-function useAmbientDirection(
-  root: HTMLElement | null,
-  provided: "ltr" | "rtl" | undefined,
-): "ltr" | "rtl" | undefined {
-  const [ambient, setAmbient] = React.useState<"ltr" | "rtl" | undefined>(undefined);
-
-  useLayoutEffect(() => {
-    if (provided !== undefined) return;
-    const parent = root?.parentElement;
-    if (!parent || typeof window === "undefined" || typeof window.getComputedStyle !== "function") {
-      return;
-    }
-    setAmbient(window.getComputedStyle(parent).direction === "rtl" ? "rtl" : "ltr");
-  }, [root, provided]);
-
-  return provided ?? ambient;
-}
-
-export const ScrollArea = React.forwardRef<
-  React.ComponentRef<typeof ScrollAreaPrimitive.Root>,
-  ScrollAreaProps
->(
+export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
   (
     {
       className,
@@ -235,88 +213,75 @@ export const ScrollArea = React.forwardRef<
       anchorOffset,
       onAnchoredChange,
       orientation = "vertical",
-      dir,
       ...props
     },
     ref,
   ) => {
-    // State, not a ref, so the anchoring effect re-runs the moment the viewport mounts.
+    // State, not a ref, so the anchoring effect re-runs the moment the element mounts.
     const [viewport, setViewport] = React.useState<HTMLDivElement | null>(null);
-    // Same reason: the direction can only be read once the root is in the document.
-    const [root, setRoot] = React.useState<HTMLDivElement | null>(null);
-    const attachRoot = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        setRoot(node);
-        if (typeof ref === "function") ref(node);
-        else if (ref) (ref as React.RefObject<HTMLDivElement | null>).current = node;
-      },
-      [ref],
-    );
-    const direction = useAmbientDirection(root, dir);
     const attachViewport = React.useCallback(
       (node: HTMLDivElement | null) => {
         setViewport(node);
-        if (typeof viewportRef === "function") viewportRef(node);
-        else if (viewportRef)
-          (viewportRef as React.RefObject<HTMLDivElement | null>).current = node;
+        for (const target of [ref, viewportRef]) {
+          if (typeof target === "function") target(node);
+          else if (target) (target as React.RefObject<HTMLDivElement | null>).current = node;
+        }
       },
-      [viewportRef],
+      [ref, viewportRef],
     );
 
     useBottomAnchor(viewport, anchor === "bottom", anchorOffset, onAnchoredChange);
 
     return (
-      <ScrollAreaPrimitive.Root
-        ref={attachRoot}
-        dir={direction}
-        className={cn("relative overflow-hidden", className)}
+      // `tabIndex={0}` keeps the scroll viewport keyboard-reachable so overflowing content can be
+      // scrolled without a pointer (WCAG 2.1.1 / axe scrollable-region-focusable).
+      //
+      // NO `dir` IS STAMPED HERE, deliberately. Radix's Root called `useDirection(dir)`, which
+      // falls back to the literal "ltr" and writes it onto the element — and a `dir` attribute is
+      // not advisory: it resets the inline axis for the whole subtree, so every `margin-inline-*`,
+      // `text-align: start` and `align-items: flex-end` inside resolved LTR on an RTL page
+      // (measured in Chromium: a chat feed inside `dir="rtl"` kept its own bubbles on the wrong
+      // side). A plain element inherits the page's direction, which is the correct answer and
+      // needs no code. A caller may still pass `dir` explicitly; it rides through with the rest.
+      <div
+        ref={attachViewport}
+        tabIndex={0}
+        data-slot="scroll-area-viewport"
+        data-anchor={anchor}
+        data-orientation={orientation}
+        className={cn("ui-scroll-area", className)}
         {...props}
       >
-        {/* Keep the scroll viewport keyboard-reachable so overflowing content can be scrolled
-            without a pointer (WCAG 2.1.1 / axe scrollable-region-focusable). `viewportRef` is the
-            supported handle on this element — it is NOT an invitation to drop the tab stop. */}
-        <ScrollAreaPrimitive.Viewport
-          ref={attachViewport}
-          tabIndex={0}
-          data-slot="scroll-area-viewport"
-          data-anchor={anchor}
-          data-orientation={orientation}
-          className="size-full rounded-[inherit]"
-        >
+        <div data-slot="scroll-area-content" className="ui-scroll-area-content">
           {children}
-        </ScrollAreaPrimitive.Viewport>
-        {/* Mounting a ScrollBar is what ENABLES its axis — Radix reads `scrollbarXEnabled` /
-            `scrollbarYEnabled` from these children and writes the viewport's `overflowX`/`overflowY`
-            inline. So the axis a caller did not ask for stays `overflow: hidden`, and asking for
-            `horizontal` is the whole fix: no consumer overflow class, and nothing here for a
-            stylesheet to override (an inline style would win over it anyway). */}
-        {orientation !== "horizontal" && <ScrollBar orientation="vertical" />}
-        {orientation !== "vertical" && <ScrollBar orientation="horizontal" />}
-        <ScrollAreaPrimitive.Corner />
-      </ScrollAreaPrimitive.Root>
+        </div>
+      </div>
     );
   },
 );
-ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
+ScrollArea.displayName = "ScrollArea";
 
-export const ScrollBar = React.forwardRef<
-  React.ComponentRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
-  React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
->(({ className, orientation = "vertical", ...props }, ref) => (
-  <ScrollAreaPrimitive.ScrollAreaScrollbar
-    ref={ref}
-    orientation={orientation}
-    className={cn(
-      "ui-scroll-area-bar flex touch-none transition-colors select-none",
-      orientation === "vertical" &&
-        "ui-scroll-area-bar--vertical h-full border-s border-s-transparent",
-      orientation === "horizontal" &&
-        "ui-scroll-area-bar--horizontal flex-col border-t border-t-transparent",
-      className,
-    )}
-    {...props}
-  >
-    <ScrollAreaPrimitive.ScrollAreaThumb className="ui-scroll-area-thumb bg-border relative flex-1" />
-  </ScrollAreaPrimitive.ScrollAreaScrollbar>
-));
-ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;
+/**
+ * Deliberately NOT exported: a deprecated no-op must not grow the package's public type surface.
+ * Nothing was exported for it before either — it used to be typed straight off Radix.
+ */
+type ScrollBarProps = {
+  orientation?: "vertical" | "horizontal";
+  className?: string;
+};
+
+/**
+ * @deprecated Renders nothing. Native scrolling has no separate bar element to mount: the browser
+ * draws the scrollbar for whichever axis overflows, and WHICH axes may overflow is
+ * `<ScrollArea orientation="vertical | horizontal | both">`.
+ *
+ * Under Radix, mounting a `ScrollBar` was what ENABLED its axis (Radix read `scrollbarXEnabled` /
+ * `scrollbarYEnabled` from these children and wrote the viewport's inline `overflowX`/`overflowY`
+ * from them), so `<ScrollBar orientation="horizontal" />` was load-bearing rather than decorative.
+ * It is kept as an inert export so existing call sites keep compiling; move the intent to
+ * `orientation` — `<ScrollArea orientation="both">` is the replacement for a vertical area that
+ * also mounted a horizontal bar.
+ */
+export function ScrollBar(_props: ScrollBarProps): null {
+  return null;
+}

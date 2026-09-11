@@ -10,16 +10,10 @@
     "data-entry-select-matrix",
     "feedback-dialog",
     "feedback-sheet",
-    "navigation-context-menu",
     "navigation-dropdown-menu"
   ],
   "overlay": {
     "data-entry-select": [
-      "landmark-one-main",
-      "page-has-heading-one",
-      "region"
-    ],
-    "navigation-context-menu": [
       "landmark-one-main",
       "page-has-heading-one",
       "region"

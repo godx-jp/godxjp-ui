@@ -13,27 +13,8 @@ describe("layout and navigation owner frame contracts", () => {
     ["docs/layout/sidebar.tsx", ["Sidebar", "SidebarHeader", "SidebarSection", "SidebarItem"]],
     ["docs/navigation/tabs.tsx", ["Tabs", "TabsList", "TabsTrigger", "TabsContent"]],
     [
-      "docs/navigation/context-menu.tsx",
-      ["ContextMenu", "ContextMenuTrigger", "ContextMenuContent", "ContextMenuItem"],
-    ],
-    [
       "docs/navigation/dropdown-menu.tsx",
       ["DropdownMenu", "DropdownMenuTrigger", "DropdownMenuContent", "DropdownMenuItem"],
-    ],
-    [
-      "docs/navigation/menubar.tsx",
-      ["Menubar", "MenubarMenu", "MenubarTrigger", "MenubarContent", "MenubarItem"],
-    ],
-    [
-      "docs/navigation/navigation-menu.tsx",
-      [
-        "NavigationMenu",
-        "NavigationMenuList",
-        "NavigationMenuItem",
-        "NavigationMenuTrigger",
-        "NavigationMenuContent",
-        "NavigationMenuLink",
-      ],
     ],
     ["docs/navigation/toolbar.tsx", ["Toolbar", "ToolbarGroup"]],
   ])("renders the public compound contract in %s", (file, exports) => {

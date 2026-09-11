@@ -8,16 +8,15 @@ import {
   CardHeader,
   CardTitle,
   ScrollArea,
-  ScrollBar,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
- * ScrollArea — custom scrollbar container. ALWAYS set an explicit height/max-height
- * (vertical) or width (horizontal) on the wrapper or the scrollbar never appears.
- * `type` controls when the bar is visible; `ScrollArea orientation="horizontal"`
- * adds a horizontal bar. Composed only from real @godxjp/ui components.
+ * ScrollArea — a native scrolling box. ALWAYS give it an explicit height/max-height
+ * (vertical) or width (horizontal), or nothing ever overflows and no scrollbar appears.
+ * `orientation` decides which axes may scroll; the browser draws the bar, styled from
+ * the --scroll-area-* tokens. Composed only from real @godxjp/ui components.
  */
 const entries = Array.from(
   { length: 18 },
@@ -115,7 +114,6 @@ export default function Demo() {
                   anchor="bottom"
                   viewportRef={streamViewport}
                   onAnchoredChange={setAnchored}
-                  type="always"
                 >
                   <CardContent>
                     <Flex direction="col">
@@ -173,7 +171,7 @@ export default function Demo() {
           <CardContent>
             <Card variant="outline" className="h-40 w-full">
               <CardContent flush>
-                <ScrollArea anchor="bottom" anchorOffset={0} type="always">
+                <ScrollArea anchor="bottom" anchorOffset={0}>
                   <CardContent>
                     <Flex direction="col" gap="xs">
                       {entries.map((e) => (
@@ -217,38 +215,11 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>type=&quot;always&quot;（バーを常時表示）</CardTitle>
-            <CardDescription>
-              既定の hover はホバー時のみバーを表示します。always
-              は内容が溢れる限りバーを常に表示します。
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Card variant="outline" className="h-56 w-full">
-              <CardContent flush>
-                <ScrollArea type="always">
-                  <CardContent>
-                    <Flex direction="col" gap="xs">
-                      {entries.map((e) => (
-                        <div key={e} className="text-sm tabular-nums">
-                          {e}
-                        </div>
-                      ))}
-                    </Flex>
-                  </CardContent>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
             <CardTitle level={2}>ScrollArea</CardTitle>
             <CardDescription>orientation="horizontal"</CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea orientation="horizontal" type="always">
+            <ScrollArea orientation="horizontal">
               <ResponsiveGrid flow="columns">
                 {columns.map((column) => (
                   <Card key={column}>
@@ -264,17 +235,25 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>個別の ScrollBar を追加する</CardTitle>
+            <CardTitle level={2}>両方向スクロール（orientation=&quot;both&quot;）</CardTitle>
+            <CardDescription>
+              縦にも横にも溢れうる面は orientation=&quot;both&quot;。以前は縦の ScrollArea に
+              ScrollBar を足して横軸を開けていたが、スクロールはブラウザ本来のものになったので、
+              軸を決めるのは orientation だけになった。
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea type="always">
-              <ResponsiveGrid flow="columns">
-                {columns.map((column) => (
-                  <Text key={column}>{column}</Text>
-                ))}
-              </ResponsiveGrid>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
+            <Card variant="outline" className="h-32 w-full">
+              <CardContent flush>
+                <ScrollArea orientation="both">
+                  <ResponsiveGrid flow="columns">
+                    {columns.map((column) => (
+                      <Text key={column}>{column}</Text>
+                    ))}
+                  </ResponsiveGrid>
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
 
@@ -288,7 +267,7 @@ export default function Demo() {
           <CardContent>
             <Card variant="outline" className="h-56 w-full">
               <CardContent flush>
-                <ScrollArea type="always">
+                <ScrollArea>
                   <CardContent>
                     <Flex direction="col" gap="xs">
                       {shortEntries.map((e) => (

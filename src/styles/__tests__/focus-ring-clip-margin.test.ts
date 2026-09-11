@@ -227,8 +227,6 @@ describe("focus-ring clip margin", () => {
         /min-height:/.test(r.body),
     );
     expect(label, "the *-label rule disappeared from navigation-layout.css").toBeDefined();
-    expect(label!.selector).toContain(".ui-context-menu-label");
-    expect(label!.selector).toContain(".ui-menubar-label");
     // `height: auto` releases the definite height the shared row rule set; without it the
     // `min-height` below it is dead code.
     expect(label!.body).toMatch(/height:\s*auto;/);

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { describe, expect, it } from "vitest";
 
-import { ScrollArea, ScrollBar } from "../scroll-area";
+import { ScrollArea } from "../scroll-area";
 import { Button } from "../../general/button";
 import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi } from "@/test/render";
@@ -15,8 +15,8 @@ const messages = Array.from({ length: 12 }, (_, index) => `メッセージ ${Str
  * must survive the new props.
  */
 describe("ScrollArea a11y", () => {
-  // ScrollArea wraps content in a Radix viewport with custom scrollbars; the scrollable region
-  // must keep its content reachable to assistive tech.
+  // ScrollArea is a native scroll container; the scrollable region must keep its content reachable
+  // to assistive tech, and must stay focusable (axe scrollable-region-focusable).
   it("has no axe violations for a scrollable list", async () => {
     await expectNoA11yViolations(
       <ScrollArea className="h-24 w-48">
@@ -31,13 +31,12 @@ describe("ScrollArea a11y", () => {
 
   it("has no axe violations as a plain scroll region", async () => {
     await expectNoA11yViolations(
-      <ScrollArea className="h-40">
+      <ScrollArea className="h-40" orientation="both">
         <div>
           {messages.map((message) => (
             <div key={message}>{message}</div>
           ))}
         </div>
-        <ScrollBar orientation="horizontal" />
       </ScrollArea>,
     );
   });

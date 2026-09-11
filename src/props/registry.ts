@@ -2324,6 +2324,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/navigation.prop.ts",
     vocabulary: [],
   },
+  DropdownMenuTriggerActionProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
   PaginationAlignProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
