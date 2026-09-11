@@ -181,18 +181,19 @@ const link = ({ isActive }: { isActive: boolean }) =>
 export function SettingsLayout() {
   return (
     <Flex direction="col" gap="lg" className="lg:flex-row lg:items-start">
-      {/* < lg: horizontal, scrollable route tabs. */}
-      <nav aria-label="設定" className="flex gap-1 overflow-x-auto lg:hidden">
+      {/* < lg: horizontal, scrollable route tabs. Flex owns the row and the gap — hideFrom /
+          hideBelow own the breakpoint, so neither nav needs a hand-rolled flex or gap utility. */}
+      <Flex as="nav" aria-label="設定" gap={1} hideFrom="lg" className="overflow-x-auto">
         {SECTIONS.map((s) => (
           <NavLink key={s.to} to={s.to} className={link} end>{s.label}</NavLink>
         ))}
-      </nav>
+      </Flex>
       {/* >= lg: persistent vertical local nav (bounded width, does not shrink). */}
-      <nav aria-label="設定" className="hidden lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:gap-1">
+      <Flex as="nav" aria-label="設定" direction="col" gap={1} hideBelow="lg" width={224} shrink={false}>
         {SECTIONS.map((s) => (
           <NavLink key={s.to} to={s.to} className={link} end>{s.label}</NavLink>
         ))}
-      </nav>
+      </Flex>
       {/* Bounded content region (~42rem) — the routed section renders here. min-w-0 lets it shrink. */}
       <main className="min-w-0 max-w-2xl flex-1"><Outlet /></main>
     </Flex>
@@ -266,6 +267,11 @@ import {
 import { Switch } from "@godxjp/ui/data-entry";
 import { AlertDialog } from "@godxjp/ui/feedback";
 import { Flex } from "@godxjp/ui/layout";
+
+// The sections stack in ONE bounded column. The gap between sibling Cards belongs to that stack,
+// never to the cards themselves — four bare <Card>s in a row is what the audit means by
+// sibling-cards-need-flex, and it is the same rule the DO list at the bottom of this file states.
+<Flex direction="col" gap="lg" className="max-w-3xl">
 
 // 1) IDENTITY — metadata is a description list, so it is Descriptions (a real <dl>), never a
 //    two-column flex of styled divs. One header action goes in CardAction.
@@ -359,6 +365,8 @@ import { Flex } from "@godxjp/ui/layout";
     />
   </CardContent>
 </Card>
+
+</Flex>
 
 <AlertDialog
   open={confirmOpen}

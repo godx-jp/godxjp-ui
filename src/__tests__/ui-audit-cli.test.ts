@@ -27,6 +27,24 @@ function audit(source: string, framework = false, path?: string, filename = "sam
 }
 
 describe("consumer audit CLI regressions", () => {
+  /**
+   * `\p{Extended_Pictographic}` covers U+00A9 ©, U+00AE ® and U+2122 ™, and all three are
+   * `Emoji_Presentation=No` — typographic marks that predate emoji and default to text
+   * presentation. None of the reasons in the rule's own message reaches them: a copyright line
+   * does not break on Win/Linux and does not pollute an accessible name. The catalog's own
+   * CenteredShell recipe was flagged for the `©` in its footer, and so is every consumer that
+   * ships one.
+   *
+   * With U+FE0F after them they are asking for emoji presentation on purpose, so they stay caught.
+   */
+  it("does not call ©, ® or ™ an emoji, but still catches them with a VS16 selector", () => {
+    expect(audit("<Text>\u00a9 2026 GodX</Text>").output).not.toContain('"no-emoji-in-ui"');
+    expect(audit("<Text>Acme\u2122 \u00ae</Text>").output).not.toContain('"no-emoji-in-ui"');
+    expect(audit("<Text>\u00a9\ufe0f 2026</Text>").output).toContain('"no-emoji-in-ui"');
+    expect(audit("<Text>Shipped \u2705</Text>").output).toContain('"no-emoji-in-ui"');
+    expect(audit("<Text>\ud83c\udf89</Text>").output).toContain('"no-emoji-in-ui"');
+  });
+
   it("distinguishes framework test support and API prose from shipped JSX", () => {
     expect(audit("<button>Fixture</button>", true, "src/test").output).not.toContain(
       '"no-raw-button"',

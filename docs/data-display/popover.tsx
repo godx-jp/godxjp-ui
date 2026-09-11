@@ -15,7 +15,7 @@ import {
   PopoverTrigger,
 } from "@godxjp/ui/data-display";
 import { Checkbox, FormField, Input, Label } from "@godxjp/ui/data-entry";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Info, SlidersHorizontal } from "lucide-react";
 
@@ -203,6 +203,46 @@ export default function Demo() {
                 </PopoverTrigger>
                 <PopoverContent align="end" aria-label="終了端の配置例">
                   <PopoverDescription>終了端に揃えます。</PopoverDescription>
+                </PopoverContent>
+              </Popover>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>width · パネルの測り方</CardTitle>
+            <CardDescription>
+              既定の panel は --popover-width（18rem）。auto は中身に測らせます — 自前の幅を持つもの
+              （Calendar、チャート、固定幅のプレビュー）はこれ以外に正解がありません。trigger
+              はアンカーに合わせます。className に w-* を書くのは呼び出し側の定数で、どのテーマからも
+              retune できません。flush が padding 側で避けているのと同じ話です。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap gap="sm">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline">panel（既定）</Button>
+                </PopoverTrigger>
+                <PopoverContent aria-label="既定の幅">
+                  <Text size="sm">18rem のパネル幅。散文や、パネル自身が測るリスト向け。</Text>
+                </PopoverContent>
+              </Popover>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline">auto</Button>
+                </PopoverTrigger>
+                <PopoverContent width="auto" aria-label="内容に合わせた幅">
+                  <Text size="sm">中身が幅を決めます。</Text>
+                </PopoverContent>
+              </Popover>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline">trigger に合わせる</Button>
+                </PopoverTrigger>
+                <PopoverContent width="trigger" aria-label="トリガーと同じ幅">
+                  <Text size="sm">アンカーと同じ幅。</Text>
                 </PopoverContent>
               </Popover>
             </Flex>

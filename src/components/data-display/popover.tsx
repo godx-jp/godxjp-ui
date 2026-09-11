@@ -319,7 +319,32 @@ export function PopoverAnchor({ asChild, ref, ...props }: PopoverAnchorProps) {
  */
 type PopoverContentFlush = { flush?: FlushProp };
 
+/**
+ * How the panel is MEASURED across the inline axis.
+ *
+ * `"panel"` (default) is the popover's own measure, `--popover-width` (18rem) — right for prose and
+ * for a list the panel itself sizes. `"auto"` lets the CONTENT decide, which is the only correct
+ * answer for something that already has a width of its own: a two-month `Calendar` is far wider
+ * than 18rem and was being clipped by it. `"trigger"` matches the anchor, the shape every
+ * select-like control in this library wants.
+ *
+ * The axis exists because `flush` had no counterpart. The catalog's own rule says a panel must
+ * never zero its padding with a `p-0` utility, "that is a per-call-site constant no service theme
+ * can retune" — and until now the only way to get a content-width panel was exactly such a
+ * constant, `className="w-auto"`. The library's internal `.ui-control-panel-flush` has always set
+ * both knobs; this is the public half of it.
+ */
+type PopoverContentWidth = "panel" | "auto" | "trigger";
+
+const POPOVER_SURFACE_INLINE_SIZE: Record<PopoverContentWidth, string | null> = {
+  panel: null,
+  auto: "auto",
+  trigger: "var(--trigger-width)",
+};
+
 interface PopoverContentProps extends React.ComponentPropsWithRef<"div">, PopoverContentFlush {
+  /** Inline measure of the panel — `panel` (default) · `auto` (content decides) · `trigger`. */
+  width?: PopoverContentWidth;
   /**
    * Render THIS panel somewhere other than the default. Almost always unnecessary: mounting the
    * whole tree in a shadow root is what `OverlayPortalProvider` is for, and it moves every overlay
@@ -366,6 +391,7 @@ export function PopoverContent({
   children,
   ref,
   flush,
+  width,
   side = "bottom",
   align = "center",
   sideOffset = 4,
@@ -485,6 +511,7 @@ export function PopoverContent({
             data-align={align}
             data-state={isExiting ? "closed" : "open"}
             data-flush={flush ? "" : undefined}
+            data-width={width && width !== "panel" ? width : undefined}
             {...props}
             /*
              * AFTER `{...props}`, and computed from `props` rather than `rest`: `rest` is RAC's own
@@ -524,6 +551,9 @@ export function PopoverContent({
                     }),
                 ...style,
                 ...(flush ? { "--popover-space-inset": "0" } : null),
+                ...(width && POPOVER_SURFACE_INLINE_SIZE[width]
+                  ? { "--popover-surface-inline-size": POPOVER_SURFACE_INLINE_SIZE[width] }
+                  : null),
               } as React.CSSProperties
             }
           >
