@@ -83,6 +83,59 @@ function mediaBlocksMentioning(css: string, needle: string) {
   return blocks;
 }
 
+/**
+ * The shell's grid lives in TWO complementary blocks at one breakpoint: the wide-only templates
+ * (`width > 56.25rem`) and the narrow reset (`width <= 56.25rem`). Selecting by CONDITION rather
+ * than by index is what keeps these assertions honest — reading `[0]` silently started measuring
+ * the wide block the moment a second one existed.
+ */
+function shellBlock(condition: string) {
+  const blocks = mediaBlocksMentioning(shellStyles, ".app-root").filter(
+    (block) => block.condition === condition,
+  );
+  expect(blocks.length, `no @media ${condition} block owns .app-root`).toBeGreaterThan(0);
+  // The wide side is written in two places — the shell's own variants and the `sidebar="none"`
+  // ones that sit beside their narrow neighbours — so same-condition blocks are read as one.
+  return blocks.map((block) => block.body).join("\n");
+}
+
+/** Top-level track count of a `grid-template-columns` value — `var()` / `minmax()` count as one. */
+function trackCount(value: string): number {
+  let flat = value;
+  while (/\([^()]*\)/.test(flat)) flat = flat.replace(/\([^()]*\)/g, "");
+  return flat.trim().split(/\s+/).filter(Boolean).length;
+}
+
+/** Columns named by the FIRST row of a `grid-template-areas` value. */
+function areaColumns(value: string): number {
+  const firstRow = value.match(/"([^"]*)"/);
+  return firstRow ? firstRow[1].trim().split(/\s+/).filter(Boolean).length : 0;
+}
+
+/**
+ * Every `.app-root` rule that lives OUTSIDE the wide-only block, as `[selector, declarations]`.
+ * The bare `.app-root` is excluded: it is the base rule the narrow reset is there to override,
+ * and both are (0,1,0) with the reset later in the sheet.
+ */
+function qualifiedAppRootRulesOutsideWideBlock(): [string, string][] {
+  const stripped = shellStyles.replace(/\/\*[\s\S]*?\*\//g, "");
+  let outside = stripped;
+  for (const block of mediaBlocksMentioning(shellStyles, ".app-root")) {
+    if (block.condition === "(width > 56.25rem)") outside = outside.replace(block.body, "");
+  }
+  const rules: [string, string][] = [];
+  const rule = /([^{}]*)\{([^{}]*)\}/g;
+  let match: RegExpExecArray | null;
+  while ((match = rule.exec(outside)) !== null) {
+    for (const selector of splitSelectorList(match[1])) {
+      if (selector.startsWith(".app-root") && selector !== ".app-root") {
+        rules.push([selector, match[2]]);
+      }
+    }
+  }
+  return rules;
+}
+
 describe("the rail's top row follows topbarSpan", () => {
   // Only a COLUMN rail has a top row to align: on a block edge the rail is a strip and there is
   // no shell top row of its own to share a centre line with.
@@ -393,25 +446,32 @@ describe("responsive shell geometry", () => {
     // area name, so an `.app-nav-rail` that is merely unplaced does NOT disappear — the grid put it
     // in an implicit column and it rendered as a 33x168px sliver at x=1213, y=637, over the page
     // content. Being absent from the template is not the same as being hidden.
-    const restructuring = mediaBlocksMentioning(shellStyles, ".app-root");
-    expect(restructuring).toHaveLength(1);
-    const narrow = restructuring[0].body;
+    const narrow = shellBlock("(width <= 56.25rem)");
     expect(declarationsFor(narrow, ".app-nav-rail")).toMatch(/display:\s*none;/);
-    // And the single-column template must actually apply to a railed shell, in every combination
-    // with the other axes — otherwise the three-column columns survive at phone width.
-    for (const selector of [
-      ".app-root[data-nav-rail]",
-      '.app-root[data-nav-rail][data-collapsed="true"]',
-      '.app-root[data-nav-rail][data-topbar-span="full"]',
-    ]) {
-      expect(declarationsFor(narrow, selector)).toMatch(
-        /grid-template-columns:\s*minmax\(0, 1fr\);/,
-      );
+    // And the single-column template must actually REACH a railed shell. It used to be spelled as
+    // a list of the rail states somebody had thought of — five selectors for a matrix of thirty,
+    // and the list lost to its own members on specificity: `[data-nav-rail]` is (0,2,0) while the
+    // wide `[data-nav-rail][data-nav-rail-position="start"]` is (0,3,0) (gh#474; measured, 44 of
+    // 60 state × direction pairs still multi-column below 900px). The reset is now ONE bare
+    // `.app-root`, and what makes that enough is the invariant below rather than a longer list.
+    expect(declarationsFor(narrow, ".app-root")).toMatch(
+      /grid-template-columns:\s*minmax\(0, 1fr\);/,
+    );
+    // THE INVARIANT: outside the wide-only block, nothing qualified by an attribute may build a
+    // multi-column shell — except docked mode, the one contract that KEEPS its columns narrow.
+    for (const [selector, declarations] of qualifiedAppRootRulesOutsideWideBlock()) {
+      const columns = declarations.match(/grid-template-columns:([^;]+);/)?.[1] ?? "";
+      const areas = declarations.match(/grid-template-areas:([^;]+);/)?.[1] ?? "";
+      const multiColumn = trackCount(columns) > 1 || areaColumns(areas) > 1;
+      expect(
+        !multiColumn || selector.includes('[data-responsive-navigation="docked"]'),
+        `${selector} builds a multi-column shell outside the wide-only block`,
+      ).toBe(true);
     }
   });
 
   it("keeps BOTH tracks under responsiveNavigation='docked' at narrow widths", () => {
-    const narrow = mediaBlocksMentioning(shellStyles, ".app-root")[0].body;
+    const narrow = shellBlock("(width <= 56.25rem)");
     expect(
       declarationsFor(
         narrow,
@@ -427,17 +487,25 @@ describe("responsive shell geometry", () => {
   it("restructures the shell at exactly ONE breakpoint and never deletes the footer (gh#213)", () => {
     // Between 768 and 900 the two rules disagreed. One breakpoint now, and the footer/bar-height
     // contract holds at every width.
+    // ONE breakpoint, still — but TWO complementary blocks at it: the wide-only templates and the
+    // narrow reset. That split is the gh#474 fix; what must never come back is a SECOND number.
     const restructuring = mediaBlocksMentioning(shellStyles, ".app-root");
-    expect(restructuring).toHaveLength(1);
-    expect(restructuring[0].condition).toBe("(width <= 56.25rem)");
-    expect(restructuring[0].body).toContain('"footer"');
+    expect([...new Set(restructuring.map((block) => block.condition))].sort()).toEqual([
+      "(width <= 56.25rem)",
+      "(width > 56.25rem)",
+    ]);
+    // The reset itself stays in ONE place: two narrow blocks could disagree with each other.
+    expect(
+      restructuring.filter((block) => block.condition === "(width <= 56.25rem)"),
+    ).toHaveLength(1);
+    expect(shellBlock("(width <= 56.25rem)")).toContain('"footer"');
     // THE BAR HEIGHT STAYS THE TOKEN AT EVERY WIDTH. This used to be spelled "no
     // `grid-template-rows` in this block at all", which was the blunt form of the real rule and
     // became wrong once a rail on a BLOCK edge added a fourth row: that row has to go when the
     // rail is hidden, or a phone keeps a band of dead space sized by a rail nobody can see. What
     // must never come back is the thing that actually broke — the deleted 768px block restating
     // the rows with a `3rem` LITERAL, which defeated the token below 768px only.
-    for (const rows of restructuring[0].body.matchAll(/grid-template-rows:([^;]+);/g)) {
+    for (const rows of shellBlock("(width <= 56.25rem)").matchAll(/grid-template-rows:([^;]+);/g)) {
       expect(rows[1], "narrow-width row template must be token-driven").not.toMatch(
         /\d+(\.\d+)?(px|rem|em)/,
       );
@@ -450,7 +518,7 @@ describe("responsive shell geometry", () => {
     expect(shellTokens).toContain("--app-shell-bar-gap: var(--space-3);");
     // The bar's inset is NOT the shell restructure's business any more — see the
     // horizontal-page-inset-axis test below. Nothing in this block may touch it.
-    expect(restructuring[0].body).not.toMatch(/padding-inline:/);
+    expect(shellBlock("(width <= 56.25rem)")).not.toMatch(/padding-inline:/);
     // TSX KHÔNG được nhắc lại con số breakpoint. Yêu cầu cũ ở đây là "TSX phải nêu CÙNG con số
     // với CSS", và chính nó đóng khung một lỗi: Tailwind biên dịch `max-[900px]` thành
     // `width < 900px` trong khi luật CSS dùng `width <= 56.25rem`, tức bao gồm cả 900. Utility
@@ -467,7 +535,7 @@ describe("responsive shell geometry", () => {
     expect(declarationsFor(shellStyles, ".app-root .app-mobile-nav-trigger")).toMatch(
       /display:\s*none/,
     );
-    expect(restructuring[0].body).toContain(".app-root .app-mobile-nav-trigger");
+    expect(shellBlock("(width <= 56.25rem)")).toContain(".app-root .app-mobile-nav-trigger");
   });
 
   it("gives the horizontal page-inset axis ONE owner, stepping on ONE breakpoint (gh#330)", () => {
@@ -531,19 +599,19 @@ describe("responsive shell geometry", () => {
     );
     expect(restructuring).toHaveLength(1);
     expect(restructuring[0].condition).toBe("(width <= 56.25rem)");
-    expect(restructuring[0].body).toContain('"sidebar topbar"');
-    expect(restructuring[0].body).toContain('"sidebar main"');
-    expect(restructuring[0].body).toContain('"sidebar footer"');
-    expect(restructuring[0].body).toMatch(
+    expect(shellBlock("(width <= 56.25rem)")).toContain('"sidebar topbar"');
+    expect(shellBlock("(width <= 56.25rem)")).toContain('"sidebar main"');
+    expect(shellBlock("(width <= 56.25rem)")).toContain('"sidebar footer"');
+    expect(shellBlock("(width <= 56.25rem)")).toMatch(
       /grid-template-columns:\s*var\(--app-shell-sidebar-width\) minmax\(0, 1fr\);/,
     );
     // `[^{]*` rather than `\s*` after the selector: docked now re-shows BOTH navigation columns,
     // so `> .app-sidebar` heads a grouped selector and is followed by `, … > .app-nav-rail` before
     // the brace. The assertion is unchanged — docked still restores the sidebar.
-    expect(restructuring[0].body).toMatch(
+    expect(shellBlock("(width <= 56.25rem)")).toMatch(
       /data-responsive-navigation="docked"[^}]*> \.app-sidebar[^{]*\{[^}]*display:\s*flex;/s,
     );
-    expect(restructuring[0].body).toMatch(
+    expect(shellBlock("(width <= 56.25rem)")).toMatch(
       /data-responsive-navigation="docked"[^}]*\.app-mobile-nav-trigger\s*\{[^}]*display:\s*none;/s,
     );
     expect(appShell).toContain('responsiveNavigation = "drawer"');

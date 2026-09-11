@@ -72,6 +72,32 @@ parity-audit-data-entry.md`: một slider ¥/%/件 trước đây đọc lên đ
 
 ### Fixed
 
+- **Dưới 900px, mọi trạng thái của `AppShell` mới thật sự về MỘT cột.** Bản reset một cột trong
+  `@media (width <= 56.25rem)` liệt kê NĂM selector cho một ma trận BA MƯƠI trạng thái, và nó thua
+  về độ đặc hiệu ngay ở trạng thái đầu tiên nó bỏ sót: `.app-root[data-topbar-span="full"]` không
+  có trong danh sách, nên template hai vùng của bề ngang lớn sống sót xuống dưới breakpoint trong
+  khi reset chỉ khai MỘT track — `main` rơi vào một track ngầm `auto` và co theo nội dung. Consumer
+  (`godx-jp/id`) đo được **`main` 170px trong khung 720px**, các nút hành động của trang nằm ngoài
+  mép phải. Mọi trạng thái có nav rail còn hỏng nặng hơn vì đúng lý do ấy:
+  `[data-nav-rail][data-nav-rail-position="start"]` là (0,3,0), còn `[data-nav-rail]` của reset chỉ
+  là (0,2,0).
+
+  Nay mọi template NHIỀU cột nằm trong `@media (width > 56.25rem)`, nên bản reset không còn phải
+  tranh đặc hiệu với ai và rút về đúng một selector `.app-root` — một trạng thái chưa ai nghĩ ra
+  cũng vẫn rơi vào một cột. Đo trên frame mới `layout-app-shell-states` (MỘT AppShell mỗi URL):
+  trước **178 lỗi, 44/60 cặp trạng thái × hướng** ở 320/390/720/900px; sau **0**. Ảnh chụp
+  `grid-template-*` của 300 cặp trạng thái × bề ngang cho thấy phía rộng và chế độ
+  `responsiveNavigation="docked"` KHÔNG đổi, trừ đúng một ô ma trận được sửa kèm: `sidebar="none"` +
+  rail `bottom` + `topbarSpan="full"` chưa từng có luật `grid-template-areas` (bản `top` thì có),
+  nên ở 1280px `main` là **579px tại x=701** và rail tràn 40px ra ngoài; nay `main` là **1280px tại
+  x=0**.
+
+  Cổng mới `check:app-shell-narrow-grid` (lane `ci-browser-full`, shard `interaction-semantics`) đi
+  hết 30 trạng thái × LTR/RTL: ở 320/390/720/900px lưới phải còn đúng MỘT cột, `main` phải phủ kín
+  bề ngang, trang không cuộn ngang và không phần tử nào nằm ngoài hai mép; ở 1280px số track của
+  từng trạng thái phải giữ nguyên. Đột biến: trả CSS về bản cũ → đỏ ngay ở
+  `ltr topbarSpan=full @720: 2 columns (156.609px 563.391px); main 563px at x=157`.
+
 - **`Segmented` bốn lựa chọn bị cắt chữ ở màn điện thoại — nay track XUỐNG DÒNG.** Catalog hứa
   Segmented dành cho 2–4 lựa chọn, nhưng track là `inline-flex` một hàng và item co lại kèm dấu
   lược, nên bốn lựa chọn có số đếm không sống nổi ở 393px. Đo trên Chromium (gino-cloud phát hiện):
