@@ -28,162 +28,178 @@
     background: hsl(var(--background));
   }
 
-  .app-root[data-collapsed="true"] {
-    grid-template-columns: var(--app-shell-sidebar-collapsed-width) minmax(0, 1fr);
-  }
-
-  /* topbarSpan="full" — the bar runs edge to edge and the rail starts beneath it, for products
-   * whose bar carries space-level chrome (global search, account, notifications) that outranks the
-   * current section instead of belonging to it. */
-  .app-root[data-topbar-span="full"] {
-    grid-template-areas:
-      "topbar topbar"
-      "sidebar main"
-      "sidebar footer";
-  }
-
-  /* ── THE SECOND NAVIGATION TRACK (`navRail`) ──────────────────────────────────────────────
-   * A narrow rail OUTSIDE the sidebar, for the workspace/organization switcher shape (Slack,
-   * Teams, Discord): rail → sidebar → content, three columns.
+  /* ── WIDE-ONLY GRID TEMPLATES ─────────────────────────────────────────────────────────────
+   * Every template below describes a WIDE shape — a second and a third navigation COLUMN, a bar
+   * that spans them, a folded sidebar track. They are scoped BY WIDTH rather than left
+   * unconditional, because otherwise the ≤900px reset has to out-specify each of them by hand,
+   * and that is a race it was losing: the reset listed five selectors for a matrix of thirty
+   * states, and a rail variant like `[data-nav-rail][data-nav-rail-position="start"]` (0,3,0)
+   * out-ranks the reset's `[data-nav-rail]` (0,2,0) anyway. Measured on `layout-app-shell-states`
+   * before this move, 44 of 60 state × direction pairs still carried a multi-column template
+   * below 900px; `[data-topbar-span="full"]` alone (gh#474) left `main` in an implicit `auto`
+   * track — 170px of a 720px viewport at the consumer, page actions past the right edge.
    *
-   * IT IS A SLOT, NOT A LAYOUT NAME. The track exists exactly when the `navRail` node is passed,
-   * the same way `footer` and `breadcrumb` already work — there is no `hasNavRail` enum and no
-   * bundled "layout preset". That is what keeps it ORTHOGONAL to `topbarSpan`: the rail answers
-   * "how many navigation columns", `topbarSpan` answers "how far the bar reaches", and all four
-   * combinations are real product shapes, so there is no invalid pairing to block.
-   *
-   * WHY A GRID TRACK AND NOT A NESTED FLEX BOX. A consumer can only reach the single `sidebar`
-   * slot, so building this by hand means putting both columns inside it — and `Sidebar`'s own
-   * `.sb-root` is `display: contents` (see below), so two Sidebars dropped in side by side
-   * dissolve into ONE flex row and both collapse to zero unless each is first wrapped in its own
-   * box. Owning the track here removes that trap, and with it the reason to override
-   * `--app-shell-sidebar-width` per route. */
-  /* WHICH EDGE the rail sits on is `navRailPosition`, and it is a LOGICAL axis: `start`/`end` are
-   * the inline edges, so they follow writing direction and an RTL document mirrors them for free
-   * (grid columns are laid out in the inline direction — no `[dir]` rule needed). `top`/`bottom`
-   * are the block edges, where the rail turns into a horizontal strip spanning the full measure
-   * and the grid grows a ROW instead of a column.
-   *
-   * Its thickness is one token per orientation — `--app-shell-nav-rail-width` when it is a column,
-   * `--app-shell-nav-rail-height` when it is a strip — because a single "size" would read as a
-   * width in half the shapes it applies to. The height defaults to the width, so a service that
-   * re-tunes one measure moves both. */
-  .app-root[data-nav-rail][data-nav-rail-position="start"] {
-    grid-template-areas:
-      "navrail sidebar topbar"
-      "navrail sidebar main"
-      "navrail sidebar footer";
-    grid-template-columns:
-      var(--app-shell-nav-rail-width)
-      var(--app-shell-sidebar-width)
-      minmax(0, 1fr);
-  }
+   * Behind the breakpoint the narrow reset needs no specificity at all, and a variant ADDED here
+   * later cannot leak downwards — the part a longer selector list could never promise.
+   * `scripts/check-app-shell-narrow-grid.mjs` walks the whole matrix in a browser. */
+  @media (width > 56.25rem) {
+    .app-root[data-collapsed="true"] {
+      grid-template-columns: var(--app-shell-sidebar-collapsed-width) minmax(0, 1fr);
+    }
 
-  .app-root[data-nav-rail][data-nav-rail-position="start"][data-topbar-span="full"] {
-    grid-template-areas:
-      "topbar  topbar  topbar"
-      "navrail sidebar main"
-      "navrail sidebar footer";
-  }
+    /* topbarSpan="full" — the bar runs edge to edge and the rail starts beneath it, for products
+     * whose bar carries space-level chrome (global search, account, notifications) that outranks the
+     * current section instead of belonging to it. */
+    .app-root[data-topbar-span="full"] {
+      grid-template-areas:
+        "topbar topbar"
+        "sidebar main"
+        "sidebar footer";
+    }
 
-  .app-root[data-nav-rail][data-nav-rail-position="end"] {
-    grid-template-areas:
-      "sidebar topbar  navrail"
-      "sidebar main    navrail"
-      "sidebar footer  navrail";
-    grid-template-columns:
-      var(--app-shell-sidebar-width)
-      minmax(0, 1fr)
-      var(--app-shell-nav-rail-width);
-  }
+    /* ── THE SECOND NAVIGATION TRACK (`navRail`) ──────────────────────────────────────────────
+     * A narrow rail OUTSIDE the sidebar, for the workspace/organization switcher shape (Slack,
+     * Teams, Discord): rail → sidebar → content, three columns.
+     *
+     * IT IS A SLOT, NOT A LAYOUT NAME. The track exists exactly when the `navRail` node is passed,
+     * the same way `footer` and `breadcrumb` already work — there is no `hasNavRail` enum and no
+     * bundled "layout preset". That is what keeps it ORTHOGONAL to `topbarSpan`: the rail answers
+     * "how many navigation columns", `topbarSpan` answers "how far the bar reaches", and all four
+     * combinations are real product shapes, so there is no invalid pairing to block.
+     *
+     * WHY A GRID TRACK AND NOT A NESTED FLEX BOX. A consumer can only reach the single `sidebar`
+     * slot, so building this by hand means putting both columns inside it — and `Sidebar`'s own
+     * `.sb-root` is `display: contents` (see below), so two Sidebars dropped in side by side
+     * dissolve into ONE flex row and both collapse to zero unless each is first wrapped in its own
+     * box. Owning the track here removes that trap, and with it the reason to override
+     * `--app-shell-sidebar-width` per route. */
+    /* WHICH EDGE the rail sits on is `navRailPosition`, and it is a LOGICAL axis: `start`/`end` are
+     * the inline edges, so they follow writing direction and an RTL document mirrors them for free
+     * (grid columns are laid out in the inline direction — no `[dir]` rule needed). `top`/`bottom`
+     * are the block edges, where the rail turns into a horizontal strip spanning the full measure
+     * and the grid grows a ROW instead of a column.
+     *
+     * Its thickness is one token per orientation — `--app-shell-nav-rail-width` when it is a column,
+     * `--app-shell-nav-rail-height` when it is a strip — because a single "size" would read as a
+     * width in half the shapes it applies to. The height defaults to the width, so a service that
+     * re-tunes one measure moves both. */
+    .app-root[data-nav-rail][data-nav-rail-position="start"] {
+      grid-template-areas:
+        "navrail sidebar topbar"
+        "navrail sidebar main"
+        "navrail sidebar footer";
+      grid-template-columns:
+        var(--app-shell-nav-rail-width)
+        var(--app-shell-sidebar-width)
+        minmax(0, 1fr);
+    }
 
-  .app-root[data-nav-rail][data-nav-rail-position="end"][data-topbar-span="full"] {
-    grid-template-areas:
-      "topbar  topbar  topbar"
-      "sidebar main    navrail"
-      "sidebar footer  navrail";
-  }
+    .app-root[data-nav-rail][data-nav-rail-position="start"][data-topbar-span="full"] {
+      grid-template-areas:
+        "topbar  topbar  topbar"
+        "navrail sidebar main"
+        "navrail sidebar footer";
+    }
 
-  /* A strip, so it spans the whole measure and the shell grows a row for it. Under `content` the
-   * bar belongs to the content column alone, so a full-width platform strip can only sit ABOVE it;
-   * under `full` the bar already outranks everything beneath it, so the strip goes under the bar. */
-  .app-root[data-nav-rail][data-nav-rail-position="top"] {
-    grid-template-areas:
-      "navrail navrail"
-      "sidebar topbar"
-      "sidebar main"
-      "sidebar footer";
-    grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
-    grid-template-rows:
-      var(--app-shell-nav-rail-height)
-      var(--app-shell-bar-height)
-      minmax(0, 1fr)
-      auto;
-  }
+    .app-root[data-nav-rail][data-nav-rail-position="end"] {
+      grid-template-areas:
+        "sidebar topbar  navrail"
+        "sidebar main    navrail"
+        "sidebar footer  navrail";
+      grid-template-columns:
+        var(--app-shell-sidebar-width)
+        minmax(0, 1fr)
+        var(--app-shell-nav-rail-width);
+    }
 
-  /* `top` IS THE TOP — above the bar at both spans, not tucked under it. The platform strip is the
-   * outermost band of chrome: which organization you are in frames the bar, rather than the bar
-   * framing it. (`bottom` is its mirror and sits below the footer for the same reason.) */
-  .app-root[data-nav-rail][data-nav-rail-position="top"][data-topbar-span="full"] {
-    grid-template-areas:
-      "navrail navrail"
-      "topbar  topbar"
-      "sidebar main"
-      "sidebar footer";
-  }
+    .app-root[data-nav-rail][data-nav-rail-position="end"][data-topbar-span="full"] {
+      grid-template-areas:
+        "topbar  topbar  topbar"
+        "sidebar main    navrail"
+        "sidebar footer  navrail";
+    }
 
-  .app-root[data-nav-rail][data-nav-rail-position="bottom"] {
-    grid-template-areas:
-      "sidebar topbar"
-      "sidebar main"
-      "sidebar footer"
-      "navrail navrail";
-    grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
-    grid-template-rows:
-      var(--app-shell-bar-height)
-      minmax(0, 1fr)
-      auto
-      var(--app-shell-nav-rail-height);
-  }
+    /* A strip, so it spans the whole measure and the shell grows a row for it. Under `content` the
+     * bar belongs to the content column alone, so a full-width platform strip can only sit ABOVE it;
+     * under `full` the bar already outranks everything beneath it, so the strip goes under the bar. */
+    .app-root[data-nav-rail][data-nav-rail-position="top"] {
+      grid-template-areas:
+        "navrail navrail"
+        "sidebar topbar"
+        "sidebar main"
+        "sidebar footer";
+      grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
+      grid-template-rows:
+        var(--app-shell-nav-rail-height)
+        var(--app-shell-bar-height)
+        minmax(0, 1fr)
+        auto;
+    }
 
-  .app-root[data-nav-rail][data-nav-rail-position="bottom"][data-topbar-span="full"] {
-    grid-template-areas:
-      "topbar  topbar"
-      "sidebar main"
-      "sidebar footer"
-      "navrail navrail";
-  }
+    /* `top` IS THE TOP — above the bar at both spans, not tucked under it. The platform strip is the
+     * outermost band of chrome: which organization you are in frames the bar, rather than the bar
+     * framing it. (`bottom` is its mirror and sits below the footer for the same reason.) */
+    .app-root[data-nav-rail][data-nav-rail-position="top"][data-topbar-span="full"] {
+      grid-template-areas:
+        "navrail navrail"
+        "topbar  topbar"
+        "sidebar main"
+        "sidebar footer";
+    }
 
-  /* Collapse folds the SIDEBAR track only; the rail keeps its measure. That is the Slack behaviour
-   * (the channel column hides, the workspace rail stays) and it is the one that keeps the rail's
-   * destinations reachable while collapsed.
-   *
-   * EVERY position restates it, including the strip ones. The tempting shortcut — "only the column
-   * positions carry the rail in `grid-template-columns`, so only they need a collapsed variant" —
-   * is wrong, and shipped: a strip position still restates `grid-template-columns` (with the
-   * EXPANDED sidebar width) at (0,3,0), which out-specifies the generic
-   * `.app-root[data-collapsed="true"]` at (0,2,0). Measured with the rail on top: pressing collapse
-   * set `data-collapsed="true"` and `.sb-root[data-collapsed]`, the rows went icon-only — and the
-   * track stayed 256px, so the icons sat centred in a column three times their width. */
-  .app-root[data-nav-rail][data-nav-rail-position="start"][data-collapsed="true"] {
-    grid-template-columns:
-      var(--app-shell-nav-rail-width)
-      var(--app-shell-sidebar-collapsed-width)
-      minmax(0, 1fr);
-  }
+    .app-root[data-nav-rail][data-nav-rail-position="bottom"] {
+      grid-template-areas:
+        "sidebar topbar"
+        "sidebar main"
+        "sidebar footer"
+        "navrail navrail";
+      grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
+      grid-template-rows:
+        var(--app-shell-bar-height)
+        minmax(0, 1fr)
+        auto
+        var(--app-shell-nav-rail-height);
+    }
 
-  .app-root[data-nav-rail][data-nav-rail-position="end"][data-collapsed="true"] {
-    grid-template-columns:
-      var(--app-shell-sidebar-collapsed-width)
-      minmax(0, 1fr)
-      var(--app-shell-nav-rail-width);
-  }
+    .app-root[data-nav-rail][data-nav-rail-position="bottom"][data-topbar-span="full"] {
+      grid-template-areas:
+        "topbar  topbar"
+        "sidebar main"
+        "sidebar footer"
+        "navrail navrail";
+    }
 
-  .app-root[data-nav-rail]:is(
-      [data-nav-rail-position="top"],
-      [data-nav-rail-position="bottom"]
-    )[data-collapsed="true"] {
-    grid-template-columns: var(--app-shell-sidebar-collapsed-width) minmax(0, 1fr);
+    /* Collapse folds the SIDEBAR track only; the rail keeps its measure. That is the Slack behaviour
+     * (the channel column hides, the workspace rail stays) and it is the one that keeps the rail's
+     * destinations reachable while collapsed.
+     *
+     * EVERY position restates it, including the strip ones. The tempting shortcut — "only the column
+     * positions carry the rail in `grid-template-columns`, so only they need a collapsed variant" —
+     * is wrong, and shipped: a strip position still restates `grid-template-columns` (with the
+     * EXPANDED sidebar width) at (0,3,0), which out-specifies the generic
+     * `.app-root[data-collapsed="true"]` at (0,2,0). Measured with the rail on top: pressing collapse
+     * set `data-collapsed="true"` and `.sb-root[data-collapsed]`, the rows went icon-only — and the
+     * track stayed 256px, so the icons sat centred in a column three times their width. */
+    .app-root[data-nav-rail][data-nav-rail-position="start"][data-collapsed="true"] {
+      grid-template-columns:
+        var(--app-shell-nav-rail-width)
+        var(--app-shell-sidebar-collapsed-width)
+        minmax(0, 1fr);
+    }
+
+    .app-root[data-nav-rail][data-nav-rail-position="end"][data-collapsed="true"] {
+      grid-template-columns:
+        var(--app-shell-sidebar-collapsed-width)
+        minmax(0, 1fr)
+        var(--app-shell-nav-rail-width);
+    }
+
+    .app-root[data-nav-rail]:is(
+        [data-nav-rail-position="top"],
+        [data-nav-rail-position="bottom"]
+      )[data-collapsed="true"] {
+      grid-template-columns: var(--app-shell-sidebar-collapsed-width) minmax(0, 1fr);
+    }
   }
 
   /* NO TOP BAR AT ALL — `topbar`, `topbarLeft`, `topbarRight` and `logo` all undefined. */
@@ -1094,51 +1110,61 @@
   }
 
   /* THE ONE AppShell breakpoint — 900px (56.25rem), the DXS canonical value. */
-  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="start"] {
-    grid-template-columns: var(--app-shell-nav-rail-width) minmax(0, 1fr);
-    grid-template-areas: "navrail topbar" "navrail main" "navrail footer";
-  }
-  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="start"][data-topbar-span="full"] {
-    grid-template-areas: "topbar topbar" "navrail main" "navrail footer";
-  }
-  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="end"] {
-    grid-template-columns: minmax(0, 1fr) var(--app-shell-nav-rail-width);
-    grid-template-areas: "topbar navrail" "main navrail" "footer navrail";
-  }
-  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="end"][data-topbar-span="full"] {
-    grid-template-areas: "topbar topbar" "main navrail" "footer navrail";
-  }
-  /* One column, and the strip is a row of it. */
-  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="top"] {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "navrail" "topbar" "main" "footer";
-    grid-template-rows:
-      var(--app-shell-nav-rail-height)
-      var(--app-shell-bar-height)
-      minmax(0, 1fr)
-      auto;
-  }
-  .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="top"][data-topbar-span="full"] {
-    grid-template-areas: "navrail" "topbar" "main" "footer";
-  }
-  .app-root:where([data-sidebar="none"])[data-nav-rail]:is(
-      [data-nav-rail-position="bottom"]
-    ) {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "topbar" "main" "footer" "navrail";
-    grid-template-rows:
-      var(--app-shell-bar-height)
-      minmax(0, 1fr)
-      auto
-      var(--app-shell-nav-rail-height);
+  @media (width > 56.25rem) {
+    .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="start"] {
+      grid-template-columns: var(--app-shell-nav-rail-width) minmax(0, 1fr);
+      grid-template-areas: "navrail topbar" "navrail main" "navrail footer";
+    }
+    .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="start"][data-topbar-span="full"] {
+      grid-template-areas: "topbar topbar" "navrail main" "navrail footer";
+    }
+    .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="end"] {
+      grid-template-columns: minmax(0, 1fr) var(--app-shell-nav-rail-width);
+      grid-template-areas: "topbar navrail" "main navrail" "footer navrail";
+    }
+    .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="end"][data-topbar-span="full"] {
+      grid-template-areas: "topbar topbar" "main navrail" "footer navrail";
+    }
+    /* One column, and the strip is a row of it. */
+    .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="top"] {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "navrail" "topbar" "main" "footer";
+      grid-template-rows:
+        var(--app-shell-nav-rail-height)
+        var(--app-shell-bar-height)
+        minmax(0, 1fr)
+        auto;
+    }
+    .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="top"][data-topbar-span="full"] {
+      grid-template-areas: "navrail" "topbar" "main" "footer";
+    }
+    .app-root:where([data-sidebar="none"])[data-nav-rail]:is(
+        [data-nav-rail-position="bottom"]
+      ) {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "topbar" "main" "footer" "navrail";
+      grid-template-rows:
+        var(--app-shell-bar-height)
+        minmax(0, 1fr)
+        auto
+        var(--app-shell-nav-rail-height);
+    }
+
+    /* `bottom` + `full` — the counterpart of the `top` rule above, and the one member of this
+     * matrix nobody wrote. Without it the bar's own `[data-topbar-span="full"]` areas (two
+     * columns) survive against a one-column `grid-template-columns`, and the strip falls into an
+     * implicit second track: measured at 1280px before this rule, `main` was 579px at x=701 with
+     * the rail 40px past the right edge. */
+    .app-root:where([data-sidebar="none"])[data-nav-rail][data-nav-rail-position="bottom"][data-topbar-span="full"] {
+      grid-template-areas: "topbar" "main" "footer" "navrail";
+    }
   }
 
   @media (width <= 56.25rem) {
-    .app-root,
-    .app-root[data-collapsed="true"],
-    .app-root[data-nav-rail],
-    .app-root[data-nav-rail][data-collapsed="true"],
-    .app-root[data-nav-rail][data-topbar-span="full"] {
+    /* ONE selector, not a list of five. Everything that builds a MULTI-column template now lives
+     * in the wide-only block above, so there is nothing left here to out-specify: a bare
+     * `.app-root` is enough, and a state nobody has thought of yet still lands in one column. */
+    .app-root {
       grid-template-areas:
         "topbar"
         "main"
