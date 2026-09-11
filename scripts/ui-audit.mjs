@@ -33,7 +33,20 @@ const PALETTE =
  * Emoji in product text — Unicode "Extended_Pictographic" set (UTS #51). Catches
  * ✅🎉🔥🚀 etc. but NOT typographic punctuation (· — × ✓), which have their own rules.
  */
-const EMOJI = /\p{Extended_Pictographic}/u;
+/*
+ * EMOJI — pictographs, but NOT the three typographic marks that happen to carry the property.
+ *
+ * `\p{Extended_Pictographic}` includes U+00A9 ©, U+00AE ® and U+2122 ™. All three are
+ * `Emoji_Presentation=No`: they default to TEXT presentation, they have been in typography since
+ * long before emoji existed, and none of the reasons in this rule's message applies to them — a
+ * copyright line does not "break on Win/Linux" and does not pollute an accessible name. The
+ * catalog's own CenteredShell recipe was flagged for the `©` in its footer, which is unavoidable
+ * product copy, and every consumer with a footer would be flagged for the same thing.
+ *
+ * Followed by U+FE0F they are asking for emoji presentation on purpose, and then they ARE emoji —
+ * so that spelling is still caught.
+ */
+const EMOJI = /[\u00A9\u00AE\u2122]\uFE0F|(?![\u00A9\u00AE\u2122])\p{Extended_Pictographic}/u;
 /** Regional-indicator pairs = emoji flags (🇯🇵) — broken on Win/Linux; use Intl.DisplayNames. */
 const EMOJI_FLAG = /\p{Regional_Indicator}/u;
 

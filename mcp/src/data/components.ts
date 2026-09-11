@@ -692,7 +692,7 @@ export const COMPONENTS: ComponentEntry[] = [
     ],
     useCases: [
       "A master list page (e.g. invoices, journal entries, customers) where the header holds the page title, a 'New Invoice' button in `extra`, a breadcrumb trail, and a full-bleed DataTable as the body — use `variant='flush'` + `<PageContainer.Inset>` for the Toolbar above the table.",
-      "A detail / edit form page where the footer holds Save and Cancel buttons — use `footer={<Flex direction='row' justify='between' className='w-full'><Button variant='outline'>削除</Button><Button>保存</Button></Flex>}` with `stickyFooter` + `footerReveal='onScroll'` so the save bar slides up only once the header (and its actions) scroll out of view — the canonical edit/create pattern.",
+      "A detail / edit form page where the footer holds Save and Cancel buttons — use `footer={<Flex direction='row' justify='between' fill><Button variant='outline'>削除</Button><Button>保存</Button></Flex>}` with `stickyFooter` + `footerReveal='onScroll'` so the save bar slides up only once the header (and its actions) scroll out of view — the canonical edit/create pattern.",
       "A settings or narrow-form page (e.g. account profile, entity configuration) where `variant='narrow'` constrains content to a readable column width and `stickyFooter` pins the submit bar.",
       "A dashboard page with KPI cards and chart sections — use `variant='default'` with `children={<Flex direction='col' gap='lg'>…</Flex>}` to vertically stack multiple Card/StatCard sections beneath the page title.",
       "Any deep-nav page in a multi-level admin (e.g. Accounting > Ledger > Journal Entry #42) where a 3-segment breadcrumb trail provides back-navigation without browser history dependence.",
@@ -1737,7 +1737,7 @@ export default function Shell() {
     ],
     related: [
       "AppShell — place Topbar in its `topbar` slot. AppShell also exposes its own `logo`/`topbarLeft`/`topbarRight` slots if you don't want a separate Topbar at all.",
-      'Avatar — the brand mark for the `start` slot (use `className="rounded-md"` for a square-ish product glyph).',
+      'Avatar — the brand mark for the `start` slot (use `shape="square"` for a product glyph; never a `rounded-*` utility, which freezes the radius where no theme can reach it).',
       "AppSettingPicker — locale/theme/timezone/currency picker; the consumer drops it into `end`. Its appearance (icon-only, labelled, bordered) is configured on IT, not on Topbar.",
       "DropdownMenu — wrap a `Button` to build an entity switcher or user menu yourself, then place it in a slot.",
     ],
@@ -3952,7 +3952,11 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     example: `import { Card, CardContent, CardHeader, CardTitle, ListRow, Badge } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Smartphone } from "lucide-react";
+import { Flex } from "@godxjp/ui/layout";
 
+// The three scenarios below are three CARDS on one page, so they are wrapped in a Flex — the gap
+// between sibling cards belongs to the stack, never to the cards (audit: sibling-cards-need-flex).
+<Flex direction="col" gap="lg">
 <Card>
   <CardHeader>
     <CardTitle>アクティブなセッション</CardTitle>
@@ -4005,7 +4009,8 @@ import { Smartphone } from "lucide-react";
       ))}
     </ul>
   </CardContent>
-</Card>`,
+</Card>
+</Flex>`,
     storyPath: "data-display/ListRow.stories.tsx",
     rules: [42, 44],
   },
@@ -5937,6 +5942,9 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
   SelectTrigger,
   SelectValue,
 } from "@godxjp/ui/data-entry";
+import { Text } from "@godxjp/ui/general";
+// as="span" on both: an option row is a phrasing context, so a <div> would be invalid HTML.
+import { Flex } from "@godxjp/ui/layout";
 
 // ── 1. Data-driven (Ant-style) — static list, no search ──────────────────────
 export function StatusSelect({ value, onChange }) {
@@ -5993,10 +6001,12 @@ export function AccountSelect({ value, onChange, selectedLabel }) {
       selectedLabel={selectedLabel}
       placeholder="Search accounts…"
       renderOption={(opt) => (
-        <span className="flex gap-2">
-          <span className="text-muted-foreground font-mono">{opt.value}</span>
+        <Flex as="span" align="center" gap="xs">
+          <Text as="span" tone="muted" mono>
+            {opt.value}
+          </Text>
           {opt.label}
-        </span>
+        </Flex>
       )}
       name="account_id"
     />
@@ -6097,12 +6107,13 @@ export function PrioritySelect({ value, onValueChange }) {
       "Field — use for a binary or small-set choice rendered as radio-style cards with rich descriptions, when the visual weight of a toggle is insufficient for the decision importance.",
       "RadioGroup — use when the user must choose exactly one option from 2–4 mutually exclusive values; Switch is only appropriate for a single on/off boolean.",
     ],
-    example: `import { Switch, Label } from "@godxjp/ui/data-entry";
+    example: `import { Field, Switch } from "@godxjp/ui/data-entry";
 
-<div className="flex items-center gap-2">
+// Field, not a hand-rolled row: it owns the label-to-control id wiring, the description slot and
+// the row rhythm. A <div className="flex items-center gap-2"> around a bare <Label> loses all three.
+<Field id="stackable" label="他クーポンとの併用を許可" description="会計時に自動で合算されます">
   <Switch id="stackable" checked={stackable} onCheckedChange={setStackable} />
-  <Label htmlFor="stackable">他クーポンとの併用を許可</Label>
-</div>`,
+</Field>`,
     storyPath: "data-entry/Switch.stories.tsx",
     rules: [],
   },
@@ -6305,7 +6316,7 @@ export function PrioritySelect({ value, onValueChange }) {
       "DO use `Checkbox.Group` (alias for CheckboxGroup) with the `options` prop when you have ≥2 choices from an array — it renders each item inside a `Field` (label + optional description), generates stable ids automatically, and manages the `string[]` value array. NEVER hand-roll a loop of bare `<Checkbox>` elements for a multi-select list.",
       "DO pass `name` on `Checkbox.Group` (not on individual checkboxes) when the group must submit as form fields — the group propagates the name to each internal checkbox so the browser serialises all checked values under that key.",
       "DON'T use `checked='indeterminate'` on `Checkbox.Group` children — indeterminate is only meaningful on a parent 'select-all' control you wire manually; the group itself does not auto-compute it.",
-      "DON'T wrap a standalone Checkbox in `Field` manually — `Field` is the internal composition primitive that `Checkbox.Group` uses. For a single boolean with a label, use `<div className='flex items-center gap-2'><Checkbox id='x' .../><Label htmlFor='x'>...</Label></div>` as shown in the catalog example; for a full labelled-checkbox with description, use `Field` directly only if you need a one-off item outside a group.",
+      "DON'T wrap a standalone Checkbox in `Field` manually — `Field` is the internal composition primitive that `Checkbox.Group` uses. For a single boolean with a label, use `<Field id='x' label='…'><Checkbox id='x' … /></Field>` as shown in the catalog example — Field owns the label-to-control id wiring, the description slot and the row rhythm, and a hand-rolled flex row owns none of them; for a full labelled-checkbox with description, use `Field` directly only if you need a one-off item outside a group.",
     ],
     useCases: [
       "A 'Select all' / bulk-action row above a DataTable — standalone Checkbox with `checked='indeterminate'` when some (not all) rows are selected, toggling between all-selected and none-selected.",
@@ -6321,12 +6332,14 @@ export function PrioritySelect({ value, onValueChange }) {
       "RadioGroup — use when only one option in a group may be selected at a time (mutually exclusive). CheckboxGroup = multiple selections allowed; RadioGroup = single selection only.",
       "Field — the internal layout primitive (control slot + Label + description) that Checkbox.Group renders per item. Use it directly only when you need a one-off labelled checkbox or radio item outside of a group, and you want the consistent indent/description layout without the group's value-management overhead.",
     ],
-    example: `import { Checkbox, Label } from "@godxjp/ui/data-entry";
+    example: `import { Checkbox, Field } from "@godxjp/ui/data-entry";
 
-<div className="flex items-center gap-2">
+// Field, not a hand-rolled row. It owns the label-to-control id wiring, the optional description
+// and the row rhythm; a <div className="flex items-center gap-2"> around a bare <Label> owns none
+// of those and the audit blocks the utilities twice over.
+<Field id="agree" label="利用規約に同意する">
   <Checkbox id="agree" checked={agreed} onCheckedChange={(v) => setAgreed(!!v)} />
-  <Label htmlFor="agree">利用規約に同意する</Label>
-</div>`,
+</Field>`,
     storyPath: "data-entry/Checkbox.stories.tsx",
     rules: [],
   },
@@ -8146,7 +8159,8 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
       "Input — the raw primitive TimePicker wraps internally. Use Input directly only when you need a plain text field with no time semantics or popover.",
       "ColorPicker — another popover-backed input primitive in the same group; structurally similar pattern but for hex colour values.",
     ],
-    example: `import { TimePicker } from "@godxjp/ui/data-entry";
+    example: `import { FormField, TimePicker } from "@godxjp/ui/data-entry";
+import { Button } from "@godxjp/ui/general";
 import { useState } from "react";
 
 // Controlled usage inside a React form
@@ -8154,19 +8168,15 @@ export function ShiftStartField() {
   const [startTime, setStartTime] = useState("09:00");
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor="shift-start" className="text-sm font-medium">
-        Shift start
-      </label>
+    <FormField id="shift-start" label="Shift start" controlWidth="9rem">
       <TimePicker
         id="shift-start"
         name="shift_start"
         value={startTime}
         onValueChange={setStartTime}
         minuteStep={15}
-        className="w-36"
       />
-    </div>
+    </FormField>
   );
 }
 
@@ -8181,7 +8191,7 @@ export function CutoffTimeForm() {
         minuteStep={30}
         placeholder="hh:mm"
       />
-      <button type="submit">Save</button>
+      <Button type="submit">Save</Button>
     </form>
   );
 }`,
@@ -8732,7 +8742,7 @@ function MultiRegionPicker() {
       "Command / CommandInput — low-level search primitive; TreeSelect already embeds this internally. Do NOT compose your own tree dropdown out of Command — use TreeSelect.",
     ],
     example: `import { useState } from "react";
-import { TreeSelect } from "@godxjp/ui/data-entry";
+import { FormField, TreeSelect } from "@godxjp/ui/data-entry";
 
 const accountTree = [
   {
@@ -8763,10 +8773,7 @@ const accountTree = [
 export function AccountPicker() {
   const [account, setAccount] = useState<string | undefined>();
   return (
-    <div className="flex flex-col gap-1">
-      <label htmlFor="account-picker" className="text-sm font-medium">
-        GL Account
-      </label>
+    <FormField id="account-picker" label="GL Account">
       <TreeSelect
         id="account-picker"
         treeData={accountTree}
@@ -8777,7 +8784,7 @@ export function AccountPicker() {
         placeholder="Select account…"
         allowClear
       />
-    </div>
+    </FormField>
   );
 }
 
@@ -9597,26 +9604,28 @@ export function DisabledColor() {
       "Switch — for boolean on/off; Slider is for continuous or stepped numeric ranges.",
       "RangeField (if present) — check the MCP first; if a composed range-input field exists, prefer it over wiring two Slider thumbs manually.",
     ],
-    example: `{\`import { Slider } from "@godxjp/ui/data-entry";
+    example: `{\`import { FormField, Slider } from "@godxjp/ui/data-entry";
+import { Button } from "@godxjp/ui/general";
 import { useState } from "react";
+
+// Money in a label goes through Intl, never a hand-written symbol: the symbol, the grouping and
+// the number of minor units all change with the locale and the currency.
+const money = new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" });
 
 // Single-thumb controlled slider
 function VolumeSlider() {
   const [volume, setVolume] = useState([70]);
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-foreground">
-        Volume: {volume[0]}%
-      </label>
+    <FormField id="volume" label={\`Volume: \${volume[0]}%\`}>
       <Slider
+        id="volume"
         value={volume}
         onValueChange={setVolume}
         min={0}
         max={100}
         step={1}
-        aria-label="Volume"
       />
-    </div>
+    </FormField>
   );
 }
 
@@ -9624,11 +9633,12 @@ function VolumeSlider() {
 function PriceRangeSlider() {
   const [range, setRange] = useState([2000, 8000]);
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-foreground">
-        Price: ¥{range[0].toLocaleString()} – ¥{range[1].toLocaleString()}
-      </label>
+    <FormField
+      id="price-range"
+      label={\`Price: \${money.format(range[0])} – \${money.format(range[1])}\`}
+    >
       <Slider
+        id="price-range"
         value={range}
         onValueChange={setRange}
         onValueCommit={(v) => console.log("committed", v)}
@@ -9636,9 +9646,8 @@ function PriceRangeSlider() {
         max={10000}
         step={500}
         minStepsBetweenThumbs={1}
-        aria-label="Price range"
       />
-    </div>
+    </FormField>
   );
 }
 
@@ -9646,8 +9655,8 @@ function PriceRangeSlider() {
 function FormSlider() {
   return (
     <form method="post" action="/settings">
-      <Slider name="priority" defaultValue={[50]} min={0} max={100} step={10} />
-      <button type="submit">Save</button>
+      <Slider name="priority" aria-label="Priority" defaultValue={[50]} min={0} max={100} step={10} />
+      <Button type="submit">Save</Button>
     </form>
   );
 }\`}`,
@@ -9910,10 +9919,10 @@ function FormSlider() {
     ],
     usage: [
       "DO set mode explicitly ('single', 'multiple', 'range') — omitting it renders a display-only grid with no selection. The value passed to selected and the argument shape of onSelect both depend on mode.",
-      "DO embed Calendar inside a Popover + PopoverContent when building a date-picker UI (set PopoverContent className='w-auto p-0'). For form-submittable single-date or range inputs prefer the higher-level DatePicker (with `range` for a from/to pair) — it owns the input, icon, locale wiring, and ISO form submission natively.",
+      'DO embed Calendar inside a Popover + PopoverContent when building a date-picker UI — `<PopoverContent flush width="auto">`. `flush` drops the panel padding (Calendar brings its own) and `width="auto"` lets the calendar set the measure, which the panel\'s own 18rem would otherwise clip at two months. For form-submittable single-date or range inputs prefer the higher-level DatePicker (with `range` for a from/to pair) — it owns the input, icon, locale wiring, and ISO form submission natively.',
       "DO pass a locale object imported from 'react-day-picker/locale' (e.g. import { ja } from 'react-day-picker/locale') for i18n — weekday names, month names, and first-day-of-week all come from the locale.",
       "DO use the disabled prop with Matcher objects ({ before: minDate }, { after: maxDate }, { dayOfWeek: [0, 6] }) to restrict selectable days — never render your own disabled overlay on top.",
-      "DON'T add inner padding on the wrapping PopoverContent — Calendar already has p-3 via its className. Use PopoverContent className='w-auto p-0' to avoid double padding.",
+      'DON\'T zero the panel padding or pin its width with utilities on className. Those are per-call-site constants no service theme can retune; `flush` and `width="auto"` set the same two tokens the panel already reads.',
       "DON'T hand-roll a calendar grid — Calendar wraps react-day-picker which is keyboard-navigable, ARIA-annotated, and screen-reader friendly out of the box. Provide a footer string for screen-reader status announcements when the selection changes.",
     ],
     useCases: [
@@ -9927,7 +9936,7 @@ function FormSlider() {
     related: [
       "DatePicker — the complete single-date form control (typeable ISO input + calendar icon + Popover). Use DatePicker instead of Calendar when you need a form-submittable field with an input box.",
       "DatePicker — the complete date form control (typeable ISO input + calendar icon + Popover); add `range` for the two-input from/to pair. Use it instead of Calendar when you need form fields.",
-      "Popover / PopoverContent — the shell you must provide when you want Calendar inside a trigger. Set PopoverContent className='w-auto p-0' to avoid double padding.",
+      'Popover / PopoverContent — the shell you must provide when you want Calendar inside a trigger. Pass `flush` and `width="auto"` so the panel neither double-pads nor clips the grid.',
     ],
     example: `import { useState } from "react";
 import { Calendar } from "@godxjp/ui/data-entry";
@@ -9963,7 +9972,10 @@ export function ReportRangeFilter() {
       <PopoverTrigger asChild>
         <Button variant="outline">期間を選択</Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="end">
+      {/* flush drops the panel's padding and width="auto" lets the calendar set the measure —
+          the panel's own 18rem would clip two months. Never a w-auto/p-0 utility on className:
+          those are per-call-site constants no service theme can retune. */}
+      <PopoverContent flush width="auto" align="end">
         <Calendar
           mode="range"
           selected={range}
@@ -10500,6 +10512,13 @@ function CustomRadioGroup() {
           "PopoverContent prop. The panel's CONTENT owns its inset: the popover zeroes its own --popover-space-inset so a Command list, a menu or a table runs edge to edge and draws its separators across the full width. Reach for it whenever the child already paints its own rows; leave it off for prose panels, which want the panel padding.",
       },
       {
+        name: "width",
+        type: '"panel" | "auto" | "trigger"',
+        defaultValue: '"panel"',
+        description:
+          'PopoverContent prop. How the panel is MEASURED across the inline axis. "panel" (default) is the popover\'s own --popover-width (18rem) — right for prose and for a list the panel sizes itself. "auto" lets the CONTENT decide, the only correct answer for something with a width of its own (a two-month Calendar is far wider than 18rem and was being clipped by it). "trigger" matches the anchor. It is the counterpart of `flush`: both set a token the panel already reads, so a service theme keeps owning them, where a `w-*` utility on className is a per-call-site constant nothing can retune.',
+      },
+      {
         name: "className",
         type: "string",
         description:
@@ -10508,6 +10527,7 @@ function CustomRadioGroup() {
     ],
     usage: [
       "DO compose: <Popover> → <PopoverTrigger asChild> → <Button/> and <PopoverContent>. All four parts are required for any popover to function; omitting PopoverTrigger or PopoverContent produces nothing.",
+      'DO set `<PopoverContent width="auto">` when the child brings its own measure — a Calendar, a chart, a fixed-width preview. The panel\'s own 18rem clips them, and a `w-*` utility on className is a per-call-site constant no service theme can retune, which is exactly what `flush` exists to avoid on the padding axis. `width="trigger"` matches the anchor, the shape every select-like control wants.',
       "DO set `<PopoverContent flush>` when the panel holds a Command list, a menu or a table — the child owns its own inset, so its rows and separators reach the panel edges. Never zero the padding with a utility on className: that is a per-call-site constant no service theme can retune, while `flush` keeps the inset on --popover-space-inset.",
       "DO use asChild on PopoverTrigger when the trigger is already a Button or link — this avoids a nested <button><button> violation and extra DOM nesting.",
       "DO use controlled mode (open + onOpenChange) when external code must open/close the popover programmatically (e.g., form validation reveal, keyboard shortcut). For toggle-only interactions, uncontrolled (defaultOpen) is simpler.",
@@ -10516,7 +10536,7 @@ function CustomRadioGroup() {
       "DON'T place a Popover inside a Dialog without setting modal={false} on the Popover — nested modals conflict with Radix's focus management and produce stuck focus.",
     ],
     useCases: [
-      "Advanced filter panel: a 'Filters' Button triggers a Popover containing filter inputs (date range, status selects); panel width overridden via className='w-96'.",
+      "Advanced filter panel: a Filters Button triggers a Popover containing filter inputs (date range, status selects); panel measured with `<PopoverContent width='auto'>` so the filters set the width, or `width='trigger'` to match the button.",
       "Row action menu overflow: when a DataTable row has too many actions for inline display, a Popover holds the secondary actions (Edit, Archive, Delete) without navigating away.",
       "Contextual help / tooltip-rich: a small '?' icon button opens a Popover with PopoverTitle + PopoverDescription explaining a form field — richer than a Tooltip but less intrusive than a Dialog.",
       "Inline record preview: clicking a reference number in an invoice list opens a Popover showing a summary card of the linked document before the user decides to navigate.",
@@ -10545,7 +10565,7 @@ export function InvoiceFilterPopover() {
       <PopoverTrigger asChild>
         <Button variant="outline">Advanced filters</Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-96">
+      <PopoverContent align="start" width="trigger">
         <PopoverHeader>
           <PopoverTitle>Filter invoices</PopoverTitle>
           <PopoverDescription>Narrow results by date range and status.</PopoverDescription>
@@ -10683,26 +10703,36 @@ export function ControlledPopover() {
       "Collapsible — use Collapsible to show/hide a section; pair with ScrollArea when the revealed content can itself overflow.",
       "Card/CardContent — when the card body should scroll, put ScrollArea inside CardContent rather than applying overflow directly to CardContent.",
     ],
-    example: `import { ScrollArea, ScrollBar } from "@godxjp/ui/data-display";
+    example: `import { Card, CardContent, ScrollArea, ScrollBar } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
+import { Flex } from "@godxjp/ui/layout";
 
-// Vertical-only (default)
-<ScrollArea className="h-64 w-full rounded-md border">
-  <div className="p-4 space-y-2">
-    {entries.map((entry) => (
-      <div key={entry.id} className="text-sm">{entry.label}</div>
-    ))}
-  </div>
-</ScrollArea>
+// Vertical-only (default). The FRAME is a Card, not a rounded-md border — a hand-rolled surface
+// freezes the radius and the border colour at the call site, where no theme can reach them. The
+// bounded height stays a class because it is a measurement of this SCREEN, not a shape of the
+// component.
+<Card>
+  <CardContent flush>
+    <ScrollArea className="h-64">
+      <Flex direction="col" gap="sm" pad={4}>
+        {entries.map((entry) => (
+          <Text key={entry.id} size="sm">{entry.label}</Text>
+        ))}
+      </Flex>
+    </ScrollArea>
+  </CardContent>
+</Card>
 
-// Horizontal + vertical (e.g. wide Cascader columns)
+// Horizontal + vertical (e.g. wide Cascader columns). Use border-e, never border-r: a physical
+// edge puts the rule on the wrong side under RTL.
 <ScrollArea className="w-full">
-  <div className="flex max-h-[min(280px,50vh)]">
+  <Flex className="max-h-[min(280px,50vh)]">
     {columns.map((col, i) => (
-      <ul key={i} className="min-w-36 border-r last:border-r-0">
+      <ul key={i} className="min-w-36 border-e last:border-e-0">
         {col.map((item) => <li key={item.value}>{item.label}</li>)}
       </ul>
     ))}
-  </div>
+  </Flex>
   <ScrollBar orientation="horizontal" />
 </ScrollArea>
 
@@ -10710,16 +10740,20 @@ export function ControlledPopover() {
 const viewport = React.useRef<HTMLDivElement>(null);
 const [atNewest, setAtNewest] = React.useState(true);
 
-<ScrollArea
-  anchor="bottom"
-  viewportRef={viewport}
-  onAnchoredChange={setAtNewest}
-  className="h-64 w-full rounded-md border"
->
-  <div className="px-3">
-    {posts.map((post) => <PostRow key={post.id} post={post} />)}
-  </div>
-</ScrollArea>
+<Card>
+  <CardContent flush>
+    <ScrollArea
+      anchor="bottom"
+      viewportRef={viewport}
+      onAnchoredChange={setAtNewest}
+      className="h-64"
+    >
+      <Flex direction="col" pad={{ inline: 3 }}>
+        {posts.map((post) => <PostRow key={post.id} post={post} />)}
+      </Flex>
+    </ScrollArea>
+  </CardContent>
+</Card>
 <Button
   type="button"
   disabled={atNewest}
@@ -10802,29 +10836,42 @@ const [atNewest, setAtNewest] = React.useState(true);
     ],
     example: `{\`import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+// Money goes through Intl — the symbol, the grouping and the minor units are all locale data.
+const money = new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" });
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui";
+import { Card, CardContent } from "@godxjp/ui/data-display";
+import { Button, Text } from "@godxjp/ui/general";
+import { Flex } from "@godxjp/ui/layout";
 
 // --- Uncontrolled (simplest) ---
+// The icon needs no margin of its own: Button spaces its own icon slot. The gap between the
+// trigger and the revealed body belongs to the Flex around them, and the body is a Card — a
+// rounded-md border div is a hand-rolled surface with the radius frozen at the call site.
 export function InvoiceLineDetail() {
   return (
     <Collapsible>
-      <CollapsibleTrigger asChild>
-        <Button variant="ghost" size="sm">
-          <ChevronDown className="mr-1 h-4 w-4" aria-hidden="true" />
-          Show tax breakdown
-        </Button>
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        <div className="mt-2 rounded-md border p-3 text-sm">
-          <p>Consumption tax (10%): ¥1,234</p>
-          <p>Withholding tax: ¥0</p>
-        </div>
-      </CollapsibleContent>
+      <Flex direction="col" align="start" gap="sm">
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost" size="sm">
+            <ChevronDown aria-hidden="true" />
+            Show tax breakdown
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <Card>
+            <CardContent>
+              <Flex direction="col" gap="xs">
+                <Text size="sm">Consumption tax (10%): {money.format(1234)}</Text>
+                <Text size="sm">Withholding tax: {money.format(0)}</Text>
+              </Flex>
+            </CardContent>
+          </Card>
+        </CollapsibleContent>
+      </Flex>
     </Collapsible>
   );
 }
@@ -10834,16 +10881,18 @@ export function FilterSection() {
   const [open, setOpen] = useState(false);
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
-      <CollapsibleTrigger asChild>
-        <Button variant="outline" size="sm">
-          Advanced filters
-          <ChevronDown className="ml-1 h-4 w-4" aria-hidden="true" />
-        </Button>
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        {/* place filter controls here */}
-        <p className="mt-2 text-sm text-muted-foreground">Date range, entity, status…</p>
-      </CollapsibleContent>
+      <Flex direction="col" align="start" gap="sm">
+        <CollapsibleTrigger asChild>
+          <Button variant="outline" size="sm">
+            Advanced filters
+            <ChevronDown aria-hidden="true" />
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          {/* place filter controls here */}
+          <Text size="sm" tone="muted">Date range, entity, status…</Text>
+        </CollapsibleContent>
+      </Flex>
     </Collapsible>
   );
 }\`}`,

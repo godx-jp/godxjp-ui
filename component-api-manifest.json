@@ -11015,6 +11015,14 @@
           "type": "\"always\" | \"partial\" | undefined",
           "values": ["always", "partial"],
           "declaredIn": ["src/components/data-display/popover.tsx"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "PopoverContentWidth | undefined",
+          "values": ["auto", "panel", "trigger"],
+          "declaredIn": ["src/components/data-display/popover.tsx"]
         }
       ]
     },

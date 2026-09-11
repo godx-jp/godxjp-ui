@@ -214,7 +214,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 41,
     title: "Drawer & dialog footer layout",
-    body: 'Sheet/Dialog/AlertDialog footers are a pinned action bar (the Drawer footer convention): the footer sticks to the bottom, SheetFooter draws a full-bleed top border, and actions are RIGHT-aligned with the PRIMARY button rightmost (Cancel/secondary to its left). A destructive / clear / reset action goes far-LEFT — give that button `className="mr-auto"`. NEVER stack footer buttons full-width or center them.',
+    body: 'Sheet/Dialog/AlertDialog footers are a pinned action bar (the Drawer footer convention): the footer sticks to the bottom, SheetFooter draws a full-bleed top border, and actions are RIGHT-aligned with the PRIMARY button rightmost (Cancel/secondary to its left). A destructive / clear / reset action goes far-LEFT — give that button `className="me-auto"` — the logical edge, so the action stays on the reading-start side under RTL too. NEVER stack footer buttons full-width or center them.',
   },
   {
     number: 42,

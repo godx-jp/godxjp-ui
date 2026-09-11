@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * The MCP catalog must not prescribe what `ui-audit` forbids.
+ * check:catalog-snippets — the MCP catalog must not prescribe what `ui-audit` forbids.
  *
  * An agent copies a catalog snippet verbatim. When the snippet carries a utility the audit blocks
  * in a consumer, that agent ships audit errors while following the design system's own guidance —
@@ -12,101 +12,199 @@
  * `check:doc-prop-existence` reads PROPS, `check:mcp-pattern-imports` reads IMPORTS, and neither
  * looks at classes.
  *
- * ## Why this is `audit:`, not `check:` — read before promoting it
+ * ## Two kinds of string, and only one of them is a program
  *
- * It is a DIAGNOSTIC with a known backlog, not a gate, and it is deliberately not wired into a
- * workflow. As committed it reports **74 finding(s)** across **57 catalog entries**, and
- * making it green is a judgement call per entry that this script cannot make: some snippets are
- * "write it this way" (real defects, fix them), some are "never write it this way" (a quoted
- * anti-pattern, which needs a marker), and `component-tokens.generated.ts` is generated output
- * that should probably be out of scope entirely.
+ * The first version of this script fed EVERY string literal that mentioned `className=` to
+ * `ui-audit` at once, on one flattened line each. That reported 74 findings across 57 entries and
+ * was left unwired, correctly, because most of those findings were not defects — and the shape of
+ * the mistake is worth naming, because it is the same one this repo keeps paying for: it measured
+ * the wrong thing and the number looked real.
  *
- * Wiring it as `check:catalog-audit-clean` before that triage would mean shipping a red gate, and
- * allowlisting the backlog to force it green would mean a gate that guards nothing — this repo has
- * measured both failure shapes already. Do the triage, then rename it and wire it; the day it
- * reports zero is the day it becomes a gate.
+ *  - A CODE field (`example` on a component, `code` on a pattern) is a program. An agent pastes it.
+ *    `ui-audit` is exactly the right instrument, and every finding in one is a defect.
+ *  - Everything else — `tagline`, `description`, `usage`, `useCases`, `related`, `notes`, `body`,
+ *    `fix` — is PROSE written for a reader, and prose in this catalog quotes code for one purpose:
+ *    to contrast the wrong shape against the right one. Auditing it audits the WARNINGS. Of the 74
+ *    original findings, 40 were in code fields and were real; the rest were sentences like
+ *    "DON'T hand-roll `<div className="flex items-center justify-between border-b py-3">`", where
+ *    the flagged class is the thing the sentence exists to forbid.
  *
- * How it works: every string literal in `mcp/src/data/*.ts` that contains a `className=` is written
- * to one scratch file and handed to `scripts/ui-audit.mjs --consumer`. The audit's class-shaped
- * rules only read class EXPRESSIONS (a `className` attribute, a class-named binding, a
- * `cn()`/`clsx()`/`cva()` call), so ordinary prose in a usage string can never be a finding — the
- * same property `docs/CONSUMER-RULES.md` promises consumers.
+ * So code fields get `ui-audit`, one file per snippet so a finding maps back to its own line. Prose
+ * gets a different, narrower question, and it is the question that actually matters there:
+ *
+ *    **does this sentence RECOMMEND a class a consumer is not allowed to write?**
+ *
+ * Two things have to be true before that is a finding, and both are mechanical rather than a
+ * judgement about English:
+ *
+ *  1. the quoted class value fails `ui-audit` on its own — `h-9 w-full` on a Skeleton and `h-64` on
+ *     a ScrollArea are measurements of a SCREEN and a consumer may write them, while
+ *     `w-auto p-0` and `flex items-center gap-2` are not; and
+ *  2. the sentence does not mark it as the shape NOT to write.
+ *
+ * That is not a loophole, it is the check the prose needed. It is what catches the Calendar entry's
+ * DO bullet — "set PopoverContent className='w-auto p-0'" — a real prescription of two
+ * per-call-site constants, in a catalog whose own Popover bullet forbids exactly that. Marking an
+ * anti-pattern is the author's job and the catalog already has a vocabulary for it; ANTI_PATTERN
+ * below IS that vocabulary. Widening it is a decision about what the catalog means, not a way to
+ * make this gate quiet — if a sentence has no way to say "not this", it is prescribing.
  */
 import { readFileSync, readdirSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
+import ts from "typescript";
 
 const ROOT = process.cwd();
 const DATA_DIR = join(ROOT, "mcp/src/data");
 
+/** The fields whose whole content is a program an agent pastes. */
+const CODE_FIELDS = new Set(["example", "code"]);
+
 /**
- * String literals, template literals included, without parsing TypeScript: the catalog is data,
- * and every snippet we care about lives inside a quoted string that mentions `className=`.
+ * The catalog's own vocabulary for "this is the shape NOT to write".
+ *
+ * Every entry here is a phrase the catalog already uses, in English or Vietnamese. A sentence that
+ * quotes a class and carries none of them is telling the reader to write it.
  */
-const STRING_LITERAL = /"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)'|`((?:[^`\\]|\\.)*)`/g;
+const ANTI_PATTERN =
+  /don't|don’t|\bnot\b|\bnever\b|instead\s+of|rather\s+than|hand-roll|hand-rolled|replace\s+classname|ui-audit\s+(?:blocks|rejects|forbids)|blocked\s+by\s+ui-audit|always\s+wrong|only\s+move\s+left|⛔|⚠️|sai|[Đđ]ừng|thay\s+cho/i;
 
-const snippets = [];
-for (const entry of readdirSync(DATA_DIR)) {
-  if (!entry.endsWith(".ts")) continue;
-  const src = readFileSync(join(DATA_DIR, entry), "utf8");
-  for (const match of src.matchAll(STRING_LITERAL)) {
-    const raw = match[1] ?? match[2] ?? match[3] ?? "";
-    if (!raw.includes("className=")) continue;
-    const text = raw.replace(/\\"/g, '"').replace(/\\'/g, "'").replace(/\\n/g, "\n");
-    const line = src.slice(0, match.index).split("\n").length;
-    snippets.push({ file: `mcp/src/data/${entry}`, line, text });
+/**
+ * Generated output is not authored guidance. `component-tokens.generated.ts` is written by
+ * `gen-component-tokens.mjs` from the token files' own comments; a finding there is a finding about
+ * a CSS comment, and the place to fix it is the token file, which `check:token-tiers` already owns.
+ */
+const isGenerated = (file) => file.endsWith(".generated.ts");
+
+/** Collect every string literal in the catalog with the field it belongs to and its owner. */
+function collect() {
+  const code = [];
+  const prose = [];
+  for (const entry of readdirSync(DATA_DIR)) {
+    if (!entry.endsWith(".ts") || isGenerated(entry)) continue;
+    const src = readFileSync(join(DATA_DIR, entry), "utf8");
+    const sf = ts.createSourceFile(entry, src, ts.ScriptTarget.Latest, true);
+    const walk = (node, field, owner) => {
+      if (ts.isObjectLiteralExpression(node)) {
+        const named = node.properties.find(
+          (p) =>
+            ts.isPropertyAssignment(p) &&
+            p.name.getText(sf) === "name" &&
+            ts.isStringLiteral(p.initializer),
+        );
+        if (named) owner = named.initializer.text;
+      }
+      if (ts.isPropertyAssignment(node)) field = node.name.getText(sf).replace(/['"]/g, "");
+      if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+        const text = node.text;
+        if (text.includes("className=")) {
+          const line = sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1;
+          const where = { file: `mcp/src/data/${entry}`, line, field: field ?? "(root)", owner };
+          if (CODE_FIELDS.has(field)) code.push({ ...where, text });
+          else prose.push({ ...where, text });
+        }
+      }
+      ts.forEachChild(node, (child) => walk(child, field, owner));
+    };
+    walk(sf, null, null);
   }
+  return { code, prose };
 }
 
-if (!snippets.length) {
-  console.log("✓ check:catalog-audit-clean — no catalog snippet carries a className.");
-  process.exit(0);
-}
+const { code, prose } = collect();
+const failures = [];
 
-const dir = mkdtempSync(join(tmpdir(), "catalog-audit-"));
-const scratch = join(dir, "catalog-snippets.tsx");
-// One line per snippet, so an audit finding's line number maps straight back to its source.
-writeFileSync(scratch, snippets.map((s) => s.text.replace(/\n/g, " ")).join("\n") + "\n");
-
-let output;
-let failed = false;
+/*
+ * CODE FIELDS — one scratch file per snippet, never one shared file.
+ *
+ * The shared-file version joined every snippet onto ONE LINE each so the reporter could map a line
+ * number back, which meant a multi-line recipe was audited as a single 4000-character line and the
+ * context printed with each finding was the first 100 characters of an unrelated import block. A
+ * file per snippet keeps the snippet's own line numbers, so a finding points at the line inside the
+ * recipe that carries it.
+ */
+const dir = mkdtempSync(join(tmpdir(), "catalog-snippets-"));
 try {
-  output = execFileSync(process.execPath, [join(ROOT, "scripts/ui-audit.mjs"), "--consumer", scratch], {
-    encoding: "utf8",
-  });
-} catch (error) {
-  failed = true;
-  output = `${error.stdout ?? ""}${error.stderr ?? ""}`;
-}
-
-if (!failed) {
+  for (const snippet of code) {
+    const scratch = join(dir, "snippet.tsx");
+    writeFileSync(scratch, `${snippet.text}\n`);
+    let output = "";
+    try {
+      execFileSync(process.execPath, [join(ROOT, "scripts/ui-audit.mjs"), "--consumer", scratch], {
+        encoding: "utf8",
+      });
+      continue;
+    } catch (error) {
+      output = `${error.stdout ?? ""}${error.stderr ?? ""}`;
+    }
+    const lines = snippet.text.split("\n");
+    for (const line of output.split("\n")) {
+      // Strip the reporter's ANSI colour runs. The escape is BUILT rather than written as a
+      // literal, because a raw ESC inside a regex literal is an eslint `no-control-regex` error.
+      const ansi = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g");
+      const match = line.replace(ansi, "").match(/snippet\.tsx:(\d+)\s+\[([a-z-]+)]/);
+      if (!match) continue;
+      const inSnippet = Number(match[1]);
+      failures.push(
+        `  ${snippet.file}:${snippet.line} · ${snippet.owner ?? "?"}.${snippet.field} ` +
+          `[${match[2]}]\n      ${(lines[inSnippet - 1] ?? "").trim().slice(0, 120)}`,
+      );
+    }
+  }
+} finally {
   rmSync(dir, { recursive: true, force: true });
-  console.log(
-    `✓ check:catalog-audit-clean — ${snippets.length} catalog snippet(s) with a className pass ui-audit as a consumer.`,
+}
+
+/*
+ * PROSE FIELDS — a quoted class must be marked as something not to write.
+ *
+ * Split on sentence ends and blank lines so a bullet that says "DO X, DON'T hand-roll Y" is judged
+ * as the two claims it makes rather than as one blob.
+ */
+const proseDir = mkdtempSync(join(tmpdir(), "catalog-prose-"));
+try {
+  for (const snippet of prose) {
+    for (const chunk of snippet.text.split(/(?<=[.!?。」])\s+|\n{2,}/)) {
+      if (!chunk.includes("className=")) continue;
+      if (ANTI_PATTERN.test(chunk)) continue;
+      for (const match of chunk.matchAll(/className=['"{`]*["']([^"']+)["']/g)) {
+        const scratch = join(proseDir, "quoted.tsx");
+        writeFileSync(scratch, `<div className="${match[1]}" />\n`);
+        try {
+          execFileSync(
+            process.execPath,
+            [join(ROOT, "scripts/ui-audit.mjs"), "--consumer", scratch],
+            { encoding: "utf8" },
+          );
+          continue; // a class a consumer may legitimately write
+        } catch {
+          failures.push(
+            `  ${snippet.file}:${snippet.line} · ${snippet.owner ?? "?"}.${snippet.field} ` +
+              `[prose-prescribes-a-blocked-class]\n      className="${match[1]}"\n      ` +
+              `${chunk.replace(/\n/g, " ").trim().slice(0, 130)}`,
+          );
+        }
+      }
+    }
+  }
+} finally {
+  rmSync(proseDir, { recursive: true, force: true });
+}
+
+if (failures.length) {
+  console.error(`✗ check:catalog-snippets — ${failures.length} finding(s).\n`);
+  for (const failure of failures) console.error(failure);
+  console.error(
+    "\nA code field must pass ui-audit the way a consumer's page does: layout via <Flex>/" +
+      "<ResponsiveGrid>,\nspacing via props, surfaces via Card/Badge/ListRow, colour via tones.\n" +
+      "A prose field may RECOMMEND a class a consumer is allowed to write, and may QUOTE a blocked" +
+      " one\nonly to warn about it — say so in words, the way the rest of the catalog does.",
   );
-  process.exit(0);
+  process.exit(1);
 }
 
-// Map each reported line back to the catalog file and line it came from.
-const lines = output.split("\n");
-const report = [];
-for (const line of lines) {
-  const m = line.match(/catalog-snippets\.tsx:(\d+)/);
-  if (!m) continue;
-  const origin = snippets[Number(m[1]) - 1];
-  if (origin) report.push(`  ${origin.file}:${origin.line}`);
-}
-rmSync(dir, { recursive: true, force: true });
-
-console.error("✗ check:catalog-audit-clean — the catalog prescribes what ui-audit forbids.");
-console.error(output.trim());
-if (report.length) {
-  console.error("\nOriginating catalog entries:");
-  for (const entry of [...new Set(report)]) console.error(entry);
-}
-console.error(
-  "\nRewrite the snippet the way a consumer must write it (layout via <Flex>/<ResponsiveGrid>,\n" +
-    "spacing via props, colours via tones) — an agent copies these verbatim.",
+console.log(
+  `✓ check:catalog-snippets — ${code.length} code snippet(s) pass ui-audit as a consumer; ` +
+    `${prose.length} prose string(s) quote no blocked class as advice.`,
 );
-process.exit(1);

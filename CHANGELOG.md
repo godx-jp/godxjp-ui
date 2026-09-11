@@ -20,6 +20,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`PopoverContent width`** — `panel` (mặc định, `--popover-width` = 18rem) · `auto` (nội dung
+  quyết định) · `trigger` (bằng neo). Đây là vế còn thiếu của `flush`. `flush` tồn tại vì zero
+  padding bằng một utility trên `className` là hằng số tại chỗ gọi mà không theme nào retune được
+  — chính luật Popover trong catalog nói thế. TRỤC ĐO NGANG có đúng cùng vấn đề và **không có
+  prop nào**: panel rộng 18rem, nên bất cứ thứ gì tự mang bề rộng của nó — một `Calendar` hai
+  tháng là ca làm lộ ra chuyện này — đều bị cắt trừ khi call site viết `className="w-auto"`. Lớp
+  nội bộ `.ui-control-panel-flush` của chính thư viện xưa nay vẫn đặt CẢ HAI knob; đây là nửa
+  công khai của nó.
+
+### Fixed
+
+- **Catalog kê đơn đúng thứ `ui-audit` cấm — 40 lỗi trong các trường MÃ.** `example` của một
+  component và `code` của một pattern là chương trình mà agent DÁN nguyên văn. Mười bốn trong số
+  đó chứa thứ audit chặn ở consumer: `<div className="flex flex-col gap-1.5">` + một `<label>`
+  trần quanh `DatePicker`/`TimePicker`/`TreeSelect`/`Slider` (đúng thứ `bare-control-needs-formfield`
+  bảo phải thay bằng `FormField`), `<div className="flex items-center gap-2">` quanh
+  `Checkbox`/`Switch` (phải là `Field`), `<button type="submit">` trần, `rounded-md border` tự vẽ
+  thay `Card`, `border-r` vật lý, `mr-1`/`ml-1` trên icon của `Button` (Button tự dãn khe icon),
+  `¥` gõ tay thay `Intl.NumberFormat`, và ba `<Card>` anh em không có `<Flex>` ở giữa. Nay cả 27
+  đoạn mã đều sạch.
+
+- **`no-emoji-in-ui` gọi `©`, `®`, `™` là emoji.** Cả ba là `Emoji_Presentation=No` — dấu chữ
+  in có trước emoji rất lâu và mặc định hiển thị dạng CHỮ. Không lý do nào trong thông điệp của
+  chính luật chạm tới chúng: một dòng bản quyền không "vỡ trên Win/Linux" và không làm bẩn tên
+  khả truy cập. Công thức `CenteredShell` của catalog bị bắt vì chữ `©` trong footer, và mọi
+  consumer có footer cũng vậy. Kèm U+FE0F thì chúng đang cố tình xin hiển thị dạng emoji, nên
+  cách viết ấy vẫn bị bắt.
+
+### Changed
+
+- **`audit:catalog-snippets` trở thành `check:catalog-snippets`, và đã nối vào `verify:ci:static`.**
+  Bản cũ ném MỌI chuỗi có `className=` vào `ui-audit`, mỗi chuỗi ép thành một dòng: 74 phát hiện
+  trên 57 entry, và nó bị để ngoài CI — đúng, vì phần lớn không phải lỗi. Hình dạng sai lầm đáng
+  gọi tên: **nó đo nhầm thứ, và con số trông như thật.**
+
+  Một trường MÃ (`example`, `code`) là chương trình → `ui-audit` là đúng thước, mỗi đoạn một tệp
+  riêng nên số dòng của phát hiện trỏ đúng vào dòng trong công thức. Mọi trường còn lại là VĂN
+  XUÔI viết cho người đọc, và văn xuôi trong catalog trích mã vì đúng một lý do: đối chiếu hình
+  sai với hình đúng. Soi nó là soi các LỜI CẢNH BÁO. Văn xuôi nay bị hỏi một câu hẹp hơn và đúng
+  hơn: *câu này có khuyên dùng một class mà consumer không được phép viết không?* — hai điều kiện
+  đều máy móc: class được trích phải TỰ NÓ trượt `ui-audit`, và câu không đánh dấu nó là hình
+  không nên viết. Nhờ vậy `className="h-9 w-full"` trên một Skeleton (số đo của MỘT MÀN HÌNH) đi
+  qua, còn `className='w-auto p-0'` trong một bullet DO của Calendar thì không — và đó là một lời
+  kê đơn thật, trong chính catalog có luật cấm điều đó ở trục bên cạnh.
+
+  `component-tokens.generated.ts` nằm ngoài phạm vi và có lý do: nó là đầu ra sinh tự động từ chú
+  thích của các tệp token, nên chỗ sửa là tệp token, thứ `check:token-tiers` đã canh.
+
+  Đếm trung thực sau khi sửa: **0** — 27 đoạn mã qua `ui-audit` như một consumer, 47 chuỗi văn
+  xuôi không kê đơn class nào bị chặn. Phép thử đột biến: trả một utility vào trường mã → đỏ kèm
+  đúng số dòng; cho một bullet DO kê `className='w-auto p-0'` → đỏ; cho nó kê `className='h-9 w-full'`
+  → vẫn xanh.
+
+### Added
+
 - **`MobileShell width`** — trục mà `height` đã có còn `width` thì không. `"fill"` (mặc định, và
   là thứ shell vẫn làm) lấy trọn bề rộng được cấp; `"phone"` chặn ở
   `--mobile-shell-max-inline-size` (430px — bề rộng logic lớn nhất của lớp máy cầm tay hiện tại)

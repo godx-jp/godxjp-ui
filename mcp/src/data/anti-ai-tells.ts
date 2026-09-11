@@ -304,9 +304,10 @@ is correct — but ONE deep, not three.`,
 shell with a centered spinner. Layout shifts when content
 arrives.`,
     fix: `Use Skeleton placeholders matching the eventual content shape.
-Render \`<Skeleton className="h-9 w-full rounded-md" />\` in place of
-each control — inside the FormField that will hold it, so the labels
-and grid stay put. Layout stays stable, perceived speed improves.`,
+Render \`<Skeleton className="h-9 w-full" />\` in place of each control
+— inside the FormField that will hold it, so the labels and grid stay
+put. Height and fill are this screen's measurements; never add a
+\`rounded-*\`, because Skeleton already carries the radius token. Layout stays stable, perceived speed improves.`,
   },
 ];
 
