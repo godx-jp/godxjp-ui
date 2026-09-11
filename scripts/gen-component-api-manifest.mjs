@@ -109,8 +109,42 @@ for (const directory of fs
       .filter((file) => file.fileName.includes(`${path.sep}src${path.sep}components${path.sep}`))
       .map((file) => file.text)
       .join("\n");
+    /*
+     * A UNION props type is one component with two call shapes (`<Select options>` vs the compound
+     * children; a range picker vs a single one). `getPropertiesOfType` on a union returns only what
+     * every member has IN COMMON, so the entire data-driven half of `Select` — `options`,
+     * `loadOptions`, `showSearch`, and every antd prop hanging off them — was absent from the
+     * manifest, and absent is what an agent reads as "does not exist" (see
+     * docs/WHAT-BELONGS-HERE.md on `pad`/`padRaw`). Each member is enumerated instead and the
+     * results deduped by name.
+     *
+     * `required` is deliberately the AND across the members that declare the prop: a prop required
+     * in one shape and absent from another cannot be demanded of every call site.
+     */
+    const declaredHere = (prop) =>
+      (prop.declarations ?? []).some((declaration) => {
+        const filename = declaration.getSourceFile().fileName;
+        return (
+          filename.includes(`${path.sep}src${path.sep}components${path.sep}`) ||
+          filename.includes(`${path.sep}src${path.sep}props${path.sep}components${path.sep}`)
+        );
+      });
+    const propsOfType = (type) => {
+      if (!type.isUnion()) return checker.getPropertiesOfType(type);
+      const byName = new Map();
+      for (const member of type.types) {
+        for (const prop of checker.getPropertiesOfType(member)) {
+          const seen = byName.get(prop.name);
+          // The member that DECLARES the prop here wins. Both `Select` shapes carry `aria-label`,
+          // but only one declares it in this repo's prop files; keeping the other one made the
+          // ownership filter below drop the prop from the manifest entirely.
+          if (!seen || (!declaredHere(seen) && declaredHere(prop))) byName.set(prop.name, prop);
+        }
+      }
+      return [...byName.values()];
+    };
     const props = [];
-    for (const prop of checker.getPropertiesOfType(propsType)) {
+    for (const prop of propsOfType(propsType)) {
       const declarations = prop.declarations ?? [];
       const isOwned = declarations.some((declaration) => {
         const filename = declaration.getSourceFile().fileName;

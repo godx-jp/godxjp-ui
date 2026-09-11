@@ -21,7 +21,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@godxjp/ui/data-entry";
+import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { X } from "lucide-react";
 
 /**
  * Select — the single-select control. Prefer the data-driven `options` API
@@ -38,6 +40,12 @@ export default function Demo() {
   const [reviewerAsync, setReviewerAsync] = useState("tanaka");
   const [reviewerCustom, setReviewerCustom] = useState("tanaka");
   const [reviewerLabel, setReviewerLabel] = useState("tanaka");
+  const [prefixed, setPrefixed] = useState("JPY");
+  const [tags, setTags] = useState<string[]>(["至急", "社内便"]);
+  // antd `labelInValue`: the record arrives carrying its own label, before any option list loads.
+  const [assignedTo, setAssignedTo] = useState<
+    { value: string; label: React.ReactNode } | undefined
+  >({ value: "52", label: "東京本社" });
 
   const people = [
     { value: "tanaka", label: "田中 太郎", sublabel: "tanaka@example.com" },
@@ -388,6 +396,105 @@ export default function Demo() {
                   { value: "suzuki", label: "鈴木" },
                   { value: "ito", label: "伊藤" },
                 ]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>
+              Ant Design 6 · prefix・suffixIcon・placement・listHeight
+            </CardTitle>
+            <CardDescription>
+              グループは options のネスト（{`{ label, options }`}）でも、行の group
+              でも同じ一覧になります。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="prefixed" label="通貨">
+              <Select
+                id="prefixed"
+                name="currency_prefixed"
+                value={prefixed}
+                onValueChange={setPrefixed}
+                prefix={<Badge tone="muted">¥</Badge>}
+                placement="bottomEnd"
+                listHeight={220}
+                options={[
+                  {
+                    label: "アジア",
+                    options: [
+                      { value: "JPY", label: "日本円" },
+                      { value: "VND", label: "ベトナムドン" },
+                    ],
+                  },
+                  {
+                    label: "ヨーロッパ",
+                    options: [{ value: "EUR", label: "ユーロ" }],
+                  },
+                ]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>mode=&quot;tags&quot; · tokenSeparators・tagRender</CardTitle>
+            <CardDescription>
+              一覧にない値も入力できます。カンマ区切りの貼り付けは一度にまとめて確定します。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="tags" label="ラベル">
+              <Select
+                id="tags"
+                name="labels[]"
+                mode="tags"
+                value={tags}
+                onValueChange={setTags}
+                tokenSeparators={[",", "\n"]}
+                maxTagTextLength={6}
+                options={[
+                  { value: "至急", label: "至急" },
+                  { value: "要確認", label: "要確認" },
+                ]}
+                tagRender={({ label, onClose }) => (
+                  <Badge tone="info">
+                    {label}
+                    <Button
+                      variant="ghost"
+                      size="icon-xs"
+                      aria-label={`${String(label)} を外す`}
+                      onClick={onClose}
+                    >
+                      <X aria-hidden="true" />
+                    </Button>
+                  </Badge>
+                )}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>labelInValue · 読み込み前でも名前が出る</CardTitle>
+            <CardDescription>
+              値が {`{ value, label }`} を持つので、選択肢がまだ届いていなくても ID
+              ではなく名前を表示できます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="assigned" label="担当拠点">
+              <Select
+                id="assigned"
+                name="office_id"
+                labelInValue
+                value={assignedTo}
+                onValueChange={setAssignedTo}
+                notFoundContent="拠点を読み込み中"
+                options={[]}
               />
             </FormField>
           </CardContent>

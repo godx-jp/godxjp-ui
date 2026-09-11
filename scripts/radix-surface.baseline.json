@@ -1,14 +1,12 @@
 {
   "files": 8,
   "packages": 9,
-  "declared": [
-    "@radix-ui/react-select"
-  ],
+  "declared": [],
   "sources": {
     "src/components/data-entry/__tests__/label-rac.test.tsx": [
       "@radix-ui/react-label"
     ],
-    "src/components/data-entry/select.tsx": [
+    "src/components/data-entry/__tests__/radix-select.fixture.tsx": [
       "@radix-ui/react-select"
     ],
     "src/components/ui/__tests__/avatar-aspect-ratio.test.tsx": [

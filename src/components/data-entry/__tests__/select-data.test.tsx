@@ -34,6 +34,6 @@ describe("Select (options data API)", () => {
     const user = userEvent.setup();
     renderWithUi(<Select options={[{ value: "x", label: "プレーン" }]} placeholder="p" />);
     await user.click(screen.getByRole("combobox"));
-    expect(screen.getByText("プレーン")).toBeInTheDocument();
+    expect(await screen.findByRole("option", { name: "プレーン" })).toBeInTheDocument();
   });
 });

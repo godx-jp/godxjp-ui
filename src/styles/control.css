@@ -1348,7 +1348,8 @@
     background: hsl(var(--secondary));
     color: hsl(var(--secondary-foreground));
   }
-  .ui-tag-input-remove {
+  .ui-tag-input-remove,
+  .ui-search-select-value-remove {
     /* ≥24px hit area (WCAG 2.5.8) around the 12px glyph; negative inline margin keeps the chip tight */
     display: inline-flex;
     align-items: center;
@@ -1363,10 +1364,12 @@
     color: inherit;
     opacity: 0.7;
   }
-  .ui-tag-input-remove:hover {
+  .ui-tag-input-remove:hover,
+  .ui-search-select-value-remove:hover {
     opacity: 1;
   }
-  .ui-tag-input-remove svg {
+  .ui-tag-input-remove svg,
+  .ui-search-select-value-remove svg {
     width: 0.75rem;
     height: 0.75rem;
   }
@@ -1662,6 +1665,7 @@
   }
 
   .ui-search-select-list {
+    max-block-size: var(--search-select-list-max-height);
     max-block-size: none;
     min-block-size: 0;
     flex: 1 1 0%;
@@ -1868,12 +1872,28 @@
 }
 
 @layer components {
-  /* SELECT — the Radix listbox popup. */
+  /* SELECT — react-aria renders a wrapper <div> around the trigger and its hidden native <select>;
+   * the Radix root it replaced rendered no box at all. `display: contents` keeps the TRIGGER the
+   * layout child a flex row or a grid cell sees, exactly as before. */
+  .ui-select-root {
+    display: contents;
+  }
+
+  /* SELECT — the listbox popup (a react-aria Popover). It is a column so the listbox inside can
+   * shrink into whatever height react-aria measured as available (it writes that as an inline
+   * `max-height`, which is why the token cap lives on the listbox below, not here). */
   .ui-select-content {
     position: relative;
     z-index: var(--overlay-z-index);
+    display: flex;
+    flex-direction: column;
     max-height: var(--select-content-max-height);
-    min-width: var(--menu-content-min-width);
+    /* antd `popupMatchSelectWidth` default: the trigger width is the floor. react-aria publishes
+     * the trigger width as --trigger-width on this element. */
+    min-width: max(
+      var(--menu-content-min-width),
+      var(--trigger-width, var(--menu-content-min-width))
+    );
     overflow: hidden;
     border-radius: var(--radius-md);
     border: 1px solid hsl(var(--border));
@@ -1884,13 +1904,23 @@
 
   /* antd `popupMatchSelectWidth` for the plain (no-search) listbox. Absent = the trigger width is
    * the floor; `content` lets the popup hug its rows; `fixed` pins it to the consumer's number. */
+  .ui-select-content[data-popup-match="content"] {
+    min-width: var(--menu-content-min-width);
+  }
+
   .ui-select-content[data-popup-match="fixed"] {
     min-width: var(--select-content-inline-size);
     width: var(--select-content-inline-size);
   }
 
+  /* The listbox is the scroll container: capped by the token, and allowed to shrink below it when
+   * the popup has less room than that. */
   .ui-select-viewport {
+    min-block-size: 0;
+    max-block-size: var(--select-content-max-height);
+    overflow-y: auto;
     padding: var(--menu-content-space-inset);
+    outline: none;
   }
 
   /* antd `notFoundContent` inside the plain listbox — a quiet, non-selectable row, so the popup is
@@ -1980,6 +2010,27 @@
   .ui-select-chevron {
     flex-shrink: 0;
     opacity: var(--control-affix-rest-alpha);
+  }
+
+  /* antd `prefix` / `suffixIcon` on the trigger. The trigger is `justify-between`, which is right
+   * for [value][chevron] and wrong the moment a third child arrives: the value would float to the
+   * centre. With a prefix the row packs from the start and the VALUE takes the slack instead. */
+  .ui-select-prefix,
+  .ui-select-suffix {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* With a prefix the trigger holds THREE children, and its `justify-between` utility would push
+   * the value to the middle. Growing the VALUE is what packs the row instead — measured in
+   * Chromium: prefix at 46px, value starting at 79px and filling the rest. A
+   * `justify-content: flex-start` rule was tried here first and is DEAD on arrival (the utilities
+   * layer outranks components), so it is not left behind pretending to work. */
+  .ui-select-trigger-prefixed > [data-slot="select-value"] {
+    flex: 1 1 auto;
+    text-align: start;
   }
 }
 

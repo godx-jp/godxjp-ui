@@ -5622,8 +5622,9 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     props: [
       {
         name: "mode",
-        type: '"multiple"',
-        description: "Select several options; value/defaultValue become string arrays.",
+        type: '"multiple" | "tags"',
+        description:
+          "Select several options; value/defaultValue become string arrays. `tags` additionally ACCEPTS what was typed (a value that is not in the list), which is antd's own split between the two.",
       },
       {
         name: "maxCount",
@@ -5633,9 +5634,9 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       { name: "maxTagCount", type: "number", description: "Collapse extra selected labels." },
       {
         name: "options",
-        type: "SearchSelectOptionProp[]",
+        type: "(SearchSelectOptionProp | { label: string; options: SearchSelectOptionProp[] })[]",
         description:
-          "Static option list. Passing this (or loadOptions) switches Select from the compound API to the data-driven API. Each option has { value, label, sublabel?, icon?, group?, disabled? }. `icon` (avatar / flag / lucide node) renders before the label in the rows AND on the trigger once selected. group buckets the option under an optgroup-style heading.",
+          "Static option list. Passing this (or loadOptions) switches Select from the compound API to the data-driven API. An entry may be one of antd's nested GROUPS ({ label, options }) instead of a row; its heading becomes the same `group` a flat row carries. Rows in a foreign shape ({id,name}) go through fieldNames. Each option has { value, label, sublabel?, icon?, group?, disabled? }. `icon` (avatar / flag / lucide node) renders before the label in the rows AND on the trigger once selected. group buckets the option under an optgroup-style heading.",
       },
       {
         name: "loadOptions",
@@ -5645,10 +5646,10 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       },
       {
         name: "showSearch",
-        type: "boolean",
-        defaultValue: "true when loadOptions is set, false otherwise",
+        type: 'boolean | { filterOption?: boolean | ((input, option) => boolean); optionFilterProp?: "label" | "value" | "sublabel"; filterSort?; searchValue?: string; onSearch?: (value: string) => void; autoClearSearchValue?: boolean }',
+        defaultValue: "true when loadOptions is set or mode is multiple/tags, false otherwise",
         description:
-          "Toggle the searchable combobox mode (SearchSelect engine) vs a plain Radix listbox. Set to true on a static options list to enable client-side filtering.",
+          "Toggle the searchable combobox mode vs the plain listbox. The OBJECT form is antd's and configures the search in one place (passing it also turns search ON). NOTE the argument order: `showSearch.filterOption(input, option)` is antd's, while the long-standing top-level `filterOption(option, query)` keeps this library's; `filterOption: false` keeps every row, for a list the server already filtered.",
       },
       {
         name: "value",
@@ -5905,13 +5906,97 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         description:
           "antd `popupMatchSelectWidth`. true (default) pins the popup to the trigger width, false lets it hug its rows, a number pins it to that many pixels.",
       },
+      {
+        name: "fieldNames",
+        type: "{ label?: string; value?: string; options?: string; groupLabel?: string; disabled?: string }",
+        description:
+          "antd `fieldNames` — read rows in a FOREIGN shape ({id,name,children}) without copying them into a second array first. The same spelling Cascader and TreeSelect take. A foreign row needs a cast at the call site, exactly as theirs does.",
+      },
+      {
+        name: "labelInValue",
+        type: "boolean",
+        description:
+          "antd `labelInValue` — value and onValueChange speak {value,label} instead of a bare string (an array of them in multiple/tags). It earns its place on the async EDIT form: a record holding {value:'52',label:'東京本社'} renders the pick immediately, with no options page loaded and no flash of the raw id.",
+      },
+      {
+        name: "prefix",
+        type: "React.ReactNode",
+        description:
+          "antd `prefix` — a node pinned BEFORE the value on the trigger (a currency mark, an icon). Deliberately not aria-hidden: for role=combobox the trigger's text is the VALUE, and a prefix that is part of the value belongs in it. The NAME still comes from the label.",
+      },
+      {
+        name: "suffixIcon",
+        type: "React.ReactNode",
+        description:
+          "antd `suffixIcon` — replaces the trailing chevron; `null` removes the indicator entirely (antd's own replacement for the deprecated showArrow). While a value is clearable the ✕ owns that seat, as in antd.",
+      },
+      {
+        name: "placement",
+        type: '"bottomStart" | "bottomEnd" | "topStart" | "topEnd"',
+        description:
+          "antd `placement`, spelled on the LOGICAL inline axis (antd's bottomLeft/topRight cannot mirror for an RTL layout). Absent = below, start-aligned, with collision flipping — what a picker wants.",
+      },
+      {
+        name: "popupRender",
+        type: "(originNode: React.ReactNode) => React.ReactNode",
+        description:
+          "antd `popupRender` — wrap the popup's own node to add a footer, a 'create' action or a hint line. It must still render originNode: dropping it leaves a popup with no options.",
+      },
+      {
+        name: "listHeight",
+        type: "number",
+        description:
+          "antd `listHeight` — the option list's max height in px for THIS instance. It overrides the --select-content-max-height token rather than hard-coding a height, so the token stays the default everywhere else.",
+      },
+      {
+        name: "onPopupScroll",
+        type: "(event: React.UIEvent<HTMLElement>) => void",
+        description:
+          "antd `onPopupScroll` — fires on the option list's own scroll. It runs BESIDE the built-in infinite scroll (loadOptions paging), never instead of it.",
+      },
+      {
+        name: "optionFilterProp",
+        type: '"label" | "value" | "sublabel"',
+        description:
+          "antd `optionFilterProp` — which field the default filter matches while searching. Unset matches BOTH label and value (this library's long-standing behaviour); antd's own default is value alone.",
+      },
+      {
+        name: "tokenSeparators",
+        type: "string[]",
+        description:
+          "antd `tokenSeparators` (multiple/tags) — characters that commit what has been typed. Typing or PASTING 'a,b,c' commits three values in ONE onValueChange. A pasted run is read off the clipboard, so a '\\n' separator works even though a single-line input strips newlines.",
+      },
+      {
+        name: "maxTagTextLength",
+        type: "number",
+        description:
+          "antd `maxTagTextLength` (multiple/tags) — cut each chip's TEXT to this many characters (an ellipsis marks the cut). The value keeps its whole label.",
+      },
+      {
+        name: "tagRender",
+        type: "(props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean }) => React.ReactNode",
+        description:
+          "antd `tagRender` (multiple/tags) — render one chip yourself. Exactly the shape TagInput's tagRender takes. The onClose handed in is the same remover the built-in ✕ calls, so a custom chip cannot end up unremovable; supplying tagRender withdraws the built-in ✕.",
+      },
+      {
+        name: "onSelect / onDeselect",
+        type: "(value: string, option: SearchSelectOptionProp) => void",
+        description:
+          "antd `onSelect` / `onDeselect` — fires as one option JOINS or LEAVES the selection, beside onValueChange (which reports the whole value).",
+      },
+      {
+        name: "maxTagPlaceholder",
+        type: "React.ReactNode | ((omitted: { value: string; label: React.ReactNode }[]) => React.ReactNode)",
+        description:
+          "antd `maxTagPlaceholder` — the node standing in for the values maxTagCount hid. A function receives the omitted values, so '+3 件' or a tooltip listing them is possible.",
+      },
     ],
     usage: [
       "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
       "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",
-      "READING THE SELECTED CODE FROM THE DOM: the trigger publishes `data-value` = the selected VALUE, alongside the `data-field` key it inherits from FormField. Use that in e2e tests and screen automation \u2014 the trigger's visible text is the option LABEL (\u6771\u4eac\u672c\u793e), and the only other place the code lives is Radix's aria-hidden 1x1px native <select>, which exists solely so a native submit carries the value. `data-value` is absent while nothing is selected, and it tracks uncontrolled picks too.",
+      "READING THE SELECTED CODE FROM THE DOM: the trigger publishes `data-value` = the selected VALUE, alongside the `data-field` key it inherits from FormField. Use that in e2e tests and screen automation \u2014 the trigger's visible text is the option LABEL (\u6771\u4eac\u672c\u793e), and the only other place the code lives is the aria-hidden, 1px-clipped native <select> react-aria renders so a native submit (and browser autofill) carries the value. `data-value` is absent while nothing is selected, and it tracks uncontrolled picks too.",
       "DO use loadOptions + selectedLabel together for async selects: selectedLabel prevents a flash of the raw id string while the first page loads.",
-      "DO name the control with FormField (or aria-label) — NOT with a <label htmlFor>. The trigger is a button with role=combobox, and neither a wrapping <label> nor htmlFor names it: role=combobox takes no accessible name from its content either, so the visible value is the VALUE, not the name. Wrapping the Select in <FormField label=…> is the supported route; for a Select with no visible label pass aria-label. This holds for BOTH APIs — the compound trigger inherits the FormField contract (label, helper, error, required) through Select, and a bare <Select aria-label=…> forwards it too. Anything you set directly on SelectTrigger wins.",
+      "DO name the control with FormField, aria-label, or a <label htmlFor> pointing at the trigger id — all three work. (An earlier version of this entry said htmlFor does NOT name the trigger. That was wrong: the trigger is a <button>, which is a labelable element, so <label for> does name it — src/components/data-entry/__tests__/select-rac.test.tsx pins it on both the old Radix base and the react-aria one, because 17 godx-task files name their Selects exactly that way.) What role=combobox does NOT do is take a name from its own content, so the visible value is the VALUE, never the name — a Select with no label of any kind is anonymous. Wrapping in <FormField label=…> stays the route that also wires helper, error and required. This holds for BOTH APIs; anything set directly on SelectTrigger wins.",
       "DO treat loading / no-options / error / disabled as DISTINCT states. A data-driven Select never opens a blank popover: a static options=[] list auto-disables the trigger (opening it would show nothing), while an async loadOptions shows a loading row, then either the options, a localized empty affordance (override with emptyMessage), or an error affordance if the fetch rejects (override with errorMessage). Disable the Select when there is nothing to pick AND no async loader; keep it enabled (it opens to load/search) whenever loadOptions is set.",
       "DON'T mix the two APIs: once you pass options or loadOptions, Select is data-driven — all compound sub-parts (SelectTrigger, SelectContent, SelectItem) are rendered internally. Do not wrap them manually.",
       "DON'T use a raw <select> element. Select is the one control for all single-select use cases. The only allowed raw <select> is a hidden aria-hidden sr-only element kept as an e2e hook paired with a visible Select.",

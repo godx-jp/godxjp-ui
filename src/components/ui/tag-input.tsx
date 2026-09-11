@@ -7,6 +7,7 @@ import {
   applyMaxTagCount,
   controlSurfaceAttrs,
   resolveAllowClear,
+  splitByTokenSeparators,
 } from "../data-entry/control-surface";
 import type {
   AllowClearProp,
@@ -73,11 +74,6 @@ export type TagInputProps = {
   tokenSeparators?: string[];
 };
 
-/** Escape a separator so it is a literal inside the `[...]` character class built from the list. */
-function escapeForCharClass(character: string): string {
-  return character.replace(/[\\\]^-]/g, "\\$&");
-}
-
 export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
   (
     {
@@ -124,9 +120,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     /** Commit a run of text, splitting it on every `tokenSeparators` entry (antd's paste contract). */
     const addAll = (raw: string) => {
       let next = [...tags];
-      const pieces = tokenSeparators.length
-        ? raw.split(new RegExp(`[${tokenSeparators.map(escapeForCharClass).join("")}]`))
-        : [raw];
+      const pieces = splitByTokenSeparators(raw, tokenSeparators);
       for (const piece of pieces) {
         const tag = piece.trim();
         if (!tag || next.includes(tag)) continue;

@@ -124,22 +124,30 @@ try {
       }
       if (story === "data-entry-select") {
         await page.locator("#priority").click();
-        for (const slot of [
-          "select-content",
-          "select-label",
-          "select-separator",
-          "select-scroll-down-button",
-        ]) {
+        for (const slot of ["select-content", "select-label", "select-separator"]) {
           if ((await page.locator(`[data-slot="${slot}"]`).count()) === 0)
             throw new Error(`${story}: missing rendered ${slot}`);
         }
-        await page.locator('[data-slot="select-viewport"]').evaluate((element) => {
+        /*
+         * A long list must be REACHABLE. This used to assert Radix's scroll-up/down buttons were
+         * rendered; react-aria's listbox has none — it is a native scroll container — so asserting
+         * those two slots now would only be asserting that Radix is still here. The property they
+         * were standing in for is measured directly instead: the viewport really overflows, and
+         * scrolling it really moves, which is what "the 24th option can be reached" means.
+         */
+        const scroll = await page.locator('[data-slot="select-viewport"]').evaluate((element) => {
+          const before = element.scrollTop;
           element.scrollTop = element.scrollHeight;
           element.dispatchEvent(new Event("scroll", { bubbles: true }));
+          return {
+            overflows: element.scrollHeight > element.clientHeight + 1,
+            moved: element.scrollTop > before,
+          };
         });
+        if (!scroll.overflows)
+          throw new Error(`${story}: the option list does not overflow, so nothing is scrollable`);
+        if (!scroll.moved) throw new Error(`${story}: the option list refused to scroll`);
         await page.waitForTimeout(50);
-        if ((await page.locator('[data-slot="select-scroll-up-button"]').count()) === 0)
-          throw new Error(`${story}: missing rendered select-scroll-up-button after scrolling`);
         await page.keyboard.press("ArrowDown");
         await page.keyboard.press("Escape");
       }

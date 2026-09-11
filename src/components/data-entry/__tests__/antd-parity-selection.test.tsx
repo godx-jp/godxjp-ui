@@ -223,7 +223,7 @@ describe("antd parity — open / defaultOpen / onOpenChange", () => {
   it("a plain Select honours `open` (it used to render a permanently shut listbox)", () => {
     renderWithUi(<Select options={OPTIONS} placeholder="通貨" aria-label="通貨" open />);
     expect(screen.getByRole("listbox")).toBeInTheDocument();
-    expect(screen.getByText("日本円")).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "日本円" })).toBeInTheDocument();
   });
 
   it("a plain Select reports open changes through onOpenChange", async () => {
@@ -554,16 +554,17 @@ describe("antd parity — popupMatchSelectWidth", () => {
     expect(content.style.getPropertyValue("--select-content-inline-size")).toBe("420px");
   });
 
-  it("true (the default) leaves the DOM exactly as it was", async () => {
+  it("true (the default) keeps the trigger width as the floor", async () => {
     const user = userEvent.setup();
     renderWithUi(<Select options={OPTIONS} aria-label="通貨" />);
     await user.click(screen.getByRole("combobox"));
-    expect(document.querySelector('[data-slot="select-content"]')).not.toHaveAttribute(
-      "data-popup-match",
-    );
-    expect(document.querySelector('[data-slot="select-viewport"]')?.className ?? "").toContain(
-      "--radix-select-trigger-width",
-    );
+    const content = document.querySelector<HTMLElement>('[data-slot="select-content"]');
+    expect(content).not.toHaveAttribute("data-popup-match");
+    // The floor is `.ui-select-content:not([data-popup-match])` in control.css reading the
+    // `--trigger-width` react-aria publishes on this element. jsdom lays nothing out, so what is
+    // checkable here is that the variable the rule reads is really published; the width itself is
+    // measured in the browser (docs frame data-entry-select).
+    expect(content?.style.getPropertyValue("--trigger-width")).not.toBe("");
   });
 });
 
