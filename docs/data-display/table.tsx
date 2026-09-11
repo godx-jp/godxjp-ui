@@ -181,7 +181,7 @@ export default function Demo() {
               full frame. The suppression above is scoped to a flush body, never to `bordered`.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent flush>
             <Table bordered>
               <TableHeader>
                 <TableRow>

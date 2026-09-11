@@ -11,7 +11,12 @@ Read this once; the audit enforces it. Everything else in `docs/` is for contrib
 7. Colours are semantic tokens (`tone="destructive"`, `bg-primary`), never palette names, hex, or `bg-black` / `text-white`.
 8. Sizes come from props (`size`, `width`, `columns`), never `w-[240px]` / `max-h-[420px]`.
 9. Logical directions (`ms-`, `me-`, `start-`, `end-`) when a utility is unavoidable; never `ml-` / `left-`.
-10. Run `node node_modules/@godxjp/ui/scripts/ui-audit.mjs <dir>` before every review; then `visual-audit.mjs <url>` on the running app. Zero errors is the bar.
+10. A `Card` whose whole body is a table gets `<CardContent flush>` — the table must touch the
+    card's inner edge. A default `CardContent` pads 16px while the table draws its own border, so
+    the table reads as a second box inside the card, and a wide one runs past the card entirely.
+    (`flush` alone is enough: it drops the border, the radius and the inline padding. `tight` is a
+    different knob — it governs the header band, not the body's edges.)
+11. Run `node node_modules/@godxjp/ui/scripts/ui-audit.mjs <dir>` before every review; then `visual-audit.mjs <url>` on the running app. Zero errors is the bar.
 
 **Opting a deliberate exception out.** Name the rule; the block form also has to say why.
 
@@ -45,6 +50,6 @@ information belongs on the screen:
 - `ServiceLauncherCard` already has this shape as a prop — `disabledReason`, rendered above the
   action — and it is the pattern to copy anywhere else.
 
-If the control is disabled *pending something the user can fix*, prefer leaving it enabled and
+If the control is disabled _pending something the user can fix_, prefer leaving it enabled and
 explaining on submit: an inert control with a paragraph beside it is often a validation message
 wearing a disguise.

@@ -42,11 +42,11 @@ Implementation: `src/tokens/base.css` (values) · layout owners: `src/styles/*-l
 | `--card-space-body-y`                             | `--space-section-active` | Header↔body gap                            |
 | `--card-space-header-y` / `--card-space-footer-y` | `--space-stack-sm`       | Banded header + separated footer band      |
 
-| Component                 | Use                                         |
-| ------------------------- | ------------------------------------------- |
-| `StatCard`                | KPI / stat tile (`solo` path)               |
-| `CardContent solo`        | Body-only card (same padding as `StatCard`) |
-| `CardContent flush tight` | Edge-to-edge table/tabs in card             |
+| Component           | Use                                                                                                                                                                                     |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `StatCard`          | KPI / stat tile (`solo` path)                                                                                                                                                           |
+| `CardContent solo`  | Body-only card (same padding as `StatCard`)                                                                                                                                             |
+| `CardContent flush` | Edge-to-edge table/tabs in card — REQUIRED when the table IS the body (rule 10). `flush` alone drops the border, radius and inline padding; add `tight` only to change the HEADER band. |
 
 See preview **Data Display → Card** for live examples.
 

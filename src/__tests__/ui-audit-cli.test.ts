@@ -252,3 +252,52 @@ it("rejects Select onChange and accepts the supported value callback", () => {
     '"value-callback-on-value-change"',
   );
 });
+
+describe("card composition (godx-jp/id#496, #498)", () => {
+  it("does not call a Form-wrapped body a missing body", () => {
+    // The only correct composition for a card whose submit button lives in CardFooter: the <form>
+    // has to wrap the content AND the footer, or the button cannot submit it. The rule asked for a
+    // Card slot as the IMMEDIATE next element, so it fired on correct code — three times, on a
+    // consumer's newest file.
+    const wrapped = [
+      '<Card>\n<Form onSubmit={s}>\n<CardContent>body</CardContent>\n<CardFooter><Button type="submit">save</Button></CardFooter>\n</Form>\n</Card>',
+      '<Card density="tight">\n<>\n<CardContent solo>body</CardContent>\n</>\n</Card>',
+    ];
+
+    for (const source of wrapped) {
+      expect(audit(source).output, source).not.toContain('"card-needs-content"');
+    }
+  });
+
+  it("still reports a card with no body at all", () => {
+    expect(audit("<Card>\n<Table><tbody /></Table>\n</Card>").output).toContain(
+      '"card-needs-content"',
+    );
+  });
+
+  it("requires flush when the table IS the card body, and only then", () => {
+    const bare =
+      "<Card>\n<CardContent>\n<DataTable columns={c} data={d} />\n</CardContent>\n</Card>";
+    const flush =
+      "<Card>\n<CardContent flush>\n<DataTable columns={c} data={d} />\n</CardContent>\n</Card>";
+    // A filter bar ABOVE the table makes the body mixed, and there the padding is correct — the
+    // trap the reporter hit with a `childElementCount === 1` test.
+    const mixed =
+      '<Card>\n<CardContent>\n<Flex direction="col" gap="md">\n<FilterBar />\n<DataTable columns={c} data={d} />\n</Flex>\n</CardContent>\n</Card>';
+
+    expect(audit(bare).output).toContain('"card-table-needs-flush"');
+    expect(audit(flush).output).not.toContain('"card-table-needs-flush"');
+    expect(audit(mixed).output).not.toContain('"card-table-needs-flush"');
+  });
+});
+
+it("names the replacement primitive in the finding (godx-jp/id#497)", () => {
+  // Without this the reader has to ask the catalog which component replaces what they just wrote —
+  // one round-trip per finding, and a guess about what to look up.
+  const out = audit(
+    "<Card>\n<CardContent>\n<DataTable columns={c} data={d} />\n</CardContent>\n</Card>",
+  ).output;
+
+  expect(out).toContain('"replacement": "CardContent flush"');
+  expect(audit('<button type="button">save</button>').output).toContain('"replacement": "Button"');
+});
