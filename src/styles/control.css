@@ -3532,6 +3532,25 @@
     justify-content: center;
   }
 
+  /* WRAPPED ROWS TAKE THE TRACK'S OWN INSET (gh#503). The track promises the same 2px inset on
+   * every edge; once #480 let it wrap, the one edge it did NOT hold was the one between two rows,
+   * where the slabs met with nothing between them. Measured at 393px: a two-row track was
+   * 2 + 28 + 28 + 2, so the two rows of labels sat 4.2px apart against 4.1px at the outer edge —
+   * the crowding gh#503 reports as a padding defect is this missing edge, not the 2px inset.
+   *
+   * `row-gap`, not `gap`: the inline gutter between members of ONE row is the slab boundary and
+   * must stay at zero. Scoped away from the column, where `row-gap` would be the MAIN-axis gap and
+   * would push every stacked member apart instead — a column is a menu, and its rows touch on
+   * purpose.
+   *
+   * The value is the track padding itself rather than a spacing step, for the reason the token
+   * file records: every length on this control is derived from the control band so the track
+   * measures exactly `--control-height` and sits level with an Input beside it. A track that wraps
+   * is two bands, and the space between them is the same inset as the space around them. */
+  .ui-segmented:not([data-orientation="vertical"]) {
+    row-gap: var(--segmented-track-padding);
+  }
+
   .ui-segmented[data-orientation="vertical"] {
     flex-direction: column;
   }

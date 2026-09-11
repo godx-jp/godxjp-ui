@@ -91,4 +91,31 @@ describe("Segmented sizes from the scope it is IN, not from :root", () => {
       rule(CONTROL_CSS, '  .ui-segmented[data-orientation="vertical"] > .ui-segmented-item'),
     ).toContain("block-size: var(--control-height)");
   });
+
+  /**
+   * gh#503 — the crowding a consumer reported as a track-padding defect. The track holds a 2px
+   * inset on all four outer edges; once #480 let it wrap, the ONE edge it did not hold was the one
+   * between two rows. Measured in Chromium at 393px: a two-row track was 2 + 28 + 28 + 2 = 60px,
+   * so the two rows of labels sat 4.2px apart while the outer edge gave 4.1px — rows meeting with
+   * nothing between them, which is what reads as cramped. The inset, not the padding, was missing.
+   *
+   * `row-gap` and not `gap`: the inline gutter between members of one row is the slab boundary and
+   * stays at zero. Scoped off the column, where `row-gap` is the MAIN-axis gap and would push every
+   * stacked member apart.
+   */
+  it("gives a WRAPPED row the same inset the track's outer edges get", () => {
+    expect(rule(CONTROL_CSS, '  .ui-segmented:not([data-orientation="vertical"])')).toMatch(
+      /row-gap:\s*var\(--segmented-track-padding\);/,
+    );
+  });
+
+  /**
+   * And the 2px inset itself STAYS 2px. It is load-bearing, not an oversight: the item band is
+   * `--control-height − padding × 2`, so the track measures exactly one control tall and sits level
+   * with an Input beside it. Raised to the 8px a consumer read off docs/SPACING.md, the label band
+   * would drop to 16px — a 14px type size in a 16px box. docs/SPACING.md now says so out loud.
+   */
+  it("pins the 2px track padding the whole control geometry is derived from", () => {
+    expect(SEGMENTED_TOKENS).toMatch(/--segmented-track-padding:\s*calc\(var\(--space-1\) \/ 2\);/);
+  });
 });

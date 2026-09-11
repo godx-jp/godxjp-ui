@@ -49,6 +49,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hợp lệ đều bị tính là lỗi — 3 trên 5 phát hiện ở một consumer là sai, và đều nằm trên mã mới
   nhất của họ. Nay nó hỏi đúng ý định của luật: có `<CardContent>` nào trước `</Card>` của chính
   thẻ này không (đếm theo độ sâu, vì Card lồng được trong Card).
+- **`Tabs tabPlacement="start"` / `"end"` tự gập ngang trên màn hẹp (#502).** Dải tab dọc và panel
+  dùng CHUNG một trục inline, nên khi min-content của panel chiếm gần hết màn điện thoại thì dải bị
+  ép về 0 — đo ở Chromium 393px với một khối 676px trong panel: dải rộng **8px, phần tab 0px**, tức
+  không còn đường nào tới tab khác ngoài tab đang mở (WCAG 2.2 SC 2.1.1), kèm tràn ngang (SC
+  1.4.10). Từ `--tabs-placement-responsive-breakpoint-width` (48rem) trở xuống, `start`/`end` gập
+  thành `top`/`bottom` — **kể cả trục phím mũi tên**, vì gập bằng `@media` sẽ để một dải nằm ngang
+  bị lái bởi ↑/↓. Ant Design gập đúng cặp ấy theo đúng cách ấy; chỗ khác duy nhất là nó đoán thiết
+  bị qua user agent, còn ở đây là một câu hỏi về BỀ RỘNG, và là một núm theme (đặt `0px` để tắt
+  hẳn). Trên ngưỡng gập, dải dọc thêm `flex-shrink: 0` — một panel tự cuộn được phần tràn của nó,
+  một dải tab 0px thì không cuộn vào lại được.
+- **`Segmented` khi xuống hàng: hai hàng không còn dính nhau (#503).** Track hứa 2px ở mọi mép
+  ngoài, nhưng từ khi #480 cho phép `flex-wrap`, mép DUY NHẤT nó không giữ là mép giữa hai hàng: đo
+  ở 393px, track hai hàng là 2 + 28 + 28 + 2, hai dòng nhãn cách nhau 4,2px trong khi mép ngoài cho
+  4,1px. Nay hàng gập nhận `row-gap: var(--segmented-track-padding)` — cùng một khoảng thụt, trên
+  cả hai trục. Bar một hàng không đổi một byte nào.
+- **`SPACING.md` nói rõ: ruột của một control KHÔNG nằm trên thang cách của bố cục (#503).** Thang
+  φ/8px là khoảng cách GIỮA các khối; ruột control dẫn xuất từ băng control (`--control-height`,
+  `--control-padding-x`). 2px của `--segmented-track-padding` là cố ý và chịu lực: label =
+  `--control-height − padding × 2`, nên track cao đúng một control và ngang hàng với `Input` cạnh
+  nó; nâng lên 8px thì băng nhãn còn 16px cho cỡ chữ 14px. Trước đây doc và component nói hai đằng
+  và consumer không có cách nào biết bên nào đúng.
 
 ## [23.0.0] - 2026-09-11
 

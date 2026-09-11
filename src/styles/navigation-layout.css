@@ -126,6 +126,22 @@
     flex: 1 1 auto;
   }
 
+  /* A VERTICAL STRIP MUST NEVER BE SHRUNK OUT OF EXISTENCE (gh#502). Strip and panel are two flex
+   * items on one inline axis, and a flex item shrinks by default — so a panel whose content has a
+   * wide min-content takes the whole row and leaves the strip at its `min-inline-size: 0`.
+   * Measured at 393px with a 676px-wide block in the panel: the strip came out 8px wide with 0px
+   * of tab inside it, i.e. every tab but the open one unreachable.
+   *
+   * The narrow fold in tabs.tsx already turns the strip horizontal on a phone; this is the rule
+   * for the widths the fold does not cover — a 1024px window whose panel holds a wide table. The
+   * strip keeps its content width (`--tabs-list-max-inline-size` still caps it) and the panel gets
+   * what is left, which is the trade this component has to make: a panel can scroll its own
+   * overflow, an invisible tab strip cannot be scrolled into existence. */
+  [data-slot="tabs"][data-orientation="vertical"] > [data-slot="tabs-list"],
+  [data-slot="tabs"][data-orientation="vertical"] > .ui-tabs-bar {
+    flex-shrink: 0;
+  }
+
   .ui-tabs-extra {
     display: flex;
     flex: 0 0 auto;

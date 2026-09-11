@@ -1399,34 +1399,63 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--search-select-list-max-height",
+    "value": "none",
+    "description": "antd `listHeight` writes this per instance; `none` lets the panel's own available height win."
+  },
+  {
     "name": "--search-select-footer-space-inset",
     "value": "var(--space-1)",
+<<<<<<< HEAD
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+=======
+    "description": "antd `listHeight` writes this per instance; `none` lets the panel's own available height win."
+>>>>>>> b9425a84 (fix(tabs,segmented): fold a vertical tab strip on a phone; hold the wrapped Segmented inset)
   },
   {
     "name": "--search-select-option-space-gap",
     "value": "var(--space-2)",
+<<<<<<< HEAD
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+=======
+    "description": "antd `listHeight` writes this per instance; `none` lets the panel's own available height win."
+>>>>>>> b9425a84 (fix(tabs,segmented): fold a vertical tab strip on a phone; hold the wrapped Segmented inset)
   },
   {
     "name": "--search-select-option-font-size",
     "value": "var(--font-size-sm)",
+<<<<<<< HEAD
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+=======
+    "description": "antd `listHeight` writes this per instance; `none` lets the panel's own available height win."
+>>>>>>> b9425a84 (fix(tabs,segmented): fold a vertical tab strip on a phone; hold the wrapped Segmented inset)
   },
   {
     "name": "--search-select-option-sublabel-font-size",
     "value": "var(--font-size-xs)",
+<<<<<<< HEAD
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+=======
+    "description": "antd `listHeight` writes this per instance; `none` lets the panel's own available height win."
+>>>>>>> b9425a84 (fix(tabs,segmented): fold a vertical tab strip on a phone; hold the wrapped Segmented inset)
   },
   {
     "name": "--search-select-status-space-inline",
     "value": "var(--space-2)",
+<<<<<<< HEAD
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+=======
+    "description": "antd `listHeight` writes this per instance; `none` lets the panel's own available height win."
+>>>>>>> b9425a84 (fix(tabs,segmented): fold a vertical tab strip on a phone; hold the wrapped Segmented inset)
   },
   {
     "name": "--search-select-status-space-block",
     "value": "var(--space-3)",
+<<<<<<< HEAD
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+=======
+    "description": "antd `listHeight` writes this per instance; `none` lets the panel's own available height win."
+>>>>>>> b9425a84 (fix(tabs,segmented): fold a vertical tab strip on a phone; hold the wrapped Segmented inset)
   },
   {
     "name": "--search-select-placeholder-space-block",
@@ -4072,6 +4101,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--tabs-list-overflow",
     "value": "auto",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-placement-responsive-breakpoint-width",
+    "value": "48rem",
+    "description": "Width at or below which `tabPlacement=\"start\"`/`\"end\"` folds to `top`/`bottom` (gh#502) — a * vertical strip and its panel share one inline axis and a phone has room for one of them. Same * line `--sheet-responsive-breakpoint-width` draws; `0px` (which no viewport matches) turns the * fold off. Read in JS (src/lib/breakpoint-token.ts) because the fold also swaps which arrow keys * move the roving focus — see the note on `foldVerticalPlacement` in navigation/tabs.tsx."
   },
   {
     "name": "--tabs-indicator-background",

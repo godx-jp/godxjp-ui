@@ -4,7 +4,7 @@ import { chain, mergeRefs } from "@react-aria/utils";
 import { Dialog as RacDialog, Modal, ModalOverlay } from "react-aria-components";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
-import { useMediaQuery } from "../../lib/hooks";
+import { useMaxWidthBreakpoint } from "../../lib/breakpoint-token";
 import { cn } from "../../lib/utils";
 import { Slot } from "../../lib/slot";
 import type { SheetResponsiveProp } from "../../props/components/feedback.prop";
@@ -48,30 +48,6 @@ const SHEET_BREAKPOINT_TOKEN = "--sheet-responsive-breakpoint-width";
 /** Mirrors the token default (48rem @ a 16px root) so SSR and a token-less test env agree. */
 const SHEET_BREAKPOINT_FALLBACK_QUERY = "(max-width: 768px)";
 
-/** CSS length → px. Supports the units a breakpoint knob is realistically written in. */
-function cssLengthToPx(value: string, rootFontSize: number): number | undefined {
-  const match = /^(-?\d*\.?\d+)(px|rem|em)?$/.exec(value.trim());
-  if (match == null) return undefined;
-  const amount = Number(match[1]);
-  if (!Number.isFinite(amount)) return undefined;
-  return match[2] === "rem" || match[2] === "em" ? amount * rootFontSize : amount;
-}
-
-/**
- * Build the media query from the token. A CSS `@media` cannot resolve a custom property, so the
- * breakpoint is read off the document root once per mount — that is what makes the drawer
- * breakpoint themeable instead of a literal baked into every composite.
- */
-function readSheetBreakpointQuery(): string {
-  if (typeof document === "undefined" || typeof window.getComputedStyle !== "function") {
-    return SHEET_BREAKPOINT_FALLBACK_QUERY;
-  }
-  const rootStyle = window.getComputedStyle(document.documentElement);
-  const rootFontSize = cssLengthToPx(rootStyle.fontSize || "16px", 16) ?? 16;
-  const px = cssLengthToPx(rootStyle.getPropertyValue(SHEET_BREAKPOINT_TOKEN), rootFontSize);
-  return px == null ? SHEET_BREAKPOINT_FALLBACK_QUERY : `(max-width: ${String(px)}px)`;
-}
-
 /**
  * The canonical responsive-overlay decision, shared by `SheetContent` and by any composite that
  * swaps a desktop surface for a mobile sheet (see `OrgSwitcher`). Returns `"bottom"` when the
@@ -80,14 +56,7 @@ function readSheetBreakpointQuery(): string {
 export function useSheetResponsiveMode(
   responsive: SheetResponsiveProp = "side",
 ): SheetPresentation {
-  const [query, setQuery] = React.useState(SHEET_BREAKPOINT_FALLBACK_QUERY);
-
-  React.useEffect(() => {
-    // Same-value updates bail out inside React, so this is a no-op unless a theme moved the knob.
-    setQuery(readSheetBreakpointQuery());
-  }, []);
-
-  const compact = useMediaQuery(query);
+  const compact = useMaxWidthBreakpoint(SHEET_BREAKPOINT_TOKEN, SHEET_BREAKPOINT_FALLBACK_QUERY);
 
   if (responsive === "side" || responsive === "bottom") return responsive;
   return compact ? "bottom" : "side";
