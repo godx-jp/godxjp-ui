@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — BREAKING, và lẽ ra phải có trong 23.0.0
+
+- **`Radio` và mục `Segmented` không còn thuộc tính `role` trên phần tử được vẽ.** Hệ quả của việc
+  rời Radix ở 23.0.0 cộng bản sửa vùng bấm (#487): vai trò nay là vai trò NGẦM của một `<input>`
+  thật nằm bên trong. Cây accessibility không đổi, `getByRole` vẫn tìm thấy — nhưng mọi selector
+  viết theo thuộc tính im lặng trả về **0**. Đo trên frame của kho này: **0 trên 10** radio và
+  **0 trên 33** mục Segmented trả lời `[role="radio"]`.
+
+  Đây là dạng hồi quy tệ nhất vì nó làm cổng XANH HƠN: một consumer đo được test a11y chuyển từ đỏ
+  sang xanh ngay sau khi nâng lên 23.0.0, trong khi khiếm khuyết nó canh vẫn còn nguyên — luật chỉ
+  đơn giản là hết nhìn thấy. 23.0.0 không ghi điều này ở đâu cả.
+
+  Selector thay thế: `[data-slot="radio-group-item"]`, `[data-slot="segmented-item"]`,
+  `[data-slot="checkbox"]` cho hộp được vẽ; hoặc locator theo vai trò tính được (`getByRole`,
+  `internal:role=radio[name=…]` của Playwright) cho chính control. `Switch` không ảnh hưởng —
+  react-aria khai `role="switch"` tường minh.
+
 ### Added
 
 - **`ui-audit --changed`** — quét đúng những gì nhánh này đụng vào, bất kể sửa bằng công cụ nào.
@@ -471,6 +488,7 @@ parity-audit-data-entry.md`: một slider ¥/%/件 trước đây đọc lên đ
   bề ngang, trang không cuộn ngang và không phần tử nào nằm ngoài hai mép; ở 1280px số track của
   từng trạng thái phải giữ nguyên. Đột biến: trả CSS về bản cũ → đỏ ngay ở
   `ltr topbarSpan=full @720: 2 columns (156.609px 563.391px); main 563px at x=157`.
+
 - **`AppDateFormat` có `ymd` (`yyyy/MM/dd`), và `ja` mặc định là nó.** Trục này xưa nay có ba giá
   trị và KHÔNG giá trị nào viết ra `2026/05/01`: `iso` dùng gạch ngang, hai dạng gạch chéo còn lại
   đặt ngày hoặc tháng lên trước. Một chứng từ nghiệp vụ Nhật (請求書, 申請書) viết `YYYY/MM/DD`,
